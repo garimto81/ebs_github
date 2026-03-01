@@ -8,120 +8,120 @@
     {
       "rect": [9, 363, 745, 16],
       "label": "1",
-      "fn": "#1 Tab Bar",
+      "fn": "S-00 Tab Bar",
       "ocr_text": "Sources | Outputs | GFX 1 | GFX 2 | GFX3 | Commentary | System"
     },
     {
       "rect": [9, 379, 556, 86],
       "label": "2",
-      "fn": "#2 Device Table",
+      "fn": "S-01 Device Table",
       "ocr_text": "Device | Format / Input / URL | Action | L | R | Cycle | Status | DAWN-KO-DT (Adobe Premiere I) | <Auto/Not Specified> | Preview | X | X | 0 | OFF | Integrated Camera | YUY2 2592x1944@24.00p 4:3 | Settings | 0 | OFF"
     },
     {
       "rect": [565, 385, 187, 26],
       "label": "3",
-      "fn": "#3 Board Cam Hide GFX",
+      "fn": "S-05 Board Cam Hide GFX",
       "ocr_text": "Board Cam Hide GFX ☑",
       "ebs_scope": "v1.0"
     },
     {
       "rect": [565, 411, 187, 27],
       "label": "4",
-      "fn": "#4 Auto Camera Control",
+      "fn": "S-06 Auto Camera Control",
       "ocr_text": "Auto Camera Control ☑",
       "ebs_scope": "v2.0 Defer"
     },
     {
       "rect": [565, 438, 187, 20],
       "label": "5",
-      "fn": "#5 Camera Mode Section",
+      "fn": "Camera Mode section label",
       "ocr_text": "Camera Mode"
     },
     {
       "rect": [565, 458, 187, 16],
       "label": "6",
-      "fn": "#6 Camera Mode Dropdown",
+      "fn": "S-07 Camera Mode dropdown",
       "ocr_text": "Mode | Static ▼",
       "ebs_scope": "v1.0"
     },
     {
       "rect": [565, 474, 187, 16],
       "label": "7",
-      "fn": "#7 Heads Up Split Screen",
+      "fn": "S-08 Heads Up Split Screen",
       "ocr_text": "Heads Up Split Screen ☑",
       "ebs_scope": "v1.0"
     },
     {
       "rect": [565, 490, 187, 15],
       "label": "8",
-      "fn": "#8 Follow Players",
+      "fn": "S-09 Follow Players",
       "ocr_text": "Follow Players ☐",
       "ebs_scope": "v1.0"
     },
     {
       "rect": [565, 505, 187, 16],
       "label": "9",
-      "fn": "#9 Follow Board",
+      "fn": "S-10 Follow Board",
       "ocr_text": "Follow Board ☐",
       "ebs_scope": "v1.0"
     },
     {
       "rect": [565, 521, 187, 21],
       "label": "10",
-      "fn": "#10 Linger on Board",
+      "fn": "Linger on Board spinner",
       "ocr_text": "Linger on Board | 3 ↑↓ S"
     },
     {
       "rect": [565, 542, 187, 21],
       "label": "11",
-      "fn": "#11 Post Bet Dropdown",
+      "fn": "Post Bet dropdown",
       "ocr_text": "Post Bet | Default ▼"
     },
     {
       "rect": [565, 563, 187, 21],
       "label": "12",
-      "fn": "#12 Hand Dropdown",
+      "fn": "Hand dropdown",
       "ocr_text": "Hand | Default ▼"
     },
     {
       "rect": [9, 584, 285, 44],
       "label": "13",
-      "fn": "#13 Background + Chroma Key",
+      "fn": "S-11/S-12 Background + Chroma Key",
       "ocr_text": "Background key colour | ☑ Chroma Key",
       "ebs_scope": "v1.0"
     },
     {
       "rect": [431, 592, 129, 21],
       "label": "14",
-      "fn": "#14 Add Network Camera",
+      "fn": "S-02 Add Network Camera",
       "ocr_text": "Add Net... | Camera",
       "ebs_scope": "v1.0"
     },
     {
       "rect": [9, 619, 220, 100],
       "label": "15",
-      "fn": "#15 Audio Input + Sync + Level",
+      "fn": "S-17/S-18 Audio Input + Sync + Level",
       "ocr_text": "Audio | No Audio Input ▼ | Sync | 0 mS | Level",
       "ebs_scope": "v1.0"
     },
     {
       "rect": [235, 619, 235, 90],
       "label": "16",
-      "fn": "#16 External Switcher + ATEM Control",
+      "fn": "S-13/S-14 External Switcher + ATEM Control",
       "ocr_text": "External Switcher Source | -- None -- ▼ | ATEM Control ☐ | IP",
       "ebs_scope": "v2.0 Defer"
     },
     {
       "rect": [477, 619, 88, 90],
       "label": "17",
-      "fn": "#17 Board Sync + Crossfade",
+      "fn": "S-15/S-16 Board Sync + Crossfade",
       "ocr_text": "Board Sync | 0 ↑↓ mS | Crossfade | 300 ↑↓ mS",
       "ebs_scope": "v2.0 Defer"
     },
     {
       "rect": [572, 619, 172, 90],
       "label": "18",
-      "fn": "#18 Player View Dropdowns",
+      "fn": "Player View dropdowns",
       "ocr_text": "Player ▼ | View ▼"
     }
   ],
