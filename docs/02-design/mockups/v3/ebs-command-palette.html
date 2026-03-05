@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<!-- Component: Command Palette — Modal Overlay (960px Console Context) -->
+<!-- Style Reference: Swiss International / Bloomberg Terminal -->
+<!-- B&W Monochrome Craft — EBS Console Command Palette v1.0 -->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=960">
+<title>EBS Component — Command Palette</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #000;
+    --white: #fff;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e0e0e0;
+    --gray-300: #ccc;
+    --gray-400: #aaa;
+    --gray-500: #888;
+    --gray-600: #666;
+    --gray-700: #444;
+    --gray-800: #2a2a2a;
+    --gray-900: #1a1a1a;
+    --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+    --font-sans: 'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #e8e8e8;
+    display: inline-block;
+  }
+
+  /* ─── OUTER WRAPPER ─── */
+  .scene {
+    width: 960px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    font-family: var(--font-sans);
+    color: var(--black);
+    border: 2px solid var(--black);
+    background: var(--white);
+  }
+
+  /* ─── CONSOLE BACKGROUND (dimmed) ─── */
+  .console-bg {
+    width: 100%;
+    height: 680px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0.3;
+    pointer-events: none;
+    user-select: none;
+    overflow: hidden;
+  }
+
+  /* Topbar bg */
+  .bg-topbar {
+    height: 48px;
+    background: var(--black);
+    border-bottom: 3px solid var(--black);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
+  }
+
+  .bg-logo {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--white);
+    padding-right: 16px;
+    border-right: 1px solid #444;
+  }
+
+  .bg-table-name {
+    font-size: 12px;
+    color: #888;
+    flex: 1;
+  }
+
+  .bg-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 4px 8px;
+    border: 1px solid #444;
+    color: #777;
+  }
+
+  /* Content bg */
+  .bg-content {
+    flex: 1;
+    display: flex;
+  }
+
+  .bg-sidebar {
+    width: 220px;
+    border-right: 3px solid var(--black);
+    background: #fafafa;
+    padding: 16px 0;
+  }
+
+  .bg-sidebar-row {
+    height: 36px;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bg-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ccc;
+  }
+
+  .bg-dot.active {
+    background: var(--black);
+  }
+
+  .bg-sidebar-row.active-row {
+    background: var(--black);
+  }
+
+  .bg-row-text {
+    font-size: 11px;
+    color: #bbb;
+  }
+
+  .bg-row-text.active-text {
+    color: var(--white);
+  }
+
+  .bg-main {
+    flex: 1;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bg-toolbar {
+    height: 40px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+  }
+
+  .bg-tab {
+    height: 28px;
+    padding: 0 14px;
+    border: 1px solid #ccc;
+    font-size: 11px;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+  }
+
+  .bg-tab.active-tab {
+    background: var(--black);
+    color: var(--white);
+    border-color: var(--black);
+  }
+
+  .bg-grid {
+    flex: 1;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .bg-card {
+    height: 120px;
+    border: 1px solid #e0e0e0;
+    background: #fafafa;
+  }
+
+  .bg-card-header {
+    height: 28px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  /* ─── OVERLAY BACKDROP ─── */
+  .palette-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 96px;
+    z-index: 10;
+  }
+
+  /* ─── COMMAND PALETTE MODAL ─── */
+  .palette {
+    width: 480px;
+    max-height: 400px;
+    background: var(--white);
+    border: 2px solid var(--black);
+    box-shadow: 8px 8px 0 var(--black);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Search Input Row */
+  .palette-search {
+    display: flex;
+    align-items: center;
+    height: 52px;
+    border-bottom: 2px solid var(--black);
+    padding: 0 16px;
+    gap: 12px;
+    background: var(--white);
+  }
+
+  .palette-kbd {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    background: var(--black);
+    padding: 3px 7px;
+    border: 1px solid var(--black);
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 2px 2px 0 #555;
+  }
+
+  .palette-divider-v {
+    width: 1px;
+    height: 24px;
+    background: #ccc;
+    flex-shrink: 0;
+  }
+
+  .palette-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--black);
+    background: transparent;
+    letter-spacing: 0.02em;
+  }
+
+  .palette-input::placeholder {
+    color: #bbb;
+    font-weight: 400;
+  }
+
+  .palette-clear {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: #aaa;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* Results body */
+  .palette-body {
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  /* Section label */
+  .palette-section-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #999;
+    padding: 8px 16px 5px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #e8e8e8;
+    border-top: 1px solid #e8e8e8;
+  }
+
+  /* Command item */
+  .palette-item {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    padding: 0 16px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    gap: 12px;
+    position: relative;
+  }
+
+  .palette-item:hover {
+    background: #f5f5f5;
+  }
+
+  .palette-item.active {
+    background: var(--black);
+    color: var(--white);
+    border-bottom-color: #222;
+  }
+
+  .palette-item-icon {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #ccc;
+    width: 16px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .palette-item.active .palette-item-icon {
+    color: #666;
+  }
+
+  .palette-item-cmd {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--black);
+    flex-shrink: 0;
+    min-width: 140px;
+  }
+
+  .palette-item.active .palette-item-cmd {
+    color: var(--white);
+  }
+
+  .palette-item-desc {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 400;
+    color: #888;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .palette-item.active .palette-item-desc {
+    color: #aaa;
+  }
+
+  .palette-item-shortcut {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: #bbb;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .palette-item.active .palette-item-shortcut {
+    color: #777;
+  }
+
+  .palette-item-arrow {
+    font-size: 10px;
+    color: #ccc;
+    flex-shrink: 0;
+  }
+
+  .palette-item.active .palette-item-arrow {
+    color: #777;
+  }
+
+  /* Category badge */
+  .palette-cat {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    border: 1px solid;
+    flex-shrink: 0;
+  }
+
+  .cat-overlay {
+    color: #555;
+    border-color: #bbb;
+    background: #f0f0f0;
+  }
+
+  .cat-system {
+    color: #333;
+    border-color: #999;
+    background: #e0e0e0;
+  }
+
+  .cat-rfid {
+    color: #000;
+    border-color: #666;
+    background: #d0d0d0;
+  }
+
+  .palette-item.active .cat-overlay,
+  .palette-item.active .cat-system,
+  .palette-item.active .cat-rfid {
+    color: #bbb;
+    border-color: #555;
+    background: #222;
+  }
+
+  /* Footer */
+  .palette-footer {
+    height: 36px;
+    border-top: 2px solid var(--black);
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  .palette-hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .hint-key {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    color: #555;
+    background: var(--white);
+    border: 1px solid #bbb;
+    padding: 1px 5px;
+    box-shadow: 1px 1px 0 #ccc;
+    letter-spacing: 0.05em;
+  }
+
+  .hint-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: #888;
+    text-transform: uppercase;
+  }
+
+  .hint-sep {
+    width: 1px;
+    height: 16px;
+    background: #ccc;
+  }
+
+  /* Component annotation */
+  .component-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #777;
+    background: #e8e8e8;
+    padding: 5px 12px;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    margin-top: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+
+  <!-- Console Background (dimmed to simulate overlay context) -->
+  <div class="console-bg">
+    <div class="bg-topbar">
+      <div class="bg-logo">EBS</div>
+      <div class="bg-table-name">Feature Table · Main Stage</div>
+      <div class="bg-badge">LIVE</div>
+      <div class="bg-badge">⌘K</div>
+      <div class="bg-badge">OP</div>
+    </div>
+    <div class="bg-content">
+      <div class="bg-sidebar">
+        <div class="bg-sidebar-row active-row">
+          <div class="bg-dot active"></div>
+          <div class="bg-row-text active-text">Feature Table</div>
+        </div>
+        <div class="bg-sidebar-row">
+          <div class="bg-dot"></div>
+          <div class="bg-row-text">Table 2</div>
+        </div>
+        <div class="bg-sidebar-row">
+          <div class="bg-dot"></div>
+          <div class="bg-row-text">Table 3</div>
+        </div>
+        <div class="bg-sidebar-row">
+          <div class="bg-dot"></div>
+          <div class="bg-row-text">Table 4</div>
+        </div>
+      </div>
+      <div class="bg-main">
+        <div class="bg-toolbar">
+          <div class="bg-tab active-tab">Overview</div>
+          <div class="bg-tab">Players</div>
+          <div class="bg-tab">Graphics</div>
+          <div class="bg-tab">RFID</div>
+          <div class="bg-tab">Settings</div>
+        </div>
+        <div class="bg-grid">
+          <div class="bg-card"><div class="bg-card-header"></div></div>
+          <div class="bg-card"><div class="bg-card-header"></div></div>
+          <div class="bg-card"><div class="bg-card-header"></div></div>
+          <div class="bg-card"><div class="bg-card-header"></div></div>
+          <div class="bg-card"><div class="bg-card-header"></div></div>
+          <div class="bg-card"><div class="bg-card-header"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Command Palette Overlay -->
+  <div class="palette-overlay">
+    <div class="palette">
+
+      <!-- Search Input -->
+      <div class="palette-search">
+        <div class="palette-kbd">⌘K</div>
+        <div class="palette-divider-v"></div>
+        <input class="palette-input" type="text" placeholder="Type a command or search..." value="show" readonly>
+        <div class="palette-clear">ESC</div>
+      </div>
+
+      <!-- Results -->
+      <div class="palette-body">
+
+        <!-- Recent -->
+        <div class="palette-section-label">Recent</div>
+
+        <div class="palette-item active">
+          <div class="palette-item-icon">↑</div>
+          <div class="palette-item-cmd">show leaderboard</div>
+          <div class="palette-item-desc">Show Leaderboard overlay</div>
+          <div class="palette-cat cat-overlay">overlay</div>
+          <div class="palette-item-arrow">↵</div>
+        </div>
+
+        <div class="palette-item">
+          <div class="palette-item-icon">↑</div>
+          <div class="palette-item-cmd">hide player 3</div>
+          <div class="palette-item-desc">Hide Player 3 Graphic</div>
+          <div class="palette-cat cat-overlay">overlay</div>
+          <div class="palette-item-arrow">↵</div>
+        </div>
+
+        <!-- Commands -->
+        <div class="palette-section-label">Commands</div>
+
+        <div class="palette-item">
+          <div class="palette-item-icon">·</div>
+          <div class="palette-item-cmd">reset</div>
+          <div class="palette-item-desc">Reset current hand</div>
+          <div class="palette-cat cat-system">system</div>
+          <div class="palette-item-arrow">↵</div>
+        </div>
+
+        <div class="palette-item">
+          <div class="palette-item-icon">·</div>
+          <div class="palette-item-cmd">theme dark-blue</div>
+          <div class="palette-item-desc">Switch theme</div>
+          <div class="palette-cat cat-system">system</div>
+          <div class="palette-item-arrow">↵</div>
+        </div>
+
+        <div class="palette-item">
+          <div class="palette-item-icon">·</div>
+          <div class="palette-item-cmd">output ndi-1</div>
+          <div class="palette-item-desc">Change NDI output</div>
+          <div class="palette-cat cat-system">system</div>
+          <div class="palette-item-arrow">↵</div>
+        </div>
+
+        <div class="palette-item">
+          <div class="palette-item-icon">·</div>
+          <div class="palette-item-cmd">delay 30</div>
+          <div class="palette-item-desc">Set Secure Delay to 30s</div>
+          <div class="palette-cat cat-system">system</div>
+          <div class="palette-item-arrow">↵</div>
+        </div>
+
+        <div class="palette-item">
+          <div class="palette-item-icon">·</div>
+          <div class="palette-item-cmd">register deck</div>
+          <div class="palette-item-desc">Start RFID deck registration</div>
+          <div class="palette-cat cat-rfid">rfid</div>
+          <div class="palette-item-arrow">↵</div>
+        </div>
+
+        <div class="palette-item">
+          <div class="palette-item-icon">·</div>
+          <div class="palette-item-cmd">calibrate</div>
+          <div class="palette-item-desc">Start RFID calibration</div>
+          <div class="palette-cat cat-rfid">rfid</div>
+          <div class="palette-item-arrow">↵</div>
+        </div>
+
+      </div>
+
+      <!-- Footer Hints -->
+      <div class="palette-footer">
+        <div class="palette-hint">
+          <span class="hint-key">↑</span>
+          <span class="hint-key">↓</span>
+          <span class="hint-label">Navigate</span>
+        </div>
+        <div class="hint-sep"></div>
+        <div class="palette-hint">
+          <span class="hint-key">↵</span>
+          <span class="hint-label">Execute</span>
+        </div>
+        <div class="hint-sep"></div>
+        <div class="palette-hint">
+          <span class="hint-key">Esc</span>
+          <span class="hint-label">Close</span>
+        </div>
+        <div class="hint-sep"></div>
+        <div class="palette-hint">
+          <span class="hint-key">Tab</span>
+          <span class="hint-label">Autocomplete</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Component Annotation -->
+  <div class="component-label">EBS Command Palette · Modal Overlay · ⌘K · v1.0</div>
+
+</div>
+
+</body>
+</html>
