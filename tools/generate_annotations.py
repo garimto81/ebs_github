@@ -13,6 +13,7 @@ Usage:
   python generate_annotations.py --ebs                    # EBS Console tab annotation
   python generate_annotations.py --ebs --target sources   # Single EBS tab
   python generate_annotations.py --ebs --calibrate        # EBS with auto-calibration
+  python generate_annotations.py --ebs --layout           # Clean layout screenshots (no annotation)
 
 Strategy: Contrast Edge Detection + Auto-Calibration
 - Normal mode: auto-snaps box edges to nearest contrast boundaries (±2px)
@@ -1473,6 +1474,8 @@ def main():
                         help='Crop each annotated box from original image')
     parser.add_argument('--ebs', action='store_true',
                         help='Process EBS Console tab mockups instead of PokerGFX')
+    parser.add_argument('--layout', action='store_true',
+                        help='Capture clean layout screenshots (no annotation overlay)')
     parser.add_argument('--target', type=str, default=None,
                         help='Process only images matching this prefix (e.g. "02" or "sources")')
     args = parser.parse_args()
@@ -1486,6 +1489,59 @@ def main():
 
         if args.calibrate:
             print("NOTE: --calibrate is ignored for --ebs mode. HTML coordinates are the source of truth.")
+
+        if args.layout:
+            # --layout mode: capture clean tab screenshots without annotation
+            print("Layout capture mode: clean screenshots only (no annotation overlay)")
+            os.makedirs(EBS_INPUT_DIR, exist_ok=True)
+            count = 0
+
+            with sync_playwright() as p:
+                browser = p.chromium.launch()
+                page = browser.new_page(viewport={'width': 1200, 'height': 1600})
+
+                # Use the first HTML file from EBS_HTML_MAP
+                html_file = 'ebs-console-main-v4.html'
+                html_path = os.path.join(EBS_INPUT_DIR, html_file)
+                if not os.path.exists(html_path):
+                    print(f"ERROR: {html_path} not found")
+                    browser.close()
+                    sys.exit(1)
+
+                page.goto(f'file:///{html_path.replace(chr(92), "/")}')
+                page.wait_for_load_state('networkidle')
+
+                tabs = ['sources', 'outputs', 'gfx', 'display', 'rules', 'system']
+                for tab_name in tabs:
+                    if args.target and args.target not in tab_name:
+                        continue
+
+                    # Click tab
+                    tab_selector = f'.tab[data-tab="{tab_name}"]'
+                    tab_el = page.locator(tab_selector)
+                    if tab_el.count() > 0:
+                        tab_el.first.click()
+                        panel_selector = f'#panel-{tab_name}'
+                        page.wait_for_selector(f'{panel_selector}.active', timeout=3000)
+                    else:
+                        print(f"  WARNING: Tab '{tab_name}' not found, skipping")
+                        continue
+
+                    # Screenshot .app element
+                    app_locator = page.locator('.app')
+                    if app_locator.count() == 0:
+                        app_locator = page.locator('#app')
+
+                    png_name = f'ebs-console-{tab_name}.png'
+                    png_path = os.path.join(EBS_INPUT_DIR, png_name)
+                    app_locator.first.screenshot(path=png_path)
+                    print(f"  Layout: {png_path}")
+                    count += 1
+
+                browser.close()
+
+            print(f"\nDone: {count} layout screenshots captured.")
+            return
 
         os.makedirs(EBS_OUTPUT_DIR, exist_ok=True)
         count = 0
