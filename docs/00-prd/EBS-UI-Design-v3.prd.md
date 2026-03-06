@@ -1,11 +1,11 @@
 ---
 doc_type: "prd"
 doc_id: "EBS-UI-Design-v3"
-version: "2.5.0"
+version: "3.6.0"
 status: "draft"
 owner: "BRACELET STUDIO"
 created: "2026-03-05"
-last_updated: "2026-03-05"
+last_updated: "2026-03-06"
 phase: "phase-1"
 priority: "critical"
 
@@ -27,22 +27,13 @@ source_analysis:
 
 EBS 앱이 **어떻게 생겨야 하는지** 정의한다. 기능 카탈로그, 게임 규칙, 시나리오는 선행 문서(pokergfx-prd-v2.md)에 정의되어 있으며, 기술 스택과 아키텍처는 v2.0(EBS-UI-Design-v2.prd.md)에 정의되어 있다. 본 문서는 이 두 문서와 **중복 없이** 앱 레이아웃과 오버레이 그래픽 배치만 다룬다.
 
-| 내용 | pokergfx-prd-v2.md | v2.0 | **v3.0 (본 문서)** |
-|------|:------------------:|:----:|:------------------:|
-| 프로젝트 비전/역할/시나리오 | O | - | - |
-| 22개 게임 규칙/기능 카탈로그 | O | - | - |
-| 기술 스택/아키텍처 | - | O | - |
-| **앱 레이아웃 설계** | - | - | **O** |
-| **오버레이 그래픽 배치** | - | - | **O** |
-| **현대 UI 패러다임 적용** | - | - | **O** |
-
 ### 1.2 설계 철학
 
 **PokerGFX 구조를 따라갈 이유가 없다.** PokerGFX는 2010년대 WinForms 6탭 구조다. EBS는 프로덕션 검증된 3개 벤치마크 앱에서 추출한 패턴을 적용하여, 가장 세련되고 혁신적인 방송 제어 앱으로 설계한다.
 
 ### 1.3 벤치마크 앱 3선
 
-모든 설계 결정은 아래 3개 프로덕션 검증 앱에서 추출한 패턴에 근거한다.
+모든 설계 결정은 아래 3개 프로덕션 검증 앱에서 추출한 패턴에 근거한다. 각 벤치마크는 EBS의 서로 다른 영역을 담당한다: BM-1은 **Console 앱 레이아웃**, BM-2는 **정보 구조와 키보드 UX**, BM-3은 **오버레이 시각 언어**를 정의한다.
 
 **BM-1: Ross Video DashBoard** (방송 제어)
 
@@ -54,9 +45,39 @@ EBS 앱이 **어떻게 생겨야 하는지** 정의한다. 기능 카탈로그, 
 >
 > *DashBoard 9.0 Aura 테마: 역할별 레이아웃 전환과 다크 테마 기반 방송 제어 UI*
 
-- 검증: Super Bowl LVIII 그래픽 운영, SoFi Stadium 상설 시스템, NBC/ESPN/Sky Sports 등 전 세계 방송국 표준 제어 소프트웨어. **라이브 스포츠 방송 제어의 사실상 표준**.
-- 추출 패턴: CustomPanel 빌더 (운영자가 패널 직접 구성), 단일 인터페이스 철학 (탭 분리 X), 역할별 레이아웃 전환
-- EBS 적용: 하이브리드 레이아웃 (사이드바 + 중앙 프리뷰 + 컨텍스트 패널)
+- 검증: Super Bowl LVI AR 그래픽 운영 (NBC Sports + Van Wagner), SoFi Stadium 상설 시스템, Rogers Sportsnet(토론토), QTV 중계차 운영. NBC/ESPN/Sky Sports 등 전 세계 방송국 표준 제어 소프트웨어. **라이브 스포츠 방송 제어의 사실상 표준**.
+- 기술 상세: v9.16 (2026.01), **80+ openGear 파트너** 네이티브 지원, CustomPanel Visual Logic Editor (코드 없이 디바이스 제어 워크플로우 구성), RBAC(Role-Based Access Control)로 운영자별 패널 접근 권한 관리, RossTalk/VDCP/OGPJSON/HTTP(S)/TCP/UDP/MIDI 프로토콜 지원.
+- 추출 패턴: CustomPanel 빌더 (운영자가 패널 직접 구성), 단일 인터페이스 철학 (탭 분리 X), 역할별 레이아웃 전환, RBAC 접근 제어
+- EBS 적용: Top-Preview 레이아웃 (상단 전폭 프리뷰 + 하단 탭 컨트롤), 역할별 UI 커스터마이징
+
+#### BM-1 보조 레퍼런스: Top-Preview 레이아웃 수렴 현상
+
+EBS Console의 Top-Preview 레이아웃은 Ross DashBoard 단독 참조가 아니라, 2024~2026년 기준 **주요 방송 제어 소프트웨어 전부**가 동일 패턴으로 수렴한 업계 표준이다.
+
+> ![OBS Studio v28 — Top-Preview + 하단 5-Dock 패턴 (Scenes/Sources/Audio Mixer/Transitions/Controls)](../../images/benchmarks/obs-studio-interface.png)
+>
+> *OBS Studio v28: 상단에 전폭 프리뷰, 하단에 Scenes/Sources/Audio Mixer/Transitions/Controls 5개 도크. 가장 널리 사용되는 오픈소스 방송 소프트웨어.*
+
+> ![OBS Studio Mode — Preview/Program 듀얼 모니터 패턴](../../images/benchmarks/obs-studio-mode.png)
+>
+> *OBS Studio Mode: 좌측 Preview + 우측 Program + 중앙 Transition 컨트롤. 방송 스위처 표준 패턴.*
+
+> ![vMix — Preview/Output 상단 + 하단 Input Bar + 제어 버튼](../../images/benchmarks/vmix-interface.png)
+>
+> *vMix: 좌측 Preview(주황 타이틀바) + 우측 Output(초록 타이틀바) + 하단 Input Bar + 색상 코드 탭 분류. 프로 라이브 프로덕션 소프트웨어.*
+
+> ![Blackmagic ATEM Software Control — Switcher/Media/Audio/Camera 탭 구조](../../images/benchmarks/atem-software-control.jpg)
+>
+> *ATEM Software Control: Program/Preview 버스 버튼 + Transition Style + 우측 Palettes(설정 패널) + 하단 4탭(Switcher/Media/Audio/Camera). 하드웨어 스위처의 소프트웨어 미러.*
+
+| 소프트웨어 | 레이아웃 패턴 | 프리뷰 위치 | 컨트롤 위치 | EBS 차용 요소 |
+|-----------|:----------:|:---------:|:---------:|------------|
+| **OBS Studio** | Top-Preview + Bottom-Docks | 상단 전폭 | 하단 5도크 | 도크 구조, 씬/소스 관리 |
+| **vMix** | Dual-Preview + Bottom-Input | 상단 좌우 | 하단 Input Bar | 듀얼 프리뷰 모드, 색상 코드 탭 |
+| **ATEM Software** | Bus-Style + Right-Palette | 상단 버스 | 우측 팔레트 + 하단 탭 | 탭 기반 설정 분리, 팔레트 UI |
+| **Ross DashBoard** | CustomPanel (자유 배치) | 운영자 설정 | 운영자 설정 | 역할별 레이아웃, RBAC |
+
+> **결론**: 4개 소프트웨어 모두 "프리뷰=상단, 컨트롤=하단/측면"으로 수렴. EBS는 이 패턴을 따르되, **하단 전폭 탭 패널(가변 높이, 스크롤 금지)**로 6탭 설정을 통합한다.
 
 **BM-2: Bloomberg Terminal** (정보 밀도 + 키보드 퍼스트)
 
@@ -64,11 +85,17 @@ EBS 앱이 **어떻게 생겨야 하는지** 정의한다. 기능 카탈로그, 
 >
 > *Bloomberg Terminal: 수천 개 데이터를 한 화면에 배치하는 적응형 정보 밀도 UI. 커맨드 라인 즉시 접근 패턴의 원조.*
 
-- 검증: 325,000+ 구독자, 2019년 Chromium 기반 전환, 금융 업계 40년 표준. **실시간 데이터 밀도 UI의 최고 레퍼런스** — 수천 개 데이터를 한 화면에 제어하는 UX 패턴이 방송 제어와 동일 문제를 해결.
-- 추출 패턴: 커맨드 라인 즉시 접근, 적응형 정보 밀도, 키보드 우선 조작
-- EBS 적용: 커맨드 팔레트 (Cmd+K), 게임 상태별 정보량 자동 조절
+- 검증: **325,000+ 전문 구독자**, 연간 $25,000/좌석, 2019년 Chromium 기반 전환, 금융 업계 40년 표준. **실시간 데이터 밀도 UI의 최고 레퍼런스** — 수천 개 데이터를 한 화면에 제어하는 UX 패턴이 방송 제어와 동일 문제를 해결.
+- UX 설계 원칙 (Bloomberg UX 팀 공식):
+  - **Concealing Complexity**: 수천 개 기능을 사용자 여정(journey)별로 은닉. 현재 맥락에 필요한 것만 표면에 노출.
+  - **Consistency**: 수천 개 화면에서 동일한 인터랙션 패턴 유지 — 예측 가능성이 정보 밀도 UI의 핵심 사용성.
+  - **Gradual Evolution**: 실시간 금융 의사결정에 사용되므로 UI 급변은 치명적. 점진적 변화만 허용.
+  - **GO Key 패턴**: 모든 화면 상단에 커맨드 바 존재. 기능명/티커 입력 + GO(Enter) = 즉시 이동. 마우스 탐색 불필요.
+  - **Launchpad**: 사용자 맞춤 대시보드. 임의의 탭/윈도우 수 배치 가능 (기존 4패널 제한 폐지).
+- 추출 패턴: 커맨드 라인 즉시 접근 (GO Key), 적응형 정보 밀도, 키보드 우선 조작, 맥락 기반 복잡성 은닉
+- EBS 적용: 게임 상태별 정보량 자동 조절, 일관된 컨트롤 패턴
 
-**BM-3: GGPoker + GTO Wizard** (포커 오버레이 혁신)
+**BM-3: GGPoker + GTO Wizard + WSOP 방송** (포커 오버레이 혁신)
 
 > ![GGPoker + GTO Wizard — 포커 방송 오버레이 (Glassmorphism + 네온 강조)](../01_PokerGFX_Analysis/03_Reference_ngd/web_screenshots/ggpoker-gto-broadcast.gif)
 >
@@ -78,19 +105,20 @@ EBS 앱이 **어떻게 생겨야 하는지** 정의한다. 기능 카탈로그, 
 >
 > *GTO Wizard 실시간 분석 오버레이: 확률/Equity 표시, 상태별 동적 UI 전환*
 
-- 검증: 세계 최대 온라인 포커 플랫폼 (WSOP Online 독점 파트너), GTO Wizard의 실시간 분석 오버레이. **포커 시각화의 최신 트렌드 레퍼런스** — PokerStars, 888poker 등 주요 플랫폼이 동일 UI 패턴(Glassmorphism, 네온 강조)을 채택.
-- 추출 패턴: Glassmorphism 카드 UI, 네온/글로우 이벤트 강조, Bold 타이포 핵심 수치 강조
-- EBS 적용: 오버레이 현대화, 상태별 동적 UI, 올인/빅팟 발광 효과
+> ![WSOP Paradise 2025 — RFID 기반 방송 오버레이 (올인 상황)](../01_PokerGFX_Analysis/03_Reference_ngd/web_screenshots/wsop-paradise-2025-rfid-broadcast.png)
+>
+> *WSOP Paradise 2025: GGPoker 플랫폼 기반 라이브 방송. 하단 플레이어 스트립 + 보드 카드 + 팟 표시. PokerGFX와 동일한 RFID 시스템을 사용하되 현대적 시각 언어 적용.*
 
 ### 1.4 설계 패턴 ↔ 벤치마크 매핑
 
 | 설계 패턴 | 벤치마크 출처 | EBS 적용 |
 |-----------|:------------:|----------|
-| 하이브리드 레이아웃 | BM-1 Ross | 사이드바 + 중앙 프리뷰 + 컨텍스트 패널 |
-| 커맨드 팔레트 | BM-2 Bloomberg | Cmd+K로 모든 조작에 즉시 접근 |
-| 적응형 정보 밀도 | BM-2 Bloomberg | AT/오버레이에서 게임 진행에 따라 정보량 자동 조절 (Console은 수동 탭 전환) |
+| Top-Preview 레이아웃 | OBS/ATEM/vMix/Ross | 상단 전폭 프리뷰 + 하단 탭 컨트롤 (업계 수렴 패턴) |
+| 적응형 정보 밀도 | BM-2 Bloomberg + BM-3 Smart HUD | AT/오버레이에서 게임 진행에 따라 정보량 자동 조절 (Console은 수동 탭 전환) |
+| 복잡성 은닉 | BM-2 Bloomberg | 수십 개 설정을 6탭 + 서브그룹으로 계층화 |
 | Glassmorphism 오버레이 | BM-3 GGPoker | 반투명 프로스트 카드/팟/확률 패널 |
 | Bold 타이포 + 네온 | BM-3 GGPoker | 핵심 수치 강조, 올인 이벤트 발광 효과 |
+| 듀얼 디스플레이 마스킹 | BM-3 GGPoker Streamer Mode | 방송 딜레이 중 홀 카드 자동 마스킹 |
 | LCH 색공간 테마 | BM-3 + 업계 트렌드 | 3변수(base, accent, contrast) 커스텀 테마 |
 
 ### 1.5 불필요 기능 제거
@@ -105,120 +133,733 @@ PokerGFX 247개 요소 중 **54개 비활성화** (whitepaper 분석):
 | Twitch 연동 | 5 | Twitch 스트리밍 미운영 |
 | 기타 | 14 | 태그, 라이선스, 시스템, 레거시 UI |
 
-## 2장. EBS Console — 전면 재설계
+## 2장. EBS Console
 
 PokerGFX의 776x660px WinForms 6탭 구조를 완전히 탈피한다.
 
 ### 핵심 혁신
 
-| PokerGFX (레거시) | EBS v3.0 (혁신) | 벤치마크 |
+| PokerGFX  | EBS v3.0  | 벤치마크 |
 |-------------------|-----------------|:--------:|
-| 6탭 WinForms (Sources, Outputs, GFX 1/2/3, System) | 하이브리드 레이아웃 (사이드바 + 프리뷰 + 컨텍스트) | BM-1 Ross |
-| 고정 컨트롤 패널 | 탭 기반 설정 패널 + 커맨드 팔레트 (Cmd+K) | BM-1 + BM-2 |
-| 메뉴 → 탭 → 서브그룹 탐색 | 커맨드 팔레트 (Cmd+K) 즉시 접근 | BM-2 Bloomberg |
+| 6탭 WinForms (Sources, Outputs, GFX 1/2/3, System) | Top-Preview 레이아웃 (상단 전폭 프리뷰 + 하단 탭 컨트롤) | OBS/ATEM/vMix |
+| 고정 컨트롤 패널 | 탭 기반 설정 패널 (6탭 구조) | OBS |
+| 메뉴 → 탭 → 서브그룹 탐색 | 키보드 단축키 (Ctrl+1~6) 즉시 접근 | OBS/vMix |
 
 ### 2.1 메인 레이아웃
 
 **최소 해상도**: 1024x768 | **권장**: 1920x1080
-**레이아웃 비율**: 사이드바 220px (고정) / 중앙 프리뷰 (가변) / 컨텍스트 패널 320px (고정)
+**레이아웃**: Menu Bar 28px (고정) / Preview Area 가변 (1fr) / Info Bar 36px (고정) / Tab Bar 36px (고정) / Tab Content 가변 (auto, 스크롤 금지)
 
-> ![EBS Console 메인 레이아웃 B&W 목업 — Swiss International 스타일](../02-design/mockups/v3/ebs-console-main.png)
+CSS: `grid-template-rows: 28px 1fr 36px 36px auto; height: 100vh;`
+
+> ![EBS Console 메인 레이아웃 B&W 목업 — Swiss International 스타일](../02-design/mockups/v3/ebs-console-main-v4.png)
 >
-> *EBS Console v3.0: 3컬럼 하이브리드 레이아웃 (사이드바 220px + 중앙 프리뷰 16:9 + 설정 패널 320px). 우측 설정 패널에서 Sources, Outputs, GFX, System 탭으로 오버레이 표시 방식을 구성한다.*
+> ![EBS Console 메인 윈도우 Annotation — Menu Bar, Preview, Info Bar 요소 매핑](../01_PokerGFX_Analysis/02_Annotated_ngd/ebs-main-window.png)
+>
+> *EBS Console v4.0: Menu Bar(28px) + Preview(가변, 16:9) + Info Bar(36px) + Tab Bar(36px) + Tab Content(가변, 스크롤 금지). 업계 표준(OBS Studio, vMix, TriCaster, ATEM, Wirecast) 기반. 6탭 구조(Sources/Outputs/GFX/Display/Rules/System).*
 
-### 2.2 사이드바 (좌측 220px)
 
-테이블 목록과 Quick Actions를 제공한다. Ross Video DashBoard의 "패널 직접 구성" 철학에서 차용.
+
+#### 운영 워크플로우
+
+**방송 전 (Setup)**:
+1. System 탭에서 RFID 연결 확인 (Info Bar RFID 상태 ● Green)
+2. Sources 탭에서 카메라/NDI 소스 등록, Chroma Key 설정
+3. Outputs 탭에서 출력 해상도(1080p/4K), Fill & Key 설정
+4. GFX 탭에서 레이아웃(Board Position, Player Layout), 스킨, 브랜딩 설정
+5. Register Deck으로 새 덱 등록 → 카드 RFID 매핑 확인
+6. Launch AT로 Action Tracker 실행
+
+**긴급 상황**:
+- 오버레이 오류 → Hide GFX (즉시 숨김) → 문제 해결 → Hide GFX 토글 복원
+- 카드 인식 오류 → Reset Hand → 현재 핸드 전체 초기화
+- AT 연결 끊김 → Launch AT로 재실행, 자동 재연결 시도
+
+#### 개발 스펙
+
+**리사이즈 동작**: 윈도우 리사이즈 시 Menu Bar(28px), Info Bar(36px), Tab Bar(36px)는 고정. 
+Preview Area와 Tab Content가 가변. Tab Content는 탭별 콘텐츠 높이에 따라 결정되며, 스크롤은 금지된다.
+
+### 2.2 Menu Bar (28px)
+
+표준 데스크톱 앱 메뉴바. 좌측에 EBS 로고(M-01), 이어서 File/Edit/View/Table/Help 메뉴.
+
+```
+[EBS] File  Edit  View  Table  Help
+```
+
+| 메뉴 | 항목 |
+|------|------|
+| File | New Session, Open Session, Save Session, Export Hand History, Exit |
+| Edit | Undo, Redo, Preferences (M-12 흡수) |
+| View | Toggle Preview (F11), Toggle Tab Panel (Ctrl+M), Toggle Lock (Ctrl+L) |
+| Table | Switch Table (M-02t 기능), Register Deck (M-13), Launch AT (M-14) |
+| Help | About (M-01 기능), Keyboard Shortcuts, Documentation, Export Logs |
+
+#### EBS Logo (M-01)
+
+운영: 로고 클릭 시 About 다이얼로그를 표시한다. 앱 버전, 빌드 번호, 라이선스 정보, 진단 로그 내보내기 버튼을 포함한다. 더블클릭 시 개발자 콘솔(DevTools)을 토글한다.
+
+개발: About 다이얼로그는 모달 오버레이. 진단 로그 내보내기는 `system.export_logs` 명령으로 최근 24시간 로그를 ZIP으로 패키징한다. DevTools 토글은 `Ctrl+Shift+I` 바인딩과 동일하며, 프로덕션 빌드에서도 접근 가능하다(디버깅용).
+
+#### Settings / Preferences (M-12)
+
+운영: Edit > Preferences로 접근한다. 앱 전반에 적용되는 설정을 관리한다: 테마(Dark/Light), 언어, 단축키 커스터마이징, 자동 저장 간격, 로그 레벨 등. Tab Content의 설정은 개별 기능 설정이고, M-12는 앱 자체의 환경 설정이다.
+
+개발: Settings 다이얼로그는 모달 오버레이. 설정값은 로컬 `settings.json` 파일에 저장된다 (서버 전파 불필요). 다이얼로그 내부는 카테고리별 리스트 (Appearance, Shortcuts, Advanced). 변경 즉시 적용 (Apply 버튼 없음, 실시간 반영). Escape로 닫기.
+
+### 2.2b Info Bar (36px)
+
+Preview Area와 Tab Bar 사이에 위치한다. 테이블 식별, 상태 인디케이터, Quick Actions를 제공한다.
+
+```
+[Table: Final Table ▼] ── [RFID ●] [CPU ▐▐▐] [GPU ▐▐] ── [🔒] [Reset] [Deck] [AT] [Hide]
+```
 
 | 영역 | 내용 |
 |------|------|
-| 테이블 목록 | 활성 테이블 리스트. 선택 시 중앙 프리뷰와 컨텍스트 패널이 해당 테이블로 전환 |
-| Quick Actions | Reset Hand, Register Deck, Launch AT, Hide GFX — 항상 접근 가능한 핵심 버튼 |
-| 연결 상태 | 각 테이블의 RFID/AT/Engine 연결 상태 인디케이터 |
+| 좌측 — 식별 | 테이블 드롭다운 (활성 테이블 전환. 기존 사이드바 테이블 리스트를 드롭다운으로 축소) |
+| 중앙 — 상태 인디케이터 | RFID 연결 상태 (●), CPU 사용률 바 (▐▐▐), GPU 사용률 바 (▐▐) |
+| 우측 — Quick Actions | Reset Hand, Register Deck, Launch AT, Hide GFX — 항상 접근 가능한 핵심 버튼 4개 |
 
-### 2.3 중앙 프리뷰
+#### Info Bar 요소 상세 (9개)
 
-라이브 오버레이 미리보기. 16:9 종횡비를 유지하며, 크로마키 블루 배경 위에 현재 GFX 상태를 실시간 렌더링한다.
+**좌측 — 식별 영역**
+
+**Table Dropdown (M-02t)**
+
+운영: 현재 활성 테이블을 표시하고, 드롭다운으로 다른 테이블로 전환한다. 멀티테이블 토너먼트에서 운영자가 테이블을 신속히 전환할 때 사용한다. 테이블 전환 시 Preview Area, AT, 모든 오버레이가 선택된 테이블의 데이터로 갱신된다.
+
+개발: WebSocket `tables.list` 요청으로 사용 가능한 테이블 목록을 조회한다. `tables.switch { table_id }` 요청으로 활성 테이블을 전환한다. 전환 중 Preview는 "Switching Table..." 오버레이를 표시하고, 완료 후 자동 제거된다. 테이블 전환 시 현재 테이블의 미저장 설정은 자동 저장된다.
+
+**중앙 — 상태 인디케이터**
+
+**RFID Status (M-05)**
+
+운영: RFID 리더의 현재 상태를 7색 아이콘으로 표시한다. 각 색상의 의미:
+
+| 색상 | 상태 | 원인 | 운영자 대응 |
+|------|------|------|------------|
+| 🟢 Green | 정상 연결 | 리더 연결 + 안테나 정상 | 없음 |
+| 🟡 Yellow | 카드 읽기 중 | RFID 태그 감지, 데이터 수신 중 | 없음 (자동 전환) |
+| 🔵 Blue | 캘리브레이션 모드 | 안테나 캘리브레이션 진행 중 | 캘리브레이션 완료 대기 |
+| 🟠 Orange | 신호 약함 | 안테나 간섭 또는 거리 초과 | 안테나 위치 조정 |
+| 🔴 Red | 연결 끊김 | USB 분리, 리더 전원 OFF | USB 재연결, 리더 전원 확인 |
+| ⚪ White | 미초기화 | 앱 시작 직후, 리더 탐색 중 | 자동 연결 대기 (5초) |
+| ⚫ Black (비활성) | RFID 비활성화 | System 탭에서 수동 비활성화 | 필요 시 System 탭에서 재활성화 |
+
+개발: `rfid.status` WebSocket 이벤트로 상태 변경을 수신한다. 상태 전이: `BLACK → WHITE → GREEN` (정상 부팅), `GREEN → YELLOW → GREEN` (카드 읽기), `GREEN → RED` (연결 끊김). 5초 이상 RED 유지 시 Info Bar 전체에 경고 배너를 표시한다.
+
+**RFID Connection Icon (M-06)**
+
+운영: M-05 보조 아이콘. 연결(링크 아이콘) / 미연결(끊긴 링크 아이콘) 2상태만 표시한다. M-05의 색상이 RED/BLACK일 때 미연결 상태가 된다.
+
+개발: M-05 상태에서 파생되는 UI 전용 요소. 별도 WebSocket 이벤트 없음. `rfid.status ∈ {RED, BLACK}` → 미연결 아이콘, 그 외 → 연결 아이콘.
+
+**CPU Indicator (M-03)**
+
+운영: CPU 사용률을 수평 바 그래프로 표시한다. 50% 이하 녹색, 50~80% 황색, 80% 이상 적색. 80% 이상 지속 시 오버레이 렌더링 프레임 드롭이 발생할 수 있다. 대응: 불필요한 백그라운드 앱 종료, 해상도/프레임레이트 하향 조정.
+
+개발: `system.metrics` WebSocket 이벤트에서 `cpu_usage` 필드를 500ms 간격으로 수신한다. 이동 평균(5초 윈도우)으로 안정적 표시. 임계값: `warn: 50`, `critical: 80`. Critical 도달 시 `system.alert { type: "cpu_high" }` 이벤트를 생성한다.
+
+**GPU Indicator (M-04)**
+
+운영: GPU 사용률을 수평 바 그래프로 표시한다. M-03과 동일한 색상 임계값 적용. GPU는 오버레이 렌더링에 직접 사용되므로 높은 사용률은 프레임 드롭의 직접적 원인이다.
+
+개발: `system.metrics` WebSocket 이벤트에서 `gpu_usage` 필드를 수신한다. M-03과 동일한 이동 평균/임계값/이벤트 패턴. Critical 시 `system.alert { type: "gpu_high" }`.
+
+**우측 — Quick Actions**
+
+**Lock Toggle (M-07)**
+
+운영: 설정 잠금/해제를 토글한다. 잠금 상태에서는 Tab Content의 모든 설정 컨트롤이 비활성화(회색 처리)되어 실수로 설정을 변경하는 것을 방지한다. 방송 중 운영자가 의도치 않게 설정을 건드리는 사고를 예방하기 위한 안전장치다. **예외**: Info Bar의 Quick Actions (Reset Hand, Register Deck, Launch AT, Hide GFX)는 Lock 상태에서도 항상 활성화된다. 긴급 조작은 Lock에 의해 차단되지 않는다.
+
+개발: Lock 상태는 `ui.lock` 로컬 상태로 관리한다 (서버 전파 불필요). Lock 활성화 시 Tab Content의 모든 `<input>`, `<select>`, `<button>` 요소에 `disabled` 속성을 추가하고, 반투명 오버레이를 표시한다. 단축키: `Ctrl+L`. Lock 아이콘: 🔒 (잠김) / 🔓 (해제).
+
+**Reset Hand (M-11)**
+
+운영: 현재 핸드를 긴급 초기화한다. 모든 카드 인식 데이터, 플레이어 액션, 팟 정보를 클리어하고 핸드 시작 전 상태로 되돌린다. UNDO(Z키)로 복구할 수 없는 심각한 오류 발생 시 최후의 수단으로 사용한다. 확인 다이얼로그가 표시된다 ("정말 현재 핸드를 초기화하시겠습니까?").
+
+개발: `game.reset` WebSocket 메시지를 서버로 전송한다. 서버는 현재 핸드의 모든 상태를 초기화하고, AT와 오버레이에 `game.hand_reset` 이벤트를 브로드캐스트한다. AT는 이 이벤트를 수신하면 좌석 상태를 Pre-Start로 복원한다. 오버레이는 모든 Player/Board Graphic을 퇴장 애니메이션과 함께 제거한다. 단축키: `Ctrl+R`. 확인 다이얼로그 필수 (실수 방지).
+
+**Register Deck (M-13)**
+
+운영: 새 카드 덱의 RFID 등록 프로세스를 시작한다. 52장(+ 조커 2장) 카드를 순서대로 RFID 리더에 태그하여 UID를 매핑한다. 덱 교체 시(새 덱 개봉) 반드시 실행해야 한다. 등록 중에는 Preview에 등록 진행 오버레이가 표시된다.
+
+개발: `rfid.register` WebSocket 메시지로 등록 모드를 시작한다. 전제조건: RFID 상태가 GREEN(M-05), 게임이 진행 중이지 않을 것 (핸드 진행 중이면 등록 거부). 등록 UI는 별도 모달 다이얼로그로 표시되며, 54장 그리드에서 등록된 카드를 실시간으로 하이라이트한다. 등록 완료/취소 시 `rfid.register_complete` / `rfid.register_cancel` 이벤트. 단축키: `Ctrl+D`.
+
+**Launch AT (M-14)**
+
+운영: Action Tracker를 실행하거나, 이미 실행 중이면 AT 윈도우로 포커스를 전환한다. AT가 실행 중일 때 버튼에 녹색 인디케이터가 표시된다. AT 미실행 시 회색.
+
+개발: AT 실행 상태는 WebSocket `at.status` 이벤트로 모니터링한다. 미실행 → 클릭 시 AT 프로세스를 spawn하고 WebSocket 연결을 대기한다 (최대 10초 타임아웃). 이미 실행 중 → 클릭 시 `window.focus()` 또는 OS 레벨 윈도우 활성화 API 호출. AT와의 WebSocket 연결이 끊어지면 버튼 인디케이터가 황색으로 전환되고, 5초 간격으로 재연결을 시도한다. 단축키: `Ctrl+T`.
+
+**Hide GFX (M-15)**
+
+운영: 모든 오버레이 그래픽을 즉시 숨기거나 복원한다. 방송 중 오버레이에 오류가 표시될 때 긴급으로 숨기는 용도다. **되돌릴 수 있는 유일한 긴급 조작**이다 (Reset Hand는 비가역적). 숨김 상태에서 다시 클릭하면 오버레이가 즉시 복원된다.
+
+개발: `overlay.visibility` WebSocket 메시지를 서버로 전송한다. `{ visible: false }` → 오버레이 엔진이 렌더링을 중단하고 투명 프레임만 출력. `{ visible: true }` → 렌더링 재개. 숨김 상태에서는 Preview Area에 "GFX HIDDEN" 워터마크를 표시한다. 숨김/복원 전환 시간: 1프레임 이내(16ms). 단축키: `Ctrl+H`. Lock 상태에서도 동작한다.
+
+### 2.3 Preview Area (가변)
+
+라이브 오버레이 미리보기. 전체 폭을 사용하며, 16:9 비율을 유지하고 남는 좌우 공간은 배경색(#1a1a2e)으로 채운다.
 
 | 속성 | 값 |
 |------|-----|
-| 종횡비 | 16:9 (고정) |
-| 배경 | Chroma-key Blue (#0000FF) |
+| 너비 | 전폭(100vw). 실제 16:9 영역은 height 기준으로 자동 계산 |
+| 높이 | 가변 (1fr — Menu Bar/Info Bar/Tab Bar/Tab Content 제외한 나머지) |
+| 종횡비 | 16:9 (고정). CSS `aspect-ratio: 16/9` |
+| 배경 | 프리뷰 영역: Chroma-key Blue (#0000FF). 좌우 여백: #1a1a2e |
 | 렌더링 | 오버레이 엔진 iframe 임베드 (실시간 합성) |
-| 인터랙션 | 오버레이 요소 클릭 → 설정 패널에 해당 요소 설정 표시 |
+| 인터랙션 | 오버레이 요소 클릭 → 하단 탭에서 해당 설정으로 자동 전환 + 포커스 |
+| 크기 (1920px) | 실제 16:9 영역: 고정 영역(28+36+36=100px) + Tab Content(가변 ~200px) 제외 = Preview ~780px → 16:9: 1387×780 |
+| 크기 (1024px) | 실제 16:9 영역: 고정 영역 100px + Tab Content(가변 ~200px) 제외 = Preview ~468px → 16:9: 832×468 |
 
-### 2.4 설정 패널 (우측 320px)
+#### 운영 설명
 
-PokerGFX GfxServer의 6탭 구조를 3컬럼 레이아웃의 우측 패널로 재배치. Console은 **오버레이 표시 방식**만 제어하며, 게임 데이터(블라인드 값, 플레이어, 스택)는 AT에서 입력한다.
+Preview Area는 시청자가 보는 방송 화면과 동일한 오버레이를 실시간으로 표시한다. 운영자는 GFX 탭에서 설정을 변경하면 Preview에서 즉시 결과를 확인할 수 있다. 레이아웃(Board Position, Player Layout), 애니메이션(Transition In/Out), 스킨 변경 등 모든 시각적 설정이 Preview에 실시간 반영된다.
+
+**클릭 인터랙션**: Preview의 오버레이 요소를 클릭하면 하단 Tab Content에서 해당 설정으로 자동 전환된다. 이를 통해 운영자는 "보이는 것을 클릭하면 설정이 열리는" 직관적 워크플로우를 사용할 수 있다.
+
+| 클릭 대상 (Preview) | 전환 탭 | 포커스 대상 | element-catalog |
+|---------------------|---------|------------|:---------------:|
+| Player Graphic | GFX | Card & Player 서브그룹 | G-14~G-16 |
+| Board Graphic | GFX | Layout 서브그룹 | G-01 |
+| Sponsor Logo | GFX | Branding 서브그룹 | G-10~G-12 |
+| Strip (하단 배너) | GFX | Branding 서브그룹 | G-13 |
+| Blinds Graphic | Display | Blinds 서브그룹 | G-45~G-51c |
+| Ticker | GFX | Branding 서브그룹 | G-13s |
+| Leaderboard | GFX | Layout 서브그룹 | G-06 |
+
+#### 개발 스펙
+
+**렌더링 방식**: 오버레이 엔진을 iframe으로 임베드한다. iframe의 `src`는 로컬 오버레이 렌더러 URL(`http://localhost:{port}/overlay`)이다. Console과 오버레이 엔진 간 통신은 `postMessage` API를 사용한다.
+
+**스케일링 알고리즘**: Preview Area의 가용 크기에서 16:9 비율의 최대 영역을 계산한다. `object-fit: contain` + `aspect-ratio: 16/9` CSS 적용. 남는 좌우 공간은 배경색(#1a1a2e)으로 채운다.
+
+**상태별 표시**:
+
+| 상태 | Preview 표시 | 조건 |
+|------|-------------|------|
+| 정상 | 실시간 오버레이 렌더링 | 오버레이 엔진 연결 정상 |
+| GFX HIDDEN | 반투명 "GFX HIDDEN" 워터마크 | Hide GFX(M-15) 활성화 |
+| SERVER DISCONNECTED | 회색 배경 + 연결 끊김 메시지 | WebSocket 연결 끊김 |
+| 해상도 변경 중 | 블랙아웃 (약 1초) | Outputs 탭에서 Video Size 변경 |
+| RFID 미연결 | 정상 렌더링 + Info Bar 경고만 | RFID 상태 RED (Preview는 영향 없음) |
+
+**클릭 매핑 구현**: 오버레이 엔진이 각 요소에 `data-element-id` 속성을 부여한다. iframe 내 클릭 이벤트를 `postMessage`로 Console에 전달하면, Console이 `data-element-id` → 탭/서브그룹 매핑 테이블을 참조하여 자동 전환한다.
+
+### 2.4 Tab Bar + Tab Content
+
+하단 영역 전체를 두 레이어로 구성한다. 기존 우측 320px 세로 스택 → 1920px 전폭 가로 다중 컬럼으로 재배치.
+
+**Tab Bar (36px)**:
+
+```
+[Sources] [Outputs] [GFX] [Display] [Rules] [System]                           [▼ 패널 최소화]
+```
+
+**Tab Content (가변)**: 전폭 활용. 스크롤 금지 — 모든 콘텐츠가 한 번에 표시된다. Console은 **오버레이 표시 방식**만 제어하며, 게임 데이터(블라인드 값, 플레이어, 스택)는 AT에서 입력한다.
 
 | 탭 | 내용 | PokerGFX 대응 |
 |----|------|:---:|
 | Sources | 비디오 입력 장치, 카메라 모드(Static/Dynamic), Chroma Key, 보드 싱크 보정 | Sources 탭 |
 | Outputs | 출력 해상도, Live/Delay 파이프라인, Secure Delay, 프레임레이트 | Outputs 탭 |
-| GFX | 오버레이 레이아웃(Board Position, Player Layout), 애니메이션(Transition In/Out), 스킨, 수치 형식(8종 영역별 정밀도), 통화 기호, 블라인드/Equity/Outs 표시 조건, 리더보드 옵션, 마진 | GFX 1+2+3 통합 |
+| GFX | 오버레이 레이아웃(Board Position, Player Layout), 카드/플레이어, 애니메이션(Transition In/Out), 브랜딩(스폰서 로고, 스킨) | GFX 1+2 통합 |
+| Display | 수치 형식(8종 영역별 정밀도), 통화 기호, 블라인드/Equity 표시 조건, BB 모드 | GFX 3 Numbers |
+| Rules | 게임 규칙(Bomb Pot, Straddle), 플레이어 표시(좌석번호, 탈락, 정렬) | GFX 2 Rules |
 | System | RFID 안테나 제어(UPCARD/Muck/Community), AT 접근 허용, 캘리브레이션, 테이블 진단 | System 탭 |
-| 프리뷰 요소 클릭 시 | 해당 오버레이 요소의 상세 설정 (위치, 크기, 표시 조건) | EBS 신규 |
+| 프리뷰 요소 클릭 시 | 해당 오버레이 요소의 Tab으로 자동 전환 + 포커스 | EBS 신규 |
+
+**패널 크기 (해상도별)**:
+
+| 해상도 | Menu Bar | Preview | Info Bar | Tab Bar | Tab Content |
+|--------|:-------:|:-------:|:--------:|:-------:|:-----------:|
+| 1920×1080 | 1920×28 | 1920×780 (16:9: 1387×780) | 1920×36 | 1920×36 | 1920×~200 (탭별 가변) |
+| 1024×768 | 1024×28 | 1024×468 (16:9: 832×468) | 1024×36 | 1024×36 | 1024×~200 (탭별 가변) |
+
+**프리뷰 면적 비교**:
+
+| 해상도 | v3.0 (3-Column) | v4.0 (Top-Preview) | 증가율 |
+|--------|:---------------:|:------------------:|:------:|
+| 1920×1080 | 1,070,280 px² | 1,081,260 px² (1387×780) | **+1%** |
+| 1024×768 | 131,648 px² | 389,376 px² (832×468) | **+196%** |
+
+#### 운영 설명
+
+Tab Bar의 6개 탭은 Console의 모든 설정을 기능별로 분류한다. 각 탭의 역할:
+
+| 탭 | 역할 요약 | 방송 전/중 |
+|----|----------|:----------:|
+| Sources | 비디오 입력 장치 관리, 카메라 모드, Chroma Key, ATEM 스위처 | 방송 전 설정 |
+| Outputs | 출력 해상도, 프레임레이트, Live/Delay 파이프라인, Fill & Key | 방송 전 설정 |
+| GFX | 오버레이 시각 설정 — 레이아웃, 카드/플레이어, 애니메이션, 브랜딩 | 방송 전 + 방송 중 조정 |
+| Display | 수치 표시 형식 — 블라인드, 통화, 영역별 정밀도, BB 모드 | 방송 전 설정 |
+| Rules | 게임 규칙 — Bomb Pot, Straddle, 플레이어 정렬, 위닝 핸드 | 방송 전 설정 |
+| System | RFID 연결, 테이블 식별, AT 접근 정책, 시스템 진단 | 방송 전 설정 |
+
+**패널 최소화**: Tab Bar 우측의 `[▼]` 버튼으로 Tab Content를 접을 수 있다. 최소화 시 Tab Bar(36px)만 남고 Preview Area가 확장된다. 단축키: `Ctrl+M`.
+
+**Lock 영향**: Lock Toggle(M-07) 활성화 시 Tab Content의 모든 컨트롤이 비활성화된다. 탭 전환 자체는 Lock 상태에서도 가능하다 (읽기 전용 확인 용도).
+
+#### 개발 스펙
+
+**Tab Content 3-Column 그리드**: 각 탭의 Content 영역은 3-Column CSS Grid로 구성된다. 컬럼 할당은 탭별로 다르다 — 상세는 §2.6~2.9 참조.
+
+CSS: `grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding: 12px; overflow: hidden;`
+
+**컨트롤 6종 표준**: Tab Content에서 사용하는 UI 컨트롤은 6종으로 제한한다.
+
+| 컨트롤 | 용도 | 예시 |
+|--------|------|------|
+| Dropdown | 고정 선택지 | Board Position (Left/Right/Centre/Top) |
+| TextField | 자유 텍스트 입력 | Vanity Text, ATEM IP |
+| Checkbox | ON/OFF 토글 | Chroma Key Enable, Show Blinds |
+| ColorPicker | 색상 선택 | Chroma Key Color, Fill & Key Color |
+| Slider | 연속 범위 값 | X Margin (0.0~1.0), Transition 시간 |
+| NumberInput | 정수/소수 직접 입력 | Frame Rate, Cycle 시간 |
+
+**실시간 WebSocket 반영**: Tab Content에서 설정값을 변경하면 `config.update { key, value }` WebSocket 메시지가 서버로 즉시 전송된다. 서버는 설정을 저장하고 오버레이 엔진에 `config.changed` 이벤트를 브로드캐스트한다. Preview Area가 즉시 갱신된다. 디바운스: 300ms (Slider/NumberInput 연속 조작 시).
 
 #### Sources 탭
 
-> ![Console Sources 탭 목업](../02-design/mockups/v3/ebs-console-sources.png)
+##### 1. 레이아웃
+
+> ![Sources 탭 레이아웃](../02-design/mockups/v3/ebs-console-sources.png)
 >
-> *Sources 탭: Video Sources 테이블(L/R/Source/Format/Cycle/Status/Action) + Camera Mode(Static/Dynamic) + Chroma Key + ATEM Control(조건부)*
+> *Sources 탭 — 전폭, 가변 높이, 3-Column 그리드: Video Input | Chroma Key | ATEM Control*
+
+##### 2. 요소 매핑
+
+> ![Sources 탭 요소 매핑](../01_PokerGFX_Analysis/02_Annotated_ngd/ebs-sources-tab.png)
+>
+> *번호 = annotation 박스. 각 요소의 상세는 아래 테이블 참조.*
+
+##### 3. 요소 설명
+
+| # | 요소명 | ID | 컨트롤 | 설명 |
+|:-:|--------|:--:|--------|------|
+| 1 | Video Source Table | S-01 | DataTable | NDI/캡처카드/네트워크 카메라 소스 목록. L/R Source(S-03, S-25), Format(S-04), Cycle(S-26), Status(S-27), Action(S-28) 컬럼 포함 |
+| 2 | Camera Mode | S-01 | SegmentedButton | Static/Dynamic 카메라 모드 전환 |
+| 3 | Chroma Key Enable | S-11 | Checkbox | 크로마키 활성화. Preview 배경이 선택 색상으로 채워짐 |
+| 4 | Background Colour | S-12 | ColorPicker | 크로마키 배경색 선택 (기본 #0000FF) |
+| 5 | Tolerance | S-12 | Slider | 크로마키 허용 범위 (0~100) |
+| 6 | Board Sync Offset | S-12 | NumberInput + Button | 보드 싱크 오프셋(ms) + CAL 버튼 |
+| 7 | ATEM Connection | S-29 | StatusIndicator | ATEM 스위처 IP 연결 상태 표시 |
+| 8 | Auto-Cut | S-14 | Checkbox | ATEM 자동 컷 전환 활성화 |
+| 9 | Transition | S-14 | Dropdown | ATEM 트랜지션 타입 (CUT/MIX/DIP) |
+| 10 | T-Bar | S-14 | Slider | ATEM T-Bar 수동 트랜지션 |
+| 11 | DSK Fill | S-14 | Checkbox | Downstream Key Fill 활성화 |
 
 Video Sources 테이블에서 NDI/캡처카드/네트워크 카메라를 관리한다. Camera Mode로 Static/Dynamic을 전환하고, Chroma Key와 ATEM 스위처 연결을 설정한다.
 
 #### Outputs 탭
 
-> ![Console Outputs 탭 목업](../02-design/mockups/v3/ebs-console-outputs.png)
+##### 1. 레이아웃
+
+> ![Outputs 탭 레이아웃](../02-design/mockups/v3/ebs-console-outputs.png)
 >
-> *Outputs 탭: Resolution(Video Size/9x16/Frame Rate) + Live Pipeline(Video/Audio/Device) + Fill & Key(듀얼 미니 프리뷰 + Channel Map)*
+> *Outputs 탭 — 전폭, 가변 높이, 3-Column 그리드: Resolution | Live Pipeline | Fill & Key*
+
+##### 2. 요소 매핑
+
+> ![Outputs 탭 요소 매핑](../01_PokerGFX_Analysis/02_Annotated_ngd/ebs-outputs-tab.png)
+>
+> *번호 = annotation 박스. 각 요소의 상세는 아래 테이블 참조.*
+
+##### 3. 요소 설명
+
+| # | 요소명 | ID | 컨트롤 | 설명 |
+|:-:|--------|:--:|--------|------|
+| 1 | Video Size | O-01 | Dropdown | 출력 해상도 (1080p / 4K) |
+| 2 | Ratio | O-02 | SegmentedButton | 16:9 / 9:16 비율 전환 |
+| 3 | Frame Rate | O-03 | Dropdown | 프레임레이트 (30/60fps) |
+| 4 | Bit Depth | O-03 | ReadOnly | 색 깊이 표시 (8-bit) |
+| 5 | NDI Output | O-04 | Checkbox | NDI 네트워크 출력 활성화 |
+| 6 | RTMP Stream | O-04 | Checkbox | RTMP 스트리밍 출력 |
+| 7 | SRT Output | O-04 | Checkbox | SRT 프로토콜 출력 |
+| 8 | Delay | O-04 | NumberInput | 출력 딜레이(초) |
+| 9 | Fill Output | O-05 | StatusIndicator | Fill 신호 출력 포트 (HDMI A) |
+| 10 | Key Output | O-05 | StatusIndicator | Key 신호 출력 포트 (HDMI B) |
+| 11 | Alpha Channel | O-18 | Checkbox | 알파 채널 출력 활성화 |
+| 12 | Luma Key | O-18 | Checkbox | Luma Key 모드 활성화 |
+| 13 | Preview Monitor | O-19 | Button | Fill/Key 듀얼 미니 프리뷰 + APPLY |
 
 출력 해상도와 프레임레이트를 설정하고, DeckLink/NDI 출력 파이프라인을 구성한다. Fill & Key 모드 시 듀얼 미니 프리뷰로 Fill/Key 신호를 확인한다.
 
 #### GFX 탭
 
-> ![Console GFX 탭 목업](../02-design/mockups/v3/ebs-console-gfx.png)
->
-> *GFX 탭: Layout(Board Position/Player Layout/Margins) + Card & Player + Animation(Transition In/Out) + Branding(Sponsor Logos/Vanity Text) + Numbers(Precision 5행/Mode 3행) + Rules*
+##### 1. 레이아웃
 
-PokerGFX GFX 1+2+3을 단일 스크롤 패널로 통합. Layout → Card & Player → Animation → Branding → Numbers → Rules 순서로 서브그룹을 배치한다.
+> ![GFX 탭 레이아웃](../02-design/mockups/v3/ebs-console-gfx.png)
+>
+> *GFX 탭 — 전폭, 가변 높이, 3-Column 그리드: Layout + Card & Player | Animation | Branding*
+
+##### 2. 요소 매핑
+
+> ![GFX 탭 요소 매핑](../01_PokerGFX_Analysis/02_Annotated_ngd/ebs-gfx-tab.png)
+>
+> *번호 = annotation 박스. 각 요소의 상세는 아래 테이블 참조.*
+
+##### 3. 요소 설명
+
+| # | 요소명 | ID | 컨트롤 | 설명 |
+|:-:|--------|:--:|--------|------|
+| 1 | Template | G-01 | Dropdown | 오버레이 레이아웃 템플릿 (Standard/Custom) |
+| 2 | Strip Pos | G-02 | SegmentedButton | 플레이어 스트립 위치 (BOT/TOP) |
+| 3 | Show Hole Cards | G-14 | Checkbox | 홀카드 표시 활성화 |
+| 4 | Card Reveal | G-16 | Dropdown | 카드 공개 시점 (Auto/Immediate/On Action) |
+| 5 | Player Name Style | G-22 | Dropdown | 플레이어 이름 표시 형식 (Full/First/Nickname) |
+| 6 | Transitions | G-17 | Checkbox | 등장/퇴장 애니메이션 활성화 |
+| 7 | Speed | G-17 | Slider | 트랜지션 속도 (0.1x~2.0x) |
+| 8 | Logo Overlay | G-10 | Checkbox | 스폰서 로고 오버레이 활성화 |
+| 9 | Logo Position | G-10 | Dropdown | 로고 위치 (TL/TR/BL/BR) |
+| 10 | Watermark | G-13 | Checkbox | 워터마크 표시 활성화 |
+| 11 | Pot Display | G-45 | Checkbox | 팟 금액 표시 활성화 |
+| 12 | Stack Format | G-50b | Dropdown | 스택 표시 형식 (K/M/Exact) |
+| 13 | Bet Display | G-50c | Checkbox | 베팅 금액 표시 활성화 |
+| 14 | Game Type | G-52 | Dropdown | 게임 타입 (NL Hold'em/PLO/Mixed) |
+| 15 | Show Blinds | G-45 | Checkbox | 블라인드 레벨 표시 활성화 |
+
+PokerGFX GFX 1+2의 시각 설정을 통합. Layout → Card & Player → Animation → Branding 순서로 4개 서브그룹을 배치한다. Numbers와 Rules는 별도 탭(Display, Rules)으로 분리되었다.
 
 #### System 탭
 
-> ![Console System 탭 목업](../02-design/mockups/v3/ebs-console-system.png)
+##### 1. 레이아웃
+
+> ![System 탭 레이아웃](../02-design/mockups/v3/ebs-console-system.png)
 >
-> *System 탭: RFID(상단 — Reset/Calibrate + 안테나 제어) + Table(Name/Password) + AT(Allow Access/Predictive Bet) + Diagnostics(Table Diagnostics/System Log/Export) + Startup*
+> *System 탭 — 전폭, 가변 높이, 3-Column 그리드: RFID + Table | Action Tracker + Connection | Diagnostics*
+
+##### 2. 요소 매핑
+
+> ![System 탭 요소 매핑](../01_PokerGFX_Analysis/02_Annotated_ngd/ebs-system-tab.png)
+>
+> *번호 = annotation 박스. 각 요소의 상세는 아래 테이블 참조.*
+
+##### 3. 요소 설명
+
+| # | 요소명 | ID | 컨트롤 | 설명 |
+|:-:|--------|:--:|--------|------|
+| 1 | Reader Status | Y-03 | StatusIndicator | RFID 리더 연결 상태 (ST25R3911B 칩명 표시) |
+| 2 | Antenna Power | Y-04 | Slider | 안테나 출력 강도 (0~100%) |
+| 3 | Reset Reader | Y-03 | TextButton | RFID 시스템 초기화 (RESET) |
+| 4 | Calibrate | Y-04 | TextButton | 안테나 캘리브레이션 실행 (RUN) |
+| 5 | Table Name | Y-01 | Dropdown | 테이블 식별 이름 선택 |
+| 6 | AT Status | Y-13 | StatusIndicator | Action Tracker 연결 상태 |
+| 7 | Auto-Launch | Y-13 | Checkbox | AT 자동 실행 활성화 |
+| 8 | WebSocket Port | Y-13 | NumberInput | AT WebSocket 포트 번호 |
+| 9 | Launch AT | Y-13 | TextButton | AT 수동 실행 (OPEN) |
+| 10 | Server | Y-09 | StatusIndicator | EBS Server 엔진 상태 |
+| 11 | WS Clients | Y-09 | ReadOnly | 연결된 WebSocket 클라이언트 수 |
+| 12 | CPU Usage | Y-09 | ProgressBar | CPU 사용률 (%) |
+| 13 | GPU Usage | Y-09 | ProgressBar | GPU 사용률 (%) |
+| 14 | Memory | Y-09 | ReadOnly | 메모리 사용량 (GB) |
+| 15 | Frame Drop | Y-10 | ReadOnly | 프레임 드롭 카운터 (빨간색 경고) |
+| 16 | Log Level | Y-10 | Dropdown | 로그 레벨 (DEBUG/INFO/WARN/ERROR) |
+| 17 | Export Logs | Y-12 | TextButton | 로그 파일 내보내기 (EXPORT) |
 
 RFID 연결이 방송 시작의 첫 번째 전제 조건이므로 최상단에 배치. Table 식별, AT 접근 정책, 시스템 진단 순서로 구성한다.
 
-### 2.5 커맨드 팔레트 (Cmd+K)
+### 2.5 상태 바 (제거)
 
-Bloomberg Terminal의 커맨드 라인에서 차용. 모든 기능에 키보드로 즉시 접근한다.
+상태 인디케이터가 Info Bar로 이동했으므로 별도 상태 바는 제거한다.
 
-> ![Command Palette 목업](../02-design/mockups/v3/ebs-command-palette.png)
+| 항목 | 이전 위치 | 이동 위치 |
+|------|----------|---------|
+| RFID 상태 | 하단 상태 바 | Info Bar 중앙 (RFID ●) |
+| CPU/GPU 사용률 | 하단 상태 바 | Info Bar 중앙 (CPU ▐▐▐ / GPU ▐▐) |
+| 핸드 번호 | 하단 상태 바 | 제거 (AT에서 관리) |
+| 딜레이 카운터 | 하단 상태 바 | 제거 (송출 딜레이 장비에서 관리) |
+| 단축키 가이드 | 하단 상태 바 | 제거 (키보드 단축키로 대체) |
+
+### 2.6 Sources 탭 기능 상세
+
+Sources 탭은 방송 입력 파이프라인을 제어한다. 3-Column 그리드 내에 **Video Input**, **Chroma Key**, **ATEM Control** 서브그룹을 배치한다.
+
+#### Video Input (S-01, S-03~S-04, S-25~S-29)
+
+비디오 소스 목록을 DataTable로 관리한다. 운영자는 NDI, 캡처카드, 네트워크 카메라를 등록하고 상태를 모니터링한다.
+
+| 컬럼 | ID | 기능 | 조작 |
+|------|:--:|------|------|
+| L/R Source | S-03, S-25 | 좌/우 비디오 소스 할당 (X 마커) | 클릭 토글 |
+| Format/Input/URL | S-04 | 소스 포맷 및 입력 경로 표시 | 읽기 전용 |
+| Cycle | S-26 | 소스 순환 표시 시간 (초, 0=제외) | 숫자 입력 |
+| Status | S-27 | ON/OFF 활성 상태 | 토글 |
+| Action | S-28 | Preview 토글 + Settings 버튼 | 클릭 |
+
+**동작**: 소스가 ON으로 전환되면 Preview Area에 해당 피드가 실시간 합성된다. 소스 해상도가 출력 해상도(O-01)와 불일치하면 자동 스케일링을 적용한다.
+
+> **[DROP]** Auto Camera Control (SV-002) — 게임 상태 기반 자동 카메라 전환 전체 배제. 카메라 전환은 프로덕션 팀(스위처)이 수동 운영한다.
+
+#### Chroma Key (S-11, S-12)
+
+| 요소 | ID | 기능 | 기본값 |
+|------|:--:|------|--------|
+| Enable | S-11 | 크로마키 활성화 체크박스 | OFF |
+| Background Colour | S-12 | 배경색 ColorPicker | #0000FF (Blue) |
+
+**동작**: Enable 활성화 시 Preview Area 배경이 선택 색상으로 채워진다. OBS Browser Source에서 이 색상을 키로 사용하여 투명 오버레이를 합성한다.
+
+> **[DROP]** Board Sync / Crossfade (SV-004) — 밀리초 보드 싱크/크로스페이드 배제.
 >
-> *Command Palette (⌘K): 배경 dimming + 480px 모달. RECENT/COMMANDS 섹션 분리, 카테고리 뱃지(OVERLAY/SYSTEM/RFID), 키보드 힌트(↑↓/↵/Esc/Tab).*
+> **[DROP]** Audio Input Source / Audio Sync — 오디오 입력 관리는 OBS/외부 오디오 믹서에서 처리.
 
-| 명령 예시 | 동작 |
-|----------|------|
-| `show leaderboard` | Leaderboard 오버레이 표시 |
-| `hide player 3` | 좌석 3 Player Graphic 숨김 |
-| `reset` | 현재 핸드 초기화 |
-| `theme dark-blue` | 테마 전환 |
-| `output ndi-1` | NDI 출력 채널 변경 |
-| `delay 30` | Secure Delay 시간 변경 |
+#### ATEM Control (S-13, S-14, S-29)
 
-**자연어 퍼지 매칭**: `del 30` → `delay 30`으로 해석. 최근 명령 히스토리 표시.
+외부 하드웨어 스위처(Blackmagic ATEM)와 연동하여 Fill & Key 출력을 제어한다.
 
-### 2.6 상태 바 (하단)
+| 요소 | ID | 기능 |
+|------|:--:|------|
+| ATEM IP | S-29 | 스위처 IP 주소 입력 (TextField) |
+| Switcher Source | S-13 | ATEM 입력 소스 선택 (Dropdown) |
+| ATEM Control Enable | S-14 | 스위처 제어 활성화 (Checkbox) |
 
-| 인디케이터 | 내용 |
-|-----------|------|
-| RFID 상태 | Connected (녹색) / Disconnected (빨간색) + heartbeat |
-| 핸드 번호 | Hand #247 (자동 증가) |
-| 딜레이 카운터 | DELAYED 모드 활성 시 남은 시간 표시 (SEC-002) |
-| 단축키 가이드 | Ctrl+? 으로 전체 단축키 목록 토글 |
-| Engine 상태 | Game Engine 연결 + CPU/메모리 사용률 |
+**전제조건**: Fill & Key 모드가 활성화된 경우에만 ATEM 컨트롤이 표시된다. ATEM IP 연결 실패 시 Status 아이콘이 빨간색으로 전환되고, Info Bar의 시스템 상태에도 경고가 반영된다.
+
+> **[DROP]** Virtual Camera (SV-009) — OBS 가상 카메라 배제.
+
+### 2.7 Outputs 탭 기능 상세
+
+Outputs 탭은 방송 출력 파이프라인을 구성한다. 3-Column 그리드 내에 **Resolution**, **Live Pipeline**, **Fill & Key** 서브그룹을 배치한다.
+
+#### Resolution (O-01~O-03)
+
+| 요소 | ID | 기능 | 기본값 | 유효 범위 |
+|------|:--:|------|--------|----------|
+| Video Size | O-01 | 출력 해상도 선택 | 1080p | 1080p / 4K |
+| 9:16 Vertical | O-02 | 세로 모드 토글 (모바일 스트리밍용) | OFF | — |
+| Frame Rate | O-03 | 프레임레이트 선택 | 60fps | 30 / 60fps |
+
+**동작**: Video Size 변경 시 Preview Area와 오버레이 렌더링 캔버스가 동시에 재초기화된다. 재초기화 중 Preview는 일시 블랙아웃(약 1초)되므로 방송 중 변경은 권장하지 않는다. 9:16 Vertical 활성화 시 전체 오버레이 좌표계가 세로 모드로 전환된다.
+
+#### Live Pipeline (O-04, O-05)
+
+| 요소 | ID | 기능 |
+|------|:--:|------|
+| Live Video/Audio/Device | O-04 | Live 출력 3개 드롭다운 (DeckLink/NDI 채널 선택) |
+| Live Key & Fill | O-05 | Fill & Key 듀얼 출력 활성화 (외부 키잉 장치 선택 시) |
+
+**동작**: Live Pipeline은 EBS Server가 생성한 오버레이를 NDI 또는 DeckLink 포트로 출력하는 경로다. O-05 활성화 시 Fill 신호(오버레이 합성 영상)와 Key 신호(알파 마스크)가 분리 출력되어 외부 스위처에서 실시간 키잉이 가능하다.
+
+> **[DROP]** Delay Pipeline (O-06~O-12) — Secure Delay는 송출 딜레이 장비에서 처리. EBS 자체 딜레이 버퍼는 구현하지 않는다.
+>
+> **[DROP]** Twitch / Streaming (SV-011, O-16~O-17) — 방송 플랫폼 연동은 OBS/외부 도구에서 처리.
+>
+> **[DROP]** Recording Mode (O-15) / Split Recording (SV-030) — 녹화/분할 녹화는 방송 운영 범위 외.
+
+#### Fill & Key (O-18~O-20)
+
+Fill & Key 모드 활성화(O-05) 시에만 표시되는 서브그룹.
+
+| 요소 | ID | 기능 | 기본값 |
+|------|:--:|------|--------|
+| Fill & Key Color | O-18 | Key 신호 배경색 | #FF000000 (투명 블랙) |
+| Fill/Key Preview | O-19 | Fill 신호와 Key 신호 나란히 미니 프리뷰 (듀얼) | — |
+| DeckLink Channel Map | O-20 | Fill/Key → DeckLink 물리 포트 매핑 | — |
+
+**동작**: O-19의 듀얼 미니 프리뷰는 Fill(오버레이 합성 영상)과 Key(흑백 알파 마스크)를 나란히 보여준다. 운영자는 Key 신호에서 오버레이 영역이 올바르게 마스킹되는지 실시간으로 확인할 수 있다. O-20에서 DeckLink 포트를 잘못 매핑하면 Fill/Key 신호가 뒤바뀌므로 설정 확인 알림을 제공한다.
+
+### 2.8 GFX 탭 기능 상세
+
+GFX 탭은 오버레이의 시각적 설정을 관리하는 핵심 탭이다. 4개 서브그룹을 배치한다: **Layout → Card & Player → Animation → Branding**. 스크롤 금지 — 3-Column 밀집 배치로 모든 설정이 한 번에 표시된다. Branding은 기본 접힘 상태로 시작한다. Numbers와 Rules는 각각 Display 탭(§2.8b)과 Rules 탭(§2.8c)으로 분리되었다.
+
+#### Layout 서브그룹 (G-01~G-06)
+
+오버레이의 전체 배치를 결정한다. 4장 오버레이 설계의 9-Grid 시스템과 연동된다.
+
+| 요소 | ID | 기능 | 유효 범위 |
+|------|:--:|------|----------|
+| Board Position | G-01 | 보드 카드 위치 | Left / Right / Centre / Top |
+| Player Layout | G-02 | 플레이어 배치 모드 | Horizontal / Vert-Bot-Spill / Vert-Bot-Fit / Vert-Top-Spill / Vert-Top-Fit |
+| X Margin | G-03 | 좌우 여백 (정규화 좌표) | 0.0~1.0 (기본 0.04) |
+| Top Margin | G-04 | 상단 여백 | 0.0~1.0 (기본 0.05) |
+| Bot Margin | G-05 | 하단 여백 | 0.0~1.0 (기본 0.04) |
+| Leaderboard Position | G-06 | 리더보드 위치 | Centre / Left / Right |
+
+**동작**: Layout 값을 변경하면 Preview Area의 오버레이가 즉시 재배치된다. Board Position과 Player Layout의 조합이 4장의 배치 프리셋(A~D)에 해당한다. 마진 조정은 오버레이가 방송 Safe Area 내에 머물도록 보장한다.
+
+#### Card & Player 서브그룹 (G-14~G-16, G-22)
+
+카드 공개 시점과 폴드 표시 방식을 결정한다. 방송 연출 스타일에 직접적으로 영향을 미친다.
+
+| 요소 | ID | 기능 | 유효 범위 |
+|------|:--:|------|----------|
+| Reveal Players | G-14 | 홀카드 공개 시점 | Immediate / On Action / After Bet / On Action + Next |
+| How to Show Fold | G-15 | 폴드 표시 방식 + 지연 시간 | Immediate / Delayed (초 입력) |
+| Reveal Cards | G-16 | 카드 공개 연출 | Immediate / After Action / End of Hand / Showdown Cash / Showdown Tourney / Never |
+| Show Leaderboard | G-22 | 핸드 후 리더보드 자동 표시 + 설정 | Checkbox + Settings |
+
+**동작**: Reveal Players가 "Immediate"이면 홀카드가 딜 즉시 시청자에게 공개된다 (Live 모드). "On Action"이면 해당 플레이어가 액션을 취할 때 공개된다. How to Show Fold의 "Immediate"는 v3.0 기본값으로, 폴드 플레이어 Graphic을 즉시 페이드아웃 제거한다 (4장 §4.4 참조). "Delayed"로 설정하면 지정 초만큼 폴드 표시를 유지한 후 제거한다.
+
+#### Animation 서브그룹 (G-17~G-20)
+
+오버레이 등장/퇴장 효과와 액션 플레이어 시각 강조를 설정한다.
+
+| 요소 | ID | 기능 | 유효 범위 |
+|------|:--:|------|----------|
+| Transition In | G-17 | 등장 애니메이션 타입 + 시간(초) | Dropdown + NumberInput |
+| Transition Out | G-18 | 퇴장 애니메이션 타입 + 시간(초) | Dropdown + NumberInput |
+| Indent Action Player | G-19 | 액션 플레이어 들여쓰기 | Checkbox |
+| Bounce Action Player | G-20 | 액션 플레이어 바운스 효과 | Checkbox |
+
+**동작**: Transition In/Out은 Player Graphic과 Board Graphic의 화면 등장/퇴장 시 적용된다. 타입은 Default/Pop/Expand/Slide 중 선택하며, 시간은 0.1~2.0초 범위다. Indent와 Bounce는 현재 액션 차례(Action-on) 플레이어를 시각적으로 구별하는 효과로, 동시 활성화 가능하다.
+
+#### Branding 서브그룹 (G-10~G-13, G-13s)
+
+스폰서 로고와 배니티 텍스트를 관리한다. 기본 접힘 상태.
+
+| 요소 | ID | 기능 |
+|------|:--:|------|
+| Sponsor Logo 1 | G-10 | Leaderboard 위치 스폰서 로고 (ImageSlot) |
+| Sponsor Logo 2 | G-11 | Board 위치 스폰서 로고 (ImageSlot) |
+| Sponsor Logo 3 | G-12 | Strip 위치 스폰서 로고 (ImageSlot) |
+| Vanity Text | G-13 | 테이블 표시 텍스트 + Game Variant 대체 옵션 (TextField + Checkbox) |
+| Skin Info | G-13s | 현재 스킨명 + 용량 (읽기 전용) |
+
+**동작**: 3개 로고 슬롯에 PNG/SVG 이미지를 드래그 앤 드롭으로 등록한다. Vanity Text에 입력한 문자열은 Board Graphic의 배니티 영역(4장 §4.5)에 표시된다. "Use as Game Variant" 체크 시 게임 타입 표시를 Vanity Text로 대체한다 (예: "WSOP Main Event Day 1A").
+
+> **[v2.0 Defer]** Skin Editor (G-14s, SV-027) / Graphic Editor (SV-028) — 스킨 편집기는 v2.0 커스터마이징 단계에서 구현.
+
+### 2.8b Display 탭 기능 상세
+
+Display 탭은 수치 표시 형식을 영역별로 세밀하게 제어한다. PokerGFX GFX 3 탭의 Display 설정을 계승한다. 3개 서브그룹: **Blinds → Precision → Mode**.
+
+#### Blinds 서브그룹 (G-45~G-49)
+
+| 요소 | ID | 기능 | 기본값 |
+|------|:--:|------|--------|
+| Show Blinds | G-45 | 블라인드 표시 조건 | When Changed |
+| Show Hand # | G-46 | 핸드 번호 동시 표시 | ON |
+| Currency Symbol | G-47 | 통화 기호 | ₩ |
+| Trailing Currency | G-48 | 통화 기호 후치 여부 (₩100 vs 100₩) | OFF (전치) |
+| Divide by 100 | G-49 | 전체 금액을 100으로 나눠 표시 | OFF |
+
+#### Precision 서브그룹 (G-50a~G-50e)
+
+| 요소 | ID | 대상 영역 | 선택지 |
+|------|:--:|----------|--------|
+| Leaderboard Precision | G-50a | 리더보드 칩카운트 | Exact Amount / Smart k-M / Divide |
+| Player Stack Precision | G-50b | Player Graphic 스택 | Smart k-M (기본) |
+| Player Action Precision | G-50c | 액션 금액 (BET/RAISE) | Smart Amount (기본) |
+| Blinds Precision | G-50d | Blinds Graphic 수치 | Smart Amount (기본) |
+| Pot Precision | G-50e | Board Graphic 팟 | Smart Amount (기본) |
+
+> **[DROP]** Twitch Bot Precision (G-50f) / Ticker Precision (G-50g) / Strip Precision (G-50h) — 해당 기능 자체가 Drop.
+
+#### Mode 서브그룹 (G-51a~G-51c)
+
+| 요소 | ID | 기능 | 선택지 |
+|------|:--:|------|--------|
+| Chipcounts Mode | G-51a | 칩카운트 표시 단위 | Amount / BB |
+| Pot Mode | G-51b | 팟 표시 단위 | Amount / BB |
+| Bets Mode | G-51c | 베팅 표시 단위 | Amount / BB |
+
+**동작**: BB 모드 활성화 시 모든 수치가 Big Blind 배수로 표시된다 (예: 스택 50,000 / BB 1,000 → "50 BB"). 토너먼트 방송에서 시청자 이해도를 높이는 표준 방식이다. Amount 모드에서는 Precision 설정에 따라 Smart k-M(예: 1.2M) 또는 정확 금액이 표시된다.
+
+> **[v2.0 Defer]** Outs 서브그룹 (G-40~G-42) — Show Outs / Outs Position / True Outs는 Equity 엔진(v2.0)과 함께 구현.
+
+### 2.8c Rules 탭 기능 상세
+
+Rules 탭은 게임 규칙이 오버레이 표시에 영향을 미치는 설정을 관리한다. PokerGFX GFX 2 탭의 규칙 부분을 계승한다. 2개 서브그룹: **Game Rules → Player Display**. 방송 시작 전 세팅하고 핸드 진행 중에는 변경하지 않는 것이 원칙이다.
+
+#### Game Rules 서브그룹 (G-52~G-56)
+
+| 요소 | ID | 기능 |
+|------|:--:|------|
+| Move Button Bomb Pot | G-52 | Bomb Pot 후 딜러 버튼 이동 여부 |
+| Limit Raises | G-53 | 유효 스택 기반 레이즈 제한 |
+| Straddle Sleeper | G-55 | 스트래들 위치 규칙 (버튼/UTG 이외 슬리퍼) |
+| Sleeper Final Action | G-56 | 슬리퍼 스트래들 최종 액션 여부 |
+
+#### Player Display 서브그룹 (G-32~G-38)
+
+| 요소 | ID | 기능 |
+|------|:--:|------|
+| Add Seat # | G-32 | 플레이어 이름에 좌석 번호 추가 |
+| Show as Eliminated | G-33 | 스택 소진 시 탈락 표시 |
+| Clear Previous Action | G-35 | 이전 액션 초기화 + 'x to call'/'option' 표시 |
+| Order Players | G-36 | 플레이어 정렬 순서 |
+| Hilite Winning Hand | G-38 | 위닝 핸드 강조 시점 (Immediately / After Delay) |
+
+**동작**: Move Button Bomb Pot이 활성화되면 Bomb Pot 핸드 후 딜러 버튼이 다음 좌석으로 이동한다 (비활성 시 Bomb Pot 전 위치 유지). Hilite Winning Hand가 "After Delay"이면 쇼다운 후 설정된 지연 시간 후에 위닝 핸드 카드가 하이라이트된다.
+
+### 2.9 System 탭 기능 상세
+
+System 탭은 RFID 하드웨어, 테이블 인증, AT 접근 정책, 시스템 진단을 관리한다. RFID 연결이 방송 시작의 첫 번째 전제 조건이므로 최상단에 배치한다. 5개 서브그룹: **Table → RFID → AT → Diagnostics → Startup**.
+
+#### Table 서브그룹 (Y-01, Y-02)
+
+| 요소 | ID | 기능 |
+|------|:--:|------|
+| Table Name | Y-01 | 테이블 식별 이름 (TextField). AT 연결 시 이 이름으로 테이블을 찾는다 |
+| Table Password | Y-02 | AT 접속 비밀번호 (TextField, 마스킹). 빈 값이면 비밀번호 없이 접속 허용 |
+
+**동작**: Table Name은 Info Bar의 테이블 드롭다운(§2.2b)에 표시되는 이름과 동기화된다. AT에서 접속 시 Table Name + Password 조합으로 인증한다.
+
+#### RFID 서브그룹 (Y-03~Y-07)
+
+| 요소 | ID | 기능 |
+|------|:--:|------|
+| RFID Reset | Y-03 | RFID 시스템 초기화 — 재시작 없이 연결 재설정 (TextButton) |
+| RFID Calibrate | Y-04 | 안테나별 캘리브레이션 — 초기 설치 시 1회 실행 (TextButton) |
+| UPCARD Antennas | Y-05 | UPCARD 안테나로 홀카드 읽기 활성화 (Checkbox) |
+| Disable Muck | Y-06 | AT 모드 시 muck 안테나 비활성화 (Checkbox) |
+| Disable Community | Y-07 | 커뮤니티 카드 안테나 비활성화 (Checkbox) |
+
+**동작**: Reset은 RFID 리더와의 Serial 연결을 끊고 재연결한다. Info Bar의 RFID 상태 인디케이터(§2.2b)가 Yellow(캘리브레이션 중) → Green(정상) 또는 Red(실패)로 전환된다. Calibrate는 각 안테나의 신호 강도를 측정하여 최적 인식 임계값을 설정한다. UPCARD/Muck/Community 안테나를 개별 비활성화하면 해당 위치의 RFID 자동 인식이 꺼지고 수동 입력으로 전환된다.
+
+#### AT 서브그룹 (Y-13, Y-14)
+
+| 요소 | ID | 기능 |
+|------|:--:|------|
+| Allow AT Access | Y-13 | AT 접근 허용 — 비활성 시 AT Auto 모드만 가능 (Checkbox) |
+| Predictive Bet | Y-14 | 베팅 예측 자동완성 활성화 (Checkbox) |
+
+**동작**: Allow AT Access가 OFF이면 AT에서 "Track the Action" 버튼이 비활성화되어 수동 액션 입력이 차단된다. RFID Auto 모드에서만 게임 트래킹이 진행된다. Predictive Bet은 운영자가 베팅 금액 첫 자리를 입력하면 이전 패턴과 현재 팟 크기를 기반으로 예상 금액을 자동완성하는 기능이다.
+
+#### Diagnostics 서브그룹 (Y-09, Y-10, Y-12)
+
+| 요소 | ID | 기능 |
+|------|:--:|------|
+| Table Diagnostics | Y-09 | 안테나별 상태/신호 강도 별도 창 (TextButton) |
+| System Log | Y-10 | 실시간 이벤트/오류 로그 뷰어 별도 창 (TextButton) |
+| Export Folder | Y-12 | JSON 핸드 히스토리 내보내기 폴더 지정 (FolderPicker) |
+
+**동작**: Table Diagnostics는 RFID 안테나 10개(좌석별 UPCARD + Muck + Community)의 연결 상태, 신호 강도(dBm), 마지막 인식 시각을 보여주는 진단 창을 연다. System Log는 WebSocket 메시지, RFID 이벤트, 오류를 실시간 스트리밍하는 로그 뷰어를 연다.
+
+#### Startup 서브그룹 (Y-22)
+
+| 요소 | ID | 기능 |
+|------|:--:|------|
+| Auto Start | Y-22 | OS 시작 시 EBS Server 자동 실행 (Checkbox) |
+
+> **[DROP]** License Key / Activation Code / License Server / Serial Number — PokerGFX 라이선스 관련 4개 요소. EBS 자체 시스템에서 불필요.
+>
+> **[DROP]** Kiosk Mode (Y-15) — 키오스크 잠금 모드 배제.
+>
+> **[DROP]** MultiGFX (SV-025) / Stream Deck 연동 (SV-026) — 다중 테이블 운영 및 외부 컨트롤러 연동 배제.
+
+### 2.10 탭 간 교차 참조
+
+Console 6탭의 설정이 AT와 오버레이에 어떻게 전파되는지를 요약한다. Console은 **사전 세팅 도구**이므로 방송 시작 전에 설정을 완료하고, 방송 중에는 AT와 오버레이가 이 설정을 참조하여 동작한다.
+
+| 탭 | Console 설정 | AT 영향 | 오버레이 영향 |
+|----|-------------|---------|-------------|
+| Outputs | Video Size (O-01) | — | 렌더링 캔버스 해상도 결정 |
+| Outputs | Frame Rate (O-03) | — | 오버레이 렌더링 fps 결정 |
+| Sources | Chroma Key (S-11~S-12) | — | Preview + 출력 배경색 |
+| GFX | Board Position (G-01) | — | Board Graphic 9-Grid 위치 |
+| GFX | Player Layout (G-02) | — | Player Graphic 배치 모드 |
+| GFX | Reveal Players (G-14) | AT에서 카드 공개 시점 연동 | 홀카드 공개 시각 효과 |
+| GFX | How to Show Fold (G-15) | AT 폴드 시 시각 전환 | 폴드 플레이어 Graphic 제거 타이밍 |
+| GFX | Transition In/Out (G-17~G-18) | — | 등장/퇴장 애니메이션 |
+| Display | Currency/Precision (G-47~G-50e) | — | 모든 수치 표시 형식 |
+| Display | BB Mode (G-51a~G-51c) | — | 칩카운트/팟/베팅 BB 배수 표시 |
+| System | Table Name/Password (Y-01~Y-02) | AT 인증 시 사용 | — |
+| System | Allow AT Access (Y-13) | AT "Track the Action" 활성화 여부 | — |
+| System | RFID 안테나 (Y-05~Y-07) | 카드 자동 인식 경로 결정 | 카드 데이터 소스 (RFID vs 수동) |
 
 ## 3장. Action Tracker — 터치 최적화 재설계
 
@@ -402,6 +1043,249 @@ BOARD CARDS를 밑변으로 두고 좌석이 위로 반원 아치를 형성. 방
 | TURN/RIVER | 높음 | 보드 카드 추가, 팟/사이드팟 상세 |
 | SHOWDOWN | 최대 | 위너 강조, 팟 분배 표시, 핸드 결과 |
 
+### 3.7 Pre-Start Setup
+
+게임 트래킹을 시작하기 전에 운영자가 완료해야 하는 사전 설정 단계. AT 초기 화면에서 순차적으로 진행한다.
+
+#### 설정 순서 (PS-001~PS-012)
+
+| 단계 | 기능 ID | 내용 | 입력 방식 |
+|:----:|:-------:|------|----------|
+| 1 | PS-001 | Event Name 입력 | TextField (오버레이 Strip/Blinds에 표시) |
+| 2 | PS-002 / AT-005 | Game Type 선택 | Dropdown (22종). v1.0은 Texas Hold'em 전용 |
+| 3 | PS-008 | Blinds 설정 — SB/BB/Ante 금액 | 3개 숫자 입력 |
+| 4 | PS-003 | Min Chip 설정 | 숫자 입력 (베팅 단위 기준) |
+| 5 | PS-009 | Straddle 추가 (선택) | 토글 + 금액 입력 |
+| 6 | PS-004~PS-005 | 플레이어 이름 + 칩 스택 입력 | 좌석별 탭 → 이름/스택 입력 |
+| 7 | PS-006 / PS-010 | 포지션 할당 — BTN 위치 드래그 | BTN 뱃지를 좌석으로 드래그. SB/BB 자동 배치 |
+| 8 | PS-012 | **TRACK THE ACTION** 버튼 | 설정 완료 후 게임 트래킹 시작 |
+
+**동작**: TRACK THE ACTION을 누르면 게임 상태가 IDLE → SETUP_HAND로 전환된다. 이 시점부터 AT는 게임 진행 루프(§3.8)로 진입한다. 설정 단계에서 필수 항목(Game Type, SB/BB, 최소 2인 등록)이 미완료면 버튼이 비활성화된다.
+
+**Ante 7가지 유형**: Pre-Start에서 Ante를 설정할 때 아래 유형 중 선택한다 (game-engine.md §4.2 참조).
+
+| 유형 | 납부자 | 설명 |
+|------|--------|------|
+| No Ante | — | Ante 없음 (기본값) |
+| Standard | 전원 | 동일 금액 납부. 데드 머니 |
+| Button Ante | 딜러만 | 딜러 위치 플레이어만 납부 |
+| BB Ante | Big Blind만 | BB가 전원 Ante 대납 (토너먼트 표준) |
+| Live Ante | 전원 | Ante가 라이브 머니로 취급 |
+| TB Ante | SB + BB | Two Blind 합산 Ante |
+| Bring In | 특정 | Stud 계열 전용 (v2.0 Defer) |
+
+> **[v3.0 Defer]** RFID 카드 감지 상태 (PS-007) — RFID 하드웨어 전제. v1.0에서는 수동 입력 폴백.
+>
+> **[v3.0 Defer]** Board Count 선택 (PS-011) / AUTO 모드 토글 (PS-013) — RFID 인프라 전제.
+
+### 3.8 게임 진행 루프 — UI 관점
+
+TRACK THE ACTION 이후, 한 핸드의 전체 생명주기를 AT 화면 변화로 기술한다. 게임 엔진 내부 로직은 game-engine.md를 참조하되, 여기서는 **운영자가 보는 화면과 수행하는 조작**에 집중한다.
+
+#### 8단계 상태별 AT 화면 변화
+
+| 상태 | 좌석 영역 | 보드 영역 | 액션 패널 | 정보 바 |
+|------|----------|----------|----------|---------|
+| **IDLE** | 이름+스택만. 카드 슬롯 비활성 | 비어있음 | NEW HAND, EDIT SEATS | Hand # 표시 |
+| **SETUP_HAND** | 포지션 뱃지(BTN/SB/BB) 표시. 블라인드 자동 수거 | 비어있음 | 대기 (자동 진행) | SB/BB/Ante 금액 |
+| **PRE_FLOP** | 홀카드 슬롯 활성(RFID 대기 또는 수동 입력). Action-on 펄스 | 비어있음 | CHECK, BET, CALL, RAISE, FOLD, ALL-IN | 팟 금액 실시간 |
+| **FLOP** | 액션 플레이어 하이라이트. 폴드 플레이어 반투명 | 3장 순차 표시 | CHECK, BET, CALL, RAISE, FOLD, ALL-IN | 팟 갱신 |
+| **TURN** | 동일 | 4장 표시 (Turn 추가) | 동일 | 팟 갱신 |
+| **RIVER** | 동일 | 5장 표시 (River 추가) | 동일 | 최종 팟 |
+| **SHOWDOWN** | 위너 강조(네온 글로우). 핸드 공개 | 5장 + 위닝 핸드명 | MUCK, SHOW, SPLIT POT | 결과 요약 |
+| **HAND_COMPLETE** | 팟 지급 → 스택 갱신 → 3초 대기 → IDLE | 클리어 | — (자동 전환) | Hand # +1 |
+
+#### 운영자 핵심 루프
+
+매 핸드에서 운영자가 반복하는 조작 흐름:
+
+1. **NEW HAND** 탭 → 딜러 위치 확인/조정 → 블라인드 자동 수거
+2. 홀카드 배분 → **RFID 자동 감지** 대기 (또는 수동 입력, §3.9)
+3. Pre-Flop 액션: 좌석별 **액션 버튼** 탭 (FOLD/CALL/RAISE + 금액)
+4. Flop 3장 → 동일 액션 반복
+5. Turn → River → 동일
+6. Showdown → 위너 선택 → **팟 지급**
+7. → IDLE 자동 복귀 → 1번으로
+
+#### 예외 흐름 (UI 관점)
+
+| 예외 | AT 화면 변화 | 운영자 조작 |
+|------|------------|-----------|
+| **전원 폴드** (1명 남음) | 남은 플레이어 스택에 팟 자동 합산 애니메이션 → HAND_COMPLETE | 없음 (자동) |
+| **전원 올인** | 남은 보드 카드 자동 전개(런아웃). 에퀴티 바 표시(v2.0) | 없음 (자동) |
+| **Bomb Pot** | SETUP_HAND → FLOP 직행. Pre-Flop 액션 패널 비활성 | 합의 금액 입력 → 자동 진행 |
+| **RFID 실패** | 5초 카운트다운 → 52장 카드 그리드 팝업 (§3.9) | 수동 카드 선택 |
+
+### 3.9 카드 인식과 수동 입력
+
+카드 데이터 입력은 2가지 경로로 동작한다: **RFID 자동 인식**(v3.0 RFID 인프라 완성 시)과 **수동 입력 폴백**(v1.0 기본).
+
+#### RFID 자동 인식 (AT-020, v3.0)
+
+| 상태 | 카드 슬롯 표시 | 트리거 |
+|------|-------------|--------|
+| EMPTY | 빈 슬롯 (점선 테두리) | 초기 상태 |
+| DETECTING | 노란색 펄스 (안테나 감지 중) | RFID 신호 수신 시작 |
+| DEALT | 카드 이미지 표시 (예: A♠) | UID → 카드 매핑 성공 |
+| WRONG_CARD | 빨간 테두리 + 경고 아이콘 | 이미 다른 좌석에 할당된 카드 감지 |
+
+**동작**: RFID 안테나가 카드 UID를 읽으면 DB(cards.db)에서 suit/rank를 조회하여 좌석에 자동 배정한다. 전체 홀카드 배분이 완료되면 PRE_FLOP으로 자동 전이한다. Community 카드(Flop/Turn/River)도 동일 경로로 자동 인식한다.
+
+**오인식 처리**: WRONG_CARD 발생 시 해당 슬롯을 탭하면 UNDO와 동일하게 해당 카드 배정을 취소하고 재감지 대기 상태로 복귀한다.
+
+#### 수동 입력 폴백 (AT-020, v1.0 기본)
+
+RFID 미연결 또는 5초 인식 실패 시 수동 입력 그리드가 활성화된다.
+
+**52장 카드 그리드 팝업**:
+
+| 속성 | 사양 |
+|------|------|
+| 레이아웃 | 4행(♠♥♦♣) x 13열(A~K) 그리드 |
+| 크기 | 화면 하단 2/3 오버레이 (배경 어둡게) |
+| 이미 사용된 카드 | 회색 처리 + 선택 불가 |
+| 선택 | 탭하여 카드 선택 → 확인 |
+| 게임별 | Holdem 2장, PLO4 4장, PLO5 5장 연속 선택 |
+
+**동작**: 좌석의 빈 카드 슬롯을 탭하면 52장 그리드 팝업이 열린다. 이미 다른 좌석이나 보드에 배정된 카드는 회색으로 비활성화되어 중복 배정을 방지한다. Community 카드도 보드 영역 탭 → 그리드에서 선택하는 동일 방식으로 입력한다.
+
+### 3.10 플레이어 관리
+
+핸드 진행 중 또는 핸드 사이에 플레이어를 등록/해제/조정하는 기능.
+
+#### 좌석 등록 (PS-004, PS-005)
+
+| 조작 | 동작 |
+|------|------|
+| 빈 좌석(OPEN) 탭 | 등록 폼 열림: 이름 (TextField) + 초기 스택 (NumberInput) |
+| 확인 | 좌석 활성화. 이름+스택 표시. 오버레이 Player Graphic 생성 |
+| 사진/국기 (SV-029) | 프로필 사진 (80x80 원형) + 국가 코드 (ISO 3166-1) 설정 |
+
+#### 좌석 해제
+
+| 조작 | 동작 |
+|------|------|
+| 등록된 좌석 롱프레스 | "좌석 해제" 확인 다이얼로그 |
+| 확인 | 좌석 OPEN 상태로 전환. 핸드 진행 중이면 해당 플레이어 자동 폴드 처리 |
+
+#### 칩 스택 조정 (AT-023)
+
+| 조작 | 동작 |
+|------|------|
+| 좌석의 스택 영역 탭 | ADJUST STACK 숫자 키패드 열림 |
+| 금액 입력 → 확인 | 스택 즉시 갱신. 오버레이 Player Graphic 스택 실시간 반영 |
+| 용도 | 재버밍(rebuy 시 스택 추가), 카운트 오류 보정, 테이블 이동 스택 조정 |
+
+#### 포지션 할당 (PS-006, PS-010)
+
+| 조작 | 동작 |
+|------|------|
+| BTN 뱃지 드래그 | 원하는 좌석으로 드래그 앤 드롭 |
+| 자동 배치 | BTN 기준으로 SB(BTN+1), BB(BTN+2) 자동 결정 |
+| 핸드 사이 | NEW HAND 시 BTN이 다음 좌석으로 자동 이동 |
+
+**동작**: BTN 뱃지를 드래그하면 SB/BB 뱃지가 테이블 순서에 따라 자동 재배치된다. Heads-up(2인)에서는 BTN=SB 규칙이 자동 적용된다. Straddle 활성화 시 3rd Blind 뱃지(STR)가 추가 표시된다.
+
+### 3.11 특수 규칙 UI
+
+일반 게임 흐름에서 벗어나는 특수 상황의 AT 화면 처리.
+
+#### Bomb Pot
+
+| 항목 | 동작 |
+|------|------|
+| 트리거 | 운영자가 BOMB POT 버튼 탭 (SETUP_HAND 상태에서) |
+| 금액 입력 | 전원 납부 금액 입력 → 각 좌석 스택에서 자동 차감 |
+| 상태 전이 | SETUP_HAND → FLOP 직행 (Pre-Flop 액션 패널 비활성) |
+| 딜러 이동 | Console GFX 탭 G-52(Move Button Bomb Pot) 설정에 따름 |
+
+#### Straddle (PS-009)
+
+| 항목 | 동작 |
+|------|------|
+| 활성화 | Pre-Start Setup에서 Straddle 토글 ON + 금액 입력 |
+| 표시 | 3rd Blind 위치에 STR 뱃지 표시. 해당 좌석 스택에서 Straddle 금액 차감 |
+| 액션 순서 | Straddle 플레이어가 Pre-Flop 마지막 액션 (BB 이후 → UTG → ... → STR) |
+| Sleeper Straddle | Console GFX 탭 G-55~G-56 설정에 따라 UTG 이외 위치 Straddle 허용 |
+
+#### v2.0 Defer 특수 기능
+
+> **[v2.0 Defer]** Run It Twice (AT-025) — 올인 후 보드를 2회 전개하여 팟 절반 분할. v1.0에서는 단일 런아웃만 지원.
+>
+> **[v2.0 Defer]** CHOP (AT-024) — 팟 분할 합의 처리. v1.0에서는 OBS 자막으로 임시 대체.
+>
+> **[v2.0 Defer]** Miss Deal (AT-026) — 미스딜 핸드 무효화. v1.0에서는 수동으로 핸드 취소(Reset Hand) 후 재시작.
+
+### 3.12 키보드 단축키 (AT-014)
+
+라이브 방송에서 고속 운영을 위한 키보드 단축키. 마우스/터치 없이 핵심 조작을 수행할 수 있다.
+
+#### 액션 단축키
+
+| 키 | 기능 | 비고 |
+|:--:|------|------|
+| F | FOLD | 현재 Action-on 플레이어 폴드 |
+| C | CHECK / CALL | 상황에 따라 자동 전환 |
+| B | BET | 숫자 키패드 활성화 |
+| R | RAISE | 숫자 키패드 활성화 |
+| A | ALL-IN | 전 스택 투입 |
+| Z | UNDO | 마지막 액션 되돌리기 |
+
+#### 좌석 선택 단축키
+
+| 키 | 기능 |
+|:--:|------|
+| 1~9 | P1~P9 좌석 직접 선택 |
+| 0 | P10 좌석 선택 (10인 모드) |
+
+#### 게임 진행 단축키
+
+| 키 | 기능 |
+|:--:|------|
+| N | NEW HAND — 새 핸드 시작 |
+| H | HIDE GFX — 오버레이 일시 숨김 토글 |
+| Enter | 현재 입력 확인 (베팅 금액 등) |
+| Esc | 현재 입력 취소 / 팝업 닫기 |
+
+**동작**: 키보드 단축키는 AT 앱이 포커스된 상태에서만 동작한다. 숫자 키패드가 활성화된 상태(B/R 이후)에서는 0~9 키가 금액 입력으로 전환된다. Enter로 확인하면 숫자 키패드가 닫히고 좌석 선택 모드로 복귀한다.
+
+### 3.13 UNDO와 오류 복구 (AT-013)
+
+라이브 방송에서 운영 오입력을 즉시 복구하는 핵심 안전장치.
+
+#### UNDO 스택
+
+| 속성 | 사양 |
+|------|------|
+| 최대 깊이 | 5단계 |
+| 복원 대상 | 액션(FOLD/BET/CALL/RAISE/ALL-IN), 카드 배정, 스택 조정 |
+| 시각 피드백 | UNDO 버튼 옆에 잔여 단계 표시 (예: "UNDO (3)") |
+| 단축키 | Z |
+
+#### 동작
+
+1. UNDO 탭/키 입력 → 가장 최근 액션이 취소된다
+2. 취소된 액션의 좌석이 이전 상태로 복원된다 (스택 복원, 폴드 취소 등)
+3. 오버레이도 동기화되어 이전 상태로 되돌아간다
+4. 연속 UNDO로 최대 5단계까지 되돌릴 수 있다
+
+#### 제한
+
+| 조건 | 동작 |
+|------|------|
+| HAND_COMPLETE 이후 | UNDO 불가 — 핸드 결과 확정 후에는 되돌릴 수 없다 |
+| UNDO 스택 소진 (0단계) | UNDO 버튼 비활성화 (회색) |
+| 카드 UNDO | RFID 카드 배정 취소 → 해당 슬롯 EMPTY로 복귀, 카드 그리드에서 다시 선택 가능 |
+
+#### 오류 복구 시나리오
+
+| 시나리오 | 복구 방법 |
+|----------|----------|
+| 잘못된 플레이어에게 폴드 입력 | Z(UNDO) → 폴드 취소 → 올바른 좌석 선택 → 폴드 |
+| 베팅 금액 오입력 | Z(UNDO) → 베팅 취소 → B/R → 올바른 금액 입력 |
+| 카드 오인식 (RFID) | 해당 슬롯 탭 → 카드 배정 취소 → 재감지 대기 |
+| 잘못된 핸드 시작 | Z(UNDO) 연속 → 가능한 범위까지 복원. 불가 시 Reset Hand(M-11) |
+
 ## 4장. 오버레이 그래픽 — HTML 템플릿 기반 재설계
 
 오버레이는 메인 방송 영상 위에 **덧입히는 부가 그래픽**이다. 화면 중앙은 메인 영상이 차지하고, 오버레이는 가장자리(좌/우/상/하)에 배치한다. 폴드한 플레이어는 즉시 제거하여 **액티브 플레이어만** 표시한다.
@@ -454,54 +1338,75 @@ BOARD CARDS를 밑변으로 두고 좌석이 위로 반원 아치를 형성. 방
 
 기본 레이아웃: 3인 액티브 플레이어. 화면 중앙은 **메인 영상 영역**으로 비워둔다.
 
-#### 배치 A: 하단 집중형 (기본값)
+#### 9-Position 그리드 시스템
 
-Player Graphic을 하단 가장자리에 일렬 배치. 가장 범용적인 레이아웃.
+Player Graphic 그룹과 Board Graphic은 각각 **독립적으로** 9개 위치 중 하나에 배치된다. Strip(상단 바), Blinds(하단 바), Ticker(최하단)는 위치 고정으로 9-grid 대상이 아니다.
 
-> ![오버레이 방송 화면 배치 A (하단 집중형) B&W 목업 — Editorial 스타일](../02-design/mockups/v3/ebs-overlay-broadcast.png)
+| 위치 코드 | 설명 | 기준점 |
+|-----------|------|--------|
+| TOP-LEFT | 좌상단 | anchor: top-left |
+| TOP-CENTER | 중상단 | anchor: top-center |
+| TOP-RIGHT | 우상단 | anchor: top-right |
+| MID-LEFT | 좌중단 | anchor: mid-left |
+| CENTER | 중단 | anchor: center |
+| MID-RIGHT | 우중단 | anchor: mid-right |
+| BOT-LEFT | 좌하단 | anchor: bottom-left |
+| BOT-CENTER | 중하단 | anchor: bottom-center |
+| BOT-RIGHT | 우하단 | anchor: bottom-right |
+
+**기본 세팅**: Player Graphic 그룹 = **BOT-LEFT (좌하단)**, Board Graphic = **BOT-RIGHT (우하단)**
+
+> ![오버레이 방송 화면 — 9-Grid 포지션 시스템 기본 세팅 (1920x1080) B&W 목업](../02-design/mockups/v3/ebs-overlay-layout-grid.png)
 >
-> *오버레이 배치 A (하단 집중형): Strip 상단 바 + Board Graphic 중앙 + Player Graphic x3 하단 가장자리 + Blinds 바 + Ticker. 메인 영상 영역(회색)은 비움.*
+> *9-Grid 기본 세팅: Player Graphic x3 좌하단 + Board Graphic 우하단. 점선은 3x3 그리드 경계선. 각 셀에 포지션 코드 표시. Strip/Blinds/Ticker는 고정 위치.*
 
-#### 배치 B: 좌우 분산형
+#### 배치 프리셋 (9-grid 기반 재해석)
 
-Player Graphic을 좌측/우측 가장자리에 세로 배치. 와이드 테이블 촬영에 적합.
+기존 배치 A/B/C는 9-grid 좌표계로 표현된 프리셋으로 관리한다.
 
-> ![오버레이 방송 화면 배치 B (좌우 분산형) B&W 목업](../02-design/mockups/v3/ebs-overlay-layout-b.png)
+| 프리셋 | Player Graphic 위치 | Board Graphic 위치 | 적합한 상황 |
+|--------|--------------------|--------------------|-----------|
+| **배치 A — 하단 집중** | BOT-LEFT | BOT-LEFT (세로 스택) | 범용, 정면 카메라 |
+| **배치 B — 센터형** | BOT-LEFT | BOT-CENTER | 중앙 강조, 정면 앵글 |
+| **배치 C — 일렬형** | MID-LEFT | BOT-LEFT (수직 정렬) | 좌측 집중, 우측 완전 개방 |
+| **배치 D — 좌우 반전** | BOT-RIGHT | BOT-LEFT | 좌측 앵글 확보, 와이드샷 |
+| **기본값 (Default)** | BOT-LEFT | BOT-RIGHT | 일반 방송 |
+
+##### 배치 A: 하단 집중형
+
+> *배치 A: Player Graphic x3을 좌하단 세로 스택 배치. Strip 상단 바 + Blinds 바 + Ticker는 고정.*
+
+##### 배치 B: 센터형
+
+> ![오버레이 방송 화면 배치 B (센터형) B&W 목업](../02-design/mockups/v3/ebs-overlay-layout-b.png)
 >
-> *배치 B: Player 1, 2를 좌측 가장자리에 세로 배치, Player 3을 우측 가장자리에 배치. 중앙 메인 영상 영역 확보.*
+> *배치 B: Player Graphic을 좌하단(BOT-LEFT) 세로 스택, Board Graphic을 중하단(BOT-CENTER)에 배치. 양쪽 대칭 구도.*
 
-#### 배치 C: L자형
+##### 배치 C: 일렬형
 
-좌측 + 하단에 L자로 배치. 우측을 완전히 비워 카메라 앵글 확보.
-
-> ![오버레이 방송 화면 배치 C (L자형) B&W 목업](../02-design/mockups/v3/ebs-overlay-layout-c.png)
+> ![오버레이 방송 화면 배치 C (일렬형) B&W 목업](../02-design/mockups/v3/ebs-overlay-layout-c.png)
 >
-> *배치 C: Player 1, 2를 좌측에 세로 배치, Player 3을 하단 우측에 배치. 우측 상단을 완전히 비워 카메라 앵글 확보.*
+> *배치 C: Board Graphic을 좌하단(BOT-LEFT), Player Graphic을 좌중단(MID-LEFT) 수직 정렬. 우측 상단 완전 개방.*
 
-#### 배치 커스터마이징
+##### 배치 D: 좌우 반전형
 
-모든 오버레이 요소는 픽셀 단위로 위치와 크기를 조정할 수 있다.
+> ![오버레이 방송 화면 배치 D (좌우 반전형) B&W 목업](../02-design/mockups/v3/ebs-overlay-layout-d.png)
+>
+> *배치 D: Board Graphic을 좌하단(BOT-LEFT), Player Graphic을 우하단(BOT-RIGHT) 배치. 기본값의 좌우 반전.*
+
+#### 배치 커스터마이징 (미세 조정)
+
+9-grid 위치 선택 후 픽셀 단위로 오프셋과 크기를 미세 조정할 수 있다.
 
 | 속성 | 타입 | 설명 | 기본값 예시 |
 |------|------|------|-----------|
-| x | int | 좌측 기준 X 좌표 (px) | 40 |
-| y | int | 상단 기준 Y 좌표 (px) | 780 |
+| grid_position | enum | 9-grid 위치 코드 (위 표 참조) | BOT-LEFT |
+| offset_x | int | grid 기준점에서 X 오프셋 (px) | 20 |
+| offset_y | int | grid 기준점에서 Y 오프셋 (px) | -20 |
 | width | int | 요소 너비 (px) | 280 |
 | height | int | 요소 높이 (px) | 180 |
-| alignment | enum | left / center / right | left |
-| anchor | enum | top-left / top-right / bottom-left / bottom-right | bottom-left |
 | visible | bool | 표시 여부 | true |
 | z-index | int | 레이어 순서 (높을수록 앞) | 100 |
-
-#### Board Graphic 위치 옵션
-
-Board Graphic은 3가지 배치 중 선택한다.
-
-| 옵션 | 위치 | 적합한 상황 |
-|------|------|-----------|
-| 하단 중앙 (기본) | x=760, y=620 | 하단 집중형 배치와 조합 |
-| 좌측 | x=40, y=450 | 좌우 분산형에서 좌측 그룹과 근접 |
-| 우측 | x=1440, y=450 | 우측에 플레이어 집중 시 |
 
 ### 4.3 HTML 템플릿 시스템
 
@@ -914,7 +1819,7 @@ Player Graphic의 홀카드 슬롯은 게임 타입에 따라 변형된다.
 
 | 앱 | 최소 | 권장 | 비고 |
 |----|------|------|------|
-| EBS Console | 1024x768 | 1920x1080 | 반응형, 사이드바/컨텍스트 패널 고정폭 |
+| EBS Console | 1024x768 | 1920x1080 | 반응형, Top-Preview 레이아웃 (Menu Bar 28px + Preview 가변 + Info Bar 36px + Tab Bar 36px + Tab Content 가변) |
 | Action Tracker | 1024x600 | 1280x800 | 태블릿 가로(Landscape) 고정 |
 | 오버레이 출력 | 1920x1080 | 1920x1080 | 방송 표준 (4K 스케일링 대응) |
 | 오버레이 세로 | 1080x1920 | 1080x1920 | 9:16 모바일 스트리밍 |
@@ -959,6 +1864,14 @@ Player Graphic의 홀카드 슬롯은 게임 타입에 따라 변형된다.
 
 | 날짜 | 버전 | 변경 내용 | 결정 근거 |
 |------|------|-----------|----------|
+| 2026-03-06 | v3.7.0 | 레거시 HTML 7개(960px flexbox 4탭) → main-v4.html 단일 소스 통합. data-ann 107개(공통 13 + 탭별 94). generate_annotations.py 탭 전환/scope 필터링 추가. Display/Rules 탭 annotation PNG 신규 생성 | PRD v3.6.0 표준(720px CSS Grid, dark theme, 6탭)과 annotation 소스 불일치 해소 |
+| 2026-03-06 | v3.6.0 | 레이아웃 5행 구조 전환(Menu Bar 28px + Info Bar 36px 분리), 4탭→6탭(GFX→GFX+Display+Rules 분리), Tab Content 가변 높이 + 스크롤 금지, §2.8b Display 탭 + §2.8c Rules 탭 신설 | 표준 데스크톱 앱 패턴 적용, GFX 41개 설정의 스크롤 없는 전체 표시 |
+| 2026-03-06 | v3.5.0 | §2.4 탭별 요소 분석을 3단 구성으로 재구성 (①레이아웃 ②요소 매핑 ③요소 설명). generate_annotations.py --ebs 모드 추가. Console 4탭 annotated PNG 생성 (Sources 11개, Outputs 13개, GFX 15개, System 17개 요소) | 목업 이미지 1장 + 텍스트 캡션만으로는 요소-ID 매핑이 불명확 — 번호 annotation 오버레이로 시각적 교차 참조 |
+| 2026-03-06 | v3.4.0 | §2.1~2.4 Console 메인 레이아웃 기능 상세 추가. 운영자 워크플로우 + 개발자 구현 스펙 2-Layer 서술. Top Bar 11개 요소(M-01~M-15 + M-02t/M-12), Preview Area 클릭 인터랙션, Tab Bar 4탭 기능 요약, 컨트롤 표준 6종 정의 | §2.6~2.10 수준 상세화로 통일 — 레이아웃 요소 자체의 운영/개발 스펙 누락 수정 |
+| 2026-03-06 | v3.3.0 | §2.6~2.10 Console 4탭 기능 상세 추가 (Sources/Outputs/GFX/System + 교차 참조). §3.7~3.13 AT 기능 상세 추가 (Pre-Start Setup/게임 진행 루프/카드 인식/플레이어 관리/특수 규칙/키보드 단축키/UNDO). element-catalog ID 교차 참조, triage Drop 마킹 포함 | 2장 "레이아웃만 있고 기능 설명 없음" + 3장 "핵심 운영 기능 누락" 치명적 결함 수정 |
+| 2026-03-06 | v3.2.0 | §2.5 커맨드 팔레트 (Cmd+K) 섹션 제거. §1.4 매핑 테이블, §핵심 혁신 테이블, §2.6 상태 바 테이블에서 커맨드 팔레트 참조 제거. 목업 HTML/PNG 삭제 | Over-engineering — 4탭 + 키보드 단축키(Ctrl+1~4)로 모든 기능 접근 가능. Bloomberg GO Key 패턴은 방송 프로덕션 도메인에 부적합 |
+| 2026-03-05 | v3.1.0 | §1.3 벤치마크 보강: BM-1 보조 레퍼런스 4종(OBS/vMix/ATEM/Ross 비교표 + 스크린샷 4장), BM-2 Bloomberg UX 설계 원칙 5개 추가, BM-3 WSOP Paradise 2025 방송 스크린샷 + Streamer Mode/Smart HUD 기술 상세 추가. §1.4 매핑 테이블 8항목으로 확장. 탭 목업 캡션 전폭 레이아웃 반영 | 벤치마크 근거 강화 — 텍스트만 언급된 OBS/vMix/ATEM에 실제 UI 스크린샷 증거 추가 |
+| 2026-03-05 | v3.0.0 | Console 레이아웃 3-Column → Top-Preview 전환. §1.4 벤치마크 매핑, §2.1~2.4 전면 재설계, §2.6 상태 바 제거, §6.1 제약 조건 업데이트. 업계 벤치마크(OBS/vMix/TriCaster/ATEM/Wirecast) 기반. 프리뷰 면적 +33%(1920px), +236%(1024px) | 3-column 좌우 고정 패널이 16:9 프리뷰를 압박. 모든 주요 방송 SW가 top-preview 구조로 수렴 |
 | 2026-03-05 | v2.5.0 | Console 설정 패널 4탭(Sources/Outputs/GFX/System) + Command Palette + Blinds Graphic HTML/PNG 목업 6종 추가. PRD 2.4~2.5절, 4.6절에 이미지 임베드 | 누락된 Console 탭별 레이아웃 설계 완성 |
 | 2026-03-05 | v2.4.0 | 잔여 ASCII 5개(그리드 시스템 + 좌석 템플릿 A/B/C/D) → HTML/PNG B&W 목업 교체. 문서 내 ASCII 와이어프레임 완전 제거 (디렉토리 트리 1개만 잔존) | 문서 시각 무결성 통일 — 모든 UI 다이어그램 PNG 표준화 |
 | 2026-03-05 | v2.3.0 | 전체 ASCII 와이어프레임 11개를 HTML/PNG B&W 목업으로 교체. 신규 목업 8종 추가 (Layout B/C, Player/Board/Field Graphic, Leaderboard, Ticker, Strip). 기존 PNG 3종 공백 제거 재캡처. | ASCII는 렌더링 환경 의존, PNG 표준화로 문서 품질 통일 |
@@ -969,4 +1882,4 @@ Player Graphic의 홀카드 슬롯은 게임 타입에 따라 변형된다.
 
 ---
 
-**Version**: 2.4.0 | **Updated**: 2026-03-05
+**Version**: 3.7.0 | **Updated**: 2026-03-06

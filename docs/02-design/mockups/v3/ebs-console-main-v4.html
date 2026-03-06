@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<!-- EBS Console v4.1 — Menu Bar + Info Bar + 6-Tab Layout -->
+<!-- 해상도: min 1024×768 / 권장 1920×1080 -->
+<!-- CSS Grid: 28px(Menu Bar) + 1fr(Preview) + 36px(Info Bar) + 36px(Tab Bar) + auto(Tab Content) -->
+<!-- Style Reference: Swiss International Typographic Style -->
+<!-- B&W Monochrome Craft — OBS/ATEM 방식 레이아웃 -->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EBS Console v4 — Main Layout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    display: inline-block;
+  }
+
+  /* ─── APP SHELL ─── */
+  /* Grid: 28px Menu Bar | 1fr Preview | 36px Info Bar | 36px Tab Bar | auto Tab Content */
+  .app {
+    width: 720px;
+    max-width: 720px;
+    max-height: 1280px;
+    display: grid;
+    grid-template-rows: 28px 1fr 36px 36px auto;
+    height: 640px;
+    background: #000;
+    font-family: 'Noto Sans KR', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    color: #fff;
+    border: 2px solid #000;
+    overflow: hidden;
+  }
+
+  /* ─── MENU BAR ─── */
+  .menubar {
+    grid-row: 1;
+    height: 28px;
+    background: #000;
+    border-bottom: 1px solid #222;
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .menu-logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #222;
+    flex-shrink: 0;
+  }
+
+  .menu-items {
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-family: 'Noto Sans KR', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #ccc;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.1s;
+  }
+
+  .menu-item:hover {
+    background: #222;
+    color: #fff;
+  }
+
+  /* ─── PREVIEW AREA ─── */
+  .preview-area {
+    grid-row: 2;
+    background: #1a1a2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .preview-frame {
+    aspect-ratio: 16 / 9;
+    max-width: 100%;
+    max-height: 100%;
+    background: #0000FF;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #0000aa;
+    box-shadow: 0 0 0 1px #000;
+  }
+
+  /* Simulated overlay content on blue */
+  .preview-overlay-strip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 22%;
+    background: rgba(0,0,0,0.65);
+    display: flex;
+    align-items: center;
+    padding: 0 2%;
+    gap: 1.5%;
+    border-top: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .pov-player {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .pov-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.55em;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    white-space: nowrap;
+  }
+
+  .pov-stack {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8em;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .pov-separator {
+    width: 1px;
+    height: 60%;
+    background: rgba(255,255,255,0.15);
+    flex-shrink: 0;
+  }
+
+  .pov-board {
+    margin-left: auto;
+    display: flex;
+    gap: 2%;
+    align-items: center;
+  }
+
+  .pov-card {
+    width: 1.6em;
+    height: 2.2em;
+    background: rgba(80,80,80,0.7);
+    border: 1px solid rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7em;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .pov-card.known {
+    background: rgba(255,255,255,0.9);
+    color: #000;
+    border-color: rgba(0,0,0,0.3);
+  }
+
+  .preview-center-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .preview-center-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75em;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .preview-center-res {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.55em;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.25);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .preview-center-chroma {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.5em;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.2);
+    display: block;
+    text-transform: uppercase;
+  }
+
+  /* Preview corner info */
+  .preview-corner {
+    position: absolute;
+    bottom: 24%;
+    left: 1%;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.5em;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .preview-corner-right {
+    left: auto;
+    right: 1%;
+    text-align: right;
+  }
+
+  /* ─── INFO BAR ─── */
+  .info-bar {
+    grid-row: 3;
+    height: 36px;
+    background: #000;
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 0;
+    flex-shrink: 0;
+  }
+
+  .table-selector {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 6px;
+    border-right: 1px solid #333;
+    height: 100%;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .table-selector:hover {
+    background: #111;
+  }
+
+  .table-selector-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #666;
+  }
+
+  .table-selector-value {
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0.03em;
+  }
+
+  .table-selector-arrow {
+    font-size: 8px;
+    color: #555;
+    margin-left: 2px;
+  }
+
+  /* Center status indicators */
+  .infobar-status {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 0 12px;
+  }
+
+  .status-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .status-chip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-chip-dot.ok { background: #fff; }
+  .status-chip-dot.warn { background: transparent; border: 1.5px solid #555; }
+
+  .status-chip-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #666;
+  }
+
+  /* CPU/GPU bar */
+  .meter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .meter-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: #666;
+  }
+
+  .meter-bar {
+    width: 28px;
+    height: 8px;
+    border: 1px solid #333;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .meter-fill {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    bottom: 1px;
+    background: #fff;
+  }
+
+  /* Right actions */
+  .infobar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-left: 1px solid #333;
+    height: 100%;
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 11px;
+    border-right: 1px solid #333;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #777;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.1s, color 0.1s;
+  }
+
+  .action-btn:last-child {
+    border-right: none;
+  }
+
+  .action-btn:hover {
+    background: #1a1a1a;
+    color: #fff;
+  }
+
+  .action-btn.accent {
+    color: #fff;
+    border-left: 1px solid #333;
+  }
+
+  .action-btn.accent:hover {
+    background: #fff;
+    color: #000;
+  }
+
+  /* ─── TAB BAR ─── */
+  .tabbar {
+    grid-row: 4;
+    height: 36px;
+    background: #111;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+  }
+
+  .tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #555;
+    cursor: pointer;
+    border-right: 1px solid #222;
+    position: relative;
+    transition: color 0.15s;
+  }
+
+  .tab:last-child {
+    border-right: none;
+  }
+
+  .tab:hover {
+    color: #aaa;
+    background: #161616;
+  }
+
+  .tab.active {
+    color: #fff;
+    background: #000;
+  }
+
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #fff;
+  }
+
+  .tabbar-minimize {
+    width: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid #333;
+    color: #444;
+    font-size: 10px;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .tabbar-minimize:hover {
+    color: #aaa;
+  }
+
+  /* ─── TAB CONTENT ─── */
+  .tab-content-area {
+    grid-row: 5;
+    background: #0a0a0a;
+    overflow: hidden;
+  }
+
+  .tab-panel {
+    display: none;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
+  /* 3-column grid for settings */
+  .panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+  }
+
+  .panel-col {
+    border-right: 1px solid #1a1a1a;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panel-col:last-child {
+    border-right: none;
+  }
+
+  .col-header {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #444;
+    padding: 8px 10px 6px;
+    border-bottom: 1px solid #1a1a1a;
+    background: #060606;
+    flex-shrink: 0;
+  }
+
+  .ctrl-row {
+    display: flex;
+    align-items: center;
+    padding: 7px 10px;
+    border-bottom: 1px solid #111;
+    gap: 6px;
+    min-height: 32px;
+  }
+
+  .ctrl-row:last-child {
+    border-bottom: none;
+  }
+
+  .ctrl-label {
+    font-size: 11px;
+    font-weight: 400;
+    color: #aaa;
+    flex: 1;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+  }
+
+  .ctrl-label small {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: #444;
+    letter-spacing: 0.08em;
+    margin-top: 1px;
+  }
+
+  .ctrl-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #555;
+    white-space: nowrap;
+  }
+
+  /* Toggle switch */
+  .ctrl-toggle {
+    width: 28px;
+    height: 14px;
+    border: 1px solid #333;
+    background: #333;
+    position: relative;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .ctrl-toggle::after {
+    content: '';
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+  }
+
+  .ctrl-toggle.off {
+    background: #1a1a1a;
+    border-color: #222;
+  }
+
+  .ctrl-toggle.off::after {
+    left: 2px;
+    right: auto;
+    background: #333;
+  }
+
+  /* Mode group */
+  .ctrl-mode-group {
+    display: flex;
+    gap: 0;
+    flex-shrink: 0;
+  }
+
+  .ctrl-mode {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border: 1px solid #333;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: #444;
+    background: transparent;
+  }
+
+  .ctrl-mode:not(:first-child) {
+    border-left: none;
+  }
+
+  .ctrl-mode.selected {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+  }
+
+  /* Color swatch */
+  .ctrl-swatch {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #333;
+    flex-shrink: 0;
+  }
+
+  /* Indicator dot */
+  .ctrl-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ctrl-dot.on { background: #fff; }
+  .ctrl-dot.off { background: transparent; border: 1px solid #333; }
+
+  /* Mini button */
+  .ctrl-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border: 1px solid #333;
+    background: transparent;
+    color: #666;
+    cursor: pointer;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: border-color 0.1s, color 0.1s;
+  }
+
+  .ctrl-btn:hover {
+    border-color: #fff;
+    color: #fff;
+  }
+
+  .ctrl-btn.accent {
+    border-color: #555;
+    color: #aaa;
+  }
+
+  /* Input */
+  .ctrl-input {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 3px 6px;
+    border: 1px solid #222;
+    background: #111;
+    color: #888;
+    width: 56px;
+    text-align: right;
+  }
+
+  /* Slider track */
+  .ctrl-slider-wrap {
+    flex: 1;
+    height: 3px;
+    background: #1a1a1a;
+    border: 1px solid #222;
+    position: relative;
+  }
+
+  .ctrl-slider-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: #fff;
+  }
+
+  /* Select-style dropdown indicator */
+  .ctrl-dropdown {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #666;
+    padding: 3px 6px;
+    border: 1px solid #222;
+    background: #111;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .ctrl-dropdown-arrow {
+    font-size: 7px;
+    color: #444;
+  }
+
+  /* Divider row */
+  .panel-divider {
+    height: 1px;
+    background: #1a1a1a;
+    margin: 2px 0;
+  }
+
+  /* Section sub-header */
+  .ctrl-section {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #333;
+    padding: 6px 10px 4px;
+    border-bottom: 1px solid #111;
+    background: #050505;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ── MENU BAR ── -->
+  <nav class="menubar" data-ann="Menu Bar" data-ann-fn="Menu Bar (28px)" data-ann-color="GREEN" data-ann-scope="common">
+    <div class="menu-logo" data-ann="M-01" data-ann-fn="EBS Logo" data-ann-pos="right" data-ann-scope="common">EBS</div>
+    <div class="menu-items">
+      <div class="menu-item">File</div>
+      <div class="menu-item">Edit</div>
+      <div class="menu-item">View</div>
+      <div class="menu-item">Table</div>
+      <div class="menu-item">Help</div>
+    </div>
+  </nav>
+
+  <!-- ── PREVIEW AREA ── -->
+  <main class="preview-area" data-ann="Preview" data-ann-fn="Preview Area (16:9 Chroma Key)" data-ann-color="GREEN" data-ann-scope="common">
+    <div class="preview-frame">
+
+      <!-- Preview center label -->
+      <div class="preview-center-info">
+        <span class="preview-center-label">Preview</span>
+        <span class="preview-center-res">1920 × 1080</span>
+        <span class="preview-center-chroma">Chroma Key Blue</span>
+      </div>
+
+      <!-- Corner labels -->
+      <div class="preview-corner">LIVE</div>
+      <div class="preview-corner preview-corner-right">PRE_FLOP</div>
+
+      <!-- Bottom overlay strip -->
+      <div class="preview-overlay-strip">
+        <div class="pov-player">
+          <div class="pov-name">P1 KIM</div>
+          <div class="pov-stack">48,200</div>
+        </div>
+        <div class="pov-separator"></div>
+        <div class="pov-player">
+          <div class="pov-name">P3 LEE</div>
+          <div class="pov-stack">31,750</div>
+        </div>
+        <div class="pov-separator"></div>
+        <div class="pov-player">
+          <div class="pov-name">P5 PARK</div>
+          <div class="pov-stack">12,900</div>
+        </div>
+        <div class="pov-board">
+          <div class="pov-card known">A♠</div>
+          <div class="pov-card known">K♥</div>
+          <div class="pov-card known">7♦</div>
+          <div class="pov-card"></div>
+          <div class="pov-card"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── INFO BAR ── -->
+  <header class="info-bar" data-ann="Info Bar" data-ann-fn="Info Bar (36px)" data-ann-color="GREEN" data-ann-scope="common">
+    <div class="table-selector" data-ann="M-02t" data-ann-fn="Table Dropdown" data-ann-scope="common" onclick="">
+      <span class="table-selector-label">Table</span>
+      <span class="table-selector-value">Final Table</span>
+      <span class="table-selector-arrow">▼</span>
+    </div>
+
+    <!-- Center: RFID status + CPU + GPU meters -->
+    <div class="infobar-status">
+      <div class="status-chip" data-ann="M-06" data-ann-fn="RFID Connection" data-ann-scope="common">
+        <div class="status-chip-dot ok" data-ann="M-05" data-ann-fn="RFID Status (7-color dot)" data-ann-scope="common"></div>
+        <span class="status-chip-label">RFID</span>
+      </div>
+      <div class="meter-group" data-ann="M-03" data-ann-fn="CPU Indicator" data-ann-scope="common">
+        <span class="meter-label">CPU</span>
+        <div class="meter-bar">
+          <div class="meter-fill" style="width: 70%;"></div>
+        </div>
+      </div>
+      <div class="meter-group" data-ann="M-04" data-ann-fn="GPU Indicator" data-ann-scope="common">
+        <span class="meter-label">GPU</span>
+        <div class="meter-bar">
+          <div class="meter-fill" style="width: 42%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: action buttons -->
+    <div class="infobar-actions">
+      <div class="action-btn" title="Reset Hand" data-ann="M-11" data-ann-fn="Reset Hand" data-ann-scope="common">Reset</div>
+      <div class="action-btn" title="Register Deck" data-ann="M-13" data-ann-fn="Register Deck" data-ann-scope="common">Deck</div>
+      <div class="action-btn accent" title="Launch Action Tracker" data-ann="M-14" data-ann-fn="Launch AT" data-ann-scope="common">AT</div>
+      <div class="action-btn" title="Hide GFX Overlay" data-ann="M-15" data-ann-fn="Hide GFX" data-ann-scope="common">Hide</div>
+    </div>
+  </header>
+
+  <!-- ── TAB BAR ── -->
+  <nav class="tabbar">
+    <div class="tab" data-tab="sources">Sources<span style="font-size:7px;opacity:0.4;margin-left:3px;">1</span></div>
+    <div class="tab" data-tab="outputs">Outputs<span style="font-size:7px;opacity:0.4;margin-left:3px;">2</span></div>
+    <div class="tab active" data-tab="gfx">GFX<span style="font-size:7px;opacity:0.4;margin-left:3px;">3</span></div>
+    <div class="tab" data-tab="display">Display<span style="font-size:7px;opacity:0.4;margin-left:3px;">4</span></div>
+    <div class="tab" data-tab="rules">Rules<span style="font-size:7px;opacity:0.4;margin-left:3px;">5</span></div>
+    <div class="tab" data-tab="system">System<span style="font-size:7px;opacity:0.4;margin-left:3px;">6</span></div>
+    <div class="tabbar-minimize" title="패널 최소화">▼</div>
+  </nav>
+
+  <!-- ── TAB CONTENT ── -->
+  <section class="tab-content-area">
+
+    <!-- SOURCES TAB -->
+    <div class="tab-panel" id="panel-sources">
+      <div class="panel-grid">
+
+        <!-- Col 1: Video Input -->
+        <div class="panel-col" data-ann="S-01" data-ann-fn="Video Input" data-ann-scope="sources">
+          <div class="col-header">Video Input</div>
+          <div class="ctrl-row" data-ann="S-02" data-ann-fn="Camera 1" data-ann-scope="sources">
+            <span class="ctrl-label">Camera 1<small>1080p60</small></span>
+            <div class="ctrl-dot on"></div>
+          </div>
+          <div class="ctrl-row" data-ann="S-03" data-ann-fn="Camera 2" data-ann-scope="sources">
+            <span class="ctrl-label">Camera 2<small>720p30</small></span>
+            <div class="ctrl-dot off"></div>
+          </div>
+          <div class="ctrl-row" data-ann="S-04" data-ann-fn="NDI Input" data-ann-scope="sources">
+            <span class="ctrl-label">NDI Input<small>—</small></span>
+            <div class="ctrl-dot off"></div>
+          </div>
+          <div class="ctrl-section">Camera Mode</div>
+          <div class="ctrl-row" data-ann="S-05" data-ann-fn="Camera Mode (Static/Dynamic)" data-ann-scope="sources">
+            <span class="ctrl-label">Mode</span>
+            <div class="ctrl-mode-group">
+              <div class="ctrl-mode selected">Static</div>
+              <div class="ctrl-mode">Dynamic</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 2: Chroma Key + Board Sync -->
+        <div class="panel-col" data-ann="S-06" data-ann-fn="Chroma Key" data-ann-scope="sources">
+          <div class="col-header">Chroma Key</div>
+          <div class="ctrl-row" data-ann="S-07" data-ann-fn="Chroma Enable" data-ann-scope="sources">
+            <span class="ctrl-label">Enable</span>
+            <div class="ctrl-toggle"></div>
+          </div>
+          <div class="ctrl-row" data-ann="S-08" data-ann-fn="Chroma Color" data-ann-scope="sources">
+            <span class="ctrl-label">Color</span>
+            <div class="ctrl-swatch" style="background:#0000FF;"></div>
+            <span class="ctrl-value">#0000FF</span>
+          </div>
+          <div class="ctrl-row" data-ann="S-09" data-ann-fn="Chroma Tolerance" data-ann-scope="sources">
+            <span class="ctrl-label">Tolerance</span>
+            <div class="ctrl-slider-wrap">
+              <div class="ctrl-slider-fill" style="width:60%;"></div>
+            </div>
+            <span class="ctrl-value">60</span>
+          </div>
+          <div class="ctrl-section">Board Sync</div>
+          <div class="ctrl-row" data-ann="S-10" data-ann-fn="Board Sync Offset" data-ann-scope="sources">
+            <span class="ctrl-label">Offset</span>
+            <div class="ctrl-input" style="pointer-events:none;">0 ms</div>
+            <div class="ctrl-btn">Cal</div>
+          </div>
+        </div>
+
+        <!-- Col 3: ATEM Control -->
+        <div class="panel-col" data-ann="S-11" data-ann-fn="ATEM Control" data-ann-scope="sources">
+          <div class="col-header">ATEM Control</div>
+          <div class="ctrl-row" data-ann="S-12" data-ann-fn="ATEM Connection" data-ann-scope="sources">
+            <span class="ctrl-label">ATEM Mini<small>Connected</small></span>
+            <div class="ctrl-dot on"></div>
+          </div>
+          <div class="ctrl-row" data-ann="S-13" data-ann-fn="Auto-Cut Toggle" data-ann-scope="sources">
+            <span class="ctrl-label">Auto-Cut</span>
+            <div class="ctrl-toggle"></div>
+          </div>
+          <div class="ctrl-row" data-ann="S-14" data-ann-fn="Transition Type" data-ann-scope="sources">
+            <span class="ctrl-label">Transition<small>CUT</small></span>
+            <div class="ctrl-dropdown">
+              CUT <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="S-15" data-ann-fn="T-Bar Slider" data-ann-scope="sources">
+            <span class="ctrl-label">T-Bar</span>
+            <div class="ctrl-slider-wrap">
+              <div class="ctrl-slider-fill" style="width:100%;"></div>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="S-16" data-ann-fn="DSK Fill Toggle" data-ann-scope="sources">
+            <span class="ctrl-label">DSK Fill</span>
+            <div class="ctrl-toggle"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- OUTPUTS TAB -->
+    <div class="tab-panel" id="panel-outputs">
+      <div class="panel-grid">
+
+        <!-- Col 1: Resolution -->
+        <div class="panel-col" data-ann="O-01" data-ann-fn="Resolution" data-ann-scope="outputs">
+          <div class="col-header">Resolution</div>
+          <div class="ctrl-row" data-ann="O-02" data-ann-fn="Video Size" data-ann-scope="outputs">
+            <span class="ctrl-label">Video Size</span>
+            <div class="ctrl-dropdown">
+              1920×1080 <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="O-03" data-ann-fn="Aspect Ratio (16:9 / 9:16)" data-ann-scope="outputs">
+            <span class="ctrl-label">Ratio</span>
+            <div class="ctrl-mode-group">
+              <div class="ctrl-mode selected">16:9</div>
+              <div class="ctrl-mode">9:16</div>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="O-04" data-ann-fn="Frame Rate" data-ann-scope="outputs">
+            <span class="ctrl-label">Frame Rate</span>
+            <div class="ctrl-dropdown">
+              60 fps <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="O-05" data-ann-fn="Bit Depth" data-ann-scope="outputs">
+            <span class="ctrl-label">Bit Depth</span>
+            <span class="ctrl-value">8-bit</span>
+          </div>
+        </div>
+
+        <!-- Col 2: Live Pipeline -->
+        <div class="panel-col" data-ann="O-06" data-ann-fn="Live Pipeline" data-ann-scope="outputs">
+          <div class="col-header">Live Pipeline</div>
+          <div class="ctrl-row" data-ann="O-07" data-ann-fn="NDI Output" data-ann-scope="outputs">
+            <span class="ctrl-label">NDI Output<small>Local Network</small></span>
+            <div class="ctrl-toggle"></div>
+          </div>
+          <div class="ctrl-row" data-ann="O-08" data-ann-fn="RTMP Stream" data-ann-scope="outputs">
+            <span class="ctrl-label">RTMP Stream<small>—</small></span>
+            <div class="ctrl-toggle off"></div>
+          </div>
+          <div class="ctrl-row" data-ann="O-09" data-ann-fn="SRT Output" data-ann-scope="outputs">
+            <span class="ctrl-label">SRT Output<small>—</small></span>
+            <div class="ctrl-toggle off"></div>
+          </div>
+          <div class="ctrl-row" data-ann="O-10" data-ann-fn="Broadcast Delay" data-ann-scope="outputs">
+            <span class="ctrl-label">Delay<small>00:28</small></span>
+            <div class="ctrl-input" style="pointer-events:none;">28 s</div>
+          </div>
+        </div>
+
+        <!-- Col 3: Fill & Key -->
+        <div class="panel-col" data-ann="O-11" data-ann-fn="Fill &amp; Key" data-ann-scope="outputs">
+          <div class="col-header">Fill &amp; Key</div>
+          <div class="ctrl-row" data-ann="O-12" data-ann-fn="Fill Output (HDMI A)" data-ann-scope="outputs">
+            <span class="ctrl-label">Fill Output<small>HDMI A</small></span>
+            <div class="ctrl-dot on"></div>
+          </div>
+          <div class="ctrl-row" data-ann="O-13" data-ann-fn="Key Output (HDMI B)" data-ann-scope="outputs">
+            <span class="ctrl-label">Key Output<small>HDMI B</small></span>
+            <div class="ctrl-dot on"></div>
+          </div>
+          <div class="ctrl-row" data-ann="O-14" data-ann-fn="Alpha Channel" data-ann-scope="outputs">
+            <span class="ctrl-label">Alpha Channel</span>
+            <div class="ctrl-toggle"></div>
+          </div>
+          <div class="ctrl-row" data-ann="O-15" data-ann-fn="Luma Key" data-ann-scope="outputs">
+            <span class="ctrl-label">Luma Key</span>
+            <div class="ctrl-toggle off"></div>
+          </div>
+          <div class="ctrl-row" data-ann="O-16" data-ann-fn="Preview Monitor Apply" data-ann-scope="outputs">
+            <span class="ctrl-label">Preview Monitor</span>
+            <div class="ctrl-btn">Apply</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- GFX TAB (default active) -->
+    <div class="tab-panel active" id="panel-gfx">
+      <div class="panel-grid">
+
+        <!-- Col 1: Layout + Card/Player -->
+        <div class="panel-col" data-ann="G-01" data-ann-fn="Layout" data-ann-scope="gfx">
+          <div class="col-header">Layout</div>
+          <div class="ctrl-row" data-ann="G-02" data-ann-fn="Template Select" data-ann-scope="gfx">
+            <span class="ctrl-label">Template</span>
+            <div class="ctrl-dropdown">
+              Standard <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="G-03" data-ann-fn="Strip Position (Bot/Top)" data-ann-scope="gfx">
+            <span class="ctrl-label">Strip Pos</span>
+            <div class="ctrl-mode-group">
+              <div class="ctrl-mode selected">Bot</div>
+              <div class="ctrl-mode">Top</div>
+            </div>
+          </div>
+          <div class="ctrl-section">Card &amp; Player</div>
+          <div class="ctrl-row" data-ann="G-04" data-ann-fn="Show Hole Cards" data-ann-scope="gfx">
+            <span class="ctrl-label">Show Hole Cards</span>
+            <div class="ctrl-toggle"></div>
+          </div>
+          <div class="ctrl-row" data-ann="G-05" data-ann-fn="Card Reveal Mode" data-ann-scope="gfx">
+            <span class="ctrl-label">Card Reveal</span>
+            <div class="ctrl-dropdown">
+              Auto <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="G-06" data-ann-fn="Player Name Style" data-ann-scope="gfx">
+            <span class="ctrl-label">Player Name Style</span>
+            <div class="ctrl-dropdown">
+              Full <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 2: Animation + Branding -->
+        <div class="panel-col" data-ann="G-07" data-ann-fn="Animation" data-ann-scope="gfx">
+          <div class="col-header">Animation</div>
+          <div class="ctrl-row" data-ann="G-08" data-ann-fn="Transitions Toggle" data-ann-scope="gfx">
+            <span class="ctrl-label">Transitions</span>
+            <div class="ctrl-toggle"></div>
+          </div>
+          <div class="ctrl-row" data-ann="G-09" data-ann-fn="Animation Speed" data-ann-scope="gfx">
+            <span class="ctrl-label">Speed</span>
+            <div class="ctrl-slider-wrap">
+              <div class="ctrl-slider-fill" style="width:50%;"></div>
+            </div>
+            <span class="ctrl-value">1x</span>
+          </div>
+          <div class="ctrl-section">Branding</div>
+          <div class="ctrl-row" data-ann="G-10" data-ann-fn="Logo Overlay Toggle" data-ann-scope="gfx">
+            <span class="ctrl-label">Logo Overlay</span>
+            <div class="ctrl-toggle"></div>
+          </div>
+          <div class="ctrl-row" data-ann="G-11" data-ann-fn="Logo Position" data-ann-scope="gfx">
+            <span class="ctrl-label">Logo Position</span>
+            <div class="ctrl-dropdown">
+              TL <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="G-12" data-ann-fn="Watermark Toggle" data-ann-scope="gfx">
+            <span class="ctrl-label">Watermark</span>
+            <div class="ctrl-toggle off"></div>
+          </div>
+        </div>
+
+        <!-- Col 3: Skin -->
+        <div class="panel-col" data-ann="G-13" data-ann-fn="Skin" data-ann-scope="gfx">
+          <div class="col-header">Skin</div>
+          <div class="ctrl-row" data-ann="G-14" data-ann-fn="Active Skin Select" data-ann-scope="gfx">
+            <span class="ctrl-label">Active Skin<small>Titanium</small></span>
+            <div class="ctrl-btn">Change</div>
+          </div>
+          <div class="ctrl-row">
+            <span class="ctrl-label">Skin Size<small>1.41 GB</small></span>
+          </div>
+          <div class="ctrl-row" data-ann="G-15" data-ann-fn="Vanity Text" data-ann-scope="gfx">
+            <span class="ctrl-label">Vanity Text</span>
+            <div class="ctrl-input" style="width:70px;pointer-events:none;">WSOP 2026</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DISPLAY TAB -->
+    <div class="tab-panel" id="panel-display">
+      <div class="panel-grid">
+
+        <!-- Col 1: Blinds -->
+        <div class="panel-col" data-ann="D-01" data-ann-fn="Blinds" data-ann-scope="display">
+          <div class="col-header">Blinds</div>
+          <div class="ctrl-row" data-ann="D-02" data-ann-fn="Show Blinds Mode" data-ann-scope="display">
+            <span class="ctrl-label">Show Blinds</span>
+            <div class="ctrl-dropdown">
+              When Changed <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="D-03" data-ann-fn="Show Hand Number" data-ann-scope="display">
+            <span class="ctrl-label">Show Hand #</span>
+            <div class="ctrl-toggle"></div>
+          </div>
+          <div class="ctrl-row" data-ann="D-04" data-ann-fn="Currency Symbol" data-ann-scope="display">
+            <span class="ctrl-label">Currency Symbol</span>
+            <div class="ctrl-input" style="width:36px;pointer-events:none;">₩</div>
+          </div>
+          <div class="ctrl-row" data-ann="D-05" data-ann-fn="Trailing Currency" data-ann-scope="display">
+            <span class="ctrl-label">Trailing Currency</span>
+            <div class="ctrl-toggle off"></div>
+          </div>
+          <div class="ctrl-row" data-ann="D-06" data-ann-fn="Divide by 100" data-ann-scope="display">
+            <span class="ctrl-label">Divide by 100</span>
+            <div class="ctrl-toggle off"></div>
+          </div>
+        </div>
+
+        <!-- Col 2: Precision -->
+        <div class="panel-col" data-ann="D-07" data-ann-fn="Precision" data-ann-scope="display">
+          <div class="col-header">Precision</div>
+          <div class="ctrl-row" data-ann="D-08" data-ann-fn="Leaderboard Precision" data-ann-scope="display">
+            <span class="ctrl-label">Leaderboard</span>
+            <div class="ctrl-dropdown">
+              Smart k-M <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="D-09" data-ann-fn="Player Stack Precision" data-ann-scope="display">
+            <span class="ctrl-label">Player Stack</span>
+            <div class="ctrl-dropdown">
+              Smart k-M <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="D-10" data-ann-fn="Player Action Precision" data-ann-scope="display">
+            <span class="ctrl-label">Player Action</span>
+            <div class="ctrl-dropdown">
+              Smart k-M <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="D-11" data-ann-fn="Blinds Precision" data-ann-scope="display">
+            <span class="ctrl-label">Blinds</span>
+            <div class="ctrl-dropdown">
+              Smart k-M <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="D-12" data-ann-fn="Pot Precision" data-ann-scope="display">
+            <span class="ctrl-label">Pot</span>
+            <div class="ctrl-dropdown">
+              Smart k-M <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 3: Mode -->
+        <div class="panel-col" data-ann="D-13" data-ann-fn="Mode" data-ann-scope="display">
+          <div class="col-header">Mode</div>
+          <div class="ctrl-row" data-ann="D-14" data-ann-fn="Chipcounts Mode" data-ann-scope="display">
+            <span class="ctrl-label">Chipcounts Mode</span>
+            <div class="ctrl-dropdown">
+              Amount <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="D-15" data-ann-fn="Pot Mode" data-ann-scope="display">
+            <span class="ctrl-label">Pot Mode</span>
+            <div class="ctrl-dropdown">
+              Amount <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="D-16" data-ann-fn="Bets Mode" data-ann-scope="display">
+            <span class="ctrl-label">Bets Mode</span>
+            <div class="ctrl-dropdown">
+              Amount <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RULES TAB -->
+    <div class="tab-panel" id="panel-rules">
+      <div class="panel-grid">
+
+        <!-- Col 1: Game Rules -->
+        <div class="panel-col" data-ann="R-01" data-ann-fn="Game Rules" data-ann-scope="rules">
+          <div class="col-header">Game Rules</div>
+          <div class="ctrl-row" data-ann="R-02" data-ann-fn="Move Button Bomb Pot" data-ann-scope="rules">
+            <span class="ctrl-label">Move Button Bomb Pot</span>
+            <div class="ctrl-toggle off"></div>
+          </div>
+          <div class="ctrl-row" data-ann="R-03" data-ann-fn="Limit Raises" data-ann-scope="rules">
+            <span class="ctrl-label">Limit Raises</span>
+            <div class="ctrl-toggle off"></div>
+          </div>
+          <div class="ctrl-row" data-ann="R-04" data-ann-fn="Straddle Sleeper" data-ann-scope="rules">
+            <span class="ctrl-label">Straddle Sleeper</span>
+            <div class="ctrl-dropdown">
+              Off <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="R-05" data-ann-fn="Sleeper Final Action" data-ann-scope="rules">
+            <span class="ctrl-label">Sleeper Final Action</span>
+            <div class="ctrl-dropdown">
+              No <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 2: Player Display -->
+        <div class="panel-col" data-ann="R-06" data-ann-fn="Player Display" data-ann-scope="rules">
+          <div class="col-header">Player Display</div>
+          <div class="ctrl-row" data-ann="R-07" data-ann-fn="Add Seat Number" data-ann-scope="rules">
+            <span class="ctrl-label">Add Seat #</span>
+            <div class="ctrl-toggle off"></div>
+          </div>
+          <div class="ctrl-row" data-ann="R-08" data-ann-fn="Show as Eliminated" data-ann-scope="rules">
+            <span class="ctrl-label">Show as Eliminated</span>
+            <div class="ctrl-toggle off"></div>
+          </div>
+          <div class="ctrl-row" data-ann="R-09" data-ann-fn="Clear Previous Action" data-ann-scope="rules">
+            <span class="ctrl-label">Clear Previous Action</span>
+            <div class="ctrl-dropdown">
+              Auto <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="R-10" data-ann-fn="Order Players" data-ann-scope="rules">
+            <span class="ctrl-label">Order Players</span>
+            <div class="ctrl-dropdown">
+              Seat <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="R-11" data-ann-fn="Hilite Winning Hand" data-ann-scope="rules">
+            <span class="ctrl-label">Hilite Winning Hand</span>
+            <div class="ctrl-toggle"></div>
+          </div>
+        </div>
+
+        <!-- Col 3: empty -->
+        <div class="panel-col">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SYSTEM TAB -->
+    <div class="tab-panel" id="panel-system">
+      <div class="panel-grid">
+
+        <!-- Col 1: RFID -->
+        <div class="panel-col" data-ann="Y-01" data-ann-fn="RFID" data-ann-scope="system">
+          <div class="col-header">RFID</div>
+          <div class="ctrl-row" data-ann="Y-02" data-ann-fn="Reader Status (ST25R3911B)" data-ann-scope="system">
+            <span class="ctrl-label">Reader Status<small>ST25R3911B</small></span>
+            <div class="ctrl-dot on"></div>
+          </div>
+          <div class="ctrl-row" data-ann="Y-03" data-ann-fn="Antenna Power" data-ann-scope="system">
+            <span class="ctrl-label">Antenna Power</span>
+            <div class="ctrl-slider-wrap">
+              <div class="ctrl-slider-fill" style="width:75%;"></div>
+            </div>
+            <span class="ctrl-value">75%</span>
+          </div>
+          <div class="ctrl-row" data-ann="Y-04" data-ann-fn="Reset Reader" data-ann-scope="system">
+            <span class="ctrl-label">Reset Reader</span>
+            <div class="ctrl-btn accent">Reset</div>
+          </div>
+          <div class="ctrl-row" data-ann="Y-05" data-ann-fn="Calibrate Reader" data-ann-scope="system">
+            <span class="ctrl-label">Calibrate</span>
+            <div class="ctrl-btn accent">Run</div>
+          </div>
+          <div class="ctrl-section">Table</div>
+          <div class="ctrl-row" data-ann="Y-06" data-ann-fn="Table Name Select" data-ann-scope="system">
+            <span class="ctrl-label">Table Name</span>
+            <div class="ctrl-dropdown">
+              Final Table <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 2: AT + Connection -->
+        <div class="panel-col" data-ann="Y-07" data-ann-fn="Action Tracker" data-ann-scope="system">
+          <div class="col-header">Action Tracker</div>
+          <div class="ctrl-row" data-ann="Y-08" data-ann-fn="AT Connection Status" data-ann-scope="system">
+            <span class="ctrl-label">AT Status<small>Connected</small></span>
+            <div class="ctrl-dot on"></div>
+          </div>
+          <div class="ctrl-row" data-ann="Y-09" data-ann-fn="Auto-Launch Toggle" data-ann-scope="system">
+            <span class="ctrl-label">Auto-Launch</span>
+            <div class="ctrl-toggle"></div>
+          </div>
+          <div class="ctrl-row" data-ann="Y-10" data-ann-fn="WebSocket Port" data-ann-scope="system">
+            <span class="ctrl-label">WebSocket Port</span>
+            <div class="ctrl-input" style="pointer-events:none;">8765</div>
+          </div>
+          <div class="ctrl-row" data-ann="Y-11" data-ann-fn="Launch AT Button" data-ann-scope="system">
+            <span class="ctrl-label">Launch AT</span>
+            <div class="ctrl-btn accent">Open</div>
+          </div>
+          <div class="ctrl-section">Connection</div>
+          <div class="ctrl-row" data-ann="Y-12" data-ann-fn="Server Engine Status" data-ann-scope="system">
+            <span class="ctrl-label">Server<small>ENGINE</small></span>
+            <div class="ctrl-dot on"></div>
+          </div>
+          <div class="ctrl-row" data-ann="Y-13" data-ann-fn="WebSocket Clients" data-ann-scope="system">
+            <span class="ctrl-label">WS Clients</span>
+            <span class="ctrl-value">3</span>
+          </div>
+        </div>
+
+        <!-- Col 3: Diagnostics -->
+        <div class="panel-col" data-ann="Y-14" data-ann-fn="Diagnostics" data-ann-scope="system">
+          <div class="col-header">Diagnostics</div>
+          <div class="ctrl-row" data-ann="Y-15" data-ann-fn="CPU Usage" data-ann-scope="system">
+            <span class="ctrl-label">CPU Usage</span>
+            <div class="ctrl-slider-wrap">
+              <div class="ctrl-slider-fill" style="width:70%;"></div>
+            </div>
+            <span class="ctrl-value">70%</span>
+          </div>
+          <div class="ctrl-row" data-ann="Y-16" data-ann-fn="GPU Usage" data-ann-scope="system">
+            <span class="ctrl-label">GPU Usage</span>
+            <div class="ctrl-slider-wrap">
+              <div class="ctrl-slider-fill" style="width:42%;"></div>
+            </div>
+            <span class="ctrl-value">42%</span>
+          </div>
+          <div class="ctrl-row" data-ann="Y-17" data-ann-fn="Memory Usage" data-ann-scope="system">
+            <span class="ctrl-label">Memory</span>
+            <span class="ctrl-value">4.2 / 16 GB</span>
+          </div>
+          <div class="ctrl-row" data-ann="Y-18" data-ann-fn="Frame Drop Counter" data-ann-scope="system">
+            <span class="ctrl-label">Frame Drop</span>
+            <span class="ctrl-value">0</span>
+          </div>
+          <div class="ctrl-row" data-ann="Y-19" data-ann-fn="Log Level" data-ann-scope="system">
+            <span class="ctrl-label">Log Level</span>
+            <div class="ctrl-dropdown">
+              INFO <span class="ctrl-dropdown-arrow">▼</span>
+            </div>
+          </div>
+          <div class="ctrl-row" data-ann="Y-20" data-ann-fn="Export Logs" data-ann-scope="system">
+            <span class="ctrl-label">Export Logs</span>
+            <div class="ctrl-btn accent">Export</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<script>
+  // Tab switching
+  const tabs = document.querySelectorAll('.tab[data-tab]');
+  const panels = document.querySelectorAll('.tab-panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+
+      tab.classList.add('active');
+      const panel = document.getElementById('panel-' + target);
+      if (panel) panel.classList.add('active');
+    });
+  });
+
+  // Minimize toggle
+  const minimizeBtn = document.querySelector('.tabbar-minimize');
+  const tabContentArea = document.querySelector('.tab-content-area');
+  let minimized = false;
+
+  minimizeBtn.addEventListener('click', () => {
+    minimized = !minimized;
+    const app = document.getElementById('app');
+    if (minimized) {
+      app.style.gridTemplateRows = '28px 1fr 36px 36px 0px';
+      tabContentArea.style.display = 'none';
+      minimizeBtn.textContent = '▲';
+    } else {
+      app.style.gridTemplateRows = '28px 1fr 36px 36px auto';
+      tabContentArea.style.display = '';
+      minimizeBtn.textContent = '▼';
+    }
+  });
+</script>
+
+</body>
+</html>

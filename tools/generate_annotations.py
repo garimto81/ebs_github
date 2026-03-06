@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate annotated overlay images for PokerGFX UI Analysis.
+"""Generate annotated overlay images for PokerGFX UI Analysis and EBS Console.
 
 Usage:
   python generate_annotations.py                          # Normal (auto-snap + empty check)
@@ -10,6 +10,9 @@ Usage:
   python generate_annotations.py --debug --target 02      # Debug single image
   python generate_annotations.py --ocr                    # OCR-based precision calibration
   python generate_annotations.py --ocr --target 04        # OCR calibration for single image
+  python generate_annotations.py --ebs                    # EBS Console tab annotation
+  python generate_annotations.py --ebs --target sources   # Single EBS tab
+  python generate_annotations.py --ebs --calibrate        # EBS with auto-calibration
 
 Strategy: Contrast Edge Detection + Auto-Calibration
 - Normal mode: auto-snaps box edges to nearest contrast boundaries (±2px)
@@ -35,6 +38,12 @@ try:
     TESSERACT_AVAILABLE = True
 except ImportError:
     TESSERACT_AVAILABLE = False
+
+try:
+    from playwright.sync_api import sync_playwright
+    PLAYWRIGHT_AVAILABLE = True
+except ImportError:
+    PLAYWRIGHT_AVAILABLE = False
 
 INPUT_DIR = "C:/claude/ebs/images/pokerGFX"
 OUTPUT_DIR = "C:/claude/ebs/docs/01_PokerGFX_Analysis/02_Annotated_ngd"
@@ -523,14 +532,30 @@ def draw_boxes(img, boxes, default_color=RED):
         badge_w = tw + pad_x * 2
         badge_h = th + pad_y * 2 + 2
 
-        # Default: above top-left corner
-        lx = x - 1
-        ly = y - badge_h - 1
+        # Label position: 'top' (default), 'right', 'bottom'
+        label_pos = box.get('label_pos', 'top')
 
-        # If would go above image, place inside top-left
-        if ly < 0:
-            ly = y + 2
-            lx = x + 2
+        if label_pos == 'right':
+            lx = x + w + 3
+            ly = y
+            # If would go right of image, fall back inside
+            if lx + badge_w > img.width:
+                lx = x + w - badge_w - 2
+                ly = y + 2
+        elif label_pos == 'bottom':
+            lx = x - 1
+            ly = y + h + 2
+            # If would go below image, place inside bottom
+            if ly + badge_h > img.height:
+                ly = y + h - badge_h - 2
+        else:
+            # Default: above top-left corner
+            lx = x - 1
+            ly = y - badge_h - 1
+            # If would go above image, place inside top-left
+            if ly < 0:
+                ly = y + 2
+                lx = x + 2
 
         # If would go left of image
         if lx < 0:
@@ -599,17 +624,26 @@ IMAGES = {
         'src': '스크린샷 2026-02-05 180630.png',
         'window_rect': (0, 0, 765, 365),
         'boxes': [
-            {'rect': (0,   0,   765, 32),  'label': '1'},   # Title Bar
-            {'rect': (10,  38,  572, 316), 'label': '2'},   # Preview
-            {'rect': (594, 38,  158, 40),  'label': '3'},   # CPU/GPU/Error/Lock
-            {'rect': (594, 82,  154, 50),  'label': '4',  'is_drop': True},   # Secure Delay + Preview (EBS MVP 범위 외)
+            {'rect': (0,   0,   765, 32),  'label': 'M-01'},  # [M-01] Title Bar
+            {'rect': (10,  38,  572, 316), 'label': 'M-02'},  # [M-02] Preview Panel
+            # CPU/GPU/Error/Lock → 개별 요소로 세분화
+            {'rect': (618, 38,  28,  36),  'label': 'M-03'},  # [M-03] CPU Indicator
+            {'rect': (648, 38,  28,  36),  'label': 'M-04'},  # [M-04] GPU Indicator
+            {'rect': (600, 84,  18,  18),  'label': 'M-05'},  # [M-05] RFID Status LED (빨간 점)
+            {'rect': (686, 38,  34,  36),  'label': 'M-06'},  # [M-06] RFID Connection Icon (빨간 금지=미연결 경고)
+            {'rect': (722, 38,  34,  36),  'label': 'M-07'},   # [M-07] Lock Toggle (빨간 자물쇠)
+            # Secure Delay + Preview ☑ 세분화 (is_drop 유지)
+            {'rect': (630, 82,  118, 22),  'label': 'M-08', 'is_drop': True},   # [M-08] Secure Delay ☐ (EBS MVP 범위 외)
+            {'rect': (630, 106, 118, 22),  'label': 'M-09'},  # [M-09] Preview Toggle ☑
             # (y=136-152 is empty separator space - no box)
-            {'rect': (594, 156, 154, 30),  'label': '5'},   # Reset Hand
-            {'rect': (594, 190, 154, 28),  'label': '6'},   # Register Deck
-            {'rect': (594, 222, 154, 28),  'label': '7'},   # Action Tracker
-            {'rect': (594, 254, 154, 28),  'label': '8',  'is_drop': True},   # Studio (EBS MVP 범위 외)
-            {'rect': (594, 286, 154, 28),  'label': '9',  'is_drop': True},   # Split Recording (SV-030 Drop 확정)
-            {'rect': (594, 318, 154, 34),  'label': '10', 'is_drop': True},   # Tag Player (EBS MVP 범위 외)
+            # Reset Hand 행 → 버튼 + Settings 세분화
+            {'rect': (600, 156, 98,  30),  'label': 'M-11'},  # [M-11] Reset Hand 버튼
+            {'rect': (702, 156, 46,  30),  'label': 'M-12'},  # [M-12] Settings (톱니바퀴+자물쇠)
+            {'rect': (594, 190, 154, 28),  'label': 'M-13'},  # [M-13] Register Deck
+            {'rect': (594, 222, 154, 28),  'label': 'M-14'},  # [M-14] Launch AT (Action Tracker)
+            {'rect': (594, 254, 154, 28),  'label': 'DROP-Studio',    'is_drop': True},   # Studio (EBS MVP 범위 외)
+            {'rect': (594, 286, 154, 28),  'label': 'DROP-SplitRec',  'is_drop': True},   # Split Recording (SV-030 Drop 확정)
+            {'rect': (594, 318, 154, 34),  'label': 'DROP-TagPlayer', 'is_drop': True},   # Tag Player (EBS MVP 범위 외)
         ],
     },
 
@@ -1060,14 +1094,145 @@ IMAGES = {
 
 
 # ============================================================
+# EBS CONSOLE ANNOTATION
+# ============================================================
+
+EBS_INPUT_DIR = "C:/claude/ebs/docs/02-design/mockups/v3"
+EBS_OUTPUT_DIR = "C:/claude/ebs/docs/01_PokerGFX_Analysis/02_Annotated_ngd"
+
+# Annotation color for EBS: cyan to distinguish from PokerGFX red
+EBS_COLOR = (0, 180, 220)
+
+# EBS Console: single source of truth — ebs-console-main-v4.html
+# Each entry: (html_file, tab_name, scope_filter)
+# - tab_name: Playwright clicks .tab[data-tab="{tab_name}"] to activate that tab
+# - scope_filter: 'common' for main-window (Menu Bar + Preview + Info Bar only)
+#                 None for tab views (extracts elements inside active panel)
+EBS_HTML_MAP = {
+    'ebs-main-window':  ('ebs-console-main-v4.html', None,       'common'),
+    'ebs-sources-tab':  ('ebs-console-main-v4.html', 'sources',  None),
+    'ebs-outputs-tab':  ('ebs-console-main-v4.html', 'outputs',  None),
+    'ebs-gfx-tab':      ('ebs-console-main-v4.html', 'gfx',      None),
+    'ebs-display-tab':  ('ebs-console-main-v4.html', 'display',  None),
+    'ebs-rules-tab':    ('ebs-console-main-v4.html', 'rules',    None),
+    'ebs-system-tab':   ('ebs-console-main-v4.html', 'system',   None),
+}
+
+
+def extract_coords_from_html(html_path, png_path, tab_name=None, scope_filter=None):
+    """Extract annotation coordinates from HTML using Playwright.
+
+    Renders the HTML file in headless Chromium, optionally clicks a tab to activate it,
+    captures a screenshot of the .app element, and extracts bounding boxes for
+    elements with [data-ann] attribute filtered by scope.
+
+    Args:
+        html_path: Path to the HTML file
+        png_path: Path to save the screenshot
+        tab_name: If set, clicks .tab[data-tab="{tab_name}"] before capturing
+        scope_filter: 'common' = only data-ann-scope="common" elements
+                      None (with tab_name) = elements inside the active panel
+                      None (without tab_name) = all elements
+
+    Returns:
+        list: boxes compatible with draw_boxes() format
+    """
+    color_map = {
+        'GREEN': GREEN,
+        'EBS_COLOR': EBS_COLOR,
+    }
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(viewport={'width': 1200, 'height': 1600})
+        page.goto(f'file:///{html_path.replace(chr(92), "/")}')
+        page.wait_for_load_state('networkidle')
+
+        # Click tab to activate if specified
+        if tab_name:
+            tab_selector = f'.tab[data-tab="{tab_name}"]'
+            tab_el = page.locator(tab_selector)
+            if tab_el.count() > 0:
+                tab_el.first.click()
+                # Wait for panel to become visible
+                panel_selector = f'#panel-{tab_name}'
+                page.wait_for_selector(f'{panel_selector}.active', timeout=3000)
+            else:
+                print(f"  WARNING: Tab '{tab_name}' not found")
+
+        # Find the .app container
+        app_locator = page.locator('.app')
+        if app_locator.count() == 0:
+            app_locator = page.locator('#app')
+
+        app_box = app_locator.first.bounding_box()
+        if not app_box:
+            print(f"  ERROR: .app / #app container not found in {html_path}")
+            browser.close()
+            return []
+
+        app_x, app_y = app_box['x'], app_box['y']
+
+        # Screenshot the .app element
+        app_locator.first.screenshot(path=png_path)
+
+        # Extract [data-ann] elements with scope filtering
+        elements = page.query_selector_all('[data-ann]')
+        boxes = []
+        for el in elements:
+            ann = el.get_attribute('data-ann')
+            fn = el.get_attribute('data-ann-fn') or ann
+            color_name = el.get_attribute('data-ann-color') or 'EBS_COLOR'
+            label_pos = el.get_attribute('data-ann-pos')
+            el_scope = el.get_attribute('data-ann-scope')
+
+            # Scope filtering
+            if scope_filter == 'common':
+                # Only include elements explicitly marked as common
+                if el_scope != 'common':
+                    continue
+            elif tab_name:
+                # For tab views: include elements scoped to this tab
+                if el_scope and el_scope != tab_name:
+                    continue
+
+            bbox = el.bounding_box()
+            if bbox is None:
+                print(f"  WARNING: [data-ann=\"{ann}\"] has no bounding box, skipping")
+                continue
+
+            x = round(bbox['x'] - app_x)
+            y = round(bbox['y'] - app_y)
+            w = round(bbox['width'])
+            h = round(bbox['height'])
+
+            box = {
+                'rect': (x, y, w, h),
+                'label': ann,
+                'fn': fn,
+                'color': color_map.get(color_name, EBS_COLOR),
+            }
+            if label_pos:
+                box['label_pos'] = label_pos
+
+            boxes.append(box)
+
+        browser.close()
+
+    return boxes
+
+
+# ============================================================
 # MAIN
 # ============================================================
 
-def process_image(name, data, mode='normal', snap=True):
+def process_image(name, data, mode='normal', snap=True, input_dir=None, output_dir=None):
     """Process a single image. mode: 'normal', 'calibrate', 'debug', 'ocr', 'crop'.
     snap: if True, auto-calibrate box positions in normal mode.
     """
-    src_path = os.path.join(INPUT_DIR, data['src'])
+    src_dir = input_dir or INPUT_DIR
+    dst_dir = output_dir or OUTPUT_DIR
+    src_path = os.path.join(src_dir, data['src'])
     if not os.path.exists(src_path):
         print(f"SKIP (not found): {src_path}")
         return None
@@ -1121,13 +1286,13 @@ def process_image(name, data, mode='normal', snap=True):
                   f"variance={w['variance']} avg={w['avg_color']} - may be empty")
 
         # Generate calibrated overlay
-        dst_path = os.path.join(OUTPUT_DIR, f"{name}.png")
+        dst_path = os.path.join(dst_dir, f"{name}.png")
         result = draw_boxes(img, calibrated)
         result.save(dst_path, quality=95)
         print(f"  -> {dst_path}")
 
         # Save calibrated coordinates to JSON sidecar (Fix #3)
-        json_path = os.path.join(OUTPUT_DIR, f"{name}-calibrated.json")
+        json_path = os.path.join(dst_dir, f"{name}-calibrated.json")
         json_data = {
             'name': name,
             'src': data['src'],
@@ -1209,13 +1374,13 @@ def process_image(name, data, mode='normal', snap=True):
                   f" - may be empty")
 
         # Save output image
-        dst_path = os.path.join(OUTPUT_DIR, f"{name}.png")
+        dst_path = os.path.join(dst_dir, f"{name}.png")
         result = draw_boxes(img, calibrated)
         result.save(dst_path, quality=95)
         print(f"  -> {dst_path}")
 
         # Save JSON sidecar with OCR metadata
-        json_path = os.path.join(OUTPUT_DIR, f"{name}-ocr.json")
+        json_path = os.path.join(dst_dir, f"{name}-ocr.json")
         json_data = {
             'name': name,
             'src': data['src'],
@@ -1258,14 +1423,14 @@ def process_image(name, data, mode='normal', snap=True):
         result = draw_boxes(img, calibrated)
         result = draw_debug_overlay(result, calibrated, h_seps)
 
-        dst_path = os.path.join(OUTPUT_DIR, f"{name}-debug.png")
+        dst_path = os.path.join(dst_dir, f"{name}-debug.png")
         result.save(dst_path, quality=95)
         print(f"DEBUG: {dst_path} ({img.size[0]}x{img.size[1]}, "
               f"{len(boxes)} boxes, {len(h_seps)} separators)")
         return calibrated
 
     else:  # normal
-        dst_path = os.path.join(OUTPUT_DIR, f"{name}.png")
+        dst_path = os.path.join(dst_dir, f"{name}.png")
 
         # Fix #1: Auto-snap to edges in normal mode (disable with --no-snap)
         if snap:
@@ -1294,7 +1459,7 @@ def process_image(name, data, mode='normal', snap=True):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Generate annotated overlay images for PokerGFX UI Analysis')
+        description='Generate annotated overlay images for PokerGFX UI Analysis and EBS Console')
     parser.add_argument('--calibrate', action='store_true',
                         help='Auto-calibrate box positions using edge detection')
     parser.add_argument('--debug', action='store_true',
@@ -1306,11 +1471,78 @@ def main():
                              '(OCR text region detection + edge-snap)')
     parser.add_argument('--crop', action='store_true',
                         help='Crop each annotated box from original image')
+    parser.add_argument('--ebs', action='store_true',
+                        help='Process EBS Console tab mockups instead of PokerGFX')
     parser.add_argument('--target', type=str, default=None,
-                        help='Process only images matching this prefix (e.g. "02")')
+                        help='Process only images matching this prefix (e.g. "02" or "sources")')
     args = parser.parse_args()
 
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    # Select image set and directories based on --ebs flag
+    if args.ebs:
+        if not PLAYWRIGHT_AVAILABLE:
+            print("ERROR: playwright is not installed.")
+            print("  Install with: pip install playwright && playwright install chromium")
+            sys.exit(1)
+
+        if args.calibrate:
+            print("NOTE: --calibrate is ignored for --ebs mode. HTML coordinates are the source of truth.")
+
+        os.makedirs(EBS_OUTPUT_DIR, exist_ok=True)
+        count = 0
+        for name, (html_file, tab_name, scope_filter) in EBS_HTML_MAP.items():
+            if args.target and args.target not in name:
+                continue
+
+            html_path = os.path.join(EBS_INPUT_DIR, html_file)
+            if not os.path.exists(html_path):
+                print(f"SKIP (not found): {html_path}")
+                continue
+
+            png_name = name + '.png'
+            png_path = os.path.join(EBS_OUTPUT_DIR, png_name)
+
+            tab_info = f" [tab={tab_name}]" if tab_name else ""
+            scope_info = f" [scope={scope_filter}]" if scope_filter else ""
+            print(f"Processing {name} <- {html_file}{tab_info}{scope_info}")
+            boxes = extract_coords_from_html(html_path, png_path, tab_name=tab_name, scope_filter=scope_filter)
+            if not boxes:
+                print(f"  WARNING: No [data-ann] elements found in {html_file}")
+                continue
+
+            print(f"  Extracted {len(boxes)} annotations")
+
+            # Load the screenshot we just captured
+            img = Image.open(png_path).copy()
+
+            if args.debug:
+                debug_img = img.copy()
+                draw_debug_overlay(debug_img, boxes)
+                debug_path = os.path.join(EBS_OUTPUT_DIR, name + '-debug.png')
+                debug_img.save(debug_path)
+                print(f"  Debug overlay: {debug_path}")
+
+            # Draw annotation boxes
+            img = draw_boxes(img, boxes, default_color=EBS_COLOR)
+
+            # Check for empty boxes
+            warnings = check_empty_boxes(img, boxes)
+            if warnings:
+                for w in warnings:
+                    print(f"  WARNING: {w}")
+
+            img.save(png_path)
+            print(f"  Saved: {png_path}")
+            count += 1
+
+        print(f"\nDone: {count} EBS Console images generated (Playwright mode).")
+        return
+    else:
+        images = IMAGES
+        in_dir = INPUT_DIR
+        out_dir = OUTPUT_DIR
+        label = "PokerGFX"
+
+    os.makedirs(out_dir, exist_ok=True)
 
     if args.crop:
         mode = 'crop'
@@ -1333,10 +1565,11 @@ def main():
     count = 0
     total_warnings = 0
     total_crops = 0
-    for name, data in IMAGES.items():
-        if args.target and not name.startswith(args.target):
+    for name, data in images.items():
+        if args.target and args.target not in name:
             continue
-        result = process_image(name, data, mode=mode, snap=snap)
+        result = process_image(name, data, mode=mode, snap=snap,
+                               input_dir=in_dir, output_dir=out_dir)
         if mode == 'crop' and isinstance(result, int):
             total_crops += result
         elif isinstance(result, list):
@@ -1344,20 +1577,20 @@ def main():
         count += 1
 
     if mode == 'crop':
-        print(f"\nCrop complete: {count} images processed, {total_crops} crops generated.")
+        print(f"\nCrop complete: {count} {label} images processed, {total_crops} crops generated.")
         print(f"Output directory: {CROP_DIR}")
     elif mode == 'ocr':
-        print(f"\nOCR calibration complete: {count} images processed.")
+        print(f"\nOCR calibration complete: {count} {label} images processed.")
         print("OCR JSON sidecar files saved to output directory (*-ocr.json).")
     elif mode == 'calibrate':
-        print(f"\nCalibration complete: {count} images analyzed.")
+        print(f"\nCalibration complete: {count} {label} images analyzed.")
         print("JSON sidecar files saved to output directory.")
     elif mode == 'debug':
-        print(f"\nDebug overlays: {count} images generated (*-debug.png).")
+        print(f"\nDebug overlays: {count} {label} images generated (*-debug.png).")
     else:
         warn_msg = f" ({total_warnings} empty-box warnings)" if total_warnings else ""
         snap_msg = " (edge-snap ON)" if snap else " (edge-snap OFF)"
-        print(f"\nDone: {count} images generated{snap_msg}{warn_msg}.")
+        print(f"\nDone: {count} {label} images generated{snap_msg}{warn_msg}.")
 
 
 if __name__ == '__main__':
