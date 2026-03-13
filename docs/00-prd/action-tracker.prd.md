@@ -1,10 +1,10 @@
 ---
 doc_type: "prd"
 doc_id: "PRD-AT-001"
-version: "2.1.0"
+version: "2.2.0"
 status: "draft"
 owner: "BRACELET STUDIO"
-last_updated: "2026-03-05"
+last_updated: "2026-03-13"
 phase: "phase-1"
 priority: "critical"
 parent_doc: "EBS-UI-Design-v3.prd.md"
@@ -1065,7 +1065,8 @@ Phase 6: P1 기능
 | 버전 | 날짜 | 변경 내용 |
 |------|------|----------|
 | 1.0.0 | 2026-02-19 | 초기 작성. 26개 기능 전체 요구사항 정의, 68개 프로토콜 메시지 매핑, Flutter Desktop 아키텍처, ASCII 레이아웃 및 키보드 단축키 설계 |
-| 2.1.0 | 2026-03-05 | Tier 1 UI 와이어프레임 7개 ASCII → HTML/PNG B&W 목업 교체 (메인 레이아웃, 설정 뷰, 카드 선택, 통계 패널, RFID 등록, 전체 레이아웃, 좌석 셀). Tier 2 상태 머신/흐름도 5개 ASCII → Mermaid 변환 (연결 구조, 게임 상태 머신, RFID 등록 흐름, UNDO 히스토리, 연결 끊김 복구). Tier 3 코드 구조/인라인 8개 보존. |
 | 2.0.0 | 2026-02-19 | 3단계 분석 기반 UI 설계 전면 재구성. 6개 스크린샷 정밀 분석 삽입 (5.1~5.5). 18개 신규 요구사항 추가 (REQ-AT-027~044): Settings 컴팩트 뷰, STRADDLE 좌석별 설정, 3rd Blind, BTN BLIND, CAP, 7 DEUCE, BOMB POT, HIT GAME, Statistics/Scoreboard 뷰(VPIP/PFR/AGRFq/WTSD/WIN), STRIP STACK/WIN, TICKER, LIVE 토글, FIELD/REMAIN/TOTAL, RFID 덱 등록 모드(52장 전체화면), 동적 액션 버튼(CHECK↔CALL, BET↔RAISE-TO), RFID 스캔 상태 아이콘 행, REGISTER 버튼. 앱 구조에 신규 화면 추가(SettingsScreen, StatisticsScreen, CardGridScreen, RegisterDeckScreen). 프로토콜 매핑 확장 (26개 → 44개). |
+| 2.1.0 | 2026-03-05 | Tier 1 UI 와이어프레임 7개 ASCII → HTML/PNG B&W 목업 교체 (메인 레이아웃, 설정 뷰, 카드 선택, 통계 패널, RFID 등록, 전체 레이아웃, 좌석 셀). Tier 2 상태 머신/흐름도 5개 ASCII → Mermaid 변환 (연결 구조, 게임 상태 머신, RFID 등록 흐름, UNDO 히스토리, 연결 끊김 복구). Tier 3 코드 구조/인라인 8개 보존. |
+| 2.2.0 | 2026-03-13 | 설계 문서 통합 — DESIGN-AT-001/DESIGN-AT-v3 → DESIGN-AT-002 (EBS-UI-Design-ActionTracker.md). 역설계 문서 + GGP-GFX Story 3.1/3.2 기반 통합. GGP-GFX 기획서 AT 이미지 10장 추출 삽입. |
 
-**Version**: 2.1.0 | **Updated**: 2026-03-05
+**Version**: 2.2.0 | **Updated**: 2026-03-13
