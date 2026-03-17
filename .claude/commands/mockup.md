@@ -13,7 +13,7 @@ HTML 와이어프레임과 Google Stitch를 자동 선택하여 최적의 목업
 /mockup [name] [options]
 
 Options:
-  --bnw             Black & White 모드 (기본, 자동 선택)
+  --bnw             (deprecated) B&W Refined Minimal은 이제 기본 스타일. 하위 호환용 파싱만
   --force-html      강제 HTML 와이어프레임
   --force-hifi      강제 Stitch API (고품질)
   --screens=N       생성할 화면 수 (1-5, 기본: 1)
@@ -25,7 +25,7 @@ Options:
 ## 자동 선택 시스템
 
 ```
-/mockup [name] --bnw
+/mockup [name]
       │
       ▼
 ┌─────────────────────────────────────────────────────┐
@@ -80,16 +80,16 @@ Options:
 ### 자동 선택 예시
 
 ```bash
-# 자동 선택 → HTML (단순 요청)
-/mockup "로그인 화면" --bnw
+# 자동 선택 → HTML (단순 요청, B&W Refined Minimal 기본 적용)
+/mockup "로그인 화면"
 # 🤖 선택: HTML Generator (이유: 기본값)
 
 # 자동 선택 → Stitch (고품질 키워드)
-/mockup "대시보드 - 이해관계자 프레젠테이션" --bnw
+/mockup "대시보드 - 이해관계자 프레젠테이션"
 # 🤖 선택: Stitch API (이유: 고품질 키워드 감지)
 
 # 자동 선택 → Stitch (PRD 연결)
-/mockup "인증 흐름" --bnw --prd=PRD-0001
+/mockup "인증 흐름" --prd=PRD-0001
 # 🤖 선택: Stitch API (이유: PRD 연결)
 ```
 
@@ -97,11 +97,11 @@ Options:
 
 ```bash
 # 강제 HTML (Stitch 키워드 무시)
-/mockup "고품질 대시보드" --bnw --force-html
+/mockup "고품질 대시보드" --force-html
 # 📝 선택: HTML Generator (이유: 강제 HTML 옵션)
 
 # 강제 Stitch
-/mockup "로그인 화면" --bnw --force-hifi
+/mockup "로그인 화면" --force-hifi
 # 🤖 선택: Stitch API (이유: 강제 Stitch 옵션)
 ```
 
@@ -109,7 +109,7 @@ Options:
 
 ```bash
 # Stitch API 실패 시
-/mockup "대시보드 - 최종 리뷰" --bnw
+/mockup "대시보드 - 최종 리뷰"
 # ⚠️ Stitch API 실패 → HTML로 폴백
 # 📝 선택: HTML Generator (이유: 폴백)
 ```
@@ -168,9 +168,9 @@ Options:
 
 ## 스타일 비교
 
-### --bnw (frontend-design 에이전트 기반 모노크롬 디자인)
+### B&W Refined Minimal (HTML 목업 기본 스타일, --bnw deprecated)
 
-**`designer` 에이전트 + `frontend-design` 플러그인으로 세련된 B&W 목업 생성**
+**`designer` 에이전트 내장 Aesthetic Guidelines로 세련된 B&W 목업 생성**
 
 | 항목 | 규칙 |
 |------|------|
@@ -260,19 +260,19 @@ STITCH_API_BASE_URL=https://api.stitch.withgoogle.com/v1  # 선택
 
 `--mockup <파일>` 지정 시 파일 내 ASCII 다이어그램을 **`11-ascii-diagram.md` 디자인 가이드 기준**으로 변환합니다.
 
-> **`--bnw`는 스타일 제약만 담당합니다** (HTML 목업의 색상·폰트를 B&W로 제한). ASCII 교체 워크플로우는 `--mockup <파일>`이 담당합니다.
+> B&W Refined Minimal은 HTML 목업의 기본 스타일입니다 (`--bnw` deprecated). ASCII 교체 워크플로우는 `--mockup <파일>`이 담당합니다.
 
 ### 변환 기준 (`11-ascii-diagram.md`)
 
 | ASCII 타입 | 변환 형식 |
 |-----------|----------|
 | 흐름도 / 시퀀스 / 아키텍처 / 트리 | Mermaid 코드 블록 (저장 파일 기본) |
-| UI 화면 / 컴포넌트 목업 | HTML 와이어프레임 + PNG (`--bnw` 적용 시 B&W 스타일) |
+| UI 화면 / 컴포넌트 목업 | HTML 와이어프레임 + PNG (B&W Refined Minimal 기본 적용) |
 
 ### 워크플로우
 
 ```
-/mockup <파일> --bnw --target=docs/example.md
+/mockup <파일> --target=docs/example.md
       │
       ▼
 ┌─────────────────────────────────────────────────────┐
@@ -309,13 +309,13 @@ STITCH_API_BASE_URL=https://api.stitch.withgoogle.com/v1  # 선택
 
 ```bash
 # 특정 파일의 ASCII 다이어그램 교체
-/mockup "시스템 아키텍처" --bnw --target=docs/ARCHITECTURE.md
+/mockup "시스템 아키텍처" --target=docs/ARCHITECTURE.md
 
 # PRD 파일의 모든 ASCII 교체
-/mockup --bnw --target=docs/prds/PRD-0001.md
+/mockup --target=docs/prds/PRD-0001.md
 
 # 현재 작업 중인 문서 (자동 감지)
-/auto --mockup --bnw "대시보드 화면"
+/auto --mockup "대시보드 화면"
 ```
 
 ### 교체 전/후 예시
@@ -358,7 +358,7 @@ STITCH_API_BASE_URL=https://api.stitch.withgoogle.com/v1  # 선택
 
 ### 주의사항
 
-- `--bnw` 없이 `--mockup`만 사용하면 ASCII 교체 **안함** (HTML만 생성)
+- `--mockup`만으로 HTML 목업 생성 + B&W Refined Minimal 스타일 자동 적용 (`--bnw` deprecated)
 - `--target` 없으면 현재 컨텍스트에서 자동 감지
 - 교체 전 반드시 확인 질문 표시 (기본값)
 - `--force`로 확인 없이 즉시 교체

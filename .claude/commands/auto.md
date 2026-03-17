@@ -1,6 +1,6 @@
 ---
 name: auto
-version: 20.1.0
+version: 23.0.0
 description: PDCA Orchestrator - Agent Teams + PDCA 통합 워크플로우
 aliases: [autopilot, ulw, ultrawork, ralph]
 deprecated: false
@@ -37,11 +37,13 @@ deprecated: false
 | 옵션 | 설명 |
 |------|------|
 | `--gdocs` | Google Docs PRD 동기화 |
-| `--mockup` | 목업 생성 (하위: `--bnw`, `--force-html`, `--prd=`) |
+| `--mockup` | 목업 생성 (하위: `--force-html`, `--prd=`). B&W Refined Minimal 기본 적용. `--bnw` deprecated |
 | `--debate` | 3AI 토론 |
 | `--research` | 리서치 모드 |
 | `--gmail` | Gmail 메일 분석 후 컨텍스트 주입 |
 | `--slack <채널ID>` | Slack 채널 분석 후 컨텍스트 주입 |
+| `--jira <cmd> <target>` | Jira 조회/분석 (epics, project, board, search, issue) |
+| `--figma <url> [connect\|rules]` | Figma 디자인 연동 (implement-design, code-connect, design-system-rules) |
 | `--daily` | daily v3.0 9-Phase Pipeline |
 | `--interactive` | 각 Phase 전환 시 사용자 승인 요청 |
 | `--max N` | 최대 N회 반복 |

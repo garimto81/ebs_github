@@ -1,3 +1,8 @@
+---
+name: prd-update
+description: 로컬 PRD 업데이트 (브랜치 기반 자동 탐지)
+---
+
 # /prd-update — 로컬 PRD 업데이트 커맨드
 
 로컬 PRD 파일을 업데이트하는 전담 커맨드. Google Docs 동기화(`/prd-sync`)와 역할이 다름.

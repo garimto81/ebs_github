@@ -1,6 +1,7 @@
 ---
 name: research
-description: RPI Phase 1 - 코드베이스 분석, 리서치, AI 리뷰
+description: >
+  This skill should be used when the user requests codebase analysis, external research, or AI-powered code review (RPI Phase 1).
 version: 2.0.0
 triggers:
   keywords:
@@ -16,8 +17,9 @@ triggers:
 
 ```
 TeamCreate(team_name="research-session")
-Task(subagent_type="researcher", name="researcher",
-     team_name="research-session", model="sonnet",
+Agent(subagent_type="researcher", name="researcher",
+     description="리서치 실행",
+     team_name="research-session",
      prompt="리서치: [주제]")
 SendMessage(type="message", recipient="researcher", content="리서치 시작.")
 # 완료 대기 → shutdown_request → TeamDelete()
@@ -35,11 +37,11 @@ SendMessage(type="message", recipient="researcher", content="리서치 시작.")
 ## 인과관계 (CRITICAL - 절대 보존)
 
 ```
-/auto Tier 3
+/auto Phase 1 Step 1.2 (사전 분석)
     └── /research code (코드 분석 필요 시)
     └── /research web (오픈소스 탐색 필요 시)
 
-/auto Phase 1
+/auto Phase 1 Step 1.3 (계획 수립)
     └── /research plan (구현 계획 수립)
 ```
 

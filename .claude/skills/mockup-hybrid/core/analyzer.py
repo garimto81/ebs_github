@@ -4,7 +4,6 @@
 사용자 프롬프트와 옵션을 분석하여 최적의 목업 생성 백엔드를 선택합니다.
 """
 
-import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -216,7 +215,7 @@ class DesignContextAnalyzer:
                         backend=MockupBackend.HTML,
                         reason=SelectionReason.API_UNAVAILABLE,
                         confidence=0.7,
-                        details=f"PRD 연결했으나 Stitch API 불가",
+                        details="PRD 연결했으나 Stitch API 불가",
                     )
 
         # 다중 화면 확인

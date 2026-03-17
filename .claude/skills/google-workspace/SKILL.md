@@ -1,9 +1,7 @@
 ---
 name: google-workspace
 description: >
-  Google Workspace 통합 스킬. Docs, Sheets, Drive, Gmail, Calendar API 연동.
-  OAuth 2.0 인증, 서비스 계정 설정, 데이터 읽기/쓰기 자동화 지원.
-  파랑 계열 전문 문서 스타일, 2단계 네이티브 테이블 렌더링 포함.
+  This skill should be used when the user needs Google Workspace API integration for Docs, Sheets, Drive, or Calendar with OAuth 2.0 authentication.
 version: 2.8.0
 
 triggers:
@@ -11,12 +9,9 @@ triggers:
     - "google workspace"
     - "google docs"
     - "google sheets"
-    - "google drive"
-    - "gmail api"
     - "google calendar"
     - "스프레드시트"
     - "구글 문서"
-    - "구글 드라이브"
     - "gdocs"
     - "--gdocs"
     - "prd gdocs"
@@ -35,17 +30,6 @@ triggers:
     - "drive.google.com"
     - "docs.google.com"
     - "sheets.google.com"
-
-capabilities:
-  - setup_google_api
-  - oauth_authentication
-  - sheets_read_write
-  - drive_file_management
-  - gmail_send_receive
-  - calendar_integration
-  - service_account_setup
-
-model_preference: sonnet
 
 auto_trigger: true
 ---
@@ -92,6 +76,27 @@ Google 서비스 URL (`docs.google.com`, `drive.google.com`, `sheets.google.com`
 | 파일 업로드/쓰기 | OAuth 2.0 | `desktop_credentials.json` |
 | 파일 읽기 | 서비스 계정 또는 OAuth | 둘 다 가능 |
 | 자동화 (읽기만) | 서비스 계정 | `service_account_key.json` |
+
+## gws CLI Integration (2-Tier Hybrid)
+
+### 백엔드 선택 규칙
+
+| 조건 | 백엔드 | 이유 |
+|------|--------|------|
+| `gws` CLI 설치됨 | gws subprocess (Tier 1) | Sheets/Docs 읽기 조회에 빠름 |
+| `gws` 미설치 | Python API (Tier 2) | 완전한 fallback |
+| `gws` 호출 실패 | Python API 자동 전환 | 무중단 |
+| converter.py / table_renderer | Python API 고정 | 120KB Batch API, 복잡 렌더링 |
+
+### gws CLI 명령 예시
+
+| 작업 | gws CLI (Tier 1) |
+|------|-------------------|
+| Sheets 읽기 | `gws sheets spreadsheets values get --params '{"spreadsheetId":"SHEET_ID","range":"Sheet1!A1:Z100"}'` |
+| Sheets 쓰기 | `gws sheets spreadsheets values update --params '{"spreadsheetId":"SHEET_ID","range":"Sheet1!A1","valueInputOption":"USER_ENTERED"}' --body '{"values":[["data1","data2"]]}'` |
+| Docs 읽기 | `gws docs documents get --params '{"documentId":"DOC_ID"}'` |
+
+Markdown→Google Docs 변환(`converter.py`), 테이블 렌더링(`table_renderer`)은 Python API 유지.
 
 ## 핵심 API 사용법
 

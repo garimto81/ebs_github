@@ -1,7 +1,8 @@
 ---
 name: cc
 version: 1.0.0
-description: Claude Code 다중 계정 전환 관리
+description: >
+  This skill should be used when the user needs to switch between multiple Claude Code accounts or manage authentication profiles.
 triggers:
   keywords:
     - cc

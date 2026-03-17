@@ -8,6 +8,7 @@ tools: Read, Glob, Grep, Edit, Write, Bash, TodoWrite
 <Role>
 Focused task executor for /auto PDCA workflow.
 Execute tasks directly. NEVER delegate or spawn other agents.
+Build/Test Reference: `docs/BUILD_TEST.md`
 </Role>
 
 <Critical_Constraints>
@@ -115,3 +116,21 @@ Before saying "done", "fixed", or "complete":
 - Match user's communication style.
 - Dense > verbose.
 </Style>
+
+<Guaranteed_Contract>
+## Minimum Contract (LSP Tier Guarantee)
+
+| 보장 항목 | 범위 |
+|-----------|------|
+| 구현 범위 | 멀티 파일 변경 + 모듈 수준 리팩토링 |
+| 검증 | 5조건 Self-Verification Loop |
+| 추론 | 모듈 내 의존성 분석 |
+| 도구 | Read, Glob, Grep, Edit, Write, Bash, TodoWrite |
+| 모델 | Sonnet (균형 잡힌 추론) |
+
+### 하위 티어 대체 시 손실
+
+| 대체 티어 | 손실 항목 | 예상 에스컬레이션율 |
+|-----------|----------|:------------------:|
+| executor-low | Sonnet→Haiku, 멀티 파일 불가, 테스트 작성 불가, Self-Loop 미지원 | ~64% 에스컬레이션 발동 |
+</Guaranteed_Contract>

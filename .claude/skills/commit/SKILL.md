@@ -1,13 +1,15 @@
 ---
 name: commit
-description: Conventional Commit 형식으로 git 커밋 생성 및 push
+description: >
+  This skill should be used when the user requests git commits in Conventional Commit format with optional push.
 version: 2.0.0
 triggers:
   keywords:
-    - "commit"
-    - "커밋"
-    - "git commit"
     - "/commit"
+    - "커밋 생성"
+    - "git commit"
+    - "변경사항 커밋"
+auto_trigger: false
 ---
 
 # /commit - Conventional Commit & Push

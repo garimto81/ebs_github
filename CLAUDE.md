@@ -137,6 +137,10 @@ python C:\claude\ebs\tools\generate_annotations.py
 python C:\claude\ebs\tools\generate_annotations.py --calibrate       # 자동 캘리브레이션
 python C:\claude\ebs\tools\generate_annotations.py --debug --target 02  # 디버그 모드 (단일 이미지)
 
+# HTML 목업 기반 Playwright 캡처 모드 (고품질, data-ann 좌표 자동 추출)
+python C:\claude\ebs\tools\generate_annotations.py --pokergfx-html             # 전체 10개 화면
+python C:\claude\ebs\tools\generate_annotations.py --pokergfx-html --target 01  # 단일 화면
+
 # UI 요소 자동 감지
 python C:\claude\ebs\tools\detect_ui_elements.py <image_path>
 
@@ -331,6 +335,9 @@ mockups/            # HTML 와이어프레임 (sources, outputs, gfx, rules, mai
 | 문서 | 경로 | 용도 |
 |------|------|------|
 | Master PRD | `docs/PRD-0003-EBS-RFID-System.md` | 비전/전략/로드맵 |
+| **Foundation PRD** | `docs/00-prd/PRD-EBS_Foundation.md` | EBS 시스템 전체 기획서 — 비전, 기술 설계, 로드맵, KPI (v30.0.0) |
+| Kickoff 기획서 | `docs/00-prd/EBS-Kickoff-2026.md` | 3년 전략 + 6-Phase 로드맵 (비전 중심) |
+| DB Schema PRD | `docs/00-prd/PRD-EBS_DB_Schema.md` | L0-L5 데이터 파이프라인 스키마 (v1.4) |
 | Phase 1 복제 PRD | `docs/01_PokerGFX_Analysis/PRD-0003-Phase1-PokerGFX-Clone.md` | PokerGFX 동일 복제 설계서 (v9.1.0) |
 | Server UI 설계 | `docs/00-prd/EBS-UI-Design-v3.prd.md` | EBS UI Design SSOT (v8.1.0) |
 | 기능 상호작용 | `docs/01_PokerGFX_Analysis/PRD-0004-feature-interactions.md` | 탭/기능 간 상호작용 명세 |

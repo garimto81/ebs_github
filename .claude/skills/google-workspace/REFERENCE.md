@@ -4,6 +4,57 @@
 
 ---
 
+## gws CLI Commands (Tier 1 — Primary)
+
+gws CLI가 설치되어 있으면 Python API 대신 gws를 우선 사용합니다.
+
+### Sheets
+
+```powershell
+# 스프레드시트 읽기
+gws sheets spreadsheets values get --params '{"spreadsheetId":"1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms","range":"Sheet1!A:E"}'
+
+# 스프레드시트 쓰기
+gws sheets spreadsheets values update --params '{"spreadsheetId":"ID","range":"Sheet1!A1","valueInputOption":"USER_ENTERED"}' --body '{"values":[["a","b"]]}'
+
+# 스프레드시트 추가
+gws sheets spreadsheets values append --params '{"spreadsheetId":"ID","range":"Sheet1!A1","valueInputOption":"USER_ENTERED","insertDataOption":"INSERT_ROWS"}' --body '{"values":[["new","row"]]}'
+```
+
+### Drive
+
+```powershell
+# 파일 목록 조회
+gws drive files list --params '{"q":"\"FOLDER_ID\" in parents and trashed=false","pageSize":100,"fields":"files(id,name,mimeType,modifiedTime)"}'
+
+# 파일 검색
+gws drive files list --params '{"q":"name contains \"보고서\" and trashed=false","pageSize":20}'
+```
+
+### Gmail
+
+```powershell
+# 메일 목록
+gws gmail users messages list --params '{"userId":"me","q":"in:inbox","maxResults":10}'
+
+# 메일 상세
+gws gmail users messages get --params '{"userId":"me","id":"MSG_ID","format":"full"}'
+```
+
+### Calendar
+
+```powershell
+# 일정 조회
+gws calendar events list --params '{"calendarId":"primary","timeMin":"2026-03-12T00:00:00Z","maxResults":10,"singleEvents":true,"orderBy":"startTime"}'
+
+# 일정 생성
+gws calendar events insert --params '{"calendarId":"primary"}' --body '{"summary":"회의","start":{"dateTime":"2026-03-12T14:00:00+09:00"},"end":{"dateTime":"2026-03-12T15:00:00+09:00"}}'
+```
+
+> **전환하지 않는 것**: Docs Converter (`lib/google_docs/converter.py`), Drive Guardian, Table Renderer는 Batch API가 필요하므로 Python API만 사용합니다.
+
+---
+
 ## OAuth 2.0 인증 코드
 
 ```python

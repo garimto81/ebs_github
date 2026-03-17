@@ -4,7 +4,6 @@
 분석 결과에 따라 적절한 어댑터로 요청을 라우팅합니다.
 """
 
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
@@ -23,7 +22,6 @@ from lib.mockup_hybrid.export_utils import (
     save_html,
     capture_screenshot,
     get_output_paths,
-    generate_markdown_embed,
 )
 
 from .analyzer import DesignContextAnalyzer, AnalysisResult
@@ -31,7 +29,7 @@ from .fallback_handler import FallbackHandler
 from ..adapters.html_adapter import HTMLAdapter
 from ..adapters.stitch_adapter import StitchAdapter
 from ..adapters.mermaid_adapter import MermaidAdapter
-from .document_scanner import DocumentScanner, DocumentScanResult, SectionClassification
+from .document_scanner import DocumentScanner, DocumentScanResult
 from .document_embedder import DocumentEmbedder
 
 
@@ -199,7 +197,7 @@ class MockupRouter:
             generation_results.append((section, mockup_result))
 
         # 3. 문서에 결과 삽입
-        embed_results = embedder.embed_batch(doc_path, generation_results)
+        embedder.embed_batch(doc_path, generation_results)
 
         return scan_result
 
@@ -278,7 +276,9 @@ class MockupRouter:
 
         if backend == MockupBackend.STITCH:
             # Stitch 시도
-            stitch_result = self.stitch_adapter.generate_from_prompt(prompt)
+            stitch_result = self.stitch_adapter.generate_from_prompt(
+                prompt, bnw=options.bnw if options else False
+            )
 
             if stitch_result.success:
                 html_content = stitch_result.html_content
@@ -293,7 +293,7 @@ class MockupRouter:
 
                 if fallback_result.should_fallback:
                     # HTML로 폴백
-                    html_result = self.html_adapter.generate_from_prompt(prompt)
+                    html_result = self.html_adapter.generate_from_prompt(prompt, options=options)
                     if html_result.success:
                         html_content = html_result.html_content
                         fallback_used = True
@@ -317,7 +317,7 @@ class MockupRouter:
                     )
         else:
             # HTML 생성
-            html_result = self.html_adapter.generate_from_prompt(prompt)
+            html_result = self.html_adapter.generate_from_prompt(prompt, options=options)
 
             if html_result.success:
                 html_content = html_result.html_content
@@ -350,13 +350,13 @@ class MockupRouter:
             backend=final_backend,
             reason=final_reason,
             html_path=html_path,
-            image_path=image_path,
+            image_path=captured_path,  # 실제 캡처된 경로 (실패 시 None → embedder HTML 폴백)
             success=success,
             message=self._create_message(
                 backend=final_backend,
                 reason=final_reason,
                 html_path=html_path,
-                image_path=image_path,
+                image_path=captured_path,
                 success=success,
                 fallback_used=fallback_used,
             ),

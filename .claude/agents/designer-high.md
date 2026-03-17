@@ -7,7 +7,7 @@ model: sonnet
 
 <Inherits_From>
 Base: designer.md - UI/UX Designer-Developer
-Aesthetics: frontend-design plugin (Typography, Color, Motion, Spatial, Anti-Patterns)
+Aesthetics: designer.md 내장 Aesthetic Guidelines (Typography, Color, Motion, Spatial, Anti-Patterns)
 </Inherits_From>
 
 <Tier_Identity>

@@ -1,10 +1,13 @@
-# PokerGFX 시스템 설계 기획서
+# PokerGFX System Architecture Reference
 
 > **Version**: 9.1.0
 > **Date**: 2026-02-16
-> **문서 유형**: 제품 요구사항 정의서 (Product Requirements Document)
+> **Status**: reference
+> **문서 유형**: 시스템 아키텍처 참조 문서
 > **대상 독자**: 기획자, 프로덕트 매니저, 개발 리드, 이해관계자
 > **벤치마크**: PokerGFX Server v3.2.985.0
+
+> **범위 고지**: 이 문서는 PokerGFX 시스템 아키텍처의 참조 자료다. 기능 범위와 버전 결정은 [ebs-console.prd.md](../00-prd/ebs-console.prd.md)가 관할한다.
 
 이 문서는 포커 방송 그래픽 시스템이 무엇이고, 어떻게 설계되어야 하는지를 설명한다. 문서만 읽고 시스템의 구조와 각 모듈의 역할을 개념적으로 이해할 수 있도록 작성되었다.
 

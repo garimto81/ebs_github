@@ -1,6 +1,7 @@
 ---
 name: overlay-fallback
-description: "이미지 분석 또는 오버레이 요소 감지가 실패했을 때 coord_picker.html 수동 어노테이션 도구로 안내하는 스킬. OCR 신뢰도 < 30%, OpenCV 0개 감지, 사용자 수동 어노테이션 요청 시 자동 트리거."
+description: >
+  This skill should be used when image analysis or overlay element detection fails, guiding users to coord_picker.html manual annotation tool.
 version: 1.0.0
 triggers:
   keywords:
@@ -11,7 +12,6 @@ triggers:
     - "overlay fallback"
     - "오버레이 좌표 직접"
 auto_trigger: true
-model_preference: sonnet
 ---
 
 # /overlay-fallback

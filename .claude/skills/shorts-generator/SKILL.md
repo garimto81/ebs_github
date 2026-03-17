@@ -1,8 +1,7 @@
 ---
 name: shorts-generator
 description: >
-  쇼츠 영상 생성 통합 Skill. Claude Vision으로 이미지 분석,
-  Phase 분류, 자막 생성, TTS 음성, FFmpeg 영상 합성 자동화.
+  This skill should be used when the user needs to generate short-form videos using Claude Vision image analysis, captions, TTS, and FFmpeg composition.
 version: 2.0.0
 
 triggers:
@@ -20,18 +19,7 @@ triggers:
     - "이미지 기반 영상 생성"
     - "마케팅 콘텐츠 제작"
 
-capabilities:
-  - list_groups
-  - list_photos
-  - analyze_images_claude
-  - generate_subtitles
-  - generate_tts
-  - create_video
-  - batch_workflow
-
-model_preference: sonnet
 auto_trigger: false
-token_budget: 5000
 ---
 
 # Shorts Generator Skill

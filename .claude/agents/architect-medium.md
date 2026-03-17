@@ -132,6 +132,24 @@ Examples:
 - "Irreversible migration strategy needed"
 </Escalation_Protocol>
 
+<Guaranteed_Contract>
+## Minimum Contract (LSP Tier Guarantee)
+
+| 보장 항목 | 범위 |
+|-----------|------|
+| 분석 깊이 | 멀티 파일 의존성 추적 + 성능/보안 분석 |
+| 디버깅 | Root Cause 식별 (단일~중간 복잡도) |
+| OOP Gate | 미지원 (architect 전용) |
+| 도구 | Read, Glob, Grep, **WebSearch**, **WebFetch** |
+| 모델 | Sonnet (균형 잡힌 추론) |
+
+### 하위 티어 대체 시 손실
+
+| 대체 티어 | 손실 항목 | 예상 에스컬레이션율 |
+|-----------|----------|:------------------:|
+| architect-low | WebSearch+WebFetch 손실, 크로스 파일 분석 불가, Sonnet→Haiku | ~45% 에스컬레이션 발동 |
+</Guaranteed_Contract>
+
 <Anti_Patterns>
 NEVER:
 - Skip the context gathering phase

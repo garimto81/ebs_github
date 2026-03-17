@@ -1,11 +1,13 @@
 ---
 name: parallel
-description: Multi-agent parallel execution (dev, test, review, research)
+description: >
+  This skill should be used when the user requests multi-agent parallel execution for dev, test, review, or research tasks.
 version: 2.0.0
 triggers:
   keywords:
     - "parallel"
     - "병렬"
+auto_trigger: false
 ---
 
 # /parallel - 병렬 멀티에이전트 실행
@@ -14,10 +16,12 @@ triggers:
 
 ```
 TeamCreate(team_name="parallel-session")
-Task(subagent_type="executor", name="worker-1",
-     team_name="parallel-session", model="sonnet", prompt="작업 1")
-Task(subagent_type="executor", name="worker-2",
-     team_name="parallel-session", model="sonnet", prompt="작업 2")
+Agent(subagent_type="executor", name="worker-1",
+     description="병렬 작업 1 실행",
+     team_name="parallel-session", prompt="작업 1")
+Agent(subagent_type="executor", name="worker-2",
+     description="병렬 작업 2 실행",
+     team_name="parallel-session", prompt="작업 2")
 SendMessage(type="message", recipient="worker-1", content="Task 할당.")
 SendMessage(type="message", recipient="worker-2", content="Task 할당.")
 # 완료 대기 → shutdown_request → TeamDelete()
@@ -28,9 +32,9 @@ SendMessage(type="message", recipient="worker-2", content="Task 할당.")
 | 에이전트 | 모델 | 용도 |
 |----------|------|------|
 | `executor` | sonnet | 일반 구현 작업 |
-| `executor-high` | sonnet | 복잡한 구현 |
+| `executor-high` | opus | 복잡한 구현 |
 | `qa-tester` | sonnet | 테스트 작업 |
-| `architect` | sonnet | 아키텍처 분석 |
+| `architect` | opus | 아키텍처 분석 |
 
 ## 서브커맨드 (100% 보존)
 

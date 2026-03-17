@@ -1,7 +1,7 @@
 ---
 name: vision
-description: Visual/media file analyzer for images, PDFs, and diagrams (Sonnet)
-model: sonnet
+description: Visual/media file analyzer for images, PDFs, and diagrams (Haiku)
+model: haiku
 tools: Read, Glob, Grep
 ---
 

@@ -1,12 +1,7 @@
 ---
 name: karpathy-guidelines
 description: >
-  Andrej Karpathy의 6대 개발 원칙을 적용하여 코드 품질을 높입니다.
-  트리거: 코드 리뷰, 새 코드 작성, 리팩토링, 디버깅.
-license: MIT
-compatibility: claude-code
-user-invocable: true
-disable-model-invocation: false
+  This skill should be used when applying Andrej Karpathy's 6 development principles during code review, new code writing, refactoring, or debugging.
 version: 2.0.0
 triggers:
   keywords:
@@ -16,7 +11,8 @@ triggers:
     - "리팩토링"
     - "코드 작성"
     - "디버깅"
-model_preference: sonnet
+    - "카파시"
+    - "코드 리뷰 원칙"
 auto_trigger: false
 ---
 

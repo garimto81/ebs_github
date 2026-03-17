@@ -32,6 +32,14 @@ tools/morning-automation/data/*.json
 tools/morning-automation/data/*.txt
 !tools/morning-automation/data/.gitkeep
 
+# 대용량 미디어 파일
+Media/
+images/overlays/**/*.mp4
+
+# 임시/테스트 결과
+.tmp/
+test-results/
+
 # PokerGFX 디컴파일 아카이브 (저작권 보호)
 docs/01_PokerGFX_Analysis/07_Decompiled_Archive/Server/
 docs/01_PokerGFX_Analysis/07_Decompiled_Archive/Common/

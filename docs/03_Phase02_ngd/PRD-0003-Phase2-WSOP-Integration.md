@@ -384,37 +384,11 @@ def rollback_sync(sync_id: str):
 
 ### 7.1 연결 상태 표시
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  WSOPLIVE Connection: ● Connected (Last sync: 2s ago)          │
-│  ──────────────────────────────────────────────────────────  │
-│  Players: Synced | Chips: Synced | Blinds: Synced           │
-└─────────────────────────────────────────────────────────────┘
-
-연결 끊김 시:
-┌─────────────────────────────────────────────────────────────┐
-│  ⚠️ WSOPLIVE Connection: ● Disconnected                        │
-│  ──────────────────────────────────────────────────────────  │
-│  Manual mode active. Changes will sync when reconnected.    │
-│  [Retry Connection]  [Continue Offline]                     │
-└─────────────────────────────────────────────────────────────┘
-```
+연결 상태 패널은 WSOPLIVE 연결 여부(Connected/Disconnected), 마지막 동기화 시각, 데이터 유형별(Players/Chips/Blinds) 동기화 상태를 표시한다. 연결 끊김 시 Manual mode 전환 안내와 [Retry Connection] / [Continue Offline] 버튼을 노출한다.
 
 ### 7.2 충돌 해결 UI
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  ⚠️ Chip Count Conflict - Seat 3                            │
-│  ──────────────────────────────────────────────────────────  │
-│                                                              │
-│  EBS Value:    $47,500                                       │
-│  WSOPLIVE Value:  $52,000                                       │
-│  Difference:   $4,500 (9.5%)                                 │
-│                                                              │
-│  [Use EBS]  [Use WSOPLIVE (Recommended)]  [Enter Manually]     │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
+충돌 해결 패널은 충돌 발생 시트 번호, EBS/WSOPLIVE 각각의 칩 카운트, 차이(절대값 및 %)를 표시한다. [Use EBS] / [Use WSOPLIVE (Recommended)] / [Enter Manually] 3개 액션 버튼을 제공한다.
 
 ### 7.3 동기화 로그 패널
 

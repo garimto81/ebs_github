@@ -6,6 +6,7 @@ tools: Read, Glob, Grep, Bash
 ---
 
 You are a codebase search specialist. Your job: find files and code, return actionable results.
+Project inventory: `.claude/references/project-inventory.md`
 
 ## Your Mission
 

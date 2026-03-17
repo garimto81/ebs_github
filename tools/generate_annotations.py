@@ -14,6 +14,8 @@ Usage:
   python generate_annotations.py --ebs --target sources   # Single EBS tab
   python generate_annotations.py --ebs --calibrate        # EBS with auto-calibration
   python generate_annotations.py --ebs --layout           # Clean layout screenshots (no annotation)
+  python generate_annotations.py --at                     # Action Tracker reference annotation
+  python generate_annotations.py --at --target 01         # Single AT screen
 
 Strategy: Contrast Edge Detection + Auto-Calibration
 - Normal mode: auto-snaps box edges to nearest contrast boundaries (±2px)
@@ -25,6 +27,7 @@ Strategy: Contrast Edge Detection + Auto-Calibration
 import argparse
 import json
 import os
+import re
 import sys
 from PIL import Image, ImageDraw, ImageFont
 
@@ -50,6 +53,9 @@ INPUT_DIR = "C:/claude/ebs/images/pokerGFX"
 OUTPUT_DIR = "C:/claude/ebs/docs/01_PokerGFX_Analysis/02_Annotated_ngd"
 CROP_DIR = "C:/claude/ebs/docs/01_PokerGFX_Analysis/03_Cropped_ngd"
 
+AT_INPUT_DIR = "C:/claude/ebs/docs/01_PokerGFX_Analysis/03_Reference_ngd/action_tracker"
+AT_OUTPUT_DIR = "C:/claude/ebs/docs/01_PokerGFX_Analysis/02_Annotated_ngd"
+
 DELTA_GUARD = {
     'dy_max': 12,   # y 이동 최대 (행 겹침 방지)
     'dh_max': 20,   # 높이 변화 최대 (오버 확장 방지)
@@ -59,12 +65,12 @@ DELTA_GUARD = {
 
 # Font setup
 try:
-    font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 13)
+    font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 9)
 except Exception:
     font = ImageFont.load_default()
 
 try:
-    font_small = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 10)
+    font_small = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 8)
 except Exception:
     font_small = ImageFont.load_default()
 
@@ -496,10 +502,28 @@ def crop_boxes(img, boxes, output_dir, name, padding=8):
 
 
 # ============================================================
+# IMAGE UTILITIES
+# ============================================================
+
+MAX_IMAGE_WIDTH = 1280
+
+def cap_image_width(path, max_width=MAX_IMAGE_WIDTH):
+    """Resize image to max_width if it exceeds, maintaining aspect ratio."""
+    img = Image.open(path)
+    if img.width <= max_width:
+        return
+    ratio = max_width / img.width
+    new_size = (max_width, int(img.height * ratio))
+    img = img.resize(new_size, Image.LANCZOS)
+    img.save(path)
+    print(f"  Resized: {img.width}x{img.height} (capped to {max_width}px width)")
+
+
+# ============================================================
 # DRAWING FUNCTIONS
 # ============================================================
 
-def draw_boxes(img, boxes, default_color=RED):
+def draw_boxes(img, boxes, default_color=RED, compact=False):
     """Draw annotation boxes with external labels on image."""
     overlay = Image.new('RGBA', img.size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
@@ -510,11 +534,20 @@ def draw_boxes(img, boxes, default_color=RED):
         c = box.get('color', default_color)
         is_drop = box.get('is_drop', False)
 
+        # Compact label: extract number only (e.g. "M-01" -> "1")
+        if compact:
+            m = re.match(r'[A-Z]+-0*(\d+\w*)', label)
+            if m:
+                label = m.group(1)
+            else:
+                # DROP-Studio → Studio (prefix removal)
+                label = re.sub(r'^[A-Z]+-', '', label)
+
         # Semi-transparent fill
-        fill_alpha = DROP_ALPHA if is_drop else 22
+        fill_alpha = DROP_ALPHA if is_drop else 12
         draw.rectangle([x + 2, y + 2, x + w - 2, y + h - 2], fill=(*c, fill_alpha))
         # Border
-        draw.rectangle([x, y, x + w, y + h], outline=c, width=2)
+        draw.rectangle([x, y, x + w, y + h], outline=c, width=1)
 
         # Drop: 대각선 X 마킹 + [DROP] 라벨 접두사
         if is_drop:
@@ -523,15 +556,18 @@ def draw_boxes(img, boxes, default_color=RED):
                       fill=DROP_OVERLAY_COLOR, width=DROP_LINE_WIDTH)
             draw.line([(x + w - pad, y + pad), (x + pad, y + h - pad)],
                       fill=DROP_OVERLAY_COLOR, width=DROP_LINE_WIDTH)
-            label = f'[DROP] {label}'
+            if compact:
+                label = f'✕{label}'
+            else:
+                label = f'[DROP] {label}'
 
         # Label badge - positioned above the box
         bbox = draw.textbbox((0, 0), label, font=font)
         tw = bbox[2] - bbox[0]
         th = bbox[3] - bbox[1]
-        pad_x, pad_y = 5, 2
+        pad_x, pad_y = 2, 1
         badge_w = tw + pad_x * 2
-        badge_h = th + pad_y * 2 + 2
+        badge_h = th + pad_y * 2
 
         # Label position: 'top' (default), 'right', 'bottom'
         label_pos = box.get('label_pos', 'top')
@@ -1095,11 +1131,48 @@ IMAGES = {
 
 
 # ============================================================
+# ACTION TRACKER ANNOTATION
+# ============================================================
+
+AT_SCREENS = {
+    'at-01-setup-mode': {
+        'src': 'at-01-setup-mode.png',
+        'boxes': [
+            # Z1: 상단 바 (Status/Controls)
+            {'rect': (8, 22, 30, 28),   'label': 'AT-S01'},   # USB 연결 아이콘
+            {'rect': (48, 22, 35, 28),  'label': 'AT-S02'},   # WiFi 신호
+            {'rect': (215, 20, 75, 32), 'label': 'AT-S03'},   # HAND 1
+            {'rect': (295, 20, 55, 32), 'label': 'AT-S04'},   # AUTO 배지
+            {'rect': (370, 22, 35, 28), 'label': 'AT-S05'},   # Camera
+            {'rect': (555, 20, 58, 32), 'label': 'AT-S06'},   # GFX 버튼
+            {'rect': (625, 20, 80, 32), 'label': 'AT-S07'},   # 창크기 + X
+            # Z2: 홀카드 슬롯 (10쌍)
+            {'rect': (5, 58, 770, 38),  'label': 'AT-S08'},   # 홀카드 슬롯 행
+            # Z3: STRADDLE + 좌석 라벨
+            {'rect': (5, 98, 770, 18),  'label': 'AT-S09'},   # STRADDLE 행
+            {'rect': (5, 118, 770, 38), 'label': 'AT-S10'},   # SEAT 1~10 라벨
+            # Z4: 포지션 + 칩 스택
+            {'rect': (5, 158, 770, 32), 'label': 'AT-S11'},   # DLR/SML/BIG 포지션
+            {'rect': (5, 192, 770, 28), 'label': 'AT-S12'},   # 칩 스택 숫자
+            # Z5: 블라인드 + 옵션 + GO
+            {'rect': (5, 225, 770, 35), 'label': 'AT-S13'},   # 블라인드 설정 (CAP~3B)
+            {'rect': (5, 265, 770, 30), 'label': 'AT-S14'},   # 하단 옵션 (MIN CHIP~HIT GAME)
+            {'rect': (5, 300, 530, 55), 'label': 'AT-S15'},   # 게임 설정 (HOLDEM/SETTINGS)
+            {'rect': (545, 300, 230, 55), 'label': 'AT-S16', 'color': GREEN},  # GO 버튼
+        ],
+    },
+}
+
+
+# ============================================================
 # EBS CONSOLE ANNOTATION
 # ============================================================
 
 EBS_INPUT_DIR = "C:/claude/ebs/docs/02-design/mockups/v3"
 EBS_OUTPUT_DIR = "C:/claude/ebs/docs/01_PokerGFX_Analysis/02_Annotated_ngd"
+
+# PokerGFX HTML replica annotation
+POKERGFX_HTML_DIR = "C:/claude/ebs/docs/01_PokerGFX_Analysis/01_Mockups_ngd"
 
 # Annotation color for EBS: cyan to distinguish from PokerGFX red
 EBS_COLOR = (0, 180, 220)
@@ -1111,16 +1184,30 @@ EBS_COLOR = (0, 180, 220)
 #                 None for tab views (extracts elements inside active panel)
 EBS_HTML_MAP = {
     'ebs-main-window':  ('ebs-console-main-v4.html', None,       'common'),
-    'ebs-sources-tab':  ('ebs-console-main-v4.html', 'sources',  None),
     'ebs-outputs-tab':  ('ebs-console-main-v4.html', 'outputs',  None),
     'ebs-gfx-tab':      ('ebs-console-main-v4.html', 'gfx',      None),
     'ebs-display-tab':  ('ebs-console-main-v4.html', 'display',  None),
     'ebs-rules-tab':    ('ebs-console-main-v4.html', 'rules',    None),
-    'ebs-system-tab':   ('ebs-console-main-v4.html', 'system',   None),
+    'ebs-stats-tab':    ('ebs-console-main-v4.html', 'stats',    None),
+}
+
+# PokerGFX HTML replicas: WinForms-style HTML mockups
+# Each entry: (html_file, tab_name, scope_filter)
+POKERGFX_HTML_MAP = {
+    '01-main-window':           ('pokergfx-server.html', None,      None),
+    '02-sources-tab':           ('pokergfx-server.html', 'sources', None),
+    '03-outputs-tab':           ('pokergfx-server.html', 'outputs', None),
+    '04-gfx1-tab':              ('pokergfx-server.html', 'gfx1',    None),
+    '05-gfx2-tab':              ('pokergfx-server.html', 'gfx2',    None),
+    '06-gfx3-tab':              ('pokergfx-server.html', 'gfx3',    None),
+    '08-system-tab':            ('pokergfx-server.html', 'system',  None),
+    '09-skin-editor':           ('pokergfx-09-skin-editor.html',     None, None),
+    '10-graphic-editor-board':  ('pokergfx-10-gfx-editor.html',     'board', None),
+    '11-graphic-editor-player': ('pokergfx-10-gfx-editor.html',     'player', None),
 }
 
 
-def extract_coords_from_html(html_path, png_path, tab_name=None, scope_filter=None):
+def extract_coords_from_html(html_path, png_path, tab_name=None, scope_filter=None, default_color=EBS_COLOR):
     """Extract annotation coordinates from HTML using Playwright.
 
     Renders the HTML file in headless Chromium, optionally clicks a tab to activate it,
@@ -1141,11 +1228,12 @@ def extract_coords_from_html(html_path, png_path, tab_name=None, scope_filter=No
     color_map = {
         'GREEN': GREEN,
         'EBS_COLOR': EBS_COLOR,
+        'RED': RED,
     }
 
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        page = browser.new_page(viewport={'width': 1200, 'height': 1600})
+        page = browser.new_page(viewport={'width': 800, 'height': 1600}, device_scale_factor=1)
         page.goto(f'file:///{html_path.replace(chr(92), "/")}')
         page.wait_for_load_state('networkidle')
 
@@ -1160,6 +1248,9 @@ def extract_coords_from_html(html_path, png_path, tab_name=None, scope_filter=No
                 page.wait_for_selector(f'{panel_selector}.active', timeout=3000)
             else:
                 print(f"  WARNING: Tab '{tab_name}' not found")
+
+        # Expand collapsed panels so all elements are visible for annotation
+        page.evaluate('document.querySelectorAll(".panel-col.collapsed").forEach(el => el.classList.remove("collapsed"))')
 
         # Find the .app container
         app_locator = page.locator('.app')
@@ -1176,6 +1267,7 @@ def extract_coords_from_html(html_path, png_path, tab_name=None, scope_filter=No
 
         # Screenshot the .app element
         app_locator.first.screenshot(path=png_path)
+        cap_image_width(png_path)
 
         # Extract [data-ann] elements with scope filtering
         elements = page.query_selector_all('[data-ann]')
@@ -1207,14 +1299,19 @@ def extract_coords_from_html(html_path, png_path, tab_name=None, scope_filter=No
             w = round(bbox['width'])
             h = round(bbox['height'])
 
+            # Check for drop flag
+            is_drop = el.get_attribute('data-ann-drop')
+
             box = {
                 'rect': (x, y, w, h),
                 'label': ann,
                 'fn': fn,
-                'color': color_map.get(color_name, EBS_COLOR),
+                'color': color_map.get(color_name, default_color),
             }
             if label_pos:
                 box['label_pos'] = label_pos
+            if is_drop and is_drop.lower() == 'true':
+                box['is_drop'] = True
 
             boxes.append(box)
 
@@ -1474,14 +1571,77 @@ def main():
                         help='Crop each annotated box from original image')
     parser.add_argument('--ebs', action='store_true',
                         help='Process EBS Console tab mockups instead of PokerGFX')
+    parser.add_argument('--at', action='store_true',
+                        help='Process Action Tracker reference screenshots')
+    parser.add_argument('--pokergfx-html', action='store_true',
+                        help='Process PokerGFX screens from HTML replicas (Playwright)')
     parser.add_argument('--layout', action='store_true',
                         help='Capture clean layout screenshots (no annotation overlay)')
+    parser.add_argument('--crop-tabbar', action='store_true',
+                        help='Crop tab bar screenshots for each tab (EBS mode only)')
     parser.add_argument('--target', type=str, default=None,
                         help='Process only images matching this prefix (e.g. "02" or "sources")')
     args = parser.parse_args()
 
-    # Select image set and directories based on --ebs flag
-    if args.ebs:
+    # Select image set and directories based on mode flags
+    if args.pokergfx_html:
+        if not PLAYWRIGHT_AVAILABLE:
+            print("ERROR: playwright is not installed.")
+            print("  Install with: pip install playwright && playwright install chromium")
+            sys.exit(1)
+
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        count = 0
+        for name, (html_file, tab_name, scope_filter) in POKERGFX_HTML_MAP.items():
+            if args.target and args.target not in name:
+                continue
+
+            html_path = os.path.join(POKERGFX_HTML_DIR, html_file)
+            if not os.path.exists(html_path):
+                print(f"SKIP (not found): {html_path}")
+                continue
+
+            png_name = name + '.png'
+            png_path = os.path.join(OUTPUT_DIR, png_name)
+
+            tab_info = f" [tab={tab_name}]" if tab_name else ""
+            scope_info = f" [scope={scope_filter}]" if scope_filter else ""
+            print(f"Processing {name} <- {html_file}{tab_info}{scope_info}")
+            boxes = extract_coords_from_html(html_path, png_path, tab_name=tab_name, scope_filter=scope_filter, default_color=RED)
+            if not boxes:
+                print(f"  WARNING: No [data-ann] elements found in {html_file}")
+                continue
+
+            print(f"  Extracted {len(boxes)} annotations")
+
+            # Load the screenshot we just captured
+            img = Image.open(png_path).copy()
+
+            if args.debug:
+                debug_img = img.copy()
+                draw_debug_overlay(debug_img, boxes)
+                debug_path = os.path.join(OUTPUT_DIR, name + '-debug.png')
+                debug_img.save(debug_path)
+                print(f"  Debug overlay: {debug_path}")
+
+            # Draw annotation boxes - RED color, non-compact labels
+            img = draw_boxes(img, boxes, default_color=RED, compact=False)
+
+            # Check for empty boxes
+            warnings = check_empty_boxes(img, boxes)
+            if warnings:
+                for w in warnings:
+                    print(f"  WARNING: {w}")
+
+            img.save(png_path)
+            cap_image_width(png_path)
+            print(f"  Saved: {png_path}")
+            count += 1
+
+        print(f"\nDone: {count} PokerGFX images generated (HTML Playwright mode).")
+        return
+
+    elif args.ebs:
         if not PLAYWRIGHT_AVAILABLE:
             print("ERROR: playwright is not installed.")
             print("  Install with: pip install playwright && playwright install chromium")
@@ -1498,7 +1658,7 @@ def main():
 
             with sync_playwright() as p:
                 browser = p.chromium.launch()
-                page = browser.new_page(viewport={'width': 1200, 'height': 1600})
+                page = browser.new_page(viewport={'width': 800, 'height': 1600}, device_scale_factor=1)
 
                 # Use the first HTML file from EBS_HTML_MAP
                 html_file = 'ebs-console-main-v4.html'
@@ -1511,7 +1671,17 @@ def main():
                 page.goto(f'file:///{html_path.replace(chr(92), "/")}')
                 page.wait_for_load_state('networkidle')
 
-                tabs = ['sources', 'outputs', 'gfx', 'display', 'rules', 'system']
+                # ── main window 캡처 (기본 로드 상태, Outputs 탭 active) ──
+                app_locator = page.locator('.app')
+                if app_locator.count() == 0:
+                    app_locator = page.locator('#app')
+                main_png = os.path.join(EBS_INPUT_DIR, 'ebs-console-main-v4.png')
+                app_locator.first.screenshot(path=main_png)
+                cap_image_width(main_png)
+                print(f"  Layout: {main_png}")
+                count += 1
+
+                tabs = ['outputs', 'gfx', 'display', 'rules', 'stats']
                 for tab_name in tabs:
                     if args.target and args.target not in tab_name:
                         continue
@@ -1535,12 +1705,65 @@ def main():
                     png_name = f'ebs-console-{tab_name}.png'
                     png_path = os.path.join(EBS_INPUT_DIR, png_name)
                     app_locator.first.screenshot(path=png_path)
+                    cap_image_width(png_path)
                     print(f"  Layout: {png_path}")
                     count += 1
 
                 browser.close()
 
             print(f"\nDone: {count} layout screenshots captured.")
+            return
+
+        if args.crop_tabbar:
+            print("Tab Bar crop mode: capturing tab bar for each tab state")
+            os.makedirs(EBS_OUTPUT_DIR, exist_ok=True)
+            count = 0
+
+            with sync_playwright() as p:
+                browser = p.chromium.launch()
+                page = browser.new_page(viewport={'width': 800, 'height': 1600}, device_scale_factor=1)
+
+                html_file = 'ebs-console-main-v4.html'
+                html_path = os.path.join(EBS_INPUT_DIR, html_file)
+                if not os.path.exists(html_path):
+                    print(f"ERROR: {html_path} not found")
+                    browser.close()
+                    sys.exit(1)
+
+                page.goto(f'file:///{html_path.replace(chr(92), "/")}')
+                page.wait_for_load_state('networkidle')
+
+                tabs = ['outputs', 'gfx', 'display', 'rules', 'stats']
+                for tab_name in tabs:
+                    if args.target and args.target not in tab_name:
+                        continue
+
+                    # Click tab
+                    tab_selector = f'.tab[data-tab="{tab_name}"]'
+                    tab_el = page.locator(tab_selector)
+                    if tab_el.count() > 0:
+                        tab_el.first.click()
+                        panel_selector = f'#panel-{tab_name}'
+                        page.wait_for_selector(f'{panel_selector}.active', timeout=3000)
+                    else:
+                        print(f"  WARNING: Tab '{tab_name}' not found, skipping")
+                        continue
+
+                    # Screenshot .tabbar element only
+                    tabbar_locator = page.locator('.tabbar')
+                    if tabbar_locator.count() == 0:
+                        print(f"  WARNING: .tabbar not found, skipping")
+                        continue
+
+                    png_name = f'ebs-tabbar-{tab_name}.png'
+                    png_path = os.path.join(EBS_OUTPUT_DIR, png_name)
+                    tabbar_locator.first.screenshot(path=png_path)
+                    print(f"  Tab Bar crop: {png_path}")
+                    count += 1
+
+                browser.close()
+
+            print(f"\nDone: {count} Tab Bar crops captured.")
             return
 
         os.makedirs(EBS_OUTPUT_DIR, exist_ok=True)
@@ -1578,7 +1801,7 @@ def main():
                 print(f"  Debug overlay: {debug_path}")
 
             # Draw annotation boxes
-            img = draw_boxes(img, boxes, default_color=EBS_COLOR)
+            img = draw_boxes(img, boxes, default_color=EBS_COLOR, compact=True)
 
             # Check for empty boxes
             warnings = check_empty_boxes(img, boxes)
@@ -1587,11 +1810,17 @@ def main():
                     print(f"  WARNING: {w}")
 
             img.save(png_path)
+            cap_image_width(png_path)
             print(f"  Saved: {png_path}")
             count += 1
 
         print(f"\nDone: {count} EBS Console images generated (Playwright mode).")
         return
+    elif args.at:
+        images = AT_SCREENS
+        in_dir = AT_INPUT_DIR
+        out_dir = AT_OUTPUT_DIR
+        label = "Action Tracker"
     else:
         images = IMAGES
         in_dir = INPUT_DIR

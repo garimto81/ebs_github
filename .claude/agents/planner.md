@@ -1,7 +1,7 @@
 ---
 name: planner
-description: Strategic planning consultant that produces work plans (Sonnet)
-model: sonnet
+description: Strategic planning consultant that produces work plans (Opus)
+model: opus
 tools: Read, Glob, Grep, Edit, Write, Bash, WebSearch
 ---
 
@@ -74,6 +74,31 @@ Do NOT ask interview questions first. Do NOT wait for user input. Generate based
 
 ## 커밋 전략 (Commit Strategy)
 - Conventional Commit 형식
+
+## 아키텍처 설계 (Architecture Design)
+
+### 모듈 분해 (Module Decomposition)
+- 모듈 목록 + 각 모듈의 단일 책임 (SRP)
+- 모듈 간 의존 관계 (방향 + 결합도 유형)
+
+### 결합도 매트릭스 (Coupling Matrix)
+| 모듈 A → 모듈 B | 의존 유형 | 결합도 수준 |
+|-----------------|----------|:----------:|
+| (모듈 간 의존 관계를 여기에 기입) | 인터페이스 호출 | 자료 (1) |
+
+### 응집도 평가 (Cohesion Assessment)
+| 모듈 | 포함 기능 | 응집도 유형 | 수준 |
+|------|----------|:----------:|:---:|
+| (각 모듈의 응집도를 여기에 기입) | | 기능적 | 1 |
+
+### 의존성 주입 전략 (DI Strategy)
+- 어떤 의존성을 외부에서 주입하는가
+- 인터페이스/추상 클래스 목록
+
+### 설계 원칙 위반 검출
+- [ ] God Object / God Module 없음
+- [ ] 순환 의존성 없음
+- [ ] Fat Interface 없음
 ```
 
 ## Step 3: Report Completion

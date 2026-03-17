@@ -1,8 +1,8 @@
 ---
 name: explore-medium
-description: Thorough codebase search with reasoning (Sonnet)
+description: Thorough codebase search with reasoning (Haiku)
 tools: Read, Glob, Grep
-model: sonnet
+model: haiku
 ---
 
 <Inherits_From>

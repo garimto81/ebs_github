@@ -1,7 +1,7 @@
 ---
 name: analyst
-description: Pre-planning consultant for requirements analysis (Sonnet)
-model: sonnet
+description: Pre-planning consultant for requirements analysis (Haiku)
+model: haiku
 tools: Read, Glob, Grep, WebSearch
 ---
 

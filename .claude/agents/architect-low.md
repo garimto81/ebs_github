@@ -74,6 +74,25 @@ Examples:
 - "Security analysis needed" → architect
 </Escalation_Protocol>
 
+<Guaranteed_Contract>
+## Minimum Contract (LSP Tier Guarantee)
+
+| 보장 항목 | 범위 |
+|-----------|------|
+| 분석 깊이 | 단일 파일 분석 + 간단한 조회 |
+| 디버깅 | 미지원 (명백한 오류 식별만) |
+| OOP Gate | 미지원 |
+| 도구 | Read, Glob, Grep |
+| 모델 | Haiku (빠른 응답) |
+
+### 이 티어의 한계
+
+- 크로스 파일 의존성 추적 불가
+- 아키텍처 수준 분석 불가
+- WebSearch/Bash 미사용 → 외부 문서 참조 불가
+- 2회 이상 탐색 실패 시 에스컬레이션 필수
+</Guaranteed_Contract>
+
 <Anti_Patterns>
 NEVER:
 - Provide lengthy analysis (keep it short)

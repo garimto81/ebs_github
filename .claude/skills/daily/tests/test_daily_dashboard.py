@@ -2,14 +2,14 @@
 
 import pytest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 import sys
 import json
 
 # Add scripts directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-from daily_dashboard import DailyDashboard, SecretaryResult, DashboardState
+from daily_dashboard import DailyDashboard, SecretaryResult
 
 
 class TestSecretaryResult:
