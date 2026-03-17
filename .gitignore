@@ -16,6 +16,7 @@ __pycache__/
 
 # 임시 파일
 *.backup
+*.tmp_replace*
 
 # 디버그/중간 산출물
 tools/debug_output/
