@@ -2,18 +2,18 @@
 
 ## 계층 구조
 
-| 구분 | 기준 | 제목 패턴 |
-|------|------|----------|
-| **Feature** | 큰 기능 영역 | `[EBS] {Feature}` |
-| **Epic** | Feature 안의 독립된 하위 영역 | `[EBS][{Feature}] {Epic}` |
-| **Story** | Epic 안에서 독립적으로 완료/검증 가능한 단위 | `[EBS][{Feature}][{Epic}] {설명}` |
+| 구분 | 기준 | 제목 패턴 | Jira |
+|------|------|----------|------|
+| **Feature** | 큰 기능 영역 | `[EBS] {Feature}` | Jira에 안 올림 — 문서에서만 그룹핑 |
+| **Epic** | Feature 안의 독립된 하위 영역 | `[EBS][{Feature}] {Epic}` | Jira Epic |
+| **Story** | Epic 안에서 독립적으로 완료/검증 가능한 단위 | `[EBS][{Feature}][{Epic}] {설명}` | Jira Story |
 
 ### 예시
 
 ```
-Feature: [EBS] 방송 셋업
-  Epic:    [EBS][방송 셋업] 게임 설정
-    Story:   [EBS][방송 셋업][게임 설정] 게임 타입을 선택한다
+Feature: [EBS] 방송 셋업                              ← 문서에서만 관리
+  Epic:    [EBS][방송 셋업] 게임 설정                    ← Jira Epic
+    Story:   [EBS][방송 셋업][게임 설정] 게임 타입을 선택한다   ← Jira Story
     Story:   [EBS][방송 셋업][게임 설정] RFID 덱을 매핑한다
   Epic:    [EBS][방송 셋업] 플레이어 관리
     Story:   [EBS][방송 셋업][플레이어 관리] 좌석을 배치한다
@@ -36,7 +36,7 @@ Feature: [EBS] 방송 셋업
 
 ## 문서 형식
 
-### Feature 파일
+### Feature 파일 (문서 전용 — Jira에 안 올림)
 
 ```markdown
 # Feature: [EBS] {Feature 이름}
@@ -56,7 +56,7 @@ Feature: [EBS] 방송 셋업
 | [{Epic 이름}](epic-{슬러그}.md) | N개 | 설명 |
 ```
 
-### Epic 파일
+### Epic 파일 (Jira Epic으로 업로드)
 
 ```markdown
 # Epic: [EBS][{Feature}] {Epic 이름}
