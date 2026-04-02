@@ -13,6 +13,12 @@ working/vX.Y.Z 브랜치 생성
 + backlogs/ 에 Epic/Story 생성
         │
         ▼
+/upload-jira 실행
+        │
+        ▼
+Jira에 Epic/Story 티켓 자동 생성
+        │
+        ▼
 협업자 작업 + 피드백
 (피드백에 따른 문서 수정도 working 브랜치에서)
         │
@@ -61,3 +67,24 @@ release/vX.Y.Z (확정본 + published/vX.Y.Z/)
 
 - working 브랜치에서만 실행 가능
 - 이미 존재하는 release 버전은 생성 불가
+
+## /upload-jira 스킬
+
+```
+/upload-jira
+```
+
+### 스킬이 하는 일
+
+1. `backlogs/` 문서를 읽음
+2. 중복 검사 (기존 Jira 티켓 Summary 검색)
+3. Epic → Jira Epic 생성 (Project: PV, Component: EBS)
+4. Story → Jira Story 생성 (Epic 하위)
+5. Dependencies → Jira 이슈 링크 연결
+6. 생성된 티켓 키를 백로그 문서에 기록
+
+### 주의사항
+
+- working 브랜치에서만 실행 가능
+- 생성 전 사용자 확인 필수
+- 중복 생성 방지 (Summary 기준 검색)

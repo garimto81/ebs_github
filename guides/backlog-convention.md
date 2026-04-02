@@ -82,10 +82,14 @@ Feature: [EBS-AI] 방송 셋업                              ← 문서에서만
 - **Acceptance Criteria**:
   - [ ] {완료 조건 — 구체적이고 검증 가능하게}
   - [ ] {엣지 케이스 포함}
+- **Dependencies**:
+  - S{N}. {선행 Story 설명} (이유)
 - **Priority**: High / Medium / Low
 - **Labels**: `{버전}`, `{관련 태그}`
 - **Notes**: {기술 참고 사항, 기획에 빠진 부분 지적 등}
 ```
+
+> Dependencies는 **같은 Epic 내** Story 간에만 설정합니다. Epic 간 의존성은 없습니다.
 
 ### Story 상세도 기준
 
