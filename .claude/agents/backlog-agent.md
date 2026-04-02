@@ -55,9 +55,9 @@ Confluence 조회:
 #### 계층 구조 및 제목 패턴
 
 ```
-Feature: [EBS] {Feature}
-Epic:    [EBS][{Feature}] {Epic}
-Story:   [EBS][{Feature}][{Epic}] {설명}
+Feature: [EBS-AI] {Feature}
+Epic:    [EBS-AI][{Feature}] {Epic}
+Story:   [EBS-AI][{Feature}][{Epic}] {설명}
 ```
 
 #### Story 상세도
@@ -67,7 +67,7 @@ Story는 **받는 사람이 바로 작업에 들어갈 수 있는 수준**으로
 ```markdown
 ### S1. {스토리 설명}
 
-- **Summary**: [EBS][{Feature}][{Epic}] {스토리 설명}
+- **Summary**: [EBS-AI][{Feature}][{Epic}] {스토리 설명}
 - **Description**: 
   {상세 설명. 기획 문서의 어떤 부분을 구현하는지,
   어떤 동작이 기대되는지 구체적으로 기술}
