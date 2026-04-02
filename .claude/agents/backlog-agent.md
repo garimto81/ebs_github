@@ -50,46 +50,50 @@ Confluence 조회:
 
 ### 3. 백로그 생성
 
-`backlogs/` 디렉토리를 생성하고 Epic/Story 구조의 백로그를 작성합니다.
+`backlogs/` 디렉토리를 생성하고 `guides/backlog-convention.md`에 정의된 형식에 따라 Feature/Epic/Story 구조의 백로그를 작성합니다.
 
-#### Epic 문서 형식
+#### 계층 구조 및 제목 패턴
+
+```
+Feature: [EBS] {Feature}
+Epic:    [EBS][{Feature}] {Epic}
+Story:   [EBS][{Feature}][{Epic}] {설명}
+```
+
+#### Story 상세도
+
+Story는 **받는 사람이 바로 작업에 들어갈 수 있는 수준**으로 작성합니다:
 
 ```markdown
-# Epic: {에픽 제목}
+### S1. {스토리 설명}
 
-## 개요
-
-{이 에픽이 다루는 범위와 목적}
-
-## 근거 문서
-
-- [{기획 문서 경로}]({경로}) — [Confluence]({Confluence 페이지 링크})
-
-## Stories
-
-### S1. {스토리 제목}
-
-- **Summary**: {한 줄 요약 — Jira 티켓 제목으로 사용}
-- **Description**: {상세 설명}
+- **Summary**: [EBS][{Feature}][{Epic}] {스토리 설명}
+- **Description**: 
+  {상세 설명. 기획 문서의 어떤 부분을 구현하는지,
+  어떤 동작이 기대되는지 구체적으로 기술}
+- **References**:
+  - [{문서 경로} {섹션}]({경로}) — [Confluence]({링크})
 - **Acceptance Criteria**:
-  - [ ] {완료 조건 1}
-  - [ ] {완료 조건 2}
-- **Priority**: {High / Medium / Low}
+  - [ ] {정상 케이스 — 구체적이고 검증 가능하게}
+  - [ ] {엣지 케이스 포함}
+- **Priority**: High / Medium / Low
 - **Labels**: `{버전}`, `{관련 태그}`
+- **Notes**: {기술 참고 사항, 기획에 빠진 부분 지적 등}
 ```
 
 #### 파일 네이밍
 
 ```
 backlogs/
-  ├── README.md              # 백로그 인덱스
-  ├── epic-{슬러그}.md        # Epic 단위 파일
+  ├── README.md                              # 백로그 인덱스
+  ├── feature-{슬러그}.md                     # Feature 파일
+  ├── epic-{feature}-{epic-슬러그}.md         # Epic 파일
   └── ...
 ```
 
 ### 4. 백로그 인덱스 생성
 
-`backlogs/README.md`에 전체 Epic/Story 목록과 문서 매핑을 요약합니다:
+`backlogs/README.md`에 전체 구조와 문서 매핑을 요약합니다:
 
 ```markdown
 # Backlogs — working/{version}
@@ -100,19 +104,18 @@ backlogs/
 |------------|------------|----------|
 | [{경로}]({경로}) | [링크]({Confluence URL}) | {버전} |
 
-## Epics
+## Features
 
-| Epic | Stories | 설명 |
-|------|:-------:|------|
-| [epic-xxx](epic-xxx.md) | N개 | 설명 |
+| Feature | Epics | Stories | 설명 |
+|---------|:-----:|:-------:|------|
+| [{Feature}](feature-xxx.md) | N개 | N개 | 설명 |
 ```
 
 ### 5. 결과 보고
 
 생성된 백로그 요약을 사용자에게 보고합니다:
 - 문서 매핑 결과 (저장소 ↔ Confluence)
-- 생성된 Epic 수
-- 총 Story 수
-- 각 Epic별 Story 목록
+- 생성된 Feature / Epic / Story 수
+- 각 Feature별 Epic/Story 목록
 - 기획 문서에서 발견된 빠진 부분 / 질문 사항
 - 다음 단계 안내 (리뷰, Jira 업로드 등)
