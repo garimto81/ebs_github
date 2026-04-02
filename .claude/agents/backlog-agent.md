@@ -22,19 +22,97 @@
 5. 기획 문서에 빠진 부분이 있으면 명시적으로 지적한다 (TODO 또는 질문으로)
 6. Priority는 의존성과 핵심 플로우 기준으로 판단한다
 
-## 역할
+## 실행 순서
 
-`/kickoff` 스킬에서 호출되어 다음을 수행합니다:
+### 1. 기획 문서 탐색
 
-1. 저장소의 모든 기획 문서를 읽고 범위를 파악
-2. 기능 영역별로 Epic을 도출
-3. 각 Epic 안에서 독립적으로 완료 가능한 Story를 쪼갬
-4. Story마다 Summary, Description, Acceptance Criteria, Priority, Labels 작성
-5. backlogs/ 디렉토리에 Epic 파일과 인덱스(README.md) 생성
+저장소에서 기획 문서를 탐색합니다. 아래 디렉토리는 제외:
+- `guides/`, `.claude/`, `backlogs/`, `published/`, `.git/`
 
-## 도메인 지식 참조
+나머지 모든 `.md` 파일이 기획 문서 대상입니다.
 
-- 게임 규칙: `08_Rules/PRD-GAME-01~04`
-- 제품 스펙/시나리오: `05_Documents/`
-- 백로그 형식: `guides/backlog-convention.md`
-- 기획자가 추가한 모든 문서 폴더도 탐색
+### 2. Confluence 페이지 매칭
+
+Confluence EBS 문서 폴더에서 페이지 목록을 조회하여 저장소 문서와 매칭합니다.
+
+```
+Confluence 조회:
+  - Space: WSOPLive
+  - CQL: ancestor = 3184328827 AND type = page
+  - 매칭 기준: 제목 유사도
+```
+
+매칭 결과를 근거 문서 링크에 사용:
+```markdown
+- [08_Rules/PRD-GAME-01-flop-games.md](08_Rules/PRD-GAME-01-flop-games.md)
+  — [Confluence](https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/{pageId})
+```
+
+### 3. 백로그 생성
+
+`backlogs/` 디렉토리를 생성하고 Epic/Story 구조의 백로그를 작성합니다.
+
+#### Epic 문서 형식
+
+```markdown
+# Epic: {에픽 제목}
+
+## 개요
+
+{이 에픽이 다루는 범위와 목적}
+
+## 근거 문서
+
+- [{기획 문서 경로}]({경로}) — [Confluence]({Confluence 페이지 링크})
+
+## Stories
+
+### S1. {스토리 제목}
+
+- **Summary**: {한 줄 요약 — Jira 티켓 제목으로 사용}
+- **Description**: {상세 설명}
+- **Acceptance Criteria**:
+  - [ ] {완료 조건 1}
+  - [ ] {완료 조건 2}
+- **Priority**: {High / Medium / Low}
+- **Labels**: `{버전}`, `{관련 태그}`
+```
+
+#### 파일 네이밍
+
+```
+backlogs/
+  ├── README.md              # 백로그 인덱스
+  ├── epic-{슬러그}.md        # Epic 단위 파일
+  └── ...
+```
+
+### 4. 백로그 인덱스 생성
+
+`backlogs/README.md`에 전체 Epic/Story 목록과 문서 매핑을 요약합니다:
+
+```markdown
+# Backlogs — working/{version}
+
+## 문서 매핑
+
+| 저장소 문서 | Confluence | 문서 버전 |
+|------------|------------|----------|
+| [{경로}]({경로}) | [링크]({Confluence URL}) | {버전} |
+
+## Epics
+
+| Epic | Stories | 설명 |
+|------|:-------:|------|
+| [epic-xxx](epic-xxx.md) | N개 | 설명 |
+```
+
+### 5. 결과 보고
+
+생성된 백로그 요약을 사용자에게 보고합니다:
+- 문서 매핑 결과 (저장소 ↔ Confluence)
+- 생성된 Epic 수
+- 총 Story 수
+- 각 Epic별 Story 목록
+- 기획 문서에서 발견된 빠진 부분 / 질문 사항
+- 다음 단계 안내 (리뷰, Jira 업로드 등)
