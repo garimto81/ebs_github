@@ -6,10 +6,9 @@
 
 ```
 main
-  ├─ working/v0.1.0
-  ├─ working/v0.2.0
-  ├─ release/v0.1.0
-  └─ foundation/...
+  ├─ working/v0.1.0        ← 협업 진행 중
+  ├─ release/v0.1.0        ← 딜리버리 완료
+  └─ foundation/...        ← 기반 구조 작업
 ```
 
 ## main

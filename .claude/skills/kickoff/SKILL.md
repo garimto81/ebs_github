@@ -62,22 +62,25 @@ git branch -a | grep -E '(release|working)/'
 
 ```bash
 git checkout main
-git pull origin main  # remote가 있는 경우
+git pull origin main  # remote가 없으면 이 단계 스킵
 git checkout -b working/{version}
 ```
 
+> `git pull` 실패 시 remote가 설정되지 않은 것이므로 무시하고 진행합니다.
+
 ### Step 5. Backlog Agent 호출
 
-`.claude/agents/backlog-agent.md`를 호출하여 백로그 생성을 위임합니다.
+Agent 도구를 사용하여 서브에이전트를 생성합니다. 서브에이전트에게 다음을 전달합니다:
 
-에이전트에게 전달하는 정보:
-- 버전: `{version}`
-- 브랜치: `working/{version}`
+1. `.claude/agents/backlog-agent.md` 파일의 전체 내용 (퍼소나 + 실행 순서)
+2. 버전 정보: `{version}`
+3. 브랜치 정보: `working/{version}`
+4. `guides/backlog-convention.md`의 형식을 따를 것
 
-에이전트가 이후 모든 작업을 수행합니다:
-- 저장소 기획 문서 탐색
-- Confluence 페이지 매칭
-- Epic/Story 백로그 생성
+서브에이전트가 이후 모든 작업을 수행합니다:
+- 저장소 기획 문서 탐색 (블랙리스트: `guides/`, `.claude/`, `backlogs/`, `published/`, `.git/`, 루트 `*.md`)
+- Confluence 페이지 매칭 (매칭 결과를 사용자에게 확인)
+- Feature/Epic/Story 백로그 생성
 - 백로그 인덱스 생성
 - 결과 보고
 
