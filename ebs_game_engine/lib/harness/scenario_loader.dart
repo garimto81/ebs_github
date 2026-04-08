@@ -171,6 +171,17 @@ class ScenarioLoader {
       return const HandEnd();
     }
 
+    // pineapple_discard: {seat: 0, card: Kh}
+    if (map.containsKey('pineapple_discard')) {
+      final raw = map['pineapple_discard'];
+      if (raw is Map) {
+        final seat = (raw['seat'] as num?)?.toInt() ?? 0;
+        final cardStr = raw['card'] as String? ?? '';
+        final card = Card.parse(cardStr);
+        return PineappleDiscard(seat, card);
+      }
+    }
+
     return null;
   }
 

@@ -1,0 +1,41 @@
+# Scenario 06: Short Deck — flush beats full house (short deck ranking)
+# dealer=seat0(HU: BTN/SB), seat1=BB
+# Hero has flush, Villain has full house, but in short deck flush > full house
+variant: short_deck
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "Hero", stack: 1000 }
+  - { label: "Villain", stack: 1000 }
+events:
+  - deal_hole:
+      0: [As, Ks]
+      1: [Ah, Ad]
+  # HU preflop: seat0 raises
+  - action: { seat: 0, type: raise, amount: 30 }
+  - action: { seat: 1, type: call, amount: 20 }
+  # Flop
+  - street_advance: flop
+  - deal_community: [Qs, Js, 6h]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: bet, amount: 40 }
+  - action: { seat: 1, type: call, amount: 40 }
+  # Turn
+  - street_advance: turn
+  - deal_community: [9s]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: bet, amount: 80 }
+  - action: { seat: 1, type: call, amount: 80 }
+  # River
+  - street_advance: river
+  - deal_community: [6d]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: check }
+  # Hero has nut flush (A K Q J 9 spades), Villain has full house (AAA 66)
+  # In short deck, flush beats full house
+  - pot_awarded: { 0: 310 }
+  - hand_end: true
+expectations:
+  hand_ended: true
