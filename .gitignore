@@ -2,6 +2,9 @@
 .omc/
 nul
 
+# Git Worktrees
+.worktrees/
+
 # Node
 node_modules/
 
