@@ -4,7 +4,7 @@
 
 Login UI + Lobby + Settings (Game/Statistics/Output 라우팅)
 
-**기술 스택**: React / Next.js (TBD)
+**기술 스택**: React 19 + Vite 6 + Zustand + TypeScript
 
 > Graphic Editor(Skin/Overlay 편집)는 Flutter 기반 → Team 4 소속.
 > 이 팀의 Settings는 비시각 설정(Game/Stats/Output 라우팅)만 담당.
@@ -15,7 +15,7 @@ Login UI + Lobby + Settings (Game/Statistics/Output 라우팅)
 |------|------|
 | `qa/lobby/` | Lobby QA 전략, 체크리스트, spec-gap |
 | `ui-design/` | UI-00 (디자인 시스템), UI-01 (Lobby), UI-03 (Settings) |
-| `src/` | React/Next.js 소스 코드 |
+| `src/` | React 19 + Vite 소스 코드 |
 
 ## 계약 참조 (읽기 전용 — 수정 금지)
 
@@ -50,4 +50,22 @@ Login UI + Lobby + Settings (Game/Statistics/Output 라우팅)
 
 ## Build
 
-> 추후 React/Next.js 프로젝트 설정 시 업데이트
+```bash
+npm install          # 의존성 설치
+npm run dev          # 개발 서버 (Vite)
+npm run build        # 프로덕션 빌드
+npm run lint         # ESLint
+npm run preview      # 빌드 결과 미리보기
+```
+
+## Docker
+
+```bash
+docker compose up --build    # Node 20 Alpine + nginx
+```
+
+## E2E
+
+```bash
+npx playwright test          # Playwright E2E 테스트
+```
