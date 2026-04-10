@@ -39,7 +39,7 @@ docs/qa/
   │    ├─ QA-GE-00-audit.md             ← 감사 결과
   │    ├─ QA-GE-01-strategy.md          ← 전략 + 구현 가이드
   │    └─ QA-GE-02-checklist.md         ← BS-07 기반 체크리스트 + 구현 대조
-  (game-engine/ → docs/04-rules-games/games/qa/ 로 이전됨)
+  (game-engine/ → team3-engine/qa/ 로 이전됨)
 ```
 
 ---
@@ -73,10 +73,10 @@ docs/qa/
 
 ```
 다음 문서를 읽고 작업:
-1. docs/qa/lobby/QA-LOBBY-00-audit.md       — 현황 진단
-2. docs/qa/lobby/QA-LOBBY-01-strategy.md    — 전략 + 테스트 항목 (L-U/W/E)
-3. docs/qa/lobby/QA-LOBBY-WSOP-PARITY.md   — WSOP LIVE 기능 동등성 체크리스트
-4. docs/02-behavioral/BS-02-lobby/          — 행동 명세
+1. team1-frontend/qa/lobby/QA-LOBBY-00-audit.md       — 현황 진단
+2. team1-frontend/qa/lobby/QA-LOBBY-01-strategy.md    — 전략 + 테스트 항목 (L-U/W/E)
+3. team1-frontend/qa/lobby/QA-LOBBY-WSOP-PARITY.md   — WSOP LIVE 기능 동등성 체크리스트
+4. contracts/specs/BS-02-lobby/          — 행동 명세
 레포: /ebs_lobby_web/
 ```
 
@@ -84,9 +84,9 @@ docs/qa/
 
 ```
 다음 문서를 읽고 작업:
-1. docs/qa/commandcenter/QA-CC-00-audit.md   — 현황 진단
-2. docs/qa/commandcenter/QA-CC-01-strategy.md — 전략 + 테스트 항목 (C-U/I/W/E)
-3. docs/02-behavioral/BS-05-command-center/   — 행동 명세 (7파일)
+1. team4-cc/qa/commandcenter/QA-CC-00-audit.md   — 현황 진단
+2. team4-cc/qa/commandcenter/QA-CC-01-strategy.md — 전략 + 테스트 항목 (C-U/I/W/E)
+3. contracts/specs/BS-05-command-center/   — 행동 명세 (7파일)
 레포: /ebs_app/
 ```
 
@@ -94,8 +94,8 @@ docs/qa/
 
 ```
 다음 문서를 읽고 작업:
-1. docs/qa/graphic-editor/QA-GE-00-audit.md   — 현황 진단
-2. docs/qa/graphic-editor/QA-GE-01-strategy.md — 전략 + 테스트 항목 (G-U/C/E)
+1. team4-cc/qa/graphic-editor/QA-GE-00-audit.md   — 현황 진단
+2. team4-cc/qa/graphic-editor/QA-GE-01-strategy.md — 전략 + 테스트 항목 (G-U/C/E)
 레포: /ebs_ui/ebs-skin-editor/
 ```
 
@@ -145,11 +145,11 @@ docs/qa/
 
 | 문서 | 경로 |
 |------|------|
-| 상위 테스트 전략 | `docs/testing/TEST-01-test-plan.md` |
-| E2E 시나리오 | `docs/testing/TEST-02-e2e-scenarios.md` |
-| Mock 데이터 | `docs/testing/TEST-04-mock-data.md` |
+| 상위 테스트 전략 | `team4-cc/specs/testing/TEST-01-test-plan.md` |
+| E2E 시나리오 | `team4-cc/specs/testing/TEST-02-e2e-scenarios.md` |
+| Mock 데이터 | `team4-cc/specs/testing/TEST-04-mock-data.md` |
 | Foundation PRD | `docs/01-strategy/PRD-EBS_Foundation.md` |
-| 행동 명세 | `docs/02-behavioral/BS-00~07` |
+| 행동 명세 | `contracts/specs/BS-00~07` |
 
 ---
 

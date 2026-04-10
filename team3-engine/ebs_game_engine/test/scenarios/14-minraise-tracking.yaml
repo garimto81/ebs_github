@@ -1,0 +1,48 @@
+# Scenario 14: Min-raise tracking — bet → raise → re-raise sequence
+# dealer=seat0, SB=seat1, BB=seat2
+# Verifies min-raise sizing is tracked correctly through multiple raises
+variant: nlh
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "UTG", stack: 2000 }
+  - { label: "SB", stack: 2000 }
+  - { label: "BB", stack: 2000 }
+events:
+  - deal_hole:
+      0: [As, Kh]
+      1: [Qd, Qc]
+      2: [Jd, Jc]
+  # Preflop: UTG raises to 30 (3x BB)
+  - action: { seat: 0, type: raise, amount: 30 }
+  # SB re-raises to 90 (3x the raise)
+  - action: { seat: 1, type: raise, amount: 90 }
+  # BB folds
+  - action: { seat: 2, type: fold }
+  # UTG calls
+  - action: { seat: 0, type: call, amount: 60 }
+  # Flop
+  - street_advance: flop
+  - deal_community: [Ac, Ad, 2s]
+  # SB bets 100
+  - action: { seat: 1, type: bet, amount: 100 }
+  # UTG raises to 300
+  - action: { seat: 0, type: raise, amount: 300 }
+  # SB folds
+  - action: { seat: 1, type: fold }
+  # UTG wins
+  - pot_awarded: { 0: 590 }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  community_count: 3
+  stacks:
+    0: 2200    # 2000 - 30 - 60 - 300 + 590
+    1: 1810    # 2000 - 5 - 85 - 100 (folded on flop)
+    2: 1990    # 2000 - 10 (folded preflop)
+  seat_statuses:
+    1: folded
+    2: folded

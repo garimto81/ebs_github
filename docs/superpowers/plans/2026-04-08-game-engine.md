@@ -8,14 +8,14 @@
 
 **Tech Stack:** Dart 3.11+, dart:io HTTP 서버, YAML (yaml 패키지), Docker multi-stage build, Vanilla JS/CSS/SVG
 
-**Project Root:** `C:/claude/ebs/ebs_game_engine/`
+**Project Root:** `C:/claude/ebs/team3-engine/ebs_game_engine/`
 
 ---
 
 ## File Structure
 
 ```
-ebs_game_engine/
+team3-engine/ebs_game_engine/
 ├── pubspec.yaml
 ├── analysis_options.yaml
 ├── Dockerfile
@@ -120,7 +120,7 @@ ebs_game_engine/
 - [ ] **Step 1: Create pubspec.yaml**
 
 ```yaml
-name: ebs_game_engine
+name: team3-engine/ebs_game_engine
 description: EBS Poker Game Engine — Flop family 7 variants + Interactive Simulator
 version: 0.1.0
 publish_to: none
@@ -172,7 +172,7 @@ See `test/scenarios/` for built-in test fixtures.
 
 - [ ] **Step 5: Run dart pub get**
 
-Run: `cd C:/claude/ebs/ebs_game_engine && dart pub get`
+Run: `cd C:/claude/ebs/team3-engine/ebs_game_engine && dart pub get`
 Expected: `Resolving dependencies... Got dependencies!`
 
 - [ ] **Step 6: Commit**
@@ -197,7 +197,7 @@ git commit -m "feat(engine): project scaffold with pubspec, analysis_options, do
 ```dart
 // test/core/cards/card_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/card.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/card.dart';
 
 void main() {
   group('Card', () {
@@ -328,8 +328,8 @@ Expected: All tests PASS
 ```dart
 // test/core/cards/deck_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/card.dart';
-import 'package:ebs_game_engine/core/cards/deck.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/card.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/deck.dart';
 
 void main() {
   group('Deck', () {
@@ -492,7 +492,7 @@ git commit -m "feat(engine): Card + Deck with standard/shortDeck, deterministic 
 ```dart
 // test/core/state/pot_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/state/pot.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/pot.dart';
 
 void main() {
   group('Pot', () {
@@ -701,7 +701,7 @@ class BettingRound {
 ```dart
 // test/core/state/betting_round_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/state/betting_round.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/betting_round.dart';
 
 void main() {
   group('BettingRound', () {
@@ -925,7 +925,7 @@ class HandEnd extends Event {
 
 - [ ] **Step 3: Verify compiles**
 
-Run: `cd C:/claude/ebs/ebs_game_engine && dart analyze lib/core/actions/`
+Run: `cd C:/claude/ebs/team3-engine/ebs_game_engine && dart analyze lib/core/actions/`
 Expected: No issues found
 
 - [ ] **Step 4: Commit**
@@ -952,9 +952,9 @@ git commit -m "feat(engine): Action sealed class + Event hierarchy (event sourci
 ```dart
 // test/core/variants/nlh_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/card.dart';
-import 'package:ebs_game_engine/core/cards/deck.dart';
-import 'package:ebs_game_engine/core/variants/nlh.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/card.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/deck.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/nlh.dart';
 
 void main() {
   group('NLH Variant', () {
@@ -1161,8 +1161,8 @@ git commit -m "feat(engine): Variant interface + NLH + HandEvaluator stub"
 ```dart
 // test/core/cards/hand_evaluator_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/card.dart';
-import 'package:ebs_game_engine/core/cards/hand_evaluator.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/card.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/hand_evaluator.dart';
 
 List<Card> p(String s) => s.split(' ').map(Card.parse).toList();
 
@@ -1572,13 +1572,13 @@ git commit -m "feat(engine): full HandEvaluator — all 10 categories, Omaha mus
 ```dart
 // test/core/rules/betting_rules_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/card.dart';
-import 'package:ebs_game_engine/core/cards/deck.dart';
-import 'package:ebs_game_engine/core/state/seat.dart';
-import 'package:ebs_game_engine/core/state/pot.dart';
-import 'package:ebs_game_engine/core/state/betting_round.dart';
-import 'package:ebs_game_engine/core/state/game_state.dart';
-import 'package:ebs_game_engine/core/rules/betting_rules.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/card.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/deck.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/seat.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/pot.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/betting_round.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/game_state.dart';
+import 'package:team3-engine/ebs_game_engine/core/rules/betting_rules.dart';
 
 GameState _makeState({
   required List<int> stacks,
@@ -1872,11 +1872,11 @@ git commit -m "feat(engine): BettingRules — legalActions + applyAction + NL ru
 ```dart
 // test/core/rules/street_machine_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/deck.dart';
-import 'package:ebs_game_engine/core/state/seat.dart';
-import 'package:ebs_game_engine/core/state/game_state.dart';
-import 'package:ebs_game_engine/core/state/betting_round.dart';
-import 'package:ebs_game_engine/core/rules/street_machine.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/deck.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/seat.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/game_state.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/betting_round.dart';
+import 'package:team3-engine/ebs_game_engine/core/rules/street_machine.dart';
 
 GameState _makeStateForStreet({
   required Street street,
@@ -2204,11 +2204,11 @@ git commit -m "feat(engine): StreetMachine + Engine.apply() + Engine.legalAction
 ```dart
 // test/core/rules/showdown_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/card.dart';
-import 'package:ebs_game_engine/core/state/seat.dart';
-import 'package:ebs_game_engine/core/state/pot.dart';
-import 'package:ebs_game_engine/core/rules/showdown.dart';
-import 'package:ebs_game_engine/core/variants/nlh.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/card.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/seat.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/pot.dart';
+import 'package:team3-engine/ebs_game_engine/core/rules/showdown.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/nlh.dart';
 
 List<Card> p(String s) => s.split(' ').map(Card.parse).toList();
 
@@ -2463,10 +2463,10 @@ git commit -m "feat(engine): Showdown — hi evaluation, split pot, side pot, hi
 ```dart
 // test/core/variants/short_deck_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/card.dart';
-import 'package:ebs_game_engine/core/cards/hand_evaluator.dart';
-import 'package:ebs_game_engine/core/variants/short_deck.dart';
-import 'package:ebs_game_engine/core/variants/short_deck_triton.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/card.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/hand_evaluator.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/short_deck.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/short_deck_triton.dart';
 
 List<Card> p(String s) => s.split(' ').map(Card.parse).toList();
 
@@ -2636,8 +2636,8 @@ git commit -m "feat(engine): Short Deck 6+ and Triton variants with custom hand 
 ```dart
 // test/core/variants/pineapple_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/card.dart';
-import 'package:ebs_game_engine/core/variants/pineapple.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/card.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/pineapple.dart';
 
 void main() {
   group('Pineapple', () {
@@ -2739,11 +2739,11 @@ git commit -m "feat(engine): Pineapple variant — 3 hole cards, discard after p
 ```dart
 // test/core/variants/omaha_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/card.dart';
-import 'package:ebs_game_engine/core/cards/hand_evaluator.dart';
-import 'package:ebs_game_engine/core/variants/omaha.dart';
-import 'package:ebs_game_engine/core/variants/five_card_omaha.dart';
-import 'package:ebs_game_engine/core/variants/courchevel.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/card.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/hand_evaluator.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/omaha.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/five_card_omaha.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/courchevel.dart';
 
 List<Card> p(String s) => s.split(' ').map(Card.parse).toList();
 
@@ -2789,9 +2789,9 @@ void main() {
 ```dart
 // test/core/variants/omaha_hilo_test.dart
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/core/cards/card.dart';
-import 'package:ebs_game_engine/core/cards/hand_evaluator.dart';
-import 'package:ebs_game_engine/core/variants/omaha_hilo.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/card.dart';
+import 'package:team3-engine/ebs_game_engine/core/cards/hand_evaluator.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/omaha_hilo.dart';
 
 List<Card> p(String s) => s.split(' ').map(Card.parse).toList();
 
@@ -3448,7 +3448,7 @@ class HarnessServer {
 
 ```dart
 // bin/harness.dart
-import 'package:ebs_game_engine/harness/server.dart';
+import 'package:team3-engine/ebs_game_engine/harness/server.dart';
 
 void main(List<String> args) async {
   var port = 8080;
@@ -3489,7 +3489,7 @@ git commit -m "feat(harness): HTTP server + session management — 7 API endpoin
 // test/harness/scenario_loader_test.dart
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/harness/scenario_loader.dart';
+import 'package:team3-engine/ebs_game_engine/harness/scenario_loader.dart';
 
 void main() {
   group('ScenarioLoader', () {
@@ -3719,9 +3719,9 @@ class ScenarioLoader {
 ```dart
 // bin/replay.dart
 import 'dart:io';
-import 'package:ebs_game_engine/harness/scenario_loader.dart';
-import 'package:ebs_game_engine/engine.dart';
-import 'package:ebs_game_engine/core/variants/variants.dart';
+import 'package:team3-engine/ebs_game_engine/harness/scenario_loader.dart';
+import 'package:team3-engine/ebs_game_engine/engine.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/variants.dart';
 
 void main(List<String> args) {
   if (args.isEmpty) {
@@ -4351,7 +4351,7 @@ initControls(update);
 
 - [ ] **Step 7: Verify server serves frontend**
 
-Run: `cd C:/claude/ebs/ebs_game_engine && dart run bin/harness.dart --port 8080`
+Run: `cd C:/claude/ebs/team3-engine/ebs_game_engine && dart run bin/harness.dart --port 8080`
 Open: `http://localhost:8080` → HTML loads, variant dropdown populated
 
 - [ ] **Step 8: Commit**
@@ -4528,7 +4528,7 @@ services:
 
 - [ ] **Step 3: Build and test Docker image**
 
-Run: `cd C:/claude/ebs/ebs_game_engine && docker compose build harness`
+Run: `cd C:/claude/ebs/team3-engine/ebs_game_engine && docker compose build harness`
 Expected: Build succeeds
 
 Run: `docker compose up harness -d`
@@ -4560,10 +4560,10 @@ git commit -m "feat(docker): multi-stage Dockerfile + docker-compose (prod + dev
 // test/scenario_runner_test.dart
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:ebs_game_engine/harness/scenario_loader.dart';
-import 'package:ebs_game_engine/engine.dart';
-import 'package:ebs_game_engine/core/variants/variants.dart';
-import 'package:ebs_game_engine/core/state/seat.dart';
+import 'package:team3-engine/ebs_game_engine/harness/scenario_loader.dart';
+import 'package:team3-engine/ebs_game_engine/engine.dart';
+import 'package:team3-engine/ebs_game_engine/core/variants/variants.dart';
+import 'package:team3-engine/ebs_game_engine/core/state/seat.dart';
 
 void main() {
   final dir = Directory('test/scenarios');

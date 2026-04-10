@@ -72,4 +72,4 @@ async def admin_token(client):
 
 ## 관련 PRD
 
-- docs/back-office/BO-01-overview.md
+- team2-backend/specs/back-office/BO-01-overview.md

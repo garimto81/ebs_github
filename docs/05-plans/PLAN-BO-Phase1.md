@@ -238,13 +238,13 @@ backend/
 
 | 문서 | 경로 |
 |------|------|
-| BO Overview | `docs/back-office/BO-01-overview.md` |
-| 사용자 관리 | `docs/back-office/BO-02-user-management.md` |
-| 대회 관리 | `docs/back-office/BO-03-tournament-management.md` |
-| 테이블 관리 | `docs/back-office/BO-04-table-management.md` |
-| 플레이어 DB | `docs/back-office/BO-05-player-database.md` |
-| 시스템 설정 | `docs/back-office/BO-07-system-config.md` |
-| 감사 로그 | `docs/back-office/BO-08-audit-log.md` |
-| 데이터 동기화 | `docs/back-office/BO-09-data-sync.md` |
-| Settings 행동 명세 | `docs/02-behavioral/BS-03-settings/BS-03-00-overview.md` |
+| BO Overview | `team2-backend/specs/back-office/BO-01-overview.md` |
+| 사용자 관리 | `team2-backend/specs/back-office/BO-02-user-management.md` |
+| 대회 관리 | `team2-backend/specs/back-office/BO-03-tournament-management.md` |
+| 테이블 관리 | `team2-backend/specs/back-office/BO-04-table-management.md` |
+| 플레이어 DB | `team2-backend/specs/back-office/BO-05-player-database.md` |
+| 시스템 설정 | `team2-backend/specs/back-office/BO-07-system-config.md` |
+| 감사 로그 | `team2-backend/specs/back-office/BO-08-audit-log.md` |
+| 데이터 동기화 | `team2-backend/specs/back-office/BO-09-data-sync.md` |
+| Settings 행동 명세 | `contracts/specs/BS-03-settings/BS-03-00-overview.md` |
 | 백로그 | `docs/backlog.md` |

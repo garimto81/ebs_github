@@ -1,0 +1,46 @@
+# Scenario 26: NLH All-In Runout
+# 2 players (heads-up), both all-in preflop
+# dealer=seat0=SB, seat1=BB
+# Preflop: seat0 all-in 1000, seat1 calls 990
+# seat0: stack=0, currentBet=1000 (SB 5 + allin 995)
+# seat1: stack=0, currentBet=1000 (BB 10 + call 990)
+# pot = 2000
+# Deal full board, showdown: seat0(AA) beats seat1(KK)
+# pot_awarded: seat0 gets 2000
+# Final: seat0=2000, seat1=0
+# Check: 2000+0 = 2000 ✓
+variant: nlh
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "Hero", stack: 1000 }
+  - { label: "Villain", stack: 1000 }
+events:
+  - deal_hole:
+      0: [As, Ad]
+      1: [Kh, Kd]
+  # HU preflop: SB/BTN acts first, goes all-in
+  - action: { seat: 0, type: allin, amount: 995 }
+  - action: { seat: 1, type: call, amount: 990 }
+  # Deal full board
+  - street_advance: flop
+  - deal_community: [2h, 7c, 9d]
+  - street_advance: turn
+  - deal_community: [3s]
+  - street_advance: river
+  - deal_community: [4c]
+  # Showdown: AA beats KK
+  - pot_awarded: { 0: 2000 }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  community_count: 5
+  stacks:
+    0: 2000
+    1: 0
+  seat_statuses:
+    0: all_in
+    1: all_in

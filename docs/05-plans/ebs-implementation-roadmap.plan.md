@@ -14,7 +14,7 @@
 1. **전략**: `docs/01-strategy/PRD-EBS_Foundation.md` v41.0.0 (Phase 1 POC 5단계 + KPI + 5-Phase 로드맵)
 2. **캐노니컬 ID**: `docs/01-strategy/EBS-Feature-Catalog.md` v1.0.0 (144개, MW-/OUT-/G1-/G2-/G3-/SYS-/SK-/GEB-/GEP-)
 3. **로드맵 다이어그램**: EBS-Kickoff-2026 Phase 1~5 sibling 레포 매핑 (원본: archive 보존)
-4. **행동 명세**: `docs/02-behavioral/BS-00~07/` + `docs/04-rules-games/games/engine-spec/BS-06-*` (전체 완성 — 2026-04-08)
+4. **행동 명세**: `contracts/specs/BS-00~07/` + `team3-engine/specs/engine-spec/BS-06-*` (전체 완성 — 2026-04-08)
 5. **기존 UI 자산**: `C:\claude\ebs_ui\ebs-action-tracker\`, `C:\claude\ebs_ui\ebs-console\`
 
 > **정의**: 이 레포(`garimto81/ebs`)는 **기획 레포**다 (`CLAUDE.md` 명시). 실제 구현 코드는 sibling 레포에서 살고, 이 문서는 어떤 항목이 어느 sibling 레포로 가는지를 기록한다.
@@ -106,7 +106,7 @@ PRD line 986: "Hold'em 1종 8시간 연속 방송 가능" + 2027-01 프로덕션
 
 ## 4. 행동 명세 보강 작업 (이 레포에서 진행)
 
-`docs/02-behavioral/README.md` "작성 우선순위" 표 + sibling 레포 작업과 병렬 가능. 빈 디렉터리만 나열:
+`contracts/specs/README.md` "작성 우선순위" 표 + sibling 레포 작업과 병렬 가능. 빈 디렉터리만 나열:
 
 | 우선 | 디렉터리 | 현재 | 필요 | 활용 자산 |
 |:---:|---|:---:|---|---|
@@ -116,7 +116,7 @@ PRD line 986: "Hold'em 1종 8시간 연속 방송 가능" + 2027-01 프로덕션
 | 4 | `BS-07-overlay/` | 비어있음 | 10개 요소 트리거/갱신/애니메이션 | `docs/07-archive/01-pokergfx-analysis/` element catalog |
 | 5 | `BS-03-settings/` | 비어있음 | 4섹션 (Output/Overlay/Game/Statistics) | `ebs_ui\ebs-console\` v9.7.0 |
 
-> **이미 채움**: `BS-02-lobby/BS-02-lobby.md`, `docs/04-rules-games/games/engine-spec/BS-06-01~08-holdem-*.md` — 작업 불필요.
+> **이미 채움**: `BS-02-lobby/BS-02-lobby.md`, `team3-engine/specs/engine-spec/BS-06-01~08-holdem-*.md` — 작업 불필요.
 
 ---
 
@@ -126,11 +126,11 @@ PRD line 986: "Hold'em 1종 8시간 연속 방송 가능" + 2027-01 프로덕션
 - `docs/05-plans/ebs-implementation-roadmap.plan.md` ← 이 파일 1개
 
 **후속 PR (이 레포 내 — Section 4 보강)**:
-- `docs/02-behavioral/BS-01-auth/BS-01-auth.md`
-- `docs/02-behavioral/BS-04-rfid/BS-04-rfid.md`
-- `docs/02-behavioral/BS-05-command-center/BS-05-command-center.md`
-- `docs/02-behavioral/BS-07-overlay/BS-07-overlay.md`
-- `docs/02-behavioral/BS-03-settings/BS-03-settings.md` (필요 시)
+- `contracts/specs/BS-01-auth/BS-01-auth.md`
+- `contracts/specs/BS-04-rfid/BS-04-rfid.md`
+- `contracts/specs/BS-05-command-center/BS-05-command-center.md`
+- `contracts/specs/BS-07-overlay/BS-07-overlay.md`
+- `contracts/specs/BS-03-settings/BS-03-settings.md` (필요 시)
 
 **후속 작업 (sibling 레포 — 이 레포 외부)**:
 - `ebs(HW)`, `ebs(FW)`, `ui_overlay` 각각의 Phase 1 5단계 항목 (Section 2 표)
@@ -174,7 +174,7 @@ Phase 1 POC 5단계 시나리오 E2E 데모 (PRD line 1002 표 기준) — sibli
 
 이 기획 레포에서 완성된 설계 문서 전체 목록. sibling 구현 레포는 이 문서들만으로 코드를 작성한다.
 
-### 행동 명세 (`docs/02-behavioral/`)
+### 행동 명세 (`contracts/specs/`)
 
 | 문서 | 파일 수 | 핵심 내용 |
 |------|:------:|----------|
@@ -187,31 +187,31 @@ Phase 1 POC 5단계 시나리오 E2E 데모 (PRD line 1002 표 기준) — sibli
 | BS-06 Game Engine | 2 + 17 | 트리거 경계 + engine-spec(Hold'em+Flop+Draw+Stud) |
 | BS-07 Overlay | 5 | 10개 요소, Rive 애니메이션, 스킨, 씬 JSON |
 
-### Back Office (`docs/back-office/`)
+### Back Office (`team2-backend/specs/back-office/`)
 
 | 문서 | 파일 수 | 핵심 내용 |
 |------|:------:|----------|
 | BO-01~11 | 12 | 3-앱 관계도, CRUD, 데이터 동기화, WSOP LIVE 연동, 감사 로그, 리포팅 |
 
-### API 계약 (`docs/api/`)
+### API 계약 (`contracts/api/`)
 
 | 문서 | 파일 수 | 핵심 내용 |
 |------|:------:|----------|
 | API-01~06 | 7 | 백엔드 66개 엔드포인트, WSOP LIVE 연동, **RFID HAL 인터페이스(Mock 정본)**, Overlay 출력, WebSocket, Auth |
 
-### 데이터 모델 (`docs/data/`)
+### 데이터 모델 (`contracts/data/`)
 
 | 문서 | 파일 수 | 핵심 내용 |
 |------|:------:|----------|
 | DATA-01~06 | 7 | ER 다이어그램, 20개 엔티티, 5개 FSM, DB 스키마, 마이그레이션, 시드 데이터 |
 
-### 기술 구현 (`docs/impl/`)
+### 기술 구현 (`team2-backend/specs/impl/`)
 
 | 문서 | 파일 수 | 핵심 내용 |
 |------|:------:|----------|
 | IMPL-01~09 | 10 | 기술 스택, 5레포 구조, 상태 관리, 라우팅, DI, 에러, 로깅, 테스트, 빌드 |
 
-### 테스트 설계 (`docs/testing/`)
+### 테스트 설계 (`team4-cc/specs/testing/`)
 
 | 문서 | 파일 수 | 핵심 내용 |
 |------|:------:|----------|

@@ -19,7 +19,7 @@
 | 원본 (archive) | 승격 위치 | 이유 |
 |---------------|----------|------|
 | `00-prd-archive/EBS-Feature-Catalog.md` | `docs/01-strategy/EBS-Feature-Catalog.md` | 144개 기능 ID — BS-00, 로드맵, QA에서 참조 |
-| `00-prd-archive/PRD-EBS_DB_Schema.md` | `docs/data/PRD-EBS_DB_Schema.md` | DATA-04에서 참조 |
+| `00-prd-archive/PRD-EBS_DB_Schema.md` | `contracts/data/PRD-EBS_DB_Schema.md` | DATA-04에서 참조 |
 
 ## 폴더 구조
 
