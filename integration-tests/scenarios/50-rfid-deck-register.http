@@ -1,0 +1,113 @@
+### CCR-026 — BS-04-05 Deck Registration (AT-05)
+###
+### 검증:
+### - POST /decks 저장 (54장 매핑)
+### - 중복 UID 거부
+### - GET /decks 목록
+### - PATCH /tables/{id}/active_deck
+### - DeckRegistered WebSocket 이벤트
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 50.1 POST /api/v1/decks — 54장 등록
+POST {{host}}/api/v1/decks
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "deck_name": "WSOP-FT-2026-Deck-01",
+  "cards": [
+    { "uid": "04A3B2C1D001", "rank": 12, "suit": 0 },
+    { "uid": "04A3B2C1D002", "rank": 11, "suit": 0 },
+    { "uid": "04A3B2C1D003", "rank": 10, "suit": 0 },
+    { "uid": "04A3B2C1D004", "rank": 9,  "suit": 0 },
+    { "uid": "04A3B2C1D005", "rank": 8,  "suit": 0 }
+
+  ]
+}
+
+# (52장 + Joker 2 = 54장 전체 전송. 간결화 위해 5장만 표시)
+#
+# 예상 응답: 201 Created
+# {
+#   "deck_id": "dk_01HVQK...",
+#   "deck_name": "WSOP-FT-2026-Deck-01",
+#   "card_count": 54,
+#   "created_at": "2026-04-10T14:30:00Z"
+# }
+
+### 50.2 POST /api/v1/decks — 중복 UID (같은 deck 내)
+POST {{host}}/api/v1/decks
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "deck_name": "duplicate-test",
+  "cards": [
+    { "uid": "04A3B2C1D001", "rank": 12, "suit": 0 },
+    { "uid": "04A3B2C1D001", "rank": 11, "suit": 1 }
+  ]
+}
+
+# 예상: 422 Unprocessable Entity
+# { "error": "DUPLICATE_UID", "uid": "04A3B2C1D001" }
+
+### 50.3 POST /api/v1/decks — 52장 미만 (Joker 제외도 안 됨)
+POST {{host}}/api/v1/decks
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "deck_name": "incomplete",
+  "cards": [
+    { "uid": "04A3B2C1D001", "rank": 12, "suit": 0 }
+  ]
+}
+
+# 예상: 422 Unprocessable Entity
+# { "error": "INSUFFICIENT_CARDS", "expected": 52, "actual": 1 }
+
+### 50.4 GET /api/v1/decks — 덱 목록
+GET {{host}}/api/v1/decks?flight_id=1
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK
+# { "decks": [{ "id": "dk_...", "deck_name": "...", "card_count": 54, ... }] }
+
+### 50.5 PATCH /api/v1/tables/1/active_deck — 활성 덱 설정
+PATCH {{host}}/api/v1/tables/1/active_deck
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "deck_id": "dk_01HVQK-wsop-ft-2026"
+}
+
+# 예상: 200 OK + DeckRegistered WS broadcast
+
+### 50.6 WS 수신: DeckRegistered (수동)
+###
+### wscat -c 'ws://localhost:8000/ws/lobby?token=<jwt>&format=json'
+### 위 50.5 이후 수신 메시지:
+### {
+###   "type": "DeckRegistered",
+###   "payload": {
+###     "deck_id": "dk_01HVQK-wsop-ft-2026",
+###     "deck_name": "WSOP-FT-2026-Deck-01",
+###     "table_id": 1,
+###     "card_count": 54
+###   }
+### }
+
+### 50.7 DELETE /api/v1/decks/{id} — 활성 덱 삭제 차단
+DELETE {{host}}/api/v1/decks/dk_01HVQK-wsop-ft-2026
+Authorization: Bearer {{admin_token}}
+If-Match: W/"1-etag"
+
+# 예상: 409 Conflict
+# { "error": "ACTIVE_DECK_CANNOT_DELETE", "message": "..." }

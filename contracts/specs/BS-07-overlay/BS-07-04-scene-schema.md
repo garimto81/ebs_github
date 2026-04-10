@@ -344,3 +344,41 @@
 | `BS-07-02-animations.md` | animations 섹션의 상태값 |
 | `BS-06-00-REF-game-engine-spec.md` | Enum 값 (game_phase, suit, rank, PlayerStatus 등) |
 | `BS-00-definitions.md` | 엔티티·상태 용어 |
+| `BS-05-03-seat-management §6` | CC 시각 규격 원본 (CCR-034 동일 색상 체계) |
+
+---
+
+## player_state_colors 섹션 (CCR-034)
+
+Scene Schema의 `player_state_colors` 필드는 CC와 Overlay가 공유하는 **단일 색상 체계**를 정의한다. `BS-07-01 §Player Element 시각 규격`과 `BS-05-03 §6`에서 참조하는 hex 코드를 이 섹션에 확정한다.
+
+```json
+{
+  "player_state_colors": {
+    "position_markers": {
+      "dealer":  "#E53935",
+      "sb":      "#FDD835",
+      "bb":      "#1E88E5",
+      "utg":     "#43A047",
+      "default": "#FFFFFF"
+    },
+    "seat_backgrounds": {
+      "vacant":      { "color": "#616161", "opacity": 1.0 },
+      "active":      { "color": "#2E7D32", "opacity": 1.0 },
+      "folded":      { "color": "#616161", "opacity": 0.4 },
+      "sitting_out": { "color": "#616161", "opacity": 0.6 },
+      "all_in":      { "color": "#000000", "opacity": 1.0 }
+    },
+    "action_glow": {
+      "color":     "#FDD835",
+      "period_ms": 800,
+      "easing":    "alternate"
+    }
+  }
+}
+```
+
+**규칙**:
+- Skin마다 override 가능하지만 CC와 Overlay가 **동일 값**을 공유
+- CC 전용/Overlay 전용 색상 분리 **금지** (계약 위반)
+- Table별 색상 Override는 `BS-03-02-gfx §7` 참조 (skin 수준이 아닌 table 설정 수준)

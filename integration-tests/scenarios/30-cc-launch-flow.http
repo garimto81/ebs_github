@@ -1,0 +1,107 @@
+### CCR-029 — CC Launch Flow
+###
+### 검증:
+### - POST /tables/{id}/launch 응답에 launch_token, cc_instance_id, ws_url
+### - launch_token JWT 만료 5분
+### - WebSocket 연결 시 launch_token 검증 + cc_instance_id 매칭
+### - Operator assigned_tables RBAC
+### - TableFSM SETUP 이상 요구
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+@operator_token = {{$dotenv OPERATOR_JWT}}
+@viewer_token = {{$dotenv VIEWER_JWT}}
+
+### 30.1 POST /api/v1/tables/1/launch-cc — Admin 정상
+# @name launchAdmin
+POST {{host}}/api/v1/tables/1/launch-cc
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{}
+
+# 예상 응답: 200 OK
+# {
+#   "data": {
+#     "table_id": 1,
+#     "status": "live",
+#     "cc_instance_id": "cc-uuid-abcd-1234",
+#     "launch_token": "eyJhbGc...",         // JWT 5분 수명
+#     "ws_url": "ws://localhost:8000/ws/cc?table_id=1",
+#     "launched_at": "2026-04-10T12:00:00Z"
+#   },
+#   "error": null
+# }
+
+### 30.2 launch_token JWT decode 검증 (수동)
+###
+### 응답의 launch_token 을 jwt.io 등에서 디코드:
+###   sub = cc_instance_id
+###   exp = 현재 + 5분 (300s)
+###   role = "cc_launch"
+###   table_id = 1
+###
+### 5분 후 재연결 시도 → 401 (expired)
+
+### 30.3 POST /api/v1/tables/1/launch-cc — Viewer → 403
+POST {{host}}/api/v1/tables/1/launch-cc
+Authorization: Bearer {{viewer_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{}
+
+# 예상: 403 Forbidden (Viewer는 Launch 불가)
+
+### 30.4 POST — Operator + 할당되지 않은 테이블 → 403
+POST {{host}}/api/v1/tables/999/launch-cc
+Authorization: Bearer {{operator_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{}
+
+# Operator의 assigned_tables 에 999가 없을 때:
+# 예상: 403 Forbidden (RBAC 거부)
+
+### 30.5 POST — TableFSM == EMPTY → 422
+POST {{host}}/api/v1/tables/99/launch-cc
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{}
+
+# Table 99 가 EMPTY 상태 (게임 설정 전):
+# 예상: 422 Unprocessable Entity
+# { "error": "INVALID_TABLE_STATE", "current_state": "EMPTY", "required": "SETUP|LIVE|PAUSED" }
+
+### 30.6 WebSocket 연결 with launch_token (수동)
+###
+### wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token={{launchAdmin.response.body.data.launch_token}}&cc_instance_id={{launchAdmin.response.body.data.cc_instance_id}}&format=json'
+###
+### 예상: 연결 성공 후 초기 상태 JSON 수신:
+### {
+###   "type": "InitialState",
+###   "payload": {
+###     "table": {...},
+###     "seats": [...],
+###     "current_hand": {...} | null
+###   }
+### }
+
+### 30.7 WebSocket 연결 — cc_instance_id 불일치
+###
+### wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token=<launch_token>&cc_instance_id=wrong-uuid&format=json'
+###
+### 예상: 연결 즉시 종료 (1008 Policy Violation)
+### 이유: launch_token 의 sub 와 cc_instance_id 가 불일치
+
+### 30.8 WebSocket 연결 — 만료된 launch_token
+###
+### (launch 후 5분+ 경과)
+### wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token=<expired>&cc_instance_id=...&format=json'
+###
+### 예상: 1008 Policy Violation (TOKEN_EXPIRED)
+### 클라이언트는 Lobby에 재요청 필요

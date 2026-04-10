@@ -102,13 +102,18 @@ Event의 진행 구간. Day 1A, Day 1B 등.
 | entries | INTEGER | 참가자 수 | — | 0 |
 | players_left | INTEGER | 남은 참가자 | — | 0 |
 | table_count | INTEGER | 테이블 수 | — | 0 |
-| status | TEXT | Flight 상태 | NOT NULL | 'created' |
+| status | INTEGER | `EventFlightStatus` enum (BS-02-02 §1) — 0=Created, 1=Announce, 2=Registering, 4=Running, 5=Completed, 6=Canceled (3 skip) | NOT NULL | 0 |
+| is_registerable | BOOLEAN | 신규 등록 허용 여부 (CCR-017) | NOT NULL | true |
+| day_index | INTEGER | Event 내부 Day 순서 (0-based; Day1A/1B=0, Day2=1, ...) (CCR-017) | NOT NULL | 0 |
+| is_pause | BOOLEAN | Flight 단위 일시정지 — true면 Late Reg 타이머 경과 멈춤 (CCR-017) | NOT NULL | false |
 | play_level | INTEGER | 현재 블라인드 레벨 | — | 1 |
 | remain_time | INTEGER | 레벨 남은 시간 (초) | — | NULL |
 | source | TEXT | 데이터 소스 | NOT NULL | 'manual' |
 | synced_at | DATETIME | API 동기화 시각 | — | NULL |
 | created_at | DATETIME | 생성 시각 | NOT NULL | now() |
 | updated_at | DATETIME | 수정 시각 | NOT NULL | now() |
+
+> **CCR-017**: `status`가 문자열(`created/active/done`) → `EventFlightStatus` 정수 enum으로 변경되었다. 마이그레이션: `active → Running(4)`, `pending → Announce(1)`, `done → Completed(5)`. 상세는 `BS-02-02-event-flight.md` 참조.
 
 ### 1.5 Table
 
@@ -122,6 +127,7 @@ Event의 진행 구간. Day 1A, Day 1B 등.
 | name | TEXT | 테이블명 | NOT NULL, UNIQUE per flight | — |
 | type | TEXT | 'feature' / 'general' | NOT NULL | 'general' |
 | status | TEXT | TableFSM 상태 | NOT NULL | 'empty' |
+| is_pause | BOOLEAN | LIVE/PAUSED와 **직교하는** 일시정지 축. 'live + is_pause=true'는 브레이크/중재 상태. 'paused + is_pause=false'는 불변 조합으로 서버가 거부 (CCR-017). 상세는 `BS-02-03-table.md` 참조. | NOT NULL | false |
 | max_players | INTEGER | 최대 인원 | NOT NULL | 9 |
 | game_type | INTEGER | 게임 종류 enum | NOT NULL | 0 |
 | small_blind | INTEGER | SB 금액 | — | NULL |

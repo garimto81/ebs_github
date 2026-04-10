@@ -1,0 +1,82 @@
+### CCR-017 §2 — Table is_pause 직교 축 제약
+###
+### 검증:
+### - LIVE + is_pause=true 허용 (브레이크/중재)
+### - PAUSED + is_pause=false 거부 (불변 조합)
+### - EMPTY/SETUP/CLOSED 상태에서 is_pause=true 거부
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 61.1 PATCH /tables/1 — LIVE + is_pause=true 허용
+PATCH {{host}}/api/v1/tables/1
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "status": "live",
+  "is_pause": true
+}
+
+# 예상: 200 OK (브레이크/중재 상태)
+
+### 61.2 PATCH — PAUSED + is_pause=false (불변 조합)
+PATCH {{host}}/api/v1/tables/1
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "status": "paused",
+  "is_pause": false
+}
+
+# 예상: 422 Unprocessable Entity
+# {
+#   "error": "INVALID_STATE_COMBINATION",
+#   "message": "PAUSED 상태는 is_pause=true 여야 합니다",
+#   "allowed": { "status": "paused", "is_pause": true }
+# }
+
+### 61.3 PATCH — EMPTY + is_pause=true (불변 조합)
+PATCH {{host}}/api/v1/tables/1
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "status": "empty",
+  "is_pause": true
+}
+
+# 예상: 422 Unprocessable Entity
+# { "error": "INVALID_STATE_COMBINATION", "message": "EMPTY/SETUP/CLOSED에서 is_pause=false 고정" }
+
+### 61.4 GET /tables/1 — 응답에 is_pause 필드 포함
+GET {{host}}/api/v1/tables/1
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK
+# {
+#   "id": "tbl_01HVQK...",
+#   "status": "live",
+#   "is_pause": true,
+#   ...
+# }
+
+### 61.5 WebSocket TableStatusChanged 이벤트 (수동)
+###
+### wscat -c 'ws://localhost:8000/ws/lobby?token=<jwt>&format=json'
+### 위 61.1 요청 후 수신:
+### {
+###   "type": "TableStatusChanged",
+###   "payload": {
+###     "table_id": 1,
+###     "old_status": "live",
+###     "new_status": "live",
+###     "old_is_pause": false,
+###     "new_is_pause": true,
+###     "reason": "break"
+###   }
+### }

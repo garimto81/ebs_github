@@ -58,8 +58,12 @@ CC 하단에 배치된 8개 액션 버튼은 운영자가 게임을 진행하는
 | **단축키** | N |
 | **금액 입력** | 불필요 |
 | **확인 다이얼로그** | 없음 |
+| **서버 명령** | `WriteGameInfo` (API-05 §9) — 24 필드 핸드 초기화 프로토콜 |
+| **서버 응답** | `GameInfoAck { hand_id, ready_for_deal }` 수신 후 DEAL 버튼 활성화 |
 | **이벤트** | `StartHand` |
 | **결과** | IDLE → SETUP_HAND 전이 |
+
+> **CCR-024**: NEW HAND 버튼 클릭 시 CC는 `WriteGameInfo` WebSocket 프로토콜을 BO에 발행한다. 24 필드(`dealer_seat`, `sb_seat`, `bb_seat`, `blind_structure_id`, `active_seats`, `dead_button_mode` 등) 전체 스키마와 검증 규칙은 **`API-05-websocket-events.md §9 WriteGameInfo`** 참조.
 
 ### 특수: Bomb Pot 모드
 

@@ -1,0 +1,66 @@
+### CCR-010 — Auth Login with AUTH_PROFILE
+###
+### 검증:
+### - 환경별 expires_in 차등 (dev=1h, staging/prod=2h, live=12h)
+### - 응답에 expires_at (ISO 8601), auth_profile, refresh_expires_in 포함
+### - AUTH_PROFILE 환경 플래그에 따라 token 만료 시간 변동
+
+@host = http://localhost:8000
+
+### 10.1 POST /api/v1/auth/login — dev 프로파일 (AUTH_PROFILE=dev)
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin@ebs.test",
+  "password": "test-password-1234"
+}
+
+# 예상 응답 (AUTH_PROFILE=dev 기동 시):
+# 200 OK
+# {
+#   "access_token": "eyJhbGc...",
+#   "refresh_token": "eyJhbGc...",
+#   "expires_in": 3600,                          // 1h (dev)
+#   "expires_at": "2026-04-10T15:34:56Z",
+#   "auth_profile": "dev",
+#   "refresh_expires_in": 86400                  // 24h (dev)
+# }
+
+### 10.2 POST /api/v1/auth/login — live 프로파일 (AUTH_PROFILE=live)
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+X-Test-Profile: live
+
+{
+  "username": "admin@ebs.test",
+  "password": "test-password-1234"
+}
+
+# 예상 응답 (AUTH_PROFILE=live 기동 시):
+# expires_in: 43200           // 12h (live, 방송용)
+# refresh_expires_in: 604800  // 7d
+# auth_profile: "live"
+
+### 10.3 POST /api/v1/auth/refresh — 토큰 갱신
+POST {{host}}/api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "{{$dotenv REFRESH_TOKEN}}"
+}
+
+# 예상 응답: 새 access_token + expires_at 갱신
+# WebSocket은 끊기지 않음 (BS-01-auth §5.3)
+
+### 10.4 POST /api/v1/auth/refresh — 만료된 refresh token
+POST {{host}}/api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "eyJhbGc.expired..."
+}
+
+# 예상 응답:
+# 401 Unauthorized
+# { "error": "REFRESH_TOKEN_EXPIRED", "message": "..." }

@@ -179,6 +179,42 @@ GameState(t=3) ──┤        │
 
 Security Delay 0초 설정 시 지연 버퍼 없이 **실시간 출력**한다. 비 Feature Table이나 데모/테스트 시 사용.
 
+### 3.5 이중 출력 (Backstage / Broadcast) — CCR-036
+
+Overlay는 두 개의 NDI 스트림을 **동시에** 제공한다:
+
+| Stream | 용도 | Delay |
+|--------|------|:-----:|
+| **Backstage** (NDI 채널 1) | 운영진 / 감독용 | 없음 (즉시) |
+| **Broadcast** (NDI 채널 2) | 시청자 방송용 | `delay_seconds` 지연 |
+
+두 스트림은 동일 내용이며 시간차로만 분리된다. 운영진이 실시간(Backstage)을 보면서 방송(Broadcast) 지연 상태를 모니터링.
+
+### 3.6 OutputEventBuffer 구조
+
+```dart
+class OutputEventBuffer {
+  final Queue<DelayedEvent> _buffer = Queue();
+  final Duration delay;
+
+  void enqueue(OutputEvent event) {
+    _buffer.add(DelayedEvent(
+      event: event,
+      releaseAt: DateTime.now().add(delay),
+    ));
+    _scheduleRelease();
+  }
+}
+```
+
+- 각 OutputEvent는 `releaseAt` 시점이 되면 Broadcast Output으로 방출
+- Backstage는 buffer를 우회하고 즉시 송출
+- 자세한 설정 변경 시 규칙(중간 delay 조정, 크래시 처리, 방송 종료 flush)은 `contracts/specs/BS-07-overlay/BS-07-07-security-delay.md` 참조
+
+### 3.7 `delay_holecards_only` 옵션 (CCR-036)
+
+`delay_holecards_only == true`로 설정하면 **홀카드만 지연**되고 다른 요소(액션 배지, Pot 변화 등)는 즉시 송출된다. 시청자 경험을 개선하면서 부정행위 방지 핵심(홀카드)은 유지하는 절충안.
+
 ---
 
 ## 4. 해상도 대응

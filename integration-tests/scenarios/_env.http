@@ -1,0 +1,20 @@
+### EBS Integration Test — 공통 환경 변수
+###
+### 사용법: REST Client (VSCode) 또는 httpyac.
+### 각 시나리오 파일은 이 환경을 참조한다.
+
+# @name env
+@host = http://localhost:8000
+@engine_host = http://localhost:8080
+@ws_lobby = ws://localhost:8000/ws/lobby
+@ws_cc = ws://localhost:8000/ws/cc
+
+# 공통 인증 토큰 (실제 실행 시 environment에서 overide)
+@admin_token = {{$dotenv ADMIN_JWT}}
+@operator_token = {{$dotenv OPERATOR_JWT}}
+@viewer_token = {{$dotenv VIEWER_JWT}}
+
+# 테스트용 고정 ID
+@test_table_id = 1
+@test_flight_id = 1
+@test_event_id = 1

@@ -3,6 +3,7 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | IRfidReader 인터페이스, 이벤트 타입, Mock HAL 사양, DI 교체, 테스트 케이스 |
+| 2026-04-10 | CCR-022 | §9~§13 — UART 생명주기, 안테나 튜닝 재시도, 펌웨어 감지, 다중 리더, ST25R3916 마이그레이션 |
 
 ---
 
@@ -714,3 +715,155 @@ CC UI / Game Engine (구현체 무관하게 이벤트 소비)
 | T-61 | `rfidModeProvider = real` → 인스턴스 확인 | `RealRfidReader` |
 | T-62 | 런타임 모드 변경 → 이벤트 스트림 재구독 | 새 구현체의 스트림으로 전환 |
 | T-63 | 테스트 오버라이드 | `ProviderScope(overrides)` 로 Mock 강제 주입 확인 |
+
+---
+
+## 9. 시리얼 UART 연결 생명주기 (CCR-022)
+
+### 9.1 연결 FSM
+
+```
+DISCONNECTED ──open()──▶ CONNECTING ──handshake OK──▶ CONNECTED
+      ▲                        │                        │
+      │                        │ handshake fail         │
+      │                        ▼                        │
+      │                    CONNECTION_FAILED            │
+      │                        │                        │
+      │                        │ backoff                │
+      │                        ▼                        │
+      └────── close() ◀── RECONNECTING ◀──disconnect────┘
+```
+
+| 상태 | 설명 |
+|------|------|
+| `DISCONNECTED` | 초기 상태 또는 명시적 `close()` 후 |
+| `CONNECTING` | `open()` 호출 중, 시리얼 포트 열기 시도 |
+| `CONNECTED` | 정상 운영, 이벤트 수신/명령 송신 가능 |
+| `CONNECTION_FAILED` | 포트 없음, 권한 거부, handshake 실패 |
+| `RECONNECTING` | 자동 재연결 시도 중 |
+
+### 9.2 이벤트 (IRfidReader 추가)
+
+- `ConnectionStatusChanged { from: ReaderStatus, to: ReaderStatus, reason?: string }`
+- `HandshakeComplete { firmware_version: string, chip_id: string, is_supported: bool, is_recommended: bool, warning_message?: string }`
+- `HandshakeFailed { error_code: int, message: string }`
+
+### 9.3 재연결 정책
+
+```dart
+class ReaderReconnectPolicy {
+  // WSOP Fatima.app SignalR 정책과 통일 (BS-05-00 §BO 복구 참조)
+  static const List<Duration> retryDelays = [
+    Duration.zero,
+    Duration(seconds: 5),
+    Duration(seconds: 10),  // 이후 10s × 100회
+  ];
+  static const int maxRetries = 101;
+}
+```
+
+### 9.4 핸드 진행 중 연결 끊김
+
+`HandFSM != IDLE` 중 리더가 끊기면:
+
+1. CC가 AT-01에 경고 배너: "RFID 리더 끊김 — 수동 입력 모드"
+2. AT-03 Card Selector 진입 가능 (수동 입력 폴백)
+3. 재연결 시도 백그라운드 지속
+4. 재연결 성공: 배너 해제, RFID 감지 재개
+5. 핸드 종료까지 재연결 실패: 수동 입력으로 핸드 완료
+
+### 9.5 Mock 시뮬레이션 API
+
+```dart
+abstract class IMockRfidReader implements IRfidReader {
+  void injectDisconnect();
+  void injectReconnect();
+  void simulateHandshakeFailure(int errorCode);
+}
+```
+
+---
+
+## 10. 안테나 튜닝 재시도 (CCR-022)
+
+### 10.1 배경
+
+ST25R3911B(후속 ST25R3916)는 안테나 매칭 임피던스를 자동 튜닝한다. 금속 포커 테이블, 주변 베팅 토큰 등 환경 변수로 튜닝이 실패할 수 있다.
+
+### 10.2 이벤트 및 판정
+
+- `AntennaStatusChanged { tuning_quality: float, status: "tuned" | "degraded" | "failed" }`
+- `tuning_quality >= 0.6` → `tuned` (정상)
+- `0.3 <= tuning_quality < 0.6` → `degraded` (경고)
+- `tuning_quality < 0.3` → `failed` (재시도 필요)
+
+### 10.3 재시도 절차
+
+```
+초기 튜닝 시도
+  │
+  ├─ 성공 (quality >= 0.6) → 정상 운영
+  │
+  └─ 실패 (quality < 0.3)
+      │
+      ├─ 재시도 1 (500ms 대기)
+      ├─ 재시도 2 (1s 대기)
+      ├─ 재시도 3 (2s 대기)
+      │
+      └─ 3회 모두 실패:
+          ├─ AntennaStatusChanged { status: "failed" }
+          ├─ CC 경고 배너 "안테나 튜닝 실패 — 물리 환경 점검 필요"
+          └─ 운영자 수동 재튜닝 (M-01 Menu → RFID → Retune Antenna)
+```
+
+### 10.4 Degraded 모드
+
+`0.3 ~ 0.6` 구간에서는 동작을 유지하되 경고 배너 표시. "일부 카드가 인식되지 않을 수 있습니다" 메시지 + 운영자에게 재튜닝 권장.
+
+---
+
+## 11. 펌웨어 버전 감지 (CCR-022)
+
+### 11.1 지원 버전
+
+| 칩 | 펌웨어 | 상태 |
+|----|--------|------|
+| ST25R3911B | v1.2.x | 지원 |
+| ST25R3911B | v1.3.x | 지원 (권장) |
+| ST25R3911B | v1.4.x | 지원 |
+| ST25R3911B | v1.1.x | 경고 (Legacy) |
+| ST25R3911B | v1.0.x | 미지원 |
+| ST25R3916 | v2.0.x+ | 지원 (Phase 2) |
+
+### 11.2 Handshake 동작
+
+연결 시 펌웨어 버전을 자동 감지하여 `HandshakeComplete` 이벤트를 발행한다.
+
+- **미지원 버전**: `HandshakeFailed` → 연결 거부, CC 경고 다이얼로그 "펌웨어 버전 X.X는 지원되지 않습니다. 업그레이드 필요"
+- **Legacy 버전**: `HandshakeComplete { is_supported: true, warning_message: "Legacy 펌웨어 — 일부 기능 제한" }`, 연결 허용 + 경고 배너
+
+---
+
+## 12. 다중 리더 충돌 해결 (CCR-022)
+
+### 12.1 Phase 1 (현재)
+
+테이블당 1 리더 전제. 다중 리더는 미지원.
+
+### 12.2 Phase 2+ (향후 확장)
+
+- **좌석 그룹핑**: 리더 A = Seat 1~5, 리더 B = Seat 6~10
+- **동일 카드 다중 감지**: `TimestampBasedResolver` — 먼저 감지한 쪽 우선
+- **충돌 이벤트**: `MultiReaderConflict { uid, reader_ids: [string], resolved_by: string }`
+- **Mock API**: `injectMultiReaderConflict(readers, uid)` 로 시뮬레이션
+
+---
+
+## 13. ST25R3911B → ST25R3916 마이그레이션 경로 (CCR-022)
+
+후속 칩 ST25R3916은 개선된 감도·저전력·다중 안테나 지원을 제공한다. Phase 2에서 마이그레이션하며 본 계약은 다음을 보장한다:
+
+- `IRfidReader` 인터페이스는 **변경 없음** — 구현체만 교체
+- `HandshakeComplete.chip_id` 값으로 런타임 식별
+- 양쪽 칩 모두 `v1.2+`/`v2.0+` 펌웨어에서 동일 이벤트 스트림 제공
+- Phase 2 전환 시 `rfidModeProvider` DI만 업데이트

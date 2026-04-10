@@ -1,0 +1,92 @@
+### CCR-013 §4, §5 — GET metadata + PATCH with If-Match ETag
+###
+### 검증:
+### - GET metadata 응답에 ETag 헤더
+### - PATCH with stale ETag → 412 Precondition Failed
+### - PATCH with current ETag → 200 OK + new ETag
+### - JSON Merge Patch (RFC 7396) 동작
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+@skin_id = sk_01HVQK-test
+
+### 21.1 GET /api/v1/skins/{id}/metadata — 초기 조회
+# @name getMetadata
+GET {{host}}/api/v1/skins/{{skin_id}}/metadata
+Authorization: Bearer {{admin_token}}
+
+# 예상 응답: 200 OK
+# ETag: W/"3-xyz..."
+# Content-Type: application/json
+# {
+#   "skin_name": "wsop-2026-test",
+#   "version": "1.0.0",
+#   "colors": { "badge_check": "#00FF00", ... },
+#   ...
+# }
+
+### 21.2 PATCH /api/v1/skins/{id}/metadata — 정상 편집
+PATCH {{host}}/api/v1/skins/{{skin_id}}/metadata
+Authorization: Bearer {{admin_token}}
+If-Match: {{getMetadata.response.headers.ETag}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "colors": {
+    "badge_check": "#00AA00"
+  },
+  "fonts": {
+    "pot": {
+      "size": 48
+    }
+  }
+}
+
+# 예상: 200 OK + 새 ETag + 갱신된 skin.json 전체
+
+### 21.3 PATCH with stale ETag → 412 Precondition Failed
+PATCH {{host}}/api/v1/skins/{{skin_id}}/metadata
+Authorization: Bearer {{admin_token}}
+If-Match: W/"1-stale-etag"
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "skin_name": "wsop-2026-test-v2"
+}
+
+# 예상: 412 Precondition Failed
+# {
+#   "error": "ETAG_MISMATCH",
+#   "current_etag": "W/\"5-...\"",
+#   "message": "다른 세션이 먼저 수정했습니다. refetch 후 재시도하세요."
+# }
+
+### 21.4 PATCH — If-Match 헤더 누락
+PATCH {{host}}/api/v1/skins/{{skin_id}}/metadata
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "skin_name": "wsop-2026-no-etag"
+}
+
+# 예상: 428 Precondition Required (또는 400 Bad Request)
+
+### 21.5 PATCH — 스키마 검증 실패 (색상 hex 아님)
+PATCH {{host}}/api/v1/skins/{{skin_id}}/metadata
+Authorization: Bearer {{admin_token}}
+If-Match: {{getMetadata.response.headers.ETag}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "colors": {
+    "badge_bet": "red"
+  }
+}
+
+# 예상: 422 Unprocessable Entity
+# { "error": "SCHEMA_VIOLATION", "path": "colors.badge_bet", "message": "..." }

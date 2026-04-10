@@ -4,6 +4,8 @@
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 연결 아키텍처, 메시지 포맷, 이벤트 분류, 생명주기 |
 | 2026-04-09 | GAP-L-002 보강 | §1.3 WebSocket JWT 인증 방식 추가 |
+| 2026-04-10 | CCR-003 | client→server command 메시지에 `idempotency_key` 필드 추가 |
+| 2026-04-10 | CCR-015 | envelope에 단조증가 `seq` 필드 + replay 엔드포인트 연동 |
 
 ---
 
@@ -82,14 +84,16 @@ WebSocket 프로토콜은 HTTP `Authorization` 헤더를 직접 지원하지 않
 ```json
 {
   "type": "HandStarted",
+  "table_id": "tbl-5",
+  "seq": 12345,
   "payload": {
     "hand_id": 42,
-    "table_id": 5,
     "hand_number": 15,
     "dealer_seat": 3,
     "player_count": 6
   },
   "timestamp": "2026-04-08T14:30:00.123Z",
+  "server_time": "2026-04-08T14:30:00.123Z",
   "source_id": "cc-table-5",
   "message_id": "msg-uuid-1234"
 }
@@ -98,10 +102,25 @@ WebSocket 프로토콜은 HTTP `Authorization` 헤더를 직접 지원하지 않
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|:----:|------|
 | `type` | string | O | 이벤트 타입 (PascalCase) |
+| `table_id` | string | O | 테이블 식별자. 글로벌 이벤트는 `"*"` |
+| `seq` | int (BIGINT) | O | **CCR-015** — 테이블당 단조증가 시퀀스. 재연결 시 gap 감지용. 글로벌 이벤트는 `table_id="*"`의 독립 시퀀스 |
 | `payload` | object | O | 이벤트별 데이터 |
-| `timestamp` | string (ISO 8601) | O | 이벤트 발생 시각 (ms 정밀도) |
+| `timestamp` | string (ISO 8601) | O | 이벤트 발생 시각 (ms 정밀도, 클라이언트/서버 생성 모두 허용) |
+| `server_time` | string (ISO 8601) | O | **CCR-015** — 서버 기준 시각 (클록 스큐 보정용). BO가 append 시 강제 설정 |
 | `source_id` | string | O | 발신자 식별 (`cc-table-{id}` / `lobby` / `bo`) |
 | `message_id` | string (UUID) | O | 메시지 고유 ID (중복 방지) |
+| `idempotency_key` | string (UUID/ULID) | 조건부 | **client→server command 메시지** 권장 (CCR-003). BO는 이 키로 중복 command 차단 + audit_events에 기록. |
+
+#### Seq 보장 규칙 (CCR-015)
+
+| 규칙 | 내용 |
+|------|------|
+| SSOT | `audit_events.seq` 컬럼(DATA-04 §5.2)이 단일 진실. WebSocket 브로드캐스트는 DB commit 이후에만 수행한다. |
+| 범위 | 테이블별 독립 시퀀스. 테이블 생성 시 0으로 리셋. `(table_id, seq)` UNIQUE. |
+| 글로벌 이벤트 | `table_id="*"` 의 독립 시퀀스 유지. |
+| HA failover | 재시작 시 DB에서 `SELECT MAX(seq) FROM audit_events WHERE table_id=...` 로 이어간다. |
+| 순서 보장 범위 | **같은 테이블 내부만**. 테이블 간 순서는 `server_time` 기반으로 비교. |
+| gap 복구 | 클라이언트가 `seq` 연속성 깨짐 감지 → `GET /api/v1/tables/{id}/events?since={last_seq}` 호출하여 누락 이벤트 replay (API-01 §5.7). |
 
 ### 2.2 응답/확인 메시지
 
@@ -119,6 +138,33 @@ WebSocket 프로토콜은 HTTP `Authorization` 헤더를 직접 지원하지 않
   "message_id": "msg-uuid-5678"
 }
 ```
+
+### 2.3 Client→Server command 메시지 예시 (CCR-003)
+
+CC/Lobby가 BO에 상태 변경을 요청하는 command 메시지는 `idempotency_key` 필드를 포함해야 한다. BO는 동일 키 재수신 시 `idempotency_keys` 테이블(DATA-04 §4.5) 또는 `audit_events.idempotency_key` UNIQUE 제약으로 중복 처리를 차단한다.
+
+```json
+{
+  "type": "AssignSeatCommand",
+  "payload": {
+    "table_id": 5,
+    "seat_no": 3,
+    "player_id": 1012
+  },
+  "timestamp": "2026-04-10T12:34:56.789Z",
+  "source_id": "cc-table-5",
+  "message_id": "msg-uuid-9001",
+  "idempotency_key": "01J9M2K3A7Q8R5T6V0X1Y2Z3B4"
+}
+```
+
+**BO 응답 패턴 (Ack)**:
+
+| 상황 | Ack `status` | 비고 |
+|------|-------------|------|
+| 최초 처리 | `"ok"` | 정상 처리, audit_events append |
+| 동일 키 + 동일 payload 재수신 | `"ok_replayed"` | 캐시된 응답 재생, audit_events append 없음 |
+| 동일 키 + 상이한 payload | `"error"` + `error_code: "idempotency_key_reused"` | REST API의 409와 동일 의미 |
 
 ---
 
@@ -225,6 +271,43 @@ Lobby(또는 Settings)에서 설정을 변경하면 BO를 경유하여 CC에 실
 | `PlayerUpdated` | table_id, seat, player_id, fields_changed | Lobby 플레이어 수정 | CC | 이름/프로필 변경 |
 | `TableAssigned` | table_id, rfid_reader_id, deck_status, output_preset | Lobby 테이블 설정 | CC | RFID/덱/출력 설정 |
 | `BlindStructureChanged` | table_id, new_level, sb, bb, ante | Lobby 블라인드 변경 | CC | 새 블라인드 레벨 적용 |
+| `skin_updated` | skin_id, version, transition_type, broadcasted_at | Admin이 GE에서 PUT /skins/{id}/activate 성공 (API-07 §6) | CC, Overlay | 스킨 전환 (CCR-015) |
+
+### 5.3 skin_updated 이벤트 상세 (CCR-015)
+
+```json
+{
+  "type": "skin_updated",
+  "seq": 42,
+  "payload": {
+    "skin_id": "sk_01HVQK...",
+    "version": 3,
+    "transition_type": "fade",
+    "broadcasted_at": "2026-04-14T10:30:00Z"
+  },
+  "timestamp": "2026-04-14T10:30:00.012Z",
+  "source_id": "bo-api-07",
+  "message_id": "msg-uuid-skin-42"
+}
+```
+
+| 필드 | 설명 |
+|------|------|
+| `seq` | 단조증가. CCR-015 seq 정책 준수. Overlay replay 기준. |
+| `skin_id` | 새로 활성화된 스킨의 ID |
+| `version` | 스킨 버전 (편집마다 증가) |
+| `transition_type` | 전환 효과. `BS-07-03 §5.2`의 5종 enum (`cut`/`fade`/`slide`/`dissolve`/`black`) |
+| `broadcasted_at` | 서버 시각, Admin audit 용 |
+
+**Consumer 동작 (CC/Overlay, Team 4)**:
+
+1. `GET /api/v1/skins/{skin_id}` → `.gfskin` 바이트 다운로드 (API-07 §3)
+2. `BS-07-03 §3 로드 FSM` 수행 (in-memory ZIP 해제 + JSON Schema 검증)
+3. `BS-07-03 §5.2 전환 FSM` 수행 (`transition_type`에 따른 효과 적용)
+4. Overlay 재렌더 (500ms 이내, GEA-06)
+5. 로드 실패 시: `BS-07-03 §4` 폴백 스킨 전환
+
+**Replay**: Overlay 재연결 또는 network gap 후 복구 시 `GET /api/v1/skins/active`로 current active 확인 후 `GET /events/replay?from_seq={last_seq}&channel=cc_event`로 놓친 `skin_updated` 이벤트 재생 (CCR-015 seq 단조증가 정책 활용).
 
 ### 5.1 ConfigChanged payload 상세
 
@@ -356,5 +439,187 @@ WebSocket 연결 후 첫 메시지로 인증 토큰을 전송해야 한다. 5초
   "timestamp": "2026-04-08T14:30:01Z",
   "source_id": "bo",
   "message_id": "msg-uuid-err-1"
+}
+```
+
+---
+
+## 8. 직렬화 협상 (CCR-023)
+
+### 8.1 배경
+
+초당 수십 이벤트가 발생하는 라이브 방송 환경에서 JSON payload의 메타데이터 오버헤드(키 이름, 공백, 콤마)는 대역폭에 부담을 준다. WSOP LIVE Fatima.app은 **SignalR + MessagePack** 조합으로 payload를 평균 30~50% 압축하여 운영 중이다.
+
+EBS는 SignalR로 전환하지 않고 **JSON과 MessagePack을 모두 지원**하는 타협안을 채택한다 (Option C).
+
+### 8.2 연결 시 협상
+
+WebSocket URL query param `format`으로 선택:
+
+| 연결 | URL 예시 |
+|------|---------|
+| CC → BO (JSON, 기본) | `ws://{host}/ws/cc?table_id={id}&token={t}&format=json` |
+| CC → BO (MessagePack) | `ws://{host}/ws/cc?table_id={id}&token={t}&format=msgpack` |
+| Lobby → BO (JSON, 기본) | `ws://{host}/ws/lobby?token={t}&format=json` |
+| Lobby → BO (MessagePack) | `ws://{host}/ws/lobby?token={t}&format=msgpack` |
+
+**기본값**: `format` 생략 시 `json` (하위 호환). BO 초기 구현은 JSON만 지원, MessagePack은 Phase 2에서 활성화. 미지원 `format` 요청 시 WebSocket handshake를 HTTP 406 Not Acceptable로 거부.
+
+**혼합 금지**: 한 연결 내에서 format 전환 불가. 전환 필요 시 연결 재수립.
+
+### 8.3 MessagePack 스키마
+
+기존 JSON envelope 구조를 MessagePack으로 1:1 매핑한다. 필드 이름과 값은 JSON과 **동일**:
+
+```
+fixmap 5 elements
+  "type" → "HandStarted"
+  "payload" → fixmap N elements
+  "timestamp" → "2026-04-08T14:30:00.123Z"
+  "source_id" → "cc-table-5"
+  "message_id" → "msg-uuid-1234"
+```
+
+| JSON 타입 | MessagePack 타입 |
+|----------|-----------------|
+| string | fixstr / str8 / str16 / str32 |
+| int | positive/negative fixint / int8~64 |
+| float | float32 / float64 |
+| boolean | true / false |
+| null | nil |
+| object | fixmap / map16 / map32 |
+| array | fixarray / array16 / array32 |
+
+**특수 케이스**:
+- **Timestamp**: 문자열(ISO 8601)로 유지. MessagePack extension type 미사용 (상호운용성 우선).
+- **UUID**: 문자열로 유지.
+- **Binary data** (향후 image/file): MessagePack `bin8/16/32` 사용.
+
+### 8.4 구현 라이브러리
+
+| 환경 | 라이브러리 |
+|------|-----------|
+| Python (FastAPI) | `msgpack` |
+| Dart (Flutter) | `messagepack` |
+| JavaScript/TypeScript | `@msgpack/msgpack` |
+
+각 클라이언트 직렬화 결과가 상호 decode 가능한지 Cross-compat 테스트 필수.
+
+### 8.5 Fallback
+
+MessagePack 파싱 실패 시 BO는 해당 메시지를 drop하지 않고 `DeserializationError` 이벤트로 로그 기록 후 연결을 종료한다. 클라이언트는 재연결 시 `format=json`으로 downgrade 가능.
+
+---
+
+## 9. WriteGameInfo 프로토콜 (CCR-024)
+
+### 9.1 용도
+
+CC의 NEW HAND 버튼이 서버에 발행하는 **핸드 초기화 명령**. Game Engine의 HandFSM을 `IDLE → SETUP_HAND` 로 전이시키며, 블라인드 구조·포지션·특수 규칙을 1회 명령으로 확정한다.
+
+- **발행자**: CC (BS-05-02 NEW HAND 버튼)
+- **수신자**: BO → Game Engine
+- **응답**: `GameInfoAck { hand_id, ready_for_deal }` 또는 `GameInfoRejected { reason }`
+
+### 9.2 필드 스키마 (24 fields)
+
+```json
+{
+  "type": "WriteGameInfo",
+  "payload": {
+    "table_id": 5,
+    "hand_id": 248,
+    "dealer_seat": 3,
+    "sb_seat": 4,
+    "bb_seat": 5,
+    "sb_amount": 500,
+    "bb_amount": 1000,
+    "ante_amount": 100,
+    "big_blind_ante": false,
+    "straddle_seats": [6],
+    "straddle_amount": 2000,
+    "blind_structure_id": "wsop-ft-2026-lv42",
+    "blind_level": 42,
+    "current_level_start_ts": "2026-04-10T14:30:00Z",
+    "next_level_start_ts": "2026-04-10T14:50:00Z",
+    "game_type": "no_limit_holdem",
+    "allowed_games": ["nlhe"],
+    "rotation_order": null,
+    "chip_denominations": [100, 500, 1000, 5000, 25000, 100000],
+    "active_seats": [1, 2, 3, 4, 5, 6, 7, 8],
+    "dead_button_mode": true,
+    "run_it_multiple_allowed": true,
+    "bomb_pot_enabled": false,
+    "cap_bb_multiplier": null
+  },
+  "timestamp": "2026-04-10T14:30:00.123Z",
+  "source_id": "cc-table-5",
+  "message_id": "msg-uuid-1234"
+}
+```
+
+### 9.3 필드 정의
+
+| # | 필드 | 타입 | 필수 | 설명 |
+|:-:|------|------|:----:|------|
+| 1 | `table_id` | int | ✓ | 테이블 식별자 |
+| 2 | `hand_id` | int | ✓ | 핸드 식별자 (Backend에서 할당) |
+| 3 | `dealer_seat` | int (0~9) | ✓ | Dealer button 좌석 |
+| 4 | `sb_seat` | int (0~9) | ✓ | Small Blind 좌석 |
+| 5 | `bb_seat` | int (0~9) | ✓ | Big Blind 좌석 |
+| 6 | `sb_amount` | int | ✓ | SB 금액 |
+| 7 | `bb_amount` | int | ✓ | BB 금액 |
+| 8 | `ante_amount` | int | ✓ | Ante 금액 (0이면 없음) |
+| 9 | `big_blind_ante` | bool | ✓ | true면 BB가 전체 ante 선납 |
+| 10 | `straddle_seats` | int[] | ✓ | Straddle 활성 좌석 (빈 배열 = 없음) |
+| 11 | `straddle_amount` | int | △ | `straddle_seats` 비어있지 않을 때 필수 |
+| 12 | `blind_structure_id` | string | ✓ | 블라인드 구조 ID (Lobby가 생성) |
+| 13 | `blind_level` | int | ✓ | 현재 레벨 번호 (1부터) |
+| 14 | `current_level_start_ts` | ISO 8601 | ✓ | 현재 레벨 시작 시각 |
+| 15 | `next_level_start_ts` | ISO 8601 | ✓ | 다음 레벨 시작 예정 시각 |
+| 16 | `game_type` | enum | ✓ | `no_limit_holdem` / `pot_limit_holdem` / `limit_holdem` / `plo` / `mix` |
+| 17 | `allowed_games` | string[] | ✓ | Mix 게임 시 허용 종목 리스트 |
+| 18 | `rotation_order` | string[]\|null | △ | Mix 게임 순환 순서 (null = 랜덤) |
+| 19 | `chip_denominations` | int[] | ✓ | 테이블 가용 토큰 단위 |
+| 20 | `active_seats` | int[] | ✓ | 현재 핸드 참여 좌석 (Sitting Out 제외) |
+| 21 | `dead_button_mode` | bool | ✓ | Dead Button Rule 적용 여부 |
+| 22 | `run_it_multiple_allowed` | bool | ✓ | Run It Multiple(X2/X3) 허용 여부 |
+| 23 | `bomb_pot_enabled` | bool | ✓ | 이 핸드가 Bomb Pot인지 |
+| 24 | `cap_bb_multiplier` | int\|null | ✓ | Cap Game BB 배수 (null = 무제한) |
+
+### 9.4 검증 규칙
+
+- `dealer_seat`, `sb_seat`, `bb_seat`는 `active_seats`에 포함
+- `straddle_seats`는 `active_seats`의 부분집합
+- `sb_amount < bb_amount`, Straddle 존재 시 `bb_amount < straddle_amount`
+- `game_type == "mix"`이면 `allowed_games` ≥ 2
+- `current_level_start_ts < next_level_start_ts`
+
+### 9.5 응답
+
+**`GameInfoAck` (성공)**:
+```json
+{
+  "type": "GameInfoAck",
+  "payload": {
+    "hand_id": 248,
+    "ready_for_deal": true,
+    "estimated_deal_ready_ts": "2026-04-10T14:30:00.200Z"
+  }
+}
+```
+
+CC는 이 응답 수신 후 DEAL 버튼을 활성화한다.
+
+**`GameInfoRejected` (실패)**:
+```json
+{
+  "type": "GameInfoRejected",
+  "payload": {
+    "hand_id": 248,
+    "reason": "VALIDATION_FAILED",
+    "field": "sb_amount",
+    "message": "sb_amount must be < bb_amount"
+  }
 }
 ```

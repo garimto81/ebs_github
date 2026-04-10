@@ -7,6 +7,7 @@
 | 2026-04-09 | 비밀번호 재설정 추가 | Forgot Password 흐름(A-26~A-29), 에러 코드 2건, Audit 이벤트 2건 |
 | 2026-04-09 | doc-critic FAIL 항목 수정 | 정의 섹션 용어 사전 14개 추가, 인증 전체 흐름 시각화 추가, 전문 용어 첫 등장 시 괄호 설명 30건 추가 |
 | 2026-04-09 | GAP-L-001 보강 | 세션 관리 A-20(앱 재방문 토큰 검증), A-21(로그인 페이지 진입 조건) 추가 |
+| 2026-04-10 | CCR-006 | JWT Access/Refresh 만료 정책 환경별 차등 명시 (`## Session & Token Lifecycle` 섹션 신설) |
 
 ---
 
@@ -26,7 +27,7 @@
 |----------|------|
 | **Authentication** | 사용자 식별 — email + password + 선택적 TOTP 2FA |
 | **Authorization** | 권한 결정 — JWT 토큰의 `role` 클레임 기반 RBAC |
-| **Session** | 인증 상태 유지 — Access Token(15분) + Refresh Token(7일) |
+| **Session** | 인증 상태 유지 — Access Token + Refresh Token (만료 정책은 환경별 차등, `## Session & Token Lifecycle` 참조) |
 
 ### 용어 사전
 
@@ -35,8 +36,8 @@
 | **JWT** (JSON Web Token) | 로그인 성공 시 서버가 발급하는 디지털 출입증. 매 요청마다 이 출입증을 보여 신원을 증명 |
 | **TOTP** (Time-based One-Time Password) | 30초마다 바뀌는 6자리 숫자 코드. Google Authenticator 같은 앱에서 생성 |
 | **RBAC** (Role-Based Access Control) | 역할(Admin/Operator/Viewer)에 따라 접근 가능한 기능을 제한하는 방식 |
-| **Access Token** | 15분짜리 단기 출입증. API 요청 시 매번 제출 |
-| **Refresh Token** | 7일짜리 장기 출입증. Access Token 만료 시 새 Access Token을 발급받는 데 사용 |
+| **Access Token** | 단기 출입증. API 요청 시 매번 제출. 만료 시간은 환경별 차등 (dev 1h / staging·prod 2h / **prod-live 12h**) |
+| **Refresh Token** | 장기 출입증. Access Token 만료 시 새 Access Token을 발급받는 데 사용. 만료 시간: dev 24h / staging·prod·live 7d |
 | **WebSocket** | 서버와 브라우저 간 실시간 양방향 통신 채널. 채팅처럼 즉시 메시지를 주고받음 |
 | **OAuth** | 외부 서비스(Google, Microsoft)의 계정으로 로그인하는 방식. 비밀번호를 직접 관리하지 않아도 됨 |
 | **SSO** (Single Sign-On) | 한 번 로그인하면 여러 서비스에 추가 로그인 없이 접근하는 방식 |
@@ -55,8 +56,8 @@
 |--------|----------|------|
 | **로그인** | 사용자 (수동) | Lobby에서 email + password 입력 (CC는 독립 로그인 없음) |
 | **로그아웃** | 사용자 (수동) | 메뉴에서 로그아웃 선택 |
-| **세션 만료 — Access Token** | 시스템 (자동) | 15분 경과 → 자동 Refresh 시도 |
-| **세션 만료 — Refresh Token** | 시스템 (자동) | 7일 경과 → 로그인 화면 리다이렉트 |
+| **세션 만료 — Access Token** | 시스템 (자동) | 환경별 Access TTL 경과 → 자동 Refresh 시도 (만료 5분 전 선제 갱신). 상세: `## Session & Token Lifecycle` |
+| **세션 만료 — Refresh Token** | 시스템 (자동) | 환경별 Refresh TTL(기본 7일) 경과 → 로그인 화면 리다이렉트 |
 | **재인증** | 시스템 (자동) | 네트워크 복구, 앱 재시작 시 토큰 갱신 |
 | **강제 로그아웃** | Admin (수동) | Admin이 사용자 비활성화 → 다음 토큰 갱신 시 차단 |
 | **비밀번호 변경** | 사용자/Admin (수동) | 모든 Refresh Token 무효화 → 전 기기 재로그인 |
@@ -113,8 +114,8 @@
 
 | # | As a | When | Then | Edge Case |
 |:-:|------|------|------|-----------|
-| A-08 | 모든 역할 | Access Token 15분 만료 | 클라이언트가 자동으로 `POST /auth/refresh`(토큰 갱신 API) → 새 Access Token | Refresh 실패 시 로그인 화면 리다이렉트 |
-| A-09 | 모든 역할 | Refresh Token 7일 만료 | 로그인 화면 리다이렉트, 세션 데이터는 서버에 보존 | 재로그인 시 세션 복원 다이얼로그 표시 |
+| A-08 | 모든 역할 | Access Token 환경별 TTL 만료 (dev 1h / prod 2h / **live 12h**) | 클라이언트가 만료 5분 전 자동으로 `POST /auth/refresh`(토큰 갱신 API) → 새 Access Token | Refresh 실패 시 로그인 화면 리다이렉트. WebSocket은 끊지 않고 `reauth` 커맨드로 유지 |
+| A-09 | 모든 역할 | Refresh Token TTL(dev 24h / prod·live 7d) 만료 | 로그인 화면 리다이렉트, 세션 데이터는 서버에 보존 | 재로그인 시 세션 복원 다이얼로그 표시 |
 | A-20 | 모든 역할 | 브라우저를 닫았다가 Lobby URL 재방문 | `GET /auth/session`으로 서버 토큰 검증 → 유효: 이전 화면 유지 / 만료: `logout()` → 로그인 화면 리다이렉트 | localStorage에 토큰이 있어도 서버 검증 없이 Lobby 진입 금지 |
 | A-21 | 모든 역할 | 유효한 세션 상태에서 로그인 페이지(`/login`) 직접 접근 | `GET /auth/session` 성공 → 자동으로 `/series`로 리다이렉트 | 로그인 폼 표시 금지 (이미 인증된 상태) |
 | A-10 | Operator | Lobby에서 CC Launch 시 | Lobby가 one_time_token(1회용 인증 코드) 생성 → CC 실행 파라미터로 전달 → CC가 token exchange로 자체 JWT 발급 | one_time_token 유효기간 5분. 만료 시 CC 종료, Lobby에서 재Launch 필요 |
@@ -246,6 +247,47 @@
 
 > **CC 세션 생성**: CC 세션은 Lobby의 [Launch CC]로만 생성된다. CC에서 직접 로그인하여 세션을 생성할 수 없다.
 
+### JWT 만료 정책 (CCR-006)
+
+> **근거**: WSOP Staff App `Auth.md` 의 `expires_in: 43200초(12h)` 운영 기준. 14-16시간 연속 방송 시나리오에서 짧은 Access Token은 과도한 refresh 오버헤드와 WebSocket 재연결 리스크를 유발한다. 환경별 프로파일로 보안/편의를 절충한다.
+
+#### 환경별 만료 정책
+
+| 환경 | Access | Refresh | 근거 |
+|------|--------|---------|------|
+| dev | 1h | 24h | 개발 편의 |
+| staging | 2h | 7d | QA 테스트 세션 |
+| prod(방송 외) | 2h | 7d | 사무/관리 세션 |
+| **prod(live 방송)** | **12h** | **7d** | WSOP Staff App 준거. 14-16h 연속 방송 중 재인증 최소화 |
+
+환경 플래그는 BO 설정 `AUTH_PROFILE=dev|staging|prod|live` 로 제어한다. 본 문서 상단의 "Access Token 15분" 기술은 과거 초안이며 실제 운영 기준은 위 표를 따른다.
+
+#### 토큰 갱신 규칙
+
+| 항목 | 규칙 |
+|------|------|
+| 자동 refresh 시점 | 클라이언트는 Access 만료 5분 전 자동 refresh 시도 |
+| Refresh 실패 | Refresh Token 만료/무효 → 즉시 로그아웃 → Lobby 로그인 화면 |
+| Refresh 성공 | 새 Access Token으로 교체, WebSocket 연결은 유지 (끊지 않음) |
+
+#### WebSocket 재연결 interplay
+
+| 상황 | 동작 |
+|------|------|
+| 최초 연결 | Access Token 검증 (URL query `token`) |
+| 연결 중 Access 만료 | BO는 연결을 끊지 않고 `token_expiring` 이벤트 발행 → 클라이언트가 refresh 후 `reauth` 커맨드 전송 |
+| `reauth` 미수신 60초 경과 | BO가 연결 강제 종료 |
+
+#### 강제 무효화
+
+| 트리거 | 동작 |
+|--------|------|
+| 관리자 비밀번호 변경 | 해당 사용자의 모든 Refresh Token blacklist |
+| 역할 박탈 | Refresh Token blacklist → 다음 refresh 시 `AUTH_ACCOUNT_DISABLED` |
+| 수동 kick | Refresh Token blacklist + WebSocket 연결 즉시 종료 |
+| Access Token 처리 | 짧은 수명으로 자연 무효화 대기 (stateless) |
+| live 환경(12h) 최적화 | Redis `blacklist:jti:{jti}` 캐시로 blacklist 조회 성능 보장 |
+
 ### Audit 이벤트 매트릭스
 
 | 이벤트 | 기록 대상 | Audit Log 필드 |
@@ -309,6 +351,69 @@
 | 5 | — | CC가 자체 토큰으로 BO에 독립 인증 |
 
 > **핵심**: CC는 Lobby와 토큰을 공유하지 않는다. One-time token 교환으로 별도 JWT 세션을 생성한다.
+
+---
+
+## Session & Token Lifecycle (CCR-006)
+
+> **근거**: WSOP Staff App `Auth.md` 의 `expires_in: 43200초(12h)` 기준을 참조하여, 14-16시간 연속 방송 시나리오에서 과도한 refresh 오버헤드와 WebSocket 재연결 리스크를 피하고, 동시에 사무/개발 환경의 짧은 노출 창을 보장한다. Phase별·환경별로 차등 적용한다.
+
+### 1. 만료 정책 (환경별 차등)
+
+| 환경 | Access Token | Refresh Token | 근거 |
+|------|:------------:|:-------------:|------|
+| `dev` | 1h | 24h | 개발 편의, 재인증 빈번 허용 |
+| `staging` | 2h | 7d | QA 테스트 세션 연속성 |
+| `prod` (방송 외) | 2h | 7d | 사무/관리 세션 |
+| **`live`** (방송 운영) | **12h** | **7d** | WSOP Staff App 준거. 14-16h 연속 방송 중 재인증 최소화 |
+
+**환경 플래그**: BO 설정 `AUTH_PROFILE=dev|staging|prod|live`로 제어. 기본값 `prod`.
+
+> **주의**: 기존 경우의 수 매트릭스(A-08, A-09)의 "Access 15분 / Refresh 7일" 문구는 `prod` 기본값 기준이 아닌 초기 초안 값이다. 본 섹션이 **SSOT**이며, 해당 매트릭스는 CCR-006 후속 정리 대상.
+
+### 2. 토큰 갱신 규칙
+
+| 규칙 | 동작 |
+|------|------|
+| 자동 refresh | 클라이언트는 Access 만료 **5분 전** 자동 `POST /auth/refresh` 시도 |
+| Refresh 실패 | 만료/무효 시 즉시 로그아웃 → Lobby 로그인 화면 리다이렉트 |
+| Refresh 성공 | 새 Access로 교체. WebSocket 연결은 **끊지 않음** |
+| Access Token 저장 | Lobby: JavaScript 메모리 / CC: Flutter Secure Storage |
+| Refresh Token 저장 | Lobby: HttpOnly Cookie(SameSite=Strict) / CC: Secure Storage |
+
+### 3. WebSocket 재연결 Interplay
+
+| 단계 | BO 동작 | 클라이언트 동작 |
+|:----:|---------|----------------|
+| 1 | 최초 연결 시 Access 토큰 검증 (`?token=` query param, API-05 §1.3) | — |
+| 2 | 토큰이 연결 중 만료되면 **연결을 끊지 않고** `token_expiring` 이벤트 발행 | — |
+| 3 | — | `POST /auth/refresh` → 새 Access 취득 |
+| 4 | `reauth` 커맨드 수신 → 새 토큰으로 세션 권한 갱신 | `reauth` 커맨드 전송 (envelope `type: "ReauthCommand"`) |
+| 5 | `reauth` 미수신 **60초** 경과 시 연결 강제 종료 | 재접속 필요 |
+
+### 4. 강제 무효화
+
+| 트리거 | 동작 | 비고 |
+|--------|------|------|
+| 관리자 비밀번호 변경 | 해당 사용자의 모든 Refresh Token을 DB blacklist | Access는 짧은 수명으로 자연 무효화 대기 |
+| 역할 박탈/강등 | Refresh blacklist + WebSocket 연결 종료 | 다음 API 호출 시 403 |
+| Admin 수동 kick | Refresh blacklist + 현재 Access도 `jti` blacklist 등록 | `live` 환경(12h) 필수 |
+| `live` 환경 blacklist 저장소 | Redis `blacklist:jti:{jti}` 캐시 (TTL=Access 잔여) | 성능 핵심, Phase 3+ 구현 |
+
+### 5. API-06 응답 필드 (CCR-006)
+
+`POST /auth/login`, `POST /auth/refresh` 응답 JSON에 다음 필드를 포함한다.
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `access_token` | string | JWT Access Token |
+| `refresh_token` | string | JWT Refresh Token (`live` 환경은 HttpOnly Cookie로 대체 가능) |
+| `expires_in` | int (seconds) | Access Token 유효 기간 (`AUTH_PROFILE`에 따라 3600~43200) |
+| `expires_at` | string (ISO 8601) | Access Token 만료 시각 (절대시간) |
+| `refresh_expires_in` | int (seconds) | Refresh Token 유효 기간 (기본 604800 = 7d) |
+| `auth_profile` | string | `dev`/`staging`/`prod`/`live` 중 하나 (클라이언트 UX 분기용) |
+
+> 상세 응답 샘플과 에러 코드는 `API-06-auth-session.md §CCR-006` 참조.
 
 ---
 

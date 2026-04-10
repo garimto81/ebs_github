@@ -3,6 +3,9 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 모든 BS/BO/IMPL/API/DATA 문서의 용어 기반 확립 |
+| 2026-04-10 | CCR-011 | §1 앱 아키텍처 표에 Graphic Editor(GE, Team 1 Lobby 허브) 행 추가 |
+| 2026-04-10 | CCR-014 | §7.4 신설 — GE 요구사항 Prefix 재편 (GEM/GEI/GEA/GER), GEB-/GEP- reference-only 전환 |
+| 2026-04-10 | CCR-016 | §1 Lobby row 기술 컬럼 Quasar(Vue 3)+TS 확정. 본 §1 표가 Tech Stack SSOT임을 명시 |
 
 ---
 
@@ -20,11 +23,12 @@ EBS는 **3개 별도 앱 + 1개 독립 패키지**로 구성된다. WSOP LIVE(St
 
 | 용어 | 정의 | 기술 | 비고 |
 |------|------|------|------|
-| **Lobby** | 모든 테이블의 관제·설정 허브. 웹 브라우저 앱 | 웹 (React/Next.js TBD) | 구 WSOP LIVE Staff Page 대응 |
+| **Lobby** | 모든 테이블의 관제·설정 허브. 웹 브라우저 앱 | Quasar Framework (Vue 3) + TypeScript | 구 WSOP LIVE Staff Page 대응. GE 허브 포함. Tech Stack SSOT (CCR-016). |
 | **Command Center (CC)** | 게임 진행 커맨드 입력 화면. 테이블당 1개 인스턴스 | Flutter 앱 (별도 실행) | 구 PokerGFX Action Tracker |
 | **Back Office (BO)** | Lobby와 CC 사이 간접 데이터 공유 계층. REST API + WebSocket + DB | FastAPI + SQLite → PostgreSQL | Lobby↔CC 직접 연동 없음 |
 | **Game Engine** | 게임 규칙·상태 관리 순수 패키지. CC에 import됨 | 순수 Dart (Flutter 의존 없음) | Event Sourcing |
 | **Overlay** | 시청자 방송 화면 그래픽 출력 | Flutter + Rive | CC와 동일 기술 스택 |
+| **Graphic Editor (GE)** | 아트 디자이너 `.gfskin` Import + 메타데이터 편집 + Activate 허브. Lobby 탭(`/lobby/graphic-editor`). | Quasar (Vue 3) + rive-js (@rive-app/canvas) | Admin 전용. CC/Overlay와 별개 런타임. 동일 `.riv` 바이너리 공유. (CCR-011) |
 | **Settings** | 오버레이·출력·게임 규칙·통계 설정. Lobby의 하위 다이얼로그 | Lobby 웹 내 구현 | ~~Console~~ 독립 앱 아님 |
 
 **관계**:
@@ -33,6 +37,8 @@ EBS는 **3개 별도 앱 + 1개 독립 패키지**로 구성된다. WSOP LIVE(St
 - CC 1개 = Table 1개 = Overlay 1개
 
 > **금지**: "단일 Flutter 앱의 2개 화면" 표현. Lobby(웹)와 CC(Flutter)는 별도 앱이다.
+
+> **Tech Stack SSOT (CCR-016)**: 본 §1 표는 EBS 앱 기술 스택의 **단일 출처(Single Source of Truth)** 다. `team*-*/specs/impl/IMPL-*.md`, `team*-*/CLAUDE.md`, `team*-*/ui-design/UI-*.md` 등 팀 내부 스펙은 본 표를 cross-reference해야 한다. 기술 스택 변경은 반드시 본 표를 먼저 수정한 뒤 CCR 알림을 통해 모든 팀 내부 스펙을 동기화한다.
 
 ---
 
@@ -207,8 +213,10 @@ Competition → Series → Event → Flight → Table → Seat → Player
 | **G3-** | GFX3 방송 연출 (자막, 타이머 등) | 13 |
 | **SYS-** | System (RFID, 네트워크, 보안, 백업) | 16 |
 | **SK-** | Skin Editor | 16 |
-| **GEB-** | Graphic Editor Board | 15 |
-| **GEP-** | Graphic Editor Player | 15 |
+| **GEB-** | Graphic Editor Board (PokerGFX 역설계 참고 자산, reference-only) | 15 |
+| **GEP-** | Graphic Editor Player (PokerGFX 역설계 참고 자산, reference-only) | 15 |
+
+> **GEB-/GEP- 상태 변경 (CCR-014)**: 두 prefix는 PokerGFX 역설계 기반의 Transform/Animation 편집 요구사항이었으나, `ge-ownership-move` (CCR-011)로 편집 scope가 "메타데이터 + Import + Activate"로 축소되면서 **reference-only**로 전환되었다. 실제 편집 UI 대상이 아니며, 디자이너는 Rive 공식 에디터로 `.riv`를 완성한다. 신규 GE 요구사항 prefix는 §7.4 참조.
 
 ### 7.2 BS 문서 번호
 
@@ -228,6 +236,85 @@ Competition → Series → Event → Flight → Table → Seat → Player
 | ID | 영역 | 문서 위치 |
 |----|------|----------|
 | BO-01~11 | Back Office 기획 | `back-office/` |
+
+### 7.4 Graphic Editor Requirements Prefix (CCR-011 / CCR-014)
+
+Graphic Editor는 Team 1 Lobby 허브로 이관되며 편집 범위가 "Import + Metadata + Activate"로 축소되었다. 요구사항 prefix 체계는 다음과 같다.
+
+| Prefix | 범위 | 개수 | 상태 | 소유 |
+|--------|------|:----:|------|------|
+| **GEM-** | Metadata 편집 (`skin.json` 필드: 이름/버전/색상/폰트/해상도/animations duration) | 25 | active | team1 |
+| **GEI-** | Import Flow (`.gfskin` ZIP 업로드, 검증, 프리뷰) | 8 | active | team1 |
+| **GEA-** | Activate + Broadcast (`PUT /skins/{id}/activate` + 멀티 CC 동기화) | 6 | active | team1 + team2 |
+| **GER-** | RBAC guards (Admin/Operator/Viewer gate, UI + API 이중) | 5 | active | team1 + team2 |
+| **GEB-** | Board 편집 (PokerGFX 역설계 참고) | 15 | reference-only | — |
+| **GEP-** | Player 편집 (PokerGFX 역설계 참고) | 15 | reference-only | — |
+
+#### GEM-* Metadata Editing Requirements (25)
+
+| ID | 설명 | `skin.json` path | UI | 검증 |
+|----|------|---------------|-----|------|
+| GEM-01 | Skin 이름 편집 | `skin_name` | text input (1~40) | non-empty |
+| GEM-02 | 버전 편집 | `version` | text input | semver regex `^\d+\.\d+\.\d+$` |
+| GEM-03 | 작성자 편집 | `author` | text input (0~80) | — |
+| GEM-04 | 해상도 선택 | `resolution.width`/`.height` | dropdown (1080p/1440p/2160p) | enum |
+| GEM-05 | 배경 설정 | `background.type` + `.color`/`.chromakey_color` | dropdown + color picker | enum + `#hex` |
+| GEM-06 | 배경 색상 | `colors.background` | color picker | `#hex` |
+| GEM-07 | Text primary 색상 | `colors.text_primary` | color picker | `#hex` |
+| GEM-08 | Text secondary 색상 | `colors.text_secondary` | color picker | `#hex` |
+| GEM-09 | Badge check 색상 | `colors.badge_check` | color picker | `#hex` |
+| GEM-10 | Badge fold 색상 | `colors.badge_fold` | color picker | `#hex` |
+| GEM-11 | Badge bet 색상 | `colors.badge_bet` | color picker | `#hex` |
+| GEM-12 | Badge call 색상 | `colors.badge_call` | color picker | `#hex` |
+| GEM-13 | Badge allin 색상 | `colors.badge_allin` | color picker | `#hex` |
+| GEM-14 | Pot text 색상 | `colors.pot_text` | color picker | `#hex` |
+| GEM-15 | Player name 폰트 | `fonts.player_name` | family + size + weight | — |
+| GEM-16 | Chip stack 폰트 | `fonts.chip_stack` | family + size + weight | — |
+| GEM-17 | Pot 폰트 | `fonts.pot` | family + size + weight | — |
+| GEM-18 | Action badge 폰트 | `fonts.action_badge` | family + size + weight | — |
+| GEM-19 | Equity 폰트 | `fonts.equity` | family + size + weight | — |
+| GEM-20 | Hand rank 폰트 | `fonts.hand_rank` | family + size + weight | — |
+| GEM-21 | Card fade duration | `animations.card_fade_duration_ms` | slider (0~5000) | integer |
+| GEM-22 | Board slide duration | `animations.board_slide_duration_ms` | slider (0~5000) | integer |
+| GEM-23 | Board stagger delay | `animations.board_stagger_delay_ms` | slider (0~1000) | integer |
+| GEM-24 | Glint sequence duration | `animations.glint_sequence_duration_ms` | slider (0~5000) | integer |
+| GEM-25 | Reset duration | `animations.reset_duration_ms` | slider (0~5000) | integer |
+
+#### GEI-* Import Flow Requirements (8)
+
+| ID | 설명 |
+|----|------|
+| GEI-01 | `.gfskin` ZIP 파일 선택 UI (파일 다이얼로그 또는 드래그앤드롭) |
+| GEI-02 | ZIP 구조 검증 (`skin.json` + `skin.riv` 필수) |
+| GEI-03 | `skin.json` JSON 파싱 |
+| GEI-04 | DATA-07 JSON Schema 클라이언트 검증 (ajv-js) |
+| GEI-05 | `skin.riv` Rive 파싱 가능성 확인 |
+| GEI-06 | Rive 프리뷰 렌더링 (rive-js `@rive-app/canvas`) |
+| GEI-07 | `POST /api/v1/skins` multipart 업로드 |
+| GEI-08 | 업로드 실패 시 에러 메시지 UI |
+
+#### GEA-* Activate + Broadcast Requirements (6)
+
+| ID | 설명 |
+|----|------|
+| GEA-01 | Activate 버튼 클릭 → ETag 포함 `PUT` 요청 |
+| GEA-02 | GameState==RUNNING 감지 시 경고 다이얼로그 표시 |
+| GEA-03 | 412 ETag 충돌 시 최신 상태 refetch 후 재시도 옵션 |
+| GEA-04 | 성공 응답 후 UI에 "Activated" 토스트 |
+| GEA-05 | 서버 `skin_updated` WebSocket broadcast (seq 단조증가, CCR-015 준수) |
+| GEA-06 | 다중 CC 인스턴스 동시 리로드 (500ms 이내) |
+
+#### GER-* RBAC Requirements (5)
+
+| ID | 설명 |
+|----|------|
+| GER-01 | Admin 역할만 Upload / PATCH / Activate / Delete 버튼 표시 |
+| GER-02 | Operator는 읽기 전용 (리스트 / 프리뷰 / 메타데이터 조회) |
+| GER-03 | Viewer는 GE 탭 자체 접근 차단 |
+| GER-04 | 서버 API gate (UI gate 우회 방지) |
+| GER-05 | 403 응답 시 UI 안내 메시지 |
+
+> **연관 문서**: `BS-08-graphic-editor/` 5파일, `API-07-graphic-editor.md`, `DATA-07-gfskin-schema.md`.
 
 ---
 

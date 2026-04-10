@@ -185,7 +185,172 @@ CC가 비정상 종료 후 재시작되면:
 | BS-05-04 수동 카드 입력 | RFID 폴백 시 카드 입력 UI |
 | BS-05-05 Undo/복구 | 오류 복구 메커니즘 상세 |
 | BS-05-06 키보드 단축키 | 단축키 전체 맵 |
+| BS-05-07 Statistics | AT-04 Statistics 화면 (CCR-027) |
+| BS-05-08 Game Settings Modal | AT-06 모달 (CCR-028) |
+| BS-05-09 Player Edit Modal | AT-07 모달 (CCR-028) |
+| BS-05-10 Multi-Table Operator | 다중 테이블 운영 패턴 (CCR-030) |
 | BS-02-lobby | Lobby에서 CC Launch 플로우 |
 | BS-06-00-triggers | CC 이벤트 21종 정의 |
 | BS-06-01-holdem-lifecycle | HandFSM 상태 전이 |
 | BS-07-overlay | CC와 1:1 대응 Overlay 출력 |
+
+---
+
+## 6. AT 화면 체계 (CCR-028)
+
+CC 앱은 **8개 독립 화면**(AT-00 ~ AT-07)으로 구성되며, AT-01 Main은 **7개 Zone**(M-01 ~ M-07)으로 그룹핑된다. Miller's Law(7±2) 기반 인지 부하 최소화, 6시간+ 라이브 방송 피로 최소화 원칙.
+
+### 6.1 화면 카탈로그
+
+| 화면 ID | 이름 | 크기 | 진입 경로 | 상세 문서 |
+|---------|------|------|---------|----------|
+| AT-00 | Login | 480×360 | 앱 시작 | `BS-01-auth` |
+| AT-01 | Main | 720 min-width, auto height | Login 성공 | 본 문서 §3, §6.2 |
+| AT-02 | Action View | AT-01 Layer 4~6 오버레이 | 핸드 진행 중 | `BS-05-01`, `BS-05-02` |
+| AT-03 | Card Selector | 560×auto (모달) | 카드 슬롯 탭 또는 RFID Fallback | `BS-05-04` |
+| AT-04 | Statistics | — | M-01 Toolbar → Menu → Statistics | `BS-05-07-statistics.md` |
+| AT-05 | RFID Register | — | Settings 또는 메뉴 | `BS-04-05-register-screen.md` |
+| AT-06 | Game Settings | 600×auto (모달) | M-01 Toolbar → Menu → Game Settings | `BS-05-08-game-settings-modal.md` |
+| AT-07 | Player Edit | 모달 | 좌석 롱프레스 또는 컨텍스트 메뉴 | `BS-05-09-player-edit-modal.md` |
+
+### 6.2 AT-01 Main의 7 Zone 구조
+
+| Zone | 이름 | 기능 |
+|:----:|------|------|
+| M-01 | Toolbar | NEW HAND, HIDE GFX 토글, Menu |
+| M-02 | Info Bar | Hand #, Pot, SB/BB/Ante 표시 |
+| M-03 | 좌석 라벨 행 | 포지션 마커 (Dealer/SB/BB/UTG) — 시각 규격은 `BS-05-03 §시각 규격` |
+| M-04 | 스트래들 토글 행 | 좌석별 Straddle ON/OFF |
+| M-05 | 좌석 카드 행 | 10좌석 상태 (Active/Empty/Folded/All-In) |
+| M-06 | 블라인드 패널 | `WriteGameInfo` 프로토콜 필드 (API-05 §9) |
+| M-07 | 액션 패널 | FOLD/CALL/BET/RAISE/ALL-IN + UNDO |
+
+### 6.3 반응형 해상도
+
+- **최소 폭**: 720px (568px 이하 미지원)
+- **높이**: auto (CSS Container Queries 기반)
+- **근거**: Nielsen Heuristic #7 (Flexibility and Efficiency of Use)
+
+---
+
+## 7. Launch 플로우 상세 (CCR-029)
+
+### 7.1 시퀀스
+
+```
+[Operator] → [Lobby Web] → [BO] → [DB] → [CC 신규 프로세스]
+
+1. Operator가 Lobby에서 [Launch] 클릭
+2. Lobby → BO: POST /api/v1/tables/{id}/launch
+3. BO 검증:
+   - auth 확인 (JWT role=Admin/Operator)
+   - RBAC (Operator면 assigned_tables에 해당 table 포함)
+   - TableFSM이 SETUP 이상인지
+4. BO → DB: cc_session record 생성 (cc_instance_id 할당)
+5. BO: launch_token 생성 (JWT 5분 수명)
+6. BO → Lobby: 200 OK { cc_instance_id, launch_token, ws_url }
+7. Lobby → OS: Flutter CC 앱 실행
+   (OS별 shell command 또는 deep link)
+8. CC 앱 시작 with args:
+   --table_id={id}
+   --token={launch_token}
+   --cc_instance_id={uuid}
+9. CC → BO: WebSocket 연결
+   ws://host/ws/cc?table_id=X&token=launch_token&cc_instance_id=U
+10. BO: launch_token 검증 + cc_instance_id 매칭
+    + cc_session.status = CONNECTED
+11. BO → CC: 초기 상태 JSON 전송 (TableState + Seat + 현재 Hand)
+12. CC: IDLE 화면 진입, Ready
+```
+
+### 7.2 Launch 실패 복구
+
+| 실패 | 대응 |
+|------|------|
+| Launch token 만료 (5분 초과) | Lobby가 자동 재요청 → 새 토큰 |
+| CC 프로세스 실행 실패 | Lobby 경고 배너 "CC 실행 실패. OS 권한 확인" |
+| WebSocket 연결 실패 | CC 재연결 시도 (§8 참조) |
+| BO 검증 실패 (RBAC) | Lobby 배너 "권한 부족" + 403 |
+
+### 7.3 API-01 엔드포인트
+
+`POST /api/v1/tables/{id}/launch` 상세는 `API-01-backend-endpoints.md` 참조.
+
+---
+
+## 8. BO 연결 상실 복구 (CCR-031, W2 해소)
+
+### 8.1 감지
+
+- WebSocket `Ping` 30초 간격 / `Pong` 10초 타임아웃 (API-05 §하트비트)
+- 3회 연속 Pong 타임아웃 → 연결 상실로 판단
+
+### 8.2 복구 흐름
+
+```
+BO WebSocket 연결 상실 감지
+  │
+  ├─ 핸드 미진행 (HandFSM == IDLE)
+  │   ├─ AT-01 우상단 연결 상태 아이콘 → 적색
+  │   ├─ M-01 Toolbar에 "재연결 중..." 토스트
+  │   ├─ 재연결 시도: 0ms → 5s → 10s × 최대 100회 → 중단
+  │   └─ 재연결 성공:
+  │        ├─ GET /tables/{id}/state 호출
+  │        ├─ 서버 상태 수신 → IDLE 복귀
+  │        └─ 연결 아이콘 → 녹색
+  │
+  └─ 핸드 진행 중 (HandFSM ∈ { PRE_FLOP, FLOP, TURN, RIVER, SHOWDOWN })
+      ├─ AT-01 최상단 경고 배너 "BO 연결 끊김 — 로컬 모드 (액션 X/20)"
+      ├─ 로컬 Event Sourcing 스택에 모든 액션 기록 (최대 20 이벤트)
+      ├─ 액션 버튼은 정상 활성 (로컬 검증만, 서버 ActionOnResponse 무시)
+      ├─ RFID 감지 계속 동작 (로컬 스택에 기록)
+      │
+      └─ 재연결 성공 시:
+         ├─ 로컬 이벤트 스택 → `ReplayEvents` 프로토콜로 BO에 일괄 전송
+         │   payload: { hand_id, events: [{ type, payload, local_timestamp }, ...] }
+         │
+         ├─ BO 응답 처리:
+         │   ├─ Accept → 모든 이벤트 수용, 상태 동기화, 배너 해제
+         │   ├─ PartialAccept → N개까지 수용, "N번째부터 재입력 필요" 다이얼로그
+         │   └─ Reject → "동기화 실패, 핸드 Reset 필요" → `AbortHand`
+         │
+         └─ 20 이벤트 초과 시:
+             ├─ 로컬 스택 가득 참 → "이벤트 버퍼 초과" 경고
+             ├─ 새 액션 입력 차단
+             └─ 운영자가 핸드 Reset 선택 가능
+```
+
+### 8.3 구현 요구사항
+
+| 항목 | 값 |
+|------|---|
+| 하트비트 간격 | 30초 |
+| Pong 타임아웃 | 10초 |
+| 재연결 백오프 | 0ms → 5s → 10s × 100 → 중단 |
+| 로컬 이벤트 버퍼 | 20 이벤트 |
+| ReplayEvents 최대 payload | 20 × 2KB = 40KB |
+
+---
+
+## 9. Table FSM vs HandFSM 경계 (CCR-031, W6 해소)
+
+| FSM | 소관 | 전이 주체 |
+|-----|------|----------|
+| **TableFSM** (`EMPTY/SETUP/LIVE/PAUSED/CLOSED`) | 테이블 생명주기 (Lobby 관리) | Lobby 또는 Admin |
+| **HandFSM** (`IDLE/SETUP_HAND/PRE_FLOP/.../HAND_COMPLETE`) | 현재 핸드 진행 (CC 관리) | CC 운영자 + Game Engine |
+
+**규칙**:
+- `PAUSED`는 **TableFSM** 상태 (CC는 구독자)
+- TableFSM == PAUSED면 HandFSM은 freeze — 액션 버튼 비활성
+- TableFSM이 PAUSED → LIVE 전이 시 HandFSM은 이전 상태 복원 (로컬 Event Sourcing 기반)
+
+---
+
+## 10. 운영 패턴 — 1:1:1 vs 1:N (CCR-030)
+
+| 관계 | 의미 |
+|------|------|
+| **CC : Table : Overlay = 1:1:1** | 기술적 인스턴스 관계 (불변) |
+| **Operator : CC 인스턴스 = 1:N** | 한 명의 운영자가 여러 CC 동시 관리 가능 |
+
+다중 테이블 운영의 3가지 패턴(A/B/C)과 키보드 포커스 정책 등 상세는 `BS-05-10-multi-table-ops.md` 참조.

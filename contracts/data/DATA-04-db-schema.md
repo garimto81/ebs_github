@@ -3,6 +3,7 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | SQLAlchemy/SQLModel 스타일 스키마 초판 (Phase 1 SQLite 호환) |
+| 2026-04-10 | CCR-001 | `idempotency_keys`, `audit_events` 테이블 신설 (멱등성 + 이벤트 소싱 SSOT) |
 
 ---
 
@@ -437,7 +438,118 @@ class OutputPreset(SQLModel, table=True):
 
 ---
 
-## 5. 인덱스
+## 5. 멱등성·이벤트 소싱 테이블 (CCR-001)
+
+> **근거**: CCR-001 — WSOP+ `EventFlightSeatHistory`/Audit 테이블 설계 및 CCR-003(Idempotency-Key)/CCR-015(WebSocket seq) 요구사항을 수용한다.
+> **관련 CCR**: CCR-001, CCR-003, CCR-010, CCR-015
+
+### 5.1 `idempotency_keys`
+
+재시도 안전성 보장용 요청/응답 캐시. 24h TTL 후 정리.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `key` | VARCHAR(128) | PK | 클라이언트가 생성한 UUIDv4/ULID |
+| `user_id` | VARCHAR(64) | NOT NULL | 멱등성 범위를 사용자당으로 좁혀 키 충돌 방지 |
+| `method` | VARCHAR(16) | NOT NULL | POST/PUT/PATCH/DELETE |
+| `path` | VARCHAR(255) | NOT NULL | 요청 경로 (query string 제외) |
+| `request_hash` | CHAR(64) | NOT NULL | 바디 SHA-256 |
+| `status_code` | SMALLINT | NOT NULL | 최초 응답 상태 |
+| `response_body` | TEXT | NULL | 최초 응답 바디 (JSON) |
+| `created_at` | TIMESTAMP | NOT NULL DEFAULT now() | 인입 시각 |
+| `expires_at` | TIMESTAMP | NOT NULL | `created_at + 24h` |
+
+**인덱스**:
+- `(user_id, key)` UNIQUE
+- `expires_at` B-tree (청소용)
+
+**정리 정책**:
+- `DELETE FROM idempotency_keys WHERE expires_at < now()` — cron 5분 간격
+
+**Phase 1 SQLite 매핑**: `VARCHAR`/`CHAR` → `TEXT`, `TIMESTAMP` → `TEXT` (ISO 8601), `SMALLINT` → `INTEGER`.
+
+```python
+# idempotency_keys
+class IdempotencyKey(SQLModel, table=True):
+    __tablename__ = "idempotency_keys"
+
+    key: str = Field(primary_key=True, max_length=128)
+    user_id: str = Field(nullable=False, max_length=64)
+    method: str = Field(nullable=False, max_length=16)
+    path: str = Field(nullable=False, max_length=255)
+    request_hash: str = Field(nullable=False, max_length=64)   # SHA-256 hex
+    status_code: int = Field(nullable=False)
+    response_body: str | None = None                           # TEXT (JSON)
+    created_at: str = Field(default_factory=utcnow)
+    expires_at: str = Field(nullable=False)                    # created_at + 24h
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "key"),
+    )
+```
+
+---
+
+### 5.2 `audit_events`
+
+모든 상태 변경을 append-only로 기록하는 이벤트 스토어. `seq`는 테이블별 단조증가이며 WebSocket envelope의 `seq`(CCR-015)와 1:1 매핑된다. 복구·리플레이·Undo의 SSOT.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGSERIAL | PK | 전역 순번 (audit용) |
+| `table_id` | VARCHAR(64) | NOT NULL | 테이블 식별자. 테이블 없는 이벤트(global)는 `'*'` |
+| `seq` | BIGINT | NOT NULL | 테이블별 단조증가. `(table_id, seq)` UNIQUE |
+| `event_type` | VARCHAR(64) | NOT NULL | `seat_assigned`, `hand_started`, `rebalance_step` 등 |
+| `actor_user_id` | VARCHAR(64) | NULL | 주체 (system 이벤트는 NULL) |
+| `correlation_id` | VARCHAR(64) | NULL | 분산 트레이싱 ID (same across service hops) |
+| `causation_id` | VARCHAR(64) | NULL | 직전 원인 이벤트의 id (event sourcing 체인) |
+| `idempotency_key` | VARCHAR(128) | NULL | 요청이 `Idempotency-Key` 동반 시 기록 |
+| `payload` | JSONB | NOT NULL | 이벤트 본문 (스키마는 `event_type`별) |
+| `inverse_payload` | JSONB | NULL | Undo/Revive용 역방향 이벤트 본문 |
+| `created_at` | TIMESTAMP | NOT NULL DEFAULT now() | append 시각 |
+
+**제약**:
+- `UNIQUE (table_id, seq)` — seq 중복 방지
+- `UNIQUE (idempotency_key) WHERE idempotency_key IS NOT NULL` — 방어적 중복 차단
+- **append-only**: UPDATE/DELETE는 DB 레벨에서 차단 (trigger 또는 역할 권한). Undo는 새 inverse 이벤트를 append.
+
+**인덱스**:
+- `(table_id, seq DESC)` — replay 쿼리 최적화 (`GET /tables/{id}/events?since=...`)
+- `(correlation_id)` — 분산 트레이싱
+- `(event_type, created_at)` — 이벤트 종류별 조회
+
+**보존**: 1년 (감사 규정). 이후 cold storage로 아카이브.
+
+**Phase 1 SQLite 매핑**: `JSONB` → `TEXT`(JSON 직렬화), `BIGSERIAL` → `INTEGER PRIMARY KEY AUTOINCREMENT`, `BIGINT` → `INTEGER`, `VARCHAR` → `TEXT`.
+
+```python
+# audit_events
+class AuditEvent(SQLModel, table=True):
+    __tablename__ = "audit_events"
+
+    id: int = Field(primary_key=True)                          # BIGSERIAL
+    table_id: str = Field(nullable=False, max_length=64)       # '*' = global
+    seq: int = Field(nullable=False)                           # BIGINT, per-table monotonic
+    event_type: str = Field(nullable=False, max_length=64)
+    actor_user_id: str | None = None
+    correlation_id: str | None = None
+    causation_id: str | None = None
+    idempotency_key: str | None = None
+    payload: str = Field(nullable=False)                       # TEXT (JSON)
+    inverse_payload: str | None = None                         # TEXT (JSON), Undo/Revive
+    created_at: str = Field(default_factory=utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("table_id", "seq"),
+    )
+```
+
+> **append-only 강제 방법** (Phase 3+ PostgreSQL): `REVOKE UPDATE, DELETE ON audit_events FROM app_role;` + `BEFORE UPDATE OR DELETE` trigger로 차단.
+> **Phase 1 SQLite**: 애플리케이션 계층의 `EventRepository` 가드 + 통합 테스트로 검증.
+
+---
+
+## 6. 인덱스
 
 | 테이블 | 인덱스 | 컬럼 | 용도 |
 |--------|--------|------|------|
@@ -457,10 +569,15 @@ class OutputPreset(SQLModel, table=True):
 | audit_logs | idx_audit_user | user_id | 사용자별 감사 로그 |
 | audit_logs | idx_audit_entity | entity_type, entity_id | 엔티티별 이력 |
 | audit_logs | idx_audit_time | created_at | 시간순 조회 |
+| idempotency_keys | idx_idem_user_key | user_id, key (UNIQUE) | 사용자별 멱등키 조회 |
+| idempotency_keys | idx_idem_expires | expires_at | 만료 정리 |
+| audit_events | idx_audit_events_table_seq | table_id, seq DESC (UNIQUE) | replay 쿼리 |
+| audit_events | idx_audit_events_corr | correlation_id | 분산 트레이싱 |
+| audit_events | idx_audit_events_type_time | event_type, created_at | 이벤트 종류별 조회 |
 
 ---
 
-## 6. CASCADE 규칙
+## 7. CASCADE 규칙
 
 | 부모 | 자식 | ON DELETE |
 |------|------|----------|

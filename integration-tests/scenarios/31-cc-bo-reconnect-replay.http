@@ -1,0 +1,114 @@
+### CCR-031 (§W2) — CC BO 연결 복구 + ReplayEvents
+###
+### 검증:
+### - BO 끊김 감지 (하트비트 3회 miss)
+### - 핸드 진행 중 로컬 Event Sourcing (최대 20 이벤트)
+### - 재연결 시 ReplayEvents 일괄 전송
+### - BO Accept / PartialAccept / Reject 응답 처리
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 31.1 POST /api/v1/tables/{id}/replay-events — Accept 케이스 (수동)
+###
+### CC가 로컬 버퍼(최대 20 이벤트)를 일괄 전송
+POST {{host}}/api/v1/tables/1/replay-events
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "hand_id": 248,
+  "cc_instance_id": "cc-uuid-abcd",
+  "events": [
+    {
+      "type": "ActionPerformed",
+      "payload": { "seat_no": 3, "action": "fold" },
+      "local_timestamp": "2026-04-10T14:30:05.123Z",
+      "local_seq": 1
+    },
+    {
+      "type": "ActionPerformed",
+      "payload": { "seat_no": 4, "action": "call", "amount": 1000 },
+      "local_timestamp": "2026-04-10T14:30:06.234Z",
+      "local_seq": 2
+    },
+    {
+      "type": "CardDetected",
+      "payload": { "uid": "04A3B2C1", "card": "Ah" },
+      "local_timestamp": "2026-04-10T14:30:07.456Z",
+      "local_seq": 3
+    }
+  ]
+}
+
+# 예상 응답: 200 OK (Accept)
+# {
+#   "status": "accept",
+#   "accepted_count": 3,
+#   "synced_state": { /* 최신 hand_state */ },
+#   "next_expected_seq": 50
+# }
+
+### 31.2 POST /replay-events — PartialAccept (일부 이벤트 거부)
+POST {{host}}/api/v1/tables/1/replay-events
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "hand_id": 248,
+  "cc_instance_id": "cc-uuid-abcd",
+  "events": [
+    { "type": "ActionPerformed", "payload": { "seat_no": 3, "action": "fold" }, "local_seq": 1 },
+    { "type": "ActionPerformed", "payload": { "seat_no": 99, "action": "bet", "amount": 500 }, "local_seq": 2 }
+  ]
+}
+
+# Seat 99는 존재하지 않음:
+# 예상 응답: 207 Multi-Status (PartialAccept)
+# {
+#   "status": "partial",
+#   "accepted_count": 1,
+#   "rejected": [
+#     { "local_seq": 2, "reason": "INVALID_SEAT", "message": "Seat 99 does not exist" }
+#   ],
+#   "resume_from_seq": 2
+# }
+
+### 31.3 POST /replay-events — Reject (핸드 Reset 필요)
+POST {{host}}/api/v1/tables/1/replay-events
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "hand_id": 999,
+  "cc_instance_id": "cc-uuid-abcd",
+  "events": [
+    { "type": "ActionPerformed", "payload": {...}, "local_seq": 1 }
+  ]
+}
+
+# hand_id 999 가 서버에 없음 (이미 종료 또는 불일치):
+# 예상 응답: 409 Conflict (Reject)
+# {
+#   "status": "reject",
+#   "reason": "HAND_STATE_MISMATCH",
+#   "message": "Hand 999 not found or already completed.",
+#   "action": "abort_hand"
+# }
+
+### 31.4 Heartbeat 검증 (수동)
+###
+### WebSocket 연결 후 30s 간격으로 Ping/Pong 모니터링
+### 3회 연속 Pong 타임아웃(총 90s) 시 CC는 연결 상실 처리:
+###   - AT-01 우상단 아이콘 적색
+###   - 재연결 시도 0ms → 5s → 10s × 100회 백오프
+
+### 31.5 POST /tables/{id}/state — 재연결 후 상태 조회
+GET {{host}}/api/v1/tables/1/state
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK + 현재 전체 상태
+# CC가 IDLE 복귀 시 이 응답으로 로컬 상태 동기화

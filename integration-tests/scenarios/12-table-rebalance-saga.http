@@ -1,0 +1,72 @@
+### CCR-020 — Table Rebalance Saga
+###
+### 검증:
+### - POST /tables/rebalance 응답에 saga_id, steps 포함
+### - 207 Multi-Status (부분 성공) + 500 실패 시나리오
+### - 각 step의 status: "pending" → "in_progress" → "completed" / "failed"
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 12.1 POST /api/v1/tables/rebalance — 정상 (전체 성공)
+POST {{host}}/api/v1/tables/rebalance
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+
+{
+  "flight_id": 1,
+  "source_tables": [5, 6],
+  "target_tables": [1, 2, 3]
+}
+
+# 예상 응답: 200 OK
+# {
+#   "saga_id": "rbl-01HVQK...",
+#   "status": "completed",
+#   "steps": [
+#     { "step_id": 1, "action": "break_source_tables", "status": "completed" },
+#     { "step_id": 2, "action": "reassign_players", "status": "completed" },
+#     { "step_id": 3, "action": "notify_cc_instances", "status": "completed" }
+#   ],
+#   "players_moved": 18
+# }
+
+### 12.2 POST /api/v1/tables/rebalance — 부분 성공 (일부 테이블 가득 참)
+POST {{host}}/api/v1/tables/rebalance
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+
+{
+  "flight_id": 1,
+  "source_tables": [10, 11, 12],
+  "target_tables": [1, 2]
+}
+
+# 예상 응답: 207 Multi-Status
+# {
+#   "saga_id": "rbl-...",
+#   "status": "partial",
+#   "steps": [
+#     { "step_id": 1, "status": "completed" },
+#     { "step_id": 2, "status": "failed", "reason": "Target table 2 reached max_players" },
+#     { "step_id": 3, "status": "skipped" }
+#   ],
+#   "players_moved": 7,
+#   "players_pending": 11
+# }
+
+### 12.3 GET /api/v1/sagas/{saga_id} — saga 상태 조회
+GET {{host}}/api/v1/sagas/rbl-01HVQK-test-saga-id
+Authorization: Bearer {{admin_token}}
+
+# 예상: 현재 saga 상태, step별 진행률, 롤백 가능 여부
+
+### 12.4 POST /api/v1/sagas/{saga_id}/rollback — 부분 실패 후 롤백
+POST {{host}}/api/v1/sagas/rbl-01HVQK-test-saga-id/rollback
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+
+# 예상: 완료된 step들을 역순으로 reverse
+# 207 Multi-Status with rollback 결과

@@ -190,3 +190,41 @@ Run It Twice/Thrice 시 보드를 여러 번 깐다.
 | `BS-07-01-elements.md` | 요소별 트리거 조건 |
 | `BS-07-03-skin-loading.md` | 스킨별 애니메이션 파라미터 오버라이드 |
 | `BS-03-settings/` | 애니메이션 속도 설정 UI |
+
+---
+
+## Rive 사운드 경계 (CCR-033)
+
+Rive Artboard의 State Machine에서 사운드 트리거가 필요한 시점(예: Winner 애니메이션 내부 fanfare)은 **Input 변수**(`soundTrigger: string`)로 외부에 노출하며, Rive가 직접 `audio` 태그로 재생하지 않는다.
+
+```
+Rive State Machine
+  │
+  ├─ animation reaches "fanfare_cue" keyframe
+  │
+  ├─ Input "soundTrigger" = "winner_fanfare"
+  │
+  ├─ Flutter 코드 (Input listener)
+  │   └─ AudioPlayerProvider.play("winner_fanfare")
+  │
+  └─ Rive는 사운드를 직접 재생하지 않음
+```
+
+**경계 규칙**:
+- Rive 내부에서 사운드 재생 금지 — 모든 사운드는 `AudioPlayerProvider` 중앙 관리
+- Rive는 `soundTrigger` Input만 변경, 실제 재생은 Flutter 코드 책임
+- Volume/Mute/Channel 정책이 Rive 안에 있으면 일관성이 깨지므로 중앙 관리 필수
+
+상세는 `BS-07-05-audio §5 Rive 애니메이션 내부 사운드` 참조.
+
+---
+
+## CC-Overlay 일관성 (CCR-032, CCR-034)
+
+Overlay 애니메이션은 CC(`BS-05-03-seat-management §6`)의 시각 규격과 **동일한 색상 체계와 주기**를 유지한다. 운영자(CC)와 시청자(Overlay)가 서로 다른 시각 언어를 보지 않도록 강제한다.
+
+- **action-glow**: CC는 `#FDD835` box-shadow 0.8s alternate. Overlay는 Rive 애니메이션으로 재현하되 같은 색상·주기.
+- **포지션 마커 색상**: Dealer `#E53935`, SB `#FDD835`, BB `#1E88E5`, UTG `#43A047` (CC와 동일)
+- **좌석 배경**: Active `#2E7D32`, Folded 40% opacity, All-In `#000000` (CC와 동일)
+
+Table별 색상 Override가 있는 경우 CC와 Overlay가 **동일 override를 공유**한다 (BS-03-02-gfx §7).

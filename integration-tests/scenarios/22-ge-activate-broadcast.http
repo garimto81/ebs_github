@@ -1,0 +1,105 @@
+### CCR-013 §6, CCR-015 — Activate + WebSocket skin_updated Broadcast
+###
+### 검증:
+### - PUT /skins/{id}/activate 201 → active_skin_id 갱신
+### - WebSocket 구독자들이 skin_updated 이벤트 수신
+### - seq 단조증가 (CCR-021)
+### - X-Game-State 불일치 시 409 + Warning
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+@skin_id = sk_01HVQK-test
+
+### 22.1 GET /api/v1/skins/active — 현재 active 조회
+GET {{host}}/api/v1/skins/active
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK { "active_skin_id": "sk_previous", "seq": 41 }
+# 또는 204 No Content (active 미설정)
+
+### 22.2 PUT /api/v1/skins/{id}/activate — GameState=IDLE
+# @name activate
+PUT {{host}}/api/v1/skins/{{skin_id}}/activate
+Authorization: Bearer {{admin_token}}
+If-Match: W/"3-etag-from-metadata"
+X-Game-State: IDLE
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{}
+
+# 예상 응답: 201 Created
+# {
+#   "active_skin_id": "sk_01HVQK-test",
+#   "seq": 42,
+#   "broadcasted_at": "2026-04-10T10:30:00Z"
+# }
+
+### 22.3 Activate 후 Consumer WS 수신 검증 (수동)
+###
+### 사전에 wscat 연결:
+###   wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token=<jwt>&format=json'
+###
+### 위 22.2 요청 후 수신 메시지:
+### {
+###   "type": "skin_updated",
+###   "seq": 42,
+###   "payload": {
+###     "skin_id": "sk_01HVQK-test",
+###     "version": 3,
+###     "transition_type": "fade",
+###     "broadcasted_at": "2026-04-10T10:30:00Z"
+###   },
+###   "timestamp": "2026-04-10T10:30:00.012Z",
+###   "source_id": "bo-api-07",
+###   "message_id": "msg-uuid-skin-42"
+### }
+###
+### 검증 포인트:
+### - seq = 42 (단조증가, CCR-021)
+### - transition_type ∈ {cut, fade, slide, dissolve, black}
+### - broadcasted_at이 활성화 시각과 일치
+
+### 22.4 PUT /activate — GameState RUNNING + X-Game-State=IDLE 불일치
+PUT {{host}}/api/v1/skins/{{skin_id}}/activate
+Authorization: Bearer {{admin_token}}
+If-Match: W/"4-new-etag"
+X-Game-State: IDLE
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{}
+
+# 실제 서버 GameState가 RUNNING일 때:
+# 예상 응답: 409 Conflict
+# Warning: 199 - "GameState mismatch: server=RUNNING, client=IDLE"
+# {
+#   "error": "GAME_STATE_MISMATCH",
+#   "server_state": "RUNNING",
+#   "client_state": "IDLE"
+# }
+
+### 22.5 PUT /activate — 사용자가 RUNNING 강제 override
+PUT {{host}}/api/v1/skins/{{skin_id}}/activate
+Authorization: Bearer {{admin_token}}
+If-Match: W/"4-new-etag"
+X-Game-State: RUNNING
+X-Force-Activate: true
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{}
+
+# 예상: 201 Created (경고 다이얼로그 후 명시적 강제)
+
+### 22.6 PUT /activate — stale ETag
+PUT {{host}}/api/v1/skins/{{skin_id}}/activate
+Authorization: Bearer {{admin_token}}
+If-Match: W/"1-stale"
+X-Game-State: IDLE
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{}
+
+# 예상: 412 Precondition Failed

@@ -305,3 +305,66 @@
 | `BS-06-00-REF-game-engine-spec.md` | DisplayConfig 필드 (card_reveal_type 등) |
 | `BS-06-00-triggers.md` | 트리거 이벤트 카탈로그 |
 | `BS-03-settings/` | 가시성 토글 UI |
+| `BS-05-03-seat-management §6` | CC 시각 규격 원본 (CCR-034 동기화) |
+
+---
+
+## Player Element 시각 규격 (CCR-034)
+
+> **참조**: `BS-05-03-seat-management §6` (CC 시각 규격 원본)
+
+Overlay의 Player Element(10좌석 각각)는 CC 화면과 **동일한 색상 체계**를 사용한다. 운영자(CC)와 시청자(Overlay)가 같은 시각 언어로 정보를 파악하도록 강제한다.
+
+### 포지션 마커 색상
+
+| 포지션 | CSS / Dart Color | 출처 |
+|--------|-----------------|------|
+| Dealer | `#E53935` (Material Red 600) | BS-05-03 §6.1 |
+| SB | `#FDD835` (Material Yellow 600) | BS-05-03 §6.1 |
+| BB | `#1E88E5` (Material Blue 600) | BS-05-03 §6.1 |
+| UTG | `#43A047` (Material Green 600) | BS-05-03 §6.1 |
+| 일반 | `#FFFFFF` | BS-05-03 §6.1 |
+
+### 좌석 상태 배경색
+
+| Seat 상태 | 배경 | 투명도 | 추가 요소 |
+|-----------|------|:------:|----------|
+| VACANT | `#616161` | 100% | "OPEN" (Overlay에서 숨김 가능) |
+| OCCUPIED + active | `#2E7D32` | 100% | — |
+| OCCUPIED + active + action_on | `#2E7D32` + action-glow | 100% | 노란 테두리 펄스 |
+| OCCUPIED + folded | `#616161` | 40% | — |
+| OCCUPIED + sitting_out | `#616161` | 60% | "AWAY" |
+| OCCUPIED + all_in | `#000000` | 100% | "ALL-IN" 배지 (흰색) |
+
+### action-glow 애니메이션
+
+- **효과**: box-shadow 펄스 (CSS) 또는 Rive State Machine의 동등한 구현
+- **주기**: **0.8초** (`BS-05-03 §6.3`과 동일)
+- Rive 구현 시 `action_glow_intensity` Input(0.0~1.0)을 사인파로 구동
+- **근거**: Preattentive Processing (0.8s가 무의식 감지 범위)
+
+### Skin Override 정책
+
+Graphic Editor(BS-08)에서 Admin이 Skin마다 위 색상을 커스터마이즈할 수 있다. **CC와 Overlay는 동일 override 값을 공유**해야 한다.
+
+- `.gfskin` / `skin.json` 에 `player_state_colors` 섹션 **1개**만 유지
+- CC 화면과 Overlay 화면이 모두 이 섹션을 참조
+- **CC 전용/Overlay 전용 색상 분리 금지** (계약 위반)
+
+### 상태 동기화 흐름
+
+```
+Game Engine (BS-06)
+  │
+  ├─ 상태 변경 (player_status: active → folded)
+  │
+  ├─ OutputEvent 발행 (API-04)
+  │   └─ { seat_no, player_status, biggest_bet, ... }
+  │
+  ├─ Overlay 수신
+  │   └─ Player Element 상태 업데이트
+  │   └─ 본 문서 §Player Element 시각 규격 렌더링
+  │
+  └─ CC 수신
+      └─ BS-05-03 §6에 따른 동일 렌더링 (같은 색상 코드)
+```

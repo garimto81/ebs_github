@@ -232,3 +232,55 @@ BO DB에 없는 플레이어를 즉석 등록:
 | BS-05-02 액션 버튼 | 활성 플레이어 수에 따른 버튼 활성 조건 |
 | BS-02-lobby | Lobby Table Management와 좌석 데이터 동기화 |
 | BS-07-overlay | 좌석 변경 시 Overlay 플레이어 위치 반영 |
+
+---
+
+## 6. 시각 규격 (CCR-032)
+
+CC M-03 좌석 라벨 행과 M-05 좌석 카드 행의 색상·애니메이션 규격. Overlay(BS-07-01)는 동일 체계를 Rive 애니메이션으로 재현한다 (CCR-034).
+
+### 6.1 포지션 마커 색상 (M-03)
+
+| 포지션 | 표시 | CSS 색상 | 근거 |
+|--------|------|---------|------|
+| **Dealer** | 🔴 빨간 원 + "D" | `#E53935` (Material Red 600) | WSOP 원본 포커 관습 |
+| **SB** (Small Blind) | 🟡 노란 원 + "SB" | `#FDD835` (Material Yellow 600) | WSOP 원본 |
+| **BB** (Big Blind) | 🔵 파란 원 + "BB" | `#1E88E5` (Material Blue 600) | WSOP 원본 |
+| **UTG** | 🟢 초록 원 + "UTG" | `#43A047` (Material Green 600) | WSOP 원본 |
+| 일반 | ⚪ 흰색 원 (포지션 숫자) | `#FFFFFF` | Neutral fallback |
+
+### 6.2 좌석 상태 배경색 (M-05)
+
+| SeatFSM × Player 상태 | 배경색 | 투명도 | 추가 요소 |
+|----------------------|--------|:------:|----------|
+| VACANT | `#616161` (Gray 700) | 100% | "OPEN" 텍스트 |
+| OCCUPIED + active | `#2E7D32` (Green 800) | 100% | — |
+| OCCUPIED + active + action_on | `#2E7D32` + action-glow 펄스 | 100% | 노란 테두리 강조 |
+| OCCUPIED + folded | `#616161` (Gray 700) | 40% | — |
+| OCCUPIED + sitting_out | `#616161` (Gray 700) | 60% | "AWAY" 텍스트 |
+| OCCUPIED + all_in | `#000000` (Black) | 100% | "ALL-IN" 텍스트 (흰색) |
+
+### 6.3 action-glow 애니메이션
+
+- **효과**: box-shadow 펄스 (Preattentive Processing)
+- **주기**: 0.8초 (`infinite alternate`)
+- **근거**: `team4-cc/ui-design/reference/action-tracker/analysis/EBS-AT-Design-Rationale.md §4.4`
+
+```css
+@keyframes action-glow {
+  from { box-shadow: 0 0 0 0 rgba(253, 216, 53, 0.4); }
+  to   { box-shadow: 0 0 16px 4px rgba(253, 216, 53, 1.0); }
+}
+
+.seat-cell[data-action-on="true"] {
+  animation: action-glow 0.8s infinite alternate;
+}
+```
+
+### 6.4 Overlay 동기화
+
+Overlay(BS-07-01-elements)는 본 섹션의 색상 체계와 주기(0.8s)를 동일하게 사용한다. CC와 Overlay의 색상 분열이 운영자와 시청자의 시각 언어를 분열시키는 것을 방지 (CCR-034).
+
+### 6.5 Table별 Override
+
+특정 테이블에서 브랜딩 목적으로 색상을 override하는 정책은 `BS-03-02-gfx §7 Overlay 색상 Override` (CCR-025) 참조.

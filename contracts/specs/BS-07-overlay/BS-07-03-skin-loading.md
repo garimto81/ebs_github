@@ -27,22 +27,24 @@
 
 ## 2. 스킨 파일 구조
 
-### 2.1 디렉토리 구조
+### 2.1 배포 포맷: `.gfskin` ZIP (CCR-012)
+
+스킨은 `.gfskin` 확장자의 ZIP 컨테이너로 배포된다. 상세 스키마는 `contracts/data/DATA-07-gfskin-schema.md` 참조.
 
 ```
-skins/
-  wsop-2026-default/
-    skin.riv              ← Rive 애니메이션 파일
-    skin.skin.json        ← 메타데이터 (레이아웃, 색상, 폰트)
-    cards/                ← 카드 이미지 에셋 (52장 + 뒷면)
-      As.png, Kh.png, ...
-      back.png
-    assets/               ← 기타 에셋 (배경, 아이콘)
-      background.png
-      dealer-button.png
-  wsop-2026-dark/
-    ...
+my-skin.gfskin (ZIP)
+├── skin.json          ← 메타데이터 (필수, 루트)
+├── skin.riv           ← Rive 애니메이션 파일 (필수)
+├── cards/             ← 카드 이미지 (선택, 52장 + back)
+│   └── As.png ... back.png
+└── assets/            ← 기타 에셋 (선택)
+    ├── background.png
+    └── dealer-button.png
 ```
+
+Overlay 로드 시에는 `.gfskin`을 in-memory 압축 해제 후 `skin.json` + `skin.riv`를 읽는다. 로컬 캐시(`skins/` 디렉토리)는 구현 세부사항이며 계약 범위가 아니다.
+
+> **이전 디렉토리 기반 포맷**(`skin.skin.json` + 별도 `.riv`)은 폐기되었다. Team 1 Lobby GE가 `.gfskin`을 생성하고 Team 2가 저장, Team 4 Overlay가 in-memory로 해제해 소비한다.
 
 ### 2.2 메타데이터 JSON 구조 (.skin.json)
 
@@ -208,17 +210,17 @@ Admin이 Settings에서 스킨 변경
 
 ## 6. 스킨 검증
 
-### 6.1 필수 검증 항목
+### 6.1 필수 검증 항목 (CCR-012)
 
-스킨 로드 시 다음 항목을 검증한다. 실패 시 폴백 전환.
+스킨 로드 시 다음 항목을 검증한다. 실패 시 폴백 전환. 전체 검증 순서는 `DATA-07-gfskin-schema.md §4` 참조.
 
 | 검증 항목 | 조건 | 실패 시 |
 |----------|------|--------|
-| .skin.json 존재 | 파일 존재 + JSON 파싱 성공 | 폴백 전환 |
-| .riv 존재 | 파일 존재 + Rive 파싱 성공 | 폴백 전환 |
+| ZIP 구조 | `.gfskin` 내부에 `skin.json` + `skin.riv`가 루트에 존재 | 폴백 전환 |
+| JSON Schema | `skin.json`이 DATA-07 스키마(`$id: gfskin-1.0.json`)를 통과 | 폴백 전환 |
+| Rive 파싱 | `skin.riv` 파싱 성공 | 폴백 전환 |
 | 해상도 일치 | skin resolution == output resolution | 경고 로그 (스케일링 적용) |
-| 좌석 수 | seats 배열 10개 (0~9) | 폴백 전환 |
-| 카드 이미지 | 52장 + back 이미지 존재 | 누락분만 기본 대체 |
+| 카드 이미지 | `cards/` 엔트리가 존재할 경우 52장 + back 검증 | 누락분만 기본 대체 |
 
 ### 6.2 에러 처리
 

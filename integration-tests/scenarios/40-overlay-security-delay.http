@@ -1,0 +1,101 @@
+### CCR-036 — Security Delay (이중 출력 Backstage/Broadcast)
+###
+### 검증:
+### - Backstage Stream은 즉시, Broadcast Stream은 delay_seconds 지연
+### - delay_holecards_only 옵션 동작
+### - delay 변경 시 buffer 재계산
+### - delay_enabled=false 시 버퍼 우회
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 40.1 GET /api/v1/tables/1/output-config — 현재 delay 설정 조회
+GET {{host}}/api/v1/tables/1/output-config
+Authorization: Bearer {{admin_token}}
+
+# 예상 응답: 200 OK
+# {
+#   "delay_enabled": true,
+#   "delay_seconds": 30,
+#   "delay_holecards_only": false,
+#   "backstage_ndi_channel": 1,
+#   "broadcast_ndi_channel": 2
+# }
+
+### 40.2 PATCH /api/v1/tables/1/output-config — delay 활성화
+PATCH {{host}}/api/v1/tables/1/output-config
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "delay_enabled": true,
+  "delay_seconds": 30
+}
+
+# 예상: 200 OK + OutputConfigChanged WS 이벤트 발행
+
+### 40.3 PATCH — delay_holecards_only=true
+PATCH {{host}}/api/v1/tables/1/output-config
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "delay_holecards_only": true
+}
+
+# 예상: 200 OK
+# 이후 홀카드만 delay 적용, 액션/팟은 즉시
+
+### 40.4 PATCH — delay_seconds 범위 초과
+PATCH {{host}}/api/v1/tables/1/output-config
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "delay_seconds": 700
+}
+
+# 예상: 422 Unprocessable Entity
+# { "error": "OUT_OF_RANGE", "field": "delay_seconds", "max": 600 }
+
+### 40.5 Backstage vs Broadcast Stream 검증 (수동)
+###
+### 사전: Table 1에 delay_seconds=10 설정 + active 핸드 진행
+###
+### NDI 모니터링 도구(NDI Studio Monitor 등)로 두 채널 동시 관찰:
+### - Channel 1 (Backstage): CardDealt 이벤트 후 **즉시** 홀카드 표시
+### - Channel 2 (Broadcast): 동일 이벤트 후 **10초 지연** 홀카드 표시
+###
+### 시간차 측정: Backstage 표시 시점 ±100ms ~ Broadcast 표시 시점 = 10초 ±500ms
+
+### 40.6 GET /api/v1/tables/1/delay-buffer-status — pending 이벤트 조회
+GET {{host}}/api/v1/tables/1/delay-buffer-status
+Authorization: Bearer {{admin_token}}
+
+# 예상 응답:
+# {
+#   "delay_enabled": true,
+#   "delay_seconds": 30,
+#   "pending_count": 42,
+#   "oldest_release_at": "2026-04-10T14:30:15Z",
+#   "newest_release_at": "2026-04-10T14:30:30Z"
+# }
+
+### 40.7 delay 감소 시 즉시 release (수동 확인)
+###
+### Current: delay_seconds = 60
+### PATCH → delay_seconds = 30
+###
+### Buffer 내 이벤트 중 30s 이상 경과한 것은 즉시 Broadcast Output으로 release
+### pending_count 감소 확인
+
+### 40.8 delay 증가 시 기존 이벤트는 원래 scheduling 유지
+###
+### Current: delay_seconds = 30
+### PATCH → delay_seconds = 60
+###
+### Buffer 내 이벤트는 원래 releaseAt 유지
+### 새 이벤트만 60s 적용

@@ -272,6 +272,25 @@ CC에서 핸드를 시작하려면 다음이 모두 충족되어야 한다:
 
 ---
 
+## RFID 완료 시 자동 스트리트 전이 (CCR-031, W12 해소)
+
+보드 카드가 RFID로 감지되면 Game Engine은 자동으로 다음 스트리트로 전이한다.
+
+| 현재 HandFSM | RFID 감지 | 자동 전이 |
+|--------------|-----------|----------|
+| PRE_FLOP | 보드 3장 감지 (플롭) | PRE_FLOP → FLOP |
+| FLOP | 보드 4번째 카드 감지 (턴) | FLOP → TURN |
+| TURN | 보드 5번째 카드 감지 (리버) | TURN → RIVER |
+
+**예외 — Run It Multiple**:
+- `run_it_multiple_allowed == true` + ALL-IN 상황에서는 **자동 전이 안 함**
+- 운영자가 명시적으로 `SetRunItMultiple { run_count: 2|3 }` 호출 후 각 run을 순차 진행
+- 각 run마다 별도 보드 RFID 감지
+
+**구현 주의**: 자동 전이 로직은 Engine 측에서 처리. CC는 `StreetTransitioned` 이벤트를 수신하고 UI를 갱신만 한다.
+
+---
+
 ## 영향 받는 요소
 
 | 영향 대상 | 이 문서와의 관계 |
