@@ -37,6 +37,6 @@ BO 문서는 **정책과 아키텍처**만 정의한다. 상세 구현은 아래
 
 ## 참조
 
-- 용어/상태/트리거 정의: `docs/02-behavioral/BS-00-definitions.md`
-- Lobby 행동 명세: `docs/02-behavioral/BS-02-lobby/BS-02-lobby.md`
-- 트리거 경계: `docs/02-behavioral/BS-06-game-engine/BS-06-00-triggers.md`
+- 용어/상태/트리거 정의: `contracts/specs/BS-00-definitions.md`
+- Lobby 행동 명세: `contracts/specs/BS-02-lobby/BS-02-lobby.md`
+- 트리거 경계: `contracts/specs/BS-06-game-engine/BS-06-00-triggers.md`

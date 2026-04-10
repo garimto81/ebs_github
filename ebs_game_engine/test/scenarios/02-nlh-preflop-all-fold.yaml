@@ -1,0 +1,35 @@
+# Scenario 02: NLH preflop — seat0 raises, seat1 and seat2 fold
+# dealer=seat0, SB=seat1, BB=seat2
+# UTG=seat0 raises, SB folds, BB folds. Hand ends preflop.
+variant: nlh
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "Hero", stack: 1000 }
+  - { label: "Villain1", stack: 1000 }
+  - { label: "Villain2", stack: 1000 }
+events:
+  - deal_hole:
+      0: [As, Kh]
+      1: [Qd, Qc]
+      2: [7h, 2c]
+  # Preflop: UTG=seat0 acts first
+  - action: { seat: 0, type: raise, amount: 30 }
+  - action: { seat: 1, type: fold }
+  - action: { seat: 2, type: fold }
+  # seat0 wins uncontested
+  - pot_awarded: { 0: 45 }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  community_count: 0
+  stacks:
+    0: 1015    # 1000 - 30 + 45
+    1: 995     # 1000 - 5 (folded SB)
+    2: 990     # 1000 - 10 (folded BB)
+  seat_statuses:
+    1: folded
+    2: folded

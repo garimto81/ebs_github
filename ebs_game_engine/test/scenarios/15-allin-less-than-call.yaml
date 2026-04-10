@@ -1,0 +1,53 @@
+# Scenario 15: All-in for less than the call amount
+# Short stack player goes all-in for less than the current bet
+# dealer=seat0, SB=seat1(short stack=25), BB=seat2
+variant: nlh
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "Big Stack", stack: 1000 }
+  - { label: "Short Stack", stack: 25 }
+  - { label: "Medium Stack", stack: 500 }
+events:
+  - deal_hole:
+      0: [As, Kh]
+      1: [Qd, Qc]
+      2: [Jd, Jc]
+  # UTG raises to 50 (more than short stack has)
+  - action: { seat: 0, type: raise, amount: 50 }
+  # SB goes all-in for remaining 20 (25-5=20 remaining, total=25)
+  - action: { seat: 1, type: allin, amount: 20 }
+  # BB calls 50
+  - action: { seat: 2, type: call, amount: 40 }
+  # UTG checks (already put in 50, no more action needed)
+  - action: { seat: 0, type: check }
+  # All players' bets settled — deal community
+  - street_advance: flop
+  - deal_community: [Ac, Ad, 2s]
+  - action: { seat: 2, type: check }
+  - action: { seat: 0, type: check }
+  # Turn
+  - street_advance: turn
+  - deal_community: [3h]
+  - action: { seat: 2, type: check }
+  - action: { seat: 0, type: check }
+  # River
+  - street_advance: river
+  - deal_community: [4d]
+  - action: { seat: 2, type: check }
+  - action: { seat: 0, type: check }
+  # Award pots
+  - pot_awarded: { 1: 75, 0: 50 }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  community_count: 5
+  stacks:
+    0: 1000    # 1000 - 50 + 50 (side pot winner)
+    1: 75      # 25 - 20 - 5 + 75 (main pot winner)
+    2: 450     # 500 - 10 - 40
+  seat_statuses:
+    1: allIn

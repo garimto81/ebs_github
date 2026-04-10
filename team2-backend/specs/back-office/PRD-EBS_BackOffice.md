@@ -261,7 +261,7 @@ FastAPI + SQLite(Phase 1~2) → PostgreSQL(Phase 3+), JWT → OAuth 인증, Dock
 
 > CRUD/데이터 모델/유저 스토리는 BS(행동 명세) + API + DATA 문서가 SSOT
 
-### API 계약 (docs/api/)
+### API 계약 (contracts/api/)
 
 | ID | 제목 | 역할 |
 |----|------|------|
@@ -272,7 +272,7 @@ FastAPI + SQLite(Phase 1~2) → PostgreSQL(Phase 3+), JWT → OAuth 인증, Dock
 | API-05 | WebSocket Events | 실시간 이벤트 프로토콜 |
 | API-06 | Auth & Session | JWT 인증 계약 |
 
-### 데이터 모델 (docs/data/)
+### 데이터 모델 (contracts/data/)
 
 | ID | 제목 | 역할 |
 |----|------|------|

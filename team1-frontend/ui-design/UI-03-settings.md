@@ -394,11 +394,11 @@ Equity, Outs, Rabbit Hunting, Leaderboard, Score Strip.
 
 | 참조 문서 | 경로 |
 |----------|------|
-| BS-03-00 Overview | `docs/02-behavioral/BS-03-settings/BS-03-00-overview.md` |
-| BS-03-01 Outputs | `docs/02-behavioral/BS-03-settings/BS-03-01-outputs.md` |
-| BS-03-02 GFX | `docs/02-behavioral/BS-03-settings/BS-03-02-gfx.md` |
-| BS-03-03 Display | `docs/02-behavioral/BS-03-settings/BS-03-03-display.md` |
-| BS-03-04 Rules | `docs/02-behavioral/BS-03-settings/BS-03-04-rules.md` |
-| BS-03-05 Stats | `docs/02-behavioral/BS-03-settings/BS-03-05-stats.md` |
-| BS-03-06 Preferences | `docs/02-behavioral/BS-03-settings/BS-03-06-preferences.md` |
+| BS-03-00 Overview | `contracts/specs/BS-03-settings/BS-03-00-overview.md` |
+| BS-03-01 Outputs | `contracts/specs/BS-03-settings/BS-03-01-outputs.md` |
+| BS-03-02 GFX | `contracts/specs/BS-03-settings/BS-03-02-gfx.md` |
+| BS-03-03 Display | `contracts/specs/BS-03-settings/BS-03-03-display.md` |
+| BS-03-04 Rules | `contracts/specs/BS-03-settings/BS-03-04-rules.md` |
+| BS-03-05 Stats | `contracts/specs/BS-03-settings/BS-03-05-stats.md` |
+| BS-03-06 Preferences | `contracts/specs/BS-03-settings/BS-03-06-preferences.md` |
 | Foundation PRD | `docs/01-strategy/PRD-EBS_Foundation.md` |

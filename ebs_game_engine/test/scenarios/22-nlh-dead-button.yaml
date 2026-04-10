@@ -1,0 +1,53 @@
+# Scenario 22: NLH Dead Button (seat1 sitting out)
+# 4 seats: seat0=dealer, seat1=sitting_out, seat2=SB, seat3=BB
+# HandStart skips sitting-out seats for blind assignment
+# activeSeatIndices after dealer: [2, 3, 0] (seat1 skipped)
+# SB=seat2, BB=seat3
+# After HandStart: seat2 stack=990 (SB=10), seat3 stack=980 (BB=20), pot=30
+# UTG=seat0 (first active after BB=seat3)
+# seat0 raises to 50, seat2 calls 40, seat3 folds
+# pot = 30 + 50 + 40 = 120
+# Flop: seat2 checks, seat0 bets 60, seat2 folds
+# pot = 120 + 60 = 180
+# seat0 wins 180
+# Final: seat0=1000-50-60+180=1070, seat1=1000(sitting out), seat2=990-40=950, seat3=980
+# Check: 1070+1000+950+980 = 4000 ✓
+variant: nlh
+dealer: 0
+blinds:
+  sb: 10
+  bb: 20
+seats:
+  - { label: "BTN", stack: 1000 }
+  - { label: "SitOut", stack: 1000, status: sitting_out }
+  - { label: "SB", stack: 1000 }
+  - { label: "BB", stack: 1000 }
+events:
+  - deal_hole:
+      0: [As, Kh]
+      2: [8d, 3c]
+      3: [9s, 4d]
+  # Preflop: seat0 acts first (UTG, first active after BB=seat3)
+  - action: { seat: 0, type: raise, amount: 50 }
+  - action: { seat: 2, type: call, amount: 40 }
+  - action: { seat: 3, type: fold }
+  # Flop
+  - street_advance: flop
+  - deal_community: [Ah, 7d, 2s]
+  - action: { seat: 2, type: check }
+  - action: { seat: 0, type: bet, amount: 60 }
+  - action: { seat: 2, type: fold }
+  # seat0 wins
+  - pot_awarded: { 0: 180 }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  stacks:
+    0: 1070
+    1: 1000
+    2: 950
+    3: 980
+  seat_statuses:
+    1: sitting_out
+    3: folded

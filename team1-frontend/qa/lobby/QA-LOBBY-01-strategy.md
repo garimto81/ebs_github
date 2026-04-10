@@ -91,5 +91,5 @@ flutter pub add --dev mocktail
 ## 참조
 
 - 감사 결과: `docs/qa/lobby/QA-LOBBY-00-audit.md`
-- 행동 명세: `docs/02-behavioral/BS-02-lobby/BS-02-lobby.md`
+- 행동 명세: `contracts/specs/BS-02-lobby/BS-02-lobby.md`
 - 상위 전략: `docs/testing/TEST-01-test-plan.md`

@@ -138,5 +138,5 @@ BS-05 명세 기준 **구현율 약 10~15%**.
 
 ## 참조
 
-- 행동 명세: docs/02-behavioral/BS-05-command-center/ (7파일)
+- 행동 명세: contracts/specs/BS-05-command-center/ (7파일)
 - 감사 결과: docs/qa/commandcenter/QA-CC-00-audit.md

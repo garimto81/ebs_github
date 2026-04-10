@@ -1,0 +1,43 @@
+# Scenario 12: Five Card Omaha — player has 5 hole cards, must use exactly 2
+# dealer=seat0(HU), seat1=BB
+variant: five_card_omaha
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "Hero", stack: 1000 }
+  - { label: "Villain", stack: 1000 }
+events:
+  - deal_hole:
+      0: [As, Kh, Qd, Jc, Ts]
+      1: [2h, 3d, 4c, 5s, 6d]
+  # HU preflop: seat0 raises
+  - action: { seat: 0, type: raise, amount: 30 }
+  - action: { seat: 1, type: call, amount: 20 }
+  # Flop
+  - street_advance: flop
+  - deal_community: [Ac, Kd, Qs]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: bet, amount: 40 }
+  - action: { seat: 1, type: call, amount: 40 }
+  # Turn
+  - street_advance: turn
+  - deal_community: [Jd]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: check }
+  # River
+  - street_advance: river
+  - deal_community: [9h]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: check }
+  # seat0 wins with top two pair (must use exactly 2 hole cards)
+  - pot_awarded: { 0: 140 }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  community_count: 5
+  stacks:
+    0: 1070    # 1000 - 5 - 25 - 40 + 140
+    1: 930     # 1000 - 10 - 20 - 40

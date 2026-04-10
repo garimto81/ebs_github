@@ -28,10 +28,10 @@
 
 | 문서 | 경로 |
 |------|------|
-| 용어 정의 | `docs/02-behavioral/BS-00-definitions.md` |
-| RFID HAL 인터페이스 | `docs/api/API-03-rfid-hal-interface.md` |
-| WebSocket 프로토콜 | `docs/api/API-05-websocket-events.md` |
-| 인증/세션 | `docs/api/API-06-auth-session.md` |
-| DB 스키마 | `docs/data/DATA-04-db-schema.md` |
+| 용어 정의 | `contracts/specs/BS-00-definitions.md` |
+| RFID HAL 인터페이스 | `contracts/api/API-03-rfid-hal-interface.md` |
+| WebSocket 프로토콜 | `contracts/api/API-05-websocket-events.md` |
+| 인증/세션 | `contracts/api/API-06-auth-session.md` |
+| DB 스키마 | `contracts/data/DATA-04-db-schema.md` |
 | BO 아키텍처 | `docs/back-office/BO-01-overview.md` |
 | Foundation PRD | `docs/01-strategy/PRD-EBS_Foundation.md` |

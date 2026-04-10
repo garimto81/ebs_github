@@ -1,10 +1,10 @@
-> **⚠ 이 문서는 archive 상태입니다.** 현행 DB 스키마는 `docs/data/DATA-04-db-schema.md`로 승격되었습니다 (2026-04-08). 이 파일은 역사적 참조용으로 보존합니다.
+> **⚠ 이 문서는 archive 상태입니다.** 현행 DB 스키마는 `contracts/data/DATA-04-db-schema.md`로 승격되었습니다 (2026-04-08). 이 파일은 역사적 참조용으로 보존합니다.
 >
 > 관련 현행 문서:
-> - ER 다이어그램: `docs/data/DATA-01-er-diagram.md`
-> - 엔티티 정의: `docs/data/DATA-02-entities.md`
-> - FSM 다이어그램: `docs/data/DATA-03-state-machines.md`
-> - DB 스키마: `docs/data/DATA-04-db-schema.md`
+> - ER 다이어그램: `contracts/data/DATA-01-er-diagram.md`
+> - 엔티티 정의: `contracts/data/DATA-02-entities.md`
+> - FSM 다이어그램: `contracts/data/DATA-03-state-machines.md`
+> - DB 스키마: `contracts/data/DATA-04-db-schema.md`
 
 # EBS 데이터 추출 PRD (ARCHIVED)
 
@@ -16,7 +16,7 @@
 | **작성일** | 2026-03-09 |
 | **작성자** | 기획팀 |
 | **대상 독자** | 기획팀, 개발팀 |
-| **상태** | ~~초안~~ → **Archive** (2026-04-08 `docs/data/`로 승격) |
+| **상태** | ~~초안~~ → **Archive** (2026-04-08 `contracts/data/`로 승격) |
 
 ---
 

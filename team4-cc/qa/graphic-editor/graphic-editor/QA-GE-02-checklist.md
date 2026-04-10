@@ -173,4 +173,4 @@ BS-07 명세 기준 **구현율 약 40%** (에디터 UI 완성 but 렌더링/파
 
 - 역설계: `C:\claude\ebs_reverse\docs\02-design\pokergfx-reverse-engineering-complete.md`
 - 감사 결과: `docs/qa/graphic-editor/QA-GE-00-audit.md`
-- 행동 명세: `docs/02-behavioral/BS-07-overlay/` (4파일)
+- 행동 명세: `contracts/specs/BS-07-overlay/` (4파일)

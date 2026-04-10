@@ -41,8 +41,8 @@ EBS 소프트웨어 QA 테스트 문서 모음. 물리 하드웨어 테스트는
 
 | 참조 | 경로 |
 |------|------|
-| 용어/Mock 모드 정의 | `docs/02-behavioral/BS-00-definitions.md` |
-| 트리거 경계/Mock 합성 | `docs/02-behavioral/BS-06-game-engine/BS-06-00-triggers.md` |
-| RFID HAL 인터페이스 | `docs/api/API-03-rfid-hal-interface.md` |
-| Hold'em 라이프사이클 | `docs/04-rules-games/games/engine-spec/BS-06-01-holdem-lifecycle.md` |
-| Hold'em 베팅 | `docs/04-rules-games/games/engine-spec/BS-06-02-holdem-betting.md` |
+| 용어/Mock 모드 정의 | `contracts/specs/BS-00-definitions.md` |
+| 트리거 경계/Mock 합성 | `contracts/specs/BS-06-game-engine/BS-06-00-triggers.md` |
+| RFID HAL 인터페이스 | `contracts/api/API-03-rfid-hal-interface.md` |
+| Hold'em 라이프사이클 | `team3-engine/specs/engine-spec/BS-06-01-holdem-lifecycle.md` |
+| Hold'em 베팅 | `team3-engine/specs/engine-spec/BS-06-02-holdem-betting.md` |

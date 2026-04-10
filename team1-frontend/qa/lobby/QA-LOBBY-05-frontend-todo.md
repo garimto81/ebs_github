@@ -9,7 +9,7 @@
 ## 개요
 
 > **레포**: `C:\claude\ebs_lobby\` (React 19 + TypeScript + Vite + Zustand)
-> **기준 문서**: `docs/02-behavioral/BS-02-lobby/BS-02-lobby.md`
+> **기준 문서**: `contracts/specs/BS-02-lobby/BS-02-lobby.md`
 > **체크리스트**: `docs/qa/lobby/QA-LOBBY-02-checklist.md` (BS-02 대조 결과 구현율 ~55%)
 
 기존 `QA-LOBBY-04`는 Flutter(Dart) 코드 기준이라 현재 React 코드베이스에 적용 불가.

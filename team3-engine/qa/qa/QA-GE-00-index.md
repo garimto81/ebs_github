@@ -89,9 +89,9 @@ TC 확장 시 서브케이스: `TC-G1-xxx-xxa`, `TC-G1-xxx-xxb` 접미사.
 |------|------|-----------|
 | Master Plan §8 | `docs/qa/QA-EBS-Master-Plan.md` | TC ID + 조건 유지, 입력/출력으로 확장 |
 | TEST-03 Fixtures | `docs/testing/TEST-03-game-engine-fixtures.md` | Hold'em 32개 fixture 인라인 참조 |
-| Engine Spec | `docs/04-rules-games/games/engine-spec/BS-06-*` | 각 TC 참조 필드에 명시 |
-| Triggers | `docs/02-behavioral/BS-06-game-engine/BS-06-00-triggers.md` | TC 사전조건 트리거 소스 |
-| Game PRD | `docs/04-rules-games/games/PRD-GAME-01~04.md` | 게임별 파라미터 원천 |
+| Engine Spec | `team3-engine/specs/engine-spec/BS-06-*` | 각 TC 참조 필드에 명시 |
+| Triggers | `contracts/specs/BS-06-game-engine/BS-06-00-triggers.md` | TC 사전조건 트리거 소스 |
+| Game PRD | `team3-engine/specs/PRD-GAME-01~04.md` | 게임별 파라미터 원천 |
 
 ---
 

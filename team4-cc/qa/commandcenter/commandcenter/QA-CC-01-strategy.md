@@ -107,7 +107,7 @@ flutter pub add --dev mocktail
 ## 참조
 
 - 감사 결과: `docs/qa/commandcenter/QA-CC-00-audit.md`
-- 행동 명세: `docs/02-behavioral/BS-05-command-center/` (7파일)
+- 행동 명세: `contracts/specs/BS-05-command-center/` (7파일)
   - `BS-05-00-overview.md`
   - `BS-05-01-hand-lifecycle.md`
   - `BS-05-02-action-buttons.md`

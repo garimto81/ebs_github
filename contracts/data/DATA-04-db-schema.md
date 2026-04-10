@@ -10,7 +10,7 @@
 
 EBS Back Office DB의 물리 스키마를 SQLAlchemy/SQLModel 스타일로 정의한다. Phase 1은 SQLite, Phase 3+는 PostgreSQL을 대상으로 한다.
 
-> 참조: `docs/data/PRD-EBS_DB_Schema.md` — GFX 데이터 추출 스키마 (L0→L1 구간). 이 문서는 3-앱 아키텍처 BO 운영 스키마이다.
+> 참조: `contracts/data/PRD-EBS_DB_Schema.md` — GFX 데이터 추출 스키마 (L0→L1 구간). 이 문서는 3-앱 아키텍처 BO 운영 스키마이다.
 
 ### Phase 1 SQLite 호환 규칙
 

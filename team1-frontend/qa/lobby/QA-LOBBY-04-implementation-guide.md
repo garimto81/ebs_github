@@ -11,7 +11,7 @@
 BS-02 행동 명세와 실제 구현을 대조한 결과, Login ~ Tables (화면 0-4) 범위에서 발견된 Gap을 해소하기 위한 구현 지시서.
 
 > 레포: `/ebs_lobby_web/`
-> 행동 명세: `docs/02-behavioral/BS-02-lobby/BS-02-lobby.md`
+> 행동 명세: `contracts/specs/BS-02-lobby/BS-02-lobby.md`
 > 체크리스트: `docs/qa/lobby/QA-LOBBY-02-checklist.md`
 
 ---
@@ -22,7 +22,7 @@ BS-02 행동 명세와 실제 구현을 대조한 결과, Login ~ Tables (화면
 다음 문서를 순서대로 읽고 구현 작업을 진행해:
 1. docs/qa/lobby/QA-LOBBY-04-implementation-guide.md  ← 이 문서 (구현 지시서)
 2. docs/qa/lobby/QA-LOBBY-02-checklist.md              ← BS-02 체크리스트
-3. docs/02-behavioral/BS-02-lobby/BS-02-lobby.md       ← 행동 명세 원본
+3. contracts/specs/BS-02-lobby/BS-02-lobby.md       ← 행동 명세 원본
 레포: /ebs_lobby_web/
 ```
 
@@ -493,6 +493,6 @@ Phase 4: 개선 (MEDIUM)
 ## 참조
 
 - 체크리스트: `docs/qa/lobby/QA-LOBBY-02-checklist.md`
-- 행동 명세: `docs/02-behavioral/BS-02-lobby/BS-02-lobby.md`
+- 행동 명세: `contracts/specs/BS-02-lobby/BS-02-lobby.md`
 - Playwright 캡처: `docs/qa/lobby/screenshots/`
-- BS 목업: `docs/02-behavioral/BS-02-lobby/visual/screenshots/`
+- BS 목업: `contracts/specs/BS-02-lobby/visual/screenshots/`

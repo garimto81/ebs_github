@@ -1,0 +1,43 @@
+# Scenario 09: Omaha Hi-Lo — no qualifying lo hand (all boards > 8)
+# Hi takes entire pot
+# dealer=seat0(HU), seat1=BB
+variant: omaha_hilo
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "Hero", stack: 1000 }
+  - { label: "Villain", stack: 1000 }
+events:
+  - deal_hole:
+      0: [As, Kh, Qd, Jc]
+      1: [Td, 9s, 8h, 7c]
+  # HU preflop: seat0 calls
+  - action: { seat: 0, type: call, amount: 5 }
+  - action: { seat: 1, type: check }
+  # Flop: high cards only, no possible lo qualifier
+  - street_advance: flop
+  - deal_community: [Ah, Kd, Qs]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: check }
+  # Turn: another high card
+  - street_advance: turn
+  - deal_community: [Jh]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: check }
+  # River: still no lo board
+  - street_advance: river
+  - deal_community: [9h]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: check }
+  # seat0 wins entire pot (no lo qualifier)
+  - pot_awarded: { 0: 20 }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  community_count: 5
+  stacks:
+    0: 1010    # 1000 - 10 + 20 (hi takes all, no lo qualifier)
+    1: 990     # 1000 - 10

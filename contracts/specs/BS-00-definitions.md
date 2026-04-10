@@ -187,7 +187,7 @@ Competition → Series → Event → Flight → Table → Seat → Player
 | `{Entity}{Action}` | `ConfigChanged`, `PlayerUpdated`, `TableAssigned` | BO |
 | `{Entity}{Action}` | `OperatorConnected`, `OperatorDisconnected` | BO (WebSocket) |
 
-> **WebSocket 이벤트 상세**: `docs/api/API-05-websocket-events.md`
+> **WebSocket 이벤트 상세**: `contracts/api/API-05-websocket-events.md`
 
 ---
 
@@ -270,7 +270,7 @@ Mock 모드는 RFID 하드웨어 없이 EBS 전체 기능을 사용하기 위한
 
 > **핵심 원칙**: Mock 모드에서 바뀌는 것은 **RFID HAL 구현체 1개**뿐이다. 나머지 모든 계층은 Real 모드와 100% 동일하다.
 
-> **인터페이스 계약 상세**: `docs/api/API-03-rfid-hal-interface.md`
+> **인터페이스 계약 상세**: `contracts/api/API-03-rfid-hal-interface.md`
 
 ---
 
@@ -290,6 +290,6 @@ Mock 모드는 RFID 하드웨어 없이 EBS 전체 기능을 사용하기 위한
 |----------|------|
 | Enum 값 상세 | `docs/04-rules-games/games/engine-spec/BS-06-00-REF-game-engine-spec.md` |
 | Feature Catalog 144 ID | `docs/01-strategy/EBS-Feature-Catalog.md` |
-| 트리거 경계 상세 | `docs/02-behavioral/BS-06-game-engine/BS-06-00-triggers.md` |
-| RFID HAL 인터페이스 | `docs/api/API-03-rfid-hal-interface.md` |
-| WebSocket 이벤트 상세 | `docs/api/API-05-websocket-events.md` |
+| 트리거 경계 상세 | `contracts/specs/BS-06-game-engine/BS-06-00-triggers.md` |
+| RFID HAL 인터페이스 | `contracts/api/API-03-rfid-hal-interface.md` |
+| WebSocket 이벤트 상세 | `contracts/api/API-05-websocket-events.md` |

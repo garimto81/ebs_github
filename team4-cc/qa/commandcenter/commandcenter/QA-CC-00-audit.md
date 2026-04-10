@@ -94,5 +94,5 @@ expect(session.phase, SessionPhase.loading);
 
 ## 참조
 
-- 행동 명세: `docs/02-behavioral/BS-05-command-center/` (7파일)
+- 행동 명세: `contracts/specs/BS-05-command-center/` (7파일)
 - QA 전략: `docs/qa/commandcenter/QA-CC-01-strategy.md`

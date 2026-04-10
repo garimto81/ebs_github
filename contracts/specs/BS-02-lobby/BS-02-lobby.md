@@ -825,7 +825,7 @@ Config에서 RFID 모드가 **Mock**일 때, Feature Table도 물리 RFID 리더
 
 **Mock 모드 전환**: Admin Settings > System > RFID Mode 토글. 핸드 진행 중 전환 불가 — Table IDLE 상태에서만.
 
-> **참조**: Mock HAL 상세 → `docs/api/API-03-rfid-hal-interface.md`, 덱 등록 행동 명세 → `docs/02-behavioral/BS-04-rfid/BS-04-01-deck-registration.md`
+> **참조**: Mock HAL 상세 → `contracts/api/API-03-rfid-hal-interface.md`, 덱 등록 행동 명세 → `contracts/specs/BS-04-rfid/BS-04-01-deck-registration.md`
 
 ### RFID 상태 표시 (Feature Table)
 

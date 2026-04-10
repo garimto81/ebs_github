@@ -1,0 +1,38 @@
+# Scenario 11: Courchevel — 1 community card dealt before preflop action
+# Players have 5 hole cards, must use exactly 2 hole cards + 3 community cards
+# dealer=seat0(HU), seat1=BB
+variant: courchevel
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "Hero", stack: 1000 }
+  - { label: "Villain", stack: 1000 }
+events:
+  - deal_hole:
+      0: [As, Kh, Qd, Jc, Ts]
+      1: [2h, 3d, 4c, 5s, 6h]
+  # In Courchevel, 1 community card is dealt BEFORE preflop betting
+  - deal_community: [Ac]
+  # HU preflop: seat0 raises
+  - action: { seat: 0, type: raise, amount: 30 }
+  - action: { seat: 1, type: call, amount: 20 }
+  # Flop (2 more community cards)
+  - street_advance: flop
+  - deal_community: [Kd, Qc]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: bet, amount: 40 }
+  - action: { seat: 1, type: fold }
+  # seat0 wins
+  - pot_awarded: { 0: 100 }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  community_count: 3
+  stacks:
+    0: 1030    # 1000 - 5 - 25 - 40 + 100
+    1: 970     # 1000 - 10 - 20 (folded on flop)
+  seat_statuses:
+    1: folded
