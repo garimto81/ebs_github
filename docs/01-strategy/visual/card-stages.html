@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0f1923; font-family: 'Segoe UI','Noto Sans KR',sans-serif; padding: 32px 48px; width: 1200px; color: #e0e0e0; }
+h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 24px; text-align: center; }
+.stages { display: flex; gap: 16px; justify-content: center; }
+.stage {
+  background: #141e2a; border: 1px solid #2a3a4a; border-radius: 12px;
+  padding: 16px; text-align: center; width: 220px;
+}
+.stage-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.stage-sub { font-size: 11px; color: #667788; margin-bottom: 12px; }
+.cards { display: flex; gap: 6px; justify-content: center; margin-bottom: 8px; }
+.card {
+  width: 44px; height: 60px; background: #fff; border-radius: 5px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px;
+}
+.card .s { font-size: 11px; margin-top: -2px; }
+.bk { color: #1a1a1a; }
+.rd { color: #e03030; }
+.new-card { border: 2px solid #e67e22; }
+.old-card { border: 2px solid #2a3a4a; }
+.stage-num { font-size: 10px; color: #445566; font-weight: 700; margin-bottom: 4px; }
+.arrow { font-size: 20px; color: #334455; align-self: center; }
+</style>
+</head>
+<body>
+<h2>Texas Hold'em — 게임 진행 4단계</h2>
+<div class="stages">
+  <!-- Flop -->
+  <div class="stage">
+    <div class="stage-num">STEP 1</div>
+    <div class="stage-title" style="color:#e67e22;">Flop</div>
+    <div class="stage-sub">보드 3장 공개</div>
+    <div class="cards">
+      <div class="card rd new-card"><span>A</span><span class="s">♦</span></div>
+      <div class="card bk new-card"><span>7</span><span class="s">♣</span></div>
+      <div class="card bk new-card"><span>2</span><span class="s">♠</span></div>
+    </div>
+  </div>
+  <div class="arrow">→</div>
+  <!-- Turn -->
+  <div class="stage">
+    <div class="stage-num">STEP 2</div>
+    <div class="stage-title" style="color:#e67e22;">Turn</div>
+    <div class="stage-sub">+1장 (4번째)</div>
+    <div class="cards">
+      <div class="card rd old-card"><span>A</span><span class="s">♦</span></div>
+      <div class="card bk old-card"><span>7</span><span class="s">♣</span></div>
+      <div class="card bk old-card"><span>2</span><span class="s">♠</span></div>
+      <div class="card rd new-card"><span>K</span><span class="s">♦</span></div>
+    </div>
+  </div>
+  <div class="arrow">→</div>
+  <!-- River -->
+  <div class="stage">
+    <div class="stage-num">STEP 3</div>
+    <div class="stage-title" style="color:#e67e22;">River</div>
+    <div class="stage-sub">+1장 (5번째, 마지막)</div>
+    <div class="cards">
+      <div class="card rd old-card"><span>A</span><span class="s">♦</span></div>
+      <div class="card bk old-card"><span>7</span><span class="s">♣</span></div>
+      <div class="card bk old-card"><span>2</span><span class="s">♠</span></div>
+      <div class="card rd old-card"><span>K</span><span class="s">♦</span></div>
+      <div class="card bk new-card"><span>10</span><span class="s">♣</span></div>
+    </div>
+  </div>
+  <div class="arrow">→</div>
+  <!-- Showdown -->
+  <div class="stage">
+    <div class="stage-num">STEP 4</div>
+    <div class="stage-title" style="color:#a080d0;">Showdown</div>
+    <div class="stage-sub">승자 결정</div>
+    <div style="font-size:28px; margin:12px 0;">🏆</div>
+    <div style="font-size:11px; color:#a080d0;">7장 중 최고 5장 비교</div>
+  </div>
+</div>
+<div style="text-align:center; margin-top:16px; font-size:12px; color:#556677;">각 단계 사이에 베팅 라운드가 진행된다 (Call / Raise / Fold)</div>
+</body>
+</html>

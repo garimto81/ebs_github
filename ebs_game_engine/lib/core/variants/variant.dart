@@ -1,6 +1,8 @@
 import '../cards/card.dart';
 import '../cards/deck.dart';
 import '../cards/hand_evaluator.dart';
+import '../rules/bet_limit.dart';
+import '../rules/no_limit.dart';
 
 /// Abstract interface for all poker game variants.
 abstract class Variant {
@@ -39,6 +41,9 @@ abstract class Variant {
 
   /// Evaluate the best hi hand from hole + community cards.
   HandRank evaluateHi(List<Card> hole, List<Card> community);
+
+  /// Betting limit rules for this variant. Defaults to No Limit.
+  BetLimit get betLimit => const NoLimitBet();
 
   /// Evaluate the best lo hand (returns null if variant has no lo,
   /// or if no qualifying lo hand exists).

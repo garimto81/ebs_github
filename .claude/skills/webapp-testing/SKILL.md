@@ -226,4 +226,4 @@ page.wait_for_selector('[data-testid="app-loaded"]')
 
 - `/check` - 린트 + 테스트 실행
 - `/parallel test` - 병렬 테스트
-- `/debug` - 테스트 실패 시 디버깅
+- `debugging-workflow` - 테스트 실패 시 디버깅

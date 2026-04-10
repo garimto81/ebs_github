@@ -128,7 +128,7 @@ export function renderActions(state) {
 
       case 'call':
         btn.textContent = `Call $${action.callAmount ?? ''}`;
-        btn.addEventListener('click', () => _callback?.({ type: 'call' }));
+        btn.addEventListener('click', () => _callback?.({ type: 'call', amount: action.callAmount }));
         break;
 
       case 'bet':

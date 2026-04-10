@@ -1,10 +1,13 @@
 import '../cards/card.dart';
 import '../cards/deck.dart';
+import '../rules/bet_limit.dart';
+import '../rules/no_limit.dart';
+import 'card_reveal_config.dart';
 import 'seat.dart';
 import 'pot.dart';
 import 'betting_round.dart';
 
-enum Street { preflop, flop, turn, river, showdown }
+enum Street { setupHand, preflop, flop, turn, river, showdown, runItMultiple }
 
 class GameState {
   final String sessionId;
@@ -22,6 +25,38 @@ class GameState {
   final int bbAmount;
   final bool handInProgress;
 
+  // Hand tracking
+  final int handNumber;
+
+  // Ante configuration
+  final int? anteAmount;
+  final int? anteType; // 0-6 per BS-06-03
+
+  // Straddle
+  final bool straddleEnabled;
+  final int? straddleSeat;
+
+  // Card reveal
+  final CardRevealConfig? revealConfig;
+  final CanvasType canvasType;
+
+  // Bomb Pot
+  final bool bombPotEnabled;
+  final int? bombPotAmount;
+
+  // 7-2 Side Bet
+  final bool sevenDeuceEnabled;
+  final int? sevenDeuceAmount;
+
+  // Run It Multiple
+  final int? runItTimes;
+
+  // Action timeout (ms, null = no timeout)
+  final int? actionTimeoutMs;
+
+  // Bet limit strategy (NL/FL/PL)
+  final BetLimit? betLimit;
+
   GameState({
     required this.sessionId,
     required this.variantName,
@@ -37,6 +72,20 @@ class GameState {
     this.bbSeat = -1,
     this.bbAmount = 0,
     this.handInProgress = false,
+    this.handNumber = 0,
+    this.anteAmount,
+    this.anteType,
+    this.straddleEnabled = false,
+    this.straddleSeat,
+    this.revealConfig,
+    this.canvasType = CanvasType.broadcast,
+    this.bombPotEnabled = false,
+    this.bombPotAmount,
+    this.sevenDeuceEnabled = false,
+    this.sevenDeuceAmount,
+    this.runItTimes,
+    this.actionTimeoutMs,
+    this.betLimit,
   })  : pot = pot ?? Pot(),
         betting = betting ?? BettingRound();
 
@@ -53,6 +102,20 @@ class GameState {
     int? bbSeat,
     int? bbAmount,
     bool? handInProgress,
+    int? handNumber,
+    int? anteAmount,
+    int? anteType,
+    bool? straddleEnabled,
+    int? straddleSeat,
+    CardRevealConfig? revealConfig,
+    CanvasType? canvasType,
+    bool? bombPotEnabled,
+    int? bombPotAmount,
+    bool? sevenDeuceEnabled,
+    int? sevenDeuceAmount,
+    int? runItTimes,
+    int? actionTimeoutMs,
+    BetLimit? betLimit,
   }) {
     return GameState(
       sessionId: sessionId,
@@ -69,6 +132,20 @@ class GameState {
       bbSeat: bbSeat ?? this.bbSeat,
       bbAmount: bbAmount ?? this.bbAmount,
       handInProgress: handInProgress ?? this.handInProgress,
+      handNumber: handNumber ?? this.handNumber,
+      anteAmount: anteAmount ?? this.anteAmount,
+      anteType: anteType ?? this.anteType,
+      straddleEnabled: straddleEnabled ?? this.straddleEnabled,
+      straddleSeat: straddleSeat ?? this.straddleSeat,
+      revealConfig: revealConfig ?? this.revealConfig,
+      canvasType: canvasType ?? this.canvasType,
+      bombPotEnabled: bombPotEnabled ?? this.bombPotEnabled,
+      bombPotAmount: bombPotAmount ?? this.bombPotAmount,
+      sevenDeuceEnabled: sevenDeuceEnabled ?? this.sevenDeuceEnabled,
+      sevenDeuceAmount: sevenDeuceAmount ?? this.sevenDeuceAmount,
+      runItTimes: runItTimes ?? this.runItTimes,
+      actionTimeoutMs: actionTimeoutMs ?? this.actionTimeoutMs,
+      betLimit: betLimit ?? this.betLimit,
     );
   }
 

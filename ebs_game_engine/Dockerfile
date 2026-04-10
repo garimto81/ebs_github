@@ -4,7 +4,8 @@ FROM dart:stable AS build
 WORKDIR /app
 
 # Cache pub dependencies
-COPY pubspec.yaml pubspec.lock ./
+COPY pubspec.yaml ./
+COPY pubspec.lock* ./
 RUN dart pub get
 
 # Copy source

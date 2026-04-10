@@ -29,13 +29,23 @@ class Session {
   /// Add an event and return the resulting state.
   GameState addEvent(Event event) {
     events.add(event);
+    _undoCount = 0;
     return currentState;
   }
 
-  /// Remove the last event (undo).
-  void undo() {
-    if (events.isNotEmpty) events.removeLast();
+  int _undoCount = 0;
+  static const _maxUndoSteps = 5;
+
+  /// Remove the last event (undo). Limited to [_maxUndoSteps] consecutive undos.
+  bool undo() {
+    if (events.isEmpty || _undoCount >= _maxUndoSteps) return false;
+    events.removeLast();
+    _undoCount++;
+    return true;
   }
+
+  /// Reset the undo counter (call after any non-undo action).
+  void resetUndoCount() => _undoCount = 0;
 
   /// Legal actions at current state.
   List<LegalAction> legalActions() => Engine.legalActions(currentState);
@@ -45,10 +55,13 @@ class Session {
     final state = cursor != null ? stateAt(cursor) : currentState;
     final effectiveCursor = cursor ?? events.length;
 
-    // Build log descriptions
-    final log = <String>[];
+    // Build log entries as structured objects for frontend
+    final log = <Map<String, dynamic>>[];
     for (var i = 0; i < events.length; i++) {
-      log.add(_describeEvent(events[i], i));
+      log.add({
+        'type': _eventType(events[i]),
+        'description': _describeEvent(events[i], i),
+      });
     }
 
     return {
@@ -70,6 +83,19 @@ class Session {
       'actionOn': state.actionOn,
       'dealerSeat': state.dealerSeat,
       'legalActions': Engine.legalActions(state).map((a) => a.toJson()).toList(),
+      'handNumber': state.handNumber,
+      'anteType': state.anteType,
+      'anteAmount': state.anteAmount,
+      'straddleEnabled': state.straddleEnabled,
+      'straddleSeat': state.straddleSeat,
+      'bombPotEnabled': state.bombPotEnabled,
+      'bombPotAmount': state.bombPotAmount,
+      'canvasType': state.canvasType.name,
+      'sevenDeuceEnabled': state.sevenDeuceEnabled,
+      'sevenDeuceAmount': state.sevenDeuceAmount,
+      'runItTimes': state.runItTimes,
+      'actionTimeoutMs': state.actionTimeoutMs,
+      'isAllInRunout': Engine.isAllInRunout(state),
       'eventCount': events.length,
       'cursor': effectiveCursor,
       'log': log,
@@ -84,6 +110,32 @@ class Session {
         'status': seat.status.name,
         'holeCards': seat.holeCards.map((c) => c.notation).toList(),
         'isDealer': seat.isDealer,
+      };
+
+  String _eventType(Event event) => switch (event) {
+        HandStart() => 'HandStart',
+        DealHoleCards() => 'DealHole',
+        DealCommunity() => 'DealComm',
+        PineappleDiscard() => 'Discard',
+        PlayerAction(action: final a) => _actionVerb(a),
+        StreetAdvance() => 'Street',
+        PotAwarded() => 'PotAward',
+        HandEnd() => 'HandEnd',
+        MisDeal() => 'MisDeal',
+        BombPotConfig() => 'BombPot',
+        RunItChoice() => 'RunIt',
+        ManualNextHand() => 'NextHand',
+        TimeoutFold() => 'Timeout',
+        MuckDecision() => 'Muck',
+      };
+
+  String _actionVerb(Action action) => switch (action) {
+        Fold() => 'Fold',
+        Check() => 'Check',
+        Call() => 'Call',
+        Bet() => 'Bet',
+        Raise() => 'Raise',
+        AllIn() => 'AllIn',
       };
 
   String _describeEvent(Event event, int idx) {
@@ -101,6 +153,13 @@ class Session {
       StreetAdvance(next: final n) => '#$idx StreetAdvance -> ${n.name}',
       PotAwarded(awards: final a) => '#$idx PotAwarded $a',
       HandEnd() => '#$idx HandEnd',
+      MisDeal() => '#$idx MisDeal',
+      BombPotConfig(amount: final a) => '#$idx BombPotConfig amount=$a',
+      RunItChoice(times: final t) => '#$idx RunItChoice times=$t',
+      ManualNextHand() => '#$idx ManualNextHand',
+      TimeoutFold(seatIndex: final s) => '#$idx TimeoutFold seat=$s',
+      MuckDecision(seatIndex: final s, showCards: final show) =>
+        '#$idx MuckDecision seat=$s show=$show',
     };
   }
 

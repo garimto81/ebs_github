@@ -3,10 +3,14 @@ import 'dart:convert';
 
 import '../core/state/game_state.dart';
 import '../core/state/seat.dart';
+import '../core/state/card_reveal_config.dart';
 import '../core/cards/card.dart';
 import '../core/actions/event.dart';
 import '../core/actions/action.dart';
+import '../core/math/equity_calculator.dart';
+import '../core/rules/showdown_order.dart';
 import '../core/variants/variants.dart';
+import '../engine.dart' show Engine;
 import 'session.dart';
 import 'scenario_loader.dart';
 
@@ -16,18 +20,20 @@ class HarnessServer {
   final String webDir;
   final String scenariosDir;
 
+  final String host;
   final Map<String, Session> _sessions = {};
   HttpServer? _server;
 
   HarnessServer({
     required this.port,
+    this.host = '0.0.0.0',
     this.webDir = 'lib/harness/web',
     this.scenariosDir = 'scenarios',
   });
 
   Future<void> start() async {
-    _server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
-    print('HarnessServer listening on http://localhost:$port');
+    _server = await HttpServer.bind(host, port);
+    print('HarnessServer listening on http://$host:$port');
     await for (final req in _server!) {
       try {
         await _handle(req);
@@ -105,6 +111,38 @@ class HarnessServer {
       return;
     }
 
+    // GET /api/session/:id/equity
+    final equityMatch =
+        RegExp(r'^/api/session/([^/]+)/equity$').firstMatch(path);
+    if (method == 'GET' && equityMatch != null) {
+      await _getEquity(req, equityMatch.group(1)!);
+      return;
+    }
+
+    // GET /api/session/:id/validate
+    final validateMatch =
+        RegExp(r'^/api/session/([^/]+)/validate$').firstMatch(path);
+    if (method == 'GET' && validateMatch != null) {
+      await _validateCards(req, validateMatch.group(1)!);
+      return;
+    }
+
+    // GET /api/session/:id/showdown-order
+    final showdownOrderMatch =
+        RegExp(r'^/api/session/([^/]+)/showdown-order$').firstMatch(path);
+    if (method == 'GET' && showdownOrderMatch != null) {
+      await _getShowdownOrder(req, showdownOrderMatch.group(1)!);
+      return;
+    }
+
+    // GET /api/session/:id/runout-check
+    final runoutMatch =
+        RegExp(r'^/api/session/([^/]+)/runout-check$').firstMatch(path);
+    if (method == 'GET' && runoutMatch != null) {
+      await _getRunoutCheck(req, runoutMatch.group(1)!);
+      return;
+    }
+
     // GET /api/variants
     if (method == 'GET' && path == '/api/variants') {
       _sendJson(req.response, 200, {'variants': variantRegistry.keys.toList()});
@@ -143,17 +181,28 @@ class HarnessServer {
       stacks = List.filled(seatCount, (stacksRaw as num?)?.toInt() ?? 1000);
     }
 
-    // Build blinds map
+    // Build blinds map — supports both {sb:5, bb:10} and {"1":5, "2":10}
     final Map<int, int> blinds = {};
-    blindsRaw.forEach((k, v) => blinds[int.parse(k)] = (v as num).toInt());
+    final n = stacks.length;
+    if (blindsRaw.containsKey('sb') || blindsRaw.containsKey('bb')) {
+      final sbAmt = (blindsRaw['sb'] as num?)?.toInt() ?? 5;
+      final bbAmt = (blindsRaw['bb'] as num?)?.toInt() ?? 10;
+      final sbIdx = (dealerSeat + 1) % n;
+      final bbIdx = (dealerSeat + 2) % n;
+      blinds[sbIdx] = sbAmt;
+      blinds[bbIdx] = bbAmt;
+    } else if (blindsRaw.isNotEmpty) {
+      blindsRaw.forEach((k, v) {
+        final parsed = int.tryParse(k);
+        if (parsed != null) blinds[parsed] = (v as num).toInt();
+      });
+    }
 
     if (blinds.isEmpty) {
-      // Default SB/BB relative to dealer
-      final n = stacks.length;
-      final sb = (dealerSeat + 1) % n;
-      final bb = (dealerSeat + 2) % n;
-      blinds[sb] = 5;
-      blinds[bb] = 10;
+      final sbIdx = (dealerSeat + 1) % n;
+      final bbIdx = (dealerSeat + 2) % n;
+      blinds[sbIdx] = 5;
+      blinds[bbIdx] = 10;
     }
 
     final deck = variant.createDeck(seed: seed);
@@ -167,12 +216,25 @@ class HarnessServer {
       ),
     );
 
+    // Read optional H2 config
+    final config = data['config'] as Map<String, dynamic>? ?? {};
+
     final initial = GameState(
       sessionId: _newId(),
       variantName: variant.name,
       seats: seats,
       deck: deck,
       dealerSeat: dealerSeat,
+      anteType: (config['anteType'] as num?)?.toInt(),
+      anteAmount: (config['anteAmount'] as num?)?.toInt(),
+      straddleEnabled: config['straddleEnabled'] as bool? ?? false,
+      straddleSeat: (config['straddleSeat'] as num?)?.toInt(),
+      bombPotEnabled: config['bombPotEnabled'] as bool? ?? false,
+      bombPotAmount: (config['bombPotAmount'] as num?)?.toInt(),
+      canvasType: _parseCanvasType(config['canvasType'] as String?),
+      sevenDeuceEnabled: config['sevenDeuceEnabled'] as bool? ?? false,
+      sevenDeuceAmount: (config['sevenDeuceAmount'] as num?)?.toInt(),
+      actionTimeoutMs: (config['actionTimeoutMs'] as num?)?.toInt(),
     );
 
     final session = Session(id: initial.sessionId, variant: variant, initial: initial);
@@ -269,6 +331,21 @@ class HarnessServer {
         event = PotAwarded(awards);
       case 'hand_end':
         event = const HandEnd();
+      case 'misdeal':
+        event = const MisDeal();
+      case 'bomb_pot_config':
+        event = BombPotConfig((data['amount'] as num).toInt());
+      case 'run_it_choice':
+        event = RunItChoice((data['times'] as num).toInt());
+      case 'manual_next_hand':
+        event = const ManualNextHand();
+      case 'timeout_fold':
+        event = TimeoutFold(seatIndex);
+      case 'muck':
+        final show = data['showCards'] as bool? ?? true;
+        event = MuckDecision(seatIndex, showCards: show);
+      case 'pineapple_discard':
+        event = PineappleDiscard(seatIndex, Card.parse(data['card'] as String));
       default:
         _sendJson(req.response, 400, {'error': 'Unknown event type: $type'});
         return;
@@ -373,6 +450,76 @@ class HarnessServer {
     _sendJson(req.response, 201, session.toJson());
   }
 
+  // ── H2 API handlers ─────────────────────────────────────────────────────────
+
+  Future<void> _getEquity(HttpRequest req, String id) async {
+    final session = _sessions[id];
+    if (session == null) {
+      _sendJson(req.response, 404, {'error': 'Session not found: $id'});
+      return;
+    }
+
+    final state = session.currentState;
+    final hands = <int, List<Card>>{};
+    for (final seat in state.seats) {
+      if ((seat.isActive || seat.isAllIn) && seat.holeCards.length == 2) {
+        hands[seat.index] = seat.holeCards;
+      }
+    }
+
+    if (hands.length < 2) {
+      _sendJson(req.response, 200, {'equity': <String, dynamic>{}});
+      return;
+    }
+
+    final equity = EquityCalculator.calculate(
+      hands: hands,
+      board: state.community,
+      iterations: 5000,
+    );
+
+    _sendJson(req.response, 200, {
+      'equity': equity.map((k, v) => MapEntry(k.toString(), v)),
+    });
+  }
+
+  Future<void> _validateCards(HttpRequest req, String id) async {
+    final session = _sessions[id];
+    if (session == null) {
+      _sendJson(req.response, 404, {'error': 'Session not found: $id'});
+      return;
+    }
+
+    final issues = Engine.validateCards(session.currentState);
+    _sendJson(req.response, 200, {
+      'valid': issues.isEmpty,
+      'issues': issues,
+    });
+  }
+
+  Future<void> _getShowdownOrder(HttpRequest req, String id) async {
+    final session = _sessions[id];
+    if (session == null) {
+      _sendJson(req.response, 404, {'error': 'Session not found: $id'});
+      return;
+    }
+
+    final order = ShowdownOrder.getRevealOrder(session.currentState);
+    _sendJson(req.response, 200, {'revealOrder': order});
+  }
+
+  Future<void> _getRunoutCheck(HttpRequest req, String id) async {
+    final session = _sessions[id];
+    if (session == null) {
+      _sendJson(req.response, 404, {'error': 'Session not found: $id'});
+      return;
+    }
+
+    _sendJson(req.response, 200, {
+      'isAllInRunout': Engine.isAllInRunout(session.currentState),
+    });
+  }
+
   // ── Static file serving ─────────────────────────────────────────────────────
 
   Future<void> _serveStatic(HttpRequest req) async {
@@ -437,11 +584,19 @@ class HarnessServer {
       (DateTime.now().microsecond).toRadixString(36);
 
   Street _parseStreet(String s) => switch (s) {
+        'setupHand' => Street.setupHand,
         'preflop' => Street.preflop,
         'flop' => Street.flop,
         'turn' => Street.turn,
         'river' => Street.river,
         'showdown' => Street.showdown,
+        'runItMultiple' => Street.runItMultiple,
         _ => Street.flop,
+      };
+
+  CanvasType _parseCanvasType(String? s) => switch (s) {
+        'venue' => CanvasType.venue,
+        'broadcast' => CanvasType.broadcast,
+        _ => CanvasType.broadcast,
       };
 }

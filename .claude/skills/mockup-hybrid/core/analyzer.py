@@ -4,6 +4,7 @@
 사용자 프롬프트와 옵션을 분석하여 최적의 목업 생성 백엔드를 선택합니다.
 """
 
+import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -91,14 +92,6 @@ class DesignContextAnalyzer:
                 details="--force-html 옵션 지정",
             )
 
-        if options.force_mermaid:
-            return AnalysisResult(
-                backend=MockupBackend.MERMAID,
-                reason=SelectionReason.FORCE_MERMAID,
-                confidence=1.0,
-                details="--mockup mermaid 옵션 지정",
-            )
-
         if options.force_hifi:
             # Stitch 사용 가능 여부 확인
             if not self.stitch_client.is_available():
@@ -138,33 +131,15 @@ class DesignContextAnalyzer:
             details="기본값 (HTML)",
         )
 
-    def _match_keyword(self, keyword: str, prompt_lower: str) -> bool:
-        """키워드 매칭 (짧은 키워드는 word boundary 사용)"""
-        kw = keyword.lower()
-        if len(kw) <= 3:
-            return bool(re.search(r'\b' + re.escape(kw) + r'\b', prompt_lower))
-        return kw in prompt_lower
-
     def _analyze_keywords(self, prompt: str) -> Optional[AnalysisResult]:
         """키워드 분석"""
         prompt_lower = prompt.lower()
         keywords = self.rules.get("rules", {}).get("keywords", {})
 
-        # Mermaid 트리거 확인 (최우선)
-        mermaid_triggers = keywords.get("mermaid_triggers", [])
-        for keyword in mermaid_triggers:
-            if self._match_keyword(keyword, prompt_lower):
-                return AnalysisResult(
-                    backend=MockupBackend.MERMAID,
-                    reason=SelectionReason.MERMAID_KEYWORD,
-                    confidence=0.9,
-                    details=f"다이어그램 키워드 감지: '{keyword}'",
-                )
-
         # Stitch 트리거 확인
         stitch_triggers = keywords.get("stitch_triggers", [])
         for keyword in stitch_triggers:
-            if self._match_keyword(keyword, prompt_lower):
+            if keyword.lower() in prompt_lower:
                 # Stitch 사용 가능 여부 확인
                 if self.stitch_client.is_available():
                     return AnalysisResult(
@@ -185,7 +160,7 @@ class DesignContextAnalyzer:
         # HTML 트리거 확인
         html_triggers = keywords.get("html_triggers", [])
         for keyword in html_triggers:
-            if self._match_keyword(keyword, prompt_lower):
+            if keyword.lower() in prompt_lower:
                 return AnalysisResult(
                     backend=MockupBackend.HTML,
                     reason=SelectionReason.HTML_KEYWORD,
@@ -215,7 +190,7 @@ class DesignContextAnalyzer:
                         backend=MockupBackend.HTML,
                         reason=SelectionReason.API_UNAVAILABLE,
                         confidence=0.7,
-                        details="PRD 연결했으나 Stitch API 불가",
+                        details=f"PRD 연결했으나 Stitch API 불가",
                     )
 
         # 다중 화면 확인

@@ -4,6 +4,7 @@
 분석 결과에 따라 적절한 어댑터로 요청을 라우팅합니다.
 """
 
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
@@ -22,15 +23,13 @@ from lib.mockup_hybrid.export_utils import (
     save_html,
     capture_screenshot,
     get_output_paths,
+    generate_markdown_embed,
 )
 
 from .analyzer import DesignContextAnalyzer, AnalysisResult
 from .fallback_handler import FallbackHandler
 from ..adapters.html_adapter import HTMLAdapter
 from ..adapters.stitch_adapter import StitchAdapter
-from ..adapters.mermaid_adapter import MermaidAdapter
-from .document_scanner import DocumentScanner, DocumentScanResult
-from .document_embedder import DocumentEmbedder
 
 
 class MockupRouter:
@@ -40,7 +39,6 @@ class MockupRouter:
         self,
         html_adapter: Optional[HTMLAdapter] = None,
         stitch_adapter: Optional[StitchAdapter] = None,
-        mermaid_adapter: Optional[MermaidAdapter] = None,
         analyzer: Optional[DesignContextAnalyzer] = None,
         fallback_handler: Optional[FallbackHandler] = None,
     ):
@@ -50,13 +48,11 @@ class MockupRouter:
         Args:
             html_adapter: HTML 어댑터
             stitch_adapter: Stitch 어댑터
-            mermaid_adapter: Mermaid 어댑터
             analyzer: 프롬프트 분석기
             fallback_handler: 폴백 핸들러
         """
         self.html_adapter = html_adapter or HTMLAdapter()
         self.stitch_adapter = stitch_adapter or StitchAdapter()
-        self.mermaid_adapter = mermaid_adapter or MermaidAdapter()
         self.analyzer = analyzer or DesignContextAnalyzer()
         self.fallback_handler = fallback_handler or FallbackHandler()
 
@@ -82,26 +78,6 @@ class MockupRouter:
         options = options or MockupOptions()
         output_dir = output_dir or DEFAULT_MOCKUP_DIR
         image_dir = image_dir or DEFAULT_IMAGE_DIR
-
-        # 0. 파일 경로 감지 → 문서 모드
-        prompt_path = Path(prompt)
-        if prompt_path.suffix in ('.md', '.markdown') and prompt_path.exists():
-            self.route_document(
-                doc_path=prompt_path,
-                options=options,
-                output_dir=output_dir,
-                image_dir=image_dir,
-            )
-            # 문서 모드는 별도 결과 반환
-            return MockupResult(
-                backend=MockupBackend.MERMAID,
-                reason=SelectionReason.DEFAULT,
-                html_path=prompt_path,
-                image_path=None,
-                success=True,
-                message=f"📄 문서 기반 목업 생성 완료: {prompt_path}",
-                fallback_used=False,
-            )
 
         # 1. 프롬프트 분석
         analysis = self.analyzer.analyze(prompt, options)
@@ -129,78 +105,6 @@ class MockupRouter:
 
         return result
 
-    def route_document(
-        self,
-        doc_path: Path,
-        options: Optional[MockupOptions] = None,
-        output_dir: Optional[Path] = None,
-        image_dir: Optional[Path] = None,
-        force: bool = False,
-        dry_run: bool = False,
-    ) -> DocumentScanResult:
-        """
-        문서 기반 일괄 목업 생성
-
-        문서를 스캔하여 시각화 필요 섹션을 발견하고,
-        각 섹션에 적합한 목업을 자동 생성하여 문서에 삽입합니다.
-
-        Args:
-            doc_path: 마크다운 문서 경로
-            options: 목업 옵션
-            output_dir: HTML 출력 디렉토리
-            image_dir: 이미지 출력 디렉토리
-            force: True면 기존 시각화도 재생성
-            dry_run: True면 스캔만 하고 생성하지 않음
-
-        Returns:
-            DocumentScanResult 객체
-        """
-        options = options or MockupOptions()
-        output_dir = output_dir or DEFAULT_MOCKUP_DIR
-        image_dir = image_dir or DEFAULT_IMAGE_DIR
-
-        scanner = DocumentScanner()
-        embedder = DocumentEmbedder()
-
-        # 1. 문서 스캔
-        scan_result = scanner.scan(doc_path, force=force)
-
-        if dry_run:
-            return scan_result
-
-        if scan_result.mockup_count == 0:
-            return scan_result
-
-        # 2. 각 NEED 섹션에 대해 목업 생성
-        generation_results = []
-        for section in scan_result.need_sections:
-            # 섹션의 suggested_tier를 force 옵션으로 변환
-            section_options = MockupOptions(
-                bnw=options.bnw,
-                force_mermaid=section.suggested_tier == MockupBackend.MERMAID,
-                force_html=section.suggested_tier == MockupBackend.HTML,
-                force_hifi=section.suggested_tier == MockupBackend.STITCH,
-                prd=options.prd,
-            )
-
-            # 섹션 제목 + 본문을 프롬프트로 사용
-            heading_text = section.heading.lstrip('#').strip()
-            prompt = f"{heading_text}: {section.content[:200]}"
-
-            mockup_result = self.route(
-                prompt=prompt,
-                options=section_options,
-                output_dir=output_dir,
-                image_dir=image_dir,
-            )
-
-            generation_results.append((section, mockup_result))
-
-        # 3. 문서에 결과 삽입
-        embedder.embed_batch(doc_path, generation_results)
-
-        return scan_result
-
     def _execute_backend(
         self,
         backend: MockupBackend,
@@ -215,70 +119,9 @@ class MockupRouter:
         final_backend = backend
         final_reason = analysis.reason
 
-        if backend == MockupBackend.MERMAID:
-            # Mermaid 코드 생성
-            mermaid_result = self.mermaid_adapter.generate_from_prompt(prompt)
-
-            if mermaid_result.success:
-                screen_name = self._extract_name(prompt)
-                output_dir = html_path.parent if html_path else DEFAULT_MOCKUP_DIR
-
-                # .mermaid.md 저장 (마크다운 원본 유지)
-                md_path = output_dir / f"{screen_name}.mermaid.md"
-                md_path.parent.mkdir(parents=True, exist_ok=True)
-                md_content = f"# {screen_name}\n\n```mermaid\n{mermaid_result.mermaid_code}\n```\n"
-                md_path.write_text(md_content, encoding="utf-8")
-
-                # HTML 래퍼 저장 (width/height auto, max 720/1280 제약 적용)
-                html_wrapper = self.mermaid_adapter.to_html_wrapper(
-                    mermaid_result.mermaid_code,
-                    title=screen_name,
-                )
-                html_path.parent.mkdir(parents=True, exist_ok=True)
-                html_path.write_text(html_wrapper, encoding="utf-8")
-
-                # 스크린샷 캡처 (auto_size: 다이어그램 실제 크기에 맞춰 캡처)
-                captured_path = capture_screenshot(
-                    html_path=html_path,
-                    image_path=image_path,
-                    auto_size=True,
-                )
-
-                return MockupResult(
-                    backend=MockupBackend.MERMAID,
-                    reason=analysis.reason,
-                    html_path=html_path,
-                    image_path=captured_path,
-                    success=True,
-                    message=self._create_mermaid_message(
-                        mermaid_result.mermaid_code,
-                        mermaid_result.diagram_type,
-                        html_path,
-                    ),
-                    fallback_used=False,
-                    mermaid_code=mermaid_result.mermaid_code,
-                )
-            else:
-                # Mermaid 실패 시 HTML로 폴백
-                return self._execute_backend(
-                    backend=MockupBackend.HTML,
-                    prompt=prompt,
-                    options=options,
-                    html_path=html_path,
-                    image_path=image_path,
-                    analysis=AnalysisResult(
-                        backend=MockupBackend.HTML,
-                        reason=SelectionReason.FALLBACK,
-                        confidence=0.7,
-                        details=f"Mermaid 실패 -> HTML 폴백: {mermaid_result.error_message}",
-                    ),
-                )
-
         if backend == MockupBackend.STITCH:
             # Stitch 시도
-            stitch_result = self.stitch_adapter.generate_from_prompt(
-                prompt, bnw=options.bnw if options else False
-            )
+            stitch_result = self.stitch_adapter.generate_from_prompt(prompt)
 
             if stitch_result.success:
                 html_content = stitch_result.html_content
@@ -293,7 +136,7 @@ class MockupRouter:
 
                 if fallback_result.should_fallback:
                     # HTML로 폴백
-                    html_result = self.html_adapter.generate_from_prompt(prompt, options=options)
+                    html_result = self.html_adapter.generate_from_prompt(prompt)
                     if html_result.success:
                         html_content = html_result.html_content
                         fallback_used = True
@@ -317,7 +160,7 @@ class MockupRouter:
                     )
         else:
             # HTML 생성
-            html_result = self.html_adapter.generate_from_prompt(prompt, options=options)
+            html_result = self.html_adapter.generate_from_prompt(prompt)
 
             if html_result.success:
                 html_content = html_result.html_content
@@ -350,13 +193,13 @@ class MockupRouter:
             backend=final_backend,
             reason=final_reason,
             html_path=html_path,
-            image_path=captured_path,  # 실제 캡처된 경로 (실패 시 None → embedder HTML 폴백)
+            image_path=image_path,
             success=success,
             message=self._create_message(
                 backend=final_backend,
                 reason=final_reason,
                 html_path=html_path,
-                image_path=captured_path,
+                image_path=image_path,
                 success=success,
                 fallback_used=fallback_used,
             ),
@@ -385,23 +228,6 @@ class MockupRouter:
             message=f"❌ 오류: {error_message}",
             fallback_used=False,
         )
-
-    def _create_mermaid_message(
-        self,
-        mermaid_code: str,
-        diagram_type: str,
-        md_path: Path,
-    ) -> str:
-        """Mermaid 결과 메시지 생성"""
-        lines = [
-            f"📊 선택: Mermaid {diagram_type} (이유: 다이어그램 키워드 감지)",
-            f"✅ 생성: {md_path}",
-            "",
-            "```mermaid",
-            mermaid_code,
-            "```",
-        ]
-        return "\n".join(lines)
 
     def _create_message(
         self,

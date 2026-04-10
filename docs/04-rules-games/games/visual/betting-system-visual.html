@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>베팅 시스템 — 시각 가이드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a1a0e;color:#e8f5e9;font-family:'Segoe UI','Apple SD Gothic Neo',sans-serif;font-size:14px;padding:20px 14px;max-width:720px;margin:0 auto}
+.ph{text-align:center;padding:24px 0 16px;border-bottom:1px solid #1b4d2a;margin-bottom:28px}
+.ph h1{font-size:21px;font-weight:700;color:#fbbf24;letter-spacing:-.02em;margin-bottom:5px}
+.ph .sub{font-size:12px;color:#6b9a75}
+.ph .disc{margin-top:8px;padding:7px 14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:6px;font-size:11px;color:#a8cc9e;display:inline-block}
+.sec{margin-bottom:36px}
+.st{font-size:12px;font-weight:600;color:#fbbf24;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;padding-bottom:5px;border-bottom:1px solid #1b4d2a}
+.cap{text-align:center;font-size:11px;color:#6b9a75;margin-top:7px}
+
+/* poker table */
+.pt{background:radial-gradient(ellipse at center,#0d7a3a 0%,#0a5c2f 70%,#083d1f 100%);border-radius:90px;border:8px solid #3d2010;box-shadow:0 0 0 3px #5c3a1e,0 8px 28px rgba(0,0,0,.6);padding:20px 16px;text-align:center;margin:0 auto;max-width:640px}
+
+/* chip base */
+.chip{width:40px;height:40px;border-radius:50%;border:3px dashed rgba(255,255,255,.3);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;box-shadow:0 2px 4px rgba(0,0,0,.4);position:relative;flex-shrink:0}
+.chip.r{background:radial-gradient(circle,#ef4444,#b91c1c)}
+.chip.b{background:radial-gradient(circle,#3b82f6,#1d4ed8)}
+.chip.g{background:radial-gradient(circle,#22c55e,#15803d)}
+.chip.k{background:radial-gradient(circle,#1f2937,#111827)}
+.chip.w{background:radial-gradient(circle,#f9fafb,#d1d5db);color:#111}
+.chip.gold{background:radial-gradient(circle,#fbbf24,#d97706);color:#78350f;border-color:rgba(120,53,15,.4)}
+
+/* chip stack — multiple chips overlapping vertically */
+.cstack{display:inline-flex;flex-direction:column-reverse;align-items:center;position:relative}
+.cstack .chip{margin-top:-24px}
+.cstack .chip:first-child{margin-top:0}
+.cstack-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.cstack-wrap .clbl{font-size:10px;color:#a8cc9e;font-weight:600;text-align:center;margin-top:6px}
+
+/* action grid */
+.ag{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 auto}
+.abox{background:rgba(0,0,0,.3);border-radius:10px;padding:12px 8px 10px;text-align:center;border:1px solid rgba(255,255,255,.07)}
+.abox .aname{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+.abox .adesc{font-size:10px;color:#6b9a75;margin-top:6px;line-height:1.4}
+.abox.fold .aname{color:#9ca3af}
+.abox.check .aname{color:#38bdf8}
+.abox.bet .aname{color:#fbbf24}
+.abox.call .aname{color:#22c55e}
+.abox.raise .aname{color:#f97316}
+.abox.allin .aname{color:#ef4444}
+
+/* fold card visual */
+.fold-cards{display:flex;gap:3px;justify-content:center;opacity:.35;transform:rotate(-5deg)}
+.fc{width:30px;height:42px;border-radius:4px;background:repeating-linear-gradient(135deg,#374151 0,#374151 4px,#4b5563 4px,#4b5563 8px);border:1px solid #6b7280}
+.fc:last-child{transform:rotate(10deg) translateX(-4px)}
+
+/* check visual */
+.check-vis{display:flex;align-items:center;justify-content:center;gap:8px}
+.tap-icon{width:38px;height:38px;border-radius:50%;background:rgba(56,189,248,.15);border:2px solid rgba(56,189,248,.4);display:flex;align-items:center;justify-content:center}
+.tap-ring{width:52px;height:52px;border-radius:50%;border:2px solid rgba(56,189,248,.2);display:flex;align-items:center;justify-content:center;animation:pulse-ring 1.8s ease-out infinite}
+@keyframes pulse-ring{0%{transform:scale(.85);opacity:.6}70%{transform:scale(1.1);opacity:.15}100%{transform:scale(.85);opacity:.6}}
+.tap-dot{width:10px;height:10px;border-radius:50%;background:#38bdf8}
+
+/* all-in visual */
+.allin-vis{display:flex;align-items:flex-end;justify-content:center;gap:6px}
+.allin-arrow{font-size:18px;color:#ef4444;margin-bottom:4px;letter-spacing:-2px}
+
+/* pot badge */
+.pc2{width:62px;height:62px;border-radius:50%;background:radial-gradient(circle,#fbbf24,#d97706);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 0 14px rgba(251,191,36,.3)}
+.pc2 .ptl{font-size:9px;font-weight:700;color:#78350f}
+.pc2 .pta{font-size:15px;font-weight:800;color:#1a0a00}
+
+/* small pot */
+.pc-sm{width:52px;height:52px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 10px rgba(0,0,0,.4)}
+.pc-sm .ptl{font-size:8px;font-weight:700}
+.pc-sm .pta{font-size:12px;font-weight:800}
+.pc-main{background:radial-gradient(circle,#fbbf24,#d97706)}
+.pc-main .ptl{color:#78350f}
+.pc-main .pta{color:#1a0a00}
+.pc-side{background:radial-gradient(circle,#60a5fa,#2563eb)}
+.pc-side .ptl{color:#bfdbfe}
+.pc-side .pta{color:#fff}
+
+/* side pot stages */
+.stage{background:rgba(0,0,0,.25);border-radius:10px;padding:14px 12px;margin-bottom:10px;border:1px solid rgba(255,255,255,.06)}
+.slbl{font-size:11px;font-weight:700;color:#38bdf8;letter-spacing:.04em;margin-bottom:10px}
+.player-row{display:flex;justify-content:space-around;align-items:flex-end;flex-wrap:wrap;gap:8px}
+.pbox{text-align:center}
+.pname{font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:4px}
+.pamt{font-size:10px;color:#6b9a75;margin-top:4px}
+.ptag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;margin-top:3px;display:inline-block}
+.ptag.in{background:rgba(34,197,94,.18);color:#22c55e}
+.ptag.out{background:rgba(239,68,68,.12);color:#ef4444}
+.arrow-down{text-align:center;font-size:16px;color:#2d5a3d;margin:6px 0}
+.pot-row{display:flex;justify-content:center;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-top:4px}
+.pot-item{text-align:center}
+.pot-lbl{font-size:10px;color:#6b9a75;margin-bottom:5px;font-weight:600;letter-spacing:.03em}
+.pot-players{font-size:9px;color:#a8cc9e;margin-top:4px}
+
+/* bet structure bars */
+.bet-struct{display:flex;flex-direction:column;gap:14px}
+.bs-row{display:flex;align-items:center;gap:10px}
+.bs-label{font-size:11px;font-weight:700;width:28px;flex-shrink:0;text-align:right}
+.bs-label.nl{color:#ef4444}
+.bs-label.pl{color:#f97316}
+.bs-label.fl{color:#38bdf8}
+.bs-bar-wrap{flex:1;position:relative;height:32px;display:flex;align-items:center}
+.bs-bar{height:20px;border-radius:4px;display:flex;align-items:center;position:relative}
+.bs-bar.nl{background:linear-gradient(90deg,#991b1b,#ef4444);width:100%}
+.bs-bar.pl{background:linear-gradient(90deg,#9a3412,#f97316);width:62%}
+.bs-bar.fl{background:linear-gradient(90deg,#1e40af,#3b82f6);width:22%}
+.bs-min{font-size:9px;font-weight:700;color:#fff;padding-left:6px;white-space:nowrap}
+.bs-cap{font-size:9px;font-weight:700;color:rgba(255,255,255,.85);margin-left:5px;white-space:nowrap}
+.bs-inf{font-size:12px;color:rgba(255,255,255,.6);margin-left:4px;letter-spacing:2px}
+.bs-examples{margin-top:8px;padding:8px 10px;background:rgba(0,0,0,.2);border-radius:7px}
+.bs-ex-row{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.bs-ex-row:last-child{border-bottom:none}
+.bs-ex-lbl{font-size:10px;font-weight:700;width:28px;flex-shrink:0;text-align:right}
+.bs-ex-lbl.nl{color:#ef4444}
+.bs-ex-lbl.pl{color:#f97316}
+.bs-ex-lbl.fl{color:#38bdf8}
+.bs-ex-range{font-size:10px;color:#a8cc9e;flex:1}
+.bs-ex-note{font-size:9px;color:#6b9a75}
+
+/* separator */
+.pot-sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,#1b4d2a 20%,#1b4d2a 80%,transparent);margin:20px 0}
+
+/* blind position table */
+.tbl-wrap{position:relative;width:340px;height:220px;margin:0 auto}
+.tbl-oval{position:absolute;top:30px;left:20px;width:300px;height:160px;background:radial-gradient(ellipse,#0d7a3a,#0a5c2f,#083d1f);border-radius:50%;border:6px solid #3d2010;box-shadow:0 0 0 2px #5c3a1e}
+.pnode{position:absolute;text-align:center;transform:translate(-50%,-50%)}
+.pbadge{display:inline-block;width:36px;height:36px;border-radius:50%;font-size:11px;font-weight:700;line-height:36px;text-align:center}
+.pbadge.btn{background:#fbbf24;color:#1a0a00}
+.pbadge.sb{background:#3b82f6;color:#fff}
+.pbadge.bb{background:#ef4444;color:#fff}
+.pbadge.utg{background:#22c55e;color:#fff}
+.pbadge.def{background:#4b5563;color:#d1d5db}
+.prole{font-size:9px;color:#6b9a75;margin-top:2px}
+</style>
+</head>
+<body>
+
+<div class="ph">
+  <h1>베팅 시스템 — 시각 가이드</h1>
+  <div class="sub">PRD-GAME 베팅 규칙 시각 보충 자료</div>
+  <div class="disc">이 가이드는 텍스트 문서를 보충하는 시각 자료입니다. 전체 규칙은 PRD를 참조하세요.</div>
+</div>
+
+<!-- 섹션 0: 포커 칩 5종 -->
+<div class="sec" id="chips">
+<div class="st">포커 칩 -- 색상별 금액 체계</div>
+<div class="cap">포커 테이블에서는 돈 대신 칩(베팅 토큰)을 사용합니다.</div>
+<div class="pt" style="padding:30px 20px">
+<div style="display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:16px">
+  <div style="text-align:center">
+    <div class="chip w" style="margin:0 auto">1</div>
+    <div style="font-size:11px;color:#fbbf24;margin-top:6px;font-weight:700">1</div>
+    <div style="font-size:10px;color:#6b9a75">White</div>
+  </div>
+  <div style="text-align:center">
+    <div class="chip r" style="margin:0 auto">5</div>
+    <div style="font-size:11px;color:#fbbf24;margin-top:6px;font-weight:700">5</div>
+    <div style="font-size:10px;color:#6b9a75">Red</div>
+  </div>
+  <div style="text-align:center">
+    <div class="chip b" style="margin:0 auto">10</div>
+    <div style="font-size:11px;color:#fbbf24;margin-top:6px;font-weight:700">10</div>
+    <div style="font-size:10px;color:#6b9a75">Blue</div>
+  </div>
+  <div style="text-align:center">
+    <div class="chip g" style="margin:0 auto">25</div>
+    <div style="font-size:11px;color:#fbbf24;margin-top:6px;font-weight:700">25</div>
+    <div style="font-size:10px;color:#6b9a75">Green</div>
+  </div>
+  <div style="text-align:center">
+    <div class="chip k" style="margin:0 auto">100</div>
+    <div style="font-size:11px;color:#fbbf24;margin-top:6px;font-weight:700">100</div>
+    <div style="font-size:10px;color:#6b9a75">Black</div>
+  </div>
+</div>
+</div>
+<div class="cap">실제 카지노에서도 이 색상 체계를 사용합니다</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 1: 베팅 액션 6종 -->
+<div class="sec" id="actions">
+  <div class="st">섹션 1: 베팅 액션 6종</div>
+  <p style="color:#a8cc9e;font-size:12px;margin-bottom:14px;text-align:center">한 번의 차례에서 플레이어가 선택할 수 있는 6가지 행동입니다.</p>
+
+  <div class="pt">
+    <div class="ag">
+
+      <!-- FOLD -->
+      <div class="abox fold">
+        <div class="aname">Fold</div>
+        <div style="min-height:64px;display:flex;align-items:center;justify-content:center">
+          <div class="fold-cards">
+            <div class="fc"></div>
+            <div class="fc"></div>
+          </div>
+        </div>
+        <div class="adesc">패를 버리고 포기.<br>베팅 금액 회수 불가.</div>
+      </div>
+
+      <!-- CHECK -->
+      <div class="abox check">
+        <div class="aname">Check</div>
+        <div style="min-height:64px;display:flex;align-items:center;justify-content:center">
+          <div class="tap-ring">
+            <div class="tap-icon">
+              <div class="tap-dot"></div>
+            </div>
+          </div>
+        </div>
+        <div class="adesc">베팅 없이 패스.<br>추가 금액 없음.</div>
+      </div>
+
+      <!-- BET -->
+      <div class="abox bet">
+        <div class="aname">Bet</div>
+        <div style="min-height:64px;display:flex;align-items:center;justify-content:center">
+          <div class="cstack-wrap">
+            <div class="cstack">
+              <div class="chip gold">100</div>
+              <div class="chip gold">100</div>
+              <div class="chip gold">100</div>
+            </div>
+            <div class="clbl">베팅 금액</div>
+          </div>
+        </div>
+        <div class="adesc">이번 스트리트의<br>첫 베팅 행위.</div>
+      </div>
+
+      <!-- CALL -->
+      <div class="abox call">
+        <div class="aname">Call</div>
+        <div style="min-height:64px;display:flex;align-items:center;justify-content:center;gap:8px">
+          <div class="cstack-wrap">
+            <div class="cstack">
+              <div class="chip b">100</div>
+              <div class="chip b">100</div>
+              <div class="chip b">100</div>
+            </div>
+            <div class="clbl" style="color:#60a5fa">상대방</div>
+          </div>
+          <div style="font-size:16px;color:#2d5a3d;margin-bottom:14px">=</div>
+          <div class="cstack-wrap">
+            <div class="cstack">
+              <div class="chip g">100</div>
+              <div class="chip g">100</div>
+              <div class="chip g">100</div>
+            </div>
+            <div class="clbl">나</div>
+          </div>
+        </div>
+        <div class="adesc">상대 베팅과<br>동일한 금액 투입.</div>
+      </div>
+
+      <!-- RAISE -->
+      <div class="abox raise">
+        <div class="aname">Raise</div>
+        <div style="min-height:64px;display:flex;align-items:center;justify-content:center;gap:8px">
+          <div class="cstack-wrap">
+            <div class="cstack">
+              <div class="chip b">100</div>
+              <div class="chip b">100</div>
+              <div class="chip b">100</div>
+            </div>
+            <div class="clbl" style="color:#60a5fa">상대방</div>
+          </div>
+          <div style="font-size:14px;color:#f97316;margin-bottom:14px;font-weight:700">&lt;</div>
+          <div class="cstack-wrap">
+            <div class="cstack">
+              <div class="chip r">100</div>
+              <div class="chip r">100</div>
+              <div class="chip r">100</div>
+              <div class="chip r">100</div>
+              <div class="chip r">100</div>
+            </div>
+            <div class="clbl" style="color:#fca5a5">나</div>
+          </div>
+        </div>
+        <div class="adesc">상대 베팅보다<br>더 높게 올림.</div>
+      </div>
+
+      <!-- ALL-IN -->
+      <div class="abox allin">
+        <div class="aname">All-in</div>
+        <div style="min-height:64px;display:flex;align-items:center;justify-content:center">
+          <div class="allin-vis">
+            <div class="cstack-wrap">
+              <div class="cstack">
+                <div class="chip r">500</div>
+                <div class="chip r">500</div>
+                <div class="chip b">100</div>
+                <div class="chip b">100</div>
+                <div class="chip g">50</div>
+              </div>
+              <div class="clbl" style="color:#fca5a5">전부</div>
+            </div>
+            <div class="allin-arrow" style="margin-bottom:18px">→</div>
+            <div style="margin-bottom:8px">
+              <div class="pc2">
+                <div class="ptl">POT</div>
+                <div class="pta">ALL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="adesc">보유 칩 전부를<br>팟에 투입.</div>
+      </div>
+
+    </div><!-- /ag -->
+  </div><!-- /pt -->
+  <div class="cap">각 액션은 이전 베팅 상황에 따라 선택 가능 여부가 달라집니다.</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 2: Side Pot 시각화 -->
+<div class="sec" id="sidepot">
+  <div class="st">섹션 2: Side Pot 시각화 — 3인 All-in 예시</div>
+  <p style="color:#a8cc9e;font-size:12px;margin-bottom:14px;text-align:center">보유 칩이 다른 3명이 모두 All-in할 때 팟이 분리되는 과정입니다.<br>Player A (300칩) / Player B (800칩) / Player C (2000칩)</p>
+
+  <!-- Step 1: 초기 상태 -->
+  <div class="stage">
+    <div class="slbl">Step 1 — 각자 All-in 투입 전</div>
+    <div class="player-row">
+      <div class="pbox">
+        <div class="pname">Player A</div>
+        <div class="cstack-wrap">
+          <div class="cstack">
+            <div class="chip r" style="width:36px;height:36px;font-size:10px">300</div>
+          </div>
+        </div>
+        <div class="pamt">보유: 300</div>
+      </div>
+      <div class="pbox">
+        <div class="pname">Player B</div>
+        <div class="cstack-wrap">
+          <div class="cstack">
+            <div class="chip b" style="width:36px;height:36px;font-size:10px">500</div>
+            <div class="chip b" style="width:36px;height:36px;font-size:10px">300</div>
+          </div>
+        </div>
+        <div class="pamt">보유: 800</div>
+      </div>
+      <div class="pbox">
+        <div class="pname">Player C</div>
+        <div class="cstack-wrap">
+          <div class="cstack">
+            <div class="chip g" style="width:36px;height:36px;font-size:10px">500</div>
+            <div class="chip g" style="width:36px;height:36px;font-size:10px">500</div>
+            <div class="chip g" style="width:36px;height:36px;font-size:10px">500</div>
+            <div class="chip g" style="width:36px;height:36px;font-size:10px">500</div>
+          </div>
+        </div>
+        <div class="pamt">보유: 2000</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">▼</div>
+
+  <!-- Step 2: Main Pot 형성 -->
+  <div class="stage">
+    <div class="slbl">Step 2 — Main Pot 형성 (A의 최대 금액 기준)</div>
+    <p style="font-size:11px;color:#6b9a75;margin-bottom:10px'>각자가 최소 300씩 투입 → A는 300 전부, B는 300, C는 300 기여</p>
+    <div class="player-row">
+      <div class="pbox">
+        <div class="pname">Player A</div>
+        <div style="display:flex;gap:3px;justify-content:center;margin:4px 0">
+          <div class="chip r" style="width:32px;height:32px;font-size:9px">300</div>
+        </div>
+        <div class="ptag in">기여 300</div>
+        <div class="pamt">잔여: 0</div>
+      </div>
+      <div class="pbox">
+        <div class="pname">Player B</div>
+        <div style="display:flex;gap:3px;justify-content:center;margin:4px 0">
+          <div class="chip b" style="width:32px;height:32px;font-size:9px">300</div>
+        </div>
+        <div class="ptag in">기여 300</div>
+        <div class="pamt">잔여: 500</div>
+      </div>
+      <div class="pbox">
+        <div class="pname">Player C</div>
+        <div style="display:flex;gap:3px;justify-content:center;margin:4px 0">
+          <div class="chip g" style="width:32px;height:32px;font-size:9px">300</div>
+        </div>
+        <div class="ptag in">기여 300</div>
+        <div class="pamt">잔여: 1700</div>
+      </div>
+    </div>
+    <div class="arrow-down">▼</div>
+    <div class="pot-row">
+      <div class="pot-item">
+        <div class="pot-lbl">Main Pot</div>
+        <div class="pc-sm pc-main">
+          <div class="ptl">POT</div>
+          <div class="pta">900</div>
+        </div>
+        <div class="pot-players">A + B + C 모두 참여</div>
+      </div>
+    </div>
+    <div class="cap" style="margin-top:8px">300 x 3 = 900 / A, B, C 3인 모두 우승 자격 있음</div>
+  </div>
+
+  <div class="arrow-down">▼</div>
+
+  <!-- Step 3: Side Pot 형성 -->
+  <div class="stage">
+    <div class="slbl">Step 3 — Side Pot 1 형성 (B의 잔여 금액 기준)</div>
+    <p style="font-size:11px;color:#6b9a75;margin-bottom:10px">B의 잔여 500을 C가 매칭 → A는 이미 소진, 참여 불가</p>
+    <div class="player-row">
+      <div class="pbox">
+        <div class="pname">Player A</div>
+        <div style="margin:8px 0;opacity:.3">
+          <div class="chip k" style="width:32px;height:32px;font-size:9px">-</div>
+        </div>
+        <div class="ptag out">참여 불가</div>
+        <div class="pamt">칩 소진</div>
+      </div>
+      <div class="pbox">
+        <div class="pname">Player B</div>
+        <div style="display:flex;gap:3px;justify-content:center;margin:4px 0">
+          <div class="chip b" style="width:32px;height:32px;font-size:9px">500</div>
+        </div>
+        <div class="ptag in">기여 500</div>
+        <div class="pamt">잔여: 0</div>
+      </div>
+      <div class="pbox">
+        <div class="pname">Player C</div>
+        <div style="display:flex;gap:3px;justify-content:center;margin:4px 0">
+          <div class="chip g" style="width:32px;height:32px;font-size:9px">500</div>
+        </div>
+        <div class="ptag in">기여 500</div>
+        <div class="pamt">잔여: 1200</div>
+      </div>
+    </div>
+    <div class="arrow-down">▼</div>
+    <div class="pot-row">
+      <div class="pot-item">
+        <div class="pot-lbl">Main Pot</div>
+        <div class="pc-sm pc-main">
+          <div class="ptl">POT</div>
+          <div class="pta">900</div>
+        </div>
+        <div class="pot-players">A / B / C 참여</div>
+      </div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:8px;color:#2d5a3d;font-size:18px">+</div>
+      <div class="pot-item">
+        <div class="pot-lbl">Side Pot 1</div>
+        <div class="pc-sm pc-side">
+          <div class="ptl">SIDE</div>
+          <div class="pta">1000</div>
+        </div>
+        <div class="pot-players">B / C 만 참여</div>
+      </div>
+    </div>
+    <div class="cap" style="margin-top:8px">500 x 2 = 1000 / C가 남은 1200은 아무도 매칭 불가 → 환급</div>
+  </div>
+
+  <!-- 결과 요약 -->
+  <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:14px 12px;border:1px solid rgba(251,191,36,.15)">
+    <div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:10px;letter-spacing:.03em">최종 팟 구성 요약</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div style="flex:1;min-width:160px;background:rgba(0,0,0,.2);border-radius:8px;padding:10px">
+        <div style="font-size:10px;color:#a8cc9e;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Main Pot — 900</div>
+        <div style="font-size:11px;color:#e8f5e9;line-height:1.6">A, B, C 모두 참여<br>핸드 강도로 결정</div>
+      </div>
+      <div style="flex:1;min-width:160px;background:rgba(0,0,0,.2);border-radius:8px;padding:10px">
+        <div style="font-size:10px;color:#93c5fd;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Side Pot 1 — 1000</div>
+        <div style="font-size:11px;color:#e8f5e9;line-height:1.6">B, C 만 참여<br>A는 수령 불가</div>
+      </div>
+      <div style="flex:1;min-width:160px;background:rgba(0,0,0,.2);border-radius:8px;padding:10px">
+        <div style="font-size:10px;color:#6b9a75;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.04em">C 환급 — 1200</div>
+        <div style="font-size:11px;color:#6b9a75;line-height:1.6">매칭 상대 없음<br>즉시 C에게 반환</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 3: NL / PL / FL 비교 -->
+<div class="sec" id="bet-structure">
+  <div class="st">섹션 3: NL / PL / FL 베팅 구조 비교</div>
+  <p style="color:#a8cc9e;font-size:12px;margin-bottom:14px;text-align:center">BB = 100 기준. 세 구조의 최대 베팅 가능 금액이 다릅니다.</p>
+
+  <div style="background:rgba(0,0,0,.25);border-radius:10px;padding:16px 14px;border:1px solid rgba(255,255,255,.06)">
+
+    <!-- 레이블 -->
+    <div style="display:flex;gap:10px;margin-bottom:6px">
+      <div style="width:28px"></div>
+      <div style="flex:1;font-size:10px;color:#6b9a75;letter-spacing:.04em;font-weight:600;text-transform:uppercase">최소 → 최대 베팅 가능 범위 (BB = 100 기준)</div>
+    </div>
+
+    <div class="bet-struct">
+
+      <!-- No Limit -->
+      <div>
+        <div class="bs-row">
+          <div class="bs-label nl">NL</div>
+          <div class="bs-bar-wrap">
+            <div class="bs-bar nl">
+              <span class="bs-min">100</span>
+            </div>
+            <span class="bs-inf">···</span>
+            <span class="bs-cap" style="color:#fca5a5">무제한</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:3px;padding-left:38px">
+          <div style="font-size:10px;color:#9ca3af;line-height:1.5">No Limit — 최소 1 BB, 최대 보유 칩 전부. All-in 가능.</div>
+        </div>
+      </div>
+
+      <!-- Pot Limit -->
+      <div>
+        <div class="bs-row">
+          <div class="bs-label pl">PL</div>
+          <div class="bs-bar-wrap">
+            <div class="bs-bar pl">
+              <span class="bs-min">100</span>
+            </div>
+            <span class="bs-cap" style="color:#fdba74">팟 크기 이하</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:3px;padding-left:38px">
+          <div style="font-size:10px;color:#9ca3af;line-height:1.5">Pot Limit — 최소 1 BB, 최대 현재 팟 크기. 오마하에서 자주 사용.</div>
+        </div>
+      </div>
+
+      <!-- Fixed Limit -->
+      <div>
+        <div class="bs-row">
+          <div class="bs-label fl">FL</div>
+          <div class="bs-bar-wrap">
+            <div class="bs-bar fl">
+              <span class="bs-min">100</span>
+            </div>
+            <span class="bs-cap" style="color:#93c5fd">고정 단위</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:3px;padding-left:38px">
+          <div style="font-size:10px;color:#9ca3af;line-height:1.5">Fixed Limit — 지정된 고정 단위만 베팅. 인상 횟수도 제한됨.</div>
+        </div>
+      </div>
+
+    </div><!-- /bet-struct -->
+
+    <!-- 실전 예시 테이블 -->
+    <div class="bs-examples" style="margin-top:16px">
+      <div style="font-size:10px;font-weight:700;color:#fbbf24;margin-bottom:8px;letter-spacing:.04em;text-transform:uppercase">실전 금액 예시 (팟 400, 보유 2000 기준)</div>
+
+      <div class="bs-ex-row">
+        <div class="bs-ex-lbl nl">NL</div>
+        <div class="bs-ex-range">최소 100 → 최대 2000 (All-in)</div>
+        <div class="bs-ex-note">임의 금액 선택 가능</div>
+      </div>
+      <div class="bs-ex-row">
+        <div class="bs-ex-lbl pl">PL</div>
+        <div class="bs-ex-range">최소 100 → 최대 400 (팟 크기)</div>
+        <div class="bs-ex-note">팟 계산 후 상한 결정</div>
+      </div>
+      <div class="bs-ex-row">
+        <div class="bs-ex-lbl fl">FL</div>
+        <div class="bs-ex-range">프리플랍/플랍 100 고정 / 턴·리버 200 고정</div>
+        <div class="bs-ex-note">단위 외 금액 불가</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 구조별 사용처 -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+    <div style="flex:1;min-width:170px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);border-radius:8px;padding:10px">
+      <div style="font-size:10px;font-weight:700;color:#ef4444;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em">No Limit</div>
+      <div style="font-size:11px;color:#e8f5e9;line-height:1.6">Texas Hold'em<br>Short Deck Hold'em<br>— 대부분의 토너먼트</div>
+    </div>
+    <div style="flex:1;min-width:170px;background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.18);border-radius:8px;padding:10px">
+      <div style="font-size:10px;font-weight:700;color:#f97316;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em">Pot Limit</div>
+      <div style="font-size:11px;color:#e8f5e9;line-height:1.6">Omaha Hi<br>Omaha Hi-Lo<br>— PLO 형태</div>
+    </div>
+    <div style="flex:1;min-width:170px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.18);border-radius:8px;padding:10px">
+      <div style="font-size:10px;font-weight:700;color:#38bdf8;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em">Fixed Limit</div>
+      <div style="font-size:11px;color:#e8f5e9;line-height:1.6">Stud Hi / Hi-Lo<br>Razz, 2-7 Draw<br>— 고전 카지노 형태</div>
+    </div>
+  </div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 4: 블라인드 위치 -->
+<div class="sec" id="blind-position">
+<div class="st">블라인드 위치 -- 원형 테이블</div>
+<div class="cap">딜러 버튼(D)을 기준으로 SB, BB 위치가 결정됩니다</div>
+<div class="tbl-wrap">
+<div class="tbl-oval"></div>
+<!-- BTN (bottom center) -->
+<div class="pnode" style="left:170px;top:215px">
+  <div class="pbadge btn">D</div>
+  <div class="prole">BTN (Dealer)</div>
+</div>
+<!-- SB (bottom left) -->
+<div class="pnode" style="left:50px;top:185px">
+  <div class="pbadge sb">SB</div>
+  <div class="pamt">50</div>
+  <div class="prole">Small Blind</div>
+</div>
+<!-- BB (top left) -->
+<div class="pnode" style="left:30px;top:90px">
+  <div class="pbadge bb">BB</div>
+  <div class="pamt">100</div>
+  <div class="prole">Big Blind</div>
+</div>
+<!-- UTG (top center) -->
+<div class="pnode" style="left:170px;top:15px">
+  <div class="pbadge utg">1st</div>
+  <div class="prole">UTG (첫 행동)</div>
+</div>
+<!-- MP (top right) -->
+<div class="pnode" style="left:310px;top:90px">
+  <div class="pbadge def">MP</div>
+  <div class="prole">Middle</div>
+</div>
+<!-- CO (bottom right) -->
+<div class="pnode" style="left:290px;top:185px">
+  <div class="pbadge def">CO</div>
+  <div class="prole">Cut-Off</div>
+</div>
+</div>
+<div class="cap" style="margin-top:20px">매 핸드마다 딜러 버튼(D)이 시계 방향으로 이동합니다. 블라인드도 함께 이동합니다.</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 5: Ante 7종 -->
+<div class="sec" id="ante-types">
+<div class="st">Ante 7종 -- 3그룹 비교</div>
+<div class="cap">누가 Ante를 내는지에 따라 3그룹으로 나뉩니다</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:12px">
+  <!-- 그룹 1: 전원 -->
+  <div style="flex:1;min-width:200px;background:rgba(0,0,0,.25);border-radius:10px;padding:14px;text-align:center">
+    <div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:8px">그룹 1: 전원 납부</div>
+    <div style="font-size:10px;color:#6b9a75;margin-bottom:10px">Standard / Live Ante</div>
+    <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap">
+      <div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">A</div>
+      <div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">A</div>
+      <div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">A</div>
+      <div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">A</div>
+      <div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">A</div>
+      <div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">A</div>
+    </div>
+    <div style="font-size:10px;color:#6b9a75;margin-top:6px">6명 모두 동일 금액</div>
+  </div>
+  <!-- 그룹 2: 1명 대납 -->
+  <div style="flex:1;min-width:200px;background:rgba(0,0,0,.25);border-radius:10px;padding:14px;text-align:center">
+    <div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:8px">그룹 2: 1명 대납</div>
+    <div style="font-size:10px;color:#6b9a75;margin-bottom:10px">Button / BB Ante</div>
+    <div style="display:flex;justify-content:center;gap:4px;align-items:flex-end">
+      <div style="opacity:.3"><div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">-</div></div>
+      <div style="opacity:.3"><div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">-</div></div>
+      <div><div class="chip r" style="width:36px;height:36px;font-size:10px;line-height:30px">ALL</div></div>
+      <div style="opacity:.3"><div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">-</div></div>
+      <div style="opacity:.3"><div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">-</div></div>
+    </div>
+    <div style="font-size:10px;color:#6b9a75;margin-top:6px">1명이 전원분 대납</div>
+  </div>
+  <!-- 그룹 3: 2명 분담 -->
+  <div style="flex:1;min-width:200px;background:rgba(0,0,0,.25);border-radius:10px;padding:14px;text-align:center">
+    <div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:8px">그룹 3: 2명 분담</div>
+    <div style="font-size:10px;color:#6b9a75;margin-bottom:10px">TB Ante</div>
+    <div style="display:flex;justify-content:center;gap:4px;align-items:flex-end">
+      <div style="opacity:.3"><div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">-</div></div>
+      <div><div class="chip sb" style="width:32px;height:32px;font-size:9px;line-height:26px;background:radial-gradient(circle,#3b82f6,#1d4ed8)">SB</div></div>
+      <div><div class="chip r" style="width:32px;height:32px;font-size:9px;line-height:26px">BB</div></div>
+      <div style="opacity:.3"><div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">-</div></div>
+      <div style="opacity:.3"><div class="chip w" style="width:28px;height:28px;font-size:8px;line-height:22px">-</div></div>
+    </div>
+    <div style="font-size:10px;color:#6b9a75;margin-top:6px">SB + BB가 합산 분담</div>
+  </div>
+</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 6: Straddle -->
+<div class="sec" id="straddle">
+<div class="st">Straddle -- 행동 순서 변경</div>
+<div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:10px">
+  <!-- 일반 -->
+  <div style="flex:1;min-width:280px;background:rgba(0,0,0,.2);border-radius:10px;padding:14px">
+    <div style="font-size:12px;font-weight:700;color:#22c55e;text-align:center;margin-bottom:10px">일반 순서</div>
+    <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap">
+      <div style="text-align:center"><div class="pbadge utg" style="display:inline-block">1</div><div class="prole">UTG</div></div>
+      <div style="color:#4b5563;font-size:16px;line-height:36px">-&gt;</div>
+      <div style="text-align:center"><div class="pbadge def" style="display:inline-block">2</div><div class="prole">MP</div></div>
+      <div style="color:#4b5563;font-size:16px;line-height:36px">-&gt;</div>
+      <div style="text-align:center"><div class="pbadge def" style="display:inline-block">3</div><div class="prole">CO</div></div>
+      <div style="color:#4b5563;font-size:16px;line-height:36px">-&gt;</div>
+      <div style="text-align:center"><div class="pbadge btn" style="display:inline-block">4</div><div class="prole">BTN</div></div>
+      <div style="color:#4b5563;font-size:16px;line-height:36px">-&gt;</div>
+      <div style="text-align:center"><div class="pbadge sb" style="display:inline-block">5</div><div class="prole">SB</div></div>
+      <div style="color:#4b5563;font-size:16px;line-height:36px">-&gt;</div>
+      <div style="text-align:center"><div class="pbadge bb" style="display:inline-block">6</div><div class="prole">BB</div></div>
+    </div>
+  </div>
+  <!-- Straddle -->
+  <div style="flex:1;min-width:280px;background:rgba(0,0,0,.2);border-radius:10px;padding:14px;border:1px solid rgba(251,191,36,.3)">
+    <div style="font-size:12px;font-weight:700;color:#fbbf24;text-align:center;margin-bottom:10px">Straddle (UTG가 마지막!)</div>
+    <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap">
+      <div style="text-align:center"><div class="pbadge def" style="display:inline-block">1</div><div class="prole">MP</div></div>
+      <div style="color:#4b5563;font-size:16px;line-height:36px">-&gt;</div>
+      <div style="text-align:center"><div class="pbadge def" style="display:inline-block">2</div><div class="prole">CO</div></div>
+      <div style="color:#4b5563;font-size:16px;line-height:36px">-&gt;</div>
+      <div style="text-align:center"><div class="pbadge btn" style="display:inline-block">3</div><div class="prole">BTN</div></div>
+      <div style="color:#4b5563;font-size:16px;line-height:36px">-&gt;</div>
+      <div style="text-align:center"><div class="pbadge sb" style="display:inline-block">4</div><div class="prole">SB</div></div>
+      <div style="color:#4b5563;font-size:16px;line-height:36px">-&gt;</div>
+      <div style="text-align:center"><div class="pbadge bb" style="display:inline-block">5</div><div class="prole">BB</div></div>
+      <div style="color:#4b5563;font-size:16px;line-height:36px">-&gt;</div>
+      <div style="text-align:center;position:relative"><div class="pbadge utg" style="display:inline-block;box-shadow:0 0 8px rgba(251,191,36,.5)">6</div><div class="prole" style="color:#fbbf24">UTG</div><div style="font-size:8px;color:#ef4444;font-weight:700">LAST!</div></div>
+    </div>
+    <div class="cap">UTG가 2x BB를 미리 걸고, 마지막에 행동합니다</div>
+  </div>
+</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 7: Bomb Pot -->
+<div class="sec" id="bombpot">
+<div class="st">Bomb Pot -- Pre-Flop 스킵</div>
+<div style="margin-top:12px">
+  <!-- 일반 -->
+  <div style="margin-bottom:14px">
+    <div style="font-size:11px;font-weight:700;color:#22c55e;margin-bottom:8px">일반 흐름</div>
+    <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:4px">
+      <div style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);border-radius:7px;padding:8px 12px;font-size:11px;font-weight:600;color:#22c55e;white-space:nowrap">Pre-Flop<br>베팅</div>
+      <div style="color:#4b5563;font-size:14px;padding:0 2px">-&gt;</div>
+      <div style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);border-radius:7px;padding:8px 12px;font-size:11px;font-weight:600;color:#3b82f6;white-space:nowrap">Flop<br>3장</div>
+      <div style="color:#4b5563;font-size:14px;padding:0 2px">-&gt;</div>
+      <div style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);border-radius:7px;padding:8px 12px;font-size:11px;font-weight:600;color:#3b82f6;white-space:nowrap">Turn<br>+1장</div>
+      <div style="color:#4b5563;font-size:14px;padding:0 2px">-&gt;</div>
+      <div style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);border-radius:7px;padding:8px 12px;font-size:11px;font-weight:600;color:#3b82f6;white-space:nowrap">River<br>+1장</div>
+    </div>
+  </div>
+  <!-- Bomb Pot -->
+  <div>
+    <div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:8px">Bomb Pot</div>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+      <div style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:7px;padding:8px 12px;font-size:11px;font-weight:600;color:#fbbf24;white-space:nowrap">전원<br>일정 금액</div>
+      <div style="color:#4b5563;font-size:14px;padding:0 2px">-&gt;</div>
+      <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:7px;padding:8px 12px;font-size:11px;font-weight:600;color:#ef4444;text-decoration:line-through;opacity:.5;white-space:nowrap">Pre-Flop<br>SKIP</div>
+      <div style="color:#4b5563;font-size:14px;padding:0 2px">-&gt;</div>
+      <div style="background:rgba(251,191,36,.15);border:2px solid #fbbf24;border-radius:7px;padding:8px 12px;font-size:11px;font-weight:700;color:#fbbf24;box-shadow:0 0 8px rgba(251,191,36,.3);white-space:nowrap">바로 Flop!<br>3장</div>
+      <div style="color:#4b5563;font-size:14px;padding:0 2px">-&gt;</div>
+      <div style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);border-radius:7px;padding:8px 12px;font-size:11px;font-weight:600;color:#3b82f6;white-space:nowrap">Turn<br>+1장</div>
+      <div style="color:#4b5563;font-size:14px;padding:0 2px">-&gt;</div>
+      <div style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);border-radius:7px;padding:8px 12px;font-size:11px;font-weight:600;color:#3b82f6;white-space:nowrap">River<br>+1장</div>
+    </div>
+  </div>
+</div>
+<div class="cap">Bomb Pot: 전원이 합의 금액을 넣고 Pre-Flop을 건너뜁니다. 바로 Flop부터 시작.</div>
+</div>
+
+</body>
+</html>

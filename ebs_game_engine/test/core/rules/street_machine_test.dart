@@ -62,21 +62,23 @@ void main() {
   });
 
   group('StreetMachine.firstToAct', () {
-    test('postflop: first active after dealer', () {
-      // Dealer=seat0, seats 0,1,2 all active → first after dealer = seat 1
+    test('postflop: SB acts first (per BS-06-10:82-86)', () {
+      // Dealer=0, SB=1, all active → SB (seat 1) acts first
       final state = _makeState(
         seats: [_seat(0), _seat(1), _seat(2)],
         dealerSeat: 0,
+        sbSeat: 1,
         street: Street.flop,
       );
       expect(StreetMachine.firstToAct(state), 1);
     });
 
-    test('postflop: skips folded seats', () {
-      // Dealer=0, seat1 folded → first active = seat 2
+    test('postflop: skips folded SB, next active acts', () {
+      // Dealer=0, SB=1 folded → next active = seat 2
       final state = _makeState(
         seats: [_seat(0), _seat(1, status: SeatStatus.folded), _seat(2)],
         dealerSeat: 0,
+        sbSeat: 1,
         street: Street.flop,
       );
       expect(StreetMachine.firstToAct(state), 2);
@@ -106,11 +108,12 @@ void main() {
       expect(StreetMachine.firstToAct(state), 0);
     });
 
-    test('postflop: skips allIn seats', () {
-      // Dealer=0, seat1 allIn → first actionable = seat 2
+    test('postflop: skips allIn SB, next active acts', () {
+      // Dealer=0, SB=1 allIn → first actionable = seat 2
       final state = _makeState(
         seats: [_seat(0), _seat(1, status: SeatStatus.allIn), _seat(2)],
         dealerSeat: 0,
+        sbSeat: 1,
         street: Street.flop,
       );
       expect(StreetMachine.firstToAct(state), 2);
@@ -157,8 +160,8 @@ void main() {
       for (final s in next.seats) {
         expect(s.currentBet, 0);
       }
-      // firstToAct should be seat 1 (first active after dealer 0)
-      expect(next.actionOn, 1);
+      // firstToAct should be seat 0 (SB, per BS-06-10:82-86. sbSeat defaults to 0)
+      expect(next.actionOn, 0);
     });
   });
 }

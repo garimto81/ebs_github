@@ -281,12 +281,14 @@ class HandEvaluator {
       return values.first;
     }
 
-    // Wheel: A-5-4-3-2 → values would be [14, 5, 4, 3, 2]
+    // Wheel: A plays low + 4 consecutive cards
+    // Standard: A-2-3-4-5 (restSorted starts at 2)
+    // Short Deck: A-6-7-8-9 (restSorted starts at 6)
     if (values.first == 14) {
-      final lowValues = [values[1], values[2], values[3], values[4], 1]..sort();
-      // Check if [1, v1, v2, v3, v4] is consecutive ascending
-      if (lowValues[0] == 1 && _isConsecutiveAsc(lowValues)) {
-        return lowValues.last; // 5-high for standard wheel, 9-high for short deck
+      final restSorted = [values[1], values[2], values[3], values[4]]..sort();
+      if (_isConsecutiveAsc(restSorted) &&
+          (restSorted.first == 2 || restSorted.first == 6)) {
+        return restSorted.last; // 5-high for standard wheel, 9-high for short deck
       }
     }
 

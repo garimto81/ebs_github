@@ -4,6 +4,7 @@ version: 19.0.0
 description: /auto로 통합됨 (v19.0). 리다이렉트 stub.
 deprecated: true
 redirect: auto
+audit_exclude: true
 ---
 
 # /work -> /auto 리다이렉트

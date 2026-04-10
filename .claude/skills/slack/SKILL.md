@@ -1,7 +1,8 @@
 ---
 name: slack
 description: >
-  This skill should be used when the user requests Slack operations like sending/receiving messages, channel management, or browser OAuth authentication.
+  Slack 메시징 스킬. Browser OAuth 인증, 메시지 전송/수신, 채널 관리.
+  "slack", "슬랙 메시지", "slack 전송" 요청 시 사용.
 version: 1.0.0
 triggers:
   keywords:
@@ -24,6 +25,13 @@ triggers:
     - "Slack 연동"
     - "채널 메시지"
     - "팀 커뮤니케이션"
+capabilities:
+  - slack_oauth
+  - send_message
+  - read_history
+  - list_channels
+  - get_user_info
+model_preference: sonnet
 auto_trigger: true
 ---
 
@@ -235,17 +243,6 @@ python -m lib.slack history "C채널ID2" --limit 50 --json
 
 # 3. 결과 종합하여 분석 리포트 작성
 ```
-
-## /auto 통합 동작
-
-`--slack` 옵션이 `/auto`에 전달되면 **Step 2.0 (옵션 처리)** 단계에서 실행:
-
-1. Slack 인증 상태 확인 (`python -m lib.slack status --json`)
-2. 요청된 Slack 작업 실행 (send/history/channels)
-3. JSON 결과 파싱 → 컨텍스트로 수집
-4. 결과를 후속 작업에 활용 (예: daily 보고서 데이터 소스)
-
-**옵션 실패 시: 에러 출력, 절대 조용히 스킵 금지.**
 
 ## Workflow (Legacy)
 

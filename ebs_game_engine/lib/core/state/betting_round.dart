@@ -5,6 +5,7 @@ class BettingRound {
   int lastAggressor;
   Set<int> actedThisRound;
   bool bbOptionPending;
+  int raiseCount;
 
   BettingRound({
     this.currentBet = 0,
@@ -13,6 +14,7 @@ class BettingRound {
     this.lastAggressor = -1,
     Set<int>? actedThisRound,
     this.bbOptionPending = false,
+    this.raiseCount = 0,
   }) : actedThisRound = actedThisRound ?? {};
 
   BettingRound copy() => BettingRound(
@@ -22,5 +24,6 @@ class BettingRound {
     lastAggressor: lastAggressor,
     actedThisRound: Set.of(actedThisRound),
     bbOptionPending: bbOptionPending,
+    raiseCount: raiseCount,
   );
 }

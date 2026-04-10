@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=900">
+<title>EBS Data Sync Flow</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; padding: 20px 16px; }
+
+  .flow { display: flex; align-items: center; gap: 0; justify-content: center; }
+
+  .node {
+    border: 2px solid #222;
+    padding: 10px 14px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 10px;
+    background: #fff;
+    white-space: nowrap;
+    position: relative;
+  }
+  .node-api { background: #e3f2fd; border-color: #1565c0; color: #1565c0; border-radius: 6px; }
+  .node-db { background: #fff3e0; border-color: #e65100; color: #e65100; border-radius: 0; }
+  .node-lobby { background: #e8f5e9; border-color: #2e7d32; color: #2e7d32; border-radius: 6px; }
+  .node-cc { background: #f3e5f5; border-color: #6a1b9a; color: #6a1b9a; border-radius: 6px; }
+  .node-overlay { background: #fce4ec; border-color: #c62828; color: #c62828; border-radius: 6px; }
+
+  .node-sub { font-size: 8px; font-weight: 400; color: #888; margin-top: 2px; }
+
+  .arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 4px;
+    min-width: 60px;
+  }
+  .arrow-line {
+    height: 2px;
+    background: #555;
+    width: 100%;
+    position: relative;
+  }
+  .arrow-line::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: -4px;
+    border: 5px solid transparent;
+    border-left: 6px solid #555;
+  }
+  .arrow-bidir .arrow-line::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: -4px;
+    border: 5px solid transparent;
+    border-right: 6px solid #555;
+  }
+  .arrow-label {
+    font-size: 8px;
+    color: #888;
+    font-weight: 600;
+    margin-bottom: 3px;
+    white-space: nowrap;
+  }
+
+  .hand-history {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+    gap: 0;
+  }
+  .hh-label {
+    font-size: 9px;
+    color: #6a1b9a;
+    font-weight: 600;
+    background: #f3e5f5;
+    padding: 4px 10px;
+    border: 1px dashed #6a1b9a;
+    border-radius: 4px;
+  }
+  .hh-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 4px;
+    min-width: 40px;
+  }
+  .hh-arrow-line {
+    height: 2px;
+    background: #6a1b9a;
+    width: 100%;
+    position: relative;
+  }
+  .hh-arrow-line::after {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: -4px;
+    border: 5px solid transparent;
+    border-right: 6px solid #6a1b9a;
+  }
+  .hh-arrow-label {
+    font-size: 7px;
+    color: #6a1b9a;
+    margin-bottom: 2px;
+  }
+
+  .title { font-size: 12px; font-weight: 700; margin-bottom: 12px; text-align: center; letter-spacing: 0.5px; }
+  .subtitle { font-size: 9px; color: #888; text-align: center; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<div class="title">EBS 데이터 연동 흐름</div>
+<div class="subtitle">WSOP LIVE API → Back Office DB → Lobby → Command Center → Overlay</div>
+
+<!-- Main flow -->
+<div class="flow">
+  <div class="node node-api">
+    WSOP LIVE<br>API
+    <div class="node-sub">외부 데이터 소스</div>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-label">REST</div>
+    <div class="arrow-line"></div>
+  </div>
+
+  <div class="node node-db">
+    Back Office<br>DB
+    <div class="node-sub">중앙 데이터베이스</div>
+  </div>
+
+  <div class="arrow arrow-bidir">
+    <div class="arrow-label">REST / WS</div>
+    <div class="arrow-line"></div>
+  </div>
+
+  <div class="node node-lobby">
+    Lobby
+    <div class="node-sub">웹 (브라우저)</div>
+  </div>
+
+  <div class="arrow arrow-bidir">
+    <div class="arrow-label">WebSocket</div>
+    <div class="arrow-line"></div>
+  </div>
+
+  <div class="node node-cc">
+    Command<br>Center
+    <div class="node-sub">Flutter 앱</div>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-label">NDI / SDI</div>
+    <div class="arrow-line"></div>
+  </div>
+
+  <div class="node node-overlay">
+    Overlay
+    <div class="node-sub">방송 출력</div>
+  </div>
+</div>
+
+<!-- Hand History reverse flow -->
+<div class="hand-history">
+  <div style="width: 164px;"></div>
+  <div class="hh-label">Hand History</div>
+  <div class="hh-arrow">
+    <div class="hh-arrow-label">역방향</div>
+    <div class="hh-arrow-line"></div>
+  </div>
+  <div style="font-size: 8px; color: #6a1b9a; font-weight: 600;">Command Center → DB</div>
+  <div style="font-size: 7px; color: #888; margin-left: 8px;">핸드 데이터, 액션, 카드 기록</div>
+</div>
+
+</body>
+</html>

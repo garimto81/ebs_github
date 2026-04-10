@@ -24,3 +24,12 @@ events:
   - hand_end: true
 expectations:
   hand_ended: true
+  pot_total: 0
+  community_count: 0
+  stacks:
+    0: 1015    # 1000 - 30 + 45
+    1: 995     # 1000 - 5 (folded SB)
+    2: 990     # 1000 - 10 (folded BB)
+  seat_statuses:
+    1: folded
+    2: folded

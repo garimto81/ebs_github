@@ -32,3 +32,12 @@ events:
   - hand_end: true
 expectations:
   hand_ended: true
+  pot_total: 0
+  community_count: 3
+  stacks:
+    0: 1020    # 1000 - 10 - 20 + 50
+    1: 990     # 1000 - 5 - 5 (folded on flop)
+    2: 990     # 1000 - 10 (folded on flop)
+  seat_statuses:
+    1: folded
+    2: folded

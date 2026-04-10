@@ -282,5 +282,70 @@ void main() {
       );
       expect(BettingRules.isRoundComplete(state), isFalse);
     });
+
+    test('false when 1 active + 2 allIn and active has NOT acted', () {
+      final state = _makeState(
+        seats: [
+          _seat(0, currentBet: 200, status: SeatStatus.allIn),
+          _seat(1, stack: 980, currentBet: 20),
+          _seat(2, currentBet: 200, status: SeatStatus.allIn),
+        ],
+        currentBet: 200,
+        actedThisRound: {0, 2},
+      );
+      expect(BettingRules.isRoundComplete(state), isFalse);
+    });
+
+    test('true when 1 active + 2 allIn and active HAS acted and matched bet', () {
+      final state = _makeState(
+        seats: [
+          _seat(0, currentBet: 200, status: SeatStatus.allIn),
+          _seat(1, stack: 800, currentBet: 200),
+          _seat(2, currentBet: 200, status: SeatStatus.allIn),
+        ],
+        currentBet: 200,
+        actedThisRound: {0, 1, 2},
+      );
+      expect(BettingRules.isRoundComplete(state), isTrue);
+    });
+
+    test('false when 1 active + 1 allIn and active has NOT acted', () {
+      final state = _makeState(
+        seats: [
+          _seat(0, currentBet: 500, status: SeatStatus.allIn),
+          _seat(1, stack: 980, currentBet: 20),
+        ],
+        currentBet: 500,
+        actedThisRound: {0},
+      );
+      expect(BettingRules.isRoundComplete(state), isFalse);
+    });
+
+    test('true when 1 active + 1 allIn and active called', () {
+      final state = _makeState(
+        seats: [
+          _seat(0, currentBet: 500, status: SeatStatus.allIn),
+          _seat(1, stack: 500, currentBet: 500),
+        ],
+        currentBet: 500,
+        actedThisRound: {0, 1},
+      );
+      expect(BettingRules.isRoundComplete(state), isTrue);
+    });
+
+    test('false when BB option pending with BB active and others allIn', () {
+      final state = _makeState(
+        seats: [
+          _seat(0, currentBet: 20, status: SeatStatus.allIn),
+          _seat(1, stack: 980, currentBet: 20),
+          _seat(2, currentBet: 20, status: SeatStatus.allIn),
+        ],
+        currentBet: 20,
+        actedThisRound: {0, 2},
+        bbOptionPending: true,
+        bbSeat: 1,
+      );
+      expect(BettingRules.isRoundComplete(state), isFalse);
+    });
   });
 }

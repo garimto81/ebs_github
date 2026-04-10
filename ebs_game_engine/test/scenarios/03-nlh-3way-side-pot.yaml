@@ -31,3 +31,13 @@ events:
   - hand_end: true
 expectations:
   hand_ended: true
+  pot_total: 0
+  community_count: 5
+  stacks:
+    0: 600     # 500 - 500 + 600 (side pot winner)
+    1: 300     # 100 - 100 + 300 (main pot winner)
+    2: 0       # 300 - 300 (lost all)
+  seat_statuses:
+    0: allIn
+    1: allIn
+    2: allIn

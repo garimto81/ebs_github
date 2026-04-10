@@ -40,3 +40,8 @@ events:
   - hand_end: true
 expectations:
   hand_ended: true
+  pot_total: 0
+  community_count: 5
+  stacks:
+    0: 1070    # 1000 - 25 - 40 + 140 (wait: -5 SB, -25 raise incr, -40 bet + 140)
+    1: 930     # 1000 - 10 - 20 - 40

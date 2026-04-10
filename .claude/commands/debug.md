@@ -14,6 +14,7 @@ description: Hypothesis-verification based debugging (Phase Gate D0-D4)
 2. 원인 가설 작성 (D1)
 3. 검증 방법 설계 (D2)
 4. 가설 검증 실행 (D3)
+4.5. 수정안 검증 (D3.5) — fix_complexity >= 2 일 때
 5. 가설 확인 후 수정 (D4)
 
 ## Usage
@@ -41,7 +42,15 @@ description: Hypothesis-verification based debugging (Phase Gate D0-D4)
     │
     ├─ 기각 → D1로 복귀 (3회 시 /issue failed)
     │
-    └─ 확인 → [D4: 수정 허용]
+    └─ 확인 → fix_complexity 평가
+              │
+              ├─ < 2점: [D4: 수정 허용] (기존 fast path)
+              │
+              └─ >= 2점: [D3.5: 수정안 검증]
+                            │
+                            ├─ APPROVE → [D4: 수정 허용]
+                            └─ REJECT → 수정안 재설계 (max 2회)
+                                  └─ 2회 기각 → D4 진행 (경고 포함)
 ```
 
 ---
@@ -92,9 +101,85 @@ description: Hypothesis-verification based debugging (Phase Gate D0-D4)
   "hypothesis_count": 1,
   "verification_plan": "handleStreamEnd에 로그 추가하여 호출 순서 확인",
   "verification_result": null,
-  "hypothesis_confirmed": false
+  "hypothesis_confirmed": false,
+  "fix_proposal": null,
+  "fix_complexity": 0,
+  "critic_rounds": 0,
+  "critic_verdict": null
 }
 ```
+
+---
+
+### D3.5: 수정안 검증 (Solution Critique Gate)
+
+**트리거 조건**: fix_complexity >= 2 (아래 기준)
+
+| # | 조건 | 1점 기준 |
+|---|------|---------|
+| 1 | 수정 파일 수 | 3개 이상 |
+| 2 | 근본 원인 깊이 | 크로스 모듈 / race condition |
+| 3 | 회귀 위험 | 공유/코어 코드 수정 |
+| 4 | 이전 시도 | 1회 이상 수정 실패 |
+| 5 | 사용자 명시 | "review fix" 키워드 |
+
+**fix_complexity 계산 프로토콜 (D3 confirmed 직후 자동 실행):**
+
+가설이 확인되면(D3 → confirmed), Lead는 아래 5개 조건을 즉시 평가하고
+state.json의 `fix_complexity` 필드를 업데이트합니다.
+
+```
+fix_score = 0
+fix_score += 1 if len(affected_files) >= 3         # 조건1: 수정 파일 수
+fix_score += 1 if cross_module or race_condition    # 조건2: 근본 원인 깊이
+fix_score += 1 if modifies_shared_or_core_code      # 조건3: 회귀 위험
+fix_score += 1 if hypothesis_count >= 2             # 조건4: 이전 시도 (가설 기각 1회+)
+fix_score += 1 if "review fix" in user_input        # 조건5: 사용자 명시
+
+state.fix_complexity = fix_score
+```
+
+**조건2 판정 기준 (cross_module 정량화):**
+- 가설 텍스트에 2개 이상 서로 다른 디렉토리의 파일이 언급됨 → `cross_module = true`
+- 가설 텍스트에 "race", "async", "timing", "concurrent" 포함 → `race_condition = true`
+
+**조건3 판정 기준 (shared_or_core 정량화):**
+- 수정 대상 파일 경로에 `core/`, `shared/`, `common/`, `lib/`, `utils/` 포함 → `true`
+- 또는 수정 대상 파일이 5개 이상 다른 파일에서 import됨 → `true`
+
+**판정 로그 출력 (필수):**
+```
+═══ fix_complexity 판정 ═══
+수정 파일:   {0|1}점 ({근거})
+원인 깊이:   {0|1}점 ({근거})
+회귀 위험:   {0|1}점 ({근거})
+이전 시도:   {0|1}점 ({근거})
+사용자 명시: {0|1}점
+총점: {score}/5 → {D3.5 실행|D4 직접 진행}
+═══════════════════════════
+```
+
+**fix_complexity < 2**: D3.5 스킵 → D4 직접 진행 (기존 동작 유지)
+
+**fix_complexity >= 2**: Critic 검토 실행
+
+```
+Agent(
+  subagent_type="critic",
+  name="fix-critic",
+  description="수정안 적정성 검증",
+  prompt="수정안을 검증하세요:
+  - 근본 원인: {hypothesis}
+  - 제안된 수정: {fix_proposal}
+  - 검증 프로토콜: .claude/references/verification-protocol.md
+  VERDICT: APPROVE | REJECT (REJECT 시 대안 제시 필수)"
+)
+```
+
+- 최대 2회 라운드
+- APPROVE → D4 진행
+- REJECT → 수정안 재설계 후 재검토
+- 2회 REJECT → D4 진행 (⚠️ 경고 포함)
 
 ---
 

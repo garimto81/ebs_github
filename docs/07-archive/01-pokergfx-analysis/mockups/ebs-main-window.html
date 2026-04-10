@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=600">
+<title>EBS Server v2.0 -- Main Window Mockup</title>
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-deep:#1a1a2e;
+  --bg-main:#2d2d44;
+  --bg-panel:#252540;
+  --bg-input:#ffffff;
+  --bg-btn:#3c3c5a;
+  --bg-btn-hover:#4a4a6a;
+  --border:#444466;
+  --border-light:#555577;
+  --text:#ffffff;
+  --text-sec:#ccccdd;
+  --text-dim:#888899;
+  --accent:#4488ff;
+  --chroma:#0000ff;
+  --red:#cc2222;
+  --green:#22aa44;
+  --radius:3px;
+}
+html{font-family:'Segoe UI',system-ui,sans-serif;font-size:12px;color:var(--text);background:var(--bg-deep);height:fit-content}
+body{margin:0;padding:0;background:var(--bg-deep);height:fit-content;display:inline-block}
+
+/* ===== APP WINDOW ===== */
+.app{width:fit-content;min-width:500px;background:var(--bg-deep);border:1px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,.6)}
+
+/* ===== ID BADGE ===== */
+.id{
+  font-size:9px;color:var(--text-dim);font-family:monospace;
+  background:rgba(255,255,255,.08);padding:1px 4px;border-radius:2px;letter-spacing:.4px
+}
+
+/* ===== TITLE BAR (M-01) ===== */
+.titlebar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(180deg,#3a3a54 0%,#2a2a40 100%);
+  padding:5px 10px;border-bottom:1px solid var(--border);height:28px
+}
+.titlebar-left{display:flex;align-items:center;gap:8px}
+.titlebar-icon{
+  width:16px;height:16px;background:#cc4444;border-radius:2px;
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff
+}
+.titlebar-title{font-size:12px;color:var(--text-sec)}
+.titlebar-title b{color:var(--text)}
+.titlebar-controls{display:flex;gap:0}
+.titlebar-controls button{
+  width:34px;height:22px;border:none;background:transparent;
+  color:var(--text-dim);font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center
+}
+.titlebar-controls button:hover{background:rgba(255,255,255,.1);color:var(--text)}
+.titlebar-controls .tbclose:hover{background:#cc2222;color:#fff}
+
+/* ===== MAIN HEADER LAYOUT ===== */
+.main-header{display:flex;gap:0;border-bottom:2px solid var(--border);background:var(--bg-panel)}
+
+/* ===== PREVIEW PANEL (M-02) ===== */
+.preview-area{
+  flex:1 1 auto;
+  background:var(--chroma);
+  position:relative;
+  aspect-ratio:16/9;
+}
+.preview-area .preview-label{
+  position:absolute;bottom:4px;left:6px;
+  font-size:9px;color:rgba(255,255,255,.55);font-family:monospace;letter-spacing:.3px
+}
+.preview-area .preview-live{
+  position:absolute;top:8px;right:8px;
+  background:rgba(204,34,34,.85);color:#fff;
+  font-size:9px;font-weight:700;padding:2px 7px;border-radius:2px;letter-spacing:1px
+}
+.preview-area .preview-id{
+  position:absolute;top:8px;left:8px
+}
+.preview-area .preview-fullscreen{
+  position:absolute;bottom:6px;right:6px;
+  background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.18);
+  color:rgba(255,255,255,.7);border-radius:3px;cursor:pointer;
+  font-size:11px;padding:2px 6px;display:flex;align-items:center;gap:4px
+}
+.preview-area .preview-fullscreen:hover{background:rgba(0,0,0,.7);color:#fff}
+
+/* ===== CONTROL PANEL ===== */
+.control-panel{
+  flex:0 0 240px;background:var(--bg-panel);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;padding:6px 8px;gap:6px;align-self:flex-start
+}
+
+/* System stats row */
+.cp-stats{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px}
+.cp-stat-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-dim)}
+.cp-stat-label{font-size:9px;font-weight:700;letter-spacing:.4px;color:var(--text-dim);white-space:nowrap}
+.cp-progress-wrap{display:flex;align-items:center;gap:3px}
+.cp-progress{
+  width:38px;height:7px;background:#1a1a2e;border:1px solid var(--border);
+  border-radius:2px;overflow:hidden;position:relative
+}
+.cp-progress-fill{height:100%;border-radius:1px;transition:width .3s}
+.cp-progress-fill.green{background:var(--green)}
+.cp-pct{font-size:9px;color:var(--text-sec);font-family:monospace;min-width:24px}
+
+/* RFID Status + RFID Connection Icon row */
+.cp-indicators{display:flex;align-items:center;gap:6px;padding-bottom:4px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.cp-rfid{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-sec)}
+.cp-rfid-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.cp-rfid-conn{
+  display:flex;align-items:center;gap:3px;font-size:10px;
+  padding:2px 6px;border-radius:3px;border:1px solid;
+}
+.cp-rfid-conn.connected{color:var(--green);border-color:rgba(34,170,68,.5);background:rgba(34,170,68,.1)}
+.cp-rfid-conn.disconnected{color:var(--red);border-color:rgba(204,34,34,.5);background:rgba(204,34,34,.08)}
+.cp-rfid-conn-icon{font-size:12px}
+
+/* Checkboxes */
+.cp-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-sec)}
+.cp-row input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;cursor:pointer}
+
+/* Control buttons */
+.cpbtn{
+  background:var(--bg-btn);border:1px solid var(--border-light);
+  color:var(--text);padding:5px 8px;cursor:pointer;
+  font-size:11px;font-family:inherit;border-radius:3px;text-align:center;
+  transition:background .12s
+}
+.cpbtn:hover{background:var(--bg-btn-hover);border-color:#6666aa}
+.cpbtn.wide{width:100%}
+
+/* Reset Hand row */
+.cp-row-btns{display:flex;gap:3px}
+.cp-row-btns .cpbtn{flex:1}
+.cp-icon-btn{
+  width:28px;height:28px;background:var(--bg-btn);border:1px solid var(--border-light);
+  color:var(--text);cursor:pointer;border-radius:3px;font-size:13px;
+  display:flex;align-items:center;justify-content:center
+}
+.cp-icon-btn:hover{background:var(--bg-btn-hover)}
+
+/* ===== TAB BAR ===== */
+.tabbar{
+  display:flex;align-items:flex-end;gap:0;
+  background:var(--bg-panel);border-bottom:2px solid var(--border);
+  padding:0 4px;
+}
+.tab{
+  padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;
+  color:var(--text-dim);border:1px solid transparent;border-bottom:none;
+  border-radius:3px 3px 0 0;margin-bottom:-2px;white-space:nowrap;
+  transition:all .12s;letter-spacing:.3px
+}
+.tab:hover{color:var(--text-sec);background:rgba(255,255,255,.05)}
+
+/* ===== TAB EMPTY AREA ===== */
+.tab-empty{
+  background:var(--bg-main);min-height:120px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-dim);font-size:11px;font-style:italic;
+  border-bottom:1px solid var(--border)
+}
+
+/* ===== STATUS BAR ===== */
+.status-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:4px 10px;background:var(--bg-panel);
+  border-top:1px solid var(--border);font-size:10px;color:var(--text-dim)
+}
+.status-bar-left{display:flex;align-items:center;gap:8px}
+.status-bar-right{display:flex;align-items:center;gap:6px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:3px;flex-shrink:0;vertical-align:middle}
+.status-hand{
+  background:var(--accent);color:#fff;font-size:9px;font-weight:700;
+  padding:1px 6px;border-radius:2px;letter-spacing:.3px
+}
+.status-game{font-size:10px;color:var(--text-sec)}
+.status-blinds{font-family:monospace;font-size:10px;color:var(--text-sec)}
+.status-sep{color:var(--border-light);font-size:10px}
+.status-conn{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-sec)}
+
+/* ===== SHORTCUT BAR ===== */
+.shortcut-bar{
+  display:flex;align-items:center;justify-content:flex-end;
+  padding:2px 10px;background:#1a1a2e;border-top:1px solid var(--border);
+  font-size:9px;color:var(--text-dim);gap:12px
+}
+.shortcut-item{display:flex;align-items:center;gap:3px}
+.kbd{
+  background:#111;border:1px solid var(--border-light);color:var(--text-sec);
+  font-size:9px;font-family:monospace;padding:0 4px;border-radius:2px;
+  box-shadow:0 1px 0 #333
+}
+
+/* ===== WATERMARK ===== */
+.watermark{
+  text-align:center;padding:5px;font-size:9px;
+  color:var(--text-dim);background:#111122;border-top:1px solid var(--border);
+  letter-spacing:.3px
+}
+
+/* ===== VARIANT NOTE ===== */
+.variant-note{
+  margin-top:16px;padding:12px 14px;
+  background:#111122;border:1px solid var(--border);
+  width:fit-content;
+}
+.variant-title{
+  font-size:10px;font-weight:700;letter-spacing:.5px;
+  color:var(--text-dim);margin-bottom:10px;text-transform:uppercase
+}
+.variant-row{display:flex;gap:12px;align-items:flex-start}
+.variant-card{
+  background:var(--bg-panel);border:1px solid var(--border);
+  padding:8px 10px;min-width:180px;
+}
+.variant-card.active{border-color:var(--accent)}
+.variant-badge{
+  font-size:8px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+  background:var(--border);color:var(--text-dim);
+  padding:1px 6px;border-radius:2px;margin-bottom:5px;display:inline-block
+}
+.variant-badge.alt{background:rgba(68,136,255,.2);color:var(--accent)}
+.variant-label{font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px}
+.variant-img{
+  display:block;width:220px;height:auto;
+  border:1px solid var(--border-light);margin:6px 0;
+}
+.variant-sub{font-size:9px;color:var(--text-dim);line-height:1.5;font-family:monospace;margin-bottom:4px}
+.variant-res{font-size:9px;color:var(--accent);font-family:monospace;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- M-01: Title Bar -->
+  <div class="titlebar">
+    <div class="titlebar-left">
+      <div class="titlebar-icon">E</div>
+      <div class="titlebar-title"><b>EBS Server</b> v2.0 &mdash; Main Window</div>
+      <span class="id">M-01</span>
+    </div>
+    <div class="titlebar-controls">
+      <button title="Minimize">&#x2012;</button>
+      <button title="Restore">&#x25a1;</button>
+      <button class="tbclose" title="Close">&#x2715;</button>
+    </div>
+  </div>
+
+  <!-- Main Header: Preview (left) + Controls (right) -->
+  <div class="main-header">
+
+    <!-- M-02: Preview Panel (Chroma Key Blue) -->
+    <div class="preview-area">
+      <span class="preview-id"><span class="id">M-02</span></span>
+      <span class="preview-live">LIVE</span>
+      <div class="preview-label">1920 &#x00D7; 1080</div>
+      <!-- M-20: Fullscreen Preview -->
+      <button class="preview-fullscreen" title="Fullscreen Preview (F11)">
+        &#x26F6; <span style="font-size:9px">F11</span>
+        <span class="id" style="margin-left:2px">M-20</span>
+      </button>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+
+      <!-- CPU (M-03) + GPU (M-04) -->
+      <div class="cp-stats">
+        <div class="cp-stat-item">
+          <span class="cp-stat-label">CPU</span>
+          <div class="cp-progress-wrap">
+            <div class="cp-progress">
+              <div class="cp-progress-fill green" style="width:42%"></div>
+            </div>
+            <span class="cp-pct">42%</span>
+          </div>
+          <span class="id">M-03</span>
+        </div>
+        <div class="cp-stat-item" style="margin-left:6px">
+          <span class="cp-stat-label">GPU</span>
+          <div class="cp-progress-wrap">
+            <div class="cp-progress">
+              <div class="cp-progress-fill green" style="width:38%"></div>
+            </div>
+            <span class="cp-pct">38%</span>
+          </div>
+          <span class="id">M-04</span>
+        </div>
+      </div>
+
+      <!-- M-05: RFID Status | M-06: RFID Connection Icon -->
+      <div class="cp-indicators">
+        <div class="cp-rfid">
+          <div class="cp-rfid-dot"></div>
+          <span>RFID</span>
+          <span class="id" style="margin-left:2px">M-05</span>
+        </div>
+        <div class="cp-rfid-conn connected" title="RFID Reader: Connected via USB">
+          <span class="cp-rfid-conn-icon">&#x1F50C;</span>
+          <span>USB</span>
+          <span class="id" style="margin-left:2px">M-06</span>
+        </div>
+      </div>
+
+      <!-- M-11: Reset Hand + M-12: Settings -->
+      <div class="cp-row-btns" style="flex:1">
+        <button class="cpbtn">Reset Hand <span class="id">M-11</span></button>
+        <button class="cp-icon-btn" title="Settings">&#x2699;<span class="id" style="margin-left:2px;font-size:8px">M-12</span></button>
+      </div>
+
+      <!-- M-13: Register Deck -->
+      <button class="cpbtn wide" style="flex:1">Register Deck <span class="id">M-13</span></button>
+
+      <!-- M-14: Launch Command Center -->
+      <button class="cpbtn wide" style="flex:1">Launch Command Center <span class="id">M-14</span></button>
+
+    </div><!-- /control-panel -->
+  </div><!-- /main-header -->
+
+  <!-- Status Bar (M-17/M-18 Drop 확정) -->
+  <div class="status-bar">
+    <div class="status-bar-left">
+      <span><span class="status-dot"></span>Connected</span>
+      <span class="status-game">Texas Hold'em</span>
+      <span class="status-sep">|</span>
+      <span class="status-blinds">500 / 1K</span>
+    </div>
+  </div>
+
+  <!-- M-19: Keyboard Shortcut Hint Bar -->
+  <div class="shortcut-bar">
+    <span class="shortcut-item">
+      <span class="kbd">Ctrl</span>+<span class="kbd">1~5</span>
+      <span style="margin-left:3px">Open Tab</span>
+      <span class="id" style="margin-left:4px">M-19</span>
+    </span>
+    <span class="shortcut-item">
+      <span class="kbd">F11</span>
+      <span style="margin-left:3px">Fullscreen</span>
+    </span>
+  </div>
+
+  <div class="watermark">PRD-0004 Ch.2 &mdash; EBS Main Window (M-01 ~ M-20, 12 Elements, M-17/M-18 Drop) &mdash; Wireframe v1.7 | 자동 16:9</div>
+
+</div><!-- /app -->
+
+<!-- Preview 유연성 비교 -->
+<div class="variant-note">
+  <div class="variant-title">M-02 Preview — 해상도 변형 비교</div>
+  <div class="variant-row">
+    <!-- 좌: 현재 파일 설명 -->
+    <div class="variant-card active">
+      <div class="variant-badge">현재 파일</div>
+      <div class="variant-label">자동 16:9</div>
+      <div class="variant-sub">flex:1 1 auto · aspect-ratio:16/9<br>출력 해상도에 비례하여 자동 조정</div>
+      <div class="variant-res">1920 × 1080 기준</div>
+    </div>
+    <!-- 우: 720×480 캡쳐 -->
+    <div class="variant-card">
+      <div class="variant-badge alt">SD 변형</div>
+      <div class="variant-label">고정 720×480</div>
+      <img src="ebs-main-window-720x480-capture.png"
+           alt="720×480 고정 Preview 변형"
+           class="variant-img">
+      <div class="variant-sub">flex:0 0 720px · 고정 픽셀<br>SD 480p 출력 환경 전용</div>
+      <div class="variant-res">720 × 480 (3:2)</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

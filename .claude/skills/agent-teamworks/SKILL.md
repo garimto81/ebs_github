@@ -1,7 +1,13 @@
 ---
 name: agent-teamworks
 description: Multi-Agent Team Workflow - 4개 전문 팀 자율 협업 시스템
-version: 1.0.0
+version: 2.0.0
+team_pattern: true
+agents:
+  - executor
+  - executor-high
+  - architect
+  - planner
 triggers:
   keywords:
     - "/team"
@@ -16,7 +22,7 @@ auto_trigger: true
 
 # Agent Teamworks - Multi-Agent Team Workflow
 
-> 4개 전문 팀(Dev, Quality, Ops, Research)이 자율적으로 협업하는 LangGraph 기반 시스템
+> 4개 전문 팀(Dev, Quality, Ops, Research)이 Agent Teams 패턴으로 자율 협업하는 시스템
 
 ## 아키텍처
 
@@ -42,34 +48,75 @@ auto_trigger: true
 | `/teamwork "프로젝트"` | Coordinator → 4팀 오케스트레이션 |
 | `/team status` | 현재 팀 실행 상태 조회 |
 
-## 실행 지시
+## Agent Teams 실행
 
 ### `/team {팀명} "작업"` 실행 시
 
-```python
-from src.agents.teams import Coordinator
+```
+# Step 1: 팀 생성
+TeamCreate(team_name="team-{팀명}-{task}")
 
-result = Coordinator.run_single_team("{팀명}", "작업 설명")
+# Step 2: 팀 에이전트 스폰
+Agent(
+  subagent_type="executor",
+  name="{팀명}-executor",
+  description="{팀명} Team 작업 실행",
+  team_name="team-{팀명}-{task}",
+  model="sonnet",
+  prompt="{작업 설명}"
+)
+
+# Step 3: 완료 후 정리
+SendMessage(to="{팀명}-executor", message={type: "shutdown_request"})
+TeamDelete()
 ```
 
-또는 Agent Teams로 위임:
+### `/teamwork "프로젝트"` 실행 시 (4팀 오케스트레이션)
+
 ```
-TeamCreate(team_name="teamwork-{팀명}")
-Task(subagent_type="executor", name="team-runner",
-     team_name="teamwork-{팀명}", model="sonnet",
-     prompt="src/agents/teams/{팀명}_team.py의 {팀}Team을 실행하세요.
-     태스크: {작업 설명}")
-SendMessage(type="message", recipient="team-runner", content="팀 실행 시작.")
-# 완료 대기 → shutdown_request → TeamDelete()
-```
+# Step 1: 프로젝트 팀 생성
+TeamCreate(team_name="teamwork-{project}")
 
-### `/teamwork "프로젝트"` 실행 시
+# Step 2: 4팀 병렬 스폰
+Agent(
+  subagent_type="architect",
+  name="dev-lead",
+  description="Dev Team: 설계 + 구현",
+  team_name="teamwork-{project}",
+  model="opus",
+  prompt="Dev Team Lead로서 프로젝트를 진행하세요: {프로젝트 설명}
+  역할: Architect → Frontend/Backend → Tester → Docs → Integrator"
+)
 
-```python
-from src.agents.teams import Coordinator
+Agent(
+  subagent_type="qa-tester",
+  name="quality-lead",
+  description="Quality Team: PDCA 검증",
+  team_name="teamwork-{project}",
+  model="sonnet",
+  prompt="Quality Team Lead로서 품질 검증을 수행하세요: {프로젝트 설명}
+  역할: Reviewer → Analyzer → GapDetector → SecurityChecker"
+)
 
-coordinator = Coordinator()
-result = coordinator.run("프로젝트 설명")
+Agent(
+  subagent_type="researcher",
+  name="research-lead",
+  description="Research Team: 조사 및 분석",
+  team_name="teamwork-{project}",
+  model="sonnet",
+  prompt="Research Team Lead로서 리서치를 수행하세요: {프로젝트 설명}
+  역할: CodeAnalyst → WebResearcher → DataScientist → Synthesizer"
+)
+
+# Step 3: 팀 간 조율 (SendMessage 활용)
+SendMessage(to="dev-lead", summary="리서치 결과 전달", message="research-lead 결과: ...")
+SendMessage(to="quality-lead", summary="구현 결과 검증 요청", message="dev-lead 구현 완료: ...")
+
+# Step 4: 모든 팀 완료 후 정리
+SendMessage(to="dev-lead", message={type: "shutdown_request"})
+SendMessage(to="quality-lead", message={type: "shutdown_request"})
+SendMessage(to="research-lead", message={type: "shutdown_request"})
+TeamDelete()
 ```
 
 ## 팀 구성

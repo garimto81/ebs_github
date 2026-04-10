@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>EBS Lobby — Screen 4: Table Management</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  /* Header */
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; }
+  .cc-btn { background: #333; color: #fff; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; cursor: pointer; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  /* Breadcrumb */
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc a { color: #555; text-decoration: none; font-weight: 600; }
+  .bc .s { margin: 0 4px; color: #ccc; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  /* Info Section - WSOP LIVE style */
+  .info { padding: 8px 16px; border-bottom: 1px solid #eee; display: flex; gap: 24px; flex-wrap: wrap; font-size: 10px; }
+  .info-item { display: flex; gap: 4px; }
+  .info-label { color: #999; font-weight: 600; }
+  .info-val { font-weight: 700; }
+  .info-val-green { color: #28a745; font-weight: 700; }
+
+  /* Seating controls */
+  .controls { padding: 6px 16px; border-bottom: 1px solid #eee; display: flex; gap: 8px; align-items: center; }
+  .ctrl-group { display: flex; align-items: center; gap: 4px; font-size: 10px; }
+  .ctrl-label { color: #999; font-size: 9px; font-weight: 600; }
+
+  /* Level indicators - WSOP LIVE style */
+  .levels { padding: 6px 16px; border-bottom: 1px solid #eee; display: flex; gap: 12px; font-size: 10px; }
+  .level-box { padding: 3px 8px; border: 1px solid #ddd; font-weight: 700; font-size: 10px; }
+  .level-box.active { background: #dc3545; color: #fff; border-color: #dc3545; }
+  .level-box.next { background: #28a745; color: #fff; border-color: #28a745; }
+  .level-box.future { background: #007bff; color: #fff; border-color: #007bff; }
+
+  /* Search/Filter bar */
+  .toolbar { padding: 6px 16px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+  .toolbar-left { display: flex; gap: 6px; align-items: center; }
+  .toolbar-right { display: flex; gap: 6px; }
+  .btn-sm { font-size: 9px; padding: 3px 8px; border: 1px solid #ccc; background: #fff; cursor: pointer; font-weight: 600; }
+  .btn-new { background: #28a745; color: #fff; border-color: #28a745; }
+  .search { font-size: 10px; padding: 3px 8px; border: 1px solid #ccc; width: 160px; }
+
+  /* Main Content */
+  .main { display: flex; }
+
+  /* Table Grid */
+  .grid { flex: 1; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 8px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #999; text-align: center; padding: 5px 3px; border-bottom: 2px solid #ddd; white-space: nowrap; }
+  th:first-child { text-align: left; padding-left: 16px; }
+  td { padding: 4px 3px; border-bottom: 1px solid #f0f0f0; text-align: center; vertical-align: middle; }
+  td:first-child { text-align: left; padding-left: 16px; }
+  tr:hover { background: #fafafa; }
+
+  /* Feature row */
+  .feat { background: #fffef5; }
+  .feat:hover { background: #fffde0; }
+  .star { color: #b8860b; font-weight: 700; }
+
+  /* Seat cells */
+  .seat { display: inline-block; width: 14px; height: 14px; border-radius: 2px; font-size: 7px; line-height: 14px; text-align: center; font-weight: 700; margin: 0 0.5px; }
+  .s-a { background: #c3e6cb; color: #155724; }
+  .s-e { background: #f0f0f0; color: #bbb; }
+  .s-r { background: #f5c6cb; color: #721c24; }
+  .s-d { background: #d6d8db; color: #383d41; }
+  .s-w { background: #fff3cd; color: #856404; }
+
+  /* EBS columns */
+  .ebs-col { background: #fafafa; }
+  th.ebs-col { background: #f5f5f5; color: #b8860b; }
+
+  /* Status dots */
+  .dot-sm { display: inline-block; width: 5px; height: 5px; border-radius: 50%; vertical-align: middle; margin-right: 2px; }
+  .d-g { background: #28a745; }
+  .d-y { background: #ffc107; }
+  .d-r { background: #dc3545; }
+  .d-x { background: #ccc; }
+
+  /* CC status in grid */
+  .cc-s { font-size: 9px; font-weight: 600; white-space: nowrap; }
+  .cc-live { color: #28a745; }
+  .cc-idle { color: #999; }
+  .cc-err { color: #dc3545; }
+  .cc-op { font-size: 8px; color: #888; font-weight: 400; }
+
+  /* Action buttons */
+  .btn-act { font-size: 8px; font-weight: 700; padding: 2px 8px; border: 1px solid #222; background: #fff; cursor: pointer; }
+  .btn-launch { background: #222; color: #fff; }
+  .btn-open { background: #fff; color: #222; }
+  .btn-err { border-color: #dc3545; color: #dc3545; }
+
+  /* Waiting List */
+  .wl { width: 200px; border-left: 1px solid #eee; padding: 6px 10px; font-size: 10px; }
+  .wl-title { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+  .wl-item { padding: 2px 0; display: flex; gap: 4px; }
+  .wl-num { color: #999; font-weight: 600; width: 16px; }
+  .wl-name { font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC<span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+  </div>
+</div>
+
+<!-- Breadcrumb -->
+<div class="bc">
+  <a href="#">WSOP 2026</a><span class="s">›</span>
+  <a href="#">#14: Mixed PLO/Omaha/Big O</a><span class="s">›</span>
+  <a href="#">Day2</a><span class="s">›</span>
+  <span class="cur">Tables</span>
+</div>
+
+<!-- Info Section -->
+<div class="info">
+  <div class="info-item"><span class="info-label">Players</span> <span class="info-val">918</span>/919</div>
+  <div class="info-item"><span class="info-label">Δ Elim</span> <span class="info-val">17</span></div>
+  <div class="info-item"><span class="info-label">Total Tables</span> <span class="info-val">124</span></div>
+  <div class="info-item"><span class="info-label">Seats</span> <span class="info-val">1,116</span></div>
+  <div class="info-item"><span class="info-label">Waiting</span> <span class="info-val" style="color:#dc3545;">12</span></div>
+  <div class="info-item"><span class="info-label">Active CC</span> <span class="info-val-green">3</span></div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <div class="ctrl-group"><span class="ctrl-label">Auto Seating</span> <b>Enabled</b></div>
+  <div class="ctrl-group"><span class="ctrl-label">Seating</span> Random ● Observe ○</div>
+</div>
+
+<!-- Levels -->
+<div class="levels">
+  <span style="color:#999; font-weight:600;">Levels:</span>
+  <span class="level-box active">Day2 $72,400 enjx 80</span>
+  <span class="level-box next">All Day $91,100 enjx 11</span>
+  <span class="level-box future">Later $176,170 enjx 0</span>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="toolbar-left">
+    <input type="text" class="search" placeholder="Search Player / Table...">
+    <button class="btn-sm">Seat Status</button>
+  </div>
+  <div class="toolbar-right">
+    <span style="font-size:9px; color:#888;">Waiting List: 12 👤</span>
+    <button class="btn-sm btn-new">+ New Table</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Table Grid -->
+  <div class="grid">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:80px;">Table</th>
+          <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
+          <th>Std</th>
+          <th class="ebs-col">RFID</th>
+          <th class="ebs-col">Deck</th>
+          <th class="ebs-col">Out</th>
+          <th class="ebs-col">Command Center</th>
+          <th class="ebs-col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Feature Table - CC LIVE -->
+        <tr class="feat">
+          <td><span class="star">★</span> <b>Day2-#071</b></td>
+          <td><span class="seat s-a">1</span></td>
+          <td><span class="seat s-a">2</span></td>
+          <td><span class="seat s-a">3</span></td>
+          <td><span class="seat s-a">4</span></td>
+          <td><span class="seat s-a">5</span></td>
+          <td><span class="seat s-a">6</span></td>
+          <td><span class="seat s-a">7</span></td>
+          <td><span class="seat s-a">8</span></td>
+          <td><span class="seat s-a">9</span></td>
+          <td><b>9</b></td>
+          <td class="ebs-col"><span class="dot-sm d-g"></span>Rdy</td>
+          <td class="ebs-col"><span class="dot-sm d-g"></span>52/52</td>
+          <td class="ebs-col">NDI<span class="dot-sm d-g"></span></td>
+          <td class="ebs-col"><span class="cc-s cc-live">●LIVE</span> <span class="cc-op">Op.A · #47</span></td>
+          <td class="ebs-col"><button class="btn-act btn-open">Open</button></td>
+        </tr>
+        <!-- General - CC LIVE -->
+        <tr>
+          <td><b>Day2-#069</b></td>
+          <td><span class="seat s-a">1</span></td>
+          <td><span class="seat s-a">2</span></td>
+          <td><span class="seat s-a">3</span></td>
+          <td><span class="seat s-a">4</span></td>
+          <td><span class="seat s-e"></span></td>
+          <td><span class="seat s-a">6</span></td>
+          <td><span class="seat s-a">7</span></td>
+          <td><span class="seat s-a">8</span></td>
+          <td><span class="seat s-r">9</span></td>
+          <td><b>7</b></td>
+          <td class="ebs-col"><span class="dot-sm d-x"></span>—</td>
+          <td class="ebs-col">—</td>
+          <td class="ebs-col">—</td>
+          <td class="ebs-col"><span class="cc-s cc-live">●LIVE</span> <span class="cc-op">Op.B · #23</span></td>
+          <td class="ebs-col"><button class="btn-act btn-open">Open</button></td>
+        </tr>
+        <!-- CC IDLE -->
+        <tr>
+          <td><b>Day2-#070</b></td>
+          <td><span class="seat s-a">1</span></td>
+          <td><span class="seat s-a">2</span></td>
+          <td><span class="seat s-a">3</span></td>
+          <td><span class="seat s-a">4</span></td>
+          <td><span class="seat s-a">5</span></td>
+          <td><span class="seat s-a">6</span></td>
+          <td><span class="seat s-e"></span></td>
+          <td><span class="seat s-a">8</span></td>
+          <td><span class="seat s-a">9</span></td>
+          <td><b>8</b></td>
+          <td class="ebs-col"><span class="dot-sm d-x"></span>—</td>
+          <td class="ebs-col">—</td>
+          <td class="ebs-col">—</td>
+          <td class="ebs-col"><span class="cc-s cc-idle">○IDLE</span></td>
+          <td class="ebs-col"><button class="btn-act btn-launch">Launch</button></td>
+        </tr>
+        <!-- Feature - CC ERROR -->
+        <tr class="feat">
+          <td><span class="star">★</span> <b>Day2-#072</b></td>
+          <td><span class="seat s-a">1</span></td>
+          <td><span class="seat s-a">2</span></td>
+          <td><span class="seat s-a">3</span></td>
+          <td><span class="seat s-a">4</span></td>
+          <td><span class="seat s-a">5</span></td>
+          <td><span class="seat s-a">6</span></td>
+          <td><span class="seat s-a">7</span></td>
+          <td><span class="seat s-e"></span></td>
+          <td><span class="seat s-a">9</span></td>
+          <td><b>8</b></td>
+          <td class="ebs-col"><span class="dot-sm d-r"></span>Err</td>
+          <td class="ebs-col"><span class="dot-sm d-y"></span>0/52</td>
+          <td class="ebs-col">SDI<span class="dot-sm d-g"></span></td>
+          <td class="ebs-col"><span class="cc-s cc-err">●ERR</span> <span class="cc-op">Op.C · ⚠RFID</span></td>
+          <td class="ebs-col"><button class="btn-act btn-err">Open⚠</button></td>
+        </tr>
+        <!-- CC IDLE -->
+        <tr>
+          <td><b>Day2-#073</b></td>
+          <td><span class="seat s-a">1</span></td>
+          <td><span class="seat s-a">2</span></td>
+          <td><span class="seat s-e"></span></td>
+          <td><span class="seat s-a">4</span></td>
+          <td><span class="seat s-a">5</span></td>
+          <td><span class="seat s-a">6</span></td>
+          <td><span class="seat s-a">7</span></td>
+          <td><span class="seat s-a">8</span></td>
+          <td><span class="seat s-e"></span></td>
+          <td><b>7</b></td>
+          <td class="ebs-col"><span class="dot-sm d-x"></span>—</td>
+          <td class="ebs-col">—</td>
+          <td class="ebs-col">—</td>
+          <td class="ebs-col"><span class="cc-s cc-idle">○IDLE</span></td>
+          <td class="ebs-col"><button class="btn-act btn-launch">Launch</button></td>
+        </tr>
+        <tr>
+          <td><b>Day2-#074</b></td>
+          <td><span class="seat s-a">1</span></td>
+          <td><span class="seat s-a">2</span></td>
+          <td><span class="seat s-a">3</span></td>
+          <td><span class="seat s-a">4</span></td>
+          <td><span class="seat s-a">5</span></td>
+          <td><span class="seat s-a">6</span></td>
+          <td><span class="seat s-a">7</span></td>
+          <td><span class="seat s-a">8</span></td>
+          <td><span class="seat s-e"></span></td>
+          <td><b>8</b></td>
+          <td class="ebs-col"><span class="dot-sm d-x"></span>—</td>
+          <td class="ebs-col">—</td>
+          <td class="ebs-col">—</td>
+          <td class="ebs-col"><span class="cc-s cc-idle">○IDLE</span></td>
+          <td class="ebs-col"><button class="btn-act btn-launch">Launch</button></td>
+        </tr>
+        <tr>
+          <td><b>Day2-#075</b></td>
+          <td><span class="seat s-a">1</span></td>
+          <td><span class="seat s-a">2</span></td>
+          <td><span class="seat s-a">3</span></td>
+          <td><span class="seat s-a">4</span></td>
+          <td><span class="seat s-a">5</span></td>
+          <td><span class="seat s-e"></span></td>
+          <td><span class="seat s-a">7</span></td>
+          <td><span class="seat s-a">8</span></td>
+          <td><span class="seat s-a">9</span></td>
+          <td><b>8</b></td>
+          <td class="ebs-col"><span class="dot-sm d-x"></span>—</td>
+          <td class="ebs-col">—</td>
+          <td class="ebs-col">—</td>
+          <td class="ebs-col"><span class="cc-s cc-idle">○IDLE</span></td>
+          <td class="ebs-col"><button class="btn-act btn-launch">Launch</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Waiting List -->
+  <div class="wl">
+    <div class="wl-title">Waiting List (12)</div>
+    <div class="wl-item"><span class="wl-num">1.</span> <span class="wl-name">Christopher Kearin</span></div>
+    <div class="wl-item"><span class="wl-num">2.</span> <span class="wl-name">Bence Fist</span></div>
+    <div class="wl-item"><span class="wl-num">3.</span> <span class="wl-name">Yuval Frome</span></div>
+    <div class="wl-item"><span class="wl-num">4.</span> <span class="wl-name">Ravi Guerin</span></div>
+    <div class="wl-item"><span class="wl-num">5.</span> <span class="wl-name">Paul Ephremsen</span></div>
+    <div class="wl-item"><span class="wl-num">6.</span> <span class="wl-name">Benedetta Šudice</span></div>
+    <div class="wl-item"><span class="wl-num">7.</span> <span class="wl-name">Ernest Grenier</span></div>
+    <div class="wl-item"><span class="wl-num">8.</span> <span class="wl-name">Naomi Dato</span></div>
+    <div class="wl-item"><span class="wl-num">9.</span> <span class="wl-name">Mirsha Mitev</span></div>
+    <div class="wl-item" style="color:#999;">+3 more...</div>
+  </div>
+
+</div>
+
+</body>
+</html>

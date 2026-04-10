@@ -12,7 +12,7 @@ from typing import Optional
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))
 
-from lib.mockup_hybrid.stitch_client import StitchClient, get_stitch_client
+from lib.mockup_hybrid.stitch_client import StitchClient, StitchResponse, get_stitch_client
 
 
 @dataclass
@@ -51,7 +51,6 @@ class StitchAdapter:
         description: str = "",
         style: str = "modern",
         color_scheme: Optional[str] = None,
-        bnw: bool = False,
     ) -> StitchGenerationResult:
         """
         Stitch API로 UI 생성
@@ -91,7 +90,7 @@ class StitchAdapter:
         if response.success:
             return StitchGenerationResult(
                 success=True,
-                html_content=response.html_content or self._create_placeholder_html(screen_name, bnw=bnw),
+                html_content=response.html_content or self._create_placeholder_html(screen_name),
                 image_url=response.image_url,
             )
         else:
@@ -106,7 +105,6 @@ class StitchAdapter:
         self,
         prompt: str,
         style: str = "modern",
-        bnw: bool = False,
     ) -> StitchGenerationResult:
         """
         프롬프트에서 화면 정보 추출하여 생성
@@ -114,7 +112,6 @@ class StitchAdapter:
         Args:
             prompt: 사용자 프롬프트
             style: 디자인 스타일
-            bnw: B&W 모드 여부
 
         Returns:
             StitchGenerationResult 객체
@@ -128,21 +125,10 @@ class StitchAdapter:
             screen_name=screen_name,
             description=description,
             style=style,
-            bnw=bnw,
         )
 
-    def _create_placeholder_html(self, title: str, bnw: bool = False) -> str:
+    def _create_placeholder_html(self, title: str) -> str:
         """Stitch 응답이 HTML을 포함하지 않을 경우 플레이스홀더 생성"""
-        if bnw:
-            bg_gradient = "linear-gradient(135deg, #e5e5e5 0%, #f8f8f8 100%)"
-            badge_bg = "#1a1a1a"
-            title_color = "#000"
-            shadow = "0 20px 60px rgba(0,0,0,0.15)"
-        else:
-            bg_gradient = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-            badge_bg = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-            title_color = "#1a1a2e"
-            shadow = "0 20px 60px rgba(0,0,0,0.3)"
         return f'''<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -153,7 +139,7 @@ class StitchAdapter:
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
     body {{
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: {bg_gradient};
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -162,7 +148,7 @@ class StitchAdapter:
     .container {{
       background: white;
       border-radius: 16px;
-      box-shadow: {shadow};
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
       padding: 48px;
       text-align: center;
       max-width: 600px;
@@ -170,12 +156,12 @@ class StitchAdapter:
     .title {{
       font-size: 28px;
       font-weight: 700;
-      color: {title_color};
+      color: #1a1a2e;
       margin-bottom: 16px;
     }}
     .badge {{
       display: inline-block;
-      background: {badge_bg};
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       padding: 8px 16px;
       border-radius: 20px;

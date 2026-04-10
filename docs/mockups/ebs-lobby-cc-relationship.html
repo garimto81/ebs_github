@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1000">
+<title>EBS Lobby-CC Relationship (1:N)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; padding: 20px 24px; }
+  .row { display: flex; align-items: stretch; gap: 0; }
+  .col { display: flex; flex-direction: column; gap: 0; }
+  .box { border: 1.5px solid #222; padding: 10px 12px; }
+  .lbl { font-size: 7px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #999; margin-bottom: 3px; }
+  .name { font-size: 14px; font-weight: 800; }
+  .desc { font-size: 9px; color: #666; margin-top: 2px; line-height: 1.5; }
+  .items { font-size: 10px; color: #333; line-height: 1.7; margin-top: 6px; }
+  .items b { color: #111; }
+  .ah { display: flex; align-items: center; justify-content: center; font-size: 14px; color: #999; padding: 0 8px; }
+  .av { text-align: center; font-size: 14px; color: #999; padding: 4px 0; }
+  .src { background: #f7f7f7; flex: 0 0 140px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+  .db { background: #f0f0f0; flex: 1; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+  .lobby { flex: 1; border-width: 2px; }
+  .sec { border: 1px solid #ccc; padding: 6px 8px; margin-top: 6px; background: #fafafa; }
+  .sec-lbl { font-size: 7px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #aaa; margin-bottom: 3px; }
+  .cc-group { display: flex; gap: 8px; flex-wrap: nowrap; }
+  .cc-box { border: 1.5px solid #222; padding: 8px 10px; flex: 0 0 auto; width: 190px; }
+  .cc-box-live { border-color: #28a745; }
+  .cc-box-idle { border-color: #ccc; border-style: dashed; }
+  .overlay { background: #111; color: #fff; padding: 6px 8px; text-align: center; flex: 0 0 60px; display: flex; flex-direction: column; justify-content: center; }
+  .overlay .name { color: #fff; font-size: 10px; }
+  .overlay .desc { color: #888; }
+  .tag { font-size: 8px; font-weight: 700; padding: 1px 5px; border-radius: 2px; }
+  .tag-web { background: #e8f0fe; color: #1a73e8; }
+  .tag-flutter { background: #e8f5e9; color: #2e7d32; }
+  .ws { font-size: 8px; color: #999; text-align: center; padding: 2px; letter-spacing: 0.5px; }
+  .hdr-btn { display: inline-block; font-size: 9px; font-weight: 700; background: #222; color: #fff; padding: 3px 8px; margin-top: 6px; letter-spacing: 0.5px; }
+  .note { font-size: 9px; color: #888; margin-top: 10px; line-height: 1.5; border-top: 1px solid #ddd; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<!-- Row 1: API + DB -->
+<div class="row">
+  <div class="box src"><div class="lbl">External</div><div class="name">WSOP LIVE API</div><div class="desc">대회 정보</div></div>
+  <div class="ah">→</div>
+  <div class="box db"><div class="lbl">Storage</div><div class="name">Back Office DB</div><div class="desc">중앙 저장소</div></div>
+</div>
+
+<div class="av">↓</div>
+
+<!-- Row 2: Lobby -->
+<div class="box lobby">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div>
+      <div class="lbl">Web <span class="tag tag-web">Browser</span></div>
+      <div class="name">LOBBY</div>
+      <div class="desc">설정/관리 + 모든 Command Center 관제</div>
+    </div>
+    <div class="hdr-btn">Active CC ●3</div>
+  </div>
+  <div class="sec">
+    <div class="sec-lbl">Navigation</div>
+    <div class="items"><b>Series</b> → <b>Event</b> → <b>Flight</b> → <b>Table</b> → <b>Player</b></div>
+  </div>
+  <div class="sec">
+    <div class="sec-lbl">Settings</div>
+    <div class="items"><b>Outputs</b> · <b>GFX</b> · <b>Display</b> · <b>Diagnostics</b> · <b>Export</b></div>
+  </div>
+  <div class="sec">
+    <div class="sec-lbl">CC Management (헤더에서 항상 접근)</div>
+    <div class="items"><b>[Active CC ●3]</b> — 어느 화면에서든 클릭 → 활성 CC 목록 드롭다운 → [Open] / [Launch]</div>
+  </div>
+</div>
+
+<div class="av">↓ WebSocket + REST API</div>
+
+<!-- Row 3: N개 CC + Overlay -->
+<div class="row">
+  <div class="cc-group" style="flex:1;">
+    <div class="col">
+      <div class="cc-box cc-box-live">
+        <div class="lbl"><span class="tag tag-flutter">Flutter</span></div>
+        <div class="name" style="font-size:11px;">CC #1 — Table #071 ★</div>
+        <div class="desc">●LIVE · Op.A · Hand#47 · Omaha Hi-Lo</div>
+      </div>
+      <div class="ah" style="padding:2px 0; font-size:10px;">→</div>
+      <div class="overlay"><div class="name">Overlay #1</div><div class="desc">NDI</div></div>
+    </div>
+    <div class="col">
+      <div class="cc-box cc-box-live">
+        <div class="lbl"><span class="tag tag-flutter">Flutter</span></div>
+        <div class="name" style="font-size:11px;">CC #2 — Table #069</div>
+        <div class="desc">●LIVE · Op.B · Hand#23 · PLO Hi-Lo</div>
+      </div>
+      <div class="ah" style="padding:2px 0; font-size:10px;">→</div>
+      <div class="overlay"><div class="name">Overlay #2</div><div class="desc">NDI</div></div>
+    </div>
+    <div class="col">
+      <div class="cc-box" style="border-color:#dc3545;">
+        <div class="lbl"><span class="tag tag-flutter">Flutter</span></div>
+        <div class="name" style="font-size:11px;">CC #3 — Table #072 ★ ⚠</div>
+        <div class="desc" style="color:#dc3545;">●ERROR · Op.C · RFID Disconnected</div>
+      </div>
+      <div class="ah" style="padding:2px 0; font-size:10px;">→</div>
+      <div class="overlay"><div class="name">Overlay #3</div><div class="desc">SDI</div></div>
+    </div>
+    <div class="col">
+      <div class="cc-box cc-box-idle">
+        <div class="lbl" style="color:#ccc;"><span class="tag" style="background:#f0f0f0; color:#999;">Flutter</span></div>
+        <div class="name" style="font-size:11px; color:#999;">CC — Table #070</div>
+        <div class="desc" style="color:#ccc;">○ IDLE · [Launch]</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <b>1:N 관계</b>: 1개 웹 Lobby에서 N개 Flutter Command Center를 Launch/모니터링. 각 CC는 독립 앱 인스턴스.<br>
+  <b>어디서든 접근</b>: 헤더의 [Active CC ●3] 버튼으로 Series/Events/Flights/Tables/Players 어느 화면에서든 CC 목록 접근.<br>
+  <b>동시 사용</b>: Lobby(브라우저)와 CC(Flutter)는 동시 운영. Lobby에서 설정 변경 → WebSocket → CC 실시간 반영.
+</div>
+
+</body>
+</html>

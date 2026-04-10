@@ -6,11 +6,15 @@ class StreetMachine {
 
   /// Get the next street after [current].
   static Street nextStreet(Street current) => switch (current) {
+        Street.setupHand => Street.preflop,
         Street.preflop => Street.flop,
         Street.flop => Street.turn,
         Street.turn => Street.river,
         Street.river => Street.showdown,
-        Street.showdown => throw StateError('No street after showdown'),
+        Street.showdown =>
+          throw StateError('No street after showdown'),
+        Street.runItMultiple =>
+          throw StateError('No street after runItMultiple'),
       };
 
   /// Number of community cards to deal for a given street.
@@ -27,6 +31,9 @@ class StreetMachine {
   /// Heads-up preflop: SB/BTN acts first.
   /// Postflop: first active seat after dealer.
   static int firstToAct(GameState state) {
+    // No action during setup phase
+    if (state.street == Street.setupHand) return -1;
+
     final n = state.seats.length;
 
     if (state.street == Street.preflop) {
@@ -34,12 +41,31 @@ class StreetMachine {
       if (n == 2) {
         return state.sbSeat;
       }
+      // Straddle active: first to act = seat after straddle
+      if (state.straddleEnabled && state.straddleSeat != null) {
+        return _nextActiveSeat(state, state.straddleSeat!);
+      }
       // Multi-way: UTG = first active after BB
       return _nextActiveSeat(state, state.bbSeat);
     }
 
-    // Postflop: first active after dealer
-    return _nextActiveSeat(state, state.dealerSeat);
+    // Postflop: SB or next active from SB (per BS-06-10:82-86)
+    // SB acts first; if SB is folded/allIn, next active clockwise.
+    // Heads-up: BB acts first (per BS-06-10:78-80).
+    if (n == 2) {
+      return state.seats[state.bbSeat].isActive ? state.bbSeat : -1;
+    }
+    return _nextActiveFrom(state, state.sbSeat);
+  }
+
+  /// Find the first active seat starting FROM [fromSeat] itself (inclusive).
+  static int _nextActiveFrom(GameState state, int fromSeat) {
+    final n = state.seats.length;
+    for (var i = 0; i < n; i++) {
+      final idx = (fromSeat + i) % n;
+      if (state.seats[idx].isActive) return idx;
+    }
+    return -1;
   }
 
   /// Find the next active (not folded, not allIn) seat after [fromSeat].
@@ -75,6 +101,7 @@ class StreetMachine {
     newState.betting.lastAggressor = -1;
     newState.betting.actedThisRound.clear();
     newState.betting.bbOptionPending = false;
+    newState.betting.raiseCount = 0;
 
     // Set first to act (use newState which has updated street)
     final first = firstToAct(newState);

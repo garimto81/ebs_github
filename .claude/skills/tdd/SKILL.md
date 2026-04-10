@@ -1,8 +1,11 @@
 ---
 name: tdd
-description: >
-  This skill should be used when the user requests Test-Driven Development guidance with Red-Green-Refactor discipline.
-version: 2.0.0
+description: Guide Test-Driven Development with Red-Green-Refactor discipline
+version: 3.0.0
+team_pattern: true
+agents:
+  - tdd-guide
+  - tdd-guide-low
 triggers:
   keywords:
     - "tdd"
@@ -14,16 +17,38 @@ triggers:
 
 # /tdd - Test-Driven Development
 
-## 실행 방법
+## Agent Teams 실행
+
+이 스킬은 Agent Teams 패턴으로 TDD 워크플로우를 실행합니다.
+
+### 실행 방법
 
 ```
-TeamCreate(team_name="tdd-session")
-Agent(subagent_type="tdd-guide", name="tdd-runner",
-     description="TDD 워크플로우 실행",
-     team_name="tdd-session",
-     prompt="TDD 워크플로우 실행: [기능 설명]")
-SendMessage(type="message", recipient="tdd-runner", content="TDD 시작.")
-# 완료 대기 → shutdown_request → TeamDelete()
+# Step 1: 팀 생성
+TeamCreate(team_name="tdd-{feature}")
+
+# Step 2: TDD 가이드 에이전트 스폰
+Agent(
+  subagent_type="tdd-guide",
+  name="tdd-runner",
+  description="TDD Red-Green-Refactor 워크플로우 실행",
+  team_name="tdd-{feature}",
+  model="sonnet",
+  prompt="TDD 워크플로우를 실행하세요: {기능 설명}
+
+  1. Red: 실패하는 테스트 먼저 작성 → pytest -v (FAIL 확인)
+  2. Green: 테스트 통과하는 최소 코드 작성 → pytest -v (PASS 확인)
+  3. Refactor: 코드 개선 (테스트 유지) → pytest -v (PASS 유지)
+
+  각 단계마다 커밋:
+  - test: Add {feature} test (RED) 🔴
+  - feat: Implement {feature} (GREEN) 🟢
+  - refactor: Improve {feature} ♻️"
+)
+
+# Step 3: 완료 후 정리
+SendMessage(to="tdd-runner", message={type: "shutdown_request"})
+TeamDelete()
 ```
 
 ### 에이전트
@@ -39,10 +64,11 @@ SendMessage(type="message", recipient="tdd-runner", content="TDD 시작.")
 /auto Tier 5 AUTONOMOUS
     └── /tdd <feature> (테스트 없는 코드 감지 시)
 
-/auto Tier 3
+/work --loop Tier 3
     └── /tdd <feature> (새 기능 구현 요청 시)
 ```
 
+**이 인과관계는 Agent Teams 전환과 무관하게 그대로 유지됩니다.**
 
 ## Red-Green-Refactor Cycle
 

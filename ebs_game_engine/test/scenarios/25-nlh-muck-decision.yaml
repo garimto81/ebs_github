@@ -1,0 +1,54 @@
+# Scenario 25: NLH Muck Decision
+# 2 players (heads-up), play to showdown
+# dealer=seat0=SB, seat1=BB
+# Preflop: seat0 calls 5, seat1 checks (BB option)
+# Flop-Turn-River: all checks
+# Showdown: seat0(AK) beats seat1(72)
+# pot = 10+10 = 20
+# pot_awarded to seat0, then seat1 mucks (show=false)
+# seat1's hole cards should be cleared
+# Final: seat0=1000-10+20=1010, seat1=1000-10=990
+# Check: 1010+990 = 2000 ✓
+variant: nlh
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "Hero", stack: 1000 }
+  - { label: "Villain", stack: 1000 }
+events:
+  - deal_hole:
+      0: [As, Kh]
+      1: [7d, 2c]
+  # HU preflop: SB/BTN acts first
+  - action: { seat: 0, type: call, amount: 5 }
+  - action: { seat: 1, type: check }
+  # Flop
+  - street_advance: flop
+  - deal_community: [Ah, 7s, 3c]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: check }
+  # Turn
+  - street_advance: turn
+  - deal_community: [9d]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: check }
+  # River
+  - street_advance: river
+  - deal_community: [2s]
+  - action: { seat: 1, type: check }
+  - action: { seat: 0, type: check }
+  # Showdown: seat0 wins
+  - pot_awarded: { 0: 20 }
+  # Loser mucks
+  - muck: { seat: 1, show: false }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  community_count: 5
+  stacks:
+    0: 1010
+    1: 990
+  hole_cards_empty: [1]

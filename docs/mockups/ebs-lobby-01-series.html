@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1000">
+<title>EBS Lobby — Screen 1: Series Lobby</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  /* Header */
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; }
+  .cc-btn { background: #333; color: #fff; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; cursor: pointer; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  /* Breadcrumb */
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  /* Toolbar */
+  .toolbar { padding: 6px 16px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+  .toolbar-left { display: flex; gap: 8px; align-items: center; }
+  .toolbar-right { display: flex; gap: 6px; }
+  .search { font-size: 10px; padding: 3px 8px; border: 1px solid #ccc; width: 180px; }
+  .btn-sm { font-size: 9px; padding: 3px 8px; border: 1px solid #ccc; background: #fff; cursor: pointer; font-weight: 600; }
+  .btn-sm.active { background: #eee; border-color: #999; }
+  .btn-new { background: #28a745; color: #fff; border-color: #28a745; }
+  .chk { font-size: 10px; color: #666; display: flex; align-items: center; gap: 3px; }
+
+  /* Card Grid */
+  .section { padding: 8px 16px 4px; }
+  .section-title { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; padding: 0 16px; }
+  .card { border: 1px solid #e0e0e0; cursor: pointer; overflow: hidden; }
+  .card:hover { border-color: #999; }
+  .card-img { height: 52px; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #fff; font-weight: 700; letter-spacing: 0.5px; }
+  .card-body { padding: 6px 8px; }
+  .card-name { font-size: 10px; font-weight: 700; margin-bottom: 2px; }
+  .card-meta { font-size: 9px; color: #888; line-height: 1.4; }
+  .card-status { display: inline-block; font-size: 8px; font-weight: 700; padding: 1px 5px; margin-top: 3px; }
+  .s-running { background: #d4edda; color: #155724; }
+  .s-announced { background: #cce5ff; color: #004085; }
+  .s-completed { background: #f0f0f0; color: #666; }
+  .s-registering { background: #fff3cd; color: #856404; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC<span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+  </div>
+</div>
+
+<!-- Breadcrumb -->
+<div class="bc">
+  <span class="cur">Home</span>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="toolbar-left">
+    <input type="text" class="search" placeholder="Search Series...">
+    <label class="chk"><input type="checkbox"> Hide outdated</label>
+    <button class="btn-sm">★ Bookmarks</button>
+  </div>
+  <div class="toolbar-right">
+    <button class="btn-sm btn-new">+ New Series</button>
+  </div>
+</div>
+
+<!-- 2026 -->
+<div class="section"><div class="section-title">2026</div></div>
+<div class="grid">
+  <div class="card">
+    <div class="card-img" style="background:#2d5016;">Las Vegas, NV</div>
+    <div class="card-body">
+      <div class="card-name">WSOP 2026</div>
+      <div class="card-meta">May 27 – Jul 16 · 95 Events</div>
+      <span class="card-status s-running">Running</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-img" style="background:#1a3a5c;">Cannes Republic, Lake Tahoe</div>
+    <div class="card-body">
+      <div class="card-name">WSOP Europe 2026</div>
+      <div class="card-meta">Sep 15 – Oct 5 · 14 Events</div>
+      <span class="card-status s-announced">Announced</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-img" style="background:#5c3a1a;">Sao Paulo, Brazil</div>
+    <div class="card-body">
+      <div class="card-name">WSOP Circuit — Brazil</div>
+      <div class="card-meta">Mar 10 – Mar 20 · 12 Events</div>
+      <span class="card-status s-completed">Completed</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-img" style="background:#4a1a5c;">Sydney, Australia</div>
+    <div class="card-body">
+      <div class="card-name">WSOP Circuit — Australia</div>
+      <div class="card-meta">Apr 1 – Apr 12 · 10 Events</div>
+      <span class="card-status s-registering">Registering</span>
+    </div>
+  </div>
+</div>
+
+<!-- 2025 -->
+<div class="section"><div class="section-title">2025</div></div>
+<div class="grid">
+  <div class="card">
+    <div class="card-img" style="background:#3a3a3a;">Las Vegas, NV</div>
+    <div class="card-body">
+      <div class="card-name">WSOP 2025</div>
+      <div class="card-meta">May 28 – Jul 17 · 99 Events</div>
+      <span class="card-status s-completed">Completed</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-img" style="background:#444;">Rozvadov, Czech Republic</div>
+    <div class="card-body">
+      <div class="card-name">WSOP Europe 2025</div>
+      <div class="card-meta">Oct 1 – Oct 22 · 15 Events</div>
+      <span class="card-status s-completed">Completed</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-img" style="background:#555;">Horseshoe, Indiana</div>
+    <div class="card-body">
+      <div class="card-name">WSOP Circuit — Indiana</div>
+      <div class="card-meta">Jan 5 – Jan 16 · 8 Events</div>
+      <span class="card-status s-completed">Completed</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-img" style="background:#4a4a4a;">Atlantic City, NJ</div>
+    <div class="card-body">
+      <div class="card-name">2025 World Series of Poker</div>
+      <div class="card-meta">Feb 10 – Feb 20 · 6 Events</div>
+      <span class="card-status s-completed">Completed</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

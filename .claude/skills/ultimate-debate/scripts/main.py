@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -244,8 +245,7 @@ def get_debate_status(task_id: str) -> dict:
     Returns:
         Status dict
     """
-    _project_root = Path(__file__).resolve().parent.parent.parent.parent.parent
-    debate_path = _project_root / ".claude" / "debates" / task_id
+    debate_path = Path(".claude/debates") / task_id
 
     if not debate_path.exists():
         return {

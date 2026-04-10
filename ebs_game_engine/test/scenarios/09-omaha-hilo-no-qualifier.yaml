@@ -36,3 +36,8 @@ events:
   - hand_end: true
 expectations:
   hand_ended: true
+  pot_total: 0
+  community_count: 5
+  stacks:
+    0: 1010    # 1000 - 10 + 20 (hi takes all, no lo qualifier)
+    1: 990     # 1000 - 10

@@ -11,11 +11,15 @@ export 'core/cards/card.dart';
 export 'core/cards/deck.dart';
 export 'core/cards/hand_evaluator.dart';
 
+// Math
+export 'core/math/equity_calculator.dart';
+
 // State
 export 'core/state/seat.dart';
 export 'core/state/pot.dart';
 export 'core/state/betting_round.dart';
 export 'core/state/game_state.dart';
+export 'core/state/card_reveal_config.dart';
 
 // Actions & Events
 export 'core/actions/action.dart';
@@ -27,15 +31,25 @@ export 'core/variants/nlh.dart';
 export 'core/variants/variants.dart';
 
 // Rules
+export 'core/rules/bet_limit.dart';
+export 'core/rules/no_limit.dart';
+export 'core/rules/fixed_limit.dart';
+export 'core/rules/pot_limit.dart';
 export 'core/rules/betting_rules.dart';
 export 'core/rules/street_machine.dart';
 export 'core/rules/showdown.dart';
+export 'core/rules/showdown_order.dart';
 
+import 'core/cards/card.dart';
 import 'core/state/game_state.dart';
+import 'core/state/pot.dart';
 import 'core/state/seat.dart';
+import 'core/actions/action.dart';
 import 'core/actions/event.dart';
 import 'core/rules/betting_rules.dart';
+import 'core/rules/no_limit.dart';
 import 'core/rules/street_machine.dart';
+import 'core/variants/variants.dart';
 
 /// The main game engine. All methods are pure functions:
 /// given a state and an event, produce a new state.
@@ -53,7 +67,46 @@ class Engine {
       final StreetAdvance e => _streetAdvance(state, e),
       final PotAwarded e => _awardPot(state, e),
       final HandEnd _ => _endHand(state),
+      final MisDeal _ => _handleMisDeal(state),
+      final BombPotConfig e => _handleBombPotConfig(state, e),
+      final RunItChoice e => _handleRunItChoice(state, e),
+      final ManualNextHand _ => _handleManualNextHand(state),
+      final TimeoutFold e => _handleTimeoutFold(state, e),
+      final MuckDecision e => _handleMuckDecision(state, e),
     };
+  }
+
+  /// Check if all remaining players are all-in (no further action possible).
+  /// The harness uses this to decide whether to auto-deal remaining community cards.
+  static bool isAllInRunout(GameState state) {
+    final active = state.seats.where((s) => s.isActive).toList();
+    final allIn = state.seats.where((s) => s.isAllIn).toList();
+    return active.isEmpty && allIn.length >= 2;
+  }
+
+  /// Validate that no duplicate cards exist in the current game state.
+  /// Returns list of duplicate card descriptions, or empty if all valid.
+  static List<String> validateCards(GameState state) {
+    final seen = <Card>{};
+    final duplicates = <String>[];
+
+    // Check community cards
+    for (final card in state.community) {
+      if (!seen.add(card)) {
+        duplicates.add('Duplicate community card: $card');
+      }
+    }
+
+    // Check hole cards across all seats
+    for (final seat in state.seats) {
+      for (final card in seat.holeCards) {
+        if (!seen.add(card)) {
+          duplicates.add('Duplicate card at seat ${seat.index}: $card');
+        }
+      }
+    }
+
+    return duplicates;
   }
 
   /// Get legal actions for the current player.
@@ -76,6 +129,7 @@ class Engine {
         seat.status = SeatStatus.active;
       }
       seat.currentBet = 0;
+      seat.antePosted = 0;
       seat.holeCards = [];
     }
 
@@ -126,18 +180,233 @@ class Engine {
     newState.betting.actedThisRound.clear();
     newState.betting.bbOptionPending = true;
 
+    // Resolve variant's bet limit
+    final variantFactory = variantRegistry[state.variantName];
+    final resolvedBetLimit = variantFactory != null
+        ? variantFactory().betLimit
+        : const NoLimitBet();
+
+    // ── Ante processing ──
+    final anteType = newState.anteType;
+    final anteAmt = newState.anteAmount ?? 0;
+    bool bbActsFirst = false;
+    bool sbActsFirst = false;
+
+    if (anteAmt > 0 && anteType != null) {
+      switch (anteType) {
+        case 0: // Standard Ante — all active players post
+          for (final seat in newState.seats) {
+            if (seat.isActive || seat.isAllIn) {
+              final post = anteAmt < seat.stack ? anteAmt : seat.stack;
+              seat.stack -= post;
+              seat.antePosted = post;
+              newState.pot.addToMain(post);
+              if (seat.stack == 0 && seat.status != SeatStatus.allIn) {
+                seat.status = SeatStatus.allIn;
+              }
+            }
+          }
+        case 1: // Button Ante — dealer posts for all
+          final dealer = newState.seats[event.dealerSeat];
+          if (dealer.isActive || dealer.isAllIn) {
+            final totalAnte = anteAmt * newState.activePlayers.length;
+            final post = totalAnte < dealer.stack ? totalAnte : dealer.stack;
+            dealer.stack -= post;
+            dealer.antePosted = post;
+            newState.pot.addToMain(post);
+            if (dealer.stack == 0 && dealer.status != SeatStatus.allIn) {
+              dealer.status = SeatStatus.allIn;
+            }
+          }
+        case 2: // BB Ante — BB posts for all
+          final bb = newState.seats[bbIdx];
+          if (bb.isActive || bb.isAllIn) {
+            final totalAnte = anteAmt * newState.activePlayers.length;
+            final post = totalAnte < bb.stack ? totalAnte : bb.stack;
+            bb.stack -= post;
+            bb.antePosted = post;
+            newState.pot.addToMain(post);
+            if (bb.stack == 0 && bb.status != SeatStatus.allIn) {
+              bb.status = SeatStatus.allIn;
+            }
+          }
+        case 3: // BB Ante 1st — same as Type 2 but BB acts first
+          final bb = newState.seats[bbIdx];
+          if (bb.isActive || bb.isAllIn) {
+            final totalAnte = anteAmt * newState.activePlayers.length;
+            final post = totalAnte < bb.stack ? totalAnte : bb.stack;
+            bb.stack -= post;
+            bb.antePosted = post;
+            newState.pot.addToMain(post);
+            if (bb.stack == 0 && bb.status != SeatStatus.allIn) {
+              bb.status = SeatStatus.allIn;
+            }
+          }
+          bbActsFirst = true;
+        case 4: // Live Ante — all post, counts toward bet
+          for (final seat in newState.seats) {
+            if (seat.isActive || seat.isAllIn) {
+              final post = anteAmt < seat.stack ? anteAmt : seat.stack;
+              seat.stack -= post;
+              seat.antePosted = post;
+              seat.currentBet += post;
+              newState.pot.addToMain(post);
+              if (seat.stack == 0 && seat.status != SeatStatus.allIn) {
+                seat.status = SeatStatus.allIn;
+              }
+            }
+          }
+          // Current bet is max of BB and ante
+          if (anteAmt > newState.betting.currentBet) {
+            newState.betting.currentBet = anteAmt;
+          }
+        case 5: // TB Ante — SB and BB split total
+          final sb = newState.seats[sbIdx];
+          final bbSeat = newState.seats[bbIdx];
+          final totalAnte = anteAmt * newState.activePlayers.length;
+          final halfAnte = totalAnte ~/ 2;
+          final otherHalf = totalAnte - halfAnte;
+          if (sb.isActive || sb.isAllIn) {
+            final sbPost = halfAnte < sb.stack ? halfAnte : sb.stack;
+            sb.stack -= sbPost;
+            sb.antePosted = sbPost;
+            newState.pot.addToMain(sbPost);
+            if (sb.stack == 0 && sb.status != SeatStatus.allIn) {
+              sb.status = SeatStatus.allIn;
+            }
+          }
+          if (bbSeat.isActive || bbSeat.isAllIn) {
+            final bbPost = otherHalf < bbSeat.stack ? otherHalf : bbSeat.stack;
+            bbSeat.stack -= bbPost;
+            bbSeat.antePosted = bbPost;
+            newState.pot.addToMain(bbPost);
+            if (bbSeat.stack == 0 && bbSeat.status != SeatStatus.allIn) {
+              bbSeat.status = SeatStatus.allIn;
+            }
+          }
+        case 6: // TB Ante 1st — same as Type 5 but SB acts first
+          final sb = newState.seats[sbIdx];
+          final bbSeat = newState.seats[bbIdx];
+          final totalAnte = anteAmt * newState.activePlayers.length;
+          final halfAnte = totalAnte ~/ 2;
+          final otherHalf = totalAnte - halfAnte;
+          if (sb.isActive || sb.isAllIn) {
+            final sbPost = halfAnte < sb.stack ? halfAnte : sb.stack;
+            sb.stack -= sbPost;
+            sb.antePosted = sbPost;
+            newState.pot.addToMain(sbPost);
+            if (sb.stack == 0 && sb.status != SeatStatus.allIn) {
+              sb.status = SeatStatus.allIn;
+            }
+          }
+          if (bbSeat.isActive || bbSeat.isAllIn) {
+            final bbPost = otherHalf < bbSeat.stack ? otherHalf : bbSeat.stack;
+            bbSeat.stack -= bbPost;
+            bbSeat.antePosted = bbPost;
+            newState.pot.addToMain(bbPost);
+            if (bbSeat.stack == 0 && bbSeat.status != SeatStatus.allIn) {
+              bbSeat.status = SeatStatus.allIn;
+            }
+          }
+          sbActsFirst = true;
+        default:
+          break;
+      }
+    }
+
+    // ── Bomb Pot processing ──
+    if (newState.bombPotEnabled &&
+        newState.bombPotAmount != null &&
+        newState.bombPotAmount! > 0) {
+      for (final seat in newState.seats) {
+        if (seat.isActive || seat.isAllIn) {
+          final post = newState.bombPotAmount! < seat.stack
+              ? newState.bombPotAmount!
+              : seat.stack;
+          seat.stack -= post;
+          newState.pot.addToMain(post);
+          if (seat.stack == 0 && seat.status != SeatStatus.allIn) {
+            seat.status = SeatStatus.allIn;
+          }
+        }
+      }
+      // Bomb pot skips preflop — go directly to flop
+      // Reset betting for flop
+      newState.betting.currentBet = 0;
+      newState.betting.minRaise = bbAmount;
+      newState.betting.lastRaise = 0;
+      newState.betting.lastAggressor = -1;
+      newState.betting.actedThisRound.clear();
+      newState.betting.bbOptionPending = false;
+
+      // First to act postflop: first active after dealer
+      final first = StreetMachine.firstToAct(
+        newState.copyWith(
+          street: Street.flop,
+          sbSeat: sbIdx,
+          bbSeat: bbIdx,
+          bbAmount: bbAmount,
+        ),
+      );
+      // Reset seat currentBets for flop betting round
+      for (final seat in newState.seats) {
+        seat.currentBet = 0;
+      }
+      return newState.copyWith(
+        sbSeat: sbIdx,
+        bbSeat: bbIdx,
+        bbAmount: bbAmount,
+        actionOn: first,
+        street: Street.flop,
+        betLimit: resolvedBetLimit,
+      );
+    }
+
+    // ── Straddle processing ──
+    int? straddleSeatIdx;
+    if (newState.straddleEnabled && newState.straddleSeat != null) {
+      straddleSeatIdx = newState.straddleSeat!;
+      final straddleSeat = newState.seats[straddleSeatIdx];
+      if (straddleSeat.isActive) {
+        final straddleAmt = bbAmount * 2;
+        final post =
+            straddleAmt < straddleSeat.stack ? straddleAmt : straddleSeat.stack;
+        straddleSeat.stack -= post;
+        straddleSeat.currentBet = post;
+        newState.pot.addToMain(post);
+        if (straddleSeat.stack == 0) {
+          straddleSeat.status = SeatStatus.allIn;
+        }
+        // Update betting to straddle amount
+        newState.betting.currentBet = post;
+        newState.betting.minRaise = post;
+      }
+    }
+
     // Find first to act
-    final firstAct = StreetMachine.firstToAct(newState.copyWith(
+    final stateForFirstAct = newState.copyWith(
       sbSeat: sbIdx,
       bbSeat: bbIdx,
       bbAmount: bbAmount,
-    ));
+      straddleSeat: straddleSeatIdx,
+    );
+
+    int firstAct;
+    if (bbActsFirst) {
+      firstAct = bbIdx;
+      newState.betting.bbOptionPending = true;
+    } else if (sbActsFirst) {
+      firstAct = sbIdx;
+    } else {
+      firstAct = StreetMachine.firstToAct(stateForFirstAct);
+    }
 
     return newState.copyWith(
       sbSeat: sbIdx,
       bbSeat: bbIdx,
       bbAmount: bbAmount,
       actionOn: firstAct,
+      betLimit: resolvedBetLimit,
     );
   }
 
@@ -166,6 +435,27 @@ class Engine {
     final newState =
         BettingRules.applyAction(state, event.seatIndex, event.action);
 
+    // Recalculate side pots when any player is all-in
+    final hasAllIn = newState.seats.any((s) => s.isAllIn);
+    if (hasAllIn) {
+      final bets = <int, int>{};
+      final folded = <int>{};
+      for (final seat in newState.seats) {
+        if (seat.currentBet > 0 || seat.isAllIn || seat.isActive) {
+          bets[seat.index] = seat.currentBet;
+        }
+        if (seat.isFolded && seat.currentBet > 0) {
+          folded.add(seat.index);
+          bets[seat.index] = seat.currentBet;
+        }
+      }
+      final sidePots = Pot.calculateSidePots(bets: bets, folded: folded);
+      if (sidePots.length > 1) {
+        newState.pot.main = sidePots[0].amount;
+        newState.pot.sides = sidePots.sublist(1);
+      }
+    }
+
     // Check if all but one folded
     final activeCount =
         newState.seats.where((s) => s.isActive || s.isAllIn).length;
@@ -175,7 +465,7 @@ class Engine {
 
     // Check if round is complete
     if (BettingRules.isRoundComplete(newState)) {
-      return newState.copyWith(actionOn: -1); // Signal: advance street
+      return _autoAdvanceAndDeal(newState);
     }
 
     // Next player to act
@@ -183,7 +473,54 @@ class Engine {
     return newState.copyWith(actionOn: next);
   }
 
+  /// Auto-advance street and deal community cards when betting round completes.
+  /// Handles all-in runout by chaining flop→turn→river→showdown.
+  static GameState _autoAdvanceAndDeal(GameState state) {
+    final nextStreet = StreetMachine.nextStreet(state.street);
+
+    // Showdown: no cards to deal, signal completion
+    if (nextStreet == Street.showdown) {
+      return state.copyWith(actionOn: -1);
+    }
+
+    // Advance street (resets bets, sets firstToAct)
+    var advanced = StreetMachine.advanceStreet(state);
+
+    // Deal community cards from deck
+    final cardCount = StreetMachine.communityCardsToDeal(nextStreet);
+    if (cardCount > 0) {
+      final cards = <Card>[];
+      for (var i = 0; i < cardCount; i++) {
+        cards.add(advanced.deck.draw());
+      }
+      advanced = advanced.copyWith(
+        community: [...advanced.community, ...cards],
+      );
+    }
+
+    // All-in runout: no active players left, chain to next street
+    final activeAfter = advanced.seats.where((s) => s.isActive).length;
+    if (activeAfter == 0 && nextStreet != Street.showdown) {
+      return _autoAdvanceAndDeal(advanced.copyWith(actionOn: -1));
+    }
+
+    return advanced;
+  }
+
   static GameState _streetAdvance(GameState state, StreetAdvance event) {
+    // Validate transition: must follow sequential order
+    const validNext = {
+      Street.preflop: {Street.flop},
+      Street.flop: {Street.turn},
+      Street.turn: {Street.river},
+      Street.river: {Street.showdown, Street.runItMultiple},
+      Street.runItMultiple: {Street.showdown},
+    };
+    final allowed = validNext[state.street];
+    if (allowed != null && !allowed.contains(event.next)) {
+      return state; // reject invalid transition
+    }
+
     // Override target street from event
     final newState = state.copyWith(street: event.next);
 
@@ -199,6 +536,7 @@ class Engine {
     newState.betting.lastAggressor = -1;
     newState.betting.actedThisRound.clear();
     newState.betting.bbOptionPending = false;
+    newState.betting.raiseCount = 0;
 
     // First to act for new street
     final first = StreetMachine.firstToAct(newState);
@@ -217,6 +555,90 @@ class Engine {
   }
 
   static GameState _endHand(GameState state) {
-    return state.copyWith(handInProgress: false, actionOn: -1);
+    // Find next dealer: skip sitting-out seats
+    final n = state.seats.length;
+    int nextDealer = state.dealerSeat;
+    for (var i = 1; i <= n; i++) {
+      final idx = (state.dealerSeat + i) % n;
+      if (state.seats[idx].status != SeatStatus.sittingOut) {
+        nextDealer = idx;
+        break;
+      }
+    }
+
+    return state.copyWith(
+      handInProgress: false,
+      actionOn: -1,
+      dealerSeat: nextDealer,
+      handNumber: state.handNumber + 1,
+    );
+  }
+
+  static GameState _handleMisDeal(GameState state) {
+    final newState = state.copyWith();
+    // Return each seat's currentBet back to their stack, reset status
+    for (final seat in newState.seats) {
+      seat.stack += seat.currentBet + seat.antePosted;
+      seat.currentBet = 0;
+      seat.antePosted = 0;
+      seat.holeCards = [];
+      if (seat.status == SeatStatus.allIn || seat.status == SeatStatus.folded) {
+        seat.status = SeatStatus.active;
+      }
+    }
+    // Clear pot
+    newState.pot.main = 0;
+    newState.pot.sides = [];
+    return newState.copyWith(
+      handInProgress: false,
+      actionOn: -1,
+      street: Street.preflop,
+      community: [],
+    );
+  }
+
+  static GameState _handleBombPotConfig(GameState state, BombPotConfig event) {
+    if (event.amount <= 0) return state; // BS-06-09: amount > 0 required
+    return state.copyWith(
+      bombPotEnabled: true,
+      bombPotAmount: event.amount,
+    );
+  }
+
+  static GameState _handleRunItChoice(GameState state, RunItChoice event) {
+    if (event.times != 2 && event.times != 3) return state; // BS-06-09: 2 or 3 only
+    return state.copyWith(
+      runItTimes: event.times,
+      street: Street.runItMultiple,
+    );
+  }
+
+  static GameState _handleManualNextHand(GameState state) {
+    final newState = state.copyWith(
+      handInProgress: false,
+      actionOn: -1,
+      street: Street.preflop,
+      community: [],
+      bombPotEnabled: false,
+    );
+    // Clear hole cards for all seats
+    for (final seat in newState.seats) {
+      seat.holeCards = [];
+    }
+    return newState;
+  }
+
+  static GameState _handleTimeoutFold(GameState state, TimeoutFold event) {
+    // Treat timeout as a fold action
+    return _playerAction(state, PlayerAction(event.seatIndex, const Fold()));
+  }
+
+  static GameState _handleMuckDecision(GameState state, MuckDecision event) {
+    if (!event.showCards) {
+      final newState = state.copyWith();
+      newState.seats[event.seatIndex].holeCards = [];
+      return newState;
+    }
+    return state; // Cards already visible
   }
 }

@@ -103,6 +103,13 @@ String _describeEvent(Event event) => switch (event) {
       StreetAdvance(next: final n) => 'StreetAdvance -> ${n.name}',
       PotAwarded(awards: final a) => 'PotAwarded $a',
       HandEnd() => 'HandEnd',
+      MisDeal() => 'MisDeal',
+      BombPotConfig(amount: final a) => 'BombPotConfig amount=$a',
+      RunItChoice(times: final t) => 'RunItChoice times=$t',
+      ManualNextHand() => 'ManualNextHand',
+      TimeoutFold(seatIndex: final s) => 'TimeoutFold seat=$s',
+      MuckDecision(seatIndex: final s, showCards: final show) =>
+        'MuckDecision seat=$s show=$show',
     };
 
 String _describeAction(Action action) => switch (action) {

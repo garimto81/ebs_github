@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0f1923; font-family: 'Segoe UI','Noto Sans KR',sans-serif; padding: 36px 48px; width: 1200px; color: #e0e0e0; }
+h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 24px; }
+.players { display: flex; gap: 24px; justify-content: center; }
+.player { text-align: center; }
+.player-name { font-size: 12px; color: #667788; margin-bottom: 8px; }
+.cards { display: flex; gap: 6px; justify-content: center; }
+.card {
+  width: 56px; height: 76px; background: #fff; border-radius: 6px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 18px; border: 2px solid #e67e22;
+}
+.card .s { font-size: 13px; margin-top: -2px; }
+.bk { color: #1a1a1a; }
+.rd { color: #e03030; }
+.card-back {
+  width: 56px; height: 76px; border-radius: 6px; border: 2px solid #2a3a4a;
+  background: repeating-linear-gradient(45deg, #1a2a3a, #1a2a3a 3px, #162030 3px, #162030 6px);
+}
+.you { border: 2px solid #e67e22; border-radius: 10px; padding: 10px 14px; background: #1a1510; }
+.you .player-name { color: #e67e22; font-weight: 700; }
+</style>
+</head>
+<body>
+<h2>카드 배분 — 각자 비공개 2장을 받는다</h2>
+<div class="players">
+  <div class="player"><div class="player-name">Player 1</div><div class="cards"><div class="card-back"></div><div class="card-back"></div></div></div>
+  <div class="player you"><div class="player-name">나 (Player 2)</div><div class="cards"><div class="card bk"><span>K</span><span class="s">♠</span></div><div class="card rd"><span>9</span><span class="s">♣</span></div></div></div>
+  <div class="player"><div class="player-name">Player 3</div><div class="cards"><div class="card-back"></div><div class="card-back"></div></div></div>
+  <div class="player"><div class="player-name">Player 4</div><div class="cards"><div class="card-back"></div><div class="card-back"></div></div></div>
+  <div class="player"><div class="player-name">Player 5</div><div class="cards"><div class="card-back"></div><div class="card-back"></div></div></div>
+</div>
+<div style="text-align:center; margin-top:16px; font-size:12px; color:#667788;">나만 내 카드를 볼 수 있다. 다른 플레이어의 카드는 뒤집혀 있다.</div>
+</body>
+</html>

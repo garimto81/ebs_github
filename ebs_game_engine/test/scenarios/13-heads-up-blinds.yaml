@@ -24,7 +24,14 @@ events:
   - action: { seat: 0, type: bet, amount: 30 }
   - action: { seat: 1, type: fold }
   # seat0 wins
-  - pot_awarded: { 0: 60 }
+  - pot_awarded: { 0: 90 }
   - hand_end: true
 expectations:
   hand_ended: true
+  pot_total: 0
+  community_count: 3
+  stacks:
+    0: 1030    # 1000 - 5 - 5 - 20 - 30 + 90
+    1: 970     # 1000 - 10 - 20 (folded on flop)
+  seat_statuses:
+    1: folded

@@ -33,7 +33,16 @@ events:
   # SB folds
   - action: { seat: 1, type: fold }
   # UTG wins
-  - pot_awarded: { 0: 580 }
+  - pot_awarded: { 0: 590 }
   - hand_end: true
 expectations:
   hand_ended: true
+  pot_total: 0
+  community_count: 3
+  stacks:
+    0: 2200    # 2000 - 30 - 60 - 300 + 590
+    1: 1810    # 2000 - 5 - 85 - 100 (folded on flop)
+    2: 1990    # 2000 - 10 (folded preflop)
+  seat_statuses:
+    1: folded
+    2: folded

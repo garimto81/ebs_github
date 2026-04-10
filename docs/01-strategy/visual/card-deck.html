@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0f1923;
+  font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+  padding: 36px 48px;
+  width: 1200px;
+  color: #e0e0e0;
+}
+h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.sub { font-size: 13px; color: #667788; margin-bottom: 24px; }
+
+.suit-row { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.suit-label {
+  width: 28px; font-size: 20px; text-align: center;
+  display: flex; align-items: center; justify-content: center;
+}
+.card {
+  width: 60px; height: 80px;
+  background: #fff;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  border: 2px solid #2a3a4a;
+}
+.card .suit { font-size: 14px; margin-top: -2px; }
+.black { color: #1a1a1a; }
+.red { color: #e03030; }
+
+.note {
+  font-size: 12px;
+  color: #556677;
+  margin-top: 16px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<h2>카드 52장 — 4무늬 × 13숫자</h2>
+<div class="sub">포커는 일반 트럼프 카드 52장을 사용한다</div>
+
+<div class="suit-row">
+  <div class="suit-label">♠</div>
+  <div class="card black"><span>2</span><span class="suit">♠</span></div>
+  <div class="card black"><span>3</span><span class="suit">♠</span></div>
+  <div class="card black"><span>4</span><span class="suit">♠</span></div>
+  <div class="card black"><span>5</span><span class="suit">♠</span></div>
+  <div class="card black"><span>6</span><span class="suit">♠</span></div>
+  <div class="card black"><span>7</span><span class="suit">♠</span></div>
+  <div class="card black"><span>8</span><span class="suit">♠</span></div>
+  <div class="card black"><span>9</span><span class="suit">♠</span></div>
+  <div class="card black"><span>10</span><span class="suit">♠</span></div>
+  <div class="card black"><span>J</span><span class="suit">♠</span></div>
+  <div class="card black"><span>Q</span><span class="suit">♠</span></div>
+  <div class="card black"><span>K</span><span class="suit">♠</span></div>
+  <div class="card black"><span>A</span><span class="suit">♠</span></div>
+</div>
+
+<div class="suit-row">
+  <div class="suit-label" style="color:#e03030;">♥</div>
+  <div class="card red"><span>2</span><span class="suit">♥</span></div>
+  <div class="card red"><span>3</span><span class="suit">♥</span></div>
+  <div class="card red"><span>4</span><span class="suit">♥</span></div>
+  <div class="card red"><span>5</span><span class="suit">♥</span></div>
+  <div class="card red"><span>6</span><span class="suit">♥</span></div>
+  <div class="card red"><span>7</span><span class="suit">♥</span></div>
+  <div class="card red"><span>8</span><span class="suit">♥</span></div>
+  <div class="card red"><span>9</span><span class="suit">♥</span></div>
+  <div class="card red"><span>10</span><span class="suit">♥</span></div>
+  <div class="card red"><span>J</span><span class="suit">♥</span></div>
+  <div class="card red"><span>Q</span><span class="suit">♥</span></div>
+  <div class="card red"><span>K</span><span class="suit">♥</span></div>
+  <div class="card red"><span>A</span><span class="suit">♥</span></div>
+</div>
+
+<div class="suit-row">
+  <div class="suit-label" style="color:#e03030;">♦</div>
+  <div class="card red"><span>2</span><span class="suit">♦</span></div>
+  <div class="card red"><span>3</span><span class="suit">♦</span></div>
+  <div class="card red"><span>4</span><span class="suit">♦</span></div>
+  <div class="card red"><span>5</span><span class="suit">♦</span></div>
+  <div class="card red"><span>6</span><span class="suit">♦</span></div>
+  <div class="card red"><span>7</span><span class="suit">♦</span></div>
+  <div class="card red"><span>8</span><span class="suit">♦</span></div>
+  <div class="card red"><span>9</span><span class="suit">♦</span></div>
+  <div class="card red"><span>10</span><span class="suit">♦</span></div>
+  <div class="card red"><span>J</span><span class="suit">♦</span></div>
+  <div class="card red"><span>Q</span><span class="suit">♦</span></div>
+  <div class="card red"><span>K</span><span class="suit">♦</span></div>
+  <div class="card red"><span>A</span><span class="suit">♦</span></div>
+</div>
+
+<div class="suit-row">
+  <div class="suit-label">♣</div>
+  <div class="card black"><span>2</span><span class="suit">♣</span></div>
+  <div class="card black"><span>3</span><span class="suit">♣</span></div>
+  <div class="card black"><span>4</span><span class="suit">♣</span></div>
+  <div class="card black"><span>5</span><span class="suit">♣</span></div>
+  <div class="card black"><span>6</span><span class="suit">♣</span></div>
+  <div class="card black"><span>7</span><span class="suit">♣</span></div>
+  <div class="card black"><span>8</span><span class="suit">♣</span></div>
+  <div class="card black"><span>9</span><span class="suit">♣</span></div>
+  <div class="card black"><span>10</span><span class="suit">♣</span></div>
+  <div class="card black"><span>J</span><span class="suit">♣</span></div>
+  <div class="card black"><span>Q</span><span class="suit">♣</span></div>
+  <div class="card black"><span>K</span><span class="suit">♣</span></div>
+  <div class="card black"><span>A</span><span class="suit">♣</span></div>
+</div>
+
+<div class="note">숫자는 2가 가장 약하고, A(에이스)가 가장 강하다</div>
+
+</body>
+</html>

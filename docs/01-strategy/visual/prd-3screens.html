@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0f1923;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+  padding: 40px 48px;
+  width: 1200px;
+}
+h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.subtitle { font-size: 13px; color: #667788; margin-bottom: 32px; }
+.screens { display: flex; gap: 20px; margin-bottom: 32px; }
+.screen {
+  flex: 1; background: #141e2a; border: 1px solid #2a3a4a;
+  border-radius: 12px; overflow: hidden;
+}
+.screen-header {
+  padding: 12px 16px; font-size: 15px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.badge {
+  font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+}
+.screen-body { padding: 16px; min-height: 200px; }
+
+.lobby-header { background: #1a2636; color: #80b0e0; }
+.lobby-badge { background: #1a3050; color: #6090c0; }
+.table-cards { display: flex; gap: 8px; flex-wrap: wrap; }
+.table-card {
+  background: #1a2636; border: 1px solid #2a3a4a; border-radius: 6px;
+  padding: 10px 14px; font-size: 11px; width: calc(50% - 4px);
+}
+.table-card .t { font-weight: 700; font-size: 12px; color: #90b0d0; margin-bottom: 4px; }
+.table-card .i { color: #667788; }
+.table-card.live { border-color: #27ae60; }
+.table-card.live .s { color: #27ae60; font-weight: 700; }
+.table-card .s { color: #556677; }
+
+.cc-header { background: #2a1a1a; color: #e67e22; }
+.cc-badge { background: #3a2010; color: #e67e22; }
+.seats { display: flex; justify-content: center; gap: 4px; margin-bottom: 12px; }
+.seat {
+  width: 20px; height: 20px; background: #1a2636; border: 1px solid #3a4a5a;
+  border-radius: 50%; font-size: 8px; display: flex; align-items: center;
+  justify-content: center; color: #667788;
+}
+.seat.a { border-color: #e67e22; color: #e67e22; }
+.cc-table {
+  width: 200px; height: 90px; margin: 8px auto 12px;
+  border: 2px solid #2a3a4a; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: #445566;
+}
+.actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.ab { padding: 5px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+
+.st-header { background: #1a1a2a; color: #a080d0; }
+.st-badge { background: #2a2040; color: #a080d0; }
+.tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+.tab {
+  padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  background: #1a2636; color: #556677;
+}
+.tab.on { background: #2a2040; color: #a080d0; }
+.si {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0; border-bottom: 1px solid #1a2636; font-size: 11px;
+}
+.si .k { color: #778899; }
+.si .v { color: #c0d0e0; font-weight: 600; }
+.tgl {
+  width: 32px; height: 16px; background: #1a3a2a; border-radius: 8px;
+  position: relative;
+}
+.tgl::after {
+  content: ''; width: 12px; height: 12px; background: #30b060;
+  border-radius: 50%; position: absolute; top: 2px; right: 2px;
+}
+
+.nav { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.nl {
+  font-size: 12px; color: #556677; background: #141e2a;
+  border: 1px solid #2a3a4a; padding: 8px 16px; border-radius: 8px;
+}
+.na { color: #e67e22; font-size: 16px; }
+.nl.h { border-color: #e67e22; color: #e67e22; }
+.nl.p { border-color: #a080d0; color: #a080d0; }
+</style>
+</head>
+<body>
+<h1>EBS — 3화면 구조</h1>
+<div class="subtitle">Lobby → Command Center → Settings ⚙ | Flutter + Rive 단일 앱</div>
+
+<div class="screens">
+  <div class="screen">
+    <div class="screen-header lobby-header">🏠 Lobby <span class="badge lobby-badge">테이블 관리</span></div>
+    <div class="screen-body">
+      <div class="table-cards">
+        <div class="table-card live"><div class="t">Table 1</div><div class="i">NLH · 10명</div><div class="s">● LIVE</div></div>
+        <div class="table-card"><div class="t">Table 2</div><div class="i">PLO · 8명</div><div class="s">Setup</div></div>
+        <div class="table-card"><div class="t">Table 3</div><div class="i">Stud · 0명</div><div class="s">Empty</div></div>
+        <div class="table-card"><div class="t">Table 4</div><div class="i">NLH · 6명</div><div class="s">Setup</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-header cc-header">🎮 Command Center <span class="badge cc-badge">게임 진행</span></div>
+    <div class="screen-body">
+      <div class="seats">
+        <div class="seat">1</div><div class="seat">2</div><div class="seat a">3</div>
+        <div class="seat">4</div><div class="seat">5</div><div class="seat">6</div>
+        <div class="seat">7</div><div class="seat">8</div><div class="seat">9</div><div class="seat">10</div>
+      </div>
+      <div class="cc-table">Feature Table</div>
+      <div class="actions">
+        <span class="ab" style="background:#5a2020;color:#e05050;">FOLD</span>
+        <span class="ab" style="background:#1a3a2a;color:#30b060;">CHECK</span>
+        <span class="ab" style="background:#3a2a10;color:#e0a030;">BET</span>
+        <span class="ab" style="background:#1a2a3a;color:#5090d0;">CALL</span>
+        <span class="ab" style="background:#3a1a3a;color:#c060c0;">RAISE</span>
+        <span class="ab" style="background:#2a2a2a;color:#e0e0e0;">ALL-IN</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-header st-header">⚙ Settings <span class="badge st-badge">Admin 전용</span></div>
+    <div class="screen-body">
+      <div class="tabs">
+        <span class="tab on">Output</span><span class="tab">Overlay</span>
+        <span class="tab">Game</span><span class="tab">Stats</span>
+      </div>
+      <div class="si"><span class="k">NDI Output</span><div class="tgl"></div></div>
+      <div class="si"><span class="k">Video Size</span><span class="v">1920×1080</span></div>
+      <div class="si"><span class="k">Fill & Key</span><div class="tgl"></div></div>
+      <div class="si"><span class="k">Frame Rate</span><span class="v">60 fps</span></div>
+      <div class="si"><span class="k">RTMP Stream</span><span class="v" style="color:#556677;">OFF</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="nav">
+  <span class="nl">Login</span><span class="na">→</span>
+  <span class="nl h">Lobby</span><span class="na">⇄</span>
+  <span class="nl h">Command Center</span>
+  <span class="na" style="color:#a080d0;">⚙</span>
+  <span class="nl p">Settings</span>
+</div>
+</body>
+</html>

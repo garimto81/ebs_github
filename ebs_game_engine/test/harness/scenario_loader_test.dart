@@ -275,13 +275,15 @@ events:
         HandStart(dealerSeat: 0, blinds: {1: 5, 2: 10}),
       );
 
-      // Apply all scenario events
+      // Apply all scenario events (skip StreetAdvance/DealCommunity —
+      // Engine auto-advances and deals community cards)
       final events = ScenarioLoader.buildEvents(scenario);
       for (final event in events) {
+        if (event is StreetAdvance || event is DealCommunity) continue;
         state = Engine.apply(state, event);
       }
 
-      // After flop deal: community should have 3 cards
+      // After preflop complete: Engine auto-advances to flop with 3 cards
       expect(state.community, hasLength(3));
       expect(state.street, equals(Street.flop));
     });

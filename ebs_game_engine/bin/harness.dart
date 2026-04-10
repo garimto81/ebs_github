@@ -12,7 +12,9 @@ void main(List<String> args) async {
     }
   }
 
-  final server = HarnessServer(port: port);
+  // Detect Docker: if /app/web exists, use it; otherwise default
+  final webDir = Directory('/app/web').existsSync() ? '/app/web' : 'lib/harness/web';
+  final server = HarnessServer(port: port, webDir: webDir);
 
   // Graceful shutdown on SIGINT
   ProcessSignal.sigint.watch().listen((_) async {

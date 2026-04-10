@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>EBS Lobby — Screen 5: Player List</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  /* Header */
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; }
+  .cc-btn { background: #333; color: #fff; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; cursor: pointer; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  /* Breadcrumb */
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc a { color: #555; text-decoration: none; font-weight: 600; }
+  .bc .s { margin: 0 4px; color: #ccc; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  /* Summary Bar */
+  .summary { padding: 6px 16px; border-bottom: 1px solid #eee; display: flex; gap: 24px; font-size: 10px; }
+  .sum-item { display: flex; gap: 4px; }
+  .sum-label { color: #999; font-weight: 600; }
+  .sum-val { font-weight: 700; }
+  .sum-val-green { color: #28a745; font-weight: 700; }
+  .sum-val-red { color: #dc3545; font-weight: 700; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 8px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #999; text-align: center; padding: 5px 4px; border-bottom: 2px solid #ddd; white-space: nowrap; }
+  th:nth-child(2) { text-align: left; }
+  td { padding: 4px 4px; border-bottom: 1px solid #f0f0f0; text-align: center; vertical-align: middle; font-size: 10px; }
+  td:nth-child(2) { text-align: left; }
+  tr:hover { background: #fafafa; }
+
+  /* Feature row */
+  .feat { background: #fffef5; }
+  .feat:hover { background: #fffde0; }
+  .star { color: #b8860b; font-weight: 700; font-size: 9px; }
+
+  /* EBS columns */
+  .ebs-col { background: #fafafa; }
+  th.ebs-col { background: #f5f5f5; color: #b8860b; }
+
+  /* Player name with flag */
+  .player { display: flex; align-items: center; gap: 4px; }
+  .flag { font-size: 11px; }
+  .p-name { font-weight: 600; }
+
+  /* State badges */
+  .state { display: inline-block; font-size: 8px; font-weight: 700; padding: 1px 5px; }
+  .st-active { background: #d4edda; color: #155724; }
+  .st-elim { background: #f5c6cb; color: #721c24; }
+  .st-away { background: #fff3cd; color: #856404; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC<span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+  </div>
+</div>
+
+<!-- Breadcrumb -->
+<div class="bc">
+  <a href="#">WSOP 2026</a><span class="s">›</span>
+  <a href="#">Event #5</a><span class="s">›</span>
+  <a href="#">Day2</a><span class="s">›</span>
+  <span class="cur">Players</span>
+</div>
+
+<!-- Summary Bar -->
+<div class="summary">
+  <div class="sum-item"><span class="sum-label">Players</span> <span class="sum-val">918</span></div>
+  <div class="sum-item"><span class="sum-label">Total Stack</span> <span class="sum-val">151,060,000</span></div>
+  <div class="sum-item"><span class="sum-label">Entered Stacks</span> <span class="sum-val">153,113,000</span></div>
+  <div class="sum-item"><span class="sum-label">Difference</span> <span class="sum-val-red">-2,053,000</span></div>
+  <div class="sum-item"><span class="sum-label">Avg Stack</span> <span class="sum-val">164,553</span></div>
+</div>
+
+<!-- Player Table -->
+<table>
+  <thead>
+    <tr>
+      <th style="width:40px;">Place</th>
+      <th>Player</th>
+      <th style="width:80px;">Chips</th>
+      <th style="width:65px;">Big Blinds</th>
+      <th style="width:55px;">State</th>
+      <th style="width:60px;">Country</th>
+      <th class="ebs-col" style="width:45px;">VPIP</th>
+      <th class="ebs-col" style="width:40px;">PFR</th>
+      <th class="ebs-col" style="width:40px;">AGR</th>
+      <th style="width:50px;">★ FT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="feat">
+      <td>1</td>
+      <td><div class="player"><span class="flag">🇺🇸</span> <span class="p-name">Daniel Negreanu</span> <span class="star">★</span></div></td>
+      <td><b>4,317,000</b></td>
+      <td>171.8 BB</td>
+      <td><span class="state st-active">Active</span></td>
+      <td>USA</td>
+      <td class="ebs-col"><b>28%</b></td>
+      <td class="ebs-col"><b>19%</b></td>
+      <td class="ebs-col"><b>3.2</b></td>
+      <td><span class="star">★</span></td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><div class="player"><span class="flag">🇫🇷</span> <span class="p-name">Romain Arnaud</span></div></td>
+      <td><b>3,850,000</b></td>
+      <td>153.2 BB</td>
+      <td><span class="state st-active">Active</span></td>
+      <td>FRA</td>
+      <td class="ebs-col">24%</td>
+      <td class="ebs-col">16%</td>
+      <td class="ebs-col">2.8</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><div class="player"><span class="flag">🇬🇧</span> <span class="p-name">Phil Morrison</span></div></td>
+      <td><b>2,914,000</b></td>
+      <td>115.9 BB</td>
+      <td><span class="state st-active">Active</span></td>
+      <td>GBR</td>
+      <td class="ebs-col">31%</td>
+      <td class="ebs-col">22%</td>
+      <td class="ebs-col">4.1</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><div class="player"><span class="flag">🇩🇪</span> <span class="p-name">Stefan Lehner</span></div></td>
+      <td><b>2,580,000</b></td>
+      <td>102.6 BB</td>
+      <td><span class="state st-active">Active</span></td>
+      <td>DEU</td>
+      <td class="ebs-col">22%</td>
+      <td class="ebs-col">14%</td>
+      <td class="ebs-col">2.1</td>
+      <td>—</td>
+    </tr>
+    <tr class="feat">
+      <td>5</td>
+      <td><div class="player"><span class="flag">🇺🇸</span> <span class="p-name">Bryn Kenney</span> <span class="star">★</span></div></td>
+      <td><b>2,310,000</b></td>
+      <td>91.9 BB</td>
+      <td><span class="state st-active">Active</span></td>
+      <td>USA</td>
+      <td class="ebs-col"><b>33%</b></td>
+      <td class="ebs-col"><b>25%</b></td>
+      <td class="ebs-col"><b>4.5</b></td>
+      <td><span class="star">★</span></td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><div class="player"><span class="flag">🇧🇷</span> <span class="p-name">Yuri Martins</span></div></td>
+      <td><b>1,920,000</b></td>
+      <td>76.4 BB</td>
+      <td><span class="state st-away">Away</span></td>
+      <td>BRA</td>
+      <td class="ebs-col">26%</td>
+      <td class="ebs-col">18%</td>
+      <td class="ebs-col">3.0</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><div class="player"><span class="flag">🇯🇵</span> <span class="p-name">Naoki Ishibashi</span></div></td>
+      <td><b>1,640,000</b></td>
+      <td>65.2 BB</td>
+      <td><span class="state st-active">Active</span></td>
+      <td>JPN</td>
+      <td class="ebs-col">20%</td>
+      <td class="ebs-col">12%</td>
+      <td class="ebs-col">1.8</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><div class="player"><span class="flag">🇮🇱</span> <span class="p-name">Oren Biton</span></div></td>
+      <td><b>1,450,000</b></td>
+      <td>57.7 BB</td>
+      <td><span class="state st-active">Active</span></td>
+      <td>ISR</td>
+      <td class="ebs-col">29%</td>
+      <td class="ebs-col">20%</td>
+      <td class="ebs-col">3.5</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td><div class="player"><span class="flag">🇨🇦</span> <span class="p-name">André Belley</span></div></td>
+      <td><b>1,280,000</b></td>
+      <td>50.9 BB</td>
+      <td><span class="state st-active">Active</span></td>
+      <td>CAN</td>
+      <td class="ebs-col">25%</td>
+      <td class="ebs-col">17%</td>
+      <td class="ebs-col">2.6</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td><div class="player"><span class="flag">🇪🇸</span> <span class="p-name">Carlos Selfa</span></div></td>
+      <td><b>1,100,000</b></td>
+      <td>43.8 BB</td>
+      <td><span class="state st-elim">Elim</span></td>
+      <td>ESP</td>
+      <td class="ebs-col">35%</td>
+      <td class="ebs-col">21%</td>
+      <td class="ebs-col">3.8</td>
+      <td>—</td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>EBS Lobby — Screen 2: Event List</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  /* Header */
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; }
+  .cc-btn { background: #333; color: #fff; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; cursor: pointer; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  /* Breadcrumb */
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc a { color: #555; text-decoration: none; font-weight: 600; }
+  .bc .s { margin: 0 4px; color: #ccc; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  /* Status Tabs */
+  .tabs { padding: 6px 16px; border-bottom: 1px solid #eee; display: flex; gap: 16px; }
+  .tab { font-size: 10px; color: #888; cursor: pointer; padding-bottom: 4px; font-weight: 600; }
+  .tab.active { color: #111; border-bottom: 2px solid #111; }
+  .tab .cnt { font-size: 9px; color: #aaa; margin-left: 2px; }
+
+  /* Toolbar */
+  .toolbar { padding: 5px 16px; border-bottom: 1px solid #eee; display: flex; justify-content: flex-end; }
+  .btn-sm { font-size: 9px; padding: 3px 8px; border: 1px solid #ccc; background: #fff; cursor: pointer; font-weight: 600; }
+  .btn-new { background: #28a745; color: #fff; border-color: #28a745; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 8px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #999; text-align: center; padding: 5px 4px; border-bottom: 2px solid #ddd; white-space: nowrap; }
+  th:nth-child(3) { text-align: left; }
+  td { padding: 5px 4px; border-bottom: 1px solid #f0f0f0; text-align: center; vertical-align: middle; font-size: 10px; }
+  td:nth-child(3) { text-align: left; }
+  tr:hover { background: #fafafa; }
+
+  /* Feature row */
+  .feat { background: #fffef5; }
+  .feat:hover { background: #fffde0; }
+  .star { color: #b8860b; font-weight: 700; }
+
+  /* Status badges */
+  .badge { display: inline-block; font-size: 8px; font-weight: 700; padding: 2px 6px; }
+  .b-created { background: #f0f0f0; color: #666; }
+  .b-announced { background: #cce5ff; color: #004085; }
+  .b-registering { background: #fff3cd; color: #856404; }
+  .b-running { background: #d4edda; color: #155724; }
+  .b-completed { background: #f0f0f0; color: #666; }
+
+  /* EBS columns */
+  .ebs-col { background: #fafafa; }
+  th.ebs-col { background: #f5f5f5; color: #b8860b; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC<span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+  </div>
+</div>
+
+<!-- Breadcrumb -->
+<div class="bc">
+  <a href="#">WSOP 2026</a><span class="s">›</span>
+  <span class="cur">Events</span>
+</div>
+
+<!-- Status Tabs -->
+<div class="tabs">
+  <div class="tab">Created<span class="cnt">(0)</span></div>
+  <div class="tab">Announced<span class="cnt">(3)</span></div>
+  <div class="tab">Registering<span class="cnt">(1)</span></div>
+  <div class="tab active">Running<span class="cnt">(2)</span></div>
+  <div class="tab">Completed<span class="cnt">(24)</span></div>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <button class="btn-sm btn-new">+ New Event</button>
+</div>
+
+<!-- Event Table -->
+<table>
+  <thead>
+    <tr>
+      <th style="width:80px;">Start Time</th>
+      <th style="width:30px;">No.</th>
+      <th>Event Name</th>
+      <th style="width:55px;">Buy-In</th>
+      <th style="width:40px;">Game</th>
+      <th class="ebs-col" style="width:65px;">Game Mode</th>
+      <th style="width:50px;">Entries</th>
+      <th style="width:60px;">Re-Entries</th>
+      <th style="width:50px;">Unique</th>
+      <th style="width:65px;">Status</th>
+      <th style="width:50px;">★ Feature</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="feat">
+      <td>03/31, 12:00</td>
+      <td>#1</td>
+      <td><b>€1,100 The Opener Mystery Bounty</b></td>
+      <td>€1,100</td>
+      <td>NLH</td>
+      <td class="ebs-col">Single</td>
+      <td><b>894</b></td>
+      <td>1,298</td>
+      <td>—</td>
+      <td><span class="badge b-running">Running</span></td>
+      <td><span class="star">★</span></td>
+    </tr>
+    <tr>
+      <td>04/01, 14:00</td>
+      <td>#2</td>
+      <td>€600 PLO / PLO8 / Big O</td>
+      <td>€600</td>
+      <td>PLO</td>
+      <td class="ebs-col">Choice</td>
+      <td><b>97</b></td>
+      <td>84</td>
+      <td>—</td>
+      <td><span class="badge b-registering">Registering</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>04/01, 16:00</td>
+      <td>#3</td>
+      <td>€550 Deepstack NLH</td>
+      <td>€550</td>
+      <td>NLH</td>
+      <td class="ebs-col">Single</td>
+      <td><b>127</b></td>
+      <td>—</td>
+      <td>—</td>
+      <td><span class="badge b-completed">Completed</span></td>
+      <td>—</td>
+    </tr>
+    <tr class="feat">
+      <td>04/03, 12:00</td>
+      <td>#5</td>
+      <td><b>€5,300 Europe Main Event</b></td>
+      <td>€5,300</td>
+      <td>NLH</td>
+      <td class="ebs-col">Single</td>
+      <td><b>1,807</b></td>
+      <td>838</td>
+      <td>1,273</td>
+      <td><span class="badge b-running">Running</span></td>
+      <td><span class="star">★</span></td>
+    </tr>
+    <tr>
+      <td>04/04, 14:00</td>
+      <td>#6</td>
+      <td>€600 Turbo NLH</td>
+      <td>€600</td>
+      <td>NLH</td>
+      <td class="ebs-col">Single</td>
+      <td><b>78</b></td>
+      <td>26</td>
+      <td>—</td>
+      <td><span class="badge b-announced">Announced</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>04/05, 12:00</td>
+      <td>#7</td>
+      <td>€1,500 Omaha Hi-Lo 8/B</td>
+      <td>€1,500</td>
+      <td>O8</td>
+      <td class="ebs-col">Fixed 6h</td>
+      <td>—</td>
+      <td>—</td>
+      <td>—</td>
+      <td><span class="badge b-announced">Announced</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>04/06, 12:00</td>
+      <td>#8</td>
+      <td>€10,000 High Roller NLH</td>
+      <td>€10,000</td>
+      <td>NLH</td>
+      <td class="ebs-col">Single</td>
+      <td>—</td>
+      <td>—</td>
+      <td>—</td>
+      <td><span class="badge b-announced">Announced</span></td>
+      <td>—</td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

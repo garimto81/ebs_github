@@ -14,6 +14,7 @@ class Scenario {
   final Map<String, int> blinds;
   final List<Map<String, dynamic>> events;
   final Map<String, dynamic>? expectations;
+  final Map<String, dynamic>? config;
 
   const Scenario({
     required this.variant,
@@ -22,6 +23,7 @@ class Scenario {
     required this.blinds,
     required this.events,
     this.expectations,
+    this.config,
   });
 }
 
@@ -74,6 +76,13 @@ class ScenarioLoader {
       expectations = _yamlMapToMap(expectRaw);
     }
 
+    // Config (optional) — sets GameState properties before hand start
+    Map<String, dynamic>? config;
+    final configRaw = doc['config'];
+    if (configRaw is YamlMap) {
+      config = _yamlMapToMap(configRaw);
+    }
+
     return Scenario(
       variant: variant,
       seats: seats,
@@ -81,6 +90,7 @@ class ScenarioLoader {
       blinds: blinds,
       events: events,
       expectations: expectations,
+      config: config,
     );
   }
 
@@ -103,6 +113,22 @@ class ScenarioLoader {
   }
 
   static Event? _buildEvent(Map<String, dynamic> map) {
+    // hand_start: { dealer: 1, blinds: { 2: 5, 0: 10 } }
+    if (map.containsKey('hand_start')) {
+      final raw = map['hand_start'];
+      if (raw is Map) {
+        final dealer = (raw['dealer'] as num?)?.toInt() ?? 0;
+        final blindsRaw = raw['blinds'];
+        final blinds = <int, int>{};
+        if (blindsRaw is Map) {
+          blindsRaw.forEach((k, v) {
+            blinds[int.parse(k.toString())] = (v as num).toInt();
+          });
+        }
+        return HandStart(dealerSeat: dealer, blinds: blinds);
+      }
+    }
+
     // deal_hole: {0: [As, Kh], 1: [Qd, Qc]}
     if (map.containsKey('deal_hole')) {
       final raw = map['deal_hole'];
@@ -182,6 +208,62 @@ class ScenarioLoader {
       }
     }
 
+    // misdeal: true
+    if (map.containsKey('misdeal')) {
+      return const MisDeal();
+    }
+
+    // bomb_pot_config: { amount: 50 }
+    if (map.containsKey('bomb_pot_config')) {
+      final raw = map['bomb_pot_config'];
+      if (raw is Map) {
+        final amount = (raw['amount'] as num?)?.toInt() ?? 0;
+        return BombPotConfig(amount);
+      }
+      if (raw is num) {
+        return BombPotConfig(raw.toInt());
+      }
+    }
+
+    // run_it_choice: { times: 2 }
+    if (map.containsKey('run_it_choice')) {
+      final raw = map['run_it_choice'];
+      if (raw is Map) {
+        final times = (raw['times'] as num?)?.toInt() ?? 2;
+        return RunItChoice(times);
+      }
+      if (raw is num) {
+        return RunItChoice(raw.toInt());
+      }
+    }
+
+    // manual_next_hand: true
+    if (map.containsKey('manual_next_hand')) {
+      return const ManualNextHand();
+    }
+
+    // timeout_fold: { seat: 2 }
+    if (map.containsKey('timeout_fold')) {
+      final raw = map['timeout_fold'];
+      if (raw is Map) {
+        final seat = (raw['seat'] as num?)?.toInt() ?? 0;
+        return TimeoutFold(seat);
+      }
+      if (raw is num) {
+        return TimeoutFold(raw.toInt());
+      }
+    }
+
+    // muck: { seat: 1, show: false }
+    if (map.containsKey('muck')) {
+      final raw = map['muck'];
+      if (raw is Map) {
+        final seat = (raw['seat'] as num?)?.toInt() ?? 0;
+        final show = raw['show'] as bool? ?? false;
+        return MuckDecision(seat, showCards: show);
+      }
+    }
+
     return null;
   }
 
@@ -196,11 +278,13 @@ class ScenarioLoader {
       };
 
   static Street _parseStreet(String s) => switch (s) {
+        'setupHand' => Street.setupHand,
         'preflop' => Street.preflop,
         'flop' => Street.flop,
         'turn' => Street.turn,
         'river' => Street.river,
         'showdown' => Street.showdown,
+        'runItMultiple' => Street.runItMultiple,
         _ => Street.flop,
       };
 
@@ -266,6 +350,20 @@ class ScenarioLoader {
         buf.writeln('  - pineapple_discard:');
         buf.writeln('      seat: $s');
         buf.writeln('      card: ${c.notation}');
+      case MisDeal():
+        buf.writeln('  - misdeal: true');
+      case BombPotConfig(amount: final a):
+        buf.writeln('  - bomb_pot_config: $a');
+      case RunItChoice(times: final t):
+        buf.writeln('  - run_it_choice: $t');
+      case ManualNextHand():
+        buf.writeln('  - manual_next_hand: true');
+      case TimeoutFold(seatIndex: final s):
+        buf.writeln('  - timeout_fold: $s');
+      case MuckDecision(seatIndex: final s, showCards: final show):
+        buf.writeln('  - muck_decision:');
+        buf.writeln('      seat: $s');
+        buf.writeln('      show: $show');
     }
   }
 

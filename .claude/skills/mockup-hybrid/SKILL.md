@@ -1,8 +1,9 @@
 ---
 name: mockup-hybrid
 description: >
-  This skill should be used when the user needs UI mockups via 3-Tier hybrid system: Mermaid diagrams, HTML wireframes, or Google Stitch AI.
-version: 2.0.0
+  HTML 와이어프레임 + Google Stitch 하이브리드 목업 생성 시스템.
+  프롬프트 분석 기반 자동 백엔드 선택, Stitch API 연동, 폴백 지원.
+version: 1.0.0
 
 triggers:
   keywords:
@@ -12,160 +13,197 @@ triggers:
     - "와이어프레임"
     - "wireframe"
     - "ui mockup"
-    - "다이어그램"
-    - "diagram"
-    - "mermaid"
+    - "--hifi"
+    - "--bnw"
+    - "stitch"
   file_patterns:
     - "docs/mockups/*.html"
-    - "docs/mockups/*.mermaid.md"
     - "docs/images/mockups/*.png"
   context:
     - "UI 디자인"
     - "화면 설계"
     - "프로토타입"
-    - "시스템 구조"
-    - "흐름도"
+
+capabilities:
+  - auto_backend_selection
+  - html_wireframe_generation
+  - stitch_api_integration
+  - playwright_screenshot
+  - fallback_handling
+
+model_preference: sonnet
 
 auto_trigger: true
 ---
 
-# Mockup Hybrid Skill v2.0
+# Mockup Hybrid Skill
 
-3-Tier 자동 선택 목업 생성 시스템. `--mockup`만으로 최적의 시각화 방식을 자동 결정합니다.
+HTML 와이어프레임과 Google Stitch API를 통합한 하이브리드 목업 생성 시스템입니다.
 
-## 동작 모드
+## Plan Mode 안내
 
-### Mode 1: 문서 기반 (Document-Driven)
+Plan mode에서는 이 스킬 사용 불가 (Write/Bash 금지). 대신 `/plan` 커맨드를 사용하여 ASCII 와이어프레임 + mockup-spec을 생성한 후, ExitPlanMode 이후 이 스킬로 실제 목업을 생성한다.
+
+## 아키텍처
+
 ```
-/auto --mockup docs/02-design/feature.md
+/mockup [name] --bnw
       │
       ▼
-┌─────────────────────────────────┐
-│      Document Scanner           │
-│  ## 헤딩 기준 섹션 분리 + 분류  │
-│  NEED / SKIP / EXIST 판단      │
-└─────────────────────────────────┘
-      │
-      ├─ NEED 섹션들 ──▶ 3-Tier Router ──▶ 일괄 생성
-      ├─ EXIST 섹션   ──▶ 스킵 (--force 시 재생성)
-      └─ SKIP 섹션    ──▶ 스킵 (서술형)
+┌──────────────────────────────────────────────────┐
+│        Design Context Analyzer (내장)             │
+├──────────────────────────────────────────────────┤
+│  1. 프롬프트 분석 (키워드, 복잡도)               │
+│  2. 환경 검사 (Stitch API 키 유효?)              │
+│  3. 자동 선택 규칙 적용                          │
+└──────────────────────────────────────────────────┘
       │
       ▼
-┌─────────────────────────────────┐
-│      Document Embedder          │
-│  Mermaid → 인라인 코드 블록    │
-│  HTML    → ![](이미지 참조)    │
-└─────────────────────────────────┘
-```
-
-### Mode 2: 단건 (Prompt-Driven)
-```
-/auto "요청" --mockup
+┌──────────────────────────────────────────────────┐
+│              백엔드 라우터                        │
+├──────────────────────────────────────────────────┤
+│  Stitch 선택 → Stitch Adapter → Stitch API      │
+│  HTML 선택   → HTML Adapter   → Local Generator │
+└──────────────────────────────────────────────────┘
       │
       ▼
-  3-Tier Router
-      ├─ 다이어그램 키워드 ──▶ Mermaid (~2초)
-      ├─ UI/화면 키워드    ──▶ HTML Wireframe (~5초)
-      └─ 고품질/발표 키워드 ─▶ Stitch AI (~15초)
+┌──────────────────────────────────────────────────┐
+│           Fallback Handler                        │
+│  Stitch API 실패 → HTML로 자동 폴백             │
+└──────────────────────────────────────────────────┘
+      │
+      ▼
+┌──────────────────────────────────────────────────┐
+│           Export Manager                          │
+│  HTML + PNG 저장 + 선택 이유 출력                │
+└──────────────────────────────────────────────────┘
 ```
 
-## 자동 라우팅 규칙
+## 옵션
+
+| 옵션 | 동작 | 백엔드 선택 |
+|------|------|-------------|
+| `--bnw` (기본) | **자동 선택** | 프롬프트 분석 → HTML or Stitch |
+| `--force-html` | 강제 HTML | Local HTML 고정 |
+| `--force-hifi` | 강제 Stitch | Stitch API 고정 |
+
+## 자동 선택 규칙
 
 ### 우선순위
 
 1. **강제 옵션** (사용자 명시)
-   - `--mockup mermaid` → Mermaid 고정
-   - `--mockup html` → HTML 고정
-   - `--mockup hifi` → Stitch 고정
-   - `--mockup --quasar` → HTML + Quasar Material Design 스타일
-   - `--mockup-q` → HTML + Quasar White Tone Minimal 스타일
+   - `--force-html` → HTML
+   - `--force-hifi` → Stitch
 
-2. **키워드 감지** (자동)
+2. **키워드 감지**
+   - Stitch 트리거: "프레젠테이션", "고품질", "리뷰용", "이해관계자", "최종", "공식"
+   - HTML 트리거: "빠른", "구조", "와이어프레임", "초안", "검토"
 
-| Tier | 키워드 | 출력 |
-|:----:|--------|------|
-| Mermaid | 흐름, 플로우, 시퀀스, API 호출, DB, 스키마, ER, 클래스, 아키텍처, 파이프라인, 상태, 워크플로우 | `.mermaid.md` |
-| HTML | 화면, UI, 레이아웃, 페이지, 대시보드, 폼, 카드, 사이드바, 와이어프레임 | `.html` + `.png` |
-| Stitch | 프레젠테이션, 고품질, 최종, 데모, 발표, 리뷰용, 이해관계자 | `.html` + `.png` (HiFi) |
+3. **컨텍스트**
+   - `--prd=PRD-NNNN` → Stitch (문서용 고품질)
+   - `--screens=3+` → HTML (빠른 생성)
 
-3. **프로젝트 타입 감지** (자동)
-   - Quasar 프로젝트 감지 시 (`package.json` quasar dep 또는 `quasar.config.*`) → `style="quasar"` 자동 적용 (명시적 `--quasar` 불필요)
-   - React/Next.js 프로젝트 감지 시 → 기존 HTML B&W Refined Minimal (향후 React 스타일 확장 가능)
+4. **환경 검사**
+   - Stitch API 키 없음 → HTML
+   - Rate Limit 초과 → HTML
 
-4. **컨텍스트** — `--prd=PRD-NNNN` → Stitch, `--screens=3+` → HTML
-5. **환경** — Stitch API 불가 → HTML
-6. **기본값** → HTML
+5. **기본값** → HTML (가장 빠름)
 
-## Mermaid 다이어그램 타입
+## 핵심 기능: ASCII 다이어그램 → 이미지 교체
 
-| 타입 | 트리거 | 용도 |
-|------|--------|------|
-| `flowchart` | 흐름, 프로세스, 파이프라인 | 워크플로우, 결정 트리 |
-| `sequenceDiagram` | 시퀀스, API 호출, 통신, 인증 | API 흐름, 인증 플로우 |
-| `erDiagram` | DB, 스키마, ER, 테이블 관계 | 데이터 모델 |
-| `classDiagram` | 클래스, 인터페이스, 상속 | OOP 구조 |
-| `stateDiagram-v2` | 상태, 상태 머신, 라이프사이클 | 상태 전이 |
-| `gitGraph` | 브랜치, 커밋, 머지 | Git 전략 |
+`--bnw` 옵션의 **핵심 목적**은 Markdown 파일의 ASCII 다이어그램을 이미지로 교체하는 것입니다.
+
+### 워크플로우
+
+```
+ASCII 다이어그램 감지 → HTML 목업 생성 → PNG 캡처 → Markdown 교체
+```
+
+### 단계별 동작
+
+| 단계 | 동작 | 출력 |
+|:----:|------|------|
+| 1 | 대상 파일에서 ASCII 다이어그램 탐지 | 박스/화살표/선 패턴 |
+| 2 | 각 ASCII를 HTML 와이어프레임으로 변환 | `docs/mockups/*.html` |
+| 3 | Playwright로 스크린샷 캡처 | `docs/images/*.png` |
+| 4 | **원본 Markdown의 ASCII를 이미지 참조로 교체** | `![](../images/*.png)` |
+
+### ASCII 감지 패턴
+
+```python
+ASCII_PATTERNS = [
+    r'[┌┐└┘├┤┬┴┼]',  # 박스 코너/교차점
+    r'[─│═║]',        # 선
+    r'[→←↑↓▶◀▲▼]',    # 화살표
+    r'[╔╗╚╝╠╣╦╩╬]',   # 이중선 박스
+]
+```
+
+### 교체 옵션
+
+| 옵션 | 설명 |
+|------|------|
+| `--target=FILE` | 교체 대상 Markdown 파일 지정 |
+| `--keep-ascii` | 원본 ASCII를 HTML 주석으로 보존 |
+| `--dry-run` | 미리보기 (실제 수정 안함) |
+| `--force` | 확인 질문 없이 즉시 교체 |
 
 ## 사용 예시
 
 ```bash
-# 문서 기반 자동 목업 (핵심 기능)
-/auto --mockup docs/02-design/auth.design.md
-# → 문서 스캔 → 시각화 필요 섹션 자동 발견 → 일괄 생성 + 삽입
+# ASCII 다이어그램 교체 (핵심 용례)
+/mockup "시스템 구조" --bnw --target=docs/ARCHITECTURE.md
 
-# 미리보기 (실제 수정 없이 어떤 목업이 생성될지 확인)
-/auto --mockup docs/02-design/auth.design.md --dry-run
+# PRD 파일의 모든 ASCII 교체
+/mockup --bnw --target=docs/prds/PRD-0001.md
 
-# 기존 목업도 재생성
-/auto --mockup docs/02-design/auth.design.md --force
+# 자동 선택 → HTML (단순 요청)
+/mockup "로그인 화면" --bnw
 
-# 단건 자동 선택 (프롬프트 기반)
-/auto "API 인증 흐름 설계" --mockup
-/auto "대시보드 화면 설계" --mockup
+# 자동 선택 → Stitch (고품질 키워드)
+/mockup "대시보드 - 이해관계자 프레젠테이션" --bnw
 
-# 강제 지정
-/auto "시스템 구조" --mockup mermaid
-/auto "로그인 화면" --mockup html
-/auto "데모 페이지" --mockup hifi
+# 자동 선택 → Stitch (PRD 연결)
+/mockup "인증 흐름" --bnw --prd=PRD-0001
+
+# 강제 HTML
+/mockup "대시보드" --bnw --force-html
+
+# 강제 Stitch
+/mockup "랜딩 페이지" --bnw --force-hifi
 ```
 
 ## 출력 형식
 
 ```bash
-# Mermaid 선택 시
-📊 선택: Mermaid sequenceDiagram (이유: 다이어그램 키워드 감지)
-✅ 생성: docs/mockups/인증흐름.mermaid.md
+# 성공 시
+🤖 선택: Stitch API (이유: 고품질 키워드 감지)
+✅ 생성: docs/mockups/dashboard-hifi.html
+📸 캡처: docs/images/mockups/dashboard-hifi.png
 
-# HTML 선택 시
-📝 선택: HTML Generator (이유: 기본값)
+# 폴백 시
+⚠️ Stitch API 실패 → HTML로 폴백
 ✅ 생성: docs/mockups/dashboard.html
 📸 캡처: docs/images/mockups/dashboard.png
-
-# Stitch 선택 시
-🤖 선택: Stitch API (이유: 고품질 키워드 감지)
-✅ 생성: docs/mockups/landing-hifi.html
-📸 캡처: docs/images/mockups/landing-hifi.png
 ```
 
 ## 모듈 구조
 
 ```
 .claude/skills/mockup-hybrid/
-├── SKILL.md
+├── SKILL.md                    # 이 파일
 ├── adapters/
-│   ├── mermaid_adapter.py      # Mermaid 코드 생성 (NEW)
 │   ├── html_adapter.py         # HTML 와이어프레임 생성
 │   └── stitch_adapter.py       # Stitch API 연동
 ├── core/
-│   ├── analyzer.py             # 3-Tier 프롬프트 분석
+│   ├── analyzer.py             # 프롬프트 분석 + 자동 선택
 │   ├── router.py               # 백엔드 라우팅
-│   └── fallback_handler.py     # 폴백 처리
+│   └── fallback_handler.py     # Stitch → HTML 폴백
 └── config/
-    └── selection_rules.yaml    # 자동 선택 규칙 (v2.0)
+    └── selection_rules.yaml    # 자동 선택 규칙
 
 lib/mockup_hybrid/
-├── __init__.py                 # 타입 정의 (MERMAID 추가)
+├── __init__.py
 ├── stitch_client.py            # Stitch API 클라이언트
 └── export_utils.py             # 내보내기 유틸리티
 ```
@@ -173,212 +211,40 @@ lib/mockup_hybrid/
 ## 환경 변수
 
 ```bash
-# Google Stitch (무료 - 350 screens/월) — Tier 3 전용
+# Google Stitch (무료 - 350 screens/월)
 STITCH_API_KEY=your-api-key
 STITCH_API_BASE_URL=https://api.stitch.withgoogle.com/v1
 ```
 
-## Quasar Material Design (--quasar 스타일)
+## Google Stitch 비용
 
-`--mockup --quasar` 시 B&W Refined Minimal 대신 Quasar Framework Material Design 적용.
+| 항목 | 비용 | 월 한도 |
+|------|:----:|---------|
+| Standard Mode (Gemini 2.5 Flash) | **무료** | 350 screens/월 |
+| Experimental Mode (Gemini 2.5 Pro) | **무료** | 50-200 screens/월 |
 
-### 동작 방식
+> **참고**: Google Labs 실험 단계로 현재 완전 무료. 향후 변경 가능성 있음.
 
-```
-/auto "요청" --mockup --quasar
-      │
-      ▼
-  MockupOptions(style="quasar")
-      │
-      ▼
-  HTMLAdapter → mockup-quasar.html 템플릿 선택
-      │
-      ▼
-  designer 에이전트 (Quasar 컴포넌트 어휘로 스타일링)
-      │
-      ▼
-  Playwright PNG 캡처 (networkidle 대기 → CDN 로드 완료)
-```
+## 연동
 
-### Quasar 컴포넌트 매핑
+| 스킬/에이전트 | 연동 시점 |
+|---------------|----------|
+| `google-workspace` | Google Drive 업로드 |
+| `frontend-dev` | UI 구현 |
+| `docs-writer` | PRD 문서 삽입 |
 
-| B&W 요소 | Quasar 대응 |
-|----------|------------|
-| header | `q-toolbar` + `q-toolbar-title` |
-| input | `q-input outlined` |
-| button | `q-btn color="primary"` |
-| card | `q-card` + `q-card-section` |
-| table | `q-table` |
-| sidebar | `q-drawer` |
+## 관련 문서
 
-### UMD 제약
-
-- CDN: Vue 3 + Quasar 2 UMD + Material Icons
-- **self-closing 태그 금지**: `<q-input />` 불가 → `<q-input></q-input>` 필수
-- B&W 팔레트 적용 스킵 (Quasar 자체 Material Design 색상 사용)
-
-## Quasar White Tone Minimal (--mockup-q 스타일)
-
-`--mockup-q` 시 Quasar 컴포넌트 구조를 유지하면서 White Tone Minimal 디자인 적용.
-
-### 동작 방식
-
-```
-/auto "요청" --mockup-q
-      │
-      ▼
-  MockupOptions(style="quasar-white")
-      │
-      ▼
-  HTMLAdapter → mockup-quasar-white.html 템플릿 선택
-      │
-      ▼
-  designer 에이전트 (White Minimal 어휘로 스타일링)
-      │
-      ▼
-  Playwright PNG 캡처 (networkidle 대기 → CDN 로드 완료)
-```
-
-### White Minimal 팔레트
-
-| 용도 | 값 |
-|------|-----|
-| Primary | `#374151` (차콜) |
-| Secondary | `#6b7280` (그레이) |
-| Page BG | `#ffffff` |
-| Card BG | `#ffffff` + border `#e5e7eb` |
-| Text primary | `#111827` |
-| Text secondary | `#6b7280` |
-| Text muted | `#9ca3af` |
-| Border | `#e5e7eb` |
-
-### 컴포넌트 매핑 (vs 기존 Quasar)
-
-| 요소 | Quasar (컬러) | White Minimal |
-|------|--------------|---------------|
-| Header | `bg-primary text-white` | `bg-white text-dark` + border-bottom |
-| Card | default shadow | `flat bordered` |
-| Button | `color="primary"` | `color="grey-8"` |
-| Page BG | `#f5f5f5` | `#ffffff` |
-
-### UMD 제약
-
-기존 Quasar와 동일: self-closing 태그 금지, Vue 3 + Quasar 2 UMD CDN.
-
-## B&W Refined Minimal (기본 스타일)
-
-HTML 목업은 항상 Refined Minimal (Linear Style) B&W 디자인으로 생성된다. `--bnw` 플래그는 deprecated (하위 호환용 파싱만, 무시됨).
-
-### 동작 방식
-
-```
-/auto "요청" --mockup
-      │
-      ▼
-3-Tier 라우터 (키워드 기반 — 라우팅 우선)
-      │
-      ├─ 다이어그램 키워드 → Mermaid 생성
-      │   (흐름, 시퀀스, API, DB, ER, 클래스, 상태, 아키텍처 등)
-      │   (Mermaid는 기본 흑백 계열)
-      │
-      └─ UI/화면 키워드 → designer 에이전트 (B&W Refined Minimal 적용)
-              (화면, UI, 레이아웃, 페이지, 대시보드, 폼, 와이어프레임 등)
-              │
-              ├── 팔레트: #222326, #555555, #8a8a8a, #767676, #e5e5e5, #F4F5F8, #ffffff
-              ├── 아이콘 없음 (텍스트 레이블만, emoji/SVG/icon font 금지)
-              ├── 단일 서체 Inter 400/500/600 — Refined Minimal (Linear Style)
-              ├── 균등 padding, 8px grid, 3-layer shadow 깊이감
-              └── border-radius 12px, 1px solid #e5e5e5 border
-```
-
-### 크기 및 텍스트 규칙 (필수 적용)
-
-| 항목 | 규칙 |
-|------|------|
-| **최대 규격** | 너비 720px × 높이 1280px (`max-width: 720px; max-height: 1280px`) |
-| **폰트 크기** | body 15px, caption 12px, heading max 30px (hero max 36px) |
-| **텍스트 우선** | 텍스트로 표현 가능한 요소는 이미지/SVG/아이콘 삽입 금지 — 레이블/텍스트로만 표현 |
-
-### B&W 팔레트 규칙 — Refined Minimal (Linear Style)
-
-| 용도 | 색상 |
-|------|------|
-| 주요 텍스트 | `#222326` (Nordic Gray) |
-| 보조 텍스트 | `#555555` |
-| 뮤트/캡션 | `#8a8a8a` |
-| 비활성/플레이스홀더 | `#767676` (WCAG AA 4.54:1) |
-| 구분선/보더 | `#e5e5e5` (1px only) |
-| 페이지 배경 | `#F4F5F8` (Mercury White) |
-| 카드/surface | `#ffffff` |
-
-### designer 에이전트 미사용 시 폴백
-
-`designer` 에이전트를 사용할 수 없는 경우 `html_adapter.py`의 기본 템플릿으로 폴백:
-- Inter 400/500/600 단일 서체 (Refined Minimal)
-- 8px grid, 3-layer shadow 깊이감
-- #F4F5F8 page background + #ffffff card + border-radius 12px
+- `docs/MOCKUP_HYBRID_GUIDE.md` - 상세 가이드
+- `.claude/commands/mockup.md` - 커맨드 정의
+- `.claude/templates/mockup-wireframe.html` - HTML 템플릿
 
 ## 변경 로그
 
-### v2.1.0 (2026-02-19)
-
-**Features:**
-- `--bnw` 복원 (frontend-design 에이전트 기반 모노크롬 디자인)
-- B&W 팔레트 규칙 정의 (그레이스케일 #000~#fff만)
-- `html_adapter.py` 폴백 템플릿 품질 개선 (Roboto 제거, 독창적 타이포그래피)
-
-### v2.0.0 (2026-02-16)
-
-**Features:**
-- 3-Tier 자동 선택 (Mermaid/HTML/Stitch)
-- Mermaid 다이어그램 어댑터 (6가지 다이어그램 타입)
-- `--mockup`만으로 자동 라우팅
-- `--mockup mermaid/html/hifi` 강제 지정 옵션
-
 ### v1.0.0 (2026-01-23)
 
-- 초기 버전 (HTML + Stitch 2-tier)
-
-## /auto 연동 (4-Step 워크플로우)
-
-`/auto --mockup` 실행 시 아래 워크플로우가 적용된다. 상세: `/auto REFERENCE.md` Step 2.0.
-
-### Step 2.0.1: 라우팅 + 기본 HTML 생성 (Lead 직접 Python 호출)
-
-MockupRouter.route()로 3-Tier 라우팅 실행. `options.bnw=True` 시 html_adapter가 B&W 기본 팔레트 자동 적용.
-
-### Step 2.0.2: designer 스타일링 (HTML 선택 시)
-
-조건: `backend == HTML`일 때 실행.
-designer(sonnet) 에이전트를 스폰하여 Refined Minimal B&W 스타일링. Mermaid 선택 시 스킵.
-
-### Step 2.0.3: PNG 캡처 (Lead 직접 Bash 실행)
-
-```bash
-python -c "
-import sys; sys.path.insert(0, 'C:/claude')
-from pathlib import Path
-from lib.mockup_hybrid.export_utils import capture_screenshot, get_output_paths
-html_path = Path('docs/mockups/{name}.html')
-_, img_path = get_output_paths('{name}')
-result = capture_screenshot(html_path, img_path, auto_size=True)
-print(f'CAPTURED: {result}' if result else 'CAPTURE_FAILED')
-"
-```
-
-- 성공: `docs/images/mockups/{name}.png` 생성 -> Step 2.0.4 성공 경로
-- 실패 (Playwright 미설치 등): `CAPTURE_FAILED` 출력 -> Step 2.0.4 폴백 경로
-
-### Step 2.0.4: 문서 삽입 (Lead 직접 Edit 실행 -- 대상 문서가 있는 경우만)
-
-- **캡처 성공 시**: `generate_markdown_embed()` 결과를 Edit로 대상 문서에 삽입
-  - `![{name}](docs/images/mockups/{name}.png)` + `[HTML 원본](docs/mockups/{name}.html)`
-- **캡처 실패 시 (CAPTURE_FAILED)**: HTML 링크로 폴백
-  - `[{name} 목업](docs/mockups/{name}.html)` + 경고 메시지
-- **대상 문서 없음**: 삽입 스킵 (HTML/PNG 파일만 생성된 상태로 완료)
-
-### 금지 사항
-
-- executor 또는 executor-high가 `docs/mockups/*.html`을 직접 Write하는 것은 금지
-- UI 목업 생성 시 반드시 designer 에이전트 경유
-- `--bnw`: deprecated (하위 호환용 파싱만). B&W Refined Minimal은 HTML 목업의 기본 스타일
+**Features:**
+- 초기 버전 릴리스
+- HTML 와이어프레임 + Stitch API 하이브리드 지원
+- 프롬프트 기반 자동 백엔드 선택
+- Stitch → HTML 자동 폴백

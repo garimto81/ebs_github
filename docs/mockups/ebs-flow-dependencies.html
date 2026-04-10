@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=800">
+<title>EBS Module Dependencies</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; padding: 16px; }
+
+  .title { font-size: 12px; font-weight: 700; margin-bottom: 14px; text-align: center; letter-spacing: 0.5px; }
+
+  .canvas { position: relative; width: 760px; height: 250px; margin: 0 auto; }
+
+  .mod {
+    position: absolute;
+    border: 2px solid #222;
+    padding: 6px 10px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 10px;
+    background: #fff;
+    white-space: nowrap;
+  }
+  .mod-num { font-size: 8px; color: #888; font-weight: 600; display: block; }
+
+  .mod-lobby { background: #e8f5e9; border-color: #2e7d32; color: #2e7d32; left: 280px; top: 95px; }
+  .mod-auth { background: #e3f2fd; border-color: #1565c0; color: #1565c0; left: 80px; top: 95px; }
+  .mod-cc { background: #f3e5f5; border-color: #6a1b9a; color: #6a1b9a; left: 460px; top: 95px; }
+  .mod-engine { background: #fff8e1; border-color: #f57f17; color: #f57f17; left: 560px; top: 25px; }
+  .mod-overlay { background: #fce4ec; border-color: #c62828; color: #c62828; left: 680px; top: 25px; }
+  .mod-settings { background: #f1f8e9; border-color: #558b2f; color: #558b2f; left: 220px; top: 205px; }
+  .mod-rfid { background: #e0f7fa; border-color: #00838f; color: #00838f; left: 380px; top: 205px; }
+  .mod-api { background: #efebe9; border-color: #4e342e; color: #4e342e; left: 280px; top: 5px; }
+  .mod-db { background: #fff3e0; border-color: #e65100; color: #e65100; left: 420px; top: 5px; }
+
+  /* SVG arrows */
+  svg { position: absolute; top: 0; left: 0; width: 760px; height: 250px; pointer-events: none; }
+  .arr { stroke: #888; stroke-width: 1.5; fill: none; marker-end: url(#ah); }
+  .arr-bi { stroke: #888; stroke-width: 1.5; fill: none; marker-end: url(#ah); marker-start: url(#ah2); }
+  .arr-label { font-size: 7px; fill: #aaa; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="title">BS-01~07 모듈 의존성</div>
+
+<div class="canvas">
+  <svg xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#888"/></marker>
+      <marker id="ah2" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto"><path d="M8,0 L0,3 L8,6" fill="#888"/></marker>
+    </defs>
+    <!-- Auth → Lobby -->
+    <line x1="165" y1="112" x2="278" y2="112" class="arr"/>
+    <!-- Lobby → CC -->
+    <line x1="370" y1="112" x2="458" y2="112" class="arr"/>
+    <!-- CC → Engine -->
+    <line x1="510" y1="95" x2="575" y2="52" class="arr"/>
+    <!-- Engine → Overlay -->
+    <line x1="630" y1="42" x2="678" y2="42" class="arr"/>
+    <!-- API → DB -->
+    <line x1="335" y1="22" x2="418" y2="22" class="arr"/>
+    <!-- DB → Lobby (down) -->
+    <line x1="445" y1="32" x2="340" y2="93" class="arr"/>
+    <!-- Settings → Lobby -->
+    <line x1="270" y1="205" x2="310" y2="130" class="arr-bi"/>
+    <!-- RFID → Lobby -->
+    <line x1="410" y1="205" x2="350" y2="130" class="arr"/>
+  </svg>
+
+  <div class="mod mod-auth">Auth<span class="mod-num">BS-01</span></div>
+  <div class="mod mod-lobby">Lobby<span class="mod-num">BS-02</span></div>
+  <div class="mod mod-cc">Command<br>Center<span class="mod-num">BS-05</span></div>
+  <div class="mod mod-engine">Engine<span class="mod-num">BS-06</span></div>
+  <div class="mod mod-overlay">Overlay<span class="mod-num">BS-07</span></div>
+  <div class="mod mod-settings">Settings<span class="mod-num">BS-03</span></div>
+  <div class="mod mod-rfid">RFID<span class="mod-num">BS-04</span></div>
+  <div class="mod mod-api">WSOP LIVE<br>API<span class="mod-num">외부</span></div>
+  <div class="mod mod-db">Back Office<br>DB<span class="mod-num">저장소</span></div>
+</div>
+
+</body>
+</html>

@@ -1,6 +1,8 @@
 import '../state/game_state.dart';
 import '../state/seat.dart';
 import '../actions/action.dart';
+import 'bet_limit.dart';
+import 'no_limit.dart';
 
 /// Describes a single legal action available to the current player.
 class LegalAction {
@@ -24,7 +26,7 @@ class LegalAction {
       };
 }
 
-/// Pure-function betting rules for No-Limit poker.
+/// Pure-function betting rules — delegates min/max calculations to [BetLimit].
 class BettingRules {
   BettingRules._();
 
@@ -34,29 +36,24 @@ class BettingRules {
     final seat = state.seats[state.actionOn];
     if (!seat.isActive) return [];
 
+    final limit = state.betLimit ?? const NoLimitBet();
     final stack = seat.stack;
     final seatBet = seat.currentBet;
     final currentBet = state.betting.currentBet;
-    final minRaise = state.betting.minRaise;
     final toCall = currentBet - seatBet;
-    final bb = state.bbAmount;
 
-    // BB option: hero is BB, currentBet == BB, and option pending
     final isBbOption = state.betting.bbOptionPending &&
         state.actionOn == state.bbSeat &&
         toCall == 0;
 
     final actions = <LegalAction>[];
-
-    // Fold: always available
     actions.add(const LegalAction(type: 'fold'));
 
     if (isBbOption) {
-      // BB option: check or raise
       actions.add(const LegalAction(type: 'check'));
-      if (stack > 0) {
-        final raiseMin = currentBet + minRaise;
-        final raiseMax = stack + seatBet;
+      if (stack > 0 && _canRaise(state, limit)) {
+        final raiseMin = limit.minRaiseTo(state);
+        final raiseMax = limit.maxRaiseTo(state, state.actionOn);
         if (raiseMax >= raiseMin) {
           actions.add(LegalAction(
             type: 'raise',
@@ -66,25 +63,25 @@ class BettingRules {
         }
       }
     } else if (toCall == 0) {
-      // No bet to call: check or bet
       actions.add(const LegalAction(type: 'check'));
       if (stack > 0) {
-        final betMin = bb > 0 ? bb : minRaise;
-        actions.add(LegalAction(
-          type: 'bet',
-          minAmount: betMin > stack ? stack : betMin,
-          maxAmount: stack,
-        ));
+        final betMin = limit.minBet(state);
+        final betMax = limit.maxBet(state, state.actionOn);
+        if (betMax >= betMin) {
+          actions.add(LegalAction(
+            type: 'bet',
+            minAmount: betMin,
+            maxAmount: betMax,
+          ));
+        }
       }
     } else {
-      // Facing a bet/raise
       final callAmt = toCall < stack ? toCall : stack;
       actions.add(LegalAction(type: 'call', callAmount: callAmt));
 
-      // Can only raise if stack > toCall
-      if (stack > toCall) {
-        final raiseMin = currentBet + minRaise;
-        final raiseMax = stack + seatBet;
+      if (stack > toCall && _canRaise(state, limit)) {
+        final raiseMin = limit.minRaiseTo(state);
+        final raiseMax = limit.maxRaiseTo(state, state.actionOn);
         if (raiseMax >= raiseMin) {
           actions.add(LegalAction(
             type: 'raise',
@@ -96,6 +93,15 @@ class BettingRules {
     }
 
     return actions;
+  }
+
+  /// Check if raising is allowed (raise cap enforcement for FL).
+  static bool _canRaise(GameState state, BetLimit limit) {
+    if (limit.raiseCap == null) return true;
+    // Heads-up exception: cap does not apply
+    final activeCount = state.seats.where((s) => s.isActive).length;
+    if (activeCount <= 2) return true;
+    return state.betting.raiseCount < limit.raiseCap!;
   }
 
   /// Apply an action to the game state, returning a new state.
@@ -116,8 +122,9 @@ class BettingRules {
           betting.bbOptionPending = false;
         }
 
-      case Call(:final amount):
-        final deduct = amount < seat.stack ? amount : seat.stack;
+      case Call():
+        final toCall = betting.currentBet - seat.currentBet;
+        final deduct = toCall < seat.stack ? toCall : seat.stack;
         seat.stack -= deduct;
         seat.currentBet += deduct;
         newState.pot.addToMain(deduct);
@@ -132,32 +139,39 @@ class BettingRules {
         betting.currentBet = seat.currentBet;
         betting.minRaise = amount;
         betting.lastAggressor = seatIndex;
+        betting.raiseCount += 1;
         if (seat.stack == 0) {
           seat.status = SeatStatus.allIn;
         }
 
       case Raise(:final toAmount):
-        final increment = toAmount - seat.currentBet;
+        final rawIncrement = toAmount - seat.currentBet;
+        final increment = rawIncrement.clamp(0, seat.stack);
         seat.stack -= increment;
-        final raiseSize = toAmount - betting.currentBet;
+        final actualToAmount = seat.currentBet + increment;
+        final raiseSize = actualToAmount - betting.currentBet;
         if (raiseSize > betting.minRaise) {
           betting.minRaise = raiseSize;
         }
-        seat.currentBet = toAmount;
+        seat.currentBet = actualToAmount;
         newState.pot.addToMain(increment);
-        betting.currentBet = toAmount;
+        betting.currentBet = actualToAmount;
         betting.lastAggressor = seatIndex;
+        betting.raiseCount += 1;
         if (seat.stack == 0) {
           seat.status = SeatStatus.allIn;
         }
         if (betting.bbOptionPending) {
           betting.bbOptionPending = false;
         }
+        // Reset acted tracking — all players must re-act after raise
+        betting.actedThisRound = {seatIndex};
 
-      case AllIn(:final amount):
-        seat.stack -= amount;
-        seat.currentBet += amount;
-        newState.pot.addToMain(amount);
+      case AllIn():
+        final allInAmount = seat.stack; // always go all-in for remaining stack
+        seat.stack = 0;
+        seat.currentBet += allInAmount;
+        newState.pot.addToMain(allInAmount);
         seat.status = SeatStatus.allIn;
         if (seat.currentBet > betting.currentBet) {
           final raiseSize = seat.currentBet - betting.currentBet;
@@ -166,6 +180,9 @@ class BettingRules {
           }
           betting.currentBet = seat.currentBet;
           betting.lastAggressor = seatIndex;
+          betting.raiseCount += 1;
+          // Reset acted tracking — all players must re-act after all-in raise
+          betting.actedThisRound = {seatIndex};
         }
     }
 
@@ -173,13 +190,28 @@ class BettingRules {
   }
 
   /// Check if the current betting round is complete.
+  ///
+  /// BB's preflop check option is handled naturally: BB is not added to
+  /// [actedThisRound] during blind posting, so the round cannot complete
+  /// until BB takes an explicit action (check, raise, fold).
   static bool isRoundComplete(GameState state) {
     final active = state.seats.where((s) => s.isActive).toList();
-    if (active.length <= 1) return true;
 
-    // BB option still pending
-    if (state.betting.bbOptionPending) return false;
+    // All players folded or all-in — no action possible
+    if (active.isEmpty) return true;
 
+    // Single active player remaining
+    if (active.length == 1) {
+      // If no all-in opponents exist, everyone else folded → instant win
+      final hasAllIn = state.seats.any((s) => s.isAllIn);
+      if (!hasAllIn) return true;
+      // All-in opponents exist: active player must act and match bet
+      final s = active.first;
+      return state.betting.actedThisRound.contains(s.index) &&
+          s.currentBet == state.betting.currentBet;
+    }
+
+    // Multiple active players: all must act and match
     return active.every((s) =>
         state.betting.actedThisRound.contains(s.index) &&
         s.currentBet == state.betting.currentBet);

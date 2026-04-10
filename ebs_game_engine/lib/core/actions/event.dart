@@ -47,3 +47,32 @@ class PotAwarded extends Event {
 class HandEnd extends Event {
   const HandEnd();
 }
+
+class MisDeal extends Event {
+  const MisDeal();
+}
+
+class BombPotConfig extends Event {
+  final int amount;
+  const BombPotConfig(this.amount);
+}
+
+class RunItChoice extends Event {
+  final int times; // 2 or 3
+  const RunItChoice(this.times);
+}
+
+class ManualNextHand extends Event {
+  const ManualNextHand();
+}
+
+class TimeoutFold extends Event {
+  final int seatIndex;
+  const TimeoutFold(this.seatIndex);
+}
+
+class MuckDecision extends Event {
+  final int seatIndex;
+  final bool showCards; // true = show, false = muck
+  const MuckDecision(this.seatIndex, {required this.showCards});
+}

@@ -1,0 +1,36 @@
+# Scenario 21: NLH Misdeal
+# 3 players, BB=10, SB=5
+# dealer=seat0, SB=seat1, BB=seat2
+# After HandStart: seat1 stack=995 (SB), seat2 stack=990 (BB), pot=15
+# Deal hole cards, then misdeal triggered
+# MisDeal handler: returns currentBet to each seat, clears pot, resets hand
+# seat1 currentBet=5 → stack=995+5=1000
+# seat2 currentBet=10 → stack=990+10=1000
+# seat0 currentBet=0 → stack=1000
+# pot=0, handInProgress=false
+# Final: all stacks=1000, pot=0
+variant: nlh
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "BTN", stack: 1000 }
+  - { label: "SB", stack: 1000 }
+  - { label: "BB", stack: 1000 }
+events:
+  - deal_hole:
+      0: [As, Kh]
+      1: [Qd, Qc]
+      2: [7h, 2c]
+  # Misdeal before any action
+  - misdeal: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  community_count: 0
+  stacks:
+    0: 1000
+    1: 1000
+    2: 1000
+  hole_cards_empty: [0, 1, 2]

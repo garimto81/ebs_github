@@ -105,7 +105,7 @@ model_preference: sonnet
 phase: [1, 2]
 auto_trigger: true
 dependencies:
-  - architect
+  - debugger
 token_budget: 1200
 ---
 ```
