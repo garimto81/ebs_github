@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<!-- Style Reference: White Minimal — AT Statistics/Scoreboard Panel (AT-T01~T15) -->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>EBS AT — Stats Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; background: #fff; display: inline-block; }
+
+  .component {
+    width: 720px;
+    background: #fafafa;
+    border: 2px solid #d0d0d0;
+    font-family: 'Noto Sans KR', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* SECTION HEADER */
+  .panel-header {
+    height: 36px; background: #f0f0f0; color: #1a1a1a;
+    display: flex; align-items: center;
+    padding: 0 16px; border-bottom: 1px solid #d0d0d0;
+    flex-shrink: 0; gap: 12px;
+  }
+  .panel-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .panel-hand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: #888; letter-spacing: 0.08em; margin-left: auto;
+  }
+  .panel-hand span { color: #1a1a1a; font-weight: 600; }
+
+  /* MAIN LAYOUT: table + side */
+  .panel-body {
+    display: flex; flex: 1;
+  }
+
+  /* STATS TABLE */
+  .stats-table-wrap {
+    flex: 1; overflow: hidden;
+    border-right: 1px solid #d0d0d0;
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  thead th {
+    height: 30px; background: #f0f0f0; color: #1a1a1a;
+    font-size: 9px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; text-align: center;
+    border-right: 1px solid #e0e0e0;
+    padding: 0 4px;
+  }
+  thead th:last-child { border-right: none; }
+  thead th.th-seat { text-align: left; padding-left: 10px; width: 52px; }
+  thead th.th-stack { width: 90px; }
+
+  tbody tr { border-bottom: 1px solid #e0e0e0; }
+  tbody tr:nth-child(even) { background: #fafafa; }
+  tbody tr:hover { background: #f0f0f0; }
+  tbody tr.tr-active { background: #e8e8e8; color: #1a1a1a; }
+  tbody tr.tr-folded { opacity: 0.5; }
+
+  td {
+    height: 32px; font-size: 10px; font-weight: 400;
+    text-align: center; border-right: 1px solid #e0e0e0;
+    padding: 0 4px;
+    color: #1a1a1a;
+  }
+  td:last-child { border-right: none; }
+  td.td-seat {
+    text-align: left; padding-left: 10px;
+    font-weight: 600; font-size: 10px; letter-spacing: 0.04em;
+  }
+  td.td-stack {
+    font-weight: 600; font-size: 11px; letter-spacing: 0.02em;
+    background: #f5f5f5;
+  }
+  tbody tr.tr-active td.td-stack { background: #e0e0e0; color: #1a1a1a; }
+  td.td-win { font-weight: 600; }
+  td.td-win--neg { color: #888; }
+  td.td-win--pos { color: #1a1a1a; font-weight: 600; }
+  td.td-pct { font-size: 10px; color: #555; }
+
+  tfoot td {
+    height: 24px; font-size: 8px; color: #aaa;
+    text-align: left; padding-left: 10px;
+    border-top: 1px solid #e0e0e0; letter-spacing: 0.08em;
+  }
+
+  /* SIDE PANEL */
+  .side-panel {
+    width: 110px; flex-shrink: 0;
+    display: flex; flex-direction: column;
+  }
+  .sp-btn {
+    flex: 1;
+    border: none; border-bottom: 1px solid #e0e0e0;
+    background: #fafafa;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 2px;
+    transition: background 0.08s;
+    min-height: 36px;
+    box-shadow: inset 0 -1px 0 #e0e0e0;
+    color: #555;
+  }
+  .sp-btn:last-child { border-bottom: none; }
+  .sp-btn:hover { background: #f0f0f0; color: #1a1a1a; }
+  .sp-btn--active { background: #e8e8e8; color: #1a1a1a; border-bottom: 1px solid #1a1a1a; }
+  .sp-btn--active:hover { background: #e0e0e0; }
+  .sp-btn--divider {
+    flex: 0 0 1px; background: #d0d0d0; cursor: default;
+    pointer-events: none;
+  }
+  .sp-val { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .sp-label { font-size: 8px; color: #999; letter-spacing: 0.08em; }
+  .sp-btn--active .sp-label { color: #666; }
+  .sp-input {
+    flex: 0 0 36px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex; align-items: center;
+    padding: 0 8px; gap: 4px; background: #fafafa;
+  }
+  .sp-input-label { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: #888; letter-spacing: 0.06em; text-transform: uppercase; flex-shrink: 0; }
+  .sp-input-val {
+    flex: 1; font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600; text-align: right;
+    border-bottom: 1px solid #e0e0e0; padding: 0 2px;
+    color: #1a1a1a;
+  }
+</style>
+</head>
+<body>
+<div class="component">
+
+  <!-- HEADER -->
+  <div class="panel-header">
+    <span class="panel-title">Statistics</span>
+    <span class="panel-hand">HAND <span>#247</span></span>
+  </div>
+
+  <!-- BODY -->
+  <div class="panel-body">
+
+    <!-- STATS TABLE -->
+    <div class="stats-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="th-seat">SEAT</th>
+            <th class="th-stack">STACK</th>
+            <th>VPIP%</th>
+            <th>PFR%</th>
+            <th>AGRFq%</th>
+            <th>WTSD%</th>
+            <th>WIN</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="tr-active">
+            <td class="td-seat">S 1</td>
+            <td class="td-stack">1,000,000</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-win">—</td>
+          </tr>
+          <tr>
+            <td class="td-seat">S 2</td>
+            <td class="td-stack">1,005,000</td>
+            <td class="td-pct">100</td>
+            <td class="td-pct">100</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-win td-win--pos">+5,000</td>
+          </tr>
+          <tr class="tr-folded">
+            <td class="td-seat">S 3</td>
+            <td class="td-stack">995,000</td>
+            <td class="td-pct">100</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-win td-win--neg">-5,000</td>
+          </tr>
+          <tr>
+            <td class="td-seat">S 4</td>
+            <td class="td-stack">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-win">—</td>
+          </tr>
+          <tr>
+            <td class="td-seat">S 5</td>
+            <td class="td-stack">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-win">—</td>
+          </tr>
+          <tr>
+            <td class="td-seat">S 6</td>
+            <td class="td-stack">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-win">—</td>
+          </tr>
+          <tr>
+            <td class="td-seat">S 7</td>
+            <td class="td-stack">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-win">—</td>
+          </tr>
+          <tr>
+            <td class="td-seat">S 8</td>
+            <td class="td-stack">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-win">—</td>
+          </tr>
+          <tr>
+            <td class="td-seat">S 9</td>
+            <td class="td-stack">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-win">—</td>
+          </tr>
+          <tr>
+            <td class="td-seat">S 10</td>
+            <td class="td-stack">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-pct">—</td>
+            <td class="td-win">—</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="7">VPIP / PFR / AGRFq / WTSD — cumulative session stats</td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- SIDE PANEL -->
+    <div class="side-panel">
+      <button class="sp-btn sp-btn--active">LIVE</button>
+      <button class="sp-btn">GFX</button>
+      <div class="sp-input">
+        <span class="sp-input-label">FIELD</span>
+        <span class="sp-input-val">9</span>
+      </div>
+      <div class="sp-input">
+        <span class="sp-input-label">REMAIN</span>
+        <span class="sp-input-val">—</span>
+      </div>
+      <div class="sp-input">
+        <span class="sp-input-label">TOTAL</span>
+        <span class="sp-input-val">—</span>
+      </div>
+      <button class="sp-btn">STRIP<br>STACK</button>
+      <button class="sp-btn">STRIP<br>WIN</button>
+      <button class="sp-btn">TICKER</button>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

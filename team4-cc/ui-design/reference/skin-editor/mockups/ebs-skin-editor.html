@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>EBS Skin Editor — Titanium</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.prod.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@quasar/extras@1/material-icons/material-icons.css" rel="stylesheet">
+<style>
+  /* ── EBS Dark Tokens ── */
+  body.body--dark {
+    --ebs-surface: #2d2d30;
+    --ebs-panel: #252526;
+    --ebs-border: #3e3e42;
+    --ebs-bg: #1e1e1e;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    line-height: 1.2;
+    background: var(--ebs-bg);
+    margin: 0;
+    padding: 0;
+    max-width: 720px;
+  }
+
+  /* ── Annotation Tokens ── */
+  .eid { font-size: 10px; color: #808080; font-weight: 400; margin-left: 4px; }
+  .eid-block { font-size: 9px; color: #808080; font-weight: 400; display: block; margin-bottom: 0; }
+  .p2-label { font-size: 10px; color: #808080; margin-left: 4px; }
+
+  /* ── Mode Toggle ── */
+  body.clean .eid,
+  body.clean .eid-block,
+  body.clean .p2-label { display: none !important; }
+
+  body.annotated .eid,
+  body.annotated .eid-block { display: none !important; }
+
+  /* Zone bounding boxes */
+  body.annotated .zone-metadata {
+    outline: 2px solid #2196F3; outline-offset: 3px; position: relative;
+  }
+  body.annotated .zone-elements {
+    outline: 2px solid #4CAF50; outline-offset: 3px; position: relative;
+  }
+  body.annotated .zone-settings-visual {
+    outline: 2px solid #FF9800; outline-offset: 3px; position: relative;
+  }
+  body.annotated .zone-actions {
+    outline: 2px solid #F44336; outline-offset: 3px; position: relative;
+  }
+  body.annotated .zone-layout {
+    outline: 2px solid #9C27B0; outline-offset: 3px; position: relative;
+  }
+
+  /* Zone labels */
+  body.annotated .zone-metadata::before {
+    content: 'Metadata  01 ~ 05';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #2196F3; color: white; border-radius: 2px; z-index: 10;
+  }
+  body.annotated .zone-elements::before {
+    content: 'Elements  06';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #4CAF50; color: white; border-radius: 2px; z-index: 10;
+  }
+  body.annotated .zone-settings-visual::before {
+    content: 'Settings  07 ~ 13';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #FF9800; color: white; border-radius: 2px; z-index: 10;
+  }
+  body.annotated .zone-actions::before {
+    content: 'Actions  21 ~ 26';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #F44336; color: white; border-radius: 2px; z-index: 10;
+  }
+  body.annotated .zone-layout::before {
+    content: 'Player / Flags  14 ~ 20';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #9C27B0; color: white; border-radius: 2px; z-index: 10;
+  }
+
+  /* Individual field bounding boxes */
+  body.annotated .af {
+    position: relative;
+    outline: 1px solid var(--zc, #999);
+    outline-offset: 1px;
+    border-radius: 3px;
+  }
+  body.annotated .af::before {
+    content: attr(data-eid);
+    position: absolute; top: -11px; left: 0;
+    font-size: 8px; font-weight: 600; padding: 0px 3px;
+    background: var(--zc, #999); color: white;
+    border-radius: 2px; line-height: 1.4;
+    z-index: 10; white-space: nowrap;
+  }
+  .zone-metadata .af { --zc: #2196F3; }
+  .zone-elements .af { --zc: #4CAF50; }
+  .zone-settings-visual .af { --zc: #FF9800; }
+  .zone-actions .af { --zc: #F44336; }
+  .zone-layout .af { --zc: #9C27B0; }
+
+  /* Legend bar */
+  .legend-bar {
+    display: none; justify-content: center; gap: 8px;
+    padding: 3px 10px; font-size: 9px; font-weight: 500;
+    border-top: 1px solid var(--ebs-border); background: var(--ebs-panel);
+    color: #cccccc;
+  }
+  body.annotated .legend-bar { display: flex; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* ── Layout Overrides ── */
+  .ebs-dialog {
+    background: var(--ebs-panel);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    overflow: hidden;
+    max-width: 720px;
+  }
+  .ebs-titlebar {
+    background: #1a1a1b;
+    color: #cccccc;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--ebs-border);
+  }
+  .ebs-body {
+    padding: 1px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--ebs-panel);
+  }
+
+  /* ── 3-Column Flexbox ── */
+  .three-col {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+  }
+  .col-1, .col-2, .col-3 {
+    display: flex; flex-direction: column; gap: 0; min-width: 0;
+    flex: 1;
+  }
+  .col-header {
+    font-size: 9px;
+    font-weight: 600;
+    color: #808080;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1px 0 2px 0;
+    margin-bottom: 1px;
+    border-bottom: 1px solid var(--ebs-border);
+  }
+
+  /* ── Alternating Rows ── */
+  .alt-row:nth-child(odd)  { background: #2d2d30; }
+  .alt-row:nth-child(even) { background: #252526; }
+  .alt-row {
+    padding: 1px 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 2px;
+  }
+
+  /* ── Quasar Overrides ── */
+  .q-expansion-item .q-item { min-height: 20px; padding: 2px 4px; }
+  .q-expansion-item .q-item__label { font-size: 10px; font-weight: 600; color: #cccccc; }
+  .q-expansion-item__content { padding: 0; }
+  .q-card { background: var(--ebs-panel) !important; }
+  .ebs-expansion-body { padding: 0 4px 1px 4px; display: flex; flex-direction: column; gap: 1px; }
+
+  .q-field--outlined .q-field__control {
+    border-color: var(--ebs-border) !important;
+    background: var(--ebs-surface);
+  }
+  .q-field--outlined:hover .q-field__control {
+    border-color: #5a5a5e !important;
+  }
+  .q-field__native, .q-field__input { color: #cccccc !important; font-size: 12px !important; }
+  .q-field__label { color: #808080 !important; font-size: 11px !important; }
+  .q-select__dropdown-icon { color: #808080; }
+  .q-slider__track-container { opacity: 1; }
+
+  /* ── Element Grid ── */
+  .element-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    padding: 2px 0;
+  }
+  .element-btn-custom {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    color: #cccccc;
+    background: var(--ebs-surface);
+    border: 1px solid var(--ebs-border);
+    border-radius: 5px;
+    padding: 2px 2px;
+    text-align: center;
+    cursor: default;
+    line-height: 1.3;
+  }
+
+  /* ── Color Swatch ── */
+  .color-swatch {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 1px solid var(--ebs-border);
+    border-radius: 4px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .color-rule { display: flex; flex-direction: column; gap: 1px; padding: 2px 0; }
+  .color-rule + .color-rule { border-top: 1px solid var(--ebs-border); padding-top: 2px; }
+
+  /* ── Card Preview ── */
+  .card-preview { display: flex; gap: 4px; }
+  .mini-card {
+    width: 20px; height: 28px;
+    border: 1px solid var(--ebs-border);
+    border-radius: 4px;
+    background: #3a3a3e;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; color: #cccccc;
+  }
+  .mini-card.back { background: #1e1e1e; color: #808080; font-size: 8px; }
+
+  /* ── Action Bar ── */
+  .action-bar {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding-top: 2px;
+    border-top: 1px solid var(--ebs-border);
+  }
+  .action-bar .spacer { flex: 1; }
+
+  /* ── Row helpers ── */
+  .row { display: flex; align-items: center; gap: 4px; }
+  .row-between { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+  .row-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; }
+  .col { display: flex; flex-direction: column; gap: 2px; }
+  .flex-1 { flex: 1; }
+
+  /* ── Label ── */
+  .label { font-size: 9px; font-weight: 500; color: #aaaaaa; white-space: nowrap; }
+
+  /* ── Number Input ── */
+  .num-input {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #cccccc;
+    border: 1px solid var(--ebs-border);
+    border-radius: 5px;
+    padding: 1px 3px;
+    width: 40px;
+    text-align: center;
+    background: var(--ebs-surface);
+  }
+
+  /* ── Text input ── */
+  .text-input {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #cccccc;
+    border: 1px solid var(--ebs-border);
+    border-radius: 5px;
+    padding: 2px 4px;
+    background: var(--ebs-surface);
+    outline: none;
+    width: 100%;
+  }
+  textarea.text-input { resize: none; height: 20px; }
+
+  /* ── Select ── */
+  select {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #cccccc;
+    border: 1px solid var(--ebs-border);
+    border-radius: 5px;
+    padding: 1px 4px;
+    background: var(--ebs-surface);
+    cursor: default;
+  }
+  select:disabled { opacity: 0.4; }
+
+  /* ── Custom Toggle ── */
+  .toggle { position: relative; display: inline-block; width: 24px; height: 12px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .toggle .track {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: #3e3e42; border-radius: 6px;
+  }
+  .toggle .track::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #808080;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .toggle input:checked + .track { background: #0e639c; }
+  .toggle input:checked + .track::after { background: #ffffff; margin-left: 12px; }
+
+  /* ── Custom Slider ── */
+  .slider-track {
+    position: relative; height: 3px;
+    background: #3e3e42; border-radius: 2px;
+    flex: 1; min-width: 60px;
+  }
+  .slider-fill { position: absolute; top: 0; left: 0; height: 3px; background: #0e639c; border-radius: 2px; }
+  .slider-handle {
+    position: absolute; top: -4px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #cccccc; border: 2px solid #0e639c;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+
+  /* ── Custom Btn ── */
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #cccccc;
+    background: transparent;
+    border: 1px solid var(--ebs-border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    cursor: default;
+    white-space: nowrap;
+  }
+  .btn-primary { background: #0e639c; color: #ffffff; border-color: #0e639c; font-weight: 600; }
+  .btn-sm { font-size: 10px; padding: 2px 5px; }
+  .btn-flat { border-color: transparent; background: transparent; }
+  .btn-flat:hover { background: rgba(255,255,255,0.05); }
+
+  /* ── Footer ── */
+  .ebs-footer {
+    text-align: center;
+    padding: 2px 0;
+    font-size: 9px;
+    color: #555;
+    background: var(--ebs-bg);
+  }
+</style>
+</head>
+<body class="body--dark">
+
+<div id="app">
+  <div class="ebs-dialog">
+
+    <!-- Titlebar -->
+    <div class="ebs-titlebar">
+      <span style="font-size:14px; margin-right:8px;">&#9881;</span>
+      Skin Editor — Titanium
+    </div>
+
+    <div class="ebs-body">
+
+      <!-- ══════════════════════════════════════════════ -->
+      <!-- 1  SKIN METADATA  (01 ~ 05)               -->
+      <!-- ══════════════════════════════════════════════ -->
+      <div class="zone-metadata" style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;padding-top:0;">
+
+        <div class="af" data-eid="01" style="display:flex;align-items:center;gap:4px;">
+          <span class="eid-block">01</span>
+          <span class="label">Name</span>
+          <input class="text-input" type="text" value="Titanium" readonly style="width:90px;">
+        </div>
+
+        <div class="af" data-eid="02" style="display:flex;align-items:center;gap:4px;flex:1;min-width:120px;">
+          <span class="eid-block">02</span>
+          <span class="label">Details</span>
+          <input class="text-input" type="text" value="Custom poker skin" readonly style="flex:1;">
+        </div>
+
+        <div class="af" data-eid="03" style="display:flex;align-items:center;gap:4px;">
+          <span class="eid-block">03</span>
+          <span class="label">RemTrans</span>
+          <label class="toggle"><input type="checkbox"><span class="track"></span></label>
+        </div>
+
+        <div class="af" data-eid="04" style="display:flex;align-items:center;gap:4px;">
+          <span class="eid-block">04</span>
+          <span class="label">4K</span>
+          <label class="toggle"><input type="checkbox"><span class="track"></span></label>
+        </div>
+
+        <div class="af" data-eid="05" style="display:flex;align-items:center;gap:4px;min-width:140px;">
+          <span class="eid-block">05</span>
+          <span class="label">AdjSize</span>
+          <div class="slider-track">
+            <div class="slider-fill" style="width:100%;"></div>
+            <div class="slider-handle" style="left:calc(100% - 6px);"></div>
+          </div>
+          <span class="label" style="min-width:28px;text-align:right;">100%</span>
+        </div>
+
+      </div>
+
+      <!-- ══════════════════════════════════════════════ -->
+      <!-- 2  ELEMENT GRID  (06)                        -->
+      <!-- ══════════════════════════════════════════════ -->
+      <div class="zone-elements" style="padding-top:0;">
+        <!-- 06 Element Grid -->
+        <div class="col af" data-eid="06" style="gap:2px;">
+          <div>
+            <span class="eid-block">06</span>
+            <span class="label">Element Grid</span>
+          </div>
+          <div class="element-grid">
+            <div class="element-btn-custom"><span class="eid-block">06.1</span>Board</div>
+            <div class="element-btn-custom"><span class="eid-block">06.2</span>Blinds</div>
+            <div class="element-btn-custom"><span class="eid-block">06.3</span>Outs</div>
+            <div class="element-btn-custom"><span class="eid-block">06.4</span>Strip</div>
+            <div class="element-btn-custom"><span class="eid-block">06.5</span>Hand History</div>
+            <div class="element-btn-custom"><span class="eid-block">06.7</span>Leader-board</div>
+            <div class="element-btn-custom"><span class="eid-block">06.10</span>Field</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Separator -->
+      <div style="height:1px;background:var(--ebs-border);"></div>
+
+      <!-- ══════════════════════════════════════════════ -->
+      <!-- MIDDLE — Three-Column Flex                     -->
+      <!-- ══════════════════════════════════════════════ -->
+      <div class="three-col">
+
+        <!-- ── COL 1: Text / Font (07~10) ── -->
+        <div class="col-1 zone-settings-visual" style="padding-top:0;">
+          <div class="col-header">Text / Font</div>
+
+          <!-- T1: Text / Font (07~10) — expanded -->
+          <div class="af" data-eid="07~10" style="border-bottom:1px solid var(--ebs-border);">
+            <div style="display:flex;align-items:center;gap:3px;padding:1px 0;cursor:default;">
+              <span style="font-size:8px;color:#808080;">&#9660;</span>
+              <span style="font-size:10px;font-weight:600;color:#cccccc;">Text / Font</span>
+            </div>
+            <div class="ebs-expansion-body">
+
+              <!-- 07 All Caps -->
+              <div class="alt-row row-between af" data-eid="07">
+                <div class="row">
+                  <span class="eid" style="margin-left:0;">07</span>
+                  <span class="label">All Caps</span>
+                </div>
+                <label class="toggle"><input type="checkbox"><span class="track"></span></label>
+              </div>
+
+              <!-- 08 Reveal Speed -->
+              <div class="col alt-row af" data-eid="08" style="gap:2px;">
+                <div class="row">
+                  <span class="eid" style="margin-left:0;">08</span>
+                  <span class="label">Reveal Speed</span>
+                </div>
+                <div class="slider-track">
+                  <div class="slider-fill" style="width:60%;"></div>
+                  <div class="slider-handle" style="left:calc(60% - 6px);"></div>
+                </div>
+              </div>
+
+              <!-- 09 Fonts -->
+              <div class="col alt-row af" data-eid="09" style="gap:2px;">
+                <div class="row">
+                  <span class="eid" style="margin-left:0;">09</span>
+                  <span class="label">Fonts</span>
+                </div>
+                <div class="row">
+                  <span class="label" style="font-size:9px;min-width:28px;">Font 1</span>
+                  <input class="text-input" type="text" value="Arial" readonly style="flex:1;">
+                  <button class="btn btn-sm">[...]</button>
+                </div>
+                <div class="row">
+                  <span class="label" style="font-size:9px;min-width:28px;">Font 2</span>
+                  <input class="text-input" type="text" value="Arial" readonly style="flex:1;">
+                  <button class="btn btn-sm">[...]</button>
+                </div>
+              </div>
+
+              <!-- 10 Language -->
+              <div class="alt-row row af" data-eid="10">
+                <span class="eid" style="margin-left:0;">10</span>
+                <span class="label">Language</span>
+                <button class="btn btn-sm">EN</button>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- /col-1 -->
+
+        <!-- ── COL 2: Cards (11~13) ── -->
+        <div class="col-2 zone-settings-visual" style="padding-top:0;">
+          <div class="col-header">Cards</div>
+
+          <!-- T1: Cards (11~13) — expanded -->
+          <div class="af" data-eid="11~13" style="border-bottom:1px solid var(--ebs-border);">
+            <div style="display:flex;align-items:center;gap:3px;padding:1px 0;cursor:default;">
+              <span style="font-size:8px;color:#808080;">&#9660;</span>
+              <span style="font-size:10px;font-weight:600;color:#cccccc;">Cards</span>
+            </div>
+            <div class="ebs-expansion-body">
+
+              <!-- 11 Card Preview -->
+              <div class="col alt-row af" data-eid="11" style="gap:2px;">
+                <div class="row">
+                  <span class="eid" style="margin-left:0;">11</span>
+                  <span class="label">Card Preview</span>
+                </div>
+                <div class="card-preview">
+                  <div class="mini-card">A&#9824;</div>
+                  <div class="mini-card" style="color:#e57373;">A&#9829;</div>
+                  <div class="mini-card" style="color:#64b5f6;">A&#9830;</div>
+                  <div class="mini-card" style="color:#81c784;">A&#9827;</div>
+                  <div class="mini-card back">BACK</div>
+                </div>
+              </div>
+
+              <!-- 12 Card Management -->
+              <div class="col alt-row af" data-eid="12" style="gap:2px;">
+                <div class="row">
+                  <span class="eid" style="margin-left:0;">12</span>
+                  <span class="label">Card Management</span>
+                </div>
+                <div class="row-wrap">
+                  <select style="flex:1;min-width:80px;"><option>Standard Deck</option></select>
+                  <button class="btn btn-sm">Add</button>
+                  <button class="btn btn-sm">Replace</button>
+                  <button class="btn btn-sm">Delete</button>
+                </div>
+              </div>
+
+              <!-- 13 Import Card Back -->
+              <div class="alt-row row af" data-eid="13">
+                <span class="eid" style="margin-left:0;">13</span>
+                <span class="label">Import Card Back</span>
+                <button class="btn btn-sm">Import</button>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- /col-2 -->
+
+        <!-- ── COL 3: Player / Flags (14~20) ── -->
+        <div class="col-3 zone-layout" style="padding-top:0;">
+          <div class="col-header">Player / Flags</div>
+
+          <!-- T1: Player / Flags (14~20) — expanded -->
+          <div class="af" data-eid="14~20" style="border-bottom:1px solid var(--ebs-border);">
+            <div style="display:flex;align-items:center;gap:3px;padding:1px 0;cursor:default;">
+              <span style="font-size:8px;color:#808080;">&#9660;</span>
+              <span style="font-size:10px;font-weight:600;color:#cccccc;">Player / Flags</span>
+            </div>
+            <div class="ebs-expansion-body">
+
+              <div class="alt-row row af" data-eid="14">
+                <span class="eid" style="margin-left:0;">14</span>
+                <span class="label">Variant</span>
+                <select style="flex:1;"><option>HOLDEM</option></select>
+              </div>
+              <div class="alt-row row af" data-eid="15">
+                <span class="eid" style="margin-left:0;">15</span>
+                <span class="label">Player Set</span>
+                <select style="flex:1;"><option>Default</option></select>
+              </div>
+              <div class="alt-row row af" data-eid="16">
+                <span class="eid" style="margin-left:0;">16</span>
+                <button class="btn btn-sm">Edit</button>
+                <button class="btn btn-sm">New</button>
+                <button class="btn btn-sm">Delete</button>
+              </div>
+              <div class="alt-row row-between af" data-eid="17">
+                <div class="row">
+                  <span class="eid" style="margin-left:0;">17</span>
+                  <span class="label">Crop to Circle</span>
+                </div>
+                <label class="toggle"><input type="checkbox" checked><span class="track"></span></label>
+              </div>
+              <div class="alt-row row-between af" data-eid="18">
+                <div class="row">
+                  <span class="eid" style="margin-left:0;">18</span>
+                  <span class="label">Country Flag Mode</span>
+                  <span class="p2-label">(P2)</span>
+                </div>
+                <label class="toggle"><input type="checkbox"><span class="track"></span></label>
+              </div>
+              <div class="alt-row row af" data-eid="19">
+                <span class="eid" style="margin-left:0;">19</span>
+                <button class="btn btn-sm">Edit Flags</button>
+                <span class="p2-label">(P2)</span>
+              </div>
+              <div class="alt-row row af" data-eid="20">
+                <span class="eid" style="margin-left:0;">20</span>
+                <span class="label">Hide Flag After</span>
+                <input class="num-input" type="text" value="0" readonly>
+                <span class="p2-label">(P2)</span>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- /col-3 -->
+
+      </div><!-- /three-col -->
+
+      <!-- ══════════════════════════════════════════════ -->
+      <!-- VANITY ROW (57~58)                            -->
+      <!-- ══════════════════════════════════════════════ -->
+      <!-- Vanity (57~58) -->
+      <div style="display:flex;align-items:center;gap:4px;padding:1px 4px;">
+        <div class="af" data-eid="57" style="display:flex;align-items:center;gap:4px;flex:1;">
+          <span class="eid" style="margin-left:0;">57</span>
+          <span class="label">Vanity Text</span>
+          <input class="text-input" type="text" value="PokerGFX.io" readonly style="flex:1;">
+        </div>
+        <div class="af" data-eid="58" style="display:flex;align-items:center;gap:4px;">
+          <span class="eid" style="margin-left:0;">58</span>
+          <span class="label">Game Name in Vanity</span>
+          <label class="toggle"><input type="checkbox" checked><span class="track"></span></label>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════ -->
+      <!-- 4  ACTION BAR  (21 ~ 26)                  -->
+      <!-- ══════════════════════════════════════════════ -->
+      <div class="action-bar zone-actions" style="position:relative;">
+        <span class="af" data-eid="21" style="display:inline-flex;align-items:center;gap:4px;">
+          <span class="eid" style="margin-left:0;">21</span>
+          <button class="btn btn-flat">IMPORT</button>
+        </span>
+        <span class="af" data-eid="22" style="display:inline-flex;align-items:center;gap:4px;">
+          <span class="eid">22</span>
+          <button class="btn btn-flat">EXPORT</button>
+        </span>
+        <span class="af" data-eid="23" style="display:inline-flex;align-items:center;gap:4px;">
+          <span class="eid">23</span>
+          <button class="btn btn-flat">DOWNLOAD</button>
+          <span class="p2-label">(P2)</span>
+        </span>
+        <span class="spacer"></span>
+        <span class="af" data-eid="24" style="display:inline-flex;align-items:center;gap:4px;">
+          <span class="eid">24</span>
+          <button class="btn">RESET</button>
+        </span>
+        <span class="af" data-eid="25" style="display:inline-flex;align-items:center;gap:4px;">
+          <span class="eid">25</span>
+          <button class="btn">DISCARD</button>
+        </span>
+        <span class="af" data-eid="26" style="display:inline-flex;align-items:center;gap:4px;">
+          <span class="eid">26</span>
+          <button class="btn btn-primary">USE</button>
+        </span>
+      </div>
+
+      <!-- Legend Bar (annotated mode only) -->
+      <div class="legend-bar">
+        <div class="legend-item"><div class="legend-swatch" style="background:#2196F3;"></div>Metadata (01~05)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#4CAF50;"></div>Elements (06)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#FF9800;"></div>Settings (07~13, 57~58)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#9C27B0;"></div>Player/Flags (14~20)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#F44336;"></div>Actions (21~26)</div>
+      </div>
+
+    </div><!-- /ebs-body -->
+  </div><!-- /ebs-dialog -->
+
+  <div class="ebs-footer">mockups/ebs-skin-editor.html</div>
+</div><!-- /#app -->
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.umd.prod.js"></script>
+<script>
+  // Query param mode: ?clean or ?annotated
+  var q = location.search;
+  if (q.includes('clean')) document.body.classList.add('clean');
+  if (q.includes('annotated')) document.body.classList.add('annotated');
+
+  // Mount minimal Vue app for Quasar dark mode init
+  const { createApp } = Vue;
+  const app = createApp({ setup() { return {}; } });
+  app.use(Quasar, { config: { dark: true } });
+  app.mount('#app');
+</script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reader State Machine</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            width: 760px;
+            background: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            padding: 25px 30px;
+            margin: 0;
+            color: #000000;
+        }
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #000;
+        }
+        .diagram {
+            width: 700px;
+            height: 340px;
+            position: relative;
+            margin: 0 auto;
+        }
+        .state {
+            position: absolute;
+            border: 3px solid #000;
+            background: #f0f0f0;
+            text-align: center;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            font-weight: 700;
+        }
+        .s-disconnected {
+            width: 180px; height: 70px;
+            top: 20px; left: 20px;
+        }
+        .s-connected {
+            width: 180px; height: 70px;
+            top: 20px; right: 20px;
+        }
+        .s-negotiating {
+            width: 180px; height: 70px;
+            bottom: 20px; right: 20px;
+        }
+        .s-ok {
+            width: 180px; height: 70px;
+            bottom: 20px; left: 20px;
+            background: #d8d8d8;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reader State Machine</h1>
+
+    <div class="diagram">
+        <!-- States -->
+        <div class="state s-disconnected">disconnected</div>
+        <div class="state s-connected">connected</div>
+        <div class="state s-negotiating">negotiating</div>
+        <div class="state s-ok">ok</div>
+
+        <!-- SVG Arrows -->
+        <svg width="700" height="340" viewBox="0 0 700 340"
+             style="position:absolute; top:0; left:0; pointer-events:none;">
+            <defs>
+                <marker id="arrowHead" markerWidth="10" markerHeight="7"
+                        refX="9" refY="3.5" orient="auto" fill="#000">
+                    <polygon points="0 0, 10 3.5, 0 7"/>
+                </marker>
+                <marker id="arrowHeadGray" markerWidth="10" markerHeight="7"
+                        refX="9" refY="3.5" orient="auto" fill="#555">
+                    <polygon points="0 0, 10 3.5, 0 7"/>
+                </marker>
+            </defs>
+
+            <!-- 1. disconnected → connected (top, left to right) -->
+            <line x1="200" y1="45" x2="488" y2="45"
+                  stroke="#000" stroke-width="3" marker-end="url(#arrowHead)"/>
+            <rect x="305" y="30" width="50" height="20" rx="3" fill="#fff" stroke="#999" stroke-width="1"/>
+            <text x="330" y="44" text-anchor="middle" font-size="12" font-weight="700" fill="#333">연결</text>
+
+            <!-- 2. connected → negotiating (right, top to bottom) -->
+            <line x1="590" y1="90" x2="590" y2="238"
+                  stroke="#000" stroke-width="3" marker-end="url(#arrowHead)"/>
+            <rect x="600" y="150" width="76" height="20" rx="3" fill="#fff" stroke="#999" stroke-width="1"/>
+            <text x="638" y="164" text-anchor="middle" font-size="12" font-weight="700" fill="#333">협상 시작</text>
+
+            <!-- 3. negotiating → ok (bottom, right to left) -->
+            <line x1="500" y1="295" x2="212" y2="295"
+                  stroke="#000" stroke-width="3" marker-end="url(#arrowHead)"/>
+            <rect x="320" y="275" width="76" height="20" rx="3" fill="#fff" stroke="#999" stroke-width="1"/>
+            <text x="358" y="289" text-anchor="middle" font-size="12" font-weight="700" fill="#333">협상 완료</text>
+
+            <!-- 4. ok → disconnected (left, bottom to top, DASHED = error path) -->
+            <line x1="110" y1="250" x2="110" y2="102"
+                  stroke="#555" stroke-width="3" stroke-dasharray="8,5"
+                  marker-end="url(#arrowHeadGray)"/>
+            <rect x="14" y="160" width="76" height="20" rx="3" fill="#fff" stroke="#999" stroke-width="1"/>
+            <text x="52" y="174" text-anchor="middle" font-size="12" font-weight="700" fill="#555">연결 끊김</text>
+        </svg>
+    </div>
+</body>
+</html>

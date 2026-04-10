@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>M5 - RFID Table Layout</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: #fff; color: #000; padding: 0; margin: 0; max-width: 720px; }
+.table-container { max-width: 720px; margin: 0; padding: 15px; display: flex; justify-content: center; align-items: center; min-height: 600px; }
+.poker-table { position: relative; width: 680px; height: 378px; }
+.table-rail { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #444; border-radius: 189px; }
+.table-felt { position: absolute; top: 23px; left: 23px; right: 23px; bottom: 23px; background: #888; border-radius: 166px; }
+.reader { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.reader-circle { width: 40px; height: 40px; background: #1a1a1a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; position: relative; z-index: 2; }
+.reader-label { font-size: 10px; font-weight: 600; color: #1a1a1a; }
+.radio-waves { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; z-index: 1; }
+.radio-wave { position: absolute; top: 50%; left: 50%; border: 2px dashed rgba(26,26,26,0.3); border-radius: 50%; }
+.radio-wave.w1 { width: 50px; height: 50px; margin-left: -25px; margin-top: -25px; }
+.radio-wave.w2 { width: 65px; height: 65px; margin-left: -32.5px; margin-top: -32.5px; }
+.radio-wave.w3 { width: 80px; height: 80px; margin-left: -40px; margin-top: -40px; }
+.reader.board .reader-circle { background: #333; width: 60px; height: 60px; font-size: 13px; }
+.reader.board .radio-waves { width: 100px; height: 100px; }
+.reader.board .radio-wave.w1 { width: 70px; height: 70px; margin-left: -35px; margin-top: -35px; }
+.reader.board .radio-wave.w2 { width: 85px; height: 85px; margin-left: -42.5px; margin-top: -42.5px; }
+.reader.board .radio-wave.w3 { width: 100px; height: 100px; margin-left: -50px; margin-top: -50px; }
+.reader.muck .reader-circle { background: #666; }
+.dealer-button { position: absolute; width: 30px; height: 30px; background: #fff; border: 3px solid #1a1a1a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; color: #1a1a1a; z-index: 3; }
+.legend { text-align: center; margin-top: 40px; font-size: 14px; padding: 12px; background: #f5f5f5; }
+.legend-box { display: inline-block; width: 14px; height: 14px; border-radius: 50%; margin: 0 4px; vertical-align: middle; }
+.legend-box.seat { background: #1a1a1a; }
+.legend-box.board { background: #333; }
+.legend-box.muck { background: #666; }
+</style>
+</head>
+<body>
+
+<div class="table-container">
+  <div class="poker-table">
+    <div class="table-rail"></div>
+    <div class="table-felt"></div>
+
+    <!-- Seat 1 (top-left) -->
+    <div class="reader" style="top: 45px; left: 91px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">1</div>
+    </div>
+
+    <!-- Seat 2 -->
+    <div class="reader" style="top: 23px; left: 166px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">2</div>
+    </div>
+
+    <!-- Seat 3 -->
+    <div class="reader" style="top: 23px; left: 265px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">3</div>
+    </div>
+
+    <!-- Seat 4 -->
+    <div class="reader" style="top: 23px; left: 401px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">4</div>
+    </div>
+
+    <!-- Seat 5 (top-right) -->
+    <div class="reader" style="top: 45px; left: 499px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">5</div>
+    </div>
+
+    <!-- Seat 6 (bottom-right) -->
+    <div class="reader" style="top: 287px; left: 499px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">6</div>
+    </div>
+
+    <!-- Seat 7 -->
+    <div class="reader" style="top: 318px; left: 401px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">7</div>
+    </div>
+
+    <!-- Seat 8 -->
+    <div class="reader" style="top: 318px; left: 265px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">8</div>
+    </div>
+
+    <!-- Seat 9 -->
+    <div class="reader" style="top: 318px; left: 166px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">9</div>
+    </div>
+
+    <!-- Seat 10 (bottom-left) -->
+    <div class="reader" style="top: 287px; left: 91px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">10</div>
+    </div>
+
+    <!-- Board Reader (center) -->
+    <div class="reader board" style="top: 166px; left: 318px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">Board</div>
+    </div>
+
+    <!-- Muck Reader (near dealer) -->
+    <div class="reader muck" style="top: 121px; left: 454px;">
+      <div class="radio-waves">
+        <div class="radio-wave w1"></div>
+        <div class="radio-wave w2"></div>
+        <div class="radio-wave w3"></div>
+      </div>
+      <div class="reader-circle">Muck</div>
+    </div>
+
+    <!-- Dealer Button -->
+    <div class="dealer-button" style="top: 151px; left: 121px;">D</div>
+  </div>
+</div>
+
+<div class="legend">
+  <span class="legend-box seat"></span> 좌석 리더 ×10
+  &nbsp;&nbsp;
+  <span class="legend-box board"></span> Board
+  &nbsp;&nbsp;
+  <span class="legend-box muck"></span> Muck
+  &nbsp;&nbsp;= 총 12대
+</div>
+
+</body>
+</html>

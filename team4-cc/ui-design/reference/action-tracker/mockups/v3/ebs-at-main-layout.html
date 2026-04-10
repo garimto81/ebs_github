@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<!-- Style Reference: White Minimal — AT Main Layout (AT-M01~M05) -->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>EBS AT — Main Layout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; background: #fff; display: inline-block; }
+
+  .component {
+    width: 720px;
+    background: #fafafa;
+    border: 2px solid #d0d0d0;
+    font-family: 'Noto Sans KR', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== TOOLBAR (AT-M01) ===== */
+  .toolbar {
+    height: 44px;
+    background: #f0f0f0;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #d0d0d0;
+    flex-shrink: 0;
+  }
+  .tb-seg {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 12px;
+    border-right: 1px solid #d0d0d0;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tb-seg--spacer { flex: 1; }
+  .tb-seg--right { border-right: none; border-left: 1px solid #d0d0d0; padding: 0; gap: 0; }
+  .tb-icon {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 0 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #d0d0d0;
+    color: #555;
+  }
+  .tb-icon:last-child { border-right: none; }
+  .tb-icon:hover { background: #e8e8e8; color: #1a1a1a; }
+  .hand-label { font-size: 13px; font-weight: 600; letter-spacing: 0.15em; color: #1a1a1a; }
+  .conn-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #1a1a1a; display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ===== CARD ICON ROW (AT-M02) ===== */
+  .card-icon-row {
+    height: 36px;
+    border-bottom: 1px solid #d0d0d0;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 5px;
+    background: #fafafa;
+    flex-shrink: 0;
+  }
+  .ci {
+    width: 22px; height: 28px;
+    border: 1.5px solid #d0d0d0; border-radius: 2px;
+    background: #1a1a1a;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; color: #fff; font-weight: 600;
+    box-shadow: 1px 1px 0 #ccc;
+    flex-shrink: 0;
+  }
+  .ci--empty {
+    background: #f0f0f0; border-style: dashed; border-color: #c0c0c0;
+    color: #bbb; box-shadow: none;
+  }
+  .ci-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; color: #888; letter-spacing: 0.05em;
+    margin-left: 4px; text-transform: uppercase;
+  }
+
+  /* ===== SEAT TAB ROW (AT-M03) ===== */
+  .seat-tab-row {
+    height: 34px;
+    border-bottom: 1px solid #d0d0d0;
+    display: flex;
+    flex-shrink: 0;
+  }
+  .stab {
+    flex: 1;
+    height: 100%;
+    border-right: 1px solid #e0e0e0;
+    background: #fafafa;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: #555;
+  }
+  .stab:last-child { border-right: none; }
+  .stab--active { background: #e8e8e8; color: #1a1a1a; border-bottom: 2px solid #1a1a1a; }
+  .stab:hover:not(.stab--active) { background: #f0f0f0; color: #1a1a1a; }
+
+  /* ===== MAIN AREA (AT-M04) ===== */
+  .main-area {
+    display: flex;
+    border-bottom: 1px solid #d0d0d0;
+    min-height: 160px;
+    flex: 1;
+  }
+  .ma-left {
+    width: 110px; flex-shrink: 0;
+    border-right: 1px solid #d0d0d0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .miss-deal-btn {
+    width: 80px; height: 80px;
+    border: 1px solid #d0d0d0; background: #fafafa;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 4px;
+    color: #1a1a1a;
+    box-shadow: 2px 2px 0 #d0d0d0;
+  }
+  .miss-deal-btn:hover { background: #f0f0f0; }
+  .miss-deal-icon { font-size: 20px; }
+
+  .ma-center {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 16px;
+    gap: 12px;
+  }
+  .board-row {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .bcard {
+    width: 38px; height: 52px;
+    border: 1px solid #d0d0d0; border-radius: 3px;
+    background: #fff;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    box-shadow: 1px 1px 0 #d0d0d0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600; line-height: 1.1;
+    flex-shrink: 0;
+    color: #1a1a1a;
+  }
+  .bcard--empty {
+    background: #f5f5f5; border-style: dashed; border-color: #ccc;
+    box-shadow: none; color: #ccc;
+  }
+  .bcard__rank { font-size: 14px; font-weight: 600; }
+  .bcard__suit { font-size: 10px; }
+
+  .seat-info-row {
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid #d0d0d0; padding: 8px 16px;
+    background: #fafafa; width: 100%;
+    box-shadow: 1px 1px 0 #e0e0e0;
+  }
+  .seat-info-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #1a1a1a; color: #fff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .seat-info-text { font-size: 11px; font-weight: 500; letter-spacing: 0.03em; flex: 1; }
+  .seat-info-stack { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #555; }
+  .seat-status-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #1a1a1a; flex-shrink: 0;
+  }
+
+  .ma-right {
+    width: 100px; flex-shrink: 0;
+    border-left: 1px solid #d0d0d0;
+    display: flex; flex-direction: column;
+  }
+  .ma-right-btn {
+    flex: 1; border-bottom: 1px solid #e0e0e0;
+    background: #fafafa; border-left: none; border-right: none; border-top: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #555;
+  }
+  .ma-right-btn:last-child { border-bottom: none; }
+  .ma-right-btn:hover { background: #f0f0f0; color: #1a1a1a; }
+  .ma-right-btn--star { font-size: 16px; }
+
+  /* ===== ACTION BUTTONS (AT-M05) ===== */
+  .action-row {
+    height: 56px; display: flex; flex-shrink: 0;
+  }
+  .act-btn {
+    flex: 1; height: 100%;
+    border: none; border-right: 1px solid #d0d0d0;
+    background: #fafafa;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 0 -2px 0 #e0e0e0;
+    transition: background 0.08s;
+    color: #1a1a1a;
+  }
+  .act-btn:last-child { border-right: none; }
+  .act-btn:hover { background: #f0f0f0; }
+  .act-btn--undo {
+    flex: 0 0 60px; font-size: 16px;
+    background: #f0f0f0; color: #555;
+    box-shadow: none;
+  }
+  .act-btn--fold { background: #1a1a1a; color: #fff; box-shadow: inset 0 -2px 0 #444; }
+  .act-btn--fold:hover { background: #333; }
+  .act-btn--allin { background: #1a1a1a; color: #fff; box-shadow: inset 0 -2px 0 #444; }
+  .act-btn--allin:hover { background: #333; }
+</style>
+</head>
+<body>
+<div class="component">
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="tb-seg">
+      <span class="conn-dot"></span>
+      <span style="font-size:11px;letter-spacing:0.08em;">CONNECTED</span>
+    </div>
+    <div class="tb-seg">
+      <span style="font-size:13px;">⇌</span>
+    </div>
+    <div class="tb-seg">
+      <span style="font-size:11px;">WiFi</span>
+      <span style="font-size:10px;color:#aaa;">▲</span>
+    </div>
+    <div class="tb-seg tb-seg--spacer">
+      <span class="hand-label">HAND&nbsp;&nbsp;#247</span>
+    </div>
+    <div class="tb-seg tb-seg--right">
+      <div class="tb-icon" title="Screenshot">📷</div>
+      <div class="tb-icon" title="GFX Toggle">GFX</div>
+      <div class="tb-icon" title="Register">REG</div>
+      <div class="tb-icon" title="Minimize">□</div>
+      <div class="tb-icon" title="Close">✕</div>
+    </div>
+  </div>
+
+  <!-- CARD ICON ROW -->
+  <div class="card-icon-row">
+    <div class="ci">🂠</div>
+    <div class="ci">🂠</div>
+    <div class="ci">🂠</div>
+    <span class="ci-label">Dealt</span>
+    <div style="flex:1"></div>
+    <div class="ci ci--empty">—</div>
+    <div class="ci ci--empty">—</div>
+    <div class="ci ci--empty">—</div>
+    <div class="ci ci--empty">—</div>
+    <div class="ci ci--empty">—</div>
+    <div class="ci ci--empty">—</div>
+    <div class="ci ci--empty">—</div>
+    <span class="ci-label" style="margin-left:0">Available</span>
+  </div>
+
+  <!-- SEAT TAB ROW -->
+  <div class="seat-tab-row">
+    <div class="stab">S1</div>
+    <div class="stab stab--active">S2</div>
+    <div class="stab">S3</div>
+    <div class="stab">S4</div>
+    <div class="stab">S5</div>
+    <div class="stab">S6</div>
+    <div class="stab">S7</div>
+    <div class="stab">S8</div>
+    <div class="stab">S9</div>
+    <div class="stab">S10</div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div class="main-area">
+
+    <!-- LEFT: MISS DEAL -->
+    <div class="ma-left">
+      <button class="miss-deal-btn">
+        <span class="miss-deal-icon">⚠</span>
+        <span>MISS</span>
+        <span>DEAL</span>
+      </button>
+    </div>
+
+    <!-- CENTER: Board + Seat Info -->
+    <div class="ma-center">
+      <div class="board-row">
+        <div class="bcard">
+          <span class="bcard__rank">7</span>
+          <span class="bcard__suit">♥</span>
+        </div>
+        <div class="bcard">
+          <span class="bcard__rank">6</span>
+          <span class="bcard__suit">♠</span>
+        </div>
+        <div class="bcard">
+          <span class="bcard__rank">4</span>
+          <span class="bcard__suit">♥</span>
+        </div>
+        <div class="bcard bcard--empty"><span>—</span></div>
+        <div class="bcard bcard--empty"><span>—</span></div>
+      </div>
+      <div class="seat-info-row">
+        <div class="seat-info-num">2</div>
+        <div class="seat-info-text">SEAT 2 — STACK&nbsp;</div>
+        <div class="seat-info-stack">995,000</div>
+        <div class="seat-status-dot"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: GFX Controls -->
+    <div class="ma-right">
+      <button class="ma-right-btn">HIDE<br>GFX</button>
+      <button class="ma-right-btn">GFX</button>
+      <button class="ma-right-btn ma-right-btn--star">★</button>
+    </div>
+
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="action-row">
+    <button class="act-btn act-btn--undo">←</button>
+    <button class="act-btn act-btn--fold">FOLD</button>
+    <button class="act-btn">CHECK</button>
+    <button class="act-btn">BET</button>
+    <button class="act-btn act-btn--allin">ALL IN</button>
+  </div>
+
+</div>
+</body>
+</html>

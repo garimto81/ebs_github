@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720">
+    <title>EBS Server — System</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #fff;
+    color: #000;
+    padding: 0;
+    margin: 0;
+}
+
+.wireframe-container {
+    width: 720px;
+    background: #fff;
+    border: 1px solid #999;
+    overflow: hidden;
+}
+
+.title-bar {
+    background: #1a1a1a;
+    color: white;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.window-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.window-control {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.window-control.close    { background: #333; }
+.window-control.minimize { background: #888; }
+.window-control.maximize { background: #555; }
+
+.title-text {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Preview + Status strip */
+.top-strip {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    background: #f5f5f5;
+    height: 72px;
+}
+
+.preview-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #ccc;
+    background: #222;
+    color: #888;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.status-panel {
+    width: 200px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+}
+
+.status-label { color: #555; font-weight: 600; }
+.status-value { color: #000; }
+.status-dot-inline {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #555;
+    margin-right: 4px;
+}
+
+/* Tab bar */
+.tab-bar {
+    display: flex;
+    border-bottom: 2px solid #ccc;
+    background: #f0f0f0;
+}
+
+.tab {
+    padding: 9px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    border-right: 1px solid #ddd;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.tab.active {
+    background: #fff;
+    color: #000;
+    border-bottom: 2px solid #000;
+    margin-bottom: -2px;
+}
+
+/* Content */
+.content {
+    padding: 16px;
+}
+
+.section-header {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 3px;
+}
+
+.section-sub {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 14px;
+}
+
+.cards-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.card {
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 14px;
+}
+
+.card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.id-tag {
+    background: #333;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+}
+
+/* Form elements */
+.form-group {
+    margin-bottom: 10px;
+}
+
+.form-group:last-child { margin-bottom: 0; }
+
+.form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Segoe UI', sans-serif;
+    background: white;
+}
+
+.btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Segoe UI', sans-serif;
+    background: #e8e8e8;
+    color: #333;
+}
+
+.btn.primary {
+    background: #333;
+    color: #fff;
+    border-color: #333;
+}
+
+.btn-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Toggle */
+.toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.toggle-row:last-child { margin-bottom: 0; }
+
+.toggle-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+}
+
+.toggle-sub {
+    font-size: 10px;
+    color: #777;
+    font-weight: 400;
+}
+
+.toggle {
+    width: 44px;
+    height: 22px;
+    background: #d0d0d0;
+    border-radius: 11px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.toggle.on { background: #555; }
+
+.toggle-knob {
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+
+.toggle.on .toggle-knob { left: 24px; }
+
+/* Checkbox */
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.checkbox-row:last-child { margin-bottom: 0; }
+
+.cb {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid #888;
+    border-radius: 3px;
+    flex-shrink: 0;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cb.checked { background: #333; border-color: #333; }
+
+.cb.checked::after {
+    content: '';
+    width: 8px;
+    height: 5px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translateY(-1px);
+}
+
+.checkbox-text {
+    font-size: 12px;
+    color: #333;
+}
+
+/* RFID section */
+.rfid-buttons-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.rfid-antenna-row {
+    margin-bottom: 8px;
+}
+
+.rfid-antenna-row:last-child { margin-bottom: 0; }
+
+/* System info / metric */
+.metric-row {
+    margin-bottom: 9px;
+}
+
+.metric-row:last-child { margin-bottom: 0; }
+
+.metric-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 4px;
+}
+
+.metric-val { color: #666; font-weight: 400; }
+
+.progress-bar {
+    width: 100%;
+    height: 7px;
+    background: #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #888;
+    border-radius: 4px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    padding: 7px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.info-row:last-child { border-bottom: none; }
+.info-key { font-weight: 600; color: #444; }
+.info-val { color: #666; }
+
+/* Input-with-button */
+.input-btn {
+    display: flex;
+    gap: 8px;
+}
+
+.input-btn .form-input { flex: 1; }
+
+/* Two column layout */
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+/* Version footer */
+.version-footer {
+    margin-top: 2px;
+    padding: 10px 14px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.version-text { font-size: 11px; color: #555; }
+.version-label { font-weight: 600; }
+    </style>
+</head>
+<body>
+<div class="wireframe-container">
+
+    <!-- Title Bar -->
+    <div class="title-bar">
+        <div class="window-controls">
+            <div class="window-control close"></div>
+            <div class="window-control minimize"></div>
+            <div class="window-control maximize"></div>
+        </div>
+        <div class="title-text">EBS Server</div>
+    </div>
+
+    <!-- Preview + Status Strip -->
+    <div class="top-strip">
+        <div class="preview-panel">PREVIEW</div>
+        <div class="status-panel">
+            <div class="status-row">
+                <span class="status-label">RFID</span>
+                <span class="status-value"><span class="status-dot-inline"></span>Connected</span>
+            </div>
+            <div class="status-row">
+                <span class="status-label">Clients</span>
+                <span class="status-value">2</span>
+            </div>
+            <div class="status-row">
+                <span class="status-label">Hand</span>
+                <span class="status-value">#0042</span>
+            </div>
+            <div class="status-row">
+                <span class="status-label">Skin</span>
+                <span class="status-value">wsop_main</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+        <div class="tab">Sources</div>
+        <div class="tab">Outputs</div>
+        <div class="tab">GFX</div>
+        <div class="tab">Rules</div>
+        <div class="tab active">System</div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="section-header">System</div>
+        <div class="section-sub">24 settings | Y-01 ~ Y-24 · RFID, Diagnostics, AT Access, Advanced</div>
+
+        <div class="cards-grid">
+
+            <!-- Card 1: Table Identity -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="id-tag">Y-01</span>
+                    <span class="id-tag">Y-02</span>
+                    Table Identity
+                </div>
+                <div class="two-col">
+                    <div class="form-group">
+                        <label class="form-label">Table Name</label>
+                        <input type="text" class="form-input" value="Table 1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" value="••••••">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: RFID -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="id-tag">Y-03</span>
+                    <span class="id-tag">Y-04</span>
+                    <span class="id-tag">Y-05</span>
+                    <span class="id-tag">Y-06</span>
+                    <span class="id-tag">Y-07</span>
+                    RFID Configuration
+                </div>
+                <div class="rfid-buttons-row">
+                    <button class="btn">Reset RFID</button>
+                    <button class="btn primary">Calibrate Antennas</button>
+                </div>
+                <div class="checkbox-row">
+                    <div class="cb checked"></div>
+                    <span class="checkbox-text">Y-05 — UPCARD Antennas (read hole cards via upcard antenna)</span>
+                </div>
+                <div class="checkbox-row">
+                    <div class="cb"></div>
+                    <span class="checkbox-text">Y-06 — Disable Muck Antenna (disable muck in AT mode)</span>
+                </div>
+                <div class="checkbox-row">
+                    <div class="cb"></div>
+                    <span class="checkbox-text">Y-07 — Disable Community Antenna</span>
+                </div>
+            </div>
+
+            <!-- Card 3: System Info + Diagnostics -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="id-tag">Y-08</span>
+                    <span class="id-tag">Y-09</span>
+                    <span class="id-tag">Y-10</span>
+                    <span class="id-tag">Y-12</span>
+                    System Info &amp; Diagnostics
+                </div>
+                <div class="metric-row">
+                    <div class="metric-head"><span>CPU</span><span class="metric-val">24%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:24%"></div></div>
+                </div>
+                <div class="metric-row">
+                    <div class="metric-head"><span>GPU</span><span class="metric-val">38%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:38%"></div></div>
+                </div>
+                <div class="metric-row">
+                    <div class="metric-head"><span>Memory</span><span class="metric-val">1.2 / 8.0 GB</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:15%"></div></div>
+                </div>
+                <div style="margin-top:10px;">
+                    <div class="info-row"><span class="info-key">OS</span><span class="info-val">Windows 11 Pro</span></div>
+                    <div class="info-row"><span class="info-key">GPU</span><span class="info-val">NVIDIA RTX 4070</span></div>
+                    <div class="info-row"><span class="info-key">Encoder</span><span class="info-val">NVENC H.265</span></div>
+                </div>
+                <div class="btn-group" style="margin-top:12px;">
+                    <button class="btn">Y-09 Table Diagnostics...</button>
+                    <button class="btn">Y-10 View System Log</button>
+                </div>
+                <div class="form-group" style="margin-top:12px;">
+                    <label class="form-label">Y-12 — Export Folder</label>
+                    <div class="input-btn">
+                        <input type="text" class="form-input" value="C:\EBS\Export">
+                        <button class="btn">Browse</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: AT Access -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="id-tag">Y-13</span>
+                    <span class="id-tag">Y-14</span>
+                    <span class="id-tag">Y-15</span>
+                    Action Tracker Access
+                </div>
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">Y-13 — Allow AT Access</div>
+                        <div class="toggle-sub">Enable Action Tracker client connections</div>
+                    </div>
+                    <div class="toggle on"><div class="toggle-knob"></div></div>
+                </div>
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">Y-14 — Predictive Bet</div>
+                        <div class="toggle-sub">Predictive bet input in AT</div>
+                    </div>
+                    <div class="toggle on"><div class="toggle-knob"></div></div>
+                </div>
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">Y-15 — Kiosk Mode</div>
+                        <div class="toggle-sub">Restrict AT to dealer functions only</div>
+                    </div>
+                    <div class="toggle"><div class="toggle-knob"></div></div>
+                </div>
+            </div>
+
+            <!-- Card 5: Advanced -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="id-tag">Y-16~Y-23</span>
+                    Advanced
+                </div>
+                <div class="checkbox-row">
+                    <div class="cb"></div>
+                    <span class="checkbox-text">Y-16 — MultiGFX (multi-table operation)</span>
+                </div>
+                <div class="checkbox-row">
+                    <div class="cb"></div>
+                    <span class="checkbox-text">Y-17 — Sync Stream (stream synchronization)</span>
+                </div>
+                <div class="checkbox-row">
+                    <div class="cb"></div>
+                    <span class="checkbox-text">Y-18 — Sync Skin (skin synchronization)</span>
+                </div>
+                <div class="checkbox-row">
+                    <div class="cb"></div>
+                    <span class="checkbox-text">Y-19 — No Cards (disable card detection)</span>
+                </div>
+                <div class="checkbox-row">
+                    <div class="cb"></div>
+                    <span class="checkbox-text">Y-20 — Disable GPU Encoding</span>
+                </div>
+                <div class="checkbox-row">
+                    <div class="cb"></div>
+                    <span class="checkbox-text">Y-21 — Ignore Name Tags</span>
+                </div>
+                <div class="checkbox-row">
+                    <div class="cb"></div>
+                    <span class="checkbox-text">Y-22 — Auto Start on OS launch</span>
+                </div>
+                <div class="form-group" style="margin-top:12px;">
+                    <label class="form-label">Y-23 — Stream Deck Mapping</label>
+                    <button class="btn">Configure Stream Deck...</button>
+                </div>
+            </div>
+
+            <!-- Card 6: Updates -->
+            <div class="version-footer">
+                <span class="version-text"><span class="version-label">Y-24</span> &nbsp;EBS Server v1.0.0</span>
+                <button class="btn">Check for Updates</button>
+            </div>
+
+        </div><!-- .cards-grid -->
+    </div><!-- .content -->
+
+</div><!-- .wireframe-container -->
+</body>
+</html>

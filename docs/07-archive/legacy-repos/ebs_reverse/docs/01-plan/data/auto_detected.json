@@ -1,0 +1,129 @@
+{
+  "source": "C:\\claude\\ebs_reverse\\docs\\01-plan\\images\\web\\wsop-2025-paradise-overlay.png",
+  "image_size": {
+    "width": 640,
+    "height": 360
+  },
+  "detected": [
+    {
+      "label": "player_panel",
+      "id": 1,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 196,
+        "h": 291
+      },
+      "confidence": 0.85,
+      "method": "gradient_edge"
+    },
+    {
+      "label": "action_badge",
+      "id": 3,
+      "box": {
+        "x": 153,
+        "y": 262,
+        "w": 56,
+        "h": 35
+      },
+      "confidence": 0.8,
+      "method": "color_hsv"
+    },
+    {
+      "label": "equity_bar",
+      "id": 4,
+      "box": {
+        "x": 0,
+        "y": 50,
+        "w": 212,
+        "h": 15
+      },
+      "confidence": 0.68,
+      "method": "saturation_bar"
+    },
+    {
+      "label": "community_cards",
+      "id": 5,
+      "box": {
+        "x": 340,
+        "y": 230,
+        "w": 64,
+        "h": 66
+      },
+      "confidence": 0.75,
+      "method": "bright_rect_pattern"
+    },
+    {
+      "label": "top_bar",
+      "id": 6,
+      "box": {
+        "x": 179,
+        "y": 0,
+        "w": 365,
+        "h": 46
+      },
+      "confidence": 0.85,
+      "method": "gradient_boundary"
+    },
+    {
+      "label": "event_badge",
+      "id": 7,
+      "box": {
+        "x": 480,
+        "y": 0,
+        "w": 160,
+        "h": 108
+      },
+      "confidence": 0.72,
+      "method": "dark_region_corner"
+    },
+    {
+      "label": "bottom_strip",
+      "id": 8,
+      "box": {
+        "x": 0,
+        "y": 311,
+        "w": 640,
+        "h": 49
+      },
+      "confidence": 0.9,
+      "method": "gradient_boundary"
+    },
+    {
+      "label": "pot_counter",
+      "id": 9,
+      "box": {
+        "x": 140,
+        "y": 311,
+        "w": 290,
+        "h": 49
+      },
+      "confidence": 0.78,
+      "method": "strip_variance_segment"
+    },
+    {
+      "label": "field_stage",
+      "id": 10,
+      "box": {
+        "x": 490,
+        "y": 311,
+        "w": 80,
+        "h": 48
+      },
+      "confidence": 0.73,
+      "method": "strip_variance_segment"
+    },
+    {
+      "label": "sponsor_logo",
+      "id": 11,
+      "box": {
+        "x": 224,
+        "y": 340,
+        "w": 192,
+        "h": 20
+      },
+      "confidence": 0.6,
+      "method": "strip_bottom_center"
+    }
+  ]
+}

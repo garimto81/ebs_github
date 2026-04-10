@@ -119,7 +119,7 @@ PokerGFX 역설계 참조. 직접 편집하지 않음.
 
 ### 03-ui-design/ — UI 설계
 
-로컬 파일 없음. `C:\claude\ebs_ui\` 레포에서 관리.
+설계 자산은 팀 폴더에 통합됨: `team4-cc/ui-design/reference/`, `team1-frontend/ui-design/reference/`
 
 | ebs_ui 프로젝트 | Confluence | Page ID |
 |----------------|-----------|---------|
@@ -167,13 +167,18 @@ Confluence 미발행. 로컬 참조용.
 
 ---
 
-## 3개 레포 관계
+## 통합 레포 구조
 
-| 레포 | 역할 |
+모든 EBS 관련 코드/문서가 이 레포에 통합됨 (2026-04-10).
+
+| 폴더 | 역할 |
 |------|------|
-| **`C:\claude\ebs\`** | 기획 레포 — 전략, 행동 명세, 게임 규칙 |
-| **`C:\claude\ebs_ui\`** | UI 설계 레포 — Action Tracker, Console, Skin Editor |
-| **`C:\claude\ebs_reverse\`** | 역설계 레포 — PokerGFX 분석 (참조) |
+| `contracts/` | API/Data/Spec 계약 (Conductor 소유) |
+| `team1-frontend/` | React 19 + Vite (Login/Lobby/Settings) |
+| `team2-backend/` | FastAPI BO (REST/WS/DB) |
+| `team3-engine/` | Pure Dart Game Engine |
+| `team4-cc/` | Flutter CC + Overlay + Graphic Editor |
+| `docs/07-archive/legacy-repos/` | 이전 외부 레포 아카이브 |
 
 ---
 

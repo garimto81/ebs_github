@@ -1,0 +1,151 @@
+{
+    "screen_id": "at-06",
+    "screen_name": "RFID Registration",
+    "dimensions": {
+        "width": 786,
+        "height": 553
+    },
+    "elements": [
+        {
+            "id": 1,
+            "name": "App Icon",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 0.3,
+                "y": 0.2,
+                "w": 2.0,
+                "h": 3.2
+            },
+            "visual": "PokerGFX 앱 아이콘 (작은 정사각형)",
+            "protocol": "—",
+            "note": "윈도우 타이틀바 아이콘",
+            "annotation_text": "[COM-TB-01] 앱 아이콘"
+        },
+        {
+            "id": 2,
+            "name": "Title Text",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 2.5,
+                "y": 0.5,
+                "w": 30.0,
+                "h": 2.7
+            },
+            "visual": "PokerGFX Action Tracker © 2026 텍스트",
+            "protocol": "—",
+            "note": "앱 타이틀 텍스트",
+            "annotation_text": "[COM-TB-02] 타이틀 텍스트"
+        },
+        {
+            "id": 3,
+            "name": "Minimize Button",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 86.8,
+                "y": 0.2,
+                "w": 4.0,
+                "h": 3.2
+            },
+            "visual": "— (최소화)",
+            "protocol": "—",
+            "note": "윈도우 최소화",
+            "annotation_text": "[COM-TB-03] 최소화 버튼"
+        },
+        {
+            "id": 4,
+            "name": "Maximize Button",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 91.0,
+                "y": 0.2,
+                "w": 4.0,
+                "h": 3.2
+            },
+            "visual": "□ (최대화)",
+            "protocol": "—",
+            "note": "윈도우 최대화",
+            "annotation_text": "[COM-TB-04] 최대화 버튼"
+        },
+        {
+            "id": 5,
+            "name": "Close Button (Window)",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 95.2,
+                "y": 0.2,
+                "w": 4.5,
+                "h": 3.2
+            },
+            "visual": "X (빨간 배경)",
+            "protocol": "—",
+            "note": "윈도우 닫기",
+            "annotation_text": "[COM-TB-05] 윈도우 닫기"
+        },
+        {
+            "id": 6,
+            "name": "Black Background",
+            "category": "background",
+            "bbox_pct": {
+                "x": 0.0,
+                "y": 3.6,
+                "w": 100.0,
+                "h": 96.4
+            },
+            "visual": "순수 검정 배경 (앱 콘텐츠 영역 전체)",
+            "protocol": "—",
+            "note": "RFID 등록 모달 배경 — 일반 Setup Mode 대신 전체 검정 오버레이",
+            "annotation_text": "[S06-001] RFID 등록 검정 배경"
+        },
+        {
+            "id": 7,
+            "name": "Instruction Label",
+            "category": "rfid",
+            "bbox_pct": {
+                "x": 22.5,
+                "y": 38.0,
+                "w": 55.0,
+                "h": 8.0
+            },
+            "visual": "PLACE THIS CARD ON ANY ANTENNA 흰색 굵은 텍스트 (검정 둥근 사각형 배경)",
+            "protocol": "RegisterDeck",
+            "note": "RFID 카드를 안테나에 올리라는 안내 메시지",
+            "annotation_text": "[S06-002] 카드 안테나 안내 메시지"
+        },
+        {
+            "id": 8,
+            "name": "Card Image",
+            "category": "rfid",
+            "bbox_pct": {
+                "x": 34.0,
+                "y": 47.0,
+                "w": 18.0,
+                "h": 18.0
+            },
+            "visual": "카드 이미지 — 흰색 배경에 A♠ (에이스 스페이드) 아이콘",
+            "protocol": "RegisterDeck",
+            "note": "현재 등록 중인 카드 시각적 표시. 등록 순서에 따라 카드 종류 변경",
+            "annotation_text": "[S06-003] 등록 중 카드 이미지"
+        },
+        {
+            "id": 9,
+            "name": "CANCEL Button",
+            "category": "rfid",
+            "bbox_pct": {
+                "x": 22.5,
+                "y": 67.0,
+                "w": 55.0,
+                "h": 10.0
+            },
+            "visual": "CANCEL 흰색 굵은 텍스트 (진한 빨간/버건디 배경, 둥근 사각형)",
+            "protocol": "SendRegisterDeckCancel",
+            "note": "RFID 덱 등록 프로세스 취소. Setup Mode로 복귀",
+            "annotation_text": "[S06-004] 등록 취소 버튼"
+        }
+    ],
+    "total_elements": 9,
+    "categories": [
+        "titlebar",
+        "background",
+        "rfid"
+    ]
+}

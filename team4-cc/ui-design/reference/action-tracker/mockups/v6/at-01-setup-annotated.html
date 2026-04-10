@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=640">
+<title>AT-01: Setup Mode (v7 White Minimal) — Annotated</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #fafafa;
+    --bg-tertiary: #f0f0f0;
+    --bg-muted: #f5f5f5;
+    --fg-primary: #1a1a1a;
+    --fg-secondary: #555555;
+    --fg-muted: #888888;
+    --fg-disabled: #bbbbbb;
+    --border-default: #d0d0d0;
+    --border-light: #e0e0e0;
+    --accent: #1a1a1a;
+    --error: #dd0000;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-secondary);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: 'Noto Sans KR', 'Segoe UI', Arial, sans-serif;
+  }
+
+  .screenshot-container {
+    width: 640px;
+    height: auto;
+    position: relative;
+    background: var(--bg-primary);
+    overflow: hidden;
+  }
+
+  /* =========================================
+     TITLEBAR (id=1~5)
+     ========================================= */
+  .titlebar {
+    width: 100%;
+    height: 28px;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .titlebar-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+  .titlebar-text {
+    color: var(--fg-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .titlebar-buttons {
+    display: flex;
+    height: 100%;
+  }
+  .titlebar-btn {
+    width: 30px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg-secondary);
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .titlebar-btn:hover { background: var(--border-light); }
+  .titlebar-btn.close-btn:hover { background: var(--error); color: #fff; }
+
+  /* =========================================
+     TOOLBAR (id=6~17)
+     ========================================= */
+  .toolbar {
+    width: 100%;
+    height: 32px;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .toolbar-cell {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-right: 1px solid var(--border-light);
+  }
+  .toolbar-cell:hover { background: var(--bg-muted); }
+
+  /* id=6: USB */
+  .tb-usb {
+    width: 5%;
+    background: var(--bg-secondary);
+  }
+  .usb-icon {
+    color: var(--fg-muted);
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  /* id=7: WiFi */
+  .tb-wifi {
+    width: 5.5%;
+    background: var(--bg-secondary);
+  }
+  .wifi-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 16px;
+  }
+  .wifi-bar {
+    width: 3px;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+
+  /* id=8: Hand Number Box */
+  .tb-hand-box {
+    width: 8%;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-default);
+    margin: 0 2px;
+  }
+  .hand-num-display {
+    color: var(--fg-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    width: 100%;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* id=9: HAND label */
+  .tb-hand-label {
+    position: absolute;
+    left: 12%;
+    top: 28px;
+    width: 8%;
+    height: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 6;
+    pointer-events: none;
+  }
+  .hand-lbl-text {
+    color: var(--fg-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .tb-spacer {
+    flex: 1;
+    background: var(--bg-tertiary);
+  }
+
+  /* id=16: Fullscreen */
+  .tb-fullscreen {
+    width: 5.5%;
+    background: var(--bg-secondary);
+  }
+  .expand-icon {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2px;
+    width: 14px; height: 14px;
+  }
+  .expand-icon span {
+    color: var(--fg-muted);
+    font-size: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* id=17: Close X */
+  .tb-close {
+    width: 4.5%;
+    background: var(--bg-secondary);
+    border-right: none;
+  }
+  .tb-close:hover { background: var(--error); }
+  .tb-close .lbl {
+    color: var(--fg-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .tb-close:hover .lbl { color: #fff; }
+
+  /* =========================================
+     CARD SLOTS ROW (id=18~27)
+     ========================================= */
+  .card-slots-row {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .card-slot {
+    width: 9.7%;
+    height: 100%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--border-light);
+    cursor: pointer;
+    flex-shrink: 0;
+    gap: 2px;
+  }
+  .card-slot:last-child {
+    width: 12.3%;
+    border-right: none;
+  }
+  .card-slot:hover { background: var(--bg-muted); }
+  .mini-card {
+    width: 24px;
+    height: 34px;
+    background: var(--bg-primary);
+    border-radius: 3px;
+    border: 1px solid var(--border-default);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 600;
+    line-height: 1.1;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .mini-card .suit {
+    font-size: 10px;
+    line-height: 1;
+  }
+  .mini-card .rank {
+    font-size: 9px;
+    font-weight: 600;
+  }
+  .suit-spade { color: var(--fg-primary); }
+  .suit-heart { color: var(--error); }
+  .suit-diamond { color: var(--error); }
+  .suit-club { color: var(--fg-primary); }
+
+  /* =========================================
+     SEAT LABELS ROW (id=28~37)
+     ========================================= */
+  .seat-labels-row {
+    width: 100%;
+    height: 28px;
+    display: flex;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .seat-cell {
+    width: 9.7%;
+    height: 100%;
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--border-light);
+    border: 1px solid var(--border-light);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .seat-cell:last-child {
+    width: 12.3%;
+    border-right: none;
+  }
+  .seat-lbl {
+    color: var(--fg-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* =========================================
+     STRADDLE ROW (id=38~47)
+     ========================================= */
+  .straddle-row {
+    width: 100%;
+    height: 24px;
+    display: flex;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .straddle-cell {
+    width: 9.7%;
+    height: 100%;
+    background: var(--bg-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--border-light);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .straddle-cell:last-child {
+    width: 12.3%;
+    border-right: none;
+  }
+  .straddle-cell:hover { background: var(--bg-tertiary); }
+  .straddle-lbl {
+    color: var(--fg-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 6px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* =========================================
+     CHIP INPUT ROW (id=48~57)
+     ========================================= */
+  .position-row {
+    width: 100%;
+    height: 36px;
+    display: flex;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .position-cell {
+    width: 9.7%;
+    height: 100%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--border-light);
+    cursor: pointer;
+    flex-shrink: 0;
+    gap: 3px;
+  }
+  .position-cell:last-child {
+    width: 12.3%;
+    border-right: none;
+  }
+  .pos-marker {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-default);
+  }
+  .pos-red { background: #e74c3c; border-color: #c0392b; }
+  .pos-yellow { background: #f1c40f; border-color: #d4ac0d; }
+  .pos-blue { background: #3498db; border-color: #2980b9; }
+  .pos-green { background: #2ecc71; border-color: #27ae60; }
+
+  /* =========================================
+     BLIND CONTROLS (id=58~74, 95~96, 101~102)
+     ========================================= */
+  .blind-row {
+    width: 100%;
+    height: 56px;
+    background: var(--bg-primary);
+    position: relative;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .blind-label-box {
+    position: absolute;
+    height: 45%;
+    top: 0;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-default);
+    cursor: pointer;
+  }
+  .blind-label-box:hover { background: var(--bg-muted); }
+  .blind-lbl {
+    color: var(--fg-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .blind-arrow-btn {
+    position: absolute;
+    height: 48%;
+    top: 52%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-default);
+    cursor: pointer;
+  }
+  .blind-arrow-btn:hover { background: var(--bg-tertiary); }
+  .blind-value-input {
+    position: absolute;
+    height: 48%;
+    top: 52%;
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-default);
+    cursor: pointer;
+  }
+  .blind-value-input:hover { background: var(--bg-muted); }
+  .val-lbl {
+    color: var(--fg-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .arrow-lbl {
+    color: var(--fg-secondary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Blind box positions */
+  .bl-cap       { left: 0.5%;  width: 11%; }
+  .bl-ante      { left: 12.5%; width: 11%; }
+  .bl-btn-blind { left: 24.5%; width: 13%; }
+  .bl-dealer    { left: 38.5%; width: 12%; }
+  .bl-sb        { left: 51.5%; width: 16%; }
+  .bl-bb        { left: 68.5%; width: 16%; }
+  .bl-3b        { left: 85.5%; width: 14%; }
+
+  .val-cap        { left: 0.5%;  width: 11%; }
+  .val-ante       { left: 12.5%; width: 11%; }
+  .val-btn-blind  { left: 24.5%; width: 13%; }
+  .arr-dealer-dec { left: 38.5%; width: 6%; }
+  .arr-dealer-inc { left: 44.5%; width: 6%; }
+  .arr-sb-pos-dec { left: 51.5%; width: 3.5%; }
+  .chip-sb-display{ left: 55%;   width: 9%; }
+  .arr-sb-pos-inc { left: 64%;   width: 3.5%; }
+  .arr-bb-pos-dec { left: 68.5%; width: 3.5%; }
+  .chip-bb-display{ left: 72%;   width: 9%; }
+  .arr-bb-pos-inc { left: 81%;   width: 3.5%; }
+  .arr-3b-dec     { left: 85.5%; width: 3%; }
+  .chip-3b-display{ left: 88.5%; width: 8%; }
+  .arr-3b-inc     { left: 96.5%; width: 3%; }
+
+  .blind-chip-display {
+    position: absolute;
+    height: 48%;
+    top: 52%;
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-default);
+    cursor: pointer;
+  }
+  .blind-chip-display:hover { background: var(--bg-muted); }
+  .chip-display-text {
+    color: var(--fg-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* =========================================
+     GAME SETTINGS ROW (id=75~80)
+     ========================================= */
+  .game-settings-row {
+    width: 100%;
+    height: 30px;
+    background: var(--bg-primary);
+    position: relative;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .gs-btn {
+    position: absolute;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid var(--border-default);
+  }
+  .gs-btn:hover { background: var(--bg-muted); }
+  .gs-lbl {
+    color: var(--fg-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .gs-min-chip { left: 0.5%;  width: 10%; background: var(--bg-tertiary); }
+  .gs-7deuce   { left: 11%;   width: 10%; background: var(--bg-tertiary); }
+  .gs-bomb-pot { left: 21.5%; width: 10%; background: var(--bg-tertiary); }
+  .gs-boards   { left: 32%;   width: 10%; background: var(--bg-tertiary); }
+  .gs-nit-game { left: 42.5%; width: 10%; background: var(--bg-tertiary); }
+  .gs-game-variant {
+    position: absolute;
+    left: 53%;
+    width: 46.5%;
+    height: 28px;
+    background: var(--bg-muted);
+    border: 1px solid var(--border-default);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--fg-primary);
+    cursor: pointer;
+    outline: none;
+    padding: 0 4px;
+  }
+
+  /* id=82: SINGLE BOARD */
+  .single-board-btn {
+    position: absolute;
+    left: 32%;
+    top: 0;
+    width: 10%;
+    height: 100%;
+    background: var(--bg-muted);
+    border: 1.5px solid var(--border-default);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .single-board-btn:hover { background: var(--bg-tertiary); }
+  .single-board-lbl {
+    color: var(--fg-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* id=83: SETTINGS */
+  .settings-btn {
+    position: absolute;
+    left: 53%;
+    top: 0;
+    width: 46.5%;
+    height: 100%;
+    background: var(--accent);
+    border: 1.5px solid var(--fg-primary);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .settings-btn:hover { opacity: 0.85; }
+  .settings-lbl {
+    color: #fff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* =========================================
+     GAME SETTINGS VALUE BUTTONS (id=85,87,89,91,93)
+     ========================================= */
+  .gs-value-row {
+    width: 100%;
+    height: 80px;
+    background: var(--bg-primary);
+    position: relative;
+  }
+  .gs-value-btn {
+    position: absolute;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    cursor: pointer;
+  }
+  .gs-value-btn:hover { background: var(--bg-muted); }
+  .gs-value-lbl {
+    color: var(--fg-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gsv-min-chip { left: 0.5%;  width: 10%; }
+  .gsv-7deuce   { left: 11%;   width: 10%; }
+  .gsv-bomb-pot { left: 21.5%; width: 10%; }
+  .gsv-nit-game { left: 42.5%; width: 10%; }
+
+  /* ========= ANNOTATION OVERLAY ========= */
+  .anno-overlay {
+    position: absolute;
+    border: 2px solid;
+    border-radius: 2px;
+    z-index: 100;
+    pointer-events: auto;
+    cursor: help;
+    transition: opacity 0.15s;
+  }
+  .anno-overlay:hover { opacity: 1 !important; z-index: 200; }
+  .anno-badge {
+    position: absolute; top: -1px; left: -1px;
+    padding: 0px 3px; font-size: 8px; font-weight: bold;
+    font-family: 'Consolas','Monaco',monospace;
+    color: #fff; border-radius: 2px 0 2px 0;
+    white-space: nowrap; line-height: 1.3; pointer-events: none;
+  }
+  .anno-tooltip {
+    display: none; position: absolute; top: calc(100% + 2px); left: 0;
+    padding: 4px 8px; background: rgba(0,0,0,0.9); color: #fff;
+    font-size: 11px; font-family: 'Segoe UI',sans-serif;
+    border-radius: 3px; white-space: nowrap; z-index: 300; pointer-events: none;
+  }
+  .anno-overlay:hover .anno-tooltip { display: block; }
+
+  .anno-cat-titlebar { border-color: rgba(52,152,219,0.8); }
+  .anno-cat-titlebar .anno-badge { background: #3498db; }
+  .anno-cat-toolbar { border-color: rgba(46,204,113,0.8); }
+  .anno-cat-toolbar .anno-badge { background: #27ae60; }
+  .anno-cat-card_area { border-color: rgba(241,196,15,0.8); }
+  .anno-cat-card_area .anno-badge { background: #f39c12; }
+  .anno-cat-seat { border-color: rgba(230,126,34,0.8); }
+  .anno-cat-seat .anno-badge { background: #e67e22; }
+  .anno-cat-blind { border-color: rgba(121,85,72,0.8); }
+  .anno-cat-blind .anno-badge { background: #795548; }
+  .anno-cat-chip_input { border-color: rgba(255,87,34,0.8); }
+  .anno-cat-chip_input .anno-badge { background: #ff5722; }
+  .anno-cat-game_settings { border-color: rgba(96,125,139,0.8); }
+  .anno-cat-game_settings .anno-badge { background: #607d8b; }
+  .anno-cat-option { border-color: rgba(156,39,176,0.8); }
+  .anno-cat-option .anno-badge { background: #9c27b0; }
+  .anno-cat-hand_control { border-color: rgba(0,188,212,0.8); }
+  .anno-cat-hand_control .anno-badge { background: #00bcd4; }
+  .anno-cat-navigation { border-color: rgba(233,30,99,0.8); }
+  .anno-cat-navigation .anno-badge { background: #e91e63; }
+
+</style>
+</head>
+<body>
+<div class="screenshot-container">
+
+  <!-- ===== TITLEBAR ===== -->
+  <!-- id=1: App Icon -->
+  <div class="titlebar">
+    <div
+      class="titlebar-icon"
+      data-element-id="1"
+      data-element-name="app-icon"
+      data-element-group="titlebar"
+    >&#9654;</div>
+    <!-- id=1: App Icon -->
+
+    <!-- id=2: Title Text -->
+    <span
+      class="titlebar-text"
+      data-element-id="2"
+      data-element-name="title-text"
+      data-element-group="titlebar"
+    >EBS Action Tracker &copy; 2026</span>
+    <!-- id=2: Title Text -->
+
+    <div class="titlebar-buttons">
+      <!-- id=3: Minimize -->
+      <div
+        class="titlebar-btn"
+        data-element-id="3"
+        data-element-name="minimize-button"
+        data-element-group="titlebar"
+      >&#8212;</div>
+      <!-- id=3: Minimize -->
+      <!-- id=4: Maximize -->
+      <div
+        class="titlebar-btn"
+        data-element-id="4"
+        data-element-name="maximize-button"
+        data-element-group="titlebar"
+      >&#9633;</div>
+      <!-- id=4: Maximize -->
+      <!-- id=5: Close -->
+      <div
+        class="titlebar-btn close-btn"
+        data-element-id="5"
+        data-element-name="close-button-window"
+        data-element-group="titlebar"
+      >&#10005;</div>
+      <!-- id=5: Close -->
+    </div>
+  </div>
+
+  <!-- ===== TOOLBAR ===== -->
+  <div class="toolbar" style="position:relative;">
+
+    <!-- id=6: USB -->
+    <div
+      class="toolbar-cell tb-usb"
+      data-element-id="6"
+      data-element-name="usb-connection-icon"
+      data-element-group="titlebar"
+    >
+      <span class="usb-icon">&#9783;</span>
+    </div>
+    <!-- id=6: USB Connection Icon -->
+
+    <!-- id=7: WiFi -->
+    <div
+      class="toolbar-cell tb-wifi"
+      data-element-id="7"
+      data-element-name="wifi-signal-icon"
+      data-element-group="titlebar"
+    >
+      <div class="wifi-bars">
+        <div class="wifi-bar" style="height:4px;"></div>
+        <div class="wifi-bar" style="height:7px;"></div>
+        <div class="wifi-bar" style="height:10px;"></div>
+        <div class="wifi-bar" style="height:14px;"></div>
+      </div>
+    </div>
+    <!-- id=7: WiFi Signal Icon -->
+
+    <!-- id=9: HAND label (overlay positioned) -->
+    <div
+      class="tb-hand-label"
+      data-element-id="9"
+      data-element-name="hand-label"
+      data-element-group="hand_control"
+      style="position:absolute; left:12%; top:0; width:8%; height:10px;"
+    >
+      <span class="hand-lbl-text">HAND</span>
+    </div>
+    <!-- id=9: HAND Label -->
+
+    <!-- id=8: Hand Number Box -->
+    <div
+      class="toolbar-cell tb-hand-box"
+      data-element-id="8"
+      data-element-name="hand-number-box"
+      data-element-group="hand_control"
+    >
+      <span class="hand-num-display">1</span>
+    </div>
+    <!-- id=8: Hand Number Box -->
+
+    <!-- Spacer -->
+    <div class="tb-spacer"></div>
+
+    <!-- id=16: Fullscreen -->
+    <div
+      class="toolbar-cell tb-fullscreen"
+      data-element-id="16"
+      data-element-name="fullscreen-icon-button"
+      data-element-group="toolbar"
+    >
+      <div class="expand-icon">
+        <span>&#8598;</span>
+        <span>&#8599;</span>
+        <span>&#8601;</span>
+        <span>&#8600;</span>
+      </div>
+    </div>
+    <!-- id=16: Fullscreen Icon Button -->
+
+    <!-- id=17: Close X -->
+    <div
+      class="toolbar-cell tb-close"
+      data-element-id="17"
+      data-element-name="app-close-button"
+      data-element-group="toolbar"
+    >
+      <span class="lbl">X</span>
+    </div>
+    <!-- id=17: App Close Button -->
+
+  </div>
+
+  <!-- ===== CARD SLOTS ROW (id=18~27) ===== -->
+  <div class="card-slots-row">
+
+    <!-- id=18: Seat 1 Card Slot -->
+    <div class="card-slot" data-element-id="18" data-element-name="seat-1-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-spade">&#9824;</span><span class="rank">A</span></div>
+      <div class="mini-card"><span class="rank suit-heart">&#9829;</span><span class="rank">K</span></div>
+    </div>
+    <!-- id=18: Seat 1 Card Slot -->
+
+    <!-- id=19: Seat 2 Card Slot -->
+    <div class="card-slot" data-element-id="19" data-element-name="seat-2-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-diamond">&#9830;</span><span class="rank">Q</span></div>
+      <div class="mini-card"><span class="rank suit-club">&#9827;</span><span class="rank">J</span></div>
+    </div>
+    <!-- id=19: Seat 2 Card Slot -->
+
+    <!-- id=20: Seat 3 Card Slot -->
+    <div class="card-slot" data-element-id="20" data-element-name="seat-3-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-spade">&#9824;</span><span class="rank">T</span></div>
+      <div class="mini-card"><span class="rank suit-heart">&#9829;</span><span class="rank">9</span></div>
+    </div>
+    <!-- id=20: Seat 3 Card Slot -->
+
+    <!-- id=21: Seat 4 Card Slot -->
+    <div class="card-slot" data-element-id="21" data-element-name="seat-4-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-diamond">&#9830;</span><span class="rank">8</span></div>
+      <div class="mini-card"><span class="rank suit-club">&#9827;</span><span class="rank">7</span></div>
+    </div>
+    <!-- id=21: Seat 4 Card Slot -->
+
+    <!-- id=22: Seat 5 Card Slot -->
+    <div class="card-slot" data-element-id="22" data-element-name="seat-5-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-spade">&#9824;</span><span class="rank">6</span></div>
+      <div class="mini-card"><span class="rank suit-heart">&#9829;</span><span class="rank">5</span></div>
+    </div>
+    <!-- id=22: Seat 5 Card Slot -->
+
+    <!-- id=23: Seat 6 Card Slot -->
+    <div class="card-slot" data-element-id="23" data-element-name="seat-6-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-diamond">&#9830;</span><span class="rank">4</span></div>
+      <div class="mini-card"><span class="rank suit-club">&#9827;</span><span class="rank">3</span></div>
+    </div>
+    <!-- id=23: Seat 6 Card Slot -->
+
+    <!-- id=24: Seat 7 Card Slot -->
+    <div class="card-slot" data-element-id="24" data-element-name="seat-7-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-spade">&#9824;</span><span class="rank">2</span></div>
+      <div class="mini-card"><span class="rank suit-heart">&#9829;</span><span class="rank">A</span></div>
+    </div>
+    <!-- id=24: Seat 7 Card Slot -->
+
+    <!-- id=25: Seat 8 Card Slot -->
+    <div class="card-slot" data-element-id="25" data-element-name="seat-8-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-diamond">&#9830;</span><span class="rank">K</span></div>
+      <div class="mini-card"><span class="rank suit-club">&#9827;</span><span class="rank">Q</span></div>
+    </div>
+    <!-- id=25: Seat 8 Card Slot -->
+
+    <!-- id=26: Seat 9 Card Slot -->
+    <div class="card-slot" data-element-id="26" data-element-name="seat-9-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-spade">&#9824;</span><span class="rank">J</span></div>
+      <div class="mini-card"><span class="rank suit-heart">&#9829;</span><span class="rank">T</span></div>
+    </div>
+    <!-- id=26: Seat 9 Card Slot -->
+
+    <!-- id=27: Seat 10 Card Slot -->
+    <div class="card-slot" data-element-id="27" data-element-name="seat-10-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-diamond">&#9830;</span><span class="rank">9</span></div>
+      <div class="mini-card"><span class="rank suit-club">&#9827;</span><span class="rank">8</span></div>
+    </div>
+    <!-- id=27: Seat 10 Card Slot -->
+
+  </div>
+
+  <!-- ===== SEAT LABELS ROW (id=28~37) ===== -->
+  <div class="seat-labels-row">
+    <!-- id=28: Seat 1 Label -->
+    <div class="seat-cell" data-element-id="28" data-element-name="seat-1-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 1</span>
+    </div>
+    <!-- id=29: Seat 2 Label -->
+    <div class="seat-cell" data-element-id="29" data-element-name="seat-2-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 2</span>
+    </div>
+    <!-- id=30: Seat 3 Label -->
+    <div class="seat-cell" data-element-id="30" data-element-name="seat-3-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 3</span>
+    </div>
+    <!-- id=31: Seat 4 Label -->
+    <div class="seat-cell" data-element-id="31" data-element-name="seat-4-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 4</span>
+    </div>
+    <!-- id=32: Seat 5 Label -->
+    <div class="seat-cell" data-element-id="32" data-element-name="seat-5-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 5</span>
+    </div>
+    <!-- id=33: Seat 6 Label -->
+    <div class="seat-cell" data-element-id="33" data-element-name="seat-6-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 6</span>
+    </div>
+    <!-- id=34: Seat 7 Label -->
+    <div class="seat-cell" data-element-id="34" data-element-name="seat-7-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 7</span>
+    </div>
+    <!-- id=35: Seat 8 Label -->
+    <div class="seat-cell" data-element-id="35" data-element-name="seat-8-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 8</span>
+    </div>
+    <!-- id=36: Seat 9 Label -->
+    <div class="seat-cell" data-element-id="36" data-element-name="seat-9-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 9</span>
+    </div>
+    <!-- id=37: Seat 10 Label -->
+    <div class="seat-cell" data-element-id="37" data-element-name="seat-10-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT<br>10</span>
+    </div>
+  </div>
+
+  <!-- ===== STRADDLE ROW (id=38~47) ===== -->
+  <div class="straddle-row">
+    <!-- id=38: Seat 1 Straddle -->
+    <div class="straddle-cell" data-element-id="38" data-element-name="seat-1-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <!-- id=39: Seat 2 Straddle -->
+    <div class="straddle-cell" data-element-id="39" data-element-name="seat-2-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <!-- id=40: Seat 3 Straddle -->
+    <div class="straddle-cell" data-element-id="40" data-element-name="seat-3-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <!-- id=41: Seat 4 Straddle -->
+    <div class="straddle-cell" data-element-id="41" data-element-name="seat-4-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <!-- id=42: Seat 5 Straddle -->
+    <div class="straddle-cell" data-element-id="42" data-element-name="seat-5-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <!-- id=43: Seat 6 Straddle -->
+    <div class="straddle-cell" data-element-id="43" data-element-name="seat-6-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <!-- id=44: Seat 7 Straddle -->
+    <div class="straddle-cell" data-element-id="44" data-element-name="seat-7-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <!-- id=45: Seat 8 Straddle -->
+    <div class="straddle-cell" data-element-id="45" data-element-name="seat-8-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <!-- id=46: Seat 9 Straddle -->
+    <div class="straddle-cell" data-element-id="46" data-element-name="seat-9-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <!-- id=47: Seat 10 Straddle -->
+    <div class="straddle-cell" data-element-id="47" data-element-name="seat-10-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+  </div>
+
+  <!-- ===== CHIP INPUT ROW (id=48~57) ===== -->
+  <div class="position-row">
+    <!-- id=48: Seat 1 Chip Input -->
+    <div class="position-cell" data-element-id="48" data-element-name="seat-1-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-red"></div>
+      <div class="pos-marker pos-yellow"></div>
+    </div>
+    <!-- id=49: Seat 2 Chip Input -->
+    <div class="position-cell" data-element-id="49" data-element-name="seat-2-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-blue"></div>
+      <div class="pos-marker pos-green"></div>
+    </div>
+    <!-- id=50: Seat 3 Chip Input -->
+    <div class="position-cell" data-element-id="50" data-element-name="seat-3-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-red"></div>
+      <div class="pos-marker pos-yellow"></div>
+    </div>
+    <!-- id=51: Seat 4 Chip Input -->
+    <div class="position-cell" data-element-id="51" data-element-name="seat-4-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-blue"></div>
+      <div class="pos-marker pos-green"></div>
+    </div>
+    <!-- id=52: Seat 5 Chip Input -->
+    <div class="position-cell" data-element-id="52" data-element-name="seat-5-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-red"></div>
+      <div class="pos-marker pos-yellow"></div>
+    </div>
+    <!-- id=53: Seat 6 Chip Input -->
+    <div class="position-cell" data-element-id="53" data-element-name="seat-6-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-blue"></div>
+      <div class="pos-marker pos-green"></div>
+    </div>
+    <!-- id=54: Seat 7 Chip Input -->
+    <div class="position-cell" data-element-id="54" data-element-name="seat-7-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-red"></div>
+      <div class="pos-marker pos-yellow"></div>
+    </div>
+    <!-- id=55: Seat 8 Chip Input -->
+    <div class="position-cell" data-element-id="55" data-element-name="seat-8-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-blue"></div>
+      <div class="pos-marker pos-green"></div>
+    </div>
+    <!-- id=56: Seat 9 Chip Input -->
+    <div class="position-cell" data-element-id="56" data-element-name="seat-9-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-red"></div>
+      <div class="pos-marker pos-yellow"></div>
+    </div>
+    <!-- id=57: Seat 10 Chip Input -->
+    <div class="position-cell" data-element-id="57" data-element-name="seat-10-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-blue"></div>
+      <div class="pos-marker pos-green"></div>
+    </div>
+  </div>
+
+  <!-- ===== BLIND CONTROLS (id=58~74, 95~96, 101~102) ===== -->
+  <div class="blind-row">
+
+    <!-- Row 1: Label boxes (top) -->
+    <!-- id=58: CAP Control -->
+    <div class="blind-label-box bl-cap" data-element-id="58" data-element-name="cap-control" data-element-group="blind">
+      <span class="blind-lbl">CAP</span>
+    </div>
+    <!-- id=59: ANTE Control -->
+    <div class="blind-label-box bl-ante" data-element-id="59" data-element-name="ante-control" data-element-group="blind">
+      <span class="blind-lbl">ANTE</span>
+    </div>
+    <!-- id=60: BTN BLIND Control -->
+    <div class="blind-label-box bl-btn-blind" data-element-id="60" data-element-name="btn-blind-control" data-element-group="blind">
+      <span class="blind-lbl">BTN<br>BLIND</span>
+    </div>
+    <!-- id=61: DEALER Control -->
+    <div class="blind-label-box bl-dealer" data-element-id="61" data-element-name="dealer-control" data-element-group="blind">
+      <span class="blind-lbl">DEALER</span>
+    </div>
+    <!-- id=62: SB Control -->
+    <div class="blind-label-box bl-sb" data-element-id="62" data-element-name="sb-control" data-element-group="blind">
+      <span class="blind-lbl">SB</span>
+    </div>
+    <!-- id=63: BB Control -->
+    <div class="blind-label-box bl-bb" data-element-id="63" data-element-name="bb-control" data-element-group="blind">
+      <span class="blind-lbl">BB</span>
+    </div>
+    <!-- id=64: 3B Control -->
+    <div class="blind-label-box bl-3b" data-element-id="64" data-element-name="3b-control" data-element-group="blind">
+      <span class="blind-lbl">3B</span>
+    </div>
+
+    <!-- Row 2: All buttons (single row) -->
+    <!-- id=65: CAP Value Input -->
+    <div class="blind-value-input val-cap" data-element-id="65" data-element-name="cap-value-input" data-element-group="blind">
+      <span class="val-lbl">0</span>
+    </div>
+    <!-- id=67: ANTE Value Input -->
+    <div class="blind-value-input val-ante" data-element-id="67" data-element-name="ante-value-input" data-element-group="blind">
+      <span class="val-lbl">0</span>
+    </div>
+    <!-- id=101: BTN BLIND Value Input -->
+    <div class="blind-value-input val-btn-blind" data-element-id="101" data-element-name="btn-blind-value-input" data-element-group="blind">
+      <span class="val-lbl">0</span>
+    </div>
+    <!-- id=95: Dealer Position Left -->
+    <div class="blind-arrow-btn arr-dealer-dec" data-element-id="95" data-element-name="dealer-position-left" data-element-group="blind">
+      <span class="arrow-lbl">&#9664;</span>
+    </div>
+    <!-- id=96: Dealer Position Right -->
+    <div class="blind-arrow-btn arr-dealer-inc" data-element-id="96" data-element-name="dealer-position-right" data-element-group="blind">
+      <span class="arrow-lbl">&#9654;</span>
+    </div>
+    <!-- id=69: SB Position Left -->
+    <div class="blind-arrow-btn arr-sb-pos-dec" data-element-id="69" data-element-name="sb-position-left" data-element-group="blind">
+      <span class="arrow-lbl">&#9664;</span>
+    </div>
+    <div class="blind-chip-display chip-sb-display" data-element-name="sb-chip-display" data-element-group="blind">
+      <span class="chip-display-text">200</span>
+    </div>
+    <!-- id=70: SB Position Right -->
+    <div class="blind-arrow-btn arr-sb-pos-inc" data-element-id="70" data-element-name="sb-position-right" data-element-group="blind">
+      <span class="arrow-lbl">&#9654;</span>
+    </div>
+    <!-- id=71: BB Position Left -->
+    <div class="blind-arrow-btn arr-bb-pos-dec" data-element-id="71" data-element-name="bb-position-left" data-element-group="blind">
+      <span class="arrow-lbl">&#9664;</span>
+    </div>
+    <div class="blind-chip-display chip-bb-display" data-element-name="bb-chip-display" data-element-group="blind">
+      <span class="chip-display-text">400</span>
+    </div>
+    <!-- id=72: BB Position Right -->
+    <div class="blind-arrow-btn arr-bb-pos-inc" data-element-id="72" data-element-name="bb-position-right" data-element-group="blind">
+      <span class="arrow-lbl">&#9654;</span>
+    </div>
+    <!-- id=73: 3B Value Input Left -->
+    <div class="blind-arrow-btn arr-3b-dec" data-element-id="73" data-element-name="3b-value-input-left" data-element-group="blind">
+      <span class="arrow-lbl">&#9664;</span>
+    </div>
+    <div class="blind-chip-display chip-3b-display" data-element-name="3b-chip-display" data-element-group="blind">
+      <span class="chip-display-text">800</span>
+    </div>
+    <!-- id=74: 3B Value Input Right -->
+    <div class="blind-arrow-btn arr-3b-inc" data-element-id="74" data-element-name="3b-value-input-right" data-element-group="blind">
+      <span class="arrow-lbl">&#9654;</span>
+    </div>
+
+  </div>
+
+  <!-- ===== GAME SETTINGS ROW (id=75~80) ===== -->
+  <div class="game-settings-row">
+    <!-- id=75: MIN CHIP Button -->
+    <div class="gs-btn gs-min-chip" data-element-id="75" data-element-name="min-chip-button" data-element-group="game_settings">
+      <span class="gs-lbl">MIN<br>CHIP</span>
+    </div>
+    <!-- id=76: 7 DEUCE Button -->
+    <div class="gs-btn gs-7deuce" data-element-id="76" data-element-name="7-deuce-button" data-element-group="game_settings">
+      <span class="gs-lbl">7<br>DEUCE</span>
+    </div>
+    <!-- id=77: BOMB POT Button -->
+    <div class="gs-btn gs-bomb-pot" data-element-id="77" data-element-name="bomb-pot-button" data-element-group="game_settings">
+      <span class="gs-lbl">BOMB<br>POT</span>
+    </div>
+    <!-- id=78: # BOARDS Button -->
+    <div class="gs-btn gs-boards" data-element-id="78" data-element-name="boards-button" data-element-group="game_settings">
+      <span class="gs-lbl">#<br>BOARDS</span>
+    </div>
+    <!-- id=79: NIT GAME Button -->
+    <div class="gs-btn gs-nit-game" data-element-id="79" data-element-name="nit-game-button" data-element-group="game_settings">
+      <span class="gs-lbl">NIT<br>GAME</span>
+    </div>
+    <!-- id=80: Game Variant Select -->
+    <select data-element-id="80" class="gs-game-variant" data-element-name="game-variant-select" data-element-group="game_settings">
+      <optgroup label="── Flop (13) ──">
+        <option value="holdem" selected>Holdem</option>
+        <option value="holdem_6plus_st">6+ Holdem (S>T)</option>
+        <option value="holdem_6plus_ts">6+ Holdem (T>S)</option>
+        <option value="pineapple">Pineapple</option>
+        <option value="omaha">Omaha 4</option>
+        <option value="omaha_hilo">Omaha 4 Hi-Lo</option>
+        <option value="omaha5">Omaha 5</option>
+        <option value="omaha5_hilo">Omaha 5 Hi-Lo</option>
+        <option value="omaha6">Omaha 6</option>
+        <option value="omaha6_hilo">Omaha 6 Hi-Lo</option>
+        <option value="courchevel">Courchevel</option>
+        <option value="courchevel_hilo">Courchevel Hi-Lo</option>
+      </optgroup>
+      <optgroup label="── Draw (6) ──">
+        <option value="draw5">5-Card Draw</option>
+        <option value="deuce7_draw">2-7 Single Draw</option>
+        <option value="deuce7_triple">2-7 Triple Draw</option>
+        <option value="a5_triple">A-5 Triple Draw</option>
+        <option value="badugi">Badugi</option>
+        <option value="badeucy">Badeucy</option>
+        <option value="badacey">Badacey</option>
+      </optgroup>
+      <optgroup label="── Stud (3) ──">
+        <option value="stud7">7-Card Stud</option>
+        <option value="stud7_hilo8">Stud Hi-Lo8</option>
+        <option value="razz">Razz</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <!-- ===== GAME SETTINGS VALUE BUTTONS (id=85,87,89,91,93) ===== -->
+  <div class="gs-value-row">
+    <!-- id=85: MIN CHIP Value -->
+    <div class="gs-value-btn gsv-min-chip" data-element-id="85"
+         data-element-name="min-chip-value" data-element-group="game_settings">
+      <span class="gs-value-lbl">100</span>
+    </div>
+    <!-- id=87: 7 DEUCE Value -->
+    <div class="gs-value-btn gsv-7deuce" data-element-id="87"
+         data-element-name="7-deuce-value" data-element-group="game_settings">
+      <span class="gs-value-lbl">0</span>
+    </div>
+    <!-- id=89: BOMB POT Value -->
+    <div class="gs-value-btn gsv-bomb-pot" data-element-id="89"
+         data-element-name="bomb-pot-value" data-element-group="game_settings">
+      <span class="gs-value-lbl">0</span>
+    </div>
+    <!-- id=93: NIT GAME Value -->
+    <div class="gs-value-btn gsv-nit-game" data-element-id="93"
+         data-element-name="nit-game-value" data-element-group="game_settings">
+      <span class="gs-value-lbl">0</span>
+    </div>
+    <!-- id=82: SINGLE BOARD Button -->
+    <div class="single-board-btn" data-element-id="82" data-element-name="single-board-button" data-element-group="game_settings">
+      <span class="single-board-lbl">SINGLE<br>BOARD</span>
+    </div>
+    <!-- id=83: SETTINGS Button -->
+    <div class="settings-btn" data-element-id="83"
+         data-element-name="settings-button" data-element-group="navigation">
+      <span class="settings-lbl">SETTINGS</span>
+    </div>
+  </div>
+
+  <!-- ===== ANNOTATION OVERLAYS ===== -->
+  <!--
+    Layout height calculation (total ~394px):
+      Titlebar:        0 -  28px  ( 0.00% -  7.11%)
+      Toolbar:        28 -  60px  ( 7.11% - 15.23%)
+      Card Slots:     60 - 140px  (15.23% - 35.53%)
+      Seat Labels:   140 - 168px  (35.53% - 42.64%)
+      Straddle:      168 - 192px  (42.64% - 48.73%)
+      Chip Input:    192 - 228px  (48.73% - 57.87%)
+      Blind Ctrl:    228 - 284px  (57.87% - 72.08%)
+      Game Settings: 284 - 314px  (72.08% - 79.70%)
+      GS Values:     314 - 394px  (79.70% - 100.00%)
+  -->
+
+  <!-- ===== ZONE 1: TITLEBAR (id=1-5) ===== -->
+  <!-- id=1: App Icon -->
+  <div class="anno-overlay anno-cat-titlebar" style="left:0.6%;top:0%;width:3.5%;height:7.1%;">
+    <span class="anno-badge">1</span>
+    <span class="anno-tooltip">App Icon</span>
+  </div>
+  <!-- id=2: Title Text -->
+  <div class="anno-overlay anno-cat-titlebar" style="left:4.5%;top:0%;width:56%;height:7.1%;">
+    <span class="anno-badge">2</span>
+    <span class="anno-tooltip">Title Text — EBS Action Tracker</span>
+  </div>
+  <!-- id=3: Minimize -->
+  <div class="anno-overlay anno-cat-titlebar" style="left:85.5%;top:0%;width:4.7%;height:7.1%;">
+    <span class="anno-badge">3</span>
+    <span class="anno-tooltip">Minimize Button</span>
+  </div>
+  <!-- id=4: Maximize -->
+  <div class="anno-overlay anno-cat-titlebar" style="left:90.2%;top:0%;width:4.7%;height:7.1%;">
+    <span class="anno-badge">4</span>
+    <span class="anno-tooltip">Maximize Button</span>
+  </div>
+  <!-- id=5: Close Window -->
+  <div class="anno-overlay anno-cat-titlebar" style="left:94.9%;top:0%;width:4.7%;height:7.1%;">
+    <span class="anno-badge">5</span>
+    <span class="anno-tooltip">Close Window Button</span>
+  </div>
+
+  <!-- ===== ZONE 2: TOOLBAR (id=6-17) ===== -->
+  <!-- id=6: USB Status -->
+  <div class="anno-overlay anno-cat-toolbar" style="left:0%;top:7.11%;width:5%;height:8.12%;">
+    <span class="anno-badge">6</span>
+    <span class="anno-tooltip">USB Connection Status</span>
+  </div>
+  <!-- id=7: WiFi Status -->
+  <div class="anno-overlay anno-cat-toolbar" style="left:5%;top:7.11%;width:5.5%;height:8.12%;">
+    <span class="anno-badge">7</span>
+    <span class="anno-tooltip">WiFi Signal Status</span>
+  </div>
+  <!-- id=8: Hand Number Box -->
+  <div class="anno-overlay anno-cat-hand_control" style="left:10.5%;top:7.11%;width:8%;height:8.12%;">
+    <span class="anno-badge">8</span>
+    <span class="anno-tooltip">Hand Number Display Box</span>
+  </div>
+  <!-- id=9: HAND Label -->
+  <div class="anno-overlay anno-cat-hand_control" style="left:12%;top:7.11%;width:8%;height:2.5%;opacity:0.7;">
+    <span class="anno-badge">9</span>
+    <span class="anno-tooltip">HAND Label</span>
+  </div>
+  <!-- id=16: Fullscreen -->
+  <div class="anno-overlay anno-cat-toolbar" style="left:90%;top:7.11%;width:5.5%;height:8.12%;">
+    <span class="anno-badge">16</span>
+    <span class="anno-tooltip">Fullscreen Toggle</span>
+  </div>
+  <!-- id=17: Close X (toolbar) -->
+  <div class="anno-overlay anno-cat-toolbar" style="left:95.5%;top:7.11%;width:4.5%;height:8.12%;">
+    <span class="anno-badge">17</span>
+    <span class="anno-tooltip">App Close Button</span>
+  </div>
+
+  <!-- ===== ZONE 3: CARD SLOTS (id=18-27) ===== -->
+  <!-- Card slots row: top=15.23%, height=20.30% -->
+  <!-- id=18: Seat 1 Card Slot -->
+  <div class="anno-overlay anno-cat-card_area" style="left:0%;top:15.23%;width:9.7%;height:20.30%;">
+    <span class="anno-badge">18</span>
+    <span class="anno-tooltip">Seat 1 Card Slot</span>
+  </div>
+  <!-- id=19: Seat 2 Card Slot -->
+  <div class="anno-overlay anno-cat-card_area" style="left:9.7%;top:15.23%;width:9.7%;height:20.30%;">
+    <span class="anno-badge">19</span>
+    <span class="anno-tooltip">Seat 2 Card Slot</span>
+  </div>
+  <!-- id=20: Seat 3 Card Slot -->
+  <div class="anno-overlay anno-cat-card_area" style="left:19.4%;top:15.23%;width:9.7%;height:20.30%;">
+    <span class="anno-badge">20</span>
+    <span class="anno-tooltip">Seat 3 Card Slot</span>
+  </div>
+  <!-- id=21: Seat 4 Card Slot -->
+  <div class="anno-overlay anno-cat-card_area" style="left:29.1%;top:15.23%;width:9.7%;height:20.30%;">
+    <span class="anno-badge">21</span>
+    <span class="anno-tooltip">Seat 4 Card Slot</span>
+  </div>
+  <!-- id=22: Seat 5 Card Slot -->
+  <div class="anno-overlay anno-cat-card_area" style="left:38.8%;top:15.23%;width:9.7%;height:20.30%;">
+    <span class="anno-badge">22</span>
+    <span class="anno-tooltip">Seat 5 Card Slot</span>
+  </div>
+  <!-- id=23: Seat 6 Card Slot -->
+  <div class="anno-overlay anno-cat-card_area" style="left:48.5%;top:15.23%;width:9.7%;height:20.30%;">
+    <span class="anno-badge">23</span>
+    <span class="anno-tooltip">Seat 6 Card Slot</span>
+  </div>
+  <!-- id=24: Seat 7 Card Slot -->
+  <div class="anno-overlay anno-cat-card_area" style="left:58.2%;top:15.23%;width:9.7%;height:20.30%;">
+    <span class="anno-badge">24</span>
+    <span class="anno-tooltip">Seat 7 Card Slot</span>
+  </div>
+  <!-- id=25: Seat 8 Card Slot -->
+  <div class="anno-overlay anno-cat-card_area" style="left:67.9%;top:15.23%;width:9.7%;height:20.30%;">
+    <span class="anno-badge">25</span>
+    <span class="anno-tooltip">Seat 8 Card Slot</span>
+  </div>
+  <!-- id=26: Seat 9 Card Slot -->
+  <div class="anno-overlay anno-cat-card_area" style="left:77.6%;top:15.23%;width:9.7%;height:20.30%;">
+    <span class="anno-badge">26</span>
+    <span class="anno-tooltip">Seat 9 Card Slot</span>
+  </div>
+  <!-- id=27: Seat 10 Card Slot -->
+  <div class="anno-overlay anno-cat-card_area" style="left:87.3%;top:15.23%;width:12.7%;height:20.30%;">
+    <span class="anno-badge">27</span>
+    <span class="anno-tooltip">Seat 10 Card Slot</span>
+  </div>
+
+  <!-- ===== ZONE 4: SEAT LABELS (id=28-37) ===== -->
+  <!-- Seat labels row: top=35.53%, height=7.11% -->
+  <!-- id=28: Seat 1 Label -->
+  <div class="anno-overlay anno-cat-seat" style="left:0%;top:35.53%;width:9.7%;height:7.11%;">
+    <span class="anno-badge">28</span>
+    <span class="anno-tooltip">Seat 1 Label</span>
+  </div>
+  <!-- id=29: Seat 2 Label -->
+  <div class="anno-overlay anno-cat-seat" style="left:9.7%;top:35.53%;width:9.7%;height:7.11%;">
+    <span class="anno-badge">29</span>
+    <span class="anno-tooltip">Seat 2 Label</span>
+  </div>
+  <!-- id=30: Seat 3 Label -->
+  <div class="anno-overlay anno-cat-seat" style="left:19.4%;top:35.53%;width:9.7%;height:7.11%;">
+    <span class="anno-badge">30</span>
+    <span class="anno-tooltip">Seat 3 Label</span>
+  </div>
+  <!-- id=31: Seat 4 Label -->
+  <div class="anno-overlay anno-cat-seat" style="left:29.1%;top:35.53%;width:9.7%;height:7.11%;">
+    <span class="anno-badge">31</span>
+    <span class="anno-tooltip">Seat 4 Label</span>
+  </div>
+  <!-- id=32: Seat 5 Label -->
+  <div class="anno-overlay anno-cat-seat" style="left:38.8%;top:35.53%;width:9.7%;height:7.11%;">
+    <span class="anno-badge">32</span>
+    <span class="anno-tooltip">Seat 5 Label</span>
+  </div>
+  <!-- id=33: Seat 6 Label -->
+  <div class="anno-overlay anno-cat-seat" style="left:48.5%;top:35.53%;width:9.7%;height:7.11%;">
+    <span class="anno-badge">33</span>
+    <span class="anno-tooltip">Seat 6 Label</span>
+  </div>
+  <!-- id=34: Seat 7 Label -->
+  <div class="anno-overlay anno-cat-seat" style="left:58.2%;top:35.53%;width:9.7%;height:7.11%;">
+    <span class="anno-badge">34</span>
+    <span class="anno-tooltip">Seat 7 Label</span>
+  </div>
+  <!-- id=35: Seat 8 Label -->
+  <div class="anno-overlay anno-cat-seat" style="left:67.9%;top:35.53%;width:9.7%;height:7.11%;">
+    <span class="anno-badge">35</span>
+    <span class="anno-tooltip">Seat 8 Label</span>
+  </div>
+  <!-- id=36: Seat 9 Label -->
+  <div class="anno-overlay anno-cat-seat" style="left:77.6%;top:35.53%;width:9.7%;height:7.11%;">
+    <span class="anno-badge">36</span>
+    <span class="anno-tooltip">Seat 9 Label</span>
+  </div>
+  <!-- id=37: Seat 10 Label -->
+  <div class="anno-overlay anno-cat-seat" style="left:87.3%;top:35.53%;width:12.7%;height:7.11%;">
+    <span class="anno-badge">37</span>
+    <span class="anno-tooltip">Seat 10 Label</span>
+  </div>
+
+  <!-- ===== ZONE 5: STRADDLE ROW (id=38-47) ===== -->
+  <!-- Straddle row: top=42.64%, height=6.09% -->
+  <!-- id=38: Seat 1 Straddle -->
+  <div class="anno-overlay anno-cat-option" style="left:0%;top:42.64%;width:9.7%;height:6.09%;">
+    <span class="anno-badge">38</span>
+    <span class="anno-tooltip">Seat 1 Straddle Toggle</span>
+  </div>
+  <!-- id=39: Seat 2 Straddle -->
+  <div class="anno-overlay anno-cat-option" style="left:9.7%;top:42.64%;width:9.7%;height:6.09%;">
+    <span class="anno-badge">39</span>
+    <span class="anno-tooltip">Seat 2 Straddle Toggle</span>
+  </div>
+  <!-- id=40: Seat 3 Straddle -->
+  <div class="anno-overlay anno-cat-option" style="left:19.4%;top:42.64%;width:9.7%;height:6.09%;">
+    <span class="anno-badge">40</span>
+    <span class="anno-tooltip">Seat 3 Straddle Toggle</span>
+  </div>
+  <!-- id=41: Seat 4 Straddle -->
+  <div class="anno-overlay anno-cat-option" style="left:29.1%;top:42.64%;width:9.7%;height:6.09%;">
+    <span class="anno-badge">41</span>
+    <span class="anno-tooltip">Seat 4 Straddle Toggle</span>
+  </div>
+  <!-- id=42: Seat 5 Straddle -->
+  <div class="anno-overlay anno-cat-option" style="left:38.8%;top:42.64%;width:9.7%;height:6.09%;">
+    <span class="anno-badge">42</span>
+    <span class="anno-tooltip">Seat 5 Straddle Toggle</span>
+  </div>
+  <!-- id=43: Seat 6 Straddle -->
+  <div class="anno-overlay anno-cat-option" style="left:48.5%;top:42.64%;width:9.7%;height:6.09%;">
+    <span class="anno-badge">43</span>
+    <span class="anno-tooltip">Seat 6 Straddle Toggle</span>
+  </div>
+  <!-- id=44: Seat 7 Straddle -->
+  <div class="anno-overlay anno-cat-option" style="left:58.2%;top:42.64%;width:9.7%;height:6.09%;">
+    <span class="anno-badge">44</span>
+    <span class="anno-tooltip">Seat 7 Straddle Toggle</span>
+  </div>
+  <!-- id=45: Seat 8 Straddle -->
+  <div class="anno-overlay anno-cat-option" style="left:67.9%;top:42.64%;width:9.7%;height:6.09%;">
+    <span class="anno-badge">45</span>
+    <span class="anno-tooltip">Seat 8 Straddle Toggle</span>
+  </div>
+  <!-- id=46: Seat 9 Straddle -->
+  <div class="anno-overlay anno-cat-option" style="left:77.6%;top:42.64%;width:9.7%;height:6.09%;">
+    <span class="anno-badge">46</span>
+    <span class="anno-tooltip">Seat 9 Straddle Toggle</span>
+  </div>
+  <!-- id=47: Seat 10 Straddle -->
+  <div class="anno-overlay anno-cat-option" style="left:87.3%;top:42.64%;width:12.7%;height:6.09%;">
+    <span class="anno-badge">47</span>
+    <span class="anno-tooltip">Seat 10 Straddle Toggle</span>
+  </div>
+
+  <!-- ===== ZONE 6: CHIP INPUT / POSITION ROW (id=48-57) ===== -->
+  <!-- Position row: top=48.73%, height=9.14% -->
+  <!-- id=48: Seat 1 Chip Input -->
+  <div class="anno-overlay anno-cat-chip_input" style="left:0%;top:48.73%;width:9.7%;height:9.14%;">
+    <span class="anno-badge">48</span>
+    <span class="anno-tooltip">Seat 1 Position / Chip Input</span>
+  </div>
+  <!-- id=49: Seat 2 Chip Input -->
+  <div class="anno-overlay anno-cat-chip_input" style="left:9.7%;top:48.73%;width:9.7%;height:9.14%;">
+    <span class="anno-badge">49</span>
+    <span class="anno-tooltip">Seat 2 Position / Chip Input</span>
+  </div>
+  <!-- id=50: Seat 3 Chip Input -->
+  <div class="anno-overlay anno-cat-chip_input" style="left:19.4%;top:48.73%;width:9.7%;height:9.14%;">
+    <span class="anno-badge">50</span>
+    <span class="anno-tooltip">Seat 3 Position / Chip Input</span>
+  </div>
+  <!-- id=51: Seat 4 Chip Input -->
+  <div class="anno-overlay anno-cat-chip_input" style="left:29.1%;top:48.73%;width:9.7%;height:9.14%;">
+    <span class="anno-badge">51</span>
+    <span class="anno-tooltip">Seat 4 Position / Chip Input</span>
+  </div>
+  <!-- id=52: Seat 5 Chip Input -->
+  <div class="anno-overlay anno-cat-chip_input" style="left:38.8%;top:48.73%;width:9.7%;height:9.14%;">
+    <span class="anno-badge">52</span>
+    <span class="anno-tooltip">Seat 5 Position / Chip Input</span>
+  </div>
+  <!-- id=53: Seat 6 Chip Input -->
+  <div class="anno-overlay anno-cat-chip_input" style="left:48.5%;top:48.73%;width:9.7%;height:9.14%;">
+    <span class="anno-badge">53</span>
+    <span class="anno-tooltip">Seat 6 Position / Chip Input</span>
+  </div>
+  <!-- id=54: Seat 7 Chip Input -->
+  <div class="anno-overlay anno-cat-chip_input" style="left:58.2%;top:48.73%;width:9.7%;height:9.14%;">
+    <span class="anno-badge">54</span>
+    <span class="anno-tooltip">Seat 7 Position / Chip Input</span>
+  </div>
+  <!-- id=55: Seat 8 Chip Input -->
+  <div class="anno-overlay anno-cat-chip_input" style="left:67.9%;top:48.73%;width:9.7%;height:9.14%;">
+    <span class="anno-badge">55</span>
+    <span class="anno-tooltip">Seat 8 Position / Chip Input</span>
+  </div>
+  <!-- id=56: Seat 9 Chip Input -->
+  <div class="anno-overlay anno-cat-chip_input" style="left:77.6%;top:48.73%;width:9.7%;height:9.14%;">
+    <span class="anno-badge">56</span>
+    <span class="anno-tooltip">Seat 9 Position / Chip Input</span>
+  </div>
+  <!-- id=57: Seat 10 Chip Input -->
+  <div class="anno-overlay anno-cat-chip_input" style="left:87.3%;top:48.73%;width:12.7%;height:9.14%;">
+    <span class="anno-badge">57</span>
+    <span class="anno-tooltip">Seat 10 Position / Chip Input</span>
+  </div>
+
+  <!-- ===== ZONE 7: BLIND CONTROLS (id=58-74, 95-96, 101) ===== -->
+  <!-- Blind row: top=57.87%, height=14.21% -->
+  <!-- Top labels: top=57.87%, height=6.40% (45% of 56px) -->
+  <!-- Bottom values: top=65.23%, height=6.82% (48% of 56px) -->
+
+  <!-- id=58: CAP Label -->
+  <div class="anno-overlay anno-cat-blind" style="left:0.5%;top:57.87%;width:11%;height:6.40%;">
+    <span class="anno-badge">58</span>
+    <span class="anno-tooltip">CAP Label</span>
+  </div>
+  <!-- id=59: ANTE Label -->
+  <div class="anno-overlay anno-cat-blind" style="left:12.5%;top:57.87%;width:11%;height:6.40%;">
+    <span class="anno-badge">59</span>
+    <span class="anno-tooltip">ANTE Label</span>
+  </div>
+  <!-- id=60: BTN BLIND Label -->
+  <div class="anno-overlay anno-cat-blind" style="left:24.5%;top:57.87%;width:13%;height:6.40%;">
+    <span class="anno-badge">60</span>
+    <span class="anno-tooltip">BTN BLIND Label</span>
+  </div>
+  <!-- id=61: DEALER Label -->
+  <div class="anno-overlay anno-cat-blind" style="left:38.5%;top:57.87%;width:12%;height:6.40%;">
+    <span class="anno-badge">61</span>
+    <span class="anno-tooltip">DEALER Position Label</span>
+  </div>
+  <!-- id=62: SB Label -->
+  <div class="anno-overlay anno-cat-blind" style="left:51.5%;top:57.87%;width:16%;height:6.40%;">
+    <span class="anno-badge">62</span>
+    <span class="anno-tooltip">SB (Small Blind) Label</span>
+  </div>
+  <!-- id=63: BB Label -->
+  <div class="anno-overlay anno-cat-blind" style="left:68.5%;top:57.87%;width:16%;height:6.40%;">
+    <span class="anno-badge">63</span>
+    <span class="anno-tooltip">BB (Big Blind) Label</span>
+  </div>
+  <!-- id=64: 3B Label -->
+  <div class="anno-overlay anno-cat-blind" style="left:85.5%;top:57.87%;width:14%;height:6.40%;">
+    <span class="anno-badge">64</span>
+    <span class="anno-tooltip">3B (3-Bet) Label</span>
+  </div>
+
+  <!-- Bottom row value inputs/arrows -->
+  <!-- id=65: CAP Value -->
+  <div class="anno-overlay anno-cat-blind" style="left:0.5%;top:65.23%;width:11%;height:6.82%;">
+    <span class="anno-badge">65</span>
+    <span class="anno-tooltip">CAP Value Input</span>
+  </div>
+  <!-- id=67: ANTE Value -->
+  <div class="anno-overlay anno-cat-blind" style="left:12.5%;top:65.23%;width:11%;height:6.82%;">
+    <span class="anno-badge">67</span>
+    <span class="anno-tooltip">ANTE Value Input</span>
+  </div>
+  <!-- id=101: BTN BLIND Value -->
+  <div class="anno-overlay anno-cat-blind" style="left:24.5%;top:65.23%;width:13%;height:6.82%;">
+    <span class="anno-badge">101</span>
+    <span class="anno-tooltip">BTN BLIND Value Input</span>
+  </div>
+  <!-- id=95: Dealer Dec Arrow -->
+  <div class="anno-overlay anno-cat-blind" style="left:38.5%;top:65.23%;width:6%;height:6.82%;">
+    <span class="anno-badge">95</span>
+    <span class="anno-tooltip">Dealer Position Left Arrow</span>
+  </div>
+  <!-- id=96: Dealer Inc Arrow -->
+  <div class="anno-overlay anno-cat-blind" style="left:44.5%;top:65.23%;width:6%;height:6.82%;">
+    <span class="anno-badge">96</span>
+    <span class="anno-tooltip">Dealer Position Right Arrow</span>
+  </div>
+  <!-- id=69: SB Position Left -->
+  <div class="anno-overlay anno-cat-blind" style="left:51.5%;top:65.23%;width:3.5%;height:6.82%;">
+    <span class="anno-badge">69</span>
+    <span class="anno-tooltip">SB Position Left Arrow</span>
+  </div>
+  <!-- SB Chip Display (no id in source) -->
+  <div class="anno-overlay anno-cat-blind" style="left:55%;top:65.23%;width:9%;height:6.82%;opacity:0.6;">
+    <span class="anno-badge">SB$</span>
+    <span class="anno-tooltip">SB Chip Value Display (200)</span>
+  </div>
+  <!-- id=70: SB Position Right -->
+  <div class="anno-overlay anno-cat-blind" style="left:64%;top:65.23%;width:3.5%;height:6.82%;">
+    <span class="anno-badge">70</span>
+    <span class="anno-tooltip">SB Position Right Arrow</span>
+  </div>
+  <!-- id=71: BB Position Left -->
+  <div class="anno-overlay anno-cat-blind" style="left:68.5%;top:65.23%;width:3.5%;height:6.82%;">
+    <span class="anno-badge">71</span>
+    <span class="anno-tooltip">BB Position Left Arrow</span>
+  </div>
+  <!-- BB Chip Display (no id in source) -->
+  <div class="anno-overlay anno-cat-blind" style="left:72%;top:65.23%;width:9%;height:6.82%;opacity:0.6;">
+    <span class="anno-badge">BB$</span>
+    <span class="anno-tooltip">BB Chip Value Display (400)</span>
+  </div>
+  <!-- id=72: BB Position Right -->
+  <div class="anno-overlay anno-cat-blind" style="left:81%;top:65.23%;width:3.5%;height:6.82%;">
+    <span class="anno-badge">72</span>
+    <span class="anno-tooltip">BB Position Right Arrow</span>
+  </div>
+  <!-- id=73: 3B Dec Arrow -->
+  <div class="anno-overlay anno-cat-blind" style="left:85.5%;top:65.23%;width:3%;height:6.82%;">
+    <span class="anno-badge">73</span>
+    <span class="anno-tooltip">3B Value Left Arrow</span>
+  </div>
+  <!-- 3B Chip Display (no id in source) -->
+  <div class="anno-overlay anno-cat-blind" style="left:88.5%;top:65.23%;width:8%;height:6.82%;opacity:0.6;">
+    <span class="anno-badge">3B$</span>
+    <span class="anno-tooltip">3B Chip Value Display (800)</span>
+  </div>
+  <!-- id=74: 3B Inc Arrow -->
+  <div class="anno-overlay anno-cat-blind" style="left:96.5%;top:65.23%;width:3%;height:6.82%;">
+    <span class="anno-badge">74</span>
+    <span class="anno-tooltip">3B Value Right Arrow</span>
+  </div>
+
+  <!-- ===== ZONE 8: GAME SETTINGS LABELS (id=75-80) ===== -->
+  <!-- Game settings row: top=72.08%, height=7.61% -->
+  <!-- id=75: MIN CHIP -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:0.5%;top:72.08%;width:10%;height:7.61%;">
+    <span class="anno-badge">75</span>
+    <span class="anno-tooltip">MIN CHIP Label Button</span>
+  </div>
+  <!-- id=76: 7 DEUCE -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:11%;top:72.08%;width:10%;height:7.61%;">
+    <span class="anno-badge">76</span>
+    <span class="anno-tooltip">7 DEUCE Label Button</span>
+  </div>
+  <!-- id=77: BOMB POT -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:21.5%;top:72.08%;width:10%;height:7.61%;">
+    <span class="anno-badge">77</span>
+    <span class="anno-tooltip">BOMB POT Label Button</span>
+  </div>
+  <!-- id=78: # BOARDS -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:32%;top:72.08%;width:10%;height:7.61%;">
+    <span class="anno-badge">78</span>
+    <span class="anno-tooltip"># BOARDS Label Button</span>
+  </div>
+  <!-- id=79: NIT GAME -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:42.5%;top:72.08%;width:10%;height:7.61%;">
+    <span class="anno-badge">79</span>
+    <span class="anno-tooltip">NIT GAME Label Button</span>
+  </div>
+  <!-- id=80: Game Variant Select -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:53%;top:72.08%;width:46.5%;height:7.61%;">
+    <span class="anno-badge">80</span>
+    <span class="anno-tooltip">Game Variant Select (22 types)</span>
+  </div>
+
+  <!-- ===== ZONE 9: GAME SETTINGS VALUES + BOTTOM BUTTONS (id=82-93) ===== -->
+  <!-- GS value row: top=79.70%, height=20.30% -->
+  <!-- id=85: MIN CHIP Value -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:0.5%;top:79.70%;width:10%;height:20.30%;">
+    <span class="anno-badge">85</span>
+    <span class="anno-tooltip">MIN CHIP Value (100)</span>
+  </div>
+  <!-- id=87: 7 DEUCE Value -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:11%;top:79.70%;width:10%;height:20.30%;">
+    <span class="anno-badge">87</span>
+    <span class="anno-tooltip">7 DEUCE Value (0)</span>
+  </div>
+  <!-- id=89: BOMB POT Value -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:21.5%;top:79.70%;width:10%;height:20.30%;">
+    <span class="anno-badge">89</span>
+    <span class="anno-tooltip">BOMB POT Value (0)</span>
+  </div>
+  <!-- id=82: SINGLE BOARD Button -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:32%;top:79.70%;width:10%;height:20.30%;">
+    <span class="anno-badge">82</span>
+    <span class="anno-tooltip">SINGLE BOARD Button</span>
+  </div>
+  <!-- id=93: NIT GAME Value -->
+  <div class="anno-overlay anno-cat-game_settings" style="left:42.5%;top:79.70%;width:10%;height:20.30%;">
+    <span class="anno-badge">93</span>
+    <span class="anno-tooltip">NIT GAME Value (0)</span>
+  </div>
+  <!-- id=83: SETTINGS Button -->
+  <div class="anno-overlay anno-cat-navigation" style="left:53%;top:79.70%;width:46.5%;height:20.30%;">
+    <span class="anno-badge">83</span>
+    <span class="anno-tooltip">SETTINGS Navigation Button</span>
+  </div>
+</div>
+</body>
+</html>

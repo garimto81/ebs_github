@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphicElement Class Hierarchy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 600px;
+        }
+        .container {
+            width: 800px;
+            height: 600px;
+            border: 2px solid #000000;
+            padding: 20px;
+            background: #ffffff;
+            overflow: auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #000000;
+        }
+        .tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .node {
+            background: #f5f5f5;
+            border: 2px solid #000000;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+            position: relative;
+        }
+        .root {
+            background: #e0e0e0;
+            font-size: 16px;
+            padding: 15px 30px;
+            margin-bottom: 40px;
+        }
+        .children {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px 30px;
+            margin-top: 20px;
+        }
+        .child {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .connector {
+            width: 2px;
+            height: 30px;
+            background: #000000;
+            margin: 0;
+        }
+        .horizontal-line {
+            position: absolute;
+            top: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            height: 2px;
+            background: #000000;
+        }
+        .vertical-connector {
+            position: absolute;
+            width: 2px;
+            height: 30px;
+            background: #000000;
+            top: 130px;
+        }
+        .description {
+            font-size: 10px;
+            color: #666666;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GraphicElement Class Hierarchy</h1>
+
+        <div class="tree">
+            <div class="node root">
+                GraphicElement (Base)
+            </div>
+
+            <div class="horizontal-line"></div>
+
+            <div class="children">
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        PlayerElement
+                        <div class="description">이름, 칩, 카드, 국기</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        BoardElement
+                        <div class="description">커뮤니티 카드 5장</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        BlindsElement
+                        <div class="description">블라인드 레벨 표시</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        ChipCount
+                        <div class="description">칩 카운트</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        HistoryPanelElement
+                        <div class="description">핸드 히스토리</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        FieldElement
+                        <div class="description">보드 영역 배경</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        Panel
+                        <div class="description">Header/Footer/Repeat</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        Strip
+                        <div class="description">플레이어 순위, Logo</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        TickerElement
+                        <div class="description">스크롤 텍스트</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        OutsElement
+                        <div class="description">아웃츠 카드 표시</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        ActionClockElement
+                        <div class="description">액션 타이머</div>
+                    </div>
+                </div>
+
+                <div class="child">
+                    <div class="connector"></div>
+                    <div class="node">
+                        SplitScreenDividerElement
+                        <div class="description">분할 화면 구분선</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

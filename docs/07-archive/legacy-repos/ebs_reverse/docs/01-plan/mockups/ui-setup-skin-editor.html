@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720">
+    <title>스킨/레이아웃 에디터 통합 - PokerGFX Wireframe</title>
+    <style>
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #000;
+            padding: 0;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .toolbar {
+            border: 1px solid #999;
+            background: #f5f5f5;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2px;
+        }
+
+        .toolbar-btn {
+            padding: 4px 10px;
+            border: 1px solid #999;
+            background: #fff;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .toolbar-separator {
+            width: 1px;
+            height: 20px;
+            background: #999;
+        }
+
+        .toolbar-tabs {
+            display: flex;
+            gap: 4px;
+            margin-left: auto;
+        }
+
+        .tab {
+            padding: 4px 14px;
+            border: 1px solid #999;
+            background: #fff;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .tab.active {
+            font-weight: bold;
+            border-bottom: 3px solid #000;
+        }
+
+        .main-layout {
+            display: flex;
+            border: 1px solid #999;
+            height: 480px;
+        }
+
+        .left-panel {
+            width: 140px;
+            border-right: 1px solid #999;
+            background: #fff;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            background: #f5f5f5;
+            padding: 8px 10px;
+            font-weight: bold;
+            font-size: 12px;
+            border-bottom: 1px solid #999;
+        }
+
+        .tree-item {
+            padding: 4px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tree-item.expandable::before {
+            content: '▼ ';
+            font-size: 9px;
+        }
+
+        .tree-item.selected {
+            background: #000;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .tree-child {
+            padding-left: 24px;
+        }
+
+        .center-panel {
+            flex: 1;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ruler-top {
+            position: absolute;
+            top: 0;
+            left: 30px;
+            right: 0;
+            height: 18px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #999;
+            font-size: 9px;
+            color: #666;
+        }
+
+        .ruler-left {
+            position: absolute;
+            top: 18px;
+            left: 0;
+            width: 30px;
+            bottom: 0;
+            background: #f5f5f5;
+            border-right: 1px solid #999;
+            font-size: 9px;
+            color: #666;
+        }
+
+        .ruler-tick {
+            position: absolute;
+        }
+
+        .canvas-area {
+            position: absolute;
+            top: 18px;
+            left: 30px;
+            right: 0;
+            bottom: 0;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .table-shape {
+            width: 320px;
+            height: 200px;
+            border: 2px dashed #999;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .seat-rect {
+            position: absolute;
+            width: 70px;
+            height: 40px;
+            border: 1px solid #666;
+            background: #fff;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .seat-rect.selected {
+            border: 2px solid #000;
+        }
+
+        .handle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #000;
+            border: 1px solid #fff;
+        }
+
+        .handle.tl { top: -3px; left: -3px; }
+        .handle.tr { top: -3px; right: -3px; }
+        .handle.bl { bottom: -3px; left: -3px; }
+        .handle.br { bottom: -3px; right: -3px; }
+
+        .s1 { bottom: -22px; left: 50%; transform: translateX(-50%); }
+        .s2 { bottom: 30px; left: -38px; }
+        .s3 { top: 30px; left: -38px; }
+        .s4 { top: -22px; left: 50%; transform: translateX(-50%); }
+        .s5 { top: 30px; right: -38px; }
+        .s6 { bottom: 30px; right: -38px; }
+
+        .canvas-note {
+            position: absolute;
+            bottom: 16px;
+            left: 40px;
+            font-size: 10px;
+            color: #666;
+            font-style: italic;
+            max-width: 280px;
+        }
+
+        .right-panel {
+            width: 200px;
+            border-left: 1px solid #999;
+            background: #fff;
+            overflow-y: auto;
+        }
+
+        .property-group {
+            border-bottom: 1px solid #ccc;
+            padding: 8px;
+        }
+
+        .property-group-title {
+            font-weight: bold;
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+
+        .property-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 11px;
+        }
+
+        .property-label {
+            color: #333;
+        }
+
+        .property-input {
+            width: 90px;
+            padding: 3px 6px;
+            border: 1px solid #999;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 11px;
+        }
+
+        .property-note {
+            font-size: 10px;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .status-bar {
+            border: 1px solid #999;
+            background: #f5f5f5;
+            padding: 6px 12px;
+            font-size: 11px;
+            color: #333;
+            margin-top: 2px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            gap: 6px;
+        }
+
+        .status-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="breadcrumb">Part VII &gt; Section 18. 준비 단계 &gt; 스킨/레이아웃 에디터</div>
+
+    <div class="toolbar">
+        <div class="toolbar-btn">New</div>
+        <div class="toolbar-btn">Open</div>
+        <div class="toolbar-btn">Save</div>
+        <div class="toolbar-btn">Import</div>
+        <div class="toolbar-btn">Export</div>
+        <div class="toolbar-separator"></div>
+        <div class="toolbar-btn">Undo</div>
+        <div class="toolbar-btn">Redo</div>
+        <div class="toolbar-separator"></div>
+        <div class="toolbar-tabs">
+            <div class="tab active">Skin Editor</div>
+            <div class="tab">GE Board</div>
+            <div class="tab">GE Player</div>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <div class="left-panel">
+            <div class="panel-header">Element Tree</div>
+            <div class="tree-item expandable">Table</div>
+            <div class="tree-item tree-child">배경</div>
+            <div class="tree-item tree-child">펠트</div>
+            <div class="tree-item tree-child">테두리</div>
+            <div class="tree-item expandable">Seats</div>
+            <div class="tree-item tree-child">Seat 1</div>
+            <div class="tree-item tree-child">Seat 2</div>
+            <div class="tree-item tree-child selected">Seat 3</div>
+            <div class="tree-item tree-child">Seat 4~10</div>
+            <div class="tree-item expandable">Cards</div>
+            <div class="tree-item tree-child">앞면</div>
+            <div class="tree-item tree-child">뒷면</div>
+            <div class="tree-item tree-child">Pip</div>
+            <div class="tree-item expandable">Board</div>
+            <div class="tree-item tree-child">위치</div>
+            <div class="tree-item tree-child">팟</div>
+            <div class="tree-item tree-child">딜러</div>
+            <div class="tree-item expandable">Overlays</div>
+            <div class="tree-item tree-child">로고</div>
+            <div class="tree-item tree-child">자막</div>
+            <div class="tree-item tree-child">티커</div>
+        </div>
+
+        <div class="center-panel">
+            <div class="ruler-top">
+                <div class="ruler-tick" style="left: 100px; top: 4px;">100</div>
+                <div class="ruler-tick" style="left: 200px; top: 4px;">200</div>
+                <div class="ruler-tick" style="left: 300px; top: 4px;">300</div>
+                <div class="ruler-tick" style="left: 400px; top: 4px;">400</div>
+                <div class="ruler-tick" style="left: 500px; top: 4px;">500</div>
+            </div>
+            <div class="ruler-left">
+                <div class="ruler-tick" style="top: 100px; left: 6px;">100</div>
+                <div class="ruler-tick" style="top: 200px; left: 6px;">200</div>
+                <div class="ruler-tick" style="top: 300px; left: 6px;">300</div>
+                <div class="ruler-tick" style="top: 400px; left: 6px;">400</div>
+            </div>
+            <div class="canvas-area">
+                <div class="table-shape">
+                    <div class="seat-rect s1">Seat 1</div>
+                    <div class="seat-rect s2">Seat 2</div>
+                    <div class="seat-rect s3 selected">
+                        Seat 3
+                        <div class="handle tl"></div>
+                        <div class="handle tr"></div>
+                        <div class="handle bl"></div>
+                        <div class="handle br"></div>
+                    </div>
+                    <div class="seat-rect s4">Seat 4</div>
+                    <div class="seat-rect s5">Seat 5</div>
+                    <div class="seat-rect s6">Seat 6</div>
+                </div>
+                <div class="canvas-note">
+                    <strong>디자인 근거:</strong> 드래그로 요소 배치, 눈금으로 정밀 정렬
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="panel-header">Properties</div>
+
+            <div class="property-group">
+                <div class="property-group-title">Transform</div>
+                <div class="property-row">
+                    <span class="property-label">X</span>
+                    <input type="text" class="property-input" value="245" />
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Y</span>
+                    <input type="text" class="property-input" value="380" />
+                </div>
+                <div class="property-row">
+                    <span class="property-label">W</span>
+                    <input type="text" class="property-input" value="465" />
+                </div>
+                <div class="property-row">
+                    <span class="property-label">H</span>
+                    <input type="text" class="property-input" value="120" />
+                </div>
+            </div>
+
+            <div class="property-group">
+                <div class="property-group-title">Font</div>
+                <div class="property-row">
+                    <span class="property-label">Name</span>
+                    <input type="text" class="property-input" value="Segoe UI" />
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Size</span>
+                    <input type="text" class="property-input" value="14" />
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Weight</span>
+                    <input type="text" class="property-input" value="Bold" />
+                </div>
+            </div>
+
+            <div class="property-group">
+                <div class="property-group-title">Background</div>
+                <div class="property-row">
+                    <span class="property-label">Color</span>
+                    <input type="text" class="property-input" value="#1a1a1a" />
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Opacity</span>
+                    <input type="text" class="property-input" value="90%" />
+                </div>
+            </div>
+
+            <div class="property-group">
+                <div class="property-group-title">Effects</div>
+                <div class="property-row">
+                    <span class="property-label">Shadow</span>
+                    <input type="text" class="property-input" value="ON" />
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Glow</span>
+                    <input type="text" class="property-input" value="OFF" />
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Animation</span>
+                    <input type="text" class="property-input" value="Fade In" />
+                </div>
+                <div class="property-note">
+                    <strong>디자인 근거:</strong> 99+ 설정 필드를 카테고리별로 접이식 관리
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="status-label">Skin:</span>
+            <span>WSOP_2024.vpt</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Elements:</span>
+            <span>47</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Status:</span>
+            <span>Modified</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Zoom:</span>
+            <span>100%</span>
+        </div>
+    </div>
+</body>
+</html>

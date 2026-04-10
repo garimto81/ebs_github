@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>GFX2 Tab Annotated</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a1a; padding: 0; margin: 0; }
+  .container { position: relative; display: inline-block; }
+  .container img { display: block; width: 765px; height: 730px; }
+  .annotation {
+    position: absolute;
+    border: 2px solid #ff3333;
+    background: rgba(255, 51, 51, 0.15);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  .annotation .number {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    width: 24px;
+    height: 24px;
+    background: #ff3333;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .legend {
+    padding: 16px 20px;
+    background: #2a2a2a;
+    color: #eee;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .legend h3 {
+    color: #ff3333;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  .legend table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .legend td {
+    padding: 4px 8px;
+    border-bottom: 1px solid #3a3a3a;
+    vertical-align: top;
+  }
+  .legend td:first-child {
+    width: 40px;
+    color: #ff3333;
+    font-weight: bold;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <img src="../images/screenshots/스크린샷 2026-02-05 180652.png" alt="GFX2 Tab">
+  <!-- 1: 리더보드 옵션 그룹 (좌측 상단) -->
+  <div class="annotation" style="left: 20px; top: 398px; width: 340px; height: 130px;">
+    <span class="number">1</span>
+  </div>
+  <!-- 2: 게임 규칙 옵션 그룹 (좌측 하단) -->
+  <div class="annotation" style="left: 20px; top: 535px; width: 340px; height: 100px;">
+    <span class="number">2</span>
+  </div>
+  <!-- 3: 플레이어 표시 옵션 (우측 상단) -->
+  <div class="annotation" style="left: 380px; top: 398px; width: 380px; height: 55px;">
+    <span class="number">3</span>
+  </div>
+  <!-- 4: Equity/Outs 옵션 -->
+  <div class="annotation" style="left: 380px; top: 455px; width: 380px; height: 50px;">
+    <span class="number">4</span>
+  </div>
+  <!-- 5: Clear previous action / 'x to call' -->
+  <div class="annotation" style="left: 380px; top: 510px; width: 380px; height: 25px;">
+    <span class="number">5</span>
+  </div>
+  <!-- 6: 플레이어 순서 설정 -->
+  <div class="annotation" style="left: 380px; top: 540px; width: 380px; height: 28px;">
+    <span class="number">6</span>
+  </div>
+  <!-- 7: Show hand equities -->
+  <div class="annotation" style="left: 380px; top: 572px; width: 380px; height: 28px;">
+    <span class="number">7</span>
+  </div>
+  <!-- 8: Hilite 설정 -->
+  <div class="annotation" style="left: 380px; top: 604px; width: 380px; height: 55px;">
+    <span class="number">8</span>
+  </div>
+</div>
+<div class="legend">
+  <h3>GFX 2 탭 기능 영역</h3>
+  <table>
+    <tr><td>1</td><td>리더보드 옵션 — knockout rank, Chipcount %, eliminated 표시, Cumulative Winnings, 리더보드 숨김, Max BB multiple</td></tr>
+    <tr><td>2</td><td>게임 규칙 옵션 — Move button after Bomb Pot, Effective Stack size, Straddle 위치, Sleeper straddle</td></tr>
+    <tr><td>3</td><td>플레이어 표시 — Add seat # to player name, Show as eliminated when loses stack, Allow Rabbit Hunting</td></tr>
+    <tr><td>4</td><td>Equity/Outs — Unknown cards blink in Secure Mode, Hilite Nit game players when, equity/outs split pots 무시</td></tr>
+    <tr><td>5</td><td>Clear previous action — 이전 액션 클리어 및 'x to call' / 'option' 표시</td></tr>
+    <tr><td>6</td><td>플레이어 순서 — Order players from the first (To the left of the button 등)</td></tr>
+    <tr><td>7</td><td>Show hand equities — Equity 표시 시점 (After 1st betting round 등)</td></tr>
+    <tr><td>8</td><td>Hilite 설정 — Hilite winning hand 타이밍 (Immediately 등)</td></tr>
+  </table>
+</div>
+</body>
+</html>

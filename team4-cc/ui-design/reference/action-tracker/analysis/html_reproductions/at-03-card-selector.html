@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AT-03 Card Selector — Pure HTML Reproduction</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a1a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* ── Root container: 786 × 460 ── */
+    .screenshot-container {
+      width: 786px;
+      height: 460px;
+      position: relative;
+      overflow: hidden;
+      background: #111;
+    }
+
+    /* ─────────────────────────────────────
+       id=1  Title Bar
+       height: 5% of 460 = 23px
+       Dark titlebar (app-specific, not Windows default)
+    ───────────────────────────────────── */
+    .titlebar {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%;
+      height: 23px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #333;
+      display: flex;
+      align-items: center;
+      padding: 0 6px;
+      z-index: 5;
+    }
+    .tb-icon {
+      width: 14px;
+      height: 14px;
+      background: #2d7bc4;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .tb-title {
+      flex: 1;
+      font-size: 11px;
+      color: #fff;
+      margin-left: 6px;
+      white-space: nowrap;
+    }
+    .tb-buttons {
+      display: flex;
+      height: 100%;
+    }
+    .tb-btn {
+      width: 38px;
+      height: 23px;
+      border: none;
+      background: transparent;
+      font-size: 10px;
+      color: #ccc;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .tb-btn.close {
+      background: #C0392B;
+      color: #fff;
+    }
+
+    /* ─────────────────────────────────────
+       id=2  Back Button
+       bbox: x=2.5% y=6% w=7.5% h=11%
+       → left=20px top=28px w=59px h=51px
+    ───────────────────────────────────── */
+    .back-btn {
+      position: absolute;
+      left: 20px;
+      top: 28px;
+      width: 59px;
+      height: 51px;
+      background: #2E7D32;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .back-btn::after {
+      content: '◀';
+      font-size: 20px;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    /* ─────────────────────────────────────
+       id=3  Selected Card Display
+       bbox: x=11% y=6% w=52% h=11%
+       → left=86px top=28px w=409px h=51px
+    ───────────────────────────────────── */
+    .selected-display {
+      position: absolute;
+      left: 86px;
+      top: 28px;
+      width: 409px;
+      height: 51px;
+      background: #1c1c1c;
+      border: 1px solid #444;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding: 4px 8px;
+      gap: 8px;
+    }
+    .sel-card {
+      width: 44px;
+      height: 42px;
+      background: #2a2a2a;
+      border: 1px solid #555;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.1;
+    }
+    .sel-card .sel-rank {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .sel-card .sel-suit {
+      font-size: 13px;
+    }
+    .sel-card.heart .sel-rank,
+    .sel-card.heart .sel-suit { color: #e03030; }
+    .sel-card.spade .sel-rank,
+    .sel-card.spade .sel-suit { color: #fff; }
+
+    /* ─────────────────────────────────────
+       id=4  OK Button
+       bbox: x=65% y=6% w=12% h=11%
+       → left=511px top=28px w=94px h=51px
+    ───────────────────────────────────── */
+    .ok-btn {
+      position: absolute;
+      left: 511px;
+      top: 28px;
+      width: 94px;
+      height: 51px;
+      background: #ddd;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid #bbb;
+    }
+    .ok-btn span {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111;
+    }
+
+    /* ─────────────────────────────────────
+       CARD GRID  (ids 5–8)
+       4 rows × 13 cols
+       Row height: 20% of 460 = 92px each
+       Rows start at:
+         Spade  y=18% → top=83px
+         Heart  y=38% → top=175px
+         Diamond y=58% → top=267px
+         Club   y=78% → top=359px
+    ───────────────────────────────────── */
+    .card-row {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 92px;
+      display: flex;
+    }
+
+    .card-row.spade  { top: 83px;  background: #7a5c10; }
+    .card-row.heart  { top: 175px; background: #7a0000; }
+    .card-row.diamond{ top: 267px; background: #7a0000; }
+    .card-row.club   { top: 359px; background: #7a5c10; }
+
+    /* Each individual card cell */
+    .card-cell {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      padding: 3px 1px;
+    }
+
+    /* Card "face" — the rounded card shape inside the row */
+    .card-face {
+      width: calc(100% - 4px);
+      height: calc(100% - 6px);
+      border-radius: 5px;
+      background: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+      gap: 1px;
+    }
+
+    .card-cell:hover .card-face {
+      background: rgba(255,255,255,0.12);
+    }
+
+    .c-rank {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+    .c-suit {
+      font-size: 12px;
+      color: #fff;
+      line-height: 1;
+    }
+
+    /* Disabled (already selected) card */
+    .card-cell.disabled .card-face {
+      background: rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.08);
+    }
+    .card-cell.disabled .c-rank,
+    .card-cell.disabled .c-suit {
+      color: #555;
+    }
+
+    /* Heart / Diamond suit color */
+    .card-row.heart  .c-suit,
+    .card-row.diamond .c-suit {
+      color: #ff9999;
+    }
+    .card-row.heart  .card-cell.disabled .c-suit,
+    .card-row.diamond .card-cell.disabled .c-suit {
+      color: #553333;
+    }
+  </style>
+</head>
+<body>
+  <div class="screenshot-container">
+
+    <!-- id=1: Title Bar -->
+    <div
+      class="titlebar"
+      data-element-id="1"
+      data-element-name="Title Bar"
+      data-element-group="chrome"
+    >
+      <div class="tb-icon"></div>
+      <span class="tb-title">PokerGFX Action Tracker © 2026</span>
+      <div class="tb-buttons">
+        <button class="tb-btn">&#x2014;</button>
+        <button class="tb-btn">&#x25A1;</button>
+        <button class="tb-btn close">&#x2715;</button>
+      </div>
+    </div>
+
+    <!-- id=2: Back Button -->
+    <div
+      class="back-btn"
+      data-element-id="2"
+      data-element-name="Back Button"
+      data-element-group="navigation"
+    ></div>
+
+    <!-- id=3: Selected Card Display -->
+    <div
+      class="selected-display"
+      data-element-id="3"
+      data-element-name="Selected Card Display"
+      data-element-group="display"
+    >
+      <!-- 7♥ selected -->
+      <div class="sel-card heart">
+        <span class="sel-rank">7</span>
+        <span class="sel-suit">&#x2665;</span>
+      </div>
+      <!-- 6♠ selected -->
+      <div class="sel-card spade">
+        <span class="sel-rank">6</span>
+        <span class="sel-suit">&#x2660;</span>
+      </div>
+    </div>
+
+    <!-- id=4: OK Button -->
+    <div
+      class="ok-btn"
+      data-element-id="4"
+      data-element-name="OK Button"
+      data-element-group="action"
+    >
+      <span>OK</span>
+    </div>
+
+    <!-- id=5: Spade Row -->
+    <div
+      class="card-row spade"
+      data-element-id="5"
+      data-element-name="Spade Row"
+      data-element-group="card_grid"
+    >
+      <div class="card-cell"><div class="card-face"><span class="c-rank">A</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">K</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">Q</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">J</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">10</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">9</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">8</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">7</span><span class="c-suit">&#x2660;</span></div></div>
+      <!-- 6♠ disabled (already selected) -->
+      <div class="card-cell disabled"><div class="card-face"><span class="c-rank">6</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">5</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">4</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">3</span><span class="c-suit">&#x2660;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">2</span><span class="c-suit">&#x2660;</span></div></div>
+    </div>
+
+    <!-- id=6: Heart Row -->
+    <div
+      class="card-row heart"
+      data-element-id="6"
+      data-element-name="Heart Row"
+      data-element-group="card_grid"
+    >
+      <div class="card-cell"><div class="card-face"><span class="c-rank">A</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">K</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">Q</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">J</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">10</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">9</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">8</span><span class="c-suit">&#x2665;</span></div></div>
+      <!-- 7♥ disabled (already selected) -->
+      <div class="card-cell disabled"><div class="card-face"><span class="c-rank">7</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">6</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">5</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">4</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">3</span><span class="c-suit">&#x2665;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">2</span><span class="c-suit">&#x2665;</span></div></div>
+    </div>
+
+    <!-- id=7: Diamond Row -->
+    <div
+      class="card-row diamond"
+      data-element-id="7"
+      data-element-name="Diamond Row"
+      data-element-group="card_grid"
+    >
+      <div class="card-cell"><div class="card-face"><span class="c-rank">A</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">K</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">Q</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">J</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">10</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">9</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">8</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">7</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">6</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">5</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">4</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">3</span><span class="c-suit">&#x2666;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">2</span><span class="c-suit">&#x2666;</span></div></div>
+    </div>
+
+    <!-- id=8: Club Row -->
+    <div
+      class="card-row club"
+      data-element-id="8"
+      data-element-name="Club Row"
+      data-element-group="card_grid"
+    >
+      <div class="card-cell"><div class="card-face"><span class="c-rank">A</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">K</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">Q</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">J</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">10</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">9</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">8</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">7</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">6</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">5</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">4</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">3</span><span class="c-suit">&#x2663;</span></div></div>
+      <div class="card-cell"><div class="card-face"><span class="c-rank">2</span><span class="c-suit">&#x2663;</span></div></div>
+    </div>
+
+  </div>
+</body>
+</html>

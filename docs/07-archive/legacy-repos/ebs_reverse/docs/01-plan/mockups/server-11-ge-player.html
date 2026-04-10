@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>Graphic Editor — Player Layout</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #fff;
+    color: #000;
+    padding: 0;
+    margin: 0;
+  }
+
+  .wireframe-container {
+    width: 720px;
+    background: #fff;
+    border: 1px solid #999;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+
+  /* Title Bar */
+  .title-bar {
+    background: #1a1a1a;
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .window-controls span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .window-controls .close { background: #333; }
+  .window-controls .minimize { background: #888; }
+  .window-controls .maximize { background: #555; }
+
+  .title-text {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* Toolbar */
+  .toolbar {
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .toolbar select,
+  .toolbar button {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .toolbar button:hover {
+    background: #f5f5f5;
+  }
+
+  .toolbar .separator {
+    width: 1px;
+    height: 20px;
+    background: #ccc;
+  }
+
+  /* Main Layout */
+  .main-content {
+    display: flex;
+    height: 540px;
+  }
+
+  /* Left Panel */
+  .left-panel {
+    width: 130px;
+    background: #fafafa;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+  }
+
+  .panel-header {
+    background: #e9e9e9;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .tree-view {
+    padding: 8px 0;
+  }
+
+  .tree-item {
+    padding: 4px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .tree-item:hover {
+    background: #f0f0f0;
+  }
+
+  .tree-item.selected {
+    background: #333;
+    color: #fff;
+  }
+
+  .tree-item.parent {
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .tree-item.child {
+    padding-left: 24px;
+    color: #666;
+  }
+
+  .tree-icon {
+    font-size: 10px;
+  }
+
+  /* Center Panel */
+  .center-panel {
+    flex: 1;
+    background: #2a2a2a;
+    padding: 12px;
+    overflow-y: auto;
+  }
+
+  .canvas-wrapper {
+    background: #1e1e1e;
+    border-radius: 6px;
+    padding: 14px;
+    position: relative;
+  }
+
+  .canvas {
+    width: 100%;
+    height: 240px;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 19px, #444 19px, #444 20px),
+      repeating-linear-gradient(90deg, transparent, transparent 19px, #444 19px, #444 20px);
+    background-color: #2a2a2a;
+    border: 1px solid #555;
+    border-radius: 4px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Player Box */
+  .player-box {
+    width: 290px;
+    height: 75px;
+    background: #333;
+    border: 2px solid #555;
+    border-radius: 8px;
+    padding: 8px;
+    position: relative;
+  }
+
+  .player-photo {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 50px;
+    height: 50px;
+    background: #555;
+    border: 2px solid #888;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: #aaa;
+  }
+
+  .player-cards {
+    position: absolute;
+    left: 65px;
+    top: 8px;
+    display: flex;
+    gap: 4px;
+  }
+
+  .card {
+    width: 30px;
+    height: 42px;
+    background: #fff;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .card.spade { color: #000; }
+  .card.heart { color: #555; }
+
+  .player-name {
+    position: absolute;
+    left: 60px;
+    top: 5px;
+    width: 75px;
+    height: 14px;
+    background: rgba(136, 136, 136, 0.2);
+    border: 1px solid #888;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+  }
+
+  .handle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #888;
+    border: 1px solid #fff;
+    border-radius: 50%;
+  }
+
+  .handle.tl { top: -4px; left: -4px; }
+  .handle.tr { top: -4px; right: -4px; }
+  .handle.bl { bottom: -4px; left: -4px; }
+  .handle.br { bottom: -4px; right: -4px; }
+
+  .player-stack {
+    position: absolute;
+    left: 137px;
+    top: 9px;
+    color: #aaa;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .player-action {
+    position: absolute;
+    left: 137px;
+    top: 26px;
+    color: #888;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .equity-bar-wrapper {
+    position: absolute;
+    left: 137px;
+    top: 42px;
+    width: 125px;
+  }
+
+  .equity-label {
+    font-size: 8px;
+    color: #999;
+    margin-bottom: 2px;
+  }
+
+  .equity-bar {
+    width: 100%;
+    height: 6px;
+    background: #555;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .equity-fill {
+    width: 68%;
+    height: 100%;
+    background: #888;
+    border-radius: 3px;
+  }
+
+  .hand-rank {
+    position: absolute;
+    left: 137px;
+    top: 55px;
+    color: #aaa;
+    font-size: 9px;
+    font-weight: 500;
+  }
+
+  .country-flag {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 20px;
+    height: 15px;
+    background: #555;
+    border: 1px solid #666;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 7px;
+    color: #aaa;
+  }
+
+  /* Preview Section */
+  .preview-section {
+    margin-top: 10px;
+  }
+
+  .preview-label {
+    color: #999;
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .preview-canvas {
+    width: 100%;
+    height: 110px;
+    background: #e0e0e0;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .preview-table {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 175px;
+    height: 100px;
+    border: 2px solid #555;
+    border-radius: 50px;
+    background: #ccc;
+  }
+
+  .preview-seat {
+    position: absolute;
+    width: 58px;
+    height: 15px;
+    background: #444;
+    border: 1px solid #666;
+    border-radius: 3px;
+    font-size: 6px;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Seat positions */
+  .preview-seat:nth-child(1) { left: 50%; top: -12px; transform: translateX(-50%); }
+  .preview-seat:nth-child(2) { right: 20px; top: 20px; }
+  .preview-seat:nth-child(3) { right: 10px; top: 50%; transform: translateY(-50%); }
+  .preview-seat:nth-child(4) { right: 20px; bottom: 20px; }
+  .preview-seat:nth-child(5) { right: 90px; bottom: -12px; }
+  .preview-seat:nth-child(6) { left: 90px; bottom: -12px; }
+  .preview-seat:nth-child(7) { left: 20px; bottom: 20px; }
+  .preview-seat:nth-child(8) { left: 10px; top: 50%; transform: translateY(-50%); }
+  .preview-seat:nth-child(9) { left: 20px; top: 20px; }
+  .preview-seat:nth-child(10) { left: 50%; top: 50%; transform: translate(-50%, -50%); color: #888; }
+
+  /* Right Panel */
+  .right-panel {
+    width: 180px;
+    background: #fafafa;
+    border-left: 1px solid #ddd;
+    overflow-y: auto;
+  }
+
+  .properties {
+    padding: 10px;
+  }
+
+  .prop-group {
+    margin-bottom: 10px;
+  }
+
+  .prop-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .prop-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .prop-field {
+    flex: 1;
+  }
+
+  .prop-field label {
+    font-size: 11px;
+    color: #888;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .prop-field input[type="text"],
+  .prop-field input[type="number"],
+  .prop-field select {
+    width: 100%;
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+    background: #fff;
+  }
+
+  .color-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .color-swatch {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .checkbox-row input[type="checkbox"] {
+    cursor: pointer;
+  }
+
+  .checkbox-row label {
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <div class="wireframe-container">
+    <!-- Title Bar -->
+    <div class="title-bar">
+      <div class="window-controls">
+        <span class="close"></span>
+        <span class="minimize"></span>
+        <span class="maximize"></span>
+      </div>
+      <div class="title-text">Graphic Editor — Player Layout</div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <select>
+        <option>Player Set: Default</option>
+        <option>Player Set: Heads Up</option>
+        <option>Player Set: 6-Max</option>
+      </select>
+      <div class="separator"></div>
+      <button>AT Mode</button>
+      <button>Animation</button>
+      <div class="separator"></div>
+      <button>Undo</button>
+      <button>Redo</button>
+      <div class="separator"></div>
+      <button>Save</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Left Panel -->
+      <div class="left-panel">
+        <div class="panel-header">Player Elements</div>
+        <div class="tree-view">
+          <div class="tree-item parent"><span class="tree-icon">V</span> Player Box</div>
+          <div class="tree-item child">-- Background</div>
+          <div class="tree-item child">-- Border</div>
+
+          <div class="tree-item parent"><span class="tree-icon">V</span> Identity</div>
+          <div class="tree-item child">-- Photo</div>
+          <div class="tree-item child selected">-- Name Text</div>
+          <div class="tree-item child">-- Country Flag</div>
+          <div class="tree-item child">-- Position Badge</div>
+
+          <div class="tree-item parent"><span class="tree-icon">V</span> Cards</div>
+          <div class="tree-item child">-- Card 1</div>
+          <div class="tree-item child">-- Card 2</div>
+          <div class="tree-item child">-- Card 3-6 (Omaha)</div>
+          <div class="tree-item child">-- Card Animation</div>
+
+          <div class="tree-item parent"><span class="tree-icon">V</span> Game Info</div>
+          <div class="tree-item child">-- Stack Text</div>
+          <div class="tree-item child">-- Action Text</div>
+          <div class="tree-item child">-- Bet Amount</div>
+          <div class="tree-item child">-- Equity Bar</div>
+
+          <div class="tree-item parent"><span class="tree-icon">V</span> Status</div>
+          <div class="tree-item child">-- Hand Rank</div>
+          <div class="tree-item child">-- Fold Effect</div>
+          <div class="tree-item child">-- Winner Highlight</div>
+        </div>
+      </div>
+
+      <!-- Center Panel -->
+      <div class="center-panel">
+        <div class="canvas-wrapper">
+          <div class="canvas">
+            <div class="player-box">
+              <div class="player-photo">PHOTO</div>
+
+              <div class="player-cards">
+                <div class="card spade">As</div>
+                <div class="card heart">Kh</div>
+              </div>
+
+              <div class="player-name">
+                Phil Ivey
+                <div class="handle tl"></div>
+                <div class="handle tr"></div>
+                <div class="handle bl"></div>
+                <div class="handle br"></div>
+              </div>
+
+              <div class="player-stack">$212,300</div>
+              <div class="player-action">RAISE $5,000</div>
+
+              <div class="equity-bar-wrapper">
+                <div class="equity-label">Equity: 68%</div>
+                <div class="equity-bar">
+                  <div class="equity-fill"></div>
+                </div>
+              </div>
+
+              <div class="hand-rank">One Pair, Aces</div>
+
+              <div class="country-flag">FLAG</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-section">
+          <div class="preview-label">Table Preview (10-max)</div>
+          <div class="preview-canvas">
+            <div class="preview-table">
+              <div class="preview-seat">Seat 1</div>
+              <div class="preview-seat">Seat 2</div>
+              <div class="preview-seat">Seat 3</div>
+              <div class="preview-seat">Seat 4</div>
+              <div class="preview-seat">Seat 5</div>
+              <div class="preview-seat">Seat 6</div>
+              <div class="preview-seat">Seat 7</div>
+              <div class="preview-seat">Seat 8</div>
+              <div class="preview-seat">Seat 9</div>
+              <div class="preview-seat">DEALER</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="right-panel">
+        <div class="panel-header">Properties — Name Text</div>
+        <div class="properties">
+          <div class="prop-group">
+            <div class="prop-label">Position</div>
+            <div class="prop-row">
+              <div class="prop-field">
+                <label>X</label>
+                <input type="number" value="95">
+              </div>
+              <div class="prop-field">
+                <label>Y</label>
+                <input type="number" value="8">
+              </div>
+            </div>
+          </div>
+
+          <div class="prop-group">
+            <div class="prop-label">Size</div>
+            <div class="prop-row">
+              <div class="prop-field">
+                <label>W</label>
+                <input type="number" value="120">
+              </div>
+              <div class="prop-field">
+                <label>H</label>
+                <input type="number" value="20">
+              </div>
+            </div>
+          </div>
+
+          <div class="prop-group">
+            <div class="prop-label">Text</div>
+            <div class="prop-field">
+              <label>Content</label>
+              <input type="text" value="{player_name}">
+            </div>
+            <div class="prop-field" style="margin-top: 8px;">
+              <label>Font</label>
+              <select>
+                <option>Segoe UI Semibold</option>
+                <option>Arial Bold</option>
+                <option>Roboto Medium</option>
+              </select>
+            </div>
+            <div class="prop-row" style="margin-top: 8px;">
+              <div class="prop-field">
+                <label>Size</label>
+                <input type="number" value="16">
+              </div>
+              <div class="prop-field">
+                <label>px</label>
+              </div>
+            </div>
+            <div class="prop-field" style="margin-top: 8px;">
+              <label>Color</label>
+              <div class="color-picker">
+                <div class="color-swatch" style="background: #fff;"></div>
+                <input type="text" value="#FFFFFF">
+              </div>
+            </div>
+          </div>
+
+          <div class="prop-group">
+            <div class="prop-label">Effects</div>
+            <div class="prop-field">
+              <label>GEP-009: Fold Effect</label>
+              <select>
+                <option>Gray + 50% opacity</option>
+                <option>Strikethrough</option>
+                <option>Dim</option>
+              </select>
+            </div>
+            <div class="prop-field" style="margin-top: 8px;">
+              <label>GEP-010: Winner Glow</label>
+              <div class="color-picker">
+                <div class="color-swatch" style="background: #888;"></div>
+                <input type="text" value="#888888">
+              </div>
+              <div class="checkbox-row">
+                <input type="checkbox" id="animated" checked>
+                <label for="animated">Animated</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="prop-group">
+            <div class="prop-label">Animation</div>
+            <div class="prop-field">
+              <label>Card In (GEP-012)</label>
+              <select>
+                <option>Flip</option>
+                <option>Slide</option>
+                <option>Fade</option>
+              </select>
+            </div>
+            <div class="prop-field" style="margin-top: 8px;">
+              <label>Duration</label>
+              <div class="prop-row">
+                <input type="number" value="300">
+                <label style="padding-top: 8px;">ms</label>
+              </div>
+            </div>
+            <div class="prop-field" style="margin-top: 8px;">
+              <label>Chip Move (GEP-013)</label>
+              <select>
+                <option>Arc</option>
+                <option>Linear</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

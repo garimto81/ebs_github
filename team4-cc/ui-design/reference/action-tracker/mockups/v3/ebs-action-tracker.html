@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<!-- Style Reference: White Minimal — monospace accent, light borders, clean, B&W -->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=960">
+<title>EBS Action Tracker — White Minimal Mockup v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     RESET & BASE
+  ============================================================ */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    display: inline-block;
+  }
+
+  /* ============================================================
+     APP CONTAINER
+  ============================================================ */
+  .app {
+    width: 960px;
+    background: #fafafa;
+    border: 2px solid #d0d0d0;
+    font-family: 'Noto Sans KR', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ============================================================
+     TOP BAR
+  ============================================================ */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-bottom: 1px solid #d0d0d0;
+    background: #f0f0f0;
+    color: #1a1a1a;
+    padding: 0;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  .top-bar__segment {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    height: 100%;
+    border-right: 1px solid #d0d0d0;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #1a1a1a;
+  }
+
+  .top-bar__segment--spacer {
+    flex: 1;
+  }
+
+  .top-bar__segment--right {
+    border-right: none;
+    border-left: 1px solid #d0d0d0;
+    gap: 0;
+    padding: 0;
+  }
+
+  .conn-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    display: inline-block;
+    flex-shrink: 0;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .conn-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+
+  .game-type {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+  }
+
+  .blinds {
+    font-size: 12px;
+    font-weight: 400;
+    color: #555;
+  }
+
+  .hand-num {
+    font-size: 12px;
+    color: #888;
+    letter-spacing: 0.05em;
+  }
+
+  .hand-num span {
+    color: #1a1a1a;
+    font-weight: 600;
+  }
+
+  .top-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 20px;
+    background: transparent;
+    color: #555;
+    border: none;
+    border-left: 1px solid #d0d0d0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .top-btn:hover {
+    background: #e8e8e8;
+    color: #1a1a1a;
+  }
+
+  .top-btn:first-child {
+    border-left: none;
+  }
+
+  /* ============================================================
+     TABLE AREA
+  ============================================================ */
+  .table-area {
+    flex: 1;
+    position: relative;
+    background: #fff;
+    min-height: 480px;
+    overflow: hidden;
+  }
+
+  /* Oval felt background */
+  .table-felt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 560px;
+    height: 300px;
+    border: 1px solid #d0d0d0;
+    border-radius: 150px;
+    background: repeating-linear-gradient(
+      45deg,
+      #f8f8f8 0,
+      #f8f8f8 2px,
+      #fff 2px,
+      #fff 10px
+    );
+    box-shadow: 3px 3px 0 #e0e0e0;
+  }
+
+  /* Table label */
+  .table-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  /* Board cards */
+  .board-cards {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .card {
+    width: 36px;
+    height: 50px;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 1px 1px 0 #e0e0e0;
+    flex-shrink: 0;
+    color: #1a1a1a;
+  }
+
+  .card__rank {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .card__suit {
+    font-size: 11px;
+  }
+
+  .card--empty {
+    background: #f5f5f5;
+    border-style: dashed;
+    border-color: #ccc;
+    box-shadow: none;
+  }
+
+  .card--empty .card__rank {
+    color: #ccc;
+    font-size: 18px;
+  }
+
+  /* Pot display */
+  .pot-display {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .pot-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #888;
+  }
+
+  .pot-amount {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: #1a1a1a;
+  }
+
+  /* ============================================================
+     PLAYER SEATS — Oval arrangement
+  ============================================================ */
+  .seat {
+    position: absolute;
+    width: 88px;
+    text-align: center;
+  }
+
+  .seat__card-area {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-bottom: 4px;
+  }
+
+  .seat__hole {
+    width: 22px;
+    height: 30px;
+    border: 1px solid #d0d0d0;
+    border-radius: 2px;
+    background: #fff;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 1px 1px 0 #e0e0e0;
+    color: #888;
+  }
+
+  .seat__box {
+    border: 1px solid #d0d0d0;
+    background: #fff;
+    padding: 5px 6px 4px;
+    box-shadow: 2px 2px 0 #e0e0e0;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.05s;
+  }
+
+  .seat__box:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 #d0d0d0;
+  }
+
+  /* Active state */
+  .seat--active .seat__box {
+    border-width: 2px;
+    border-color: #1a1a1a;
+    box-shadow: 3px 3px 0 #555;
+    background: #1a1a1a;
+    color: #fff;
+  }
+
+  .seat--active .seat__box::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 1px solid #1a1a1a;
+    border-radius: 1px;
+    animation: active-ring 1s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes active-ring {
+    0%, 100% { opacity: 1; inset: -6px; }
+    50% { opacity: 0.3; inset: -4px; }
+  }
+
+  /* Folded state */
+  .seat--folded {
+    opacity: 0.4;
+  }
+
+  .seat--folded .seat__box {
+    background: #f0f0f0;
+    box-shadow: 1px 1px 0 #ccc;
+    border-color: #ccc;
+  }
+
+  /* All-in state */
+  .seat--allin .seat__box {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #1a1a1a;
+  }
+
+  /* Open/Empty seat */
+  .seat--open .seat__box {
+    border-style: dashed;
+    border-color: #ccc;
+    background: #fafafa;
+    box-shadow: none;
+    color: #bbb;
+  }
+
+  .seat__name {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #1a1a1a;
+  }
+
+  .seat--active .seat__name {
+    color: #fff;
+  }
+
+  .seat__stack {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 400;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  .seat--active .seat__stack {
+    color: #ccc;
+  }
+
+  .seat__action {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    color: #1a1a1a;
+    line-height: 1;
+  }
+
+  .seat--active .seat__action {
+    color: #fff;
+  }
+
+  /* Badges: BTN, SB, BB */
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 1px 4px;
+    border: 1px solid #1a1a1a;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 16px;
+    text-align: center;
+    background: #1a1a1a;
+    color: #fff;
+    margin-left: 3px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .badge--sb {
+    background: #555;
+    border-color: #555;
+  }
+
+  .badge--bb {
+    background: #333;
+    border-color: #333;
+  }
+
+  .seat__badges {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin-top: 3px;
+    min-height: 16px;
+  }
+
+  /* Bet chip beside seat */
+  .bet-chip {
+    position: absolute;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============================================================
+     SEAT POSITIONS — 9-seat oval (960px wide, 480px table area)
+  ============================================================ */
+  .seat--p1 { top: 14px;  left: 380px; }
+  .seat--p2 { top: 80px;  left: 656px; }
+  .seat--p3 { top: 220px; left: 696px; }
+  .seat--p4 { top: 344px; left: 586px; }
+  .seat--p5 { top: 380px; left: 420px; }
+  .seat--p6 { top: 344px; left: 186px; }
+  .seat--p7 { top: 220px; left: 60px;  }
+  .seat--p8 { top: 80px;  left: 116px; }
+  .seat--p9 { top: 14px;  left: 196px; }
+
+  .bet-chip--p2 { top: 120px; left: 620px; }
+  .bet-chip--p3 { top: 258px; left: 640px; }
+
+  /* ============================================================
+     ACTION PANEL
+  ============================================================ */
+  .action-panel {
+    border-top: 1px solid #d0d0d0;
+    background: #fafafa;
+    flex-shrink: 0;
+  }
+
+  /* Main actions row */
+  .action-row {
+    display: flex;
+    border-bottom: 1px solid #d0d0d0;
+    height: 56px;
+  }
+
+  .action-btn {
+    flex: 1;
+    height: 100%;
+    border: none;
+    border-right: 1px solid #d0d0d0;
+    background: #fafafa;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+    transition: background 0.08s, transform 0.05s;
+    box-shadow: inset 0 -2px 0 #e0e0e0;
+    position: relative;
+    min-width: 48px;
+    color: #1a1a1a;
+  }
+
+  .action-btn:last-child {
+    border-right: none;
+  }
+
+  .action-btn:hover {
+    background: #f0f0f0;
+  }
+
+  .action-btn:active {
+    background: #1a1a1a;
+    color: #fff;
+    transform: translateY(2px);
+    box-shadow: none;
+  }
+
+  .action-btn--primary {
+    background: #1a1a1a;
+    color: #fff;
+    box-shadow: inset 0 -2px 0 #444;
+  }
+
+  .action-btn--primary:hover {
+    background: #333;
+  }
+
+  .action-btn--danger {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #1a1a1a;
+    box-shadow: inset 0 -2px 0 #444;
+  }
+
+  .action-btn--danger:hover {
+    background: #333;
+  }
+
+  .action-btn--undo {
+    flex: 0 0 64px;
+    font-size: 10px;
+    background: #f0f0f0;
+    color: #555;
+    box-shadow: none;
+  }
+
+  .action-btn__sub {
+    font-size: 9px;
+    font-weight: 400;
+    color: #888;
+    letter-spacing: 0.05em;
+  }
+
+  .action-btn--primary .action-btn__sub,
+  .action-btn--danger .action-btn__sub {
+    color: #aaa;
+  }
+
+  .caret {
+    font-size: 8px;
+    margin-left: 2px;
+  }
+
+  /* Bottom row: quick bet + keypad */
+  .action-bottom {
+    display: flex;
+    height: 168px;
+  }
+
+  /* Quick bet panel */
+  .quick-bet {
+    flex: 1;
+    border-right: 1px solid #d0d0d0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .quick-bet__label {
+    padding: 6px 12px 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #aaa;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .quick-bet__grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .quick-btn {
+    border: none;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fafafa;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    transition: background 0.08s;
+    box-shadow: inset 0 -1px 0 #e0e0e0;
+    min-height: 48px;
+    color: #1a1a1a;
+  }
+
+  .quick-btn:nth-child(2n) {
+    border-right: none;
+  }
+
+  .quick-btn:nth-child(3), .quick-btn:nth-child(4) {
+    border-bottom: none;
+  }
+
+  .quick-btn:hover {
+    background: #f0f0f0;
+  }
+
+  .quick-btn:active {
+    background: #1a1a1a;
+    color: #fff;
+    box-shadow: none;
+  }
+
+  .quick-btn__frac {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .quick-btn__amount {
+    font-size: 10px;
+    color: #888;
+    font-weight: 400;
+  }
+
+  .quick-btn:active .quick-btn__amount {
+    color: #aaa;
+  }
+
+  /* Keypad */
+  .keypad {
+    flex: 0 0 288px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .keypad__display {
+    border-bottom: 1px solid #d0d0d0;
+    background: #f0f0f0;
+    color: #1a1a1a;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0 16px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .keypad__display-label {
+    font-size: 9px;
+    color: #999;
+    letter-spacing: 0.15em;
+    font-weight: 400;
+    text-transform: uppercase;
+    flex: 1;
+  }
+
+  .keypad__display-val {
+    font-size: 20px;
+    color: #1a1a1a;
+  }
+
+  .keypad__grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+
+  .key-btn {
+    border: none;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fafafa;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.06s;
+    box-shadow: inset 0 -1px 0 #e0e0e0;
+    min-height: 31px;
+    min-width: 48px;
+    color: #1a1a1a;
+  }
+
+  .key-btn:nth-child(4n) {
+    border-right: none;
+  }
+
+  .key-btn:nth-last-child(-n+4) {
+    border-bottom: none;
+  }
+
+  .key-btn:hover {
+    background: #f0f0f0;
+  }
+
+  .key-btn:active {
+    background: #1a1a1a;
+    color: #fff;
+    box-shadow: none;
+  }
+
+  .key-btn--del {
+    background: #f0f0f0;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: #555;
+  }
+
+  .key-btn--00 {
+    font-size: 12px;
+  }
+
+  .key-btn--confirm {
+    background: #1a1a1a;
+    color: #fff;
+    box-shadow: inset 0 -1px 0 #444;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  .key-btn--confirm:hover {
+    background: #333;
+  }
+
+  /* ============================================================
+     UTILITY
+  ============================================================ */
+  .open-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #bbb;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ========== TOP BAR ========== -->
+  <div class="top-bar">
+    <div class="top-bar__segment">
+      <span class="conn-dot"></span>
+      <span class="conn-label">Connected</span>
+    </div>
+    <div class="top-bar__segment">
+      <span class="game-type">HOLDEM</span>
+    </div>
+    <div class="top-bar__segment">
+      <span class="blinds">100 / 200 / 0</span>
+    </div>
+    <div class="top-bar__segment">
+      <span class="hand-num">Hand <span>#247</span></span>
+    </div>
+    <div class="top-bar__segment top-bar__segment--spacer"></div>
+    <div class="top-bar__segment top-bar__segment--right">
+      <button class="top-btn">HIDE</button>
+      <button class="top-btn">ADJUST</button>
+    </div>
+  </div>
+
+  <!-- ========== TABLE AREA ========== -->
+  <div class="table-area">
+
+    <!-- Oval felt -->
+    <div class="table-felt"></div>
+
+    <!-- Board cards (center of felt) -->
+    <div class="board-cards">
+      <div class="card">
+        <span class="card__rank">A</span>
+        <span class="card__suit">♠</span>
+      </div>
+      <div class="card">
+        <span class="card__rank">K</span>
+        <span class="card__suit">♦</span>
+      </div>
+      <div class="card">
+        <span class="card__rank">7</span>
+        <span class="card__suit">♣</span>
+      </div>
+      <div class="card card--empty">
+        <span class="card__rank">—</span>
+      </div>
+      <div class="card card--empty">
+        <span class="card__rank">—</span>
+      </div>
+    </div>
+
+    <!-- Pot display -->
+    <div class="pot-display">
+      <div class="pot-label">POT</div>
+      <div class="pot-amount">1,250</div>
+    </div>
+
+    <!-- ======== SEATS ======== -->
+
+    <!-- P1 — Active (BTN), top center-right -->
+    <div class="seat seat--p1 seat--active">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div>
+        <div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">Alice K</div>
+        <div class="seat__stack">45,200</div>
+        <div class="seat__action">ACTION ON</div>
+        <div class="seat__badges">
+          <span class="badge">BTN</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- P2 — BET 500, right upper -->
+    <div class="seat seat--p2">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div>
+        <div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">Bob M</div>
+        <div class="seat__stack">32,100</div>
+        <div class="seat__action">BET</div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+    <div class="bet-chip bet-chip--p2">BET 500</div>
+
+    <!-- P3 — CALL, right lower -->
+    <div class="seat seat--p3">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div>
+        <div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">Carol J</div>
+        <div class="seat__stack">28,800</div>
+        <div class="seat__action">CALL</div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+    <div class="bet-chip bet-chip--p3">CALL 200</div>
+
+    <!-- P4 — SB, bottom right -->
+    <div class="seat seat--p4">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div>
+        <div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">Dave L</div>
+        <div class="seat__stack">55,000</div>
+        <div class="seat__action"></div>
+        <div class="seat__badges">
+          <span class="badge badge--sb">SB</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- P5 — BB, bottom center -->
+    <div class="seat seat--p5">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div>
+        <div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">Eve R</div>
+        <div class="seat__stack">41,300</div>
+        <div class="seat__action"></div>
+        <div class="seat__badges">
+          <span class="badge badge--bb">BB</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- P6 — Folded, bottom left -->
+    <div class="seat seat--p6 seat--folded">
+      <div class="seat__box">
+        <div class="seat__name">Frank S</div>
+        <div class="seat__stack">22,100</div>
+        <div class="seat__action">FOLD</div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+
+    <!-- P7 — Folded, left lower -->
+    <div class="seat seat--p7 seat--folded">
+      <div class="seat__box">
+        <div class="seat__name">Grace H</div>
+        <div class="seat__stack">18,500</div>
+        <div class="seat__action">FOLD</div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+
+    <!-- P8 — Active, left upper -->
+    <div class="seat seat--p8">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div>
+        <div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">Henry T</div>
+        <div class="seat__stack">67,200</div>
+        <div class="seat__action"></div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+
+    <!-- P9 — OPEN, top center-left -->
+    <div class="seat seat--p9 seat--open">
+      <div class="seat__box">
+        <div class="open-label">OPEN</div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+
+  </div><!-- /table-area -->
+
+  <!-- ========== ACTION PANEL ========== -->
+  <div class="action-panel">
+
+    <!-- Main actions -->
+    <div class="action-row">
+      <button class="action-btn">CHECK</button>
+      <button class="action-btn">
+        BET<span class="caret">▼</span>
+      </button>
+      <button class="action-btn action-btn--primary">
+        CALL
+        <span class="action-btn__sub">200</span>
+      </button>
+      <button class="action-btn">
+        RAISE<span class="caret">▼</span>
+      </button>
+      <button class="action-btn action-btn--danger">FOLD</button>
+      <button class="action-btn action-btn--danger">ALL-IN</button>
+      <button class="action-btn action-btn--undo">↩ UNDO</button>
+    </div>
+
+    <!-- Quick bet + Keypad -->
+    <div class="action-bottom">
+
+      <!-- Quick bet -->
+      <div class="quick-bet">
+        <div class="quick-bet__label">Quick Bet</div>
+        <div class="quick-bet__grid">
+          <button class="quick-btn">
+            <span class="quick-btn__frac">½</span>
+            <span class="quick-btn__amount">625</span>
+          </button>
+          <button class="quick-btn">
+            <span class="quick-btn__frac">⅔</span>
+            <span class="quick-btn__amount">833</span>
+          </button>
+          <button class="quick-btn">
+            <span class="quick-btn__frac">1×</span>
+            <span class="quick-btn__amount">1,250</span>
+          </button>
+          <button class="quick-btn">
+            <span class="quick-btn__frac">2×</span>
+            <span class="quick-btn__amount">2,500</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Keypad -->
+      <div class="keypad">
+        <div class="keypad__display">
+          <span class="keypad__display-label">BET AMT</span>
+          <span class="keypad__display-val">—</span>
+        </div>
+        <div class="keypad__grid">
+          <button class="key-btn">1</button>
+          <button class="key-btn">2</button>
+          <button class="key-btn">3</button>
+          <button class="key-btn key-btn--del">DEL</button>
+          <button class="key-btn">4</button>
+          <button class="key-btn">5</button>
+          <button class="key-btn">6</button>
+          <button class="key-btn key-btn--del">CLR</button>
+          <button class="key-btn">7</button>
+          <button class="key-btn">8</button>
+          <button class="key-btn">9</button>
+          <button class="key-btn key-btn--confirm">SET</button>
+          <button class="key-btn">0</button>
+          <button class="key-btn key-btn--00">00</button>
+          <button class="key-btn">000</button>
+          <button class="key-btn key-btn--confirm">OK ↵</button>
+        </div>
+      </div>
+
+    </div><!-- /action-bottom -->
+  </div><!-- /action-panel -->
+
+</div><!-- /app -->
+</body>
+</html>

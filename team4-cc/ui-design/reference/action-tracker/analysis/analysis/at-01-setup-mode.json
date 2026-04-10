@@ -1,0 +1,1271 @@
+{
+    "screen_id": "at-01",
+    "screen_name": "Setup Mode",
+    "dimensions": {
+        "width": 786,
+        "height": 553
+    },
+    "elements": [
+        {
+            "id": 1,
+            "name": "App Icon",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 0.3,
+                "y": 0.2,
+                "w": 2.0,
+                "h": 3.2
+            },
+            "visual": "PokerGFX 앱 아이콘 (작은 정사각형)",
+            "protocol": "—",
+            "note": "윈도우 타이틀바 아이콘",
+            "annotation_text": "[COM-TB-01] 앱 아이콘"
+        },
+        {
+            "id": 2,
+            "name": "Title Text",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 2.5,
+                "y": 0.5,
+                "w": 30.0,
+                "h": 2.7
+            },
+            "visual": "PokerGFX Action Tracker © 2026 텍스트",
+            "protocol": "—",
+            "note": "앱 타이틀 텍스트",
+            "annotation_text": "[COM-TB-02] 타이틀 텍스트"
+        },
+        {
+            "id": 3,
+            "name": "Minimize Button",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 86.8,
+                "y": 0.2,
+                "w": 4.0,
+                "h": 3.2
+            },
+            "visual": "— (최소화)",
+            "protocol": "—",
+            "note": "윈도우 최소화",
+            "annotation_text": "[COM-TB-03] 최소화 버튼"
+        },
+        {
+            "id": 4,
+            "name": "Maximize Button",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 91.0,
+                "y": 0.2,
+                "w": 4.0,
+                "h": 3.2
+            },
+            "visual": "□ (최대화)",
+            "protocol": "—",
+            "note": "윈도우 최대화",
+            "annotation_text": "[COM-TB-04] 최대화 버튼"
+        },
+        {
+            "id": 5,
+            "name": "Close Button (Window)",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 95.2,
+                "y": 0.2,
+                "w": 4.5,
+                "h": 3.2
+            },
+            "visual": "X (빨간 배경)",
+            "protocol": "—",
+            "note": "윈도우 닫기",
+            "annotation_text": "[COM-TB-05] 윈도우 닫기"
+        },
+        {
+            "id": 6,
+            "name": "USB Connection Icon",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 0.5,
+                "y": 4.5,
+                "w": 4.5,
+                "h": 7.0
+            },
+            "visual": "USB 케이블 아이콘",
+            "protocol": "ConnectToServer",
+            "note": "서버 USB 연결 상태 표시. 클릭 시 연결/해제",
+            "annotation_text": "[COM-TL-01] USB 서버 연결 토글"
+        },
+        {
+            "id": 7,
+            "name": "WiFi Signal Icon",
+            "category": "titlebar",
+            "bbox_pct": {
+                "x": 5.5,
+                "y": 4.5,
+                "w": 5.0,
+                "h": 7.0
+            },
+            "visual": "WiFi 신호 아이콘 (3단 바, 녹색)",
+            "protocol": "NetworkQualityChanged",
+            "note": "네트워크 품질 표시 (Good/Fair/Poor)",
+            "annotation_text": "[COM-TL-02] 네트워크 품질 표시"
+        },
+        {
+            "id": 8,
+            "name": "Hand Number Box",
+            "category": "hand_control",
+            "bbox_pct": {
+                "x": 12.0,
+                "y": 4.5,
+                "w": 8.0,
+                "h": 8.0
+            },
+            "visual": "어두운 사각형 박스 (현재값: 1)",
+            "protocol": "GameInfoResponse.HandNumber",
+            "note": "현재 핸드 번호 표시",
+            "annotation_text": "[S01-001] 핸드 번호 박스"
+        },
+        {
+            "id": 9,
+            "name": "HAND Label",
+            "category": "hand_control",
+            "bbox_pct": {
+                "x": 12.0,
+                "y": 4.0,
+                "w": 8.0,
+                "h": 2.5
+            },
+            "visual": "HAND 텍스트 라벨 (흰색)",
+            "protocol": "—",
+            "note": "핸드 번호 필드 라벨",
+            "annotation_text": "[S01-002] HAND 라벨"
+        },
+        {
+            "id": 10,
+            "name": "Hand Back Arrow",
+            "category": "hand_control",
+            "bbox_pct": {
+                "x": 20.5,
+                "y": 5.0,
+                "w": 3.5,
+                "h": 6.5
+            },
+            "visual": "< 화살표 버튼",
+            "protocol": "GameInfoResponse.HandNumber",
+            "note": "이전 핸드로 이동",
+            "annotation_text": "[S01-003] 이전 핸드 화살표"
+        },
+        {
+            "id": 11,
+            "name": "Hand Forward Arrow",
+            "category": "hand_control",
+            "bbox_pct": {
+                "x": 24.5,
+                "y": 5.0,
+                "w": 3.5,
+                "h": 6.5
+            },
+            "visual": "> 화살표 버튼",
+            "protocol": "GameInfoResponse.HandNumber",
+            "note": "다음 핸드로 이동",
+            "annotation_text": "[S01-004] 다음 핸드 화살표"
+        },
+        {
+            "id": 12,
+            "name": "AUTO Button",
+            "category": "hand_control",
+            "bbox_pct": {
+                "x": 28.5,
+                "y": 5.0,
+                "w": 8.5,
+                "h": 7.0
+            },
+            "visual": "AUTO 텍스트 버튼 (어두운 배경)",
+            "protocol": "—",
+            "note": "자동 핸드 진행 모드 토글",
+            "annotation_text": "[S01-005] AUTO 모드 토글"
+        },
+        {
+            "id": 13,
+            "name": "Video Source Icon Button",
+            "category": "toolbar",
+            "bbox_pct": {
+                "x": 56.0,
+                "y": 4.5,
+                "w": 5.5,
+                "h": 7.5
+            },
+            "visual": "비디오/카메라 아이콘 버튼",
+            "protocol": "SendVideoSources",
+            "note": "비디오 소스 선택 버튼",
+            "annotation_text": "[COM-TL-04] 비디오 소스 선택"
+        },
+        {
+            "id": 14,
+            "name": "GFX Button",
+            "category": "toolbar",
+            "bbox_pct": {
+                "x": 62.0,
+                "y": 4.5,
+                "w": 7.0,
+                "h": 7.5
+            },
+            "visual": "GFX 텍스트 버튼 (빨간 텍스트, 어두운 배경)",
+            "protocol": "SendGfxEnable(!enable)",
+            "note": "GFX 활성화/비활성화 토글. 반전 값 전송 주의",
+            "annotation_text": "[COM-TL-05] GFX 활성/비활성 토글"
+        },
+        {
+            "id": 15,
+            "name": "Snapshot Icon Button",
+            "category": "toolbar",
+            "bbox_pct": {
+                "x": 69.5,
+                "y": 4.5,
+                "w": 5.5,
+                "h": 7.5
+            },
+            "visual": "이미지/스냅샷 아이콘 버튼",
+            "protocol": "—",
+            "note": "화면 캡처 기능",
+            "annotation_text": "[S01-006] 스냅샷 캡처"
+        },
+        {
+            "id": 16,
+            "name": "Fullscreen Icon Button",
+            "category": "toolbar",
+            "bbox_pct": {
+                "x": 75.5,
+                "y": 4.5,
+                "w": 5.5,
+                "h": 7.5
+            },
+            "visual": "전체화면 확장 아이콘 버튼",
+            "protocol": "—",
+            "note": "전체화면 모드 전환",
+            "annotation_text": "[COM-TL-07] 전체화면 토글"
+        },
+        {
+            "id": 17,
+            "name": "App Close Button",
+            "category": "toolbar",
+            "bbox_pct": {
+                "x": 81.5,
+                "y": 4.5,
+                "w": 4.5,
+                "h": 7.5
+            },
+            "visual": "X 텍스트 버튼 (빨간 배경)",
+            "protocol": "—",
+            "note": "앱 내부 닫기 버튼 (타이틀바 X와 별도)",
+            "annotation_text": "[COM-TL-08] 앱 종료 버튼"
+        },
+        {
+            "id": 18,
+            "name": "Seat 1 Card Slot",
+            "category": "card_area",
+            "bbox_pct": {
+                "x": 0.5,
+                "y": 13.5,
+                "w": 9.5,
+                "h": 19.0
+            },
+            "visual": "카드 슬롯 (2장 카드 표시 영역, 어두운 배경)",
+            "protocol": "SendCardEnter",
+            "note": "SEAT 1 플레이어 카드 입력 영역",
+            "annotation_text": "[COM-CD-01] SEAT 1 카드 입력"
+        },
+        {
+            "id": 19,
+            "name": "Seat 2 Card Slot",
+            "category": "card_area",
+            "bbox_pct": {
+                "x": 10.2,
+                "y": 13.5,
+                "w": 9.5,
+                "h": 19.0
+            },
+            "visual": "카드 슬롯",
+            "protocol": "SendCardEnter",
+            "note": "SEAT 2 플레이어 카드 입력 영역",
+            "annotation_text": "[COM-CD-02] SEAT 2 카드 입력"
+        },
+        {
+            "id": 20,
+            "name": "Seat 3 Card Slot",
+            "category": "card_area",
+            "bbox_pct": {
+                "x": 19.9,
+                "y": 13.5,
+                "w": 9.5,
+                "h": 19.0
+            },
+            "visual": "카드 슬롯",
+            "protocol": "SendCardEnter",
+            "note": "SEAT 3 플레이어 카드 입력 영역",
+            "annotation_text": "[COM-CD-03] SEAT 3 카드 입력"
+        },
+        {
+            "id": 21,
+            "name": "Seat 4 Card Slot",
+            "category": "card_area",
+            "bbox_pct": {
+                "x": 29.6,
+                "y": 13.5,
+                "w": 9.5,
+                "h": 19.0
+            },
+            "visual": "카드 슬롯",
+            "protocol": "SendCardEnter",
+            "note": "SEAT 4 플레이어 카드 입력 영역",
+            "annotation_text": "[COM-CD-04] SEAT 4 카드 입력"
+        },
+        {
+            "id": 22,
+            "name": "Seat 5 Card Slot",
+            "category": "card_area",
+            "bbox_pct": {
+                "x": 39.3,
+                "y": 13.5,
+                "w": 9.5,
+                "h": 19.0
+            },
+            "visual": "카드 슬롯",
+            "protocol": "SendCardEnter",
+            "note": "SEAT 5 플레이어 카드 입력 영역",
+            "annotation_text": "[COM-CD-05] SEAT 5 카드 입력"
+        },
+        {
+            "id": 23,
+            "name": "Seat 6 Card Slot",
+            "category": "card_area",
+            "bbox_pct": {
+                "x": 49.0,
+                "y": 13.5,
+                "w": 9.5,
+                "h": 19.0
+            },
+            "visual": "카드 슬롯",
+            "protocol": "SendCardEnter",
+            "note": "SEAT 6 플레이어 카드 입력 영역",
+            "annotation_text": "[COM-CD-06] SEAT 6 카드 입력"
+        },
+        {
+            "id": 24,
+            "name": "Seat 7 Card Slot",
+            "category": "card_area",
+            "bbox_pct": {
+                "x": 58.7,
+                "y": 13.5,
+                "w": 9.5,
+                "h": 19.0
+            },
+            "visual": "카드 슬롯",
+            "protocol": "SendCardEnter",
+            "note": "SEAT 7 플레이어 카드 입력 영역",
+            "annotation_text": "[COM-CD-07] SEAT 7 카드 입력"
+        },
+        {
+            "id": 25,
+            "name": "Seat 8 Card Slot",
+            "category": "card_area",
+            "bbox_pct": {
+                "x": 68.4,
+                "y": 13.5,
+                "w": 9.5,
+                "h": 19.0
+            },
+            "visual": "카드 슬롯",
+            "protocol": "SendCardEnter",
+            "note": "SEAT 8 플레이어 카드 입력 영역",
+            "annotation_text": "[COM-CD-08] SEAT 8 카드 입력"
+        },
+        {
+            "id": 26,
+            "name": "Seat 9 Card Slot",
+            "category": "card_area",
+            "bbox_pct": {
+                "x": 78.1,
+                "y": 13.5,
+                "w": 9.5,
+                "h": 19.0
+            },
+            "visual": "카드 슬롯",
+            "protocol": "SendCardEnter",
+            "note": "SEAT 9 플레이어 카드 입력 영역",
+            "annotation_text": "[COM-CD-09] SEAT 9 카드 입력"
+        },
+        {
+            "id": 27,
+            "name": "Seat 10 Card Slot",
+            "category": "card_area",
+            "bbox_pct": {
+                "x": 87.8,
+                "y": 13.5,
+                "w": 11.7,
+                "h": 19.0
+            },
+            "visual": "카드 슬롯 (SEAT 10 라벨 포함, 약간 넓음)",
+            "protocol": "SendCardEnter",
+            "note": "SEAT 10 플레이어 카드 입력 영역",
+            "annotation_text": "[COM-CD-10] SEAT 10 카드 입력"
+        },
+        {
+            "id": 28,
+            "name": "Seat 1 Label",
+            "category": "seat",
+            "bbox_pct": {
+                "x": 0.5,
+                "y": 32.7,
+                "w": 9.4,
+                "h": 5.8
+            },
+            "visual": "SEAT 1 텍스트 라벨",
+            "protocol": "SendPlayerAdd",
+            "note": "좌석 1 번호 라벨",
+            "annotation_text": "[COM-ST-01] SEAT 1 좌석 라벨"
+        },
+        {
+            "id": 29,
+            "name": "Seat 2 Label",
+            "category": "seat",
+            "bbox_pct": {
+                "x": 10.4,
+                "y": 32.7,
+                "w": 9.4,
+                "h": 5.8
+            },
+            "visual": "SEAT 2 텍스트 라벨",
+            "protocol": "SendPlayerAdd",
+            "note": "좌석 2 번호 라벨",
+            "annotation_text": "[COM-ST-02] SEAT 2 좌석 라벨"
+        },
+        {
+            "id": 30,
+            "name": "Seat 3 Label",
+            "category": "seat",
+            "bbox_pct": {
+                "x": 20.3,
+                "y": 32.7,
+                "w": 9.4,
+                "h": 5.8
+            },
+            "visual": "SEAT 3 텍스트 라벨",
+            "protocol": "SendPlayerAdd",
+            "note": "좌석 3 번호 라벨",
+            "annotation_text": "[COM-ST-03] SEAT 3 좌석 라벨"
+        },
+        {
+            "id": 31,
+            "name": "Seat 4 Label",
+            "category": "seat",
+            "bbox_pct": {
+                "x": 30.2,
+                "y": 32.7,
+                "w": 9.4,
+                "h": 5.8
+            },
+            "visual": "SEAT 4 텍스트 라벨",
+            "protocol": "SendPlayerAdd",
+            "note": "좌석 4 번호 라벨",
+            "annotation_text": "[COM-ST-04] SEAT 4 좌석 라벨"
+        },
+        {
+            "id": 32,
+            "name": "Seat 5 Label",
+            "category": "seat",
+            "bbox_pct": {
+                "x": 40.1,
+                "y": 32.7,
+                "w": 9.4,
+                "h": 5.8
+            },
+            "visual": "SEAT 5 텍스트 라벨",
+            "protocol": "SendPlayerAdd",
+            "note": "좌석 5 번호 라벨",
+            "annotation_text": "[COM-ST-05] SEAT 5 좌석 라벨"
+        },
+        {
+            "id": 33,
+            "name": "Seat 6 Label",
+            "category": "seat",
+            "bbox_pct": {
+                "x": 50.0,
+                "y": 32.7,
+                "w": 9.4,
+                "h": 5.8
+            },
+            "visual": "SEAT 6 텍스트 라벨",
+            "protocol": "SendPlayerAdd",
+            "note": "좌석 6 번호 라벨",
+            "annotation_text": "[COM-ST-06] SEAT 6 좌석 라벨"
+        },
+        {
+            "id": 34,
+            "name": "Seat 7 Label",
+            "category": "seat",
+            "bbox_pct": {
+                "x": 59.9,
+                "y": 32.7,
+                "w": 9.4,
+                "h": 5.8
+            },
+            "visual": "SEAT 7 텍스트 라벨",
+            "protocol": "SendPlayerAdd",
+            "note": "좌석 7 번호 라벨",
+            "annotation_text": "[COM-ST-07] SEAT 7 좌석 라벨"
+        },
+        {
+            "id": 35,
+            "name": "Seat 8 Label",
+            "category": "seat",
+            "bbox_pct": {
+                "x": 69.8,
+                "y": 32.7,
+                "w": 9.4,
+                "h": 5.8
+            },
+            "visual": "SEAT 8 텍스트 라벨",
+            "protocol": "SendPlayerAdd",
+            "note": "좌석 8 번호 라벨",
+            "annotation_text": "[COM-ST-08] SEAT 8 좌석 라벨"
+        },
+        {
+            "id": 36,
+            "name": "Seat 9 Label",
+            "category": "seat",
+            "bbox_pct": {
+                "x": 79.7,
+                "y": 32.7,
+                "w": 9.4,
+                "h": 5.8
+            },
+            "visual": "SEAT 9 텍스트 라벨",
+            "protocol": "SendPlayerAdd",
+            "note": "좌석 9 번호 라벨",
+            "annotation_text": "[COM-ST-09] SEAT 9 좌석 라벨"
+        },
+        {
+            "id": 37,
+            "name": "Seat 10 Label",
+            "category": "seat",
+            "bbox_pct": {
+                "x": 89.6,
+                "y": 32.7,
+                "w": 9.9,
+                "h": 5.8
+            },
+            "visual": "SEAT 10 텍스트 라벨",
+            "protocol": "SendPlayerAdd",
+            "note": "좌석 10 번호 라벨",
+            "annotation_text": "[COM-ST-10] SEAT 10 좌석 라벨"
+        },
+        {
+            "id": 38,
+            "name": "Seat 1 Straddle",
+            "category": "option",
+            "bbox_pct": {
+                "x": 0.5,
+                "y": 38.5,
+                "w": 9.4,
+                "h": 5.6
+            },
+            "visual": "STRADDLE 텍스트 버튼 (SEAT 1)",
+            "protocol": "—",
+            "note": "SEAT 1 스트래들 옵션 토글",
+            "annotation_text": "[S01-007] SEAT 1 스트래들 토글"
+        },
+        {
+            "id": 39,
+            "name": "Seat 2 Straddle",
+            "category": "option",
+            "bbox_pct": {
+                "x": 10.4,
+                "y": 38.5,
+                "w": 9.4,
+                "h": 5.6
+            },
+            "visual": "STRADDLE 텍스트 버튼 (SEAT 2)",
+            "protocol": "—",
+            "note": "SEAT 2 스트래들 옵션 토글",
+            "annotation_text": "[S01-008] SEAT 2 스트래들 토글"
+        },
+        {
+            "id": 40,
+            "name": "Seat 3 Straddle",
+            "category": "option",
+            "bbox_pct": {
+                "x": 20.3,
+                "y": 38.5,
+                "w": 9.4,
+                "h": 5.6
+            },
+            "visual": "STRADDLE 텍스트 버튼 (SEAT 3)",
+            "protocol": "—",
+            "note": "SEAT 3 스트래들 옵션 토글",
+            "annotation_text": "[S01-009] SEAT 3 스트래들 토글"
+        },
+        {
+            "id": 41,
+            "name": "Seat 4 Straddle",
+            "category": "option",
+            "bbox_pct": {
+                "x": 30.2,
+                "y": 38.5,
+                "w": 9.4,
+                "h": 5.6
+            },
+            "visual": "STRADDLE 텍스트 버튼 (SEAT 4)",
+            "protocol": "—",
+            "note": "SEAT 4 스트래들 옵션 토글",
+            "annotation_text": "[S01-010] SEAT 4 스트래들 토글"
+        },
+        {
+            "id": 42,
+            "name": "Seat 5 Straddle",
+            "category": "option",
+            "bbox_pct": {
+                "x": 40.1,
+                "y": 38.5,
+                "w": 9.4,
+                "h": 5.6
+            },
+            "visual": "STRADDLE 텍스트 버튼 (SEAT 5)",
+            "protocol": "—",
+            "note": "SEAT 5 스트래들 옵션 토글",
+            "annotation_text": "[S01-011] SEAT 5 스트래들 토글"
+        },
+        {
+            "id": 43,
+            "name": "Seat 6 Straddle",
+            "category": "option",
+            "bbox_pct": {
+                "x": 50.0,
+                "y": 38.5,
+                "w": 9.4,
+                "h": 5.6
+            },
+            "visual": "STRADDLE 텍스트 버튼 (SEAT 6)",
+            "protocol": "—",
+            "note": "SEAT 6 스트래들 옵션 토글",
+            "annotation_text": "[S01-012] SEAT 6 스트래들 토글"
+        },
+        {
+            "id": 44,
+            "name": "Seat 7 Straddle",
+            "category": "option",
+            "bbox_pct": {
+                "x": 59.9,
+                "y": 38.5,
+                "w": 9.4,
+                "h": 5.6
+            },
+            "visual": "STRADDLE 텍스트 버튼 (SEAT 7)",
+            "protocol": "—",
+            "note": "SEAT 7 스트래들 옵션 토글",
+            "annotation_text": "[S01-013] SEAT 7 스트래들 토글"
+        },
+        {
+            "id": 45,
+            "name": "Seat 8 Straddle",
+            "category": "option",
+            "bbox_pct": {
+                "x": 69.8,
+                "y": 38.5,
+                "w": 9.4,
+                "h": 5.6
+            },
+            "visual": "STRADDLE 텍스트 버튼 (SEAT 8)",
+            "protocol": "—",
+            "note": "SEAT 8 스트래들 옵션 토글",
+            "annotation_text": "[S01-014] SEAT 8 스트래들 토글"
+        },
+        {
+            "id": 46,
+            "name": "Seat 9 Straddle",
+            "category": "option",
+            "bbox_pct": {
+                "x": 79.7,
+                "y": 38.5,
+                "w": 9.4,
+                "h": 5.6
+            },
+            "visual": "STRADDLE 텍스트 버튼 (SEAT 9)",
+            "protocol": "—",
+            "note": "SEAT 9 스트래들 옵션 토글",
+            "annotation_text": "[S01-015] SEAT 9 스트래들 토글"
+        },
+        {
+            "id": 47,
+            "name": "Seat 10 Straddle",
+            "category": "option",
+            "bbox_pct": {
+                "x": 89.6,
+                "y": 38.5,
+                "w": 9.9,
+                "h": 5.6
+            },
+            "visual": "STRADDLE 텍스트 버튼 (SEAT 10)",
+            "protocol": "—",
+            "note": "SEAT 10 스트래들 옵션 토글",
+            "annotation_text": "[S01-016] SEAT 10 스트래들 토글"
+        },
+        {
+            "id": 48,
+            "name": "Seat 1 Position",
+            "category": "position",
+            "bbox_pct": {
+                "x": 0.5,
+                "y": 44.3,
+                "w": 9.4,
+                "h": 9.0
+            },
+            "visual": "원형 포지션 버튼 (SEAT 1)",
+            "protocol": "WriteGameInfo._pl_dealer/_pl_small/_pl_big",
+            "note": "SEAT 1 D/SB/BB 포지션 설정",
+            "annotation_text": "[S01-017] SEAT 1 포지션 설정"
+        },
+        {
+            "id": 49,
+            "name": "Seat 2 Position",
+            "category": "position",
+            "bbox_pct": {
+                "x": 10.4,
+                "y": 44.3,
+                "w": 9.4,
+                "h": 9.0
+            },
+            "visual": "원형 포지션 버튼 (SEAT 2)",
+            "protocol": "WriteGameInfo._pl_dealer/_pl_small/_pl_big",
+            "note": "SEAT 2 D/SB/BB 포지션 설정",
+            "annotation_text": "[S01-018] SEAT 2 포지션 설정"
+        },
+        {
+            "id": 50,
+            "name": "Seat 3 Position",
+            "category": "position",
+            "bbox_pct": {
+                "x": 20.3,
+                "y": 44.3,
+                "w": 9.4,
+                "h": 9.0
+            },
+            "visual": "원형 포지션 버튼 (SEAT 3)",
+            "protocol": "WriteGameInfo._pl_dealer/_pl_small/_pl_big",
+            "note": "SEAT 3 D/SB/BB 포지션 설정",
+            "annotation_text": "[S01-019] SEAT 3 포지션 설정"
+        },
+        {
+            "id": 51,
+            "name": "Seat 4 Position",
+            "category": "position",
+            "bbox_pct": {
+                "x": 30.2,
+                "y": 44.3,
+                "w": 9.4,
+                "h": 9.0
+            },
+            "visual": "원형 포지션 버튼 (SEAT 4)",
+            "protocol": "WriteGameInfo._pl_dealer/_pl_small/_pl_big",
+            "note": "SEAT 4 D/SB/BB 포지션 설정",
+            "annotation_text": "[S01-020] SEAT 4 포지션 설정"
+        },
+        {
+            "id": 52,
+            "name": "Seat 5 Position",
+            "category": "position",
+            "bbox_pct": {
+                "x": 40.1,
+                "y": 44.3,
+                "w": 9.4,
+                "h": 9.0
+            },
+            "visual": "원형 포지션 버튼 (SEAT 5)",
+            "protocol": "WriteGameInfo._pl_dealer/_pl_small/_pl_big",
+            "note": "SEAT 5 D/SB/BB 포지션 설정",
+            "annotation_text": "[S01-021] SEAT 5 포지션 설정"
+        },
+        {
+            "id": 53,
+            "name": "Seat 6 Position",
+            "category": "position",
+            "bbox_pct": {
+                "x": 50.0,
+                "y": 44.3,
+                "w": 9.4,
+                "h": 9.0
+            },
+            "visual": "원형 포지션 버튼 (SEAT 6)",
+            "protocol": "WriteGameInfo._pl_dealer/_pl_small/_pl_big",
+            "note": "SEAT 6 D/SB/BB 포지션 설정",
+            "annotation_text": "[S01-022] SEAT 6 포지션 설정"
+        },
+        {
+            "id": 54,
+            "name": "Seat 7 Position",
+            "category": "position",
+            "bbox_pct": {
+                "x": 59.9,
+                "y": 44.3,
+                "w": 9.4,
+                "h": 9.0
+            },
+            "visual": "원형 포지션 버튼 (SEAT 7)",
+            "protocol": "WriteGameInfo._pl_dealer/_pl_small/_pl_big",
+            "note": "SEAT 7 D/SB/BB 포지션 설정",
+            "annotation_text": "[S01-023] SEAT 7 포지션 설정"
+        },
+        {
+            "id": 55,
+            "name": "Seat 8 Position",
+            "category": "position",
+            "bbox_pct": {
+                "x": 69.8,
+                "y": 44.3,
+                "w": 9.4,
+                "h": 9.0
+            },
+            "visual": "원형 포지션 버튼 (SEAT 8)",
+            "protocol": "WriteGameInfo._pl_dealer/_pl_small/_pl_big",
+            "note": "SEAT 8 D/SB/BB 포지션 설정",
+            "annotation_text": "[S01-024] SEAT 8 포지션 설정"
+        },
+        {
+            "id": 56,
+            "name": "Seat 9 Position",
+            "category": "position",
+            "bbox_pct": {
+                "x": 79.7,
+                "y": 44.3,
+                "w": 9.4,
+                "h": 9.0
+            },
+            "visual": "원형 포지션 버튼 (SEAT 9)",
+            "protocol": "WriteGameInfo._pl_dealer/_pl_small/_pl_big",
+            "note": "SEAT 9 D/SB/BB 포지션 설정",
+            "annotation_text": "[S01-025] SEAT 9 포지션 설정"
+        },
+        {
+            "id": 57,
+            "name": "Seat 10 Position",
+            "category": "position",
+            "bbox_pct": {
+                "x": 89.6,
+                "y": 44.3,
+                "w": 9.9,
+                "h": 9.0
+            },
+            "visual": "원형 포지션 버튼 (SEAT 10)",
+            "protocol": "WriteGameInfo._pl_dealer/_pl_small/_pl_big",
+            "note": "SEAT 10 D/SB/BB 포지션 설정",
+            "annotation_text": "[S01-026] SEAT 10 포지션 설정"
+        },
+        {
+            "id": 58,
+            "name": "CAP Control",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 0.5,
+                "y": 53.5,
+                "w": 7.5,
+                "h": 7.0
+            },
+            "visual": "CAP 라벨 + 값 박스",
+            "protocol": "WriteGameInfo._cap",
+            "note": "CAP 설정값",
+            "annotation_text": "[S01-027] CAP 설정값"
+        },
+        {
+            "id": 59,
+            "name": "ANTE Control",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 8.5,
+                "y": 53.5,
+                "w": 7.5,
+                "h": 7.0
+            },
+            "visual": "ANTE 라벨 + 값 박스",
+            "protocol": "WriteGameInfo._ante",
+            "note": "앤티 설정값",
+            "annotation_text": "[S01-028] ANTE 설정값"
+        },
+        {
+            "id": 60,
+            "name": "BTN BLIND Control",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 16.5,
+                "y": 53.5,
+                "w": 10.5,
+                "h": 7.0
+            },
+            "visual": "BTN BLIND 라벨 + 값 박스",
+            "protocol": "WriteGameInfo._button_blind",
+            "note": "버튼 블라인드 설정값",
+            "annotation_text": "[S01-029] 버튼 블라인드 설정값"
+        },
+        {
+            "id": 61,
+            "name": "DEALER Control",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 27.5,
+                "y": 53.5,
+                "w": 9.5,
+                "h": 7.0
+            },
+            "visual": "DEALER 라벨 + 값 박스",
+            "protocol": "WriteGameInfo._pl_dealer",
+            "note": "딜러 위치 설정",
+            "annotation_text": "[S01-030] 딜러 위치 설정"
+        },
+        {
+            "id": 62,
+            "name": "SB Control",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 37.5,
+                "y": 53.5,
+                "w": 12.0,
+                "h": 7.0
+            },
+            "visual": "SB 라벨 + 값 박스",
+            "protocol": "WriteGameInfo._small",
+            "note": "스몰 블라인드 설정값",
+            "annotation_text": "[S01-031] 스몰 블라인드 설정값"
+        },
+        {
+            "id": 63,
+            "name": "BB Control",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 55.0,
+                "y": 53.5,
+                "w": 12.0,
+                "h": 7.0
+            },
+            "visual": "BB 라벨 + 값 박스",
+            "protocol": "WriteGameInfo._big",
+            "note": "빅 블라인드 설정값",
+            "annotation_text": "[S01-032] 빅 블라인드 설정값"
+        },
+        {
+            "id": 64,
+            "name": "3B Control",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 83.0,
+                "y": 53.5,
+                "w": 8.0,
+                "h": 7.0
+            },
+            "visual": "3B 라벨 + 값 박스",
+            "protocol": "WriteGameInfo._third",
+            "note": "서드 블라인드 설정값",
+            "annotation_text": "[S01-033] 서드 블라인드 설정값"
+        },
+        {
+            "id": 65,
+            "name": "CAP Decrement Button",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 0.5,
+                "y": 61.0,
+                "w": 3.5,
+                "h": 5.0
+            },
+            "visual": "< 화살표 버튼",
+            "protocol": "WriteGameInfo._cap",
+            "note": "CAP 값 감소",
+            "annotation_text": "[S01-034] CAP 값 감소"
+        },
+        {
+            "id": 66,
+            "name": "CAP Increment Button",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 4.3,
+                "y": 61.0,
+                "w": 3.5,
+                "h": 5.0
+            },
+            "visual": "> 화살표 버튼",
+            "protocol": "WriteGameInfo._cap",
+            "note": "CAP 값 증가",
+            "annotation_text": "[S01-035] CAP 값 증가"
+        },
+        {
+            "id": 67,
+            "name": "ANTE Decrement Button",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 8.5,
+                "y": 61.0,
+                "w": 3.5,
+                "h": 5.0
+            },
+            "visual": "< 화살표 버튼",
+            "protocol": "WriteGameInfo._ante",
+            "note": "ANTE 값 감소",
+            "annotation_text": "[S01-036] ANTE 값 감소"
+        },
+        {
+            "id": 68,
+            "name": "ANTE Increment Button",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 12.3,
+                "y": 61.0,
+                "w": 3.5,
+                "h": 5.0
+            },
+            "visual": "> 화살표 버튼",
+            "protocol": "WriteGameInfo._ante",
+            "note": "ANTE 값 증가",
+            "annotation_text": "[S01-037] ANTE 값 증가"
+        },
+        {
+            "id": 69,
+            "name": "SB Decrement Button",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 37.5,
+                "y": 61.0,
+                "w": 3.5,
+                "h": 5.0
+            },
+            "visual": "< 화살표 버튼",
+            "protocol": "WriteGameInfo._small",
+            "note": "SB 값 감소",
+            "annotation_text": "[S01-038] SB 값 감소"
+        },
+        {
+            "id": 70,
+            "name": "SB Increment Button",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 41.5,
+                "y": 61.0,
+                "w": 3.5,
+                "h": 5.0
+            },
+            "visual": "> 화살표 버튼",
+            "protocol": "WriteGameInfo._small",
+            "note": "SB 값 증가",
+            "annotation_text": "[S01-039] SB 값 증가"
+        },
+        {
+            "id": 71,
+            "name": "BB Decrement Button",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 55.0,
+                "y": 61.0,
+                "w": 3.5,
+                "h": 5.0
+            },
+            "visual": "< 화살표 버튼",
+            "protocol": "WriteGameInfo._big",
+            "note": "BB 값 감소",
+            "annotation_text": "[S01-040] BB 값 감소"
+        },
+        {
+            "id": 72,
+            "name": "BB Increment Button",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 59.0,
+                "y": 61.0,
+                "w": 3.5,
+                "h": 5.0
+            },
+            "visual": "> 화살표 버튼",
+            "protocol": "WriteGameInfo._big",
+            "note": "BB 값 증가",
+            "annotation_text": "[S01-041] BB 값 증가"
+        },
+        {
+            "id": 73,
+            "name": "3B Decrement Button",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 83.0,
+                "y": 61.0,
+                "w": 3.5,
+                "h": 5.0
+            },
+            "visual": "< 화살표 버튼",
+            "protocol": "WriteGameInfo._third",
+            "note": "3B 값 감소",
+            "annotation_text": "[S01-042] 3B 값 감소"
+        },
+        {
+            "id": 74,
+            "name": "3B Increment Button",
+            "category": "blind",
+            "bbox_pct": {
+                "x": 87.0,
+                "y": 61.0,
+                "w": 3.5,
+                "h": 5.0
+            },
+            "visual": "> 화살표 버튼",
+            "protocol": "WriteGameInfo._third",
+            "note": "3B 값 증가",
+            "annotation_text": "[S01-043] 3B 값 증가"
+        },
+        {
+            "id": 75,
+            "name": "MIN CHIP Button",
+            "category": "game_settings",
+            "bbox_pct": {
+                "x": 0.5,
+                "y": 73.2,
+                "w": 10.0,
+                "h": 7.0
+            },
+            "visual": "MIN CHIP 텍스트 버튼 (어두운 배경)",
+            "protocol": "WriteGameInfo._smallest_chip",
+            "note": "최소 칩 단위 설정",
+            "annotation_text": "[S01-044] 최소 칩 단위 설정"
+        },
+        {
+            "id": 76,
+            "name": "7 DEUCE Button",
+            "category": "game_settings",
+            "bbox_pct": {
+                "x": 11.0,
+                "y": 73.2,
+                "w": 10.0,
+                "h": 7.0
+            },
+            "visual": "7 DEUCE 텍스트 버튼 (어두운 배경)",
+            "protocol": "—",
+            "note": "7-Deuce 게임 규칙 토글",
+            "annotation_text": "[S01-045] 7-Deuce 규칙 토글"
+        },
+        {
+            "id": 77,
+            "name": "BOMB POT Button",
+            "category": "game_settings",
+            "bbox_pct": {
+                "x": 21.5,
+                "y": 73.2,
+                "w": 10.0,
+                "h": 7.0
+            },
+            "visual": "BOMB POT 텍스트 버튼 (어두운 배경)",
+            "protocol": "—",
+            "note": "봄 팟 게임 옵션 토글",
+            "annotation_text": "[S01-046] 봄 팟 옵션 토글"
+        },
+        {
+            "id": 78,
+            "name": "# BOARDS Button",
+            "category": "game_settings",
+            "bbox_pct": {
+                "x": 32.0,
+                "y": 73.2,
+                "w": 10.0,
+                "h": 7.0
+            },
+            "visual": "# BOARDS 텍스트 버튼 (어두운 배경)",
+            "protocol": "SendGameVariant",
+            "note": "보드 수 설정 (Single/Double/Triple)",
+            "annotation_text": "[S01-047] 보드 수 설정"
+        },
+        {
+            "id": 79,
+            "name": "HIT GAME Button",
+            "category": "game_settings",
+            "bbox_pct": {
+                "x": 42.5,
+                "y": 73.2,
+                "w": 10.0,
+                "h": 7.0
+            },
+            "visual": "HIT GAME 텍스트 버튼 (어두운 배경)",
+            "protocol": "—",
+            "note": "히트 게임 옵션 토글",
+            "annotation_text": "[S01-048] 히트 게임 옵션 토글"
+        },
+        {
+            "id": 80,
+            "name": "HOLDEM Button",
+            "category": "game_settings",
+            "bbox_pct": {
+                "x": 63.0,
+                "y": 73.2,
+                "w": 36.5,
+                "h": 7.0
+            },
+            "visual": "HOLDEM 텍스트 버튼 (녹색/황금색 배경, 큰 버튼)",
+            "protocol": "SendGameType",
+            "note": "게임 타입 선택 버튼. 클릭 시 22종 게임 타입 순환",
+            "annotation_text": "[S01-049] 게임 타입 선택"
+        },
+        {
+            "id": 81,
+            "name": "Hand Number Input Field",
+            "category": "hand_control",
+            "bbox_pct": {
+                "x": 0.5,
+                "y": 82.5,
+                "w": 8.0,
+                "h": 8.0
+            },
+            "visual": "숫자 입력 필드 (현재값: 1, 어두운 배경)",
+            "protocol": "GameInfoResponse.HandNumber",
+            "note": "핸드 번호 직접 입력 필드",
+            "annotation_text": "[S01-050] 핸드 번호 직접 입력"
+        },
+        {
+            "id": 82,
+            "name": "SINGLE BOARD Button",
+            "category": "game_settings",
+            "bbox_pct": {
+                "x": 25.0,
+                "y": 82.5,
+                "w": 20.0,
+                "h": 14.5
+            },
+            "visual": "SINGLE BOARD 텍스트 버튼 (어두운 배경)",
+            "protocol": "SendGameVariant",
+            "note": "보드 설정 (Single Board 모드)",
+            "annotation_text": "[S01-051] 싱글 보드 모드"
+        },
+        {
+            "id": 83,
+            "name": "SETTINGS Button",
+            "category": "navigation",
+            "bbox_pct": {
+                "x": 63.0,
+                "y": 82.5,
+                "w": 36.5,
+                "h": 14.5
+            },
+            "visual": "SETTINGS 텍스트 버튼 (어두운 배경, 큰 버튼)",
+            "protocol": "—",
+            "note": "앱 설정 화면으로 이동",
+            "annotation_text": "[S01-052] 앱 설정 화면 이동"
+        }
+    ],
+    "total_elements": 83,
+    "categories": [
+        "titlebar",
+        "hand_control",
+        "toolbar",
+        "card_area",
+        "seat",
+        "option",
+        "position",
+        "blind",
+        "game_settings",
+        "navigation"
+    ],
+    "notes": {
+        "go_button": "GO 버튼은 플레이어 등록 후 표시됨. 현재 스크린샷에 미포함"
+    }
+}

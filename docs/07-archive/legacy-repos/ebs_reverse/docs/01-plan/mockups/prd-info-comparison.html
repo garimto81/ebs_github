@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720">
+    <title>M1: Information Acquisition Comparison</title>
+    <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #000;
+            padding: 0;
+            margin: 0;
+            width: 720px;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0;
+            padding: 15px;
+        }
+        .section { margin-bottom: 32px; }
+        .section-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+        .section-note {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 24px;
+        }
+        .diagram { position: relative; }
+
+        /* -- Nodes -- */
+        .node {
+            position: absolute;
+            z-index: 2;
+            background: #f5f5f5;
+            border: 1px solid #ccc;
+            padding: 16px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c2c2c;
+            white-space: nowrap;
+        }
+        .node.camera {
+            background: #2c2c2c;
+            color: #fff;
+            border-color: #1a1a1a;
+            padding: 14px 20px;
+            font-size: 14px;
+        }
+        .node.rfid {
+            background: #777;
+            color: #fff;
+            border-color: #555;
+            padding: 14px 20px;
+            font-size: 14px;
+        }
+        .node .sub {
+            display: block;
+            font-size: 10px;
+            color: #999;
+            font-weight: 400;
+            text-align: center;
+            margin-top: 4px;
+        }
+        .node.camera .sub,
+        .node.rfid .sub { color: #ccc; }
+
+        /* -- Legend -- */
+        .legend {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            font-size: 12px;
+            color: #555;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-swatch {
+            width: 24px;
+            border-radius: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- Arrow marker definitions (document-global) -->
+<svg width="0" height="0" style="position: absolute;">
+    <defs>
+        <marker id="a-gray" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <polygon points="0,1 8,4 0,7" fill="#666"/>
+        </marker>
+        <marker id="a-orange" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <polygon points="0,1 8,4 0,7" fill="#777"/>
+        </marker>
+        <marker id="a-black" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <polygon points="0,1 8,4 0,7" fill="#2c2c2c"/>
+        </marker>
+        <marker id="a-gray-dim" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <polygon points="0,1 8,4 0,7" fill="#999"/>
+        </marker>
+    </defs>
+</svg>
+
+<!-- 1. 일반 스포츠 -->
+<div class="section">
+    <div class="section-label">일반 스포츠</div>
+    <div class="section-note">[모든 정보가 눈에 보인다]</div>
+
+    <div class="diagram" style="height: 90px;">
+        <!-- Nodes (text centerline ~ y:40) -->
+        <div class="node"    style="left:7px;  top:14px;">경기장</div>
+        <div class="node camera" style="left:150px; top:12px;">CAM 카메라</div>
+        <div class="node"    style="left:314px; top:14px;">영상</div>
+        <div class="node"    style="left:425px; top:6px;">GFX<span class="sub">(정리/표시)</span></div>
+        <div class="node"    style="left:563px; top:14px;">방송</div>
+
+        <!-- Connectors -->
+        <svg style="position:absolute; top:0; left:0;" width="707" height="90">
+            <line x1="71" y1="40" x2="149" y2="40" stroke="#666" stroke-width="2" marker-end="url(#a-gray)"/>
+            <line x1="247" y1="40" x2="313" y2="40" stroke="#666" stroke-width="2" marker-end="url(#a-gray)"/>
+            <line x1="359" y1="40" x2="424" y2="40" stroke="#666" stroke-width="2" marker-end="url(#a-gray)"/>
+            <line x1="483" y1="40" x2="562" y2="40" stroke="#666" stroke-width="2" marker-end="url(#a-gray)"/>
+        </svg>
+    </div>
+</div>
+
+<!-- 2. 포커 -->
+<div class="section">
+    <div class="section-label">포커</div>
+    <div class="section-note">[핵심 정보가 숨겨져 있다]</div>
+
+    <div class="diagram" style="height: 290px;">
+        <!-- Center column -->
+        <div class="node"    style="left:7px;  top:114px;">테이블</div>
+        <div class="node"    style="left:517px; top:106px;">합성<span class="sub">(정보 생성)</span></div>
+        <div class="node"    style="left:622px; top:114px;">방송</div>
+
+        <!-- Top row: RFID data path -->
+        <div class="node rfid"  style="left:137px; top:22px;">RFID</div>
+        <div class="node"       style="left:268px; top:26px;">카드 데이터</div>
+        <div class="node"       style="left:406px; top:26px;">게임 엔진</div>
+
+        <!-- Bottom row: Camera video path -->
+        <div class="node camera" style="left:137px; top:198px;">CAM 카메라</div>
+        <div class="node"        style="left:268px; top:194px;">영상<span class="sub">(카드는 안 보임)</span></div>
+
+        <!-- Connectors -->
+        <svg style="position:absolute; top:0; left:0;" width="707" height="290">
+            <!-- Fork from 테이블 -->
+            <!-- Horizontal stub -->
+            <line x1="71" y1="140" x2="105" y2="140" stroke="#999" stroke-width="1.5"/>
+            <!-- Vertical split -->
+            <line x1="105" y1="52"  x2="105" y2="228" stroke="#999" stroke-width="1.5"/>
+
+            <!-- Top branch: RFID data path -->
+            <!-- Fork → RFID -->
+            <line x1="105" y1="52" x2="136" y2="52" stroke="#777" stroke-width="2" marker-end="url(#a-orange)"/>
+            <!-- RFID → 카드 데이터 -->
+            <line x1="229" y1="52" x2="267" y2="52" stroke="#777" stroke-width="2" marker-end="url(#a-orange)"/>
+            <!-- 카드 데이터 → 게임 엔진 -->
+            <line x1="357" y1="52" x2="405" y2="52" stroke="#777" stroke-width="2" marker-end="url(#a-orange)"/>
+            <!-- 게임 엔진 → 합성 (diagonal) -->
+            <line x1="484" y1="52" x2="516" y2="128" stroke="#777" stroke-width="2" marker-end="url(#a-orange)"/>
+
+            <!-- Bottom branch: Camera video path (gray) -->
+            <!-- Fork → 카메라 -->
+            <line x1="105" y1="228" x2="136" y2="228" stroke="#666" stroke-width="2" marker-end="url(#a-gray)"/>
+            <!-- 카메라 → 영상 -->
+            <line x1="229" y1="228" x2="267" y2="228" stroke="#666" stroke-width="2" marker-end="url(#a-gray)"/>
+            <!-- 영상 → 합성 (diagonal) -->
+            <line x1="327" y1="224" x2="516" y2="148" stroke="#666" stroke-width="2" marker-end="url(#a-gray)"/>
+
+            <!-- Merge output (thick black) -->
+            <!-- 합성 → 방송 -->
+            <line x1="575" y1="140" x2="621" y2="140" stroke="#2c2c2c" stroke-width="2.5" marker-end="url(#a-black)"/>
+        </svg>
+    </div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+    <div class="legend-item">
+        <div class="legend-swatch" style="background:#666; height:3px;"></div>
+        <span>영상 경로</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background:#777; height:3px;"></div>
+        <span>데이터 경로</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background:#2c2c2c; height:4px;"></div>
+        <span>합성 출력</span>
+    </div>
+</div>
+
+</div>
+
+</body>
+</html>

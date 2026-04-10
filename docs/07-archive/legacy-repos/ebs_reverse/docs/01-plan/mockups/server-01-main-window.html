@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720">
+    <title>S1: GfxServer Main Window</title>
+    <style>
+        :root {
+            --nav-width: 44px;
+            --shell-width: 720px;
+            --content-width: calc(var(--shell-width) - var(--nav-width));
+            --bg-dark: #1a1a1a;
+            --bg-card: #ffffff;
+            --bg-section: #f5f5f5;
+            --border: #e0e0e0;
+            --border-light: #e8e8e8;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --font-mono: 'Consolas', 'Courier New', monospace;
+            --fs-xs: 10px;
+            --fs-sm: 11px;
+            --fs-base: 12px;
+            --fs-md: 13px;
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --sp-xs: 4px;
+            --sp-sm: 6px;
+            --sp-md: 10px;
+            --sp-lg: 14px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #000;
+            padding: 0;
+            margin: 0;
+        }
+
+        .wireframe-container {
+            width: var(--shell-width);
+            background: #fff;
+            border: 1px solid #999;
+            overflow: hidden;
+        }
+
+        .title-bar {
+            background: var(--bg-dark);
+            color: white;
+            padding: 8px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .title-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .app-icon {
+            width: 16px; height: 16px;
+            background: #888;
+            border-radius: var(--radius-sm);
+        }
+        .title-left span { font-size: var(--fs-md); font-weight: 600; }
+        .window-controls { display: flex; gap: 6px; }
+        .control-btn { width: 12px; height: 12px; border-radius: 50%; }
+        .control-btn.close { background: #333; }
+        .control-btn.minimize { background: #888; }
+        .control-btn.maximize { background: #555; }
+
+        .toolbar {
+            background: #2a2a2a;
+            color: white;
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: var(--fs-base);
+        }
+        .toolbar label { color: #aaa; font-size: var(--fs-sm); }
+        .toolbar select, .toolbar input[type="text"] {
+            background: #3a3a3a;
+            border: 1px solid #555;
+            color: white;
+            padding: 3px 6px;
+            border-radius: var(--radius-sm);
+            font-size: var(--fs-base);
+        }
+        .toolbar select { min-width: 160px; }
+        .btn {
+            padding: 4px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: var(--fs-base);
+            cursor: pointer;
+        }
+        .btn-start { background: #555; color: white; }
+        .btn-stop { background: #333; color: white; }
+        .btn-emergency {
+            background: #000;
+            color: white;
+            padding: 4px 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .toolbar-spacer { flex: 1; }
+        .toolbar .badge {
+            display: inline-block;
+            background: #333;
+            color: white;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: var(--fs-xs);
+            font-weight: 600;
+        }
+
+        .shell {
+            display: flex;
+            flex-direction: column;
+        }
+        .shell-top {
+            display: flex;
+            height: 560px;
+        }
+
+        .nav {
+            width: var(--nav-width);
+            background: #f0f0f0;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding-top: 6px;
+        }
+        .nav-item {
+            width: 100%;
+            padding: 6px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            font-size: 7px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .nav-item:hover { background: #e4e4e4; }
+        .nav-item.active {
+            background: white;
+            border-left-color: #333;
+            color: #333;
+            font-weight: 700;
+        }
+        .nav-icon {
+            width: 18px; height: 18px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--sp-lg);
+            background: var(--bg-section);
+        }
+
+        .ctx-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            padding: 10px;
+            border-top: 1px solid var(--border);
+            background: white;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--sp-md);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 8px 12px;
+            font-size: var(--fs-md);
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .card-header .id-tag {
+            font-size: var(--fs-xs);
+            color: #333;
+            font-weight: 600;
+            background: rgba(51,51,51,0.1);
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+        .card-body { padding: 10px 12px; }
+
+        .status-bar {
+            background: #2a2a2a;
+            color: #ccc;
+            padding: 5px 14px;
+            display: flex;
+            gap: 20px;
+            font-size: var(--fs-sm);
+            border-top: 1px solid #444;
+        }
+        .status-bar .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.green { background: #555; }
+        .status-dot.yellow { background: #888; }
+        .status-dot.red { background: #333; }
+        .status-bar-spacer { flex: 1; }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+            font-size: var(--fs-base);
+        }
+        .form-row label {
+            min-width: 80px;
+            color: var(--text-secondary);
+            font-size: var(--fs-sm);
+        }
+        .form-row .value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .preview-box {
+            background: #111;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin: 8px;
+        }
+        .preview-label {
+            padding: 4px 8px;
+            font-size: var(--fs-xs);
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .preview-canvas {
+            width: 180px;
+            height: 100px;
+            background: #e0e0e0;
+            margin: 0 auto 6px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: var(--fs-sm);
+            font-weight: 600;
+        }
+
+        .rfid-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 4px;
+        }
+        .rfid-slot {
+            background: var(--bg-section);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            text-align: center;
+            font-size: var(--fs-xs);
+        }
+        .rfid-slot .seat-num { font-weight: 700; color: var(--text-primary); }
+        .rfid-slot .rfid-status { font-size: 9px; margin-top: 1px; }
+        .rfid-slot.connected { border-color: #555; background: #f5f5f5; }
+        .rfid-slot.disconnected { border-color: #333; background: #f5f5f5; }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            padding: 8px;
+        }
+        .qa-btn {
+            padding: 6px 4px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: white;
+            font-size: var(--fs-xs);
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            color: var(--text-primary);
+        }
+        .qa-btn:hover { background: var(--bg-section); border-color: #333; color: #333; }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: var(--fs-sm);
+        }
+        .metric:last-child { border-bottom: none; }
+        .metric-label { color: var(--text-secondary); }
+        .metric-value { font-weight: 700; font-family: var(--font-mono); }
+        .metric-value.ok { color: #555; }
+        .metric-value.warn { color: #888; }
+
+        .log-panel {
+            font-family: var(--font-mono);
+            font-size: var(--fs-xs);
+            line-height: 1.5;
+            color: var(--text-secondary);
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        .log-panel .log-line { padding: 1px 0; }
+        .log-panel .ts { color: var(--text-muted); }
+        .log-panel .log-info { color: #999; }
+        .log-panel .log-ok { color: #555; }
+
+        .client-list { list-style: none; }
+        .client-list li {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+            font-size: var(--fs-sm);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .client-list li:last-child { border-bottom: none; }
+
+        .section-label {
+            font-size: var(--fs-xs);
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 6px 10px 3px;
+        }
+
+        .ctx-section {
+            border-bottom: 1px solid var(--border-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <div class="title-bar">
+            <div class="title-left">
+                <div class="app-icon"></div>
+                <span>GfxServer v3.2</span>
+            </div>
+            <div class="window-controls">
+                <div class="control-btn close"></div>
+                <div class="control-btn minimize"></div>
+                <div class="control-btn maximize"></div>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <label>Game Type</label>
+            <select>
+                <option>Texas Hold'em</option>
+                <option>Omaha Hi-Lo</option>
+                <option>Short Deck</option>
+                <option>7-Card Stud</option>
+            </select>
+            <span class="badge">MW-001</span>
+
+            <div class="toolbar-spacer"></div>
+
+            <button class="btn btn-start">Start</button>
+            <button class="btn btn-stop">Stop</button>
+            <span class="badge">MW-002</span>
+
+            <button class="btn btn-emergency">KILL</button>
+            <span class="badge">MW-010</span>
+        </div>
+
+        <div class="shell">
+            <div class="shell-top">
+            <div class="nav">
+                <div class="nav-item active">
+                    <div class="nav-icon">MN</div>
+                    <span>Main</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">SRC</div>
+                    <span>SRC</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">OUT</div>
+                    <span>OUT</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">G1</div>
+                    <span>GFX1</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">G2</div>
+                    <span>GFX2</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">G3</div>
+                    <span>GFX3</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">SYS</div>
+                    <span>SYS</span>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="id-tag">MW-003</span>
+                        Game Status
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <label>Hand #</label>
+                            <span class="value">142</span>
+                        </div>
+                        <div class="form-row">
+                            <label>Game</label>
+                            <span class="value">Texas Hold'em</span>
+                        </div>
+                        <div class="form-row">
+                            <label>Blinds</label>
+                            <span class="value">500 / 1,000</span>
+                        </div>
+                        <div class="form-row">
+                            <label>State</label>
+                            <span class="value" style="color:#555;">Running</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="id-tag">MW-004</span>
+                        Connected Clients
+                    </div>
+                    <div class="card-body">
+                        <ul class="client-list">
+                            <li>
+                                <span class="status-dot green"></span>
+                                <span style="font-weight:600;">Action Tracker #1</span>
+                                <span style="color:var(--text-muted); margin-left:auto;">192.168.1.10</span>
+                            </li>
+                            <li>
+                                <span class="status-dot yellow"></span>
+                                <span style="font-weight:600;">Action Tracker #2</span>
+                                <span style="color:var(--text-muted); margin-left:auto;">192.168.1.12</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="id-tag">MW-005</span>
+                        RFID Readers
+                        <span style="margin-left:auto; font-size:11px; color:#555; font-weight:600;">10/12 Online</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="rfid-grid">
+                            <div class="rfid-slot connected"><div class="seat-num">S1</div><div class="rfid-status" style="color:#555;">Online</div></div>
+                            <div class="rfid-slot connected"><div class="seat-num">S2</div><div class="rfid-status" style="color:#555;">Online</div></div>
+                            <div class="rfid-slot connected"><div class="seat-num">S3</div><div class="rfid-status" style="color:#555;">Online</div></div>
+                            <div class="rfid-slot connected"><div class="seat-num">S4</div><div class="rfid-status" style="color:#555;">Online</div></div>
+                            <div class="rfid-slot connected"><div class="seat-num">S5</div><div class="rfid-status" style="color:#555;">Online</div></div>
+                            <div class="rfid-slot disconnected"><div class="seat-num">S6</div><div class="rfid-status" style="color:#333;">Offline</div></div>
+                            <div class="rfid-slot connected"><div class="seat-num">S7</div><div class="rfid-status" style="color:#555;">Online</div></div>
+                            <div class="rfid-slot connected"><div class="seat-num">S8</div><div class="rfid-status" style="color:#555;">Online</div></div>
+                            <div class="rfid-slot connected"><div class="seat-num">S9</div><div class="rfid-status" style="color:#555;">Online</div></div>
+                            <div class="rfid-slot connected"><div class="seat-num">S10</div><div class="rfid-status" style="color:#555;">Online</div></div>
+                            <div class="rfid-slot connected"><div class="seat-num">BD1</div><div class="rfid-status" style="color:#555;">Online</div></div>
+                            <div class="rfid-slot disconnected"><div class="seat-num">BD2</div><div class="rfid-status" style="color:#333;">Offline</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="id-tag">MW-009</span>
+                        Server Log
+                    </div>
+                    <div class="card-body">
+                        <div class="log-panel">
+                            <div class="log-line"><span class="ts">14:32:01</span> <span class="log-ok">[OK]</span> Hand #142 started</div>
+                            <div class="log-line"><span class="ts">14:31:58</span> <span class="log-info">[RFID]</span> S3 card read: As Kh</div>
+                            <div class="log-line"><span class="ts">14:31:55</span> <span class="log-info">[NET]</span> Client AT#1 connected</div>
+                            <div class="log-line"><span class="ts">14:31:50</span> <span class="log-ok">[OK]</span> Hand #141 completed</div>
+                            <div class="log-line"><span class="ts">14:31:42</span> <span class="log-info">[GFX]</span> Showdown animation triggered</div>
+                            <div class="log-line"><span class="ts">14:31:35</span> <span class="log-info">[RFID]</span> S7 card read: Qd Jc</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="ctx-panel">
+                <div class="ctx-section">
+                    <div class="preview-box">
+                        <div class="preview-label">Live Preview</div>
+                        <div class="preview-canvas">
+                            Overlay Preview
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ctx-section">
+                    <div class="section-label">System</div>
+                    <div class="metric">
+                        <span class="metric-label">CPU</span>
+                        <span class="metric-value ok">24%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">GPU</span>
+                        <span class="metric-value ok">38%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Memory</span>
+                        <span class="metric-value">1.2 GB</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">RFID</span>
+                        <span class="metric-value ok">10/12</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Render FPS</span>
+                        <span class="metric-value ok">60</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Secure Delay</span>
+                        <span class="metric-value warn">5 min</span>
+                    </div>
+                </div>
+
+                <div class="ctx-section">
+                    <div class="section-label">Quick Actions</div>
+                    <div class="quick-actions">
+                        <button class="qa-btn">Reset Hand</button>
+                        <button class="qa-btn">Register Deck</button>
+                        <button class="qa-btn">Action Tracker</button>
+                        <button class="qa-btn">Studio Mode</button>
+                        <button class="qa-btn">Split Recording</button>
+                        <button class="qa-btn">Tag Player</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="status-dot green"></span>
+                RFID: 10/12
+            </div>
+            <div class="status-item">
+                <span class="status-dot green"></span>
+                Clients: 2
+            </div>
+            <div class="status-item">
+                Hand #142
+            </div>
+            <div class="status-item">
+                <span class="status-dot green"></span>
+                192.168.1.100:8888
+            </div>
+            <div class="status-bar-spacer"></div>
+            <div class="status-item">
+                License: PRO
+            </div>
+            <div class="status-item">
+                14:32:01
+            </div>
+        </div>
+    </div>
+</body>
+</html>

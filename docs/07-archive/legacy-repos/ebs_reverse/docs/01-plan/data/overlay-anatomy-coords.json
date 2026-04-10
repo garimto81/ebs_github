@@ -1,0 +1,108 @@
+{
+  "version": "1.7",
+  "metadata": {
+    "source_image": "docs/01-plan/images/web/wsop-2025-paradise-overlay.png",
+    "image_size": {
+      "width": 640,
+      "height": 360
+    },
+    "description": "WSOP Paradise 2025 Super Main Event Final Table — Binder-Thorel-Reid hand, Flop: 4♣ 9♦ Q♦",
+    "note": "v1.7 — id 연속화 (Top Bar 제거 후 gap 정리). 10개 요소, id=1~10. 전원 coord_picker 실측.",
+    "created_at": "2026-02-23",
+    "updated_at": "2026-02-24",
+    "scale_factor": 1.0,
+    "sync_rule": "PRD 테이블(pokergfx-prd-v2.md:596-607)과 항상 동기화 필요. 수정 시 두 파일 모두 업데이트. 좌표 수정 도구: scripts/coord_picker.html"
+  },
+  "elements": [
+    {
+      "id": 1,
+      "name": "Player Info Panel",
+      "description": "3인 플레이어 정보 패널 세로 스택 (이름, 칩, 국적, 사진)",
+      "box": { "x": 40, "y": 53, "w": 188, "h": 237 },
+      "gfx_type": "Text + Image",
+      "protocol_cmd": "SHOW_PANEL",
+      "defined": true
+    },
+    {
+      "id": 2,
+      "name": "홀카드 표시",
+      "description": "플레이어 패널 우상단 홀카드 표시 (K♣9♣ / Q♠J♠ / A♥6♠, Broadcast Canvas 전용)",
+      "box": { "x": 107, "y": 51, "w": 44, "h": 33 },
+      "gfx_type": "Image (pip)",
+      "protocol_cmd": "DELAYED_FIELD_VISIBILITY",
+      "defined": true
+    },
+    {
+      "id": 3,
+      "name": "Action Badge",
+      "description": "플레이어 패널 중단 액션 배지 (CHECK 녹색 pill, FOLD 적색, RAISE 황색)",
+      "box": { "x": 104, "y": 91, "w": 47, "h": 13 },
+      "gfx_type": "Text + Border",
+      "protocol_cmd": "FIELD_VISIBILITY",
+      "defined": true
+    },
+    {
+      "id": 4,
+      "name": "승률 바",
+      "description": "패널 하단 실시간 승률 바 (Monte Carlo, 갱신 500ms)",
+      "box": { "x": 202, "y": 63, "w": 36, "h": 21 },
+      "gfx_type": "Border + Text",
+      "protocol_cmd": "FIELD_VISIBILITY",
+      "defined": true
+    },
+    {
+      "id": 5,
+      "name": "커뮤니티 카드",
+      "description": "테이블 중앙 커뮤니티 카드 (Flop 4♥ 9♠ Q♦, PIP 렌더링)",
+      "box": { "x": 259, "y": 271, "w": 123, "h": 39 },
+      "gfx_type": "Image (pip)",
+      "protocol_cmd": "SHOW_PIP",
+      "defined": true
+    },
+    {
+      "id": 6,
+      "name": "이벤트 배지",
+      "description": "우측 상단 이벤트 배지 (2025 WSOP PARADISE + WSOP 로고, 칩 아이콘 포함 전체 높이)",
+      "box": { "x": 565, "y": 10, "w": 59, "h": 77 },
+      "gfx_type": "Text + Image",
+      "protocol_cmd": "FIELD_VISIBILITY",
+      "defined": true
+    },
+    {
+      "id": 7,
+      "name": "Bottom Info Strip",
+      "description": "하단 전체 폭 정보 스트립 (BLINDS, 이벤트, POT, FIELD, FINAL TABLE)",
+      "box": { "x": 74, "y": 312, "w": 490, "h": 44 },
+      "gfx_type": "Text + Border",
+      "protocol_cmd": "SHOW_STRIP",
+      "defined": true
+    },
+    {
+      "id": 8,
+      "name": "팟 카운터",
+      "description": "하단 중앙 팟 카운터 위젯 (2025 WSOP PARADISE 타이틀 + 42,000,000 대형 수치)",
+      "box": { "x": 264, "y": 320, "w": 108, "h": 23 },
+      "gfx_type": "Text",
+      "protocol_cmd": "FIELD_VISIBILITY",
+      "defined": true
+    },
+    {
+      "id": 9,
+      "name": "FIELD / 스테이지",
+      "description": "하단 우측 FIELD 카운터 + 스테이지 배지 (5/2891, FINAL TABLE 포함)",
+      "box": { "x": 392, "y": 317, "w": 162, "h": 24 },
+      "gfx_type": "Text",
+      "protocol_cmd": "FIELD_VISIBILITY",
+      "defined": true
+    },
+    {
+      "id": 10,
+      "name": "스폰서 로고",
+      "description": "하단 스트립 중앙 GGPoker 스폰서 로고 (GG Poker 텍스트+칩 아이콘)",
+      "box": { "x": 282, "y": 343, "w": 77, "h": 15 },
+      "gfx_type": "Image",
+      "protocol_cmd": "GFX_ENABLE",
+      "defined": true
+    }
+  ]
+}

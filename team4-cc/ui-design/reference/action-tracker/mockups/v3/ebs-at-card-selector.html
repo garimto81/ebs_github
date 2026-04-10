@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<!-- Style Reference: White Minimal — AT Manual Card Selector Modal (AT-C01~C07) -->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>EBS AT — Card Selector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; background: #fff; display: inline-block; }
+
+  .component {
+    width: 720px;
+    background: #fafafa;
+    border: 2px solid #d0d0d0;
+    font-family: 'IBM Plex Mono', monospace;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER: back + selected + ok */
+  .cs-header {
+    height: 72px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #d0d0d0;
+    display: flex; align-items: center;
+    padding: 0 12px; gap: 10px;
+    flex-shrink: 0;
+  }
+  .cs-back {
+    height: 48px; min-width: 60px;
+    border: 1px solid #d0d0d0; background: #fafafa; color: #1a1a1a;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .cs-back:hover { background: #e8e8e8; }
+
+  .cs-selected-area {
+    flex: 1; display: flex; align-items: center; gap: 6px; padding: 0 4px;
+    min-height: 52px;
+  }
+  .cs-sel-label {
+    font-size: 9px; color: #888; letter-spacing: 0.1em; text-transform: uppercase;
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    margin-right: 4px;
+  }
+  .cs-card {
+    width: 36px; height: 50px;
+    border: 1px solid #d0d0d0; border-radius: 2px;
+    background: #fff; color: #1a1a1a;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600; line-height: 1.1;
+    box-shadow: 1px 1px 0 #e0e0e0;
+    flex-shrink: 0;
+  }
+  .cs-card__rank { font-size: 13px; font-weight: 600; }
+  .cs-card__suit { font-size: 10px; }
+  .cs-card--empty {
+    border: 1px dashed #ccc; background: #f5f5f5;
+    color: #ccc; box-shadow: none;
+  }
+  .cs-card--empty span { font-size: 18px; color: #ccc; }
+
+  .cs-ok {
+    height: 48px; min-width: 80px;
+    border: 1px solid #d0d0d0; background: #1a1a1a; color: #fff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.1em;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 2px 2px 0 #ccc;
+  }
+  .cs-ok:hover { background: #333; }
+
+  /* SUIT ROWS */
+  .suit-section {
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+  }
+  .suit-section:last-child { border-bottom: none; }
+  .suit-label-row {
+    height: 22px; background: #f0f0f0;
+    display: flex; align-items: center;
+    padding: 0 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .suit-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.05em;
+    color: #1a1a1a;
+  }
+  .suit-label--spade { color: #1a1a1a; }
+  .suit-label--heart { color: #444; }
+  .suit-label--diamond { color: #555; }
+  .suit-label--club { color: #666; }
+
+  .card-grid-row {
+    display: flex; padding: 6px 8px; gap: 4px;
+    background: #fafafa;
+  }
+  .gc {
+    flex: 1; height: 56px;
+    border: 1px solid #d0d0d0; border-radius: 2px;
+    background: #fff; color: #1a1a1a;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600; line-height: 1.1;
+    cursor: pointer;
+    transition: transform 0.05s, box-shadow 0.05s;
+    box-shadow: 1px 1px 0 #e0e0e0;
+    min-width: 0;
+    position: relative;
+  }
+  .gc:hover { transform: translateY(-2px); box-shadow: 1px 3px 0 #d0d0d0; }
+  .gc:active { transform: translateY(0); background: #1a1a1a; color: #fff; }
+  .gc__r { font-size: 12px; font-weight: 600; }
+  .gc__s { font-size: 9px; }
+
+  /* Selected state */
+  .gc--selected {
+    background: #e8e8e8; color: #1a1a1a;
+    border-color: #1a1a1a;
+    box-shadow: none;
+  }
+  .gc--selected::after {
+    content: '✓';
+    position: absolute; top: 1px; right: 2px;
+    font-size: 8px; color: #1a1a1a; font-weight: 600;
+  }
+
+  /* Used / disabled state */
+  .gc--used {
+    background: #f0f0f0; color: #bbb;
+    border-color: #e0e0e0; cursor: not-allowed;
+    box-shadow: none; opacity: 0.6;
+  }
+  .gc--used .gc__r, .gc--used .gc__s { text-decoration: line-through; }
+</style>
+</head>
+<body>
+<div class="component">
+
+  <!-- HEADER -->
+  <div class="cs-header">
+    <button class="cs-back">◀</button>
+    <div class="cs-selected-area">
+      <span class="cs-sel-label">Selected</span>
+      <div class="cs-card">
+        <span class="cs-card__rank">7</span>
+        <span class="cs-card__suit">♥</span>
+      </div>
+      <div class="cs-card">
+        <span class="cs-card__rank">6</span>
+        <span class="cs-card__suit">♠</span>
+      </div>
+      <div class="cs-card cs-card--empty"><span>—</span></div>
+      <div class="cs-card cs-card--empty"><span>—</span></div>
+    </div>
+    <button class="cs-ok">OK ↵</button>
+  </div>
+
+  <!-- SPADES ROW -->
+  <div class="suit-section">
+    <div class="suit-label-row">
+      <span class="suit-label suit-label--spade">♠ SPADES</span>
+    </div>
+    <div class="card-grid-row">
+      <div class="gc gc--used"><span class="gc__r">A</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">K</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">Q</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">J</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">10</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">9</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">8</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">7</span><span class="gc__s">♠</span></div>
+      <div class="gc gc--selected"><span class="gc__r">6</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">5</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">4</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">3</span><span class="gc__s">♠</span></div>
+      <div class="gc"><span class="gc__r">2</span><span class="gc__s">♠</span></div>
+    </div>
+  </div>
+
+  <!-- HEARTS ROW -->
+  <div class="suit-section">
+    <div class="suit-label-row">
+      <span class="suit-label suit-label--heart">♥ HEARTS</span>
+    </div>
+    <div class="card-grid-row">
+      <div class="gc"><span class="gc__r">A</span><span class="gc__s">♥</span></div>
+      <div class="gc"><span class="gc__r">K</span><span class="gc__s">♥</span></div>
+      <div class="gc"><span class="gc__r">Q</span><span class="gc__s">♥</span></div>
+      <div class="gc"><span class="gc__r">J</span><span class="gc__s">♥</span></div>
+      <div class="gc"><span class="gc__r">10</span><span class="gc__s">♥</span></div>
+      <div class="gc"><span class="gc__r">9</span><span class="gc__s">♥</span></div>
+      <div class="gc"><span class="gc__r">8</span><span class="gc__s">♥</span></div>
+      <div class="gc gc--selected"><span class="gc__r">7</span><span class="gc__s">♥</span></div>
+      <div class="gc"><span class="gc__r">6</span><span class="gc__s">♥</span></div>
+      <div class="gc gc--used"><span class="gc__r">5</span><span class="gc__s">♥</span></div>
+      <div class="gc"><span class="gc__r">4</span><span class="gc__s">♥</span></div>
+      <div class="gc"><span class="gc__r">3</span><span class="gc__s">♥</span></div>
+      <div class="gc"><span class="gc__r">2</span><span class="gc__s">♥</span></div>
+    </div>
+  </div>
+
+  <!-- DIAMONDS ROW -->
+  <div class="suit-section">
+    <div class="suit-label-row">
+      <span class="suit-label suit-label--diamond">♦ DIAMONDS</span>
+    </div>
+    <div class="card-grid-row">
+      <div class="gc"><span class="gc__r">A</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">K</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">Q</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">J</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">10</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">9</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">8</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">7</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">6</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">5</span><span class="gc__s">♦</span></div>
+      <div class="gc gc--used"><span class="gc__r">4</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">3</span><span class="gc__s">♦</span></div>
+      <div class="gc"><span class="gc__r">2</span><span class="gc__s">♦</span></div>
+    </div>
+  </div>
+
+  <!-- CLUBS ROW -->
+  <div class="suit-section">
+    <div class="suit-label-row">
+      <span class="suit-label suit-label--club">♣ CLUBS</span>
+    </div>
+    <div class="card-grid-row">
+      <div class="gc"><span class="gc__r">A</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">K</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">Q</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">J</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">10</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">9</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">8</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">7</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">6</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">5</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">4</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">3</span><span class="gc__s">♣</span></div>
+      <div class="gc"><span class="gc__r">2</span><span class="gc__s">♣</span></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

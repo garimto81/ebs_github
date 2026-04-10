@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Main Window Annotated</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a1a; padding: 0; margin: 0; }
+  .container { position: relative; display: inline-block; }
+  .container img { display: block; width: 765px; height: 365px; }
+  .annotation {
+    position: absolute;
+    border: 2px solid #ff3333;
+    background: rgba(255, 51, 51, 0.15);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  .annotation .number {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    width: 24px;
+    height: 24px;
+    background: #ff3333;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .legend {
+    padding: 16px 20px;
+    background: #2a2a2a;
+    color: #eee;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .legend h3 {
+    color: #ff3333;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  .legend table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .legend td {
+    padding: 4px 8px;
+    border-bottom: 1px solid #3a3a3a;
+    vertical-align: top;
+  }
+  .legend td:first-child {
+    width: 40px;
+    color: #ff3333;
+    font-weight: bold;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <img src="../images/screenshots/스크린샷 2026-02-05 180630.png" alt="Main Window">
+  <!-- 1: GPU 프리뷰 영역 -->
+  <div class="annotation" style="left: 10px; top: 38px; width: 590px; height: 300px;">
+    <span class="number">1</span>
+  </div>
+  <!-- 2: CPU/GPU 상태 표시등 -->
+  <div class="annotation" style="left: 608px; top: 38px; width: 80px; height: 40px;">
+    <span class="number">2</span>
+  </div>
+  <!-- 3: Secure Delay 체크박스 -->
+  <div class="annotation" style="left: 640px; top: 80px; width: 120px; height: 20px;">
+    <span class="number">3</span>
+  </div>
+  <!-- 4: Preview 체크박스 -->
+  <div class="annotation" style="left: 640px; top: 100px; width: 120px; height: 20px;">
+    <span class="number">4</span>
+  </div>
+  <!-- 5: Reset Hand 버튼 -->
+  <div class="annotation" style="left: 608px; top: 140px; width: 100px; height: 28px;">
+    <span class="number">5</span>
+  </div>
+  <!-- 6: Register Deck 버튼 -->
+  <div class="annotation" style="left: 608px; top: 175px; width: 148px; height: 28px;">
+    <span class="number">6</span>
+  </div>
+  <!-- 7: Launch Action Tracker 버튼 -->
+  <div class="annotation" style="left: 608px; top: 208px; width: 148px; height: 28px;">
+    <span class="number">7</span>
+  </div>
+  <!-- 8: Studio 버튼 -->
+  <div class="annotation" style="left: 608px; top: 240px; width: 148px; height: 28px;">
+    <span class="number">8</span>
+  </div>
+  <!-- 9: Split Recording 버튼 -->
+  <div class="annotation" style="left: 608px; top: 272px; width: 148px; height: 28px;">
+    <span class="number">9</span>
+  </div>
+  <!-- 10: Tag Player 버튼 -->
+  <div class="annotation" style="left: 608px; top: 304px; width: 100px; height: 28px;">
+    <span class="number">10</span>
+  </div>
+  <!-- 11: 상태 표시등 (빨간 녹화등 + 경고/잠금) -->
+  <div class="annotation" style="left: 693px; top: 38px; width: 62px; height: 40px;">
+    <span class="number">11</span>
+  </div>
+</div>
+<div class="legend">
+  <h3>Main Window 기능 영역</h3>
+  <table>
+    <tr><td>1</td><td>GPU 프리뷰 영역 — 실시간 합성된 그래픽 오버레이를 미리 볼 수 있는 메인 캔버스</td></tr>
+    <tr><td>2</td><td>CPU / GPU 상태 표시등 — 하드웨어 인코더 활성 상태를 색상으로 표시</td></tr>
+    <tr><td>3</td><td>Secure Delay 체크박스 — 방송 보안 지연 활성화 (홀카드 노출 방지)</td></tr>
+    <tr><td>4</td><td>Preview 체크박스 — GPU 프리뷰 렌더링 ON/OFF 토글</td></tr>
+    <tr><td>5</td><td>Reset Hand 버튼 — 현재 핸드 상태 초기화 (설정/잠금 아이콘 포함)</td></tr>
+    <tr><td>6</td><td>Register Deck 버튼 — RFID 카드 덱 등록 시작</td></tr>
+    <tr><td>7</td><td>Launch Action Tracker 버튼 — 별도 Action Tracker 창 실행</td></tr>
+    <tr><td>8</td><td>Studio 버튼 — 스튜디오 모드 전환</td></tr>
+    <tr><td>9</td><td>Split Recording 버튼 — 녹화 파일 분할</td></tr>
+    <tr><td>10</td><td>Tag Player 버튼 — 플레이어 태그 지정 (이름표 입력란 포함)</td></tr>
+    <tr><td>11</td><td>경고/잠금 아이콘 — 시스템 경고 및 테이블 잠금 상태 표시</td></tr>
+  </table>
+</div>
+</body>
+</html>

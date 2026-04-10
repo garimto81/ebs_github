@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EBS AT — Action Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.prod.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Icons&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; padding: 0; background: #e0e0e0; font-family: 'Noto Sans KR', sans-serif; }
+  #q-app { max-width: 960px; margin: 0 auto; background: #fafafa; border: 2px solid #d0d0d0; }
+
+  /* ===== STATUS BAR ===== */
+  .status-bar {
+    height: 28px; background: #f0f0f0; color: #1a1a1a;
+    display: flex; align-items: center;
+    border-bottom: 1px solid #d0d0d0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .sb-item {
+    display: flex; align-items: center; gap: 5px;
+    padding: 0 14px; height: 100%; border-right: 1px solid #d0d0d0;
+  }
+  .sb-item:last-child { border-right: none; margin-left: auto; }
+  .sb-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #1a1a1a;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .sb-dot--warn { background: #888; }
+  .sb-val { color: #555; }
+
+  /* ===== GAME CONFIG BAR ===== */
+  .game-bar {
+    height: 36px; background: #fafafa;
+    display: flex; align-items: center;
+    border-bottom: 1px solid #d0d0d0;
+    font-size: 10px;
+  }
+  .gb-item {
+    display: flex; align-items: center; gap: 5px;
+    padding: 0 14px; height: 100%; border-right: 1px solid #e0e0e0;
+    letter-spacing: 0.05em;
+  }
+  .gb-item:last-child { border-right: none; margin-left: auto; }
+  .gb-label { color: #888; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .gb-val { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 11px; color: #1a1a1a; }
+  .gb-game-btn {
+    background: #1a1a1a; color: #fff; border: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    padding: 4px 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;
+  }
+
+  /* ===== TABLE AREA ===== */
+  .table-area {
+    position: relative; background: #fff;
+    height: 480px; overflow: hidden;
+  }
+  .table-felt {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 580px; height: 300px;
+    border: 1px solid #d0d0d0; border-radius: 150px;
+    background: repeating-linear-gradient(45deg, #f8f8f8 0, #f8f8f8 2px, #fff 2px, #fff 10px);
+    box-shadow: 3px 3px 0 #e0e0e0;
+  }
+
+  /* Board cards */
+  .board-cards {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -54%);
+    display: flex; gap: 7px; align-items: center;
+  }
+  .card {
+    width: 40px; height: 56px;
+    border: 1px solid #d0d0d0; border-radius: 3px; background: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: 1px 1px 0 #e0e0e0;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; line-height: 1.1;
+    color: #1a1a1a;
+  }
+  .card__r { font-size: 14px; font-weight: 600; }
+  .card__s { font-size: 10px; }
+  .card--empty { background: #f5f5f5; border-style: dashed; border-color: #ccc; box-shadow: none; color: #ccc; }
+
+  /* Pot */
+  .pot-display {
+    position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%);
+    text-align: center;
+  }
+  .pot-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #888; }
+  .pot-amount { font-family: 'IBM Plex Mono', monospace; font-size: 32px; font-weight: 600; letter-spacing: -0.02em; color: #1a1a1a; line-height: 1; }
+
+  /* Seats */
+  .seat { position: absolute; width: 100px; text-align: center; }
+  .seat__card-area { display: flex; justify-content: center; gap: 3px; margin-bottom: 4px; }
+  .seat__hole {
+    width: 24px; height: 32px; border: 1px solid #d0d0d0; border-radius: 2px;
+    background: #fff; box-shadow: 1px 1px 0 #e0e0e0;
+    display: flex; align-items: center; justify-content: center; font-size: 9px; color: #888;
+  }
+  .seat__box {
+    border: 1px solid #d0d0d0; background: #fff;
+    padding: 5px 6px 4px; box-shadow: 2px 2px 0 #e0e0e0;
+    cursor: pointer; position: relative;
+  }
+  .seat__name { font-size: 10px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .seat__stack { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #555; }
+  .seat__action { font-family: 'IBM Plex Mono', monospace; font-size: 8px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; color: #1a1a1a; }
+  .seat__badges { display: flex; justify-content: center; gap: 2px; margin-top: 3px; min-height: 14px; }
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px; font-weight: 600; letter-spacing: 0.06em;
+    padding: 1px 3px; border: 1px solid #1a1a1a;
+    border-radius: 50%; width: 18px; height: 18px;
+    background: #1a1a1a; color: #fff;
+  }
+  .badge--sb { background: #555; border-color: #555; }
+  .badge--bb { background: #333; border-color: #333; }
+
+  /* Seat states */
+  .seat--active .seat__box { border-width: 2px; border-color: #1a1a1a; }
+  .seat--action-on .seat__box {
+    border-width: 2px; background: #1a1a1a; color: #fff;
+    box-shadow: 3px 3px 0 #555;
+    animation: action-blink 0.8s ease-in-out infinite alternate;
+  }
+  @keyframes action-blink { 0%{box-shadow:3px 3px 0 #555} 100%{box-shadow:5px 5px 0 #888} }
+  .seat--action-on .seat__name,
+  .seat--action-on .seat__stack,
+  .seat--action-on .seat__action { color: #fff; }
+  .seat--folded { opacity: 0.45; }
+  .seat--folded .seat__box { background: #f0f0f0; border-color: #ccc; box-shadow: 1px 1px 0 #ccc; }
+  .seat--open .seat__box { border-style: dashed; border-color: #ccc; background: #fafafa; box-shadow: none; color: #bbb; }
+
+  .bet-chip {
+    position: absolute; font-size: 8px; font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    background: #1a1a1a; color: #fff; padding: 2px 5px; border-radius: 2px;
+    white-space: nowrap; letter-spacing: 0.05em;
+  }
+
+  /* Seat positions */
+  .seat--p1  { top: 290px; left: 784px; }
+  .seat--p2  { top: 110px; left: 804px; }
+  .seat--p3  { top: 20px;  left: 610px; }
+  .seat--p4  { top: 20px;  left: 430px; }
+  .seat--p5  { top: 20px;  left: 250px; }
+  .seat--p6  { top: 110px; left: 56px;  }
+  .seat--p7  { top: 290px; left: 56px;  }
+  .seat--p8  { top: 380px; left: 240px; }
+  .seat--p9  { top: 380px; left: 440px; }
+  .seat--p10 { top: 380px; left: 640px; }
+  .bet-chip--p1 { top: 300px; left: 744px; }
+  .bet-chip--p4 { top: 80px;  left: 440px; }
+  .bet-chip--p9 { top: 374px; left: 410px; }
+
+  /* ===== INFO BAR ===== */
+  .info-bar {
+    height: 32px; background: #f0f0f0;
+    border-top: 1px solid #d0d0d0; border-bottom: 1px solid #d0d0d0;
+    display: flex; align-items: center; padding: 0 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #555; gap: 8px;
+  }
+  .info-bar__player { font-weight: 600; color: #1a1a1a; }
+
+  /* ===== ACTION PANEL (q-footer) ===== */
+  .action-row {
+    display: flex; height: 52px; border-bottom: 1px solid #d0d0d0;
+  }
+  .act-btn {
+    flex: 1; height: 100%;
+    border: none; border-right: 1px solid #d0d0d0; background: #fafafa;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 1px;
+    box-shadow: inset 0 -2px 0 #e0e0e0; transition: background 0.08s;
+    color: #1a1a1a;
+  }
+  .act-btn:last-child { border-right: none; }
+  .act-btn:hover { background: #f0f0f0; }
+  .act-btn__sub { font-size: 9px; font-weight: 400; color: #888; }
+  .act-btn--primary { background: #1a1a1a; color: #fff; box-shadow: inset 0 -2px 0 #444; }
+  .act-btn--primary:hover { background: #333; }
+  .act-btn--primary .act-btn__sub { color: #aaa; }
+  .act-btn--danger { background: #1a1a1a; color: #fff; box-shadow: inset 0 -2px 0 #444; }
+  .act-btn--danger:hover { background: #333; }
+
+  /* Utility row */
+  .util-row {
+    display: flex; height: 44px;
+  }
+  .sp-btn {
+    flex: 1; height: 100%;
+    border: none; border-right: 1px solid #d0d0d0; background: #f0f0f0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #555;
+  }
+  .sp-btn:last-child { border-right: none; }
+  .sp-btn:hover { background: #e8e8e8; color: #1a1a1a; }
+  .sp-btn--gfx { background: #1a1a1a; color: #fff; }
+  .sp-btn--gfx:hover { background: #333; }
+</style>
+</head>
+<body>
+<div id="q-app">
+
+  <!-- STATUS BAR (q-header part 1) -->
+  <div class="status-bar">
+    <div class="sb-item">
+      <span class="sb-dot"></span>
+      <span>NET</span>
+      <span class="sb-val">Connected</span>
+    </div>
+    <div class="sb-item">
+      <span class="sb-dot"></span>
+      <span>TABLE</span>
+      <span class="sb-val">OK</span>
+    </div>
+    <div class="sb-item">
+      <span class="sb-dot"></span>
+      <span>STREAM</span>
+      <span class="sb-val">Live</span>
+    </div>
+    <div class="sb-item">
+      <span class="sb-dot sb-dot--warn"></span>
+      <span>REC</span>
+      <span class="sb-val">02:34</span>
+    </div>
+  </div>
+
+  <!-- GAME CONFIG BAR (q-header part 2) -->
+  <div class="game-bar">
+    <div class="gb-item">
+      <button class="gb-game-btn">HOLDEM &#9660;</button>
+    </div>
+    <div class="gb-item">
+      <span class="gb-label">SB</span>
+      <span class="gb-val">100</span>
+      <span class="gb-label">/&nbsp;BB</span>
+      <span class="gb-val">200</span>
+      <span class="gb-label">/&nbsp;Ante</span>
+      <span class="gb-val">0</span>
+    </div>
+    <div class="gb-item">
+      <span class="gb-label">Hand #</span>
+      <span class="gb-val">047</span>
+    </div>
+  </div>
+
+  <!-- TABLE AREA (q-page) -->
+  <div class="table-area">
+    <div class="table-felt"></div>
+
+    <!-- Board cards: Flop dealt -->
+    <div class="board-cards">
+      <div class="card"><span class="card__r">A</span><span class="card__s">&#9824;</span></div>
+      <div class="card"><span class="card__r">K</span><span class="card__s">&#9830;</span></div>
+      <div class="card"><span class="card__r">7</span><span class="card__s">&#9827;</span></div>
+      <div class="card card--empty"><span>&mdash;</span></div>
+      <div class="card card--empty"><span>&mdash;</span></div>
+    </div>
+
+    <!-- Pot -->
+    <div class="pot-display">
+      <div class="pot-label">POT</div>
+      <div class="pot-amount">4,800</div>
+    </div>
+
+    <!-- S1: Active, SB -->
+    <div class="seat seat--p1 seat--active">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div><div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">P.Lee</div>
+        <div class="seat__stack">24,500</div>
+        <div class="seat__action"></div>
+        <div class="seat__badges"><span class="badge badge--sb">SB</span></div>
+      </div>
+    </div>
+    <div class="bet-chip bet-chip--p1">100</div>
+
+    <!-- S2: Folded -->
+    <div class="seat seat--p2 seat--folded">
+      <div class="seat__box">
+        <div class="seat__name">J.Kim</div>
+        <div class="seat__stack">38,200</div>
+        <div class="seat__action">FOLD</div>
+        <div class="seat__badges"><span class="badge badge--bb">BB</span></div>
+      </div>
+    </div>
+
+    <!-- S3: Folded -->
+    <div class="seat seat--p3 seat--folded">
+      <div class="seat__box">
+        <div class="seat__name">M.Park</div>
+        <div class="seat__stack">15,100</div>
+        <div class="seat__action">FOLD</div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+
+    <!-- S4: Action-On -->
+    <div class="seat seat--p4 seat--action-on">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div><div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">C.Cho</div>
+        <div class="seat__stack">52,000</div>
+        <div class="seat__action">ACTION ON!</div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+    <div class="bet-chip bet-chip--p4">800</div>
+
+    <!-- S5: Active -->
+    <div class="seat seat--p5 seat--active">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div><div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">A.Jung</div>
+        <div class="seat__stack">9,800</div>
+        <div class="seat__action"></div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+
+    <!-- S6: Active -->
+    <div class="seat seat--p6 seat--active">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div><div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">K.Han</div>
+        <div class="seat__stack">71,300</div>
+        <div class="seat__action"></div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+
+    <!-- S7-S8: Open seats -->
+    <div class="seat seat--p7 seat--open">
+      <div class="seat__box">
+        <div style="font-size:10px;color:#bbb;letter-spacing:0.1em">OPEN</div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+
+    <!-- S8: Active, BTN -->
+    <div class="seat seat--p8 seat--active">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div><div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">S.Oh</div>
+        <div class="seat__stack">44,100</div>
+        <div class="seat__action"></div>
+        <div class="seat__badges"><span class="badge">BTN</span></div>
+      </div>
+    </div>
+
+    <!-- S9: Active -->
+    <div class="seat seat--p9 seat--active">
+      <div class="seat__card-area">
+        <div class="seat__hole">?</div><div class="seat__hole">?</div>
+      </div>
+      <div class="seat__box">
+        <div class="seat__name">H.Shin</div>
+        <div class="seat__stack">18,600</div>
+        <div class="seat__action"></div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+    <div class="bet-chip bet-chip--p9">400</div>
+
+    <!-- S10: Open -->
+    <div class="seat seat--p10 seat--open">
+      <div class="seat__box">
+        <div style="font-size:10px;color:#bbb;letter-spacing:0.1em">OPEN</div>
+        <div class="seat__badges"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INFO BAR -->
+  <div class="info-bar">
+    <span>WAITING FOR</span>
+    <span class="info-bar__player">C.CHO (SEAT 4)</span>
+    <span>| FLOP | 6 PLAYERS</span>
+  </div>
+
+  <!-- ACTION PANEL (q-footer) -->
+  <div>
+    <!-- Main action buttons -->
+    <div class="action-row">
+      <button class="act-btn act-btn--danger">FOLD</button>
+      <button class="act-btn act-btn--primary">
+        CALL
+        <span class="act-btn__sub">800</span>
+      </button>
+      <button class="act-btn">
+        RAISE TO
+        <span class="act-btn__sub">&#9660;</span>
+      </button>
+      <button class="act-btn act-btn--danger">ALL IN</button>
+    </div>
+
+    <!-- Utility buttons -->
+    <div class="util-row">
+      <button class="sp-btn sp-btn--gfx">HIDE GFX</button>
+      <button class="sp-btn">TAG HAND</button>
+      <button class="sp-btn">ADJ.STACK</button>
+      <button class="sp-btn">CHOP</button>
+      <button class="sp-btn">&#8617; UNDO</button>
+      <button class="sp-btn">
+        <q-icon name="settings" size="14px" style="margin-right:4px;" />
+        SETTINGS
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.umd.prod.js"></script>
+<script>
+const app = Vue.createApp({ data() { return {} } });
+app.use(Quasar);
+app.mount('#q-app');
+</script>
+
+<!-- ANNOTATION OVERLAY -->
+<style>
+  .anno-badge {
+    position: absolute;
+    z-index: 9999;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', 'Consolas', monospace;
+    color: #fff;
+    border-radius: 3px;
+    white-space: nowrap;
+    line-height: 1.3;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .anno-highlight {
+    position: absolute;
+    z-index: 9998;
+    border: 2px solid;
+    border-radius: 3px;
+    pointer-events: none;
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var badges = [
+      {label:"AT-01",sel:".status-bar",color:"#27ae60"},
+      {label:"AT-02",sel:".game-bar",color:"#00bcd4"},
+      {label:"AT-03",sel:".table-area",color:"#e67e22"},
+      {label:"AT-04",sel:".action-row",color:"#8e44ad"},
+      {label:"AT-05",sel:".bet-row",color:"#c0392b"},
+      {label:"AT-06",sel:".special-row",color:"#c0392b"}
+    ];
+    badges.forEach(function(b) {
+      var el = document.querySelector(b.sel);
+      if (!el) { console.warn('NOT FOUND:', b.sel); return; }
+      var rect = el.getBoundingClientRect();
+      // Highlight border
+      var hl = document.createElement('div');
+      hl.className = 'anno-highlight';
+      hl.style.left = (rect.left + window.scrollX - 2) + 'px';
+      hl.style.top = (rect.top + window.scrollY - 2) + 'px';
+      hl.style.width = (rect.width + 2) + 'px';
+      hl.style.height = (rect.height + 2) + 'px';
+      hl.style.borderColor = b.color + 'cc';
+      hl.style.background = b.color + '15';
+      document.body.appendChild(hl);
+      // Badge label
+      var badge = document.createElement('span');
+      badge.className = 'anno-badge';
+      badge.textContent = b.label;
+      badge.style.background = b.color;
+      badge.style.left = (rect.left + window.scrollX - 2) + 'px';
+      badge.style.top = (rect.top + window.scrollY - 2) + 'px';
+      document.body.appendChild(badge);
+    });
+  });
+</script>
+
+</body>
+</html>

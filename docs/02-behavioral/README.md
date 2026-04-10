@@ -198,7 +198,7 @@ Console은 독립 화면에서 **Settings 다이얼로그**로 흡수된다.
 
 | 신규 행동 명세 | 활용 가능한 기존 자산 | 위치 |
 |-------------|-------------------|------|
-| BS-05 CC | AT Design Rationale + 44기능 + 8화면 목업 | `C:\claude\ebs_ui\ebs-action-tracker\` |
-| BS-03 Settings | Console v9.7.0 (99+ 설정 필드) | `C:\claude\ebs_ui\ebs-console\` |
+| BS-05 CC | AT Design Rationale + 44기능 + 8화면 목업 | `team4-cc/ui-design/reference/action-tracker/` |
+| BS-03 Settings | Console v9.7.0 (99+ 설정 필드) | `team1-frontend/ui-design/reference/console/` |
 | BS-06 Engine | game-state-machine (35K) + AT 프로토콜 (68개) | `docs/07-archive/01-pokergfx-analysis/` |
 | BS-07 Overlay | element-catalog (88 Keep) + feature-interactions (148K) | `docs/07-archive/01-pokergfx-analysis/` |

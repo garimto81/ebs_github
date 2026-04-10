@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GGProduction Seoul Operations</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;color:#fff;font-family:system-ui,-apple-system,sans-serif;}
+
+.deck{scroll-behavior:smooth;}
+
+.slide{
+  position:relative;display:flex;flex-direction:column;
+  padding:30px 40px 0;min-height:700px;
+  border-bottom:1px solid #1a1a1a;
+}
+
+.slide-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.logo{height:30px;opacity:0.7;}
+.slide-title{font-style:italic;font-size:16px;letter-spacing:3px;text-transform:uppercase;color:#fff;}
+
+.slide-body{flex:1;display:flex;gap:30px;align-items:center;padding:60px 0 80px;}
+
+.info-panel{
+  width:35%;min-width:280px;max-width:380px;
+  background:rgba(30,30,30,0.85);border:1px solid #444;
+  border-radius:4px;padding:20px 24px;
+  font-size:13px;line-height:1.7;color:#ccc;
+  align-self:stretch;overflow-y:auto;
+}
+.info-panel h4{color:#fff;margin-bottom:10px;font-size:14px;font-weight:600;}
+.info-panel .step{color:#fff;font-weight:600;margin-top:12px;margin-bottom:2px;}
+.info-panel .bullet{padding-left:14px;}
+.info-panel .sub-bullet{padding-left:28px;font-size:12px;color:#999;}
+.info-panel .note{margin-top:12px;color:#999;font-style:italic;font-size:12px;}
+
+.diagram{flex:1;position:relative;min-height:400px;}
+
+.crowd{
+  width:100%;height:auto;opacity:0.25;pointer-events:none;
+  margin-top:auto;
+}
+
+/* Dot indicator — hidden in single-scroll mode */
+.dot-nav{display:none;}
+
+/* Node labels */
+.node-label{
+  font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  color:#ccc;text-align:center;position:absolute;white-space:nowrap;
+}
+.node-icon{position:absolute;}
+
+/* Flag badges */
+.flag{height:20px;vertical-align:middle;}
+
+/* Teal buttons */
+.teal-btn{
+  background:#1a6b60;color:#fff;padding:10px 24px;border-radius:4px;
+  font-size:12px;letter-spacing:1px;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,0.1);display:inline-block;
+  text-align:center;margin:4px;
+}
+
+/* Black cards */
+.black-card{
+  background:#1a1a1a;border:1px solid #444;border-radius:4px;
+  padding:12px 16px;font-size:11px;color:#ccc;line-height:1.6;
+}
+
+/* Process circles */
+.circle{
+  width:40px;height:40px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;font-size:10px;
+  font-weight:700;letter-spacing:1px;color:#fff;
+}
+.circle-green{background:#4caf50;}
+.circle-purple{background:#9b59b6;}
+.circle-red{background:#e74c3c;}
+
+/* Connector label on SVG */
+.conn-label{
+  font-size:9px;fill:#999;text-anchor:middle;
+}
+
+/* Slide 1 special */
+.slide1-title{
+  font-size:28px;font-weight:700;letter-spacing:6px;
+  text-transform:uppercase;text-align:center;margin-top:60px;
+  color:#fff;
+}
+.slide1-studio{display:flex;justify-content:center;align-items:center;flex:1;position:relative;}
+.slide1-studio img{max-width:800px;width:70%;border-radius:4px;}
+
+.slide1-label{
+  position:absolute;font-size:11px;letter-spacing:2px;
+  text-transform:uppercase;color:#ccc;white-space:nowrap;
+}
+
+/* Dashed border box */
+.dashed-box{
+  border:2px dashed #e74c3c;border-radius:4px;padding:6px 14px;
+  display:inline-block;
+}
+
+/* Automation box */
+.auto-box{
+  background:rgba(30,30,30,0.9);border:1px solid #666;border-radius:4px;
+  padding:8px 16px;font-size:11px;letter-spacing:1px;
+  text-transform:uppercase;color:#ccc;text-align:center;
+}
+
+/* Full diagram slides */
+.full-diagram{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:60px 20px 80px;position:relative;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .slide-body{flex-direction:column;}
+  .info-panel{width:100%;max-width:100%;min-width:auto;}
+  .diagram{min-height:300px;width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- Dot Navigation -->
+<nav class="dot-nav" id="dotNav"></nav>
+
+<div class="deck" id="deck">
+
+<!-- ==================== SLIDE 1: STUDIO LAYOUT ==================== -->
+<section class="slide" id="slide1">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">STUDIO LAYOUT</div></div>
+  <div class="slide1-title">GGPRODUCTION STUDIO LAYOUT</div>
+  <div class="slide1-studio">
+    <!-- Left labels -->
+    <div class="slide1-label" style="left:6%;top:25%;">SERVER ROOM</div>
+    <div class="slide1-label" style="left:6%;top:45%;">BACK</div>
+    <div class="slide1-label" style="left:6%;top:65%;">TRANSMISSION</div>
+    <!-- Right labels -->
+    <div class="slide1-label" style="right:6%;top:20%;">GRAPHICS</div>
+    <div class="slide1-label" style="right:6%;top:35%;">COMMENTATORS</div>
+    <div class="slide1-label" style="right:6%;top:50%;">HAND MONITORING</div>
+    <div class="slide1-label" style="right:6%;top:65%;">FRONT</div>
+    <!-- Studio image -->
+    <img src="icons/icon_377_1660x932.jpeg" alt="Studio 3D Rendering">
+    <!-- SVG connectors -->
+    <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+      <defs><marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker></defs>
+      <!-- Left lines -->
+      <line x1="18%" y1="28%" x2="22%" y2="30%" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrowR)"/>
+      <line x1="14%" y1="48%" x2="22%" y2="48%" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrowR)"/>
+      <line x1="18%" y1="68%" x2="22%" y2="65%" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrowR)"/>
+      <!-- Right lines -->
+      <line x1="82%" y1="23%" x2="78%" y2="26%" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrowR)"/>
+      <line x1="82%" y1="38%" x2="78%" y2="38%" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrowR)"/>
+      <line x1="82%" y1="53%" x2="78%" y2="50%" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrowR)"/>
+      <line x1="82%" y1="68%" x2="78%" y2="65%" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrowR)"/>
+    </svg>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 2: FRONT-END Step 1-3 ==================== -->
+<section class="slide" id="slide2">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : FRONT-END</div></div>
+  <div class="slide-body">
+    <div class="info-panel">
+      <h4>[The Front is responsible for selecting and determining the order of content-delivery.]</h4>
+      <div class="step">1. Live Feed</div>
+      <div class="bullet">&#9670; Primary stream &rarr; hand selection</div>
+      <div class="bullet">&#9670; Secondary stream &rarr;</div>
+      <div class="bullet">&#9670; Sideline reporting &rarr;</div>
+      <div class="step">2. Upload</div>
+      <div class="bullet">&#9670; Uploaded content organized and recorded into Data sheet (USA)</div>
+      <div class="bullet">&#9670; Producers need to double-check Data Sheet against transferred files (GGPro)</div>
+      <div class="step">3. Data Sheet</div>
+      <div class="bullet">I. All live feed content</div>
+      <div class="bullet">II. All uploaded content (USA)</div>
+      <div class="bullet">&#9670; Producer use Data Sheet to create the Cue Sheet</div>
+    </div>
+    <div class="diagram" style="min-height:450px;">
+      <!-- Flags -->
+      <img src="icons/icon_399_136x90.jpeg" alt="USA" class="node-icon flag" style="top:10px;left:calc(50% - 50px);height:22px;">
+      <img src="icons/icon_398_136x91.png" alt="KR" class="node-icon flag" style="top:10px;left:calc(50% + 10px);height:22px;">
+      <!-- Live Feed -->
+      <img src="icons/icon_382_148x138.png" alt="Live Feed" class="node-icon" style="top:50px;left:30px;width:55px;">
+      <span class="node-label" style="top:110px;left:18px;">LIVE FEED</span>
+      <!-- Monitoring -->
+      <img src="icons/icon_380_134x110.png" alt="Monitor" class="node-icon" style="top:50px;right:130px;width:45px;">
+      <img src="icons/icon_380_134x110.png" alt="Monitor" class="node-icon" style="top:50px;right:70px;width:45px;">
+      <img src="icons/icon_380_134x110.png" alt="Monitor" class="node-icon" style="top:50px;right:10px;width:45px;">
+      <span class="node-label" style="top:105px;right:50px;">MONITORING</span>
+      <!-- Data Sheet -->
+      <div class="dashed-box" style="position:absolute;top:170px;left:calc(50% - 60px);">
+        <img src="icons/icon_384_99x99.png" alt="Data Sheet" style="width:45px;display:block;margin:0 auto 4px;">
+        <span style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#ccc;">DATA SHEET</span>
+      </div>
+      <!-- Data Transfer -->
+      <img src="icons/icon_390_116x116.png" alt="Server" class="node-icon" style="top:280px;left:30px;width:55px;">
+      <span class="node-label" style="top:340px;left:8px;">DATA TRANSFER</span>
+      <!-- Front persons -->
+      <img src="icons/icon_359_140x124.png" alt="Front" class="node-icon" style="top:280px;right:80px;width:45px;">
+      <img src="icons/icon_359_140x124.png" alt="Front" class="node-icon" style="top:280px;right:30px;width:45px;">
+      <span class="node-label" style="top:330px;right:45px;">FRONT</span>
+      <!-- Cue Sheet -->
+      <img src="icons/icon_388_99x99.png" alt="Cue Sheet" class="node-icon" style="bottom:40px;right:80px;width:45px;">
+      <span class="node-label" style="bottom:20px;right:60px;">CUE SHEET</span>
+      <!-- Graphics label -->
+      <span class="node-label" style="bottom:20px;right:0px;color:#e74c3c;">GRAPHICS</span>
+      <!-- SVG Connectors -->
+      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+        <defs>
+          <marker id="a2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker>
+        </defs>
+        <!-- Live Feed to Monitoring -->
+        <line x1="90" y1="80" x2="200" y2="80" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a2)"/>
+        <!-- Live Feed down to Data Sheet -->
+        <line x1="60" y1="120" x2="60" y2="170" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5"/>
+        <line x1="60" y1="170" x2="160" y2="190" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a2)"/>
+        <!-- Data Sheet to Front -->
+        <line x1="260" y1="230" x2="300" y2="300" stroke="#e74c3c" stroke-width="1.5" marker-end="url(#a2)"/>
+        <!-- Front to Cue Sheet -->
+        <line x1="320" y1="340" x2="300" y2="370" stroke="#e74c3c" stroke-width="1.5" marker-end="url(#a2)"/>
+      </svg>
+    </div>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 3: FRONT-END Step 4-5 ==================== -->
+<section class="slide" id="slide3">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : FRONT-END</div></div>
+  <div class="slide-body">
+    <div class="info-panel">
+      <h4>[The Front is responsible for selecting and determining the order of content-delivery.]</h4>
+      <div class="step">4. Cue Sheet</div>
+      <div class="bullet">&#9670; Producers determine order of content-delivery based on data sheet.</div>
+      <div class="bullet">&#9670; The back-end process operates based on the directions provided in the cue sheet</div>
+      <div class="step">5. Graphics</div>
+      <div class="bullet">&#9670; Based on the cue sheet, the Graphics Producers select the appropriate graphic(s) and provide the relevant details to the Graphic Designers.</div>
+    </div>
+    <div class="diagram" style="min-height:450px;">
+      <!-- KR Flag -->
+      <img src="icons/icon_398_136x91.png" alt="KR" class="node-icon flag" style="top:10px;left:20px;height:22px;">
+      <!-- Monitoring -->
+      <img src="icons/icon_380_134x110.png" alt="Monitor" class="node-icon" style="top:40px;left:20px;width:40px;">
+      <img src="icons/icon_380_134x110.png" alt="Monitor" class="node-icon" style="top:40px;left:70px;width:40px;">
+      <img src="icons/icon_380_134x110.png" alt="Monitor" class="node-icon" style="top:40px;left:120px;width:40px;">
+      <img src="icons/icon_380_134x110.png" alt="Monitor" class="node-icon" style="top:40px;left:170px;width:40px;">
+      <span class="node-label" style="top:95px;left:60px;">MONITORING</span>
+      <!-- Data Sheet -->
+      <div class="dashed-box" style="position:absolute;top:130px;left:70px;">
+        <img src="icons/icon_384_99x99.png" alt="Data Sheet" style="width:40px;display:block;margin:0 auto 4px;">
+        <span style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#ccc;">DATA SHEET</span>
+      </div>
+      <!-- Front + USA -->
+      <img src="icons/icon_359_140x124.png" alt="Front" class="node-icon" style="top:260px;left:20px;width:45px;">
+      <img src="icons/icon_399_136x90.jpeg" alt="USA" class="node-icon flag" style="top:250px;left:70px;height:18px;">
+      <span class="node-label" style="top:310px;left:25px;">FRONT</span>
+      <!-- Cue Sheet -->
+      <img src="icons/icon_388_99x99.png" alt="Cue Sheet" class="node-icon" style="top:260px;left:150px;width:45px;">
+      <span class="node-label" style="top:310px;left:145px;">CUE SHEET</span>
+      <!-- Graphics (teal) -->
+      <img src="icons/icon_400_108x97.png" alt="Graphics" class="node-icon" style="top:250px;left:280px;width:40px;">
+      <img src="icons/icon_400_108x97.png" alt="Graphics" class="node-icon" style="top:250px;left:325px;width:40px;">
+      <span class="node-label" style="top:300px;left:280px;color:#1abc9c;">GRAPHICS</span>
+      <!-- Design (purple) -->
+      <img src="icons/icon_406_108x96.png" alt="Design" class="node-icon" style="top:350px;left:280px;width:40px;">
+      <span class="node-label" style="top:400px;left:278px;color:#9b59b6;">DESIGN</span>
+      <!-- Back (purple) -->
+      <img src="icons/icon_406_108x96.png" alt="Back" class="node-icon" style="top:250px;right:20px;width:40px;">
+      <img src="icons/icon_406_108x96.png" alt="Back" class="node-icon" style="top:250px;right:65px;width:40px;">
+      <span class="node-label" style="top:300px;right:30px;color:#9b59b6;">BACK</span>
+      <!-- SVG -->
+      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+        <defs><marker id="a3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker></defs>
+        <!-- Data Sheet down to Front -->
+        <line x1="110" y1="215" x2="50" y2="260" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a3)"/>
+        <!-- Front to Cue Sheet -->
+        <line x1="70" y1="280" x2="150" y2="280" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a3)"/>
+        <!-- Cue Sheet to Graphics -->
+        <line x1="200" y1="280" x2="280" y2="270" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a3)"/>
+        <!-- Graphics to Design -->
+        <line x1="310" y1="300" x2="310" y2="350" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a3)"/>
+        <!-- Cue Sheet to Back -->
+        <line x1="200" y1="290" x2="340" y2="270" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5"/>
+      </svg>
+    </div>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 4: BACK-END (Design + Edit) ==================== -->
+<section class="slide" id="slide4">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : BACK-END</div></div>
+  <div class="slide-body">
+    <div class="info-panel">
+      <h4>[The Back is responsible for editing, designing, and transmitting all content.]</h4>
+      <div class="step">1. Design</div>
+      <div class="bullet">&#9670; Graphics team inputs data into software based on cue sheet directives</div>
+      <div class="bullet">&#9670; Lower-thirds, overlays, and branded elements</div>
+      <div class="step">2. Edit</div>
+      <div class="bullet">&#9670; Editors assemble content following cue sheet order</div>
+      <div class="bullet">&#9670; Insert graphics, transitions, and audio</div>
+      <div class="note">Note: Design and Edit work in parallel, synchronized via cue sheet.</div>
+    </div>
+    <div class="diagram" style="min-height:450px;">
+      <!-- Top: Hand card / Front -->
+      <img src="icons/icon_415_129x129.png" alt="Hand Card" class="node-icon" style="top:20px;left:30px;width:50px;">
+      <span class="node-label" style="top:75px;left:25px;">FRONT</span>
+      <span class="node-label" style="top:20px;left:120px;font-size:9px;color:#e74c3c;">SELECTED HANDS<br>FROM FEED(S)</span>
+      <!-- Drive box -->
+      <div class="auto-box" style="position:absolute;top:30px;right:30px;">DRIVE</div>
+      <!-- Design -->
+      <img src="icons/icon_406_108x96.png" alt="Design" class="node-icon" style="top:150px;left:120px;width:45px;">
+      <span class="node-label" style="top:200px;left:115px;color:#9b59b6;">DESIGN</span>
+      <!-- Cue Sheet + Back -->
+      <img src="icons/icon_388_99x99.png" alt="Cue Sheet" class="node-icon" style="top:250px;left:30px;width:42px;">
+      <span class="node-label" style="top:298px;left:20px;">CUE SHEET</span>
+      <img src="icons/icon_406_108x96.png" alt="Back" class="node-icon" style="top:250px;left:110px;width:40px;">
+      <img src="icons/icon_406_108x96.png" alt="Back" class="node-icon" style="top:250px;left:155px;width:40px;">
+      <span class="node-label" style="top:298px;left:120px;color:#9b59b6;">BACK</span>
+      <!-- Editors -->
+      <img src="icons/icon_411_139x116.png" alt="Editor" class="node-icon" style="top:240px;right:120px;width:50px;">
+      <img src="icons/icon_411_139x116.png" alt="Editor" class="node-icon" style="top:240px;right:60px;width:50px;">
+      <img src="icons/icon_411_139x116.png" alt="Editor" class="node-icon" style="top:240px;right:0px;width:50px;">
+      <span class="node-label" style="top:298px;right:50px;">EDITORS</span>
+      <!-- LAS USA -->
+      <img src="icons/icon_413_194x194.png" alt="LAS" class="node-icon" style="bottom:50px;left:30px;width:60px;">
+      <img src="icons/icon_399_136x90.jpeg" alt="USA" class="node-icon flag" style="bottom:115px;left:40px;height:16px;">
+      <span class="node-label" style="bottom:30px;left:38px;">LAS</span>
+      <!-- LAS KR -->
+      <img src="icons/icon_413_194x194.png" alt="LAS" class="node-icon" style="bottom:50px;right:30px;width:60px;">
+      <img src="icons/icon_398_136x91.png" alt="KR" class="node-icon flag" style="bottom:115px;right:40px;height:16px;">
+      <span class="node-label" style="bottom:30px;right:38px;">LAS</span>
+      <!-- SVG -->
+      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+        <defs><marker id="a4" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker></defs>
+        <!-- Front to Drive -->
+        <line x1="90" y1="45" x2="250" y2="45" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a4)"/>
+        <!-- Cue to Design -->
+        <line x1="80" y1="270" x2="120" y2="195" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a4)"/>
+        <!-- Back to Editors -->
+        <line x1="200" y1="270" x2="260" y2="270" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a4)"/>
+        <!-- LAS to LAS yellow -->
+        <line x1="100" y1="400" x2="320" y2="400" stroke="#f1c40f" stroke-width="2"/>
+        <text x="210" y="395" fill="#f1c40f" font-size="9" text-anchor="middle" letter-spacing="2">UPLOADED CONTENT</text>
+      </svg>
+    </div>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 5: BACK-END (Transmission + Commentator) ==================== -->
+<section class="slide" id="slide5">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : BACK-END</div></div>
+  <div class="slide-body">
+    <div class="info-panel">
+      <h4>[The Back is responsible for editing, designing, and transmitting all content.]</h4>
+      <div class="step">3. Transmission</div>
+      <div class="bullet">&#9670; Final edited content is transmitted to YouTube via AJA Bridgelive</div>
+      <div class="bullet">&#9670; Producer manages transmission timing per cue sheet</div>
+      <div class="step">4. Commentator</div>
+      <div class="bullet">&#9670; Commentators deliver voice-over based on cue sheet talking points</div>
+      <div class="bullet">&#9670; Commentary added 10~30 seconds prior to transmission</div>
+    </div>
+    <div class="diagram" style="min-height:450px;">
+      <!-- Cue Sheet top -->
+      <img src="icons/icon_388_99x99.png" alt="Cue Sheet" class="node-icon" style="top:20px;left:20px;width:42px;">
+      <span class="node-label" style="top:68px;left:10px;">CUE SHEET</span>
+      <!-- Wi-Fi -->
+      <img src="icons/icon_419_163x167.png" alt="Wi-Fi" class="node-icon" style="top:20px;left:120px;width:50px;">
+      <!-- Editors -->
+      <img src="icons/icon_411_139x116.png" alt="Editor" class="node-icon" style="top:120px;left:20px;width:48px;">
+      <img src="icons/icon_411_139x116.png" alt="Editor" class="node-icon" style="top:120px;left:75px;width:48px;">
+      <img src="icons/icon_411_139x116.png" alt="Editor" class="node-icon" style="top:120px;left:130px;width:48px;">
+      <span class="node-label" style="top:175px;left:55px;">EDITORS</span>
+      <!-- Transmission label -->
+      <div class="auto-box" style="position:absolute;top:130px;right:80px;">TRANSMISSION</div>
+      <!-- YouTube -->
+      <img src="icons/icon_421_143x100.png" alt="YouTube" class="node-icon" style="top:120px;right:10px;width:55px;">
+      <!-- Bottom bracket area -->
+      <div style="position:absolute;bottom:60px;left:10px;right:10px;border:2px solid #e74c3c;border-radius:6px;padding:20px 15px;display:flex;justify-content:space-around;align-items:center;">
+        <!-- KR Producer -->
+        <div style="text-align:center;">
+          <img src="icons/icon_398_136x91.png" alt="KR" style="height:18px;display:block;margin:0 auto 6px;">
+          <img src="icons/icon_345_139x124.png" alt="Producer" style="width:40px;display:inline;">
+          <img src="icons/icon_345_139x124.png" alt="Producer" style="width:40px;display:inline;">
+          <div class="node-label" style="position:static;margin-top:4px;">PRODUCER</div>
+        </div>
+        <!-- Cue Sheet -->
+        <div style="text-align:center;">
+          <img src="icons/icon_388_99x99.png" alt="Cue" style="width:38px;">
+          <div class="node-label" style="position:static;margin-top:4px;">CUE SHEET</div>
+        </div>
+        <!-- USA Commentators -->
+        <div style="text-align:center;">
+          <img src="icons/icon_399_136x90.jpeg" alt="USA" style="height:18px;display:block;margin:0 auto 6px;">
+          <img src="icons/icon_425_139x139.png" alt="Commentator" style="width:45px;display:inline;">
+          <img src="icons/icon_425_139x139.png" alt="Commentator" style="width:45px;display:inline;">
+          <div class="node-label" style="position:static;margin-top:4px;">COMMENTATORS</div>
+        </div>
+      </div>
+      <!-- SVG -->
+      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+        <defs><marker id="a5" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker></defs>
+        <line x1="180" y1="150" x2="250" y2="150" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a5)"/>
+        <line x1="310" y1="150" x2="340" y2="150" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a5)"/>
+      </svg>
+    </div>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 6: DATA MANAGEMENT (Content Sources) ==================== -->
+<section class="slide" id="slide6">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : DATA MANAGEMENT</div>
+  <div class="full-diagram">
+    <div style="display:flex;gap:60px;align-items:flex-start;width:100%;max-width:900px;">
+      <!-- Left: Live Feed -->
+      <div style="flex:1;text-align:center;">
+        <img src="icons/icon_382_148x138.png" alt="Live Feed" style="width:60px;display:block;margin:0 auto 10px;">
+        <div style="font-size:18px;font-weight:700;letter-spacing:3px;margin-bottom:20px;">LIVE FEED</div>
+        <div class="teal-btn" style="display:block;margin:6px auto;max-width:320px;">PRIMARY STREAM / 3 TABLE - PGM</div>
+        <div class="teal-btn" style="display:block;margin:6px auto;max-width:320px;">SECONDARY STREAM / 1 TABLE - PGM</div>
+        <div class="teal-btn" style="display:block;margin:6px auto;max-width:320px;">SIDELINE REPORTING</div>
+        <div class="teal-btn" style="display:block;margin:6px auto;max-width:320px;">MORNING SHOW</div>
+      </div>
+      <!-- Right: Upload -->
+      <div style="flex:1;text-align:center;">
+        <img src="icons/icon_429_144x95.png" alt="Upload" style="width:60px;display:block;margin:0 auto 10px;">
+        <div style="font-size:18px;font-weight:700;letter-spacing:3px;margin-bottom:20px;">UPLOAD</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div class="teal-btn">VIRTUAL TABLE</div>
+          <div class="teal-btn">ORIGINAL CONTENT</div>
+          <div class="teal-btn">HOT SEAT</div>
+          <div class="teal-btn">PROMOTIONALS</div>
+          <div class="teal-btn">INTERVIEW</div>
+          <div class="teal-btn" style="visibility:hidden;"></div>
+          <div class="teal-btn">SOFT CONTENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 7: DATA MANAGEMENT (File Transfer) ==================== -->
+<section class="slide" id="slide7">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : DATA MANAGEMENT</div></div>
+  <div class="slide-body">
+    <div class="info-panel">
+      <div class="step">1. Live Feed</div>
+      <div class="bullet">&#9670; All live stream pgm feeds will be sent directly to GGProduction.</div>
+      <div class="sub-bullet">&middot; Primary stream &ndash; 3 tables</div>
+      <div class="sub-bullet">&middot; Secondary stream &ndash; 1 table</div>
+      <div class="sub-bullet">&middot; Field reporting</div>
+      <div class="step">2. Upload</div>
+      <div class="bullet">&#9670; Data Managing Hub needed onsite to organize and facilitate the transfer of all media files to GGProduction</div>
+      <div class="bullet">&#9670; Data Manager (LV) to coordinate with Data Manager (GGPro)</div>
+      <div class="bullet">&#9670; Files to be transferred via cloud-based system</div>
+      <div class="bullet">&#9670; Files to be organized via Data Managing sheet</div>
+    </div>
+    <div class="diagram" style="min-height:450px;">
+      <!-- Flags -->
+      <img src="icons/icon_399_136x90.jpeg" alt="USA" class="node-icon flag" style="top:10px;left:calc(50% - 50px);height:22px;">
+      <img src="icons/icon_398_136x91.png" alt="KR" class="node-icon flag" style="top:10px;left:calc(50% + 10px);height:22px;">
+      <!-- Live Feed -->
+      <img src="icons/icon_382_148x138.png" alt="Live Feed" class="node-icon" style="top:60px;left:calc(50% - 30px);width:55px;">
+      <span class="node-label" style="top:120px;left:calc(50% - 30px);">LIVE FEED</span>
+      <!-- Front circle -->
+      <div class="circle circle-green" style="position:absolute;top:170px;left:calc(50% - 20px);">F</div>
+      <span class="node-label" style="top:215px;left:calc(50% - 20px);">FRONT</span>
+      <!-- Data Sheet -->
+      <img src="icons/icon_384_99x99.png" alt="Data Sheet" class="node-icon" style="top:250px;left:calc(50% - 25px);width:45px;">
+      <span class="node-label" style="top:300px;left:calc(50% - 32px);">DATA SHEET</span>
+      <!-- Data Transfer -->
+      <img src="icons/icon_390_116x116.png" alt="Data Transfer" class="node-icon" style="top:340px;left:40px;width:50px;">
+      <span class="node-label" style="top:395px;left:20px;">DATA TRANSFER</span>
+      <!-- File Transfer Cloud -->
+      <img src="icons/icon_429_144x95.png" alt="File Transfer" class="node-icon" style="top:340px;left:calc(50% - 25px);width:50px;">
+      <span class="node-label" style="top:395px;left:calc(50% - 35px);">FILE TRANSFER</span>
+      <!-- Cue circle -->
+      <div class="circle circle-green" style="position:absolute;top:340px;right:40px;">C</div>
+      <span class="node-label" style="top:385px;right:38px;">CUE</span>
+      <!-- SVG -->
+      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+        <defs><marker id="a7" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker></defs>
+        <line x1="50%" y1="118" x2="50%" y2="170" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a7)"/>
+        <line x1="50%" y1="215" x2="50%" y2="250" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a7)"/>
+        <line x1="40%" y1="300" x2="25%" y2="340" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a7)"/>
+        <line x1="50%" y1="300" x2="50%" y2="340" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a7)"/>
+        <line x1="60%" y1="300" x2="75%" y2="340" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a7)"/>
+      </svg>
+    </div>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 8: DATA MANAGEMENT (Distribution) ==================== -->
+<section class="slide" id="slide8">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : DATA MANAGEMENT</div></div>
+  <div class="slide-body">
+    <div class="info-panel">
+      <div class="step">1. Front-end receives Live Feed PGM directly</div>
+      <div class="sub-bullet">&middot; Primary stream &ndash; 3 tables</div>
+      <div class="sub-bullet">&middot; Secondary stream &ndash; 1 table</div>
+      <div class="sub-bullet">&middot; Morning show</div>
+      <div class="step">2. Data Manager receives Uploaded Content from LV &rarr; Organize, double-checks and Distributes accordingly.</div>
+      <div class="bullet">&#9670; Content checklist &rarr; Front-end</div>
+      <div class="sub-bullet">&middot; per content type</div>
+      <div class="sub-bullet">&middot; operated by Content Producer and Data Manager</div>
+      <div class="bullet">&#9670; Files &rarr; Back-end</div>
+    </div>
+    <div class="diagram" style="min-height:450px;">
+      <!-- Row 1: Live Feed -> Front -> Data Sheet -> Edit -->
+      <img src="icons/icon_382_148x138.png" alt="Live Feed" class="node-icon" style="top:60px;left:10px;width:48px;">
+      <span class="node-label" style="top:112px;left:2px;">LIVE FEED</span>
+      <div class="circle circle-green" style="position:absolute;top:68px;left:110px;">F</div>
+      <span class="node-label" style="top:112px;left:100px;">FRONT</span>
+      <div class="circle circle-green" style="position:absolute;top:68px;left:210px;">DS</div>
+      <span class="node-label" style="top:112px;left:190px;">DATA SHEET</span>
+      <div class="circle circle-purple" style="position:absolute;top:68px;left:330px;">E</div>
+      <span class="node-label" style="top:112px;left:325px;">EDIT</span>
+      <!-- Row 2: Upload -> Data Sheet -> Cue -> Cue Sheet -->
+      <img src="icons/icon_429_144x95.png" alt="Upload" class="node-icon" style="top:180px;left:10px;width:48px;">
+      <span class="node-label" style="top:232px;left:8px;">UPLOAD</span>
+      <div class="circle circle-green" style="position:absolute;top:188px;left:110px;">DS</div>
+      <span class="node-label" style="top:232px;left:190px;">DATA SHEET</span>
+      <div class="circle circle-green" style="position:absolute;top:188px;left:210px;">C</div>
+      <span class="node-label" style="top:232px;left:205px;">CUE</span>
+      <img src="icons/icon_388_99x99.png" alt="Cue Sheet" class="node-icon" style="top:180px;left:320px;width:42px;">
+      <span class="node-label" style="top:228px;left:310px;">CUE SHEET</span>
+      <!-- LAS bottom -->
+      <img src="icons/icon_413_194x194.png" alt="LAS USA" class="node-icon" style="bottom:60px;left:40px;width:60px;">
+      <img src="icons/icon_399_136x90.jpeg" alt="USA" class="node-icon flag" style="bottom:125px;left:50px;height:16px;">
+      <span class="node-label" style="bottom:40px;left:52px;">LAS</span>
+      <img src="icons/icon_413_194x194.png" alt="LAS KR" class="node-icon" style="bottom:60px;right:40px;width:60px;">
+      <img src="icons/icon_398_136x91.png" alt="KR" class="node-icon flag" style="bottom:125px;right:50px;height:16px;">
+      <span class="node-label" style="bottom:40px;right:52px;">LAS</span>
+      <!-- SVG -->
+      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+        <defs><marker id="a8" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker></defs>
+        <!-- Row 1 connectors -->
+        <line x1="62" y1="82" x2="108" y2="82" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a8)"/>
+        <line x1="140" y1="82" x2="208" y2="82" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a8)"/>
+        <line x1="248" y1="82" x2="328" y2="82" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a8)"/>
+        <!-- Row 2 connectors -->
+        <line x1="62" y1="202" x2="108" y2="202" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a8)"/>
+        <line x1="140" y1="202" x2="208" y2="202" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a8)"/>
+        <line x1="248" y1="202" x2="318" y2="200" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a8)"/>
+        <!-- LAS yellow line -->
+        <line x1="110" y1="380" x2="310" y2="380" stroke="#f1c40f" stroke-width="2"/>
+      </svg>
+    </div>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 9: DATA MANAGEMENT (LAS Mirroring) ==================== -->
+<section class="slide" id="slide9">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : DATA MANAGEMENT</div></div>
+  <div class="slide-body">
+    <div class="info-panel">
+      <h4>FILE TRANSFER PROCESS</h4>
+      <div class="step">1. Upload data to the on-site LAS server</div>
+      <div class="step">2. Leverage cloud servers for efficient data handling</div>
+      <div class="step">3. Mirror the Korea LAS server to enhance</div>
+      <div class="bullet">&#9670; Data upload stability</div>
+      <div class="bullet">&#9670; Data upload speed</div>
+    </div>
+    <div class="diagram" style="min-height:450px;">
+      <!-- Cloud top center -->
+      <img src="icons/icon_441_286x286.png" alt="Cloud Server" class="node-icon" style="top:30px;left:calc(50% - 60px);width:120px;">
+      <span class="node-label" style="top:155px;left:calc(50% - 20px);font-size:12px;font-weight:600;color:#fff;">CLOUD</span>
+      <!-- LAS USA bottom left -->
+      <img src="icons/icon_413_194x194.png" alt="LAS USA" class="node-icon" style="bottom:80px;left:40px;width:70px;">
+      <img src="icons/icon_399_136x90.jpeg" alt="USA" class="node-icon flag" style="bottom:155px;left:55px;height:18px;">
+      <span class="node-label" style="bottom:55px;left:58px;font-size:12px;font-weight:600;color:#fff;">LAS</span>
+      <!-- LAS KR bottom right -->
+      <img src="icons/icon_413_194x194.png" alt="LAS KR" class="node-icon" style="bottom:80px;right:40px;width:70px;">
+      <img src="icons/icon_398_136x91.png" alt="KR" class="node-icon flag" style="bottom:155px;right:55px;height:18px;">
+      <span class="node-label" style="bottom:55px;right:58px;font-size:12px;font-weight:600;color:#fff;">LAS</span>
+      <!-- SVG triangle connectors -->
+      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+        <defs>
+          <marker id="a9" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker>
+          <marker id="a9y" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#f1c40f" stroke-width="1"/></marker>
+        </defs>
+        <!-- Cloud to LAS USA -->
+        <line x1="40%" y1="170" x2="22%" y2="280" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a9)"/>
+        <!-- Cloud to LAS KR -->
+        <line x1="60%" y1="170" x2="78%" y2="280" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a9)"/>
+        <!-- LAS to LAS yellow -->
+        <line x1="28%" y1="350" x2="72%" y2="350" stroke="#f1c40f" stroke-width="2.5" marker-end="url(#a9y)"/>
+        <text x="50%" y="342" fill="#f1c40f" font-size="10" text-anchor="middle" letter-spacing="2" font-weight="600">MIRRORING</text>
+      </svg>
+    </div>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 10: COMMENTATOR ==================== -->
+<section class="slide" id="slide10">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : COMMENTATOR</div></div>
+  <div class="slide-body">
+    <div class="info-panel" style="font-size:12px;">
+      <div class="step">1. Producer uses the Production Cue Sheet to communicate cues and talking points to the commentators.</div>
+      <div class="step" style="margin-top:14px;">2. Commentators follow cues and talking points from cue sheet to deliver commentary over the final video output, typically 10~30 seconds prior to transmission.</div>
+      <div class="step" style="margin-top:14px;">3. The Producer communicates with the Commentator using the following methods</div>
+      <div class="bullet">&#9670; Dedicated Cue Sheet</div>
+      <div class="sub-bullet">&middot; Hand history</div>
+      <div class="sub-bullet">&middot; Talking points</div>
+      <div class="sub-bullet">&middot; Announcements</div>
+      <div class="bullet">&#9670; Internal mic (headset)</div>
+      <div class="bullet">&#9670; Video prompts (countdown alerts)</div>
+      <div class="sub-bullet">&middot; For example: 60 seconds to break</div>
+      <div class="bullet">&#9670; Discord or something similar</div>
+    </div>
+    <div class="diagram" style="min-height:450px;">
+      <!-- Output KR top left -->
+      <img src="icons/icon_398_136x91.png" alt="KR" class="node-icon flag" style="top:10px;left:20px;height:18px;">
+      <span class="node-label" style="top:35px;left:15px;font-weight:600;color:#fff;">OUTPUT</span>
+      <img src="icons/icon_380_134x110.png" alt="Monitor" class="node-icon" style="top:55px;left:15px;width:55px;">
+      <!-- Output USA top right -->
+      <img src="icons/icon_399_136x90.jpeg" alt="USA" class="node-icon flag" style="top:10px;right:20px;height:18px;">
+      <span class="node-label" style="top:35px;right:15px;font-weight:600;color:#fff;">OUTPUT</span>
+      <img src="icons/icon_380_134x110.png" alt="Monitor" class="node-icon" style="top:55px;right:15px;width:55px;">
+      <!-- Middle row: Cue -> Producer(KR) -> Cue -> Commentators(USA) -->
+      <img src="icons/icon_435_87x87.png" alt="Cue" class="node-icon" style="top:200px;left:10px;width:38px;">
+      <span class="node-label" style="top:242px;left:8px;">CUE</span>
+      <img src="icons/icon_345_139x124.png" alt="Producer" class="node-icon" style="top:190px;left:80px;width:42px;">
+      <img src="icons/icon_345_139x124.png" alt="Producer" class="node-icon" style="top:190px;left:125px;width:42px;">
+      <img src="icons/icon_398_136x91.png" alt="KR" class="node-icon flag" style="top:175px;left:95px;height:14px;">
+      <span class="node-label" style="top:238px;left:85px;">PRODUCER</span>
+      <img src="icons/icon_435_87x87.png" alt="Cue" class="node-icon" style="top:200px;left:200px;width:38px;">
+      <span class="node-label" style="top:242px;left:198px;">CUE</span>
+      <img src="icons/icon_425_139x139.png" alt="Commentator" class="node-icon" style="top:185px;right:30px;width:50px;">
+      <img src="icons/icon_425_139x139.png" alt="Commentator" class="node-icon" style="top:185px;right:85px;width:50px;">
+      <img src="icons/icon_399_136x90.jpeg" alt="USA" class="node-icon flag" style="top:175px;right:55px;height:14px;">
+      <span class="node-label" style="top:242px;right:40px;">COMMENTATORS</span>
+      <!-- YouTube bottom -->
+      <img src="icons/icon_421_143x100.png" alt="YouTube" class="node-icon" style="bottom:70px;left:calc(50% - 30px);width:55px;">
+      <span class="node-label" style="bottom:48px;left:calc(50% - 38px);font-weight:600;color:#fff;">TRANSMISSION</span>
+      <!-- SVG -->
+      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+        <defs>
+          <marker id="a10" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker>
+          <marker id="a10y" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#f1c40f" stroke-width="1"/></marker>
+        </defs>
+        <!-- Producer to KR Output -->
+        <line x1="110" y1="190" x2="50" y2="130" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a10)"/>
+        <!-- Commentators to USA Output -->
+        <line x1="300" y1="190" x2="340" y2="130" stroke="#f1c40f" stroke-width="1.5" marker-end="url(#a10y)"/>
+        <!-- Cue to Producer -->
+        <line x1="52" y1="218" x2="78" y2="215" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a10)"/>
+        <!-- Producer to Cue2 -->
+        <line x1="170" y1="215" x2="198" y2="218" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a10)"/>
+        <!-- Cue2 to Commentators -->
+        <line x1="240" y1="218" x2="270" y2="215" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a10)"/>
+      </svg>
+    </div>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 11: TRANSMISSION ==================== -->
+<section class="slide" id="slide11">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : TRANSMISSION</div>
+  <div class="full-diagram">
+    <div style="display:flex;gap:40px;align-items:flex-start;width:100%;max-width:1000px;">
+      <!-- Left: USA Input -->
+      <div style="flex:1;">
+        <div style="text-align:center;margin-bottom:16px;">
+          <img src="icons/icon_399_136x90.jpeg" alt="USA" style="height:24px;">
+        </div>
+        <div class="black-card" style="margin-bottom:8px;">
+          &#9670; PGM &nbsp; &#9670; WIDE SHOT &nbsp; &#9670; EXTREME WIDE SHOT &nbsp; &#9670; CLEAN FEED
+        </div>
+        <div class="black-card" style="margin-bottom:8px;">
+          &#9670; PGM &nbsp; &#9670; WIDE SHOT &nbsp; &#9670; CLEAN FEED
+        </div>
+        <div class="black-card" style="margin-bottom:8px;">
+          &#9670; PGM &nbsp; &#9670; WIDE SHOT &nbsp; &#9670; CLEAN FEED
+        </div>
+        <div class="black-card" style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+          <img src="icons/icon_458_146x89.png" alt="AWS" style="height:28px;">
+          <span>FEED BACKUP &middot; AWS X 8CH</span>
+        </div>
+        <div style="text-align:center;font-size:10px;letter-spacing:2px;color:#999;text-transform:uppercase;margin-top:8px;">
+          INPUT (signal from external source)
+        </div>
+      </div>
+      <!-- Right: Korea Production -->
+      <div style="flex:1;position:relative;">
+        <div style="text-align:center;margin-bottom:12px;">
+          <img src="icons/icon_398_136x91.png" alt="KR" style="height:24px;">
+        </div>
+        <div style="text-align:center;margin-bottom:16px;">
+          <img src="icons/icon_460_231x62.png" alt="GGPro" style="height:22px;opacity:0.8;">
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+          <div style="text-align:center;">
+            <img src="icons/icon_456_253x253.png" alt="Production" style="width:80px;">
+            <div class="node-label" style="position:static;margin-top:6px;font-weight:600;color:#fff;">PRODUCTION</div>
+            <div class="node-label" style="position:static;font-size:9px;">(cue + edit)</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:20px;">
+            <div style="text-align:center;">
+              <img src="icons/icon_421_143x100.png" alt="YouTube" style="width:50px;">
+            </div>
+            <div style="text-align:center;">
+              <img src="icons/icon_419_163x167.png" alt="AJA" style="width:45px;">
+              <div class="node-label" style="position:static;margin-top:4px;">TRANSMISSION</div>
+              <div class="node-label" style="position:static;font-size:8px;">(AJA Bridgelive)</div>
+            </div>
+          </div>
+        </div>
+        <!-- SVG connectors within right side -->
+        <svg style="position:absolute;top:0;left:-30px;width:calc(100% + 30px);height:100%;pointer-events:none;">
+          <defs><marker id="a11" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker></defs>
+        </svg>
+      </div>
+    </div>
+    <!-- Outer SVG for cross connections -->
+    <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+      <defs><marker id="a11b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker></defs>
+      <!-- Input cards to Production -->
+      <line x1="48%" y1="35%" x2="62%" y2="45%" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a11b)"/>
+      <line x1="48%" y1="45%" x2="62%" y2="48%" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a11b)"/>
+      <line x1="48%" y1="55%" x2="62%" y2="50%" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#a11b)"/>
+    </svg>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+<!-- ==================== SLIDE 12: L-BAR ==================== -->
+<section class="slide" id="slide12">
+  <div class="slide-header"><img src="icons/icon_11_329x88.png" alt="GGProduction" class="logo"><div class="slide-title">PROCESS : L-BAR</div></div>
+  <div class="slide-body">
+    <!-- Left: Diagram (reversed layout for this slide) -->
+    <div class="diagram" style="min-height:450px;flex:1;">
+      <!-- CUE circle top center -->
+      <div class="circle circle-green" style="position:absolute;top:40px;left:calc(50% - 20px);width:50px;height:50px;font-size:11px;">CUE</div>
+      <span class="node-label" style="top:95px;left:calc(50% - 12px);">CUE</span>
+      <!-- GRAPHICS circle bottom left -->
+      <div class="circle circle-red" style="position:absolute;top:220px;left:60px;width:50px;height:50px;font-size:9px;">GFX</div>
+      <span class="node-label" style="top:275px;left:30px;">GRAPHICS (front)</span>
+      <!-- EDIT circle bottom right -->
+      <div class="circle circle-purple" style="position:absolute;top:220px;right:60px;width:50px;height:50px;font-size:10px;">EDIT</div>
+      <span class="node-label" style="top:275px;right:50px;">EDIT</span>
+      <!-- GFX Software below Graphics -->
+      <img src="icons/icon_466_135x135.png" alt="GFX Software" class="node-icon" style="top:310px;left:55px;width:55px;">
+      <span class="node-label" style="top:370px;left:30px;">GFX SOFTWARE</span>
+      <!-- Premiere below Edit -->
+      <img src="icons/icon_468_142x142.png" alt="Premiere Pro" class="node-icon" style="top:310px;right:55px;width:55px;">
+      <span class="node-label" style="top:370px;right:30px;">EDITING TOOL</span>
+      <!-- Automation box center bottom -->
+      <div class="auto-box" style="position:absolute;bottom:40px;left:calc(50% - 55px);">AUTOMATION</div>
+      <!-- SVG connectors -->
+      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+        <defs><marker id="a12" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#e74c3c" stroke-width="1"/></marker></defs>
+        <!-- CUE to GRAPHICS -->
+        <line x1="46%" y1="95" x2="24%" y2="220" stroke="#e74c3c" stroke-width="1.8" marker-end="url(#a12)"/>
+        <text x="28%" y="160" fill="#fff" font-size="11" font-weight="700">1</text>
+        <!-- CUE to EDIT -->
+        <line x1="54%" y1="95" x2="76%" y2="220" stroke="#e74c3c" stroke-width="1.8" marker-end="url(#a12)"/>
+        <text x="70%" y="160" fill="#fff" font-size="11" font-weight="700">2</text>
+        <!-- GRAPHICS to EDIT dashed -->
+        <line x1="28%" y1="245" x2="68%" y2="245" stroke="#e74c3c" stroke-width="1.2" stroke-dasharray="8,5"/>
+      </svg>
+    </div>
+    <!-- Right: Info panel -->
+    <div class="info-panel" style="font-size:12px;">
+      <div class="step">1. Based on the cue sheet, graphics team inputs and saves data (lower-third + alpha) into software.</div>
+      <div class="sub-bullet">&middot; file saved under predetermined code/name</div>
+      <div class="sub-bullet">&middot; file directly saved into editing program</div>
+      <div class="step" style="margin-top:14px;">2. In post, the editor will then fill in the remaining sections of the L-Bar and place the overlay in the correct order in the timeline as indicated in the cue sheet.</div>
+      <div class="sub-bullet">&middot; each saved lower-third file corresponds to the same file name for predetermined content (ads + graphics) to be used in the remaining sections of the L-bar overlay.</div>
+      <div class="step" style="margin-top:16px;">&#9656; Overlay usage</div>
+      <div class="sub-bullet">&middot; 1 per level</div>
+      <div class="sub-bullet">&middot; PIP transitions</div>
+      <div class="sub-bullet">&middot; Block transitions</div>
+    </div>
+  </div>
+  <img src="icons/icon_65_1337x432.jpeg" alt="Crowd" class="crowd">
+</section>
+
+</div><!-- /deck -->
+
+<script>
+(function(){
+  const deck = document.getElementById('deck');
+  const slides = document.querySelectorAll('.slide');
+  const dotNav = document.getElementById('dotNav');
+  const TOTAL = slides.length;
+
+  // Create dots
+  for(let i=0; i<TOTAL; i++){
+    const d = document.createElement('button');
+    d.className = 'dot' + (i===0?' active':'');
+    d.title = 'Slide '+(i+1);
+    d.addEventListener('click', ()=>{
+      slides[i].scrollIntoView({behavior:'smooth'});
+    });
+    dotNav.appendChild(d);
+  }
+
+  const dots = dotNav.querySelectorAll('.dot');
+
+  // IntersectionObserver
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const idx = Array.from(slides).indexOf(e.target);
+        dots.forEach((d,i)=> d.classList.toggle('active', i===idx));
+      }
+    });
+  },{root:deck, threshold:0.5});
+
+  slides.forEach(s=> obs.observe(s));
+})();
+</script>
+
+</body>
+</html>

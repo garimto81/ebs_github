@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720">
+    <title>Skin Editor — wsop_main.vpt</title>
+    <style>
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #000;
+            padding: 0;
+            margin: 0;
+        }
+
+        .wireframe-container {
+            width: 720px;
+            background: #fff;
+            border: 1px solid #999;
+            overflow: hidden;
+        }
+
+        /* Title Bar */
+        .title-bar {
+            background: #1a1a1a;
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .window-control.close { background: #333; }
+        .window-control.minimize { background: #888; }
+        .window-control.maximize { background: #555; }
+
+        .title-text {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            background: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toolbar-btn {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .toolbar-btn:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        .toolbar-btn.primary {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        .toolbar-btn.primary:hover {
+            background: #222;
+        }
+
+        .toolbar-separator {
+            width: 1px;
+            height: 24px;
+            background: #ddd;
+            margin: 0 4px;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            height: 520px;
+        }
+
+        /* Left Panel - Element Tree */
+        .left-panel {
+            width: 130px;
+            background: #fafafa;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 12px 16px;
+            background: #f0f0f0;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            font-size: 12px;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tree-view {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .tree-item {
+            padding: 4px 12px;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.2s;
+        }
+
+        .tree-item:hover {
+            background: #f0f0f0;
+        }
+
+        .tree-item.selected {
+            background: #333;
+            color: #fff;
+        }
+
+        .tree-item.child {
+            padding-left: 24px;
+        }
+
+        .tree-icon {
+            font-size: 10px;
+            width: 12px;
+        }
+
+        /* Center Panel - Canvas */
+        .center-panel {
+            flex: 1;
+            background: #2a2a2a;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .canvas-area {
+            flex: 1;
+            position: relative;
+            overflow: auto;
+            padding: 14px;
+        }
+
+        .canvas-grid {
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.1) 0px, transparent 1px, transparent 20px),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.1) 0px, transparent 1px, transparent 20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .poker-table {
+            width: 300px;
+            height: 200px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            position: relative;
+            border: 3px solid #555;
+        }
+
+        .player-seat {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Seat positions */
+        .seat-1 { top: -25px; left: 50%; transform: translateX(-50%); }
+        .seat-2 { top: 15px; right: -35px; }
+        .seat-3 { top: 80px; right: -35px; }
+        .seat-4 { bottom: 80px; right: -35px; }
+        .seat-5 { bottom: 15px; right: -35px; }
+        .seat-6 { bottom: -25px; left: 50%; transform: translateX(-50%); }
+        .seat-7 { bottom: 15px; left: -35px; }
+        .seat-8 { bottom: 80px; left: -35px; }
+        .seat-9 { top: 80px; left: -35px; }
+        .seat-10 { top: 15px; left: -35px; }
+
+        .card-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 6px;
+        }
+
+        .card-placeholder {
+            width: 24px;
+            height: 36px;
+            background: rgba(255,255,255,0.15);
+            border: 1px dashed rgba(255,255,255,0.4);
+            border-radius: 2px;
+        }
+
+        .selection-box {
+            position: absolute;
+            top: 45%;
+            left: 48%;
+            width: 120px;
+            height: 60px;
+            border: 2px dashed #333;
+            pointer-events: none;
+        }
+
+        .selection-handles {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+        }
+
+        .handle {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border: 1px solid #fff;
+            position: absolute;
+        }
+
+        .handle.tl { top: 0; left: 0; }
+        .handle.tr { top: 0; right: 0; }
+        .handle.bl { bottom: 0; left: 0; }
+        .handle.br { bottom: 0; right: 0; }
+
+        /* Right Panel - Properties */
+        .right-panel {
+            width: 180px;
+            background: #fafafa;
+            border-left: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .properties-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .property-group {
+            margin-bottom: 14px;
+        }
+
+        .property-group-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .property-row {
+            margin-bottom: 10px;
+        }
+
+        .property-label {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .property-input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .property-input:focus {
+            outline: none;
+            border-color: #333;
+        }
+
+        .property-row-dual {
+            display: flex;
+            gap: 8px;
+        }
+
+        .property-row-dual .property-col {
+            flex: 1;
+        }
+
+        .property-input.small {
+            width: 100%;
+        }
+
+        .color-swatch {
+            width: 100%;
+            height: 32px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            gap: 8px;
+        }
+
+        .color-preview {
+            width: 24px;
+            height: 24px;
+            border-radius: 3px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .color-value {
+            font-size: 11px;
+            color: #666;
+            font-family: monospace;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .property-slider {
+            flex: 1;
+        }
+
+        .slider-value {
+            min-width: 35px;
+            text-align: right;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .file-input-group {
+            display: flex;
+            gap: 4px;
+        }
+
+        .file-input-group input {
+            flex: 1;
+        }
+
+        .file-input-group button {
+            padding: 6px 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <div class="window-controls">
+                <div class="window-control close"></div>
+                <div class="window-control minimize"></div>
+                <div class="window-control maximize"></div>
+            </div>
+            <div class="title-text">Skin Editor — wsop_main.vpt</div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button class="toolbar-btn">New</button>
+            <button class="toolbar-btn">Open</button>
+            <button class="toolbar-btn">Save</button>
+            <button class="toolbar-btn">Import</button>
+            <button class="toolbar-btn">Export</button>
+            <div class="toolbar-separator"></div>
+            <button class="toolbar-btn">Undo</button>
+            <button class="toolbar-btn">Redo</button>
+            <div class="toolbar-separator"></div>
+            <button class="toolbar-btn">Reset</button>
+            <button class="toolbar-btn">Discard</button>
+            <button class="toolbar-btn primary">Use This Skin</button>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Left Panel - Element Tree -->
+            <div class="left-panel">
+                <div class="panel-header">Elements</div>
+                <div class="tree-view">
+                    <div class="tree-item">
+                        <span class="tree-icon">▼</span>
+                        <span>Table</span>
+                    </div>
+                    <div class="tree-item child">├─ Background Image</div>
+                    <div class="tree-item child">├─ Table Felt</div>
+                    <div class="tree-item child">└─ Logo</div>
+
+                    <div class="tree-item">
+                        <span class="tree-icon">▼</span>
+                        <span>Board</span>
+                    </div>
+                    <div class="tree-item child">├─ Community Cards</div>
+                    <div class="tree-item child">├─ Pot Display</div>
+                    <div class="tree-item child">└─ Dealer Button</div>
+
+                    <div class="tree-item">
+                        <span class="tree-icon">▼</span>
+                        <span>Players</span>
+                    </div>
+                    <div class="tree-item child selected">├─ Player Box</div>
+                    <div class="tree-item child">├─ Name Text</div>
+                    <div class="tree-item child">├─ Stack Text</div>
+                    <div class="tree-item child">├─ Card Slot</div>
+                    <div class="tree-item child">└─ Action Text</div>
+
+                    <div class="tree-item">
+                        <span class="tree-icon">▼</span>
+                        <span>Overlays</span>
+                    </div>
+                    <div class="tree-item child">├─ Lower Third</div>
+                    <div class="tree-item child">├─ Score Strip</div>
+                    <div class="tree-item child">└─ Sponsor Area</div>
+                </div>
+            </div>
+
+            <!-- Center Panel - Canvas -->
+            <div class="center-panel">
+                <div class="canvas-area">
+                    <div class="canvas-grid">
+                        <div class="poker-table">
+                            <!-- Player Seats -->
+                            <div class="player-seat seat-1">S1</div>
+                            <div class="player-seat seat-2">S2</div>
+                            <div class="player-seat seat-3">S3</div>
+                            <div class="player-seat seat-4">S4</div>
+                            <div class="player-seat seat-5">S5</div>
+                            <div class="player-seat seat-6">S6</div>
+                            <div class="player-seat seat-7">S7</div>
+                            <div class="player-seat seat-8">S8</div>
+                            <div class="player-seat seat-9">S9</div>
+                            <div class="player-seat seat-10">S10</div>
+
+                            <!-- Card Area -->
+                            <div class="card-area">
+                                <div class="card-placeholder"></div>
+                                <div class="card-placeholder"></div>
+                                <div class="card-placeholder"></div>
+                                <div class="card-placeholder"></div>
+                                <div class="card-placeholder"></div>
+                            </div>
+
+                            <!-- Selection Box -->
+                            <div class="selection-box">
+                                <div class="selection-handles">
+                                    <div class="handle tl"></div>
+                                    <div class="handle tr"></div>
+                                    <div class="handle bl"></div>
+                                    <div class="handle br"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Properties -->
+            <div class="right-panel">
+                <div class="panel-header">Properties</div>
+                <div class="properties-content">
+                    <!-- Position & Size -->
+                    <div class="property-group">
+                        <div class="property-group-title">Transform</div>
+                        <div class="property-row-dual">
+                            <div class="property-col">
+                                <label class="property-label">X</label>
+                                <input type="text" class="property-input small" value="120">
+                            </div>
+                            <div class="property-col">
+                                <label class="property-label">Y</label>
+                                <input type="text" class="property-input small" value="85">
+                            </div>
+                        </div>
+                        <div class="property-row-dual">
+                            <div class="property-col">
+                                <label class="property-label">W</label>
+                                <input type="text" class="property-input small" value="180">
+                            </div>
+                            <div class="property-col">
+                                <label class="property-label">H</label>
+                                <input type="text" class="property-input small" value="90">
+                            </div>
+                        </div>
+                        <div class="property-row">
+                            <label class="property-label">Anchor</label>
+                            <select class="property-input">
+                                <option>Top-Left</option>
+                                <option>Center</option>
+                            </select>
+                        </div>
+                        <div class="property-row">
+                            <label class="property-label">Rotation</label>
+                            <div class="slider-container">
+                                <input type="range" class="property-slider" min="0" max="360" value="0">
+                                <span class="slider-value">0°</span>
+                            </div>
+                        </div>
+                        <div class="property-row">
+                            <label class="property-label">Opacity</label>
+                            <div class="slider-container">
+                                <input type="range" class="property-slider" min="0" max="100" value="100">
+                                <span class="slider-value">100%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Font -->
+                    <div class="property-group">
+                        <div class="property-group-title">Font</div>
+                        <div class="property-row">
+                            <label class="property-label">Family</label>
+                            <select class="property-input">
+                                <option>Arial</option>
+                                <option selected>Segoe UI</option>
+                            </select>
+                        </div>
+                        <div class="property-row">
+                            <label class="property-label">Size</label>
+                            <input type="text" class="property-input" value="24">
+                        </div>
+                        <div class="property-row">
+                            <label class="property-label">Weight</label>
+                            <select class="property-input">
+                                <option>Regular</option>
+                                <option>Bold</option>
+                            </select>
+                        </div>
+                        <div class="property-row">
+                            <label class="property-label">Color</label>
+                            <div class="color-swatch">
+                                <div class="color-preview" style="background: #fff;"></div>
+                                <span class="color-value">#FFFFFF</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Background -->
+                    <div class="property-group">
+                        <div class="property-group-title">Background</div>
+                        <div class="property-row">
+                            <label class="property-label">Color</label>
+                            <div class="color-swatch">
+                                <div class="color-preview" style="background: #888;"></div>
+                                <span class="color-value">#888888</span>
+                            </div>
+                        </div>
+                        <div class="property-row">
+                            <label class="property-label">Image</label>
+                            <div class="file-input-group">
+                                <input type="text" class="property-input" placeholder="Path...">
+                                <button>Browse</button>
+                            </div>
+                        </div>
+                        <div class="property-row">
+                            <label class="property-label">Border Radius</label>
+                            <input type="text" class="property-input" value="8">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

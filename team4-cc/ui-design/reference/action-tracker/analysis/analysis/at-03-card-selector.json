@@ -1,0 +1,144 @@
+{
+    "screen_id": "at-03",
+    "screen_name": "Card Selector",
+    "dimensions": {
+        "width": 786,
+        "height": 460
+    },
+    "elements": [
+        {
+            "id": 1,
+            "name": "Title Bar",
+            "category": "chrome",
+            "bbox_pct": {
+                "x": 0.0,
+                "y": 0.0,
+                "w": 100.0,
+                "h": 5.0
+            },
+            "visual": "검은 타이틀바 — 'PokerGFX Action Tracker © 2026', 우측 최소화/최대화/닫기 버튼",
+            "protocol": "—",
+            "note": "표준 Windows 창 타이틀바",
+            "annotation_text": "[COM-TB] 윈도우 타이틀바 (5개 요소 그룹)"
+        },
+        {
+            "id": 2,
+            "name": "Back Button",
+            "category": "navigation",
+            "bbox_pct": {
+                "x": 2.5,
+                "y": 6.0,
+                "w": 7.5,
+                "h": 11.0
+            },
+            "visual": "녹색 배경의 좌향 삼각형(◀) 버튼 — 카드 선택 취소 및 이전 화면 복귀",
+            "protocol": "—",
+            "note": "카드 선택 취소 시 이전 액션 화면(at-02 또는 at-04)으로 복귀",
+            "annotation_text": "[S03-001] 카드 선택 취소/복귀"
+        },
+        {
+            "id": 3,
+            "name": "Selected Card Display",
+            "category": "display",
+            "bbox_pct": {
+                "x": 11.0,
+                "y": 6.0,
+                "w": 52.0,
+                "h": 11.0
+            },
+            "visual": "어두운 직사각형 박스 — 현재 선택된 카드 2장이 표시됨 (예: 7♥, 6♠). 카드 아이콘 썸네일 형태",
+            "protocol": "—",
+            "note": "선택 진행 중인 카드를 실시간으로 표시하는 미리보기 영역",
+            "annotation_text": "[S03-002] 선택 카드 미리보기"
+        },
+        {
+            "id": 4,
+            "name": "OK Button",
+            "category": "action",
+            "bbox_pct": {
+                "x": 65.0,
+                "y": 6.0,
+                "w": 12.0,
+                "h": 11.0
+            },
+            "visual": "밝은 회색/흰색 배경의 'OK' 텍스트 버튼 — 카드 선택 확정",
+            "protocol": "SendCardEnter",
+            "note": "선택된 카드를 확정하고 액션 화면으로 복귀",
+            "annotation_text": "[S03-003] 카드 선택 확정 (OK)"
+        },
+        {
+            "id": 5,
+            "name": "Spade Row",
+            "category": "card_grid",
+            "bbox_pct": {
+                "x": 0.0,
+                "y": 18.0,
+                "w": 100.0,
+                "h": 20.0
+            },
+            "visual": "골든 브라운(#8B6914 계열) 배경 — 스페이드 슈트 13장 (A♠ K♠ Q♠ J♠ 10♠ 9♠ 8♠ 7♠ 6♠ 5♠ 4♠ 3♠ 2♠) 가로 배열",
+            "protocol": "—",
+            "note": "스페이드/클럽은 골든 브라운 배경, 하트/다이아몬드는 빨간 배경으로 구분",
+            "annotation_text": "[S03-004] 스페이드 슈트 행"
+        },
+        {
+            "id": 6,
+            "name": "Heart Row",
+            "category": "card_grid",
+            "bbox_pct": {
+                "x": 0.0,
+                "y": 38.0,
+                "w": 100.0,
+                "h": 20.0
+            },
+            "visual": "빨간(#8B0000 계열) 배경 — 하트 슈트 13장 (A♥~2♥) 가로 배열",
+            "protocol": "—",
+            "note": "이미 선택된 카드는 시각적으로 비활성화 처리",
+            "annotation_text": "[S03-005] 하트 슈트 행"
+        },
+        {
+            "id": 7,
+            "name": "Diamond Row",
+            "category": "card_grid",
+            "bbox_pct": {
+                "x": 0.0,
+                "y": 58.0,
+                "w": 100.0,
+                "h": 20.0
+            },
+            "visual": "빨간(#8B0000 계열) 배경 — 다이아몬드 슈트 13장 (A♦~2♦) 가로 배열",
+            "protocol": "—",
+            "note": "하트 행과 동일한 빨간 배경 처리",
+            "annotation_text": "[S03-006] 다이아몬드 슈트 행"
+        },
+        {
+            "id": 8,
+            "name": "Club Row",
+            "category": "card_grid",
+            "bbox_pct": {
+                "x": 0.0,
+                "y": 78.0,
+                "w": 100.0,
+                "h": 20.0
+            },
+            "visual": "골든 브라운(#8B6914 계열) 배경 — 클럽 슈트 13장 (A♣~2♣) 가로 배열",
+            "protocol": "—",
+            "note": "스페이드 행과 동일한 골든 브라운 배경 처리",
+            "annotation_text": "[S03-007] 클럽 슈트 행"
+        }
+    ],
+    "total_elements": 8,
+    "categories": [
+        "chrome",
+        "navigation",
+        "display",
+        "action",
+        "card_grid"
+    ],
+    "notes": {
+        "mucked_button": "Mucked 버튼 없음 — 이 화면에서는 미확인",
+        "background_colors": "스페이드/클럽 = 골든 브라운, 하트/다이아몬드 = 빨간색으로 슈트 구분",
+        "card_layout": "4 Suit × 13 Rank = 52장. A부터 2까지 왼→오른쪽 순서",
+        "trigger": "RFID 읽기 실패 시 수동 카드 입력 대체 화면으로 진입"
+    }
+}

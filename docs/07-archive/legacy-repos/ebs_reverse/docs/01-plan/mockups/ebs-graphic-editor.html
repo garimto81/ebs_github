@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720">
+    <title>EBS — Graphic Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.prod.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@quasar/extras@1/material-icons/material-icons.css" rel="stylesheet">
+    <style>
+        body { padding: 0; margin: 0; font-family: 'Inter', sans-serif; background: #F4F5F8; }
+        #q-app { max-width: 720px; max-height: 1280px; }
+        .canvas-area {
+            background: #e0e0e0;
+            border: 1px solid #bdbdbd;
+            border-radius: 4px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+        }
+        .canvas-selection {
+            position: absolute;
+            top: 28%;
+            left: 22%;
+            width: 110px;
+            height: 55px;
+            border: 2px dashed #FFD700;
+            border-radius: 3px;
+        }
+        .canvas-size-label {
+            position: absolute;
+            bottom: 6px;
+            right: 10px;
+            font-size: 11px;
+            color: #757575;
+        }
+        .color-swatch {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #bdbdbd;
+            border-radius: 3px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .bg-preview {
+            width: 100%;
+            height: 52px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #9e9e9e;
+        }
+        .prop-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .q-expansion-item .q-item__label { font-size: 13px; font-weight: 500; }
+    </style>
+</head>
+<body>
+<div id="q-app">
+    <q-layout view="hHh lpr fFf">
+        <!-- Header -->
+        <q-header class="bg-grey-10" elevated>
+            <q-toolbar>
+                <q-toolbar-title class="text-subtitle1 text-weight-medium">Graphic Editor</q-toolbar-title>
+                <q-btn flat round dense icon="close" color="white"></q-btn>
+            </q-toolbar>
+        </q-header>
+
+        <q-page-container>
+            <q-page>
+                <!-- Mode Tabs -->
+                <q-tabs v-model="selectedMode" dense class="bg-grey-2 text-grey-8" active-color="primary" indicator-color="primary" align="justify" narrow-indicator>
+                    <q-tab v-for="(m, key) in modes" :key="key" :name="key" :label="m.label"></q-tab>
+                </q-tabs>
+
+                <!-- Main Content -->
+                <div class="row no-wrap" style="min-height: 400px;">
+                    <!-- Left Panel 55% -->
+                    <div class="col-7 q-pa-sm" style="border-right: 1px solid #e0e0e0;">
+                        <!-- Canvas -->
+                        <q-card flat bordered>
+                            <div class="canvas-area" :style="canvasStyle">
+                                <span class="text-grey-6 text-subtitle2">WYSIWYG Canvas</span>
+                                <div class="canvas-selection"></div>
+                                <span class="canvas-size-label">{{ currentMode.canvas }}</span>
+                            </div>
+                        </q-card>
+
+                        <!-- Element + Import selectors -->
+                        <div class="q-mt-sm">
+                            <div class="prop-grid-2">
+                                <q-select v-model="selectedElement" :options="currentMode.elements" label="Element" outlined dense options-dense emit-value map-options></q-select>
+                                <q-select v-if="currentMode.importModes.length > 0" v-model="selectedImport" :options="currentMode.importModes" label="Import Mode" outlined dense options-dense emit-value map-options></q-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel 45% -->
+                    <div class="col-5" style="overflow-y: auto; max-height: 520px;">
+                        <!-- Transform -->
+                        <q-expansion-item default-opened dense header-class="bg-grey-2" label="Transform" icon="open_with">
+                            <q-card>
+                                <q-card-section class="q-py-xs q-px-sm">
+                                    <div class="prop-grid-2">
+                                        <q-input v-model="transform.left" label="Left" type="number" outlined dense></q-input>
+                                        <q-input v-model="transform.top" label="Top" type="number" outlined dense></q-input>
+                                        <q-input v-model="transform.width" label="Width" type="number" outlined dense></q-input>
+                                        <q-input v-model="transform.height" label="Height" type="number" outlined dense></q-input>
+                                        <q-input v-model="transform.zOrder" label="Z-order" type="number" outlined dense></q-input>
+                                        <q-input v-model="transform.angle" label="Angle" type="number" outlined dense suffix="deg"></q-input>
+                                        <q-select v-model="transform.anchorH" :options="['Left','Right']" label="Anchor H" outlined dense></q-select>
+                                        <q-select v-model="transform.anchorV" :options="['Top','Bottom']" label="Anchor V" outlined dense></q-select>
+                                        <q-input v-model="transform.marginX" label="Margins X" type="number" outlined dense></q-input>
+                                        <q-input v-model="transform.marginY" label="Margins Y" type="number" outlined dense></q-input>
+                                    </div>
+                                    <q-input v-model="transform.cornerRadius" label="Corner Radius" type="number" outlined dense class="q-mt-xs" style="max-width: 50%;"></q-input>
+                                </q-card-section>
+                            </q-card>
+                        </q-expansion-item>
+
+                        <!-- Animation -->
+                        <q-expansion-item dense header-class="bg-grey-2" label="Animation" icon="animation">
+                            <q-card>
+                                <q-card-section class="q-py-xs q-px-sm">
+                                    <q-select v-model="animation.transitionIn" :options="transitionOptions" label="Transition In" outlined dense class="q-mb-xs"></q-select>
+                                    <q-select v-model="animation.transitionOut" :options="transitionOptions" label="Transition Out" outlined dense class="q-mb-xs"></q-select>
+                                    <div class="text-caption text-grey-7 q-mb-xs">Speed</div>
+                                    <q-slider v-model="animation.speed" :min="0" :max="1000" label :label-value="animation.speed + 'ms'" label-always color="primary" class="q-mb-sm"></q-slider>
+                                    <div class="row items-center q-gutter-xs q-mb-xs">
+                                        <span class="text-caption text-grey-7">AnimIn File</span>
+                                        <q-space></q-space>
+                                        <q-btn outline dense size="sm" label="Import" color="primary"></q-btn>
+                                        <q-btn flat dense round size="sm" icon="close" color="grey"></q-btn>
+                                    </div>
+                                    <div class="row items-center q-gutter-xs">
+                                        <span class="text-caption text-grey-7">AnimOut File</span>
+                                        <q-space></q-space>
+                                        <q-btn outline dense size="sm" label="Import" color="primary"></q-btn>
+                                        <q-btn flat dense round size="sm" icon="close" color="grey"></q-btn>
+                                    </div>
+                                </q-card-section>
+                            </q-card>
+                        </q-expansion-item>
+
+                        <!-- Text -->
+                        <q-expansion-item dense header-class="bg-grey-2" label="Text" icon="text_fields">
+                            <q-card>
+                                <q-card-section class="q-py-xs q-px-sm">
+                                    <div class="row items-center justify-between q-mb-xs">
+                                        <span class="text-caption">Text Visible</span>
+                                        <q-toggle v-model="text.visible" dense></q-toggle>
+                                    </div>
+                                    <q-select v-model="text.font" :options="['Font 1','Font 2']" label="Font" outlined dense class="q-mb-xs"></q-select>
+                                    <div class="row items-center q-mb-xs">
+                                        <span class="text-caption q-mr-sm">Colour</span>
+                                        <div class="color-row">
+                                            <div class="color-swatch" :style="{background: text.colour}"></div>
+                                            <q-input v-model="text.colour" outlined dense style="max-width: 100px;" class="q-ml-xs"></q-input>
+                                        </div>
+                                    </div>
+                                    <div class="row items-center q-mb-xs">
+                                        <span class="text-caption q-mr-sm">Hilite Col</span>
+                                        <div class="color-row">
+                                            <div class="color-swatch" :style="{background: text.hiliteCol}"></div>
+                                            <q-input v-model="text.hiliteCol" outlined dense style="max-width: 100px;" class="q-ml-xs"></q-input>
+                                        </div>
+                                    </div>
+                                    <q-select v-model="text.alignment" :options="['Left','Centre','Right']" label="Alignment" outlined dense class="q-mb-xs"></q-select>
+                                    <div class="row items-center justify-between q-mb-xs">
+                                        <span class="text-caption">Drop Shadow</span>
+                                        <q-toggle v-model="text.dropShadow" dense></q-toggle>
+                                    </div>
+                                    <q-select v-if="text.dropShadow" v-model="text.shadowDir" :options="['None','N','NE','E','SE','S','SW','W','NW']" label="Shadow Direction" outlined dense class="q-mb-xs" style="max-width: 50%;"></q-select>
+                                    <div v-if="text.dropShadow" class="row items-center q-mb-xs">
+                                        <span class="text-caption q-mr-sm">Shadow Col</span>
+                                        <div class="color-row">
+                                            <div class="color-swatch" :style="{background: text.shadowColour}"></div>
+                                            <q-input v-model="text.shadowColour" outlined dense style="max-width: 100px;" class="q-ml-xs"></q-input>
+                                        </div>
+                                    </div>
+                                    <div class="row items-center justify-between">
+                                        <span class="text-caption">Triggered by Language</span>
+                                        <q-toggle v-model="text.triggeredByLang" dense></q-toggle>
+                                    </div>
+                                </q-card-section>
+                            </q-card>
+                        </q-expansion-item>
+
+                        <!-- Background -->
+                        <q-expansion-item dense header-class="bg-grey-2" label="Background" icon="image">
+                            <q-card>
+                                <q-card-section class="q-py-xs q-px-sm">
+                                    <div class="bg-preview q-mb-xs">Click to add Background Image</div>
+                                    <div class="row q-gutter-xs q-mb-xs">
+                                        <q-btn outline dense size="sm" label="Import" color="primary"></q-btn>
+                                        <q-btn outline dense size="sm" label="Delete" color="grey"></q-btn>
+                                    </div>
+                                    <q-select v-if="currentMode.importModes.length > 0" v-model="bgImportMode" :options="currentMode.importModes" label="Import Mode" outlined dense></q-select>
+                                </q-card-section>
+                            </q-card>
+                        </q-expansion-item>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <q-toolbar class="bg-grey-2" style="border-top: 1px solid #e0e0e0;">
+                    <q-btn flat label="Adjust Colours" color="primary" no-caps></q-btn>
+                    <q-space></q-space>
+                    <q-btn outline label="Cancel" color="grey-7" no-caps class="q-mr-sm"></q-btn>
+                    <q-btn unelevated label="OK" color="primary" no-caps></q-btn>
+                </q-toolbar>
+            </q-page>
+        </q-page-container>
+    </q-layout>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.umd.prod.js"></script>
+<script>
+const app = Vue.createApp({
+    data() {
+        return {
+            selectedMode: 'board',
+            selectedElement: 'Card 1',
+            selectedImport: 'Auto',
+            bgImportMode: 'Auto',
+            modes: {
+                // Pattern A: 3-column Figma (Left Elements | Center Canvas | Right Properties)
+                board: { label: 'Board', canvas: '296 \u00d7 197', layout: 'A', elements: ['Card 1','Card 2','Card 3','Card 4','Card 5','Sponsor Logo','PokerGFX.io','100,000','Pot','Blinds','50,000/100,000','Hand','123','Game Variant'], importModes: ['Auto','AT Mode (Flop)','AT Mode (Draw/Stud)'], defaultTransition: 'Default' },
+                field: { label: 'Field', canvas: '270 \u00d7 90', layout: 'A', elements: ['Total','Remain','Field'], importModes: [], defaultTransition: 'Pop' },
+                strip: { label: 'Strip', canvas: '270 \u00d7 90', layout: 'A', elements: ['Name','Count','Position','VPIP','PFR','Logo'], importModes: [], defaultTransition: 'Default' },
+                // Pattern B: Canvas Top + 2×2 Grid (wide thin canvas, few elements)
+                blinds: { label: 'Blinds', canvas: '790 \u00d7 52', layout: 'B', elements: ['Blinds','50,000/100,000','Hand','123'], importModes: ['Blinds with Hand #'], defaultTransition: 'Default' },
+                history: { label: 'Hand History', canvas: '345 \u00d7 33', layout: 'B', elements: ['Pre-Flop','Name','Action'], importModes: ['Header','Repeating header','Repeating detail','Footer'], defaultTransition: 'Default' },
+                // Pattern C: Canvas Top + 3-column Bottom (medium-wide canvas, many elements)
+                player: { label: 'Player', canvas: '465 \u00d7 120', layout: 'C', elements: ['Name','Stack','Position','Card 1','Card 2','Photo','Flag','Action','Odds'], importModes: ['AT Mode','AT with Photo','No Photo','Photo Only','Cards Only','Action Only'], defaultTransition: 'Default' },
+                outs: { label: 'Outs', canvas: '465 \u00d7 84', layout: 'C', elements: ['Card 1','Name','# Outs'], importModes: [], defaultTransition: 'Default' },
+                leaderboard: { label: 'Leaderboard', canvas: '800 \u00d7 103', layout: 'C', elements: ['Player Photo','Player Flag','Sponsor Logo','Title','Left','Centre','Right','Footer','Event Name'], importModes: ['Header','Repeating section','Footer'], defaultTransition: 'Expand' }
+            },
+            transform: { left: 120, top: 45, width: 42, height: 58, zOrder: 5, angle: 0, anchorH: 'Left', anchorV: 'Top', marginX: 0, marginY: 0, cornerRadius: 0 },
+            animation: { transitionIn: 'Default', transitionOut: 'Default', speed: 300 },
+            transitionOptions: ['Default','Fade','Slide','Pop','Expand'],
+            text: { visible: true, font: 'Font 1', colour: '#FFFFFF', hiliteCol: '#FFD700', alignment: 'Centre', dropShadow: true, shadowDir: 'SE', shadowColour: '#000000', triggeredByLang: false }
+        }
+    },
+    computed: {
+        currentMode() {
+            return this.modes[this.selectedMode]
+        },
+        canvasStyle() {
+            const parts = this.currentMode.canvas.split(' \u00d7 ')
+            const w = parseInt(parts[0])
+            const h = parseInt(parts[1])
+            const ratio = w / h
+            return { aspectRatio: ratio }
+        }
+    },
+    watch: {
+        selectedMode(newMode) {
+            const m = this.modes[newMode]
+            this.selectedElement = m.elements[0]
+            this.selectedImport = m.importModes.length > 0 ? m.importModes[0] : ''
+            this.bgImportMode = m.importModes.length > 0 ? m.importModes[0] : ''
+            this.animation.transitionIn = m.defaultTransition
+            this.animation.transitionOut = m.defaultTransition
+        }
+    }
+})
+
+app.use(Quasar)
+app.mount('#q-app')
+</script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>PokerGFX 3-App Ecosystem</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: #fff; color: #000; padding: 0; margin: 0; }
+
+.diagram-wrapper {
+  position: relative;
+  width: 720px;
+  height: 420px;
+  margin: 0;
+  padding: 15px;
+}
+
+/* SVG connections */
+svg.connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+svg.connections line { stroke-linecap: round; }
+
+.conn-heavy { stroke: #1a1a1a; stroke-width: 3.5px; }
+.conn-medium { stroke: #555; stroke-width: 2px; }
+.conn-user { stroke: #555; stroke-width: 2px; stroke-dasharray: 3, 3; }
+.conn-output { stroke: #999; stroke-width: 1.5px; stroke-dasharray: 6, 3; }
+
+/* Center Hub */
+.hub {
+  position: absolute;
+  top: 130px;
+  left: 260px;
+  width: 200px;
+  height: 120px;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.hub-name {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+}
+.hub-desc {
+  color: #aaa;
+  font-size: 10px;
+  margin-top: 4px;
+  text-align: center;
+  line-height: 1.4;
+}
+.hub-badge {
+  margin-top: 8px;
+  background: #333;
+  color: #ccc;
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 8px;
+}
+
+/* App nodes */
+.app-node {
+  position: absolute;
+  background: #fff;
+  border: 2px solid #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  padding: 8px 12px;
+}
+.app-node .app-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+}
+.app-node .app-desc {
+  font-size: 9px;
+  color: #666;
+  text-align: center;
+  margin-top: 3px;
+  line-height: 1.3;
+}
+
+/* ActionTracker */
+.app-node.action-tracker {
+  width: 140px;
+  height: 54px;
+  top: 158px;
+  left: 30px;
+  border-color: #1a1a1a;
+  border-width: 2.5px;
+}
+
+/* HandEvaluation */
+.app-node.hand-eval {
+  width: 140px;
+  height: 54px;
+  top: 158px;
+  right: 30px;
+  border-color: #555;
+}
+
+/* Output nodes */
+.output-node {
+  position: absolute;
+  background: #f5f5f5;
+  border: 2px solid #aaa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  padding: 6px 10px;
+}
+.output-node .out-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #333;
+}
+.output-node .out-desc {
+  font-size: 9px;
+  color: #777;
+  margin-top: 2px;
+}
+.output-node .out-protocol {
+  font-size: 8px;
+  color: #999;
+  margin-top: 2px;
+  font-style: italic;
+}
+
+/* Viewer Overlay - bottom left */
+.output-node.overlay {
+  width: 150px;
+  height: 58px;
+  bottom: 30px;
+  left: 80px;
+}
+
+/* DB API - bottom right */
+.output-node.db-api {
+  width: 150px;
+  height: 58px;
+  bottom: 30px;
+  right: 80px;
+}
+
+/* User node */
+.user-node {
+  position: absolute;
+  width: 100px;
+  height: 36px;
+  background: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 15;
+}
+.user-node .user-text {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+.user-node.gfx-operator {
+  top: 24px;
+  left: 310px;
+}
+
+/* Protocol labels */
+.protocol-label {
+  position: absolute;
+  font-size: 9px;
+  color: #888;
+  z-index: 20;
+  font-weight: 500;
+}
+.protocol-label.left { top: 148px; left: 178px; }
+.protocol-label.right { top: 148px; right: 180px; }
+.protocol-label.out-left { bottom: 92px; left: 220px; }
+.protocol-label.out-right { bottom: 92px; right: 220px; }
+
+/* Legend */
+.legend {
+  position: absolute;
+  bottom: 4px;
+  right: 8px;
+  display: flex;
+  gap: 16px;
+  z-index: 20;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.legend-line { width: 24px; height: 0; }
+.legend-line.heavy { border-top: 3.5px solid #1a1a1a; }
+.legend-line.medium { border-top: 2px solid #555; }
+.legend-line.user { border-top: 2px dashed #555; }
+.legend-line.output { border-top: 1.5px dashed #999; }
+.legend-label { font-size: 9px; color: #666; }
+</style>
+</head>
+<body>
+<div class="diagram-wrapper">
+  <!-- SVG Connection Lines -->
+  <svg class="connections" viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg">
+    <!-- Hub center: (360, 190) -->
+
+    <!-- Heavy: GfxServer <-> ActionTracker -->
+    <line x1="260" y1="190" x2="170" y2="185" class="conn-heavy"/>
+
+    <!-- Medium: GfxServer <-> HandEvaluation -->
+    <line x1="460" y1="190" x2="550" y2="185" class="conn-medium"/>
+
+    <!-- User: Operator -> GfxServer -->
+    <line x1="360" y1="60" x2="360" y2="130" class="conn-user"/>
+    <!-- User: Operator -> ActionTracker -->
+    <line x1="312" y1="52" x2="140" y2="158" class="conn-user"/>
+
+    <!-- Output: Server -> Overlay -->
+    <line x1="310" y1="250" x2="190" y2="332" class="conn-output"/>
+    <!-- Output: Server -> DB API -->
+    <line x1="410" y1="250" x2="530" y2="332" class="conn-output"/>
+  </svg>
+
+  <!-- Center Hub -->
+  <div class="hub">
+    <div class="hub-name">GfxServer</div>
+    <div class="hub-desc">Game Engine + RFID + GPU<br>Statistics + Network</div>
+    <div class="hub-badge">SINGLE SOURCE OF TRUTH</div>
+  </div>
+
+  <!-- Client Apps -->
+  <div class="app-node action-tracker">
+    <div class="app-name">ActionTracker</div>
+    <div class="app-desc">Game Control Touchscreen</div>
+  </div>
+
+  <div class="app-node hand-eval">
+    <div class="app-name">HandEvaluation</div>
+    <div class="app-desc">Monte Carlo CPU Offload</div>
+  </div>
+
+  <!-- Output Nodes -->
+  <div class="output-node overlay">
+    <div class="out-name">Viewer Overlay</div>
+    <div class="out-desc">Venue + Broadcast Canvas</div>
+    <div class="out-protocol">NDI / HDMI</div>
+  </div>
+
+  <div class="output-node db-api">
+    <div class="out-name">DB API</div>
+    <div class="out-desc">Hand History + Stats</div>
+    <div class="out-protocol">HTTP / JSON</div>
+  </div>
+
+  <!-- Protocol Labels -->
+  <div class="protocol-label left">TCP :8888</div>
+  <div class="protocol-label right">TCP :8888</div>
+  <div class="protocol-label out-left">Real-time</div>
+  <div class="protocol-label out-right">Per Hand</div>
+
+  <!-- User Node -->
+  <div class="user-node gfx-operator">
+    <div class="user-text">GFX Operator</div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-line heavy"></div>
+      <span class="legend-label">Direct control</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-line medium"></div>
+      <span class="legend-label">Auto service</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-line user"></div>
+      <span class="legend-label">Operator</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-line output"></div>
+      <span class="legend-label">Output</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

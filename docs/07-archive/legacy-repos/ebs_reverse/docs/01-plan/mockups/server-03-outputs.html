@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GfxServer — Outputs</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #000;
+            padding: 0;
+            margin: 0;
+        }
+
+        .wireframe-container {
+            width: auto;
+            max-width: 720px;
+            background: white;
+            border: 1px solid #999;
+        }
+
+        .title-bar {
+            background: #1a1a1a;
+            color: white;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .window-controls { display: flex; gap: 6px; }
+        .control-btn { width: 10px; height: 10px; border-radius: 50%; }
+        .control-btn.close { background: #333; }
+        .control-btn.minimize { background: #888; }
+        .control-btn.maximize { background: #555; }
+        .title-bar h1 { font-size: 12px; font-weight: 500; flex: 1; }
+
+        .subtitle {
+            padding: 4px 10px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .subtitle p { color: #666; font-size: 10px; }
+
+        .content { padding: 7px; }
+
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 7px;
+            margin-bottom: 7px;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .card-header h2 { font-size: 11px; font-weight: 600; color: #333; }
+
+        .feature-tag {
+            display: inline-block;
+            background: #333;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 8px;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            padding: 4px 0;
+            gap: 8px;
+        }
+        .form-row label {
+            flex: 0 0 150px;
+            font-size: 10px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-row select,
+        .form-row input[type="text"],
+        .form-row input[type="number"] {
+            flex: 1;
+            padding: 3px 6px;
+            border: 1px solid #d0d0d0;
+            border-radius: 3px;
+            font-size: 10px;
+            font-family: inherit;
+        }
+        .form-row input[type="number"] { flex: 0 0 80px; }
+
+        .toggle-switch {
+            position: relative;
+            width: 38px;
+            height: 18px;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            border-radius: 18px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 13px; width: 13px;
+            left: 3px; bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        .toggle-switch input:checked + .toggle-slider { background-color: #555; }
+        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+        .checkbox-group { display: flex; gap: 10px; flex: 1; }
+        .checkbox-item { display: flex; align-items: center; gap: 4px; }
+        .checkbox-item input[type="checkbox"] { width: 12px; height: 12px; cursor: pointer; }
+        .checkbox-item label { flex: none; font-size: 10px; color: #333; cursor: pointer; }
+
+        /* 2컬럼 듀얼 캔버스 */
+        .dual-canvas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 7px;
+            margin: 6px 0;
+        }
+        .canvas-box { border-radius: 4px; overflow: hidden; }
+        .canvas-preview {
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #555;
+            position: relative;
+        }
+        .canvas-box.live .canvas-preview { background: #e8e8e8; border: 2px solid #555; }
+        .canvas-box.delayed .canvas-preview { background: #e8e8e8; border: 2px solid #888; }
+        .canvas-badge {
+            position: absolute;
+            top: 5px; right: 5px;
+            background: rgba(0,0,0,0.55);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+        .canvas-controls {
+            padding: 5px 6px;
+            background: #f5f5f5;
+            border-top: 1px solid #e0e0e0;
+        }
+        .canvas-controls .form-row { padding: 3px 0; }
+        .canvas-controls .form-row label { flex: 0 0 90px; font-size: 10px; }
+
+        .warning-text {
+            color: #333;
+            font-size: 10px;
+            margin-left: 5px;
+            font-weight: 500;
+        }
+
+        .input-group { display: flex; align-items: center; gap: 8px; flex: 1; }
+        .input-group input[type="text"] { flex: 1; }
+
+        .section-divider { height: 1px; background: #e0e0e0; margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <div class="title-bar">
+            <div class="window-controls">
+                <div class="control-btn close"></div>
+                <div class="control-btn minimize"></div>
+                <div class="control-btn maximize"></div>
+            </div>
+            <h1>GfxServer — Outputs</h1>
+        </div>
+
+        <div class="subtitle">
+            <p>12 features | Video output configuration &amp; streaming</p>
+        </div>
+
+        <div class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Video Format</h2>
+                    <span class="feature-tag">OUT-005</span>
+                    <span class="feature-tag">SRC-004</span>
+                    <span class="feature-tag">OUT-008</span>
+                </div>
+                <div class="form-row">
+                    <label>Output Resolution</label>
+                    <select>
+                        <option selected>1920x1080 (Full HD)</option>
+                        <option>3840x2160 (4K UHD)</option>
+                        <option>1280x720 (HD)</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Frame Rate</label>
+                    <select>
+                        <option>30 fps</option>
+                        <option selected>60 fps</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Chroma Key</label>
+                    <select>
+                        <option selected>None</option>
+                        <option>Green</option>
+                        <option>Blue</option>
+                        <option>Magenta</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Dual Canvas Outputs</h2>
+                    <span class="feature-tag">OUT-001</span>
+                    <span class="feature-tag">OUT-002</span>
+                    <span class="feature-tag">OUT-003</span>
+                    <span class="feature-tag">OUT-004</span>
+                    <span class="feature-tag">OUT-009</span>
+                </div>
+                <div class="dual-canvas">
+                    <div class="canvas-box live">
+                        <div class="canvas-preview">
+                            <span>Venue Canvas</span>
+                            <div class="canvas-badge">No Delay</div>
+                        </div>
+                        <div class="canvas-controls">
+                            <div class="form-row">
+                                <label>Output Type</label>
+                                <div class="checkbox-group">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="live-ndi" checked>
+                                        <label for="live-ndi">NDI</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="live-hdmi">
+                                        <label for="live-hdmi">HDMI</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="live-sdi">
+                                        <label for="live-sdi">SDI</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label>NDI Name</label>
+                                <input type="text" value="PokerGFX-Live">
+                            </div>
+                            <div class="form-row">
+                                <label>HDMI Port</label>
+                                <select>
+                                    <option selected>Port 1</option>
+                                    <option>Port 2</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <label>Key &amp; Fill</label>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="live-keyfill" checked>
+                                    <label for="live-keyfill">Enable</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="canvas-box delayed">
+                        <div class="canvas-preview">
+                            <span>Broadcast Canvas</span>
+                            <div class="canvas-badge">5 min delay</div>
+                        </div>
+                        <div class="canvas-controls">
+                            <div class="form-row">
+                                <label>Output Type</label>
+                                <div class="checkbox-group">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="delay-ndi" checked>
+                                        <label for="delay-ndi">NDI</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="delay-hdmi" checked>
+                                        <label for="delay-hdmi">HDMI</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="delay-sdi">
+                                        <label for="delay-sdi">SDI</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label>NDI Name</label>
+                                <input type="text" value="PokerGFX-Delayed">
+                            </div>
+                            <div class="form-row">
+                                <label>HDMI Port</label>
+                                <select>
+                                    <option>Port 1</option>
+                                    <option selected>Port 2</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <label>SDI Port</label>
+                                <select>
+                                    <option selected>Port 1</option>
+                                    <option>Port 2</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Preview Status</label>
+                    <span style="color: #555; font-weight: 600; font-size: 10px;">Real-time preview active</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Security &amp; Delay</h2>
+                    <span class="feature-tag">OUT-006</span>
+                    <span class="feature-tag">OUT-007</span>
+                </div>
+                <div class="form-row">
+                    <label>Secure Delay</label>
+                    <div class="input-group">
+                        <input type="number" value="5" min="0" max="30">
+                        <span style="color: #777; font-size: 10px;">minutes (0-30)</span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Dynamic Delay</label>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="dynamic-delay">
+                        <label for="dynamic-delay">Auto-adjust delay based on action</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Trustless Mode</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="warning-text">Hole cards shown ONLY on delayed output</span>
+                </div>
+                <div class="form-row">
+                    <label>Delay Countdown</label>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="countdown" checked>
+                        <label for="countdown">Show countdown timer on delayed output</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recording &amp; Streaming</h2>
+                    <span class="feature-tag">OUT-010</span>
+                    <span class="feature-tag">OUT-011</span>
+                    <span class="feature-tag">OUT-012</span>
+                </div>
+                <div class="form-row">
+                    <label>Recording Mode</label>
+                    <select>
+                        <option>Off</option>
+                        <option>Live Only</option>
+                        <option>Delayed Only</option>
+                        <option selected>Both</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Virtual Camera</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span style="color: #777; font-size: 10px; margin-left: 5px;">OBS Virtual Camera output</span>
+                </div>
+                <div class="form-row">
+                    <label>Cross-GPU Sharing</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span style="color: #777; font-size: 10px; margin-left: 5px;">DXGI SharedHandle</span>
+                </div>
+                <div class="section-divider"></div>
+                <div class="form-row">
+                    <label>ATEM Integration</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>ATEM Switcher IP</label>
+                    <input type="text" value="192.168.1.240" placeholder="Enter IP address">
+                </div>
+                <div class="form-row">
+                    <label>Auto-Switch</label>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="atem-autoswitch" checked>
+                        <label for="atem-autoswitch">Auto-switch on action (All-in, Showdown)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

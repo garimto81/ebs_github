@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Type A vs Type B 단면 비교</title>
+  <style>
+    body { background: #fff; margin: 0; padding: 20px; font-family: Inter, sans-serif; }
+  </style>
+</head>
+<body>
+<svg viewBox="0 0 800 680" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+  <defs>
+    <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#bbb" stroke-width="1"/>
+    </pattern>
+    <pattern id="hatch2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#999" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-size="18" font-weight="700" fill="#222">Type A vs Type B 단면 비교</text>
+  <text x="400" y="50" text-anchor="middle" font-size="12" fill="#888">전용 테이블(Full Build) vs 휴대형 부착킷(Portable Kit) 레이어 구성 비교</text>
+
+  <!-- ==================== TYPE A (LEFT) ==================== -->
+  <text x="190" y="80" text-anchor="middle" font-size="15" font-weight="600" fill="#222">Type A</text>
+  <text x="190" y="96" text-anchor="middle" font-size="11" fill="#888">전용 테이블 (Full Build)</text>
+
+  <!-- Speed Cloth -->
+  <rect x="80" y="115" width="220" height="8" fill="#c8e6c8" stroke="#6a6a6a" stroke-width="0.8"/>
+  <text x="310" y="121" font-size="10" fill="#555">Speed Cloth ~1mm</text>
+
+  <!-- Closed Cell Foam -->
+  <rect x="80" y="123" width="220" height="16" fill="#e8e8e8" stroke="#bbb" stroke-width="0.8"/>
+  <text x="310" y="133" font-size="10" fill="#555">Closed Cell Foam 5mm</text>
+
+  <!-- Cutout 9mm MDF -->
+  <rect x="80" y="139" width="220" height="28" fill="#ddd" stroke="#999" stroke-width="1"/>
+  <text x="190" y="156" text-anchor="middle" font-size="10" fill="#555">Cutout 9mm MDF</text>
+
+  <!-- gap for playing surface drop-in -->
+  <rect x="80" y="167" width="220" height="6" fill="none" stroke="#ccc" stroke-width="0.5" stroke-dasharray="3 2"/>
+
+  <!-- Racetrack (sides only shown as thin bars) -->
+  <rect x="80" y="173" width="50" height="36" fill="#d5d0c8" stroke="#999" stroke-width="1"/>
+  <rect x="250" y="173" width="50" height="36" fill="#d5d0c8" stroke="#999" stroke-width="1"/>
+  <text x="310" y="193" font-size="10" fill="#555">Racetrack 12mm MDF</text>
+
+  <!-- Rail-top + Rail-bot (sides) -->
+  <rect x="60" y="115" width="20" height="25" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+  <rect x="300" y="115" width="20" height="25" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+  <rect x="55" y="140" width="25" height="52" fill="#ccc" stroke="#999" stroke-width="1"/>
+  <rect x="300" y="140" width="25" height="52" fill="#ccc" stroke="#999" stroke-width="1"/>
+
+  <!-- Base 18mm MDF -->
+  <rect x="55" y="209" width="270" height="55" fill="#d8d8d8" stroke="#888" stroke-width="1.2"/>
+  <text x="190" y="240" text-anchor="middle" font-size="11" fill="#444" font-weight="500">Base 18mm MDF</text>
+
+  <!-- Antenna cavity (14mm) -->
+  <rect x="130" y="218" width="120" height="38" fill="none" stroke="#666" stroke-width="1.2" stroke-dasharray="5 3"/>
+  <rect x="145" y="225" width="90" height="24" fill="url(#hatch)" stroke="#888" stroke-width="1"/>
+  <text x="190" y="240" text-anchor="middle" font-size="9" fill="#666">Antenna</text>
+  <text x="310" y="240" font-size="10" fill="#555">14mm cavity</text>
+
+  <!-- Legs -->
+  <line x1="120" y1="264" x2="120" y2="295" stroke="#666" stroke-width="3"/>
+  <line x1="260" y1="264" x2="260" y2="295" stroke="#666" stroke-width="3"/>
+  <line x1="100" y1="295" x2="140" y2="295" stroke="#666" stroke-width="2"/>
+  <line x1="240" y1="295" x2="280" y2="295" stroke="#666" stroke-width="2"/>
+  <text x="190" y="310" text-anchor="middle" font-size="10" fill="#888">Legs</text>
+
+  <!-- Distance annotation Type A -->
+  <line x1="42" y1="115" x2="42" y2="225" stroke="#d44" stroke-width="1.5"/>
+  <line x1="36" y1="115" x2="48" y2="115" stroke="#d44" stroke-width="1.5"/>
+  <line x1="36" y1="225" x2="48" y2="225" stroke="#d44" stroke-width="1.5"/>
+  <text x="38" y="175" text-anchor="middle" font-size="10" fill="#d44" transform="rotate(-90, 38, 175)" font-weight="600">~7mm</text>
+
+  <!-- ==================== TYPE B (RIGHT) ==================== -->
+  <text x="590" y="80" text-anchor="middle" font-size="15" font-weight="600" fill="#222">Type B</text>
+  <text x="590" y="96" text-anchor="middle" font-size="11" fill="#888">휴대형 부착킷 (Portable Kit)</text>
+
+  <!-- Existing Speed Cloth -->
+  <rect x="470" y="115" width="240" height="12" fill="#c8e6c8" stroke="#6a6a6a" stroke-width="0.8" opacity="0.5"/>
+  <text x="590" y="124" text-anchor="middle" font-size="10" fill="#777">기존 펠트 ~1mm</text>
+
+  <!-- Existing Foam -->
+  <rect x="470" y="127" width="240" height="20" fill="#e8e8e8" stroke="#bbb" stroke-width="0.8" opacity="0.5"/>
+  <text x="590" y="140" text-anchor="middle" font-size="10" fill="#777">기존 폼 ~5mm</text>
+
+  <!-- Existing Board ~19mm -->
+  <rect x="470" y="147" width="240" height="60" fill="#e0ddd5" stroke="#aaa" stroke-width="1" opacity="0.7"/>
+  <text x="590" y="175" text-anchor="middle" font-size="12" fill="#666" font-weight="500">기존 상판 ~19mm</text>
+  <text x="590" y="192" text-anchor="middle" font-size="10" fill="#999">(무가공)</text>
+
+  <!-- Dashed separator -->
+  <line x1="460" y1="215" x2="720" y2="215" stroke="#888" stroke-width="1.5" stroke-dasharray="8 4"/>
+  <text x="590" y="228" text-anchor="middle" font-size="10" fill="#888" font-weight="500">EBS 부착킷 경계</text>
+
+  <!-- EBS Antenna Panel 3mm -->
+  <rect x="470" y="238" width="240" height="30" fill="url(#hatch2)" stroke="#222" stroke-width="1.5"/>
+  <text x="590" y="256" text-anchor="middle" font-size="11" fill="#222" font-weight="600">EBS 안테나 패널 3mm MDF</text>
+
+  <!-- Antenna coils -->
+  <g fill="none" stroke="#333" stroke-width="2">
+    <ellipse cx="520" cy="253" rx="18" ry="4"/>
+    <ellipse cx="590" cy="253" rx="18" ry="4"/>
+    <ellipse cx="660" cy="253" rx="18" ry="4"/>
+  </g>
+
+  <!-- Cover Cloth -->
+  <rect x="470" y="268" width="240" height="16" fill="#d0ead0" stroke="#222" stroke-width="1.2"/>
+  <text x="590" y="279" text-anchor="middle" font-size="10" fill="#222" font-weight="500">천 커버 (스테이플러 고정)</text>
+
+  <!-- Staple indicators -->
+  <g stroke="#222" stroke-width="2">
+    <line x1="478" y1="268" x2="478" y2="284"/>
+    <line x1="488" y1="268" x2="488" y2="284"/>
+    <line x1="692" y1="268" x2="692" y2="284"/>
+    <line x1="702" y1="268" x2="702" y2="284"/>
+  </g>
+
+  <!-- Distance annotation Type B -->
+  <line x1="450" y1="115" x2="450" y2="253" stroke="#d44" stroke-width="1.5"/>
+  <line x1="444" y1="115" x2="456" y2="115" stroke="#d44" stroke-width="1.5"/>
+  <line x1="444" y1="253" x2="456" y2="253" stroke="#d44" stroke-width="1.5"/>
+  <text x="446" y="190" text-anchor="middle" font-size="10" fill="#d44" transform="rotate(-90, 446, 190)" font-weight="600">~22mm</text>
+
+  <!-- ==================== SUMMARY BOXES ==================== -->
+  <rect x="50" y="340" width="320" height="90" fill="#fafafa" stroke="#ddd" stroke-width="1" rx="6"/>
+  <text x="210" y="360" text-anchor="middle" font-size="12" font-weight="600" fill="#222">Type A 레이어 스택</text>
+  <text x="210" y="378" text-anchor="middle" font-size="10" fill="#555">Cloth(1) + Foam(5) + Cutout(9) + Racetrack(12) + Base(18)</text>
+  <text x="210" y="394" text-anchor="middle" font-size="10" fill="#555">= 45mm 총 두께</text>
+  <text x="210" y="414" text-anchor="middle" font-size="11" fill="#d44" font-weight="600">안테나 거리: ~7mm (고성능)</text>
+
+  <rect x="430" y="340" width="320" height="90" fill="#fafafa" stroke="#ddd" stroke-width="1" rx="6"/>
+  <text x="590" y="360" text-anchor="middle" font-size="12" font-weight="600" fill="#222">Type B 레이어 스택</text>
+  <text x="590" y="378" text-anchor="middle" font-size="10" fill="#555">기존: 펠트(1) + 폼(5) + 상판(19) = 25mm</text>
+  <text x="590" y="394" text-anchor="middle" font-size="10" fill="#555">EBS: 안테나 패널(3) + 천 커버(2) = 5mm</text>
+  <text x="590" y="414" text-anchor="middle" font-size="11" fill="#d44" font-weight="600">안테나 거리: ~22mm (검증 필요)</text>
+
+  <!-- ==================== LEGEND ==================== -->
+  <line x1="50" y1="460" x2="750" y2="460" stroke="#e5e5e5" stroke-width="1"/>
+
+  <!-- Row 1 -->
+  <rect x="60" y="475" width="20" height="12" fill="#e0ddd5" stroke="#aaa" stroke-width="0.8" opacity="0.5"/>
+  <text x="88" y="484" font-size="10" fill="#555">기존 테이블 레이어</text>
+
+  <rect x="230" y="475" width="20" height="12" fill="url(#hatch2)" stroke="#222" stroke-width="1"/>
+  <text x="258" y="484" font-size="10" fill="#555">EBS 부착킷 레이어</text>
+
+  <rect x="420" y="475" width="20" height="12" fill="#c8e6c8" stroke="#6a6a6a" stroke-width="0.8"/>
+  <text x="448" y="484" font-size="10" fill="#555">Speed Cloth / 펠트</text>
+
+  <rect x="600" y="475" width="20" height="12" fill="#d8d8d8" stroke="#999" stroke-width="1"/>
+  <text x="628" y="484" font-size="10" fill="#555">MDF 목재</text>
+
+  <!-- Row 2 -->
+  <line x1="60" y1="503" x2="80" y2="503" stroke="#d44" stroke-width="2"/>
+  <text x="88" y="507" font-size="10" fill="#d44" font-weight="500">카드↔안테나 거리 (RFID 성능에 직결)</text>
+
+  <ellipse cx="240" cy="503" rx="14" ry="3.5" fill="none" stroke="#333" stroke-width="1.5"/>
+  <text x="262" y="507" font-size="10" fill="#555">안테나 코일</text>
+
+  <line x1="420" y1="503" x2="450" y2="503" stroke="#888" stroke-width="1.5" stroke-dasharray="6 3"/>
+  <text x="458" y="507" font-size="10" fill="#555">부착 경계선</text>
+</svg>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!-- Style Reference: White Minimal — AT Login Screen (LG-01~LG-06) -->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>EBS AT — Login Screen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; background: #fff; display: inline-block; }
+
+  .component {
+    width: 720px;
+    background: #fafafa;
+    border: 2px solid #d0d0d0;
+    font-family: 'Noto Sans KR', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 480px;
+  }
+
+  /* CARD FORM AREA */
+  .card-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 32px 32px;
+  }
+
+  /* LG-01: APP TITLE */
+  .app-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .app-version {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 0.08em;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  /* FORM WRAPPER */
+  .form-wrapper {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* INPUT GROUP */
+  .input-group {
+    margin-bottom: 16px;
+  }
+
+  .input-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  /* LG-02, LG-03: TEXT FIELDS */
+  .text-field {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #d0d0d0;
+    background: #fff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    color: #1a1a1a;
+    padding: 0 12px;
+    outline: none;
+    transition: border-color 0.1s;
+    appearance: none;
+  }
+
+  .text-field:focus {
+    border-color: #1a1a1a;
+  }
+
+  .text-field::placeholder {
+    color: #bbb;
+  }
+
+  /* LG-04: LOGIN BUTTON */
+  .login-btn {
+    width: 100%;
+    height: 52px;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    transition: background 0.1s;
+  }
+
+  .login-btn:hover {
+    background: #333;
+  }
+
+  .login-btn:active {
+    background: #000;
+  }
+
+  /* LG-05: STATUS INDICATOR */
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #d00;
+    flex-shrink: 0;
+    animation: pulse-red 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse-red {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  .status-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* LG-06: ERROR MESSAGE */
+  .error-message {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #d00;
+    letter-spacing: 0.04em;
+    min-height: 16px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+<div class="component">
+
+  <div class="card-form">
+
+    <!-- LG-01: APP TITLE -->
+    <div class="app-title">EBS ACTION TRACKER</div>
+    <div class="app-version">v1.0.0</div>
+
+    <div class="form-wrapper">
+
+      <!-- LG-02: USER ID -->
+      <div class="input-group">
+        <label class="input-label">User ID</label>
+        <input class="text-field" type="text" placeholder="operator_01">
+      </div>
+
+      <!-- LG-03: PASSWORD -->
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <input class="text-field" type="password" placeholder="••••••">
+      </div>
+
+      <!-- LG-04: LOGIN BUTTON -->
+      <button class="login-btn">LOGIN</button>
+
+      <!-- LG-05: STATUS INDICATOR -->
+      <div class="status-row">
+        <div class="status-dot"></div>
+        <span class="status-label">Disconnected</span>
+      </div>
+
+      <!-- LG-06: ERROR MESSAGE -->
+      <div class="error-message">Authentication failed — check credentials and retry.</div>
+
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

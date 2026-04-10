@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol Stack</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+        .container {
+            width: 760px;
+            padding: 30px 40px;
+            background: #ffffff;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #000000;
+        }
+        .stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .layer {
+            background: #f5f5f5;
+            border: 3px solid #000000;
+            padding: 30px 40px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .layer + .layer {
+            border-top: none;
+        }
+        .layer-number {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #666666;
+        }
+        .layer-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 5px;
+        }
+        .layer-content {
+            font-size: 14px;
+            color: #333333;
+        }
+        .layer-details {
+            font-size: 12px;
+            color: #666666;
+            margin-top: 5px;
+        }
+        .layer.top {
+            background: #e8e8e8;
+        }
+        .layer.bottom {
+            background: #d0d0d0;
+        }
+        .arrow {
+            text-align: center;
+            font-size: 20px;
+            color: #000000;
+            margin: -3px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>4-Layer Protocol Stack</h1>
+
+        <div class="stack">
+            <div class="layer top">
+                <div class="layer-number">Layer 4</div>
+                <div class="layer-title">Application Layer</div>
+                <div class="layer-content">JSON (v2.0+) / CSV (v1.x Legacy)</div>
+                <div class="layer-details">게임 상태, 플레이어 액션, 그래픽 명령 전송</div>
+            </div>
+
+            <div class="layer">
+                <div class="layer-number">Layer 3</div>
+                <div class="layer-title">Encryption Layer</div>
+                <div class="layer-content">AES-256 (Rijndael, PBKDF1)</div>
+                <div class="layer-details">데이터 암호화 및 무결성 보장</div>
+            </div>
+
+            <div class="layer">
+                <div class="layer-number">Layer 2</div>
+                <div class="layer-title">Framing Layer</div>
+                <div class="layer-content">SOH (0x01) Delimiter</div>
+                <div class="layer-details">메시지 구분자, 프레임 경계 정의</div>
+            </div>
+
+            <div class="layer bottom">
+                <div class="layer-number">Layer 1</div>
+                <div class="layer-title">Transport Layer</div>
+                <div class="layer-content">TCP (port 9001) + UDP (port 9000)</div>
+                <div class="layer-details">네트워크 전송, 신뢰성 보장 (TCP) / 실시간 전송 (UDP)</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

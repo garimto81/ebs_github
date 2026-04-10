@@ -1,0 +1,1290 @@
+{
+  "control_type": "Window",
+  "name": "Skin Editor",
+  "automation_id": "skin_edit",
+  "class_name": "WindowsForms10.Window.8.app.0.1f71e64_r6_ad1",
+  "rectangle": {
+    "left": 2710,
+    "top": 702,
+    "right": 3607,
+    "bottom": 1170
+  },
+  "enabled": true,
+  "visible": true,
+  "children": [
+    {
+      "control_type": "Pane",
+      "name": "",
+      "automation_id": "panel7",
+      "class_name": "WindowsForms10.Window.8.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 3160,
+        "top": 895,
+        "right": 3584,
+        "bottom": 955
+      },
+      "enabled": true,
+      "visible": true,
+      "children": [
+        {
+          "control_type": "Text",
+          "name": "Hide flag after",
+          "automation_id": "label18",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3332,
+            "top": 925,
+            "right": 3405,
+            "bottom": 938
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Spinner",
+          "name": "Flags",
+          "automation_id": "hide_flag_numeric",
+          "class_name": "WindowsForms10.Window.8.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3422,
+            "top": 923,
+            "right": 3472,
+            "bottom": 943
+          },
+          "enabled": true,
+          "visible": true,
+          "children": [
+            {
+              "control_type": "Spinner",
+              "name": "NumericUpDown",
+              "automation_id": "5249182",
+              "class_name": "WindowsForms10.Window.8.app.0.1f71e64_r6_ad1",
+              "rectangle": {
+                "left": 3455,
+                "top": 924,
+                "right": 3471,
+                "bottom": 942
+              },
+              "enabled": true,
+              "visible": true,
+              "children": [
+                {
+                  "control_type": "Button",
+                  "name": "위로",
+                  "automation_id": "",
+                  "class_name": "",
+                  "rectangle": {
+                    "left": 3455,
+                    "top": 924,
+                    "right": 3471,
+                    "bottom": 933
+                  },
+                  "enabled": true,
+                  "visible": true,
+                  "children": []
+                },
+                {
+                  "control_type": "Button",
+                  "name": "아래로",
+                  "automation_id": "",
+                  "class_name": "",
+                  "rectangle": {
+                    "left": 3455,
+                    "top": 933,
+                    "right": 3471,
+                    "bottom": 942
+                  },
+                  "enabled": true,
+                  "visible": true,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "control_type": "Edit",
+              "name": "Flags",
+              "automation_id": "3347032",
+              "class_name": "WindowsForms10.EDIT.app.0.1f71e64_r6_ad1",
+              "rectangle": {
+                "left": 3424,
+                "top": 925,
+                "right": 3454,
+                "bottom": 941
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            }
+          ]
+        },
+        {
+          "control_type": "Text",
+          "name": "S (0=Do not hide)",
+          "automation_id": "label7",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3474,
+            "top": 926,
+            "right": 3564,
+            "bottom": 939
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Text",
+          "name": "Flags",
+          "automation_id": "label19",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3164,
+            "top": 897,
+            "right": 3281,
+            "bottom": 918
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Edit Flags",
+          "automation_id": "flags_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3166,
+            "top": 921,
+            "right": 3234,
+            "bottom": 943
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "CheckBox",
+          "name": "Country flag does not force player photo mode",
+          "automation_id": "flag_independent_checkbox",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3290,
+            "top": 902,
+            "right": 3533,
+            "bottom": 919
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        }
+      ]
+    },
+    {
+      "control_type": "CheckBox",
+      "name": "Remove Partial Transparency when Chroma Key Enabled ",
+      "automation_id": "remove_alpha_checkbox",
+      "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 3226,
+        "top": 746,
+        "right": 3526,
+        "bottom": 763
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "CheckBox",
+      "name": "Designed for 4K (3840 x 2160)",
+      "automation_id": "checkBox_4k",
+      "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 3378,
+        "top": 768,
+        "right": 3548,
+        "bottom": 785
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "Pane",
+      "name": "To adjust colours, select an Element from the list below then click 'Adjust Colours'.",
+      "automation_id": "panel5",
+      "class_name": "WindowsForms10.Window.8.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 2730,
+        "top": 873,
+        "right": 3154,
+        "bottom": 1001
+      },
+      "enabled": true,
+      "visible": true,
+      "children": [
+        {
+          "control_type": "Button",
+          "name": "Strip",
+          "automation_id": "strip_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3016,
+            "top": 882,
+            "right": 3147,
+            "bottom": 904
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Text",
+          "name": "Elements",
+          "automation_id": "label17",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2734,
+            "top": 875,
+            "right": 2851,
+            "bottom": 896
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Board",
+          "automation_id": "gfx_board_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2742,
+            "top": 910,
+            "right": 2873,
+            "bottom": 932
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Leaderboard",
+          "automation_id": "panel_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3016,
+            "top": 938,
+            "right": 3147,
+            "bottom": 960
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Ticker",
+          "automation_id": "ticker_edit_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2879,
+            "top": 966,
+            "right": 3010,
+            "bottom": 988
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Field",
+          "automation_id": "field_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3016,
+            "top": 966,
+            "right": 3147,
+            "bottom": 988
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Blinds",
+          "automation_id": "blinds_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2879,
+            "top": 910,
+            "right": 3010,
+            "bottom": 932
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Outs",
+          "automation_id": "gfx_outs_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3016,
+            "top": 910,
+            "right": 3147,
+            "bottom": 932
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Hand History",
+          "automation_id": "history_panel_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2742,
+            "top": 938,
+            "right": 2873,
+            "bottom": 960
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Split Screen Divider",
+          "automation_id": "ssd_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2742,
+            "top": 966,
+            "right": 2873,
+            "bottom": 988
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Action Clock",
+          "automation_id": "action_clock_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2879,
+            "top": 938,
+            "right": 3010,
+            "bottom": 960
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        }
+      ]
+    },
+    {
+      "control_type": "Pane",
+      "name": "Font 2",
+      "automation_id": "panel4",
+      "class_name": "WindowsForms10.Window.8.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 2730,
+        "top": 801,
+        "right": 3154,
+        "bottom": 867
+      },
+      "enabled": true,
+      "visible": true,
+      "children": [
+        {
+          "control_type": "Text",
+          "name": "To adjust colours, select an Element from the list below then click 'Adjust Colours'.",
+          "automation_id": "label20",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2956,
+            "top": 818,
+            "right": 3147,
+            "bottom": 861
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Text",
+          "name": "Adjustments",
+          "automation_id": "label16",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2734,
+            "top": 803,
+            "right": 2851,
+            "bottom": 824
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Text",
+          "name": "Adjust Size",
+          "automation_id": "label11",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2743,
+            "top": 834,
+            "right": 2802,
+            "bottom": 847
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Slider",
+          "name": "Adjustments",
+          "automation_id": "scale_trackbar",
+          "class_name": "WindowsForms10.msctls_trackbar32.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2815,
+            "top": 831,
+            "right": 2946,
+            "bottom": 851
+          },
+          "enabled": true,
+          "visible": true,
+          "children": [
+            {
+              "control_type": "Button",
+              "name": "페이지 왼쪽으로",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 2822,
+                "top": 838,
+                "right": 2858,
+                "bottom": 842
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            },
+            {
+              "control_type": "Thumb",
+              "name": "위치",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 2858,
+                "top": 833,
+                "right": 2867,
+                "bottom": 849
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            },
+            {
+              "control_type": "Button",
+              "name": "페이지 오른쪽으로",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 2867,
+                "top": 838,
+                "right": 2939,
+                "bottom": 842
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "control_type": "Pane",
+      "name": "Cards",
+      "automation_id": "panel3",
+      "class_name": "WindowsForms10.Window.8.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 2730,
+        "top": 1007,
+        "right": 3154,
+        "bottom": 1096
+      },
+      "enabled": true,
+      "visible": true,
+      "children": [
+        {
+          "control_type": "Text",
+          "name": "Text",
+          "automation_id": "label15",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2734,
+            "top": 1009,
+            "right": 2851,
+            "bottom": 1030
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Text",
+          "name": "Font 2",
+          "automation_id": "label12",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2745,
+            "top": 1067,
+            "right": 2782,
+            "bottom": 1080
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Edit",
+          "name": "",
+          "automation_id": "font_textbox",
+          "class_name": "WindowsForms10.EDIT.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2797,
+            "top": 1039,
+            "right": 2956,
+            "bottom": 1058
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Edit",
+          "name": "",
+          "automation_id": "font2_textbox",
+          "class_name": "WindowsForms10.EDIT.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2797,
+            "top": 1065,
+            "right": 2956,
+            "bottom": 1084
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "...",
+          "automation_id": "font_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2962,
+            "top": 1037,
+            "right": 2998,
+            "bottom": 1059
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Text",
+          "name": "Text Reveal Speed",
+          "automation_id": "label10",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3012,
+            "top": 1016,
+            "right": 3143,
+            "bottom": 1028
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Slider",
+          "name": "Text",
+          "automation_id": "text_speed_trackbar",
+          "class_name": "WindowsForms10.msctls_trackbar32.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3012,
+            "top": 1031,
+            "right": 3143,
+            "bottom": 1051
+          },
+          "enabled": true,
+          "visible": true,
+          "children": [
+            {
+              "control_type": "Thumb",
+              "name": "위치",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 3019,
+                "top": 1033,
+                "right": 3028,
+                "bottom": 1049
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            },
+            {
+              "control_type": "Button",
+              "name": "페이지 오른쪽으로",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 3028,
+                "top": 1038,
+                "right": 3136,
+                "bottom": 1042
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            }
+          ]
+        },
+        {
+          "control_type": "Button",
+          "name": "...",
+          "automation_id": "font2_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2962,
+            "top": 1064,
+            "right": 2998,
+            "bottom": 1086
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Text",
+          "name": "Font 1",
+          "automation_id": "label4",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2745,
+            "top": 1041,
+            "right": 2782,
+            "bottom": 1054
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "CheckBox",
+          "name": "Text All Caps",
+          "automation_id": "all_caps_checkbox",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 2902,
+            "top": 1015,
+            "right": 2990,
+            "bottom": 1032
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Language",
+          "automation_id": "lang_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3011,
+            "top": 1064,
+            "right": 3142,
+            "bottom": 1086
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        }
+      ]
+    },
+    {
+      "control_type": "Pane",
+      "name": "",
+      "automation_id": "panel2",
+      "class_name": "WindowsForms10.Window.8.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 3160,
+        "top": 801,
+        "right": 3584,
+        "bottom": 889
+      },
+      "enabled": true,
+      "visible": true,
+      "children": [
+        {
+          "control_type": "Text",
+          "name": "Cards",
+          "automation_id": "label14",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3164,
+            "top": 802,
+            "right": 3281,
+            "bottom": 823
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Replace",
+          "automation_id": "replace_cards_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3446,
+            "top": 829,
+            "right": 3507,
+            "bottom": 851
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Delete",
+          "automation_id": "delete_cards_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3513,
+            "top": 829,
+            "right": 3576,
+            "bottom": 851
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "ComboBox",
+          "name": "as ah ad ac xx",
+          "automation_id": "cards_combobox",
+          "class_name": "WindowsForms10.COMBOBOX.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3166,
+            "top": 829,
+            "right": 3395,
+            "bottom": 879
+          },
+          "enabled": true,
+          "visible": true,
+          "children": [
+            {
+              "control_type": "Text",
+              "name": "",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 3166,
+                "top": 829,
+                "right": 3395,
+                "bottom": 879
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            },
+            {
+              "control_type": "Button",
+              "name": "Open",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 3379,
+                "top": 830,
+                "right": 3394,
+                "bottom": 878
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            }
+          ]
+        },
+        {
+          "control_type": "Button",
+          "name": "Add",
+          "automation_id": "cards_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3402,
+            "top": 829,
+            "right": 3440,
+            "bottom": 851
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Import Card Back",
+          "automation_id": "button1",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3402,
+            "top": 857,
+            "right": 3576,
+            "bottom": 879
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        }
+      ]
+    },
+    {
+      "control_type": "Button",
+      "name": "SKIN DOWNLOAD CENTRE",
+      "automation_id": "skin_centre_button",
+      "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 3003,
+        "top": 1102,
+        "right": 3134,
+        "bottom": 1152
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "Button",
+      "name": "IMPORT",
+      "automation_id": "import_button",
+      "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 2729,
+        "top": 1102,
+        "right": 2860,
+        "bottom": 1152
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "Pane",
+      "name": "",
+      "automation_id": "panel1",
+      "class_name": "WindowsForms10.Window.8.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 3160,
+        "top": 961,
+        "right": 3584,
+        "bottom": 1093
+      },
+      "enabled": true,
+      "visible": true,
+      "children": [
+        {
+          "control_type": "CheckBox",
+          "name": "Override Card Set",
+          "automation_id": "card_image_set_override_checkbox",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3191,
+            "top": 1035,
+            "right": 3301,
+            "bottom": 1052
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Text",
+          "name": "Player",
+          "automation_id": "label13",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3164,
+            "top": 963,
+            "right": 3281,
+            "bottom": 984
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "CheckBox",
+          "name": "Crop player photo to circle",
+          "automation_id": "pic_crop_circle_checkbox",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3400,
+            "top": 1063,
+            "right": 3549,
+            "bottom": 1080
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Delete",
+          "automation_id": "gfx_player_del_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3515,
+            "top": 1030,
+            "right": 3574,
+            "bottom": 1052
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "New",
+          "automation_id": "gfx_player_new_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3458,
+            "top": 1030,
+            "right": 3508,
+            "bottom": 1052
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Text",
+          "name": "Player Set",
+          "automation_id": "label6",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3400,
+            "top": 990,
+            "right": 3574,
+            "bottom": 1002
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Text",
+          "name": "Variant",
+          "automation_id": "label5",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3176,
+            "top": 990,
+            "right": 3329,
+            "bottom": 1002
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "ComboBox",
+          "name": "2 Card Games",
+          "automation_id": "player_combobox",
+          "class_name": "WindowsForms10.COMBOBOX.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3400,
+            "top": 1007,
+            "right": 3573,
+            "bottom": 1028
+          },
+          "enabled": true,
+          "visible": true,
+          "children": [
+            {
+              "control_type": "Text",
+              "name": "",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 3400,
+                "top": 1007,
+                "right": 3573,
+                "bottom": 1028
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            },
+            {
+              "control_type": "Button",
+              "name": "Open",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 3557,
+                "top": 1008,
+                "right": 3572,
+                "bottom": 1027
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            }
+          ]
+        },
+        {
+          "control_type": "Text",
+          "name": "Uses",
+          "automation_id": "label3",
+          "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3354,
+            "top": 1010,
+            "right": 3385,
+            "bottom": 1023
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "Button",
+          "name": "Edit",
+          "automation_id": "gfx_player_button",
+          "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3400,
+            "top": 1030,
+            "right": 3450,
+            "bottom": 1052
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        },
+        {
+          "control_type": "ComboBox",
+          "name": "HOLDEM (2 Cards)",
+          "automation_id": "game_combobox",
+          "class_name": "WindowsForms10.COMBOBOX.app.0.1f71e64_r6_ad1",
+          "rectangle": {
+            "left": 3166,
+            "top": 1007,
+            "right": 3339,
+            "bottom": 1028
+          },
+          "enabled": true,
+          "visible": true,
+          "children": [
+            {
+              "control_type": "Text",
+              "name": "",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 3166,
+                "top": 1007,
+                "right": 3339,
+                "bottom": 1028
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            },
+            {
+              "control_type": "Button",
+              "name": "Open",
+              "automation_id": "",
+              "class_name": "",
+              "rectangle": {
+                "left": 3323,
+                "top": 1008,
+                "right": 3338,
+                "bottom": 1027
+              },
+              "enabled": true,
+              "visible": true,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "control_type": "Button",
+      "name": "RESET TO DEFAULT",
+      "automation_id": "reset_button",
+      "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 3140,
+        "top": 1102,
+        "right": 3271,
+        "bottom": 1152
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "Button",
+      "name": "EXPORT",
+      "automation_id": "export_button",
+      "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 2866,
+        "top": 1102,
+        "right": 2997,
+        "bottom": 1152
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "Text",
+      "name": "Details",
+      "automation_id": "label2",
+      "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 2727,
+        "top": 771,
+        "right": 2766,
+        "bottom": 784
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "Edit",
+      "name": "Name",
+      "automation_id": "details_textbox",
+      "class_name": "WindowsForms10.EDIT.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 2779,
+        "top": 769,
+        "right": 3154,
+        "bottom": 789
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "Text",
+      "name": "Name",
+      "automation_id": "label1",
+      "class_name": "WindowsForms10.STATIC.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 2727,
+        "top": 747,
+        "right": 2762,
+        "bottom": 760
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "Edit",
+      "name": "",
+      "automation_id": "name_textbox",
+      "class_name": "WindowsForms10.EDIT.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 2779,
+        "top": 745,
+        "right": 3154,
+        "bottom": 765
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "Button",
+      "name": "DISCARD",
+      "automation_id": "cancel_button",
+      "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 3277,
+        "top": 1102,
+        "right": 3408,
+        "bottom": 1152
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "Button",
+      "name": "USE",
+      "automation_id": "save_button",
+      "class_name": "WindowsForms10.BUTTON.app.0.1f71e64_r6_ad1",
+      "rectangle": {
+        "left": 3414,
+        "top": 1102,
+        "right": 3545,
+        "bottom": 1152
+      },
+      "enabled": true,
+      "visible": true,
+      "children": []
+    },
+    {
+      "control_type": "TitleBar",
+      "name": "",
+      "automation_id": "",
+      "class_name": "",
+      "rectangle": {
+        "left": 2718,
+        "top": 705,
+        "right": 3599,
+        "bottom": 733
+      },
+      "enabled": true,
+      "visible": true,
+      "children": [
+        {
+          "control_type": "Button",
+          "name": "닫기",
+          "automation_id": "",
+          "class_name": "",
+          "rectangle": {
+            "left": 3578,
+            "top": 709,
+            "right": 3599,
+            "bottom": 730
+          },
+          "enabled": true,
+          "visible": true,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

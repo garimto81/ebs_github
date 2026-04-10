@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>PokerGFX 3-Layer Architecture</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: #fff; color: #000; padding: 0; margin: 0; }
+
+.architecture {
+  width: 720px;
+  position: relative;
+}
+
+.layer {
+  position: relative;
+  margin-bottom: 0;
+  overflow: visible;
+}
+
+.layer-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: #e8e8e8;
+  border-bottom: 1px solid #ccc;
+}
+.layer-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: #555;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.layer-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+.layer-desc {
+  font-size: 10px;
+  color: #888;
+  margin-left: auto;
+}
+
+.layer-content {
+  padding: 16px;
+  background: #f5f5f5;
+}
+
+/* Layer 1: Hardware */
+.reader-grid {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.reader {
+  background: #fff;
+  border: 2px solid #bbb;
+  padding: 6px 10px;
+  text-align: center;
+  width: 52px;
+}
+.reader.special {
+  background: #333;
+  border-color: #111;
+  color: #fff;
+}
+.reader-icon {
+  font-size: 9px;
+  font-weight: 700;
+  color: #555;
+}
+.reader.special .reader-icon { color: #ccc; }
+.reader-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #999;
+}
+.reader.special .reader-label { color: #fff; }
+
+.hw-extras {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+.hw-box {
+  background: #fff;
+  border: 2px solid #bbb;
+  padding: 6px 14px;
+  text-align: center;
+}
+.hw-box .reader-icon { font-size: 10px; }
+.hw-box .reader-label { font-size: 10px; }
+
+/* Connector */
+.connector {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: #eee;
+}
+.connector svg { display: block; }
+.connector-label {
+  position: absolute;
+  background: #fff;
+  padding: 2px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+/* Layer 2: Server Engine */
+.layer-2 .layer-content {
+  background: #f0f0f0;
+  padding: 12px 16px;
+}
+.server-block {
+  background: #111;
+  color: #fff;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  position: relative;
+}
+.server-name {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+.server-subtitle {
+  font-size: 10px;
+  color: #888;
+  text-align: center;
+  margin-top: 2px;
+}
+.internal-modules {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.int-mod {
+  background: #222;
+  border: 1px solid #444;
+  padding: 8px 10px;
+  text-align: center;
+  min-width: 96px;
+}
+.int-mod-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ddd;
+}
+.int-mod-detail {
+  font-size: 9px;
+  color: #777;
+  margin-top: 2px;
+}
+.int-mod-label {
+  font-size: 8px;
+  color: #555;
+  text-align: center;
+  margin-top: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Layer 3: Client Apps */
+.layer-3 .layer-content {
+  background: #eee;
+}
+.client-grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+.client-app {
+  background: #fff;
+  border: 2px solid #555;
+  padding: 12px 16px;
+  text-align: center;
+  width: 220px;
+}
+.client-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+}
+.client-role {
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
+}
+.client-conn {
+  font-size: 9px;
+  color: #999;
+  margin-top: 4px;
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+
+<div class="architecture">
+  <!-- Layer 1: Hardware -->
+  <div class="layer layer-1">
+    <div class="layer-header">
+      <div class="layer-num">1</div>
+      <div class="layer-title">Hardware</div>
+      <div class="layer-desc">RFID Reader x12, GPU, Capture Card</div>
+    </div>
+    <div class="layer-content">
+      <div class="reader-grid">
+        <div class="reader"><div class="reader-icon">RFID</div><div class="reader-label">P1</div></div>
+        <div class="reader"><div class="reader-icon">RFID</div><div class="reader-label">P2</div></div>
+        <div class="reader"><div class="reader-icon">RFID</div><div class="reader-label">P3</div></div>
+        <div class="reader"><div class="reader-icon">RFID</div><div class="reader-label">P4</div></div>
+        <div class="reader"><div class="reader-icon">RFID</div><div class="reader-label">P5</div></div>
+        <div class="reader"><div class="reader-icon">RFID</div><div class="reader-label">P6</div></div>
+        <div class="reader"><div class="reader-icon">RFID</div><div class="reader-label">P7</div></div>
+        <div class="reader"><div class="reader-icon">RFID</div><div class="reader-label">P8</div></div>
+        <div class="reader"><div class="reader-icon">RFID</div><div class="reader-label">P9</div></div>
+        <div class="reader"><div class="reader-icon">RFID</div><div class="reader-label">P10</div></div>
+        <div class="reader special"><div class="reader-icon">RFID</div><div class="reader-label">Board</div></div>
+        <div class="reader special"><div class="reader-icon">RFID</div><div class="reader-label">Muck</div></div>
+      </div>
+      <div class="hw-extras">
+        <div class="hw-box"><div class="reader-icon">GPU</div><div class="reader-label">DirectX 11</div></div>
+        <div class="hw-box"><div class="reader-icon">CAP</div><div class="reader-label">Capture Card</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connector 1→2 -->
+  <div class="connector">
+    <svg width="720" height="40">
+      <defs>
+        <marker id="a1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#666"/>
+        </marker>
+      </defs>
+      <line x1="280" y1="4" x2="280" y2="36" stroke="#666" stroke-width="2" marker-end="url(#a1)"/>
+      <line x1="360" y1="4" x2="360" y2="36" stroke="#666" stroke-width="2" marker-end="url(#a1)"/>
+      <line x1="440" y1="4" x2="440" y2="36" stroke="#666" stroke-width="2" marker-end="url(#a1)"/>
+    </svg>
+    <div class="connector-label">USB / WiFi</div>
+  </div>
+
+  <!-- Layer 2: Server Engine -->
+  <div class="layer layer-2">
+    <div class="layer-header">
+      <div class="layer-num">2</div>
+      <div class="layer-title">Server Engine</div>
+      <div class="layer-desc">GfxServer — Single Process</div>
+    </div>
+    <div class="layer-content">
+      <div class="server-block">
+        <div class="server-name">GfxServer</div>
+        <div class="server-subtitle">Single Source of Truth — All modules in one process</div>
+        <div class="internal-modules">
+          <div class="int-mod">
+            <div class="int-mod-name">Game Engine</div>
+            <div class="int-mod-detail">22 State Machines</div>
+          </div>
+          <div class="int-mod">
+            <div class="int-mod-name">Hand Eval</div>
+            <div class="int-mod-detail">Lookup Table</div>
+          </div>
+          <div class="int-mod">
+            <div class="int-mod-name">Statistics</div>
+            <div class="int-mod-detail">VPIP / PFR</div>
+          </div>
+          <div class="int-mod">
+            <div class="int-mod-name">GPU Renderer</div>
+            <div class="int-mod-detail">DirectX 11</div>
+          </div>
+          <div class="int-mod">
+            <div class="int-mod-name">Network</div>
+            <div class="int-mod-detail">TCP / UDP</div>
+          </div>
+        </div>
+        <div class="int-mod-label">Internal Modules — Not Separate Apps</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connector 2→3 -->
+  <div class="connector">
+    <svg width="720" height="40">
+      <defs>
+        <marker id="a2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#666"/>
+        </marker>
+      </defs>
+      <line x1="280" y1="4" x2="280" y2="36" stroke="#666" stroke-width="2" marker-end="url(#a2)"/>
+      <line x1="440" y1="4" x2="440" y2="36" stroke="#666" stroke-width="2" marker-end="url(#a2)"/>
+    </svg>
+    <div class="connector-label">TCP :8888</div>
+  </div>
+
+  <!-- Layer 3: Client Apps -->
+  <div class="layer layer-3">
+    <div class="layer-header">
+      <div class="layer-num">3</div>
+      <div class="layer-title">Client Apps</div>
+      <div class="layer-desc">Separate Processes — TCP Connection</div>
+    </div>
+    <div class="layer-content">
+      <div class="client-grid">
+        <div class="client-app">
+          <div class="client-name">ActionTracker</div>
+          <div class="client-role">Game Control Touchscreen</div>
+          <div class="client-conn">TCP :8888 — Operator Input</div>
+        </div>
+        <div class="client-app">
+          <div class="client-name">HandEvaluation</div>
+          <div class="client-role">Monte Carlo CPU Offload</div>
+          <div class="client-conn">TCP :8888 — Auto Service</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

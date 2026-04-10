@@ -10,7 +10,7 @@
 
 Skin Editor(SE)와 Graphic Editor(GE)는 오버레이 스킨을 편집하는 웹 앱이다. 기존 Quasar 데스크톱 앱(EBS-Skin-Editor PRD v3)을 Next.js + shadcn/ui 웹 앱으로 전환한다.
 
-> 참조: 컨트롤 상세는 `C:\claude\ebs_ui\ebs-skin-editor\docs\EBS-Skin-Editor_v3.prd.md`, BS-03-02 §7
+> 참조: 컨트롤 상세는 `ui-design/reference/skin-editor/EBS-Skin-Editor_v3.prd.md`, BS-03-02 §7
 
 ## 1. 라우트 구조
 
@@ -106,7 +106,7 @@ Skin Editor(SE)와 Graphic Editor(GE)는 오버레이 스킨을 편집하는 웹
 
 | 문서 | 경로 |
 |------|------|
-| SE/GE PRD v3 | `C:\claude\ebs_ui\ebs-skin-editor\docs\EBS-Skin-Editor_v3.prd.md` |
+| SE/GE PRD v3 | `ui-design/reference/skin-editor/EBS-Skin-Editor_v3.prd.md` |
 | 스킨 로드/전환 | `contracts/specs/BS-07-overlay/BS-07-03-skin-loading.md` |
 | Settings GFX | `contracts/specs/BS-03-settings/BS-03-02-gfx.md` |
 | 오버레이 출력 | `docs/03-ui-design/UI-04-overlay-output.md` |

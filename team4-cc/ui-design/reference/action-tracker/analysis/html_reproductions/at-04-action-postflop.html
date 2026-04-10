@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=786">
+<title>AT-04: Post-Flop Action</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  .screenshot-container {
+    width: 786px;
+    height: 553px;
+    position: relative;
+    background: #1a1a1a;
+    overflow: hidden;
+  }
+
+  /* =========================================
+     TITLEBAR (id=1)
+     ========================================= */
+  .titlebar {
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%;
+    height: 4.5%;
+    background: #2d2d2d;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    border-bottom: 1px solid #555;
+    z-index: 10;
+  }
+  .titlebar-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 5px;
+    background: #aaa;
+    border-radius: 2px;
+    flex-shrink: 0;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+  }
+  .titlebar-text {
+    color: #ddd;
+    font-size: 11px;
+    flex: 1;
+  }
+  .titlebar-buttons {
+    display: flex;
+    height: 100%;
+  }
+  .titlebar-btn {
+    width: 28px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .titlebar-btn:hover { background: #555; }
+  .titlebar-btn.close-btn { background: transparent; color: #ccc; }
+  .titlebar-btn.close-btn:hover { background: #e74c3c; color: #fff; }
+
+  /* =========================================
+     TOOLBAR (id=2~10)
+     ========================================= */
+  .toolbar {
+    position: absolute;
+    left: 0;
+    top: 4.5%;
+    width: 100%;
+    height: 12.7%;
+    background: #2a2a2a;
+    display: flex;
+    border-bottom: 1px solid #444;
+    z-index: 5;
+  }
+  .toolbar-cell {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #444;
+    cursor: pointer;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  /* id=2: USB (0–8.1%) */
+  .tb-usb {
+    width: 8.1%;
+    background: #333;
+  }
+  .usb-symbol {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .usb-arrow {
+    color: #bbb;
+    font-size: 18px;
+    transform: rotate(90deg);
+    line-height: 1;
+  }
+  .usb-plug {
+    width: 8px; height: 4px;
+    background: #bbb;
+    border-radius: 1px;
+  }
+
+  /* id=3: WiFi (8.1–16.2%) */
+  .tb-wifi {
+    width: 8.1%;
+    background: #4CAF50;
+  }
+  .wifi-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 20px;
+  }
+  .wifi-bar {
+    width: 5px;
+    background: #fff;
+    border-radius: 1px;
+  }
+
+  /* id=4: input (16.2–36.9%) */
+  .tb-input {
+    width: 20.7%;
+    background: #222;
+    padding: 5px 6px;
+  }
+  .tb-input-box {
+    width: 100%;
+    height: 70%;
+    background: #000;
+    border: 1px solid #555;
+    border-radius: 2px;
+  }
+
+  /* id=5: HAND (36.9–48.1%) */
+  .tb-hand {
+    width: 11.2%;
+    background: #111;
+    flex-direction: column;
+    gap: 0;
+  }
+  .hand-label {
+    color: #aaa;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    line-height: 1.4;
+  }
+  .hand-number {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  /* gap 48.1–57.8% */
+  .tb-gap {
+    width: 9.7%;
+    background: #1a1a1a;
+  }
+
+  /* id=6: camera (57.8–67%) */
+  .tb-camera {
+    width: 9.2%;
+    background: #8B0000;
+  }
+  .cam-icon {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .cam-body {
+    width: 20px; height: 14px;
+    background: #eee;
+    border-radius: 2px;
+    position: relative;
+  }
+  .cam-lens {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px;
+    background: #666;
+    border-radius: 50%;
+    border: 1px solid #333;
+  }
+  .cam-trigger {
+    position: absolute;
+    top: -4px; left: 50%;
+    transform: translateX(-50%);
+    width: 6px; height: 4px;
+    background: #eee;
+    border-radius: 1px 1px 0 0;
+  }
+
+  /* id=7: GFX (67–76.2%) */
+  .tb-gfx {
+    width: 9.2%;
+    background: #333;
+  }
+  .tb-gfx .lbl {
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  /* id=8: REGISTER (76.2–85.4%) */
+  .tb-register {
+    width: 9.2%;
+    background: #444;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .tb-register .lbl {
+    color: #fff;
+    font-size: 8px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* id=9: fullscreen (85.4–92.5%) */
+  .tb-fullscreen {
+    width: 7.1%;
+    background: #444;
+  }
+  .expand-icon {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 4px;
+    width: 18px; height: 18px;
+  }
+  .expand-icon span {
+    color: #fff;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* id=10: close X (92.5–100%) */
+  .tb-close {
+    width: 7.5%;
+    background: #C0392B;
+    border-right: none;
+  }
+  .tb-close .lbl {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  /* =========================================
+     CARD ICONS ROW (id=11~20)
+     ========================================= */
+  .card-icons-row {
+    position: absolute;
+    left: 0;
+    top: 17.2%;
+    width: 100%;
+    height: 12.7%;
+    display: flex;
+    background: #1a1a1a;
+    z-index: 5;
+  }
+  .card-cell {
+    width: 10%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #3a3a3a;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .card-cell:last-child { border-right: none; }
+  .card-cell.has-card { background: #DAA520; }
+  .card-cell.no-card  { background: #2a2a2a; }
+
+  /* Card graphic using CSS only */
+  .card-graphic {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .card-shape {
+    width: 22px;
+    height: 30px;
+    border-radius: 3px;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .card-cell.has-card .card-shape {
+    background: #f5f5f5;
+    border-color: #a07000;
+  }
+  .card-cell.no-card .card-shape {
+    background: #444;
+    border-color: #555;
+  }
+  .card-inner {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid;
+  }
+  .card-cell.has-card .card-inner { border-color: #888; background: #ddd; }
+  .card-cell.no-card  .card-inner { border-color: #666; background: #555; }
+
+  .plus-icon {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1;
+  }
+  .card-cell.has-card .plus-icon { color: #fff; }
+  .card-cell.no-card  .plus-icon { color: #555; }
+
+  /* =========================================
+     SEAT LABELS ROW (id=21~30)
+     ========================================= */
+  .seat-labels-row {
+    position: absolute;
+    left: 0;
+    top: 29.9%;
+    width: 100%;
+    height: 12.7%;
+    display: flex;
+    z-index: 5;
+  }
+  .seat-cell {
+    width: 10%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #3a3a3a;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .seat-cell:last-child { border-right: none; }
+
+  .seat-cell.turn    { background: #C0392B; }
+  .seat-cell.active  { background: #e8e8e8; }
+  .seat-cell.empty   { background: #2a2a2a; }
+
+  .seat-cell.turn  .seat-lbl { color: #fff; font-size: 13px; font-weight: bold; text-align: center; }
+  .seat-cell.active .seat-lbl { color: #111; font-size: 13px; font-weight: bold; text-align: center; }
+  .seat-cell.empty  .seat-lbl { color: #888; font-size: 12px; text-align: center; line-height: 1.3; }
+
+  /* =========================================
+     MIDDLE BACKGROUND
+     ========================================= */
+  .middle-bg {
+    position: absolute;
+    left: 0;
+    top: 42.5%;
+    width: 100%;
+    height: 40%;
+    background: #1a1a1a;
+    z-index: 1;
+  }
+
+  /* =========================================
+     ACTION PANEL elements (id=31–36)
+     ========================================= */
+
+  /* id=31: MISS DEAL */
+  .miss-deal {
+    position: absolute;
+    left: 0;
+    top: 46%;
+    width: 11%;
+    height: 20%;
+    background: #C0392B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #a02020;
+    z-index: 5;
+  }
+  .miss-deal:hover { filter: brightness(1.15); }
+  .miss-deal .btn-lbl {
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* id=32: TAG star */
+  .tag-btn {
+    position: absolute;
+    left: 91%;
+    top: 44%;
+    width: 9%;
+    height: 12%;
+    background: #8B0000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #6a0000;
+    border-radius: 4px;
+    z-index: 5;
+  }
+  .tag-btn:hover { filter: brightness(1.2); }
+  .star-icon {
+    color: #fff;
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  /* id=33: community cards area */
+  .community-area {
+    position: absolute;
+    left: 13%;
+    top: 46%;
+    width: 68%;
+    height: 16%;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 3px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .comm-card {
+    width: 45px;
+    height: 62px;
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .comm-card.red { color: #C0392B; }
+  .comm-card.black { color: #111; }
+
+  /* id=34: player info bar */
+  .player-info {
+    position: absolute;
+    left: 13%;
+    top: 62%;
+    width: 68%;
+    height: 14%;
+    background: #222;
+    border: 1px solid #3a3a3a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    z-index: 5;
+  }
+  .player-info .info-lbl {
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+
+  /* id=35: record button */
+  .record-btn {
+    position: absolute;
+    left: 81%;
+    top: 62%;
+    width: 10%;
+    height: 14%;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #333;
+    z-index: 5;
+  }
+  .record-btn:hover { filter: brightness(1.3); }
+  .record-dot {
+    width: 30px;
+    height: 30px;
+    background: #E74C3C;
+    border-radius: 50%;
+    border: 2px solid #c0392b;
+    box-shadow: 0 0 8px rgba(231,76,60,0.6);
+  }
+
+  /* id=36: HIDE GFX */
+  .hide-gfx {
+    position: absolute;
+    left: 83%;
+    top: 53%;
+    width: 17%;
+    height: 9%;
+    background: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #777;
+    border-radius: 3px;
+    z-index: 5;
+  }
+  .hide-gfx:hover { filter: brightness(1.15); }
+  .hide-gfx .btn-lbl {
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+
+  /* =========================================
+     BOTTOM ACTION BUTTONS (id=37~41)
+     ========================================= */
+  .action-row {
+    position: absolute;
+    left: 0;
+    top: 82.5%;
+    width: 100%;
+    height: 17.5%;
+    display: flex;
+    background: #111;
+    border-top: 2px solid #333;
+    gap: 0;
+    z-index: 5;
+  }
+
+  .act-btn {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: filter 0.1s;
+  }
+  .act-btn:hover { filter: brightness(1.2); }
+
+  /* id=37: back (0–9%) */
+  .btn-back {
+    width: 9%;
+    background: #6B2222;
+    border-right: 1px solid #3a3a3a;
+  }
+  .btn-back .act-lbl {
+    color: #fff;
+    font-size: 26px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  /* id=38: FOLD (9–28%) */
+  .btn-fold {
+    width: 19%;
+    background: #2E7D32;
+    margin: 4px 3px;
+    border-radius: 6px;
+  }
+  .btn-fold .act-lbl {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  /* id=39: CHECK (28–46%) */
+  .btn-call {
+    width: 18%;
+    background: #2E7D32;
+    margin: 4px 3px;
+    border-radius: 6px;
+  }
+  .btn-call .act-lbl {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  /* id=40: BET (46–64%) */
+  .btn-raise {
+    width: 18%;
+    background: #2E7D32;
+    margin: 4px 3px;
+    border-radius: 6px;
+  }
+  .btn-raise .act-lbl {
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+
+  /* id=41: ALL IN (64–82%) */
+  .btn-allin {
+    width: 18%;
+    background: #2E7D32;
+    margin: 4px 3px;
+    border-radius: 6px;
+  }
+  .btn-allin .act-lbl {
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  /* spacer 82–100% */
+  .btn-spacer {
+    flex: 1;
+    background: #111;
+  }
+</style>
+</head>
+<body>
+<div class="screenshot-container">
+
+  <!-- id=1: Titlebar -->
+  <div
+    class="titlebar"
+    data-element-id="1"
+    data-element-name="윈도우 타이틀바"
+    data-element-group="titlebar"
+  >
+    <div class="titlebar-icon">&#9654;</div>
+    <span class="titlebar-text">PokerGFX Action Tracker &copy; 2026</span>
+    <div class="titlebar-buttons">
+      <div class="titlebar-btn">&#8212;</div>
+      <div class="titlebar-btn">&#9633;</div>
+      <div class="titlebar-btn close-btn">&#10005;</div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+
+    <!-- id=2: USB -->
+    <div
+      class="toolbar-cell tb-usb"
+      data-element-id="2"
+      data-element-name="USB 연결 버튼"
+      data-element-group="toolbar"
+    >
+      <div class="usb-symbol">
+        <span class="usb-arrow">&#8596;</span>
+      </div>
+    </div>
+
+    <!-- id=3: WiFi -->
+    <div
+      class="toolbar-cell tb-wifi"
+      data-element-id="3"
+      data-element-name="WiFi 신호 아이콘"
+      data-element-group="toolbar"
+    >
+      <div class="wifi-bars">
+        <div class="wifi-bar" style="height:6px;"></div>
+        <div class="wifi-bar" style="height:10px;"></div>
+        <div class="wifi-bar" style="height:14px;"></div>
+        <div class="wifi-bar" style="height:18px;"></div>
+      </div>
+    </div>
+
+    <!-- id=4: Input Field -->
+    <div
+      class="toolbar-cell tb-input"
+      data-element-id="4"
+      data-element-name="핸드 정보 입력 필드"
+      data-element-group="toolbar"
+    >
+      <div class="tb-input-box"></div>
+    </div>
+
+    <!-- id=5: HAND counter -->
+    <div
+      class="toolbar-cell tb-hand"
+      data-element-id="5"
+      data-element-name="HAND 1 레이블"
+      data-element-group="toolbar"
+    >
+      <span class="hand-label">HAND</span>
+      <span class="hand-number">1</span>
+    </div>
+
+    <!-- gap 48.1–57.8% -->
+    <div class="tb-gap"></div>
+
+    <!-- id=6: Camera -->
+    <div
+      class="toolbar-cell tb-camera"
+      data-element-id="6"
+      data-element-name="카메라/비디오 버튼"
+      data-element-group="toolbar"
+    >
+      <div class="cam-icon">
+        <div class="cam-body">
+          <div class="cam-trigger"></div>
+          <div class="cam-lens"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- id=7: GFX -->
+    <div
+      class="toolbar-cell tb-gfx"
+      data-element-id="7"
+      data-element-name="GFX 버튼"
+      data-element-group="toolbar"
+    >
+      <span class="lbl">GFX</span>
+    </div>
+
+    <!-- id=8: REGISTER -->
+    <div
+      class="toolbar-cell tb-register"
+      data-element-id="8"
+      data-element-name="REGISTER 버튼"
+      data-element-group="toolbar"
+    >
+      <span class="lbl">REGISTER</span>
+    </div>
+
+    <!-- id=9: Fullscreen -->
+    <div
+      class="toolbar-cell tb-fullscreen"
+      data-element-id="9"
+      data-element-name="전체화면 버튼"
+      data-element-group="toolbar"
+    >
+      <div class="expand-icon">
+        <span>&#8598;</span>
+        <span>&#8599;</span>
+        <span>&#8601;</span>
+        <span>&#8600;</span>
+      </div>
+    </div>
+
+    <!-- id=10: Close -->
+    <div
+      class="toolbar-cell tb-close"
+      data-element-id="10"
+      data-element-name="X(닫기) 버튼"
+      data-element-group="toolbar"
+    >
+      <span class="lbl">X</span>
+    </div>
+
+  </div>
+
+  <!-- CARD ICONS ROW -->
+  <div class="card-icons-row">
+
+    <!-- id=11: SEAT 1 카드 아이콘 (no-card: 폴드/비활성) -->
+    <div
+      class="card-cell no-card"
+      data-element-id="11"
+      data-element-name="SEAT 1 카드 아이콘"
+      data-element-group="card_icon"
+    >
+      <div class="card-graphic">
+        <div class="card-shape"><div class="card-inner"></div></div>
+        <span class="plus-icon">+</span>
+      </div>
+    </div>
+
+    <div
+      class="card-cell has-card"
+      data-element-id="12"
+      data-element-name="SEAT 2 카드 아이콘"
+      data-element-group="card_icon"
+    >
+      <div class="card-graphic">
+        <div class="card-shape"><div class="card-inner"></div></div>
+        <span class="plus-icon">+</span>
+      </div>
+    </div>
+
+    <div
+      class="card-cell has-card"
+      data-element-id="13"
+      data-element-name="SEAT 3 카드 아이콘"
+      data-element-group="card_icon"
+    >
+      <div class="card-graphic">
+        <div class="card-shape"><div class="card-inner"></div></div>
+        <span class="plus-icon">+</span>
+      </div>
+    </div>
+
+    <div
+      class="card-cell no-card"
+      data-element-id="14"
+      data-element-name="SEAT 4 카드 아이콘"
+      data-element-group="card_icon"
+    >
+      <div class="card-graphic">
+        <div class="card-shape"><div class="card-inner"></div></div>
+        <span class="plus-icon">+</span>
+      </div>
+    </div>
+
+    <div
+      class="card-cell no-card"
+      data-element-id="15"
+      data-element-name="SEAT 5 카드 아이콘"
+      data-element-group="card_icon"
+    >
+      <div class="card-graphic">
+        <div class="card-shape"><div class="card-inner"></div></div>
+        <span class="plus-icon">+</span>
+      </div>
+    </div>
+
+    <div
+      class="card-cell no-card"
+      data-element-id="16"
+      data-element-name="SEAT 6 카드 아이콘"
+      data-element-group="card_icon"
+    >
+      <div class="card-graphic">
+        <div class="card-shape"><div class="card-inner"></div></div>
+        <span class="plus-icon">+</span>
+      </div>
+    </div>
+
+    <div
+      class="card-cell no-card"
+      data-element-id="17"
+      data-element-name="SEAT 7 카드 아이콘"
+      data-element-group="card_icon"
+    >
+      <div class="card-graphic">
+        <div class="card-shape"><div class="card-inner"></div></div>
+        <span class="plus-icon">+</span>
+      </div>
+    </div>
+
+    <div
+      class="card-cell no-card"
+      data-element-id="18"
+      data-element-name="SEAT 8 카드 아이콘"
+      data-element-group="card_icon"
+    >
+      <div class="card-graphic">
+        <div class="card-shape"><div class="card-inner"></div></div>
+        <span class="plus-icon">+</span>
+      </div>
+    </div>
+
+    <div
+      class="card-cell no-card"
+      data-element-id="19"
+      data-element-name="SEAT 9 카드 아이콘"
+      data-element-group="card_icon"
+    >
+      <div class="card-graphic">
+        <div class="card-shape"><div class="card-inner"></div></div>
+        <span class="plus-icon">+</span>
+      </div>
+    </div>
+
+    <div
+      class="card-cell no-card"
+      data-element-id="20"
+      data-element-name="SEAT 10 카드 아이콘"
+      data-element-group="card_icon"
+    >
+      <div class="card-graphic">
+        <div class="card-shape"><div class="card-inner"></div></div>
+        <span class="plus-icon">+</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SEAT LABELS ROW -->
+  <div class="seat-labels-row">
+
+    <!-- id=21: SEAT 1 (empty: 폴드/비활성) -->
+    <div
+      class="seat-cell empty"
+      data-element-id="21"
+      data-element-name="SEAT 1 레이블"
+      data-element-group="seat"
+    >
+      <span class="seat-lbl">SEAT 1</span>
+    </div>
+
+    <!-- id=22: SEAT 2 (turn: 현재 액션 차례) -->
+    <div
+      class="seat-cell turn"
+      data-element-id="22"
+      data-element-name="SEAT 2 레이블"
+      data-element-group="seat"
+    >
+      <span class="seat-lbl">SEAT 2</span>
+    </div>
+
+    <div
+      class="seat-cell active"
+      data-element-id="23"
+      data-element-name="SEAT 3 레이블"
+      data-element-group="seat"
+    >
+      <span class="seat-lbl">SEAT 3</span>
+    </div>
+
+    <div
+      class="seat-cell empty"
+      data-element-id="24"
+      data-element-name="SEAT 4 레이블"
+      data-element-group="seat"
+    >
+      <span class="seat-lbl">SEAT 4</span>
+    </div>
+
+    <div
+      class="seat-cell empty"
+      data-element-id="25"
+      data-element-name="SEAT 5 레이블"
+      data-element-group="seat"
+    >
+      <span class="seat-lbl">SEAT 5</span>
+    </div>
+
+    <div
+      class="seat-cell empty"
+      data-element-id="26"
+      data-element-name="SEAT 6 레이블"
+      data-element-group="seat"
+    >
+      <span class="seat-lbl">SEAT 6</span>
+    </div>
+
+    <div
+      class="seat-cell empty"
+      data-element-id="27"
+      data-element-name="SEAT 7 레이블"
+      data-element-group="seat"
+    >
+      <span class="seat-lbl">SEAT 7</span>
+    </div>
+
+    <div
+      class="seat-cell empty"
+      data-element-id="28"
+      data-element-name="SEAT 8 레이블"
+      data-element-group="seat"
+    >
+      <span class="seat-lbl">SEAT 8</span>
+    </div>
+
+    <div
+      class="seat-cell empty"
+      data-element-id="29"
+      data-element-name="SEAT 9 레이블"
+      data-element-group="seat"
+    >
+      <span class="seat-lbl">SEAT 9</span>
+    </div>
+
+    <div
+      class="seat-cell empty"
+      data-element-id="30"
+      data-element-name="SEAT 10 레이블"
+      data-element-group="seat"
+    >
+      <span class="seat-lbl">SEAT<br>10</span>
+    </div>
+
+  </div>
+
+  <!-- Middle background -->
+  <div class="middle-bg"></div>
+
+  <!-- id=31: MISS DEAL -->
+  <div
+    class="miss-deal"
+    data-element-id="31"
+    data-element-name="MISS DEAL 버튼"
+    data-element-group="action_panel"
+  >
+    <span class="btn-lbl">MISS<br>DEAL</span>
+  </div>
+
+  <!-- id=32: TAG -->
+  <div
+    class="tag-btn"
+    data-element-id="32"
+    data-element-name="TAG 버튼"
+    data-element-group="action_panel"
+  >
+    <span class="star-icon">&#9733;</span>
+  </div>
+
+  <!-- id=33: Community Cards (Flop: 7♥ 6♠ 4♥) -->
+  <div
+    class="community-area"
+    data-element-id="33"
+    data-element-name="커뮤니티 카드 영역"
+    data-element-group="community_cards"
+  >
+    <div class="comm-card red">7&#9829;</div>
+    <div class="comm-card black">6&#9824;</div>
+    <div class="comm-card red">4&#9829;</div>
+  </div>
+
+  <!-- id=34: Player Info Bar -->
+  <div
+    class="player-info"
+    data-element-id="34"
+    data-element-name="플레이어 정보 바"
+    data-element-group="info_bar"
+  >
+    <span class="info-lbl">(2) SEAT 2 - STACK 995,000</span>
+  </div>
+
+  <!-- id=35: Record Button -->
+  <div
+    class="record-btn"
+    data-element-id="35"
+    data-element-name="녹화/레코딩 버튼"
+    data-element-group="action_panel"
+  >
+    <div class="record-dot"></div>
+  </div>
+
+  <!-- id=36: HIDE GFX -->
+  <div
+    class="hide-gfx"
+    data-element-id="36"
+    data-element-name="HIDE GFX 버튼"
+    data-element-group="action_panel"
+  >
+    <span class="btn-lbl">HIDE GFX</span>
+  </div>
+
+  <!-- BOTTOM ACTION BUTTONS -->
+  <div class="action-row">
+
+    <!-- id=37: Back -->
+    <div
+      class="act-btn btn-back"
+      data-element-id="37"
+      data-element-name="← 뒤로가기 버튼"
+      data-element-group="action_panel"
+    >
+      <span class="act-lbl">&#8592;</span>
+    </div>
+
+    <!-- id=38: FOLD -->
+    <div
+      class="act-btn btn-fold"
+      data-element-id="38"
+      data-element-name="FOLD 버튼"
+      data-element-group="action_button"
+    >
+      <span class="act-lbl">FOLD</span>
+    </div>
+
+    <!-- id=39: CHECK -->
+    <div
+      class="act-btn btn-call"
+      data-element-id="39"
+      data-element-name="CHECK 버튼"
+      data-element-group="action_button"
+    >
+      <span class="act-lbl">CHECK</span>
+    </div>
+
+    <!-- id=40: BET -->
+    <div
+      class="act-btn btn-raise"
+      data-element-id="40"
+      data-element-name="BET 버튼"
+      data-element-group="action_button"
+    >
+      <span class="act-lbl">BET</span>
+    </div>
+
+    <!-- id=41: ALL IN -->
+    <div
+      class="act-btn btn-allin"
+      data-element-id="41"
+      data-element-name="ALL IN 버튼"
+      data-element-group="action_button"
+    >
+      <span class="act-lbl">ALL IN</span>
+    </div>
+
+    <div class="btn-spacer"></div>
+  </div>
+
+</div>
+</body>
+</html>

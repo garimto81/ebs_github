@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=786">
+<title>AT-01: Setup Mode</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  .screenshot-container {
+    width: 786px;
+    height: 553px;
+    position: relative;
+    background: #1a1a1a;
+    overflow: hidden;
+  }
+
+  /* =========================================
+     TITLEBAR (id=1~5)
+     ========================================= */
+  .titlebar {
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%;
+    height: 3.5%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    z-index: 10;
+  }
+  .titlebar-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    background: #4a7a4a;
+    border-radius: 2px;
+    flex-shrink: 0;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+  .titlebar-text {
+    color: #333;
+    font-size: 11px;
+    flex: 1;
+  }
+  .titlebar-buttons {
+    display: flex;
+    height: 100%;
+  }
+  .titlebar-btn {
+    width: 30px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .titlebar-btn:hover { background: #ddd; }
+  .titlebar-btn.close-btn:hover { background: #e74c3c; color: #fff; }
+
+  /* =========================================
+     TOOLBAR (id=6~17)
+     ========================================= */
+  .toolbar {
+    position: absolute;
+    left: 0;
+    top: 3.5%;
+    width: 100%;
+    height: 9%;
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #444;
+    z-index: 5;
+  }
+  .toolbar-cell {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  /* id=6: USB (0~5%) */
+  .tb-usb {
+    width: 5%;
+    background: #3a3a3a;
+    border-right: 1px solid #555;
+  }
+  .usb-icon {
+    color: #999;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  /* id=7: WiFi (5~10.5%) */
+  .tb-wifi {
+    width: 5.5%;
+    background: #4CAF50;
+    border-right: 1px solid #555;
+  }
+  .wifi-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 20px;
+  }
+  .wifi-bar {
+    width: 4px;
+    background: #fff;
+    border-radius: 1px;
+  }
+
+  /* id=8: Hand Number Box */
+  .tb-hand-box {
+    width: 8%;
+    background: #111;
+    border: 1px solid #666;
+    margin: 0 2px;
+    position: relative;
+  }
+  .hand-num-display {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+  }
+
+  /* id=9: HAND label */
+  .tb-hand-label {
+    position: absolute;
+    left: 12%;
+    top: 3.5%;
+    width: 8%;
+    height: 2.5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 6;
+    pointer-events: none;
+  }
+  .hand-lbl-text {
+    color: #aaa;
+    font-size: 8px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  /* id=10: Back arrow */
+  .tb-arrow {
+    width: 3.5%;
+    background: #333;
+    border-right: 1px solid #555;
+  }
+  .arrow-text {
+    color: #ccc;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  /* id=12: AUTO */
+  .tb-auto {
+    width: 8.5%;
+    background: #333;
+    border-right: 1px solid #555;
+  }
+  .auto-text {
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  /* Spacer */
+  .tb-spacer {
+    flex: 1;
+    background: #2a2a2a;
+  }
+
+  /* id=13: Video */
+  .tb-video {
+    width: 5.5%;
+    background: #333;
+    border-left: 1px solid #555;
+    border-right: 1px solid #555;
+  }
+  .video-icon {
+    color: #ccc;
+    font-size: 16px;
+  }
+
+  /* id=14: GFX */
+  .tb-gfx {
+    width: 7%;
+    background: #333;
+    border-right: 1px solid #555;
+  }
+  .tb-gfx .lbl {
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  /* id=15: Snapshot */
+  .tb-snapshot {
+    width: 5.5%;
+    background: #333;
+    border-right: 1px solid #555;
+  }
+  .snapshot-icon {
+    color: #ccc;
+    font-size: 16px;
+  }
+
+  /* id=16: Fullscreen */
+  .tb-fullscreen {
+    width: 5.5%;
+    background: #333;
+    border-right: 1px solid #555;
+  }
+  .expand-icon {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    width: 16px; height: 16px;
+  }
+  .expand-icon span {
+    color: #ccc;
+    font-size: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* id=17: Close X */
+  .tb-close {
+    width: 4.5%;
+    background: #C0392B;
+    border-right: none;
+  }
+  .tb-close .lbl {
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  /* =========================================
+     CARD SLOTS ROW (id=18~27)
+     ========================================= */
+  .card-slots-row {
+    position: absolute;
+    left: 0;
+    top: 13%;
+    width: 100%;
+    height: 19.5%;
+    display: flex;
+    background: #1a1a1a;
+    z-index: 5;
+  }
+  .card-slot {
+    width: 9.7%;
+    height: 100%;
+    background: #8B0000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #600;
+    cursor: pointer;
+    flex-shrink: 0;
+    gap: 2px;
+  }
+  .card-slot:last-child {
+    width: 12.3%;
+    border-right: none;
+  }
+  .mini-card {
+    width: 28px;
+    height: 40px;
+    background: #f5f0e0;
+    border-radius: 3px;
+    border: 1px solid #a08060;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: bold;
+    line-height: 1.1;
+    position: relative;
+  }
+  .mini-card .suit {
+    font-size: 12px;
+    line-height: 1;
+  }
+  .mini-card .rank {
+    font-size: 10px;
+    font-weight: bold;
+  }
+  .suit-spade { color: #000; }
+  .suit-heart { color: #c00; }
+  .suit-diamond { color: #c00; }
+  .suit-club { color: #000; }
+
+  /* =========================================
+     SEAT LABELS ROW (id=28~37)
+     ========================================= */
+  .seat-labels-row {
+    position: absolute;
+    left: 0;
+    top: 32.7%;
+    width: 100%;
+    height: 5.8%;
+    display: flex;
+    z-index: 5;
+  }
+  .seat-cell {
+    width: 9.7%;
+    height: 100%;
+    background: #C0392B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #a02020;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .seat-cell:last-child {
+    width: 12.3%;
+    border-right: none;
+  }
+  .seat-lbl {
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* =========================================
+     STRADDLE ROW (id=38~47)
+     ========================================= */
+  .straddle-row {
+    position: absolute;
+    left: 0;
+    top: 38.5%;
+    width: 100%;
+    height: 5.6%;
+    display: flex;
+    z-index: 5;
+  }
+  .straddle-cell {
+    width: 9.7%;
+    height: 100%;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #444;
+    border-bottom: 1px solid #444;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .straddle-cell:last-child {
+    width: 12.3%;
+    border-right: none;
+  }
+  .straddle-lbl {
+    color: #999;
+    font-size: 7px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* =========================================
+     CHIP INPUT ROW (id=48~57)
+     ========================================= */
+  .position-row {
+    position: absolute;
+    left: 0;
+    top: 44.3%;
+    width: 100%;
+    height: 9%;
+    display: flex;
+    z-index: 5;
+  }
+  .position-cell {
+    width: 9.7%;
+    height: 100%;
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #444;
+    cursor: pointer;
+    flex-shrink: 0;
+    gap: 3px;
+  }
+  .position-cell:last-child {
+    width: 12.3%;
+    border-right: none;
+  }
+  .pos-marker {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+  .pos-red { background: #c0392b; }
+  .pos-yellow { background: #f39c12; }
+  .pos-blue { background: #2980b9; }
+  .pos-green { background: #27ae60; }
+
+  /* =========================================
+     BLIND CONTROLS (id=58~74, 95~96, 101~102)
+     ========================================= */
+  .blind-row {
+    position: absolute;
+    left: 0;
+    top: 53.5%;
+    width: 100%;
+    height: 13%;
+    background: #1a1a1a;
+    z-index: 5;
+  }
+  .blind-label-box {
+    position: absolute;
+    height: 40%;
+    top: 0;
+    background: #556B2F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #6B8E23;
+    cursor: pointer;
+  }
+  .blind-lbl {
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .blind-arrow-btn {
+    position: absolute;
+    height: 48%;
+    top: 52%;
+    background: #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #555;
+    cursor: pointer;
+  }
+  .blind-arrow-btn:hover { background: #555; }
+  .blind-empty-box {
+    position: absolute;
+    height: 48%;
+    top: 52%;
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #444;
+  }
+  .blind-value-input {
+    position: absolute;
+    height: 48%;
+    top: 52%;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #555;
+    cursor: pointer;
+  }
+  .blind-value-input:hover { background: #444; }
+  .val-lbl {
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .arrow-lbl {
+    color: #ccc;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  /* Blind box positions — 7-column grid, 1% gap */
+  /* Col widths: CAP 11% | ANTE 11% | BTN 13% | DEALER 12% | SB 16% | BB 16% | 3B 14% = 93% + 6×1% gap = 99% */
+  .bl-cap       { left: 0.5%;  width: 11%; }
+  .bl-ante      { left: 12.5%; width: 11%; }
+  .bl-btn-blind { left: 24.5%; width: 13%; }
+  .bl-dealer    { left: 38.5%; width: 12%; }
+  .bl-sb        { left: 51.5%; width: 16%; }
+  .bl-bb        { left: 68.5%; width: 16%; }
+  .bl-3b        { left: 85.5%; width: 14%; }
+
+  /* Row 2 — value inputs & arrow buttons aligned to headers */
+  .val-cap        { left: 0.5%;  width: 11%; }
+  .val-ante       { left: 12.5%; width: 11%; }
+  .val-btn-blind  { left: 24.5%; width: 13%; }
+  .arr-dealer-dec { left: 38.5%; width: 6%; }
+  .arr-dealer-inc { left: 44.5%; width: 6%; }
+  .arr-sb-pos-dec { left: 51.5%; width: 3.5%; }
+  .chip-sb-display{ left: 55%;   width: 9%; }
+  .arr-sb-pos-inc { left: 64%;   width: 3.5%; }
+  .arr-bb-pos-dec { left: 68.5%; width: 3.5%; }
+  .chip-bb-display{ left: 72%;   width: 9%; }
+  .arr-bb-pos-inc { left: 81%;   width: 3.5%; }
+  .arr-3b-dec     { left: 85.5%; width: 3%; }
+  .chip-3b-display{ left: 88.5%; width: 8%; }
+  .arr-3b-inc     { left: 96.5%; width: 3%; }
+
+  /* Blind chip display button */
+  .blind-chip-display {
+    position: absolute;
+    height: 48%;
+    top: 52%;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #666;
+    cursor: pointer;
+  }
+  .chip-display-text {
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+  }
+
+  /* =========================================
+     GAME SETTINGS ROW (id=75~80)
+     ========================================= */
+  .game-settings-row {
+    position: absolute;
+    left: 0;
+    top: 68.5%;
+    width: 100%;
+    height: 7%;
+    background: #1a1a1a;
+    z-index: 5;
+  }
+  .gs-btn {
+    position: absolute;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #6B8E23;
+  }
+  .gs-btn:hover { filter: brightness(1.15); }
+  .gs-lbl {
+    color: #fff;
+    font-size: 9px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0 2px;
+  }
+
+  /* Game settings header positions — 5-column grid + HOLDEM */
+  .gs-min-chip { left: 0.5%;  width: 10%; background: #556B2F; }
+  .gs-7deuce   { left: 11%;   width: 10%; background: #556B2F; }
+  .gs-bomb-pot { left: 21.5%; width: 10%; background: #556B2F; }
+  .gs-boards   { left: 32%;   width: 10%; background: #556B2F; }
+  .gs-hit-game { left: 42.5%; width: 10%; background: #556B2F; }
+  .gs-holdem   { left: 53%;   width: 46.5%; background: #6B8E23; }
+
+  /* id=82: SINGLE BOARD */
+  .single-board-btn {
+    position: absolute;
+    left: 32%;
+    top: 0;
+    width: 10%;
+    height: 100%;
+    background: #8FBC8F;
+    border: 2px solid #6B8E23;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .single-board-btn:hover { filter: brightness(1.1); }
+  .single-board-lbl {
+    color: #fff;
+    font-size: 9px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.3;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+
+  /* id=83: SETTINGS (value row) */
+  .settings-btn {
+    position: absolute;
+    left: 53%;
+    top: 0;
+    width: 46.5%;
+    height: 100%;
+    background: #6B8E23;
+    border: 2px solid #556B2F;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .settings-btn:hover { filter: brightness(1.1); }
+  .settings-lbl {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+
+  /* =========================================
+     GAME SETTINGS VALUE BUTTONS (id=85,87,89,91,93)
+     ========================================= */
+  .gs-value-row {
+    position: absolute;
+    left: 0;
+    top: 75.5%;
+    width: 100%;
+    height: 20%;
+    background: #1a1a1a;
+    z-index: 5;
+  }
+  .gs-value-btn {
+    position: absolute;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #556B2F;
+    border: 1px solid #6B8E23;
+    cursor: pointer;
+  }
+  .gs-value-btn:hover { filter: brightness(1.15); }
+  .gs-value-lbl {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  /* Value button positions — aligned to 75~79 headers */
+  .gsv-min-chip { left: 0.5%;  width: 10%; }
+  .gsv-7deuce   { left: 11%;   width: 10%; }
+  .gsv-bomb-pot { left: 21.5%; width: 10%; }
+  .gsv-hit-game { left: 42.5%; width: 10%; }
+</style>
+</head>
+<body>
+<div class="screenshot-container">
+
+  <!-- ===== TITLEBAR ===== -->
+  <div class="titlebar">
+    <!-- id=1: App Icon -->
+    <div
+      class="titlebar-icon"
+      data-element-id="1"
+      data-element-name="app-icon"
+      data-element-group="titlebar"
+    >&#9654;</div>
+
+    <!-- id=2: Title Text -->
+    <span
+      class="titlebar-text"
+      data-element-id="2"
+      data-element-name="title-text"
+      data-element-group="titlebar"
+    >PokerGFX Action Tracker &copy; 2026</span>
+
+    <div class="titlebar-buttons">
+      <!-- id=3: Minimize -->
+      <div
+        class="titlebar-btn"
+        data-element-id="3"
+        data-element-name="minimize-button"
+        data-element-group="titlebar"
+      >&#8212;</div>
+      <!-- id=4: Maximize -->
+      <div
+        class="titlebar-btn"
+        data-element-id="4"
+        data-element-name="maximize-button"
+        data-element-group="titlebar"
+      >&#9633;</div>
+      <!-- id=5: Close -->
+      <div
+        class="titlebar-btn close-btn"
+        data-element-id="5"
+        data-element-name="close-button-window"
+        data-element-group="titlebar"
+      >&#10005;</div>
+    </div>
+  </div>
+
+  <!-- ===== TOOLBAR ===== -->
+  <div class="toolbar">
+
+    <!-- id=6: USB -->
+    <div
+      class="toolbar-cell tb-usb"
+      data-element-id="6"
+      data-element-name="usb-connection-icon"
+      data-element-group="titlebar"
+    >
+      <span class="usb-icon">&#9783;</span>
+    </div>
+
+    <!-- id=7: WiFi -->
+    <div
+      class="toolbar-cell tb-wifi"
+      data-element-id="7"
+      data-element-name="wifi-signal-icon"
+      data-element-group="titlebar"
+    >
+      <div class="wifi-bars">
+        <div class="wifi-bar" style="height:5px;"></div>
+        <div class="wifi-bar" style="height:9px;"></div>
+        <div class="wifi-bar" style="height:13px;"></div>
+        <div class="wifi-bar" style="height:17px;"></div>
+      </div>
+    </div>
+
+    <!-- id=9: HAND label (overlay positioned) -->
+    <div
+      class="tb-hand-label"
+      data-element-id="9"
+      data-element-name="hand-label"
+      data-element-group="hand_control"
+    >
+      <span class="hand-lbl-text">HAND</span>
+    </div>
+
+    <!-- id=8: Hand Number Box -->
+    <div
+      class="toolbar-cell tb-hand-box"
+      data-element-id="8"
+      data-element-name="hand-number-box"
+      data-element-group="hand_control"
+    >
+      <span class="hand-num-display">1</span>
+    </div>
+
+    <!-- id=10: Back Arrow -->
+    <div
+      class="toolbar-cell tb-arrow"
+      data-element-id="10"
+      data-element-name="hand-back-arrow"
+      data-element-group="hand_control"
+    >
+      <span class="arrow-text">&#9664;</span>
+    </div>
+
+    <!-- id=11: Forward Arrow -->
+    <div
+      class="toolbar-cell tb-arrow"
+      data-element-id="11"
+      data-element-name="hand-forward-arrow"
+      data-element-group="hand_control"
+    >
+      <span class="arrow-text">&#9654;</span>
+    </div>
+
+    <!-- id=12: AUTO -->
+    <div
+      class="toolbar-cell tb-auto"
+      data-element-id="12"
+      data-element-name="auto-button"
+      data-element-group="hand_control"
+    >
+      <span class="auto-text">AUTO</span>
+    </div>
+
+    <!-- Spacer -->
+    <div class="tb-spacer"></div>
+
+    <!-- id=13: Video Source -->
+    <div
+      class="toolbar-cell tb-video"
+      data-element-id="13"
+      data-element-name="video-source-icon-button"
+      data-element-group="toolbar"
+    >
+      <span class="video-icon">&#128249;</span>
+    </div>
+
+    <!-- id=14: GFX -->
+    <div
+      class="toolbar-cell tb-gfx"
+      data-element-id="14"
+      data-element-name="gfx-button"
+      data-element-group="toolbar"
+    >
+      <span class="lbl">GFX</span>
+    </div>
+
+    <!-- id=15: Snapshot -->
+    <div
+      class="toolbar-cell tb-snapshot"
+      data-element-id="15"
+      data-element-name="snapshot-icon-button"
+      data-element-group="toolbar"
+    >
+      <span class="snapshot-icon">&#128247;</span>
+    </div>
+
+    <!-- id=16: Fullscreen -->
+    <div
+      class="toolbar-cell tb-fullscreen"
+      data-element-id="16"
+      data-element-name="fullscreen-icon-button"
+      data-element-group="toolbar"
+    >
+      <div class="expand-icon">
+        <span>&#8598;</span>
+        <span>&#8599;</span>
+        <span>&#8601;</span>
+        <span>&#8600;</span>
+      </div>
+    </div>
+
+    <!-- id=17: Close X -->
+    <div
+      class="toolbar-cell tb-close"
+      data-element-id="17"
+      data-element-name="app-close-button"
+      data-element-group="toolbar"
+    >
+      <span class="lbl">X</span>
+    </div>
+
+  </div>
+
+  <!-- ===== CARD SLOTS ROW (id=18~27) ===== -->
+  <div class="card-slots-row">
+
+    <div class="card-slot" data-element-id="18" data-element-name="seat-1-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-spade">&#9824;</span><span class="rank">A</span></div>
+      <div class="mini-card"><span class="rank suit-heart">&#9829;</span><span class="rank">K</span></div>
+    </div>
+
+    <div class="card-slot" data-element-id="19" data-element-name="seat-2-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-diamond">&#9830;</span><span class="rank">Q</span></div>
+      <div class="mini-card"><span class="rank suit-club">&#9827;</span><span class="rank">J</span></div>
+    </div>
+
+    <div class="card-slot" data-element-id="20" data-element-name="seat-3-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-spade">&#9824;</span><span class="rank">T</span></div>
+      <div class="mini-card"><span class="rank suit-heart">&#9829;</span><span class="rank">9</span></div>
+    </div>
+
+    <div class="card-slot" data-element-id="21" data-element-name="seat-4-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-diamond">&#9830;</span><span class="rank">8</span></div>
+      <div class="mini-card"><span class="rank suit-club">&#9827;</span><span class="rank">7</span></div>
+    </div>
+
+    <div class="card-slot" data-element-id="22" data-element-name="seat-5-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-spade">&#9824;</span><span class="rank">6</span></div>
+      <div class="mini-card"><span class="rank suit-heart">&#9829;</span><span class="rank">5</span></div>
+    </div>
+
+    <div class="card-slot" data-element-id="23" data-element-name="seat-6-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-diamond">&#9830;</span><span class="rank">4</span></div>
+      <div class="mini-card"><span class="rank suit-club">&#9827;</span><span class="rank">3</span></div>
+    </div>
+
+    <div class="card-slot" data-element-id="24" data-element-name="seat-7-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-spade">&#9824;</span><span class="rank">2</span></div>
+      <div class="mini-card"><span class="rank suit-heart">&#9829;</span><span class="rank">A</span></div>
+    </div>
+
+    <div class="card-slot" data-element-id="25" data-element-name="seat-8-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-diamond">&#9830;</span><span class="rank">K</span></div>
+      <div class="mini-card"><span class="rank suit-club">&#9827;</span><span class="rank">Q</span></div>
+    </div>
+
+    <div class="card-slot" data-element-id="26" data-element-name="seat-9-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-spade">&#9824;</span><span class="rank">J</span></div>
+      <div class="mini-card"><span class="rank suit-heart">&#9829;</span><span class="rank">T</span></div>
+    </div>
+
+    <div class="card-slot" data-element-id="27" data-element-name="seat-10-card-slot" data-element-group="card_area">
+      <div class="mini-card"><span class="rank suit-diamond">&#9830;</span><span class="rank">9</span></div>
+      <div class="mini-card"><span class="rank suit-club">&#9827;</span><span class="rank">8</span></div>
+    </div>
+
+  </div>
+
+  <!-- ===== SEAT LABELS ROW (id=28~37) ===== -->
+  <div class="seat-labels-row">
+    <div class="seat-cell" data-element-id="28" data-element-name="seat-1-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 1</span>
+    </div>
+    <div class="seat-cell" data-element-id="29" data-element-name="seat-2-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 2</span>
+    </div>
+    <div class="seat-cell" data-element-id="30" data-element-name="seat-3-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 3</span>
+    </div>
+    <div class="seat-cell" data-element-id="31" data-element-name="seat-4-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 4</span>
+    </div>
+    <div class="seat-cell" data-element-id="32" data-element-name="seat-5-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 5</span>
+    </div>
+    <div class="seat-cell" data-element-id="33" data-element-name="seat-6-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 6</span>
+    </div>
+    <div class="seat-cell" data-element-id="34" data-element-name="seat-7-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 7</span>
+    </div>
+    <div class="seat-cell" data-element-id="35" data-element-name="seat-8-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 8</span>
+    </div>
+    <div class="seat-cell" data-element-id="36" data-element-name="seat-9-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT 9</span>
+    </div>
+    <div class="seat-cell" data-element-id="37" data-element-name="seat-10-label" data-element-group="seat">
+      <span class="seat-lbl">SEAT<br>10</span>
+    </div>
+  </div>
+
+  <!-- ===== STRADDLE ROW (id=38~47) ===== -->
+  <div class="straddle-row">
+    <div class="straddle-cell" data-element-id="38" data-element-name="seat-1-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <div class="straddle-cell" data-element-id="39" data-element-name="seat-2-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <div class="straddle-cell" data-element-id="40" data-element-name="seat-3-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <div class="straddle-cell" data-element-id="41" data-element-name="seat-4-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <div class="straddle-cell" data-element-id="42" data-element-name="seat-5-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <div class="straddle-cell" data-element-id="43" data-element-name="seat-6-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <div class="straddle-cell" data-element-id="44" data-element-name="seat-7-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <div class="straddle-cell" data-element-id="45" data-element-name="seat-8-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <div class="straddle-cell" data-element-id="46" data-element-name="seat-9-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+    <div class="straddle-cell" data-element-id="47" data-element-name="seat-10-straddle" data-element-group="option">
+      <span class="straddle-lbl">STRADDLE</span>
+    </div>
+  </div>
+
+  <!-- ===== CHIP INPUT ROW (id=48~57) ===== -->
+  <div class="position-row">
+    <div class="position-cell" data-element-id="48" data-element-name="seat-1-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-red"></div>
+      <div class="pos-marker pos-yellow"></div>
+    </div>
+    <div class="position-cell" data-element-id="49" data-element-name="seat-2-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-blue"></div>
+      <div class="pos-marker pos-green"></div>
+    </div>
+    <div class="position-cell" data-element-id="50" data-element-name="seat-3-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-red"></div>
+      <div class="pos-marker pos-yellow"></div>
+    </div>
+    <div class="position-cell" data-element-id="51" data-element-name="seat-4-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-blue"></div>
+      <div class="pos-marker pos-green"></div>
+    </div>
+    <div class="position-cell" data-element-id="52" data-element-name="seat-5-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-red"></div>
+      <div class="pos-marker pos-yellow"></div>
+    </div>
+    <div class="position-cell" data-element-id="53" data-element-name="seat-6-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-blue"></div>
+      <div class="pos-marker pos-green"></div>
+    </div>
+    <div class="position-cell" data-element-id="54" data-element-name="seat-7-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-red"></div>
+      <div class="pos-marker pos-yellow"></div>
+    </div>
+    <div class="position-cell" data-element-id="55" data-element-name="seat-8-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-blue"></div>
+      <div class="pos-marker pos-green"></div>
+    </div>
+    <div class="position-cell" data-element-id="56" data-element-name="seat-9-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-red"></div>
+      <div class="pos-marker pos-yellow"></div>
+    </div>
+    <div class="position-cell" data-element-id="57" data-element-name="seat-10-chip-input" data-element-group="chip_input">
+      <div class="pos-marker pos-blue"></div>
+      <div class="pos-marker pos-green"></div>
+    </div>
+  </div>
+
+  <!-- ===== BLIND CONTROLS (id=58~74, 95~96, 101~102) ===== -->
+  <div class="blind-row">
+
+    <!-- Row 1: Label boxes (top) -->
+    <div class="blind-label-box bl-cap" data-element-id="58" data-element-name="cap-control" data-element-group="blind">
+      <span class="blind-lbl">CAP</span>
+    </div>
+    <div class="blind-label-box bl-ante" data-element-id="59" data-element-name="ante-control" data-element-group="blind">
+      <span class="blind-lbl">ANTE</span>
+    </div>
+    <div class="blind-label-box bl-btn-blind" data-element-id="60" data-element-name="btn-blind-control" data-element-group="blind">
+      <span class="blind-lbl">BTN<br>BLIND</span>
+    </div>
+    <div class="blind-label-box bl-dealer" data-element-id="61" data-element-name="dealer-control" data-element-group="blind">
+      <span class="blind-lbl">DEALER</span>
+    </div>
+    <div class="blind-label-box bl-sb" data-element-id="62" data-element-name="sb-control" data-element-group="blind">
+      <span class="blind-lbl">SB</span>
+    </div>
+    <div class="blind-label-box bl-bb" data-element-id="63" data-element-name="bb-control" data-element-group="blind">
+      <span class="blind-lbl">BB</span>
+    </div>
+    <div class="blind-label-box bl-3b" data-element-id="64" data-element-name="3b-control" data-element-group="blind">
+      <span class="blind-lbl">3B</span>
+    </div>
+
+    <!-- Row 2: All buttons (single row) -->
+    <div class="blind-value-input val-cap" data-element-id="65" data-element-name="cap-value-input" data-element-group="blind">
+      <span class="val-lbl">0</span>
+    </div>
+    <div class="blind-value-input val-ante" data-element-id="67" data-element-name="ante-value-input" data-element-group="blind">
+      <span class="val-lbl">0</span>
+    </div>
+    <div class="blind-value-input val-btn-blind" data-element-id="101" data-element-name="btn-blind-value-input" data-element-group="blind">
+      <span class="val-lbl">0</span>
+    </div>
+    <div class="blind-arrow-btn arr-dealer-dec" data-element-id="95" data-element-name="dealer-position-left" data-element-group="blind">
+      <span class="arrow-lbl">&#9664;</span>
+    </div>
+    <div class="blind-arrow-btn arr-dealer-inc" data-element-id="96" data-element-name="dealer-position-right" data-element-group="blind">
+      <span class="arrow-lbl">&#9654;</span>
+    </div>
+    <div class="blind-arrow-btn arr-sb-pos-dec" data-element-id="69" data-element-name="sb-position-left" data-element-group="blind">
+      <span class="arrow-lbl">&#9664;</span>
+    </div>
+    <div class="blind-chip-display chip-sb-display" data-element-name="sb-chip-display" data-element-group="blind">
+      <span class="chip-display-text">200</span>
+    </div>
+    <div class="blind-arrow-btn arr-sb-pos-inc" data-element-id="70" data-element-name="sb-position-right" data-element-group="blind">
+      <span class="arrow-lbl">&#9654;</span>
+    </div>
+    <div class="blind-arrow-btn arr-bb-pos-dec" data-element-id="71" data-element-name="bb-position-left" data-element-group="blind">
+      <span class="arrow-lbl">&#9664;</span>
+    </div>
+    <div class="blind-chip-display chip-bb-display" data-element-name="bb-chip-display" data-element-group="blind">
+      <span class="chip-display-text">400</span>
+    </div>
+    <div class="blind-arrow-btn arr-bb-pos-inc" data-element-id="72" data-element-name="bb-position-right" data-element-group="blind">
+      <span class="arrow-lbl">&#9654;</span>
+    </div>
+    <div class="blind-arrow-btn arr-3b-dec" data-element-id="73" data-element-name="3b-value-input-left" data-element-group="blind">
+      <span class="arrow-lbl">&#9664;</span>
+    </div>
+    <div class="blind-chip-display chip-3b-display" data-element-name="3b-chip-display" data-element-group="blind">
+      <span class="chip-display-text">800</span>
+    </div>
+    <div class="blind-arrow-btn arr-3b-inc" data-element-id="74" data-element-name="3b-value-input-right" data-element-group="blind">
+      <span class="arrow-lbl">&#9654;</span>
+    </div>
+
+  </div>
+
+  <!-- ===== GAME SETTINGS ROW (id=75~80) ===== -->
+  <div class="game-settings-row">
+    <div class="gs-btn gs-min-chip" data-element-id="75" data-element-name="min-chip-button" data-element-group="game_settings">
+      <span class="gs-lbl">MIN<br>CHIP</span>
+    </div>
+    <div class="gs-btn gs-7deuce" data-element-id="76" data-element-name="7-deuce-button" data-element-group="game_settings">
+      <span class="gs-lbl">7<br>DEUCE</span>
+    </div>
+    <div class="gs-btn gs-bomb-pot" data-element-id="77" data-element-name="bomb-pot-button" data-element-group="game_settings">
+      <span class="gs-lbl">BOMB<br>POT</span>
+    </div>
+    <div class="gs-btn gs-boards" data-element-id="78" data-element-name="boards-button" data-element-group="game_settings">
+      <span class="gs-lbl">#<br>BOARDS</span>
+    </div>
+    <div class="gs-btn gs-hit-game" data-element-id="79" data-element-name="hit-game-button" data-element-group="game_settings">
+      <span class="gs-lbl">HIT<br>GAME</span>
+    </div>
+    <div class="gs-btn gs-holdem" data-element-id="80" data-element-name="holdem-button" data-element-group="game_settings">
+      <span class="gs-lbl" style="font-size:14px;">HOLDEM</span>
+    </div>
+  </div>
+
+  <!-- ===== GAME SETTINGS VALUE BUTTONS (id=85,87,89,91,93) — aligned under headers ===== -->
+  <div class="gs-value-row">
+    <div class="gs-value-btn gsv-min-chip" data-element-id="85"
+         data-element-name="min-chip-value" data-element-group="game_settings">
+      <span class="gs-value-lbl">100</span>
+    </div>
+    <div class="gs-value-btn gsv-7deuce" data-element-id="87"
+         data-element-name="7-deuce-value" data-element-group="game_settings">
+      <span class="gs-value-lbl">0</span>
+    </div>
+    <div class="gs-value-btn gsv-bomb-pot" data-element-id="89"
+         data-element-name="bomb-pot-value" data-element-group="game_settings">
+      <span class="gs-value-lbl">0</span>
+    </div>
+    <div class="gs-value-btn gsv-hit-game" data-element-id="93"
+         data-element-name="hit-game-value" data-element-group="game_settings">
+      <span class="gs-value-lbl">0</span>
+    </div>
+    <div class="single-board-btn" data-element-id="82" data-element-name="single-board-button" data-element-group="game_settings">
+      <span class="single-board-lbl">SINGLE<br>BOARD</span>
+    </div>
+    <div class="settings-btn" data-element-id="83"
+         data-element-name="settings-button" data-element-group="navigation">
+      <span class="settings-lbl">SETTINGS</span>
+    </div>
+  </div>
+
+
+</div>
+</body>
+</html>

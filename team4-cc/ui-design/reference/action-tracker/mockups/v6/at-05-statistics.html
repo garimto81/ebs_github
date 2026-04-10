@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=640">
+<title>AT-05: Statistics Panel — EBS Action Tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px 0;
+    font-family: 'Noto Sans KR', 'Segoe UI', Arial, sans-serif;
+  }
+
+  .screenshot-container {
+    width: 640px;
+    position: relative;
+    background: #ffffff;
+    overflow: hidden;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* =========================================
+     TITLEBAR (id=1)
+     ========================================= */
+  .titlebar {
+    width: 100%;
+    height: 36px;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-bottom: 1px solid #d0d0d0;
+    flex-shrink: 0;
+  }
+  .titlebar-icon {
+    width: 14px; height: 14px;
+    margin-right: 6px;
+    background: #1a1a1a;
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: #fff;
+  }
+  .titlebar-text {
+    color: #1a1a1a;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    flex: 1;
+  }
+  .titlebar-buttons {
+    display: flex;
+    height: 100%;
+  }
+  .titlebar-btn {
+    width: 36px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .titlebar-btn:hover { background: #e0e0e0; }
+  .titlebar-btn.close-btn:hover { background: #dd0000; color: #fff; }
+
+  /* =========================================
+     MAIN LAYOUT: table (left) + controls (right)
+     ========================================= */
+  .main-layout {
+    display: flex;
+    flex: 1;
+  }
+
+  /* =========================================
+     TABLE SECTION: left ~82%
+     ========================================= */
+  .table-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #d0d0d0;
+  }
+
+  /* Header row */
+  .hdr-row {
+    display: flex;
+    height: 32px;
+    flex-shrink: 0;
+    background: #f0f0f0;
+    border-bottom: 1px solid #d0d0d0;
+  }
+  .hdr-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #d0d0d0;
+    flex-shrink: 0;
+  }
+  .hdr-col:last-child { border-right: none; }
+  .hdr-col .col-lbl {
+    color: #1a1a1a;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  /* Column widths */
+  .col-seat  { width: 12.2%; }
+  .col-stack { width: 14.6%; }
+  .col-vpip  { width: 14.6%; }
+  .col-pfr   { width: 14.6%; }
+  .col-agrfq { width: 14.6%; }
+  .col-wtsd  { width: 14.6%; }
+  .col-win   { width: 14.6%; }
+
+  /* Data rows */
+  .data-rows {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .data-row {
+    display: flex;
+    height: 40px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .data-row:last-child { border-bottom: none; }
+  .data-row:nth-child(odd)  { background: #ffffff; }
+  .data-row:nth-child(even) { background: #fafafa; }
+
+  .data-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #e0e0e0;
+    flex-shrink: 0;
+    padding: 2px;
+  }
+  .data-cell:last-child { border-right: none; }
+
+  /* same column widths */
+  .dc-seat  { width: 12.2%; }
+  .dc-stack { width: 14.6%; }
+  .dc-vpip  { width: 14.6%; }
+  .dc-pfr   { width: 14.6%; }
+  .dc-agrfq { width: 14.6%; }
+  .dc-wtsd  { width: 14.6%; }
+  .dc-win   { width: 14.6%; }
+
+  /* Active seat label */
+  .seat-lbl-active {
+    color: #1a1a1a;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  /* Inactive seat label */
+  .seat-lbl-inactive {
+    color: #888;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* Data value box */
+  .val-box {
+    width: 90%;
+    height: 28px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .val-active {
+    background: #fafafa;
+    border: 1px solid #d0d0d0;
+    color: #1a1a1a;
+  }
+  .val-inactive {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    color: #ccc;
+  }
+  .val-neg { color: #dd0000; }
+  .val-empty { background: transparent; border: none; }
+
+  /* =========================================
+     RIGHT PANEL: ~18% width (SP-03)
+     ========================================= */
+  .right-panel {
+    width: 18%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px;
+    background: #fafafa;
+    flex-shrink: 0;
+  }
+
+  /* Top buttons: Expand + Close */
+  .rp-top-row {
+    display: flex;
+    gap: 4px;
+  }
+
+  /* id=10: Expand */
+  .btn-expand {
+    flex: 1;
+    height: 32px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+  }
+  .btn-expand:hover { background: #f0f0f0; }
+  .expand-icon {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2px;
+    width: 14px; height: 14px;
+  }
+  .expand-icon span {
+    color: #555;
+    font-size: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* id=11: Close */
+  .btn-close {
+    flex: 1;
+    height: 32px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+  }
+  .btn-close:hover { background: #dd0000; border-color: #dd0000; }
+  .btn-close:hover .x-lbl { color: #fff; }
+  .btn-close .x-lbl {
+    color: #555;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  /* =========================================
+     SP-03 Broadcast Control Buttons (v7.4.0)
+     ========================================= */
+  .sp03-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sp03-btn {
+    width: 100%;
+    height: 28px;
+    background: #fafafa;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #1a1a1a;
+  }
+  .sp03-btn:hover { background: #f0f0f0; }
+
+  /* Active state */
+  .sp03-btn.active {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #ffffff;
+  }
+  .sp03-btn.active:hover { background: #333; }
+
+  /* Input fields (REMAIN, TOTAL) */
+  .sp03-input {
+    width: 100%;
+    height: 28px;
+    background: #fafafa;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #1a1a1a;
+    text-align: right;
+    padding: 0 6px;
+    outline: none;
+  }
+  .sp03-input::placeholder {
+    color: #999;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .sp03-input:focus {
+    border-color: #1a1a1a;
+  }
+</style>
+</head>
+<body>
+<div class="screenshot-container">
+
+  <!-- id=1: Titlebar -->
+  <div class="titlebar">
+    <!-- id=1: Title Bar -->
+    <div class="titlebar-icon">&#9654;</div>
+    <span class="titlebar-text">EBS Action Tracker</span>
+    <div class="titlebar-buttons">
+      <div class="titlebar-btn">&#8212;</div>
+      <div class="titlebar-btn">&#9633;</div>
+      <div class="titlebar-btn close-btn">&#10005;</div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <!-- id=2~9: Table section -->
+    <div class="table-section">
+      <!-- Header row (ids 2-8) -->
+      <div class="hdr-row">
+        <!-- id=2: Header: SEAT -->
+        <div class="hdr-col col-seat"><span class="col-lbl">SEAT</span></div>
+        <!-- id=3: Header: STACK -->
+        <div class="hdr-col col-stack"><span class="col-lbl">STACK</span></div>
+        <!-- id=4: Header: VPIP% -->
+        <div class="hdr-col col-vpip"><span class="col-lbl">VPIP%</span></div>
+        <!-- id=5: Header: PFR% -->
+        <div class="hdr-col col-pfr"><span class="col-lbl">PFR%</span></div>
+        <!-- id=6: Header: AGRFq% -->
+        <div class="hdr-col col-agrfq"><span class="col-lbl">AGRFq%</span></div>
+        <!-- id=7: Header: WTSD% -->
+        <div class="hdr-col col-wtsd"><span class="col-lbl">WTSD%</span></div>
+        <!-- id=8: Header: WIN -->
+        <div class="hdr-col col-win"><span class="col-lbl">WIN</span></div>
+      </div>
+
+      <!-- id=9: Data Rows (SEAT 1-10) -->
+      <div class="data-rows">
+
+        <!-- SEAT 1 — active, stack only -->
+        <div class="data-row">
+          <div class="data-cell dc-seat"><span class="seat-lbl-active">SEAT 1</span></div>
+          <div class="data-cell dc-stack"><div class="val-box val-active">1,000,000</div></div>
+          <div class="data-cell dc-vpip"><div class="val-box val-active"></div></div>
+          <div class="data-cell dc-pfr"><div class="val-box val-active"></div></div>
+          <div class="data-cell dc-agrfq"><div class="val-box val-active"></div></div>
+          <div class="data-cell dc-wtsd"><div class="val-box val-active"></div></div>
+          <div class="data-cell dc-win"><div class="val-box val-active"></div></div>
+        </div>
+
+        <!-- SEAT 2 — active, with stats -->
+        <div class="data-row">
+          <div class="data-cell dc-seat"><span class="seat-lbl-active">SEAT 2</span></div>
+          <div class="data-cell dc-stack"><div class="val-box val-active">1,005,000</div></div>
+          <div class="data-cell dc-vpip"><div class="val-box val-active">100</div></div>
+          <div class="data-cell dc-pfr"><div class="val-box val-active">100</div></div>
+          <div class="data-cell dc-agrfq"><div class="val-box val-active"></div></div>
+          <div class="data-cell dc-wtsd"><div class="val-box val-active"></div></div>
+          <div class="data-cell dc-win"><div class="val-box val-active">5,000</div></div>
+        </div>
+
+        <!-- SEAT 3 — active, negative win -->
+        <div class="data-row">
+          <div class="data-cell dc-seat"><span class="seat-lbl-active">SEAT 3</span></div>
+          <div class="data-cell dc-stack"><div class="val-box val-active">995,000</div></div>
+          <div class="data-cell dc-vpip"><div class="val-box val-active">100</div></div>
+          <div class="data-cell dc-pfr"><div class="val-box val-active"></div></div>
+          <div class="data-cell dc-agrfq"><div class="val-box val-active"></div></div>
+          <div class="data-cell dc-wtsd"><div class="val-box val-active"></div></div>
+          <div class="data-cell dc-win"><div class="val-box val-active val-neg">-5,000</div></div>
+        </div>
+
+        <!-- SEAT 4-10: inactive -->
+        <div class="data-row">
+          <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 4</span></div>
+          <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 5</span></div>
+          <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 6</span></div>
+          <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 7</span></div>
+          <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 8</span></div>
+          <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 9</span></div>
+          <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 10</span></div>
+          <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+          <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Panel: SP-03 Broadcast Controls (v7.4.0) -->
+    <div class="right-panel">
+
+      <!-- id=10 + id=11: Expand & Close -->
+      <div class="rp-top-row">
+        <!-- id=10: Expand button -->
+        <div class="btn-expand">
+          <div class="expand-icon">
+            <span>&#8598;</span>
+            <span>&#8599;</span>
+            <span>&#8601;</span>
+            <span>&#8600;</span>
+          </div>
+        </div>
+        <!-- id=11: Close button -->
+        <div class="btn-close">
+          <span class="x-lbl">X</span>
+        </div>
+      </div>
+
+      <!-- SP-03 Broadcast Control Buttons -->
+      <div class="sp03-controls">
+
+        <!-- GFX: Toggle GFX overlay ON/OFF (shown active as example) -->
+        <button class="sp03-btn active"
+          data-element-id="sp03-gfx"
+          data-element-name="GFX"
+          data-element-group="broadcast_control">GFX</button>
+
+        <!-- HAND: Show/hide hand number graphic -->
+        <button class="sp03-btn"
+          data-element-id="sp03-hand"
+          data-element-name="HAND"
+          data-element-group="broadcast_control">HAND</button>
+
+        <!-- FIELD: Show/hide tournament field info -->
+        <button class="sp03-btn"
+          data-element-id="sp03-field"
+          data-element-name="FIELD"
+          data-element-group="broadcast_control">FIELD</button>
+
+        <!-- REMAIN: Input for remaining players count -->
+        <input class="sp03-input"
+          type="number"
+          placeholder="REMAIN"
+          data-element-id="sp03-remain"
+          data-element-name="REMAIN"
+          data-element-group="broadcast_control">
+
+        <!-- TOTAL: Input for total entrants count -->
+        <input class="sp03-input"
+          type="number"
+          placeholder="TOTAL"
+          data-element-id="sp03-total"
+          data-element-name="TOTAL"
+          data-element-group="broadcast_control">
+
+        <!-- STRIP STACK: Show/hide chip count strip -->
+        <button class="sp03-btn"
+          data-element-id="sp03-strip-stack"
+          data-element-name="STRIP STACK"
+          data-element-group="broadcast_control">STRIP STACK</button>
+
+        <!-- STRIP WIN: Show/hide net win strip -->
+        <button class="sp03-btn"
+          data-element-id="sp03-strip-win"
+          data-element-name="STRIP WIN"
+          data-element-group="broadcast_control">STRIP WIN</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AT-08: Game Settings — EBS v6 White</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #e8e8e8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
+  }
+
+  /* ── Root container: 640 x auto ── */
+  .screenshot-container {
+    width: 640px;
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─────────────────────────────────────
+     TITLEBAR (ids 1-5)
+  ───────────────────────────────────── */
+  .titlebar {
+    width: 100%;
+    height: 36px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #d0d0d0;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    flex-shrink: 0;
+  }
+
+  /* id=1 App Icon */
+  .tb-icon {
+    width: 16px;
+    height: 16px;
+    background: #1a1a1a;
+    border-radius: 3px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tb-icon::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 1px;
+  }
+
+  /* id=2 Title Text */
+  .tb-title {
+    flex: 1;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-left: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  /* ids 3,4,5 Window controls */
+  .tb-buttons {
+    display: flex;
+    height: 100%;
+    margin-left: 4px;
+  }
+  .tb-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    color: #555;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tb-btn:hover { background: #e0e0e0; }
+  .tb-btn.close:hover { background: #dd0000; color: #fff; }
+
+  /* ─────────────────────────────────────
+     HEADER BAR (ids 6-7)
+  ───────────────────────────────────── */
+  .header-bar {
+    width: 100%;
+    height: 40px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    flex-shrink: 0;
+  }
+  .header-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #1a1a1a;
+  }
+  .header-badge {
+    background: #1a1a1a;
+    color: #fff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 12px;
+    border-radius: 3px;
+  }
+
+  /* ─────────────────────────────────────
+     GS-02: EVENT & GAME TYPE (ids 8-20)
+  ───────────────────────────────────── */
+  .game-type-section {
+    padding: 12px 16px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888888;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  /* Event Name input */
+  .event-name-input {
+    width: 100%;
+    height: 28px;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    padding: 0 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: #bbbbbb;
+    background: #ffffff;
+    outline: none;
+    margin-bottom: 10px;
+  }
+
+  /* Small button rows (Game Type, Bet Structure) */
+  .small-btn-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .small-btn {
+    flex: 1;
+    height: 28px;
+    border: 1.5px solid #d0d0d0;
+    background: #ffffff;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1a1a1a;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .small-btn.selected {
+    background: #1a1a1a;
+    color: #ffffff;
+    border-color: #1a1a1a;
+  }
+
+  /* Game Variant buttons (original size) */
+  .game-type-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  .game-type-btn {
+    flex: 1;
+    height: 32px;
+    border: 1.5px solid #d0d0d0;
+    background: #ffffff;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1a1a1a;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .game-type-btn.selected {
+    background: #1a1a1a;
+    color: #ffffff;
+    border-color: #1a1a1a;
+  }
+  .game-variant-select {
+    width: 100%;
+    height: 32px;
+    background: #fff;
+    border: 1.5px solid #d0d0d0;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #1a1a1a;
+    cursor: default;
+    padding: 0 6px;
+  }
+
+  /* ─────────────────────────────────────
+     GS-03: BLIND STRUCTURE (ids 21-38)
+  ───────────────────────────────────── */
+  .blind-section {
+    padding: 12px 16px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .blind-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px 10px;
+  }
+  .input-group {}
+  .input-group .input-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888888;
+    margin-bottom: 4px;
+    display: block;
+  }
+  .input-group .input-field {
+    width: 100%;
+    height: 28px;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    padding: 0 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: #1a1a1a;
+    background: #ffffff;
+    outline: none;
+  }
+  .input-group .input-field.active {
+    border-color: #1a1a1a;
+  }
+  .input-group .input-field.inactive {
+    color: #bbbbbb;
+    border-color: #e0e0e0;
+  }
+
+  /* Ante Type row */
+  .ante-type-row {
+    margin-top: 10px;
+  }
+  .ante-type-row .section-label {
+    font-size: 9px;
+    color: #888888;
+    margin-bottom: 6px;
+  }
+  .type-btn-row {
+    display: flex;
+    gap: 8px;
+  }
+  .type-btn {
+    flex: 1;
+    height: 28px;
+    border: 1.5px solid #d0d0d0;
+    background: #ffffff;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1a1a1a;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .type-btn.selected {
+    background: #1a1a1a;
+    color: #ffffff;
+    border-color: #1a1a1a;
+  }
+
+  /* Straddle row */
+  .straddle-row {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 12px;
+  }
+  .straddle-toggles {
+    display: flex;
+    gap: 4px;
+  }
+  .straddle-seat {
+    width: 28px;
+    height: 20px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 2px;
+    background: #ffffff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    color: #bbbbbb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+  }
+
+  /* Straddle Type row */
+  .straddle-type-row {
+    margin-top: 8px;
+  }
+  .straddle-type-btn-row {
+    display: flex;
+    gap: 8px;
+    max-width: 280px;
+  }
+  .straddle-type-btn {
+    flex: 1;
+    height: 24px;
+    border: 1.5px solid #d0d0d0;
+    background: #ffffff;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1a1a1a;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .straddle-type-btn.selected {
+    background: #1a1a1a;
+    color: #ffffff;
+    border-color: #1a1a1a;
+  }
+
+  /* ─────────────────────────────────────
+     GS-04: SPECIAL RULES (ids 39-50)
+  ───────────────────────────────────── */
+  .special-section {
+    padding: 12px 16px;
+    flex-shrink: 0;
+  }
+  .rule-row {
+    height: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .rule-row:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Toggle switch */
+  .toggle-switch {
+    width: 40px;
+    height: 20px;
+    border-radius: 10px;
+    background: #e0e0e0;
+    position: relative;
+    flex-shrink: 0;
+    cursor: default;
+  }
+  .toggle-switch::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: left 0.15s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  .toggle-switch.on {
+    background: #1a1a1a;
+  }
+  .toggle-switch.on::after {
+    left: 22px;
+  }
+
+  .rule-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #1a1a1a;
+    width: 90px;
+    flex-shrink: 0;
+  }
+  .rule-label.off {
+    color: #888888;
+  }
+
+  .rule-value {
+    width: 80px;
+    height: 22px;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    padding: 0 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: #1a1a1a;
+    background: #ffffff;
+    outline: none;
+  }
+  .rule-value.active {
+    border-color: #1a1a1a;
+  }
+  .rule-value.inactive {
+    color: #bbbbbb;
+    border-color: #e0e0e0;
+  }
+
+  /* VPIP Reset button */
+  .vpip-reset-btn {
+    width: 100%;
+    height: 28px;
+    border: 1.5px solid #d0d0d0;
+    background: #ffffff;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1a1a1a;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  /* ─────────────────────────────────────
+     GS-05: PAYOUTS (ids 51-72)
+  ───────────────────────────────────── */
+  .payouts-section {
+    padding: 12px 16px;
+    flex-shrink: 0;
+    border-top: 1px solid #e0e0e0;
+  }
+  .payouts-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px 8px;
+  }
+  .payout-group {}
+  .payout-group .payout-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888888;
+    margin-bottom: 3px;
+    display: block;
+  }
+  .payout-group .payout-field {
+    width: 100%;
+    max-width: 60px;
+    height: 22px;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    padding: 0 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: #bbbbbb;
+    background: #ffffff;
+    outline: none;
+  }
+
+  /* ─────────────────────────────────────
+     GS-06: BOTTOM ACTIONS (ids 73-74)
+  ───────────────────────────────────── */
+  .bottom-actions {
+    height: 48px;
+    background: #f0f0f0;
+    border-top: 1px solid #d0d0d0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 16px;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .btn-action {
+    width: 80px;
+    height: 32px;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn-cancel {
+    background: #ffffff;
+    border: 1.5px solid #d0d0d0;
+    color: #1a1a1a;
+  }
+  .btn-save {
+    background: #1a1a1a;
+    border: 1.5px solid #1a1a1a;
+    color: #ffffff;
+  }
+</style>
+</head>
+<body>
+
+<div class="screenshot-container">
+
+  <!-- ═══════════ ZONE 1: TITLEBAR ═══════════ -->
+  <div class="titlebar">
+    <div class="tb-icon"
+         data-element-id="1"
+         data-element-name="App Icon"
+         data-element-group="titlebar"></div>
+    <div class="tb-title"
+         data-element-id="2"
+         data-element-name="Window Title"
+         data-element-group="titlebar">EBS Action Tracker © 2026</div>
+    <div class="tb-buttons">
+      <button class="tb-btn"
+              data-element-id="3"
+              data-element-name="Minimize Button"
+              data-element-group="titlebar">─</button>
+      <button class="tb-btn"
+              data-element-id="4"
+              data-element-name="Maximize Button"
+              data-element-group="titlebar">□</button>
+      <button class="tb-btn close"
+              data-element-id="5"
+              data-element-name="Close Button"
+              data-element-group="titlebar">✕</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ ZONE 2: HEADER BAR ═══════════ -->
+  <div class="header-bar">
+    <span class="header-label"
+          data-element-id="6"
+          data-element-name="Screen Title"
+          data-element-group="header">Game Settings</span>
+    <span class="header-badge"
+          data-element-id="7"
+          data-element-name="Game Type Badge"
+          data-element-group="header">HOLDEM</span>
+  </div>
+
+  <!-- ═══════════ ZONE 3: GS-02 EVENT & GAME TYPE ═══════════ -->
+  <div class="game-type-section">
+    <span class="section-label"
+          data-element-id="8"
+          data-element-name="Event Game Type Label"
+          data-element-group="event-game-type">Event &amp; Game Type</span>
+
+    <!-- Event Name input -->
+    <div class="event-name-input"
+         data-element-id="9"
+         data-element-name="Event Name Input"
+         data-element-group="event-game-type">EVENT NAME</div>
+
+    <!-- Game Type row -->
+    <span class="section-label" style="font-size: 9px; margin-bottom: 6px;"
+          data-element-id="10"
+          data-element-name="Game Type Label"
+          data-element-group="event-game-type">Game Type</span>
+    <div class="small-btn-row">
+      <div class="small-btn selected"
+           data-element-id="11"
+           data-element-name="Cash Button"
+           data-element-group="event-game-type">Cash</div>
+      <div class="small-btn"
+           data-element-id="12"
+           data-element-name="Feature Button"
+           data-element-group="event-game-type">Feature</div>
+      <div class="small-btn"
+           data-element-id="13"
+           data-element-name="Final Button"
+           data-element-group="event-game-type">Final</div>
+      <div class="small-btn"
+           data-element-id="14"
+           data-element-name="SNG Button"
+           data-element-group="event-game-type">SNG</div>
+    </div>
+
+    <!-- Bet Structure row -->
+    <span class="section-label" style="font-size: 9px; margin-bottom: 6px;"
+          data-element-id="15"
+          data-element-name="Bet Structure Label"
+          data-element-group="event-game-type">Bet Structure</span>
+    <div class="small-btn-row">
+      <div class="small-btn selected"
+           data-element-id="16"
+           data-element-name="NL Button"
+           data-element-group="event-game-type">NL</div>
+      <div class="small-btn"
+           data-element-id="17"
+           data-element-name="FL Button"
+           data-element-group="event-game-type">FL</div>
+      <div class="small-btn"
+           data-element-id="18"
+           data-element-name="PL Button"
+           data-element-group="event-game-type">PL</div>
+      <div class="small-btn"
+           data-element-id="19"
+           data-element-name="Capped Button"
+           data-element-group="event-game-type">Capped</div>
+    </div>
+
+    <!-- Game Variant row (existing, renumbered) -->
+    <span class="section-label" style="font-size: 9px; margin-bottom: 6px;"
+          data-element-id="20"
+          data-element-name="Game Variant Label"
+          data-element-group="event-game-type">Game Variant</span>
+    <div class="game-type-buttons">
+      <select data-element-id="8" class="game-variant-select" style="width: 100%; height: 32px;">
+        <optgroup label="── Flop (13) ──">
+          <option value="holdem" selected>Holdem</option>
+          <option value="holdem_6plus_st">6+ Holdem (S>T)</option>
+          <option value="holdem_6plus_ts">6+ Holdem (T>S)</option>
+          <option value="pineapple">Pineapple</option>
+          <option value="omaha">Omaha 4</option>
+          <option value="omaha_hilo">Omaha 4 Hi-Lo</option>
+          <option value="omaha5">Omaha 5</option>
+          <option value="omaha5_hilo">Omaha 5 Hi-Lo</option>
+          <option value="omaha6">Omaha 6</option>
+          <option value="omaha6_hilo">Omaha 6 Hi-Lo</option>
+          <option value="courchevel">Courchevel</option>
+          <option value="courchevel_hilo">Courchevel Hi-Lo</option>
+        </optgroup>
+        <optgroup label="── Draw (6) ──">
+          <option value="draw5">5-Card Draw</option>
+          <option value="deuce7_draw">2-7 Single Draw</option>
+          <option value="deuce7_triple">2-7 Triple Draw</option>
+          <option value="a5_triple">A-5 Triple Draw</option>
+          <option value="badugi">Badugi</option>
+          <option value="badeucy">Badeucy</option>
+          <option value="badacey">Badacey</option>
+        </optgroup>
+        <optgroup label="── Stud (3) ──">
+          <option value="stud7">7-Card Stud</option>
+          <option value="stud7_hilo8">Stud Hi-Lo8</option>
+          <option value="razz">Razz</option>
+        </optgroup>
+      </select>
+    </div>
+  </div>
+
+  <!-- ═══════════ ZONE 4: GS-03 BLIND STRUCTURE ═══════════ -->
+  <div class="blind-section">
+    <span class="section-label"
+          data-element-id="25"
+          data-element-name="Blind Section Label"
+          data-element-group="blind-structure">Blind Structure</span>
+    <div class="blind-grid">
+      <!-- Row 1 -->
+      <div class="input-group">
+        <label class="input-label"
+               data-element-id="26"
+               data-element-name="SB Label"
+               data-element-group="blind-structure">SB</label>
+        <div class="input-field active"
+             data-element-id="27"
+             data-element-name="SB Value"
+             data-element-group="blind-structure">200</div>
+      </div>
+      <div class="input-group">
+        <label class="input-label"
+               data-element-id="28"
+               data-element-name="BB Label"
+               data-element-group="blind-structure">BB</label>
+        <div class="input-field active"
+             data-element-id="29"
+             data-element-name="BB Value"
+             data-element-group="blind-structure">400</div>
+      </div>
+      <div class="input-group">
+        <label class="input-label"
+               data-element-id="30"
+               data-element-name="Ante Label"
+               data-element-group="blind-structure">Ante</label>
+        <div class="input-field inactive"
+             data-element-id="31"
+             data-element-name="Ante Value"
+             data-element-group="blind-structure">—</div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="input-group">
+        <label class="input-label"
+               data-element-id="32"
+               data-element-name="Cap Label"
+               data-element-group="blind-structure">Cap</label>
+        <div class="input-field inactive"
+             data-element-id="33"
+             data-element-name="Cap Value"
+             data-element-group="blind-structure">—</div>
+      </div>
+      <div class="input-group">
+        <label class="input-label"
+               data-element-id="34"
+               data-element-name="BTN BLD Label"
+               data-element-group="blind-structure">BTN BLD</label>
+        <div class="input-field inactive"
+             data-element-id="35"
+             data-element-name="BTN BLD Value"
+             data-element-group="blind-structure">—</div>
+      </div>
+      <div class="input-group">
+        <label class="input-label"
+               data-element-id="36"
+               data-element-name="3B Label"
+               data-element-group="blind-structure">3B</label>
+        <div class="input-field inactive"
+             data-element-id="37"
+             data-element-name="3B Value"
+             data-element-group="blind-structure">—</div>
+      </div>
+    </div>
+
+    <!-- Ante Type row -->
+    <div class="ante-type-row">
+      <span class="section-label"
+            data-element-id="38"
+            data-element-name="Ante Type Label"
+            data-element-group="blind-structure">Ante Type</span>
+      <div class="type-btn-row">
+        <div class="type-btn selected"
+             data-element-id="39"
+             data-element-name="Ante None Button"
+             data-element-group="blind-structure">None</div>
+        <div class="type-btn"
+             data-element-id="40"
+             data-element-name="Ante STD Button"
+             data-element-group="blind-structure">STD</div>
+        <div class="type-btn"
+             data-element-id="41"
+             data-element-name="Ante Button Button"
+             data-element-group="blind-structure">Button</div>
+        <div class="type-btn"
+             data-element-id="42"
+             data-element-name="Ante BB Button"
+             data-element-group="blind-structure">BB</div>
+        <div class="type-btn"
+             data-element-id="43"
+             data-element-name="Ante Live Button"
+             data-element-group="blind-structure">Live</div>
+      </div>
+    </div>
+
+    <!-- Straddle row -->
+    <div class="straddle-row">
+      <span class="section-label" style="margin-bottom: 0;"
+            data-element-id="43"
+            data-element-name="Straddle Label"
+            data-element-group="blind-structure">Straddle</span>
+      <div class="straddle-toggles"
+           data-element-id="44"
+           data-element-name="Straddle Seat Toggles"
+           data-element-group="blind-structure">
+        <div class="straddle-seat">S1</div>
+        <div class="straddle-seat">S2</div>
+        <div class="straddle-seat">S3</div>
+        <div class="straddle-seat">S4</div>
+      </div>
+    </div>
+
+    <!-- Straddle Type row -->
+    <div class="straddle-type-row">
+      <span class="section-label" style="font-size: 9px; margin-bottom: 6px;"
+            data-element-id="45"
+            data-element-name="Straddle Type Label"
+            data-element-group="blind-structure">Straddle Type</span>
+      <div class="straddle-type-btn-row">
+        <div class="straddle-type-btn selected"
+             data-element-id="46"
+             data-element-name="Straddle Live Button"
+             data-element-group="blind-structure">Live</div>
+        <div class="straddle-type-btn"
+             data-element-id="47"
+             data-element-name="Straddle Sleeper Button"
+             data-element-group="blind-structure">Sleeper</div>
+        <div class="straddle-type-btn"
+             data-element-id="48"
+             data-element-name="Straddle Mississippi Button"
+             data-element-group="blind-structure">Mississippi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ ZONE 5: GS-04 SPECIAL RULES ═══════════ -->
+  <div class="special-section">
+    <span class="section-label"
+          data-element-id="49"
+          data-element-name="Special Rules Label"
+          data-element-group="special-rules">Special Rules</span>
+
+    <!-- MIN CHIP — ON -->
+    <div class="rule-row">
+      <div class="toggle-switch on"
+           data-element-id="50"
+           data-element-name="Min Chip Toggle"
+           data-element-group="special-rules"></div>
+      <span class="rule-label"
+            data-element-id="50-label"
+            data-element-name="Min Chip Label"
+            data-element-group="special-rules">Min Chip</span>
+      <div class="rule-value active"
+           data-element-id="51"
+           data-element-name="Min Chip Value"
+           data-element-group="special-rules">100</div>
+    </div>
+
+    <!-- 7 DEUCE — OFF -->
+    <div class="rule-row">
+      <div class="toggle-switch"
+           data-element-id="52"
+           data-element-name="7 Deuce Toggle"
+           data-element-group="special-rules"></div>
+      <span class="rule-label off"
+            data-element-id="52-label"
+            data-element-name="7 Deuce Label"
+            data-element-group="special-rules">7 Deuce</span>
+      <div class="rule-value inactive"
+           data-element-id="53"
+           data-element-name="7 Deuce Value"
+           data-element-group="special-rules">—</div>
+    </div>
+
+    <!-- BOMB POT — OFF -->
+    <div class="rule-row">
+      <div class="toggle-switch"
+           data-element-id="54"
+           data-element-name="Bomb Pot Toggle"
+           data-element-group="special-rules"></div>
+      <span class="rule-label off"
+            data-element-id="54-label"
+            data-element-name="Bomb Pot Label"
+            data-element-group="special-rules">Bomb Pot</span>
+      <div class="rule-value inactive"
+           data-element-id="55"
+           data-element-name="Bomb Pot Value"
+           data-element-group="special-rules">—</div>
+    </div>
+
+    <!-- # BOARDS — ON -->
+    <div class="rule-row">
+      <div class="toggle-switch on"
+           data-element-id="56"
+           data-element-name="Boards Toggle"
+           data-element-group="special-rules"></div>
+      <span class="rule-label"
+            data-element-id="56-label"
+            data-element-name="Boards Label"
+            data-element-group="special-rules"># Boards</span>
+      <div class="rule-value active"
+           data-element-id="57"
+           data-element-name="Boards Value"
+           data-element-group="special-rules">1</div>
+    </div>
+
+    <!-- HIT GAME — OFF -->
+    <div class="rule-row">
+      <div class="toggle-switch"
+           data-element-id="58"
+           data-element-name="Nit Game Toggle"
+           data-element-group="special-rules"></div>
+      <span class="rule-label off"
+            data-element-id="58-label"
+            data-element-name="Nit Game Label"
+            data-element-group="special-rules">Nit Game</span>
+      <div class="rule-value inactive"
+           data-element-id="59"
+           data-element-name="Nit Game Value"
+           data-element-group="special-rules">—</div>
+    </div>
+
+    <!-- VPIP RESET button -->
+    <div class="vpip-reset-btn"
+         data-element-id="60"
+         data-element-name="VPIP Reset Button"
+         data-element-group="special-rules">Reset VPIP Stats</div>
+  </div>
+
+  <!-- ═══════════ ZONE 6: GS-05 PAYOUTS ═══════════ -->
+  <div class="payouts-section">
+    <span class="section-label"
+          data-element-id="61"
+          data-element-name="Payouts Label"
+          data-element-group="payouts">Payouts</span>
+    <div class="payouts-grid">
+      <!-- Row 1 -->
+      <div class="payout-group">
+        <label class="payout-label"
+               data-element-id="62"
+               data-element-name="1st Label"
+               data-element-group="payouts">1ST</label>
+        <div class="payout-field"
+             data-element-id="63"
+             data-element-name="1st Value"
+             data-element-group="payouts">—</div>
+      </div>
+      <div class="payout-group">
+        <label class="payout-label"
+               data-element-id="64"
+               data-element-name="2nd Label"
+               data-element-group="payouts">2ND</label>
+        <div class="payout-field"
+             data-element-id="65"
+             data-element-name="2nd Value"
+             data-element-group="payouts">—</div>
+      </div>
+      <div class="payout-group">
+        <label class="payout-label"
+               data-element-id="66"
+               data-element-name="3rd Label"
+               data-element-group="payouts">3RD</label>
+        <div class="payout-field"
+             data-element-id="67"
+             data-element-name="3rd Value"
+             data-element-group="payouts">—</div>
+      </div>
+      <div class="payout-group">
+        <label class="payout-label"
+               data-element-id="68"
+               data-element-name="4th Label"
+               data-element-group="payouts">4TH</label>
+        <div class="payout-field"
+             data-element-id="69"
+             data-element-name="4th Value"
+             data-element-group="payouts">—</div>
+      </div>
+      <div class="payout-group">
+        <label class="payout-label"
+               data-element-id="70"
+               data-element-name="5th Label"
+               data-element-group="payouts">5TH</label>
+        <div class="payout-field"
+             data-element-id="71"
+             data-element-name="5th Value"
+             data-element-group="payouts">—</div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="payout-group">
+        <label class="payout-label"
+               data-element-id="72"
+               data-element-name="6th Label"
+               data-element-group="payouts">6TH</label>
+        <div class="payout-field"
+             data-element-id="73"
+             data-element-name="6th Value"
+             data-element-group="payouts">—</div>
+      </div>
+      <div class="payout-group">
+        <label class="payout-label"
+               data-element-id="74"
+               data-element-name="7th Label"
+               data-element-group="payouts">7TH</label>
+        <div class="payout-field"
+             data-element-id="75"
+             data-element-name="7th Value"
+             data-element-group="payouts">—</div>
+      </div>
+      <div class="payout-group">
+        <label class="payout-label"
+               data-element-id="76"
+               data-element-name="8th Label"
+               data-element-group="payouts">8TH</label>
+        <div class="payout-field"
+             data-element-id="77"
+             data-element-name="8th Value"
+             data-element-group="payouts">—</div>
+      </div>
+      <div class="payout-group">
+        <label class="payout-label"
+               data-element-id="78"
+               data-element-name="9th Label"
+               data-element-group="payouts">9TH</label>
+        <div class="payout-field"
+             data-element-id="79"
+             data-element-name="9th Value"
+             data-element-group="payouts">—</div>
+      </div>
+      <div class="payout-group">
+        <label class="payout-label"
+               data-element-id="80"
+               data-element-name="10th Label"
+               data-element-group="payouts">10TH</label>
+        <div class="payout-field"
+             data-element-id="81"
+             data-element-name="10th Value"
+             data-element-group="payouts">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ ZONE 7: GS-06 BOTTOM ACTIONS ═══════════ -->
+  <div class="bottom-actions">
+    <div class="btn-action btn-cancel"
+         data-element-id="82"
+         data-element-name="Cancel Button"
+         data-element-group="actions">Cancel</div>
+    <div class="btn-action btn-save"
+         data-element-id="83"
+         data-element-name="Save Button"
+         data-element-group="actions">Save</div>
+  </div>
+
+</div>
+
+</body>
+</html>

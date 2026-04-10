@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720">
+    <title>EBS Server — GFX: Layout</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #000;
+            padding: 0;
+            margin: 0;
+        }
+
+        .wireframe-container {
+            width: 720px;
+            background: white;
+            border: 1px solid #999;
+            overflow: hidden;
+        }
+
+        /* Title Bar */
+        .title-bar {
+            background: #1a1a1a;
+            color: white;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .title-left { display: flex; align-items: center; gap: 8px; }
+        .window-controls { display: flex; gap: 6px; }
+        .control-btn { width: 12px; height: 12px; border-radius: 50%; }
+        .control-btn.close { background: #333; }
+        .control-btn.minimize { background: #888; }
+        .control-btn.maximize { background: #555; }
+        .title-text { font-size: 13px; font-weight: 600; }
+
+        /* Top Panel: Preview + Stats */
+        .top-panel {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f5f5f5;
+        }
+        .preview-area {
+            flex: 1;
+            padding: 10px 14px;
+            border-right: 1px solid #e0e0e0;
+        }
+        .preview-box {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #888;
+        }
+        .stats-panel {
+            width: 200px;
+            padding: 10px 14px;
+            font-size: 11px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { color: #666; }
+        .stat-value { font-weight: 600; color: #1a1a1a; font-family: monospace; }
+        .stat-value.ok { color: #333; }
+        .btn-reset {
+            width: 100%;
+            margin-top: 8px;
+            padding: 5px 0;
+            background: #e0e0e0;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* Main Tab Nav */
+        .main-tabs {
+            display: flex;
+            background: #2a2a2a;
+            border-bottom: 1px solid #444;
+        }
+        .main-tab {
+            padding: 8px 18px;
+            font-size: 12px;
+            color: #aaa;
+            cursor: pointer;
+            border-right: 1px solid #444;
+        }
+        .main-tab.active {
+            background: #fff;
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* Sub Tab Nav */
+        .sub-tabs {
+            display: flex;
+            background: #f0f0f0;
+            border-bottom: 2px solid #ccc;
+            padding: 0 14px;
+        }
+        .sub-tab {
+            padding: 7px 16px;
+            font-size: 11px;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        .sub-tab.active {
+            color: #000;
+            font-weight: 700;
+            border-bottom: 2px solid #1a1a1a;
+        }
+
+        /* Content */
+        .content { padding: 12px 14px; }
+
+        .section-hint {
+            font-size: 10px;
+            color: #999;
+            background: #f8f8f8;
+            border: 1px solid #e8e8e8;
+            border-radius: 3px;
+            padding: 4px 8px;
+            margin-bottom: 10px;
+        }
+
+        .card-group {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .card-header {
+            background: #f5f5f5;
+            padding: 8px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            font-size: 12px;
+            color: #333;
+        }
+        .card-body { padding: 0; }
+
+        .feature-row {
+            display: flex;
+            align-items: center;
+            padding: 7px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 10px;
+        }
+        .feature-row:last-child { border-bottom: none; }
+
+        .fid {
+            background: #333;
+            color: white;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            min-width: 52px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .fid.p0 { background: #1a1a1a; }
+        .fid.p1 { background: #555; }
+        .fid.p2 { background: #888; }
+
+        .flabel {
+            flex: 1;
+            font-size: 12px;
+            color: #333;
+            font-weight: 500;
+        }
+        .fdesc {
+            font-size: 10px;
+            color: #999;
+            margin-top: 1px;
+        }
+        .fcontrol {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        select {
+            padding: 4px 8px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: 'Segoe UI', sans-serif;
+            min-width: 120px;
+            background: white;
+        }
+        input[type="number"] {
+            padding: 4px 6px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: monospace;
+            width: 70px;
+        }
+        input[type="text"] {
+            padding: 4px 8px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 11px;
+            min-width: 100px;
+        }
+        input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+        }
+
+        .image-slot {
+            width: 80px;
+            height: 40px;
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #999;
+            background: #fafafa;
+        }
+
+        .label-tag {
+            font-size: 10px;
+            color: #888;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 2px 6px;
+        }
+        .global-badge {
+            font-size: 9px;
+            color: #555;
+            background: #e0e0e0;
+            border-radius: 8px;
+            padding: 1px 5px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <div class="title-left">
+                <div class="window-controls">
+                    <div class="control-btn close"></div>
+                    <div class="control-btn minimize"></div>
+                    <div class="control-btn maximize"></div>
+                </div>
+                <span class="title-text">EBS Server</span>
+            </div>
+        </div>
+
+        <!-- Top Panel -->
+        <div class="top-panel">
+            <div class="preview-area">
+                <div class="preview-box">Preview (16:9)</div>
+            </div>
+            <div class="stats-panel">
+                <div class="stat-row">
+                    <span class="stat-label">CPU</span>
+                    <span class="stat-value">12%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">GPU</span>
+                    <span class="stat-value">8%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">RFID</span>
+                    <span class="stat-value ok">Connected</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Hand #</span>
+                    <span class="stat-value">42</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Conn.</span>
+                    <span class="stat-value">3</span>
+                </div>
+                <div class="btn-reset">[Reset Hand]</div>
+            </div>
+        </div>
+
+        <!-- Main Tab Nav -->
+        <div class="main-tabs">
+            <div class="main-tab">Src</div>
+            <div class="main-tab">Out</div>
+            <div class="main-tab active">GFX</div>
+            <div class="main-tab">Rules</div>
+            <div class="main-tab">Sys</div>
+        </div>
+
+        <!-- Sub Tab Nav -->
+        <div class="sub-tabs">
+            <div class="sub-tab active">Layout</div>
+            <div class="sub-tab">Visual</div>
+            <div class="sub-tab">Display</div>
+            <div class="sub-tab">Numbers</div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+
+            <div class="section-hint">Layout: 보드/플레이어 위치, 마진, 헤즈업, 스폰서. Global 설정은 모든 출력 채널에 즉시 반영됨.</div>
+
+            <!-- Group 1: Position & Layout (P0) -->
+            <div class="card-group">
+                <div class="card-header">Position &amp; Layout</div>
+                <div class="card-body">
+                    <div class="feature-row">
+                        <span class="fid p0">G-01</span>
+                        <div class="flabel">
+                            Board Position
+                            <div class="fdesc">보드 카드 위치</div>
+                        </div>
+                        <div class="fcontrol">
+                            <span class="global-badge">GLOBAL</span>
+                            <select>
+                                <option>Left</option>
+                                <option selected>Right</option>
+                                <option>Centre</option>
+                                <option>Top</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="feature-row">
+                        <span class="fid p0">G-02</span>
+                        <div class="flabel">
+                            Player Layout
+                            <div class="fdesc">플레이어 배치 방식</div>
+                        </div>
+                        <div class="fcontrol">
+                            <span class="global-badge">GLOBAL</span>
+                            <select>
+                                <option selected>Vert</option>
+                                <option>Bot</option>
+                                <option>Spill</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 2: Margins (P1) -->
+            <div class="card-group">
+                <div class="card-header">Margins (%)</div>
+                <div class="card-body">
+                    <div class="feature-row">
+                        <span class="fid p1">G-03</span>
+                        <div class="flabel">
+                            X Margin
+                            <div class="fdesc">좌우 여백 (정규화 0.0~1.0)</div>
+                        </div>
+                        <div class="fcontrol">
+                            <input type="number" value="0.04" step="0.01" min="0" max="1">
+                        </div>
+                    </div>
+                    <div class="feature-row">
+                        <span class="fid p1">G-04</span>
+                        <div class="flabel">
+                            Top Margin
+                            <div class="fdesc">상단 여백</div>
+                        </div>
+                        <div class="fcontrol">
+                            <input type="number" value="0.05" step="0.01" min="0" max="1">
+                        </div>
+                    </div>
+                    <div class="feature-row">
+                        <span class="fid p1">G-05</span>
+                        <div class="flabel">
+                            Bot Margin
+                            <div class="fdesc">하단 여백</div>
+                        </div>
+                        <div class="fcontrol">
+                            <input type="number" value="0.04" step="0.01" min="0" max="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 3: Leaderboard & Heads Up (P1) -->
+            <div class="card-group">
+                <div class="card-header">Leaderboard &amp; Heads Up</div>
+                <div class="card-body">
+                    <div class="feature-row">
+                        <span class="fid p1">G-06</span>
+                        <div class="flabel">
+                            Leaderboard Position
+                            <div class="fdesc">리더보드 위치</div>
+                        </div>
+                        <div class="fcontrol">
+                            <select>
+                                <option selected>Left</option>
+                                <option>Right</option>
+                                <option>Top Left</option>
+                                <option>Top Right</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="feature-row">
+                        <span class="fid p1">G-07</span>
+                        <div class="flabel">
+                            Heads Up Layout L/R
+                            <div class="fdesc">헤즈업 화면 분할 배치</div>
+                        </div>
+                        <div class="fcontrol">
+                            <select>
+                                <option selected>Left / Right</option>
+                                <option>Right / Left</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="feature-row">
+                        <span class="fid p1">G-08</span>
+                        <div class="flabel">
+                            Heads Up Camera
+                            <div class="fdesc">헤즈업 카메라 위치</div>
+                        </div>
+                        <div class="fcontrol">
+                            <select>
+                                <option selected>Top</option>
+                                <option>Bottom</option>
+                                <option>Left</option>
+                                <option>Right</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="feature-row">
+                        <span class="fid p1">G-09</span>
+                        <div class="flabel">
+                            Heads Up Custom Y
+                            <div class="fdesc">Y축 미세 조정</div>
+                        </div>
+                        <div class="fcontrol">
+                            <input type="checkbox">
+                            <input type="number" value="0.50" step="0.01" min="0" max="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 4: Sponsor Logos (P2) -->
+            <div class="card-group">
+                <div class="card-header">Sponsor Logos &amp; Vanity Text <span style="font-size:10px;color:#999;font-weight:400;">(P2)</span></div>
+                <div class="card-body">
+                    <div class="feature-row">
+                        <span class="fid p2">G-10</span>
+                        <div class="flabel">
+                            Sponsor Logo 1
+                            <div class="fdesc">Leaderboard 스폰서</div>
+                        </div>
+                        <div class="fcontrol">
+                            <div class="image-slot">+ Logo</div>
+                            <span class="label-tag">Leaderboard</span>
+                        </div>
+                    </div>
+                    <div class="feature-row">
+                        <span class="fid p2">G-11</span>
+                        <div class="flabel">
+                            Sponsor Logo 2
+                            <div class="fdesc">Board 스폰서</div>
+                        </div>
+                        <div class="fcontrol">
+                            <div class="image-slot">+ Logo</div>
+                            <span class="label-tag">Board</span>
+                        </div>
+                    </div>
+                    <div class="feature-row">
+                        <span class="fid p2">G-12</span>
+                        <div class="flabel">
+                            Sponsor Logo 3
+                            <div class="fdesc">Strip 스폰서</div>
+                        </div>
+                        <div class="fcontrol">
+                            <div class="image-slot">+ Logo</div>
+                            <span class="label-tag">Strip</span>
+                        </div>
+                    </div>
+                    <div class="feature-row">
+                        <span class="fid p2">G-13</span>
+                        <div class="flabel">
+                            Vanity Text
+                            <div class="fdesc">테이블 텍스트 + Game Variant 대체</div>
+                        </div>
+                        <div class="fcontrol">
+                            <input type="checkbox">
+                            <input type="text" value="High Stakes Cash" style="min-width:130px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /content -->
+    </div><!-- /wireframe-container -->
+</body>
+</html>

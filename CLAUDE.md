@@ -215,18 +215,33 @@ contracts/
 |------|------|------|
 | **Foundation PRD** | `docs/01-strategy/PRD-EBS_Foundation.md` | EBS Core 아키텍처 정의 |
 | **Production Plan** | `docs/00-reference/2026-WSOP-Production-Plan-V2.pdf` | WSOP 프로덕션 원본 |
-| **PokerGFX 역설계** | `C:\claude\ebs_reverse\docs\02-design\pokergfx-reverse-engineering-complete.md` | 벤치마크 |
+| **PokerGFX 역설계** | `docs/07-archive/legacy-repos/ebs_reverse/docs/02-design/pokergfx-reverse-engineering-complete.md` | 벤치마크 |
+| **PokerGFX User Manual** | `docs/00-reference/PokerGFX-User-Manual.md` | 사용자 매뉴얼 (152KB) |
+| **Field Registry** | `docs/00-reference/field-registry.json` | 설정 필드 소유권 SSOT |
 
 ---
 
-## 관련 레포
+## 설계 자산 (ebs_ui → 통합 완료)
 
-| 레포 | 역할 |
-|------|------|
-| `C:/claude/ebs/` | **기획 레포** (이곳) — 독립 PRD, 계약, 운영 |
-| `C:/claude/ebs_reverse/` | **복제 레포** — 코드 구현 |
-| `C:/claude/ebs_ui/` | **UI 설계** — 상세 설계 (참고 문서) |
+| 자산 | 통합 위치 | 원본 |
+|------|----------|------|
+| **Action Tracker** (CC 44기능, 8화면) | `team4-cc/ui-design/reference/action-tracker/` | ebs_ui/ebs-action-tracker |
+| **Console** (6탭, 99+ 설정) | `team1-frontend/ui-design/reference/console/` | ebs_ui/ebs-console |
+| **Skin Editor** (Vue3 PoC) | `team4-cc/ui-design/reference/skin-editor/` | ebs_ui/ebs-skin-editor |
+
+## 아카이브된 레거시 레포
+
+| 레포 | 아카이브 위치 |
+|------|-------------|
+| ebs_reverse | `docs/07-archive/legacy-repos/ebs_reverse/` |
+| ebs_reverse_app | `docs/07-archive/legacy-repos/ebs_reverse_app/` |
+| ebs_app | `docs/07-archive/legacy-repos/ebs_app-README.md` |
+| ebs_bo | `docs/07-archive/legacy-repos/ebs_bo-README.md` |
+| ebs_ecosystem | `docs/07-archive/legacy-repos/ebs_ecosystem/` |
+| ebs_github | `docs/07-archive/legacy-repos/ebs_github/` |
+| ebs_poc | `docs/07-archive/legacy-repos/ebs_poc/` |
+| ebs_table | `docs/07-archive/legacy-repos/ebs_table/` |
 
 ---
 
-**마지막 업데이트**: 2026-04-10 (v3.0.0 — 5팀 구조 완성)
+**마지막 업데이트**: 2026-04-10 (v4.0.0 — 전체 생태계 통합 완료)

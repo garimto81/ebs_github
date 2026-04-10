@@ -15,7 +15,7 @@
 2. **캐노니컬 ID**: `docs/01-strategy/EBS-Feature-Catalog.md` v1.0.0 (144개, MW-/OUT-/G1-/G2-/G3-/SYS-/SK-/GEB-/GEP-)
 3. **로드맵 다이어그램**: EBS-Kickoff-2026 Phase 1~5 sibling 레포 매핑 (원본: archive 보존)
 4. **행동 명세**: `contracts/specs/BS-00~07/` + `team3-engine/specs/engine-spec/BS-06-*` (전체 완성 — 2026-04-08)
-5. **기존 UI 자산**: `C:\claude\ebs_ui\ebs-action-tracker\`, `C:\claude\ebs_ui\ebs-console\`
+5. **기존 UI 자산**: `team4-cc/ui-design/reference/action-tracker/`, `team1-frontend/ui-design/reference/console/`
 
 > **정의**: 이 레포(`garimto81/ebs`)는 **기획 레포**다 (`CLAUDE.md` 명시). 실제 구현 코드는 sibling 레포에서 살고, 이 문서는 어떤 항목이 어느 sibling 레포로 가는지를 기록한다.
 
@@ -27,10 +27,10 @@
 
 | Sibling 레포 | 위치 | Phase 1 역할 | Phase 2 역할 |
 |---|---|---|---|
-| **`ebs (HW)`** | `C:\claude\ebs_poc\` 또는 별도 hardware 레포 (TBD) | ST25R3911B + 12대 안테나 프로토타입 | 12대 안정화, 인식률 ≥ 99.5% |
+| **`ebs (HW)`** | `docs/07-archive/legacy-repos/ebs_poc/` (아카이브) | ST25R3911B + 12대 안테나 프로토타입 | 12대 안정화, 인식률 ≥ 99.5% |
 | **`ebs (FW)`** | TBD (MCU 펌웨어 전용) | ISO 14443-A UID 읽기 → Serial UART | 카드 매핑 갱신, 에러 복구 |
-| **`ui_overlay`** | `C:\claude\ui_overlay\` | 기초 카드 표시 UI | Console 5탭 + Riv 합성 |
-| **`ebs_ui`** | `C:\claude\ebs_ui\` (기존) | Action Tracker 8 mockup, Console v9.7.0 | BS-03/05 구현 참조 자산 |
+| **`ui_overlay`** | `team4-cc/` (통합) | 기초 카드 표시 UI | Console 5탭 + Riv 합성 |
+| **`ebs_ui`** | `team*/ui-design/reference/` (통합) | Action Tracker 8 mockup, Console v9.7.0 | BS-03/05 구현 참조 자산 |
 
 > **TBD 항목**: `ebs (HW)`/`ebs (FW)` 의 정확한 GitHub 레포 이름은 별도 결정. 이 문서는 _개념적_ sibling으로 표기한다.
 

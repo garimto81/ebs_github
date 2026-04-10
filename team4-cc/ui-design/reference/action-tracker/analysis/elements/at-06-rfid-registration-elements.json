@@ -1,0 +1,223 @@
+{
+  "tab_name": "at-06",
+  "screenshot_path": "C:\\claude\\ebs\\docs\\01_PokerGFX_Analysis\\03_Reference_ngd\\action_tracker\\at-06-rfid-registration.png",
+  "screenshot_hash": "cdb1ecb5692051fdb8e06c29a304f0a6313cf108f2a61a622c7dd86e2cfdf468",
+  "schema_version": "1.2",
+  "crop_bbox": [
+    0,
+    0,
+    786,
+    553
+  ],
+  "regions": [],
+  "elements": [
+    {
+      "id": 1,
+      "name": "App Icon",
+      "group": "titlebar",
+      "bbox": [
+        6,
+        6,
+        22,
+        22
+      ],
+      "confidence": 1.0,
+      "is_mismatch": false,
+      "needs_review": false,
+      "source": "html_reproduction",
+      "control_type": "Unknown",
+      "display_name": "",
+      "visible": true,
+      "disabled": false,
+      "consensus_status": "",
+      "consensus_iou": 0.0,
+      "consensus_sources": null,
+      "retry_count": 0
+    },
+    {
+      "id": 2,
+      "name": "Title Text",
+      "group": "titlebar",
+      "bbox": [
+        29,
+        6,
+        638,
+        22
+      ],
+      "confidence": 1.0,
+      "is_mismatch": false,
+      "needs_review": false,
+      "source": "html_reproduction",
+      "control_type": "Unknown",
+      "display_name": "",
+      "visible": true,
+      "disabled": false,
+      "consensus_status": "",
+      "consensus_iou": 0.0,
+      "consensus_sources": null,
+      "retry_count": 0
+    },
+    {
+      "id": 3,
+      "name": "Minimize Button",
+      "group": "titlebar",
+      "bbox": [
+        642,
+        0,
+        688,
+        30
+      ],
+      "confidence": 1.0,
+      "is_mismatch": false,
+      "needs_review": false,
+      "source": "html_reproduction",
+      "control_type": "Unknown",
+      "display_name": "",
+      "visible": true,
+      "disabled": false,
+      "consensus_status": "",
+      "consensus_iou": 0.0,
+      "consensus_sources": null,
+      "retry_count": 0
+    },
+    {
+      "id": 4,
+      "name": "Maximize Button",
+      "group": "titlebar",
+      "bbox": [
+        688,
+        0,
+        734,
+        30
+      ],
+      "confidence": 1.0,
+      "is_mismatch": false,
+      "needs_review": false,
+      "source": "html_reproduction",
+      "control_type": "Unknown",
+      "display_name": "",
+      "visible": true,
+      "disabled": false,
+      "consensus_status": "",
+      "consensus_iou": 0.0,
+      "consensus_sources": null,
+      "retry_count": 0
+    },
+    {
+      "id": 5,
+      "name": "Close Button (Window)",
+      "group": "titlebar",
+      "bbox": [
+        734,
+        0,
+        780,
+        30
+      ],
+      "confidence": 1.0,
+      "is_mismatch": false,
+      "needs_review": false,
+      "source": "html_reproduction",
+      "control_type": "Unknown",
+      "display_name": "",
+      "visible": true,
+      "disabled": false,
+      "consensus_status": "",
+      "consensus_iou": 0.0,
+      "consensus_sources": null,
+      "retry_count": 0
+    },
+    {
+      "id": 6,
+      "name": "Black Background",
+      "group": "background",
+      "bbox": [
+        0,
+        0,
+        786,
+        553
+      ],
+      "confidence": 1.0,
+      "is_mismatch": false,
+      "needs_review": false,
+      "source": "html_reproduction",
+      "control_type": "Unknown",
+      "display_name": "",
+      "visible": true,
+      "disabled": false,
+      "consensus_status": "",
+      "consensus_iou": 0.0,
+      "consensus_sources": null,
+      "retry_count": 0
+    },
+    {
+      "id": 7,
+      "name": "Instruction Label",
+      "group": "rfid",
+      "bbox": [
+        214,
+        170,
+        572,
+        214
+      ],
+      "confidence": 1.0,
+      "is_mismatch": false,
+      "needs_review": false,
+      "source": "html_reproduction",
+      "control_type": "Unknown",
+      "display_name": "",
+      "visible": true,
+      "disabled": false,
+      "consensus_status": "",
+      "consensus_iou": 0.0,
+      "consensus_sources": null,
+      "retry_count": 0
+    },
+    {
+      "id": 8,
+      "name": "Card Image",
+      "group": "rfid",
+      "bbox": [
+        322,
+        236,
+        464,
+        336
+      ],
+      "confidence": 1.0,
+      "is_mismatch": false,
+      "needs_review": false,
+      "source": "html_reproduction",
+      "control_type": "Unknown",
+      "display_name": "",
+      "visible": true,
+      "disabled": false,
+      "consensus_status": "",
+      "consensus_iou": 0.0,
+      "consensus_sources": null,
+      "retry_count": 0
+    },
+    {
+      "id": 9,
+      "name": "CANCEL Button",
+      "group": "rfid",
+      "bbox": [
+        177,
+        358,
+        609,
+        414
+      ],
+      "confidence": 1.0,
+      "is_mismatch": false,
+      "needs_review": false,
+      "source": "html_reproduction",
+      "control_type": "Unknown",
+      "display_name": "",
+      "visible": true,
+      "disabled": false,
+      "consensus_status": "",
+      "consensus_iou": 0.0,
+      "consensus_sources": null,
+      "retry_count": 0
+    }
+  ],
+  "mismatch_items": null
+}

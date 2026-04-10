@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720">
+    <title>EBS Server — Sources Tab</title>
+    <style>
+        :root {
+            --bg-dark: #1a1a1a;
+            --bg-mid: #2a2a2a;
+            --bg-card: #ffffff;
+            --bg-section: #f5f5f5;
+            --border: #e0e0e0;
+            --border-light: #ebebeb;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --font-mono: 'Consolas', 'Courier New', monospace;
+            --fs-xs: 10px;
+            --fs-sm: 11px;
+            --fs-base: 12px;
+            --fs-md: 13px;
+            --radius-sm: 4px;
+            --radius-md: 6px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #000;
+            padding: 0;
+            margin: 0;
+        }
+        .wireframe-container {
+            width: 720px;
+            background: #fff;
+            border: 1px solid #999;
+            overflow: hidden;
+        }
+
+        /* Title Bar */
+        .title-bar {
+            background: var(--bg-dark);
+            color: #fff;
+            padding: 7px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .title-left { display: flex; align-items: center; gap: 7px; }
+        .app-icon { width: 14px; height: 14px; background: #777; border-radius: 3px; }
+        .title-left span { font-size: var(--fs-md); font-weight: 600; }
+        .title-version { font-size: var(--fs-xs); color: #aaa; margin-left: 4px; }
+        .window-controls { display: flex; gap: 5px; }
+        .ctrl-btn { width: 11px; height: 11px; border-radius: 50%; background: #555; }
+
+        /* Shared top panel */
+        .top-panel {
+            display: flex;
+            height: 130px;
+            border-bottom: 1px solid var(--border);
+        }
+        .preview-mini {
+            flex: 0 0 230px;
+            background: #c8d8e8;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .preview-mini-label {
+            font-size: var(--fs-xs);
+            color: #778;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .preview-mini-sub { font-size: 9px; color: #99a; }
+        .status-mini {
+            flex: 1;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            background: #fafafa;
+        }
+        .sm-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .indicator {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 3px 7px;
+            background: #fff;
+            font-size: var(--fs-xs);
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .indicator .label { color: var(--text-muted); }
+        .indicator .val { font-weight: 700; font-family: var(--font-mono); }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+        .status-dot.ok { background: #555; }
+        .status-dot.warn { background: #888; }
+        .hand-badge {
+            background: var(--bg-mid);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--fs-xs);
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+        .id-tag {
+            font-size: 9px;
+            background: #eee;
+            color: #777;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            background: #f0f0f0;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            padding: 0 8px;
+        }
+        .tab-item {
+            padding: 7px 14px;
+            font-size: var(--fs-sm);
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .tab-item.active {
+            color: var(--text-primary);
+            border-bottom-color: #333;
+            background: #fff;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            padding: 12px 14px;
+            overflow-y: auto;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 12px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        .section-header {
+            padding: 7px 12px;
+            background: #f7f7f7;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .section-title {
+            font-size: var(--fs-sm);
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .section-body { padding: 10px 12px; }
+
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: var(--fs-sm);
+            font-weight: 600;
+        }
+        .radio-btn {
+            width: 13px; height: 13px;
+            border-radius: 50%;
+            border: 2px solid #999;
+            background: #fff;
+        }
+        .radio-btn.selected {
+            border-color: #333;
+            background: #333;
+        }
+        .radio-note {
+            font-size: 9px;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 1px;
+            font-weight: 400;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--fs-sm);
+        }
+        .data-table th {
+            background: #f5f5f5;
+            border: 1px solid var(--border);
+            padding: 5px 8px;
+            text-align: left;
+            font-size: var(--fs-xs);
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .data-table td {
+            border: 1px solid var(--border-light);
+            padding: 5px 8px;
+            vertical-align: middle;
+        }
+        .data-table tr:nth-child(even) td { background: #fafafa; }
+        .source-name { font-weight: 600; color: var(--text-primary); }
+        .source-type { font-size: 9px; color: var(--text-muted); }
+        .tbl-btn {
+            padding: 3px 8px;
+            border: 1px solid #ccc;
+            border-radius: var(--radius-sm);
+            background: #fff;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 3px;
+        }
+        .add-btn {
+            margin-top: 6px;
+            padding: 5px 12px;
+            border: 1px dashed #aaa;
+            border-radius: var(--radius-sm);
+            background: #fafafa;
+            font-size: var(--fs-xs);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Camera Control grid */
+        .cam-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 16px;
+        }
+        .chk-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: var(--fs-sm);
+        }
+        .chk-box {
+            width: 12px; height: 12px;
+            border: 1px solid #999;
+            border-radius: 2px;
+            background: #fff;
+            flex-shrink: 0;
+        }
+        .chk-box.checked { background: #555; border-color: #555; }
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: var(--fs-sm);
+        }
+        .form-label { color: var(--text-secondary); min-width: 80px; }
+        .form-select {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 3px 6px;
+            font-size: var(--fs-xs);
+            background: #fff;
+            min-width: 120px;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Two-column bottom sections */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* Number input */
+        .num-input {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 3px 8px;
+            font-size: var(--fs-xs);
+            background: #fff;
+            width: 70px;
+            font-family: var(--font-mono);
+        }
+
+        /* Text field */
+        .text-field {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 3px 8px;
+            font-size: var(--fs-xs);
+            background: #fff;
+            flex: 1;
+            color: var(--text-muted);
+        }
+        .conn-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9px;
+            padding: 2px 6px;
+            background: #f0f0f0;
+            border-radius: var(--radius-sm);
+        }
+
+        /* Color picker stub */
+        .color-swatch {
+            width: 22px; height: 22px;
+            background: #5577bb;
+            border: 2px solid #555;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: var(--bg-mid);
+            color: #ccc;
+            padding: 4px 12px;
+            display: flex;
+            gap: 16px;
+            font-size: var(--fs-sm);
+            border-top: 1px solid #444;
+        }
+        .sbar-item { display: flex; align-items: center; gap: 5px; }
+        .sbar-spacer { flex: 1; }
+    </style>
+</head>
+<body>
+<div class="wireframe-container">
+
+    <!-- Title Bar -->
+    <div class="title-bar">
+        <div class="title-left">
+            <div class="app-icon"></div>
+            <span>EBS Server</span>
+            <span class="title-version">v1.0.0</span>
+        </div>
+        <div class="window-controls">
+            <div class="ctrl-btn"></div>
+            <div class="ctrl-btn"></div>
+            <div class="ctrl-btn"></div>
+        </div>
+    </div>
+
+    <!-- Shared Top Panel: Mini Preview + Status -->
+    <div class="top-panel">
+        <div class="preview-mini">
+            <span class="preview-mini-label">M-02 Preview</span>
+            <span class="preview-mini-sub">16:9 · Chroma Blue</span>
+        </div>
+        <div class="status-mini">
+            <div class="sm-row">
+                <div class="indicator"><span class="label">CPU</span><span class="val">24%</span></div>
+                <div class="indicator"><span class="label">GPU</span><span class="val">38%</span></div>
+                <div class="indicator"><span class="status-dot ok"></span><span class="label">RFID</span><span class="val">10/12</span></div>
+                <div class="indicator"><span class="label">Error</span><span class="val">0</span></div>
+            </div>
+            <div class="sm-row">
+                <span class="hand-badge">Hand #47</span>
+                <div class="indicator"><span class="status-dot ok"></span><span>AT</span></div>
+                <div class="indicator"><span class="status-dot ok"></span><span>Overlay</span></div>
+                <div class="indicator"><span class="status-dot warn"></span><span>DB</span></div>
+            </div>
+            <div class="sm-row" style="gap:8px;">
+                <button style="padding:4px 10px;border:1px solid #ccc;border-radius:4px;font-size:11px;font-weight:600;background:#2a2a2a;color:#fff;">Reset Hand</button>
+                <button style="padding:4px 10px;border:1px solid #ccc;border-radius:4px;font-size:11px;font-weight:600;background:#fff;">Register Deck</button>
+                <button style="padding:4px 10px;border:1px solid #ccc;border-radius:4px;font-size:11px;font-weight:600;background:#fff;">Launch AT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+        <div class="tab-item">Main</div>
+        <div class="tab-item active">Sources</div>
+        <div class="tab-item">Outputs</div>
+        <div class="tab-item">GFX</div>
+        <div class="tab-item">Rules</div>
+        <div class="tab-item">System</div>
+    </div>
+
+    <!-- Tab Content: Sources -->
+    <div class="tab-content">
+
+        <!-- S-00: Output Mode Selector -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-title">Output Mode</span>
+                <span class="id-tag">S-00</span>
+                <span style="font-size:9px;color:#aaa;margin-left:4px;">Determines visible settings below</span>
+            </div>
+            <div class="section-body">
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <div class="radio-btn selected"></div>
+                        <div>
+                            <span>Fill &amp; Key</span>
+                            <span class="radio-note">DeckLink SDI/HDMI out · ATEM DSK</span>
+                        </div>
+                    </div>
+                    <div class="radio-item">
+                        <div class="radio-btn"></div>
+                        <div>
+                            <span>Chroma Key</span>
+                            <span class="radio-note">Software composite · NDI</span>
+                        </div>
+                    </div>
+                    <div class="radio-item">
+                        <div class="radio-btn"></div>
+                        <div>
+                            <span>Internal</span>
+                            <span class="radio-note">Capture card in · OBS virtual cam</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- S-01~S-04: Video Sources -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-title">Video Sources</span>
+                <span class="id-tag">S-01</span>
+            </div>
+            <div class="section-body">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width:28px;">#</th>
+                            <th>Source Name</th>
+                            <th style="width:90px;">Type</th>
+                            <th style="width:80px;">Resolution</th>
+                            <th style="width:50px;">FPS</th>
+                            <th style="width:100px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center;"><span class="status-dot ok"></span></td>
+                            <td><span class="source-name">Table Camera — NDI</span><br><span class="source-type">NDI | 192.168.1.20</span></td>
+                            <td style="font-size:10px;">NDI</td>
+                            <td style="font-size:10px;font-family:monospace;">1920×1080</td>
+                            <td style="font-size:10px;font-family:monospace;">60</td>
+                            <td><button class="tbl-btn">Preview</button><button class="tbl-btn">Settings</button></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center;"><span class="status-dot ok"></span></td>
+                            <td><span class="source-name">Board Cam — Capture</span><br><span class="source-type">Capture Card | Magewell</span></td>
+                            <td style="font-size:10px;">Capture</td>
+                            <td style="font-size:10px;font-family:monospace;">1920×1080</td>
+                            <td style="font-size:10px;font-family:monospace;">60</td>
+                            <td><button class="tbl-btn">Preview</button><button class="tbl-btn">Settings</button></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center;"><span class="status-dot warn"></span></td>
+                            <td><span class="source-name">Player Cam 1</span><br><span class="source-type">NDI | 192.168.1.25</span></td>
+                            <td style="font-size:10px;">NDI</td>
+                            <td style="font-size:10px;font-family:monospace;">1280×720</td>
+                            <td style="font-size:10px;font-family:monospace;">30</td>
+                            <td><button class="tbl-btn">Preview</button><button class="tbl-btn">Settings</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin-top:6px;display:flex;gap:6px;">
+                    <button class="add-btn">+ Add NDI Source  S-02</button>
+                    <button class="add-btn">+ Add Network Camera</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- S-05~S-10: Camera Control -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-title">Camera Control</span>
+                <span class="id-tag">S-05 ~ S-10</span>
+            </div>
+            <div class="section-body">
+                <div class="cam-grid">
+                    <div class="chk-row">
+                        <div class="chk-box checked"></div>
+                        <span>Board Cam: Hide GFX</span>
+                        <span class="id-tag">S-05</span>
+                    </div>
+                    <div class="chk-row">
+                        <div class="chk-box checked"></div>
+                        <span>Auto Camera Control</span>
+                        <span class="id-tag">S-06</span>
+                    </div>
+                    <div class="chk-row">
+                        <div class="chk-box checked"></div>
+                        <span>Heads Up Split</span>
+                        <span class="id-tag">S-08</span>
+                    </div>
+                    <div class="chk-row">
+                        <div class="chk-box"></div>
+                        <span>Follow Players</span>
+                        <span class="id-tag">S-09</span>
+                    </div>
+                    <div class="chk-row">
+                        <div class="chk-box checked"></div>
+                        <span>Follow Board</span>
+                        <span class="id-tag">S-10</span>
+                    </div>
+                    <div class="form-row" style="grid-column:span 1;">
+                        <span class="form-label">Camera Mode</span>
+                        <div class="form-select"><span>Dynamic</span><span style="color:#aaa;">▼</span></div>
+                        <span class="id-tag">S-07</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom 2-col: Background + External Switcher -->
+        <div class="two-col">
+
+            <!-- S-11~S-12: Background / Chroma Key -->
+            <div class="section" style="margin-bottom:0;">
+                <div class="section-header">
+                    <span class="section-title">Background</span>
+                    <span class="id-tag">S-11 ~ S-12</span>
+                </div>
+                <div class="section-body">
+                    <div class="chk-row" style="margin-bottom:8px;">
+                        <div class="chk-box checked"></div>
+                        <span>Enable Chroma Key</span>
+                        <span class="id-tag">S-11</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">BG Color</span>
+                        <div class="color-swatch"></div>
+                        <span style="font-size:10px;color:#777;margin-left:4px;">#0000FF</span>
+                        <span class="id-tag">S-12</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- S-13~S-14: External Switcher (Fill & Key mode only) -->
+            <div class="section" style="margin-bottom:0;">
+                <div class="section-header">
+                    <span class="section-title">External Switcher</span>
+                    <span class="id-tag">S-13 ~ S-14</span>
+                    <span style="font-size:9px;color:#e88;margin-left:4px;">Fill &amp; Key only</span>
+                </div>
+                <div class="section-body">
+                    <div class="form-row" style="margin-bottom:8px;">
+                        <span class="form-label">Switcher Src</span>
+                        <div class="form-select"><span>ATEM Mini Pro</span><span style="color:#aaa;">▼</span></div>
+                        <span class="id-tag">S-13</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">ATEM IP</span>
+                        <div class="text-field" style="font-family:monospace;font-size:11px;">192.168.1.50</div>
+                        <div class="conn-status"><span class="status-dot ok"></span>OK</div>
+                        <span class="id-tag">S-14</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- S-15~S-18: Sync + Audio -->
+        <div style="margin-top:10px;">
+            <div class="two-col">
+
+                <!-- S-15~S-16: Sync -->
+                <div class="section" style="margin-bottom:0;">
+                    <div class="section-header">
+                        <span class="section-title">Sync</span>
+                        <span class="id-tag">S-15 ~ S-16</span>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-row" style="margin-bottom:6px;">
+                            <span class="form-label">Board Sync</span>
+                            <input class="num-input" value="0" type="text">
+                            <span style="font-size:10px;color:#aaa;">ms</span>
+                            <span class="id-tag">S-15</span>
+                        </div>
+                        <div class="form-row">
+                            <span class="form-label">Crossfade</span>
+                            <input class="num-input" value="300" type="text">
+                            <span style="font-size:10px;color:#aaa;">ms</span>
+                            <span class="id-tag">S-16</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- S-17~S-18: Audio -->
+                <div class="section" style="margin-bottom:0;">
+                    <div class="section-header">
+                        <span class="section-title">Audio</span>
+                        <span class="id-tag">S-17 ~ S-18</span>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-row" style="margin-bottom:6px;">
+                            <span class="form-label">Input Src</span>
+                            <div class="form-select"><span>Realtek HD Audio</span><span style="color:#aaa;">▼</span></div>
+                            <span class="id-tag">S-17</span>
+                        </div>
+                        <div class="form-row">
+                            <span class="form-label">Audio Sync</span>
+                            <input class="num-input" value="0" type="text">
+                            <span style="font-size:10px;color:#aaa;">ms</span>
+                            <span class="id-tag">S-18</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="sbar-item"><span class="status-dot ok"></span> RFID 10/12</div>
+        <div class="sbar-item"><span class="status-dot ok"></span> Mode: Fill &amp; Key</div>
+        <div class="sbar-item">Hand #47</div>
+        <div class="sbar-spacer"></div>
+        <div class="sbar-item">EBS v1.0.0</div>
+        <div class="sbar-item">14:32:01</div>
+    </div>
+
+</div>
+</body>
+</html>

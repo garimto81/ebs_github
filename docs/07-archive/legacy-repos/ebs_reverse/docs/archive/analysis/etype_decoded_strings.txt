@@ -1,0 +1,616 @@
+=== etype ASCII Decoder Results ===
+
+Total files with sequences: 59
+Total sequences found: 87
+
+File: _global\InputMonitor.cs
+=============================
+  Method: line 8
+    Context: etype_0x56 (uintptr arg0, etype_0x34 arg1, etype_0xe0 arg2, etype_0x89 arg3)
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: _global\InputReqClass.cs
+==============================
+  Method: line 11
+    Context: void set_uid(string arg0);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: _global\LogEntry.cs
+=========================
+  Method: line 12
+    Context: bool LomW6EJ0SxBguyqYuNo6();
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\MixEffectBlockMonitor.cs
+======================================
+  Method: line 11
+    Context: etype_0x56 (uintptr arg0, etype_0x34 arg1, etype_0xe0 arg2, etype_0x89 arg3);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+  Method: line 16
+    Context: etype_0x56 (uintptr arg0, etype_0x34 arg1, etype_0xe0 arg2, etype_0x89 arg3);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: _global\NameReqClass.cs
+=============================
+  Method: line 12
+    Context: void adjust_col_Load(object arg0, System.EventArgs arg1);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: _global\StudLimits.cs
+===========================
+  Method: line 10
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\SwitchReqClass.cs
+===============================
+  Method: line 12
+    Context: void reset_button_Click(object arg0, System.EventArgs arg1);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: _global\SwitcherMonitor.cs
+================================
+  Method: line 7
+    Context: etype_0x56 (uintptr arg0, etype_0x34 arg1, etype_0xe0 arg2, etype_0x89 arg3);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: _global\TextEffect.cs
+===========================
+  Method: line 26
+    Context: unknown ();
+    Decoded: "\x87\xc4\x87\xc4"
+    Raw etypes: etype_0x87, etype_0xc4, etype_0x87, etype_0xc4, etype_0x0, etype_0x0
+
+
+File: _global\TextType.cs
+=========================
+  Method: line 10
+    Context: etype_0x99 (etype_0xc0 arg0, ushort arg1, etype_0x0 arg2, bool arg3, bool arg4, object arg5, hTyD0bp
+    Decoded: "\x99\xc0"
+    Raw etypes: etype_0x99, etype_0xc0, etype_0x0, etype_0x0
+
+
+File: _global\asset_image.cs
+============================
+  Method: line 12
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 18
+    Context: void set_DateTime(System.DateTime arg0);
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\bw25ZtdICvTEDdayI4b.cs
+====================================
+  Method: line 6
+    Context: etype_0x80 fdYbU7x4Lt0H(etype_0xb5 arg0, byte arg1, long arg2, void arg3, vpt_server.trial_form arg4
+    Decoded: "\x80\xb5"
+    Raw etypes: etype_0x80, etype_0xb5, etype_0x0, etype_0x0, etype_0x0, etype_0x0
+
+
+File: _global\camera.cs
+=======================
+  Method: line 11
+    Context: void cr3_src_label_Click(object arg0, System.EventArgs arg1);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: _global\col_replace.cs
+============================
+  Method: line 9
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\country_type.cs
+=============================
+  Method: line 9
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\di_pip_type.cs
+============================
+  Method: line 14
+    Context: bool (System.DateTime arg0, ref System.DateTime arg1, System.TimeSpan arg2, etype_0x0* arg3, char ar
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\game_player_type.cs
+=================================
+  Method: line 12
+    Context: void SetName(string arg0);
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\game_variant_info.cs
+==================================
+  Method: line 18
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 24
+    Context: <>c__DisplayClass10_0 vRL9boJcaum6vtMjhJJb();
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 30
+    Context: void AddMessage(string arg0, int arg1, string arg2);
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\lang_info.cs
+==========================
+  Method: line 8
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\log_topic_setting.cs
+==================================
+  Method: line 8
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\panel_type.cs
+===========================
+  Method: line 29
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\saved_tag.cs
+==========================
+  Method: line 11
+    Context: etype_0x56 (uintptr arg0, etype_0x34 arg1, etype_0xe0 arg2, etype_0x89 arg3);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+  Method: line 16
+    Context: etype_0x56 (uintptr arg0, etype_0x34 arg1, etype_0xe0 arg2, etype_0x89 arg3);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: _global\skin_player_type.cs
+=================================
+  Method: line 40
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\skin_type.cs
+==========================
+  Method: line 191
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: _global\state_changed_event_handler.cs
+============================================
+  Method: line 3
+    Context: etype_0x56 (uintptr arg0, etype_0x34 arg1, etype_0xe0 arg2, etype_0x89 arg3)
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: vpt_server\AudioComboboxItem.cs
+=====================================
+  Method: line 13
+    Context: void <ContinueInitializationAfterSkin>b__94_1();
+    Decoded: "port"
+    Raw etypes: etype_0x70, etype_0x6f, etype_0x72, etype_0x74, etype_0x0, etype_0x0, etype_0x0, etype_0x63, etype_0x61, etype_0x70...
+
+
+File: vpt_server\BlindsElement.cs
+=================================
+  Method: line 13
+    Context: void InitializeComponent();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 19
+    Context: game_class get__gameClass();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\BlindsElementData.cs
+=====================================
+  Method: line 11
+    Context: etype_0xe0 (etype_0x89 arg0, char arg1, cmod_reqd arg2, etype_0x0 arg3, void arg4, int arg5, void ar
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\BoardElement.cs
+================================
+  Method: line 11
+    Context: etype_0xe0 (etype_0x89 arg0, char arg1, cmod_reqd arg2, etype_0x0 arg3, void arg4, int arg5, void ar
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 49
+    Context: void .cctor();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 55
+    Context: PokerGFX.Common.Logging.LogTopic <EnsureLoggingTopicSettings>b__80_0(log_topic_setting arg0);
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 61
+    Context: bool <validate_skin>b__94_12(System.Drawing.RectangleF arg0);
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 67
+    Context: bool <default_lang>b__3(game_variant_info arg0);
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 73
+    Context: bool <default_lang>b__11(game_variant_info arg0);
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 82
+    Context: bool (System.DateTime arg0, ref System.DateTime arg1, System.TimeSpan arg2, etype_0x0* arg3, char ar
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 88
+    Context: bool qpLac8JxXxMxBodlKHIm();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\CardsComparer.cs
+=================================
+  Method: line 11
+    Context: etype_0xe0 (etype_0x89 arg0, char arg1, cmod_reqd arg2, etype_0x0 arg3, void arg4, int arg5, void ar
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\ChipCount.cs
+=============================
+  Method: line 16
+    Context: short (anOOTbphxSeCn6YGfG2 arg0, ulong arg1, cmod_reqd arg2, void arg3);
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 22
+    Context: void .ctor();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 28
+    Context: bool FvUuJJJYbF6mYJDw15Vs();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 34
+    Context: bool A0XxhNJYTCTnh4hkEQRM();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 40
+    Context: void frame_update();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\ChipCountData.cs
+=================================
+  Method: line 15
+    Context: vpt_server.FieldElement Bob61WJY8t7TeTIyWrQv();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\ColorAdjustment.cs
+===================================
+  Method: line 50
+    Context: void .cctor();
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+  Method: line 103
+    Context: void Invoke(byte arg0, bool arg1, string arg2);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: vpt_server\DPoint.cs
+==========================
+  Method: line 10
+    Context: etype_0xe0 (etype_0x89 arg0, char arg1, cmod_reqd arg2, etype_0x0 arg3, void arg4, int arg5, void ar
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\Features\Common\ConfigurationPresets\Models\ConfigurationPreset.cs
+===================================================================================
+  Method: line 111
+    Context: object WKmhYLJtPMZefnC5RkT4();
+    Decoded: "e+<GetRemoteLicense>d__26"
+    Raw etypes: etype_0x65, etype_0x2b, etype_0x3c, etype_0x47, etype_0x65, etype_0x74, etype_0x52, etype_0x65, etype_0x6d, etype_0x6f...
+
+
+File: vpt_server\Features\Common\Licensing\Models\UserLicense.cs
+================================================================
+  Method: line 14
+    Context: void BtnClose_Click(object arg0, System.EventArgs arg1);
+    Decoded: "n&http://tempuri.org/Iwcf/get_file_blockTReplyction.http://tempuri.org/Iwcf/get_file_blockRes"
+    Raw etypes: etype_0x6e, etype_0x26, etype_0x68, etype_0x74, etype_0x74, etype_0x70, etype_0x3a, etype_0x2f, etype_0x2f, etype_0x74...
+
+
+File: vpt_server\FieldElement.cs
+================================
+  Method: line 15
+    Context: float get_fade_in_start_pos();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\FirmareProgress.cs
+===================================
+  Method: line 16
+    Context: bool (System.DateTime arg0, ref System.DateTime arg1, System.TimeSpan arg2, etype_0x0* arg3, char ar
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\GraphicElement.cs
+==================================
+  Method: line 21
+    Context: void set_BlindsString(string arg0);
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 27
+    Context: string get_HandString();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 33
+    Context: System.Drawing.RectangleF get_LowestCardRectangle();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\GraphicElementData.cs
+======================================
+  Method: line 52
+    Context: etype_0xe0 (etype_0x89 arg0, char arg1, cmod_reqd arg2, etype_0x0 arg3, void arg4, int arg5, void ar
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\LogWindow.cs
+=============================
+  Method: line 21
+    Context: void .cctor();
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 27
+    Context: void remove_TransitionFramesRemainingChanged(SwitcherEventHandler arg0);
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\StripLogoElement.cs
+====================================
+  Method: line 9
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\StripRepeatElement.cs
+======================================
+  Method: line 15
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 34
+    Context: string get_Name();
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\UI\LoginForm.cs
+================================
+  Method: line 37
+    Context: void split_mute_audio_checkbox_CheckedChanged(object arg0, System.EventArgs arg1);
+    Decoded: "n&http://tempuri.org/Iwcf/get_file_blockTReplyction.http://tempuri.org/Iwcf/get_file_blockRes"
+    Raw etypes: etype_0x6e, etype_0x26, etype_0x68, etype_0x74, etype_0x74, etype_0x70, etype_0x3a, etype_0x2f, etype_0x2f, etype_0x74...
+
+
+File: vpt_server\atem.cs
+========================
+  Method: line 27
+    Context: string <GetBoardUidsSummary>b__38_2(RFIDv2.tag arg0);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+  Method: line 33
+    Context: saved_tag <GetBoardCardsSummary>b__39_6(RFIDv2.tag arg0);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+  Method: line 39
+    Context: saved_tag <Save>b__105_0(saved_tag arg0);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: vpt_server\atem_form.cs
+=============================
+  Method: line 13
+    Context: vpt_server.ColorAdjustment t3pafsJ0Hrx3JwNLndiA();
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: vpt_server\auto_stats_edit.cs
+===================================
+  Method: line 29
+    Context: void .ctor();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\cam_prev.cs
+============================
+  Method: line 13
+    Context: void Shutdown();
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: vpt_server\cam_prop.cs
+============================
+  Method: line 15
+    Context: <>c__DisplayClass94_3 fxMGD6JYWJVRo4hgu031();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\config.cs
+==========================
+  Method: line 25
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 31
+    Context: void .ctor();
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 36
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 56
+    Context: void write_entry_txt(string arg0, _hand arg1, bool arg2);
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\di_pip_edit.cs
+===============================
+  Method: line 21
+    Context: string get__blindsString();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\flag_editor.cs
+===============================
+  Method: line 17
+    Context: etype_0xe0 (etype_0x89 arg0, char arg1, cmod_reqd arg2, etype_0x0 arg3, void arg4, int arg5, void ar
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+  Method: line 23
+    Context: void .ctor();
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\live_export.cs
+===============================
+  Method: line 9
+    Context: etype_0x56 (uintptr arg0, etype_0x34 arg1, etype_0xe0 arg2, etype_0x89 arg3);
+    Decoded: "V4\xe0\x89"
+    Raw etypes: etype_0x56, etype_0x34, etype_0xe0, etype_0x89
+
+
+File: vpt_server\log.cs
+=======================
+  Method: line 36
+    Context: void trial_form_Load(object arg0, System.EventArgs arg1);
+    Decoded: "n&http://tempuri.org/Iwcf/get_file_blockTReplyction.http://tempuri.org/Iwcf/get_file_blockRes"
+    Raw etypes: etype_0x6e, etype_0x26, etype_0x68, etype_0x74, etype_0x74, etype_0x70, etype_0x3a, etype_0x2f, etype_0x2f, etype_0x74...
+
+
+File: vpt_server\slave.cs
+=========================
+  Method: line 161
+    Context: etype_0x6e (etype_0x26 arg0, etype_0x68 arg1, etype_0x74 arg2, etype_0x74 arg3, etype_0x70 arg4, ety
+    Decoded: "n&http://tempuri.org/Iwcf/get_file_blockTReplyction.http://tempuri.org/Iwcf/get_file_blockRes"
+    Raw etypes: etype_0x6e, etype_0x26, etype_0x68, etype_0x74, etype_0x74, etype_0x70, etype_0x3a, etype_0x2f, etype_0x2f, etype_0x74...
+
+
+File: vpt_server\ticker_stats_edit.cs
+=====================================
+  Method: line 22
+    Context: etype_0x34 (etype_0xe0 arg0, etype_0x89 arg1, char arg2, cmod_reqd arg3, etype_0x0 arg4, void arg5, 
+    Decoded: "4\xe0\x89"
+    Raw etypes: etype_0x34, etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\vcomm.cs
+=========================
+  Method: line 11
+    Context: etype_0xe0 (etype_0x89 arg0, char arg1, cmod_reqd arg2, etype_0x0 arg3, void arg4, int arg5, void ar
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\video_repair.cs
+================================
+  Method: line 13
+    Context: etype_0xe0 (etype_0x89 arg0, char arg1, cmod_reqd arg2, etype_0x0 arg3, void arg4, int arg5, void ar
+    Decoded: "\xe0\x89"
+    Raw etypes: etype_0xe0, etype_0x89, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0, etype_0x0...
+
+
+File: vpt_server\wcf\Iwcf.cs
+============================
+  Method: line 6
+    Context: etype_0xa8 (etype_0x60 arg0, sbyte arg1, short arg2, YDeZpOJVVSQABCwCq1SY arg3, ulong arg4, cmod_req
+    Decoded: "\xa8`"
+    Raw etypes: etype_0xa8, etype_0x60, etype_0x0
+

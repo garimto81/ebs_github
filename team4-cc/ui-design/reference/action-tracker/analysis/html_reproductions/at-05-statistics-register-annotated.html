@@ -1,0 +1,955 @@
+<!-- AT-05 Annotated: Clean UI + Annotation Overlay -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=786">
+<title>AT-05: Statistics / Register Panel — Annotated</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  .screenshot-container {
+    width: 786px;
+    height: 553px;
+    position: relative;
+    background: #1c1c1c;
+    overflow: hidden;
+  }
+
+  /* =========================================
+     TITLEBAR (id=1) — y:0%, h:5%
+     ========================================= */
+  .titlebar {
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%;
+    height: 5%;
+    background: #d4d4d4;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    border-bottom: 1px solid #aaa;
+    z-index: 10;
+  }
+  .titlebar-icon {
+    width: 14px; height: 14px;
+    margin-right: 5px;
+    background: #888;
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: #fff;
+  }
+  .titlebar-text {
+    color: #222;
+    font-size: 11px;
+    flex: 1;
+  }
+  .titlebar-buttons {
+    display: flex;
+    height: 100%;
+  }
+  .titlebar-btn {
+    width: 28px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .titlebar-btn:hover { background: #bbb; }
+  .titlebar-btn.close-btn { color: #333; }
+  .titlebar-btn.close-btn:hover { background: #e74c3c; color: #fff; }
+
+  /* =========================================
+     TABLE AREA (id=2~9): left 82% of window
+     Table Header row: y:5%, h:7%
+     ========================================= */
+  .table-header {
+    position: absolute;
+    left: 0;
+    top: 5%;
+    width: 82%;
+    height: 7%;
+    display: flex;
+    z-index: 5;
+  }
+  .th-cell {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #222;
+    flex-shrink: 0;
+  }
+  .th-cell .th-lbl {
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+  .th-seat   { width: calc(10% / 0.82 * 0.82); background: #444; }
+  .th-stack  { width: calc(12% / 0.82 * 0.82); background: #B8860B; }
+  .th-vpip   { width: calc(12% / 0.82 * 0.82); background: #444; }
+  .th-pfr    { width: calc(12% / 0.82 * 0.82); background: #444; }
+  .th-agrfq  { width: calc(12% / 0.82 * 0.82); background: #444; }
+  .th-wtsd   { width: calc(12% / 0.82 * 0.82); background: #444; }
+  .th-win    { width: calc(12% / 0.82 * 0.82); background: #444; border-right: none; }
+
+  /* Simplified: use flex fractions for exact widths within 82% container */
+  .table-section {
+    position: absolute;
+    left: 0;
+    top: 5%;
+    width: 82%;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+  }
+
+  /* Header row */
+  .hdr-row {
+    display: flex;
+    height: 7%;
+    flex-shrink: 0;
+    border-bottom: 1px solid #222;
+  }
+  .hdr-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #222;
+    flex-shrink: 0;
+  }
+  .hdr-col .col-lbl {
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.4px;
+  }
+
+  /* Column widths as % of 82% container */
+  .col-seat  { width: 12.2%;  background: #3a3a3a; }
+  .col-stack { width: 14.6%;  background: #B8860B; }
+  .col-vpip  { width: 14.6%;  background: #3a3a3a; }
+  .col-pfr   { width: 14.6%;  background: #3a3a3a; }
+  .col-agrfq { width: 14.6%;  background: #3a3a3a; }
+  .col-wtsd  { width: 14.6%;  background: #3a3a3a; }
+  .col-win   { width: 14.6%;  background: #3a3a3a; border-right: none; }
+
+  /* Data rows */
+  .data-rows {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .data-row {
+    display: flex;
+    flex: 1;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .data-row:nth-child(odd)  { background: #252525; }
+  .data-row:nth-child(even) { background: #1e1e1e; }
+
+  .data-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #2a2a2a;
+    flex-shrink: 0;
+    padding: 2px;
+  }
+
+  /* same column widths */
+  .dc-seat  { width: 12.2%; }
+  .dc-stack { width: 14.6%; }
+  .dc-vpip  { width: 14.6%; }
+  .dc-pfr   { width: 14.6%; }
+  .dc-agrfq { width: 14.6%; }
+  .dc-wtsd  { width: 14.6%; }
+  .dc-win   { width: 14.6%; border-right: none; }
+
+  /* Active seat label */
+  .seat-lbl-active {
+    color: #e0e0e0;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  /* Inactive seat label */
+  .seat-lbl-inactive {
+    color: #555;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  /* Data value box (looks like input field) */
+  .val-box {
+    width: 90%;
+    height: 70%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+  }
+  .val-active {
+    background: #1a1a1a;
+    border: 1px solid #444;
+    color: #e0e0e0;
+  }
+  .val-inactive {
+    background: #1a1a1a;
+    border: 1px solid #2e2e2e;
+    color: #333;
+  }
+  .val-neg { color: #e74c3c; }
+  .val-empty { background: transparent; border: none; }
+
+  /* =========================================
+     RIGHT PANEL: x:83%, width:17%
+     ========================================= */
+
+  /* id=10: Expand (83–91%, y:5–13%) */
+  .btn-expand {
+    position: absolute;
+    left: 83%;
+    top: 5%;
+    width: 8%;
+    height: 8%;
+    background: #3a3a3a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #555;
+    z-index: 5;
+  }
+  .btn-expand:hover { filter: brightness(1.3); }
+  .expand-icon {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    width: 16px; height: 16px;
+  }
+  .expand-icon span {
+    color: #aaa;
+    font-size: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* id=11: Close X (92–100%, y:5–13%) */
+  .btn-close {
+    position: absolute;
+    left: 92%;
+    top: 5%;
+    width: 8%;
+    height: 8%;
+    background: #C0392B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #8B0000;
+    z-index: 5;
+  }
+  .btn-close:hover { filter: brightness(1.2); }
+  .btn-close .x-lbl {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  /* Shared right-panel button style */
+  .rp-btn {
+    position: absolute;
+    left: 83%;
+    width: 17%;
+    background: #3a3a3a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #555;
+    border-radius: 4px;
+    z-index: 5;
+    text-align: center;
+  }
+  .rp-btn:hover { filter: brightness(1.25); }
+  .rp-btn .rp-lbl {
+    color: #ddd;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+  }
+  .rp-btn.golden { background: #B8860B; }
+  .rp-btn.golden .rp-lbl { color: #fff; }
+
+  /* Half-width right panel buttons */
+  .rp-half-left {
+    position: absolute;
+    left: 83%;
+    width: 8.5%;
+    background: #3a3a3a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #555;
+    border-radius: 4px;
+    z-index: 5;
+    text-align: center;
+  }
+  .rp-half-left:hover { filter: brightness(1.25); }
+  .rp-half-left .rp-lbl {
+    color: #ddd;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    line-height: 1.3;
+  }
+
+  .rp-half-right {
+    position: absolute;
+    left: 91.5%;
+    width: 8.5%;
+    background: #3a3a3a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #555;
+    border-radius: 4px;
+    z-index: 5;
+    text-align: center;
+  }
+  .rp-half-right:hover { filter: brightness(1.25); }
+  .rp-half-right .rp-lbl {
+    color: #ddd;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    line-height: 1.3;
+  }
+
+  /* Input field (id=15) */
+  .rp-input {
+    position: absolute;
+    left: 83%;
+    width: 17%;
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 3px;
+    z-index: 5;
+  }
+
+  /* =========================================
+     ANNOTATION OVERLAY
+     ========================================= */
+  .anno-overlay {
+      position: absolute;
+      border: 2px solid;
+      border-radius: 2px;
+      z-index: 100;
+      pointer-events: auto;
+      cursor: help;
+      transition: opacity 0.15s;
+  }
+  .anno-overlay:hover {
+      opacity: 1 !important;
+      z-index: 200;
+  }
+  .anno-badge {
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      padding: 1px 4px;
+      font-size: 9px;
+      font-weight: bold;
+      font-family: 'Consolas', 'Monaco', monospace;
+      color: #fff;
+      border-radius: 2px 0 2px 0;
+      white-space: nowrap;
+      line-height: 1.3;
+      pointer-events: none;
+  }
+  .anno-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 4px);
+      left: 0;
+      padding: 4px 8px;
+      background: rgba(0,0,0,0.9);
+      color: #fff;
+      font-size: 11px;
+      font-family: 'Segoe UI', sans-serif;
+      border-radius: 3px;
+      white-space: nowrap;
+      z-index: 300;
+      pointer-events: none;
+  }
+  .anno-overlay:hover .anno-tooltip {
+      display: block;
+  }
+
+  /* Category Colors */
+  .anno-cat-titlebar    { border-color: rgba(52,152,219,0.8); background: rgba(52,152,219,0.15); }
+  .anno-cat-titlebar    .anno-badge { background: #3498db; }
+  .anno-cat-toolbar     { border-color: rgba(46,204,113,0.8); background: rgba(46,204,113,0.15); }
+  .anno-cat-toolbar     .anno-badge { background: #27ae60; }
+  .anno-cat-card_icon   { border-color: rgba(241,196,15,0.8); background: rgba(241,196,15,0.15); }
+  .anno-cat-card_icon   .anno-badge { background: #f39c12; }
+  .anno-cat-card_area   { border-color: rgba(241,196,15,0.8); background: rgba(241,196,15,0.15); }
+  .anno-cat-card_area   .anno-badge { background: #f39c12; }
+  .anno-cat-seat        { border-color: rgba(230,126,34,0.8); background: rgba(230,126,34,0.15); }
+  .anno-cat-seat        .anno-badge { background: #e67e22; }
+  .anno-cat-action_panel { border-color: rgba(231,76,60,0.8); background: rgba(231,76,60,0.15); }
+  .anno-cat-action_panel .anno-badge { background: #c0392b; }
+  .anno-cat-action_button { border-color: rgba(155,89,182,0.8); background: rgba(155,89,182,0.15); }
+  .anno-cat-action_button .anno-badge { background: #8e44ad; }
+  .anno-cat-community_cards { border-color: rgba(0,188,212,0.8); background: rgba(0,188,212,0.15); }
+  .anno-cat-community_cards .anno-badge { background: #00838f; }
+  .anno-cat-info_bar    { border-color: rgba(0,150,136,0.8); background: rgba(0,150,136,0.15); }
+  .anno-cat-info_bar    .anno-badge { background: #009688; }
+  .anno-cat-rfid        { border-color: rgba(121,85,72,0.8); background: rgba(121,85,72,0.15); }
+  .anno-cat-rfid        .anno-badge { background: #795548; }
+  .anno-cat-chrome      { border-color: rgba(96,125,139,0.8); background: rgba(96,125,139,0.15); }
+  .anno-cat-chrome      .anno-badge { background: #607d8b; }
+  .anno-cat-background  { border-color: rgba(158,158,158,0.8); background: rgba(158,158,158,0.10); }
+  .anno-cat-background  .anno-badge { background: #757575; }
+  .anno-cat-table_header { border-color: rgba(63,81,181,0.8); background: rgba(63,81,181,0.15); }
+  .anno-cat-table_header .anno-badge { background: #3f51b5; }
+  .anno-cat-table_data  { border-color: rgba(96,125,139,0.8); background: rgba(96,125,139,0.15); }
+  .anno-cat-table_data  .anno-badge { background: #607d8b; }
+  .anno-cat-broadcast_control { border-color: rgba(255,87,34,0.8); background: rgba(255,87,34,0.15); }
+  .anno-cat-broadcast_control .anno-badge { background: #ff5722; }
+  .anno-cat-action      { border-color: rgba(96,125,139,0.8); background: rgba(96,125,139,0.15); }
+  .anno-cat-action      .anno-badge { background: #607d8b; }
+  .anno-cat-input       { border-color: rgba(0,150,136,0.8); background: rgba(0,150,136,0.15); }
+  .anno-cat-input       .anno-badge { background: #009688; }
+  .anno-cat-navigation  { border-color: rgba(63,81,181,0.8); background: rgba(63,81,181,0.15); }
+  .anno-cat-navigation  .anno-badge { background: #3f51b5; }
+
+</style>
+</head>
+<body>
+<div class="screenshot-container">
+
+  <!-- id=1: Titlebar -->
+  <div
+    class="titlebar"
+    data-element-id="1"
+    data-element-name="Title Bar"
+    data-element-group="chrome"
+  >
+    <div class="titlebar-icon">&#9654;</div>
+    <span class="titlebar-text">PokerGFX Action Tracker &copy; 2011-24 videopokertable.net</span>
+    <div class="titlebar-buttons">
+      <div class="titlebar-btn">&#8212;</div>
+      <div class="titlebar-btn">&#9633;</div>
+      <div class="titlebar-btn close-btn">&#10005;</div>
+    </div>
+  </div>
+
+  <!-- id=2~9: Table section (left 82%) -->
+  <div
+    class="table-section"
+    data-element-id="9"
+    data-element-name="Data Rows (SEAT 1-10)"
+    data-element-group="table_data"
+  >
+    <!-- Header row (ids 2–8 are individual columns within this row) -->
+    <div class="hdr-row">
+      <div
+        class="hdr-col col-seat"
+        data-element-id="2"
+        data-element-name="Header: SEAT"
+        data-element-group="table_header"
+      >
+        <span class="col-lbl">SEAT</span>
+      </div>
+      <div
+        class="hdr-col col-stack"
+        data-element-id="3"
+        data-element-name="Header: STACK"
+        data-element-group="table_header"
+      >
+        <span class="col-lbl">STACK</span>
+      </div>
+      <div
+        class="hdr-col col-vpip"
+        data-element-id="4"
+        data-element-name="Header: VPIP%"
+        data-element-group="table_header"
+      >
+        <span class="col-lbl">VPIP%</span>
+      </div>
+      <div
+        class="hdr-col col-pfr"
+        data-element-id="5"
+        data-element-name="Header: PFR%"
+        data-element-group="table_header"
+      >
+        <span class="col-lbl">PFR%</span>
+      </div>
+      <div
+        class="hdr-col col-agrfq"
+        data-element-id="6"
+        data-element-name="Header: AGRFq%"
+        data-element-group="table_header"
+      >
+        <span class="col-lbl">AGRFq%</span>
+      </div>
+      <div
+        class="hdr-col col-wtsd"
+        data-element-id="7"
+        data-element-name="Header: WTSD%"
+        data-element-group="table_header"
+      >
+        <span class="col-lbl">WTSD%</span>
+      </div>
+      <div
+        class="hdr-col col-win"
+        data-element-id="8"
+        data-element-name="Header: WIN"
+        data-element-group="table_header"
+      >
+        <span class="col-lbl">WIN</span>
+      </div>
+    </div>
+
+    <!-- Data rows -->
+    <div class="data-rows">
+
+      <!-- SEAT 1 — active, stack only -->
+      <div class="data-row">
+        <div class="data-cell dc-seat"><span class="seat-lbl-active">SEAT 1</span></div>
+        <div class="data-cell dc-stack"><div class="val-box val-active">1,000,000</div></div>
+        <div class="data-cell dc-vpip"><div class="val-box val-active"></div></div>
+        <div class="data-cell dc-pfr"><div class="val-box val-active"></div></div>
+        <div class="data-cell dc-agrfq"><div class="val-box val-active"></div></div>
+        <div class="data-cell dc-wtsd"><div class="val-box val-active"></div></div>
+        <div class="data-cell dc-win"><div class="val-box val-active"></div></div>
+      </div>
+
+      <!-- SEAT 2 — active, with stats -->
+      <div class="data-row">
+        <div class="data-cell dc-seat"><span class="seat-lbl-active">SEAT 2</span></div>
+        <div class="data-cell dc-stack"><div class="val-box val-active">1,005,000</div></div>
+        <div class="data-cell dc-vpip"><div class="val-box val-active">100</div></div>
+        <div class="data-cell dc-pfr"><div class="val-box val-active">100</div></div>
+        <div class="data-cell dc-agrfq"><div class="val-box val-active"></div></div>
+        <div class="data-cell dc-wtsd"><div class="val-box val-active"></div></div>
+        <div class="data-cell dc-win"><div class="val-box val-active">5,000</div></div>
+      </div>
+
+      <!-- SEAT 3 — active, negative win -->
+      <div class="data-row">
+        <div class="data-cell dc-seat"><span class="seat-lbl-active">SEAT 3</span></div>
+        <div class="data-cell dc-stack"><div class="val-box val-active">995,000</div></div>
+        <div class="data-cell dc-vpip"><div class="val-box val-active">100</div></div>
+        <div class="data-cell dc-pfr"><div class="val-box val-active"></div></div>
+        <div class="data-cell dc-agrfq"><div class="val-box val-active"></div></div>
+        <div class="data-cell dc-wtsd"><div class="val-box val-active"></div></div>
+        <div class="data-cell dc-win"><div class="val-box val-active val-neg">-5,000</div></div>
+      </div>
+
+      <!-- SEAT 4–10: inactive -->
+      <div class="data-row">
+        <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 4</span></div>
+        <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+      </div>
+
+      <div class="data-row">
+        <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 5</span></div>
+        <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+      </div>
+
+      <div class="data-row">
+        <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 6</span></div>
+        <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+      </div>
+
+      <div class="data-row">
+        <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 7</span></div>
+        <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+      </div>
+
+      <div class="data-row">
+        <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 8</span></div>
+        <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+      </div>
+
+      <div class="data-row">
+        <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 9</span></div>
+        <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+      </div>
+
+      <div class="data-row">
+        <div class="data-cell dc-seat"><span class="seat-lbl-inactive">SEAT 10</span></div>
+        <div class="data-cell dc-stack"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-vpip"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-pfr"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-agrfq"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-wtsd"><div class="val-box val-inactive"></div></div>
+        <div class="data-cell dc-win"><div class="val-box val-inactive"></div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- id=10: Expand button -->
+  <div
+    class="btn-expand"
+    data-element-id="10"
+    data-element-name="Expand Button"
+    data-element-group="action"
+  >
+    <div class="expand-icon">
+      <span>&#8598;</span>
+      <span>&#8599;</span>
+      <span>&#8601;</span>
+      <span>&#8600;</span>
+    </div>
+  </div>
+
+  <!-- id=11: Close button -->
+  <div
+    class="btn-close"
+    data-element-id="11"
+    data-element-name="Close Button"
+    data-element-group="action"
+  >
+    <span class="x-lbl">X</span>
+  </div>
+
+  <!-- id=12: LIVE button (y:14%, h:9%) -->
+  <div
+    class="rp-btn"
+    style="top:14%; height:9%;"
+    data-element-id="12"
+    data-element-name="LIVE Button"
+    data-element-group="broadcast_control"
+  >
+    <span class="rp-lbl">LIVE</span>
+  </div>
+
+  <!-- id=13: GFX button — golden/active (y:24%, h:9%) -->
+  <div
+    class="rp-btn golden"
+    style="top:24%; height:9%;"
+    data-element-id="13"
+    data-element-name="GFX Button"
+    data-element-group="broadcast_control"
+  >
+    <span class="rp-lbl">GFX</span>
+  </div>
+
+  <!-- id=14: HAND 2 button (y:34%, h:9%) -->
+  <div
+    class="rp-btn"
+    style="top:34%; height:9%;"
+    data-element-id="14"
+    data-element-name="HAND Button"
+    data-element-group="broadcast_control"
+  >
+    <span class="rp-lbl">HAND 2</span>
+  </div>
+
+  <!-- id=15: Input field (y:44%, h:7%) -->
+  <div
+    class="rp-input"
+    style="top:44%; height:7%;"
+    data-element-id="15"
+    data-element-name="Input Field (Unknown)"
+    data-element-group="input"
+  ></div>
+
+  <!-- id=16: FIELD button (y:55%, h:9%) -->
+  <div
+    class="rp-btn"
+    style="top:55%; height:9%;"
+    data-element-id="16"
+    data-element-name="FIELD Button"
+    data-element-group="broadcast_control"
+  >
+    <span class="rp-lbl">FIELD</span>
+  </div>
+
+  <!-- id=17: REMAIN (left half, y:66%, h:8%) -->
+  <div
+    class="rp-half-left"
+    style="top:66%; height:8%;"
+    data-element-id="17"
+    data-element-name="REMAIN Button"
+    data-element-group="broadcast_control"
+  >
+    <span class="rp-lbl">REMAIN</span>
+  </div>
+
+  <!-- id=18: TOTAL (right half, y:66%, h:8%) -->
+  <div
+    class="rp-half-right"
+    style="top:66%; height:8%;"
+    data-element-id="18"
+    data-element-name="TOTAL Button"
+    data-element-group="broadcast_control"
+  >
+    <span class="rp-lbl">TOTAL</span>
+  </div>
+
+  <!-- id=19: STRIP STACK (left half, y:75%, h:8%) -->
+  <div
+    class="rp-half-left"
+    style="top:75%; height:8%;"
+    data-element-id="19"
+    data-element-name="STRIP STACK Button"
+    data-element-group="broadcast_control"
+  >
+    <span class="rp-lbl">STRIP<br>STACK</span>
+  </div>
+
+  <!-- id=20: STRIP WIN (right half, y:75%, h:8%) -->
+  <div
+    class="rp-half-right"
+    style="top:75%; height:8%;"
+    data-element-id="20"
+    data-element-name="STRIP WIN Button"
+    data-element-group="broadcast_control"
+  >
+    <span class="rp-lbl">STRIP<br>WIN</span>
+  </div>
+
+  <!-- id=21: TICKER (left half, y:85%, h:8%) -->
+  <div
+    class="rp-half-left"
+    style="top:85%; height:8%;"
+    data-element-id="21"
+    data-element-name="TICKER Button"
+    data-element-group="broadcast_control"
+  >
+    <span class="rp-lbl">TICKER</span>
+  </div>
+
+  <!-- id=22: Arrow Right (right half, y:85%, h:8%) -->
+  <div
+    class="rp-half-right"
+    style="top:85%; height:8%;"
+    data-element-id="22"
+    data-element-name="Arrow Right Button"
+    data-element-group="navigation"
+  >
+    <span class="rp-lbl" style="font-size:18px;">&#8594;</span>
+  </div>
+
+  <!-- =========================================
+       ANNOTATION OVERLAY LAYER
+       ========================================= -->
+
+  <!-- id=1: Title Bar — chrome -->
+  <div class="anno-overlay anno-cat-chrome"
+       style="left:0%; top:0%; width:100%; height:5.0%; opacity:0.7;">
+      <span class="anno-badge">[1]</span>
+      <div class="anno-tooltip">Title Bar — copyright 연도가 2011-24로 표시됨 (at-03와 다름)</div>
+  </div>
+
+  <!-- id=2: Header: SEAT — table_header -->
+  <div class="anno-overlay anno-cat-table_header"
+       style="left:0%; top:5.0%; width:10.0%; height:6.5%; opacity:0.7;">
+      <span class="anno-badge">[2]</span>
+      <div class="anno-tooltip">Header: SEAT — 좌측 첫 번째 열 헤더</div>
+  </div>
+
+  <!-- id=3: Header: STACK — table_header -->
+  <div class="anno-overlay anno-cat-table_header"
+       style="left:10.0%; top:5.0%; width:12.0%; height:6.5%; opacity:0.7;">
+      <span class="anno-badge">[3]</span>
+      <div class="anno-tooltip">Header: STACK — Stack 컬럼만 골든 배경으로 강조 처리</div>
+  </div>
+
+  <!-- id=4: Header: VPIP% — table_header -->
+  <div class="anno-overlay anno-cat-table_header"
+       style="left:22.0%; top:5.0%; width:12.0%; height:6.5%; opacity:0.7;">
+      <span class="anno-badge">[4]</span>
+      <div class="anno-tooltip">Header: VPIP% — 테이블 헤더: VPIP% (Voluntarily Put money In Pot). 자발적 팟 참여 비율. PlayerInfoResponse.Vpip</div>
+  </div>
+
+  <!-- id=5: Header: PFR% — table_header -->
+  <div class="anno-overlay anno-cat-table_header"
+       style="left:33.9%; top:5.0%; width:12.0%; height:6.5%; opacity:0.7;">
+      <span class="anno-badge">[5]</span>
+      <div class="anno-tooltip">Header: PFR% — 테이블 헤더: PFR% (Pre-Flop Raise). 프리플롭 레이즈 비율. PlayerInfoResponse.Pfr</div>
+  </div>
+
+  <!-- id=6: Header: AGRFq% — table_header -->
+  <div class="anno-overlay anno-cat-table_header"
+       style="left:45.9%; top:5.0%; width:12.0%; height:6.5%; opacity:0.7;">
+      <span class="anno-badge">[6]</span>
+      <div class="anno-tooltip">Header: AGRFq% — 테이블 헤더: AGRFq% (Aggression Frequency). 공격적 플레이 빈도. PlayerInfoResponse.Agr</div>
+  </div>
+
+  <!-- id=7: Header: WTSD% — table_header -->
+  <div class="anno-overlay anno-cat-table_header"
+       style="left:57.9%; top:5.0%; width:12.0%; height:6.5%; opacity:0.7;">
+      <span class="anno-badge">[7]</span>
+      <div class="anno-tooltip">Header: WTSD% — 테이블 헤더: WTSD% (Went To ShowDown). 쇼다운 진출 비율. PlayerInfoResponse.Wtsd</div>
+  </div>
+
+  <!-- id=8: Header: WIN — table_header -->
+  <div class="anno-overlay anno-cat-table_header"
+       style="left:69.9%; top:5.0%; width:12.0%; height:6.5%; opacity:0.7;">
+      <span class="anno-badge">[8]</span>
+      <div class="anno-tooltip">Header: WIN — 테이블 헤더: WIN. 누적 수익/손실 금액. PlayerInfoResponse.CumWin</div>
+  </div>
+
+  <!-- id=9: Data Rows (SEAT 1-10) — table_data -->
+  <div class="anno-overlay anno-cat-table_data"
+       style="left:0%; top:5.0%; width:82.0%; height:95.0%; opacity:0.7;">
+      <span class="anno-badge">[9]</span>
+      <div class="anno-tooltip">Data Rows (SEAT 1-10) — 비활성 시트(4-10)는 회색으로 dimmed 처리. WIN 컬럼에 음수값 표시 가능</div>
+  </div>
+
+  <!-- id=10: Expand Button — action -->
+  <div class="anno-overlay anno-cat-action"
+       style="left:83.0%; top:5.0%; width:8.0%; height:8.0%; opacity:0.7;">
+      <span class="anno-badge">[10]</span>
+      <div class="anno-tooltip">Expand Button — 창 확장/전체화면 토글</div>
+  </div>
+
+  <!-- id=11: Close Button — action -->
+  <div class="anno-overlay anno-cat-action"
+       style="left:92.0%; top:5.0%; width:8.0%; height:8.0%; opacity:0.7;">
+      <span class="anno-badge">[11]</span>
+      <div class="anno-tooltip">Close Button — Statistics 패널 닫기 (화면 전환)</div>
+  </div>
+
+  <!-- id=12: LIVE Button — broadcast_control -->
+  <div class="anno-overlay anno-cat-broadcast_control"
+       style="left:83.0%; top:14.0%; width:17.0%; height:9.0%; opacity:0.7;">
+      <span class="anno-badge">[12]</span>
+      <div class="anno-tooltip">LIVE Button — LIVE 방송 모드 토글. GFX_ENABLE(enable) 전송. 주의: 반전 전송(!enable)</div>
+  </div>
+
+  <!-- id=13: GFX Button — broadcast_control -->
+  <div class="anno-overlay anno-cat-broadcast_control"
+       style="left:83.0%; top:24.0%; width:17.0%; height:9.0%; opacity:0.7;">
+      <span class="anno-badge">[13]</span>
+      <div class="anno-tooltip">GFX Button — GFX 오버레이 토글. SHOW_PANEL 프로토콜로 통계 패널 on/off 전환</div>
+  </div>
+
+  <!-- id=14: HAND Button — broadcast_control -->
+  <div class="anno-overlay anno-cat-broadcast_control"
+       style="left:83.0%; top:34.0%; width:17.0%; height:9.0%; opacity:0.7;">
+      <span class="anno-badge">[14]</span>
+      <div class="anno-tooltip">HAND Button — 핸드 번호 표시. 현재 2번째 핸드</div>
+  </div>
+
+  <!-- id=15: Input Field — input -->
+  <div class="anno-overlay anno-cat-input"
+       style="left:83.0%; top:44.0%; width:17.0%; height:7.0%; opacity:0.7;">
+      <span class="anno-badge">[15]</span>
+      <div class="anno-tooltip">Input Field (Unknown) — 입력 필드 (추정: 방송 그래픽 전송 값 입력). broadcast_control 버튼과 연동하여 전송할 값 지정. 역설계 교차검증 필요</div>
+  </div>
+
+  <!-- id=16: FIELD Button — broadcast_control -->
+  <div class="anno-overlay anno-cat-broadcast_control"
+       style="left:83.0%; top:55.0%; width:17.0%; height:9.0%; opacity:0.7;">
+      <span class="anno-badge">[16]</span>
+      <div class="anno-tooltip">FIELD Button — FIELD 그래픽 전송. FIELD_VAL(field_id, value) 프로토콜로 방송 그래픽에 특정 필드 값 전송</div>
+  </div>
+
+  <!-- id=17: REMAIN Button — broadcast_control -->
+  <div class="anno-overlay anno-cat-broadcast_control"
+       style="left:83.0%; top:66.0%; width:8.5%; height:8.0%; opacity:0.7;">
+      <span class="anno-badge">[17]</span>
+      <div class="anno-tooltip">REMAIN Button — REMAIN 잔여 칩 그래픽 전송. 선택된 플레이어의 현재 스택을 방송 그래픽에 표시</div>
+  </div>
+
+  <!-- id=18: TOTAL Button — broadcast_control -->
+  <div class="anno-overlay anno-cat-broadcast_control"
+       style="left:91.5%; top:66.0%; width:8.5%; height:8.0%; opacity:0.7;">
+      <span class="anno-badge">[18]</span>
+      <div class="anno-tooltip">TOTAL Button — TOTAL 총 칩 그래픽 전송. 선택된 플레이어의 총 바이인 금액을 방송 그래픽에 표시</div>
+  </div>
+
+  <!-- id=19: STRIP STACK Button — broadcast_control -->
+  <div class="anno-overlay anno-cat-broadcast_control"
+       style="left:83.0%; top:75%; width:8.5%; height:8.0%; opacity:0.7;">
+      <span class="anno-badge">[19]</span>
+      <div class="anno-tooltip">STRIP STACK Button — STRIP STACK 전송. 전체 플레이어 스택 비교 스트립 그래픽 방송 전송</div>
+  </div>
+
+  <!-- id=20: STRIP WIN Button — broadcast_control -->
+  <div class="anno-overlay anno-cat-broadcast_control"
+       style="left:91.5%; top:75%; width:8.5%; height:8.0%; opacity:0.7;">
+      <span class="anno-badge">[20]</span>
+      <div class="anno-tooltip">STRIP WIN Button — STRIP WIN 전송. 전체 플레이어 수익 비교 스트립 그래픽 방송 전송</div>
+  </div>
+
+  <!-- id=21: TICKER Button — broadcast_control -->
+  <div class="anno-overlay anno-cat-broadcast_control"
+       style="left:83.0%; top:85.0%; width:8.5%; height:8.0%; opacity:0.7;">
+      <span class="anno-badge">[21]</span>
+      <div class="anno-tooltip">TICKER Button — TICKER 그래픽 전송. 하단 흐르는 텍스트(ticker) 그래픽 방송 전송</div>
+  </div>
+
+  <!-- id=22: Arrow Right Button — navigation -->
+  <div class="anno-overlay anno-cat-navigation"
+       style="left:91.5%; top:85.0%; width:8.5%; height:8.0%; opacity:0.7;">
+      <span class="anno-badge">[22]</span>
+      <div class="anno-tooltip">Arrow Right Button — 다음 화면 또는 추가 컨트롤로 이동하는 네비게이션 버튼</div>
+  </div>
+
+</div>
+
+
+</body>
+</html>

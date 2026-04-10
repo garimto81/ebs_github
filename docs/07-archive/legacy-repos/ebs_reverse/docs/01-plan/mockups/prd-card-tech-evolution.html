@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>M2 - Card Recognition Technology Evolution</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #fff;
+  color: #000;
+  padding: 0;
+  margin: 0;
+  width: 720px;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.panel {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  background: #f5f5f5;
+  border: 2px solid #ccc;
+  overflow: hidden;
+}
+
+.panel-label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  z-index: 10;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 2px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.badge.obsolete {
+  background: #ddd;
+  color: #888;
+}
+
+.badge.current {
+  background: #333;
+  color: #fff;
+  border: 2px solid #000;
+}
+
+.cross-section {
+  padding: 48px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.layer {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.layer-card {
+  width: 160px;
+  height: 90px;
+  border: 3px solid #333;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.layer-glass {
+  width: 320px;
+  height: 32px;
+  background: repeating-linear-gradient(
+    45deg,
+    #d8d8d8,
+    #d8d8d8 3px,
+    #e8e8e8 3px,
+    #e8e8e8 6px
+  );
+  border: 2px solid #999;
+  position: relative;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.layer-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.layer-camera {
+  width: 80px;
+  height: 50px;
+  background: #333;
+  border: 2px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 12px;
+  position: relative;
+}
+
+.layer-camera::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 8px solid #333;
+}
+
+.layer-felt {
+  width: 340px;
+  height: 40px;
+  background: #555;
+  border: 2px solid #333;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.layer-reader {
+  width: 300px;
+  height: 64px;
+  background: #444;
+  border: 3px solid #000;
+  position: relative;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rfid-waves {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  height: 60px;
+}
+
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 2px dashed #555;
+  border-bottom: none;
+  background: transparent;
+}
+
+.wave1 {
+  width: 80px;
+  height: 20px;
+  border-radius: 40px 40px 0 0;
+  opacity: 0.9;
+}
+
+.wave2 {
+  width: 140px;
+  height: 36px;
+  border-radius: 70px 70px 0 0;
+  opacity: 0.7;
+}
+
+.wave3 {
+  width: 200px;
+  height: 52px;
+  border-radius: 100px 100px 0 0;
+  opacity: 0.5;
+}
+
+.arrow-evolution {
+  font-size: 72px;
+  color: #ccc;
+  font-weight: 300;
+}
+
+svg {
+  width: 100%;
+  max-width: 680px;
+  height: 60px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="panel">
+    <div class="panel-label">
+      1세대
+      <span class="badge obsolete">과거</span>
+    </div>
+    <div class="cross-section">
+      <div class="layer">
+        <div class="layer-card">CARD</div>
+      </div>
+      <div class="layer">
+        <div class="layer-glass"></div>
+        <div class="layer-label">유리판 카메라</div>
+      </div>
+      <div class="layer">
+        <div class="layer-camera">CAM</div>
+      </div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 680 60" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#999" />
+      </marker>
+    </defs>
+    <line x1="40" y1="30" x2="640" y2="30" stroke="#999" stroke-width="4" marker-end="url(#arrowhead)" />
+  </svg>
+
+  <div class="panel">
+    <div class="panel-label">
+      2세대
+      <span class="badge current">현재</span>
+    </div>
+    <div class="cross-section">
+      <div class="layer">
+        <div class="layer-card">RFID CARD</div>
+      </div>
+      <div class="layer">
+        <div class="layer-felt"></div>
+      </div>
+      <div class="layer">
+        <div class="layer-reader">
+          <div class="rfid-waves">
+            <div class="wave wave1"></div>
+            <div class="wave wave2"></div>
+            <div class="wave wave3"></div>
+          </div>
+        </div>
+        <div class="layer-label">RFID</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

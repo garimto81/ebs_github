@@ -1,0 +1,187 @@
+{
+  "$schema": "field-registry-schema",
+  "version": "1.0.0",
+  "description": "SE-Console 간 공유 필드 소유권 SSOT. status: active | remove-v2.3.0 | removed | review-needed",
+  "fields": [
+    {
+      "field": "board_pos",
+      "skin_type": "board_pos",
+      "owner": "console",
+      "owner_ref": "GFX.5",
+      "consumers": [
+        { "app": "skin-editor", "eid": "50", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "x_margin",
+      "skin_type": "x_margin",
+      "owner": "console",
+      "owner_ref": "GFX.3",
+      "consumers": [
+        { "app": "skin-editor", "eid": "55", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "y_margin_top",
+      "skin_type": "y_margin_top",
+      "owner": "console",
+      "owner_ref": "GFX.3",
+      "consumers": [
+        { "app": "skin-editor", "eid": "56", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "y_margin_bot",
+      "skin_type": "y_margin_bot",
+      "owner": "console",
+      "owner_ref": "GFX.3",
+      "consumers": [
+        { "app": "skin-editor", "eid": "56", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "gfx_vertical",
+      "skin_type": "gfx_vertical",
+      "owner": "console",
+      "owner_ref": "GFX.3",
+      "consumers": [
+        { "app": "skin-editor", "eid": "51", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "gfx_bottom_up",
+      "skin_type": "gfx_bottom_up",
+      "owner": "console",
+      "owner_ref": "GFX.3",
+      "consumers": [
+        { "app": "skin-editor", "eid": "52", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "gfx_fit",
+      "skin_type": "gfx_fit",
+      "owner": "console",
+      "owner_ref": "GFX.3",
+      "consumers": [
+        { "app": "skin-editor", "eid": "53", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "heads_up_layout_mode",
+      "skin_type": "heads_up_layout_mode",
+      "owner": "console",
+      "owner_ref": "GFX.3",
+      "consumers": [
+        { "app": "skin-editor", "eid": "54", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "heads_up_layout_direction",
+      "skin_type": "heads_up_layout_direction",
+      "owner": "console",
+      "owner_ref": "GFX.3",
+      "consumers": [
+        { "app": "skin-editor", "eid": "54", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "heads_up_custom_ypos",
+      "skin_type": "heads_up_custom_ypos",
+      "owner": "console",
+      "owner_ref": "GFX.3",
+      "consumers": [
+        { "app": "skin-editor", "eid": "69", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "order_players_type",
+      "skin_type": "order_players_type",
+      "owner": "console",
+      "owner_ref": "GFX.1",
+      "consumers": [
+        { "app": "skin-editor", "eid": "61", "status": "remove-v2.3.0" }
+      ]
+    },
+    {
+      "field": "override_card_set",
+      "skin_type": "override_card_set",
+      "owner": "console",
+      "owner_ref": "GFX.12",
+      "consumers": [
+        { "app": "skin-editor", "eid": "49", "status": "active" }
+      ]
+    },
+    {
+      "field": "currency_symbol",
+      "skin_type": "currency_symbol",
+      "owner": "console",
+      "owner_ref": "GFX.OP",
+      "consumers": [
+        { "app": "skin-editor", "eid": "34", "status": "removed" }
+      ]
+    },
+    {
+      "field": "show_currency",
+      "skin_type": "show_currency",
+      "owner": "console",
+      "owner_ref": "GFX.OP",
+      "consumers": [
+        { "app": "skin-editor", "eid": "35", "status": "removed" }
+      ]
+    },
+    {
+      "field": "trailing_currency_symbol",
+      "skin_type": "trailing_currency_symbol",
+      "owner": "console",
+      "owner_ref": "GFX.OP",
+      "consumers": [
+        { "app": "skin-editor", "eid": "36", "status": "removed" }
+      ]
+    },
+    {
+      "field": "divide_amts_by_100",
+      "skin_type": "divide_amts_by_100",
+      "owner": "console",
+      "owner_ref": "GFX.OP",
+      "consumers": [
+        { "app": "skin-editor", "eid": "37", "status": "removed" }
+      ]
+    },
+    {
+      "field": "auto_stats_time",
+      "skin_type": "auto_stats_time",
+      "owner": "console",
+      "owner_ref": "GFX.OP",
+      "consumers": [
+        { "app": "skin-editor", "eid": "62", "status": "removed" }
+      ]
+    },
+    {
+      "field": "auto_stats_first_hand",
+      "skin_type": "auto_stats_first_hand",
+      "owner": "console",
+      "owner_ref": "GFX.OP",
+      "consumers": [
+        { "app": "skin-editor", "eid": "63", "status": "removed" }
+      ]
+    },
+    {
+      "field": "auto_stats_hand_interval",
+      "skin_type": "auto_stats_hand_interval",
+      "owner": "console",
+      "owner_ref": "GFX.OP",
+      "consumers": [
+        { "app": "skin-editor", "eid": "64", "status": "removed" }
+      ]
+    },
+    {
+      "field": "action_clock_count",
+      "skin_type": "action_clock_count",
+      "owner": "console",
+      "owner_ref": "GFX.OP",
+      "consumers": [
+        { "app": "skin-editor", "eid": "68", "status": "removed" }
+      ]
+    }
+  ]
+}

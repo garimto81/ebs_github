@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720">
+    <title>게임 제어 (GFX1) - 자동/수동 영역 구분</title>
+    <style>
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #000;
+            padding: 0;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .breadcrumb {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ccc;
+        }
+        h1 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .zone {
+            border: 2px solid #000;
+            padding: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .zone-automatic {
+            background: #fafafa;
+            border-style: solid;
+        }
+        .zone-manual {
+            background: #fff;
+            border-style: dashed;
+        }
+        .zone-label {
+            position: absolute;
+            top: -14px;
+            left: 16px;
+            background: #fff;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid #000;
+        }
+        .zone-subtitle {
+            font-size: 11px;
+            color: #666;
+            margin-left: 8px;
+            font-weight: 400;
+        }
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin: 14px 0 8px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #999;
+        }
+        .section-title:first-child {
+            margin-top: 0;
+        }
+        .player-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .player-table th {
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px;
+            border-bottom: 2px solid #000;
+            text-transform: uppercase;
+            background: #f5f5f5;
+        }
+        .player-table td {
+            padding: 6px;
+            font-size: 12px;
+            border-bottom: 1px solid #ccc;
+        }
+        .player-table tr.has-cards {
+            font-weight: 600;
+        }
+        .board-cards {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .card-slot {
+            width: 48px;
+            height: 66px;
+            border: 2px solid #999;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .card-slot.filled {
+            background: #fff;
+            border-color: #000;
+        }
+        .pot-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .pot-box {
+            border: 1px solid #999;
+            padding: 12px;
+            background: #fff;
+        }
+        .pot-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            color: #666;
+        }
+        .pot-value {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .design-note {
+            background: #f5f5f5;
+            border-left: 3px solid #000;
+            padding: 10px 12px;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #333;
+            font-style: italic;
+        }
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: 2px solid #000;
+            background: #f5f5f5;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .btn-primary {
+            background: #000;
+            color: #fff;
+        }
+        .control-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .slider {
+            flex: 1;
+            height: 6px;
+            background: #ccc;
+            border: 1px solid #999;
+            position: relative;
+        }
+        .slider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 60%;
+            height: 100%;
+            background: #000;
+        }
+        .slider-value {
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 60px;
+        }
+        .input-field {
+            border: 2px solid #999;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            width: 100%;
+        }
+        .frequency-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .frequency-table th {
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 8px;
+            border-bottom: 2px solid #000;
+            background: #f5f5f5;
+        }
+        .frequency-table td {
+            padding: 8px;
+            font-size: 12px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="breadcrumb">
+        Part VII &gt; Section 19. 본방송 인터페이스 &gt; 게임 제어 (GFX1)
+    </div>
+
+    <h1>게임 제어 (GFX1) - 자동/수동 영역 구분</h1>
+
+    <div class="zone zone-automatic">
+        <div class="zone-label">
+            AUTOMATIC ZONE
+            <span class="zone-subtitle">RFID 자동 처리</span>
+        </div>
+
+        <div class="section-title">Card Display (Player Cards)</div>
+        <table class="player-table">
+            <thead>
+                <tr>
+                    <th style="width: 60px">Seat</th>
+                    <th style="width: 140px">Player</th>
+                    <th style="width: 90px">Cards</th>
+                    <th style="width: 70px">Equity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="has-cards">
+                    <td>S1</td>
+                    <td>John Smith</td>
+                    <td>A♠ K♠</td>
+                    <td>68.4%</td>
+                    <td>ACTIVE</td>
+                </tr>
+                <tr>
+                    <td>S2</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>EMPTY</td>
+                </tr>
+                <tr class="has-cards">
+                    <td>S3</td>
+                    <td>Sarah Lee</td>
+                    <td>Q♥ J♥</td>
+                    <td>18.2%</td>
+                    <td>ACTIVE</td>
+                </tr>
+                <tr>
+                    <td>S4</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>EMPTY</td>
+                </tr>
+                <tr class="has-cards">
+                    <td>S5</td>
+                    <td>Mike Chen</td>
+                    <td>7♦ 6♦</td>
+                    <td>13.4%</td>
+                    <td>ACTIVE</td>
+                </tr>
+                <tr>
+                    <td>S6</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>EMPTY</td>
+                </tr>
+                <tr>
+                    <td>S7</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>EMPTY</td>
+                </tr>
+                <tr>
+                    <td>S8</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>EMPTY</td>
+                </tr>
+                <tr>
+                    <td>S9</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>EMPTY</td>
+                </tr>
+                <tr>
+                    <td>S10</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>EMPTY</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-title">Board (Community Cards)</div>
+        <div class="board-cards">
+            <div class="card-slot filled">A♠</div>
+            <div class="card-slot filled">K♣</div>
+            <div class="card-slot filled">9♠</div>
+            <div class="card-slot">?</div>
+            <div class="card-slot">?</div>
+        </div>
+
+        <div class="section-title">Pot Display</div>
+        <div class="pot-display">
+            <div class="pot-box">
+                <div class="pot-label">Main Pot</div>
+                <div class="pot-value">$12,450</div>
+            </div>
+            <div class="pot-box">
+                <div class="pot-label">Side Pot</div>
+                <div class="pot-value">$3,200</div>
+            </div>
+        </div>
+
+        <div class="design-note">
+            <strong>디자인 근거:</strong> 방송 중 운영자가 건드릴 필요 없는 영역 — 시각적으로 '잠금' 느낌
+        </div>
+    </div>
+
+    <div class="zone zone-manual">
+        <div class="zone-label">
+            MANUAL ZONE
+            <span class="zone-subtitle">운영자 개입 필요 시</span>
+        </div>
+
+        <div class="section-title">Manual Card Entry</div>
+        <div class="button-group">
+            <button class="btn btn-primary">Manual Card Entry (52-Card Grid)</button>
+        </div>
+
+        <div class="section-title">Seat Management</div>
+        <div class="button-group">
+            <button class="btn">Add Player</button>
+            <button class="btn">Remove Player</button>
+            <button class="btn">Move Seat</button>
+        </div>
+
+        <div class="section-title">Animation Control</div>
+        <div class="control-row">
+            <div class="control-label">Transition In</div>
+            <div class="slider-container">
+                <div class="slider"></div>
+                <div class="slider-value">0.6s</div>
+            </div>
+        </div>
+        <div class="control-row">
+            <div class="control-label">Transition Out</div>
+            <div class="slider-container">
+                <div class="slider"></div>
+                <div class="slider-value">0.6s</div>
+            </div>
+        </div>
+
+        <div class="section-title">Special Features</div>
+        <div class="button-group">
+            <button class="btn">Rabbit Hunt</button>
+        </div>
+        <div class="control-row">
+            <div class="control-label">Bounty Amount</div>
+            <input type="text" class="input-field" placeholder="Enter bounty value..." value="$500">
+        </div>
+
+        <div class="design-note">
+            <strong>디자인 근거:</strong> 드물게 사용하지만 필요할 때 빠르게 접근 가능해야 함
+        </div>
+
+        <div class="section-title">개입 빈도 (시나리오별)</div>
+        <table class="frequency-table">
+            <thead>
+                <tr>
+                    <th>시나리오</th>
+                    <th>빈도</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>RFID 미인식 → Manual Card Entry</td>
+                    <td>드물게 (1-2회/토너먼트)</td>
+                </tr>
+                <tr>
+                    <td>좌석 변경 (테이블 브레이크/밸런싱)</td>
+                    <td>핸드 사이 (3-5회/레벨)</td>
+                </tr>
+                <tr>
+                    <td>Rabbit Hunt 요청</td>
+                    <td>매우 드물게 (특별 상황)</td>
+                </tr>
+                <tr>
+                    <td>Bounty 입력 (PKO 토너먼트)</td>
+                    <td>드물게 (엘리미네이션 시)</td>
+                </tr>
+                <tr>
+                    <td>애니메이션 타이밍 조정</td>
+                    <td>매우 드물게 (초기 셋업)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
