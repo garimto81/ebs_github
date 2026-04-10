@@ -38,7 +38,10 @@ tools/morning-automation/data/*.txt
 
 # 대용량 미디어 파일
 Media/
-images/overlays/**/*.mp4
+docs/00-reference/images/overlays/**/*.mp4
+
+# 레거시 staging 경로 재생성 방지 (docs/07-archive/legacy-repos/ 사용)
+archive/
 
 # 임시/테스트 결과
 .tmp/

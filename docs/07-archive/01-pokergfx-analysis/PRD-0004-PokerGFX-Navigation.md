@@ -84,7 +84,7 @@ flowchart LR
 
 **원본 캡쳐**
 
-![Main Window 원본 캡쳐](../../../images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180630.png)
+![Main Window 원본 캡쳐](../../00-reference/images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180630.png)
 
 **오버레이 분석본**
 
@@ -205,7 +205,7 @@ flowchart LR
 
 **원본 캡쳐**
 
-![System 탭 원본 캡쳐](../../../images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180624.png)
+![System 탭 원본 캡쳐](../../00-reference/images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180624.png)
 
 **오버레이 분석본**
 
@@ -310,7 +310,7 @@ flowchart LR
 
 **원본 캡쳐**
 
-![Sources 탭 원본 캡쳐](../../../images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180637.png)
+![Sources 탭 원본 캡쳐](../../00-reference/images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180637.png)
 
 **오버레이 분석본**
 
@@ -403,7 +403,7 @@ flowchart LR
 
 **원본 캡쳐**
 
-![Outputs 탭 원본 캡쳐](../../../images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180645.png)
+![Outputs 탭 원본 캡쳐](../../00-reference/images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180645.png)
 
 **오버레이 분석본**
 
@@ -512,7 +512,7 @@ flowchart LR
 
 **원본 캡쳐**
 
-![GFX 1 탭 원본 캡쳐](../../../images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180649.png)
+![GFX 1 탭 원본 캡쳐](../../00-reference/images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180649.png)
 
 **오버레이 분석본**
 
@@ -653,7 +653,7 @@ flowchart LR
 
 **원본 캡쳐**
 
-![GFX 2 탭 원본 캡쳐](../../../images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180652.png)
+![GFX 2 탭 원본 캡쳐](../../00-reference/images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180652.png)
 
 **오버레이 분석본**
 
@@ -773,7 +773,7 @@ flowchart LR
 
 **원본 캡쳐**
 
-![GFX 3 탭 원본 캡쳐](../../../images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180655.png)
+![GFX 3 탭 원본 캡쳐](../../00-reference/images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180655.png)
 
 **오버레이 분석본**
 
@@ -892,7 +892,7 @@ flowchart LR
 
 **원본 캡쳐**
 
-![Skin Editor 원본 캡쳐](../../../images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180715.png)
+![Skin Editor 원본 캡쳐](../../00-reference/images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180715.png)
 
 **오버레이 분석본**
 
@@ -998,7 +998,7 @@ PokerGFX의 Graphic Editor는 Board 모드(39개)와 Player 모드(48개)로 분
 
 **원본 캡쳐**
 
-![Graphic Editor Board 원본 캡쳐](../../../images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180720.png)
+![Graphic Editor Board 원본 캡쳐](../../00-reference/images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180720.png)
 
 **오버레이 분석본**
 
@@ -1052,7 +1052,7 @@ Graphic Editor Board: 별도 창으로 열리는 요소 편집기 (Board 모드)
 
 **원본 캡쳐**
 
-![Graphic Editor Player 원본 캡쳐](../../../images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180728.png)
+![Graphic Editor Player 원본 캡쳐](../../00-reference/images/pokerGFX/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-02-05%20180728.png)
 
 **오버레이 분석본**
 

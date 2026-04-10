@@ -4,7 +4,7 @@
 
 **분석 대상**: PokerGFX Server 3.111 (2011-24)
 **분석 목적**: EBS 자체 RFID 방송 시스템 설계 시 기능/UI 벤치마크
-**이미지 소스**: 실제 앱 캡처 (`../../../images/pokerGFX/`) + 번호 박스 오버레이 (`02_Annotated_ngd/`)
+**이미지 소스**: 실제 앱 캡처 (`../../00-reference/images/pokerGFX/`) + 번호 박스 오버레이 (`02_Annotated_ngd/`)
 **문서 구조**: 각 섹션별 원본 스크린샷 → 번호 오버레이 → 기능 설명 순서
 
 ---
@@ -31,7 +31,7 @@
 
 **원본 스크린샷**
 
-![메인 윈도우 - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180630.png)
+![메인 윈도우 - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180630.png)
 
 **번호 오버레이**
 
@@ -104,11 +104,11 @@ Preview 하단에 7개 탭이 배치되어 있습니다.
 
 **원본 스크린샷**
 
-![Sources 탭 - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180637.png)
+![Sources 탭 - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180637.png)
 
 **번호 오버레이**
 
-![Sources 탭 - 오버레이](../../../images/overlays/gfx_sources2.jpg)
+![Sources 탭 - 오버레이](../../00-reference/images/overlays/gfx_sources2.jpg)
 
 비디오 입력 장치, 카메라 제어, 크로마키, 외부 스위처 연동을 관리하는 탭입니다.
 
@@ -168,11 +168,11 @@ Preview 하단에 7개 탭이 배치되어 있습니다.
 
 **원본 스크린샷**
 
-![Outputs 탭 - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180645.png)
+![Outputs 탭 - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180645.png)
 
 **번호 오버레이**
 
-![Outputs 탭 - 오버레이](../../../images/overlays/gfx_outputs2.jpg)
+![Outputs 탭 - 오버레이](../../00-reference/images/overlays/gfx_outputs2.jpg)
 
 비디오 출력 해상도, Live/Delay 이중 파이프라인, Secure Delay, 스트리밍을 관리하는 탭입니다.
 
@@ -237,11 +237,11 @@ Preview 하단에 7개 탭이 배치되어 있습니다.
 
 **원본 스크린샷**
 
-![GFX 1 탭 - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180649.png)
+![GFX 1 탭 - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180649.png)
 
 **번호 오버레이**
 
-![GFX 1 탭 - 오버레이](../../../images/overlays/gfx_gfx1_2.jpg)
+![GFX 1 탭 - 오버레이](../../00-reference/images/overlays/gfx_gfx1_2.jpg)
 
 보드/플레이어 레이아웃, Transition 애니메이션, 스킨, 스폰서 로고, 마진을 관리하는 탭입니다.
 
@@ -325,11 +325,11 @@ Preview 하단에 7개 탭이 배치되어 있습니다.
 
 **원본 스크린샷**
 
-![GFX 2 탭 - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180652.png)
+![GFX 2 탭 - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180652.png)
 
 **번호 오버레이**
 
-![GFX 2 탭 - 오버레이](../../../images/overlays/gfx_gfx2_2.jpg)
+![GFX 2 탭 - 오버레이](../../00-reference/images/overlays/gfx_gfx2_2.jpg)
 
 리더보드 옵션, 게임 규칙, 플레이어 표시, Equity 설정을 관리하는 탭입니다.
 
@@ -398,11 +398,11 @@ Preview 하단에 7개 탭이 배치되어 있습니다.
 
 **원본 스크린샷**
 
-![GFX3 탭 - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180655.png)
+![GFX3 탭 - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180655.png)
 
 **번호 오버레이**
 
-![GFX3 탭 - 오버레이](../../../images/overlays/gfx_gfx3_2.jpg)
+![GFX3 탭 - 오버레이](../../00-reference/images/overlays/gfx_gfx3_2.jpg)
 
 Outs 표시, Score Strip, Blinds, 통화 기호, Chipcount 정밀도, 금액 표시 모드를 관리하는 탭입니다.
 
@@ -475,7 +475,7 @@ Outs 표시, Score Strip, Blinds, 통화 기호, Chipcount 정밀도, 금액 표
 
 **원본 스크린샷**
 
-![Commentary 탭 - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180659.png)
+![Commentary 탭 - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180659.png)
 
 **번호 오버레이**
 
@@ -530,11 +530,11 @@ Outs 표시, Score Strip, Blinds, 통화 기호, Chipcount 정밀도, 금액 표
 
 **원본 스크린샷**
 
-![System 탭 - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180624.png)
+![System 탭 - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180624.png)
 
 **번호 오버레이**
 
-![System 탭 - 오버레이](../../../images/overlays/gfx_system1.jpg)
+![System 탭 - 오버레이](../../00-reference/images/overlays/gfx_system1.jpg)
 
 테이블 이름, 라이선스, 캘리브레이션, MultiGFX, RFID 안테나, 시스템 정보, 진단을 관리하는 탭입니다.
 
@@ -617,7 +617,7 @@ Outs 표시, Score Strip, Blinds, 통화 기호, Chipcount 정밀도, 금액 표
 
 **원본 스크린샷**
 
-![Skin Editor - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180715.png)
+![Skin Editor - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180715.png)
 
 **번호 오버레이**
 
@@ -710,7 +710,7 @@ Outs 표시, Score Strip, Blinds, 통화 기호, Chipcount 정밀도, 금액 표
 
 **원본 스크린샷**
 
-![Graphic Editor Board - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180720.png)
+![Graphic Editor Board - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180720.png)
 
 **번호 오버레이**
 
@@ -800,7 +800,7 @@ Outs 표시, Score Strip, Blinds, 통화 기호, Chipcount 정밀도, 금액 표
 
 **원본 스크린샷**
 
-![Graphic Editor Player - 원본](../../../images/pokerGFX/스크린샷%202026-02-05%20180728.png)
+![Graphic Editor Player - 원본](../../00-reference/images/pokerGFX/스크린샷%202026-02-05%20180728.png)
 
 **번호 오버레이**
 
