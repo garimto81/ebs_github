@@ -16,15 +16,16 @@ Command Center (실시간 운영) + Overlay (방송 그래픽 출력) + Graphic 
 | `ui-design/` | UI-02 (CC), UI-04 (Overlay), UI-05 (Component Library), UI-06 (Skin Editor) |
 | `src/` | Flutter 소스 코드 |
 
-## 3개 앱 — 동일 Flutter 프로젝트
+## 3개 화면 — 동일 Flutter 앱
 
-| 앱 | 페르소나 | 역할 |
-|-----|---------|------|
-| **Command Center** | Operator | 실시간 게임 진행 — 액션 버튼, 좌석 관리, RFID 카드 입력 |
-| **Overlay** | 무인 | 방송 그래픽 출력 — holecards, pot, equity, animations |
-| **Graphic Editor** | Admin | Skin/Overlay 시각 편집 — Rive 애니메이션 설정, 레이아웃, 색상 |
+| 화면 | 페르소나 | 역할 | 렌더링 |
+|------|---------|------|--------|
+| **Command Center** | Operator | 실시간 게임 진행 — 액션 버튼, 좌석 관리, RFID 카드 입력 | Flutter UI |
+| **Overlay** | 무인 | 방송 그래픽 출력 — holecards, pot, equity, animations | **Rive Canvas** |
+| **Graphic Editor** | Admin | Skin/Overlay 시각 편집 — Rive 애니메이션 설정, 레이아웃, 색상 | Flutter + Rive 미리보기 |
 
-> Graphic Editor는 Flutter/Rive 렌더링이 필수이므로 React 기반 Team 1이 아닌 이 팀에 소속.
+> CC는 Flutter 네이티브 UI, Overlay는 Rive Canvas 위젯으로 렌더링.
+> Graphic Editor에서 편집한 .riv 파일을 Overlay가 로드하여 실시간 렌더링.
 
 ## 엔진 연동
 

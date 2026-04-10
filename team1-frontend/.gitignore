@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.quasar/
 .env
 .env.local
 test-results/

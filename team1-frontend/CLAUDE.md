@@ -4,7 +4,7 @@
 
 Login UI + Lobby + Settings (Game/Statistics/Output 라우팅)
 
-**기술 스택**: React 19 + Vite 6 + Zustand + TypeScript
+**기술 스택**: Quasar Framework (Vue 3) + TypeScript
 
 > Graphic Editor(Skin/Overlay 편집)는 Flutter 기반 → Team 4 소속.
 > 이 팀의 Settings는 비시각 설정(Game/Stats/Output 라우팅)만 담당.
@@ -15,7 +15,7 @@ Login UI + Lobby + Settings (Game/Statistics/Output 라우팅)
 |------|------|
 | `qa/lobby/` | Lobby QA 전략, 체크리스트, spec-gap |
 | `ui-design/` | UI-00 (디자인 시스템), UI-01 (Lobby), UI-03 (Settings) |
-| `src/` | React 19 + Vite 소스 코드 |
+| `src/` | Quasar 소스 코드 (신규 구축 예정) |
 
 ## 계약 참조 (읽기 전용 — 수정 금지)
 
@@ -42,6 +42,11 @@ Login UI + Lobby + Settings (Game/Statistics/Output 라우팅)
 
 `qa/lobby/QA-LOBBY-03-spec-gap.md` — 형식: `GAP-L-{NNN}`
 
+## 이전 코드 참조
+
+React 19 + Vite 6 선행 작업물: `docs/07-archive/legacy-repos/ebs_lobby-react/`
+(Quasar 전환으로 아카이브됨. API 구조/Mock 데이터 참고용)
+
 ## 금지
 
 - `../../contracts/` 파일 수정 금지 (CCR 프로세스 경유)
@@ -50,22 +55,4 @@ Login UI + Lobby + Settings (Game/Statistics/Output 라우팅)
 
 ## Build
 
-```bash
-npm install          # 의존성 설치
-npm run dev          # 개발 서버 (Vite)
-npm run build        # 프로덕션 빌드
-npm run lint         # ESLint
-npm run preview      # 빌드 결과 미리보기
-```
-
-## Docker
-
-```bash
-docker compose up --build    # Node 20 Alpine + nginx
-```
-
-## E2E
-
-```bash
-npx playwright test          # Playwright E2E 테스트
-```
+> Quasar 프로젝트 초기화 후 업데이트 예정

@@ -29,7 +29,7 @@ Team 0 — Conductor. 최상위 오케스트레이션, 계약 관리, 통합 테
 
 | 팀 | 폴더 | 기술 | 소유 API |
 |----|------|------|----------|
-| **Team 1** | `team1-frontend/` | React 19+Vite 6+Zustand | consumes API-01,05,06 |
+| **Team 1** | `team1-frontend/` | Quasar (Vue 3)+TypeScript | consumes API-01,05,06 |
 | **Team 2** | `team2-backend/` | FastAPI+SQLite/PostgreSQL | implements API-01,02,05,06 |
 | **Team 3** | `team3-engine/` | Pure Dart | publishes API-04 OutputEvent |
 | **Team 4** | `team4-cc/` | Flutter/Dart+Rive | implements API-03,05; consumes API-04 |
