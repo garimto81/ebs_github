@@ -102,7 +102,7 @@ Event의 진행 구간. Day 1A, Day 1B 등.
 | entries | INTEGER | 참가자 수 | — | 0 |
 | players_left | INTEGER | 남은 참가자 | — | 0 |
 | table_count | INTEGER | 테이블 수 | — | 0 |
-| status | INTEGER | `EventFlightStatus` enum (BS-02-02 §1) — 0=Created, 1=Announce, 2=Registering, 4=Running, 5=Completed, 6=Canceled (3 skip) | NOT NULL | 0 |
+| status | INTEGER | `EventFlightStatus` enum (BS-02-02 §1) — 0=Created, 1=Announced, 2=Registering, 4=Running, 5=Completed, 6=Canceled (3 skip) | NOT NULL | 0 |
 | is_registerable | BOOLEAN | 신규 등록 허용 여부 (CCR-017) | NOT NULL | true |
 | day_index | INTEGER | Event 내부 Day 순서 (0-based; Day1A/1B=0, Day2=1, ...) (CCR-017) | NOT NULL | 0 |
 | is_pause | BOOLEAN | Flight 단위 일시정지 — true면 Late Reg 타이머 경과 멈춤 (CCR-017) | NOT NULL | false |
@@ -113,7 +113,7 @@ Event의 진행 구간. Day 1A, Day 1B 등.
 | created_at | DATETIME | 생성 시각 | NOT NULL | now() |
 | updated_at | DATETIME | 수정 시각 | NOT NULL | now() |
 
-> **CCR-017**: `status`가 문자열(`created/active/done`) → `EventFlightStatus` 정수 enum으로 변경되었다. 마이그레이션: `active → Running(4)`, `pending → Announce(1)`, `done → Completed(5)`. 상세는 `BS-02-02-event-flight.md` 참조.
+> **CCR-017**: `status`가 문자열(`created/active/done`) → `EventFlightStatus` 정수 enum으로 변경되었다. 마이그레이션: `active → Running(4)`, `pending → Announced(1)`, `done → Completed(5)`. 상세는 `BS-02-02-event-flight.md` 참조.
 
 ### 1.5 Table
 

@@ -102,6 +102,30 @@ _현재 PENDING 항목 없음_
 - **변경 대상**: `contracts/specs/BS-02-lobby/BS-02-02-event-flight.md, contracts/specs/BS-02-lobby/BS-02-03-table.md, contracts/specs/BS-03-settings/BS-03-04-rules.md, contracts/specs/BS-01-auth/BS-01-02-rbac.md, contracts/data/DATA-02-entities.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
+
+### [NOTIFY-CCR-039] 검토 요청: audit_events.event_type 카탈로그 35값 공식 정의
+- **알림일**: 2026-04-13
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-039-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/data/DATA-04-db-schema.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-041] 검토 요청: DATA-04에 Seat Status enum 정의 + waiting_list 테이블 신설
+- **알림일**: 2026-04-13
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-041-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/data/DATA-04-db-schema.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-042] 검토 요청: API-05에 EventFlightSummary 이벤트 + Clock FSM 행동 명세 신설
+- **알림일**: 2026-04-13
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-042-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-05-websocket-events.md, contracts/specs/`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
 ## IN_PROGRESS
 
 _현재 진행 중인 항목 없음_

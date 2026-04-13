@@ -145,11 +145,42 @@ class BettingRules {
         }
 
       case Raise(:final toAmount):
+        final minRaiseTotal = betting.currentBet + betting.minRaise;
         final rawIncrement = toAmount - seat.currentBet;
         final increment = rawIncrement.clamp(0, seat.stack);
-        seat.stack -= increment;
         final actualToAmount = seat.currentBet + increment;
         final raiseSize = actualToAmount - betting.currentBet;
+
+        // WSOP Rule 95: under-raise threshold (50%)
+        if (raiseSize > 0 && raiseSize < betting.minRaise) {
+          if (raiseSize < betting.minRaise * 0.5) {
+            // Below 50% → convert to Call
+            final toCall = betting.currentBet - seat.currentBet;
+            final callDeduct = toCall < seat.stack ? toCall : seat.stack;
+            seat.stack -= callDeduct;
+            seat.currentBet += callDeduct;
+            newState.pot.addToMain(callDeduct);
+            if (seat.stack == 0) seat.status = SeatStatus.allIn;
+            break;
+          }
+          // 50%+ → round up to min raise total
+          final correctedIncrement = (minRaiseTotal - seat.currentBet).clamp(0, seat.stack);
+          seat.stack -= correctedIncrement;
+          final correctedTotal = seat.currentBet + correctedIncrement;
+          seat.currentBet = correctedTotal;
+          newState.pot.addToMain(correctedIncrement);
+          betting.currentBet = correctedTotal;
+          // minRaise unchanged (rounded up to exactly min raise)
+          betting.lastAggressor = seatIndex;
+          betting.raiseCount += 1;
+          if (seat.stack == 0) seat.status = SeatStatus.allIn;
+          if (betting.bbOptionPending) betting.bbOptionPending = false;
+          betting.actedThisRound = {seatIndex};
+          break;
+        }
+
+        // Normal raise
+        seat.stack -= increment;
         if (raiseSize > betting.minRaise) {
           betting.minRaise = raiseSize;
         }
@@ -175,14 +206,18 @@ class BettingRules {
         seat.status = SeatStatus.allIn;
         if (seat.currentBet > betting.currentBet) {
           final raiseSize = seat.currentBet - betting.currentBet;
-          if (raiseSize > betting.minRaise) {
+          if (raiseSize >= betting.minRaise) {
+            // Complete raise — full reopen (WSOP Rule 96: full raise)
             betting.minRaise = raiseSize;
+            betting.currentBet = seat.currentBet;
+            betting.lastAggressor = seatIndex;
+            betting.raiseCount += 1;
+            betting.actedThisRound = {seatIndex};
+          } else {
+            // WSOP Rule 96: incomplete all-in — no reopen
+            // minRaise, lastAggressor, actedThisRound unchanged
+            betting.currentBet = seat.currentBet;
           }
-          betting.currentBet = seat.currentBet;
-          betting.lastAggressor = seatIndex;
-          betting.raiseCount += 1;
-          // Reset acted tracking — all players must re-act after all-in raise
-          betting.actedThisRound = {seatIndex};
         }
     }
 

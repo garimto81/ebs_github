@@ -72,3 +72,26 @@ ebs_game_engine/
 - 테스트: `cd ebs_game_engine && dart test`
 - 개별: `dart test test/phase1_ante_straddle_test.dart -v`
 - Docker: `cd ebs_game_engine && docker-compose up`
+
+---
+
+## 문서 동기화 규칙
+
+### 문서 계층
+- **L0 계약** (contracts/): 읽기 전용, Conductor 소유. 이 팀은 수정 불가.
+- **L1 파생** (이 팀의 ui-design/, qa/, 구현 가이드): 이 팀 소유. contracts/ 기준 일관성은 AI 책임.
+
+### 사용자의 동기화 지시 시
+1. 지정된 contracts/ 파일 Read
+2. 자기 파생 문서와 비교 → 불일치 수정 (contracts/가 맞음)
+3. 변경 사항 보고
+
+### 파생 문서 생성/수정 시
+- 반드시 contracts/ 참조하여 일관성 확인
+- contracts/와 다르면 → CCR draft 제출 (contracts/ 직접 수정 금지)
+- 파생 문서 = 인간이 읽지 않는 AI 산출물 (일관성은 AI 책임)
+
+### 금지
+- contracts/와 불일치하는 파생 문서 생성 금지
+- 불일치 발견 시 "어느 쪽이 맞나요?" 질문 금지 (contracts/가 맞음, 파생 문서 수정)
+- 파생 문서(ui-design/, qa/, LLD)를 인간에게 읽으라고 제시 금지

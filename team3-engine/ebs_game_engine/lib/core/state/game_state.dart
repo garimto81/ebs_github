@@ -7,7 +7,7 @@ import 'seat.dart';
 import 'pot.dart';
 import 'betting_round.dart';
 
-enum Street { setupHand, preflop, flop, turn, river, showdown, runItMultiple }
+enum Street { idle, setupHand, preflop, flop, turn, river, showdown, handComplete, runItMultiple }
 
 class GameState {
   final String sessionId;

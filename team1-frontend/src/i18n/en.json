@@ -1,0 +1,145 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "confirm": "Confirm",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "yes": "Yes",
+    "no": "No",
+    "empty": "No data",
+    "retry": "Retry",
+    "required": "Required",
+    "optional": "Optional"
+  },
+  "layout": {
+    "logout": "Log out",
+    "navigation": "Navigation",
+    "nav": {
+      "series": "Series",
+      "settings": "Settings",
+      "graphicEditor": "Graphic Editor"
+    }
+  },
+  "login": {
+    "title": "EBS Lobby",
+    "subtitle": "Tournament Management System",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "submit": "Log In",
+    "forgotPassword": "Forgot password?",
+    "twoFactor": "Two-Factor Code",
+    "twoFactorPrompt": "Enter the 6-digit code from your authenticator app",
+    "verify": "Verify",
+    "restorePrompt": "Resume previous session?",
+    "restoreTable": "Previous table:",
+    "restoreContinue": "Continue",
+    "restoreFresh": "Fresh Start",
+    "errors": {
+      "invalid": "Invalid email or password",
+      "network": "Cannot connect to server",
+      "twoFactorInvalid": "Invalid verification code"
+    }
+  },
+  "forgotPassword": {
+    "subtitle": "Enter the email you signed up with",
+    "submit": "Send reset link",
+    "successMessage": "If the email is registered, a reset link has been sent."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "message": "The page you requested does not exist or has been moved.",
+    "goHome": "Go home"
+  },
+  "lobby": {
+    "series": {
+      "title": "Series",
+      "total": "{count} series",
+      "newSeries": "New Series",
+      "empty": "No series",
+      "searchPlaceholder": "Search series..."
+    },
+    "events": {
+      "title": "Events",
+      "total": "{count} events",
+      "newEvent": "New Event",
+      "empty": "No events"
+    },
+    "flights": {
+      "title": "Flights",
+      "total": "{count} flights",
+      "newFlight": "New Flight",
+      "empty": "No flights"
+    },
+    "tables": {
+      "title": "Tables",
+      "total": "{count} tables",
+      "newTable": "New Table",
+      "launchCc": "Launch CC",
+      "empty": "No tables",
+      "rebalance": "Rebalance"
+    },
+    "players": {
+      "title": "Players",
+      "total": "{count} players",
+      "empty": "No players",
+      "searchPlaceholder": "Search players..."
+    },
+    "handHistory": {
+      "title": "Hand History",
+      "empty": "No hand history"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "outputs": "Outputs",
+      "gfx": "Graphics",
+      "display": "Display",
+      "rules": "Rules",
+      "stats": "Statistics",
+      "preferences": "Preferences"
+    },
+    "dirty": "You have unsaved changes",
+    "revert": "Revert",
+    "saved": "Saved"
+  },
+  "graphicEditor": {
+    "title": "Graphic Editor",
+    "hubSubtitle": "Skin management & overlay editing",
+    "upload": "Upload",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "metadata": "Metadata",
+    "preview": "Preview",
+    "empty": "No skins registered",
+    "uploadDropzone": "Drag Rive file here or click to select",
+    "validationErrors": "Validation errors"
+  },
+  "nav": {
+    "logout": "Log out",
+    "series": "Series",
+    "players": "Players",
+    "handHistory": "Hand History",
+    "settings": "Settings",
+    "graphicEditor": "Graphic Editor",
+    "admin": "Admin"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "forbidden": "Access denied",
+    "unauthorized": "Login required",
+    "networkError": "Network error",
+    "serverError": "Server error",
+    "unknown": "Unknown error",
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "goHome": "Go home"
+  }
+}

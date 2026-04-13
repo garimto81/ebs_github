@@ -3,6 +3,9 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 로그 레벨, 구조화 필드, 저장/전송, 보존 정책 |
+| 2026-04-10 | 상관관계 필드 추가 | correlation_id, causation_id, idempotency_key, seq 표준화 (IMPL-10 §7 / BO-03 §2 정합) |
+| 2026-04-10 | CCR 의존 축소 | `correlation_id`만 독립 유지. `causation_id`(CCR-001 event sourcing), `idempotency_key`(CCR-003), `seq`(CCR-015), `audit_events` 3-way 구분(CCR-001)은 참조로 축소 |
+| 2026-04-10 | CCR 활성화 (반영 완료) | CCR-001/003/015 contracts 반영 완료. `causation_id`/`idempotency_key`/`seq` 필드 복원, §4.1 3-way 구분 복원 |
 
 ---
 
@@ -74,6 +77,12 @@
 | `error_code` | string | 에러 코드 | 모두 |
 | `duration_ms` | int | 처리 시간 | bo (API 응답) |
 | `rfid_uid` | string | RFID UID | rfid |
+| `correlation_id` | string | 분산 추적용 단일 작업 단위 ID. 모든 하위 이벤트에 전파 | 모두 |
+| `causation_id` | string | 직전 원인 이벤트 id — `audit_events.causation_id` (DATA-04 §5.2). Undo 체인 추적 | bo, cc, engine |
+| `idempotency_key` | string | mutation 요청이 동반한 `Idempotency-Key` 헤더 (API-01, CCR-003) | bo |
+| `seq` | int | 테이블별 단조증가 이벤트 순번 — `audit_events.seq` 와 WebSocket envelope `seq` 에 1:1 매핑 (CCR-015) | bo, cc |
+
+> **원칙**: `correlation_id` 는 요청 진입점(REST/WS)에서 생성·전파. 없으면 자동 생성(UUIDv4). 모든 로그 + `audit_events` + 응답 헤더 `X-Request-ID` 에 echo.
 
 ### 2.4 로그 메시지 예시
 
@@ -85,7 +94,9 @@
   "message": "Hand started",
   "table_id": 5,
   "hand_number": 15,
-  "hand_id": 42
+  "hand_id": 42,
+  "correlation_id": "corr-20260408-abc123",
+  "seq": 15001
 }
 ```
 
@@ -98,7 +109,9 @@
   "table_id": 5,
   "hand_number": 15,
   "rfid_uid": "04A3B2C1D5E6F7A8",
-  "error_code": "RFID_DUPLICATE_CARD"
+  "error_code": "RFID_DUPLICATE_CARD",
+  "correlation_id": "corr-20260408-abc123",
+  "causation_id": "evt-15001"
 }
 ```
 
@@ -140,19 +153,22 @@
 
 ---
 
-## 4. 감사 로그 vs 운영 로그
+## 4. 감사 로그 / 이벤트 스토어 / 운영 로그
 
-### 4.1 구분
+### 4.1 3-way 구분 (2026-04-10 재정의, CCR-001 활성)
 
-| 구분 | 감사 로그 (Audit Log) | 운영 로그 (Operational Log) |
-|------|---------------------|--------------------------|
-| 목적 | 누가 무엇을 언제 변경했는가 | 시스템이 어떻게 동작했는가 |
-| 대상 | 사용자 액션, 데이터 변경 | 시스템 이벤트, 에러, 성능 |
-| 저장 | BO DB `audit_logs` 테이블 | 로그 파일 + BO 집중 저장 |
-| 보존 | 영구 (삭제 불가) | 90일 (자동 정리) |
-| 필수 필드 | user_id, entity_type, action, detail | source, level, message |
+| 구분 | 감사 로그 (`audit_logs`) | 이벤트 스토어 (`audit_events`) | 운영 로그 (파일/stream) |
+|------|-----------------------|----------------------------|----------------------|
+| 목적 | 사용자·관리 액션 감사 | 모든 상태 변경의 append-only 이벤트 소싱 | 시스템 진단/성능 |
+| 대상 | 로그인, 설정 변경, 권한 변경 등 | 좌석/블라인드/토너먼트 상태 전이, Undo/Revive, saga 단계 | 에러, 성능, 디버그 |
+| 저장 | BO DB `audit_logs` | BO DB `audit_events` | 파일 JSONL + BO 집중 |
+| 보존 | 1년 (아카이브 후 2년) | 1년 (append-only) | 90일 자동 정리 |
+| 필수 필드 | user_id, entity_type, action, detail, correlation_id | table_id, seq, event_type, payload, correlation_id, causation_id, idempotency_key, inverse_payload | source, level, message, correlation_id |
+| Undo 지원 | 불필요 | ✅ (inverse_payload) | 불필요 |
+| WebSocket 발행 | 선택 | ✅ (seq와 1:1 매핑, CCR-015) | WARNING+ 만 |
+| 정본 | DATA-04 §4 | DATA-04 §5.2 (CCR-001) | 본 문서 §3 |
 
-> 참조: DATA-04 §4 audit_logs 테이블, BO-08
+> 참조: DATA-04 §4 audit_logs, DATA-04 §5.2 audit_events, BO-03 §1.2, IMPL-10 §7.
 
 ### 4.2 감사 대상 이벤트
 

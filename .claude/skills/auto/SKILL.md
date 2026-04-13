@@ -59,6 +59,26 @@ TeamCreate(team_name="auto-{feature}")
 
 **이 스킬이 활성화되면 반드시 아래 워크플로우를 실행하세요!**
 
+### Phase 0a: EBS 팀 컨텍스트 자동 감지 (조건부)
+
+**트리거**: `contracts/team-policy.json` 파일이 현재 프로젝트 루트에 존재할 때만 실행. 없으면 이 Phase 전체 skip (비-EBS 프로젝트는 기존 동작 그대로).
+
+**단계**:
+
+1. **정책 로드**: `contracts/team-policy.json` 읽기 → `teams`, `shared_blocked_for_teams`, `api_dependencies`, `ccr_inbox_dir` 파싱
+2. **팀 식별**: 우선순위 [`EBS_TEAM` env → `git branch` prefix (`teamN/*`) → cwd가 `teamN-*` 하위 → conductor(fallback)]
+3. **컨텍스트 확정**: `{TEAM_ID, OWNS, READS, BACKLOG_FILE, CCR_DRAFT_PREFIX, API_PUB, API_SUB}` 변수 세션 전역에 고정
+4. **TeamCreate 프리픽스**: 이후 모든 `TeamCreate(team_name=...)` 호출 시 `team_name` 앞에 `"{TEAM_ID}-"` 자동 부여 (예: `team2-auth-fix`). Conductor 세션이면 `conductor-*`.
+5. **contracts/ 편집 가드**: 작업 범위가 `contracts/**` 수정을 포함하면, 실제 편집 전 반드시:
+   - "이 경로는 Conductor 단독 소유. CCR 초안을 `{CCR_DRAFT_PREFIX}{YYYYMMDD}.md`에 작성하세요" 안내
+   - 변경 대상 API 파일명에서 `API-XX` 추출 → `api_dependencies[API-XX]` 에서 영향팀 목록 lookup
+   - CCR 초안 템플릿의 **"영향팀:"** 필드에 해당 목록 자동 주입 (빈 값 금지)
+6. **백로그 라우팅**: 백로그 항목 추가/수정은 **오직** `{BACKLOG_FILE}` (예: `docs/backlog/team2.md`) 로만. 단일 파일 `docs/backlog.md`는 stub이므로 touch 금지. `docs/backlog/_aggregate.md`는 읽기 전용.
+7. **크로스팀 항목 표기**: 백로그 항목이 여러 팀에 걸치면 `- **teams**: [{SELF}, {OTHER}]` 필드를 기록팀({SELF}) 파일에만 작성. 영향팀에는 CCR promote 시 `ccr_promote.py`가 자동 알림 추가.
+8. **`/auto-teamN` 금지**: 팀별 전용 /auto 스킬은 존재하지 않는다. 단일 `/auto`가 cwd 기반으로 자동 분기한다. 사용자가 `/auto-team1` 류를 입력해도 본 스킬이 처리하고 팀은 cwd/env/branch에서 추론한다.
+
+**주의**: Hook(`pre_tool_guard.check_team_scope`)이 파일 경로를 물리 차단하는 1차 방어선이다. 이 Phase 0a는 Hook이 차단하기 **전에** LLM이 실수를 안 하도록 돕는 보조 레이어이다. Hook이 block으로 응답하면 즉시 CCR inbox 경로로 재시도하라.
+
 ### Phase 0: PDCA 문서화 (필수)
 
 **모든 작업은 PDCA 사이클을 따릅니다:**

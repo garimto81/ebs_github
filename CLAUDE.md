@@ -40,7 +40,7 @@ Team 0 — Conductor. 최상위 오케스트레이션, 계약 관리, 통합 테
 
 | 경로 | 내용 | 역할 |
 |------|------|------|
-| `contracts/` | API/Data/Spec 계약 + `team-policy.json` SSOT | 단독 소유 — 팀 수정 금지 |
+| `contracts/` | API/Data + 팀 간 계약 (BS-00,01,04-04,06) + `team-policy.json` SSOT | 단독 소유 — 팀 수정 금지 |
 | `integration-tests/` | HTTP 기반 통합 테스트 | 팀 간 API 계약 검증 |
 | `docs/01-strategy/` | Foundation PRD | 전략 문서 |
 | `docs/00-reference/` | WSOP 분석, Production Plan | 참고 자료 |
@@ -71,6 +71,7 @@ Layer 6  .claude/logs/scope-guard-*.jsonl   ← 감사 로그 (append-only)
 **핵심 규칙**:
 - 팀은 `contracts/`, `docs/05-plans/`, `docs/backlog/` 의 **자기 것 외** 파일을 쓸 수 없다 (hook이 차단).
 - `contracts/` 변경은 반드시 `ccr-inbox/CCR-DRAFT-teamN-*.md` 제출 → Conductor `tools/ccr_promote.py` → CCR-{NNN} 승격 순서.
+- **예외 (v4 Fast-Track)**: `contract_ownership`에 등록된 publisher 팀은 자기 소유 계약 파일을 직접 수정 가능. **단, 수정 후 반드시 `python tools/ccr_validate_risk.py --draft <파일명>` 사후 검증 실행 필수**. 리스크 등급이 `direct_edit` 허용 범위를 초과하면 CCR 절차로 전환해야 한다.
 - `/auto-team1`, `/auto-team2` 등 팀별 스킬은 **존재하지 않는다**. 단일 `/auto`가 cwd 기반으로 자동 분기한다.
 
 ### 팀 식별 우선순위 (hook + skill 동일)
@@ -143,6 +144,39 @@ worktree를 쓰지 않더라도 feature 브랜치 명명 규칙을 `teamN/featur
 
 ---
 
+## Conductor 워크플로우
+
+### 핵심 역할
+
+팀이 CCR 없이 독립 작업할 수 있는 환경을 미리 만드는 것. CCR 발생 = Conductor 사전 준비 부족 신호.
+
+### 3-Phase
+
+| Phase | 내용 | 산출물 |
+|-------|------|--------|
+| **1 사전 준비** | contracts/ 충분성 검증, 팀 경계 확인 | 팀별 사전 검증 결과 |
+| **2 팀 독립 작업** | contracts/ 변경 시 영향 요약 생성 | 변경 영향 요약 |
+| **3 통합 검증** | CCR 사후 분석, contracts/ 보강 | 보강 계획 |
+
+### 문서 계층
+
+| 계층 | 경로 | 인간 검토 | 갱신 주체 |
+|------|------|----------|----------|
+| **L0 계약** | contracts/ | 필요 | Conductor |
+| **L1 파생** | team*/ui-design/, qa/, LLD | 불필요 | 각 팀 (사용자 지시) |
+
+- L0 변경 시 L1 불일치 = AI의 실수
+- L1 문서를 인간에게 읽으라고 제시 금지
+- 상세: `.claude/rules/18-conductor-workflow.md`
+
+### contracts/ 변경 후 필수 절차
+
+1. **변경 영향 요약** 생성 (어떤 팀의 어떤 파일이 영향받는지)
+2. 사용자에게 제시
+3. 사용자가 각 팀 세션에 갱신 지시
+
+---
+
 ## 팀 레지스트리
 
 | 팀 | 폴더 | 기술 | 소유 API |
@@ -172,10 +206,26 @@ worktree를 쓰지 않더라도 feature 브랜치 명명 규칙을 `teamN/featur
   - `ccr-inbox/archived/CCR-DRAFT-*.md` — 승격 완료되어 보관된 원본 draft
 - 승격본 파일 내부의 `## 원본 Draft` 섹션은 **추적성용 임베드 사본**이다. 이 섹션 편집 금지.
 
+### CCR 리스크 분류 (v4 — Fast-Track)
+
+| 등급 | 처리 경로 | Conductor 필요 |
+|------|----------|---------------|
+| **LOW** (추가 전용, 영향팀 ≤1) | publisher 직접 반영 + 영향팀 1명 approve | 불필요 |
+| **MEDIUM** (비파괴 수정, 영향팀 ≤2) | publisher 직접 반영 + 영향팀 전원 approve | 불필요 |
+| **HIGH** (파괴적 변경, 영향팀 3+) | 현행 CCR 풀 프로세스 (Phase A-E) | **필수** |
+
+- 리스크 판정: `python tools/ccr_validate_risk.py --draft <파일명>`
+- 현황 대시보드: `python tools/ccr_dashboard.py`
+- 분류 정책: `contracts/ccr-risk-matrix.md`
+- Publisher 권한: `contracts/team-policy.json` → `contract_ownership`
+
 ### 계약 변경 필요 시 (팀 → Conductor)
 
-팀이 `contracts/` 수정을 시도하면 hook이 차단하고 CCR draft 경로를 안내합니다.
-팀 세션에서 해야 할 일:
+팀이 `contracts/` 수정을 시도하면 hook이 팀과 리스크 등급을 판단합니다:
+- **Publisher + LOW/MEDIUM**: `contract_ownership`에 등록된 publisher 팀은 직접 수정 허용 (hook 통과)
+- **그 외**: hook이 차단하고 CCR draft 경로를 안내합니다.
+
+HIGH 등급이거나 publisher가 아닌 팀 세션에서 해야 할 일:
 
 1. **Draft 작성** → `docs/05-plans/ccr-inbox/CCR-DRAFT-{teamN}-{YYYYMMDD}[-slug].md`
    (자기 팀 prefix만 hook이 허용. 템플릿: `docs/05-plans/ccr-inbox/README.md`)
@@ -229,6 +279,11 @@ worktree를 쓰지 않더라도 feature 브랜치 명명 규칙을 `teamN/featur
      - `--applied-files` 는 실제로 수정된 파일만 정직하게 나열.
      - `promoting/CCR-NNN-*.md` 로그 파일 생성 (원본 body 임베드 없음).
      - 영향팀 `docs/backlog/team{X}.md` 에 `NOTIFY-CCR-{NNN}` append (중복 방지).
+     - NOTIFY 항목에는 `- **상태**: PENDING` 필드가 포함됨. 팀이 자기 backlog에서 직접 상태 업데이트:
+       - `PENDING` → 미검토
+       - `ACK` → 승인 (이의 없음)
+       - `NACK:사유` → 이의 제기
+       - `RESOLVED` → 처리 완료
      - 원본 draft → `archived/` 이동.
 
 4. **Phase D — Clarification (사용자 문의)**
@@ -255,7 +310,7 @@ worktree를 쓰지 않더라도 feature 브랜치 명명 규칙을 `teamN/featur
 contracts/
 ├── api/              ← API-01~06 (읽기 전용)
 ├── data/             ← DATA-01~06 + PRD (읽기 전용)
-└── specs/            ← BS-00~07 (읽기 전용)
+└── specs/            ← BS-00, BS-01, BS-04-04, BS-06 (팀 간 계약만. 팀 내부 설계는 team*/specs/로 이관)
 ```
 
 ---

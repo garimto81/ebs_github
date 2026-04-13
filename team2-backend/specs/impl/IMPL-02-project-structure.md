@@ -89,7 +89,7 @@ ebs_lobby/
 │   ├── services/
 │   │   ├── api.ts                # BO REST API 클라이언트
 │   │   └── websocket.ts          # WebSocket 연결 관리
-│   ├── store/                    # 상태 관리 (TBD)
+│   ├── store/                    # Zustand 5.x slices (auth/table/ws/ui)
 │   ├── types/                    # TypeScript 타입 정의
 │   └── utils/                    # 포매팅, 상수
 ├── package.json

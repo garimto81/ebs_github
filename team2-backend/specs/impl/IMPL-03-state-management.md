@@ -8,7 +8,7 @@
 
 ## 개요
 
-이 문서는 EBS의 **상태 관리 전략**을 정의한다. Command Center(CC)는 Riverpod을 사용하고, Lobby(웹)는 TBD(React Context/Zustand)를 사용한다. 두 앱은 Back Office(BO)를 경유하여 간접적으로 상태를 동기화한다.
+이 문서는 EBS의 **상태 관리 전략**을 정의한다. Command Center(CC)는 Riverpod을 사용하고, Lobby(웹)는 **Zustand 5.x**를 사용한다 (IMPL-01 §2.4 확정). 두 앱은 Back Office(BO)를 경유하여 간접적으로 상태를 동기화한다.
 
 > 참조: BS-00 §1 앱 아키텍처 용어, API-05 WebSocket 프로토콜, API-03 RFID HAL 인터페이스
 
@@ -170,7 +170,7 @@ gameStateProvider 갱신
 
 ## 5. Lobby — 웹 상태 관리
 
-> Lobby 상태 관리 라이브러리는 Phase 1 POC 이후 확정 (React Context / Zustand / Jotai 중 TBD).
+Lobby는 **Zustand 5.x**를 사용한다 (IMPL-01 §2.4). 서버 상태(REST 응답 캐시)와 클라이언트 상태(UI 로컬)는 별도 slice로 분리하고, WebSocket 이벤트는 전용 slice의 액션으로 전달한다.
 
 ### 5.1 상태 분류
 
@@ -204,7 +204,24 @@ gameStateProvider 갱신
 | 선택된 Series/Event/Flight | SessionStorage | 탭 복원 |
 | Access Token | JavaScript 메모리 | Refresh Token으로 갱신 |
 | Refresh Token | HttpOnly Cookie | 브라우저 자동 전송 |
-| 사이드바 상태 | localStorage | 앱 시작 시 |
+| 사이드바 상태 / 테마 | localStorage | 앱 시작 시 |
+
+### 5.5 Zustand Slice 구조
+
+Lobby는 관심사별 slice를 분리하고 `create()` 한 번으로 결합한다. `persist` 미들웨어 적용 여부는 slice마다 다르다.
+
+| Slice | 책임 | Store 키 예시 | persist 대상 | 저장 미들웨어 |
+|-------|------|---------------|--------------|--------------|
+| `authSlice` | 인증/토큰/사용자 프로필 | `user`, `accessToken`, `isAuthenticated` | 부분 (`user`만) | `persist` → SessionStorage |
+| `tableSlice` | 테이블 목록/상세/필터 상태 | `tables`, `selectedTableId`, `filters` | 아니오 (서버 캐시) | 없음 |
+| `wsSlice` | WebSocket 연결·이벤트 버퍼·구독 상태 | `connectionStatus`, `subscriptions`, `lastEventSeq` | 아니오 | 없음 |
+| `uiSlice` | 사이드바/모달/테마/토스트 | `sidebarOpen`, `theme`, `modals` | 예 (`theme`, `sidebarOpen`) | `persist` → localStorage |
+
+**원칙**:
+- 서버 상태(REST 캐시)는 `tableSlice`에서 관리하되, 재검증은 REST 호출 또는 WebSocket 이벤트로 수행 (React Query 병용 가능)
+- Access Token은 **persist 제외** — JavaScript 메모리에만 유지 (XSS 완화), Refresh Token은 HttpOnly Cookie
+- 실시간 이벤트는 `wsSlice` 액션으로 진입 → 필요한 slice에 setter 호출 (단방향 흐름 유지)
+- 각 slice는 독립 파일(`store/auth.ts`, `store/table.ts` 등)로 분리하여 코드 오너십 명확화
 
 ---
 

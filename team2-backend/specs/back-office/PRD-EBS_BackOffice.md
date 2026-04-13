@@ -4,6 +4,7 @@
 |------|------|------|
 | 2026-04-09 | 신규 작성 | WSOP LIVE Staff Page BO 벤치마크 기반, 채택/제거 매트릭스, EBS 전용 추가, Phase별 로드맵 |
 | 2026-04-09 | BO 문서 축소 | 12개→3개 축소 (BS/API/DATA SSOT 중복 제거), §5 하위 문서 참조 갱신 |
+| 2026-04-10 | Chip Master Phase 경계 명시 | §1.2 Cashier 항목에 Phase 2+ 백로그 라벨 추가, WSOP LIVE 3종 실시간 이벤트 CCR 예정 명시 |
 
 ---
 
@@ -62,7 +63,7 @@ WSOP LIVE Staff Page는 아래 BO 기능을 제공한다 (Confluence Staff App A
 | 8 | Sysop Config | ✅ 글로벌 | 모든 CC에 동일 적용. 테이블별 Settings 없음 | BO-07, BS-03 |
 | 9 | Audit Log | ✅ 그대로 | 운영 추적 필수 | BO-08 |
 | 10 | ~~Registration~~ | ❌ 제거 | 토너먼트 운영 (플레이어 등록/리엔트리) — EBS 범위 외 |
-| 11 | ~~Cashier~~ | ❌ 제거 | 금융 (칩 매매/환불) — EBS 범위 외 |
+| 11 | ~~Cashier~~ (Chip Master) | ❌ 제거 / **Phase 2+** | 금융 (칩 매매/환불) — EBS 범위 외. 단, WSOP LIVE의 InitialChipSet / RequireChips / CheckChipsQuantity 3종 실시간 이벤트 및 칩 물류 데이터 모델(chipDetailList: chipName, chipColor, value, quantity)은 **Phase 2에서 CCR 제출 예정** (방송 오버레이 칩 카운트 표시 등 연동 가능성 검토) |
 | 12 | ~~Payment~~ | ❌ 제거 | 금융 (결제/Payout/Prize Pool) — EBS 범위 외 |
 | 13 | ~~Bounty~~ | ❌ 제거 | 금융 (바운티 트랜잭션) — EBS 범위 외 |
 | 14 | ~~Report (재정)~~ | ❌ 제거 | 금융 리포팅 (캐셔/티켓/수수료) — EBS 범위 외 |

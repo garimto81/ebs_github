@@ -24,6 +24,7 @@ void main() {
       final rank = HandEvaluator.bestHand(
         [...hole, ...board],
         categoryOrder: HandCategory.shortDeck6PlusOrder,
+        shortDeck: true,
       );
 
       expect(rank.category, equals(HandCategory.straight),
@@ -43,6 +44,7 @@ void main() {
       final rank = HandEvaluator.bestHand(
         [...hole, ...board],
         categoryOrder: HandCategory.shortDeck6PlusOrder,
+        shortDeck: true,
       );
 
       expect(rank.category, equals(HandCategory.straightFlush),

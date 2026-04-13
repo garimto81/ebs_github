@@ -6,6 +6,7 @@
 | 2026-04-10 | CCR-011 | §1 앱 아키텍처 표에 Graphic Editor(GE, Team 1 Lobby 허브) 행 추가 |
 | 2026-04-10 | CCR-014 | §7.4 신설 — GE 요구사항 Prefix 재편 (GEM/GEI/GEA/GER), GEB-/GEP- reference-only 전환 |
 | 2026-04-10 | CCR-016 | §1 Lobby row 기술 컬럼 Quasar(Vue 3)+TS 확정. 본 §1 표가 Tech Stack SSOT임을 명시 |
+| 2026-04-13 | WSOP LIVE 정합성 수정 | seat_status 3→9상태 확장(WSOP LIVE Seat Status 코드), event_status Announce→Announced |
 
 ---
 
@@ -114,11 +115,17 @@ Competition → Series → Event → Flight → Table → Seat → Player
 
 ### 3.3 Seat 상태 (SeatFSM)
 
-| 상태 | 의미 |
-|------|------|
-| **VACANT** | 비어있음 — 플레이어 미배치 |
-| **OCCUPIED** | 플레이어 착석 — 게임 참여 가능 |
-| **RESERVED** | 예약됨 — 특정 플레이어에게 배정됨 |
+| 값 | 상태 | WSOP LIVE 코드 | 설명 |
+|:--:|------|:---:|------|
+| 0 | **EMPTY** | E | 빈 좌석 (백색) |
+| 1 | **NEW** | N | 신규 배정 (10분 카운트다운) |
+| 2 | **PLAYING** | — | 플레이 중 (녹색) |
+| 3 | **MOVED** | M | 이동해 온 좌석 (10분 카운트다운) |
+| 4 | **BUSTED** | B | 탈락 요청 (FM/TD confirm 대기, 적색) |
+| 5 | **RESERVED** | R | Auto Seating 제외 (짙은 회색) |
+| 6 | **OCCUPIED** | O | Break Table 등 예약 점유 |
+| 7 | **WAITING** | W | 웨이팅 플레이어 배정됨 (황색) |
+| 8 | **HOLD** | H | Seat Draw in Advance 선점 (회색) |
 
 ### 3.4 Player 상태 (Hand 내)
 
@@ -141,6 +148,19 @@ Competition → Series → Event → Flight → Table → Seat → Player
 | **REGISTERED** | 등록 완료 — 52장 매핑 확인, 게임 투입 가능 |
 | **PARTIAL** | 부분 등록 — 일부 카드 매핑 실패 (에러 상태) |
 | **MOCK** | Mock 모드 — RFID 없이 소프트웨어 가상 매핑 |
+
+### 3.6 Event 상태 (EventFSM)
+
+| 상태 | 의미 |
+|------|------|
+| **Created** | 생성됨 — App에서 미노출 |
+| **Announced** | 공지됨 — 등록 전 공지 상태 |
+| **Registering** | 등록 중 — 플레이어 등록 가능 |
+| **Running** | 진행 중 — 게임 진행 |
+| **Completed** | 완료 |
+| **Canceled** | 취소 |
+
+> 표시 상태(Restricted, Late Reg.)는 isRegisterable 플래그와 Day 번호의 조합으로 결정된다. 상세: DATA-03 §5
 
 ---
 
@@ -175,9 +195,9 @@ Competition → Series → Event → Flight → Table → Seat → Player
 |-----|----------|----------|
 | **TableFSM** | Table 상태 (EMPTY → ... → CLOSED) | 이 문서 §3.1 |
 | **HandFSM** | Hand 상태 (IDLE → ... → HAND_COMPLETE) | 이 문서 §3.2, BS-06-01 상세 |
-| **SeatFSM** | Seat 상태 (VACANT/OCCUPIED/RESERVED) | 이 문서 §3.3 |
+| **SeatFSM** | Seat 상태 (EMPTY/NEW/PLAYING/MOVED/BUSTED/RESERVED/OCCUPIED/WAITING/HOLD) | 이 문서 §3.3 |
 | **DeckFSM** | Deck 상태 (UNREGISTERED → ... → REGISTERED) | 이 문서 §3.5, BS-04-01 상세 |
-| **EventFSM** | Event 진행 상태 (Created → Running → Completed) | BS-06-00-REF §1.2.5 |
+| **EventFSM** | Event 진행 상태 (Created → Announced → Registering → Running → Completed / Canceled) | 이 문서 §3.6 |
 
 ---
 

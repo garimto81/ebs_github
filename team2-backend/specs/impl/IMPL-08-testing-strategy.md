@@ -3,6 +3,7 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 테스트 피라미드, 앱별 전략, Mock RFID 시나리오, 커버리지 목표 |
+| 2026-04-10 | §4.4 신뢰성/보안 테스트 추가 | IMPL-10 §3~§9 활성 기능(CCR-001/003/006 멱등성·audit_events·Undo·JWT 프로파일·분산락·CB·PII)의 아키텍처 불변 테스트 전략. arq/outbox/saga 테스트는 아키텍처 결정 후 추가 |
 
 ---
 
@@ -165,7 +166,143 @@ def client(db_session):
 def admin_token(client):
     # 테스트 Admin 생성 + 로그인 → JWT 반환
     ...
+
+@pytest.fixture
+def fake_redis():
+    """fakeredis 기반 Redis mock — 분산락/CB/idempotency 테스트용"""
+    import fakeredis.aioredis
+    redis = fakeredis.aioredis.FakeRedis()
+    yield redis
+    await redis.flushall()
 ```
+
+### 4.4 신뢰성/보안 테스트 (IMPL-10 §3~§9 활성 기능)
+
+본 섹션은 **아키텍처 결정(옵션 1/2)과 무관하게** 필요한 테스트 전략을 정의한다. arq worker, outbox dispatcher, saga orchestrator, 202/polling 엔드포인트 관련 테스트는 team2 아키텍처 결정 확정 후 본 섹션에 추가된다.
+
+#### 4.4.1 Retryable / NonRetryable 분류 (IMPL-06 §2.4)
+
+| 대상 | 테스트 케이스 |
+|------|-------------|
+| `RetryableError` 상속 클래스 | 5xx, 408, 429 상황에서 자동 재시도 정책 적용 확인 |
+| `NonRetryableError` 상속 클래스 | 4xx(401/403/404/409/422) 재시도 미적용 확인 |
+| `IdempotentOnlyRetryable` | Idempotency-Key 동반 시에만 재시도 활성화 |
+| FastAPI exception handler | Retryable → 5xx + `Retry-After` 헤더, NonRetryable → 4xx 매핑 |
+
+#### 4.4.2 Idempotency-Key 미들웨어 (CCR-003, IMPL-10 §3.1)
+
+| 시나리오 | 기대 결과 |
+|---------|----------|
+| 최초 요청 + 키 | 정상 처리, 응답 캐싱 (Redis + DB 백업) |
+| 동일 키 + 동일 request_hash | 캐시 재생, `Idempotent-Replayed: true` 헤더 |
+| 동일 키 + 상이 request_hash | `409 IDEMPOTENCY_KEY_REUSED` |
+| 키 누락 + mutation | 정상 처리, 재시도 안전성 미보장 경고 |
+| Redis 장애 + DB 백업 hit | DB 백업으로 캐시 재생 (2-tier fallback) |
+| TTL 만료 후 동일 키 | 새 요청으로 처리 |
+
+**Fixture**: `fake_redis` + 인메모리 SQLite `idempotency_keys` 테이블. `IdempotencyMiddleware` 를 FastAPI TestClient 에 주입하여 미들웨어 레벨에서 검증.
+
+#### 4.4.3 audit_events append-only 가드 (CCR-001, IMPL-10 §7.1)
+
+| 대상 | 테스트 케이스 |
+|------|-------------|
+| `EventRepository.append()` | 정상 INSERT + `seq` 단조증가 + `(table_id, seq)` UNIQUE |
+| Repository 인터페이스 | `update()` / `delete()` 메서드 **부재** 확인 (AttributeError 기대) |
+| 직접 SQL UPDATE 시도 | 통합 테스트에서 raw SQL 로 UPDATE 시도 → 애플리케이션 계층 가드 작동 또는 경고 로그 |
+| `dispatched_at` 예외 업데이트 | `dispatcher` 만 이 컬럼 UPDATE 가능, 다른 경로는 금지 |
+| Phase 3+ trigger 검증 | PostgreSQL 전환 시 `BEFORE UPDATE OR DELETE` trigger 차단 (마이그레이션 테스트) |
+
+#### 4.4.4 Undo / Inverse 이벤트 역산 (CCR-001, IMPL-10 §7.2)
+
+| 시나리오 | 기대 결과 |
+|---------|----------|
+| 좌석 이동 이벤트 → Undo | inverse 이벤트가 `audit_events` 에 append (원본 삭제 없음) |
+| inverse 이벤트 `causation_id` | 원 이벤트 `id` 와 정확히 일치 |
+| `correlation_id` 전파 | 원 이벤트와 동일 값 유지 |
+| Undo 후 상태 재계산 | `audit_events` `seq` 순 apply → 원 상태 복원 |
+| 이중 기록 | `audit_events` (상태 변경) + `audit_logs` (관리 액션 감사) 둘 다 기록 |
+| `undoable: false` 이벤트 | Undo 시도 시 거부 (`UndoNotAllowedError`) |
+
+#### 4.4.5 JWT 환경 프로파일 (CCR-006, IMPL-10 §9.1)
+
+| 프로파일 | 기대 Access TTL | 기대 Refresh TTL |
+|---------|----------------|-----------------|
+| `dev` | 3600s (1h) | 604800s (7d) |
+| `staging` | 7200s (2h) | 604800s (7d) |
+| `prod` | 7200s (2h) | 604800s (7d) |
+| `live` | 43200s (12h) | 604800s (7d) |
+
+| 테스트 케이스 | 검증 |
+|-------------|------|
+| 프로파일 전환 | 환경변수 변경 후 `/auth/login` 응답 `expires_in` 확인 |
+| 만료 임박 자동 refresh | Access 만료 5분 전 클라이언트가 `/auth/refresh` 호출 → 새 Access 발급, Refresh 유지 |
+| Refresh 만료 | 401 + 로그아웃 안내 |
+| blacklist 적용 | 관리자 kick 후 30초 내 해당 `jti` 401 반환 |
+| WebSocket `token_expiring` | 만료 임박 이벤트 발행 (연결 유지) |
+
+#### 4.4.6 분산락 동시성 (IMPL-10 §4.1)
+
+| 시나리오 | 기대 결과 |
+|---------|----------|
+| 동일 `lock:table:{id}` 동시 100 acquire | 1개만 성공, 99개 대기 또는 503 |
+| fencing token 단조증가 | 연속 acquire 시 token N+1 > N |
+| TTL 만료 후 stale 요청 | fencing token 검증으로 stale 거부 |
+| lease 연장 | 장기 작업 중 `EXPIRE` 갱신 → TTL 연장 확인 |
+| 락 획득 실패 재시도 | 3회(10ms/50ms/200ms) 후 503 LOCK_UNAVAILABLE |
+| Redis 장애 | 즉시 503 (fallback 없음, INV-2 의도된 거부) |
+
+**Fixture**: `fake_redis` + `asyncio.gather` 로 병렬 코루틴 100개 생성.
+
+#### 4.4.7 서킷브레이커 상태 전이 (IMPL-10 §3.3)
+
+| 전이 | 조건 | 검증 |
+|------|------|------|
+| CLOSED → OPEN | 20 req window 중 실패율 ≥ 50% | OPEN 상태 진입 + 후속 요청 즉시 실패 |
+| OPEN → HALF_OPEN | 30s 경과 | 1 req 시범 허용 |
+| HALF_OPEN → CLOSED | 시범 성공 | 정상 경로 복귀 |
+| HALF_OPEN → OPEN | 시범 실패 | OPEN 재진입, 30s 재대기 |
+| WSOP LIVE fallback | OPEN 중 요청 → Fallback Queue 로 적재 | BO-02 §7.1 fallback 흐름 확인 |
+| 메트릭 노출 | `wsop_live_cb_state` Prometheus gauge 상태 반영 | 모의 장애 주입 후 gauge 값 확인 |
+
+#### 4.4.8 PII 로깅 차단 (IMPL-10 §9.2, 진입 게이트 #16)
+
+| 대상 | 테스트 케이스 |
+|------|-------------|
+| logging Filter | 이메일/전화/JWT/이름 마스킹 확인 |
+| 로그 출력 스캔 | 테스트 중 생성된 `.log` 파일을 정규식 스캔 → PII hit 0건 |
+| 마스킹 실패 시 | FN 발견 시 패턴 추가 프로세스 문서화 (IMPL-07 참조) |
+| 정적 스캔 | `detect-secrets scan src/` pre-commit hook 작동 확인 |
+| PII 정의 | 이름(한글 포함), 이메일, 전화, IP 주소, JWT, 신용카드 번호 |
+
+#### 4.4.9 이벤트 seq 연속성 (CCR-015, IMPL-10 §4.2)
+
+| 시나리오 | 기대 결과 |
+|---------|----------|
+| 동일 테이블 이벤트 1000건 병렬 append | `seq` 1~1000 전부 존재, gap 0 |
+| 여러 테이블 병렬 append | 각 테이블별 독립 시퀀스, 상호 간섭 없음 |
+| replay 엔드포인트 | `since=0&limit=500` → 500건, `has_more=true`, `last_seq=500` |
+| seq 중복 방지 | `(table_id, seq)` UNIQUE 위반 시 IntegrityError |
+| 부팅 후 `MAX(seq)` 복원 | 재시작 시 이어서 단조증가 |
+
+#### 4.4.10 Phase 1 진입 게이트 매핑
+
+IMPL-10 §10 매트릭스의 16개 항목 중 본 섹션(4.4)이 커버하는 항목:
+
+| 게이트 # | 항목 | 본 섹션 |
+|----------|------|---------|
+| 5 | 멱등성 100% mutation | §4.4.2 |
+| 6 | 재시도 정책 | §4.4.1 |
+| 7 | 서킷브레이커 전파 | §4.4.7 |
+| 8 | 분산락 충돌 0 | §4.4.6 |
+| 9 | 이벤트 seq 연속성 | §4.4.9 |
+| 11 | audit_events 커버 | §4.4.3 |
+| 12 | Undo inverse 성공 | §4.4.4 |
+| 14 | JWT 프로파일 일치 | §4.4.5 |
+| 16 | PII 로깅 0 | §4.4.8 |
+
+나머지 게이트(#1 p95, #2 RFID E2E, #3 연속운영, #4 MTTR, #10 캐시, #13 DR, #15 인덱스)는 §5 E2E 또는 §8 CI 또는 Phase 1.5 이전 항목으로 다룬다.
+
+> **아키텍처 결정 대기 중 미작성 테스트**: `after_commit` outbox dispatcher 매트릭스 8종, arq worker 재시작 복구, saga orchestrator 6단계 + 보상, 202/polling 계약. 이 테스트들은 C1/C2 아키텍처 결정(옵션 1: outbox+arq vs 옵션 2: BackgroundTasks) 확정 후 본 섹션 §4.4.11 이후에 추가된다.
 
 ---
 

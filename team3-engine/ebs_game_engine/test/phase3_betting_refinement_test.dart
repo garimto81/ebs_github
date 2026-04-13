@@ -517,8 +517,8 @@ void main() {
 
       // SB is all-in (not active), so only UTG and BB need to have acted
       // All players are all-in (stack=50, total bet=50) → all-in runout
-      // Engine auto-deals flop→turn→river
-      expect(state.street, Street.river);
+      // Engine auto-deals flop→turn→river→showdown
+      expect(state.street, Street.showdown);
       expect(state.community.length, 5);
     });
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": 1,
-  "description": "EBS 4팀 병렬 작업 충돌 방지를 위한 팀 경계/소유권 SSOT. pre_tool_guard.py (hook), /auto (skill), tools/backlog_aggregate.py, tools/ccr_promote.py 의 유일 입력 파일. Conductor 단독 소유 — 팀 수정 금지.",
+  "version": 4,
+  "description": "EBS 4팀 병렬 작업 충돌 방지를 위한 팀 경계/소유권 SSOT. Conductor 단독 소유 — 팀 수정 금지. v4: 팀 내부 specs 이관 (BS-02,03,05,07,08 → 팀 폴더). contracts/specs/는 팀 간 계약만 보유.",
   "teams": {
     "conductor": {
       "cwd_match": null,
@@ -85,7 +85,50 @@
     "API-03": ["team4", "team1"],
     "API-04": ["team3", "team4"],
     "API-05": ["team2", "team1", "team4"],
-    "API-06": ["team2", "team1"]
+    "API-06": ["team2", "team1"],
+    "API-07": ["team2", "team1", "team4"]
   },
-  "audit_log_path": ".claude/logs/scope-guard-{YYYYMMDD}.jsonl"
+  "audit_log_path": ".claude/logs/scope-guard-{YYYYMMDD}.jsonl",
+  "contract_ownership": {
+    "contracts/api/API-01-backend-endpoints.md": {
+      "publisher": "team2",
+      "subscribers": ["team1", "team4"],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-02-wsop-live-integration.md": {
+      "publisher": "team2",
+      "subscribers": [],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-03-rfid-hal-interface.md": {
+      "publisher": "team4",
+      "subscribers": ["team1"],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-04-overlay-output.md": {
+      "publisher": "team3",
+      "subscribers": ["team4"],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-05-websocket-events.md": {
+      "publisher": "team2",
+      "subscribers": ["team1", "team3", "team4"],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-06-auth-session.md": {
+      "publisher": "team2",
+      "subscribers": ["team1"],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-07-graphic-editor.md": {
+      "publisher": "team2",
+      "subscribers": ["team1", "team4"],
+      "direct_edit": "LOW"
+    },
+    "contracts/specs/BS-04-rfid/BS-04-04-hal-contract.md": {
+      "publisher": "team4",
+      "subscribers": ["team1"],
+      "direct_edit": "LOW"
+    }
+  }
 }

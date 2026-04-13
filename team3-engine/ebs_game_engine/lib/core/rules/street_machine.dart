@@ -6,15 +6,16 @@ class StreetMachine {
 
   /// Get the next street after [current].
   static Street nextStreet(Street current) => switch (current) {
+        Street.idle => Street.setupHand,
         Street.setupHand => Street.preflop,
         Street.preflop => Street.flop,
         Street.flop => Street.turn,
         Street.turn => Street.river,
         Street.river => Street.showdown,
-        Street.showdown =>
-          throw StateError('No street after showdown'),
-        Street.runItMultiple =>
-          throw StateError('No street after runItMultiple'),
+        Street.showdown => Street.handComplete,
+        Street.handComplete =>
+          throw StateError('No street after handComplete'),
+        Street.runItMultiple => Street.handComplete,
       };
 
   /// Number of community cards to deal for a given street.
@@ -31,8 +32,10 @@ class StreetMachine {
   /// Heads-up preflop: SB/BTN acts first.
   /// Postflop: first active seat after dealer.
   static int firstToAct(GameState state) {
-    // No action during setup phase
-    if (state.street == Street.setupHand) return -1;
+    // No action during idle, setup, or completion phases
+    if (state.street == Street.idle ||
+        state.street == Street.setupHand ||
+        state.street == Street.handComplete) return -1;
 
     final n = state.seats.length;
 

@@ -33,6 +33,13 @@ class Session {
     return currentState;
   }
 
+  /// Add an event and return the result including output events.
+  ReduceResult addEventFull(Event event) {
+    events.add(event);
+    _undoCount = 0;
+    return Engine.applyFull(stateAt(events.length - 1), event);
+  }
+
   int _undoCount = 0;
   static const _maxUndoSteps = 5;
 

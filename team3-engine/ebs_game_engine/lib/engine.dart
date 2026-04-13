@@ -24,6 +24,8 @@ export 'core/state/card_reveal_config.dart';
 // Actions & Events
 export 'core/actions/action.dart';
 export 'core/actions/event.dart';
+export 'core/actions/output_event.dart';
+export 'core/actions/reduce_result.dart';
 
 // Variants
 export 'core/variants/variant.dart';
@@ -50,6 +52,8 @@ import 'core/rules/betting_rules.dart';
 import 'core/rules/no_limit.dart';
 import 'core/rules/street_machine.dart';
 import 'core/variants/variants.dart';
+import 'core/actions/output_event.dart';
+import 'core/actions/reduce_result.dart';
 
 /// The main game engine. All methods are pure functions:
 /// given a state and an event, produce a new state.
@@ -57,22 +61,28 @@ class Engine {
   Engine._();
 
   /// Apply an event to the current state, producing a new state.
+  /// Legacy wrapper: returns only the new state (backward compatible).
   static GameState apply(GameState state, Event event) {
+    return applyFull(state, event).state;
+  }
+
+  /// Apply an event, returning new state + output events.
+  static ReduceResult applyFull(GameState state, Event event) {
     return switch (event) {
-      final HandStart e => _startHand(state, e),
-      final DealHoleCards e => _dealHole(state, e),
-      final DealCommunity e => _dealCommunity(state, e),
-      final PineappleDiscard e => _pineappleDiscard(state, e),
-      final PlayerAction e => _playerAction(state, e),
-      final StreetAdvance e => _streetAdvance(state, e),
-      final PotAwarded e => _awardPot(state, e),
-      final HandEnd _ => _endHand(state),
-      final MisDeal _ => _handleMisDeal(state),
-      final BombPotConfig e => _handleBombPotConfig(state, e),
-      final RunItChoice e => _handleRunItChoice(state, e),
-      final ManualNextHand _ => _handleManualNextHand(state),
-      final TimeoutFold e => _handleTimeoutFold(state, e),
-      final MuckDecision e => _handleMuckDecision(state, e),
+      final HandStart e => _startHandFull(state, e),
+      final DealHoleCards e => _dealHoleFull(state, e),
+      final DealCommunity e => _dealCommunityFull(state, e),
+      final PineappleDiscard e => _pineappleDiscardFull(state, e),
+      final PlayerAction e => _playerActionFull(state, e),
+      final StreetAdvance e => _streetAdvanceFull(state, e),
+      final PotAwarded e => _awardPotFull(state, e),
+      final HandEnd _ => _endHandFull(state),
+      final MisDeal _ => _handleMisDealFull(state),
+      final BombPotConfig e => _handleBombPotConfigFull(state, e),
+      final RunItChoice e => _handleRunItChoiceFull(state, e),
+      final ManualNextHand _ => _handleManualNextHandFull(state),
+      final TimeoutFold e => _handleTimeoutFoldFull(state, e),
+      final MuckDecision e => _handleMuckDecisionFull(state, e),
     };
   }
 
@@ -113,9 +123,9 @@ class Engine {
   static List<LegalAction> legalActions(GameState state) =>
       BettingRules.legalActions(state);
 
-  // ── Private handlers ──
+  // ── Private handlers (Full versions returning ReduceResult) ──
 
-  static GameState _startHand(GameState state, HandStart event) {
+  static ReduceResult _startHandFull(GameState state, HandStart event) {
     final newState = state.copyWith(
       handInProgress: true,
       dealerSeat: event.dealerSeat,
@@ -352,7 +362,7 @@ class Engine {
       for (final seat in newState.seats) {
         seat.currentBet = 0;
       }
-      return newState.copyWith(
+      final bombResult = newState.copyWith(
         sbSeat: sbIdx,
         bbSeat: bbIdx,
         bbAmount: bbAmount,
@@ -360,6 +370,9 @@ class Engine {
         street: Street.flop,
         betLimit: resolvedBetLimit,
       );
+      return ReduceResult(state: bombResult, outputs: [
+        StateChanged(fromState: state.street.name, toState: Street.flop.name),
+      ]);
     }
 
     // ── Straddle processing ──
@@ -401,37 +414,43 @@ class Engine {
       firstAct = StreetMachine.firstToAct(stateForFirstAct);
     }
 
-    return newState.copyWith(
+    final resultState = newState.copyWith(
       sbSeat: sbIdx,
       bbSeat: bbIdx,
       bbAmount: bbAmount,
       actionOn: firstAct,
       betLimit: resolvedBetLimit,
     );
+    return ReduceResult(state: resultState, outputs: [
+      StateChanged(fromState: state.street.name, toState: Street.preflop.name),
+    ]);
   }
 
-  static GameState _dealHole(GameState state, DealHoleCards event) {
+  static ReduceResult _dealHoleFull(GameState state, DealHoleCards event) {
     final newState = state.copyWith();
     for (final entry in event.cards.entries) {
       newState.seats[entry.key].holeCards = List.of(entry.value);
     }
-    return newState;
+    return ReduceResult(state: newState);
   }
 
-  static GameState _dealCommunity(GameState state, DealCommunity event) {
-    return state.copyWith(
+  static ReduceResult _dealCommunityFull(GameState state, DealCommunity event) {
+    final newState = state.copyWith(
       community: [...state.community, ...event.cards],
     );
+    return ReduceResult(state: newState, outputs: [
+      BoardUpdated(cardCount: newState.community.length),
+    ]);
   }
 
-  static GameState _pineappleDiscard(
+  static ReduceResult _pineappleDiscardFull(
       GameState state, PineappleDiscard event) {
     final newState = state.copyWith();
     newState.seats[event.seatIndex].holeCards.remove(event.discarded);
-    return newState;
+    return ReduceResult(state: newState);
   }
 
-  static GameState _playerAction(GameState state, PlayerAction event) {
+  static ReduceResult _playerActionFull(GameState state, PlayerAction event) {
     final newState =
         BettingRules.applyAction(state, event.seatIndex, event.action);
 
@@ -456,21 +475,61 @@ class Engine {
       }
     }
 
+    // Build output events for this action
+    final actionType = switch (event.action) {
+      Fold() => 'fold',
+      Check() => 'check',
+      Call() => 'call',
+      Bet() => 'bet',
+      Raise() => 'raise',
+      AllIn() => 'allin',
+    };
+    final actionAmount = switch (event.action) {
+      Call(:final amount) => amount,
+      Bet(:final amount) => amount,
+      Raise(:final toAmount) => toAmount,
+      AllIn(:final amount) => amount,
+      _ => null,
+    };
+    final outputs = <OutputEvent>[
+      ActionProcessed(
+        seatIndex: event.seatIndex,
+        actionType: actionType,
+        amount: actionAmount,
+      ),
+      PotUpdated(
+        mainPot: newState.pot.main,
+        sidePots: newState.pot.sides.map((s) => s.amount).toList(),
+      ),
+    ];
+
     // Check if all but one folded
     final activeCount =
         newState.seats.where((s) => s.isActive || s.isAllIn).length;
     if (activeCount <= 1) {
-      return newState.copyWith(actionOn: -1);
+      return ReduceResult(
+        state: newState.copyWith(actionOn: -1),
+        outputs: outputs,
+      );
     }
 
     // Check if round is complete
     if (BettingRules.isRoundComplete(newState)) {
-      return _autoAdvanceAndDeal(newState);
+      final advanced = _autoAdvanceAndDeal(newState);
+      outputs.add(StateChanged(
+        fromState: state.street.name,
+        toState: advanced.street.name,
+      ));
+      return ReduceResult(state: advanced, outputs: outputs);
     }
 
     // Next player to act
     final next = StreetMachine.nextToAct(newState);
-    return newState.copyWith(actionOn: next);
+    outputs.add(ActionOnChanged(seatIndex: next));
+    return ReduceResult(
+      state: newState.copyWith(actionOn: next),
+      outputs: outputs,
+    );
   }
 
   /// Auto-advance street and deal community cards when betting round completes.
@@ -478,9 +537,9 @@ class Engine {
   static GameState _autoAdvanceAndDeal(GameState state) {
     final nextStreet = StreetMachine.nextStreet(state.street);
 
-    // Showdown: no cards to deal, signal completion
-    if (nextStreet == Street.showdown) {
-      return state.copyWith(actionOn: -1);
+    // Showdown or handComplete: no cards to deal, signal completion
+    if (nextStreet == Street.showdown || nextStreet == Street.handComplete) {
+      return state.copyWith(street: nextStreet, actionOn: -1);
     }
 
     // Advance street (resets bets, sets firstToAct)
@@ -507,18 +566,21 @@ class Engine {
     return advanced;
   }
 
-  static GameState _streetAdvance(GameState state, StreetAdvance event) {
+  static ReduceResult _streetAdvanceFull(GameState state, StreetAdvance event) {
     // Validate transition: must follow sequential order
     const validNext = {
+      Street.idle: {Street.setupHand},
+      Street.setupHand: {Street.preflop},
       Street.preflop: {Street.flop},
       Street.flop: {Street.turn},
       Street.turn: {Street.river},
       Street.river: {Street.showdown, Street.runItMultiple},
-      Street.runItMultiple: {Street.showdown},
+      Street.runItMultiple: {Street.showdown, Street.handComplete},
+      Street.showdown: {Street.handComplete},
     };
     final allowed = validNext[state.street];
     if (allowed != null && !allowed.contains(event.next)) {
-      return state; // reject invalid transition
+      return ReduceResult(state: state); // reject invalid transition
     }
 
     // Override target street from event
@@ -540,10 +602,13 @@ class Engine {
 
     // First to act for new street
     final first = StreetMachine.firstToAct(newState);
-    return newState.copyWith(actionOn: first);
+    final resultState = newState.copyWith(actionOn: first);
+    return ReduceResult(state: resultState, outputs: [
+      StateChanged(fromState: state.street.name, toState: event.next.name),
+    ]);
   }
 
-  static GameState _awardPot(GameState state, PotAwarded event) {
+  static ReduceResult _awardPotFull(GameState state, PotAwarded event) {
     final newState = state.copyWith();
     for (final entry in event.awards.entries) {
       newState.seats[entry.key].stack += entry.value;
@@ -551,10 +616,12 @@ class Engine {
     // Clear pot
     newState.pot.main = 0;
     newState.pot.sides = [];
-    return newState;
+    return ReduceResult(state: newState, outputs: [
+      WinnerDetermined(awards: event.awards),
+    ]);
   }
 
-  static GameState _endHand(GameState state) {
+  static ReduceResult _endHandFull(GameState state) {
     // Find next dealer: skip sitting-out seats
     final n = state.seats.length;
     int nextDealer = state.dealerSeat;
@@ -566,15 +633,19 @@ class Engine {
       }
     }
 
-    return state.copyWith(
+    final resultState = state.copyWith(
       handInProgress: false,
       actionOn: -1,
       dealerSeat: nextDealer,
       handNumber: state.handNumber + 1,
     );
+    return ReduceResult(state: resultState, outputs: [
+      HandCompleted(handNumber: state.handNumber),
+      StateChanged(fromState: state.street.name, toState: Street.idle.name),
+    ]);
   }
 
-  static GameState _handleMisDeal(GameState state) {
+  static ReduceResult _handleMisDealFull(GameState state) {
     final newState = state.copyWith();
     // Return each seat's currentBet back to their stack, reset status
     for (final seat in newState.seats) {
@@ -589,35 +660,41 @@ class Engine {
     // Clear pot
     newState.pot.main = 0;
     newState.pot.sides = [];
-    return newState.copyWith(
+    final resultState = newState.copyWith(
       handInProgress: false,
       actionOn: -1,
-      street: Street.preflop,
+      street: Street.idle,
       community: [],
     );
+    return ReduceResult(state: resultState, outputs: [
+      StateChanged(fromState: state.street.name, toState: Street.idle.name),
+    ]);
   }
 
-  static GameState _handleBombPotConfig(GameState state, BombPotConfig event) {
-    if (event.amount <= 0) return state; // BS-06-09: amount > 0 required
-    return state.copyWith(
+  static ReduceResult _handleBombPotConfigFull(GameState state, BombPotConfig event) {
+    if (event.amount <= 0) return ReduceResult(state: state);
+    return ReduceResult(state: state.copyWith(
       bombPotEnabled: true,
       bombPotAmount: event.amount,
-    );
+    ));
   }
 
-  static GameState _handleRunItChoice(GameState state, RunItChoice event) {
-    if (event.times != 2 && event.times != 3) return state; // BS-06-09: 2 or 3 only
-    return state.copyWith(
+  static ReduceResult _handleRunItChoiceFull(GameState state, RunItChoice event) {
+    if (event.times != 2 && event.times != 3) return ReduceResult(state: state);
+    final resultState = state.copyWith(
       runItTimes: event.times,
       street: Street.runItMultiple,
     );
+    return ReduceResult(state: resultState, outputs: [
+      StateChanged(fromState: state.street.name, toState: Street.runItMultiple.name),
+    ]);
   }
 
-  static GameState _handleManualNextHand(GameState state) {
+  static ReduceResult _handleManualNextHandFull(GameState state) {
     final newState = state.copyWith(
       handInProgress: false,
       actionOn: -1,
-      street: Street.preflop,
+      street: Street.idle,
       community: [],
       bombPotEnabled: false,
     );
@@ -625,20 +702,34 @@ class Engine {
     for (final seat in newState.seats) {
       seat.holeCards = [];
     }
-    return newState;
+    return ReduceResult(state: newState, outputs: [
+      StateChanged(fromState: state.street.name, toState: Street.idle.name),
+    ]);
   }
 
-  static GameState _handleTimeoutFold(GameState state, TimeoutFold event) {
+  static ReduceResult _handleTimeoutFoldFull(GameState state, TimeoutFold event) {
     // Treat timeout as a fold action
-    return _playerAction(state, PlayerAction(event.seatIndex, const Fold()));
+    final result = _playerActionFull(state, PlayerAction(event.seatIndex, const Fold()));
+    // Replace the ActionProcessed actionType with the timeout context
+    final outputs = result.outputs.map((o) {
+      if (o is ActionProcessed) {
+        return ActionProcessed(
+          seatIndex: o.seatIndex,
+          actionType: 'fold',
+          amount: o.amount,
+        );
+      }
+      return o;
+    }).toList();
+    return ReduceResult(state: result.state, outputs: outputs);
   }
 
-  static GameState _handleMuckDecision(GameState state, MuckDecision event) {
+  static ReduceResult _handleMuckDecisionFull(GameState state, MuckDecision event) {
     if (!event.showCards) {
       final newState = state.copyWith();
       newState.seats[event.seatIndex].holeCards = [];
-      return newState;
+      return ReduceResult(state: newState);
     }
-    return state; // Cards already visible
+    return ReduceResult(state: state);
   }
 }

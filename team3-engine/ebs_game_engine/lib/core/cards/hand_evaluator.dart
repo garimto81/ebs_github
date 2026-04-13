@@ -102,13 +102,14 @@ class HandEvaluator {
   static HandRank bestHand(
     List<Card> cards, {
     List<HandCategory>? categoryOrder,
+    bool shortDeck = false,
   }) {
     final order = categoryOrder ?? HandCategory.standardOrder;
     assert(cards.length >= 5, 'Need at least 5 cards');
 
     HandRank? best;
     for (final combo in _combinations(cards, 5)) {
-      final rank = _evaluate5(combo, order);
+      final rank = _evaluate5(combo, order, shortDeck: shortDeck);
       if (best == null || rank.compareTo(best) > 0) {
         best = rank;
       }
@@ -121,13 +122,14 @@ class HandEvaluator {
     required List<Card> hole,
     required List<Card> community,
     List<HandCategory>? categoryOrder,
+    bool shortDeck = false,
   }) {
     final order = categoryOrder ?? HandCategory.standardOrder;
 
     HandRank? best;
     for (final h2 in _combinations(hole, 2)) {
       for (final c3 in _combinations(community, 3)) {
-        final rank = _evaluate5([...h2, ...c3], order);
+        final rank = _evaluate5([...h2, ...c3], order, shortDeck: shortDeck);
         if (best == null || rank.compareTo(best) > 0) {
           best = rank;
         }
@@ -192,8 +194,9 @@ class HandEvaluator {
   /// Evaluate exactly 5 cards and return the HandRank.
   static HandRank _evaluate5(
     List<Card> cards,
-    List<HandCategory> categoryOrder,
-  ) {
+    List<HandCategory> categoryOrder, {
+    bool shortDeck = false,
+  }) {
     assert(cards.length == 5);
 
     // Sort by rank value descending
@@ -206,7 +209,7 @@ class HandEvaluator {
     final isFlush = sorted.every((c) => c.suit == sorted.first.suit);
 
     // Check straight
-    final straightResult = _checkStraight(values);
+    final straightResult = _checkStraight(values, shortDeck: shortDeck);
     final isStraight = straightResult != null;
     final straightHigh = straightResult ?? 0;
 
@@ -275,19 +278,20 @@ class HandEvaluator {
   /// Check if sorted descending values form a straight.
   /// Returns the high card of the straight, or null if not a straight.
   /// Handles wheel (A-2-3-4-5) and short deck wheel (A-6-7-8-9).
-  static int? _checkStraight(List<int> values) {
+  /// [shortDeck]: when true, A-6-7-8-9 is a valid wheel (lowest straight).
+  static int? _checkStraight(List<int> values, {bool shortDeck = false}) {
     // Normal straight check: consecutive descending
     if (_isConsecutiveDesc(values)) {
       return values.first;
     }
 
     // Wheel: A plays low + 4 consecutive cards
-    // Standard: A-2-3-4-5 (restSorted starts at 2)
-    // Short Deck: A-6-7-8-9 (restSorted starts at 6)
+    // Standard: A-2-3-4-5 (always valid)
+    // Short Deck: A-6-7-8-9 (only when shortDeck == true)
     if (values.first == 14) {
       final restSorted = [values[1], values[2], values[3], values[4]]..sort();
       if (_isConsecutiveAsc(restSorted) &&
-          (restSorted.first == 2 || restSorted.first == 6)) {
+          (restSorted.first == 2 || (shortDeck && restSorted.first == 6))) {
         return restSorted.last; // 5-high for standard wheel, 9-high for short deck
       }
     }

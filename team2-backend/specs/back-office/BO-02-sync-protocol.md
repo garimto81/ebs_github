@@ -3,6 +3,7 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-09 | 신규 작성 | BO-09 + BO-10 병합. 동기화 정책, 오프라인 대응, 충돌 해결, WSOP LIVE 폴링/UPSERT/장애 대응, Mock 모드 |
+| 2026-04-10 | 서킷브레이커/Fallback Queue | §7.1 WSOP LIVE 폴링 실패 시 Circuit Breaker + `sync:wsop:pending` Redis Stream fallback queue + cursor 기반 delta 재개 (IMPL-10 §3.3 / GAP-BO-009 정합) |
 
 ---
 
@@ -167,14 +168,66 @@ CC가 BO WebSocket 연결이 끊긴 상태에서도 **게임 진행을 중단하
 
 ## 7. 장애 대응
 
-### 7.1 API 연결 끊김
+### 7.1 API 연결 끊김 (Circuit Breaker + Fallback Queue)
+
+WSOP LIVE 폴링은 **Circuit Breaker**(IMPL-10 §3.3)로 감싸져 있으며, 실패 시 `sync:wsop:pending` **Redis Stream**으로 요청이 이동한다.
 
 | 상황 | BO 동작 | Lobby 영향 |
 |------|---------|-----------|
-| API 호출 실패 1회 | 재시도 (10초 후) | 영향 없음 |
-| API 호출 실패 3회 연속 | "API 연결 끊김" 로그 + Admin 알림 | 노랑 배너 |
-| API 연결 장기 끊김 | DB 캐시 데이터로 정상 운영 | 신규 데이터만 미반영 |
-| API 복구 | 다음 폴링 주기에 자동 재개 | 배너 제거 |
+| API 호출 실패 1회 | 재시도 (exponential: 200ms/1s/3s/10s/30s, IMPL-10 §3.2) | 영향 없음 |
+| 실패율 ≥ 50% (20 req window) | Circuit Breaker **OPEN**, 이후 요청은 Fallback Queue에 적재 | 노랑 배너 "WSOP LIVE 일시 장애" |
+| OPEN 30s 경과 | HALF_OPEN, 1 req 시범 | — |
+| HALF_OPEN 성공 | CLOSED 복귀, Fallback Queue 드레인 시작 | 배너 제거 |
+| HALF_OPEN 실패 | OPEN 재진입 | 배너 유지 |
+| 장기 끊김 (>10min) | 캐시 데이터로 정상 운영 + Admin 경보 | 신규 데이터만 미반영 |
+
+**Fallback Queue 동작**:
+
+- **큐 형태**: Redis Stream `sync:wsop:pending` — ordering + consumer group 지원. 구현 백엔드(Redis Stream vs. SQLite journal table 등)는 team2 아키텍처 결정(옵션 1/2) 확정 이후 최종화. 현 단계에서는 **논리적 스펙**만 유지.
+
+- **메시지 envelope 스키마**:
+  ```json
+  {
+    "msg_id": "1713000000-0",                  // Redis Stream entry ID 또는 UUID
+    "entity": "series | event | flight | player | seat",
+    "cursor": "2026-04-10T12:34:56.789Z",      // 마지막 성공 동기화 시점 (ISO 8601)
+    "requested_at": "2026-04-10T12:34:57.123Z",
+    "retry_count": 0,                          // 0부터 시작, 성공 시 소거
+    "last_error": null,                        // 직전 시도 실패 이유 (nullable)
+    "correlation_id": "corr-cb-20260410-ab1",  // 장애 구간 묶음 ID
+    "causation_msg_id": null                   // 이전 재시도 메시지 ID (체이닝)
+  }
+  ```
+
+- **재개 cursor 규칙**:
+  - SSOT: Redis `sync_cursor:{entity}` 또는 DB `sync_cursors(entity PK, cursor, updated_at)` 테이블
+  - 복구 시 해당 cursor 를 기준으로 `since=cursor` 파라미터로 WSOP LIVE delta 요청
+  - 성공 수신 후 `sync_cursor:{entity}` 를 새 cursor 로 업데이트 (commit 후)
+  - **cursor 롤백 금지**: 항상 단조증가. 만약 WSOP 응답이 더 오래된 cursor 를 반환하면 drift 경고 로그
+
+- **재처리 흐름**:
+  1. Circuit Breaker HALF_OPEN → 1 req 성공 → CLOSED
+  2. Drainer worker 가 `sync:wsop:pending` 에서 `entity` 별 가장 오래된 메시지부터 순차 pop
+  3. 각 메시지의 `cursor` 기준 delta 재요청 → 성공 시 ACK, 실패 시 `retry_count++` 후 재적재 (최대 5회)
+  4. 5회 초과 메시지는 `sync:wsop:deadletter` 로 이동, Admin 경보
+  5. 재처리 중 중복 레코드 발생 시 UPSERT 규칙(§6)으로 흡수
+
+- **큐 관리 임계값**:
+  | 지표 | 임계 | 조치 |
+  |------|------|------|
+  | 큐 길이 | > 10,000 | Admin 경보 + 폴링 속도 자동 감속 |
+  | 가장 오래된 메시지 age | > 10분 | 경보 + drainer 병렬 스케일 아웃 요청 |
+  | `sync_cursor_lag_seconds` | > 5분 | `wsop_sync_lag` 대시보드 경고 |
+  | deadletter 큐 | ≥ 1건 | Admin 수동 개입 알림 |
+
+- **복구 완료 기록**: drainer 가 `entity` 별 모든 메시지를 소거하고 `sync_cursor` 가 "현재 시각 - 30s" 이내로 따라잡으면 `audit_events` 에 `wsop_sync_resumed` 이벤트 append. `correlation_id` 로 장애 구간 전체 묶음 (CB OPEN 시점 ~ 재개 시점).
+
+**메트릭**:
+- `wsop_live_cb_state{state=closed|half_open|open}` — Prometheus gauge
+- `wsop_live_fallback_queue_length` — Prometheus gauge
+- `wsop_live_sync_cursor_lag_seconds` — Prometheus gauge
+
+> 세부 복구 시나리오: BO-03 §4.2 Scenario B "BO ↔ WSOP LIVE 동기화 분기" 참조.
 
 ### 7.2 데이터 불일치
 

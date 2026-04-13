@@ -8,6 +8,7 @@
 | 2026-04-09 | doc-critic FAIL 항목 수정 | 정의 섹션 용어 사전 14개 추가, 인증 전체 흐름 시각화 추가, 전문 용어 첫 등장 시 괄호 설명 30건 추가 |
 | 2026-04-09 | GAP-L-001 보강 | 세션 관리 A-20(앱 재방문 토큰 검증), A-21(로그인 페이지 진입 조건) 추가 |
 | 2026-04-10 | CCR-006 | JWT Access/Refresh 만료 정책 환경별 차등 명시 (`## Session & Token Lifecycle` 섹션 신설) |
+| 2026-04-13 | CCR promote 반영 | Refresh Token 전달 방식을 환경별 조건부로 변경 (dev~prod: JSON body, live: HttpOnly Cookie). API-06 `refresh_token_delivery` 필드와 정합 |
 
 ---
 
@@ -311,7 +312,7 @@
 | 항목 | Lobby (웹) | CC (Flutter) |
 |------|-----------|-------------|
 | Access Token 저장 | JavaScript 메모리 (XSS(웹 스크립트 공격) 방지) | Secure Storage(Flutter 보안 저장소) |
-| Refresh Token 저장 | HttpOnly Cookie(JS 접근 불가 쿠키) (SameSite=Strict) | Secure Storage(Flutter 보안 저장소) |
+| Refresh Token 전달 | dev/staging/prod: JSON body `refresh_token` 필드. **live**: `Set-Cookie: refresh_token=...; HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh` 헤더로 전달 (JSON body의 `refresh_token`은 빈 문자열) | Secure Storage(Flutter 보안 저장소) — Cookie 방식 영향 없음 |
 | 자동 갱신 | 만료 전 자동 호출 | 포그라운드 시 만료 2분 전 갱신 |
 | 오프라인 동작 | 읽기 전용 (캐시된 데이터) | 로컬 캐시 모드 (게임 진행 가능) |
 | 다중 탭/인스턴스 | `BroadcastChannel API`(브라우저 탭 간 데이터 공유 API)로 토큰 공유 | 단일 인스턴스 |
@@ -379,7 +380,16 @@
 | Refresh 실패 | 만료/무효 시 즉시 로그아웃 → Lobby 로그인 화면 리다이렉트 |
 | Refresh 성공 | 새 Access로 교체. WebSocket 연결은 **끊지 않음** |
 | Access Token 저장 | Lobby: JavaScript 메모리 / CC: Flutter Secure Storage |
-| Refresh Token 저장 | Lobby: HttpOnly Cookie(SameSite=Strict) / CC: Secure Storage |
+| Refresh Token 전달 | 환경별 조건부 — 아래 상세 참조 |
+
+환경별 Refresh Token 전달 방식:
+- dev / staging / prod: JSON body `refresh_token` 필드로 전달
+- **live (방송 운영)**: `Set-Cookie: refresh_token=...; HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh` 헤더로 전달. JSON body의 `refresh_token` 필드는 빈 문자열.
+
+클라이언트 대응:
+- Lobby (웹): live 환경에서 `credentials: 'include'` fetch 옵션 필수
+- CC (Flutter): Secure Storage에 refresh_token 직접 저장 (Cookie 방식 영향 없음)
+- `refresh_token_delivery` 응답 필드(`"body"` 또는 `"cookie"`)로 현재 전달 방식 확인 가능 (API-06 참조)
 
 ### 3. WebSocket 재연결 Interplay
 
@@ -407,7 +417,8 @@
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | `access_token` | string | JWT Access Token |
-| `refresh_token` | string | JWT Refresh Token (`live` 환경은 HttpOnly Cookie로 대체 가능) |
+| `refresh_token` | string | JWT Refresh Token. dev/staging/prod: 값 포함. **live**: 빈 문자열 (HttpOnly Cookie로 전달) |
+| `refresh_token_delivery` | string | `"body"` 또는 `"cookie"` — 현재 환경의 Refresh Token 전달 방식 |
 | `expires_in` | int (seconds) | Access Token 유효 기간 (`AUTH_PROFILE`에 따라 3600~43200) |
 | `expires_at` | string (ISO 8601) | Access Token 만료 시각 (절대시간) |
 | `refresh_expires_in` | int (seconds) | Refresh Token 유효 기간 (기본 604800 = 7d) |

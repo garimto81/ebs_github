@@ -3,6 +3,7 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 5개 FSM 상태 전이 다이어그램 + 트리거/가드/부작용 초판 |
+| 2026-04-13 | WSOP LIVE 정합성 수정 | SeatFSM 3→9상태 확장(WSOP LIVE Seat Status 코드), EventFSM Announce→Announced + isRegisterable + 표시 상태, TableFSM RESERVED_TABLE 추가 |
 
 ---
 
@@ -28,6 +29,10 @@ stateDiagram-v2
     LIVE --> CLOSED : 운영자 Close
     PAUSED --> CLOSED : 운영자 Close
     CLOSED --> EMPTY : Reset (재사용)
+    LIVE --> RESERVED_TABLE : Admin Reserve Table
+    SETUP --> RESERVED_TABLE : Admin Reserve Table
+    RESERVED_TABLE --> LIVE : Admin Release Table
+    RESERVED_TABLE --> SETUP : Admin Release Table (SETUP 복귀)
 ```
 
 ### 전이 상세
@@ -42,6 +47,9 @@ stateDiagram-v2
 | LIVE → CLOSED | Admin: [Close] | 진행 중 핸드 없음 | `table_sessions.ended_at` 기록, CC 종료, 오버레이 제거 |
 | PAUSED → CLOSED | Admin: [Close] | — | 위와 동일 |
 | CLOSED → EMPTY | Admin: [Reset] | 확인 다이얼로그 승인 | 핸드 카운트 초기화, 설정 유지, 좌석 초기화 |
+| LIVE → RESERVED_TABLE | Admin: Reserve Table | — | `tables.status` UPDATE, Auto Seating 제외, 짙은 회색 표시 |
+| SETUP → RESERVED_TABLE | Admin: Reserve Table | — | 동일 |
+| RESERVED_TABLE → LIVE | Admin: Release Table | — | `tables.status` UPDATE, Auto Seating 포함 |
 
 ### Feature Table 추가 가드
 
@@ -98,28 +106,64 @@ stateDiagram-v2
 
 ## 3. SeatFSM
 
-Seat의 상태. Lobby + CC에서 관리.
+Seat의 상태. Lobby + CC에서 관리. WSOP LIVE Seat Status 코드 9상태.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> VACANT : 테이블 생성 시
-    VACANT --> OCCUPIED : 플레이어 착석
-    VACANT --> RESERVED : 좌석 예약
-    RESERVED --> OCCUPIED : 예약자 착석
-    RESERVED --> VACANT : 예약 해제
-    OCCUPIED --> VACANT : 플레이어 이탈
+    [*] --> EMPTY : 테이블 생성 시
+    EMPTY --> NEW : SeatAssign (플레이어 배치)
+    EMPTY --> RESERVED : SeatReserve (배치 제외)
+    EMPTY --> HOLD : Hold Seats (Seat Draw 선점)
+    NEW --> PLAYING : 10분 경과 또는 핸드 참여
+    PLAYING --> EMPTY : SeatVacate (이탈)
+    PLAYING --> BUSTED : PlayerEliminate (탈락 요청)
+    PLAYING --> EMPTY : SeatMove (출발)
+    EMPTY --> MOVED : SeatMove (도착)
+    MOVED --> PLAYING : 10분 경과 또는 핸드 참여
+    BUSTED --> EMPTY : PlayerEliminate (FM/TD confirm)
+    RESERVED --> EMPTY : SeatRelease (예약 해제)
+    HOLD --> EMPTY : Hold 해제
+    EMPTY --> WAITING : Auto Seating 웨이팅 배정
+    WAITING --> PLAYING : 플레이어 도착
+    EMPTY --> OCCUPIED : BreakTable 재배치 예약
+    OCCUPIED --> PLAYING : 플레이어 도착
 ```
 
 ### 전이 상세
 
 | 전이 | 트리거 | 가드 조건 | 부작용 |
 |------|--------|----------|--------|
-| [*] → VACANT | 시스템: 테이블 생성 | — | `table_seats` INSERT (seat_no별 10개) |
-| VACANT → OCCUPIED | Admin: 좌석 배치 / CC: Sit In | 유효한 player_id | `table_seats` UPDATE (player_id, status) |
-| VACANT → RESERVED | Admin: 좌석 예약 | — | `table_seats` UPDATE (player_id, status='reserved') |
-| RESERVED → OCCUPIED | Admin: 착석 확인 | 예약된 player_id 일치 | `table_seats` UPDATE (status='occupied') |
-| RESERVED → VACANT | Admin: 예약 해제 | — | `table_seats` UPDATE (player_id=NULL, status='vacant') |
-| OCCUPIED → VACANT | Admin: 제거 / CC: Bust/Kick | 핸드 미진행 중 (또는 핸드 완료 후) | `table_seats` UPDATE, `audit_logs` INSERT |
+| [*] → EMPTY | 시스템: 테이블 생성 | — | `table_seats` INSERT (seat_no별 10개) |
+| EMPTY → NEW | Admin/Auto: 좌석 배치 | 유효한 player_id | `table_seats` UPDATE (player_id, status='new'). 10분 타이머 시작 |
+| NEW → PLAYING | 시스템: 10분 경과 또는 핸드 참여 | — | `table_seats` UPDATE (status='playing') |
+| PLAYING → EMPTY | Admin: 제거 / CC: Vacate | 핸드 미진행 중 | `table_seats` UPDATE, `audit_logs` INSERT |
+| PLAYING → BUSTED | CC: PlayerEliminate (요청) | 핸드 미진행 중 | `table_seats` UPDATE (status='busted'). FM/TD 확인 대기 |
+| BUSTED → EMPTY | Admin: PlayerEliminate (확인) | FM/TD 권한 | `table_seats` UPDATE (player_id=NULL, status='empty'), `audit_logs` INSERT |
+| PLAYING → EMPTY (이동 출발) | Admin: SeatMove | 도착 좌석 EMPTY | 출발 좌석 EMPTY, 도착 좌석 MOVED |
+| EMPTY → MOVED | Admin: SeatMove (도착) | 출발 좌석 PLAYING | `table_seats` UPDATE (status='moved'). 10분 타이머 시작 |
+| MOVED → PLAYING | 시스템: 10분 경과 또는 핸드 참여 | — | `table_seats` UPDATE (status='playing') |
+| EMPTY → RESERVED | Admin: SeatReserve | — | `table_seats` UPDATE (status='reserved'). Auto Seating 제외 |
+| RESERVED → EMPTY | Admin: SeatRelease | — | `table_seats` UPDATE (status='empty') |
+| EMPTY → WAITING | Auto Seating: 웨이팅 배정 | 웨이팅 큐에 플레이어 존재 | `table_seats` UPDATE (status='waiting', player_id). 황색 표시 |
+| WAITING → PLAYING | 시스템: 플레이어 도착 | — | `table_seats` UPDATE (status='playing') |
+| EMPTY → HOLD | Admin: Hold Seats (Seat Draw) | — | `table_seats` UPDATE (status='hold'). 회색 표시 |
+| HOLD → EMPTY | Admin: Hold 해제 | — | `table_seats` UPDATE (status='empty') |
+| EMPTY → OCCUPIED | BO: BreakTable 재배치 예약 | — | `table_seats` UPDATE (status='occupied'). 도착 예정 플레이어 매핑 |
+| OCCUPIED → PLAYING | 시스템: 플레이어 도착 | — | `table_seats` UPDATE (status='playing') |
+
+### WSOP LIVE Seat Status 코드 (Table Dealer Page)
+
+| 코드 | EBS 상태 | 색상 | 설명 |
+|------|---------|------|------|
+| E | EMPTY | 백색 | 빈 좌석 |
+| N | NEW | — | 신규 배정 (10분 카운트다운) |
+| M | MOVED | — | 이동해 온 좌석 (10분 카운트다운) |
+| B | BUSTED | 적색 | 탈락 요청 (FM/TD confirm 대기) |
+| O | OCCUPIED | — | Break Table 등 예약 점유 |
+| R | RESERVED | 짙은 회색 | Auto Seating 제외 |
+| W | WAITING | 황색 | 웨이팅 플레이어에게 배정됨 |
+| H | HOLD | 회색 | Seat Draw in Advance 선점 |
+| — | PLAYING | 녹색 | 플레이 중 |
 
 ---
 
@@ -159,12 +203,12 @@ Event 진행 상태. WSOP LIVE API 또는 Lobby에서 관리.
 ```mermaid
 stateDiagram-v2
     [*] --> Created : 이벤트 생성
-    Created --> Announce : 공지
-    Announce --> Registering : 등록 시작
+    Created --> Announced : 공지
+    Announced --> Registering : 등록 시작
     Registering --> Running : 게임 시작
     Running --> Completed : 이벤트 종료
     Created --> Canceled : 이벤트 취소
-    Announce --> Canceled : 이벤트 취소
+    Announced --> Canceled : 이벤트 취소
     Registering --> Canceled : 이벤트 취소
 ```
 
@@ -173,13 +217,32 @@ stateDiagram-v2
 | 전이 | 트리거 | 가드 조건 | 부작용 |
 |------|--------|----------|--------|
 | [*] → Created | Admin: 이벤트 생성 / API | — | `events` INSERT |
-| Created → Announce | Admin: 공지 / API | — | `events.status` UPDATE |
-| Announce → Registering | Admin: 등록 시작 / API | — | `events.status` UPDATE |
+| Created → Announced | Admin: 공지 / API | — | `events.status` UPDATE |
+| Announced → Registering | Admin: 등록 시작 / API | — | `events.status` UPDATE |
 | Registering → Running | Admin: 게임 시작 / API | 참가자 1명+ | `events.status` UPDATE, EBS 활성 상태 |
 | Running → Completed | Admin: 이벤트 종료 / API | 모든 테이블 CLOSED | `events.status` UPDATE |
-| {Created/Announce/Registering} → Canceled | Admin: 이벤트 취소 | — | `events.status` UPDATE, 관련 Flight/Table 정리 |
+| {Created/Announced/Registering} → Canceled | Admin: 이벤트 취소 | — | `events.status` UPDATE, 관련 Flight/Table 정리 |
 
 > 참조: event_flight_status enum — BS-06-00-REF 1.2.5. EBS는 Running 상태에서만 게임 데이터를 처리한다.
+
+### 표시 상태 (WSOP LIVE Tournament Status 정합)
+
+Backend 상태와 `isRegisterable` 플래그, Day 번호의 조합으로 UI 표시 상태가 결정된다.
+
+| Backend 상태 | isRegisterable | Day | 표시 상태 | 설명 |
+|-------------|:-:|:-:|---------|------|
+| Created | F | * | Created | App에서 미노출 |
+| Announced | F | 1 | Announced | 등록 전 공지 상태 |
+| Announced | F | 2+ | **Restricted** | Day2 이상에서 Announce 상태는 등록 불가 |
+| Registering | T | 1 | Registering | Day1 등록 가능 |
+| Registering | T | 2+ | **Late Reg.** | Day2 이상 등록 가능 |
+| Registering | F | * | Registering | Staff만 등록 가능 (App 불가) |
+| Running | T | * | **Late Reg.** | 시작 후에도 등록 가능 |
+| Running | F | * | Running | 등록 마감 |
+| Completed | * | * | Completed | Flight 종료 |
+| Canceled | * | * | Canceled | Flight 취소 |
+
+> **참조**: WSOP LIVE Tournament Status (Confluence page 1904542277)
 
 ---
 

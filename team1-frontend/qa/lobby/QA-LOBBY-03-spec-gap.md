@@ -4,6 +4,8 @@
 |------|------|------|
 | 2026-04-09 | 신규 작성 | 구현 과정에서 발견된 기획 문서 누락 항목 |
 | 2026-04-09 | GAP-L-001/002 기획 문서 보강 완료 | API-06 §2.1 토큰 생명주기 추가, BS-01 A-20/A-21 추가, BS-02 §세션 보존 가드 조건 추가, API-05 §1.3 WS JWT 인증 방식 추가 |
+| 2026-04-10 | GAP-L-009 RESOLVED (예정) | UI-01 §0.1~0.3 Login 확장(2FA/Forgot/Session restore Dialog) + §9.6 Session restore 거동 작성 완료. BS-01 `lastContext` 필드 스키마 row 및 `POST /auth/verify-2fa` API-06 row 만 후속 CCR 대기 |
+| 2026-04-13 | GAP-L-014~017 추가 | Google OAuth 에러 코드, "Only updated series" 필터 기준, 북마크 API, Event DataTable 확장 컬럼 |
 
 ---
 
@@ -298,6 +300,119 @@ BS-02 §화면 2는 Event 생성 폼에 13개 필드 + BlindStructure 인라인 
 | GAP-L-006 | FastAPI HTTPBearer 버전 차이 | Low | RESOLVED | API-06, IMPL-01 |
 | GAP-L-007 | Series 생성 폼 필수 필드 누락 | Medium | RESOLVED | BS-02 §화면 1 |
 | GAP-L-008 | Event 생성 폼 핵심 기능 누락 | Critical | RESOLVED | BS-02 §화면 2 |
+| GAP-L-009 | Session restore UX 미정의 | Medium | **RESOLVED (예정)** | BS-01, UI-01 §0.1~0.3 + §9.6 (2026-04-10) |
+| GAP-L-010 | GE `background.image` 편집 흐름 — .gfskin 재패키징 필요 여부 미정의 | Low | OPEN | DATA-07 §3, BS-08-02, UI-04 §5.2 (2026-04-10) |
+| GAP-L-011 | BS-08-00/02 가 `UI-08-graphic-editor.md` 참조하나 실파일은 `UI-04-graphic-editor.md` | Low | OPEN | BS-08-00, BS-08-02, UI-04 (2026-04-10) |
+| GAP-L-012 | `POST /auth/verify-2fa` endpoint 가 API-06 엔드포인트 표에 row 누락 (BS-01 A-16 본문만) | Low | OPEN | BS-01 A-16, API-06, UI-01 §0.1 (2026-04-10) |
+| GAP-L-013 | `lastContext` 필드가 BS-01 응답 스키마 섹션에 명시적으로 미정의 (A-20/A-22 서술만) | Low | OPEN | BS-01, UI-01 §0.3/§9.6 (2026-04-10) |
+| GAP-L-014 | Google OAuth callback 에러 코드 | High | OPEN | API-06, BS-01 (2026-04-13) |
+| GAP-L-015 | "Only updated series" 필터 기준 | Medium | OPEN | UI-01 §1 (2026-04-13) |
+| GAP-L-016 | 북마크 API endpoint | Medium | OPEN | API-01 (2026-04-13) |
+| GAP-L-017 | Event DataTable 확장 컬럼 API 필드 | Medium | OPEN | API-01 §5.5 (2026-04-13) |
+
+---
+
+## GAP-L-009 Session restore UX 미정의
+
+| 항목 | 내용 |
+|------|------|
+| **발견일** | 2026-04-10 |
+| **심각도** | Medium |
+| **관련 문서** | BS-01-auth A-20/A-22~A-25, UI-01 §0.1~0.3 + §9.6 |
+| **Status** | **RESOLVED (예정)** — UI-01 §0 확장 완료 (2026-04-10). 계약 확장 2건 후속 CCR 대기. |
+
+### 발견 맥락
+
+Team 1 dev-readiness critic (2026-04-10) 에서 발견. 기존 GAP-L-001 (토큰 검증 흐름) 해결 후에도 **"로그인 성공 시 이전 세션 컨텍스트를 어떻게 복원하는가"** 의 UX 가 정의되지 않았다. 특히:
+
+- Operator 가 Flight 진행 중 실수로 브라우저를 닫았다 다시 로그인했을 때, 이전에 관제하던 Table 로 자동 이동할지?
+- 24시간 전 세션도 복원할지, 신선한 세션만 복원할지?
+- 복원 다이얼로그의 "Continue / Change" UX 는 어떻게 생겼는지?
+- 2FA 활성 계정의 경우 복원 타이밍이 password 통과 직후인지 TOTP 통과 직후인지?
+- Forgot Password 완료 후 재로그인 시 복원할지 차단할지?
+
+### 영향
+
+- 반복적인 "로그인 → Series → Event → Flight → Table" 4-5 step 네비게이션 부하
+- 긴급 상황 복구 시 이전 작업 맥락 재탐색 비용
+- Operator 재할당 상황(A-24) 처리 미정의로 "이전 테이블로 이동 시도 → 권한 없음 403" 에러 가능
+
+### 해결 (UI-01 §0 확장, 2026-04-10)
+
+Team 1 dev-readiness remediation 작업으로 UI-01-lobby.md 에 다음 섹션을 작성하여 해결:
+
+| 섹션 | 내용 |
+|------|------|
+| **UI-01 §0.1** (L109-170) | 2FA TOTP 화면 — 1차 password 통과 후 `requires_2fa: true` 분기 처리. TOTP 통과 후 `lastContext` 검증으로 이동 |
+| **UI-01 §0.2** (L171-273) | Forgot Password 3단계 wizard. 완료 후 Login 화면 복귀 (복원 없음 — 새 세션 시작) |
+| **UI-01 §0.3** (L274-395) | Session Restore Dialog UI — q-dialog, 와이어프레임, 상태 전이 7단계, 복원 3조건(24시간/Running/할당 유효) |
+| **UI-01 §9.6** (L912-993) | Session Restore 거동 — 서버 계약(`lastContext` 스키마), 부분 복원 ladder(table→flight→event→series), Operator 재할당 특수 처리(A-24), A-25 [Launch CC] 자동 표시 |
+
+핵심 판단:
+- **복원 타이밍**: 2FA 통과 후 최종 토큰 발급 시점에 `lastContext` 수신 → §0.3 다이얼로그 표시
+- **24시간 조건**: 클라이언트에서 `now() - lastContext.timestamp < 24h` 판정
+- **복원 실패 ladder**: table fail → flight 목록 / flight fail → event 목록 / event fail → series 목록 / series fail → `/series`
+- **Operator 재할당**: "할당 변경" 화면 표시 후 새 테이블 목록 노출, 0개면 "미할당 — 관리자 문의" (A-24 Edge Case)
+
+### 임시 구현 (workaround)
+
+현재 Team 1 Quasar 프로젝트는 초기화 단계이므로 코드 구현 없음. UI-01 §0.3 + §9.6 에 설계 선반영 완료. 실제 Quasar 프로젝트 착수 시 `useAuthStore.tryRestoreSession()` 에서 `lastContext` 를 소비한다.
+
+### 기획 문서 보강 요청 (후속 작업)
+
+UI-01 §0.3 / §9.6 에 "계약 확장 필요" 주석으로 표시해둔 2건:
+
+| 보강 대상 | 추가할 내용 | 우선순위 |
+|----------|-----------|:-------:|
+| **BS-01-auth §응답 스키마** | `POST /auth/login` / `POST /auth/verify-2fa` / `GET /auth/session` 응답 body 에 `lastContext: { seriesId, eventId, flightId, tableId, operatorId, timestamp }` 필드 명시 (현재는 A-20/A-22 본문 서술에만 근거 존재) | P1 |
+| **API-06 Auth 엔드포인트 표** | `POST /auth/verify-2fa` row 추가 + `temp_token` 필드 명시 (현재는 BS-01 A-16 서술에만 존재) | P1 |
+| **DATA-02-entities** | `OperatorSession` 엔티티에 last context 필드 추가 또는 별도 `SessionContext` 테이블 (서버 측 영속화 전략) | P2 |
+
+위 3건은 CCR-DRAFT-team1-20260411-session-restore-contract.md 로 합쳐서 제출 예정.
+
+### 완전한 RESOLVED 조건
+
+- [x] UI 설계 완료 (UI-01 §0.1~0.3, §9.6) — 2026-04-10
+- [ ] BS-01-auth 응답 스키마에 `lastContext` 필드 row 추가 (CCR)
+- [ ] API-06 표에 `POST /auth/verify-2fa` row 추가 (CCR)
+- [ ] DATA-02 OperatorSession 엔티티 확장 또는 SessionContext 테이블 설계
+- [ ] Quasar 프로젝트 `useAuthStore.tryRestoreSession()` 구현
+
+현재는 **1번만 완료**, 나머지 4건이 남아 "RESOLVED (예정)" 상태로 표시. 4건 완료 시 본 Gap 항목을 **RESOLVED** 로 최종 전환.
+
+---
+
+### GAP-L-014 Google OAuth callback 에러 코드
+- **발견일**: 2026-04-13
+- **심각도**: High
+- **관련 문서**: contracts/api/API-06-auth-session.md, contracts/specs/BS-01-auth/BS-01-auth.md
+- **누락 내용**: Google OAuth callback 실패 시 에러 코드 미정의 (AUTH_GOOGLE_NOT_LINKED, AUTH_GOOGLE_EMAIL_MISMATCH 등)
+- **임시 구현**: 403 + generic 에러 메시지
+- **기획 보강 요청**: API-06에 Google OAuth endpoint + 에러 코드 추가 (CCR draft 제출 예정)
+
+### GAP-L-015 "Only updated series" 필터 기준
+- **발견일**: 2026-04-13
+- **심각도**: Medium
+- **관련 문서**: team1-frontend/ui-design/UI-01-lobby.md §1
+- **누락 내용**: "Only updated series" 필터의 "updated" 정의 미확정 (24h 이내? 서버 updated_at? WebSocket 이벤트?)
+- **임시 구현**: `updated_at` 기준 24h 이내
+- **기획 보강 요청**: BS-02-lobby에 Series 변경 감지 기준 명시
+
+### GAP-L-016 북마크 API endpoint
+- **발견일**: 2026-04-13
+- **심각도**: Medium
+- **관련 문서**: contracts/api/API-01-backend-endpoints.md
+- **누락 내용**: Series 북마크 토글 API 미정의 (POST/DELETE /series/{id}/bookmark)
+- **임시 구현**: localStorage 전용 (서버 동기화 없음)
+- **기획 보강 요청**: API-01에 bookmark CRUD endpoint 추가
+
+### GAP-L-017 Event DataTable 확장 컬럼 API 필드
+- **발견일**: 2026-04-13
+- **심각도**: Medium
+- **관련 문서**: contracts/api/API-01-backend-endpoints.md §5.5 Events
+- **누락 내용**: WSOP LIVE 동일 15컬럼 중 일부 (Tickets, Chip M, Alt Entries, Late Reg status) API 응답 필드 미정의
+- **임시 구현**: 해당 컬럼 빈 값 표시 ("-")
+- **기획 보강 요청**: API-01 Events 응답 스키마에 누락 필드 추가
 
 ---
 

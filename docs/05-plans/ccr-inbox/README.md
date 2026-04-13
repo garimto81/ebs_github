@@ -27,6 +27,13 @@ Hook(`pre_tool_guard.check_team_scope`)이 팀의 `contracts/` 직접 수정을 
 
 **v3 이후 (2026-04-10)**: 모든 draft를 먼저 일괄 읽고 배치 계획을 세운 뒤 그룹 단위로 실행한다. 여기서 **"실행"은 실제 `contracts/` 프로젝트 문서를 draft 의도에 맞게 Read/Edit/Write 수정**하는 것을 뜻한다. `ccr_promote.py --complete` CLI 호출은 편집이 끝난 draft를 마감하는 **후속 절차**일 뿐이다.
 
+**v4 Fast-Track (2026-04-12)**: 리스크 등급에 따라 처리 경로가 분기됩니다.
+- **LOW**: publisher 팀이 직접 `contracts/` 반영 가능 (자동 검증 + 영향팀 1명 approve)
+- **MEDIUM**: 영향팀 전원 approve 후 publisher 팀이 직접 반영
+- **HIGH**: 기존 v3 Conductor 배치 처리 (Phase A-E)
+- 리스크 판정: `python tools/ccr_validate_risk.py --draft <파일명>`
+- 분류 정책: `contracts/ccr-risk-matrix.md`
+
 ```
 team2-backend/ 세션
   ↓ /auto "API-05에 hand_evaluated 이벤트 추가"
@@ -119,6 +126,8 @@ CCR-DRAFT-{proposer}-{YYYYMMDD}[-{slug}].md
 - **변경 대상 파일**: contracts/api/API-05-websocket.md
 - **변경 유형**: add | modify | remove | rename
 - **변경 근거**: Overlay equity 실시간 표시 요구사항 (B-XXX)
+- **리스크 등급**: LOW | MEDIUM | HIGH     ← 선택. `tools/ccr_validate_risk.py`로 자동 판정 가능.
+- **조언 기한**: 2026-04-15               ← 선택 (Phase 2). 기한 내 NACK 없으면 자동 승인.
 
 ## 변경 요약
 
@@ -169,6 +178,8 @@ WS `cc_event` 채널에 `hand_evaluated` 이벤트 추가.
 | `변경 대상 파일` | `contracts/**` 경로 | 거부 |
 | `변경 유형` | add/modify/remove/rename 중 하나 | 거부 |
 | `변경 근거` | 1줄 이상 | 거부 |
+| `리스크 등급` | LOW/MEDIUM/HIGH | 자동 판정 (누락 허용) |
+| `조언 기한` | YYYY-MM-DD | 기본값 3영업일 (누락 허용) |
 
 ## 금지 사항
 

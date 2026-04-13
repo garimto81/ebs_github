@@ -1,6 +1,43 @@
+# Quasar/Vite
+.DS_Store
+.thumbs.db
 node_modules/
-dist/
-.quasar/
+/dist
+/dist-ssr
+/src-capacitor
+/src-cordova
+/.quasar
+/.cache
+/node_modules_bk
+
+# Environment
 .env
 .env.local
-test-results/
+.env.local.*
+.env.*.local
+
+# Editor
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vite
+vite.config.ts.*
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Vitest
+/coverage

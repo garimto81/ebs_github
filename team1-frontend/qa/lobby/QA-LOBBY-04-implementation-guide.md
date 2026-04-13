@@ -3,6 +3,14 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-09 | 신규 작성 | BS-02 기반 Gap 분석 → 구현 지시서 |
+| 2026-04-10 | critic revision | DEPRECATED 배너 추가 (Flutter Dart 기반, Quasar 전환으로 폐기) |
+
+> **⚠️ DEPRECATED — 참조용 아카이브**
+> 본 문서는 **Flutter Dart 기반** 으로 작성되었습니다 (`ebs_lobby_web/`, Flutter 프로젝트).
+> Team 1 의 기술 스택이 **Quasar Framework (Vue 3) + TypeScript** 로 확정(2026-04-10) 됨에 따라,
+> 본 문서의 구현 스니펫은 **역사적 참조용** 으로만 사용합니다. Dart → TypeScript, Flutter 위젯 → Vue 컴포넌트로 직접 치환되지 않으므로 신규 작업에 그대로 사용하면 안 됩니다.
+> BS-02 Gap 분석 자체(기능 수준의 누락 항목 목록)는 여전히 유효합니다 — 이 부분만 참고하세요.
+> 신규 작업은 `QA-LOBBY-06+` 시리즈(Quasar 전환 후 신규 작성 예정)를 따릅니다.
 
 ---
 

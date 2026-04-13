@@ -6,6 +6,7 @@
 | 2026-04-09 | GAP-L-002 보강 | §1.3 WebSocket JWT 인증 방식 추가 |
 | 2026-04-10 | CCR-003 | client→server command 메시지에 `idempotency_key` 필드 추가 |
 | 2026-04-10 | CCR-015 | envelope에 단조증가 `seq` 필드 + replay 엔드포인트 연동 |
+| 2026-04-13 | EventFlightSummary + Clock | §4.2 Lobby 전용 이벤트에 `event_flight_summary`(25필드) + `clock_tick` + `clock_level_changed` 3종 추가 (WSOP LIVE Staff App Live 준거) |
 
 ---
 
@@ -236,6 +237,145 @@ BO가 CC 이벤트를 가공하여 Lobby에 포워딩하는 이벤트. CC → BO
 |--------|------------------|----------|------|
 | `OperatorConnected` | table_id, operator_id, username | CC WebSocket 연결 | Operator가 CC를 실행 |
 | `OperatorDisconnected` | table_id, operator_id, reason | CC WebSocket 끊김 | CC 종료 또는 네트워크 단절 |
+| `event_flight_summary` | §4.2.1 참조 (25 필드) | 30초 주기 또는 핸드 종료/탈락 시 | Lobby 대시보드 실시간 요약 |
+| `clock_tick` | §4.2.2 참조 | 매 1초 | 블라인드 타이머 실시간 표시 |
+| `clock_level_changed` | §4.2.3 참조 | 레벨 전환·Break 시작/종료 시 | 블라인드 레벨 변경 알림 |
+
+#### 4.2.1 event_flight_summary (WSOP LIVE EventFlightSummary 준거)
+
+Lobby 대시보드에 표시할 토너먼트 요약 정보. `table_id="*"` (글로벌 이벤트).
+
+```json
+{
+  "type": "event_flight_summary",
+  "table_id": "*",
+  "seq": 99001,
+  "server_time": "2026-04-13T14:30:00Z",
+  "payload": {
+    "event_flight_id": 123,
+    "event_id": 45,
+    "display_name": "Day 1A",
+    "status": "live",
+    "entries": 1200,
+    "reentries": 340,
+    "players_left": 890,
+    "table_count": 100,
+    "empty_seat_count": 12,
+    "avg_stack": 45000,
+    "median_stack": 38000,
+    "largest_stack": 185000,
+    "smallest_stack": 8200,
+    "total_chips_in_play": 40050000,
+    "play_level": 8,
+    "current_blind": { "sb": 400, "bb": 800, "ante": 100 },
+    "next_blind": { "sb": 500, "bb": 1000, "ante": 100 },
+    "level_time_remaining_sec": 720,
+    "is_on_break": false,
+    "break_time_remaining_sec": null,
+    "tables_breaking": 3,
+    "players_moving": 12,
+    "prizepool": null,
+    "itm_threshold": null,
+    "updated_at": "2026-04-13T14:30:00Z"
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `event_flight_id` | int | Flight 식별자 |
+| `event_id` | int | Event 식별자 |
+| `display_name` | string | "Day 1A" 등 |
+| `status` | string | `created/registering/live/completed/canceled` |
+| `entries` | int | 총 참가 수 |
+| `reentries` | int | 재등록 수 |
+| `players_left` | int | 잔여 플레이어 |
+| `table_count` | int | 활성 테이블 수 |
+| `empty_seat_count` | int | 빈 좌석 수 |
+| `avg_stack` / `median_stack` | int | 평균/중간 스택 |
+| `largest_stack` / `smallest_stack` | int | 최대/최소 스택 |
+| `total_chips_in_play` | int | 총 칩 인 플레이 |
+| `play_level` | int | 현재 블라인드 레벨 |
+| `current_blind` / `next_blind` | object | `{sb, bb, ante}` |
+| `level_time_remaining_sec` | int | 레벨 잔여 시간(초) |
+| `is_on_break` | bool | 휴식 중 여부 |
+| `break_time_remaining_sec` | int? | 휴식 잔여 시간(초), 휴식 아니면 null |
+| `tables_breaking` | int | 해체 진행 테이블 수 |
+| `players_moving` | int | 이동 중 플레이어 수 |
+| `prizepool` | int? | 상금 풀 (Phase 2+) |
+| `itm_threshold` | int? | ITM 기준 등수 (Phase 2+) |
+| `updated_at` | string | ISO 8601 갱신 시각 |
+
+**발동 주기**: 30초 간격 + 핸드 종료·플레이어 탈락·테이블 해체 시 즉시. WSOP LIVE `Staff App Live §EventFlightSummary` 3분 주기 대비 EBS는 **30초**로 단축 (방송 실시간 반영 요구).
+
+#### 4.2.2 clock_tick
+
+블라인드 타이머 실시간 카운트다운. `table_id="*"`. WSOP LIVE `Staff App Live §Clock` 준거.
+
+```json
+{
+  "type": "clock_tick",
+  "table_id": "*",
+  "seq": 99002,
+  "server_time": "2026-04-13T14:30:01Z",
+  "payload": {
+    "event_flight_id": 123,
+    "status": "running",
+    "level": 8,
+    "blind_detail_type": 0,
+    "time_remaining_sec": 719,
+    "blind_info": { "sb": 400, "bb": 800, "ante": 100 },
+    "is_paused": false,
+    "pause_reason": null
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `status` | string | `stopped/running/paused/break/dinner_break` (Clock FSM) |
+| `level` | int | 현재 블라인드 레벨 |
+| `blind_detail_type` | int | `0`=Blind, `1`=Break, `2`=DinnerBreak, `3`=ColorUp, `4`=EndOfDay |
+| `time_remaining_sec` | int | 현재 레벨/브레이크 잔여 시간(초) |
+| `blind_info` | object | `{sb, bb, ante}` — 현재 블라인드 |
+| `is_paused` | bool | 수동 일시정지 여부 |
+| `pause_reason` | string? | 일시정지 사유 (null이면 미정지) |
+
+**발동 주기**: 매 1초. 클라이언트는 마지막 수신 값으로 로컬 카운트다운 표시, 1초마다 서버 보정.
+
+**Pause 우선순위**: ManualPause > DinnerBreak > Break > AutoPause. WSOP LIVE 운영 규칙 준거.
+
+#### 4.2.3 clock_level_changed
+
+블라인드 레벨 전환 시 1회 발행. `table_id="*"`.
+
+```json
+{
+  "type": "clock_level_changed",
+  "table_id": "*",
+  "seq": 99003,
+  "server_time": "2026-04-13T14:30:00Z",
+  "payload": {
+    "event_flight_id": 123,
+    "old_level": 7,
+    "new_level": 8,
+    "blind_detail_type": 0,
+    "new_blind": { "sb": 400, "bb": 800, "ante": 100 },
+    "is_break": false,
+    "next_break_at_level": 10
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `old_level` / `new_level` | int | 이전/이후 레벨 |
+| `blind_detail_type` | int | `0`=Blind, `1`=Break, `2`=DinnerBreak |
+| `new_blind` | object | `{sb, bb, ante}` — 신규 블라인드 |
+| `is_break` | bool | 브레이크 진입 여부 |
+| `next_break_at_level` | int? | 다음 브레이크 예정 레벨 |
+
+**발동 조건**: 레벨 자동 전환, Break 시작, Break 종료(→다음 레벨), DinnerBreak 시작/종료, 수동 레벨 변경.
 
 ### 4.3 구독 필터링
 

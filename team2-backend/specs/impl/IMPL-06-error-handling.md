@@ -3,6 +3,8 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 에러 레벨, 도메인별 에러, 복구 전략, 사용자 노출 |
+| 2026-04-10 | 신뢰성 정합성 | IMPL-10 §3 연결 — Retryable/NonRetryable 분류(독립), 서킷브레이커 상태 노출(독립). Idempotency-Key 인지는 CCR-003 참조 |
+| 2026-04-10 | CCR 활성화 (반영 완료) | CCR-001/003 contracts 반영 완료. §4.4 Idempotency-Key 인지 처리 구현 가이드 복원. audit_events 기록 복원 |
 
 ---
 
@@ -73,6 +75,23 @@
 | 핸드 상태 불일치 | FATAL | GameState 복원 실패 | 핸드 강제 종료 + 수동 재시작 |
 | 팟 계산 오류 | ERROR | 메인+사이드 팟 합산 불일치 | 경고 로그 + 운영자 수동 검증 요청 |
 
+### 2.4 Retryable vs NonRetryable 분류 (IMPL-10 §3 정합)
+
+재시도 정책을 적용하기 전에 모든 예외는 두 유형 중 하나로 분류되어야 한다. Python 코드에서는 `RetryableError` / `NonRetryableError` 기반 클래스를 상속하여 구분.
+
+| 유형 | 의미 | 대표 케이스 | 재시도 |
+|------|------|-----------|:------:|
+| `RetryableError` | 일시적 장애, 재시도 시 성공 가능 | Redis 타임아웃, DB deadlock, 5xx, 408 Request Timeout, 429 Too Many Requests | ✅ |
+| `NonRetryableError` | 논리/검증 오류, 재시도해도 동일 | 4xx(401/403/404/409/422), 게임 룰 위반, 스키마 오류 | ❌ |
+| `IdempotentOnlyRetryable` | Idempotency-Key 동반 시에만 재시도 가능 | 포스트 계열 network 에러 (커넥션 끊김) | 조건부 |
+
+**재시도 회수/백오프**: IMPL-10 §3.2 표 준수 (client→BO 3회, BO→WSOP 5회 등).
+
+**FastAPI exception handler 규칙**:
+- `RetryableError` → 5xx 응답 + `Retry-After` 헤더
+- `NonRetryableError` → 4xx 응답 (매핑 테이블)
+- 양자 모두 `error_code`, `correlation_id`, `details` 포함
+
 ---
 
 ## 3. 사용자 노출 UI 패턴
@@ -137,6 +156,36 @@ BO 연결 실패 시 CC는 **로컬 모드**로 전환한다.
 | 설정 변경 | 불가 — 마지막 수신 설정 유지 |
 | BO 재연결 시 | 버퍼의 미전송 이벤트를 순서대로 전송 |
 | 재연결 실패 지속 | 로컬 모드 유지 + 운영자에게 알림 |
+
+### 4.4 Idempotency-Key 인지 처리 — [CCR-003 활성]
+
+**정본**: `contracts/api/API-01 §공통 요청 헤더` (`Idempotency-Key`), `contracts/data/DATA-04 §5.1 idempotency_keys`. 헤더 동작과 저장소 스키마는 계약에 정의됨.
+
+**team2 구현 가이드 — FastAPI 미들웨어 처리 흐름**:
+
+1. `IdempotencyMiddleware` (`src/middleware/idempotency.py`) 가 mutation 요청 수신
+2. 헤더 없음 → 정상 진행, 재시도 안전성 미보장 (응답 헤더 `Retry-Allowed: false`)
+3. 헤더 있음 → Redis `idem:{user_id}:{key}` 조회
+   - Hit + 동일 `request_hash` → 캐시된 응답 재생 (`Idempotent-Replayed: true` 헤더 추가)
+   - Hit + 상이 `request_hash` → `409 Conflict` + `IDEMPOTENCY_KEY_REUSED` 에러 코드 (API-01 정본)
+   - Miss → 다운스트림 처리, 성공 응답을 Redis + DB 백업 (DATA-04 §5.1)
+4. `RetryableError` 발생 시 미들웨어가 Idempotency-Key 유무 확인
+   - 있음 → 501/503 응답 + 클라 재시도 안전
+   - 없음 → 500 응답 + 클라 재시도 금지 권고
+
+**IMPL-10 §3.1 과의 통합**: 본 미들웨어는 IMPL-10 §3.1 에 정의된 구현 가이드(저장소 순위, request_hash 알고리즘, 오버헤드 목표)를 따른다. 미들웨어는 `app.state.idempotency_store` 를 사용하고, IMPL-05 의 `get_idempotency_store()` DI 는 동일 싱글턴을 라우트 핸들러 레벨에서 선택적으로 주입받는 용도다 (두 경로 병존, 경계는 IMPL-10 §3.1 표 참조).
+
+### 4.5 서킷브레이커 상태 노출 (IMPL-10 §3.3 정합)
+
+외부 API(WSOP LIVE, OAuth) 호출부의 Circuit Breaker 상태는 에러 레벨에 영향:
+
+| CB 상태 | 에러 레벨 | 사용자 노출 |
+|---------|:--------:|-----------|
+| CLOSED | — | 정상 |
+| HALF_OPEN | WARNING | 배너 "외부 API 복구 시도 중" |
+| OPEN | ERROR | 모달 또는 기능 비활성화 "WSOP LIVE 일시 장애, 캐시 사용 중" |
+
+상태 변경은 `audit_events` (DATA-04 §5.2) + Prometheus counter 기록. OPEN 지속 5분 이상 시 Sentry 경보.
 
 ---
 

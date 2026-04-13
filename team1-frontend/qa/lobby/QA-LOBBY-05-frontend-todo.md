@@ -3,6 +3,13 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-09 | 신규 작성 | BS-02 기준 React/TypeScript 프론트엔드 구현 TODO (T-01~T-20) |
+| 2026-04-10 | critic revision | DEPRECATED 배너 추가 (React 19 TODO 리스트, Quasar 전환으로 폐기) |
+
+> **⚠️ DEPRECATED — 참조용 아카이브**
+> 본 문서는 **React 19 + Vite 6 TODO 리스트** 로 작성되었습니다.
+> Team 1 의 기술 스택이 **Quasar Framework (Vue 3) + TypeScript** 로 확정(2026-04-10) 됨에 따라,
+> 본 문서의 TODO 는 **역사적 참조용** 으로만 사용합니다. T-01 ~ T-20 의 각 항목이 다루는 "기능 수준의 부족 지점" 자체는 여전히 유효하지만, 구체적 구현 단계(React hooks, Zustand 슬라이스, react-router-dom 경로 등)는 Quasar/Pinia/Vue Router 로 재작성해야 하므로 코드 스니펫은 재사용 금지입니다.
+> 신규 작업은 `QA-LOBBY-06+` 시리즈(Quasar 전환 후 신규 작성 예정)를 따릅니다.
 
 ---
 

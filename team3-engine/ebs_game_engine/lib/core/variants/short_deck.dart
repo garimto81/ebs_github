@@ -29,6 +29,7 @@ class ShortDeck extends Variant {
     return HandEvaluator.bestHand(
       [...hole, ...community],
       categoryOrder: categoryOrder,
+      shortDeck: true,
     );
   }
 }

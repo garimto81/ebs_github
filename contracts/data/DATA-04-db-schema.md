@@ -4,6 +4,7 @@
 |------|------|------|
 | 2026-04-08 | 신규 작성 | SQLAlchemy/SQLModel 스타일 스키마 초판 (Phase 1 SQLite 호환) |
 | 2026-04-10 | CCR-001 | `idempotency_keys`, `audit_events` 테이블 신설 (멱등성 + 이벤트 소싱 SSOT) |
+| 2026-04-13 | CCR promote 반영 | event_type 카탈로그 35값 공식 정의 (§5.2 부속), SeatStatus enum 6값 (§table_seats), waiting_list 테이블 신설 (§5.3) |
 
 ---
 
@@ -169,7 +170,7 @@ class TableSeat(SQLModel, table=True):
     country_code: str | None = None
     chip_count: int = Field(default=0)
     profile_image: str | None = None
-    status: str = Field(default="vacant")       # SeatFSM
+    status: str = Field(default="empty")        # SeatStatus enum (아래 참조)
     player_move_status: str | None = None
     created_at: str = Field(default_factory=utcnow)
     updated_at: str = Field(default_factory=utcnow)
@@ -178,8 +179,23 @@ class TableSeat(SQLModel, table=True):
         UniqueConstraint("table_id", "seat_no"),
         CheckConstraint("seat_no >= 0 AND seat_no <= 9"),
     )
+```
 
+#### SeatStatus enum (2026-04-13, WSOP LIVE E/N/P/M/B/R 준거)
 
+| 값 | 설명 | WSOP 대응 |
+|------|------|----------|
+| `empty` | 빈 좌석 | E |
+| `new` | 새로 배치됨 (sit-in 대기) | N |
+| `playing` | 핸드 참여 중 | P (OCCUPIED 세분화) |
+| `moved` | 이동됨 (재배치 대기) | M |
+| `busted` | 탈락 요청됨 (확인 대기) | B |
+| `reserved` | 예약됨 | R |
+
+Phase 1 SQLite: `CHECK(status IN ('empty','new','playing','moved','busted','reserved'))`.
+Phase 3+ PostgreSQL: `CREATE TYPE seat_status AS ENUM(...)`.
+
+```python
 # players
 class Player(SQLModel, table=True):
     __tablename__ = "players"
@@ -544,8 +560,101 @@ class AuditEvent(SQLModel, table=True):
     )
 ```
 
+#### event_type 카탈로그 (2026-04-13, WSOP LIVE EventFlightActionType 준거)
+
+| 카테고리 | event_type | 설명 | WSOP 대응 |
+|---------|-----------|------|----------|
+| **Hand** | `hand_started` | 핸드 시작 | — |
+| | `hand_ended` | 핸드 종료 | — |
+| | `action_performed` | 플레이어 액션 (fold/call/raise) | — |
+| | `card_detected` | RFID 카드 감지 | — |
+| | `betting_round_complete` | 베팅 라운드 완료 | — |
+| | `all_folded` | 전원 폴드 | — |
+| | `all_in_runout` | 올인 런아웃 | — |
+| **Seat** | `seat_assigned` | 좌석 배정 | SeatAssigned(21) |
+| | `seat_vacated` | 좌석 비움 | — |
+| | `seat_moved` | 좌석 이동 | MovePlayer(22) |
+| | `seat_reserved` | 좌석 예약 | ReserveSeats(41) |
+| | `seat_released` | 좌석 예약 해제 | ReleaseSeats(42) |
+| | `player_eliminated_request` | 탈락 요청 | RequestEliminate(111) |
+| | `player_eliminated_confirm` | 탈락 확정 | Eliminate(113) |
+| | `chips_updated` | 칩 카운트 갱신 | UpdateChips(121) |
+| **Table** | `table_created` | 테이블 생성 | AddTables(3) |
+| | `table_setup` | 테이블 설정 완료 | — |
+| | `table_live` | 테이블 라이브 전환 | — |
+| | `table_paused` | 테이블 일시정지 | PauseTables(44) |
+| | `table_resumed` | 테이블 재개 | ResumeTables(45) |
+| | `table_closed` | 테이블 종료 | BreakTable(33) |
+| **Device** | `rfid_status_changed` | RFID 리더 상태 변경 | — |
+| | `output_status_changed` | 출력(NDI/HDMI) 상태 변경 | — |
+| | `game_changed` | 게임 타입 변경 | — |
+| | `config_changed` | 글로벌 설정 변경 | — |
+| | `blind_structure_changed` | 블라인드 구조 변경 | ChangeBlinds(401) |
+| **Ops** | `operator_connected` | CC 운영자 연결 | — |
+| | `operator_disconnected` | CC 운영자 해제 | — |
+| | `deck_registered` | 덱 등록 완료 | — |
+| | `player_updated` | 플레이어 정보 갱신 | — |
+| | `table_assigned` | CC에 테이블 할당 | — |
+| **Special** | `bomb_pot_set` | Bomb Pot 설정 | — |
+| | `run_it_times_set` | Run It Times 설정 | — |
+| | `chop_confirmed` | Chop 합의 | — |
+| **Overlay** | `skin_updated` | 스킨/오버레이 변경 | — |
+
+> 카탈로그는 **확장 가능** (add only). 기존 값 삭제/이름변경 금지. WSOP 대응 열은 참조용이며 EBS 구현에 구속력 없음.
+
 > **append-only 강제 방법** (Phase 3+ PostgreSQL): `REVOKE UPDATE, DELETE ON audit_events FROM app_role;` + `BEFORE UPDATE OR DELETE` trigger로 차단.
 > **Phase 1 SQLite**: 애플리케이션 계층의 `EventRepository` 가드 + 통합 테스트로 검증.
+
+---
+
+### 5.3 `waiting_list` (2026-04-13, WSOP LIVE Waiting API 준거)
+
+대기열 관리. 플레이어가 Sit-In 요청 후 좌석 배정까지의 상태를 추적한다.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | INTEGER | PK AUTOINCREMENT | 대기열 항목 ID |
+| `event_flight_id` | INTEGER | NOT NULL, FK→event_flights | Flight |
+| `player_id` | INTEGER | NOT NULL, FK→players | 플레이어 |
+| `status` | VARCHAR(16) | NOT NULL DEFAULT 'waiting' | PlayerWaitingStatus |
+| `position` | INTEGER | NOT NULL | 대기 순번 (1부터) |
+| `priority` | BOOLEAN | NOT NULL DEFAULT false | 우선 배치 여부 |
+| `called_at` | TIMESTAMP | NULL | 호출 시각 |
+| `seated_at` | TIMESTAMP | NULL | 좌석 배정 시각 |
+| `canceled_at` | TIMESTAMP | NULL | 취소/만료 시각 |
+| `created_at` | TIMESTAMP | NOT NULL DEFAULT now() | 등록 시각 |
+
+**제약**:
+- `CHECK(status IN ('waiting','front','calling','ready','seated','canceled','expired'))`
+- `UNIQUE(event_flight_id, player_id)` — 같은 Flight에 중복 대기 방지
+
+**인덱스**:
+- `(event_flight_id, position)` — 대기 순서 조회
+- `(event_flight_id, status)` — 상태별 필터
+- `(player_id)` — 플레이어별 대기 이력
+
+**Phase 1 SQLite 매핑**: 타입 동일 (VARCHAR→TEXT, TIMESTAMP→TEXT, BOOLEAN→INTEGER).
+
+```python
+class WaitingListEntry(SQLModel, table=True):
+    __tablename__ = "waiting_list"
+    
+    id: int = Field(primary_key=True)
+    event_flight_id: int = Field(nullable=False, foreign_key="event_flights.id")
+    player_id: int = Field(nullable=False, foreign_key="players.id")
+    status: str = Field(default="waiting", max_length=16)
+    position: int = Field(nullable=False)
+    priority: bool = Field(default=False)
+    called_at: str | None = None
+    seated_at: str | None = None
+    canceled_at: str | None = None
+    created_at: str = Field(default_factory=utcnow)
+    
+    __table_args__ = (
+        CheckConstraint("status IN ('waiting','front','calling','ready','seated','canceled','expired')", name="ck_waiting_status"),
+        UniqueConstraint("event_flight_id", "player_id"),
+    )
+```
 
 ---
 
@@ -574,6 +683,9 @@ class AuditEvent(SQLModel, table=True):
 | audit_events | idx_audit_events_table_seq | table_id, seq DESC (UNIQUE) | replay 쿼리 |
 | audit_events | idx_audit_events_corr | correlation_id | 분산 트레이싱 |
 | audit_events | idx_audit_events_type_time | event_type, created_at | 이벤트 종류별 조회 |
+| waiting_list | idx_wl_flight_position | event_flight_id, position | 대기 순서 조회 |
+| waiting_list | idx_wl_flight_status | event_flight_id, status | 상태별 필터 |
+| waiting_list | idx_wl_player | player_id | 플레이어별 대기 이력 |
 
 ---
 
@@ -596,3 +708,5 @@ class AuditEvent(SQLModel, table=True):
 | User | UserSession | CASCADE |
 | User | AuditLog | RESTRICT |
 | BlindStructure | BlindStructureLevel | CASCADE |
+| EventFlight | WaitingListEntry | RESTRICT |
+| Player | WaitingListEntry | SET NULL |

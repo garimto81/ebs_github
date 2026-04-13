@@ -1,0 +1,46 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "confirm": "Confirmar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "yes": "Sí",
+    "no": "No",
+    "empty": "Sin datos",
+    "retry": "Reintentar",
+    "required": "Requerido",
+    "optional": "Opcional"
+  },
+  "login": {
+    "title": "EBS Lobby",
+    "subtitle": "Tournament Management System",
+    "email": "Correo",
+    "password": "Contraseña",
+    "rememberMe": "Recordarme",
+    "submit": "Iniciar sesión",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "twoFactor": "Código 2FA",
+    "twoFactorPrompt": "Introduce el código de 6 dígitos",
+    "verify": "Verificar",
+    "restorePrompt": "¿Reanudar sesión anterior?",
+    "restoreContinue": "Continuar",
+    "restoreFresh": "Empezar de nuevo",
+    "errors": {
+      "invalid": "Correo o contraseña no válidos",
+      "network": "No se puede conectar al servidor",
+      "twoFactorInvalid": "Código inválido"
+    }
+  },
+  "lobby": {},
+  "settings": {},
+  "graphicEditor": {},
+  "nav": {},
+  "errors": {}
+}

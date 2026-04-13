@@ -13,8 +13,8 @@ void main() {
       expect(Street.runItMultiple.name, 'runItMultiple');
     });
 
-    test('values count is 7', () {
-      expect(Street.values.length, 7);
+    test('values count is 9', () {
+      expect(Street.values.length, 9);
     });
 
     test('setupHand.index < preflop.index', () {
@@ -28,12 +28,14 @@ void main() {
     test('original values are preserved in order', () {
       final names = Street.values.map((s) => s.name).toList();
       expect(names, [
+        'idle',
         'setupHand',
         'preflop',
         'flop',
         'turn',
         'river',
         'showdown',
+        'handComplete',
         'runItMultiple',
       ]);
     });
@@ -44,11 +46,8 @@ void main() {
       expect(StreetMachine.nextStreet(Street.setupHand), Street.preflop);
     });
 
-    test('runItMultiple throws on nextStreet', () {
-      expect(
-        () => StreetMachine.nextStreet(Street.runItMultiple),
-        throwsStateError,
-      );
+    test('runItMultiple transitions to handComplete', () {
+      expect(StreetMachine.nextStreet(Street.runItMultiple), Street.handComplete);
     });
 
     test('communityCardsToDeal setupHand = 0', () {

@@ -7,6 +7,8 @@
 | 2026-04-10 | CCR-003 | 모든 mutation API에 `Idempotency-Key` 헤더 표준 도입 + 멱등성 응답 계약 |
 | 2026-04-10 | CCR-010 | `POST /tables/rebalance` 응답에 saga 구조(`saga_id`, `steps`, 207/500) 추가 |
 | 2026-04-10 | CCR-015 | `GET /tables/{table_id}/events` replay 엔드포인트 신설 (WebSocket seq gap 복구) |
+| 2026-04-13 | can_undo 필드 | 이벤트 replay 응답에 `can_undo: bool` 추가 (WSOP EventFlightHistoryInfo.canUndo 대응) |
+| 2026-04-13 | PlayerWaitingStatus | Waiting List enum 7값 추가 (WSOP PlayerWaitingStatus 준거) |
 
 ---
 
@@ -463,7 +465,8 @@ Operator 경고 모달 + `BO-03 §4 Scenario D` 복구 절차를 트리거한다
         "table_id": "tbl-001",
         "ts": "2026-04-10T12:34:57.000Z",
         "server_time": "2026-04-10T12:34:57.000Z",
-        "payload": { "seat": 3, "player_id": "p-123" }
+        "payload": { "seat": 3, "player_id": "p-123" },
+        "can_undo": true
       }
     ],
     "last_seq": 12500,
@@ -472,6 +475,11 @@ Operator 경고 모달 + `BO-03 §4 Scenario D` 복구 절차를 트리거한다
   "error": null
 }
 ```
+
+**`can_undo` 계산 규칙** (WSOP `EventFlightHistoryInfo.canUndo` 대응):
+- `true`: 해당 이벤트의 `inverse_payload`가 존재(NULL 아님) + 현재 핸드 진행 중 아님(`hand_in_progress == false`) + undo 스택 깊이 < 5
+- `false`: 위 조건 중 하나라도 미충족, 또는 Bounty/Payout 관련 이벤트(Phase 3+)
+- 이 필드는 **서버가 사전 계산**하여 응답에 포함. 클라이언트는 이 값으로 Undo 버튼 활성/비활성을 결정.
 
 **권한**: Admin / Operator(해당 테이블 할당) / Viewer (읽기 전용).
 **Rate Limit**: 10 req/sec per table per client.
@@ -660,6 +668,24 @@ Operator 경고 모달 + `BO-03 §4 Scenario D` 복구 절차를 트리거한다
 | GET | `/sync/wsop-live/status` | 동기화 상태 확인 | Admin |
 
 > 상세: `API-02-wsop-live-integration.md`
+
+---
+
+### PlayerWaitingStatus
+
+Waiting List에서 플레이어의 현재 상태를 나타내는 enum. WSOP LIVE `PlayerWaitingStatus` 준거.
+
+| 값 | 설명 | 전이 조건 |
+|------|------|----------|
+| `WAITING` | 대기열 등록 | Sit-In 요청 시 |
+| `FRONT` | 대기열 선두 (배치 임박) | 자동 (대기 순서) |
+| `CALLING` | 호출 중 (이름 호출됨, 응답 대기) | Auto-seating 또는 수동 호출 시 |
+| `READY` | 응답 완료, 좌석 배정 대기 | 플레이어 응답 확인 |
+| `SEATED` | 좌석 배정 완료 | `seat_assigned` 이벤트 후 |
+| `CANCELED` | 대기 취소 | 플레이어 요청 또는 Admin 취소 |
+| `EXPIRED` | 호출 응답 없음 (Call Limit 타임아웃) | `CALL_LIMIT_MS` (IMPL-10 §6, 기본 120s) 초과 |
+
+**사용처**: `GET /tables/:event_flight_id/waiting` 응답의 각 항목에 `status` 필드로 포함.
 
 ---
 

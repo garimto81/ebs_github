@@ -52,6 +52,52 @@ class DraftError(Exception):
 
 
 # ============================================================
+# 리스크 등급 분류
+# ============================================================
+
+BREAKING_KEYWORDS = [
+    "breaking", "삭제", "deprecated", "구조 변경",
+    "마이그레이션 필수", "migration required", "schema change",
+]
+
+
+def _extract_diff_section(body: str) -> str:
+    """본문에서 ## Diff 초안 섹션의 코드 블록 내용 추출."""
+    m = re.search(r"## Diff 초안.*?```(?:diff)?\n(.*?)```", body, re.DOTALL)
+    return m.group(1) if m else ""
+
+
+def classify_risk(change_type: str, impacted: list[str], body: str) -> str:
+    """CCR 리스크 등급 분류: LOW / MEDIUM / HIGH."""
+    change_tokens = set(change_type.lower().replace("+", " ").split())
+
+    # HIGH 조건
+    if change_tokens & {"remove", "rename"}:
+        return "HIGH"
+    if len(impacted) >= 3:
+        return "HIGH"
+    body_lower = body.lower()
+    if any(kw in body_lower for kw in BREAKING_KEYWORDS):
+        return "HIGH"
+
+    # Diff 초안에서 삭제 라인 확인
+    diff_section = _extract_diff_section(body)
+    if diff_section:
+        del_count = sum(1 for line in diff_section.splitlines()
+                       if line.startswith("-") and not line.startswith("---"))
+        if del_count > 0:
+            return "HIGH"
+
+    # MEDIUM 조건
+    if "modify" in change_tokens:
+        return "MEDIUM"
+    if len(impacted) >= 2:
+        return "MEDIUM"
+
+    return "LOW"
+
+
+# ============================================================
 # Draft 파싱/검증
 # ============================================================
 
@@ -175,6 +221,9 @@ def parse_draft(path: Path) -> dict:
         )
     change_type = " + ".join(change_tokens)
 
+    # 리스크 등급 분류
+    risk = classify_risk(change_type, impacted, text)
+
     return {
         "title": title,
         "proposing": proposing,
@@ -185,6 +234,7 @@ def parse_draft(path: Path) -> dict:
         "change_type": change_type,
         "rationale": fields["변경 근거"],
         "body": text,
+        "risk_level": risk,
     }
 
 
@@ -238,6 +288,7 @@ def render_ccr_log(
     applied_files: list[str],
     skipped: bool,
     archived_draft_name: str,
+    risk_level: str | None = None,
 ) -> str:
     """간결한 로그 파일. 원본 draft body 임베드 없음.
 
@@ -276,6 +327,7 @@ def render_ccr_log(
         f"| **영향팀** | {', '.join(draft['impacted'])} |\n"
         f"| **변경 대상** | {target_cell} |\n"
         f"| **변경 유형** | {draft['change_type']} |\n"
+        f"| **리스크 등급** | {risk_level or 'N/A'} |\n"
         f"\n"
         f"## 변경 근거\n"
         f"\n"
@@ -372,6 +424,7 @@ def cmd_validate_only() -> int:
                 "target_files": draft["target_files"],
                 "change_type": draft["change_type"],
                 "rationale": draft["rationale"],
+                "risk_level": draft.get("risk_level", "HIGH"),
                 "error": None,
             })
             valid_count += 1
@@ -405,6 +458,7 @@ def cmd_complete(
     number: int,
     applied_files: list[str],
     skipped: bool,
+    risk_level: str | None = None,
 ) -> int:
     """한 draft의 마감 처리 (log 생성 + NOTIFY + archive 이동)."""
     inbox_path = INBOX / draft_name
@@ -440,6 +494,7 @@ def cmd_complete(
         applied_files=applied_files,
         skipped=skipped,
         archived_draft_name=draft_name,
+        risk_level=risk_level or draft.get("risk_level"),
     )
     log_path.write_text(log_content, encoding="utf-8")
     print(f"log: {log_path.relative_to(PROJECT)}")
@@ -517,6 +572,12 @@ def main() -> int:
         action="store_true",
         help="--complete와 함께 사용. 이미 반영되어 있어 편집을 건너뜀",
     )
+    parser.add_argument(
+        "--risk-level",
+        choices=["LOW", "MEDIUM", "HIGH"],
+        default=None,
+        help="--complete와 함께 사용. CCR 리스크 등급 (로그 기록용)",
+    )
     args = parser.parse_args()
 
     if args.validate_only:
@@ -526,7 +587,7 @@ def main() -> int:
             print("ERROR: --complete 사용 시 --number 필수", file=sys.stderr)
             return 1
         applied = [f.strip() for f in args.applied_files.split(",") if f.strip()]
-        return cmd_complete(args.complete, args.number, applied, args.skipped)
+        return cmd_complete(args.complete, args.number, applied, args.skipped, args.risk_level)
 
     return cmd_legacy_main()
 

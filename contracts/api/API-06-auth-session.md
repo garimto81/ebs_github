@@ -7,6 +7,8 @@
 | 2026-04-09 | GAP-L-001 보강 | §2.1 앱 시작 시 토큰 생명주기 섹션 추가 (토큰 검증 흐름, 로그인 페이지 진입 조건) |
 | 2026-04-10 | CCR-003 | 로그인/로그아웃/refresh 등 mutation 엔드포인트에 `Idempotency-Key` 헤더 적용 (API-01 §3 멱등성 동작 참조) |
 | 2026-04-10 | CCR-006 | JWT Access/Refresh 만료 정책 + BS-01 세부 명세 연계 |
+| 2026-04-13 | refresh_token 전달 방식 | login 응답에 `refresh_token_delivery` 필드 추가. 환경별 차등: dev/staging/prod=body, live=HttpOnly Cookie |
+| 2026-04-13 | 네이밍 규칙 | snake_case 통일 규칙 명시 (WSOP LIVE camelCase와의 변환 책임 = API-02) |
 
 ---
 
@@ -23,6 +25,14 @@
 - 클라이언트: 네트워크 재시도·더블 클릭 방지를 위해 UUIDv4/ULID를 요청당 1회 생성
 - 서버: `idempotency_keys` 테이블(DATA-04 §4)에 24h 캐시
 - 상이한 바디로 동일 키 재사용 시 `409 IDEMPOTENCY_KEY_REUSED` 반환
+
+### 필드 네이밍 규칙
+
+모든 JSON 응답 필드는 **`snake_case`** 를 사용한다.
+
+- WSOP LIVE API 는 `camelCase`(예: `accessToken`, `staffInfo`, `eventFlightId`)를 사용하나, EBS는 Python/FastAPI 생태계에 맞춰 `snake_case`(예: `access_token`, `staff_info`, `event_flight_id`)로 통일한다.
+- WSOP LIVE 데이터 동기화 시 API-02 계층의 UPSERT 로직이 camelCase → snake_case 변환을 수행한다.
+- 클라이언트(team1 Lobby, team4 CC)는 항상 snake_case 기준으로 구현한다.
 
 ---
 
@@ -90,6 +100,7 @@ EBS는 **Access Token + Refresh Token** 이중 토큰 방식을 사용한다.
   "data": {
     "access_token": "eyJhbGciOi...",
     "refresh_token": "eyJhbGciOi...",
+    "refresh_token_delivery": "body",
     "token_type": "Bearer",
     "expires_in": 7200,
     "expires_at": "2026-04-10T14:34:56Z",
@@ -124,7 +135,8 @@ EBS는 **Access Token + Refresh Token** 이중 토큰 방식을 사용한다.
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | `access_token` | string | JWT Access Token |
-| `refresh_token` | string | JWT Refresh Token |
+| `refresh_token` | string | JWT Refresh Token. `refresh_token_delivery="cookie"` 이면 이 필드는 **빈 문자열**이고 실제 값은 `Set-Cookie` 헤더로 전달 |
+| `refresh_token_delivery` | string | `"body"` (dev/staging/prod) 또는 `"cookie"` (live 환경). live에서는 `Set-Cookie: refresh_token=...; HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh` 헤더 사용 |
 | `token_type` | string | 항상 `"Bearer"` |
 | `expires_in` | int | Access Token 유효 시간 (초). `AUTH_PROFILE` 기반 3600~43200 (CCR-006) |
 | `expires_at` | string (ISO 8601) | Access Token 만료 절대 시각. 클라이언트 자동 refresh 스케줄링용 (CCR-006) |

@@ -18,9 +18,9 @@ class FixedLimitBet extends BetLimit {
   /// Returns the fixed bet size for the current street.
   int _betSize(GameState state) {
     return switch (state.street) {
-      Street.setupHand || Street.preflop || Street.flop => smallBet,
+      Street.idle || Street.setupHand || Street.preflop || Street.flop => smallBet,
       Street.turn || Street.river || Street.showdown ||
-      Street.runItMultiple =>
+      Street.handComplete || Street.runItMultiple =>
         bigBet,
     };
   }

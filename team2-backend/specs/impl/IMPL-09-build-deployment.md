@@ -126,8 +126,32 @@ services:
     ports:
       - "8000:8000"
     environment:
+      # 연결·인증
       - DATABASE_URL=sqlite:///data/ebs.db
+      - REDIS_URL=redis://redis:6379/0
       - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me}
+      - JWT_ALGORITHM=HS256
+      - AUTH_PROFILE=dev
+      - JWT_ACCESS_TTL_S=3600
+      - JWT_REFRESH_TTL_S=604800
+      # 타임아웃 (IMPL-05 §6.2, IMPL-10 §6 정합)
+      - HTTP_TIMEOUT_MS=30000
+      - WSOP_POLL_TIMEOUT_MS=10000
+      - DB_QUERY_TIMEOUT_MS=5000
+      - REDIS_TIMEOUT_MS=500
+      - WS_PING_INTERVAL_MS=30000
+      - WS_PONG_TIMEOUT_MS=60000
+      - SAGA_TIMEOUT_MS=60000
+      # 서킷브레이커 · 분산락 · 멱등성
+      - CB_FAILURE_RATIO=0.5
+      - CB_WINDOW_SIZE=20
+      - CB_OPEN_DURATION_S=30
+      - LOCK_DEFAULT_TTL_S=10
+      - IDEMPOTENCY_TTL_S=86400
+      # WSOP LIVE 동기화
+      - WSOP_LIVE_BASE_URL=${WSOP_LIVE_BASE_URL:-}
+      - WSOP_POLL_INTERVAL_S=5
+      # 기타
       - RFID_MODE=mock
       - LOG_LEVEL=DEBUG
       - CORS_ORIGINS=["http://localhost:3000","http://lobby:3000"]
@@ -260,18 +284,59 @@ CMD ["npm", "start"]
 
 ### 7.1 BO 환경 변수
 
+> **정본**: IMPL-05 §6.2. 본 표는 docker-compose 와 일치시키기 위한 **동기화 참조**이며, 값 추가/수정 시 IMPL-05 §6.2 도 동시 변경.
+
+**연결·인증**
+
 | 변수 | 기본값 | 필수 | 설명 |
 |------|--------|:----:|------|
 | `DATABASE_URL` | `sqlite:///ebs.db` | O | DB 연결 문자열 |
+| `REDIS_URL` | `redis://redis:6379/0` | O | Redis 연결 URL (lock, idempotency, CB, etc.) |
 | `JWT_SECRET` | — | O | JWT 서명 키 (최소 32자) |
-| `JWT_ALGORITHM` | `HS256` | X | JWT 알고리즘 |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | `15` | X | Access Token 만료 (분) |
-| `REFRESH_TOKEN_EXPIRE_DAYS` | `7` | X | Refresh Token 만료 (일) |
+| `JWT_ALGORITHM` | `HS256` (P1) / `RS256` (P3+) | X | JWT 알고리즘 |
+| `AUTH_PROFILE` | `dev` | X | 인증 프로파일 `dev\|staging\|prod\|live` (BS-01 §5, CCR-006) |
+| `JWT_ACCESS_TTL_S` | 프로파일별 (dev 3600 / staging·prod 7200 / live 43200) | X | Access Token TTL 초 |
+| `JWT_REFRESH_TTL_S` | `604800` (7d) | X | Refresh Token TTL 초 |
+
+**타임아웃 카탈로그** (IMPL-10 §6 정본)
+
+| 변수 | 기본값 | 필수 | 설명 |
+|------|--------|:----:|------|
+| `HTTP_TIMEOUT_MS` | `30000` | X | HTTP 요청 타임아웃 (client → BO) |
+| `WSOP_POLL_TIMEOUT_MS` | `10000` | X | BO → WSOP LIVE 폴링 타임아웃 |
+| `DB_QUERY_TIMEOUT_MS` | `5000` | X | DB 쿼리 타임아웃 |
+| `REDIS_TIMEOUT_MS` | `500` | X | Redis 명령 타임아웃 |
+| `WS_PING_INTERVAL_MS` | `30000` | X | WebSocket idle ping 주기 |
+| `WS_PONG_TIMEOUT_MS` | `60000` | X | WebSocket pong 대기 타임아웃 |
+| `SAGA_TIMEOUT_MS` | `60000` | X | Saga 전체 타임아웃 |
+
+**서킷브레이커 · 분산락 · 멱등성**
+
+| 변수 | 기본값 | 필수 | 설명 |
+|------|--------|:----:|------|
+| `CB_FAILURE_RATIO` | `0.5` | X | 서킷브레이커 실패율 임계 |
+| `CB_WINDOW_SIZE` | `20` | X | 서킷브레이커 윈도우 (req 수) |
+| `CB_OPEN_DURATION_S` | `30` | X | OPEN 지속 시간 |
+| `LOCK_DEFAULT_TTL_S` | `10` | X | 분산락 기본 TTL |
+| `IDEMPOTENCY_TTL_S` | `86400` (24h) | X | idempotency_keys TTL |
+
+**WSOP LIVE 동기화**
+
+| 변수 | 기본값 | 필수 | 설명 |
+|------|--------|:----:|------|
+| `WSOP_LIVE_BASE_URL` | — | X | WSOP LIVE API base (이전 `WSOP_LIVE_API_URL` 대체) |
+| `WSOP_LIVE_API_KEY` | — | X | WSOP LIVE API 키 |
+| `WSOP_POLL_INTERVAL_S` | `5` | X | 폴링 간격 |
+
+**운영**
+
+| 변수 | 기본값 | 필수 | 설명 |
+|------|--------|:----:|------|
 | `RFID_MODE` | `mock` | X | 기본 RFID 모드 |
 | `LOG_LEVEL` | `INFO` | X | 로그 레벨 |
-| `WSOP_LIVE_API_URL` | — | X | WSOP LIVE API 엔드포인트 |
-| `WSOP_LIVE_API_KEY` | — | X | WSOP LIVE API 키 |
 | `CORS_ORIGINS` | `["http://localhost:3000"]` | X | CORS 허용 오리진 |
+
+> **Deprecated**: `ACCESS_TOKEN_EXPIRE_MINUTES`, `REFRESH_TOKEN_EXPIRE_DAYS` 는 CCR-006 활성 후 `AUTH_PROFILE` + `JWT_ACCESS_TTL_S` / `JWT_REFRESH_TTL_S` 로 대체됨.
 
 ### 7.2 CC 환경 변수 (커맨드라인 인자)
 

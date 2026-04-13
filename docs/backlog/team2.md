@@ -512,6 +512,14 @@
 - **변경 대상**: `contracts/specs/BS-08-graphic-editor/BS-08-00-overview.md, contracts/specs/BS-08-graphic-editor/BS-08-01-modes.md, contracts/specs/BS-08-graphic-editor/BS-08-02-skin-editor.md, contracts/specs/BS-08-graphic-editor/BS-08-03-color-adjust.md, contracts/specs/BS-08-graphic-editor/BS-08-04-rive-import.md, contracts/specs/BS-08-graphic-editor/BS-08-05-preview-apply.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
+
+### [NOTIFY-CCR-038] 검토 요청: Google OAuth Phase 1 도입
+- **알림일**: 2026-04-13
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-038-*.md`
+- **제안팀**: team1
+- **변경 대상**: `contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/API-06-auth-session.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
 ## IN_PROGRESS
 
 _현재 진행 중인 항목 없음_

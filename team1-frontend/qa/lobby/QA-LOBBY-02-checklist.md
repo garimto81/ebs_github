@@ -4,6 +4,14 @@
 |------|------|------|
 | 2026-04-09 | 신규 작성 | BS-02 행동 명세 기반 QA 체크리스트 + 구현 대조 |
 | 2026-04-09 | 재작성 | React 19 코드베이스 기준 재작성 (Flutter 무효화) |
+| 2026-04-10 | critic revision | DEPRECATED 배너 추가 (Quasar 전환), 본문 체크리스트는 BS-02 행동 검증이므로 보존 |
+
+> **⚠️ DEPRECATED — 참조용 아카이브**
+> 본 문서는 React 19 + Vite 6 기준으로 작성되었습니다.
+> Team 1 의 기술 스택이 **Quasar Framework (Vue 3) + TypeScript** 로 확정(2026-04-10) 됨에 따라,
+> 본 문서의 체크리스트 중 기술 스택 의존 항목(Zustand, react-router-dom, use-websocket.ts 등 코드 참조)은 **역사적 참조용** 으로만 사용합니다.
+> 다만 BS-02 행동 명세 기반의 **기능 검증 체크리스트 본문은 기술 스택 무관** 하므로 그대로 보존되며, Quasar 전환 후에도 동일 기준으로 재활용합니다.
+> 신규 작업은 `QA-LOBBY-06+` 시리즈(Quasar 전환 후 신규 작성 예정)를 따릅니다.
 
 ---
 
@@ -154,7 +162,7 @@ ebs_lobby/ (React 19 + TypeScript + Vite + Zustand) 기준.
 | LB-04-06 | RFID 상태 인디케이터 | ⚠️ | `TableListPage.tsx:62-65` — Feature Table만 "RFID ON/OFF" 텍스트. 실시간 아닌 `rfid_reader_id` 유무 | — |
 | LB-04-07 | 덱 등록 상태 | ❌ | 테이블 카드에 덱 등록 상태 미표시 | — |
 | LB-04-08 | 출력 상태 (NDI/SDI) | ❌ | 테이블 카드에 출력 상태 미표시 | — |
-| LB-04-09 | [Enter CC] 버튼 | ❌ | 테이블 목록에 없음. TableDetailPage에서만 "Launch CC" | — |
+| LB-04-09 | [Enter CC] 버튼 | ❌ | Table 화면에서 직접 CC 진입. 테이블 목록에 없음, TableDetailPage에서만 "Launch CC" | — |
 | LB-04-10 | [+ New Table] (Admin만) | ✅ | `TableListPage.tsx:44-46` — `role === 'admin'` 조건부 | — |
 | LB-04-11 | Table 생성 폼 | ⚠️ | `TableListPage.tsx:79-103` — Name, Type, Max Players, Game Type. **누락**: Small/Big Blind, Ante, Delay | — |
 | LB-04-12 | 빈 상태 메시지 | ✅ | `TableListPage.tsx:74-76` — "No tables in this flight." | — |
@@ -163,7 +171,7 @@ ebs_lobby/ (React 19 + TypeScript + Vite + Zustand) 기준.
 
 | # | 요구사항 | 구현 | 근거 | Playwright |
 |---|----------|:----:|------|------------|
-| LB-04-13 | 10좌석 Oval 레이아웃 | ✅ | `TableDetailPage.tsx:15-27` — `SEAT_POSITIONS` 10좌석 좌표 + `.oval-felt` | — |
+| LB-04-13 | 좌석 그리드 WSOP 행 기반 레이아웃 | ✅ | `TableDetailPage.tsx:15-27` — `SEAT_POSITIONS` 10좌석 좌표 + 행 기반 그리드 | — |
 | LB-04-14 | 좌석 클릭 → 플레이어 배정 다이얼로그 | ✅ | `TableDetailPage.tsx:143-155` — 좌석 클릭 시 `seatDialog` open | — |
 | LB-04-15 | 플레이어 검색 (Add Player) | ✅ | `TableDetailPage.tsx:64-69` — `playersApi.search(q)` 2글자 이상 검색 | — |
 | LB-04-16 | 플레이어 배정 (Assign) | ✅ | `TableDetailPage.tsx:71-83` — `seatsApi.update()` 호출 | — |
@@ -227,7 +235,7 @@ ebs_lobby/ (React 19 + TypeScript + Vite + Zustand) 기준.
 | LB-08-03 | Refresh 실패 시 logout | ✅ | `client.ts:27-29` — `refreshed` 실패 → `logout()` + throw | — |
 | LB-08-04 | ProtectedRoute 가드 | ✅ | `ProtectedRoute.tsx:7-37` — `isAuthenticated` 체크 + `loadSession` 검증 | — |
 | LB-08-05 | Breadcrumb 네비게이션 | ✅ | `Breadcrumb.tsx:19-45` — URL segment 기반 동적 breadcrumb + Link 클릭 이동 | — |
-| LB-08-06 | Nav Store (계층 상태 유지) | ✅ | `nav-store.ts:1-25` — Series→Event→Flight→Table 계층 상태. 상위 변경 시 하위 초기화 | — |
+| LB-08-06 | Nav Store (계층 상태 유지) | ✅ | `nav-store.ts:1-25` — Series→Event(Day)→Table 3계층 상태 + Player 독립. 상위 변경 시 하위 초기화 | — |
 | LB-08-07 | 세션 복원 (last_table_id 등) | ❌ | `LoginPage.tsx:12` — 로그인 후 무조건 `/series`. 복원 다이얼로그 없음 | — |
 
 ---
@@ -285,7 +293,7 @@ ebs_lobby/ (React 19 + TypeScript + Vite + Zustand) 기준.
 
 | # | 요구사항 | 구현 | 근거 | Playwright |
 |---|----------|:----:|------|------------|
-| LB-13-01 | 5계층 모델 (Series→Event→Flight→Table→Seat) | ✅ | `models.ts` — Series, Event, EventFlight, Table, TableSeat 전체 정의 | — |
+| LB-13-01 | 3계층 + Player 독립 모델 (Series→Event(Day)→Table + Player 독립 레이어) | ✅ | `models.ts` — Series, Event, Table, Player 전체 정의 | — |
 | LB-13-02 | Player 모델 | ✅ | `models.ts:117-131` — wsop_id, nationality, country_code, profile_image | — |
 | LB-13-03 | Hand/HandPlayer/HandAction 모델 | ✅ | `models.ts:145-191` — hand_number, board_cards, pot, actions | — |
 | LB-13-04 | Mix 게임 필드 (game_mode, allowed_games, rotation_order, rotation_trigger) | ✅ | `models.ts:41-44` — Event 모델에 4개 필드 존재 | — |
@@ -342,7 +350,7 @@ ebs_lobby/ (React 19 + TypeScript + Vite + Zustand) 기준.
 
 > **BS-02 기준 구현율: 약 55%**
 >
-> **구현 완료**: 5계층 라우팅, 로그인/인증(JWT+refresh), CRUD 폼 (Series/Event/Flight/Table), 10좌석 Oval 레이아웃, 플레이어 검색/배정, 상태 전환 FSM, Breadcrumb, Admin 페이지 7종, Hand History, RBAC 부분 적용
+> **구현 완료**: 3계층 라우팅 + Player 독립 레이어, 로그인/인증(JWT+refresh), CRUD 폼 (Series/Event/Table), 좌석 그리드 WSOP 행 기반 레이아웃, 플레이어 검색/배정, 상태 전환 FSM, Breadcrumb, Admin 페이지 7종, Hand History, RBAC 부분 적용
 >
 > **핵심 미구현 (CRITICAL)**: WebSocket UI 미연결, 세션 복원, Degradation 전체
 >

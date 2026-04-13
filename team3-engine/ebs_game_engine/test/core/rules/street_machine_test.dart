@@ -43,8 +43,12 @@ void main() {
       expect(StreetMachine.nextStreet(Street.river), Street.showdown);
     });
 
-    test('showdown throws', () {
-      expect(() => StreetMachine.nextStreet(Street.showdown), throwsStateError);
+    test('showdown transitions to handComplete', () {
+      expect(StreetMachine.nextStreet(Street.showdown), Street.handComplete);
+    });
+
+    test('handComplete throws', () {
+      expect(() => StreetMachine.nextStreet(Street.handComplete), throwsStateError);
     });
   });
 
