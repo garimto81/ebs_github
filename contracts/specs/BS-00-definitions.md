@@ -7,6 +7,7 @@
 | 2026-04-10 | CCR-014 | §7.4 신설 — GE 요구사항 Prefix 재편 (GEM/GEI/GEA/GER), GEB-/GEP- reference-only 전환 |
 | 2026-04-10 | CCR-016 | §1 Lobby row 기술 컬럼 Quasar(Vue 3)+TS 확정. 본 §1 표가 Tech Stack SSOT임을 명시 |
 | 2026-04-13 | WSOP LIVE 정합성 수정 | seat_status 3→9상태 확장(WSOP LIVE Seat Status 코드), event_status Announce→Announced |
+| 2026-04-13 | ClockFSM + BlindDetailType | §3.7 ClockFSM 추가, §8 BlindDetailType enum 추가. BS-06-02-clock.md 내용 흡수·삭제 |
 
 ---
 
@@ -162,6 +163,44 @@ Competition → Series → Event → Flight → Table → Seat → Player
 
 > 표시 상태(Restricted, Late Reg.)는 isRegisterable 플래그와 Day 번호의 조합으로 결정된다. 상세: DATA-03 §5
 
+### 3.7 Clock 상태 (ClockFSM) — BO 소유
+
+Tournament Clock 타이머 상태. **소유: Backend(Team 2)**. 상세 트리거: `BS-06-00-triggers.md §2.4 Clock`.
+
+| 상태 | 의미 | 진입 조건 | 퇴장 조건 |
+|------|------|----------|----------|
+| **STOPPED** | 대회 시작 전 / 종료 후 | 초기, CompleteTournament | StartClock |
+| **RUNNING** | 블라인드 타이머 카운트다운 중 | StartClock, ResumeClock, Break 종료 | 레벨 종료, PauseClock |
+| **PAUSED** | TD 수동 일시정지 | PauseClock (Operator/Admin) | ResumeClock |
+| **BREAK** | 자동 휴식 | `breakPerLevel` 도달 시 자동 | Break 시간 종료 → RUNNING |
+| **DINNER_BREAK** | 식사 휴식 | `DinnerBreakTime` 도달 시 자동 | DinnerBreak 종료 → RUNNING |
+
+**Pause 우선순위**: ManualPause > DinnerBreak > Break > AutoPause (WSOP LIVE Staff App Live 준거)
+
+**대회 현지 시각 표시 (venue local time):**  
+Lobby 대시보드 상단(`ClockHeader`)에 대회 개최지 기준 현지 시각을 표시한다.  
+- 구현 방식: `series.time_zone` (IANA 포맷, DATA-02)을 읽어 **클라이언트가 직접 현재 시각 변환** (WSOP LIVE `SeriesLocalClock.vue` 패턴)  
+- `clock_tick` payload와 **무관** — 서버가 timezone을 이벤트로 보내지 않는다  
+- WSOP Europe: `series.time_zone = "Europe/Paris"` → CET/CEST 자동 전환  
+- WSOP Vegas: `series.time_zone = "America/Los_Angeles"` → PST/PDT 자동 전환
+
+### 3.8 BlindDetailType — 블라인드 레벨 유형 enum
+
+`clock_tick` / `clock_level_changed` 이벤트에서 현재 레벨의 유형을 나타낸다. WSOP LIVE `ClockStore.currentType` 준거.
+
+| 값 | 이름 | 설명 | EBS Phase |
+|:--:|------|------|----------|
+| 0 | **Blind** | 일반 블라인드 레벨 | Phase 1 |
+| 1 | **Break** | 자동 휴식 | Phase 1 |
+| 2 | **DinnerBreak** | 식사 휴식 | Phase 1 |
+| 3 | **ColorUp** | 칩 교환 | Phase 2+ |
+| 4 | **EndOfDay** | 데이 종료 | Phase 2+ |
+| 5 | **HalfBlind** | 하프 디너 블라인드 레벨 (A/B 그룹 교대) | Phase 2+ |
+| 6 | **HalfBreak** | 하프 디너 휴식 (A/B 그룹 교대) | Phase 2+ |
+
+> WSOP LIVE는 `HalfBlind`/`HalfBreak`를 별도 타입으로 구분하여 그룹별(A/B) 교대 블라인드를 지원한다.  
+> API-05 §4.2.2 `clock_tick.blind_detail_type` 필드에서 사용.
+
 ---
 
 ## 4. 트리거 3소스
@@ -198,6 +237,7 @@ Competition → Series → Event → Flight → Table → Seat → Player
 | **SeatFSM** | Seat 상태 (EMPTY/NEW/PLAYING/MOVED/BUSTED/RESERVED/OCCUPIED/WAITING/HOLD) | 이 문서 §3.3 |
 | **DeckFSM** | Deck 상태 (UNREGISTERED → ... → REGISTERED) | 이 문서 §3.5, BS-04-01 상세 |
 | **EventFSM** | Event 진행 상태 (Created → Announced → Registering → Running → Completed / Canceled) | 이 문서 §3.6 |
+| **ClockFSM** | Tournament Clock 상태 (STOPPED/RUNNING/PAUSED/BREAK/DINNER_BREAK). **소유: BO** | 이 문서 §3.7, 트리거: BS-06-00-triggers §2.4 |
 
 ---
 

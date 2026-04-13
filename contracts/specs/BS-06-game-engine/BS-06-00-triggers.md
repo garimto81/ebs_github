@@ -3,7 +3,8 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 4소스 이벤트 분류, Mock 합성 규칙, 충돌 해결, 순서 보장 |
-| 2026-04-13 | 설명 보강 + WSOP LIVE 매핑 | 모든 이벤트 친절한 설명 추가, 시팅 트리거 6개 추가 (SeatReserve/Release/PlayerEliminate/UpdateChips/BreakTable/BalanceTable), SeatFSM/TableFSM 매트릭스 추가, WSOP LIVE Seat Status 코드(E/N/M/B/O/R) 도입 + SeatFSM WAITING/HOLD 추가, TableFSM RESERVED_TABLE 추가 |
+| 2026-04-13 | 설명 보강 + WSOP LIVE 매핑 | 모든 이벤트 친절한 설명 추가, 시팅 트리거 6개 추가, SeatFSM/TableFSM 매트릭스, WSOP LIVE 매핑 |
+| 2026-04-13 | Clock 트리거 추가 | §2.4 BO: ClockStarted/Paused/Resumed + §2.5 Auto Blind-Up 로직. BS-06-02-clock.md 흡수·삭제 |
 
 ---
 
@@ -433,6 +434,37 @@ Back Office에서 데이터 변경 시 WebSocket을 통해 Lobby/CC에 통지하
 **설명**: 테이블 간 플레이어 수를 균등화하는 이벤트입니다. WSOP Rule 67에 따라 인원이 많은 테이블에서 적은 테이블로 플레이어를 이동합니다. CC는 이 이벤트를 받으면 해당 좌석의 SeatMove를 처리합니다.
 
 > **WSOP LIVE 대응**: Table Management → Balance Table — 자동 또는 수동 실행
+
+### 2.5 BO Clock 트리거 — Tournament Clock 관리
+
+> **소유**: Backend(Team 2). Game Engine(Team 3)은 Clock과 무관 — 시간 대신 `BlindStructureChanged` 명령을 수신.
+> **ClockFSM 상태 정의**: BS-00-definitions §3.7
+
+| 트리거 | 발동 주체 | 수신 대상 | 설명 |
+|--------|---------|---------|------|
+| `ClockStarted` | Admin/Operator (Lobby) | `lobby_monitor` + `cc_event` | 토너먼트 타이머 시작 → ClockFSM: STOPPED → RUNNING |
+| `ClockPaused` | Operator/Admin (CC) | `lobby_monitor` + `cc_event` | TD 수동 정지 → ClockFSM: RUNNING → PAUSED |
+| `ClockResumed` | Operator/Admin (CC) | `lobby_monitor` + `cc_event` | TD 재개 → ClockFSM: PAUSED → RUNNING |
+| `clock_tick` | BO 내부 타이머 | `lobby_monitor` + `cc_event` | 매 1초 자동 발행. 클라이언트 카운트다운용 |
+| `clock_level_changed` | BO 내부 타이머 | `lobby_monitor` + `cc_event` | 레벨 전환·Break 진입/종료 시 발행 |
+| `BlindStructureChanged` | BO (Auto Blind-Up 결과) | `cc_event` | Blind 레벨 전환 시 CC에 새 SB/BB/Ante 전달 |
+
+#### Auto Blind-Up 로직 (BO 내부)
+
+```
+[매 1초 BO 타이머]
+  └─ time_remaining_sec 감소
+       └─ = 0 도달?
+            ├─ auto_advance = false → ClockFSM: RUNNING → PAUSED (TD 수동 확인 대기)
+            └─ auto_advance = true
+                 ├─ blind_detail_type = Break/DinnerBreak → 휴식 종료 → 다음 Blind 레벨
+                 └─ blind_detail_type = Blind
+                      ├─ 다음: Break → ClockFSM: RUNNING → BREAK
+                      ├─ 다음: Blind → level++, 새 duration 시작
+                      └─ 마지막 레벨 → ClockFSM: RUNNING → STOPPED
+```
+
+레벨 전환 시 BO는 동시에: ① `clock_level_changed` 발행 → ② `BlindStructureChanged` 발행 (순서 보장).
 
 ---
 
