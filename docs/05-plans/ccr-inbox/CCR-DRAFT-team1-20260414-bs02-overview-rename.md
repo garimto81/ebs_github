@@ -18,8 +18,8 @@ team1 세션에서 이미 rename 완료. 외부 참조 7건 / 5파일을 path re
 |------|:----:|---|---|
 | `contracts/api/API-01-backend-api.md` | 45 | `BS-02-lobby.md` | `BS-02-00-overview.md` |
 | `contracts/api/API-05-websocket-events.md` | 19 | `BS-02-lobby.md §활성 CC 모니터링` | `BS-02-00-overview.md §활성 CC 모니터링` |
-| `contracts/api/API-06-auth-session.md` | 260 | `BS-02-lobby.md §세션 저장 데이터` | `BS-02-00-overview.md §세션 저장 데이터` |
-| `contracts/api/API-06-auth-session.md` | 393 | `BS-02-lobby.md §화면 0: 로그인` | `BS-02-00-overview.md §화면 0: 로그인` |
+| `contracts/api/API-06-auth-session.md` | 260 | `BS-02-lobby.md §세션 저장 데이터` | `BS-02-01-auth-session.md §세션 저장 데이터` (2026-04-14 추가 분리: 로그인·세션 콘텐츠를 BS-02-01 로 이관) |
+| `contracts/api/API-06-auth-session.md` | 393 | `BS-02-lobby.md §화면 0: 로그인` | `BS-02-01-auth-session.md §화면 0: 로그인` (2026-04-14 추가 분리) |
 | `team2-backend/specs/back-office/BO-02-sync-protocol.md` | 62 | `BS-02-lobby.md §장애 시 기능 축소 매트릭스` | `BS-02-00-overview.md §장애 시 기능 축소 매트릭스` |
 | `team2-backend/specs/back-office/BO-02-sync-protocol.md` | 273 | `BS-02-lobby.md` | `BS-02-00-overview.md` |
 | `team2-backend/specs/back-office/BO-03-operations.md` | 332 | `BS-02-lobby.md` | `BS-02-00-overview.md` |

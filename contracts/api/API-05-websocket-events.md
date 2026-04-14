@@ -9,6 +9,7 @@
 | 2026-04-13 | EventFlightSummary + Clock | §4.2 Lobby 전용 이벤트에 `event_flight_summary`(25필드) + `clock_tick` + `clock_level_changed` 3종 추가 (WSOP LIVE Staff App Live 준거) |
 | 2026-04-14 | CCR-050 | §4.2 에 `clock_detail_changed`/`clock_reload_requested`/`stack_adjusted`/`tournament_status_changed` 4종 추가 (SSOT Page 1793328277, 3728441546) |
 | 2026-04-14 | CCR-054 | §4.2.0 WSOP LIVE SignalR ↔ EBS 이벤트 매핑표 신설. `blind_structure_changed`/`prize_pool_changed` 2종 추가 (SSOT Page 1793328277) |
+| 2026-04-14 | 경계 pointer 보강 | API-04↔API-05 상호 참조 추가. in-process vs 네트워크 관심사 분리 명시 |
 
 ---
 
@@ -17,6 +18,10 @@
 이 문서는 EBS 3-앱 아키텍처(CC ↔ BO ↔ Lobby)의 **WebSocket 실시간 이벤트 프로토콜**을 정의한다. CC와 Lobby는 각각 독립된 WebSocket 연결로 BO에 접속하며, BO가 이벤트를 라우팅한다.
 
 > **참조**: 이벤트 소스 분류는 `BS-06-00-triggers.md`, 모니터링 항목은 `BS-02-lobby.md §활성 CC 모니터링`, 용어 정의는 `BS-00-definitions.md`
+
+> **경계 주의**: 본 문서는 **프로세스 간 네트워크 프로토콜**만 정의한다.
+> CC 앱 내부에서 Game Engine → Overlay 로의 데이터 흐름(Security Delay, NDI/HDMI/크로마키 출력, Rive 애니메이션, 해상도 스케일링)은
+> `API-04-overlay-output.md` 참조. 특히 §3 `OutputStatusChanged` 이벤트가 가리키는 실제 출력 채널 정의는 API-04 §2.
 
 ---
 
@@ -183,7 +188,7 @@ CC가 게임 진행 중 BO에 발행하는 이벤트. BO는 DB에 저장 후 Lob
 | `CardDetected` | hand_id, seat, suit, rank, is_board, position | 카드 인식 | RFID 또는 수동 입력 |
 | `GameChanged` | table_id, previous_game, new_game | 종목 변경 | Mix 게임 모드에서 게임 전환 |
 | `RfidStatusChanged` | table_id, status, antenna_count, error_code | RFID 상태 변경 | 연결/해제/에러 |
-| `OutputStatusChanged` | table_id, output_type, status, resolution | 출력 상태 변경 | NDI/SDI 연결/해제 |
+| `OutputStatusChanged` | table_id, output_type, status, resolution | 출력 상태 변경 | NDI/SDI 연결/해제 (채널 정의: `API-04-overlay-output.md` §2) |
 
 ### 3.1 HandStarted payload 상세
 

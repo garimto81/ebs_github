@@ -171,19 +171,7 @@ http://{bo_host}:{bo_port}/api/v1
 
 ### 5.1 Auth — 인증
 
-> 상세: `API-06-auth-session.md`
-
-> **WSOP 원본과 다름**: WSOP Staff App API는 `POST /auth` (로그인), `POST /auth/refresh`, `POST /logout` 3개만 제공. 2FA, 세션 조회 없음. 권한은 비트플래그 `Permission { None=0, Read=1, Write=2, Delete=4 }` + roleId 방식. EBS는 Google OAuth (CCR-038) + 3-role RBAC(Admin/Operator/Viewer) + 2FA를 독자 설계.
-
-| Method | Path | 설명 | 역할 제한 |
-|:------:|------|------|:---------:|
-| POST | `/auth/login` | 로그인 (토큰 발급) | 없음 |
-| POST | `/auth/refresh` | Access Token 갱신 | 없음 |
-| GET | `/auth/session` | 현재 세션 정보 | 인증 사용자 |
-| DELETE | `/auth/session` | 로그아웃 | 인증 사용자 |
-| POST | `/auth/verify-2fa` | 2FA TOTP 검증 | 없음 |
-| POST | `/auth/2fa/setup` | 2FA 초기 설정 | 인증 사용자 |
-| POST | `/auth/2fa/disable` | 2FA 비활성화 | Admin |
+> Auth API 전체 카탈로그(login, refresh, session, 2FA, password reset 등)·요청/응답 스키마·정책: `API-06-auth-session.md`. WSOP LIVE 비교(Google OAuth + 3-role RBAC + 2FA 독자 설계 등)도 API-06 §WSOP 비교 섹션 참조.
 
 ### 5.2 Users — 사용자 관리
 

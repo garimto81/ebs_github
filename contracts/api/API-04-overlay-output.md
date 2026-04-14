@@ -2,6 +2,7 @@
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-04-14 | 경계 pointer 보강 | API-04↔API-05 상호 참조 추가. in-process vs 네트워크 관심사 분리 명시 |
 | 2026-04-14 | OutputEventBuffer 구현 소유권 명시 | §3.6에 Team 4 소유 확정, Team 3 harness 역할 명시 |
 | 2026-04-08 | 신규 작성 | CC→Overlay 데이터 흐름, 출력 채널, Security Delay, 해상도, 크로마키 |
 
@@ -21,6 +22,7 @@
 | **반응형 렌더링** | GameState 변경 → Overlay 위젯 자동 rebuild (Flutter 반응형) |
 | **Security Delay** | 방송 지연 버퍼로 카드 정보 선노출 방지 |
 | **다중 출력** | 동일 Overlay 데이터를 NDI/HDMI/크로마키로 동시 출력 가능 |
+| **경계** | 이 계약은 **in-process 전용**. 3-앱 간 WebSocket 이벤트는 `API-05-websocket-events.md` 가 소유 |
 
 ---
 
@@ -46,6 +48,11 @@ Game Engine ──── GameState 업데이트
                 ├── HDMI 출력 (디스플레이 직결)
                 └── 크로마키 출력 (배경 투명)
 ```
+
+> **경계 주의**: 본 문서는 CC Flutter 앱 **프로세스 내부** 데이터 흐름만 정의한다.
+> BO/Lobby 와의 네트워크 이벤트(`HandStarted`, `ActionPerformed`, `OutputStatusChanged` 등)는
+> `API-05-websocket-events.md` 참조. Game Engine 이 OutputEvent 를 발행한 뒤 CC 가 WS 로 BO 에
+> 재발행하는 경로는 API-05 §3.
 
 ### 1.2 데이터 전달 방식
 

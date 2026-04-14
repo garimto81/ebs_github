@@ -42,7 +42,7 @@
 | **TOTP** (Time-based One-Time Password) | 30초마다 바뀌는 6자리 숫자 코드. Google Authenticator 같은 앱에서 생성 |
 | **RBAC** (Role-Based Access Control) | 역할(Admin/Operator/Viewer)에 따라 접근 가능한 기능을 제한하는 방식 |
 | **Access Token** | 단기 출입증. API 요청 시 매번 제출. 만료 시간은 환경별 차등 (dev 1h / staging·prod 2h / **prod-live 12h**) |
-| **Refresh Token** | 장기 출입증. Access Token 만료 시 새 Access Token을 발급받는 데 사용. 만료 시간: dev 24h / staging·prod·live 7d |
+| **Refresh Token** | 장기 출입증. Access Token 만료 시 새 Access Token을 발급받는 데 사용. 만료 시간: dev 24h / staging·prod·live 48h (CCR-048 WSOP LIVE 정렬) |
 | **WebSocket** | 서버와 브라우저 간 실시간 양방향 통신 채널. 채팅처럼 즉시 메시지를 주고받음 |
 | **OAuth** | 외부 서비스(Google, Microsoft)의 계정으로 로그인하는 방식. 비밀번호를 직접 관리하지 않아도 됨 |
 | **SSO** (Single Sign-On) | 한 번 로그인하면 여러 서비스에 추가 로그인 없이 접근하는 방식 |
@@ -62,7 +62,7 @@
 | **로그인** | 사용자 (수동) | Lobby에서 email + password 입력 (CC는 독립 로그인 없음) |
 | **로그아웃** | 사용자 (수동) | 메뉴에서 로그아웃 선택 |
 | **세션 만료 — Access Token** | 시스템 (자동) | 환경별 Access TTL 경과 → 자동 Refresh 시도 (만료 5분 전 선제 갱신). 상세: `## Session & Token Lifecycle` |
-| **세션 만료 — Refresh Token** | 시스템 (자동) | 환경별 Refresh TTL(기본 7일) 경과 → 로그인 화면 리다이렉트 |
+| **세션 만료 — Refresh Token** | 시스템 (자동) | 환경별 Refresh TTL(기본 48h, CCR-048) 경과 → 로그인 화면 리다이렉트 |
 | **재인증** | 시스템 (자동) | 네트워크 복구, 앱 재시작 시 토큰 갱신 |
 | **강제 로그아웃** | Admin (수동) | Admin이 사용자 비활성화 → 다음 토큰 갱신 시 차단 |
 | **비밀번호 변경** | 사용자/Admin (수동) | 모든 Refresh Token 무효화 → 전 기기 재로그인 |
@@ -112,7 +112,7 @@
 | # | As a | When | Then | Edge Case |
 |:-:|------|------|------|-----------|
 | A-05 | 모든 역할 | 잘못된 비밀번호 입력 | `AUTH_INVALID_CREDENTIALS` (401) → "사용자명 또는 비밀번호가 일치하지 않습니다" | 사용자명/비밀번호 중 어느 것이 틀렸는지 구분하지 않음 (보안) |
-| A-06 | 모든 역할 | 5회 연속 비밀번호 실패 | `AUTH_ACCOUNT_LOCKED` (403) → 30분 잠금 | 잠금 해제: 30분 대기 또는 Admin 수동 해제 |
+| A-06 | 모든 역할 | 10회 연속 비밀번호 실패 (CCR-048) | `AUTH_ACCOUNT_LOCKED` (403) → 자동 영구 잠금 | 잠금 해제: Admin 수동 해제 (`is_locked=false`). 상세: §자동 잠금 정책 |
 | A-07 | 모든 역할 | 비활성 계정으로 로그인 시도 | `AUTH_ACCOUNT_DISABLED` (403) → "비활성 계정입니다. 관리자에게 문의하세요" | Admin이 `PUT /users/{id}` → `is_active = true`로 복구 |
 
 ### 세션 관리
@@ -120,7 +120,7 @@
 | # | As a | When | Then | Edge Case |
 |:-:|------|------|------|-----------|
 | A-08 | 모든 역할 | Access Token 환경별 TTL 만료 (dev 1h / prod 2h / **live 12h**) | 클라이언트가 만료 5분 전 자동으로 `POST /auth/refresh`(토큰 갱신 API) → 새 Access Token | Refresh 실패 시 로그인 화면 리다이렉트. WebSocket은 끊지 않고 `reauth` 커맨드로 유지 |
-| A-09 | 모든 역할 | Refresh Token TTL(dev 24h / prod·live 7d) 만료 | 로그인 화면 리다이렉트, 세션 데이터는 서버에 보존 | 재로그인 시 세션 복원 다이얼로그 표시 |
+| A-09 | 모든 역할 | Refresh Token TTL(dev 24h / staging·prod·live 48h, CCR-048) 만료 | 로그인 화면 리다이렉트, 세션 데이터는 서버에 보존 | 재로그인 시 세션 복원 다이얼로그 표시 |
 | A-20 | 모든 역할 | 브라우저를 닫았다가 Lobby URL 재방문 | `GET /auth/session`으로 서버 토큰 검증 → 유효: 이전 화면 유지 / 만료: `logout()` → 로그인 화면 리다이렉트 | localStorage에 토큰이 있어도 서버 검증 없이 Lobby 진입 금지 |
 | A-21 | 모든 역할 | 유효한 세션 상태에서 로그인 페이지(`/login`) 직접 접근 | `GET /auth/session` 성공 → 자동으로 `/series`로 리다이렉트 | 로그인 폼 표시 금지 (이미 인증된 상태) |
 | A-10 | Operator | Lobby에서 CC Launch 시 | Lobby가 one_time_token(1회용 인증 코드) 생성 → CC 실행 파라미터로 전달 → CC가 token exchange로 자체 JWT 발급 | one_time_token 유효기간 5분. 만료 시 CC 종료, Lobby에서 재Launch 필요 |
@@ -260,9 +260,9 @@
 | 환경 | Access | Refresh | 근거 |
 |------|--------|---------|------|
 | dev | 1h | 24h | 개발 편의 |
-| staging | 2h | 7d | QA 테스트 세션 |
-| prod(방송 외) | 2h | 7d | 사무/관리 세션 |
-| **prod(live 방송)** | **12h** | **7d** | WSOP Staff App 준거. 14-16h 연속 방송 중 재인증 최소화 |
+| staging | 2h | 48h (CCR-048) | QA 테스트 세션 |
+| prod(방송 외) | 2h | 48h (CCR-048) | 사무/관리 세션 |
+| **prod(live 방송)** | **12h** | **48h (CCR-048)** | WSOP Staff App 준거. 14-16h 연속 방송 중 재인증 최소화 |
 
 환경 플래그는 BO 설정 `AUTH_PROFILE=dev|staging|prod|live` 로 제어한다. 본 문서 상단의 "Access Token 15분" 기술은 과거 초안이며 실제 운영 기준은 위 표를 따른다.
 
@@ -423,9 +423,9 @@ def compute_permission(user: User, resource: str) -> int:
 | 환경 | Access Token | Refresh Token | 근거 |
 |------|:------------:|:-------------:|------|
 | `dev` | 1h | 24h | 개발 편의, 재인증 빈번 허용 |
-| `staging` | 2h | 7d | QA 테스트 세션 연속성 |
-| `prod` (방송 외) | 2h | 7d | 사무/관리 세션 |
-| **`live`** (방송 운영) | **12h** | **7d** | WSOP Staff App 준거. 14-16h 연속 방송 중 재인증 최소화 |
+| `staging` | 2h | 48h (CCR-048) | QA 테스트 세션 연속성 |
+| `prod` (방송 외) | 2h | 48h (CCR-048) | 사무/관리 세션 |
+| **`live`** (방송 운영) | **12h** | **48h (CCR-048)** | WSOP Staff App 준거. 14-16h 연속 방송 중 재인증 최소화 |
 
 **환경 플래그**: BO 설정 `AUTH_PROFILE=dev|staging|prod|live`로 제어. 기본값 `prod`.
 
@@ -480,7 +480,7 @@ def compute_permission(user: User, resource: str) -> int:
 | `refresh_token_delivery` | string | `"body"` 또는 `"cookie"` — 현재 환경의 Refresh Token 전달 방식 |
 | `expires_in` | int (seconds) | Access Token 유효 기간 (`AUTH_PROFILE`에 따라 3600~43200) |
 | `expires_at` | string (ISO 8601) | Access Token 만료 시각 (절대시간) |
-| `refresh_expires_in` | int (seconds) | Refresh Token 유효 기간 (기본 604800 = 7d) |
+| `refresh_expires_in` | int (seconds) | Refresh Token 유효 기간 (기본 172800 = 48h, CCR-048) |
 | `auth_profile` | string | `dev`/`staging`/`prod`/`live` 중 하나 (클라이언트 UX 분기용) |
 | `permission` | int | 비트 플래그 기본값 (리소스별 세분화는 API 호출 시 확정). 상세: `## Permission Bit Flag` |
 | `assigned_tables` | string[] | Operator 전용. write 가능한 테이블 ID 목록. Admin·Viewer는 빈 배열 |
@@ -494,7 +494,7 @@ def compute_permission(user: User, resource: str) -> int:
 | 에러 코드 | HTTP | 사용자 노출 메시지 | 내부 로그 |
 |----------|:----:|-----------------|----------|
 | `AUTH_INVALID_CREDENTIALS` | 401 | "사용자명 또는 비밀번호가 일치하지 않습니다" | 실패 사용자명 + IP |
-| `AUTH_ACCOUNT_LOCKED` | 403 | "계정이 잠겼습니다. 30분 후 재시도하거나 관리자에게 문의하세요" | 잠금 시각 + 실패 횟수 |
+| `AUTH_ACCOUNT_LOCKED` | 403 | "계정이 잠겼습니다. 관리자에게 잠금 해제를 요청하세요." (CCR-048: 자동 영구 잠금) | 잠금 시각 + 실패 횟수 |
 | `AUTH_ACCOUNT_DISABLED` | 403 | "비활성 계정입니다. 관리자에게 문의하세요" | 비활성화 시각 + 비활성화 주체 |
 | `AUTH_TOKEN_EXPIRED` | 401 | (자동 Refresh 시도, UI 노출 없음) | 만료 시각 |
 | `AUTH_TOKEN_REVOKED` | 401 | "세션이 종료되었습니다. 다시 로그인하세요" | 무효화 사유 |
@@ -516,8 +516,8 @@ def compute_permission(user: User, resource: str) -> int:
 | BO 서버 미실행 | 로그인 불가, 모든 인증 API 응답 없음 | BO 서버 재시작 |
 | DB 연결 끊김 | 토큰 검증 불가 → 모든 API 401 | DB 연결 복구 |
 | 마지막 Admin 비활성화 시도 | 시스템이 차단 (최소 Admin 1명 보장) | 다른 Admin 계정 생성 후 재시도 |
-| Refresh Token 전체 만료 (7일 무접속) | 세션 완전 소멸 → 재로그인 필요 | 재로그인 (세션 데이터는 서버 보존) |
-| 비밀번호 5회 연속 실패 | 30분 계정 잠금 | 30분 대기 또는 Admin 수동 해제 |
+| Refresh Token 전체 만료 (48h 무접속, CCR-048) | 세션 완전 소멸 → 재로그인 필요 | 재로그인 (세션 데이터는 서버 보존) |
+| 비밀번호 10회 연속 실패 (CCR-048) | 자동 영구 계정 잠금 | Admin 수동 해제 |
 
 ---
 
