@@ -896,4 +896,13 @@ sequenceDiagram
 | 2026-03-25 | v8.1.0 | Part III 요소 상세화: zone 요약(1~17 Toolbar) → 개별 요소 명세(ID/Name/Component/Behavior/Protocol). Quasar 컴포넌트, 크기, 동작, 프로토콜을 요소별로 정의. 반복 패턴(Seat 1~10)은 템플릿+×N 표기. Appendix C(요소 카탈로그) 삭제 — 본문에 통합됨 | PRODUCT | 개발자가 바로 구현할 수 있는 수준의 상세 명세 |
 | 2026-03-25 | v8.0.0 | 문서 전면 재구조화: 4-Part 구조(Context→System Model→Screen Design→Build Guide)로 재편. 화면 목록에서 요소 수 제거→진입 조건+핵심 행동으로 교체. 요소 카탈로그(annotation ID)를 Appendix C로 분리. State Machine을 화면 상세 앞으로 이동. 중복 제거(카드 딜링 3회→1회, 게임 상태 3회→1회). §0.4 설계 결정 8항목으로 확장(640px, AT-01/06 분리, 수평 레이아웃 등). 화면별 존 구조+동작 명세로 전환 | PRODUCT | PRD 내러티브 일관성: annotation 카탈로그→설계 명세, 독자 관점 정보 순서 최적화 |
 | 2026-03-25 | v7.9.0 | PokerGFX 비교 내용 전면 제거 | PRODUCT | EBS AT 고유 설계 문서 |
-| 2026-03-25 | v7.8.0 | Annotated PNG 리사이즈 (2x→1x). 요소 ID를 annotated 배지
+| 2026-03-25 | v7.8.0 | Annotated PNG 리사이즈 (2x→1x). 요소 ID를 annotated 배지 번호로 교체 | PRODUCT | 시각적 1:1 대응 |
+| 2026-03-24 | v7.7.0 | §2 운영자 워크플로우 완성 | PRODUCT | 독자 세분화 |
+| 2026-03-24 | v7.6.0 | PRD 스크린샷을 annotated 버전으로 교체 | PRODUCT | PRD 단독 가독성 |
+| 2026-03-24 | v7.5.0 | 참조 문서 4개 제거, PRD 단독화 | PRODUCT | PRD 단독 가독성 확보 |
+| 2026-03-24 | v7.4.0 | 기능 상세 보강 (Statistics, Game Settings, CHOP/Run It, 단축키) | PRODUCT | 운영 기능 상세화 |
+| 2026-03-24 | v7.3.0 | AT-06 Game Settings 재정의 | PRODUCT | 사용자 피드백 |
+| 2026-03-24 | v7.2.0 | 목업 참조 v4/v5→v6 교체 | PRODUCT | v6 HTML 목업 반영 |
+| 2026-03-24 | v7.1.0 | Flutter→Quasar 복원 | PRODUCT | 프레임워크 방향 재결정 |
+| 2026-03-24 | v7.0.0 | 전면 재설계 (Quasar→Flutter→Quasar) | PRODUCT | 구조 문제 해결 |
+| 2026-03-24 | v6.2.0 | (아카이브) | — | v7.0.0으로 교체 |

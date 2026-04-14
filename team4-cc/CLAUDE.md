@@ -15,12 +15,9 @@ Command Center (실시간 운영) + Overlay (방송 그래픽 출력, Skin Consu
 | `specs/BS-04-rfid/` | RFID UI 명세 (팀 내부 설계, contracts/에서 이관. 04-04 HAL은 contracts/ 잔류) |
 | `specs/BS-05-command-center/` | CC 행동 명세 (팀 내부 설계, contracts/에서 이관) |
 | `specs/BS-07-overlay/` | Overlay 행동 명세 (팀 내부 설계, contracts/에서 이관) |
-| `specs/testing/` | 테스트 전략 (TEST-01~07) |
-| `qa/commandcenter/` | CC QA (QA-CC-00~02), Spec Gap (`GAP-CC-{NNN}`) |
-| `qa/graphic-editor/` | **[ARCHIVED]** GE QA — history 참조 전용 (CCR-011 소유권 team1 이관) |
-| `ui-design/` | UI-02 (CC), UI-05 (Component Library). Overlay 시퀀스는 `specs/BS-07-overlay/BS-07-08-sequences.md` 참조 |
-| `ui-design/archive/` | UI-06 Skin Editor (CCR-011 이전 설계, 보존) |
-| `ui-design/reference/` | PokerGFX Action Tracker 역설계 자료 (team4 CC 구현 시 참고). **Skin Editor 자료는 2026-04-14 team1-frontend/ui-design/reference/skin-editor/로 이관됨** (CCR-011 후속) |
+| `specs/testing/TEST-PLAN.md` | 통합 테스트 계획 (§1 계획 §2 E2E §3 픽스처 §4 Mock §5 체크리스트 §6 감사 §7 전략). 2026-04-14 7개 → 1개 통합 |
+| `ui-design/` | UI-02 (CC). Overlay 시퀀스는 `specs/BS-07-overlay/BS-07-08-sequences.md` 참조. 컴포넌트 정의는 Flutter 위젯 코드(`src/lib/widgets/`)가 SSOT |
+| `ui-design/reference/action-tracker/EBS-AT-Reference.md` | PokerGFX Action Tracker 역설계 통합본 (2026-04-14 12개 → 1개 통합). Skin Editor 자료는 team1-frontend/ui-design/reference/skin-editor/ 이관 (CCR-011) |
 | `src/` | Flutter 소스 코드 (`ebs_cc` 프로젝트) |
 
 ## 2개 화면 — 동일 Flutter 앱
