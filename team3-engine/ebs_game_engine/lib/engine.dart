@@ -10,6 +10,7 @@ library;
 export 'core/cards/card.dart';
 export 'core/cards/deck.dart';
 export 'core/cards/hand_evaluator.dart';
+export 'core/cards/badugi_evaluator.dart';
 
 // Math
 export 'core/math/equity_calculator.dart';
@@ -41,6 +42,8 @@ export 'core/rules/betting_rules.dart';
 export 'core/rules/street_machine.dart';
 export 'core/rules/showdown.dart';
 export 'core/rules/showdown_order.dart';
+export 'core/rules/bring_in.dart';
+export 'core/rules/coalescence.dart';
 
 import 'core/cards/card.dart';
 import 'core/state/game_state.dart';
@@ -163,6 +166,23 @@ class Engine {
       bbIdx = activeSeatIndices[1];
     }
 
+    // ── Missed Blind detection ──
+    // Mark sittingOut seats at blind positions
+    for (var i = 0; i < n; i++) {
+      final idx = (event.dealerSeat + 1 + i) % n;
+      final seat = newState.seats[idx];
+      if (seat.status == SeatStatus.sittingOut) {
+        // If this sittingOut seat is where SB would be (first after dealer)
+        if (i == 0 || (n == 2 && idx == event.dealerSeat)) {
+          seat.missedSb = true;
+        }
+        // If this sittingOut seat is where BB would be (second after dealer)
+        if (i == 1 || (n == 2 && idx != event.dealerSeat)) {
+          seat.missedBb = true;
+        }
+      }
+    }
+
     // Post blinds from event.blinds map
     final pot = newState.pot;
     pot.main = 0;
@@ -181,6 +201,44 @@ class Engine {
 
     // Determine BB amount from blinds
     final bbAmount = event.blinds[bbIdx] ?? 0;
+    final sbBlindAmount = event.blinds[sbIdx] ?? 0;
+
+    // ── Missed Blind posting for returning players ──
+    // Active seats with missed blind flags must post before regular action
+    for (final seat in newState.seats) {
+      if (!seat.isActive) continue;
+      if (!seat.missedBb && !seat.missedSb) continue;
+
+      int deadBlind = 0;
+      int liveBlind = 0;
+
+      if (seat.missedBb) {
+        // Dead blind (SB amount) + live blind (BB amount)
+        deadBlind = sbBlindAmount;
+        liveBlind = bbAmount;
+      } else if (seat.missedSb) {
+        // Dead blind (SB amount) only
+        deadBlind = sbBlindAmount;
+      }
+
+      final totalPost = deadBlind + liveBlind;
+      if (totalPost > 0) {
+        final post = totalPost < seat.stack ? totalPost : seat.stack;
+        seat.stack -= post;
+        pot.addToMain(post);
+        // Live blind counts toward current bet
+        if (liveBlind > 0 && post > deadBlind) {
+          seat.currentBet += post - deadBlind;
+        }
+        if (seat.stack == 0) {
+          seat.status = SeatStatus.allIn;
+        }
+      }
+
+      // Reset flags after posting
+      seat.missedSb = false;
+      seat.missedBb = false;
+    }
 
     // Set betting round
     newState.betting.currentBet = bbAmount;

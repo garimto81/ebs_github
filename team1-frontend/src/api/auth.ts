@@ -61,3 +61,40 @@ export function forgotPassword(
 ): Promise<ApiResponse<{ message: string }>> {
   return post<{ message: string }>('/auth/forgot-password', { email });
 }
+
+/**
+ * Returns the Google OAuth login URL. The backend handles the OAuth flow
+ * and redirects back with tokens on success.
+ */
+export function getGoogleLoginUrl(): string {
+  return `${import.meta.env.VITE_API_BASE_URL || '/api/v1'}/auth/google`;
+}
+
+// ---- 2FA Setup / Disable ------------------------------------------
+
+export interface TwoFactorSetupResponse {
+  secret: string;
+  qr_code_url: string;
+}
+
+/**
+ * BS-01 §A-20 — Initialize TOTP 2FA setup. Returns a secret and QR code URL
+ * that the user scans with their authenticator app.
+ */
+export function setup2fa(): Promise<ApiResponse<TwoFactorSetupResponse>> {
+  return post<TwoFactorSetupResponse>('/auth/2fa/setup');
+}
+
+/**
+ * BS-01 §A-21 — Confirm 2FA setup by verifying an initial TOTP code.
+ */
+export function confirm2fa(code: string): Promise<ApiResponse<{ enabled: boolean }>> {
+  return post<{ enabled: boolean }>('/auth/2fa/confirm', { totp_code: code });
+}
+
+/**
+ * BS-01 §A-22 — Disable 2FA for the current user.
+ */
+export function disable2fa(code: string): Promise<ApiResponse<{ disabled: boolean }>> {
+  return post<{ disabled: boolean }>('/auth/2fa/disable', { totp_code: code });
+}

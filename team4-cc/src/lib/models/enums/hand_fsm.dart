@@ -1,5 +1,5 @@
-// HandFSM states from BS-05-01-hand-lifecycle.md and BS-06-01.
-// Definitive source: contracts/specs/BS-06-game-engine/BS-06-01-holdem-lifecycle.md.
+// HandFSM states from DATA-03 §2 and BS-06-01.
+// Definitive source: contracts/data/DATA-03-state-enums.md §2 HandFSM.
 
 enum HandFsm {
   idle,
@@ -10,4 +10,5 @@ enum HandFsm {
   river,
   showdown,
   handComplete,
+  runItMultiple,
 }

@@ -107,7 +107,7 @@ export const useSettingsStore = defineStore('settings', {
      * Only overwrites if the current tab is not dirty (avoid trampling edits).
      */
     applyRemoteChange(event: WsEventEnvelope): void {
-      if (event.event !== 'config.updated') return;
+      if (event.event !== 'config.updated' && event.event !== 'config_changed') return;
       const payload = event.payload as {
         section: SettingsSection;
         key: string;

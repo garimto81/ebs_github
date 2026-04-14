@@ -1,43 +1,196 @@
-// src/types/entities.ts — New domain types added for the React→Quasar port
-// that are NOT in the legacy `src/types/models.ts`. Re-exports the legacy
-// types as well so new code can do `import { Series, Permission, ... } from
-// 'src/types/entities'` without having to remember which file hosts which.
+// src/types/entities.ts — Domain types owner for the Quasar port.
 //
-// Legacy types (Series, EbsEvent, EventFlight, Table, TableSeat, Player,
-// Hand, Skin, Config, BlindStructure, etc.) live in `models.ts` and were
-// ported directly from ebs_lobby-react/types/models.ts.
+// This file is the SOLE definition site for core business entities
+// (Competition, Series, EbsEvent, EventFlight, Table, TableSeat, Player,
+// BlindStructure) plus Quasar-era additions (Permission, Skin, SessionUser,
+// SessionNavigation, SkinMetadata).
 //
-// New additions (this file):
-//   - Permission enum + helpers (CCR-017 Bit Flag RBAC)
-//   - SettingsSection string-literal union
-//   - SessionUser / SessionNavigation (permissions map included)
-//   - SkinMetadata (structured metadata separate from Skin envelope)
+// Admin / history / config shapes (User, Hand*, Config, OutputPreset,
+// BlindStructureLevel, AuditLog) continue to live in `src/types/models.ts`
+// and are re-exported here for convenience. The prior circular re-export
+// between this file and models.ts is intentionally removed — types flow
+// models.ts → entities.ts (one way), and all 8 core domain types are now
+// owned here directly.
+
+// ---- Re-exports from models.ts (admin / history / config shapes) ----
 
 export type {
-  Competition,
-  Series,
-  EbsEvent,
-  EventFlight,
-  Table,
-  TableSeat,
-  Player,
   User,
   Hand,
   HandPlayer,
   HandAction,
   Config,
   OutputPreset,
-  BlindStructure,
   BlindStructureLevel,
   AuditLog,
 } from 'src/types/models';
 
-// NOTE: the legacy `Skin` in models.ts is pre-CCR-011 (just theme_data blob).
-// Graphic Editor code uses the richer shape defined below.
+// ---- Core domain entities (owned here; ported from ebs_lobby-react) --
 
-// Alias so new code can say `Event` without colliding with DOM Event inside
-// this module (it re-exports as a type only, never as a value).
-export type { EbsEvent as Event } from 'src/types/models';
+/** Shared escape hatch: allows `payload as Series` casts from WS envelopes
+ *  and ad-hoc writes like `(tbl as Record<string, unknown>).seated_count`.
+ *  Typed fields still win over the index for strong-typed access. */
+interface DomainEntity {
+  [key: string]: unknown;
+}
+
+export interface Competition extends DomainEntity {
+  competition_id: number;
+  name: string;
+  competition_type: number;
+  competition_tag: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Series extends DomainEntity {
+  series_id: number;
+  competition_id: number;
+  series_name: string;
+  year: number;
+  begin_at: string;
+  end_at: string;
+  image_url: string | null;
+  time_zone: string;
+  currency: string;
+  country_code: string | null;
+  is_completed: boolean;
+  is_displayed: boolean;
+  is_demo: boolean;
+  source: string;
+  synced_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Domain `Event` aliased as `EbsEvent` to avoid collision with the DOM
+ *  Event global. Consumers that want the short name can import it under
+ *  `Event` via the alias at the bottom of this file. */
+export interface EbsEvent extends DomainEntity {
+  event_id: number;
+  series_id: number;
+  event_no: number;
+  event_name: string;
+  buy_in: number | null;
+  display_buy_in: string | null;
+  game_type: number;
+  bet_structure: number;
+  event_game_type: number;
+  game_mode: string;
+  allowed_games: string | null;
+  rotation_order: string | null;
+  rotation_trigger: string | null;
+  blind_structure_id: number | null;
+  starting_chip: number | null;
+  table_size: number;
+  total_entries: number;
+  players_left: number;
+  start_time: string | null;
+  status: string;
+  source: string;
+  synced_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type { EbsEvent as Event };
+
+export interface EventFlight extends DomainEntity {
+  event_flight_id: number;
+  event_id: number;
+  display_name: string;
+  start_time: string | null;
+  is_tbd: boolean;
+  entries: number;
+  players_left: number;
+  table_count: number;
+  status: string;
+  play_level: number;
+  remain_time: number | null;
+  source: string;
+  synced_at: string | null;
+  created_at: string;
+  updated_at: string;
+  /** Team-1 Lobby shorthand alias for `event_flight_id`. */
+  flight_id: number;
+  /** Flight's index within its parent Event (1=Day 1A, 2=Day 1B, …). */
+  day_index: number;
+  /** Team-1 Lobby shorthand alias for `display_name`. */
+  flight_name: string;
+  player_count?: number;
+}
+
+export interface Table extends DomainEntity {
+  table_id: number;
+  event_flight_id: number;
+  table_no: number;
+  name: string;
+  type: string;
+  status: string;
+  max_players: number;
+  game_type: number;
+  small_blind: number | null;
+  big_blind: number | null;
+  ante_type: number;
+  ante_amount: number;
+  rfid_reader_id: number | null;
+  deck_registered: boolean;
+  output_type: string | null;
+  current_game: number | null;
+  delay_seconds: number;
+  ring: number | null;
+  is_breaking_table: boolean;
+  source: string;
+  created_at: string;
+  updated_at: string;
+  /** Seated player count. Populated by lobbyStore WS updates; absent on
+   *  initial REST response. */
+  seated_count?: number;
+}
+
+export interface TableSeat extends DomainEntity {
+  seat_id: number;
+  table_id: number;
+  seat_no: number;
+  player_id: number | null;
+  wsop_id: string | null;
+  player_name: string | null;
+  nationality: string | null;
+  country_code: string | null;
+  chip_count: number;
+  profile_image: string | null;
+  status: string;
+  player_move_status: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Player extends DomainEntity {
+  player_id: number;
+  wsop_id: string | null;
+  first_name: string;
+  last_name: string;
+  nationality: string | null;
+  country_code: string | null;
+  profile_image: string | null;
+  player_status: string;
+  is_demo: boolean;
+  source: string;
+  synced_at: string | null;
+  created_at: string;
+  updated_at: string;
+  /** Lobby/PlayerDetail derived fields — absent on raw REST response. */
+  stack?: number;
+  table_name?: string;
+  seat_index?: number;
+}
+
+export interface BlindStructure extends DomainEntity {
+  blind_structure_id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
 
 // ---- Permission (CCR-017 Bit Flag) ------------------------------
 

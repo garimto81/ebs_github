@@ -74,6 +74,22 @@
             no-caps
           />
 
+          <div class="row items-center q-my-md">
+            <q-separator class="col" />
+            <span class="q-mx-sm text-grey">{{ $t('login.or') }}</span>
+            <q-separator class="col" />
+          </div>
+
+          <q-btn
+            outline
+            class="full-width"
+            no-caps
+            @click="handleGoogleLogin"
+          >
+            <q-icon name="login" class="q-mr-sm" />
+            {{ $t('login.googleLogin') }}
+          </q-btn>
+
           <div class="text-right q-mt-sm">
             <q-btn
               flat
@@ -171,6 +187,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from 'stores/authStore';
+import { getGoogleLoginUrl } from 'src/api/auth';
 
 type Step = 'credentials' | 'totp';
 
@@ -247,7 +264,7 @@ async function handleVerify2fa(): Promise<void> {
       resolvePostLogin();
       return;
     }
-    errorMessage.value = result.errorMessage ?? '2FA verification failed';
+    errorMessage.value = ('errorMessage' in result ? result.errorMessage : null) ?? '2FA verification failed';
   } finally {
     submitting.value = false;
   }
@@ -268,6 +285,10 @@ function restoreContinue(): void {
 
 function freshStart(): void {
   void router.replace('/series');
+}
+
+function handleGoogleLogin(): void {
+  window.location.href = getGoogleLoginUrl();
 }
 </script>
 

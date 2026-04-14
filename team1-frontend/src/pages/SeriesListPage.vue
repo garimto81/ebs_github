@@ -19,6 +19,9 @@
             <q-icon name="search" />
           </template>
         </q-input>
+        <q-checkbox dense v-model="filterUpdated" :label="$t('lobby.series.onlyUpdated')" />
+        <q-checkbox dense v-model="filterBookmarked" :label="$t('lobby.series.bookmarks')" />
+        <q-btn flat dense icon="refresh" @click="resetFilters" />
         <q-btn
           v-if="authStore.hasPermission('Lobby', 'Write')"
           color="primary"
@@ -40,7 +43,15 @@
       <div v-for="s in filtered" :key="s.series_id" class="col-12 col-sm-6 col-md-4">
         <q-card flat bordered class="cursor-pointer series-card" @click="onSelect(s)">
           <q-card-section>
-            <div class="text-h6 ellipsis">{{ s.series_name }}</div>
+            <div class="row items-start no-wrap">
+              <div class="col text-h6 ellipsis">{{ s.series_name }}</div>
+              <q-btn
+                flat dense round
+                :icon="isBookmarked(s.series_id) ? 'star' : 'star_border'"
+                :color="isBookmarked(s.series_id) ? 'amber' : 'grey'"
+                @click.stop="toggleBookmark(s.series_id)"
+              />
+            </div>
             <div class="text-caption text-grey-7">{{ s.year }} · {{ s.currency }}</div>
           </q-card-section>
           <q-separator />
@@ -91,15 +102,53 @@ const router = useRouter();
 
 const search = ref('');
 const showForm = ref(false);
+const filterUpdated = ref(false);
+const filterBookmarked = ref(false);
+
+const BOOKMARKS_KEY = 'ebs_bookmarked_series';
+
+const bookmarks = ref<number[]>(
+  JSON.parse(localStorage.getItem(BOOKMARKS_KEY) ?? '[]') as number[],
+);
+
+function isBookmarked(id: number): boolean {
+  return bookmarks.value.includes(id);
+}
+
+function toggleBookmark(id: number): void {
+  const idx = bookmarks.value.indexOf(id);
+  if (idx >= 0) {
+    bookmarks.value.splice(idx, 1);
+  } else {
+    bookmarks.value.push(id);
+  }
+  localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks.value));
+}
+
+function resetFilters(): void {
+  search.value = '';
+  filterUpdated.value = false;
+  filterBookmarked.value = false;
+}
 
 onMounted(() => {
   void lobbyStore.fetchSeries();
 });
 
 const filtered = computed<Series[]>(() => {
+  let result = lobbyStore.seriesList;
   const q = search.value.trim().toLowerCase();
-  if (!q) return lobbyStore.seriesList;
-  return lobbyStore.seriesList.filter((s) => s.series_name.toLowerCase().includes(q));
+  if (q) {
+    result = result.filter((s) => s.series_name.toLowerCase().includes(q));
+  }
+  if (filterUpdated.value) {
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+    result = result.filter((s) => new Date(s.updated_at).getTime() > cutoff);
+  }
+  if (filterBookmarked.value) {
+    result = result.filter((s) => bookmarks.value.includes(s.series_id));
+  }
+  return result;
 });
 
 function formatDate(iso: string | null): string {

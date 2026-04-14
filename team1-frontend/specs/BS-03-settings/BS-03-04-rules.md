@@ -131,7 +131,7 @@ late_reg_remaining =
 **규칙**:
 - `Blind`, `Break`, `DinnerBreak`는 duration을 **그대로 합산**.
 - `HalfBlind`, `HalfBreak`는 직전 `Blind`/`Break`의 **절반 길이**로 계산.
-- Flight의 `is_pause == true` (DATA-02 Flight 참조)일 때는 `elapsed_in_current_level` 증가가 **중단**된다.
+- Flight의 `is_pause == true` (DATA-04 Flight 참조)일 때는 `elapsed_in_current_level` 증가가 **중단**된다.
 
 ### 5.2 Oveerlay 영향
 
@@ -142,5 +142,5 @@ late_reg_remaining =
 
 ### 5.3 연관 문서
 
-- `contracts/data/DATA-02-entities.md` — Flight/Blind 구조 필드
-- `contracts/specs/BS-02-lobby/BS-02-02-event-flight.md` — Flight 상태 및 Late Reg 로직
+- `contracts/data/DATA-04-db-schema.md` — Flight/Blind 구조 필드
+- `../BS-02-lobby/BS-02-02-event-flight.md` — Flight 상태 및 Late Reg 로직

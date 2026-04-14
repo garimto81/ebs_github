@@ -234,6 +234,7 @@ export const useLobbyStore = defineStore('lobby', {
       if (!payload) return;
 
       switch (event.event) {
+        // ---- Entity full-replacement updates ----
         case 'series.updated': {
           const s = payload as Series;
           if (s.series_id) this.series[s.series_id] = s;
@@ -259,6 +260,68 @@ export const useLobbyStore = defineStore('lobby', {
           if (p.player_id) this.players[p.player_id] = p;
           break;
         }
+
+        // ---- Real-time operational events ----
+        case 'table_status_changed': {
+          const { table_id, status } = payload as { table_id: number; status: string };
+          const tbl = this.tables[table_id];
+          if (tbl) (tbl as Record<string, unknown>).status = status;
+          break;
+        }
+        case 'player_moved':
+        case 'player_seated': {
+          const { table_id, player_id, seat_no, action } = payload as {
+            table_id: number;
+            player_id: number;
+            seat_no?: number;
+            action?: string;
+          };
+          // Update table seated count (increment/decrement)
+          const tbl2 = this.tables[table_id];
+          if (tbl2) {
+            const count = ((tbl2 as Record<string, unknown>).seated_count as number) ?? 0;
+            if (action === 'removed' || action === 'busted') {
+              (tbl2 as Record<string, unknown>).seated_count = Math.max(0, count - 1);
+            } else {
+              (tbl2 as Record<string, unknown>).seated_count = count + 1;
+            }
+          }
+          // Update player record if present
+          if (player_id && this.players[player_id]) {
+            (this.players[player_id] as Record<string, unknown>).table_id = table_id;
+            if (seat_no !== undefined) {
+              (this.players[player_id] as Record<string, unknown>).seat_no = seat_no;
+            }
+          }
+          break;
+        }
+        case 'hand_started': {
+          const { table_id, hand_number } = payload as { table_id: number; hand_number: number };
+          const tbl3 = this.tables[table_id];
+          if (tbl3) (tbl3 as Record<string, unknown>).current_game = hand_number;
+          break;
+        }
+        case 'hand_ended': {
+          const { table_id } = payload as { table_id: number };
+          const tbl4 = this.tables[table_id];
+          if (tbl4) (tbl4 as Record<string, unknown>).current_game = null;
+          break;
+        }
+
+        // ---- Rebalance saga events (listened to by page-level handlers) ----
+        case 'rebalance_started':
+        case 'rebalance_progress':
+        case 'rebalance_completed':
+        case 'rebalance_compensated':
+        case 'rebalance_compensation_failed':
+          // These are dispatched to page listeners via wsStore.onMessage().
+          // If rebalance_completed, refresh table data.
+          if (event.event === 'rebalance_completed') {
+            const { flight_id } = payload as { flight_id?: number };
+            if (flight_id) void this.fetchTables(flight_id);
+          }
+          break;
+
         default:
           // Unknown events are intentionally ignored; other stores may handle.
           break;

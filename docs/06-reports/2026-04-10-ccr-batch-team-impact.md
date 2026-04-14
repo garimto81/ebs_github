@@ -69,7 +69,7 @@
 | `contracts/specs/BS-03-settings/BS-03-02-gfx.md` | §6~§8 (Active Skin, Color Override, Action-Glow, Audio) | 025 |
 | `contracts/specs/BS-03-settings/BS-03-04-rules.md` | §5 `BlindDetailType` enum + Late Reg 계산식 | 017 |
 | `contracts/data/DATA-02-entities.md` | Flight/Table 필드 추가 (status enum, is_registerable, day_index, is_pause) | 017 |
-| `contracts/api/API-01-backend-endpoints.md` | `POST /tables/{id}/launch-cc` 응답에 launch_token, ws_url | 029 |
+| `contracts/api/API-01-backend-api.md` | `POST /tables/{id}/launch-cc` 응답에 launch_token, ws_url | 029 |
 
 ### 새 요구사항 (Team 1 구현 책임)
 
@@ -129,7 +129,7 @@
 | 파일 | 변경 | CCR |
 |------|------|-----|
 | `contracts/data/DATA-04-db-schema.md` | `idempotency_keys`/`audit_events` 테이블 | 018 |
-| `contracts/api/API-01-backend-endpoints.md` | Idempotency-Key, saga, launch_token, replay endpoint | 019/020/021/029 |
+| `contracts/api/API-01-backend-api.md` | Idempotency-Key, saga, launch_token, replay endpoint | 019/020/021/029 |
 | `contracts/api/API-05-websocket-events.md` | seq, skin_updated, 직렬화 협상, WriteGameInfo | 015/021/023/024 |
 | `contracts/api/API-06-auth-session.md` | AUTH_PROFILE, expires_at, refresh_expires_in | 010/019 |
 | `contracts/specs/BS-01-auth/BS-01-auth.md` | §5.1~5.4 JWT 정책 | 010 |

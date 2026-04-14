@@ -38,9 +38,25 @@ export const routes: RouteRecordRaw[] = [
       { path: 'tables/:tableId', name: 'table-detail', component: () => import('pages/TableDetailPage.vue'), props: true },
       { path: 'hand-history/:tableId?', name: 'hand-history', component: () => import('pages/HandHistoryPage.vue'), props: true },
 
+      // Audit Logs (Admin only)
+      {
+        path: 'audit-logs',
+        name: 'audit-logs',
+        component: () => import('pages/AuditLogPage.vue'),
+        meta: { requiredRole: 'admin', title: 'Audit Logs' },
+      },
+
       // Player 독립 레이어 (Table 하위가 아닌 독립 경로)
       { path: 'players', name: 'player-list', component: () => import('pages/PlayerListPage.vue') },
       { path: 'players/:playerId', name: 'player-detail', component: () => import('pages/PlayerDetailPage.vue'), props: true },
+
+      // Staff management (Admin only)
+      {
+        path: 'staff',
+        name: 'staff-list',
+        component: () => import('pages/StaffListPage.vue'),
+        meta: { requiredRole: 'admin', title: 'Staff Management' },
+      },
 
       // Settings 6탭 (UI-03)
       {

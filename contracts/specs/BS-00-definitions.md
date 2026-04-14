@@ -7,7 +7,8 @@
 | 2026-04-10 | CCR-014 | §7.4 신설 — GE 요구사항 Prefix 재편 (GEM/GEI/GEA/GER), GEB-/GEP- reference-only 전환 |
 | 2026-04-10 | CCR-016 | §1 Lobby row 기술 컬럼 Quasar(Vue 3)+TS 확정. 본 §1 표가 Tech Stack SSOT임을 명시 |
 | 2026-04-13 | WSOP LIVE 정합성 수정 | seat_status 3→9상태 확장(WSOP LIVE Seat Status 코드), event_status Announce→Announced |
-| 2026-04-13 | ClockFSM + BlindDetailType | §3.7 ClockFSM 추가, §8 BlindDetailType enum 추가. BS-06-02-clock.md 내용 흡수·삭제 |
+| 2026-04-13 | ClockFSM + BlindDetailType | §3.7 ClockFSM 추가, §3.8 BlindDetailType enum 추가. BS-06-02-clock.md 내용 흡수·삭제 |
+| 2026-04-13 | WSOP LIVE Clock 정렬 | BlindDetailType: ColorUp/EndOfDay 제거, HalfBlind=3/HalfBreak=4로 WSOP LIVE 인덱스 정렬. Clock Quick Reference 추가 |
 
 ---
 
@@ -179,27 +180,34 @@ Tournament Clock 타이머 상태. **소유: Backend(Team 2)**. 상세 트리거
 
 **대회 현지 시각 표시 (venue local time):**  
 Lobby 대시보드 상단(`ClockHeader`)에 대회 개최지 기준 현지 시각을 표시한다.  
-- 구현 방식: `series.time_zone` (IANA 포맷, DATA-02)을 읽어 **클라이언트가 직접 현재 시각 변환** (WSOP LIVE `SeriesLocalClock.vue` 패턴)  
+- 구현 방식: `series.time_zone` (IANA 포맷, DATA-04)을 읽어 **클라이언트가 직접 현재 시각 변환** (WSOP LIVE `SeriesLocalClock.vue` 패턴)  
 - `clock_tick` payload와 **무관** — 서버가 timezone을 이벤트로 보내지 않는다  
 - WSOP Europe: `series.time_zone = "Europe/Paris"` → CET/CEST 자동 전환  
 - WSOP Vegas: `series.time_zone = "America/Los_Angeles"` → PST/PDT 자동 전환
+
+> **Clock 관련 문서 위치**:
+> - FSM 상태: 본 문서 §3.7 | BlindDetailType enum: 본 문서 §3.8
+> - 트리거/Auto Blind-Up: BS-06-00-triggers §2.5
+> - WebSocket 이벤트: API-05 §4.2.2~4.2.3
+> - REST API: API-01 §5.6.1
+> - DB 필드: DATA-04 (BlindStructureLevel.detail_type)
+> - Clock display theming (WSOP LIVE `ClockThemeType`): Skin 엔티티(DATA-04)로 대체. Phase 2+ 고려.
 
 ### 3.8 BlindDetailType — 블라인드 레벨 유형 enum
 
 `clock_tick` / `clock_level_changed` 이벤트에서 현재 레벨의 유형을 나타낸다. WSOP LIVE `ClockStore.currentType` 준거.
 
-| 값 | 이름 | 설명 | EBS Phase |
-|:--:|------|------|----------|
-| 0 | **Blind** | 일반 블라인드 레벨 | Phase 1 |
-| 1 | **Break** | 자동 휴식 | Phase 1 |
-| 2 | **DinnerBreak** | 식사 휴식 | Phase 1 |
-| 3 | **ColorUp** | 칩 교환 | Phase 2+ |
-| 4 | **EndOfDay** | 데이 종료 | Phase 2+ |
-| 5 | **HalfBlind** | 하프 디너 블라인드 레벨 (A/B 그룹 교대) | Phase 2+ |
-| 6 | **HalfBreak** | 하프 디너 휴식 (A/B 그룹 교대) | Phase 2+ |
+| 값 | 이름 | 설명 |
+|:--:|------|------|
+| 0 | **Blind** | 일반 블라인드 레벨 |
+| 1 | **Break** | 자동 휴식 (전체 참가자) |
+| 2 | **DinnerBreak** | 식사 휴식 (전체 참가자) |
+| 3 | **HalfBlind** | 하프 디너 블라인드 레벨 (A/B 그룹 교대) |
+| 4 | **HalfBreak** | 하프 디너 휴식 (A/B 그룹 교대) |
 
-> WSOP LIVE는 `HalfBlind`/`HalfBreak`를 별도 타입으로 구분하여 그룹별(A/B) 교대 블라인드를 지원한다.  
-> API-05 §4.2.2 `clock_tick.blind_detail_type` 필드에서 사용.
+> WSOP LIVE `BlindDetailType` enum 준거 (5값, 인덱스 동일).  
+> `HalfBlind`/`HalfBreak`는 Half Dinner Break 시나리오에서 그룹별 교대 블라인드를 지원한다.  
+> API-05 §4.2.2 `clock_tick.blind_detail_type`, API-01 §5.6.1 Clock API에서 사용.
 
 ---
 

@@ -25,7 +25,7 @@ _현재 PENDING 항목 없음_
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/CCR-003-*.md`
 - **제안팀**: team2
-- **변경 대상**: `contracts/api/API-01-backend-endpoints.md, contracts/api/API-05-websocket-events.md, contracts/api/API-06-auth-session.md`
+- **변경 대상**: `contracts/api/API-01-backend-api.md, contracts/api/API-05-websocket-events.md, contracts/api/API-06-auth-session.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 
@@ -35,7 +35,7 @@ _현재 PENDING 항목 없음_
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/CCR-015-*.md`
 - **제안팀**: team2
-- **변경 대상**: `contracts/api/API-05-websocket-events.md, contracts/api/API-01-backend-endpoints.md`
+- **변경 대상**: `contracts/api/API-05-websocket-events.md, contracts/api/API-01-backend-api.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 
@@ -63,7 +63,7 @@ _현재 PENDING 항목 없음_
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-021-*.md`
 - **제안팀**: team2
-- **변경 대상**: `contracts/api/API-05-websocket-events.md, contracts/api/API-01-backend-endpoints.md`
+- **변경 대상**: `contracts/api/API-05-websocket-events.md, contracts/api/API-01-backend-api.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 
@@ -72,7 +72,7 @@ _현재 PENDING 항목 없음_
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-019-*.md`
 - **제안팀**: team2
-- **변경 대상**: `contracts/api/API-01-backend-endpoints.md, contracts/api/API-05-websocket-events.md, contracts/api/API-06-auth-session.md`
+- **변경 대상**: `contracts/api/API-01-backend-api.md, contracts/api/API-05-websocket-events.md, contracts/api/API-06-auth-session.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 
@@ -124,6 +124,70 @@ _현재 PENDING 항목 없음_
 - **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-042-*.md`
 - **제안팀**: team2
 - **변경 대상**: `contracts/api/API-05-websocket-events.md, contracts/specs/`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-047] 검토 요청: Competition 계층 WSOP LIVE 정렬 (Series→Event→EventFlight)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-047-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/data/DATA-02-entities.md, contracts/data/DATA-04-db-schema.md, contracts/api/API-01-backend-api.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-048] 검토 요청: 인증 체계 WSOP LIVE GGPass 패턴 정렬
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-048-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/API-06-auth-session.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-050] 검토 요청: Clock 엔드포인트 10종 완성 (WSOP LIVE Staff App 정렬)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-050-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-01-backend-api.md, contracts/specs/BS-06-game-engine/BS-06-00-triggers.md, contracts/api/API-05-websocket-events.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-051] 검토 요청: PayoutStructure (PrizePool) 엔드포인트 추가 (WSOP LIVE 정렬)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-051-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-01-backend-api.md, contracts/data/DATA-02-entities.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-052] 검토 요청: Rate Limiting & 보안 정책 정의 (OWASP + WSOP LIVE GGPass 준거)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-052-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/API-01-backend-api.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-054] 검토 요청: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-054-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-05-websocket-events.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-055] 검토 요청: OutputEventBuffer 구현 소유팀 명시 (API-04 §3)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-055-*.md`
+- **제안팀**: team3
+- **변경 대상**: `contracts/api/API-04-overlay-output.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-056] 검토 요청: 외부 파일의 구 contracts/specs/BS-0X-* 경로 dead link 일괄 정리
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-056-*.md`
+- **제안팀**: team1
+- **변경 대상**: `contracts/api/API-07-graphic-editor.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 ## IN_PROGRESS

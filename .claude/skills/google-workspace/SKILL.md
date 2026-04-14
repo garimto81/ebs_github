@@ -142,8 +142,8 @@ Google Workspace API 통합을 위한 전문 스킬입니다.
 
 | 파일명 | CLAUDE.md 키 | Google Docs ID |
 |--------|-------------|----------------|
-| `PRD-0002-wsoptv-concept-paper.md` | PRD-0002 | `1Y5KMRFunHJEXmR0MrXbb_flmf-_88obGnJBe0AC94_A` |
-| `PRD-0002-executive-summary.md` | PRD-0002-executive-summary | `1Y_GmF6AYOEkj7TEX3CptimlFVDEGZdssRysdzXHIQDs` |
+| `PRD-0002-<project>-concept-paper.md` | PRD-0002 | `<Google Docs ID>` |
+| `PRD-0002-executive-summary.md` | PRD-0002-executive-summary | `<Google Docs ID>` |
 
 **⚠️ 절대 하면 안 되는 것:**
 
@@ -213,78 +213,39 @@ uv add google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
 ## ⚠️ 서브 프로젝트에서 사용 시 (중요!)
 
-**서브 프로젝트(`wsoptv_nbatv_clone`, `youtuber_chatbot` 등)에서 `--gdocs` 옵션 사용 시 반드시 절대 경로로 루트 모듈을 호출해야 합니다.**
+**서브 프로젝트에서 `--gdocs` 옵션 사용 시 반드시 절대 경로로 루트 모듈을 호출해야 합니다.**
 
 ### 문제 상황
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  서브 프로젝트에서 실행 시 문제                               │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ❌ 실패하는 경우:                                           │
-│     cd C:\claude\wsoptv_nbatv_clone                         │
-│     python -m lib.google_docs convert docs/PRD.md           │
-│     → ModuleNotFoundError: No module named 'lib'            │
-│                                                              │
-│  ✅ 올바른 방법:                                             │
-│     cd C:\claude                                             │
-│     python -m lib.google_docs convert C:\claude\wsoptv_nbatv_clone\docs\PRD.md
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+❌ 실패: 서브 프로젝트 cwd에서 직접 실행
+   cd C:\claude\<sub-project>
+   python -m lib.google_docs convert docs/PRD.md
+   → ModuleNotFoundError: No module named 'lib'
+
+✅ 올바른 방법: 루트에서 절대 경로 인수로 호출
+   cd C:\claude
+   python -m lib.google_docs convert C:\claude\<sub-project>\docs\PRD.md
 ```
 
 ### 서브 프로젝트 변환 명령
 
 ```powershell
-# 방법 1: 루트로 이동 후 절대 경로로 파일 지정 (권장)
-cd C:\claude && python -m lib.google_docs convert "C:\claude\{서브프로젝트}\docs\파일.md"
+# 권장: 루트로 이동 후 절대 경로로 파일 지정
+cd C:\claude && python -m lib.google_docs convert "C:\claude\<sub-project>\docs\파일.md"
 
-# 방법 2: 한 줄 명령
-powershell -Command "cd C:\claude; python -m lib.google_docs convert 'C:\claude\wsoptv_nbatv_clone\docs\guides\WSOP-TV-PRD.md'"
-
-# 방법 3: 배치 변환
-cd C:\claude && python -m lib.google_docs batch "C:\claude\wsoptv_nbatv_clone\docs\*.md"
+# 배치 변환
+cd C:\claude && python -m lib.google_docs batch "C:\claude\<sub-project>\docs\*.md"
 ```
 
 ### 🚨 Claude 강제 실행 규칙 (MANDATORY)
 
-**`--gdocs` 키워드 감지 시 Claude는 다음을 자동으로 수행해야 합니다:**
+`--gdocs` 키워드 감지 시:
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  --gdocs 자동 처리 워크플로우 (강제)                          │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  1. 대상 파일 탐색                                           │
-│     - PRD, 문서 등 변환할 .md 파일 찾기                      │
-│     - 사용자가 지정한 파일 또는 컨텍스트에서 추론            │
-│                                                              │
-│  2. 절대 경로 변환                                           │
-│     - 상대 경로 → 절대 경로 (C:\claude\...)                  │
-│                                                              │
-│  3. 루트에서 실행 (필수!)                                    │
-│     cd C:\claude && python -m lib.google_docs convert "..."  │
-│                                                              │
-│  4. 결과 URL 반환                                            │
-│     - Google Docs URL 출력                                   │
-│     - 실패 시 에러 메시지 출력                               │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**실행 템플릿 (복사-붙여넣기 가능):**
-
-```powershell
-# 서브 프로젝트 파일을 Google Docs로 변환
-cd C:\claude && python -m lib.google_docs convert "{절대_파일_경로}"
-
-# 예시: wsoptv_ott 프로젝트
-cd C:\claude && python -m lib.google_docs convert "C:\claude\wsoptv_ott\docs\prds\PRD-0002-wsoptv-ott-platform-mvp.md"
-
-# 예시: wsoptv_nbatv_clone 프로젝트
-cd C:\claude && python -m lib.google_docs convert "C:\claude\wsoptv_nbatv_clone\docs\guides\WSOP-TV-PRD.md"
-```
+1. 대상 .md 파일 탐색 (사용자 지정 또는 컨텍스트 추론)
+2. 상대 경로 → 절대 경로 (`C:\claude\...`) 변환
+3. 루트에서 실행: `cd C:\claude && python -m lib.google_docs convert "..."`
+4. 결과 URL 반환 (실패 시 에러 메시지)
 
 **⚠️ 절대 하지 말아야 할 것:**
 
@@ -387,36 +348,24 @@ C:\claude\
 │   ├── desktop_credentials.json   # OAuth 클라이언트 ID (업로드용)
 │   ├── token.json                 # OAuth 토큰 (자동 생성)
 │   └── service_account_key.json   # 서비스 계정 (읽기 전용)
-├── wsoptv/                        # 서브 레포
-├── db_architecture/               # 서브 레포
+├── <sub-project-a>/               # 서브 레포 예시
+├── <sub-project-b>/               # 서브 레포 예시
 └── ...
 ```
 
-### 공유된 Google Drive 리소스
+### Google Drive 프로젝트 기반 폴더 구조 (선택)
 
-| 리소스 | 폴더/문서 ID | URL | 용도 |
-|--------|-------------|-----|------|
-| Google AI Studio | `1JwdlUe_v4Ug-yQ0veXTldFl6C24GH8hW` | [폴더](https://drive.google.com/drive/folders/1JwdlUe_v4Ug-yQ0veXTldFl6C24GH8hW) | 공유 문서/자료 저장소 |
-| WSOPTV 와이어프레임 | `1kHuCfqD7PPkybWXRL3pqeNISTPT7LUTB` | [폴더](https://drive.google.com/drive/folders/1kHuCfqD7PPkybWXRL3pqeNISTPT7LUTB) | 홈페이지 와이어프레임 PNG |
-| WSOPTV UX 기획서 | `1tghlhpQiWttpB-0CP5c1DiL5BJa4ttWj-2R77xaoVI8` | [문서](https://docs.google.com/document/d/1tghlhpQiWttpB-0CP5c1DiL5BJa4ttWj-2R77xaoVI8/edit) | 사용자 경험 설계 문서 |
-
-**서비스 계정 이메일**: `archive-sync@ggp-academy.iam.gserviceaccount.com`
-
-### Google Drive 프로젝트 기반 폴더 구조
-
-Drive 루트에는 프로젝트별로 다음과 같은 폴더 구조가 유지됩니다:
+Drive 루트를 프로젝트별로 정리하는 패턴 예시:
 
 ```
 Google Drive (루트)
-├── WSOPTV/              # WSOPTV 프로젝트
-├── EBS/                 # EBS 프로젝트
-├── 지지프로덕션/        # 지지프로덕션 프로젝트
-├── 브로드스튜디오/      # 브로드스튜디오 프로젝트
+├── <ProjectA>/
+├── <ProjectB>/
 ├── _개인/               # 개인 파일 (접두사 _ 사용)
 └── _아카이브/           # 아카이브 파일 (접두사 _ 사용)
 ```
 
-프로젝트별 폴더 ID는 `get_project_folder_id()` 함수로 조회합니다.
+프로젝트별 폴더 ID는 `get_project_folder_id(name)` 함수로 조회합니다. 프로젝트 목록은 사용자 환경에 맞게 정의하세요 (예: `.claude/local/` 오버레이).
 
 ⚠️ **중요**: 서비스 계정은 스토리지 할당량이 없어 **파일 업로드 불가**!
 - 읽기/폴더 생성: 가능
@@ -581,8 +530,8 @@ from lib.google_docs.auth import get_credentials
 from lib.google_docs.project_registry import get_project_folder_id
 
 # 특정 프로젝트의 폴더 ID 조회
-wsoptv_folder_id = get_project_folder_id('WSOPTV')
-ebs_folder_id = get_project_folder_id('EBS')
+project_a_folder_id = get_project_folder_id('ProjectA')
+project_b_folder_id = get_project_folder_id('ProjectB')
 
 # 폴더가 없으면 None 반환
 folder_id = get_project_folder_id('unknown_project')  # None

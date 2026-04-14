@@ -1,6 +1,21 @@
 import '../state/game_state.dart';
 import '../state/card_reveal_config.dart';
 
+/// Data class for showdown reveal info per seat.
+class ShowdownSeatInfo {
+  final int seatIndex;
+  final int revealOrder;
+  final bool mustShow;
+  final bool isWinner;
+
+  const ShowdownSeatInfo({
+    required this.seatIndex,
+    required this.revealOrder,
+    required this.mustShow,
+    required this.isWinner,
+  });
+}
+
 /// Determines the order in which players reveal cards at showdown,
 /// and whether cards should be visible based on reveal configuration.
 class ShowdownOrder {
@@ -71,5 +86,39 @@ class ShowdownOrder {
       case RevealType.allAfterDecision:
         return true; // After all muck decisions made
     }
+  }
+
+  /// Determine if a player can muck (refuse to show) their cards.
+  /// All-in players cannot muck. Winners at showdown must show.
+  static bool canMuck({
+    required int seatIndex,
+    required GameState state,
+    required bool isWinner,
+  }) {
+    final seat = state.seats[seatIndex];
+    // All-in players must show (cannot muck)
+    if (seat.isAllIn) return false;
+    // Winners at showdown must show
+    if (isWinner) return false;
+    // Others can muck
+    return true;
+  }
+
+  /// Get showdown info for all participating seats.
+  /// [awards] maps seatIndex → amount won.
+  static List<ShowdownSeatInfo> getShowdownInfo(
+    GameState state,
+    Map<int, int> awards,
+  ) {
+    final order = getRevealOrder(state);
+    return order.map((idx) {
+      final isWinner = awards.containsKey(idx);
+      return ShowdownSeatInfo(
+        seatIndex: idx,
+        revealOrder: order.indexOf(idx),
+        mustShow: !canMuck(seatIndex: idx, state: state, isWinner: isWinner),
+        isWinner: isWinner,
+      );
+    }).toList();
   }
 }

@@ -26,6 +26,7 @@ interface WsState {
   reconnectAttempts: number;
   reconnectDelay: number; // ms
   socket: WebSocket | null;
+  _listeners: Array<(event: WsEventEnvelope) => void>;
 }
 
 const INITIAL_BACKOFF_MS = 1000;
@@ -49,7 +50,14 @@ export const useWsStore = defineStore('ws', {
     reconnectAttempts: 0,
     reconnectDelay: INITIAL_BACKOFF_MS,
     socket: null,
+    _listeners: [],
   }),
+
+  getters: {
+    connected(state): boolean {
+      return state.status === 'connected';
+    },
+  },
 
   actions: {
     connect(): void {
@@ -171,13 +179,32 @@ export const useWsStore = defineStore('ws', {
       const settings = useSettingsStore();
       const ge = useGeStore();
 
-      if (event.event.startsWith('skin.')) {
+      if (event.event.startsWith('skin.') || event.event === 'skin_updated') {
         ge.applyRemoteSkinUpdate(event);
-      } else if (event.event === 'config.updated') {
+      } else if (event.event === 'config.updated' || event.event === 'config_changed') {
         settings.applyRemoteChange(event);
       } else {
+        // Lobby events: table/player/hand/rebalance + entity updates
         lobby.applyRemoteChange(event);
       }
+
+      // Broadcast to all registered listeners (e.g. page-level WS watchers)
+      for (const listener of this._listeners) {
+        try {
+          listener(event);
+        } catch (err) {
+          console.error('[ws] listener error', err);
+        }
+      }
+    },
+
+    /** Register a message listener. Returns an unsubscribe function. */
+    onMessage(fn: (event: WsEventEnvelope) => void): () => void {
+      this._listeners.push(fn);
+      return () => {
+        const idx = this._listeners.indexOf(fn);
+        if (idx >= 0) this._listeners.splice(idx, 1);
+      };
     },
 
     scheduleReconnect(): void {

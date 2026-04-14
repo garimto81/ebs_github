@@ -107,7 +107,7 @@ ebs/
 | 게임 PRD (Confluence) | `team3-engine/specs/games/PRD-GAME-*.md` |
 | 글로벌 백로그 | `docs/backlog.md` |
 | 통합 테스트 시나리오 | `integration-tests/scenarios/` |
-| 레거시 레포 아카이브 | `docs/07-archive/legacy-repos/` |
+| 레거시 레포 아카이브 | `C:/claude/ebs-archive-backup/07-archive/legacy-repos/` |
 
 ---
 

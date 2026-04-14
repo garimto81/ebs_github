@@ -4,8 +4,7 @@
 |------|------|------|
 | 2026-04-09 | 신규 작성 | BO-08 + BO-11 병합. 운영 정책/카탈로그만 유지, API 엔드포인트는 API-01로 이관 |
 | 2026-04-10 | 감사 및 복구 보강 | audit_events 이벤트 스토어 관점 추가, 감사 로그-핸드 리플레이 관계 명확화, §4 손실 데이터 복구 절차 신설 (WSOP LIVE Confluence 대조) |
-| 2026-04-10 | CCR 의존 축소 | `audit_events`, `idempotency_keys`, saga 등 계약 변경 의존 항목을 CCR-001/003/010 참조로 축소. §4 복구 절차 중 독립 영역(Scenario B WSOP sync cursor, Scenario C Redis 손실)만 상세 유지 |
-| 2026-04-10 | CCR 활성화 (반영 완료) | CCR-001/003/010 모두 contracts 반영 완료. §1.1 기록 대상 매트릭스, §1.2 3-way 관계, §2 details JSON 필드, §4.1/§4.4 시나리오, §4.5 책임 매트릭스, §5 유저스토리 전면 복원. 정본은 contracts/ 를 참조 |
+| 2026-04-10 | CCR-001/003/010 반영 | contracts 반영 완료 — §1.1 기록 대상 매트릭스, §1.2 3-way 관계, §2 details JSON, §4.1/§4.4/§4.5 시나리오·책임 매트릭스, §5 유저스토리 본문 확정. 정본은 contracts/ 참조 (중간 "의존 축소" 단계는 git log 참조) |
 
 ---
 
@@ -14,7 +13,7 @@
 BO의 운영 관련 정책 — 감사 로그 기록 대상/보존 정책, 리포트 카탈로그, 내보내기 형식을 정의한다.
 
 > API 엔드포인트: API-01 Backend Endpoints §감사 로그, §리포트
-> 데이터 모델: DATA-02 Entities §audit_logs
+> 데이터 모델: DATA-04 Entities §audit_logs
 
 ---
 

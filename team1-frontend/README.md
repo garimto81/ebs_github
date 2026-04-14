@@ -104,13 +104,13 @@ team1-frontend/
 │   │   ├── browser.ts
 │   │   ├── server.ts          # Node mode (test only)
 │   │   ├── handlers.ts
-│   │   └── data.ts            # DATA-02 seed
+│   │   └── data.ts            # DATA-04 seed
 │   ├── i18n/                  # vue-i18n 사전
 │   │   ├── index.ts
 │   │   ├── ko.json
 │   │   ├── en.json
 │   │   └── es.json
-│   ├── types/                 # 공유 TS 타입 (DATA-02 정렬)
+│   ├── types/                 # 공유 TS 타입 (DATA-04 정렬)
 │   ├── css/
 │   │   ├── app.scss
 │   │   └── quasar.variables.scss
@@ -145,7 +145,7 @@ team1-frontend/
 
 ## 이전 코드 참조
 
-Quasar 이식 원본: `../docs/07-archive/legacy-repos/ebs_lobby-react/` (React 19 + Vite 6 + Zustand). Pages / API client / Zustand stores / mock handler 를 Vue 3 + Pinia + MSW 2.x 로 재작성.
+Quasar 이식 원본: `../C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_lobby-react/` (React 19 + Vite 6 + Zustand). Pages / API client / Zustand stores / mock handler 를 Vue 3 + Pinia + MSW 2.x 로 재작성.
 
 ## 금지
 

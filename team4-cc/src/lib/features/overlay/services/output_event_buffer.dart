@@ -1,11 +1,13 @@
-// OutputEventBuffer — Security Delay FIFO (BS-07-07, CCR-036).
+// OutputEventBuffer — DEPRECATED, replaced by SecurityDelayBuffer.
 //
-// Events are enqueued with a releaseAt timestamp (now + delaySeconds).
-// Dual output architecture: Backstage receives immediately, Broadcast
-// receives on releaseAt. Default delay 30s. Buffer cap 1000 events.
+// This file is kept for backward compatibility. New code should use
+// SecurityDelayBuffer from security_delay_buffer.dart directly.
+//
+// Original: Security Delay FIFO (BS-07-07, CCR-036).
 
 import 'dart:collection';
 
+/// @deprecated Use [DelayedSnapshot] from security_delay_buffer.dart.
 class DelayedOutputEvent {
   const DelayedOutputEvent({
     required this.type,
@@ -18,6 +20,7 @@ class DelayedOutputEvent {
   final DateTime releaseAt;
 }
 
+/// @deprecated Use [SecurityDelayBuffer] from security_delay_buffer.dart.
 class OutputEventBuffer {
   OutputEventBuffer({
     required this.delay,

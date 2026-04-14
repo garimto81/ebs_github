@@ -1,5 +1,7 @@
 # BS-06-07: Hold'em 쇼다운
 
+> **존재 이유**: 쇼다운·hand protection 룰 — BS-06-00-REF §7·Rule 71에서 링크되는 심층 사양.
+
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-06 | 신규 작성 | Showdown 카드 공개 순서, Muck 규칙, Venue vs Broadcast Canvas 차이 |

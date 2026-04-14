@@ -47,6 +47,13 @@ class Deck {
     return _cards.removeLast();
   }
 
+  /// Reshuffle discarded cards back into the deck.
+  /// Used in Draw games when deck runs out.
+  void reshuffle(List<Card> discards, {int? seed}) {
+    _cards.addAll(discards);
+    _cards.shuffle(seed != null ? Random(seed) : Random());
+  }
+
   Deck copy() {
     final d = Deck._(List.of(_cards));
     d._preset.addAll(_preset);

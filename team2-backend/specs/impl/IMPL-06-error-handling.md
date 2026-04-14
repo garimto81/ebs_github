@@ -3,8 +3,7 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 에러 레벨, 도메인별 에러, 복구 전략, 사용자 노출 |
-| 2026-04-10 | 신뢰성 정합성 | IMPL-10 §3 연결 — Retryable/NonRetryable 분류(독립), 서킷브레이커 상태 노출(독립). Idempotency-Key 인지는 CCR-003 참조 |
-| 2026-04-10 | CCR 활성화 (반영 완료) | CCR-001/003 contracts 반영 완료. §4.4 Idempotency-Key 인지 처리 구현 가이드 복원. audit_events 기록 복원 |
+| 2026-04-10 | CCR-001/003 반영 + 신뢰성 정합성 | IMPL-10 §3 연결: Retryable/NonRetryable 분류, 서킷브레이커 상태 노출. contracts 반영 완료 — §4.4 Idempotency-Key 인지 처리, audit_events 기록 확정 |
 
 ---
 

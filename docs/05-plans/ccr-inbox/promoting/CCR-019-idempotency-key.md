@@ -7,7 +7,7 @@
 | **제안일** | 2026-04-10 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team1, team4 |
-| **변경 대상** | `contracts/api/API-01-backend-endpoints.md`<br/>`contracts/api/API-05-websocket-events.md`<br/>`contracts/api/API-06-auth-session.md` |
+| **변경 대상** | `contracts/api/API-01-backend-api.md`<br/>`contracts/api/API-05-websocket-events.md`<br/>`contracts/api/API-06-auth-session.md` |
 | **변경 유형** | add |
 
 ## 변경 근거

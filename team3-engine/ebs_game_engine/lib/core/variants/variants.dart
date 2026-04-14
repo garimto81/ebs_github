@@ -10,6 +10,18 @@ export 'omaha_hilo.dart';
 export 'five_card_omaha.dart';
 export 'six_card_omaha.dart';
 export 'courchevel.dart';
+export 'draw_variant.dart';
+export 'five_card_draw.dart';
+export 'deuce_seven_single.dart';
+export 'deuce_seven_triple.dart';
+export 'ace_five_triple.dart';
+export 'badugi.dart';
+export 'badeucy.dart';
+export 'badacey.dart';
+export 'stud_variant.dart';
+export 'seven_card_stud.dart';
+export 'seven_card_stud_hilo.dart';
+export 'razz.dart';
 
 import 'variant.dart';
 import 'nlh.dart';
@@ -23,6 +35,16 @@ import 'omaha_hilo.dart';
 import 'five_card_omaha.dart';
 import 'six_card_omaha.dart';
 import 'courchevel.dart';
+import 'five_card_draw.dart';
+import 'deuce_seven_single.dart';
+import 'deuce_seven_triple.dart';
+import 'ace_five_triple.dart';
+import 'badugi.dart';
+import 'badeucy.dart';
+import 'badacey.dart';
+import 'seven_card_stud.dart';
+import 'seven_card_stud_hilo.dart';
+import 'razz.dart';
 
 final Map<String, Variant Function()> variantRegistry = {
   'nlh': () => Nlh(),
@@ -41,4 +63,14 @@ final Map<String, Variant Function()> variantRegistry = {
   'six_card_omaha_hilo': () => SixCardOmaha(hiLo: true),
   'courchevel': () => Courchevel(),
   'courchevel_hilo': () => Courchevel(hiLo: true),
+  'five_card_draw': () => FiveCardDraw(),
+  'deuce_seven_single': () => DeuceSevenSingle(),
+  'deuce_seven_triple': () => DeuceSevenTriple(),
+  'ace_five_triple': () => AceFiveTriple(),
+  'badugi': () => Badugi(),
+  'badeucy': () => Badeucy(),
+  'badacey': () => Badacey(),
+  'seven_card_stud': () => SevenCardStud(),
+  'seven_card_stud_hilo': () => SevenCardStudHiLo(),
+  'razz': () => Razz(),
 };

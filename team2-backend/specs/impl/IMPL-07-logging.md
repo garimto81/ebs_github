@@ -4,8 +4,7 @@
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 로그 레벨, 구조화 필드, 저장/전송, 보존 정책 |
 | 2026-04-10 | 상관관계 필드 추가 | correlation_id, causation_id, idempotency_key, seq 표준화 (IMPL-10 §7 / BO-03 §2 정합) |
-| 2026-04-10 | CCR 의존 축소 | `correlation_id`만 독립 유지. `causation_id`(CCR-001 event sourcing), `idempotency_key`(CCR-003), `seq`(CCR-015), `audit_events` 3-way 구분(CCR-001)은 참조로 축소 |
-| 2026-04-10 | CCR 활성화 (반영 완료) | CCR-001/003/015 contracts 반영 완료. `causation_id`/`idempotency_key`/`seq` 필드 복원, §4.1 3-way 구분 복원 |
+| 2026-04-10 | CCR-001/003/015 반영 | contracts 반영 완료 — `correlation_id`/`causation_id`/`idempotency_key`/`seq` 필드 확정, §4.1 audit_events 3-way 구분 확정 (중간 "의존 축소" 단계는 git log 참조) |
 
 ---
 

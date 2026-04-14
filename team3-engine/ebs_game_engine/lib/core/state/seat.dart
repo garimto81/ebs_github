@@ -11,6 +11,8 @@ class Seat {
   List<Card> holeCards;
   SeatStatus status;
   bool isDealer;
+  bool missedSb;
+  bool missedBb;
 
   Seat({
     required this.index,
@@ -21,6 +23,8 @@ class Seat {
     List<Card>? holeCards,
     this.status = SeatStatus.active,
     this.isDealer = false,
+    this.missedSb = false,
+    this.missedBb = false,
   }) : holeCards = holeCards ?? [];
 
   bool get isActive => status == SeatStatus.active;
@@ -36,5 +40,7 @@ class Seat {
     holeCards: List.of(holeCards),
     status: status,
     isDealer: isDealer,
+    missedSb: missedSb,
+    missedBb: missedBb,
   );
 }

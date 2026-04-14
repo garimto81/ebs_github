@@ -8,7 +8,7 @@
 ### [B-075] React 아카이브 → Quasar 이식 (B-068 하위)
 - **날짜**: 2026-04-10
 - **teams**: [team1]
-- **설명**: `docs/07-archive/legacy-repos/ebs_lobby-react/` 의 9 pages + 19 api modules + 2 Zustand stores + mock-handler 를 Quasar (Vue 3) + Pinia + MSW 2.x 로 이식. JSX→Vue template, react-router→vue-router, Zustand `create()`→Pinia `defineStore()`, `useNavigate`→`useRouter` 변환.
+- **설명**: `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_lobby-react/` 의 9 pages + 19 api modules + 2 Zustand stores + mock-handler 를 Quasar (Vue 3) + Pinia + MSW 2.x 로 이식. JSX→Vue template, react-router→vue-router, Zustand `create()`→Pinia `defineStore()`, `useNavigate`→`useRouter` 변환.
 - **수락 기준**: `src/pages/*.vue`, `src/stores/*.ts`, `src/api/*.ts`, `src/mocks/*` 모두 존재. `pnpm dev` 시 MSW 활성화 + Login → Series 플로우 동작.
 - **관련 PRD**: `UI-A1-architecture.md` §1.2/§2/§3, `UI-01-lobby.md`, `UI-03-settings.md`, `UI-04-graphic-editor.md`
 - **블로커**: B-068 완료 선행 필수
@@ -19,6 +19,14 @@
 - **설명**: `QA-LOBBY-06-quasar-test-strategy.md` 를 기반으로 Vitest + @vue/test-utils + Playwright + MSW server mode 실제 셋업. `vitest.config.ts`, `playwright.config.ts`, `.github/workflows/frontend-test.yml` 작성.
 - **수락 기준**: `pnpm test` 가 샘플 unit test 통과, `pnpm e2e` 가 최소 1개 E2E (로그인 → Series) 통과, GitHub Actions 에서 lint+typecheck+unit+e2e 모두 녹색.
 - **관련 PRD**: `qa/lobby/QA-LOBBY-06-quasar-test-strategy.md`
+- **⚠ 2026-04-14 비고**: `qa/` 폴더 삭제됨. 본 항목은 QA-LOBBY-06 실재 복원 또는 대체 전략(BS-0X 문서 하단 §검증 섹션) 확정 후 재평가 필요.
+
+### [B-077] WSOP LIVE 기준 레포 실재 확인 (인프라)
+- **날짜**: 2026-04-14
+- **teams**: [conductor]
+- **설명**: `C:/claude/wsoplive/` 및 `C:/claude/ebs/wsoplive/` 모두 실재하지 않음. 그러나 `ebs/CLAUDE.md §원칙 1` 은 해당 레포를 "WSOP LIVE 정렬" 의 기준 미러로 명시. 실증 불가 상태에서 팀 문서 구조(압축/분할) 결정이 근거를 갖지 못함. team1 문서 압축 검토(22개→7/10/15) 가 본 이슈로 인해 보류됨.
+- **수락 기준**: (a) 레포 경로 확정 및 접근 가능 확인, 또는 (b) `ebs/CLAUDE.md §원칙 1` 수정으로 "정렬 원칙" 의존성 제거.
+- **관련**: `team1-frontend/INDEX.md` §상태, `CCR-DRAFT-team1-20260414-deadlink-cleanup.md`
 
 
 
@@ -54,12 +62,84 @@
 - **변경 대상**: `contracts/api/API-05-websocket-events.md, contracts/specs/`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
+
+### [NOTIFY-CCR-043] 검토 요청: WSOP LIVE Sync 대상 엔드포인트 카탈로그 + GGPass 통합 전략
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-043-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-01-backend-api.md` (Part II, WSOP LIVE Integration)
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-047] 검토 요청: Competition 계층 WSOP LIVE 정렬 (Series→Event→EventFlight)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-047-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/data/DATA-02-entities.md, contracts/data/DATA-04-db-schema.md, contracts/api/API-01-backend-api.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-048] 검토 요청: 인증 체계 WSOP LIVE GGPass 패턴 정렬
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-048-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/API-06-auth-session.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-049] 검토 요청: BlindStructure 관리 엔드포인트 추가 (WSOP LIVE 정렬)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-049-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-01-backend-api.md, contracts/data/DATA-02-entities.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-050] 검토 요청: Clock 엔드포인트 10종 완성 (WSOP LIVE Staff App 정렬)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-050-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-01-backend-api.md, contracts/specs/BS-06-game-engine/BS-06-00-triggers.md, contracts/api/API-05-websocket-events.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-051] 검토 요청: PayoutStructure (PrizePool) 엔드포인트 추가 (WSOP LIVE 정렬)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-051-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-01-backend-api.md, contracts/data/DATA-02-entities.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-052] 검토 요청: Rate Limiting & 보안 정책 정의 (OWASP + WSOP LIVE GGPass 준거)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-052-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/API-01-backend-api.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-053] 검토 요청: Users 엔드포인트에 WSOP LIVE Staff 패턴 (Suspend/Lock/Download) 추가
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-053-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-01-backend-api.md, contracts/data/DATA-02-entities.md, contracts/data/DATA-04-db-schema.md, contracts/specs/BS-01-auth/BS-01-auth.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-054] 검토 요청: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-054-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-05-websocket-events.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
 ## IN_PROGRESS
 
 ### [B-068] team1-frontend Quasar 프로젝트 실제 초기화
 - **날짜**: 2026-04-10
 - **teams**: [team1]
-- **설명**: `team1-frontend/src/`가 `.gitkeep`만 포함하여 사실상 빈 상태. commit `9c45acf`가 "ebs_lobby 통합 완료"를 주장하지만 실제 소스 파일이 들어있지 않음. Quasar (Vue 3) + TypeScript 프로젝트를 실제로 초기화하고 기존 `docs/07-archive/legacy-repos/ebs_lobby-react/` 또는 통합 이전 `ebs_lobby_web` 내용을 Quasar로 이식/재작성.
+- **설명**: `team1-frontend/src/`가 `.gitkeep`만 포함하여 사실상 빈 상태. commit `9c45acf`가 "ebs_lobby 통합 완료"를 주장하지만 실제 소스 파일이 들어있지 않음. Quasar (Vue 3) + TypeScript 프로젝트를 실제로 초기화하고 기존 `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_lobby-react/` 또는 통합 이전 `ebs_lobby_web` 내용을 Quasar로 이식/재작성.
 - **수락 기준**: `team1-frontend/src/` 하위에 Quasar 프로젝트 구조(`src/`, `quasar.config.js` 등) 존재, `pnpm dev` 또는 `quasar dev` 명령으로 Lobby 기본 화면이 로컬에서 부팅.
 - **관련 PRD**: CLAUDE.md §Team 1, contracts/specs/BS-02-lobby/, team1-frontend/CLAUDE.md, `UI-A1-architecture.md`, `UI-04-graphic-editor.md`, `QA-LOBBY-06-quasar-test-strategy.md`
 - **진행 상황 (2026-04-10)**: Phase A 완료 (UI-A1 아키텍처 문서 작성, UI-00 §9-12 확장, CLAUDE.md 보강). Phase D 진행 예정.
@@ -84,7 +164,7 @@ _기존 IN_PROGRESS placeholder 는 본 항목으로 대체_
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/CCR-003-*.md`
 - **제안팀**: team2
-- **변경 대상**: `contracts/api/API-01-backend-endpoints.md, contracts/api/API-05-websocket-events.md, contracts/api/API-06-auth-session.md`
+- **변경 대상**: `contracts/api/API-01-backend-api.md, contracts/api/API-05-websocket-events.md, contracts/api/API-06-auth-session.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 
@@ -104,7 +184,7 @@ _기존 IN_PROGRESS placeholder 는 본 항목으로 대체_
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/CCR-010-*.md`
 - **제안팀**: team2
-- **변경 대상**: `contracts/api/API-01-backend-endpoints.md`
+- **변경 대상**: `contracts/api/API-01-backend-api.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 
@@ -114,7 +194,7 @@ _기존 IN_PROGRESS placeholder 는 본 항목으로 대체_
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/CCR-015-*.md`
 - **제안팀**: team2
-- **변경 대상**: `contracts/api/API-05-websocket-events.md, contracts/api/API-01-backend-endpoints.md`
+- **변경 대상**: `contracts/api/API-05-websocket-events.md, contracts/api/API-01-backend-api.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 
@@ -192,7 +272,7 @@ _기존 IN_PROGRESS placeholder 는 본 항목으로 대체_
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-020-*.md`
 - **제안팀**: team2
-- **변경 대상**: `contracts/api/API-01-backend-endpoints.md`
+- **변경 대상**: `contracts/api/API-01-backend-api.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 
@@ -255,7 +335,7 @@ _기존 IN_PROGRESS placeholder 는 본 항목으로 대체_
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-029-*.md`
 - **제안팀**: team4
-- **변경 대상**: `contracts/specs/BS-05-command-center/BS-05-00-overview.md, contracts/api/API-01-backend-endpoints.md`
+- **변경 대상**: `contracts/specs/BS-05-command-center/BS-05-00-overview.md, contracts/api/API-01-backend-api.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 

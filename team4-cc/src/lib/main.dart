@@ -8,19 +8,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
+import 'features/auth/auth_provider.dart';
 import 'foundation/error_reporting/sentry_init.dart';
+import 'models/launch_config.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // TODO(CCR-029): parse args for --table_id, --token, --cc_instance_id, --ws_url
-  // See BS-05-00-overview §7 Launch 플로우 상세.
+  // Parse launch args (BS-05-00 §7 Launch Flow, CCR-029).
+  // Lobby passes --table_id, --token, --cc_instance_id, --ws_url.
+  final config = LaunchConfig.tryFromArgs(args);
 
   await initSentry(
     appRunner: () async {
       runApp(
-        const ProviderScope(
-          child: EbsCcApp(),
+        ProviderScope(
+          overrides: [
+            if (config != null)
+              launchConfigProvider.overrideWithValue(config),
+          ],
+          child: const EbsCcApp(),
         ),
       );
     },

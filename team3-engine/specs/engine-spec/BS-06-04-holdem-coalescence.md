@@ -1,5 +1,7 @@
 # BS-06-04: Hold'em 트리거 Coalescence
 
+> **존재 이유**: `lib/core/rules/coalescence.dart` 구현 사양 (RFID 버스트 병합 알고리즘).
+
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-06 | 신규 작성 | 트리거 정의 총괄 및 우선순위 규칙, coalescence 알고리즘 |

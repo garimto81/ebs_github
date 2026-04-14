@@ -3,6 +3,8 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | Overlay 앱 정의, 데이터 흐름, Layer 구조, 출력 채널 |
+| 2026-04-14 | 프로세스 모델 정합 | §1 "별도 프로세스" → "동일 Flutter 앱 in-process" 수정 (API-04 §1.2 SSOT 정렬) |
+| 2026-04-14 | 요소 카운트 정합 | §3 보조 요소 3→2 (Lower Third는 Admin 수동 요소로 분류). Layer 1 8 + 보조 2 = 10종으로 BS-07-01 총괄표와 통일 |
 
 ---
 
@@ -26,7 +28,7 @@ Overlay는 **시청자가 보는 방송 화면의 그래픽 출력 앱**이다. 
 
 > 참조: BS-00 §1 앱 아키텍처 용어
 
-Overlay는 CC(Command Center)와 **동일한 기술 스택**(Flutter + Rive)을 사용하지만, 별도 프로세스로 실행된다. CC가 운영자 입력 화면이라면, Overlay는 시청자 출력 화면이다.
+Overlay는 CC(Command Center)와 **동일한 Flutter 앱 내에서 in-process로 실행**된다 (API-04 §1.2 SSOT). CC가 운영자 입력 화면이라면, Overlay는 시청자 출력 화면으로, 같은 프로세스에서 별도 윈도우/뷰로 렌더링되어 네트워크 오버헤드 없이 Dart 함수 호출로 GameState를 공유한다.
 
 ---
 
@@ -74,13 +76,14 @@ RFID가 카드를 읽거나, 운영자가 CC에서 액션을 입력하는 순간
 
 ### 추가 표시 요소
 
-Layer 1 그래픽 8종 외에 Overlay가 표시하는 보조 요소:
+Layer 1 그래픽 8종 외에 Overlay가 **자동 트리거로 표시**하는 보조 요소 2종:
 
 | 요소 | 트리거 | 설명 |
 |------|--------|------|
 | **핸드 랭킹** (Hand Rank Label) | Engine EquityUpdated | 보드 변경 시 현재 핸드 등급 표시 |
 | **딜러 버튼** (Dealer Button) | Engine StartHand | 핸드 시작 시 딜러 위치 표시 |
-| **하단 자막** (Lower Third) | Admin 수동 입력 | Lobby Settings에서 텍스트 입력 |
+
+> **요소 카운트**: Layer 1 8종 + 자동 보조 2종 = **총 10종 자동 트리거 요소** (BS-07-01 총괄표와 일치). **하단 자막(Lower Third)**은 Admin 수동 입력 요소로 Layer 1 자동 트리거 범주에서 제외하며, Overlay 렌더는 하지만 분류상 §5 출력 채널의 텍스트 요소로 다룬다.
 
 ---
 

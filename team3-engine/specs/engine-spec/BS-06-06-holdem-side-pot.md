@@ -1,5 +1,7 @@
 # BS-06-06: Hold'em 사이드 팟
 
+> **존재 이유**: `lib/core/state/pot.dart:SidePot.calculateSidePots()` 구현 사양.
+
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-06 | 신규 작성 | N-player all-in 사이드팟 분리, 계산, 판정 순서 정의 |

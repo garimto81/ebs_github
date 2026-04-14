@@ -2,6 +2,7 @@
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-04-14 | OutputEventBuffer 구현 소유권 명시 | §3.6에 Team 4 소유 확정, Team 3 harness 역할 명시 |
 | 2026-04-08 | 신규 작성 | CC→Overlay 데이터 흐름, 출력 채널, Security Delay, 해상도, 크로마키 |
 
 ---
@@ -10,7 +11,7 @@
 
 이 문서는 **Command Center(CC) Game Engine에서 Overlay까지의 데이터 흐름과 출력 채널 계약**을 정의한다. CC와 Overlay는 동일 Flutter 앱 내에서 실행되며, 네트워크 통신 없이 in-process Dart 함수 호출로 데이터를 전달한다.
 
-> **참조**: Game Engine 상태는 `BS-06-00-REF-game-engine-spec.md`, 엔티티 정의는 `BS-00-definitions.md §2.2`, 출력 프리셋은 `DATA-02-entities.md §3.7 OutputPreset`
+> **참조**: Game Engine 상태는 `BS-06-00-REF-game-engine-spec.md`, 엔티티 정의는 `BS-00-definitions.md §2.2`, 출력 프리셋은 `DATA-04-db-schema.md §OutputPreset`
 
 ### 핵심 원칙
 
@@ -191,6 +192,15 @@ Overlay는 두 개의 NDI 스트림을 **동시에** 제공한다:
 두 스트림은 동일 내용이며 시간차로만 분리된다. 운영진이 실시간(Backstage)을 보면서 방송(Broadcast) 지연 상태를 모니터링.
 
 ### 3.6 OutputEventBuffer 구조
+
+> **구현 소유팀 (CCR-056 확정)**: **Team 4 (CC Flutter 앱)** 가 OutputEventBuffer 를 구현한다. 근거: §1.2 "CC 와 Overlay 는 동일 Flutter 앱, in-process 통신" + §3.5 "Backstage 는 buffer 우회 즉시 송출" — Backstage/Broadcast 분기는 Flutter 앱 프로세스 내부에서 자연스럽다. Team 3 harness 는 OutputEvent 를 즉시 emit 하며 buffer 미보유(Pure Dart 계산 엔진 원칙 유지). GAP-GE-009 RESOLVED.
+
+| 항목 | 소유팀 | 위치 (예상) |
+|------|--------|-------------|
+| OutputEventBuffer 클래스 구현 | **Team 4** | `team4-cc/lib/overlay/output_event_buffer.dart` |
+| Security Delay 파라미터 적용 | **Team 4** | 동일 |
+| Backstage / Broadcast 분기 | **Team 4** | 동일 (Flutter 프로세스 내부) |
+| OutputEvent emit (buffer 없음) | **Team 3** | harness `lib/core/actions/output_event.dart` |
 
 ```dart
 class OutputEventBuffer {

@@ -333,7 +333,7 @@ Settings는 Lobby 내 독립 페이지(`/settings/:tableId`)로 렌더링된다.
 > Rules 탭은 **게임 규칙 옵션** (Bomb Pot, Straddle, Player Display 등)만 다룬다.
 > **Blind 레벨 구조(레벨별 SB/BB/Ante/Duration), Blind 타이머 편집, BlindDetailType(`Blind`/`Break`/`DinnerBreak`/`HalfBlind`/`HalfBreak`) 편집 UI 는 Settings 가 아니라 Lobby 의 Flight 생성/편집 플로우가 소유한다** (UI-01 §화면 3 Flight 참조).
 > 이 원칙은 "Settings = 글로벌, Flight = Event 단위"라는 책임 분리에서 온다. Blind 구조는 Event/Flight 마다 다르므로 글로벌 Settings 에 들어갈 수 없다.
-> `BlindDetailType` 5 타입 enum(`Blind`/`Break`/`DinnerBreak`/`HalfBlind`/`HalfBreak`) 은 **CCR-017 APPLIED** 로 `contracts/specs/BS-03-settings/BS-03-04-rules.md` 에 이미 추가되었다 (UI-01 §9.3 참조).
+> `BlindDetailType` 5 타입 enum(`Blind`/`Break`/`DinnerBreak`/`HalfBlind`/`HalfBreak`) 은 **CCR-017 APPLIED** 로 `../specs/BS-03-settings/BS-03-04-rules.md` 에 이미 추가되었다 (UI-01 §9.3 참조).
 >
 > **GFX 탭의 시각 자산 메타데이터 (GEM-01~25)** 는 Settings 직접 편집이 아니라 `/lobby/graphic-editor` 허브에서 처리한다. GEM 필드 전체 목록, Upload Dropzone, rive-js 프리뷰, Activate 흐름 등 상세는 **`UI-04-graphic-editor.md §5`** 참조. Settings GFX 탭은 현재 활성화된 스킨의 메타데이터를 **읽기 전용**으로 노출하고, 편집은 [Graphic Editor 열기] 버튼으로 허브로 이동한다 (CCR-011 + CCR-025 APPLIED).
 
@@ -471,13 +471,13 @@ Equity, Outs, Rabbit Hunting, Leaderboard, Score Strip.
 
 | 참조 문서 | 경로 |
 |----------|------|
-| BS-03-00 Overview | `contracts/specs/BS-03-settings/BS-03-00-overview.md` |
-| BS-03-01 Outputs | `contracts/specs/BS-03-settings/BS-03-01-outputs.md` |
-| BS-03-02 GFX | `contracts/specs/BS-03-settings/BS-03-02-gfx.md` |
-| BS-03-03 Display | `contracts/specs/BS-03-settings/BS-03-03-display.md` |
-| BS-03-04 Rules | `contracts/specs/BS-03-settings/BS-03-04-rules.md` |
-| BS-03-05 Stats | `contracts/specs/BS-03-settings/BS-03-05-stats.md` |
-| BS-03-06 Preferences | `contracts/specs/BS-03-settings/BS-03-06-preferences.md` |
+| BS-03-00 Overview | `../specs/BS-03-settings/BS-03-00-overview.md` |
+| BS-03-01 Outputs | `../specs/BS-03-settings/BS-03-01-outputs.md` |
+| BS-03-02 GFX | `../specs/BS-03-settings/BS-03-02-gfx.md` |
+| BS-03-03 Display | `../specs/BS-03-settings/BS-03-03-display.md` |
+| BS-03-04 Rules | `../specs/BS-03-settings/BS-03-04-rules.md` |
+| BS-03-05 Stats | `../specs/BS-03-settings/BS-03-05-stats.md` |
+| BS-03-06 Preferences | `../specs/BS-03-settings/BS-03-06-preferences.md` |
 | Foundation PRD | `docs/01-strategy/PRD-EBS_Foundation.md` |
 
 ---
@@ -488,10 +488,10 @@ Equity, Outs, Rabbit Hunting, Leaderboard, Score Strip.
 
 | CCR | 상태 | 변경 대상 | 관련 섹션 |
 |-----|------|----------|----------|
-| **CCR-017** wsop-parity (BlindDetailType 5타입 enum, dayIndex, isPause, Bit Flag RBAC 등) | ✅ APPLIED | `contracts/specs/BS-03-settings/BS-03-04-rules.md` 외 4개 | Rules 탭 Blind 편집 범위 외 주석, ConfigChanged 흐름 (간접) |
+| **CCR-017** wsop-parity (BlindDetailType 5타입 enum, dayIndex, isPause, Bit Flag RBAC 등) | ✅ APPLIED | `../specs/BS-03-settings/BS-03-04-rules.md` 외 4개 | Rules 탭 Blind 편집 범위 외 주석, ConfigChanged 흐름 (간접) |
 | **CCR-016** tech-stack-ssot (Lobby Quasar 확정 + BS-00 SSOT 문장 신설) | ✅ APPLIED | `contracts/specs/BS-00-definitions.md` | §1.1 Ownership & Boundary (Team 1 Quasar 기술 근거) |
-| **CCR-011** ge-ownership-move (Graphic Editor Team 4 → Team 1 Lobby 허브 이관) | ✅ APPLIED | `contracts/specs/BS-08-graphic-editor/BS-08-00~04`, `BS-00-definitions.md` | §1.1 GFX 탭 책임 확장 (rive-js 프리뷰 + GE 허브), Team 4 Overlay 렌더링 소비자 재정의 |
-| **CCR-025** bs03-graphic-settings-tab (BS-03-02-gfx 시각 asset 메타 확장) | ✅ APPLIED | `contracts/specs/BS-03-settings/BS-03-02-gfx.md` | §1.1 GFX 탭 Team 4 기여 필드 (BS-03-02 메타 참조) |
+| **CCR-011** ge-ownership-move (Graphic Editor Team 4 → Team 1 Lobby 허브 이관) | ✅ APPLIED | `../specs/BS-08-graphic-editor/BS-08-00~04`, `BS-00-definitions.md` | §1.1 GFX 탭 책임 확장 (rive-js 프리뷰 + GE 허브), Team 4 Overlay 렌더링 소비자 재정의 |
+| **CCR-025** bs03-graphic-settings-tab (BS-03-02-gfx 시각 asset 메타 확장) | ✅ APPLIED | `../specs/BS-03-settings/BS-03-02-gfx.md` | §1.1 GFX 탭 Team 4 기여 필드 (BS-03-02 메타 참조) |
 
 CCR 경로: `docs/05-plans/ccr-inbox/promoting/CCR-{011,016,017,025}-*.md`
 원본 drafts: `docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team1-20260410-{wsop-parity,tech-stack-ssot}.md`, `CCR-DRAFT-conductor-20260410-ge-ownership-move.md`, `CCR-DRAFT-team4-20260410-bs03-graphic-settings-tab.md`

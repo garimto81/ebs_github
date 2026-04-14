@@ -38,13 +38,6 @@ interface GeState {
   error: string | null;
 }
 
-const emptyMetadata: SkinMetadata = {
-  title: '',
-  description: '',
-  author: null,
-  tags: [],
-};
-
 export const useGeStore = defineStore('ge', {
   state: (): GeState => ({
     skins: {},
@@ -183,7 +176,7 @@ export const useGeStore = defineStore('ge', {
     },
 
     applyRemoteSkinUpdate(event: WsEventEnvelope): void {
-      if (event.event !== 'skin.updated' && event.event !== 'skin.activated') return;
+      if (event.event !== 'skin.updated' && event.event !== 'skin.activated' && event.event !== 'skin_updated') return;
       const skin = event.payload as Skin | undefined;
       if (!skin?.skin_id) return;
       this.skins[skin.skin_id] = skin;

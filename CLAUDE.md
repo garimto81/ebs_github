@@ -47,7 +47,7 @@ Team 0 — Conductor. 최상위 오케스트레이션, 계약 관리, 통합 테
 | `docs/05-plans/` | 로드맵, 이행 계획, CCR (승격본) | 계획 문서 |
 | `docs/05-plans/ccr-inbox/` | 팀 CCR 초안 inbox | 팀이 자기 팀 prefix draft 작성 |
 | `docs/06-reports/` | 완료 보고서 | 현황 추적 |
-| `docs/07-archive/` | PokerGFX 분석, legacy | 아카이빙 |
+| `C:/claude/ebs-archive-backup/07-archive/` | PokerGFX 분석, legacy | 아카이빙 |
 | `docs/mockups/`, `docs/images/` | 공유 그래픽 자산 | 모든 팀 참조 |
 | `docs/backlog.md` | **stub only** (분할 전환 완료) | 기존 파일은 pointer |
 | `docs/backlog/team{N}.md` | 팀별 PENDING 백로그 | 각 팀 쓰기, 타 팀 차단 |
@@ -349,26 +349,37 @@ contracts/
 
 ---
 
-## Spec Gap 프로세스 (CRITICAL)
+## Spec Gap 프로세스 (CRITICAL — CCR-first)
 
 구현 중 기획 문서에 명시되지 않은 판단 필요 시, **임의 구현 금지**.
 
-### 절차
+### 판정 → 절차 분기
 
-1. **Gap 문서 추가** → `{팀폴더}/qa/spec-gap.md`
+**1단계: contracts/ 변경이 동반되는가?** (L0 계약 — API/Data/Specs 수정 필요 여부)
+
+#### Path A — contracts/ 변경 필요 (기본 경로)
+
+1. **CCR-DRAFT 먼저 작성** (필수, 선행 조건)
+   - 경로: `docs/05-plans/ccr-inbox/CCR-DRAFT-teamN-YYYYMMDD-slug.md`
+   - 필수 필드: 제안팀, 영향팀 (빈 배열 금지), 변경 대상 파일, 변경 유형, 변경 근거
+   - 템플릿: `docs/05-plans/ccr-inbox/README.md`
+2. **임시 구현** 수행 (workaround 문서화)
+3. **QA Gap 문서**에는 **pointer만** 기록:
    ```markdown
-   ### GAP-L-001 Settings Graphic Editor 탭 표시/숨김
-   - **발견일**: 2026-04-10
-   - **심각도**: Medium
-   - **관련 문서**: contracts/specs/BS-03-settings/
-   - **누락 내용**: Graphic Editor 탭 노출 조건 미정
-   - **임시 구현**: 항상 표시 (Admin만 접근 가능)
-   - **기획 보강 요청**: BS-03에 "Operator/Viewer는 Graphic Editor 탭 숨김" 명시
+   ### GAP-XX-NNN {제목}
+   - **발견일**: YYYY-MM-DD
+   - **CCR**: `CCR-DRAFT-teamN-YYYYMMDD-slug.md` 제출됨 (Conductor 승격 대기)
+   - **임시 구현**: {workaround 1줄 요약}
+   - **Status**: OPEN (CCR 승격 대기)
    ```
+4. **Conductor 승격** → `contracts/` 실제 반영
+5. **QA Gap 문서 RESOLVED** 업데이트 (1회 최종 기록, contracts 반영 파일 인용)
 
-2. **임시 구현** 수행 (workaround 문서화 필수)
-3. **기획 보강** 또는 **CCR 제출** (심각도에 따라)
-4. **RESOLVED 처리** ← 기획 확정 후만
+#### Path B — 팀 내부 판단만 필요 (contracts/ 영향 없음)
+
+1. **QA Gap 문서에 직접 기록** (L1만, CCR 불필요)
+2. **임시 구현** 수행
+3. **팀 내부 결정** 후 RESOLVED
 
 ### Gap 문서 위치
 
@@ -381,6 +392,9 @@ contracts/
 
 **금지**:
 - Gap 문서 없이 workaround 코드 커밋
+- **contracts/ 변경이 필요한 Gap을 QA 문서에만 기록 금지** (CCR 누락 = 절차 위반)
+- **QA Gap 문서에 contracts 롤백 사유·경고 추가 이유를 장문 기재 금지** (CCR pointer로 축약. 장문 근거는 CCR-DRAFT 본문에만 기재)
+- "심각도에 따라 CCR 선택적" 해석 금지 — contracts 변경 수반 시 **심각도 무관 CCR 필수**
 - RESOLVED 처리 시 기획 문서 업데이트 없이 종료
 
 ---
@@ -466,7 +480,7 @@ contracts/
 |------|------|------|
 | **Foundation PRD** | `docs/01-strategy/PRD-EBS_Foundation.md` | EBS Core 아키텍처 정의 |
 | **Production Plan** | `docs/00-reference/2026-WSOP-Production-Plan-V2.pdf` | WSOP 프로덕션 원본 |
-| **PokerGFX 역설계** | `docs/07-archive/legacy-repos/ebs_reverse/docs/02-design/pokergfx-reverse-engineering-complete.md` | 벤치마크 |
+| **PokerGFX 역설계** | `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_reverse/docs/02-design/pokergfx-reverse-engineering-complete.md` | 벤치마크 |
 | **PokerGFX User Manual** | `docs/00-reference/PokerGFX-User-Manual.md` | 사용자 매뉴얼 (152KB) |
 | **Field Registry** | `docs/00-reference/field-registry.json` | 설정 필드 소유권 SSOT |
 
@@ -484,14 +498,14 @@ contracts/
 
 | 레포 | 아카이브 위치 |
 |------|-------------|
-| ebs_reverse | `docs/07-archive/legacy-repos/ebs_reverse/` |
-| ebs_reverse_app | `docs/07-archive/legacy-repos/ebs_reverse_app/` |
-| ebs_app | `docs/07-archive/legacy-repos/ebs_app-README.md` |
-| ebs_bo | `docs/07-archive/legacy-repos/ebs_bo-README.md` |
-| ebs_ecosystem | `docs/07-archive/legacy-repos/ebs_ecosystem/` |
-| ebs_github | `docs/07-archive/legacy-repos/ebs_github/` |
-| ebs_poc | `docs/07-archive/legacy-repos/ebs_poc/` |
-| ebs_table | `docs/07-archive/legacy-repos/ebs_table/` |
+| ebs_reverse | `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_reverse/` |
+| ebs_reverse_app | `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_reverse_app/` |
+| ebs_app | `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_app-README.md` |
+| ebs_bo | `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_bo-README.md` |
+| ebs_ecosystem | `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_ecosystem/` |
+| ebs_github | `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_github/` |
+| ebs_poc | `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_poc/` |
+| ebs_table | `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_table/` |
 
 ---
 

@@ -473,7 +473,7 @@
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-029-*.md`
 - **제안팀**: team4
-- **변경 대상**: `contracts/specs/BS-05-command-center/BS-05-00-overview.md, contracts/api/API-01-backend-endpoints.md`
+- **변경 대상**: `contracts/specs/BS-05-command-center/BS-05-00-overview.md, contracts/api/API-01-backend-api.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 

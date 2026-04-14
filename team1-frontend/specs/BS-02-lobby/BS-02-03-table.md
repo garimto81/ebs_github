@@ -10,7 +10,7 @@
 
 Table은 **GUI status**(TableFSM, 5 상태)와 **`is_pause`**(bool, 일시정지 여부)를 **직교하는 두 축**으로 관리한다. "LIVE이면서 일시정지(브레이크/카메라 리셋/중재)" 같은 케이스를 표현하기 위해 단순 enum 확장 대신 축 분리 방식을 채택한다.
 
-> **참조**: Table 엔티티 필드는 `contracts/data/DATA-02-entities.md §1.5`.
+> **참조**: Table 엔티티 필드는 `contracts/data/DATA-04-db-schema.md §1.5`.
 
 ---
 
@@ -133,6 +133,6 @@ Table 상태 변경은 `ConfigChanged` 또는 `TableStatusChanged` WebSocket 이
 ## 6. 연관 문서
 
 - `BS-00-definitions.md §3.1` — TableFSM 정의
-- `DATA-02-entities.md §1.5` — Table 필드 정의
+- `DATA-04-db-schema.md §1.5` — Table 필드 정의
 - `BS-03-04-rules.md §5.1` — Late Reg 타이머 계산
 - `CCR-017` — 본 문서 신설 근거

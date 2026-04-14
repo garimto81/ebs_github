@@ -8,18 +8,17 @@ import { beforeAll, afterEach, afterAll } from 'vitest';
 import { config } from '@vue/test-utils';
 import { Quasar } from 'quasar';
 import { createI18n } from 'vue-i18n';
-// import { server } from 'src/mocks/server'; // will be ported by vue-porter
+import { server } from 'src/mocks/server';
 
 // MSW lifecycle
-// beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }));
-// afterEach(() => server.resetHandlers());
-// afterAll(() => server.close());
+beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }));
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
 // Quasar plugin install
 config.global.plugins = config.global.plugins || [];
 
 try {
-  // @ts-expect-error minimal i18n stub for tests (real messages loaded per-test if needed)
   const i18n = createI18n({ locale: 'ko', legacy: false, messages: { ko: {} } });
   config.global.plugins.push([Quasar, { plugins: {} }], i18n);
 } catch {

@@ -30,3 +30,7 @@ export function update(
 export function remove(id: number): Promise<ApiResponse<null>> {
   return del<null>(`/users/${id}`);
 }
+
+export function forceLogout(id: number): Promise<ApiResponse<null>> {
+  return post<null>(`/users/${id}/force-logout`);
+}

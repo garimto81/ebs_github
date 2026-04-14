@@ -40,12 +40,23 @@ tools/morning-automation/data/*.txt
 Media/
 docs/00-reference/images/overlays/**/*.mp4
 
-# 레거시 staging 경로 재생성 방지 (docs/07-archive/legacy-repos/ 사용)
+# 레거시 staging 경로 재생성 방지 (2026-04-14: 07-archive 외부 백업 이동)
 archive/
+docs/07-archive/
+
+# Dart 빌드 캐시 (2026-04-14: git 추적 해제)
+**/.dart_tool/
 
 # 임시/테스트 결과
 .tmp/
 test-results/
+
+# ssot-align runtime artifacts (Stage A plan / Stage B cache / Stage C diff / state)
+tools/.ssot-align-cache/
+tools/.ssot-align-plan.json
+tools/.ssot-align-diff/
+tools/.ssot-align-state.json
+tools/.ssot-align-report.md
 
 # PokerGFX 디컴파일 아카이브 (저작권 보호)
 docs/01_PokerGFX_Analysis/07_Decompiled_Archive/Server/

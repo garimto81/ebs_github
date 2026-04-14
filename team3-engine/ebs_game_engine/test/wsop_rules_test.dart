@@ -80,7 +80,7 @@ void main() {
       // P2 has only 130 chips left, goes all-in (currentBet will be 130)
       // raiseSize = 130 - 100 = 30, which is < minRaise (100) → incomplete
       state.seats[2].stack = 130;
-      final result = BettingRules.applyAction(state, 2, const AllIn());
+      final result = BettingRules.applyAction(state, 2, const AllIn(0));
 
       expect(result.seats[2].status, SeatStatus.allIn);
       expect(result.seats[2].currentBet, 130);
@@ -99,7 +99,7 @@ void main() {
 
       // P2 has 300 chips, goes all-in (raiseSize = 300 - 100 = 200 >= minRaise 100)
       state.seats[2].stack = 300;
-      final result = BettingRules.applyAction(state, 2, const AllIn());
+      final result = BettingRules.applyAction(state, 2, const AllIn(0));
 
       expect(result.seats[2].status, SeatStatus.allIn);
       expect(result.betting.currentBet, 300);
@@ -121,7 +121,7 @@ void main() {
 
       // P2 short all-in (50 chips, raiseSize = 50-100 < 0 → not a raise at all)
       state.seats[2].stack = 50;
-      final result = BettingRules.applyAction(state, 2, const AllIn());
+      final result = BettingRules.applyAction(state, 2, const AllIn(0));
 
       // P2's all-in doesn't exceed currentBet, so no reopen logic triggered
       expect(result.seats[2].status, SeatStatus.allIn);

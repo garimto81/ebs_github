@@ -1,0 +1,25 @@
+{
+  "$schema_version": 1,
+
+  "_comment_adapter": "null/absent = inherit from detect.js (package.json → vitest)",
+  "_comment_commands": "omit 'commands' entirely to inherit all. Include only keys you want to override or disable (explicit null = disable stage).",
+
+  "coverage_summary_path": "coverage/coverage-summary.json",
+
+  "gates": {
+    "coverage_global_min": 70,
+    "coverage_critical_files": [
+      { "path": "src/stores/authStore.ts",   "min": 90, "reason": "Auth/2FA/session restore — security-critical" },
+      { "path": "src/stores/wsStore.ts",     "min": 90, "reason": "CCR-021 WS seq validation + replay" },
+      { "path": "src/stores/lobbyStore.ts",  "min": 90, "reason": "Series/Event/Flight/Table state + rebalance" },
+      { "path": "src/boot/axios.ts",         "min": 90, "reason": "CCR-019 Idempotency-Key auto injection" }
+    ],
+    "fail_on_missing_test_file": false,
+    "act_loop_max": 5,
+    "require_e2e_on_phase_0_4": false,
+    "test_timeout_sec": 300,
+    "hooks": {
+      "post_edit_test_runner": true
+    }
+  }
+}

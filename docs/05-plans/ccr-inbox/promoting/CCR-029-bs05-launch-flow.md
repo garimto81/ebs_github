@@ -7,7 +7,7 @@
 | **제안일** | 2026-04-10 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team1, team2 |
-| **변경 대상** | `contracts/specs/BS-05-command-center/BS-05-00-overview.md`<br/>`contracts/api/API-01-backend-endpoints.md` |
+| **변경 대상** | `contracts/specs/BS-05-command-center/BS-05-00-overview.md`<br/>`contracts/api/API-01-backend-api.md` |
 | **변경 유형** | modify |
 
 ## 변경 근거
@@ -17,7 +17,7 @@
 ## 적용된 파일
 
 - `contracts/specs/BS-05-command-center/BS-05-00-overview.md`
-- `contracts/api/API-01-backend-endpoints.md`
+- `contracts/api/API-01-backend-api.md`
 
 ## 원본 Draft
 

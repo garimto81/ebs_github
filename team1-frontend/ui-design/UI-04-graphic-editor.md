@@ -42,11 +42,11 @@ CCR-011 `ge-ownership-move` APPLIED 로 Graphic Editor 허브의 소유권이 Te
 
 참조 계약:
 
-- `contracts/specs/BS-08-graphic-editor/BS-08-00-overview.md` — 역할·페르소나·use case
-- `contracts/specs/BS-08-graphic-editor/BS-08-01-import-flow.md` — 업로드 FSM (GEI-01~08)
-- `contracts/specs/BS-08-graphic-editor/BS-08-02-metadata-editing.md` — 편집 FSM + PATCH (GEM-01~25)
-- `contracts/specs/BS-08-graphic-editor/BS-08-03-activate-broadcast.md` — Activate FSM + WS (GEA-01~06)
-- `contracts/specs/BS-08-graphic-editor/BS-08-04-rbac-guards.md` — RBAC gate (GER-01~05)
+- `../specs/BS-08-graphic-editor/BS-08-00-overview.md` — 역할·페르소나·use case
+- `../specs/BS-08-graphic-editor/BS-08-01-import-flow.md` — 업로드 FSM (GEI-01~08)
+- `../specs/BS-08-graphic-editor/BS-08-02-metadata-editing.md` — 편집 FSM + PATCH (GEM-01~25)
+- `../specs/BS-08-graphic-editor/BS-08-03-activate-broadcast.md` — Activate FSM + WS (GEA-01~06)
+- `../specs/BS-08-graphic-editor/BS-08-04-rbac-guards.md` — RBAC gate (GER-01~05)
 - `contracts/api/API-07-graphic-editor.md` — 8 엔드포인트
 - `contracts/data/DATA-07-gfskin-schema.md` — `.gfskin` ZIP 포맷 + JSON Schema
 - CCR-011, CCR-012, CCR-013, CCR-014, CCR-015, CCR-025 (APPLIED)
@@ -881,7 +881,7 @@ CCR 원문 경로 (읽기 전용 참조):
 | `team1-frontend/ui-design/UI-A1-architecture.md` | 라우터(§2.1), `useGeStore`(§3.2.4), axios Idempotency-Key(§4.3), WS seq 검증(§5) |
 | `team1-frontend/ui-design/UI-01-lobby.md` | Lobby 사이드바에서 GE 메뉴 진입점 |
 | `team1-frontend/ui-design/UI-03-settings.md` | 비시각 Settings(Game/Stats/Output)와 GE의 경계 (CCR-025) |
-| `contracts/specs/BS-08-graphic-editor/BS-08-00~04.md` | 행동 명세 SSOT (변경 금지, CCR 경유) |
+| `../specs/BS-08-graphic-editor/BS-08-00~04.md` | 행동 명세 SSOT (변경 금지, CCR 경유) |
 | `contracts/api/API-07-graphic-editor.md` | 8 엔드포인트 계약 |
 | `contracts/data/DATA-07-gfskin-schema.md` | `.gfskin` 포맷 + JSON Schema SSOT |
 | `contracts/api/API-05-websocket-events.md` | `skin_updated` 이벤트 정의 |

@@ -24,7 +24,10 @@
       "pages/*": ["src/pages/*"],
       "assets/*": ["src/assets/*"],
       "stores/*": ["src/stores/*"],
-      "api/*": ["src/api/*"]
+      "api/*": ["src/api/*"],
+      "boot/*": ["src/boot/*"],
+      "#q-app": ["./node_modules/@quasar/app-vite/types/index.d.ts"],
+      "#q-app/wrappers": ["./node_modules/@quasar/app-vite/types/app-wrappers.d.ts"]
     }
   },
   "include": [

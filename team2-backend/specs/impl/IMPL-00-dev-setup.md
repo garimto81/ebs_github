@@ -99,7 +99,7 @@ Phase 1 POC에서는 RFID 하드웨어 없이 Mock 모드로 개발:
 | 컴포넌트 | Mock 방법 |
 |----------|----------|
 | RFID HAL | `MockRfidReader` DI 교체 (IMPL-05 참조) |
-| WSOP LIVE API | Mock 서버 또는 seed 데이터 (DATA-06 참조) |
+| WSOP LIVE API | Mock 서버 또는 seed 데이터 (`team2-backend/seed/README.md` 참조) |
 
 ## 참조
 
@@ -108,4 +108,4 @@ Phase 1 POC에서는 RFID 하드웨어 없이 Mock 모드로 개발:
 | 기술 스택 | `docs/impl/IMPL-01-tech-stack.md` |
 | 프로젝트 구조 | `docs/impl/IMPL-02-project-structure.md` |
 | DI 패턴 | `docs/impl/IMPL-05-dependency-injection.md` |
-| 시드 데이터 | `contracts/data/DATA-06-seed-data.md` |
+| 시드 데이터 | `team2-backend/seed/README.md` |

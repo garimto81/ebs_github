@@ -73,7 +73,7 @@ export const useAuthStore = defineStore('auth', {
         return {
           success: false,
           requires2fa: false,
-          errorCode: res.error?.code,
+          ...(res.error?.code !== undefined && { errorCode: res.error.code }),
           errorMessage: msg,
         };
       } catch (err) {

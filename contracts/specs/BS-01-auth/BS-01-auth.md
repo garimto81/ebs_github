@@ -9,6 +9,10 @@
 | 2026-04-09 | GAP-L-001 보강 | 세션 관리 A-20(앱 재방문 토큰 검증), A-21(로그인 페이지 진입 조건) 추가 |
 | 2026-04-10 | CCR-006 | JWT Access/Refresh 만료 정책 환경별 차등 명시 (`## Session & Token Lifecycle` 섹션 신설) |
 | 2026-04-13 | CCR promote 반영 | Refresh Token 전달 방식을 환경별 조건부로 변경 (dev~prod: JSON body, live: HttpOnly Cookie). API-06 `refresh_token_delivery` 필드와 정합 |
+| 2026-04-13 | CCR-017 통합 | BS-01-02-rbac.md Permission Bit Flag 섹션 흡수. 역할 정의 중복 제거. |
+| 2026-04-14 | CCR-048 | 2FA Level 4-단계(Off/Low/Medium/High), 자동 잠금 10회 실패, Refresh Token TTL 48h 명시. WSOP LIVE GGPass 정렬 (SSOT Page 1972863063, 2202861710) |
+| 2026-04-14 | CCR-052 | Rate Limiting 정책 섹션 신설 (카테고리별 한계, 응답 헤더, 저장소 전략, IP whitelist). OWASP + WSOP LIVE 준거 |
+| 2026-04-14 | CCR-053 | Provisioning 전략 (Phase별 유저 생성 방식) + Suspend vs Lock 의미 차이 섹션 신설. WSOP LIVE Staff 패턴 정렬 (SSOT Page 1597768061) |
 
 ---
 
@@ -187,22 +191,21 @@
 | **Operator** | 할당 테이블 읽기 | 할당 테이블만 Launch 가능 | 접근 불가 (403) |
 | **Viewer** | 읽기 전용 | Launch 불가 (읽기 전용) | 접근 불가 (403) |
 
-### 역할 × 엔티티 × CRUD 권한
+### 역할 × 리소스 × 권한 (비트값·CRUD 통합)
 
-| 엔티티 | Admin | Operator | Viewer |
-|--------|:-----:|:--------:|:------:|
-| Series | CRUD | R | R |
-| Event | CRUD | R | R |
-| Flight | CRUD | R | R |
-| Table | CRUD | R (할당 테이블) | R |
-| Player | CRUD | RU (할당 테이블) | R |
-| Seat | CRUD | RU (할당 테이블) | R |
-| Hand | CRUD | CR (할당 테이블) | R |
-| Config (Settings) | CRUD | — | — |
-| BlindStructure | CRUD | R | R |
-| User (계정) | CRUD | R (본인만) | R (본인만) |
+| 리소스 | Admin | Operator(할당) | Operator(타) | Viewer |
+|--------|:-----:|:--------------:|:------------:|:------:|
+| Series / Event / Flight | 7 (CRUD) | 1 (R) | 1 (R) | 1 (R) |
+| Table | 7 (CRUD) | 3 (RW) | 1 (R) | 1 (R) |
+| Seat / Player | 7 (CRUD) | 7 (CRUD) | 1 (R) | 1 (R) |
+| Hand | 7 (CRUD) | 3 (CR) | 1 (R) | 1 (R) |
+| Settings.Rules / Outputs | 7 (CRUD) | 3 (RW) | 1 (R) | 1 (R) |
+| Settings.GFX / Display | 7 (CRUD) | 1 (R) | 1 (R) | 1 (R) |
+| BlindStructure | 7 (CRUD) | 1 (R) | 1 (R) | 1 (R) |
+| User (계정) | 7 (CRUD) | 1 (R, 본인만) | 1 (R, 본인만) | 1 (R, 본인만) |
+| Graphic Editor (BS-08) | 7 (CRUD) | 1 (R) | 1 (R) | **0** (차단) |
 
-> **C** = Create, **R** = Read, **U** = Update, **D** = Delete
+> 비트: `1`=Read, `2`=Write, `4`=Delete, 조합: `3`=RW, `7`=RWD(전체). 상세: `## Permission Bit Flag`
 
 ### 세션 상태 × 인증 상태 × 시스템 반응
 
@@ -355,6 +358,62 @@
 
 ---
 
+## Permission Bit Flag (CCR-017)
+
+WSOP LIVE parity를 위해 문자열 역할과 **별도로** 비트 플래그로 리소스별 세분화된 권한을 표현한다. 기존 코드는 `role` 문자열을, 신규 코드는 `permission` 비트를 사용해 점진 마이그레이션한다.
+
+### 비트 정의
+
+```
+None   = 0   // 접근 차단
+Read   = 1   // 조회
+Write  = 2   // 생성/수정
+Delete = 4   // 삭제
+```
+
+| 값 | 2진 | 의미 |
+|---:|-----|------|
+| 0 | 000 | None (접근 차단) |
+| 1 | 001 | Read only |
+| 3 | 011 | Read + Write |
+| 7 | 111 | Read + Write + Delete (full) |
+
+### 판정 코드
+
+```typescript
+// 올바른 사용 — 비트 연산
+if ((user.permission & Permission.Write) !== 0) showEditButton();
+
+// 금지 — 폐기된 문자열 비교
+// if (user.role === 'admin' || user.role === 'operator') { ... }
+```
+
+### 서버 판정 로직
+
+```python
+def compute_permission(user: User, resource: str) -> int:
+    if user.role == "admin":
+        return 7  # full
+    if user.role == "operator":
+        if is_own_table_resource(user, resource):
+            return TABLE_RESOURCE_PERMISSIONS[resource]  # 위 매트릭스 참조
+        return 1  # 타 테이블 = read only
+    if user.role == "viewer":
+        return 0 if resource == "graphic_editor" else 1
+    return 0
+```
+
+### 마이그레이션 단계
+
+| Phase | 내용 |
+|:-----:|------|
+| 1 | JWT payload에 `permission` 정수 필드 추가 (기존 코드 영향 없음) |
+| 2 | 클라이언트 UI 게이트 → 비트 연산으로 교체 |
+| 3 | 서버 권한 판정 → 비트 기반 전환 |
+| 4 | `role` 문자열은 로깅·표시 용도만 유지 |
+
+---
+
 ## Session & Token Lifecycle (CCR-006)
 
 > **근거**: WSOP Staff App `Auth.md` 의 `expires_in: 43200초(12h)` 기준을 참조하여, 14-16시간 연속 방송 시나리오에서 과도한 refresh 오버헤드와 WebSocket 재연결 리스크를 피하고, 동시에 사무/개발 환경의 짧은 노출 창을 보장한다. Phase별·환경별로 차등 적용한다.
@@ -423,6 +482,8 @@
 | `expires_at` | string (ISO 8601) | Access Token 만료 시각 (절대시간) |
 | `refresh_expires_in` | int (seconds) | Refresh Token 유효 기간 (기본 604800 = 7d) |
 | `auth_profile` | string | `dev`/`staging`/`prod`/`live` 중 하나 (클라이언트 UX 분기용) |
+| `permission` | int | 비트 플래그 기본값 (리소스별 세분화는 API 호출 시 확정). 상세: `## Permission Bit Flag` |
+| `assigned_tables` | string[] | Operator 전용. write 가능한 테이블 ID 목록. Admin·Viewer는 빈 배열 |
 
 > 상세 응답 샘플과 에러 코드는 `API-06-auth-session.md §CCR-006` 참조.
 
@@ -440,6 +501,7 @@
 | `AUTH_TOKEN_INVALID` | 401 | "인증 오류. 다시 로그인하세요" | 서명 불일치 상세 |
 | `AUTH_UNAUTHORIZED` | 401 | "로그인이 필요합니다" | 토큰 누락 |
 | `AUTH_FORBIDDEN` | 403 | "접근 권한이 없습니다" | 요청 역할 + 요청 엔드포인트 |
+| `AUTH_PERMISSION_DENIED` | 403 | "이 작업에 필요한 권한이 없습니다" | `required_permission`, `current_permission`, `resource` 포함 |
 | `AUTH_TABLE_NOT_ASSIGNED` | 403 | "할당되지 않은 테이블입니다" | Operator ID + 요청 테이블 ID |
 | `AUTH_2FA_INVALID` | 401 | "인증 코드가 올바르지 않습니다" | 실패 횟수 |
 | `AUTH_RESET_LINK_EXPIRED` | 401 | "재설정 링크가 만료되었습니다. 다시 요청하세요" | 링크 생성 시각 + 만료 시각 |
@@ -459,6 +521,124 @@
 
 ---
 
+## 2FA Level 정책 (CCR-048, WSOP LIVE GGPass 준거)
+
+> SSOT: Confluence Page 1972863063 (GGPass 4-level 2FA). WSOP LIVE 는 Off/Low/Medium/High 4-단계 정책을 표준화.
+
+| Level | 의미 | 동작 | 적용 범위 |
+|:---:|---|---|---|
+| 0 (Off) | 비활성 | 비밀번호만 요구 | Phase 1 기본값 |
+| 1 (Low) | 알림 | 로그인 성공 시 이메일/SMS 알림 | 신규 기기 감지 |
+| 2 (Medium) | 의심 로그인 시 2FA | 새 IP/기기/지역 감지 시 2FA 요구 | 위험 기반 |
+| 3 (High) | 모든 로그인 2FA | 매 로그인 TOTP/Email/SMS 요구 | Admin 계정 권장 |
+
+**2FA 방식** (WSOP LIVE 준거):
+- Email OTP
+- Mobile SMS
+- Google OTP (TOTP)
+- Trusted Device: 특정 기기 2FA 스킵 가능 (30일). **Phase 1 미구현**, Phase 2 도입.
+
+---
+
+## 자동 잠금 정책 (CCR-048, CCR-052)
+
+> SSOT: Confluence Page 1972863063. WSOP LIVE 는 비밀번호 10회 연속 실패 시 자동 잠금.
+
+- **비밀번호 실패 10회 연속** → `users.is_locked = true`
+- **2FA 실패 10회 연속** → 동일 Lock
+- **5분 내 토큰 refresh 50회 초과** → 의심 활동, `is_locked=true` + Admin 알림
+- 해제 경로: Forgot Password 플로우 또는 Admin 수동 Unlock
+- 실패 카운터: `users.failed_login_count`, `users.last_failed_at` (Phase 2 신설)
+- 성공 로그인 시 카운터 리셋
+
+> **비고**: "5회 연속 실패 → 30분 잠금" 종전 정책은 레거시. CCR-048 반영 후 10회 실패 자동 잠금으로 상향 정렬.
+
+---
+
+## Refresh Token TTL (CCR-048)
+
+- **48시간** (WSOP LIVE 현행 정책, SSOT Page 2202861710)
+- Access Token: 환경별 TTL 유지 (CCR-006)
+- Refresh 시 rotation (기존 refresh token 블랙리스트 추가)
+
+> 기존 Refresh TTL 7일 정책은 EBS 초기 값. CCR-048 반영 후 WSOP LIVE 48h 로 정렬한다. 환경별 플래그로 덮어쓸 수 있다.
+
+---
+
+## Rate Limiting 정책 (CCR-052)
+
+> **정렬 기준**:
+> - WSOP LIVE: IP whitelist (GGPass, SSOT Page 1975582764) + 비밀번호 10회 실패 자동 잠금 (Page 1972863063)
+> - OWASP API Security Top 10 #4 (Unrestricted Resource Consumption)
+> - WSOP LIVE 엔드포인트별 수치 정책 부재 → 아래 표는 EBS 독자 정의 (이유: 보안 기본값 명시 필수)
+
+### 엔드포인트 카테고리별 정책
+
+| 카테고리 | 한계치 | 범위 | 실패 응답 | 적용 엔드포인트 예시 |
+|---|---|---|---|---|
+| **인증 (로그인)** | 5회/분 + 10회 실패 자동 잠금 | per IP + per email | 429 + `Retry-After: 60` | `/auth/login`, `/auth/verify-2fa` |
+| **인증 (토큰)** | 10회/분 | per user | 429 + `Retry-After: 60` | `/auth/refresh`, `/auth/logout` |
+| **인증 (Password Reset)** | 3회/시간 | per email | 429 + `Retry-After: 3600` | `/auth/password/reset/send` |
+| **쓰기 (POST/PUT/DELETE)** | 60회/분 | per user | 429 + `Retry-After: 60` | 전체 RW 엔드포인트 |
+| **읽기 (GET)** | 300회/분 | per user | 429 + `Retry-After: 60` | 전체 R 엔드포인트 |
+| **WebSocket 메시지** | 100msg/초 | per connection | 연결 종료 + Error 이벤트 | `/ws/cc`, `/ws/lobby` |
+| **WebSocket 연결** | 10 connections | per user | 429 connection rejected | 재연결 폭주 방어 |
+| **Sync (내부)** | 동시 1 작업 | per entity_type | Skip (lock wait) | 내부 polling worker |
+
+### 응답 헤더 (표준)
+
+| 헤더 | 값 예시 | 설명 |
+|---|---|---|
+| `X-RateLimit-Limit` | 60 | 카테고리 한계 |
+| `X-RateLimit-Remaining` | 12 | 남은 요청 수 |
+| `X-RateLimit-Reset` | 1712345678 | Unix timestamp (초) |
+| `Retry-After` | 60 | 429 응답 시만 |
+
+### 저장소 전략
+
+| Phase | 저장소 | 근거 |
+|---|---|---|
+| Phase 1 | in-memory (`slowapi` 또는 custom) | 단일 인스턴스 운영 |
+| Phase 2+ | Redis (`SET counter:{key} ... EX ...`) | 다중 인스턴스 horizontal scaling |
+
+### IP Whitelist (Admin 전용)
+
+> WSOP LIVE GGPass External API IP whitelist 패턴 준거. Phase 2+ 에서 특정 Admin 엔드포인트(`/users/*/suspend`, `/users/*/lock`, DB 관리 등)는 사내 VPN IP 대역만 허용. 환경변수 `ADMIN_IP_WHITELIST` 로 관리.
+
+### 관측(Observability)
+
+- `rate_limit_exceeded` 이벤트 → `audit_events` 기록 (event_type, endpoint, user_id, ip, count)
+- Prometheus 메트릭 노출: `http_rate_limit_rejected_total{endpoint, reason}`
+
+---
+
+## Provisioning — 유저 생성 전략 (CCR-053, Phase별)
+
+> SSOT: Confluence Page 1597768061. WSOP LIVE Staff App 에는 POST/DELETE 엔드포인트가 없고 외부 조직 시스템이 유저를 provisioning 한다. EBS 는 Phase 단계적 정렬.
+
+| Phase | 유저 생성 방식 | 근거 |
+|:---:|---|---|
+| Phase 1 (현행) | Admin 수동 + 초기 seed 스크립트 | 조직 통합 전, 소규모 운영 |
+| Phase 2 | Google OAuth 자동 생성 (`allowed_email_domains` whitelist) | Vegas 운영, 조직 계정 연동 |
+| Phase 3 | WSOP LIVE Staff 단방향 동기화 | 완전 통합 |
+
+---
+
+## Suspend vs Lock 의미 차이 (CCR-053)
+
+> SSOT: Confluence Page 1597768061. WSOP LIVE Staff 는 `isSuspended`, `isLocked` 두 플래그를 독립 관리.
+
+| 항목 | Suspend | Lock |
+|---|---|---|
+| 트리거 | Admin 수동 결정 | 보안 위반 자동 or Admin 수동 |
+| 사유 | 휴가, 일시 부재, 역할 재배치 대기 | 비밀번호 10회 실패, 의심 접근, 징계 |
+| 해제 | Admin Un-suspend | Admin Unlock (자동 해제 없음) |
+| `is_active` 영향 | 독립 | 독립 |
+| 로그인 응답 | 401 `SUSPENDED` | 401 `LOCKED` |
+| 동시 적용 | Suspend + Lock 동시 가능 (둘 중 하나라도 true 면 차단) | 동일 |
+
+---
+
 ## 영향 받는 요소
 
 | 영향 대상 | 관계 |
@@ -469,3 +649,4 @@
 | BO-02 User Management | 계정 CRUD, 역할 할당, 비활성화 |
 | BO-08 Audit Log | 로그인/로그아웃/역할 변경/잠금 이벤트 기록 |
 | Foundation PRD Ch.8 | RBAC 3역할 정의 원본 |
+| BS-08-04 rbac-guards | Graphic Editor RBAC 특화 규칙 (Viewer = permission 0) |

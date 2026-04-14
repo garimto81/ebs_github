@@ -164,7 +164,7 @@ EBS가 Layer 2 일부를 자동화로 확장할 수 있는 영역:
 - BS-07-00-overview §3 Layer 1 그래픽 8종
 - Foundation PRD v41.0.0 Ch.6 Layer 구조
 - BS-05-07-statistics §방송 GFX Push (Layer 2로의 데이터 제공)
-- API-01-backend-endpoints §Stats 엔드포인트 (Layer 2 소비자)
+- API-01-backend-api §Stats 엔드포인트 (Layer 2 소비자)
 - BS-07-07-security-delay §Security Delay (Action Badge 적용)
 ```
 

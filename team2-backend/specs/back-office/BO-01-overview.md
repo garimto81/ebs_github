@@ -4,6 +4,7 @@
 |------|------|------|
 | 2026-04-08 | 신규 작성 | BO 전체 범위, 3-앱 관계, 데이터 흐름, 기술 스택 정의 |
 | 2026-04-09 | 구조 축소 | BS/API/DATA 중복 제거, 고유 콘텐츠만 잔류 |
+| 2026-04-14 | PRD 중복 정리 | PRD-EBS_BackOffice의 §개요와 겹치던 "중앙 데이터 계층" 단락을 BO-01에서만 유지 (아키텍처 관점 전담) |
 
 ---
 
@@ -98,7 +99,7 @@ flowchart LR
 
 > API 엔드포인트: API-01 Backend Endpoints
 > WebSocket 이벤트: API-05 WebSocket Events
-> 데이터 모델: DATA-02 Entities
+> 데이터 모델: DATA-04 Entities
 > 인증/보안: API-06 Auth & Session
 > 동기화 프로토콜: BO-02 Sync Protocol
 > 감사/리포팅: BO-03 Operations

@@ -4,8 +4,7 @@
 |------|------|------|
 | 2026-04-08 | 신규 작성 | Riverpod DI 전략, RFID HAL 교체, BO URL 주입, 테스트 Mock 패턴 |
 | 2026-04-10 | BO 신뢰성 DI 추가 | Redis client, distributed lock provider, idempotency store, circuit breaker registry, audit event repository (IMPL-10 §3~§7 정합) |
-| 2026-04-10 | CCR 의존 DI 축소 | `idempotency_store`(CCR-003), `saga_orchestrator`(CCR-010), `audit_repo`(CCR-001) 행은 CCR 승인 후 추가. 독립 영역(Redis, distributed_lock, circuit_breaker, wsop_live_client)만 유지 |
-| 2026-04-10 | CCR 활성화 (반영 완료) | CCR-001/003/006/010 contracts 반영 완료. `get_idempotency_store`, `get_audit_repo`, `get_saga_orchestrator` DI 복원. AUTH_PROFILE/JWT_ACCESS_TTL_S 환경변수 복원 |
+| 2026-04-10 | CCR-001/003/006/010 반영 | contracts 반영 완료 — `get_idempotency_store`, `get_audit_repo`, `get_saga_orchestrator` DI + AUTH_PROFILE/JWT_ACCESS_TTL_S 환경변수 확정. 독립 영역(Redis, distributed_lock, circuit_breaker, wsop_live_client)과 통합 (중간 "의존 축소" 단계는 git log 참조) |
 
 ---
 

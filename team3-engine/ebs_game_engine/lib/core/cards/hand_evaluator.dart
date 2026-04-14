@@ -313,6 +313,107 @@ class HandEvaluator {
     return true;
   }
 
+  /// Best Lowball 2-7 hand from N cards.
+  /// A = High (14). Straights and flushes count against you (make hand worse).
+  /// Best hand: 7-5-4-3-2 offsuit.
+  /// The "weakest" standard poker hand wins.
+  static HandRank bestLowball27(List<Card> cards) {
+    assert(cards.length >= 5, 'Need at least 5 cards');
+
+    HandRank? best;
+    for (final combo in _combinations(cards, 5)) {
+      final rank = _evaluate5(combo, HandCategory.standardOrder);
+      // In 2-7 lowball, the worst standard hand is the best.
+      // We invert comparison: lower standard rank = better lowball hand.
+      if (best == null || rank.compareTo(best) < 0) {
+        best = rank;
+      }
+    }
+
+    // Convert to lowball ranking: invert strength so lower poker hand = higher lowball rank.
+    // Use kickers inverted (lower values = better in lowball).
+    final loKickers = best!.kickers.map((k) => 15 - k).toList();
+    // Invert strength: weaker poker category = stronger lowball
+    final loStrength = HandCategory.standardOrder.length + 1 - best.strength;
+
+    return HandRank(
+      category: best.category,
+      kickers: loKickers,
+      strength: loStrength,
+    );
+  }
+
+  /// Best Lowball A-5 hand from N cards (no 8-or-better restriction).
+  /// A = Low (1). Straights and flushes are ignored.
+  /// Best hand: A-2-3-4-5 (Wheel).
+  static HandRank bestLowballA5(List<Card> cards) {
+    assert(cards.length >= 5, 'Need at least 5 cards');
+
+    HandRank? best;
+    for (final combo in _combinations(cards, 5)) {
+      final lo = _evaluateA5Lo(combo);
+      if (best == null || lo.compareTo(best) > 0) {
+        best = lo;
+      }
+    }
+    return best!;
+  }
+
+  /// Evaluate a 5-card A-5 lo hand (no qualifier).
+  /// Ace = 1, straights/flushes ignored. No pairs → pure low.
+  /// For hands with pairs, still evaluates but ranked worse.
+  static HandRank _evaluateA5Lo(List<Card> fiveCards) {
+    assert(fiveCards.length == 5);
+
+    // Convert to lo values (Ace = 1, others = face value)
+    final values = fiveCards
+        .map((c) => c.rank.value == 14 ? 1 : c.rank.value)
+        .toList()
+      ..sort();
+
+    // Check for pairs — hands with pairs are worse than non-pair hands
+    bool hasPairs = false;
+    for (var i = 0; i < values.length - 1; i++) {
+      if (values[i] == values[i + 1]) {
+        hasPairs = true;
+        break;
+      }
+    }
+
+    if (hasPairs) {
+      // Pair hands get strength 0, kickers inverted so lower is still better
+      final kickers = values.reversed.map((v) => 15 - v).toList();
+      return HandRank(category: HandCategory.highCard, kickers: kickers, strength: 0);
+    }
+
+    // No pairs: lower values = better.
+    // Invert so that lower raw values produce higher kicker values for compareTo.
+    final kickers = values.reversed.map((v) => 15 - v).toList();
+
+    return HandRank(
+      category: HandCategory.highCard,
+      kickers: kickers,
+      strength: 1,
+    );
+  }
+
+  /// Best 8-or-better low hand from N cards (C(N,5) combinations).
+  ///
+  /// Used by Stud Hi-Lo where all cards are hole cards (no Omaha constraint).
+  /// Ace = 1. No pairs. All five cards must be ≤ 8.
+  /// Returns null if no qualifying low hand exists.
+  static HandRank? bestLow8(List<Card> cards) {
+    assert(cards.length >= 5, 'Need at least 5 cards');
+    HandRank? best;
+    for (final combo in _combinations(cards, 5)) {
+      final lo = evaluateLo(combo);
+      if (lo != null && (best == null || lo.compareTo(best) > 0)) {
+        best = lo;
+      }
+    }
+    return best;
+  }
+
   /// Generate all combinations of size k from the list.
   static Iterable<List<T>> _combinations<T>(List<T> list, int k) sync* {
     if (k == 0) {

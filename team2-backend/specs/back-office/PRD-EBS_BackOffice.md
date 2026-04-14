@@ -5,16 +5,16 @@
 | 2026-04-09 | 신규 작성 | WSOP LIVE Staff Page BO 벤치마크 기반, 채택/제거 매트릭스, EBS 전용 추가, Phase별 로드맵 |
 | 2026-04-09 | BO 문서 축소 | 12개→3개 축소 (BS/API/DATA SSOT 중복 제거), §5 하위 문서 참조 갱신 |
 | 2026-04-10 | Chip Master Phase 경계 명시 | §1.2 Cashier 항목에 Phase 2+ 백로그 라벨 추가, WSOP LIVE 3종 실시간 이벤트 CCR 예정 명시 |
+| 2026-04-14 | 서두 정리 | §개요 BO-01과 중복되던 "중앙 데이터 계층" 단락 제거. PRD 고유 관점(채택/제거 결정 문서)만 유지 |
+| 2026-04-14 | L0 중복 제거 | §3.9 WSOP LIVE 폴링 주기 표 → 정본 pointer로 축약 (정본: contracts/api/API-01 Part II §7, BO-02 §5). PRD는 "왜 동기화하는가"만 유지 |
 
 ---
 
 ## 개요
 
-Back Office(BO)는 EBS의 **중앙 데이터 계층**이다. Lobby(웹)와 Command Center(Flutter)는 직접 연동되지 않으며, BO의 REST API + WebSocket + DB를 통해 간접으로 데이터를 공유한다.
+이 문서는 Back Office(BO) 기능 범위를 **WSOP LIVE Staff Page 벤치마크 기준으로 채택·제거·확장한 결정 문서**다. 아키텍처 정의는 `BO-01-overview.md`, 데이터 모델은 `contracts/data/DATA-01~06`, API 계약은 `contracts/api/API-01~06`을 정본으로 한다.
 
 **설계 원칙**: WSOP LIVE Staff Page의 BO 기능 중 **방송 테이블 운영에 필요한 것만 채택**하고, 토너먼트 운영/금융/KYC 등 EBS 범위 외 기능은 제거한다. RFID, 덱 등록, 출력 장비 등 **EBS 전용 기능을 추가**한다.
-
-> 상세 아키텍처: BO-01 Overview / API 계약: API-01~06 / 데이터 모델: DATA-01~06
 
 ---
 
@@ -183,7 +183,7 @@ FastAPI + SQLite(Phase 1~2) → PostgreSQL(Phase 3+), JWT → OAuth 인증, Dock
 | 통계 | — | VPIP, PFR, AGR, Win%, Cumulative P&L |
 | JSON Export | — | 핸드 기록 JSON 내보내기 (후편집용) |
 
-> 상세: BS-02 Lobby §Hand History, API-01 §Hands, DATA-02 §hands
+> 상세: BS-02 Lobby §Hand History, API-01 §Hands, DATA-04 §hands
 
 ### 3.6 시스템 설정 (글로벌 Config)
 
@@ -217,14 +217,9 @@ FastAPI + SQLite(Phase 1~2) → PostgreSQL(Phase 3+), JWT → OAuth 인증, Dock
 
 ### 3.9 WSOP LIVE 동기화 (API 폴링)
 
-| 항목 | WSOP LIVE | EBS |
-|------|----------|-----|
-| 방향 | — | WSOP LIVE → BO (단방향, 읽기 전용) |
-| 폴링 주기 | — | Series 1시간, Event/Flight 5분, Player 10분 |
-| `source` 필드 | — | `api` (동기화) / `manual` (수동 생성) 구분 |
-| Mock 데이터 | — | API 미연결 시 시드 데이터로 독립 운영 |
+WSOP LIVE는 EBS의 **외부 권위 데이터 소스**다. EBS는 WSOP LIVE API를 단방향 폴링하여 Series/Event/Flight/Player/Seat를 캐싱한다. API 미연결 환경(데모/테스트)에서는 Mock 시드로 독립 운영한다.
 
-> 상세: BO-02 Sync Protocol §WSOP LIVE, API-02 WSOP LIVE Integration
+> **상세 정본**: 폴링 주기·`source` 필드 규칙·UPSERT·Mock 시드 수량은 `contracts/api/API-01` Part II §7-15 (WSOP LIVE Integration) 및 BO-02 §5, §8 참조. PRD는 채택 결정만 명시.
 
 ### 3.10 리포팅 (통계/내보내기)
 
@@ -267,7 +262,7 @@ FastAPI + SQLite(Phase 1~2) → PostgreSQL(Phase 3+), JWT → OAuth 인증, Dock
 | ID | 제목 | 역할 |
 |----|------|------|
 | API-01 | Backend Endpoints | REST API 전체 카탈로그 (66개) |
-| API-02 | WSOP LIVE Integration | WSOP LIVE → BO 연동 계약 |
+| API-01 Part II | WSOP LIVE Integration | WSOP LIVE → BO 연동 계약 (API-01 §7-15) |
 | API-03 | RFID HAL Interface | RFID 리더 추상 인터페이스 |
 | API-04 | Overlay Output | CC→Overlay 데이터 흐름 |
 | API-05 | WebSocket Events | 실시간 이벤트 프로토콜 |
@@ -278,8 +273,7 @@ FastAPI + SQLite(Phase 1~2) → PostgreSQL(Phase 3+), JWT → OAuth 인증, Dock
 | ID | 제목 | 역할 |
 |----|------|------|
 | DATA-01 | ER Diagram | 엔티티 관계도 |
-| DATA-02 | Entities | 필드 정의 (124개) |
 | DATA-03 | State Machines | FSM 상태 전이 |
-| DATA-04 | DB Schema | SQLAlchemy 스키마 |
-| DATA-05 | Migrations | Alembic 마이그레이션 |
-| DATA-06 | Seed Data | 개발/테스트 시드 |
+| DATA-04 | DB Schema | SQLAlchemy 스키마 + 엔티티 필드 정의 (BO 데이터 SSOT) |
+| (Team 2 내부) | `team2-backend/migrations/STRATEGY.md` | Alembic 전략 |
+| (Team 2 내부) | `team2-backend/seed/README.md` | 개발/테스트 시드 |

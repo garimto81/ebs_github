@@ -21,8 +21,20 @@
   "layout": {
     "logout": "Log out",
     "navigation": "Navigation",
+    "activeCc": "Active Command Centers",
+    "noCc": "No active CC",
     "nav": {
       "series": "Series",
+      "tournaments": "Tournaments",
+      "tournamentList": "Tournament List",
+      "seriesSettings": "Series Settings",
+      "staff": "Staff",
+      "staffList": "Staff List",
+      "players": "Players",
+      "playerList": "Player List",
+      "history": "History",
+      "staffActionHistory": "Staff Action History",
+      "auditLogs": "Audit Logs",
       "settings": "Settings",
       "graphicEditor": "Graphic Editor"
     }
@@ -30,10 +42,12 @@
   "login": {
     "title": "EBS Lobby",
     "subtitle": "Tournament Management System",
-    "email": "Email",
+    "email": "Email Address",
     "password": "Password",
     "rememberMe": "Remember me",
     "submit": "Log In",
+    "or": "or",
+    "googleLogin": "Sign in with Google",
     "forgotPassword": "Forgot password?",
     "twoFactor": "Two-Factor Code",
     "twoFactorPrompt": "Enter the 6-digit code from your authenticator app",
@@ -64,13 +78,22 @@
       "total": "{count} series",
       "newSeries": "New Series",
       "empty": "No series",
-      "searchPlaceholder": "Search series..."
+      "searchPlaceholder": "Search series...",
+      "onlyUpdated": "Only updated",
+      "bookmarks": "Bookmarks"
     },
     "events": {
       "title": "Events",
       "total": "{count} events",
       "newEvent": "New Event",
-      "empty": "No events"
+      "createTournament": "Create New Tournament",
+      "empty": "No events",
+      "filterEventNo": "Event No",
+      "filterName": "Name",
+      "filterMix": "Mix",
+      "filterGameType": "Game Type",
+      "filterTournType": "Type",
+      "todayEvents": "Today's Events"
     },
     "flights": {
       "title": "Flights",
@@ -84,7 +107,17 @@
       "newTable": "New Table",
       "launchCc": "Launch CC",
       "empty": "No tables",
-      "rebalance": "Rebalance"
+      "rebalance": "Rebalance",
+      "tableAction": "Table Action",
+      "searchPlayer": "Search Player...",
+      "tableNo": "Table No.",
+      "tableName": "Table Name",
+      "maxPlayers": "Max Players",
+      "isFeature": "Feature Table",
+      "enterCc": "Enter CC",
+      "addPlayer": "Add Player",
+      "seatMap": "Seat Map",
+      "selectSeat": "Select Seat"
     },
     "players": {
       "title": "Players",
@@ -94,7 +127,23 @@
     },
     "handHistory": {
       "title": "Hand History",
-      "empty": "No hand history"
+      "empty": "No hand history",
+      "selectTable": "Select Table",
+      "handNo": "Hand #",
+      "time": "Time",
+      "board": "Board",
+      "pot": "Pot",
+      "street": "Street",
+      "players": "Players",
+      "actions": "Actions",
+      "seat": "Seat",
+      "player": "Player",
+      "holeCards": "Hole Cards",
+      "startStack": "Start Stack",
+      "endStack": "End Stack",
+      "pnl": "P&L",
+      "winner": "Winner",
+      "noDetail": "No detail available"
     }
   },
   "settings": {
@@ -109,7 +158,66 @@
     },
     "dirty": "You have unsaved changes",
     "revert": "Revert",
-    "saved": "Saved"
+    "saved": "Saved",
+    "outputs": {
+      "resolution": "Resolution",
+      "frameRate": "Frame Rate",
+      "outputProtocol": "Output Protocol",
+      "fillKeyRouting": "Enable Fill & Key Routing"
+    },
+    "gfx": {
+      "layoutPreset": "Layout Preset",
+      "cardStyle": "Card Style",
+      "playerDisplayOptions": "Player Display Options",
+      "showPlayerPhoto": "Show Player Photo",
+      "showPlayerFlag": "Show Player Flag",
+      "showChipCount": "Show Chip Count",
+      "animationSpeed": "Animation Speed"
+    },
+    "display": {
+      "blindsFormat": "Blinds Display Format",
+      "precisionDigits": "Precision Digits",
+      "displayMode": "Display Mode"
+    },
+    "rules": {
+      "gameRulesTitle": "Game Rules",
+      "bombPot": "Bomb Pot",
+      "bombPotFrequency": "Bomb Pot Frequency",
+      "hands": "hands",
+      "straddle": "Straddle",
+      "straddleType": "Straddle Type",
+      "sleeper": "Sleeper",
+      "playerDisplayTitle": "Player Display",
+      "showSeatNumber": "Show Seat Number",
+      "showPlayerOrder": "Show Player Order",
+      "highlightActivePlayer": "Highlight Active Player"
+    },
+    "stats": {
+      "showEquity": "Show Equity",
+      "showOuts": "Show Outs",
+      "showLeaderboard": "Show Leaderboard",
+      "showScoreStrip": "Show Score Strip"
+    },
+    "preferences": {
+      "language": "Language",
+      "tablePassword": "Table Password",
+      "diagnostics": "Show Diagnostics",
+      "exportFolder": "Export Folder Path",
+      "exportFolderPlaceholder": "/path/to/export",
+      "twoFactor": {
+        "title": "Two-Factor Authentication (2FA)",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "enable": "Enable 2FA",
+        "disable": "Disable 2FA",
+        "setupTitle": "Set Up 2FA",
+        "disableTitle": "Disable 2FA",
+        "disableWarning": "Disabling 2FA will reduce your account security. Enter your current authentication code to continue.",
+        "confirmCode": "Authentication Code (6 digits)",
+        "qrPlaceholder": "QR code will appear here",
+        "manualEntry": "Manual entry code"
+      }
+    }
   },
   "graphicEditor": {
     "title": "Graphic Editor",
@@ -121,7 +229,27 @@
     "preview": "Preview",
     "empty": "No skins registered",
     "uploadDropzone": "Drag Rive file here or click to select",
-    "validationErrors": "Validation errors"
+    "validationErrors": "Validation errors",
+    "status": "Status",
+    "version": "Version",
+    "fileSize": "File Size",
+    "uploadedAt": "Uploaded",
+    "activatedAt": "Activated",
+    "metaTitle": "Title",
+    "metaDescription": "Description",
+    "metaAuthor": "Author",
+    "metaTags": "Tags",
+    "tagsHint": "Press Enter to add a tag"
+  },
+  "auditLog": {
+    "title": "Audit Logs",
+    "empty": "No audit logs",
+    "timestamp": "Timestamp",
+    "user": "User",
+    "action": "Action",
+    "entity": "Entity",
+    "details": "Details",
+    "ip": "IP Address"
   },
   "nav": {
     "logout": "Log out",
@@ -131,6 +259,22 @@
     "settings": "Settings",
     "graphicEditor": "Graphic Editor",
     "admin": "Admin"
+  },
+  "staff": {
+    "title": "Staff Management",
+    "addUser": "New User",
+    "editUser": "Edit User",
+    "email": "Email Address",
+    "displayName": "Display Name",
+    "password": "Password",
+    "role": "Role",
+    "tableAccess": "Table Access",
+    "allTables": "All Tables",
+    "specificTables": "Specific Tables",
+    "accountStatus": "Account Status",
+    "forceLogout": "Force Logout",
+    "confirmForceLogout": "Force logout this user?",
+    "confirmDelete": "Delete this user permanently?"
   },
   "errors": {
     "notFound": "Page not found",

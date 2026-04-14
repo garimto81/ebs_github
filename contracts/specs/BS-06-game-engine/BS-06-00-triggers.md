@@ -5,6 +5,7 @@
 | 2026-04-08 | 신규 작성 | 4소스 이벤트 분류, Mock 합성 규칙, 충돌 해결, 순서 보장 |
 | 2026-04-13 | 설명 보강 + WSOP LIVE 매핑 | 모든 이벤트 친절한 설명 추가, 시팅 트리거 6개 추가, SeatFSM/TableFSM 매트릭스, WSOP LIVE 매핑 |
 | 2026-04-13 | Clock 트리거 추가 | §2.4 BO: ClockStarted/Paused/Resumed + §2.5 Auto Blind-Up 로직. BS-06-02-clock.md 흡수·삭제 |
+| 2026-04-14 | CCR-050 | §2.5 Clock 트리거에 `ClockRestarted`/`clock_detail_changed`/`clock_reload_requested`/`stack_adjusted`/`tournament_status_changed` 5종 추가. WSOP LIVE SignalR Hub 정렬 (SSOT Page 1651343762, 3728441546, 1793328277) |
 
 ---
 
@@ -443,10 +444,15 @@ Back Office에서 데이터 변경 시 WebSocket을 통해 Lobby/CC에 통지하
 | 트리거 | 발동 주체 | 수신 대상 | 설명 |
 |--------|---------|---------|------|
 | `ClockStarted` | Admin/Operator (Lobby) | `lobby_monitor` + `cc_event` | 토너먼트 타이머 시작 → ClockFSM: STOPPED → RUNNING |
+| `ClockRestarted` | Admin/Operator | `lobby_monitor` + `cc_event` | 현재 레벨 duration 처음부터 재시작 (CCR-050) |
 | `ClockPaused` | Operator/Admin (CC) | `lobby_monitor` + `cc_event` | TD 수동 정지 → ClockFSM: RUNNING → PAUSED |
 | `ClockResumed` | Operator/Admin (CC) | `lobby_monitor` + `cc_event` | TD 재개 → ClockFSM: PAUSED → RUNNING |
 | `clock_tick` | BO 내부 타이머 | `lobby_monitor` + `cc_event` | 매 1초 자동 발행. 클라이언트 카운트다운용 |
 | `clock_level_changed` | BO 내부 타이머 | `lobby_monitor` + `cc_event` | 레벨 전환·Break 진입/종료 시 발행 |
+| `clock_detail_changed` | Admin/Operator | `lobby_monitor` + `cc_event` | 테마/공지/이벤트명/그룹명 변경 시 발행 (WSOP LIVE `ClockDetail` 대응, CCR-050) |
+| `clock_reload_requested` | Admin/Operator | `lobby_monitor` + `cc_event` | 대시보드 강제 리로드 신호 (WSOP LIVE `ClockReloadPage` 대응, CCR-050) |
+| `stack_adjusted` | Admin | `lobby_monitor` + `cc_event` | 평균 스택 강제 조정 시 발행 (CCR-050) |
+| `tournament_status_changed` | Admin | `lobby_monitor` + `cc_event` | EventFlightStatus 전이 (Created/Announce/Registering/Running/Completed/Canceled) 시 발행 (WSOP LIVE `TournamentStatus` 대응, CCR-050) |
 | `BlindStructureChanged` | BO (Auto Blind-Up 결과) | `cc_event` | Blind 레벨 전환 시 CC에 새 SB/BB/Ante 전달 |
 
 #### Auto Blind-Up 로직 (BO 내부)
@@ -457,12 +463,16 @@ Back Office에서 데이터 변경 시 WebSocket을 통해 Lobby/CC에 통지하
        └─ = 0 도달?
             ├─ auto_advance = false → ClockFSM: RUNNING → PAUSED (TD 수동 확인 대기)
             └─ auto_advance = true
-                 ├─ blind_detail_type = Break/DinnerBreak → 휴식 종료 → 다음 Blind 레벨
+                 ├─ blind_detail_type = Break/DinnerBreak/HalfBreak → 휴식 종료 → 다음 Blind/HalfBlind 레벨
+                 ├─ blind_detail_type = HalfBlind → 하프 디너 블라인드 종료 → 다음 HalfBreak 또는 Blind
                  └─ blind_detail_type = Blind
                       ├─ 다음: Break → ClockFSM: RUNNING → BREAK
+                      ├─ 다음: DinnerBreak → ClockFSM: RUNNING → DINNER_BREAK
                       ├─ 다음: Blind → level++, 새 duration 시작
                       └─ 마지막 레벨 → ClockFSM: RUNNING → STOPPED
 ```
+
+> **BlindDetailType enum**: BS-00 §3.8 (WSOP LIVE 준거)
 
 레벨 전환 시 BO는 동시에: ① `clock_level_changed` 발행 → ② `BlindStructureChanged` 발행 (순서 보장).
 

@@ -11,7 +11,7 @@
         "docs/05-plans/",
         "docs/00-reference/",
         "docs/06-reports/",
-        "docs/07-archive/",
+        "C:/claude/ebs-archive-backup/07-archive/",
         "docs/backlog/_aggregate.md",
         "docs/backlog/conductor.md",
         "docs/backlog.md",
@@ -42,7 +42,7 @@
       "backlog_file": "docs/backlog/team2.md",
       "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-team2-",
       "reads": ["contracts/api/", "contracts/data/", "contracts/specs/"],
-      "api_publishes": ["API-01", "API-02", "API-05", "API-06"]
+      "api_publishes": ["API-01", "API-05", "API-06"]
     },
     "team3": {
       "cwd_match": ["team3-engine"],
@@ -81,8 +81,7 @@
   "ccr_inbox_dir": "docs/05-plans/ccr-inbox/",
   "api_dependencies": {
     "API-01": ["team2", "team1"],
-    "API-02": ["team2"],
-    "API-03": ["team4", "team1"],
+"API-03": ["team4", "team1"],
     "API-04": ["team3", "team4"],
     "API-05": ["team2", "team1", "team4"],
     "API-06": ["team2", "team1"],
@@ -90,14 +89,9 @@
   },
   "audit_log_path": ".claude/logs/scope-guard-{YYYYMMDD}.jsonl",
   "contract_ownership": {
-    "contracts/api/API-01-backend-endpoints.md": {
+    "contracts/api/API-01-backend-api.md": {
       "publisher": "team2",
       "subscribers": ["team1", "team4"],
-      "direct_edit": "LOW"
-    },
-    "contracts/api/API-02-wsop-live-integration.md": {
-      "publisher": "team2",
-      "subscribers": [],
       "direct_edit": "LOW"
     },
     "contracts/api/API-03-rfid-hal-interface.md": {

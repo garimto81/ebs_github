@@ -1,0 +1,121 @@
+# EBS project — ssot-align configuration
+# Aligns contracts/ and team-owned specs to WSOP LIVE Confluence via the con-lookup connector.
+# See C:/claude/.claude/skills/ssot-align/references/config-schema.md for schema.
+# Based on example at C:/claude/.claude/skills/ssot-align/templates/examples/ebs-wsop/.ssot-align.yaml.
+
+version: "1.0"
+
+source:
+  type: confluence
+  connector: con-lookup
+  options:
+    cloud_id: "auto"
+    space_key: "WSOPLive"
+    auth:
+      method: browser_oauth
+
+targets:
+  - path: "contracts/**/*.md"
+    owner: conductor
+    description: "Cross-team API/data/spec contracts (Conductor-owned)"
+  - path: "team1-frontend/specs/**/*.md"
+    owner: team1
+  - path: "team1-frontend/ui-design/**/*.md"
+    owner: team1
+  - path: "team2-backend/specs/**/*.md"
+    owner: team2
+  - path: "team2-backend/qa/**/*.md"
+    owner: team2
+  - path: "team3-engine/specs/**/*.md"
+    owner: team3
+  - path: "team3-engine/qa/**/*.md"
+    owner: team3
+  - path: "team4-cc/specs/**/*.md"
+    owner: team4
+  - path: "team4-cc/ui-design/**/*.md"
+    owner: team4
+  - path: "team4-cc/qa/**/*.md"
+    owner: team4
+
+team_detection:
+  env_var: EBS_TEAM
+  git_branch_prefix: true
+  cwd_prefix: true
+  default: conductor
+
+template:
+  path: "contracts/_templates/SSOT-ALIGNED-SPEC-TEMPLATE.md"
+  blocks:
+    - "📎 원본 SSOT"
+    - "📋 Verbatim 추출"
+    - "🔀 매핑표"
+    - "🚀 마이그레이션 계획"
+    - "✅ 검증 체크리스트"
+  native_block: "🏷️ 프로젝트 고유 (No SSOT)"
+
+verdict_enum:
+  - IDENTICAL
+  - RENAMED
+  - SUBSET
+  - SUPERSET
+  - DIVERGENT
+  - DEFERRED
+
+phase_buckets:
+  - name: "Phase 1"
+    window: "2026 Q2 (~2026-06)"
+  - name: "Phase 2"
+    window: "2026 Q3-Q4"
+  - name: "Phase 3+"
+    window: "2027+ (Vegas 이후)"
+
+adapter_path_rules:
+  conductor: "contracts/adapters/"
+  team1: "team1-frontend/src/adapters/"
+  team2: "team2-backend/src/adapters/"
+  team3: "team3-engine/lib/adapters/"
+  team4: "team4-cc/src/lib/adapters/"
+
+scope_guard:
+  enforce_team_ownership: true
+  on_violation: ccr_draft
+  ccr_draft_path: "docs/05-plans/ccr-inbox/"
+  ccr_draft_filename_template: "CCR-DRAFT-{owner}-{date}-ssot-align-{slug}.md"
+
+roadmap:
+  path: "docs/05-plans/SSOT-ALIGNMENT-ROADMAP.md"
+  auto_update: true
+
+state:
+  path: "tools/.ssot-align-state.json"
+  format: json
+  checkpoint_granularity: section
+
+# Script-assisted mode — planner/renderer satisfy references/script-contract.md
+scripts:
+  planner: "tools/ssot_align_plan.py"
+  renderer: "tools/ssot_align_render.py"
+  cache_dir: "tools/.ssot-align-cache"
+  plan_path: "tools/.ssot-align-plan.json"
+  diff_dir: "tools/.ssot-align-diff"
+  report_path: "tools/.ssot-align-report.md"
+
+# Known WSOP LIVE page → EBS section mappings (discovered during 2026-04-14 critic analysis).
+# Skill uses these to skip ambiguity resolution.
+section_map:
+  - match:
+      file: "contracts/data/DATA-04-db-schema.md"
+      heading: "table_seats"
+    source_id: "1679556614"
+  - match:
+      file: "contracts/data/DATA-04-db-schema.md"
+      heading: "event_type"
+    source_id: "1679556614"
+  - match:
+      file: "contracts/data/DATA-04-db-schema.md"
+      heading: "waiting_list"
+    source_id: "2418737362"
+  - match:
+      file: "contracts/data/DATA-01-er-diagram.md"
+      heading: "*"
+    source_id: "1652949021"   # WSOP+ Database 설명(2023.04.17)

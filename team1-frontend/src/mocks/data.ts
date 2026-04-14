@@ -11,6 +11,11 @@ import type {
   TableSeat,
   Player,
   BlindStructure,
+  User,
+  Hand,
+  HandPlayer,
+  HandAction,
+  AuditLog,
 } from 'src/types/models';
 import type { Skin } from 'src/types/entities';
 
@@ -201,7 +206,11 @@ export const mockEvents: EbsEvent[] = [
   },
 ];
 
-export const mockFlights: EventFlight[] = [
+/** Raw flight rows — legacy API shape (event_flight_id / display_name).
+ *  The `mockFlights` export below augments each with Team-1 Lobby
+ *  aliases (flight_id / flight_name / day_index) so TableListPage +
+ *  DayTabs can consume EventFlight directly. */
+const rawFlights = [
   { event_flight_id: 1, event_id: 5, display_name: 'Day 1A', start_time: '2026-04-07T12:00:00', is_tbd: false, entries: 336, players_left: 0, table_count: 136, status: 'completed', play_level: 12, remain_time: null, source: 'manual', synced_at: null, created_at: NOW, updated_at: NOW },
   { event_flight_id: 2, event_id: 5, display_name: 'Day 1B', start_time: '2026-04-07T17:00:00', is_tbd: false, entries: 269, players_left: 0, table_count: 140, status: 'completed', play_level: 12, remain_time: null, source: 'manual', synced_at: null, created_at: NOW, updated_at: NOW },
   { event_flight_id: 3, event_id: 5, display_name: 'Day 1C', start_time: '2026-04-08T12:00:00', is_tbd: false, entries: 299, players_left: 0, table_count: 154, status: 'completed', play_level: 12, remain_time: null, source: 'manual', synced_at: null, created_at: NOW, updated_at: NOW },
@@ -213,6 +222,18 @@ export const mockFlights: EventFlight[] = [
   { event_flight_id: 9, event_id: 2, display_name: 'Day 1',  start_time: '2026-04-10T14:00:00', is_tbd: false, entries: 0,   players_left: 0,   table_count: 0,   status: 'announced', play_level: 0,  remain_time: null, source: 'manual', synced_at: null, created_at: NOW, updated_at: NOW },
   { event_flight_id: 10, event_id: 6, display_name: 'Day 1', start_time: '2026-04-12T18:00:00', is_tbd: false, entries: 0,   players_left: 0,   table_count: 0,   status: 'announced', play_level: 0,  remain_time: null, source: 'manual', synced_at: null, created_at: NOW, updated_at: NOW },
 ];
+
+/** Per-event running counter yields day_index (1..N within one event). */
+const _dayCounters: Record<number, number> = {};
+export const mockFlights: EventFlight[] = rawFlights.map(f => {
+  _dayCounters[f.event_id] = (_dayCounters[f.event_id] ?? 0) + 1;
+  return {
+    ...f,
+    flight_id: f.event_flight_id,
+    flight_name: f.display_name,
+    day_index: _dayCounters[f.event_id]!,
+  };
+});
 
 function makeTable(id: number, flightId: number, tableNo: number, status: Table['status'] = 'live'): Table {
   return {
@@ -373,6 +394,73 @@ export const mockSkins: Skin[] = [
     preview_url: null,
   },
 ];
+
+export const mockUsers: User[] = [
+  { user_id: 1, email: 'admin@ebs.local', display_name: 'Admin', role: 'admin', is_active: true, totp_enabled: false, last_login_at: NOW, created_at: NOW, updated_at: NOW },
+  { user_id: 2, email: 'operator1@ebs.local', display_name: 'Operator 1', role: 'operator', is_active: true, totp_enabled: false, last_login_at: '2026-04-09T10:00:00', created_at: NOW, updated_at: NOW },
+  { user_id: 3, email: 'operator2@ebs.local', display_name: 'Operator 2', role: 'operator', is_active: true, totp_enabled: false, last_login_at: '2026-04-08T18:00:00', created_at: NOW, updated_at: NOW },
+  { user_id: 4, email: 'viewer@ebs.local', display_name: 'Viewer', role: 'viewer', is_active: false, totp_enabled: false, last_login_at: null, created_at: NOW, updated_at: NOW },
+];
+
+export const mockHands: Hand[] = Array.from({ length: 10 }, (_, i) => ({
+  hand_id: i + 1,
+  table_id: 1,
+  hand_number: 1001 + i,
+  game_type: 0,
+  bet_structure: 0,
+  dealer_seat: (i % 9) + 1,
+  board_cards: i < 8 ? 'Ah Kd 7c 2s 9h' : 'Jc Td 5s',
+  pot_total: (i + 1) * 12000,
+  side_pots: '',
+  current_street: null,
+  started_at: new Date(Date.now() - (10 - i) * 600_000).toISOString(),
+  ended_at: new Date(Date.now() - (10 - i) * 600_000 + 120_000).toISOString(),
+  duration_sec: 120,
+  created_at: NOW,
+}));
+
+export const mockHandPlayers: HandPlayer[] = Array.from({ length: 9 }, (_, i) => ({
+  id: i + 1,
+  hand_id: 1,
+  seat_no: i + 1,
+  player_id: i + 1,
+  player_name: `${FAMOUS[i]![0]} ${FAMOUS[i]![1]}`,
+  hole_cards: i === 0 ? 'As Ks' : i === 1 ? 'Qh Jh' : '',
+  start_stack: 50000 + i * 5000,
+  end_stack: i === 0 ? 74000 : 50000 + i * 5000 - (i < 3 ? 8000 : 0),
+  final_action: i === 0 ? 'win' : i < 3 ? 'fold' : null,
+  is_winner: i === 0,
+  pnl: i === 0 ? 24000 : i < 3 ? -8000 : 0,
+  hand_rank: i === 0 ? 'Flush' : null,
+  win_probability: null,
+  vpip: i < 4,
+  pfr: i < 2,
+}));
+
+export const mockHandActions: HandAction[] = [
+  { id: 1, hand_id: 1, seat_no: 3, action_type: 'post_sb', action_amount: 1200, pot_after: 1200, street: 'Preflop', action_order: 1, board_cards: null, action_time: null },
+  { id: 2, hand_id: 1, seat_no: 4, action_type: 'post_bb', action_amount: 2400, pot_after: 3600, street: 'Preflop', action_order: 2, board_cards: null, action_time: null },
+  { id: 3, hand_id: 1, seat_no: 1, action_type: 'raise', action_amount: 6000, pot_after: 9600, street: 'Preflop', action_order: 3, board_cards: null, action_time: null },
+  { id: 4, hand_id: 1, seat_no: 2, action_type: 'call', action_amount: 6000, pot_after: 15600, street: 'Preflop', action_order: 4, board_cards: null, action_time: null },
+  { id: 5, hand_id: 1, seat_no: 3, action_type: 'fold', action_amount: 0, pot_after: 15600, street: 'Preflop', action_order: 5, board_cards: null, action_time: null },
+  { id: 6, hand_id: 1, seat_no: 1, action_type: 'bet', action_amount: 8000, pot_after: 23600, street: 'Flop', action_order: 6, board_cards: 'Ah Kd 7c', action_time: null },
+  { id: 7, hand_id: 1, seat_no: 2, action_type: 'call', action_amount: 8000, pot_after: 31600, street: 'Flop', action_order: 7, board_cards: null, action_time: null },
+  { id: 8, hand_id: 1, seat_no: 1, action_type: 'check', action_amount: 0, pot_after: 31600, street: 'Turn', action_order: 8, board_cards: '2s', action_time: null },
+  { id: 9, hand_id: 1, seat_no: 2, action_type: 'check', action_amount: 0, pot_after: 31600, street: 'Turn', action_order: 9, board_cards: null, action_time: null },
+  { id: 10, hand_id: 1, seat_no: 1, action_type: 'bet', action_amount: 16000, pot_after: 47600, street: 'River', action_order: 10, board_cards: '9h', action_time: null },
+  { id: 11, hand_id: 1, seat_no: 2, action_type: 'fold', action_amount: 0, pot_after: 47600, street: 'River', action_order: 11, board_cards: null, action_time: null },
+];
+
+export const mockAuditLogs: AuditLog[] = Array.from({ length: 15 }, (_, i) => ({
+  id: i + 1,
+  user_id: (i % 3) + 1,
+  entity_type: ['table', 'event', 'user', 'skin', 'config'][i % 5]!,
+  entity_id: i + 1,
+  action: ['create', 'update', 'delete', 'activate', 'login'][i % 5]!,
+  detail: `Mock audit action ${i + 1}`,
+  ip_address: '192.168.1.' + (10 + i),
+  created_at: new Date(Date.now() - i * 3_600_000).toISOString(),
+}));
 
 export const mockConfigs: Record<string, Record<string, unknown>> = {
   outputs: {

@@ -18,9 +18,9 @@ Command Center (실시간 운영) + Overlay (방송 그래픽 출력, Skin Consu
 | `specs/testing/` | 테스트 전략 (TEST-01~07) |
 | `qa/commandcenter/` | CC QA (QA-CC-00~02), Spec Gap (`GAP-CC-{NNN}`) |
 | `qa/graphic-editor/` | **[ARCHIVED]** GE QA — history 참조 전용 (CCR-011 소유권 team1 이관) |
-| `ui-design/` | UI-02 (CC), UI-04 (Overlay), UI-05 (Component Library) |
+| `ui-design/` | UI-02 (CC), UI-05 (Component Library). Overlay 시퀀스는 `specs/BS-07-overlay/BS-07-08-sequences.md` 참조 |
 | `ui-design/archive/` | UI-06 Skin Editor (CCR-011 이전 설계, 보존) |
-| `ui-design/reference/` | PokerGFX 역설계 자료 — team1이 BS-08 구현 시 참고 가능 |
+| `ui-design/reference/` | PokerGFX Action Tracker 역설계 자료 (team4 CC 구현 시 참고). **Skin Editor 자료는 2026-04-14 team1-frontend/ui-design/reference/skin-editor/로 이관됨** (CCR-011 후속) |
 | `src/` | Flutter 소스 코드 (`ebs_cc` 프로젝트) |
 
 ## 2개 화면 — 동일 Flutter 앱
@@ -81,10 +81,14 @@ dependencies:
 | CCR-019 | Idempotency-Key 헤더 표준 | `lib/data/remote/bo_api_client.dart` Dio 인터셉터 |
 | CCR-021 | WebSocket `seq` 단조증가 + replay | `lib/foundation/utils/seq_tracker.dart` + `bo_websocket_client.dart` |
 
-## Spec Gap
+## Spec Gap (CCR-first)
 
-- CC: `qa/commandcenter/spec-gap.md` — 형식: `GAP-CC-{NNN}`
+- **contracts/ 변경 필요 시**: 먼저 `../docs/05-plans/ccr-inbox/CCR-DRAFT-team4-YYYYMMDD-slug.md` 작성 (**필수**).
+  QA Gap 문서(`qa/commandcenter/spec-gap.md`)에는 "CCR-DRAFT-XXX 제출됨" pointer + 임시 구현 1줄만 기록. 장문 근거는 CCR-DRAFT 본문에만.
+- **팀 내부 판단만 필요 시** (contracts/ 영향 없음): QA Gap 문서에 직접 기록.
+- CC 형식: `GAP-CC-{NNN}` — `qa/commandcenter/spec-gap.md`
 - Graphic Editor: **team1 소유** (`team1-frontend/qa/graphic-editor/`). team4에서 GE Gap 기록 금지.
+- 상세 절차: `../CLAUDE.md` §"Spec Gap 프로세스 (CRITICAL — CCR-first)" 참조.
 
 ## 금지
 

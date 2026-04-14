@@ -8,7 +8,8 @@
 | 2026-04-10 | CCR-003 | 로그인/로그아웃/refresh 등 mutation 엔드포인트에 `Idempotency-Key` 헤더 적용 (API-01 §3 멱등성 동작 참조) |
 | 2026-04-10 | CCR-006 | JWT Access/Refresh 만료 정책 + BS-01 세부 명세 연계 |
 | 2026-04-13 | refresh_token 전달 방식 | login 응답에 `refresh_token_delivery` 필드 추가. 환경별 차등: dev/staging/prod=body, live=HttpOnly Cookie |
-| 2026-04-13 | 네이밍 규칙 | snake_case 통일 규칙 명시 (WSOP LIVE camelCase와의 변환 책임 = API-02) |
+| 2026-04-13 | 네이밍 규칙 | snake_case 통일 규칙 명시 (WSOP LIVE camelCase와의 변환 책임 = API-01 Part II) |
+| 2026-04-14 | CCR-048 | Password Reset 3-step 엔드포인트 추가 (§8). WSOP LIVE GGPass 패턴 준거. SSOT: Confluence Page 1701380121 |
 
 ---
 
@@ -20,7 +21,7 @@
 
 ### 멱등성 (CCR-003)
 
-`POST /auth/login`, `POST /auth/refresh`, `DELETE /auth/session`, `POST /auth/verify-2fa` 등 **모든 mutation 엔드포인트**는 `Idempotency-Key` 헤더를 수용한다. 동작 상세는 `API-01-backend-endpoints.md §3 공통 응답 포맷 — 멱등성 동작` 을 준수한다.
+`POST /auth/login`, `POST /auth/refresh`, `DELETE /auth/session`, `POST /auth/verify-2fa` 등 **모든 mutation 엔드포인트**는 `Idempotency-Key` 헤더를 수용한다. 동작 상세는 `API-01-backend-api.md §3 공통 응답 포맷 — 멱등성 동작` 을 준수한다.
 
 - 클라이언트: 네트워크 재시도·더블 클릭 방지를 위해 UUIDv4/ULID를 요청당 1회 생성
 - 서버: `idempotency_keys` 테이블(DATA-04 §4)에 24h 캐시
@@ -31,7 +32,7 @@
 모든 JSON 응답 필드는 **`snake_case`** 를 사용한다.
 
 - WSOP LIVE API 는 `camelCase`(예: `accessToken`, `staffInfo`, `eventFlightId`)를 사용하나, EBS는 Python/FastAPI 생태계에 맞춰 `snake_case`(예: `access_token`, `staff_info`, `event_flight_id`)로 통일한다.
-- WSOP LIVE 데이터 동기화 시 API-02 계층의 UPSERT 로직이 camelCase → snake_case 변환을 수행한다.
+- WSOP LIVE 데이터 동기화 시 API-01 Part II (WSOP LIVE Integration) 계층의 UPSERT 로직이 camelCase → snake_case 변환을 수행한다.
 - 클라이언트(team1 Lobby, team4 CC)는 항상 snake_case 기준으로 구현한다.
 
 ---
@@ -413,3 +414,66 @@ POST /auth/login (username, password)
 | `POST /auth/verify-2fa` | TOTP 코드 검증 후 최종 토큰 발급 |
 | `POST /auth/2fa/setup` | 2FA 초기 설정 (QR 코드 반환) |
 | `POST /auth/2fa/disable` | 2FA 비활성화 (Admin만) |
+
+---
+
+## 8. Password Reset (CCR-048, WSOP LIVE GGPass 정렬)
+
+> **WSOP LIVE 대응**: `POST /Password/Reset/Send` → `POST /Verify` → `POST /Password/Reset` (SSOT: Confluence Page 1701380121). EBS 도 동일 3-step 구조를 채택하며 URL 은 EBS REST 컨벤션(lowercase kebab)으로 변환.
+
+### 8.1 엔드포인트
+
+| Method | Path | 설명 | 역할 제한 |
+|:------:|------|------|:---------:|
+| POST | `/auth/password/reset/send` | 이메일로 reset 토큰 발송 | 미인증 |
+| POST | `/auth/password/reset/verify` | 토큰 검증 (만료/사용 여부 확인) | 미인증 |
+| POST | `/auth/password/reset` | 새 비밀번호 설정 (토큰 + new_password) | 미인증 |
+
+### 8.2 POST /auth/password/reset/send
+
+**Request:**
+
+```json
+{ "email": "user@example.com" }
+```
+
+> 이메일 존재 여부는 응답으로 노출하지 않는다 (enumeration 방어). 항상 `200 OK` + 일반 메시지("If the email exists, a reset link has been sent.") 반환. Rate limit: 3회/시간/email (BS-01-auth §Rate Limiting).
+
+### 8.3 POST /auth/password/reset/verify
+
+**Request:**
+
+```json
+{ "token": "..." }
+```
+
+**Response (200):**
+
+```json
+{ "valid": true, "expires_at": "2026-04-14T15:30:00Z" }
+```
+
+만료/사용된 토큰은 `400 INVALID_TOKEN` 또는 `400 TOKEN_EXPIRED`.
+
+### 8.4 POST /auth/password/reset
+
+**Request:**
+
+```json
+{ "token": "...", "new_password": "..." }
+```
+
+**동작:**
+- 성공 시 모든 활성 세션 무효화 (refresh token 블랙리스트)
+- 토큰 1회용 (used_at 기록)
+- 토큰 TTL: 1시간
+- 이전 비밀번호 재사용 거부 (최근 5개 해시 비교)
+
+**에러 응답:**
+
+| 코드 | 상태 | 설명 |
+|------|------|------|
+| `PASSWORD_RESET_INVALID_TOKEN` | 400 | 존재하지 않는 토큰 |
+| `PASSWORD_RESET_TOKEN_EXPIRED` | 400 | 토큰 만료 (1시간 초과) |
+| `PASSWORD_RESET_TOKEN_USED` | 400 | 이미 사용된 토큰 |
+| `PASSWORD_POLICY_VIOLATION` | 422 | 비밀번호 정책 미달 (BS-01-auth §비밀번호 정책) |

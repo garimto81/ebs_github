@@ -1,20 +1,25 @@
-// Seat entity stub. See BS-05-03 and DATA-02 §Seat.
+// Seat entity — Freezed DTO for WebSocket/REST serialization.
+// See BS-05-03 and DATA-04 §Seat.
 
-import '../enums/seat_status.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'player.dart';
 
-class Seat {
-  const Seat({
-    required this.seatNo,
-    required this.fsm,
-    this.player,
-    this.activity,
-    this.actionOn = false,
-  });
+part 'seat.freezed.dart';
+part 'seat.g.dart';
 
-  final int seatNo;
-  final SeatFsm fsm;
-  final Player? player;
-  final PlayerActivity? activity;
-  final bool actionOn;
+@freezed
+class Seat with _$Seat {
+  const factory Seat({
+    required int seatNo,
+    @Default('empty') String seatStatus, // WSOP LIVE 9-state FSM
+    @Default('active') String activity, // active/folded/sittingOut/allIn
+    Player? player,
+    @Default(false) bool isDealer,
+    @Default(false) bool isSB,
+    @Default(false) bool isBB,
+    @Default(false) bool actionOn,
+  }) = _Seat;
+
+  factory Seat.fromJson(Map<String, dynamic> json) => _$SeatFromJson(json);
 }

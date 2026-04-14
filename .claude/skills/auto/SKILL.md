@@ -1,7 +1,7 @@
 ---
 name: auto
 description: PDCA Orchestrator - Agent Teams + PDCA 통합 워크플로우
-version: 18.0.0
+version: 19.0.0
 triggers:
   keywords:
     - "/auto"
@@ -25,10 +25,11 @@ agents:
   - analyst
 ---
 
-# /auto - PDCA Orchestrator (v18.0 - Agent Teams 통합)
+# /auto - PDCA Orchestrator (v19.0 - Universal Test Gate)
 
-> **핵심**: `/auto "작업"` = **PDCA 문서화(필수)** + Ralph 루프 + Ultrawork 병렬 + **이중 검증**
+> **핵심**: `/auto "작업"` = **PDCA 문서화(필수)** + Ralph 루프 + Ultrawork 병렬 + **범용 Test Gate + Architect 해석**
 > **실행 패턴**: 모든 에이전트 호출은 Agent Teams 라이프사이클을 따릅니다.
+> **v19.0 주요 변경**: Phase 0.4 Check 를 Step A (머신 검증, `run-gate.js`) + Step B (Architect) 로 분리. 프로젝트 스택 자동 감지(node/python/dart/go/rust/ruby). 임시 우회 `--no-test-gate`. 상세: `~/.claude/references/verification-protocol.md §Phase 0.4`.
 
 ## Agent Teams 기본 패턴
 
@@ -48,36 +49,16 @@ TeamCreate(team_name="auto-{feature}")
 | `executor` | sonnet | 기능 구현 |
 | `executor-high` | opus | 복잡한 구현 |
 | `architect` | opus | 분석 및 검증 |
-| `planner` | opus | 계획 수립 |
+| `planner` | sonnet | 계획 수립 |
 | `critic` | opus | 계획 검토 |
 | `writer` | haiku | 문서/보고서 생성 |
 | `qa-tester` | sonnet | 테스트 실행 |
 | `researcher` | sonnet | 리서치 |
-| `analyst` | opus | 데이터 분석 |
+| `analyst` | haiku | 데이터 분석 |
 
 ## ⚠️ 필수 실행 규칙 (CRITICAL)
 
 **이 스킬이 활성화되면 반드시 아래 워크플로우를 실행하세요!**
-
-### Phase 0a: EBS 팀 컨텍스트 자동 감지 (조건부)
-
-**트리거**: `contracts/team-policy.json` 파일이 현재 프로젝트 루트에 존재할 때만 실행. 없으면 이 Phase 전체 skip (비-EBS 프로젝트는 기존 동작 그대로).
-
-**단계**:
-
-1. **정책 로드**: `contracts/team-policy.json` 읽기 → `teams`, `shared_blocked_for_teams`, `api_dependencies`, `ccr_inbox_dir` 파싱
-2. **팀 식별**: 우선순위 [`EBS_TEAM` env → `git branch` prefix (`teamN/*`) → cwd가 `teamN-*` 하위 → conductor(fallback)]
-3. **컨텍스트 확정**: `{TEAM_ID, OWNS, READS, BACKLOG_FILE, CCR_DRAFT_PREFIX, API_PUB, API_SUB}` 변수 세션 전역에 고정
-4. **TeamCreate 프리픽스**: 이후 모든 `TeamCreate(team_name=...)` 호출 시 `team_name` 앞에 `"{TEAM_ID}-"` 자동 부여 (예: `team2-auth-fix`). Conductor 세션이면 `conductor-*`.
-5. **contracts/ 편집 가드**: 작업 범위가 `contracts/**` 수정을 포함하면, 실제 편집 전 반드시:
-   - "이 경로는 Conductor 단독 소유. CCR 초안을 `{CCR_DRAFT_PREFIX}{YYYYMMDD}.md`에 작성하세요" 안내
-   - 변경 대상 API 파일명에서 `API-XX` 추출 → `api_dependencies[API-XX]` 에서 영향팀 목록 lookup
-   - CCR 초안 템플릿의 **"영향팀:"** 필드에 해당 목록 자동 주입 (빈 값 금지)
-6. **백로그 라우팅**: 백로그 항목 추가/수정은 **오직** `{BACKLOG_FILE}` (예: `docs/backlog/team2.md`) 로만. 단일 파일 `docs/backlog.md`는 stub이므로 touch 금지. `docs/backlog/_aggregate.md`는 읽기 전용.
-7. **크로스팀 항목 표기**: 백로그 항목이 여러 팀에 걸치면 `- **teams**: [{SELF}, {OTHER}]` 필드를 기록팀({SELF}) 파일에만 작성. 영향팀에는 CCR promote 시 `ccr_promote.py`가 자동 알림 추가.
-8. **`/auto-teamN` 금지**: 팀별 전용 /auto 스킬은 존재하지 않는다. 단일 `/auto`가 cwd 기반으로 자동 분기한다. 사용자가 `/auto-team1` 류를 입력해도 본 스킬이 처리하고 팀은 cwd/env/branch에서 추론한다.
-
-**주의**: Hook(`pre_tool_guard.check_team_scope`)이 파일 경로를 물리 차단하는 1차 방어선이다. 이 Phase 0a는 Hook이 차단하기 **전에** LLM이 실수를 안 하도록 돕는 보조 레이어이다. Hook이 block으로 응답하면 즉시 CCR inbox 경로로 재시도하라.
 
 ### Phase 0: PDCA 문서화 (필수)
 
@@ -226,7 +207,7 @@ Agent(
   name="ultra-planner",
   description="[Ultra] 전략 수립",
   team_name="ultra-{feature}",
-  model="opus",
+  model="sonnet",
   prompt="[Discovery]
   - Codebase: {explore_codebase_result}
   - History: {explore_history_result}
@@ -271,7 +252,7 @@ Agent(
   name="pre-mortem",
   description="[Ultra] 실패 시나리오 5개 도출",
   team_name="ultra-{feature}",
-  model="opus",
+  model="sonnet",
   prompt="[계획 초안] {planner_output}
   [Discovery] {discovery_bundle}
 
@@ -286,7 +267,7 @@ Agent(
   name="alt-explorer",
   description="[Ultra] 대안 3개 탐색",
   team_name="ultra-{feature}",
-  model="opus",
+  model="sonnet",
   prompt="[기본 안] {planner_output}
   [Discovery] {discovery_bundle}
 
@@ -342,6 +323,7 @@ IF NOT --skip-critic:
     name="quick-critic-plan-ultra",
     description="Ultra Plan 빠른 검증",
     team_name="ultra-{feature}",
+    model="sonnet",
     prompt="[QUICK VALIDATION MODE]
     대상: docs/01-plan/{feature}.plan.md
     문서 유형: plan-ultra
@@ -375,6 +357,7 @@ IF NOT --skip-critic:
       name="quick-critic-plan-ultra-retry",
       description="Ultra Plan 재검증",
       team_name="ultra-{feature}",
+      model="sonnet",
       prompt="[재검증] docs/01-plan/{feature}.plan.md — 동일 5개 기준 평가.
       VERDICT/CONFIDENCE/RISK_SCORE/FEEDBACK 출력."
     )
@@ -468,6 +451,7 @@ IF NOT --skip-critic:
     name="quick-critic-plan",
     description="Plan 빠른 검증",
     team_name="auto-{feature}",
+    model="sonnet",
     prompt="[QUICK VALIDATION MODE]
     대상 문서: docs/01-plan/{feature}.plan.md
     문서 유형: plan
@@ -502,6 +486,7 @@ IF NOT --skip-critic:
       name="quick-critic-plan-retry",
       description="Plan 재검증",
       team_name="auto-{feature}",
+      model="sonnet",
       prompt="[재검증] docs/01-plan/{feature}.plan.md — 동일 3개 기준 평가.
       VERDICT/CONFIDENCE/RISK_SCORE/FEEDBACK 출력."
     )
@@ -532,6 +517,7 @@ IF NOT --skip-critic:
     name="quick-critic-plan",
     description="Plan 빠른 검증",
     team_name="auto-{feature}",
+    model="sonnet",
     prompt="[QUICK VALIDATION MODE]
     대상 문서: docs/01-plan/{feature}.plan.md
     문서 유형: plan
@@ -564,6 +550,7 @@ IF NOT --skip-critic:
       name="quick-critic-plan-retry",
       description="Plan 재검증",
       team_name="auto-{feature}",
+      model="sonnet",
       prompt="[재검증] docs/01-plan/{feature}.plan.md — 동일 3개 기준 평가.
       VERDICT/CONFIDENCE/RISK_SCORE/FEEDBACK 출력."
     )
@@ -638,6 +625,7 @@ IF NOT --skip-critic:
     name="quick-critic-design",
     description="Design 빠른 검증",
     team_name="auto-{feature}",
+    model="sonnet",
     prompt="[QUICK VALIDATION MODE]
     대상 문서: docs/02-design/{feature}.design.md
     문서 유형: design
@@ -670,6 +658,7 @@ IF NOT --skip-critic:
       name="quick-critic-design-retry",
       description="Design 재검증",
       team_name="auto-{feature}",
+      model="sonnet",
       prompt="[재검증] docs/02-design/{feature}.design.md — 동일 3개 기준 평가.
       VERDICT/CONFIDENCE/RISK_SCORE/FEEDBACK 출력."
     )
@@ -689,24 +678,70 @@ if not file_exists(design_path):
 **Step 0.3: Do (구현)**
 - 기존 /auto 워크플로우 (Ralplan + Ultrawork)
 
-**Step 0.4: Check (단일 Architect 통합 검증)**
+**Step 0.4: Check (Step A 머신 검증 + Step B Architect 해석) — v19.0**
+
+Step 0.4는 2단계로 분리된다. Step A는 언어 독립 머신 검증(test gate)이며 객관적 PASS/FAIL을 반환한다. Step B는 Step A 결과를 Architect가 해석하여 설계-구현 gap을 판정한다. Step A FAIL 시 Step B는 스킵되고 즉시 Phase 0.5로 분기한다.
+
+**Step A — Test Gate (범용, 언어/프레임워크 독립)**
+
+```bash
+# 프로젝트 루트에서 범용 러너 실행. Node 기반이라 Windows/Linux 공통.
+node ~/.claude/lib/test-adapter/run-gate.js "<project-root>"
 ```
-# 기능 완성도 + 설계-구현 갭을 단일 Architect가 통합 검증
+
+실행 동작:
+- `detect.js` 로 manifest(package.json/pyproject.toml/pubspec.yaml/go.mod/Cargo.toml/Gemfile) 자동 감지 → adapter 결정
+- `<project-root>/.claude/test-profile.json` 병합 (존재 시 commands/gates 오버라이드)
+- lint → typecheck → test → coverage 순차 실행 (profile 에 `require_e2e_on_phase_0_4: true` 면 e2e 추가)
+- 결과 JSON 출력 — `<<<REPORT_JSON … REPORT_JSON>>>` 블록에 담김
+- exit code: 0=PASS / 1=FAIL / 2=config error
+- JSON 스키마: `~/.claude/references/verification-protocol.md §"Phase 0.4 Check — 범용 외부 검증 신호"` 참조
+
+분기:
+- `verdict_machine == "PASS"` → Step B (Architect 해석) 진입
+- `verdict_machine == "FAIL"` → Architect 스킵, 즉시 Phase 0.5 Act
+- `adapter == "none"` (테스트 없는 프로젝트) → Step B 에서 "최소 시드 테스트 제안" 옵션 검토
+
+**Step B — Architect 해석 (Step A PASS 시에만)**
+
+```
+# Step A 의 REPORT_JSON 을 Architect 에게 전달하여 품질 + 갭 검증
 Agent(
   subagent_type="architect",
   name="check-architect",
-  description="기능 완성도 + 설계-구현 갭 통합 검증",
+  description="Step A 결과 해석 + 설계-구현 갭 검증",
   team_name="auto-{feature}",
   model="opus",
-  prompt="구현 완료를 통합 검증하세요:
-  1. 기능 동작, 테스트 통과, 코드 품질 확인
-  2. docs/02-design/{feature}.design.md와 실제 구현의 일치도 검증
-  gap 점수(0-100%)를 산출하고, 90% 미만이면 불일치 항목을 나열하세요."
+  prompt="Step A Test Gate 결과 JSON 을 해석하고, 다음을 검증하세요:
+  1. 기능 동작, 코드 품질 (Step A PASS 이미 확인)
+  2. 테스트 품질: 엣지케이스 커버, 의미있는 assertion 여부
+  3. docs/02-design/{feature}.design.md와 실제 구현의 일치도
+  gap 점수(0-100%)를 산출하고, 90% 미만이면 불일치 항목을 나열하세요.
+  EXTERNAL_SIGNAL 필드에 Step A 의 adapter + steps.*.exit 요약을 기록하세요."
 )
 
 SendMessage(to="check-architect", message={type: "shutdown_request"})
 ```
-- check-architect: 기능 완성도 + 설계-구현 90% 일치 통합 검증
+
+**Profile 오버라이드 (프로젝트별 자율)**
+
+`<project>/.claude/test-profile.json` 으로 gates/commands 조정 가능. 예시 + 스키마:
+
+```json
+{
+  "gates": {
+    "coverage_global_min": 70,
+    "coverage_critical_files": [
+      { "path": "src/stores/authStore.ts", "min": 90 }
+    ],
+    "act_loop_max": 5,
+    "require_e2e_on_phase_0_4": false,
+    "test_timeout_sec": 300
+  }
+}
+```
+
+**임시 우회**: `--no-test-gate` 플래그 시 Step A 스킵하고 구 v18 방식(Architect 단독) 으로 fallback. v20 에서 제거 예정.
 
 **Step 0.5: Act (자동 실행 - CRITICAL)**
 
@@ -772,6 +807,7 @@ IF NOT --skip-critic:
     name="quick-critic-report",
     description="Report 빠른 검증",
     team_name="auto-{feature}",
+    model="sonnet",
     prompt="[QUICK VALIDATION MODE]
     대상 문서: docs/04-report/{feature}.report.md
     문서 유형: report
@@ -804,6 +840,7 @@ IF NOT --skip-critic:
       name="quick-critic-report-retry",
       description="Report 재검증",
       team_name="auto-{feature}",
+      model="sonnet",
       prompt="[재검증] docs/04-report/{feature}.report.md — 동일 3개 기준 평가.
       VERDICT/CONFIDENCE/RISK_SCORE/FEEDBACK 출력."
     )
@@ -889,16 +926,30 @@ TeamDelete()
 | `--mockup` | `Skill(skill="mockup-hybrid", args="...")` | 목업 생성 |
 | `--debate` | `Skill(skill="ultimate-debate", args="...")` | 3AI 토론 |
 | `--research` | `Skill(skill="research", args="...")` | 리서치 모드 |
-| `--slack <채널>` | Slack 채널 분석 후 컨텍스트 주입 | 채널 히스토리 기반 작업 |
-| `--gmail` | Gmail 메일 분석 후 컨텍스트 주입 | 메일 기반 작업 |
 | `--daily` | `Skill(skill="daily")` | daily v3.0 9-Phase Pipeline (Config Bootstrap 내장) |
-| `--daily --slack` | `Skill(skill="daily")` | 동일 Pipeline + Phase 6 Slack Lists 갱신 |
 | `--interactive` | 각 Phase 전환 시 사용자 승인 요청 | 단계적 승인 모드 |
-| `--con <page_id> [file]` | `lib/confluence/md2confluence.py` 실행 | Confluence 페이지 발행 |
 | `--skip-critic` | 문서 생성 후 embedded critic 게이트 생략 | 빠른 프로토타이핑 시 |
+| `--skip-advisor` | advisor 브릿지 호출 생략 (embedded critic은 유지) | API key 없거나 advisor 비용 절감 시 |
 | `--ultra` | Ultra Plan 5-Phase 파이프라인 강제 활성화 | 복잡/중요 작업 심층 계획 |
 | `--ultrathink` | `--ultra`의 alias | — |
 | `--no-ultra` | score=5여도 Ultra Plan 비활성화 (Ralplan 사용) | Ultra 자동 트리거 회피 |
+| `--init-test` | 프로젝트에 Phase 0.4 Test Gate 부트스트랩 (아래 서브커맨드 참조) | 첫 도입 시 1회 |
+| `--no-test-gate` | Phase 0.4 Step A(머신 검증) 건너뛰고 구 v18 방식(Architect 단독) 으로 진행 | v20 에서 제거 예정 |
+
+**서브커맨드: `/auto --init-test`**
+
+프로젝트에 범용 테스트 게이트 인프라를 부트스트랩한다. Phase 0 전에 1회 실행.
+
+동작 (순차):
+1. `node ~/.claude/lib/test-adapter/detect.js <cwd>` 실행 → adapter 결정 + 현재 스크립트 확인
+2. 결과를 사용자에게 제시하고 `.claude/test-profile.json` 생성 여부 질문
+   - 수락 시 `~/.claude/templates/test-profile.template.json` 복사 → `coverage_critical_files` 예시 항목 정리
+3. `adapter == "none"` 시: 샘플 테스트 1건 시드 제안 (수락 시 stack 별 minimal 테스트 생성)
+4. CI 파일 존재 여부 확인 후 없으면 `~/.claude/templates/ci/test.yml` 복사 제안
+5. hook 활성화 여부 질문 (기본 ON, `.claude/test-profile.json.gates.hooks.post_edit_test_runner`)
+6. 마지막에 `node ~/.claude/lib/test-adapter/run-gate.js <cwd>` 실행하여 현재 상태 리포트
+
+목표: 10초 안에 Phase 0.4 게이트 가동 가능 상태로 만들기. 기존 설정 파괴 금지(기존 파일이 있으면 diff 제시 후 사용자 승인).
 
 **옵션 체인 예시:**
 ```
@@ -906,230 +957,9 @@ TeamDelete()
 → Step 1: Skill(skill="prd-sync")
 → Step 2: Skill(skill="mockup-hybrid", args="화면명")
 
-/auto --slack C09N8J3UJN9 "EBS 프로젝트"
-→ Step 1: Slack 채널 히스토리 수집
-→ Step 2: 메시지 분석 및 컨텍스트 생성
-→ Step 3: 컨텍스트 기반 메인 워크플로우 실행
-
-/auto --gmail "클라이언트 메일 분석 후 응답 초안 작성"
-→ Step 1: Gmail 인증 확인
-→ Step 2: 안 읽은 메일 또는 검색 결과 수집
-→ Step 3: 메일 분석 및 컨텍스트 생성
-→ Step 4: 컨텍스트 기반 메인 워크플로우 실행
-
-/auto --con 123456 "PRD 발행"
-→ Step 1: 발행 대상 파일 결정 (PRD/Plan 자동 탐지 또는 명시 경로)
-→ Step 2: python lib/confluence/md2confluence.py <file> <page_id>
-→ Step 3: 결과 보고 (성공/실패 + 페이지 버전)
 ```
 
 **옵션 실패 시**: 에러 메시지 출력하고 **절대 조용히 스킵하지 않음**
-
-### `--slack` 옵션 워크플로우
-
-Slack 채널의 모든 메시지를 분석하여 프로젝트 컨텍스트로 활용합니다.
-
-**Step 1: 인증 확인**
-```bash
-cd C:\claude && python -m lib.slack status --json
-```
-- `"authenticated": false` → 에러 출력 후 중단
-
-**Step 2: 채널 히스토리 수집**
-```bash
-python -m lib.slack history "<채널ID>" --limit 100 --json
-```
-- 메시지 100개 단위로 수집
-- 필요 시 페이지네이션 (oldest 파라미터)
-
-**Step 3: 메시지 분석 (Agent Teams)**
-```
-TeamCreate(team_name="auto-slack")
-
-Agent(
-  subagent_type="analyst",
-  name="slack-analyst",
-  description="Slack 채널 메시지 분석",
-  team_name="auto-slack",
-  model="opus",
-  prompt="SLACK CHANNEL ANALYSIS
-
-채널: <채널ID>
-메시지 수: <N>개
-
-분석 항목:
-1. 주요 토픽 및 프로젝트 목표
-2. 핵심 결정사항 및 합의점
-3. 공유된 문서 링크 정리
-4. 참여자 역할 및 책임
-5. 미해결 이슈 및 질문
-6. 기술 스택 및 도구 언급
-
-출력: 구조화된 컨텍스트 문서"
-)
-
-SendMessage(to="slack-analyst", message={type: "shutdown_request"})
-TeamDelete()
-```
-
-**Step 4: 컨텍스트 파일 생성**
-
-`.omc/slack-context/<채널ID>.md` 생성:
-```markdown
-# Slack Channel Context: <채널명>
-
-## 프로젝트 개요
-[분석된 프로젝트 목표]
-
-## 핵심 결정사항
-[주요 합의점 목록]
-
-## 관련 문서
-[Google Docs 등 링크 목록]
-
-## 기술 스택
-[언급된 기술 목록]
-
-## 미해결 이슈
-[추적 필요한 항목]
-
-## 원본 메시지 (최근 50개)
-[타임스탬프별 메시지]
-```
-
-**Step 5: 메인 워크플로우 실행**
-- 생성된 컨텍스트 파일을 Read하여 Ralplan에 전달
-- 작업 실행 시 Slack 컨텍스트 참조
-
-### `--gmail` 옵션 워크플로우
-
-Gmail 메일을 분석하여 프로젝트 컨텍스트로 활용합니다.
-
-**사용 형식:**
-```bash
-/auto --gmail                           # 안 읽은 메일 분석
-/auto --gmail "검색어"                   # Gmail 검색 쿼리로 필터링
-/auto --gmail "작업 설명"                # 메일 기반 작업 실행
-/auto --gmail "from:client" "응답 초안"  # 검색 + 작업 조합
-```
-
-**Step 1: 인증 확인 (MANDATORY)**
-```bash
-cd C:\claude && python -m lib.gmail status --json
-```
-- `"authenticated": true, "valid": true` → 계속 진행
-- `"authenticated": false` → **에러 출력 후 중단**:
-  ```
-  ❌ Gmail 인증이 필요합니다.
-  실행: python -m lib.gmail login
-  ```
-
-**Step 2: 메일 수집**
-
-| 입력 패턴 | 실행 명령 |
-|----------|----------|
-| `--gmail` (검색어 없음) | `python -m lib.gmail unread --limit 20 --json` |
-| `--gmail "from:..."` | `python -m lib.gmail search "from:..." --limit 20 --json` |
-| `--gmail "subject:..."` | `python -m lib.gmail search "subject:..." --limit 20 --json` |
-| `--gmail "newer_than:7d"` | `python -m lib.gmail search "newer_than:7d" --limit 20 --json` |
-
-**Gmail 검색 쿼리 문법:**
-| 조건 | 예시 |
-|------|------|
-| 발신자 | `from:boss@company.com` |
-| 제목 | `subject:meeting` |
-| 최근 N일 | `newer_than:7d` |
-| 첨부파일 | `has:attachment` |
-| 안 읽음 | `is:unread` |
-| 라벨 | `label:work` |
-
-**Step 3: 메일 분석 (Agent Teams)**
-```
-TeamCreate(team_name="auto-gmail")
-
-Agent(
-  subagent_type="analyst",
-  name="gmail-analyst",
-  description="Gmail 메일 분석",
-  team_name="auto-gmail",
-  model="opus",
-  prompt="GMAIL ANALYSIS
-
-메일 수: <N>개
-메일 데이터:
-<JSON 메일 목록>
-
-분석 항목:
-1. 주요 요청사항 및 할일 추출
-2. 중요 발신자 및 우선순위 분류
-3. 회신 필요한 메일 식별 (긴급도 표시)
-4. 첨부파일 목록 및 처리 필요 여부
-5. 키워드 및 프로젝트 연관성 분석
-6. 잠재적 이슈 및 리스크 식별
-
-출력: 구조화된 이메일 분석 문서 (마크다운)"
-)
-
-SendMessage(to="gmail-analyst", message={type: "shutdown_request"})
-TeamDelete()
-```
-
-**Step 4: 컨텍스트 파일 생성**
-
-`.omc/gmail-context/<timestamp>.md` 생성:
-```markdown
-# Gmail Context: <날짜>
-
-## 요약
-- 총 메일: N개
-- 긴급 회신 필요: N개
-- 할일 추출: N개
-
-## 긴급 (회신 필요)
-| 발신자 | 제목 | 날짜 | 요청사항 |
-|--------|------|------|----------|
-| ... | ... | ... | ... |
-
-## 할일 추출
-- [ ] 항목 1 (발신자, 제목, 기한)
-- [ ] 항목 2
-
-## 메일 목록 (우선순위순)
-### 높음
-- **제목** from 발신자 (날짜)
-  > 스니펫...
-
-### 보통
-- ...
-
-## 첨부파일
-- filename.pdf (발신자, 제목)
-
-## 관련 링크
-- [링크명](URL)
-```
-
-**Step 5: 후속 작업 분기**
-
-| 사용자 요청 | 실행 |
-|------------|------|
-| 검색만 | 분석 결과 출력 후 종료 |
-| "응답 초안" | 각 메일에 대한 회신 초안 생성 |
-| "할일 생성" | TaskCreate로 TODO 항목 생성 |
-| "요약 전송" | 분석 결과를 이메일로 전송 |
-| 구체적 작업 | 메인 워크플로우 실행 (메일 컨텍스트 포함) |
-
-**예시 실행:**
-```
-/auto --gmail "from:client newer_than:3d" "각 메일에 응답 초안 작성"
-
-→ Step 1: 인증 확인 ✓
-→ Step 2: python -m lib.gmail search "from:client newer_than:3d" --limit 20 --json
-→ Step 3: Agent Teams analyst가 메일 분석
-→ Step 4: .omc/gmail-context/2026-02-02.md 생성
-→ Step 5: 각 메일별 응답 초안 생성
-→ 결과 출력
-```
 
 ### `--daily` 옵션 워크플로우 (v3.0)
 
@@ -1138,8 +968,6 @@ TeamDelete()
 **사용 형식:**
 ```bash
 /auto --daily                    # 9-Phase Pipeline 전체 실행
-/auto --daily --slack            # 동일 + Phase 6 Slack Lists 갱신
-/auto --daily ebs                # EBS 전용 브리핑
 ```
 
 **라우팅:**
@@ -1195,41 +1023,6 @@ TeamDelete()
 ```
 
 **--interactive 미사용 시** (기본 동작): 모든 Phase를 자동으로 진행합니다.
-
-### `--con` 옵션 워크플로우
-
-Markdown 문서를 Confluence Storage Format으로 변환하여 지정 페이지에 발행한다.
-Mermaid 다이어그램은 3-Stage Fallback (mermaid.ink → mmdc → Playwright)으로 PNG 변환 후 첨부파일로 업로드.
-
-**사용 형식:**
-```bash
-/auto "작업" --con <page_id>              # PRD/Plan 자동 탐지 발행
-/auto "작업" --con <page_id> <file.md>    # 지정 파일 발행
-/auto "작업" --con <page_id> --dry-run    # 업로드 없이 미리보기
-```
-
-**실행 흐름:**
-
-1. 환경변수 확인 (`ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN`)
-2. 발행 대상 파일 결정:
-   - 명시적 파일 경로 → 해당 파일
-   - 미지정 → `docs/00-prd/{feature}.prd.md` 또는 `docs/01-plan/{feature}.plan.md` 자동 탐지
-3. 실행:
-   ```bash
-   cd C:\claude && python lib/confluence/md2confluence.py <file> <page_id>
-   ```
-4. 결과 보고 (성공: 페이지 버전 + URL / 실패: 에러 메시지)
-
-**에러 처리:**
-
-| 에러 | 처리 |
-|------|------|
-| 인증 실패 (401) | 환경변수 확인 안내 + 중단 |
-| 페이지 미존재 (404) | page_id 확인 안내 + 중단 |
-| Mermaid 렌더링 실패 | 3-Stage Fallback 후에도 실패 시 에러 보고 + 중단 |
-| pandoc 미설치 | 설치 안내 (`scoop install pandoc`) + 중단 |
-
-**상세**: `secretary/.claude/skills/confluence/SKILL.md` 참조
 
 ## Ralph 루프 워크플로우 (CRITICAL)
 
@@ -1291,15 +1084,21 @@ Step 0.1의 5점 만점 복잡도 점수를 10점으로 확장합니다:
          team_name="ralplan-{feature}", model="opus", prompt="작업내용")
    Agent(subagent_type="architect", name="arch-reviewer", description="계획 검증",
          team_name="ralplan-{feature}", model="opus", prompt="...")
-   Agent(subagent_type="critic", name="critic", description="계획 비판",
-         team_name="ralplan-{feature}", model="opus", prompt="...")
 
-   # Planner → Architect → Critic 합의 도달까지 반복
+   # [Advisor Bridge] critic Agent 스폰 제거 → advisor tool API 직접 호출
+   # IF NOT --skip-advisor AND ANTHROPIC_API_KEY 설정됨:
+   #   python lib/advisor_critic.py "{작업 설명}" "{planner 결과 요약}" pre_commit
+   #   → advisor(opus)가 planner 결과를 mid-generation에서 검토 (별도 Agent 스폰 없음)
+   #   → 조언 결과를 planner에게 전달해 plan 문서 최종화
+   # FALLBACK (API key 없음 또는 advisor 오류):
+   #   embedded critic gate(quick-critic-plan)가 post-writing 품질 검증으로 대체
+
+   # Planner → Architect 합의 + advisor 조언 주입
    SendMessage(to="planner", summary="시작", message="...")
+   # advisor 결과 있으면: SendMessage(to="planner", message="advisor 검토 결과: {advisor_advice}")
    # ... 합의 후 정리
    SendMessage(to="planner", message={type: "shutdown_request"})
    SendMessage(to="arch-reviewer", message={type: "shutdown_request"})
-   SendMessage(to="critic", message={type: "shutdown_request"})
    TeamDelete()
    ```
 
@@ -1434,6 +1233,16 @@ TeamDelete()
 추가 세부사항: `.claude/commands/auto.md`
 
 ## 변경 이력
+
+### v19.0.0 (Universal Test Gate)
+
+| 기능 | 설명 | 활성화 |
+|------|------|:------:|
+| **Phase 0.4 Step A/B 분리** | Step A 머신 검증(`run-gate.js`) + Step B Architect 해석 | ✅ 기본 |
+| **Test Runner Adapter** | manifest 자동 감지: node/python/dart/go/rust/ruby | ✅ |
+| **Profile 오버라이드** | `<project>/.claude/test-profile.json` 로 gates/commands 자율 조정 | ✅ |
+| **외부 검증 신호 JSON 표준화** | verification-protocol.md §Phase 0.4 스키마 추가 | ✅ |
+| **임시 우회 플래그** | `--no-test-gate` (v20 제거 예정) | ⚠️ deprecated-soon |
 
 ### v18.0.0 (Agent Teams 전환)
 

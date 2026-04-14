@@ -7,6 +7,8 @@
 - **소스 임포트 금지** — 다른 팀 폴더의 소스를 직접 import하지 않음
 - **HTTP/WebSocket only** — 각 팀의 서비스 엔드포인트를 호출
 - 테스트 시나리오는 `.http` 형식 (REST Client 호환)
+- 계약 문서 위치: `../contracts/api/`
+- 이 폴더는 통합 테스트 전용 Conductor 세션 영역입니다.
 
 ## 서비스 엔드포인트
 

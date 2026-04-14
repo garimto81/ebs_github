@@ -11,102 +11,31 @@
 ### ~~[B-301] OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13)
 - 14 핸들러 모두 ReduceResult 반환 + OutputEvent 발행. 18 테스트 추가. 628 PASS
 
-### [B-302] Under-raise Rule 95 구현
-- **날짜**: 2026-04-13
-- **teams**: [team3]
-- **우선순위**: P1 — WSOP 규정 준수
-- **설명**: Raise 금액이 min_raise의 50% 미만이면 Call로 변환, 50% 이상이면 min_raise_total로 보정
-- **수락 기준**:
-  - betting_rules.dart applyAction Raise case에 검증 로직 추가
-  - amount < currentBet + minRaise × 0.5 → Call로 변환
-  - amount >= 50% threshold → min_raise_total로 자동 보정
-  - TC 3건+ (정상 raise, 50% 미만 → call, 50% 이상 → 보정)
-- **관련 문서**: BS-06-02 §5.1, BS-06-09 IT-16, WSOP Rule 95
+### ~~[B-302] Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13)
+- Raise <50% → Call 변환, ≥50% → minRaiseTotal 보정. TC 3건.
 
-### [B-303] Short All-in Rule 96 구현
-- **날짜**: 2026-04-13
-- **teams**: [team3]
-- **우선순위**: P1 — WSOP 규정 준수
-- **설명**: All-in 금액이 full raise에 미달하면 minRaise/lastAggressor/actedThisRound를 갱신하지 않음 (reopen 불가)
-- **수락 기준**:
-  - engine.dart AllIn case에서 raise_increment < minRaise 시 분기
-  - incomplete all-in: minRaise 불변, actedThisRound reset 미발생, lastAggressor 불변
-  - complete all-in: 기존 로직 유지
-  - TC 2건+ (incomplete vs complete all-in)
-- **관련 문서**: BS-06-02 §6.1, BS-06-09 IT-15, WSOP Rule 96
+### ~~[B-303] Short All-in Rule 96 구현~~ ✅ DONE (2026-04-13)
+- Incomplete all-in → minRaise/lastAggressor/actedThisRound 불변. TC 3건.
 
-### [B-304] Missed Blind 처리 구현
-- **날짜**: 2026-04-13
-- **teams**: [team3]
-- **우선순위**: P2 — 캐시 게임 필수
-- **설명**: sit-out 후 복귀 시 missed blind 포스팅 의무. Seat에 missed_sb/missed_bb 플래그 추가
-- **수락 기준**:
-  - Seat에 missedSb/missedBb bool 필드 추가
-  - sitOut → sitIn 시 missed blind 금액 자동 포스팅
-  - Dead blind (SB) + Live blind (BB) 구분 처리
-  - TC 3건 (SB miss, BB miss, 둘 다 miss)
-- **관련 문서**: BS-06-03 §의도적 회피 처벌, WSOP Rule 86
+### ~~[B-304] Missed Blind 처리 구현~~ ✅ DONE (2026-04-13)
+- Seat에 missedSb/missedBb 필드 추가. 핸드 시작 시 감지 + 복귀 시 dead/live blind 포스팅. TC 5건.
 
-### [B-305] Dead Button Rule 구현
-- **날짜**: 2026-04-13
-- **teams**: [team3]
-- **우선순위**: P2
-- **설명**: 딜러 포지션 플레이어 탈락 시 버튼 유지 (Dead Button), SB/BB 위치 재조정
-- **수락 기준**:
-  - Dealer seat이 빈 자리일 때 button 유지
-  - SB/BB 위치가 빈 자리를 건너뛰어 올바르게 배정
-  - "한 플레이어가 2연속 BB를 내지 않도록" 보장
-  - TC 3건 (dealer 탈락, SB 탈락, 연속 탈락)
-- **관련 문서**: BS-06-08, BS-06-10 TC-ROTATION-01
+### ~~[B-305] Dead Button Rule 구현~~ ✅ DONE (2026-04-13)
+- 기존 activeSeatIndices 로직이 이미 sittingOut skip 처리. 추가 코드 변경 불필요. TC 4건으로 검증.
 
-### [B-306] Showdown Reveal Order 완성
-- **날짜**: 2026-04-13
-- **teams**: [team3]
-- **우선순위**: P2
-- **설명**: 카드 공개 순서(last aggressor first → clockwise), muck 선택 로직, CardRevealConfig 적용
-- **수락 기준**:
-  - showdown_order.dart에 reveal 순서 리스트 반환 함수
-  - lastAggressor 기반 순서 결정
-  - All-in 시 자동 공개 (muck 불가)
-  - CardRevealConfig의 revealType/showType/foldHideType 적용
+### ~~[B-306] Showdown Reveal Order 완성~~ ✅ DONE (2026-04-13)
+- ShowdownSeatInfo + canMuck() + getShowdownInfo() 추가. All-in 자동 공개, 패자 muck 허용. TC 8건.
   - TC 3건 (일반 showdown, all-in 자동, muck 선택)
 - **관련 문서**: BS-06-07 §카드 공개 순서
 
-### [B-307] Coalescence (RFID Burst 처리) 구현
-- **날짜**: 2026-04-13
-- **teams**: [team3, team4]
-- **우선순위**: P3 — Team 4 HAL 의존
-- **설명**: RFID 리더의 복수 카드 동시 감지 → coalescence window 내 burst를 단일 이벤트로 병합
-- **수락 기준**:
-  - CoalescenceWindow 클래스 (configurable duration, 기본 500ms)
-  - 윈도우 내 복수 CardDetected → 단일 DealHoleCards 이벤트로 병합
-  - 큐 오버플로우 방지 (최대 burst size 제한)
-  - TC 3건 (정상 burst, 윈도우 초과, 오버플로우)
-- **관련 문서**: BS-06-04
+### ~~[B-307] Coalescence (RFID Burst 처리) 구현~~ ✅ DONE (2026-04-13)
+- CoalescenceWindow (Hold'em 100ms / Draw 200ms / Stud 3rd 18장), DrawCoalescenceValidator, 오버플로우 자동 분할. TC 12건.
 
-### [B-308] Draw 게임 변종 7종 구현
-- **날짜**: 2026-04-13
-- **teams**: [team3]
-- **우선순위**: P3 — Phase 3 (2027 H1)
-- **설명**: Five Card Draw, 2-7 Triple Draw, 2-7 Single Draw, A-5 Triple/Single Draw, Badugi, Badeucy
-- **수락 기준**:
-  - `lib/core/variants/` 에 각 variant 클래스 추가
-  - DrawRound 상태 관리 (교환 횟수, 카드 수 제한)
-  - Low 평가 (2-7, A-5, Badugi 4장)
-  - 각 variant별 TC 2건+
-- **관련 문서**: PRD-GAME-02, BS-06-21~22
+### ~~[B-308] Draw 게임 변종 7종 구현~~ ✅ DONE (2026-04-13)
+- Five Card Draw, 2-7 Single/Triple Draw, A-5 Triple Draw, Badugi, Badeucy, Badacey. Lowball 2-7/A-5 + BadugiEvaluator + DrawVariant 추상 클래스 + Deck.reshuffle(). TC 33건.
 
-### [B-309] Stud 게임 변종 3종 구현
-- **날짜**: 2026-04-13
-- **teams**: [team3]
-- **우선순위**: P3 — Phase 3 (2027 H1)
-- **설명**: 7-Card Stud, 7-Card Stud Hi-Lo, Razz. 3rd~7th Street, Bring-in, 공개/비공개 카드
-- **수락 기준**:
-  - `lib/core/variants/` 에 각 variant 클래스 추가
-  - StudStreetMachine (3rd~7th Street 전이, Bring-in)
-  - 공개 카드 기반 betting order 재계산
-  - 각 variant별 TC 2건+
-- **관련 문서**: PRD-GAME-03, BS-06-31~32
+### ~~[B-309] Stud 게임 변종 3종 구현~~ ✅ DONE (2026-04-13)
+- 7-Card Stud, 7-Card Stud Hi-Lo, Razz. StudVariant 추상 클래스 + BringIn 유틸 + bestLow8() evaluator. TC 26건.
 
 
 
@@ -161,6 +90,22 @@
 - **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-042-*.md`
 - **제안팀**: team2
 - **변경 대상**: `contracts/api/API-05-websocket-events.md, contracts/specs/`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-049] 검토 요청: BlindStructure 관리 엔드포인트 추가 (WSOP LIVE 정렬)
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-049-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-01-backend-api.md, contracts/data/DATA-02-entities.md`
+- **조치**: 영향 범위 검토 후 승인 또는 이의 제기
+
+
+### [NOTIFY-CCR-054] 검토 요청: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬
+- **알림일**: 2026-04-14
+- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-054-*.md`
+- **제안팀**: team2
+- **변경 대상**: `contracts/api/API-05-websocket-events.md`
 - **조치**: 영향 범위 검토 후 승인 또는 이의 제기
 
 ## IN_PROGRESS

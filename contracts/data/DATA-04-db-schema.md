@@ -5,6 +5,24 @@
 | 2026-04-08 | 신규 작성 | SQLAlchemy/SQLModel 스타일 스키마 초판 (Phase 1 SQLite 호환) |
 | 2026-04-10 | CCR-001 | `idempotency_keys`, `audit_events` 테이블 신설 (멱등성 + 이벤트 소싱 SSOT) |
 | 2026-04-13 | CCR promote 반영 | event_type 카탈로그 35값 공식 정의 (§5.2 부속), SeatStatus enum 6값 (§table_seats), waiting_list 테이블 신설 (§5.3) |
+| 2026-04-14 | Confluence 출처 명시 | WSOP LIVE 준거 구간의 원본 Confluence 페이지 링크 추가 |
+| 2026-04-14 | CCR-047 | `series` 테이블에 `competition_type`/`competition_tag` 컬럼 + CHECK 제약 추가, `event_flights.status` 를 `int` enum (0,1,2,4,5,6) 로 전환. `competitions` 테이블은 Phase 1 호환용으로 유지 (deprecated 주석). SSOT: Confluence Page 1960411325 (Enum) / 1599537917 (Tournament) |
+| 2026-04-14 | CCR-053 | `users` 테이블에 `is_suspended`/`is_locked`/`failed_login_count`/`last_failed_at` 컬럼 추가 + 상태 인덱스. WSOP LIVE Staff 패턴 (SSOT Page 1597768061) |
+
+---
+
+## 참조 Confluence 원본 (WSOP LIVE)
+
+DATA-04 는 **EBS 고유 BO 운영 스키마** 이며, 일부 개념은 WSOP LIVE Confluence 원본을 준거한다. 아래 표는 "WSOP LIVE 준거" 라고 인라인 명시된 구간과 그 출처를 매핑한다.
+
+| DATA-04 섹션 | 차용 개념 | Confluence 페이지 | Page ID | URL |
+|-------------|-----------|------------------|---------|-----|
+| §table_seats SeatStatus enum | E/N/P/M/B/R 6값 | Action History | `1679556614` | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/1679556614 |
+| §5.2 event_type 카탈로그 | EventFlightActionType 35값 | Action History | `1679556614` | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/1679556614 |
+| §5.3 waiting_list 테이블 | WaitingPlayerInfo / FlightRoomsInfo 구조 | Waiting API | `2418737362` | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/2418737362 |
+| (참고) ERD 전체 컨텍스트 | Fatima ERD | WSOP+ Database 설명(2023.04.17) | `1652949021` | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/1652949021 |
+
+로컬 미러 경로: `C:/claude/wsoplive/docs/confluence-mirror/WSOP Live 홈/2. Development/`
 
 ---
 
@@ -12,7 +30,7 @@
 
 EBS Back Office DB의 물리 스키마를 SQLAlchemy/SQLModel 스타일로 정의한다. Phase 1은 SQLite, Phase 3+는 PostgreSQL을 대상으로 한다.
 
-> 참조: `contracts/data/PRD-EBS_DB_Schema.md` — GFX 데이터 추출 스키마 (L0→L1 구간). 이 문서는 3-앱 아키텍처 BO 운영 스키마이다.
+> 본 문서는 3-앱 아키텍처 BO 운영 스키마의 단일 SSOT다. GFX 추출 스키마(L0→L1)는 별도 PRD가 없으며, Engine 내부 모델은 `team3-engine/specs/engine-spec/` 참조.
 
 ### Phase 1 SQLite 호환 규칙
 
@@ -27,6 +45,9 @@ EBS Back Office DB의 물리 스키마를 SQLAlchemy/SQLModel 스타일로 정�
 
 ```python
 # competitions
+# [DEPRECATED Phase 2, CCR-047] WSOP LIVE 는 Competition 을 별도 테이블로 두지 않고 Series 의
+# competition_type / competition_tag enum 컬럼으로 관리 (SSOT: Confluence Page 1599537917).
+# Phase 1 데이터 호환을 위해 본 테이블은 유지하되 신규 로직은 series.* 사용. Phase 2 sprint 1 drop.
 class Competition(SQLModel, table=True):
     __tablename__ = "competitions"
 
@@ -39,11 +60,16 @@ class Competition(SQLModel, table=True):
 
 
 # series
+# CCR-047: competition_type / competition_tag enum 컬럼 추가 (WSOP LIVE 정본 계층).
+#   SSOT: Confluence Page 1960411325 (CompetitionType/CompetitionTag enum).
 class Series(SQLModel, table=True):
     __tablename__ = "series"
 
     series_id: int = Field(primary_key=True)
+    # Phase 1 호환: Phase 2 에서 drop. 신규 로직은 competition_type/tag 사용.
     competition_id: int = Field(foreign_key="competitions.competition_id")
+    competition_type: int = Field(default=0)  # WSOP LIVE CompetitionType: WSOP(0)/WSOPC(1)/APL(2)/APT(3)/WSOPP(4)
+    competition_tag: int = Field(default=0)   # WSOP LIVE CompetitionTag: None(0)/Bracelets(1)/Circuit(2)/SuperCircuit(3)
     series_name: str = Field(nullable=False)
     year: int = Field(nullable=False)
     begin_at: str = Field(nullable=False)       # DATE ISO
@@ -59,6 +85,13 @@ class Series(SQLModel, table=True):
     synced_at: str | None = None
     created_at: str = Field(default_factory=utcnow)
     updated_at: str = Field(default_factory=utcnow)
+
+    # CCR-047: competition_type ∈ [0..4], competition_tag ∈ [0..3] + 복합 인덱스
+    __table_args__ = (
+        CheckConstraint("competition_type BETWEEN 0 AND 4", name="ck_series_competition_type"),
+        CheckConstraint("competition_tag BETWEEN 0 AND 3", name="ck_series_competition_tag"),
+        Index("idx_series_competition", "competition_type", "competition_tag"),
+    )
 
 
 # events
@@ -106,13 +139,20 @@ class EventFlight(SQLModel, table=True):
     entries: int = Field(default=0)
     players_left: int = Field(default=0)
     table_count: int = Field(default=0)
-    status: str = Field(default="created")
+    # EventFlightStatus enum (BS-00 §3.6, WSOP LIVE Confluence Page 1960411325 준거). 값 3 은 reserved.
+    status: int = Field(default=0)
     play_level: int = Field(default=1)
     remain_time: int | None = None
     source: str = Field(default="manual")
     synced_at: str | None = None
     created_at: str = Field(default_factory=utcnow)
     updated_at: str = Field(default_factory=utcnow)
+
+    # CCR-047: EventFlightStatus 6값 CHECK + 인덱스
+    __table_args__ = (
+        CheckConstraint("status IN (0, 1, 2, 4, 5, 6)", name="ck_event_flights_status"),
+        Index("idx_event_flights_status", "status"),
+    )
 ```
 
 ---
@@ -332,6 +372,8 @@ class DeckCard(SQLModel, table=True):
 
 ```python
 # users
+# CCR-053: is_suspended / is_locked (WSOP LIVE Staff 패턴, SSOT Page 1597768061).
+# CCR-048/052: failed_login_count / last_failed_at (10회 실패 자동 잠금).
 class User(SQLModel, table=True):
     __tablename__ = "users"
 
@@ -340,12 +382,21 @@ class User(SQLModel, table=True):
     password_hash: str = Field(nullable=False)
     display_name: str = Field(nullable=False)
     role: str = Field(default="viewer")         # admin|operator|viewer
-    is_active: bool = Field(default=True)
+    is_active: bool = Field(default=True)       # soft delete flag
+    is_suspended: bool = Field(default=False)   # Admin 결정 일시 정지
+    is_locked: bool = Field(default=False)      # 보안 위반 자동/수동 잠금
+    failed_login_count: int = Field(default=0)  # 연속 실패 카운터
+    last_failed_at: str | None = None
     totp_secret: str | None = None
     totp_enabled: bool = Field(default=False)
     last_login_at: str | None = None
     created_at: str = Field(default_factory=utcnow)
     updated_at: str = Field(default_factory=utcnow)
+
+    # CCR-053: 상태 복합 인덱스 (is_active/is_suspended/is_locked)
+    __table_args__ = (
+        Index("idx_users_status", "is_active", "is_suspended", "is_locked"),
+    )
 
 
 # user_sessions
@@ -392,12 +443,32 @@ class Config(SQLModel, table=True):
     updated_at: str = Field(default_factory=utcnow)
 
 
-# blind_structures
+# blind_structures (CCR-049: Series 템플릿 + EventFlight 적용 분리, WSOP LIVE Page 1603666061 준거)
 class BlindStructure(SQLModel, table=True):
     __tablename__ = "blind_structures"
 
     blind_structure_id: int = Field(primary_key=True)
+    series_id: int = Field(foreign_key="series.series_id")              # CCR-049: 템플릿 소유 Series
     name: str = Field(nullable=False)
+    blind_type: str = Field(default="no_limit_holdem")                  # CCR-049: no_limit_holdem / pot_limit_omaha / mixed 등
+    is_template: bool = Field(default=True)                             # CCR-049: true=템플릿, false=Flight 적용본
+    creator_user_id: int | None = Field(default=None, foreign_key="users.user_id")  # CCR-049: 수정 권한 제한
+    is_auto_renaming: bool = Field(default=False)                       # CCR-049: 중복 이름 자동 번호 접미사
+    details: str = Field(default="[]")                                  # CCR-049: BlindStructureDetail[] (jsonb 직렬화)
+    created_at: str = Field(default_factory=utcnow)
+    updated_at: str = Field(default_factory=utcnow)
+
+
+# payout_structures (CCR-051: Series 템플릿 + EventFlight 적용. WSOP LIVE Page 1603600679 준거)
+class PayoutStructure(SQLModel, table=True):
+    __tablename__ = "payout_structures"
+
+    payout_structure_id: int = Field(primary_key=True)
+    series_id: int = Field(foreign_key="series.series_id")
+    name: str = Field(nullable=False)
+    is_template: bool = Field(default=True)                             # true=템플릿, false=Flight 적용본
+    creator_user_id: int | None = Field(default=None, foreign_key="users.user_id")
+    entries: str = Field(default="[]")                                  # PayoutEntry[] (entry_from/entry_to/ranks[]) JSON 직렬화. 비즈니스 규칙: 각 구간 ranks[].award_percent 합계 = 100.0 (API 검증)
     created_at: str = Field(default_factory=utcnow)
     updated_at: str = Field(default_factory=utcnow)
 
@@ -415,7 +486,7 @@ class BlindStructureLevel(SQLModel, table=True):
     big_blind: int = Field(nullable=False)
     ante: int = Field(default=0)
     duration_minutes: int = Field(nullable=False)
-    detail_type: int = Field(default=0)         # enum 0-4
+    detail_type: int = Field(default=0)         # BlindDetailType (BS-00 §3.8)
 
     __table_args__ = (
         UniqueConstraint("blind_structure_id", "level_no"),

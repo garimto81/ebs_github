@@ -90,7 +90,7 @@ team1-frontend/
     │   ├── browser.ts
     │   ├── handlers.ts
     │   └── data.ts
-    ├── types/                # 공유 TS 타입 (DATA-02 정렬)
+    ├── types/                # 공유 TS 타입 (DATA-04 정렬)
     │   ├── entities.ts
     │   ├── api.ts
     │   └── ws.ts
@@ -738,7 +738,7 @@ export const handlers = [
 
 ### 6.4 Seed Data
 
-`src/mocks/data.ts` 는 DATA-02 엔티티 구조를 따르는 TS 상수. Playground 에서 사용할 최소 데이터:
+`src/mocks/data.ts` 는 DATA-04 엔티티 구조를 따르는 TS 상수. Playground 에서 사용할 최소 데이터:
 - Series 2개 (WSOP Main, WSOPC Cyprus)
 - Events 5개
 - Flights 10개

@@ -24,7 +24,7 @@ export async function upload(
   try {
     const res = await api.post<Skin>('/skins/upload', form, {
       headers: { 'Content-Type': 'multipart/form-data' },
-      onUploadProgress: (e) => {
+      onUploadProgress: (e: { loaded: number; total?: number }) => {
         if (onProgress && e.total) {
           onProgress(Math.round((e.loaded / e.total) * 100));
         }

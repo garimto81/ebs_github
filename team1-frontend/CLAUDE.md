@@ -15,6 +15,7 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 |------|------|
 | `qa/lobby/` | Lobby QA 전략, 체크리스트, spec-gap, 테스트 전략(QA-LOBBY-06) |
 | `ui-design/` | UI-00 (디자인 시스템), UI-01 (Lobby), UI-03 (Settings), **UI-04 (Graphic Editor)**, **UI-A1 (Architecture)** |
+| `ui-design/reference/skin-editor/` | PokerGFX Skin Editor 역설계 PRD 15종 (2026-04-14 team4에서 이관, CCR-011 후속). BS-08 구현 시 참고 |
 | `src/` | Quasar 소스 코드 |
 | `specs/BS-02-lobby/` | Lobby 행동 명세 (팀 내부 설계, contracts/에서 이관) |
 | `specs/BS-03-settings/` | Settings 행동 명세 (팀 내부 설계, contracts/에서 이관) |
@@ -24,7 +25,7 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 
 - 행동 명세: `../../contracts/specs/` (BS-01-auth, BS-02-lobby, BS-03-settings, **BS-08-graphic-editor**)
 - API 계약: `../../contracts/api/` (API-01, API-05 ws/lobby 채널, API-06 Auth, **API-07 Graphic Editor**)
-- 데이터 스키마: `../../contracts/data/` (DATA-02 Entities, **DATA-07 gfskin ZIP schema**)
+- 데이터 스키마: `../../contracts/data/` (DATA-04 DB Schema + Entity 정의, **DATA-07 gfskin ZIP schema**)
 - 공유 정의: `../../contracts/specs/BS-00-definitions.md`
 
 ## Architecture 참조 (필수)
@@ -33,7 +34,7 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 
 ## Settings 범위 (Team 1) — 6탭 CRUD
 
-`UI-03-settings.md` 및 `contracts/specs/BS-03-settings/` 과 정렬한 6탭 구조. 변경 이유: WSOP LIVE Parity(CCR-017) 및 Tech Stack SSOT(CCR-016), Graphic Editor 소유권 이관(CCR-011), BS-03-02 Graphic Settings 세부화(CCR-025) 반영.
+`UI-03-settings.md` 및 `specs/BS-03-settings/` 과 정렬한 6탭 구조. 변경 이유: WSOP LIVE Parity(CCR-017) 및 Tech Stack SSOT(CCR-016), Graphic Editor 소유권 이관(CCR-011), BS-03-02 Graphic Settings 세부화(CCR-025) 반영.
 
 | 탭 | Team 1 담당 | Team 4 담당 |
 |----|-------------|-------------|
@@ -90,7 +91,7 @@ Team 2 FastAPI backend 가 미구현이므로 Team 1 은 **MSW 2.x** 로 로컬 
 
 - **활성화**: `.env.development` 의 `VITE_USE_MOCK=true` (기본값)
 - **위치**: `src/mocks/` (`browser.ts`, `handlers.ts`, `data.ts`)
-- **seed**: DATA-02 엔티티 기반 최소 데이터 (Series 2 / Events 5 / Flights 10 / Tables 20 / Players 100)
+- **seed**: DATA-04 엔티티 기반 최소 데이터 (Series 2 / Events 5 / Flights 10 / Tables 20 / Players 100)
 - **test**: Vitest 는 `src/mocks/server.ts` (Node 모드) 사용
 - **real backend 전환**: `.env.development` 에서 `VITE_USE_MOCK=false` + `VITE_API_BASE_URL=http://localhost:8000/api/v1` 로 변경. 코드 수정 0. 상세: UI-A1 §6.
 
@@ -102,13 +103,17 @@ Team 2 FastAPI backend 가 미구현이므로 Team 1 은 **MSW 2.x** 로 로컬 
 - **locale 전환**: Settings > Preferences > Language 드롭다운. `localStorage.lobby.locale` 에 persist.
 - 상세: UI-A1 §7.
 
-## Spec Gap
+## Spec Gap (CCR-first)
 
-`qa/lobby/QA-LOBBY-03-spec-gap.md` — 형식: `GAP-L-{NNN}`
+- **contracts/ 변경 필요 시**: 먼저 `../docs/05-plans/ccr-inbox/CCR-DRAFT-team1-YYYYMMDD-slug.md` 작성 (**필수**).
+  QA Gap 문서(`qa/lobby/QA-LOBBY-03-spec-gap.md`)에는 "CCR-DRAFT-XXX 제출됨" pointer + 임시 구현 1줄만 기록. 장문 근거는 CCR-DRAFT 본문에만.
+- **팀 내부 판단만 필요 시** (contracts/ 영향 없음): QA Gap 문서에 직접 기록.
+- 형식: `GAP-L-{NNN}`
+- 상세 절차: `../CLAUDE.md` §"Spec Gap 프로세스 (CRITICAL — CCR-first)" 참조.
 
 ## 이전 코드 참조
 
-React 19 + Vite 6 선행 작업물: `docs/07-archive/legacy-repos/ebs_lobby-react/`
+React 19 + Vite 6 선행 작업물: `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_lobby-react/`
 (Quasar 전환으로 아카이브됨. API 구조/Mock 데이터 참고용)
 
 ## 금지

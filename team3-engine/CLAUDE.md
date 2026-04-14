@@ -57,9 +57,13 @@ ebs_game_engine/
 - 다른 문서명 언급 금지
 - 각 문서는 독립 완결적이어야 함
 
-## Spec Gap
+## Spec Gap (CCR-first)
 
-`qa/QA-GE-10-spec-gap.md` — 형식: `GAP-GE-{NNN}`
+- **contracts/ 변경 필요 시**: 먼저 `../docs/05-plans/ccr-inbox/CCR-DRAFT-team3-YYYYMMDD-slug.md` 작성 (**필수**).
+  QA Gap 문서(`qa/QA-GE-10-spec-gap.md`)에는 "CCR-DRAFT-XXX 제출됨" pointer + 임시 구현 1줄만 기록. 장문 근거는 CCR-DRAFT 본문에만.
+- **팀 내부 판단만 필요 시** (contracts/ 영향 없음): QA Gap 문서에 직접 기록.
+- 형식: `GAP-GE-{NNN}`
+- 상세 절차: `../CLAUDE.md` §"Spec Gap 프로세스 (CRITICAL — CCR-first)" 참조.
 
 ## 금지
 
