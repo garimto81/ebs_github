@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=800">
+<title>EBS Flow — Active CC Dropdown</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; position: relative; z-index: 10; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; position: relative; }
+  .cc-btn { background: #fff; color: #111; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc a { color: #555; text-decoration: none; font-weight: 600; }
+  .bc .s { margin: 0 4px; color: #ccc; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  /* Dim overlay */
+  .dim { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 5; }
+
+  /* Dropdown */
+  .dropdown-wrap { position: absolute; top: 28px; right: 0; z-index: 20; }
+  .dropdown { background: #fff; border: 1px solid #ddd; box-shadow: 0 4px 16px rgba(0,0,0,0.15); width: 360px; }
+  .dd-header { padding: 6px 10px; font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #999; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+  .dd-section-label { font-size: 7px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #999; padding: 4px 10px 2px; }
+
+  .dd-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #f5f5f5; cursor: pointer; }
+  .dd-item:hover { background: #fafafa; }
+  .dd-item.feat { background: #fffef5; }
+  .dd-item.error { background: #fff5f5; }
+
+  .dd-star { color: #b8860b; font-weight: 700; width: 12px; font-size: 10px; }
+  .dd-no-star { width: 12px; }
+  .dd-table { font-weight: 700; font-size: 10px; width: 36px; }
+  .dd-status { font-size: 9px; font-weight: 700; width: 50px; }
+  .st-live { color: #28a745; }
+  .st-err { color: #dc3545; }
+  .st-idle { color: #999; }
+  .dd-info { flex: 1; font-size: 9px; color: #666; }
+  .dd-info b { color: #111; }
+  .dd-warn { color: #dc3545; font-weight: 700; }
+  .dd-action { font-size: 8px; font-weight: 700; padding: 2px 8px; border: 1px solid #222; background: #fff; cursor: pointer; }
+  .dd-action.launch { background: #222; color: #fff; }
+  .dd-action.err { border-color: #dc3545; color: #dc3545; }
+
+  /* Content behind dim */
+  .content-behind { position: relative; z-index: 1; padding: 10px 16px; font-size: 10px; color: #888; }
+</style>
+</head>
+<body>
+
+<!-- Dim overlay -->
+<div class="dim"></div>
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC <span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+
+    <!-- Dropdown (open state) -->
+    <div class="dropdown-wrap">
+      <div class="dropdown">
+        <div class="dd-header">
+          <span>Command Center Sessions</span>
+          <span>5 tables</span>
+        </div>
+
+        <div class="dd-section-label">Live (3)</div>
+
+        <div class="dd-item feat">
+          <span class="dd-star">★</span>
+          <span class="dd-table">#071</span>
+          <span class="dd-status st-live">●LIVE</span>
+          <span class="dd-info">Op.A · Hand #47 · <b>Omaha Hi-Lo</b></span>
+          <button class="dd-action">Open</button>
+        </div>
+
+        <div class="dd-item">
+          <span class="dd-no-star"></span>
+          <span class="dd-table">#069</span>
+          <span class="dd-status st-live">●LIVE</span>
+          <span class="dd-info">Op.B · Hand #23 · <b>PLO Hi-Lo</b></span>
+          <button class="dd-action">Open</button>
+        </div>
+
+        <div class="dd-item feat error">
+          <span class="dd-star">★</span>
+          <span class="dd-table">#072</span>
+          <span class="dd-status st-err">●ERROR</span>
+          <span class="dd-info">Op.C · <span class="dd-warn">⚠ RFID</span></span>
+          <button class="dd-action err">Open</button>
+        </div>
+
+        <div class="dd-section-label">Idle (2)</div>
+
+        <div class="dd-item">
+          <span class="dd-no-star"></span>
+          <span class="dd-table">#070</span>
+          <span class="dd-status st-idle">○IDLE</span>
+          <span class="dd-info" style="color:#bbb;">No operator</span>
+          <button class="dd-action launch">Launch</button>
+        </div>
+
+        <div class="dd-item">
+          <span class="dd-no-star"></span>
+          <span class="dd-table">#073</span>
+          <span class="dd-status st-idle">○IDLE</span>
+          <span class="dd-info" style="color:#bbb;">No operator</span>
+          <button class="dd-action launch">Launch</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Breadcrumb -->
+<div class="bc">
+  <a href="#">WSOP 2026</a><span class="s">›</span>
+  <a href="#">#14: Mixed PLO/Omaha/Big O</a><span class="s">›</span>
+  <a href="#">Day2</a><span class="s">›</span>
+  <span class="cur">Tables</span>
+</div>
+
+<div class="content-behind">
+  <div style="height:240px; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:12px;">
+    Table grid content (dimmed)
+  </div>
+</div>
+
+</body>
+</html>

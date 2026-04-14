@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1100">
+<title>EBS Flow — Hand History</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; }
+  .cc-btn { background: #333; color: #fff; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  .content { display: flex; gap: 0; }
+  .panel { flex: 1; padding: 10px 12px; }
+  .panel-left { border-right: 1px solid #eee; }
+
+  .panel-title { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+
+  /* Filters */
+  .filters { display: flex; gap: 4px; margin-bottom: 8px; }
+  .filter-btn { font-size: 8px; font-weight: 600; padding: 2px 8px; border: 1px solid #ddd; background: #fff; cursor: pointer; }
+  .filter-btn.active { background: #222; color: #fff; border-color: #222; }
+
+  /* Hand list table */
+  table { width: 100%; border-collapse: collapse; font-size: 9px; }
+  th { font-size: 7px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #999; padding: 3px 4px; border-bottom: 2px solid #ddd; text-align: left; white-space: nowrap; }
+  td { padding: 3px 4px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
+  tr:hover { background: #fafafa; }
+  tr.selected { background: #f0f7ff; }
+  .winner { color: #28a745; font-weight: 700; }
+  .pot { font-weight: 700; }
+
+  /* Detail panel */
+  .detail-section { margin-bottom: 8px; }
+  .detail-label { font-size: 8px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #999; margin-bottom: 3px; }
+  .detail-game { font-size: 12px; font-weight: 700; }
+  .detail-meta { font-size: 9px; color: #888; }
+
+  /* Board cards */
+  .board { display: flex; gap: 3px; margin: 6px 0; }
+  .card { width: 28px; height: 36px; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; background: #fff; }
+  .card.red { color: #dc3545; }
+  .card.black { color: #111; }
+
+  /* Player detail table */
+  .detail-tbl { width: 100%; border-collapse: collapse; font-size: 9px; }
+  .detail-tbl th { font-size: 7px; padding: 2px 3px; }
+  .detail-tbl td { padding: 2px 3px; font-size: 9px; }
+  .pnl-pos { color: #28a745; font-weight: 700; }
+  .pnl-neg { color: #dc3545; font-weight: 700; }
+
+  /* Action sequence */
+  .action-seq { display: flex; gap: 3px; margin-top: 6px; }
+  .action-phase { border: 1px solid #ddd; padding: 3px 6px; font-size: 8px; text-align: center; }
+  .action-phase.active { border-color: #222; font-weight: 700; background: #f5f5f5; }
+  .action-phase .phase-name { font-weight: 700; font-size: 8px; }
+  .action-phase .phase-pot { font-size: 7px; color: #888; }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC<span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+  </div>
+</div>
+<div class="bc"><span class="cur">Hand History — Table #071</span></div>
+
+<div class="content">
+  <!-- Left: Hand List -->
+  <div class="panel panel-left" style="flex:1.1;">
+    <div class="panel-title">Hand List</div>
+    <div class="filters">
+      <button class="filter-btn active">All Hands</button>
+      <button class="filter-btn">Showdown Only</button>
+      <button class="filter-btn">Big Pots</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Hand#</th>
+          <th>Game</th>
+          <th>Players</th>
+          <th>Winner</th>
+          <th>Pot</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="selected">
+          <td><b>#47</b></td>
+          <td>O Hi-Lo</td>
+          <td>7</td>
+          <td class="winner">P. Nguyen</td>
+          <td class="pot">24,800</td>
+          <td>14:32</td>
+        </tr>
+        <tr>
+          <td>#46</td>
+          <td>O Hi-Lo</td>
+          <td>8</td>
+          <td class="winner">R. Chen</td>
+          <td class="pot">18,200</td>
+          <td>14:28</td>
+        </tr>
+        <tr>
+          <td>#45</td>
+          <td>O Hi-Lo</td>
+          <td>7</td>
+          <td>—</td>
+          <td>1,200</td>
+          <td>14:25</td>
+        </tr>
+        <tr>
+          <td>#44</td>
+          <td>Holdem</td>
+          <td>8</td>
+          <td class="winner">J. Smith</td>
+          <td class="pot">42,600</td>
+          <td>14:18</td>
+        </tr>
+        <tr>
+          <td>#43</td>
+          <td>Holdem</td>
+          <td>6</td>
+          <td class="winner">M. Lee</td>
+          <td class="pot">15,400</td>
+          <td>14:12</td>
+        </tr>
+        <tr>
+          <td>#42</td>
+          <td>Razz</td>
+          <td>7</td>
+          <td class="winner">A. Patel</td>
+          <td class="pot">8,800</td>
+          <td>14:06</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Right: Hand Detail -->
+  <div class="panel" style="flex:0.9;">
+    <div class="panel-title">Hand #47 Detail</div>
+    <div class="detail-section">
+      <div class="detail-game">Omaha Hi-Lo (Limit)</div>
+      <div class="detail-meta">Blinds: 100/200 · 7 Players · Table #071</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Board</div>
+      <div class="board">
+        <div class="card black">A&#9824;</div>
+        <div class="card red">7&#9830;</div>
+        <div class="card black">3&#9824;</div>
+        <div class="card black">K&#9827;</div>
+        <div class="card red">2&#9829;</div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Players</div>
+      <table class="detail-tbl">
+        <thead>
+          <tr>
+            <th>Seat</th>
+            <th>Player</th>
+            <th>Hole Cards</th>
+            <th>Action</th>
+            <th>Result</th>
+            <th>P&L</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><b>P. Nguyen</b></td>
+            <td>A&#9829; 2&#9830; 3&#9827; 5&#9824;</td>
+            <td>Bet/Call</td>
+            <td class="winner">Hi+Lo</td>
+            <td class="pnl-pos">+18,400</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>R. Chen</td>
+            <td>K&#9829; Q&#9830; J&#9827; T&#9824;</td>
+            <td>Call/Fold</td>
+            <td>—</td>
+            <td class="pnl-neg">-4,200</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>J. Smith</td>
+            <td>A&#9827; 4&#9829; 6&#9830; 8&#9824;</td>
+            <td>Raise/Call</td>
+            <td>2nd Lo</td>
+            <td class="pnl-neg">-6,400</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>M. Lee</td>
+            <td>—</td>
+            <td>Fold</td>
+            <td>—</td>
+            <td class="pnl-neg">-200</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Action Sequence</div>
+      <div class="action-seq">
+        <div class="action-phase">
+          <div class="phase-name">Preflop</div>
+          <div class="phase-pot">Pot: 1,400</div>
+        </div>
+        <div class="action-phase">
+          <div class="phase-name">Flop</div>
+          <div class="phase-pot">Pot: 6,200</div>
+        </div>
+        <div class="action-phase">
+          <div class="phase-name">Turn</div>
+          <div class="phase-pot">Pot: 14,600</div>
+        </div>
+        <div class="action-phase active">
+          <div class="phase-name">River</div>
+          <div class="phase-pot">Pot: 24,800</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

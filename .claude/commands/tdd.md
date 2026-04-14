@@ -13,6 +13,25 @@ Follow TDD best practices with Red-Green-Refactor workflow and git integration.
 /tdd <feature-name>
 ```
 
+### Generate Red (자동 테스트 생성)
+
+PRD에서 실패 테스트를 자동 생성합니다:
+
+```
+/tdd --generate-red <prd-path>
+```
+
+**동작**:
+1. PRD 파일의 `## 요구사항` 섹션 파싱
+2. 요구사항 1개 → 실패 테스트 함수 1개 자동 생성
+3. 생성된 테스트 파일 실행하여 FAIL(Red) 상태 확인
+
+**예시**:
+```
+/tdd --generate-red docs/00-prd/auth-system.prd.md
+# → tests/test_auth_system_auto.py 생성 (Red 상태)
+```
+
 ## Red-Green-Refactor Cycle
 
 ### 🔴 Red: Write Failing Test

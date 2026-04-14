@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0f1923;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+  padding: 48px 56px;
+  width: 1200px;
+}
+
+.section { margin-bottom: 40px; }
+.section-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.section-subtitle { font-size: 13px; color: #667788; margin-bottom: 24px; }
+
+/* Shared node styles */
+.n {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px 18px; border-radius: 8px; font-size: 14px; font-weight: 600;
+  min-width: 90px; text-align: center; white-space: nowrap;
+}
+.n-box { background: #1c2836; border: 1px solid #2a3a4a; color: #b0c0d0; }
+.n-dark { background: #2a2a2a; color: #fff; }
+.n-accent { background: #e67e22; color: #fff; }
+.n-merge { background: #162a1e; border: 2px solid #e67e22; color: #f0c060; }
+.n-sub { font-size: 11px; color: #778899; font-weight: 400; margin-left: 4px; }
+
+.arr { color: #445566; font-size: 18px; margin: 0 10px; display: inline; }
+.arr-o { color: #e67e22; }
+
+/* Flow row */
+.flow { display: flex; align-items: center; margin-bottom: 0; }
+
+/* Divider */
+hr { border: none; border-top: 1px solid #1c2836; margin: 36px 0; }
+
+/* Poker grid layout */
+.poker-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto auto;
+  align-items: center;
+  row-gap: 12px;
+}
+.poker-start { grid-row: 1 / 4; grid-column: 1; display: flex; align-items: center; padding-right: 8px; }
+.poker-path1 { grid-row: 1; grid-column: 2; display: flex; align-items: center; }
+.poker-end { grid-row: 1 / 4; grid-column: 3; display: flex; align-items: center; padding-left: 8px; }
+.poker-path2 { grid-row: 3; grid-column: 2; display: flex; align-items: center; }
+.poker-bracket {
+  grid-row: 2; grid-column: 2;
+  text-align: center; font-size: 11px; color: #556677;
+  border-left: 2px solid #334455; margin-left: 12px; padding-left: 12px;
+  height: 0;
+}
+
+/* Fork/merge visual connector */
+.fork-line {
+  width: 2px; background: #334455; height: 64px;
+  margin: 0 16px;
+}
+.fork-container {
+  display: flex; align-items: stretch;
+}
+.merge-bracket {
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  margin: 0 8px;
+}
+.merge-bracket .line { width: 2px; flex: 1; background: #e67e22; min-height: 12px; }
+.merge-bracket .dot { width: 8px; height: 8px; background: #e67e22; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<!-- ── 일반 스포츠 ── -->
+<div class="section">
+  <div class="section-title" style="color: #8899aa;">일반 스포츠</div>
+  <div class="section-subtitle">모든 정보가 눈에 보인다</div>
+  <div class="flow">
+    <span class="n n-box">경기장</span>
+    <span class="arr">→</span>
+    <span class="n n-dark">📹 카메라</span>
+    <span class="arr">→</span>
+    <span class="n n-box">영상</span>
+    <span class="arr">→</span>
+    <span class="n n-box">GFX <span class="n-sub">정리/표시</span></span>
+    <span class="arr">→</span>
+    <span class="n n-box">방송</span>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── 포커 ── -->
+<div class="section">
+  <div class="section-title" style="color: #e67e22;">포커</div>
+  <div class="section-subtitle">핵심 정보가 숨겨져 있다</div>
+
+  <div style="display: flex; align-items: center;">
+    <!-- 출발: 테이블 -->
+    <span class="n n-box">테이블</span>
+    <span class="arr">→</span>
+
+    <!-- 두 갈래 -->
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <!-- 경로 1: RFID (정보) -->
+      <div class="flow">
+        <span class="n n-accent">📡 RFID</span>
+        <span class="arr arr-o">→</span>
+        <span class="n n-box">카드 데이터</span>
+        <span class="arr arr-o">→</span>
+        <span class="n n-box">게임 엔진</span>
+      </div>
+      <!-- 경로 2: 카메라 (영상) -->
+      <div class="flow">
+        <span class="n n-dark">📹 카메라</span>
+        <span class="arr">→</span>
+        <span class="n n-box">영상 <span class="n-sub">카드는 안 보임</span></span>
+      </div>
+    </div>
+
+    <!-- 합류 -->
+    <div class="merge-bracket">
+      <div class="line"></div>
+      <div class="dot"></div>
+      <div class="line"></div>
+    </div>
+
+    <span class="arr arr-o">→</span>
+    <span class="n n-merge">합성 <span class="n-sub" style="color:#e67e22;">정보 생성</span></span>
+    <span class="arr arr-o">→</span>
+    <span class="n n-box">방송</span>
+  </div>
+</div>
+
+</body>
+</html>

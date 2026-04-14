@@ -1,0 +1,74 @@
+### CCR-019 — Idempotency-Key Header
+###
+### 검증:
+### - 동일 Idempotency-Key 재전송 시 중복 차단 (409 Conflict)
+### - 최초 요청의 응답을 그대로 반환 (idempotency_keys 테이블)
+### - API-01 mutation 전반(POST/PATCH/PUT/DELETE)에 적용
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+@idem_key = 018bf4a0-0c8f-4f8e-b8c5-4e4b2c4a7e1d
+
+### 11.1 POST /api/v1/tables — 최초 요청
+POST {{host}}/api/v1/tables
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{idem_key}}
+
+{
+  "flight_id": 1,
+  "table_no": 101,
+  "name": "Test Table 101",
+  "type": "general",
+  "max_players": 9
+}
+
+# 예상: 201 Created + table_id 반환
+
+### 11.2 POST /api/v1/tables — 동일 Idempotency-Key 재전송
+POST {{host}}/api/v1/tables
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{idem_key}}
+
+{
+  "flight_id": 1,
+  "table_no": 101,
+  "name": "Test Table 101 (DUP)",
+  "type": "general",
+  "max_players": 9
+}
+
+# 예상: 최초 응답을 그대로 반환 (201 Created + 같은 table_id)
+# 또는 409 Conflict + original_request_id (구현 선택)
+# 핵심: body가 달라도 Idempotency-Key 매칭 우선, 재처리 안 됨
+
+### 11.3 POST /api/v1/tables — Idempotency-Key 누락 (mutation에 필수)
+POST {{host}}/api/v1/tables
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+
+{
+  "flight_id": 1,
+  "table_no": 102,
+  "name": "Test Table 102"
+}
+
+# 예상: 400 Bad Request (Idempotency-Key 필수 — CCR-019 §2)
+# 또는 경고 헤더와 함께 허용 (정책 선택)
+
+### 11.4 WebSocket command에 idempotency_key (API-05 §2.3)
+###
+### ws://localhost:8000/ws/cc?table_id=1&token=<jwt>&format=json
+###
+### CC가 발행:
+### {
+###   "type": "SendPlayerFold",
+###   "payload": { "hand_id": 248, "seat_no": 3 },
+###   "idempotency_key": "uuid-fold-248-3",
+###   "timestamp": "2026-04-10T14:30:00.123Z",
+###   "source_id": "cc-table-1",
+###   "message_id": "msg-uuid-1"
+### }
+###
+### 동일 idempotency_key 재수신 시 BO는 중복 처리 없이 ACK만 반환

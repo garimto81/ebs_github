@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Flop Games 계열 — 시각 가이드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a1a0e;color:#e8f5e9;font-family:'Segoe UI','Apple SD Gothic Neo',sans-serif;font-size:14px;padding:20px 14px;max-width:720px;margin:0 auto}
+.ph{text-align:center;padding:24px 0 16px;border-bottom:1px solid #1b4d2a;margin-bottom:28px}
+.ph h1{font-size:21px;font-weight:700;color:#fbbf24;letter-spacing:-.02em;margin-bottom:5px}
+.ph .sub{font-size:12px;color:#6b9a75}
+.ph .disc{margin-top:8px;padding:7px 14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:6px;font-size:11px;color:#a8cc9e;display:inline-block}
+.sec{margin-bottom:30px}
+.st{font-size:12px;font-weight:600;color:#fbbf24;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #1b4d2a}
+.cap{text-align:center;font-size:11px;color:#6b9a75;margin-top:7px}
+/* poker table */
+.pt{background:radial-gradient(ellipse at center,#0d7a3a 0%,#0a5c2f 70%,#083d1f 100%);border-radius:90px;border:8px solid #3d2010;box-shadow:0 0 0 3px #5c3a1e,0 8px 28px rgba(0,0,0,.6);padding:20px 16px;text-align:center;margin:0 auto;max-width:640px}
+.ba{min-height:46px;display:flex;align-items:center;justify-content:center;gap:3px;margin:10px 0;padding:6px;background:rgba(0,0,0,.15);border-radius:10px}
+.bl{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.07em}
+.pr{display:flex;justify-content:space-around;margin-top:6px}
+.pl{text-align:center}
+.pll{font-size:11px;color:#fbbf24;margin-bottom:3px;font-weight:600}
+.pc{display:flex;gap:2px;justify-content:center}
+/* cards */
+.c{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:65px;border-radius:6px;background:#fff;border:1px solid #ccc;font-weight:700;box-shadow:1px 2px 4px rgba(0,0,0,.35);flex-shrink:0}
+.c .r{font-size:15px;line-height:1}.c .s{font-size:17px;line-height:1}
+.c.red{color:#dc2626}.c.blk{color:#111827}
+.c.back{background:repeating-linear-gradient(135deg,#1e3a5f 0,#1e3a5f 4px,#2563eb 4px,#2563eb 8px);border-color:#1e3a5f}
+.c.hl{border:3px solid #fbbf24;box-shadow:0 0 7px rgba(251,191,36,.5)}
+.c.ok{border:3px solid #22c55e;box-shadow:0 0 5px rgba(34,197,94,.4)}
+.c.ng{border:3px solid #ef4444;opacity:.55}
+.c.new{border:3px solid #38bdf8;box-shadow:0 0 7px rgba(56,189,248,.5)}
+.c.sm{width:36px;height:50px}
+.c.sm .r{font-size:12px}.c.sm .s{font-size:14px}
+/* stage label */
+.slbl{font-size:11px;font-weight:700;color:#38bdf8;letter-spacing:.04em;margin-bottom:5px}
+.stgs{display:flex;flex-direction:column;gap:10px}
+/* rank table */
+.rt{width:100%;border-collapse:collapse}
+.rt th{font-size:10px;font-weight:600;color:#6b9a75;letter-spacing:.06em;text-transform:uppercase;padding:5px 6px;border-bottom:1px solid #1b4d2a;text-align:left}
+.rt td{padding:4px 6px;border-bottom:1px solid #0f2e18;vertical-align:middle}
+.rt tr:hover td{background:rgba(255,255,255,.03)}
+.rn{font-size:12px;font-weight:700;color:#fbbf24;text-align:center}
+.hn{font-size:12px;font-weight:600;color:#e8f5e9;white-space:nowrap}
+.hd{font-size:10px;color:#6b9a75}
+.cr{display:flex;gap:2px}
+/* showdown */
+.sd{display:flex;gap:10px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
+.pb{background:rgba(0,0,0,.25);border-radius:10px;padding:10px 12px;text-align:center;flex:1;min-width:120px}
+.pb .pl2{font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:5px}
+.hr{margin-top:7px;font-size:12px;font-weight:700;padding:3px 8px;border-radius:4px}
+.hr.win{background:rgba(34,197,94,.15);color:#22c55e}
+.hr.los{background:rgba(239,68,68,.1);color:#ef4444}
+.vsd{display:flex;align-items:center;padding-top:30px;font-size:17px;font-weight:700;color:#4b7a55}
+.rb{text-align:center;margin-top:10px;padding:9px 14px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);border-radius:7px;font-size:13px;font-weight:700;color:#22c55e}
+/* omaha */
+.os{display:flex;gap:10px;flex-wrap:wrap}
+.ob{flex:1;min-width:230px;background:rgba(0,0,0,.25);border-radius:10px;padding:12px}
+.ob .ol{font-size:12px;font-weight:700;margin-bottom:8px}
+.ob.ok2 .ol{color:#22c55e}.ob.ng2 .ol{color:#ef4444}
+.rl{font-size:10px;color:#6b9a75;margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.cl{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:7px}
+.rv{margin-top:8px;font-size:11px;font-weight:600;padding:5px 9px;border-radius:5px}
+.rv.ok{background:rgba(34,197,94,.12);color:#22c55e}
+.rv.ng{background:rgba(239,68,68,.1);color:#ef4444}
+/* hi-lo */
+.hv{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:14px;background:rgba(0,0,0,.2);border-radius:11px}
+.hp{text-align:center}
+.hp .hpl{font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:3px}
+.hp .hph{font-size:10px;color:#6b9a75;margin-top:3px}
+.pot{text-align:center}
+.pc2{width:68px;height:68px;border-radius:50%;background:radial-gradient(circle,#fbbf24,#d97706);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 3px;box-shadow:0 0 14px rgba(251,191,36,.3)}
+.pc2 .ptl{font-size:9px;font-weight:700;color:#78350f}
+.pc2 .pta{font-size:17px;font-weight:800;color:#1a0a00}
+.sa{display:flex;gap:16px;margin-top:3px}
+.as{font-size:10px;color:#6b9a75;text-align:center}
+/* short deck */
+.dc{display:flex;gap:8px;flex-wrap:wrap}
+.dcol{flex:1;min-width:190px;background:rgba(0,0,0,.2);border-radius:9px;overflow:hidden}
+.dch{padding:7px 10px;font-size:11px;font-weight:700;text-align:center}
+.dch.n{background:rgba(99,102,241,.2);color:#a5b4fc}
+.dch.s{background:rgba(251,146,60,.2);color:#fdba74}
+.dr{display:flex;align-items:center;padding:4px 10px;border-bottom:1px solid rgba(255,255,255,.04);gap:5px}
+.dr .dn{font-size:11px;font-weight:700;color:#fbbf24;width:16px}
+.dr .dd{font-size:11px;color:#e8f5e9;flex:1}
+.dr.ch{background:rgba(251,146,60,.1)}
+.dr.ch .dd{color:#fdba74;font-weight:600}
+/* pineapple */
+.ps2{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:14px;background:rgba(0,0,0,.2);border-radius:11px}
+.pst{text-align:center}
+.pst .psl{font-size:10px;color:#6b9a75;font-weight:600;text-transform:uppercase;margin-bottom:5px;letter-spacing:.04em}
+.parr{font-size:18px;color:#2d5a3d;padding-top:14px}
+.c.dis{position:relative;opacity:.4}
+.c.dis::after{content:'✕';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;color:#ef4444;font-weight:900}
+</style>
+</head>
+<body>
+
+<div class="ph">
+  <h1>Flop Games 계열 — 시각 가이드</h1>
+  <div class="sub">PRD-GAME-01-flop-games.md 시각 보충 자료</div>
+  <div class="disc">이 가이드는 텍스트 문서를 보충하는 시각 자료입니다. 전체 규칙은 PRD를 참조하세요.</div>
+</div>
+
+<!-- 0-1. 카드 덱 소개 -->
+<div class="sec" id="deck-intro">
+  <div class="st">Step 0-1: 카드 덱 — 52장 전체</div>
+  <p style="text-align:center;color:#a8cc9e;font-size:13px;margin-bottom:10px">포커는 <strong>52장</strong>의 카드를 사용합니다. 4가지 무늬 × 13가지 숫자 = 52장. 전부 펼쳐보겠습니다.</p>
+  <div style="margin-bottom:8px">
+    <div style="color:#6b9a75;font-size:11px;margin-bottom:3px">♠ 스페이드 (검정) — 13장</div>
+    <div style="display:flex;gap:1px;flex-wrap:wrap"><span class="c sm blk"><span class="r">2</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">3</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">4</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">5</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">6</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">7</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">8</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">9</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">10</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">J</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">Q</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">K</span><span class="s">♠</span></span><span class="c sm blk"><span class="r">A</span><span class="s">♠</span></span></div>
+  </div>
+  <div style="margin-bottom:8px">
+    <div style="color:#6b9a75;font-size:11px;margin-bottom:3px">♥ 하트 (빨강) — 13장</div>
+    <div style="display:flex;gap:1px;flex-wrap:wrap"><span class="c sm red"><span class="r">2</span><span class="s">♥</span></span><span class="c sm red"><span class="r">3</span><span class="s">♥</span></span><span class="c sm red"><span class="r">4</span><span class="s">♥</span></span><span class="c sm red"><span class="r">5</span><span class="s">♥</span></span><span class="c sm red"><span class="r">6</span><span class="s">♥</span></span><span class="c sm red"><span class="r">7</span><span class="s">♥</span></span><span class="c sm red"><span class="r">8</span><span class="s">♥</span></span><span class="c sm red"><span class="r">9</span><span class="s">♥</span></span><span class="c sm red"><span class="r">10</span><span class="s">♥</span></span><span class="c sm red"><span class="r">J</span><span class="s">♥</span></span><span class="c sm red"><span class="r">Q</span><span class="s">♥</span></span><span class="c sm red"><span class="r">K</span><span class="s">♥</span></span><span class="c sm red"><span class="r">A</span><span class="s">♥</span></span></div>
+  </div>
+  <div style="margin-bottom:8px">
+    <div style="color:#6b9a75;font-size:11px;margin-bottom:3px">♦ 다이아 (빨강) — 13장</div>
+    <div style="display:flex;gap:1px;flex-wrap:wrap"><span class="c sm red"><span class="r">2</span><span class="s">♦</span></span><span class="c sm red"><span class="r">3</span><span class="s">♦</span></span><span class="c sm red"><span class="r">4</span><span class="s">♦</span></span><span class="c sm red"><span class="r">5</span><span class="s">♦</span></span><span class="c sm red"><span class="r">6</span><span class="s">♦</span></span><span class="c sm red"><span class="r">7</span><span class="s">♦</span></span><span class="c sm red"><span class="r">8</span><span class="s">♦</span></span><span class="c sm red"><span class="r">9</span><span class="s">♦</span></span><span class="c sm red"><span class="r">10</span><span class="s">♦</span></span><span class="c sm red"><span class="r">J</span><span class="s">♦</span></span><span class="c sm red"><span class="r">Q</span><span class="s">♦</span></span><span class="c sm red"><span class="r">K</span><span class="s">♦</span></span><span class="c sm red"><span class="r">A</span><span class="s">♦</span></span></div>
+  </div>
+  <div style="margin-bottom:4px">
+    <div style="color:#6b9a75;font-size:11px;margin-bottom:3px">♣ 클럽 (검정) — 13장</div>
+    <div style="display:flex;gap:1px;flex-wrap:wrap"><span class="c sm blk"><span class="r">2</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">3</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">4</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">5</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">6</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">7</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">8</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">9</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">10</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">J</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">Q</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">K</span><span class="s">♣</span></span><span class="c sm blk"><span class="r">A</span><span class="s">♣</span></span></div>
+  </div>
+  <div class="cap">이 52장이 포커의 전부입니다. 숫자가 높을수록 강하고, A(에이스)가 가장 강합니다.</div>
+</div>
+
+<!-- 0-2. 비공개 카드 개념 -->
+<div class="sec" id="private-cards">
+  <div class="st">Step 0-2: 나만 보는 카드 (비공개)</div>
+  <div style="display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap">
+    <div style="text-align:center">
+      <div style="color:#fbbf24;font-size:12px;margin-bottom:4px">플레이어 시점</div>
+      <div style="display:flex;gap:3px;justify-content:center">
+        <div class="c blk"><div class="r">A</div><div class="s">♠</div></div>
+        <div class="c red"><div class="r">K</div><div class="s">♥</div></div>
+      </div>
+      <div class="cap">"나는 볼 수 있다"</div>
+    </div>
+    <div style="font-size:24px;color:#fbbf24">→</div>
+    <div style="text-align:center">
+      <div style="color:#fbbf24;font-size:12px;margin-bottom:4px">상대 시점</div>
+      <div style="display:flex;gap:3px;justify-content:center">
+        <div class="c back"></div>
+        <div class="c back"></div>
+      </div>
+      <div class="cap">"상대는 볼 수 없다"</div>
+    </div>
+  </div>
+  <div class="cap" style="margin-top:10px">같은 카드인데 보는 사람에 따라 다릅니다. 이것이 포커의 핵심!</div>
+</div>
+
+<!-- 0-3. 공유 카드 개념 -->
+<div class="sec" id="shared-cards">
+  <div class="st">Step 0-3: 모두가 공유하는 카드 (공개)</div>
+  <div style="text-align:center">
+    <div style="color:#fbbf24;font-size:12px;margin-bottom:6px">테이블 중앙 — 모든 플레이어가 같이 봅니다</div>
+    <div style="display:flex;gap:3px;justify-content:center">
+      <div class="c red"><div class="r">A</div><div class="s">♦</div></div>
+      <div class="c blk"><div class="r">7</div><div class="s">♣</div></div>
+      <div class="c blk"><div class="r">2</div><div class="s">♠</div></div>
+      <div class="c red"><div class="r">K</div><div class="s">♦</div></div>
+      <div class="c blk"><div class="r">10</div><div class="s">♣</div></div>
+    </div>
+  </div>
+  <div class="cap">이 5장은 모든 플레이어가 함께 사용합니다</div>
+</div>
+
+<!-- 0-4. 조합 개념 -->
+<div class="sec" id="combination">
+  <div class="st">Step 0-4: 비공개 + 공유 = 최고의 5장을 만든다!</div>
+  <div style="display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap">
+    <div style="text-align:center">
+      <div style="color:#38bdf8;font-size:11px;margin-bottom:3px">내 카드 (2장)</div>
+      <div style="display:flex;gap:2px;justify-content:center">
+        <div class="c blk hl"><div class="r">A</div><div class="s">♠</div></div>
+        <div class="c red hl"><div class="r">K</div><div class="s">♥</div></div>
+      </div>
+    </div>
+    <div style="font-size:20px;color:#fbbf24">+</div>
+    <div style="text-align:center">
+      <div style="color:#38bdf8;font-size:11px;margin-bottom:3px">공유 카드 (5장)</div>
+      <div style="display:flex;gap:2px;justify-content:center">
+        <div class="c red"><div class="r">A</div><div class="s">♦</div></div>
+        <div class="c blk"><div class="r">7</div><div class="s">♣</div></div>
+        <div class="c blk"><div class="r">2</div><div class="s">♠</div></div>
+        <div class="c red"><div class="r">K</div><div class="s">♦</div></div>
+        <div class="c blk"><div class="r">10</div><div class="s">♣</div></div>
+      </div>
+    </div>
+    <div style="font-size:20px;color:#fbbf24">=</div>
+    <div style="text-align:center">
+      <div style="color:#4ade80;font-size:11px;margin-bottom:3px">최고 5장 선택!</div>
+      <div style="display:flex;gap:2px;justify-content:center">
+        <div class="c blk ok"><div class="r">A</div><div class="s">♠</div></div>
+        <div class="c red ok"><div class="r">A</div><div class="s">♦</div></div>
+        <div class="c red ok"><div class="r">K</div><div class="s">♥</div></div>
+        <div class="c red ok"><div class="r">K</div><div class="s">♦</div></div>
+        <div class="c blk ok"><div class="r">10</div><div class="s">♣</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">총 7장이 펼쳐집니다. 하지만 승부에 사용하는 건 **5장**뿐입니다.</div>
+</div>
+
+<!-- 0-4b. 7장 중 5장을 고르는 과정 -->
+<div class="sec" id="five-card-selection">
+  <div class="st">Step 0-4b: 7장 중 어떤 5장이 가장 강한가?</div>
+  <p style="text-align:center;color:#a8cc9e;font-size:12px;margin-bottom:10px">7장이 있으면 여러 가지 5장 조합이 가능합니다. 가장 강한 조합을 찾아야 합니다.</p>
+
+  <div style="text-align:center;margin-bottom:12px">
+    <div style="color:#38bdf8;font-size:11px;margin-bottom:5px">내 7장 전체</div>
+    <div style="display:flex;gap:2px;justify-content:center">
+      <div class="c blk hl"><div class="r">A</div><div class="s">♠</div></div>
+      <div class="c red hl"><div class="r">K</div><div class="s">♥</div></div>
+      <div class="c red"><div class="r">A</div><div class="s">♦</div></div>
+      <div class="c blk"><div class="r">7</div><div class="s">♣</div></div>
+      <div class="c blk"><div class="r">2</div><div class="s">♠</div></div>
+      <div class="c red"><div class="r">K</div><div class="s">♦</div></div>
+      <div class="c blk"><div class="r">10</div><div class="s">♣</div></div>
+    </div>
+    <div class="cap">노란 테두리 = 내 비공개 카드 2장 / 나머지 = 공유 카드 5장</div>
+  </div>
+
+  <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin-top:15px">
+    <div style="text-align:center;padding:10px;background:rgba(0,0,0,.2);border-radius:8px;border:2px solid #22c55e">
+      <div style="color:#4ade80;font-size:11px;font-weight:bold;margin-bottom:5px">조합 A — Two Pair ✅ 선택!</div>
+      <div style="display:flex;gap:2px;justify-content:center">
+        <div class="c blk ok"><div class="r">A</div><div class="s">♠</div></div>
+        <div class="c red ok"><div class="r">A</div><div class="s">♦</div></div>
+        <div class="c red ok"><div class="r">K</div><div class="s">♥</div></div>
+        <div class="c red ok"><div class="r">K</div><div class="s">♦</div></div>
+        <div class="c blk ok"><div class="r">10</div><div class="s">♣</div></div>
+      </div>
+      <div class="cap">A 페어 + K 페어 = Two Pair (8위)</div>
+    </div>
+    <div style="text-align:center;padding:10px;background:rgba(0,0,0,.2);border-radius:8px;border:1px solid #4b5563">
+      <div style="color:#94a3b8;font-size:11px;font-weight:bold;margin-bottom:5px">조합 B — One Pair (더 약함)</div>
+      <div style="display:flex;gap:2px;justify-content:center">
+        <div class="c blk"><div class="r">A</div><div class="s">♠</div></div>
+        <div class="c red"><div class="r">A</div><div class="s">♦</div></div>
+        <div class="c red"><div class="r">K</div><div class="s">♥</div></div>
+        <div class="c blk"><div class="r">7</div><div class="s">♣</div></div>
+        <div class="c blk"><div class="r">2</div><div class="s">♠</div></div>
+      </div>
+      <div class="cap">A 페어만 = One Pair (9위) — K♦를 빼서 약해짐</div>
+    </div>
+  </div>
+  <div class="cap" style="margin-top:10px">조합 A가 더 강하니까 조합 A를 선택합니다! 이 과정을 시스템이 자동으로 해줍니다.</div>
+</div>
+
+<!-- 0-5. 핸드 랭킹 기본 3개 -->
+<div class="sec" id="rank-basic">
+  <div class="st">핸드 랭킹 — 기본 3개 (가장 흔한 패)</div>
+  <p style="text-align:center;color:#a8cc9e;font-size:12px;margin-bottom:10px">10판 중 7판은 이 3가지 중 하나로 결정됩니다</p>
+  <table class="rt">
+    <thead><tr><th style="width:30px">순위</th><th style="width:80px">이름</th><th>예시 패</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="rn">10</td><td class="hn">High Card</td><td><div class="cr"><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div><div class="c sm red"><div class="r">K</div><div class="s">♥</div></div><div class="c sm red"><div class="r">9</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">7</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">2</div><div class="s">♠</div></div></div></td><td class="hd">아무 조합도 없음.<br/>가장 높은 카드로 비교</td></tr>
+      <tr><td class="rn">9</td><td class="hn">One Pair</td><td><div class="cr"><div class="c sm blk"><div class="r">J</div><div class="s">♠</div></div><div class="c sm red"><div class="r">J</div><div class="s">♥</div></div><div class="c sm red"><div class="r">A</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">8</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">3</div><div class="s">♠</div></div></div></td><td class="hd">같은 숫자 2장</td></tr>
+      <tr><td class="rn">8</td><td class="hn">Two Pair</td><td><div class="cr"><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div><div class="c sm red"><div class="r">A</div><div class="s">♥</div></div><div class="c sm red"><div class="r">K</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">K</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">7</div><div class="s">♠</div></div></div></td><td class="hd">2장 세트가 2개</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 0-6. 핸드 랭킹 중간 4개 -->
+<div class="sec" id="rank-mid">
+  <div class="st">핸드 랭킹 — 중간 4개 (여기서부터 흥분!)</div>
+  <table class="rt">
+    <thead><tr><th style="width:30px">순위</th><th style="width:100px">이름</th><th>예시 패</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="rn">7</td><td class="hn">Three of a Kind</td><td><div class="cr"><div class="c sm blk"><div class="r">Q</div><div class="s">♠</div></div><div class="c sm red"><div class="r">Q</div><div class="s">♥</div></div><div class="c sm red"><div class="r">Q</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">7</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">2</div><div class="s">♠</div></div></div></td><td class="hd">같은 숫자 3장</td></tr>
+      <tr><td class="rn">6</td><td class="hn">Straight</td><td><div class="cr"><div class="c sm blk"><div class="r">10</div><div class="s">♠</div></div><div class="c sm red"><div class="r">9</div><div class="s">♥</div></div><div class="c sm red"><div class="r">8</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">7</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">6</div><div class="s">♠</div></div></div></td><td class="hd">연속 5장 (무늬 무관)</td></tr>
+      <tr><td class="rn">5</td><td class="hn">Flush</td><td><div class="cr"><div class="c sm red"><div class="r">A</div><div class="s">♥</div></div><div class="c sm red"><div class="r">J</div><div class="s">♥</div></div><div class="c sm red"><div class="r">8</div><div class="s">♥</div></div><div class="c sm red"><div class="r">4</div><div class="s">♥</div></div><div class="c sm red"><div class="r">2</div><div class="s">♥</div></div></div></td><td class="hd">같은 무늬 5장</td></tr>
+      <tr><td class="rn">4</td><td class="hn">Full House</td><td><div class="cr"><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div><div class="c sm red"><div class="r">A</div><div class="s">♥</div></div><div class="c sm red"><div class="r">A</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">K</div><div class="s">♠</div></div><div class="c sm red"><div class="r">K</div><div class="s">♥</div></div></div></td><td class="hd">3장 + 2장 세트</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 0-7. 핸드 랭킹 희귀 3개 -->
+<div class="sec" id="rank-rare">
+  <div class="st">핸드 랭킹 — 희귀 3개 (전설의 패)</div>
+  <p style="text-align:center;color:#a8cc9e;font-size:12px;margin-bottom:10px">프로 선수도 평생 몇 번 보기 어렵습니다</p>
+  <table class="rt">
+    <thead><tr><th style="width:30px">순위</th><th style="width:100px">이름</th><th>예시 패</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="rn">3</td><td class="hn">Four of a Kind</td><td><div class="cr"><div class="c sm blk"><div class="r">K</div><div class="s">♠</div></div><div class="c sm red"><div class="r">K</div><div class="s">♥</div></div><div class="c sm red"><div class="r">K</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">K</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div></div></td><td class="hd">같은 숫자 4장</td></tr>
+      <tr><td class="rn">2</td><td class="hn">Straight Flush</td><td><div class="cr"><div class="c sm red"><div class="r">9</div><div class="s">♥</div></div><div class="c sm red"><div class="r">8</div><div class="s">♥</div></div><div class="c sm red"><div class="r">7</div><div class="s">♥</div></div><div class="c sm red"><div class="r">6</div><div class="s">♥</div></div><div class="c sm red"><div class="r">5</div><div class="s">♥</div></div></div></td><td class="hd">같은 무늬 + 연속 5장</td></tr>
+      <tr><td class="rn">1</td><td class="hn">Royal Flush</td><td><div class="cr"><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div><div class="c sm blk"><div class="r">K</div><div class="s">♠</div></div><div class="c sm blk"><div class="r">Q</div><div class="s">♠</div></div><div class="c sm blk"><div class="r">J</div><div class="s">♠</div></div><div class="c sm blk"><div class="r">10</div><div class="s">♠</div></div></div></td><td class="hd">같은 무늬 A~10. 최강!</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 1. Step 2: 카드 배분 -->
+<div class="sec">
+  <div class="st">Texas Hold'em — Step 2: 카드 배분</div>
+  <div class="pt">
+    <div class="ba"><span class="bl">보드 (아직 없음)</span></div>
+    <div class="pr">
+      <div class="pl"><div class="pll">Player A</div><div class="pc"><div class="c back"></div><div class="c back"></div></div></div>
+      <div class="pl"><div class="pll">Player B</div><div class="pc"><div class="c back"></div><div class="c back"></div></div></div>
+      <div class="pl"><div class="pll">Player C</div><div class="pc"><div class="c back"></div><div class="c back"></div></div></div>
+    </div>
+  </div>
+  <div class="cap">각 플레이어가 비공개 카드 2장을 받은 상태 — 본인 카드만 확인 가능</div>
+</div>
+
+<!-- 2. Step 4: 점진적 빌드업 -->
+<div class="sec">
+  <div class="st">Texas Hold'em — Step 4: 보드 공개 (Flop → Turn → River)</div>
+  <div class="stgs">
+    <div id="cc-flop-stage">
+      <div class="slbl">Stage 1 — Flop</div>
+      <div class="pt">
+        <div class="ba">
+          <div class="c blk"><div class="r">A</div><div class="s">♦</div></div>
+          <div class="c blk"><div class="r">7</div><div class="s">♣</div></div>
+          <div class="c blk"><div class="r">2</div><div class="s">♠</div></div>
+        </div>
+        <div class="pr"><div class="pl"><div class="pll">Player A (나)</div><div class="pc"><div class="c blk"><div class="r">A</div><div class="s">♠</div></div><div class="c red"><div class="r">K</div><div class="s">♥</div></div></div></div></div>
+      </div>
+      <div class="cap">Flop — 보드에 3장이 공개되었습니다. A♠ + 보드 A♦ → 페어 완성!</div>
+    </div>
+    <div>
+      <div class="slbl">Stage 2 — Turn</div>
+      <div class="pt">
+        <div class="ba">
+          <div class="c blk"><div class="r">A</div><div class="s">♦</div></div>
+          <div class="c blk"><div class="r">7</div><div class="s">♣</div></div>
+          <div class="c blk"><div class="r">2</div><div class="s">♠</div></div>
+          <div class="c red new"><div class="r">K</div><div class="s">♦</div></div>
+        </div>
+        <div class="pr"><div class="pl"><div class="pll">Player A (나)</div><div class="pc"><div class="c blk"><div class="r">A</div><div class="s">♠</div></div><div class="c red"><div class="r">K</div><div class="s">♥</div></div></div></div></div>
+      </div>
+      <div class="cap">Turn — 4번째 카드 K♦ 추가 (파란 테두리). 두 페어로 강화!</div>
+    </div>
+    <div>
+      <div class="slbl">Stage 3 — River</div>
+      <div class="pt">
+        <div class="ba">
+          <div class="c blk"><div class="r">A</div><div class="s">♦</div></div>
+          <div class="c blk"><div class="r">7</div><div class="s">♣</div></div>
+          <div class="c blk"><div class="r">2</div><div class="s">♠</div></div>
+          <div class="c red"><div class="r">K</div><div class="s">♦</div></div>
+          <div class="c blk new"><div class="r">10</div><div class="s">♣</div></div>
+        </div>
+        <div class="pr"><div class="pl"><div class="pll">Player A (나)</div><div class="pc"><div class="c blk"><div class="r">A</div><div class="s">♠</div></div><div class="c red"><div class="r">K</div><div class="s">♥</div></div></div></div></div>
+      </div>
+      <div class="cap">River — 마지막 5번째 카드. 총 7장 중 최고 5장으로 승부!</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. 핸드 랭킹 -->
+<div class="sec">
+  <div class="st">Texas Hold'em — Step 5: 핸드 랭킹 (10등급)</div>
+  <table class="rt">
+    <thead><tr><th style="width:26px">순위</th><th style="width:105px">이름</th><th>예시 패</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="rn">1</td><td class="hn">Royal Flush</td><td><div class="cr"><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div><div class="c sm blk"><div class="r">K</div><div class="s">♠</div></div><div class="c sm blk"><div class="r">Q</div><div class="s">♠</div></div><div class="c sm blk"><div class="r">J</div><div class="s">♠</div></div><div class="c sm blk"><div class="r">10</div><div class="s">♠</div></div></div></td><td class="hd">같은 무늬 A~10 최강</td></tr>
+      <tr><td class="rn">2</td><td class="hn">Straight Flush</td><td><div class="cr"><div class="c sm red"><div class="r">9</div><div class="s">♥</div></div><div class="c sm red"><div class="r">8</div><div class="s">♥</div></div><div class="c sm red"><div class="r">7</div><div class="s">♥</div></div><div class="c sm red"><div class="r">6</div><div class="s">♥</div></div><div class="c sm red"><div class="r">5</div><div class="s">♥</div></div></div></td><td class="hd">같은 무늬 연속 5장</td></tr>
+      <tr><td class="rn">3</td><td class="hn">Four of a Kind</td><td><div class="cr"><div class="c sm blk"><div class="r">K</div><div class="s">♠</div></div><div class="c sm red"><div class="r">K</div><div class="s">♥</div></div><div class="c sm red"><div class="r">K</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">K</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div></div></td><td class="hd">같은 숫자 4장</td></tr>
+      <tr><td class="rn">4</td><td class="hn">Full House</td><td><div class="cr"><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div><div class="c sm red"><div class="r">A</div><div class="s">♥</div></div><div class="c sm red"><div class="r">A</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">K</div><div class="s">♠</div></div><div class="c sm red"><div class="r">K</div><div class="s">♥</div></div></div></td><td class="hd">3장 + 2장 세트</td></tr>
+      <tr><td class="rn">5</td><td class="hn">Flush</td><td><div class="cr"><div class="c sm red"><div class="r">A</div><div class="s">♥</div></div><div class="c sm red"><div class="r">J</div><div class="s">♥</div></div><div class="c sm red"><div class="r">8</div><div class="s">♥</div></div><div class="c sm red"><div class="r">4</div><div class="s">♥</div></div><div class="c sm red"><div class="r">2</div><div class="s">♥</div></div></div></td><td class="hd">같은 무늬 5장</td></tr>
+      <tr><td class="rn">6</td><td class="hn">Straight</td><td><div class="cr"><div class="c sm blk"><div class="r">10</div><div class="s">♠</div></div><div class="c sm red"><div class="r">9</div><div class="s">♥</div></div><div class="c sm red"><div class="r">8</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">7</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">6</div><div class="s">♠</div></div></div></td><td class="hd">연속 5장 (무늬 무관)</td></tr>
+      <tr><td class="rn">7</td><td class="hn">Three of a Kind</td><td><div class="cr"><div class="c sm blk"><div class="r">Q</div><div class="s">♠</div></div><div class="c sm red"><div class="r">Q</div><div class="s">♥</div></div><div class="c sm red"><div class="r">Q</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">7</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">2</div><div class="s">♠</div></div></div></td><td class="hd">같은 숫자 3장</td></tr>
+      <tr><td class="rn">8</td><td class="hn">Two Pair</td><td><div class="cr"><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div><div class="c sm red"><div class="r">A</div><div class="s">♥</div></div><div class="c sm red"><div class="r">K</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">K</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">7</div><div class="s">♠</div></div></div></td><td class="hd">2장 세트 2개</td></tr>
+      <tr><td class="rn">9</td><td class="hn">One Pair</td><td><div class="cr"><div class="c sm blk"><div class="r">J</div><div class="s">♠</div></div><div class="c sm red"><div class="r">J</div><div class="s">♥</div></div><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div><div class="c sm red"><div class="r">8</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">3</div><div class="s">♣</div></div></div></td><td class="hd">같은 숫자 2장</td></tr>
+      <tr><td class="rn">10</td><td class="hn">High Card</td><td><div class="cr"><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div><div class="c sm red"><div class="r">K</div><div class="s">♥</div></div><div class="c sm red"><div class="r">9</div><div class="s">♦</div></div><div class="c sm blk"><div class="r">7</div><div class="s">♣</div></div><div class="c sm blk"><div class="r">2</div><div class="s">♠</div></div></div></td><td class="hd">위 조합 없음</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 4. 실전 승부 -->
+<div class="sec">
+  <div class="st">Texas Hold'em — 실전 승부 예시</div>
+  <div class="pt">
+    <div class="sd">
+      <div class="pb">
+        <div class="pl2">Player A</div>
+        <div class="pc" style="justify-content:center">
+          <div class="c blk hl"><div class="r">A</div><div class="s">♠</div></div>
+          <div class="c red hl"><div class="r">K</div><div class="s">♥</div></div>
+        </div>
+        <div class="hr win">Two Pair</div>
+        <div style="font-size:10px;color:#6b9a75;margin-top:3px">A♠ A♦ K♥ K♦ 10♣</div>
+      </div>
+      <div class="vsd">VS</div>
+      <div class="pb">
+        <div class="pl2">Player B</div>
+        <div class="pc" style="justify-content:center">
+          <div class="c red"><div class="r">Q</div><div class="s">♦</div></div>
+          <div class="c blk"><div class="r">Q</div><div class="s">♣</div></div>
+        </div>
+        <div class="hr los">One Pair</div>
+        <div style="font-size:10px;color:#6b9a75;margin-top:3px">Q♦ Q♣ A♦ K♦ 10♣</div>
+      </div>
+    </div>
+    <div class="ba" style="margin-top:10px">
+      <div class="c blk hl"><div class="r">A</div><div class="s">♦</div></div>
+      <div class="c blk"><div class="r">7</div><div class="s">♣</div></div>
+      <div class="c blk"><div class="r">2</div><div class="s">♠</div></div>
+      <div class="c red hl"><div class="r">K</div><div class="s">♦</div></div>
+      <div class="c blk"><div class="r">10</div><div class="s">♣</div></div>
+    </div>
+    <div class="rb">Player A 승리! — Two Pair (8위) &gt; One Pair (9위)</div>
+  </div>
+</div>
+
+<!-- 5. Omaha must-use-2 -->
+<div class="sec">
+  <div class="st">Omaha — 반드시 홀카드 2장 + 보드 3장</div>
+  <div class="os">
+    <div class="ob ok2">
+      <div class="ol">✅ 올바른 조합</div>
+      <div class="rl">홀카드 (2장 선택)</div>
+      <div class="cl">
+        <div class="c sm red ok"><div class="r">A</div><div class="s">♥</div></div>
+        <div class="c sm blk"><div class="r">K</div><div class="s">♠</div></div>
+        <div class="c sm red ok"><div class="r">Q</div><div class="s">♥</div></div>
+        <div class="c sm red"><div class="r">J</div><div class="s">♥</div></div>
+      </div>
+      <div class="rl">보드 (3장 선택)</div>
+      <div class="cl">
+        <div class="c sm red ok"><div class="r">10</div><div class="s">♥</div></div>
+        <div class="c sm red ok"><div class="r">9</div><div class="s">♥</div></div>
+        <div class="c sm red ok"><div class="r">8</div><div class="s">♥</div></div>
+        <div class="c sm blk"><div class="r">2</div><div class="s">♣</div></div>
+        <div class="c sm red"><div class="r">3</div><div class="s">♦</div></div>
+      </div>
+      <div class="rv ok">Flush ✅ — 홀카드 2장 + 보드 3장</div>
+    </div>
+    <div class="ob ng2">
+      <div class="ol">❌ 불가능한 조합</div>
+      <div class="rl">홀카드에서 3장 시도</div>
+      <div class="cl">
+        <div class="c sm red ng"><div class="r">A</div><div class="s">♥</div></div>
+        <div class="c sm blk"><div class="r">K</div><div class="s">♠</div></div>
+        <div class="c sm red ng"><div class="r">Q</div><div class="s">♥</div></div>
+        <div class="c sm red ng"><div class="r">J</div><div class="s">♥</div></div>
+      </div>
+      <div class="rl">보드</div>
+      <div class="cl">
+        <div class="c sm red ng"><div class="r">10</div><div class="s">♥</div></div>
+        <div class="c sm red ng"><div class="r">9</div><div class="s">♥</div></div>
+        <div class="c sm blk"><div class="r">2</div><div class="s">♣</div></div>
+        <div class="c sm red"><div class="r">3</div><div class="s">♦</div></div>
+      </div>
+      <div class="rv ng">불가! ❌ — 홀카드 3장 사용 금지</div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. Omaha Hi-Lo 팟 분배 -->
+<div class="sec">
+  <div class="st">Omaha Hi-Lo — 팟 분배</div>
+  <div class="hv">
+    <div class="hp">
+      <div class="hpl">Player A</div>
+      <div class="pc"><div class="c sm blk"><div class="r">K</div><div class="s">♠</div></div><div class="c sm red"><div class="r">K</div><div class="s">♥</div></div></div>
+      <div class="hph">Kings — Three of a Kind</div>
+      <div style="font-size:11px;font-weight:700;color:#22c55e;margin-top:5px">← High 500 수령</div>
+    </div>
+    <div class="pot">
+      <div class="pc2"><div class="ptl">POT</div><div class="pta">1000</div></div>
+      <div class="sa"><div class="as">← High<br/>50%</div><div class="as">Low →<br/>50%</div></div>
+    </div>
+    <div class="hp">
+      <div class="hpl">Player B</div>
+      <div class="pc"><div class="c sm blk"><div class="r">A</div><div class="s">♠</div></div><div class="c sm red"><div class="r">2</div><div class="s">♥</div></div></div>
+      <div class="hph">Wheel (A-2-3-4-5)</div>
+      <div style="font-size:11px;font-weight:700;color:#38bdf8;margin-top:5px">Low 500 수령 →</div>
+    </div>
+  </div>
+  <div class="cap">같은 판에서 High 승자와 Low 승자가 팟을 반씩 나눕니다</div>
+</div>
+
+<!-- 7. Short Deck 순위 변경 -->
+<div class="sec">
+  <div class="st">Short Deck — 핸드 순위 변경 (36장 덱)</div>
+  <div class="dc">
+    <div class="dcol">
+      <div class="dch n">Hold'em (52장)</div>
+      <div class="dr"><span class="dn">1</span><span class="dd">Royal Flush</span></div>
+      <div class="dr"><span class="dn">2</span><span class="dd">Straight Flush</span></div>
+      <div class="dr"><span class="dn">3</span><span class="dd">Four of a Kind</span></div>
+      <div class="dr"><span class="dn">4</span><span class="dd">Full House</span></div>
+      <div class="dr"><span class="dn">5</span><span class="dd">Flush</span></div>
+      <div class="dr"><span class="dn">6</span><span class="dd">Straight</span></div>
+      <div class="dr"><span class="dn">7</span><span class="dd">Three of a Kind</span></div>
+      <div class="dr"><span class="dn">8</span><span class="dd">Two Pair</span></div>
+      <div class="dr"><span class="dn">9</span><span class="dd">One Pair</span></div>
+      <div class="dr"><span class="dn">10</span><span class="dd">High Card</span></div>
+    </div>
+    <div class="dcol">
+      <div class="dch s">Short Deck (36장)</div>
+      <div class="dr"><span class="dn">1</span><span class="dd">Royal Flush</span></div>
+      <div class="dr"><span class="dn">2</span><span class="dd">Straight Flush</span></div>
+      <div class="dr"><span class="dn">3</span><span class="dd">Four of a Kind</span></div>
+      <div class="dr ch"><span class="dn">4</span><span class="dd">Flush ↑ 승격!</span></div>
+      <div class="dr ch"><span class="dn">5</span><span class="dd">Full House ↓</span></div>
+      <div class="dr ch"><span class="dn">6</span><span class="dd">Straight ↑</span></div>
+      <div class="dr ch"><span class="dn">7</span><span class="dd">Three of a Kind ↓</span></div>
+      <div class="dr"><span class="dn">8</span><span class="dd">Two Pair</span></div>
+      <div class="dr"><span class="dn">9</span><span class="dd">One Pair</span></div>
+      <div class="dr"><span class="dn">10</span><span class="dd">High Card</span></div>
+    </div>
+  </div>
+  <div class="cap">36장 덱에서 Flush가 더 희귀 → Full House보다 강해집니다</div>
+</div>
+
+<!-- 8. Pineapple 카드 버리기 -->
+<div class="sec">
+  <div class="st">Pineapple — 카드 버리기 (Flop 전)</div>
+  <div class="ps2">
+    <div class="pst">
+      <div class="psl">① 3장 받음</div>
+      <div class="pc">
+        <div class="c blk"><div class="r">A</div><div class="s">♠</div></div>
+        <div class="c red"><div class="r">K</div><div class="s">♥</div></div>
+        <div class="c blk"><div class="r">7</div><div class="s">♣</div></div>
+      </div>
+    </div>
+    <div class="parr">→</div>
+    <div class="pst">
+      <div class="psl">② 1장 버림</div>
+      <div class="pc">
+        <div class="c blk"><div class="r">A</div><div class="s">♠</div></div>
+        <div class="c red"><div class="r">K</div><div class="s">♥</div></div>
+        <div class="c blk dis"><div class="r">7</div><div class="s">♣</div></div>
+      </div>
+    </div>
+    <div class="parr">→</div>
+    <div class="pst">
+      <div class="psl">③ 2장으로 진행</div>
+      <div class="pc">
+        <div class="c blk"><div class="r">A</div><div class="s">♠</div></div>
+        <div class="c red"><div class="r">K</div><div class="s">♥</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">약한 카드(7♣)를 버리고 강한 조합(A♠ K♥)으로 Hold'em과 동일하게 진행</div>
+</div>
+
+<div style="text-align:center;padding:16px 0 6px;font-size:10px;color:#2d5a3d;border-top:1px solid #1b4d2a">
+  PRD-GAME-01 Visual Companion · EBS Project 2026
+</div>
+
+</body>
+</html>

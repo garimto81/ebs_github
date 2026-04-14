@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1000">
+<title>EBS Flow — Mix Game Rotation</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; }
+  .cc-btn { background: #333; color: #fff; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  .patterns { padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  .pattern { border: 1px solid #ddd; padding: 12px; }
+  .pattern-label { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .pattern-label .badge { background: #222; color: #fff; padding: 1px 6px; font-size: 8px; letter-spacing: 0; }
+
+  /* Rotation indicator */
+  .rotation { display: flex; gap: 3px; margin-bottom: 8px; }
+  .rot-item { width: 32px; height: 24px; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; font-size: 10px; font-weight: 700; background: #f5f5f5; color: #999; }
+  .rot-item.current { background: #222; color: #fff; border-color: #222; }
+  .rot-item.done { background: #e8e8e8; color: #bbb; }
+
+  .game-info { display: flex; gap: 16px; align-items: baseline; margin-bottom: 6px; }
+  .game-current { font-size: 13px; font-weight: 700; }
+  .game-meta { font-size: 9px; color: #888; }
+  .game-next { font-size: 10px; color: #666; margin-bottom: 8px; }
+  .game-next b { color: #111; }
+
+  /* Progress bar */
+  .progress-wrap { background: #eee; height: 6px; width: 100%; margin-top: 4px; }
+  .progress-fill { background: #222; height: 6px; }
+  .progress-label { font-size: 9px; color: #888; margin-top: 2px; }
+
+  /* Dealer's choice */
+  .dc-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+  .btn-dc { font-size: 9px; font-weight: 700; padding: 4px 10px; border: 1px solid #222; cursor: pointer; }
+  .btn-dc.primary { background: #222; color: #fff; }
+  .btn-dc.secondary { background: #fff; color: #222; }
+  .dropdown { border: 1px solid #ccc; padding: 4px 8px; font-size: 10px; background: #fff; min-width: 160px; }
+  .dropdown-header { font-size: 9px; color: #888; font-weight: 600; margin-bottom: 2px; }
+  .dropdown-item { padding: 2px 0; font-size: 10px; }
+  .dropdown-item.selected { font-weight: 700; color: #222; }
+  .dropdown-note { font-size: 9px; color: #999; font-style: italic; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC<span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+  </div>
+</div>
+<div class="bc"><span class="cur">Mix Game Rotation Patterns</span></div>
+
+<div class="patterns">
+  <!-- Pattern A: Fixed Rotation -->
+  <div class="pattern">
+    <div class="pattern-label"><span class="badge">A</span> Fixed Rotation (H.O.R.S.E.)</div>
+    <div class="rotation">
+      <div class="rot-item done">H</div>
+      <div class="rot-item current">O</div>
+      <div class="rot-item">R</div>
+      <div class="rot-item">S</div>
+      <div class="rot-item">E</div>
+    </div>
+    <div class="game-info">
+      <span class="game-current">Omaha Hi-Lo (Limit)</span>
+      <span class="game-meta">Hand #47 · Table #071</span>
+    </div>
+    <div class="game-next">Next: <b>Razz</b> · Remaining: <b>4/6</b> hands in current game</div>
+    <div class="progress-wrap"><div class="progress-fill" style="width:33%;"></div></div>
+    <div class="progress-label">Rotation Progress: 2/5 games completed</div>
+  </div>
+
+  <!-- Pattern B: Dealer's Choice -->
+  <div class="pattern">
+    <div class="pattern-label"><span class="badge">B</span> Dealer's Choice</div>
+    <div class="game-info">
+      <span class="game-current">Pot-Limit Omaha</span>
+      <span class="game-meta">Hand #47 · Table #071</span>
+    </div>
+    <div class="dc-row">
+      <button class="btn-dc primary">Continue PLO</button>
+      <button class="btn-dc secondary">Change Game ▼</button>
+    </div>
+    <div class="dropdown">
+      <div class="dropdown-header">Available Games (20+ variants)</div>
+      <div class="dropdown-item selected">Pot-Limit Omaha (current)</div>
+      <div class="dropdown-item">No-Limit Hold'em</div>
+      <div class="dropdown-item">Omaha Hi-Lo (Limit)</div>
+      <div class="dropdown-item">Razz</div>
+      <div class="dropdown-item">Seven Card Stud</div>
+      <div class="dropdown-item">2-7 Triple Draw</div>
+      <div class="dropdown-item" style="color:#999;">... 14 more variants</div>
+    </div>
+    <div class="dropdown-note">Default = continue previous game</div>
+  </div>
+</div>
+
+</body>
+</html>

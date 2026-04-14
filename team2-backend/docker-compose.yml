@@ -1,0 +1,63 @@
+services:
+  bo:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///data/ebs.db
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me-in-production}
+      - JWT_ALGORITHM=HS256
+      - AUTH_PROFILE=dev
+      - JWT_ACCESS_TTL_S=3600
+      - JWT_REFRESH_TTL_S=604800
+      - HTTP_TIMEOUT_MS=30000
+      - WSOP_POLL_TIMEOUT_MS=10000
+      - DB_QUERY_TIMEOUT_MS=5000
+      - REDIS_TIMEOUT_MS=500
+      - WS_PING_INTERVAL_MS=30000
+      - WS_PONG_TIMEOUT_MS=60000
+      - SAGA_TIMEOUT_MS=60000
+      - CB_FAILURE_RATIO=0.5
+      - CB_WINDOW_SIZE=20
+      - CB_OPEN_DURATION_S=30
+      - LOCK_DEFAULT_TTL_S=10
+      - IDEMPOTENCY_TTL_S=86400
+      - WSOP_LIVE_BASE_URL=${WSOP_LIVE_BASE_URL:-}
+      - WSOP_POLL_INTERVAL_S=5
+      - RFID_MODE=mock
+      - LOG_LEVEL=DEBUG
+      - CORS_ORIGINS=["http://localhost:3000","http://lobby:3000"]
+    volumes:
+      - bo-data:/app/data
+      - bo-logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  bo-data:
+    driver: local
+  bo-logs:
+    driver: local
+  redis-data:
+    driver: local

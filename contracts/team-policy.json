@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "version": 4,
+  "description": "EBS 4팀 병렬 작업 충돌 방지를 위한 팀 경계/소유권 SSOT. Conductor 단독 소유 — 팀 수정 금지. v4: 팀 내부 specs 이관 (BS-02,03,05,07,08 → 팀 폴더). contracts/specs/는 팀 간 계약만 보유.",
+  "teams": {
+    "conductor": {
+      "cwd_match": null,
+      "owns": [
+        "contracts/",
+        "docs/01-strategy/",
+        "docs/05-plans/",
+        "docs/00-reference/",
+        "docs/06-reports/",
+        "C:/claude/ebs-archive-backup/07-archive/",
+        "docs/backlog/_aggregate.md",
+        "docs/backlog/conductor.md",
+        "docs/backlog.md",
+        "docs/README.md",
+        "docs/mockups/",
+        "docs/images/",
+        "integration-tests/",
+        "tools/",
+        "CLAUDE.md",
+        "README.md",
+        ".gitignore",
+        ".claude/"
+      ],
+      "backlog_file": "docs/backlog/conductor.md",
+      "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-conductor-"
+    },
+    "team1": {
+      "cwd_match": ["team1-frontend"],
+      "owns": ["team1-frontend/"],
+      "backlog_file": "docs/backlog/team1.md",
+      "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-team1-",
+      "reads": ["contracts/api/", "contracts/specs/", "contracts/data/"],
+      "api_subscribes": ["API-01", "API-05", "API-06"]
+    },
+    "team2": {
+      "cwd_match": ["team2-backend"],
+      "owns": ["team2-backend/"],
+      "backlog_file": "docs/backlog/team2.md",
+      "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-team2-",
+      "reads": ["contracts/api/", "contracts/data/", "contracts/specs/"],
+      "api_publishes": ["API-01", "API-05", "API-06"]
+    },
+    "team3": {
+      "cwd_match": ["team3-engine"],
+      "owns": ["team3-engine/", "ebs_game_engine/"],
+      "backlog_file": "docs/backlog/team3.md",
+      "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-team3-",
+      "reads": ["contracts/api/", "contracts/specs/"],
+      "api_publishes": ["API-04"]
+    },
+    "team4": {
+      "cwd_match": ["team4-cc"],
+      "owns": ["team4-cc/"],
+      "backlog_file": "docs/backlog/team4.md",
+      "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-team4-",
+      "reads": ["contracts/api/", "contracts/specs/"],
+      "api_subscribes": ["API-04", "API-05"],
+      "api_publishes": ["API-03"]
+    }
+  },
+  "shared_blocked_for_teams": [
+    "contracts/",
+    "docs/01-strategy/",
+    "docs/05-plans/CCR-",
+    "docs/05-plans/PLAN-",
+    "docs/05-plans/ROAD",
+    "docs/05-plans/ebs-",
+    "docs/05-plans/b020-",
+    "docs/backlog/_aggregate.md",
+    "docs/backlog/conductor.md",
+    "docs/backlog.md",
+    "integration-tests/",
+    "CLAUDE.md",
+    "README.md",
+    "tools/"
+  ],
+  "ccr_inbox_dir": "docs/05-plans/ccr-inbox/",
+  "api_dependencies": {
+    "API-01": ["team2", "team1"],
+"API-03": ["team4", "team1"],
+    "API-04": ["team3", "team4"],
+    "API-05": ["team2", "team1", "team4"],
+    "API-06": ["team2", "team1"],
+    "API-07": ["team2", "team1", "team4"]
+  },
+  "audit_log_path": ".claude/logs/scope-guard-{YYYYMMDD}.jsonl",
+  "contract_ownership": {
+    "contracts/api/API-01-backend-api.md": {
+      "publisher": "team2",
+      "subscribers": ["team1", "team4"],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-03-rfid-hal-interface.md": {
+      "publisher": "team4",
+      "subscribers": ["team1"],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-04-overlay-output.md": {
+      "publisher": "team3",
+      "subscribers": ["team4"],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-05-websocket-events.md": {
+      "publisher": "team2",
+      "subscribers": ["team1", "team3", "team4"],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-06-auth-session.md": {
+      "publisher": "team2",
+      "subscribers": ["team1"],
+      "direct_edit": "LOW"
+    },
+    "contracts/api/API-07-graphic-editor.md": {
+      "publisher": "team2",
+      "subscribers": ["team1", "team4"],
+      "direct_edit": "LOW"
+    },
+    "contracts/specs/BS-04-rfid/BS-04-04-hal-contract.md": {
+      "publisher": "team4",
+      "subscribers": ["team1"],
+      "direct_edit": "LOW"
+    }
+  }
+}

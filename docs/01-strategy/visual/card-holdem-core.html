@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0f1923; font-family: 'Segoe UI','Noto Sans KR',sans-serif; padding: 36px 48px; width: 1200px; color: #e0e0e0; }
+h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.sub { font-size: 13px; color: #667788; margin-bottom: 24px; }
+.row { display: flex; align-items: center; justify-content: center; gap: 20px; }
+.group { text-align: center; }
+.group-title { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+.cards { display: flex; gap: 8px; justify-content: center; }
+.card {
+  width: 64px; height: 88px; background: #fff; border-radius: 7px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 20px;
+}
+.card .s { font-size: 14px; margin-top: -2px; }
+.bk { color: #1a1a1a; }
+.rd { color: #e03030; }
+.b-gold { border: 3px solid #e67e22; }
+.b-green { border: 3px solid #3a8a5a; }
+.b-best { border: 3px solid #e67e22; box-shadow: 0 0 10px rgba(230,126,34,0.3); }
+.sym { font-size: 28px; color: #445566; }
+.badge { display: inline-block; padding: 4px 14px; border-radius: 6px; font-size: 13px; font-weight: 700; margin-top: 16px; }
+</style>
+</head>
+<body>
+<h2>Texas Hold'em — 기준 게임</h2>
+<div class="sub">비공개 2장 + 공유 5장 = 총 7장 중 최고 5장으로 승부. 다른 모든 게임은 여기서 변형된다.</div>
+<div class="row">
+  <div class="group">
+    <div class="group-title" style="color:#e67e22;">비공개 2장</div>
+    <div class="cards">
+      <div class="card bk b-gold"><span>A</span><span class="s">♠</span></div>
+      <div class="card rd b-gold"><span>K</span><span class="s">♥</span></div>
+    </div>
+  </div>
+  <div class="sym">+</div>
+  <div class="group">
+    <div class="group-title" style="color:#3a8a5a;">공유 5장 (보드)</div>
+    <div class="cards">
+      <div class="card rd b-green"><span>A</span><span class="s">♦</span></div>
+      <div class="card bk b-green"><span>7</span><span class="s">♣</span></div>
+      <div class="card bk b-green"><span>2</span><span class="s">♠</span></div>
+      <div class="card rd b-green"><span>K</span><span class="s">♦</span></div>
+      <div class="card bk b-green"><span>10</span><span class="s">♣</span></div>
+    </div>
+  </div>
+  <div class="sym">=</div>
+  <div class="group">
+    <div class="group-title" style="color:#e67e22;">최고 5장</div>
+    <div class="cards">
+      <div class="card bk b-best"><span>A</span><span class="s">♠</span></div>
+      <div class="card rd b-best"><span>A</span><span class="s">♦</span></div>
+      <div class="card rd b-best"><span>K</span><span class="s">♥</span></div>
+      <div class="card rd b-best"><span>K</span><span class="s">♦</span></div>
+      <div class="card bk b-best"><span>10</span><span class="s">♣</span></div>
+    </div>
+  </div>
+</div>
+<div style="text-align:center;"><span class="badge" style="background:#2a1a10; color:#e67e22;">Two Pair</span></div>
+</body>
+</html>

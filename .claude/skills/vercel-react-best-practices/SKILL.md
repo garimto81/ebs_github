@@ -1,7 +1,8 @@
 ---
 name: vercel-react-best-practices
 description: >
-  This skill should be used when the user needs Vercel Engineering's React/Next.js performance optimization with 47 rules across 8 categories.
+  Vercel Engineering의 React/Next.js 성능 최적화 가이드.
+  49개 규칙, 8개 카테고리, 영향도 기반 우선순위.
 version: 1.0.0
 
 triggers:
@@ -31,7 +32,19 @@ triggers:
     - "성능 최적화 요청"
     - "코드 리뷰"
 
+capabilities:
+  - detect_async_waterfalls
+  - suggest_bundle_optimization
+  - review_server_components
+  - recommend_rerender_fixes
+
+model_preference: sonnet
+phase: [2]
 auto_trigger: true
+dependencies:
+  - frontend-dev
+  - code-reviewer
+token_budget: 2000
 ---
 
 # Vercel React Best Practices
@@ -127,7 +140,7 @@ setItems(curr => [...curr, newItem])
 
 전체 규칙은 `AGENTS.md`를 참조하세요:
 - 8개 카테고리의 상세 설명
-- 47개 규칙의 잘못된 예 / 올바른 예
+- 49개 규칙의 잘못된 예 / 올바른 예
 - 영향도 및 최적화 효과
 
 ## 관련 리소스
@@ -144,7 +157,7 @@ setItems(curr => [...curr, newItem])
 
 | 에이전트 | 연동 내용 |
 |----------|----------|
-| `designer` | React 컴포넌트 작업 시 자동 참조 |
+| `frontend-dev` | React 컴포넌트 작업 시 자동 참조 |
 | `code-reviewer` | 코드 리뷰 시 성능 규칙 적용 |
 
 ---

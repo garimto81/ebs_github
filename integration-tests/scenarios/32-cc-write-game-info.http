@@ -1,0 +1,107 @@
+### CCR-024 — WriteGameInfo 프로토콜 (24 필드)
+###
+### 검증:
+### - CC NEW HAND 버튼이 WriteGameInfo 발행 (API-05 §9)
+### - 24 필드 스키마 검증 (필수/선택)
+### - GameInfoAck / GameInfoRejected 응답
+### - 검증 규칙: dealer/sb/bb ∈ active_seats, sb < bb < straddle
+
+@host = http://localhost:8000
+@ws_cc = ws://localhost:8000/ws/cc
+
+### 32.1 WriteGameInfo — 정상 (24 필드) (수동 WebSocket)
+###
+### wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token=<jwt>&format=json'
+### 다음 메시지 전송:
+###
+### {
+###   "type": "WriteGameInfo",
+###   "payload": {
+###     "table_id": 1,
+###     "hand_id": 248,
+###     "dealer_seat": 3,
+###     "sb_seat": 4,
+###     "bb_seat": 5,
+###     "sb_amount": 500,
+###     "bb_amount": 1000,
+###     "ante_amount": 100,
+###     "big_blind_ante": false,
+###     "straddle_seats": [6],
+###     "straddle_amount": 2000,
+###     "blind_structure_id": "wsop-ft-2026-lv42",
+###     "blind_level": 42,
+###     "current_level_start_ts": "2026-04-10T14:30:00Z",
+###     "next_level_start_ts": "2026-04-10T14:50:00Z",
+###     "game_type": "no_limit_holdem",
+###     "allowed_games": ["nlhe"],
+###     "rotation_order": null,
+###     "chip_denominations": [100, 500, 1000, 5000, 25000, 100000],
+###     "active_seats": [1, 2, 3, 4, 5, 6, 7, 8],
+###     "dead_button_mode": true,
+###     "run_it_multiple_allowed": true,
+###     "bomb_pot_enabled": false,
+###     "cap_bb_multiplier": null
+###   },
+###   "idempotency_key": "uuid-wgi-248",
+###   "timestamp": "2026-04-10T14:30:00.123Z",
+###   "source_id": "cc-table-1",
+###   "message_id": "msg-uuid-wgi-1"
+### }
+###
+### 예상 응답:
+### {
+###   "type": "GameInfoAck",
+###   "payload": {
+###     "hand_id": 248,
+###     "ready_for_deal": true,
+###     "estimated_deal_ready_ts": "2026-04-10T14:30:00.200Z"
+###   }
+### }
+
+### 32.2 WriteGameInfo — sb_seat이 active_seats에 없음
+###
+### payload에서 sb_seat = 99, active_seats = [1..8]
+###
+### 예상 응답:
+### {
+###   "type": "GameInfoRejected",
+###   "payload": {
+###     "hand_id": 248,
+###     "reason": "VALIDATION_FAILED",
+###     "field": "sb_seat",
+###     "message": "sb_seat 99 not in active_seats"
+###   }
+### }
+
+### 32.3 WriteGameInfo — sb_amount >= bb_amount
+###
+### sb_amount = 1000, bb_amount = 500
+###
+### 예상: GameInfoRejected
+### field: "sb_amount"
+### message: "sb_amount must be < bb_amount"
+
+### 32.4 WriteGameInfo — straddle_seats 비어있지 않은데 straddle_amount 누락
+###
+### straddle_seats = [6], straddle_amount 필드 없음
+###
+### 예상: GameInfoRejected
+### field: "straddle_amount"
+### message: "straddle_amount required when straddle_seats is non-empty"
+
+### 32.5 WriteGameInfo — game_type=mix + allowed_games만 1개
+###
+### game_type = "mix", allowed_games = ["nlhe"]
+###
+### 예상: GameInfoRejected
+### field: "allowed_games"
+### message: "mix game requires at least 2 allowed_games"
+
+### 32.6 WriteGameInfo — current_level_start_ts >= next_level_start_ts
+###
+### current_level_start_ts = "2026-04-10T14:50:00Z"
+### next_level_start_ts    = "2026-04-10T14:30:00Z"
+###
+### 예상: GameInfoRejected
+### field: "current_level_start_ts"
+### message: "current_level_start_ts must be < next_level_start_ts"

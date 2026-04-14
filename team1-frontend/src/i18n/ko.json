@@ -1,0 +1,289 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "편집",
+    "create": "생성",
+    "search": "검색",
+    "confirm": "확인",
+    "close": "닫기",
+    "back": "뒤로",
+    "next": "다음",
+    "yes": "예",
+    "no": "아니오",
+    "empty": "데이터가 없습니다",
+    "retry": "다시 시도",
+    "required": "필수",
+    "optional": "선택"
+  },
+  "layout": {
+    "logout": "로그아웃",
+    "navigation": "메뉴",
+    "activeCc": "Active Command Centers",
+    "noCc": "활성 CC 없음",
+    "nav": {
+      "series": "Series",
+      "tournaments": "Tournaments",
+      "tournamentList": "Tournament List",
+      "seriesSettings": "Series Settings",
+      "staff": "Staff",
+      "staffList": "Staff List",
+      "players": "Players",
+      "playerList": "Player List",
+      "history": "History",
+      "staffActionHistory": "Staff Action History",
+      "auditLogs": "Audit Logs",
+      "settings": "Settings",
+      "graphicEditor": "Graphic Editor"
+    }
+  },
+  "nav": {
+    "logout": "로그아웃",
+    "series": "Series",
+    "players": "Players",
+    "handHistory": "Hand History",
+    "settings": "Settings",
+    "graphicEditor": "Graphic Editor",
+    "admin": "관리"
+  },
+  "login": {
+    "title": "EBS Lobby",
+    "subtitle": "Tournament Management System",
+    "email": "이메일 주소",
+    "password": "비밀번호",
+    "rememberMe": "로그인 유지",
+    "submit": "로그인",
+    "or": "또는",
+    "googleLogin": "Google 로그인",
+    "forgotPassword": "비밀번호를 잊으셨나요?",
+    "twoFactor": "2단계 인증 코드",
+    "twoFactorPrompt": "인증 앱에서 6자리 코드를 입력하세요",
+    "verify": "인증",
+    "restorePrompt": "이전 세션을 복원하시겠습니까?",
+    "restoreTable": "이전 테이블:",
+    "restoreContinue": "계속",
+    "restoreFresh": "새로 시작",
+    "errors": {
+      "invalid": "이메일 또는 비밀번호가 잘못되었습니다",
+      "network": "서버에 연결할 수 없습니다",
+      "twoFactorInvalid": "인증 코드가 올바르지 않습니다"
+    }
+  },
+  "forgotPassword": {
+    "subtitle": "가입 시 사용한 이메일을 입력하세요",
+    "submit": "재설정 링크 전송",
+    "successMessage": "이메일이 등록되어 있다면 재설정 링크를 발송했습니다."
+  },
+  "notFound": {
+    "title": "페이지를 찾을 수 없습니다",
+    "message": "요청하신 페이지가 존재하지 않거나 이동되었습니다.",
+    "goHome": "홈으로"
+  },
+  "lobby": {
+    "series": {
+      "title": "Series",
+      "total": "{count}개 Series",
+      "newSeries": "새 Series",
+      "empty": "Series가 없습니다",
+      "searchPlaceholder": "Series 검색...",
+      "onlyUpdated": "최근 변경",
+      "bookmarks": "북마크"
+    },
+    "events": {
+      "title": "Events",
+      "total": "{count}개 Event",
+      "newEvent": "새 Event",
+      "createTournament": "새 토너먼트 생성",
+      "empty": "Event가 없습니다",
+      "filterEventNo": "Event No",
+      "filterName": "이름",
+      "filterMix": "Mix",
+      "filterGameType": "게임 유형",
+      "filterTournType": "유형",
+      "todayEvents": "오늘의 Events"
+    },
+    "flights": {
+      "title": "Flights",
+      "total": "{count}개 Flight",
+      "newFlight": "새 Flight",
+      "empty": "Flight가 없습니다"
+    },
+    "tables": {
+      "title": "Tables",
+      "total": "{count}개 Table",
+      "newTable": "새 Table",
+      "launchCc": "CC 실행",
+      "empty": "Table이 없습니다",
+      "rebalance": "리밸런스",
+      "tableAction": "Table Action",
+      "searchPlayer": "플레이어 검색...",
+      "tableNo": "테이블 번호",
+      "tableName": "테이블 이름",
+      "maxPlayers": "최대 인원",
+      "isFeature": "Feature 테이블",
+      "enterCc": "CC 진입",
+      "addPlayer": "플레이어 추가",
+      "seatMap": "좌석 배치",
+      "selectSeat": "좌석 선택"
+    },
+    "players": {
+      "title": "Players",
+      "total": "{count}명",
+      "empty": "선수가 없습니다",
+      "searchPlaceholder": "선수 검색..."
+    },
+    "handHistory": {
+      "title": "Hand History",
+      "empty": "Hand 기록이 없습니다",
+      "selectTable": "테이블 선택",
+      "handNo": "Hand #",
+      "time": "시간",
+      "board": "보드",
+      "pot": "Pot",
+      "street": "Street",
+      "players": "플레이어",
+      "actions": "액션",
+      "seat": "좌석",
+      "player": "플레이어",
+      "holeCards": "핸드 카드",
+      "startStack": "시작 스택",
+      "endStack": "종료 스택",
+      "pnl": "손익",
+      "winner": "승자",
+      "noDetail": "상세 정보가 없습니다"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "outputs": "Outputs",
+      "gfx": "Graphics",
+      "display": "Display",
+      "rules": "Rules",
+      "stats": "Statistics",
+      "preferences": "Preferences"
+    },
+    "dirty": "저장되지 않은 변경사항이 있습니다",
+    "revert": "되돌리기",
+    "saved": "저장되었습니다",
+    "outputs": {
+      "resolution": "해상도",
+      "frameRate": "프레임 레이트",
+      "outputProtocol": "출력 프로토콜",
+      "fillKeyRouting": "Fill & Key 라우팅 활성화"
+    },
+    "gfx": {
+      "layoutPreset": "레이아웃 프리셋",
+      "cardStyle": "카드 스타일",
+      "playerDisplayOptions": "플레이어 표시 옵션",
+      "showPlayerPhoto": "플레이어 사진 표시",
+      "showPlayerFlag": "플레이어 국기 표시",
+      "showChipCount": "칩 카운트 표시",
+      "animationSpeed": "애니메이션 속도"
+    },
+    "display": {
+      "blindsFormat": "블라인드 표시 형식",
+      "precisionDigits": "소수점 자릿수",
+      "displayMode": "표시 모드"
+    },
+    "rules": {
+      "gameRulesTitle": "게임 규칙",
+      "bombPot": "Bomb Pot",
+      "bombPotFrequency": "Bomb Pot 주기",
+      "hands": "핸드",
+      "straddle": "Straddle",
+      "straddleType": "Straddle 유형",
+      "sleeper": "Sleeper",
+      "playerDisplayTitle": "플레이어 표시",
+      "showSeatNumber": "좌석 번호 표시",
+      "showPlayerOrder": "플레이어 순서 표시",
+      "highlightActivePlayer": "활성 플레이어 하이라이트"
+    },
+    "stats": {
+      "showEquity": "Equity 표시",
+      "showOuts": "Outs 표시",
+      "showLeaderboard": "Leaderboard 표시",
+      "showScoreStrip": "Score Strip 표시"
+    },
+    "preferences": {
+      "language": "언어",
+      "tablePassword": "테이블 비밀번호",
+      "diagnostics": "진단 정보 표시",
+      "exportFolder": "Export 폴더 경로",
+      "exportFolderPlaceholder": "/path/to/export",
+      "twoFactor": {
+        "title": "2단계 인증 (2FA)",
+        "enabled": "활성화됨",
+        "disabled": "비활성화됨",
+        "enable": "2FA 활성화",
+        "disable": "2FA 비활성화",
+        "setupTitle": "2FA 설정",
+        "disableTitle": "2FA 비활성화",
+        "disableWarning": "2FA를 비활성화하면 계정 보안이 약해집니다. 계속하려면 현재 인증 코드를 입력하세요.",
+        "confirmCode": "인증 코드 (6자리)",
+        "qrPlaceholder": "QR 코드가 여기에 표시됩니다",
+        "manualEntry": "수동 입력 코드"
+      }
+    }
+  },
+  "graphicEditor": {
+    "title": "Graphic Editor",
+    "hubSubtitle": "스킨 관리 및 Overlay 편집",
+    "upload": "업로드",
+    "activate": "활성화",
+    "deactivate": "비활성화",
+    "metadata": "메타데이터",
+    "preview": "미리보기",
+    "empty": "등록된 스킨이 없습니다",
+    "uploadDropzone": "Rive 파일을 여기에 드래그하거나 클릭하여 선택",
+    "validationErrors": "검증 오류",
+    "status": "상태",
+    "version": "버전",
+    "fileSize": "파일 크기",
+    "uploadedAt": "업로드일",
+    "activatedAt": "활성화일",
+    "metaTitle": "제목",
+    "metaDescription": "설명",
+    "metaAuthor": "작성자",
+    "metaTags": "태그",
+    "tagsHint": "Enter 키로 태그 추가"
+  },
+  "auditLog": {
+    "title": "감사 로그",
+    "empty": "감사 로그가 없습니다",
+    "timestamp": "시간",
+    "user": "사용자",
+    "action": "액션",
+    "entity": "대상",
+    "details": "상세",
+    "ip": "IP 주소"
+  },
+  "staff": {
+    "title": "스태프 관리",
+    "addUser": "사용자 추가",
+    "editUser": "사용자 수정",
+    "email": "이메일 주소",
+    "displayName": "표시 이름",
+    "password": "비밀번호",
+    "role": "역할",
+    "tableAccess": "테이블 접근",
+    "allTables": "모든 테이블",
+    "specificTables": "지정 테이블",
+    "accountStatus": "계정 상태",
+    "forceLogout": "강제 로그아웃",
+    "confirmForceLogout": "이 사용자를 강제 로그아웃하시겠습니까?",
+    "confirmDelete": "이 사용자를 영구 삭제하시겠습니까?"
+  },
+  "errors": {
+    "notFound": "페이지를 찾을 수 없습니다",
+    "forbidden": "접근 권한이 없습니다",
+    "unauthorized": "로그인이 필요합니다",
+    "networkError": "네트워크 오류가 발생했습니다",
+    "serverError": "서버 오류가 발생했습니다",
+    "unknown": "알 수 없는 오류가 발생했습니다",
+    "sessionExpired": "세션이 만료되었습니다. 다시 로그인해주세요",
+    "goHome": "홈으로"
+  }
+}

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Draw 계열 — 핵심 특징 시각 가이드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a1a0e;color:#e8f5e9;font-family:'Segoe UI','Apple SD Gothic Neo',sans-serif;font-size:14px;padding:20px 14px;max-width:720px;margin:0 auto}
+.ph{text-align:center;padding:24px 0 16px;border-bottom:1px solid #1b4d2a;margin-bottom:28px}
+.ph h1{font-size:21px;font-weight:700;color:#fbbf24;letter-spacing:-.02em;margin-bottom:5px}
+.ph .sub{font-size:12px;color:#6b9a75}
+.sec{margin-bottom:36px}
+.st{font-size:13px;font-weight:600;color:#fbbf24;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #1b4d2a}
+.cap{text-align:center;font-size:11px;color:#6b9a75;margin-top:7px}
+.c{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:65px;border-radius:6px;background:#fff;border:1px solid #ccc;font-weight:700;box-shadow:1px 2px 4px rgba(0,0,0,.35);flex-shrink:0}
+.c .r{font-size:15px;line-height:1}.c .s{font-size:17px;line-height:1}
+.c.red{color:#dc2626}.c.blk{color:#111827}
+.c.back{background:repeating-linear-gradient(135deg,#1e3a5f 0,#1e3a5f 4px,#2563eb 4px,#2563eb 8px);border-color:#1e3a5f}
+.c.hl{border:3px solid #fbbf24;box-shadow:0 0 7px rgba(251,191,36,.5)}
+.c.ok{border:3px solid #22c55e;box-shadow:0 0 5px rgba(34,197,94,.4)}
+.c.ng{border:3px solid #ef4444;opacity:.55}
+.c.new{border:3px solid #38bdf8;box-shadow:0 0 7px rgba(56,189,248,.5)}
+.c.sm{width:36px;height:50px}.c.sm .r{font-size:12px}.c.sm .s{font-size:14px}
+.c.xs{width:28px;height:39px}.c.xs .r{font-size:10px}.c.xs .s{font-size:11px}
+.c.dis{position:relative;opacity:.4}
+.c.dis::after{content:'\2715';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;color:#ef4444;font-weight:900}
+.c.sm.dis::after{font-size:16px}
+.c.ghost{opacity:.15;border-style:dashed;border-color:#4b5563}
+.stage{margin:14px 0;padding:14px;background:rgba(0,0,0,.2);border-radius:10px}
+.stage-title{font-size:12px;font-weight:700;color:#38bdf8;margin-bottom:8px}
+.stage-desc{font-size:11px;color:#a8cc9e;margin-bottom:8px}
+.arrow-down{text-align:center;font-size:24px;color:#fbbf24;padding:8px 0}
+.arrow-right{font-size:20px;color:#fbbf24;padding:0 6px;display:inline-flex;align-items:center}
+.badge{display:inline-block;padding:4px 10px;border-radius:5px;font-size:11px;font-weight:700}
+.badge.green{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
+.badge.red{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
+.badge.blue{background:rgba(56,189,248,.1);color:#38bdf8;border:1px solid rgba(56,189,248,.2)}
+.badge.gold{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+.cmp{display:flex;gap:12px;flex-wrap:wrap}
+.cmp-box{flex:1;min-width:200px;background:rgba(0,0,0,.25);border-radius:10px;padding:12px;text-align:center}
+.cmp-title{font-size:12px;font-weight:700;margin-bottom:8px}
+.pot-split{display:flex;align-items:center;justify-content:center;gap:16px;padding:16px;background:rgba(0,0,0,.2);border-radius:11px;flex-wrap:wrap}
+.pot-half{text-align:center;flex:1;min-width:140px;padding:10px;border-radius:8px}
+.pot-half.hi{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2)}
+.pot-half.lo{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2)}
+.card-row{display:flex;gap:2px;justify-content:center;flex-wrap:wrap;margin:4px 0}
+.divider{border:0;border-top:2px solid #1b4d2a;margin:32px 0}
+.val-cmp{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.val-box{padding:12px;border-radius:8px;text-align:center;min-width:180px}
+.val-box.best{background:rgba(34,197,94,.1);border:2px solid #22c55e}
+.val-box.worst{background:rgba(239,68,68,.08);border:2px solid #ef4444}
+.val-label{font-size:12px;font-weight:700;margin-bottom:6px}
+.val-box.best .val-label{color:#22c55e}
+.val-box.worst .val-label{color:#ef4444}
+.exch-dots{display:flex;gap:6px;justify-content:center;margin:6px 0}
+.exch-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.exch-dot.active{background:#fbbf24;color:#1a0a00}
+.exch-dot.inactive{background:rgba(75,83,99,.3);color:#4b5563;border:1px dashed #4b5563}
+.suit-tag{display:inline-block;width:22px;height:22px;border-radius:50%;font-size:13px;text-align:center;line-height:22px;font-weight:700;margin:0 1px}
+.suit-tag.sp{background:#334155;color:#e2e8f0}
+.suit-tag.ht{background:#7f1d1d;color:#fca5a5}
+.suit-tag.dm{background:#7f1d1d;color:#fca5a5}
+.suit-tag.cl{background:#334155;color:#e2e8f0}
+</style>
+</head>
+<body>
+
+<div class="ph">
+  <h1>Draw 계열 &mdash; 핵심 특징</h1>
+  <div class="sub">각 게임이 기준(2-7 Triple Draw)과 무엇이 다른지 시각적으로 보여줍니다</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 1. 2-7 Triple Draw (기준) -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec">
+  <div class="st">1. 2-7 Triple Draw &mdash; 기준 게임</div>
+
+  <!-- 가치 반전 -->
+  <div class="stage">
+    <div class="stage-title">Stage 1: 일반 포커와 가치가 완전히 반대!</div>
+
+    <div class="val-cmp">
+      <div class="val-box worst">
+        <div class="val-label">일반 포커에서 최강</div>
+        <div class="card-row">
+          <span class="c xs blk"><span class="r">A</span><span class="s">&spades;</span></span>
+          <span class="c xs blk"><span class="r">K</span><span class="s">&spades;</span></span>
+          <span class="c xs blk"><span class="r">Q</span><span class="s">&spades;</span></span>
+          <span class="c xs blk"><span class="r">J</span><span class="s">&spades;</span></span>
+          <span class="c xs blk"><span class="r">10</span><span class="s">&spades;</span></span>
+        </div>
+        <div style="font-size:10px;color:#6b9a75;margin-top:4px">Royal Flush</div>
+        <div class="badge red" style="margin-top:4px">2-7에서 최약!</div>
+      </div>
+      <div class="val-box best">
+        <div class="val-label">2-7에서 최강 (Number One)</div>
+        <div class="card-row">
+          <span class="c xs blk"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span class="c xs red"><span class="r">3</span><span class="s">&hearts;</span></span>
+          <span class="c xs red"><span class="r">4</span><span class="s">&diams;</span></span>
+          <span class="c xs blk"><span class="r">5</span><span class="s">&clubs;</span></span>
+          <span class="c xs blk"><span class="r">7</span><span class="s">&spades;</span></span>
+        </div>
+        <div style="font-size:10px;color:#6b9a75;margin-top:4px">가장 낮은 5장</div>
+        <div class="badge green" style="margin-top:4px">2-7에서 최강!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&darr;</div>
+
+  <!-- Straight 페널티 -->
+  <div class="stage">
+    <div class="stage-title">Stage 2: 왜 2-3-4-5-7이 최강이고 2-3-4-5-6이 아닌가?</div>
+
+    <div class="cmp">
+      <div class="cmp-box" style="border:2px solid #ef4444">
+        <div class="cmp-title" style="color:#ef4444">2-3-4-5-6</div>
+        <div class="card-row">
+          <span class="c xs blk ng"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span class="c xs red ng"><span class="r">3</span><span class="s">&hearts;</span></span>
+          <span class="c xs red ng"><span class="r">4</span><span class="s">&diams;</span></span>
+          <span class="c xs blk ng"><span class="r">5</span><span class="s">&clubs;</span></span>
+          <span class="c xs blk ng"><span class="r">6</span><span class="s">&spades;</span></span>
+        </div>
+        <div class="badge red" style="margin-top:6px">Straight 완성 = 페널티!</div>
+        <div class="cap">연속 5장이 되면 약해짐</div>
+      </div>
+      <div class="cmp-box" style="border:2px solid #22c55e">
+        <div class="cmp-title" style="color:#22c55e">2-3-4-5-7</div>
+        <div class="card-row">
+          <span class="c xs blk ok"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span class="c xs red ok"><span class="r">3</span><span class="s">&hearts;</span></span>
+          <span class="c xs red ok"><span class="r">4</span><span class="s">&diams;</span></span>
+          <span class="c xs blk ok"><span class="r">5</span><span class="s">&clubs;</span></span>
+          <span class="c xs blk ok"><span class="r">7</span><span class="s">&spades;</span></span>
+        </div>
+        <div class="badge green" style="margin-top:6px">Straight 아님 = 최강!</div>
+        <div class="cap">6 대신 7로 Straight 회피</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&darr;</div>
+
+  <!-- Straight / Flush 정의 -->
+  <div class="stage">
+    <div class="stage-title">Stage 2b: Straight와 Flush란?</div>
+
+    <div class="stage-desc">Straight &mdash; 숫자가 빈틈 없이 연속되는 패</div>
+    <div class="cmp">
+      <div class="cmp-box" style="border:2px solid #ef4444">
+        <div class="cmp-title" style="color:#ef4444">2-3-4-5-6</div>
+        <div class="card-row">
+          <span class="c xs blk ng"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span style="font-size:9px;color:#6b9a75;align-self:center">+1</span>
+          <span class="c xs red ng"><span class="r">3</span><span class="s">&hearts;</span></span>
+          <span style="font-size:9px;color:#6b9a75;align-self:center">+1</span>
+          <span class="c xs red ng"><span class="r">4</span><span class="s">&diams;</span></span>
+          <span style="font-size:9px;color:#6b9a75;align-self:center">+1</span>
+          <span class="c xs blk ng"><span class="r">5</span><span class="s">&clubs;</span></span>
+          <span style="font-size:9px;color:#6b9a75;align-self:center">+1</span>
+          <span class="c xs blk ng"><span class="r">6</span><span class="s">&spades;</span></span>
+        </div>
+        <div class="badge red" style="margin-top:6px">Straight = 숫자 빈틈 없이 연속</div>
+        <div class="cap">2-7에서는 페널티!</div>
+      </div>
+      <div class="cmp-box" style="border:2px solid #22c55e">
+        <div class="cmp-title" style="color:#22c55e">2-3-4-5-7</div>
+        <div class="card-row">
+          <span class="c xs blk ok"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span style="font-size:9px;color:#6b9a75;align-self:center">+1</span>
+          <span class="c xs red ok"><span class="r">3</span><span class="s">&hearts;</span></span>
+          <span style="font-size:9px;color:#6b9a75;align-self:center">+1</span>
+          <span class="c xs red ok"><span class="r">4</span><span class="s">&diams;</span></span>
+          <span style="font-size:9px;color:#6b9a75;align-self:center">+1</span>
+          <span class="c xs blk ok"><span class="r">5</span><span class="s">&clubs;</span></span>
+          <span style="font-size:9px;color:#ef4444;align-self:center;text-decoration:line-through">6&nbsp;빠짐</span>
+          <span class="c xs blk ok"><span class="r">7</span><span class="s">&spades;</span></span>
+        </div>
+        <div class="badge green" style="margin-top:6px">빈틈 있음 = Straight 아님!</div>
+        <div class="cap">6 건너뛰어 안전</div>
+      </div>
+    </div>
+
+    <div class="arrow-down">&darr;</div>
+
+    <div class="stage-desc">Flush &mdash; 무늬가 전부 같은 패</div>
+    <div class="cmp">
+      <div class="cmp-box" style="border:2px solid #ef4444">
+        <div class="cmp-title" style="color:#ef4444">2&spades; 5&spades; 7&spades; 9&spades; J&spades;</div>
+        <div class="card-row">
+          <span class="c xs blk ng"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span class="c xs blk ng"><span class="r">5</span><span class="s">&spades;</span></span>
+          <span class="c xs blk ng"><span class="r">7</span><span class="s">&spades;</span></span>
+          <span class="c xs blk ng"><span class="r">9</span><span class="s">&spades;</span></span>
+          <span class="c xs blk ng"><span class="r">J</span><span class="s">&spades;</span></span>
+        </div>
+        <div class="card-row" style="margin-top:4px">
+          <span class="suit-tag sp">&spades;</span>
+          <span class="suit-tag sp">&spades;</span>
+          <span class="suit-tag sp">&spades;</span>
+          <span class="suit-tag sp">&spades;</span>
+          <span class="suit-tag sp">&spades;</span>
+        </div>
+        <div class="badge red" style="margin-top:6px">Flush = 무늬 전부 같음</div>
+        <div class="cap">2-7에서는 페널티!</div>
+      </div>
+      <div class="cmp-box" style="border:2px solid #22c55e">
+        <div class="cmp-title" style="color:#22c55e">2&spades; 5&hearts; 7&diams; 9&clubs; J&spades;</div>
+        <div class="card-row">
+          <span class="c xs blk ok"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span class="c xs red ok"><span class="r">5</span><span class="s">&hearts;</span></span>
+          <span class="c xs red ok"><span class="r">7</span><span class="s">&diams;</span></span>
+          <span class="c xs blk ok"><span class="r">9</span><span class="s">&clubs;</span></span>
+          <span class="c xs blk ok"><span class="r">J</span><span class="s">&spades;</span></span>
+        </div>
+        <div class="card-row" style="margin-top:4px">
+          <span class="suit-tag sp">&spades;</span>
+          <span class="suit-tag ht">&hearts;</span>
+          <span class="suit-tag dm">&diams;</span>
+          <span class="suit-tag cl">&clubs;</span>
+          <span class="suit-tag sp">&spades;</span>
+        </div>
+        <div class="badge green" style="margin-top:6px">무늬 섞임 = Flush 아님!</div>
+        <div class="cap">2-7에서는 안전</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&darr;</div>
+
+  <!-- A = 불리 -->
+  <div class="stage">
+    <div class="stage-title">Stage 3: A(에이스)는 가장 높은 카드 &mdash; 불리!</div>
+    <div style="text-align:center">
+      <div style="display:flex;justify-content:center;align-items:flex-end;gap:2px">
+        <div style="text-align:center"><span class="c xs blk ok"><span class="r">2</span><span class="s">&spades;</span></span><div style="font-size:9px;color:#22c55e;margin-top:2px">최저</div></div>
+        <span class="c xs red" style="opacity:.6"><span class="r">3</span><span class="s">&hearts;</span></span>
+        <span class="c xs blk" style="opacity:.5"><span class="r">4</span><span class="s">&clubs;</span></span>
+        <span class="c xs red" style="opacity:.4"><span class="r">5</span><span class="s">&diams;</span></span>
+        <span class="c xs blk" style="opacity:.4"><span class="r">6</span><span class="s">&spades;</span></span>
+        <span class="c xs red" style="opacity:.35"><span class="r">7</span><span class="s">&hearts;</span></span>
+        <span class="c xs blk" style="opacity:.3"><span class="r">8</span><span class="s">&clubs;</span></span>
+        <span class="c xs red" style="opacity:.3"><span class="r">9</span><span class="s">&diams;</span></span>
+        <span class="c xs blk" style="opacity:.25"><span class="r">10</span><span class="s">&spades;</span></span>
+        <span class="c xs red" style="opacity:.25"><span class="r">J</span><span class="s">&hearts;</span></span>
+        <span class="c xs blk" style="opacity:.2"><span class="r">Q</span><span class="s">&clubs;</span></span>
+        <span class="c xs red" style="opacity:.2"><span class="r">K</span><span class="s">&diams;</span></span>
+        <div style="text-align:center"><span class="c xs blk ng"><span class="r">A</span><span class="s">&spades;</span></span><div style="font-size:9px;color:#ef4444;margin-top:2px">최고=독!</div></div>
+      </div>
+      <div class="cap">&larr; 좋음 (낮을수록 강함) &mdash;&mdash;&mdash; 나쁨 (높을수록 약함) &rarr;</div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&darr;</div>
+
+  <!-- 3회 교환 -->
+  <div class="stage">
+    <div class="stage-title">Stage 4: 3회 교환 (Triple Draw)</div>
+
+    <div style="margin-bottom:10px">
+      <div style="font-size:11px;color:#6b9a75;margin-bottom:4px">초기 5장:</div>
+      <div class="card-row" style="justify-content:flex-start">
+        <span class="c sm blk dis"><span class="r">K</span><span class="s">&spades;</span></span>
+        <span class="c sm red dis"><span class="r">Q</span><span class="s">&hearts;</span></span>
+        <span class="c sm blk"><span class="r">7</span><span class="s">&clubs;</span></span>
+        <span class="c sm red"><span class="r">4</span><span class="s">&diams;</span></span>
+        <span class="c sm blk"><span class="r">2</span><span class="s">&spades;</span></span>
+      </div>
+      <div style="font-size:10px;color:#ef4444;margin-top:3px">K, Q는 높아서 불리 &rarr; 버림!</div>
+    </div>
+
+    <div class="arrow-down" style="padding:4px 0">&darr; 1차 교환</div>
+
+    <div style="margin-bottom:10px">
+      <div class="card-row" style="justify-content:flex-start">
+        <span class="c sm blk new"><span class="r">8</span><span class="s">&clubs;</span></span>
+        <span class="c sm red new"><span class="r">3</span><span class="s">&hearts;</span></span>
+        <span class="c sm blk"><span class="r">7</span><span class="s">&clubs;</span></span>
+        <span class="c sm red"><span class="r">4</span><span class="s">&diams;</span></span>
+        <span class="c sm blk"><span class="r">2</span><span class="s">&spades;</span></span>
+      </div>
+      <div style="font-size:10px;color:#38bdf8;margin-top:3px">파란 테두리 = 새로 받은 카드. 8이 조금 높으니 한 번 더...</div>
+    </div>
+
+    <div class="arrow-down" style="padding:4px 0">&darr; 2차 교환</div>
+
+    <div style="margin-bottom:10px">
+      <div class="card-row" style="justify-content:flex-start">
+        <span class="c sm red new"><span class="r">5</span><span class="s">&diams;</span></span>
+        <span class="c sm red"><span class="r">3</span><span class="s">&hearts;</span></span>
+        <span class="c sm blk"><span class="r">7</span><span class="s">&clubs;</span></span>
+        <span class="c sm red"><span class="r">4</span><span class="s">&diams;</span></span>
+        <span class="c sm blk"><span class="r">2</span><span class="s">&spades;</span></span>
+      </div>
+      <div style="font-size:10px;color:#a8cc9e;margin-top:3px">8 &rarr; 5로 교체! 이제 충분히 좋음</div>
+    </div>
+
+    <div class="arrow-down" style="padding:4px 0">&darr; 3차 교환: Stand Pat (안 바꿈)</div>
+
+    <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:10px">
+      <div style="font-size:11px;color:#4ade80;font-weight:700;margin-bottom:4px">최종 패:</div>
+      <div class="card-row" style="justify-content:flex-start">
+        <span class="c sm blk ok"><span class="r">7</span><span class="s">&clubs;</span></span>
+        <span class="c sm red ok"><span class="r">5</span><span class="s">&diams;</span></span>
+        <span class="c sm red ok"><span class="r">4</span><span class="s">&diams;</span></span>
+        <span class="c sm red ok"><span class="r">3</span><span class="s">&hearts;</span></span>
+        <span class="c sm blk ok"><span class="r">2</span><span class="s">&spades;</span></span>
+      </div>
+      <div class="badge green" style="margin-top:6px">7-5 Low! (아주 강한 패)</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 2. Five Card Draw -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec">
+  <div class="st">2. Five Card Draw &mdash; 원조 포커</div>
+
+  <div class="stage">
+    <div class="stage-title">2-7 Triple Draw와 2가지가 다릅니다</div>
+
+    <div class="cmp">
+      <div class="cmp-box">
+        <div class="cmp-title" style="color:#38bdf8">2-7 Triple Draw</div>
+        <div style="font-size:11px;color:#6b9a75;margin:4px 0">교환 횟수:</div>
+        <div class="exch-dots">
+          <span class="exch-dot active">1</span>
+          <span class="exch-dot active">2</span>
+          <span class="exch-dot active">3</span>
+        </div>
+        <div style="font-size:11px;color:#6b9a75;margin:4px 0">승리:</div>
+        <div class="badge red">낮은 패 &darr;</div>
+      </div>
+      <div class="cmp-box" style="border:1px solid rgba(251,191,36,.3)">
+        <div class="cmp-title" style="color:#fbbf24">Five Card Draw</div>
+        <div style="font-size:11px;color:#6b9a75;margin:4px 0">교환 횟수:</div>
+        <div class="exch-dots">
+          <span class="exch-dot active">1</span>
+          <span class="exch-dot inactive">&ndash;</span>
+          <span class="exch-dot inactive">&ndash;</span>
+        </div>
+        <div style="font-size:11px;color:#6b9a75;margin:4px 0">승리:</div>
+        <div class="badge green">높은 패 &uarr;</div>
+      </div>
+    </div>
+    <div class="cap">서부 영화에서 카우보이가 하던 바로 그 포커. 가장 단순하지만 심리전이 핵심!</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 3. 2-7 Single Draw -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec">
+  <div class="st">3. 2-7 Single Draw &mdash; 교환 1회뿐</div>
+
+  <div class="stage">
+    <div class="stage-title">Triple Draw에서 교환 기회가 1회로 줄어듭니다</div>
+
+    <div style="text-align:center;margin-bottom:8px">
+      <div style="font-size:11px;color:#38bdf8;margin-bottom:4px">2-7 Triple Draw:</div>
+      <div class="exch-dots">
+        <span class="exch-dot active">1</span>
+        <span style="color:#fbbf24">&rarr;</span>
+        <span class="exch-dot active">2</span>
+        <span style="color:#fbbf24">&rarr;</span>
+        <span class="exch-dot active">3</span>
+        <span style="color:#fbbf24">&rarr;</span>
+        <span style="font-size:11px;color:#a8cc9e">쇼다운</span>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:11px;color:#fbbf24;margin-bottom:4px">2-7 Single Draw:</div>
+      <div class="exch-dots">
+        <span class="exch-dot active">1</span>
+        <span style="color:#fbbf24">&rarr;</span>
+        <span class="exch-dot inactive" style="text-decoration:line-through">&ndash;</span>
+        <span style="color:#4b5563">&rarr;</span>
+        <span class="exch-dot inactive" style="text-decoration:line-through">&ndash;</span>
+        <span style="color:#fbbf24">&rarr;</span>
+        <span style="font-size:11px;color:#a8cc9e">쇼다운</span>
+      </div>
+    </div>
+    <div class="cap">기회가 딱 1번! 처음 받은 카드가 거의 최종 패. 나머지(Lowball, A=High, S/F 페널티)는 동일.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 4. A-5 Triple Draw -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec">
+  <div class="st">4. A-5 Triple Draw &mdash; A가 유리 + S/F 무시</div>
+
+  <div class="stage">
+    <div class="stage-title">Stage 1: 같은 카드, 완전 다른 가치!</div>
+    <div class="stage-desc">A-2-3-4-5가 2-7 규칙과 A-5 규칙에서 어떻게 다른지:</div>
+
+    <div class="val-cmp">
+      <div class="val-box worst">
+        <div class="val-label">2-7 규칙</div>
+        <div class="card-row">
+          <span class="c xs blk"><span class="r">A</span><span class="s">&spades;</span></span>
+          <span class="c xs red"><span class="r">2</span><span class="s">&hearts;</span></span>
+          <span class="c xs red"><span class="r">3</span><span class="s">&diams;</span></span>
+          <span class="c xs blk"><span class="r">4</span><span class="s">&clubs;</span></span>
+          <span class="c xs blk"><span class="r">5</span><span class="s">&spades;</span></span>
+        </div>
+        <div style="margin-top:6px">
+          <span class="badge red">A = 가장 HIGH</span>
+        </div>
+        <div style="margin-top:4px">
+          <span class="badge red">Straight = 페널티!</span>
+        </div>
+        <div class="cap" style="color:#ef4444;font-weight:700">매우 약한 패!</div>
+      </div>
+      <div class="val-box best">
+        <div class="val-label">A-5 규칙</div>
+        <div class="card-row">
+          <span class="c xs blk"><span class="r">A</span><span class="s">&spades;</span></span>
+          <span class="c xs red"><span class="r">2</span><span class="s">&hearts;</span></span>
+          <span class="c xs red"><span class="r">3</span><span class="s">&diams;</span></span>
+          <span class="c xs blk"><span class="r">4</span><span class="s">&clubs;</span></span>
+          <span class="c xs blk"><span class="r">5</span><span class="s">&spades;</span></span>
+        </div>
+        <div style="margin-top:6px">
+          <span class="badge green">A = 가장 LOW!</span>
+        </div>
+        <div style="margin-top:4px">
+          <span class="badge green">Straight = 무시!</span>
+        </div>
+        <div class="cap" style="color:#22c55e;font-weight:700">최강! (Wheel)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&darr;</div>
+
+  <div class="stage">
+    <div class="stage-title">Stage 2: 최강 패 비교</div>
+    <div class="cmp">
+      <div class="cmp-box">
+        <div class="cmp-title" style="color:#ef4444">2-7 최강</div>
+        <div class="card-row">
+          <span class="c xs blk ok"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span class="c xs red ok"><span class="r">3</span><span class="s">&hearts;</span></span>
+          <span class="c xs red ok"><span class="r">4</span><span class="s">&diams;</span></span>
+          <span class="c xs blk ok"><span class="r">5</span><span class="s">&clubs;</span></span>
+          <span class="c xs blk ok"><span class="r">7</span><span class="s">&spades;</span></span>
+        </div>
+        <div class="cap">6이면 Straight라서 7</div>
+      </div>
+      <div class="cmp-box">
+        <div class="cmp-title" style="color:#22c55e">A-5 최강</div>
+        <div class="card-row">
+          <span class="c xs blk ok"><span class="r">A</span><span class="s">&spades;</span></span>
+          <span class="c xs red ok"><span class="r">2</span><span class="s">&hearts;</span></span>
+          <span class="c xs red ok"><span class="r">3</span><span class="s">&diams;</span></span>
+          <span class="c xs blk ok"><span class="r">4</span><span class="s">&clubs;</span></span>
+          <span class="c xs blk ok"><span class="r">5</span><span class="s">&spades;</span></span>
+        </div>
+        <div class="cap">A가 1이니까 가장 낮은 5장</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 5. Badugi -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec">
+  <div class="st">5. Badugi &mdash; 4장 + 4무늬 다양성</div>
+
+  <div class="stage">
+    <div class="stage-title">Stage 1: 목표 &mdash; 4장이 모두 다른 무늬!</div>
+
+    <div class="cmp">
+      <div class="cmp-box" style="border:2px solid #22c55e">
+        <div class="cmp-title" style="color:#22c55e">&#10003; Perfect Badugi</div>
+        <div class="card-row">
+          <span class="c sm blk ok"><span class="r">A</span><span class="s">&spades;</span></span>
+          <span class="c sm red ok"><span class="r">2</span><span class="s">&hearts;</span></span>
+          <span class="c sm red ok"><span class="r">3</span><span class="s">&diams;</span></span>
+          <span class="c sm blk ok"><span class="r">4</span><span class="s">&clubs;</span></span>
+        </div>
+        <div style="margin-top:6px">
+          <span class="suit-tag sp">&spades;</span>
+          <span class="suit-tag ht">&hearts;</span>
+          <span class="suit-tag dm">&diams;</span>
+          <span class="suit-tag cl">&clubs;</span>
+        </div>
+        <div class="badge green" style="margin-top:6px">4무늬 모두 다름!</div>
+      </div>
+      <div class="cmp-box" style="border:2px solid #ef4444">
+        <div class="cmp-title" style="color:#ef4444">&#10007; Failed</div>
+        <div class="card-row">
+          <span class="c sm blk"><span class="r">A</span><span class="s">&spades;</span></span>
+          <span class="c sm blk ng"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span class="c sm red"><span class="r">3</span><span class="s">&diams;</span></span>
+          <span class="c sm blk"><span class="r">4</span><span class="s">&clubs;</span></span>
+        </div>
+        <div style="margin-top:6px">
+          <span class="suit-tag sp">&spades;</span>
+          <span class="suit-tag sp" style="border:2px solid #ef4444">&spades;</span>
+          <span class="suit-tag dm">&diams;</span>
+          <span class="suit-tag cl">&clubs;</span>
+        </div>
+        <div class="badge red" style="margin-top:6px">&spades;이 2개! &rarr; 3-card hand</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&darr;</div>
+
+  <div class="stage">
+    <div class="stage-title">Stage 2: 랭킹 &mdash; 카드 수가 많을수록 강함</div>
+
+    <div style="margin-bottom:8px;text-align:center">
+      <div style="font-size:11px;color:#22c55e;font-weight:700;margin-bottom:4px">4-card Badugi (최강)</div>
+      <div class="card-row">
+        <span class="c xs blk ok"><span class="r">A</span><span class="s">&spades;</span></span>
+        <span class="c xs red ok"><span class="r">2</span><span class="s">&hearts;</span></span>
+        <span class="c xs red ok"><span class="r">3</span><span class="s">&diams;</span></span>
+        <span class="c xs blk ok"><span class="r">4</span><span class="s">&clubs;</span></span>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:16px;color:#fbbf24">&gt;&gt;</div>
+    <div style="margin-bottom:8px;text-align:center">
+      <div style="font-size:11px;color:#a8cc9e;margin-bottom:4px">3-card (무늬 중복 1개)</div>
+      <div class="card-row">
+        <span class="c xs blk"><span class="r">A</span><span class="s">&spades;</span></span>
+        <span class="c xs red"><span class="r">3</span><span class="s">&diams;</span></span>
+        <span class="c xs blk"><span class="r">4</span><span class="s">&clubs;</span></span>
+        <span class="c xs ghost blk"><span class="r">?</span><span class="s">?</span></span>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:16px;color:#fbbf24">&gt;&gt;</div>
+    <div style="margin-bottom:8px;text-align:center">
+      <div style="font-size:11px;color:#6b9a75;margin-bottom:4px">2-card (무늬 중복 2개)</div>
+      <div class="card-row">
+        <span class="c xs blk"><span class="r">A</span><span class="s">&spades;</span></span>
+        <span class="c xs red"><span class="r">3</span><span class="s">&diams;</span></span>
+        <span class="c xs ghost blk"><span class="r">?</span><span class="s">?</span></span>
+        <span class="c xs ghost blk"><span class="r">?</span><span class="s">?</span></span>
+      </div>
+    </div>
+    <div class="cap">4장 전부 유효 > 3장 > 2장 > 1장. 무늬 다양성이 핵심!</div>
+  </div>
+
+  <div class="arrow-down">&darr;</div>
+
+  <div class="stage">
+    <div class="stage-title">Stage 3: 기존 포커와 완전히 다른 세계!</div>
+    <div class="cmp">
+      <div class="cmp-box">
+        <div class="cmp-title" style="color:#6b9a75">기존 Draw</div>
+        <div style="font-size:24px;padding:8px">5</div>
+        <div style="font-size:11px;color:#6b9a75">장, <strong>숫자</strong>로 판단</div>
+      </div>
+      <div class="cmp-box" style="border:1px solid rgba(251,191,36,.3)">
+        <div class="cmp-title" style="color:#fbbf24">Badugi</div>
+        <div style="font-size:24px;padding:8px">4</div>
+        <div style="font-size:11px;color:#fbbf24">장, <strong>무늬 다양성</strong>으로 판단</div>
+        <div style="margin-top:4px">
+          <span class="suit-tag sp">&spades;</span>
+          <span class="suit-tag ht">&hearts;</span>
+          <span class="suit-tag dm">&diams;</span>
+          <span class="suit-tag cl">&clubs;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&darr;</div>
+
+  <!-- 죽은 카드 판정 -->
+  <div class="stage">
+    <div class="stage-title">Stage 4: 죽은 카드 판정 &mdash; 이렇게 작동합니다</div>
+
+    <div class="stage-desc">Sub-stage A: 중복 감지</div>
+    <div style="text-align:center;margin-bottom:6px">
+      <div class="card-row">
+        <span class="c sm blk hl"><span class="r">K</span><span class="s">&spades;</span></span>
+        <span class="c sm blk hl"><span class="r">5</span><span class="s">&spades;</span></span>
+        <span class="c sm red"><span class="r">3</span><span class="s">&diams;</span></span>
+        <span class="c sm blk"><span class="r">7</span><span class="s">&clubs;</span></span>
+      </div>
+      <div class="card-row" style="margin-top:4px">
+        <span class="suit-tag sp" style="border:2px solid #ef4444">&spades;</span>
+        <span class="suit-tag sp" style="border:2px solid #ef4444">&spades;</span>
+        <span class="suit-tag dm">&diams;</span>
+        <span class="suit-tag cl">&clubs;</span>
+      </div>
+    </div>
+    <div class="note" style="background:rgba(120,53,15,.15);border-left:3px solid #f97316;padding:8px 10px;border-radius:6px;font-size:11px;color:#fdba74;text-align:center">
+      &spades;이 2장! 중복 감지됨
+    </div>
+
+    <div class="arrow-down">&darr;</div>
+
+    <div class="stage-desc">Sub-stage B: 높은 쪽 제거</div>
+    <div style="text-align:center;margin-bottom:6px">
+      <div class="card-row">
+        <div style="text-align:center">
+          <div style="font-size:9px;color:#ef4444;margin-bottom:2px">K=높음 &rarr; 제거!</div>
+          <span class="c sm blk dis"><span class="r">K</span><span class="s">&spades;</span></span>
+        </div>
+        <span class="c sm blk"><span class="r">5</span><span class="s">&spades;</span></span>
+        <span class="c sm red"><span class="r">3</span><span class="s">&diams;</span></span>
+        <span class="c sm blk"><span class="r">7</span><span class="s">&clubs;</span></span>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <span class="badge blue">남은 3장 = 3-card hand</span>
+    </div>
+
+    <div class="arrow-down">&darr;</div>
+
+    <div class="stage-desc">Sub-stage C: 반례 &mdash; 중복 없으면 4-card Badugi!</div>
+    <div style="text-align:center;margin-bottom:6px">
+      <div class="card-row">
+        <span class="c sm blk ok"><span class="r">A</span><span class="s">&spades;</span></span>
+        <span class="c sm red ok"><span class="r">2</span><span class="s">&hearts;</span></span>
+        <span class="c sm red ok"><span class="r">3</span><span class="s">&diams;</span></span>
+        <span class="c sm blk ok"><span class="r">4</span><span class="s">&clubs;</span></span>
+      </div>
+      <div class="card-row" style="margin-top:4px">
+        <span class="suit-tag sp">&spades;</span>
+        <span class="suit-tag ht">&hearts;</span>
+        <span class="suit-tag dm">&diams;</span>
+        <span class="suit-tag cl">&clubs;</span>
+      </div>
+    </div>
+    <div style="text-align:center;margin-bottom:6px">
+      <span class="badge green">4무늬 모두 다름 = 4-card Badugi!</span>
+    </div>
+    <div class="note" style="background:rgba(120,53,15,.15);border-left:3px solid #f97316;padding:8px 10px;border-radius:6px;font-size:11px;color:#fdba74;text-align:center">
+      판정은 시스템이 자동으로 &mdash; 플레이어가 고를 필요 없음
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 6. Badeucy -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec">
+  <div class="st">6. Badeucy &mdash; Badugi + 2-7 Lowball 동시</div>
+
+  <div class="stage">
+    <div class="stage-title">한 판에 두 게임! 팟을 반으로 나눕니다</div>
+
+    <div class="pot-split">
+      <div class="pot-half hi">
+        <div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:6px">Badugi 절반 (50%)</div>
+        <div class="card-row">
+          <span class="c xs blk ok"><span class="r">A</span><span class="s">&spades;</span></span>
+          <span class="c xs red ok"><span class="r">2</span><span class="s">&hearts;</span></span>
+          <span class="c xs red ok"><span class="r">3</span><span class="s">&diams;</span></span>
+          <span class="c xs blk ok"><span class="r">4</span><span class="s">&clubs;</span></span>
+        </div>
+        <div style="font-size:10px;color:#6b9a75;margin-top:4px">4무늬 다양성</div>
+      </div>
+      <div style="text-align:center;flex-shrink:0">
+        <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,#fbbf24,#d97706);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(251,191,36,.3)">
+          <div style="font-size:9px;font-weight:700;color:#78350f">POT</div>
+          <div style="font-size:14px;font-weight:800;color:#1a0a00">1000</div>
+        </div>
+      </div>
+      <div class="pot-half lo">
+        <div style="font-size:11px;font-weight:700;color:#38bdf8;margin-bottom:6px">2-7 Lowball 절반 (50%)</div>
+        <div class="card-row">
+          <span class="c xs blk ok"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span class="c xs red ok"><span class="r">3</span><span class="s">&hearts;</span></span>
+          <span class="c xs red ok"><span class="r">4</span><span class="s">&diams;</span></span>
+          <span class="c xs blk ok"><span class="r">5</span><span class="s">&clubs;</span></span>
+          <span class="c xs blk ok"><span class="r">7</span><span class="s">&spades;</span></span>
+        </div>
+        <div style="font-size:10px;color:#6b9a75;margin-top:4px">낮은 5장</div>
+      </div>
+    </div>
+    <div class="cap">한 사람이 둘 다 이기면 <span class="badge gold">Scoop!</span> (전부 독식)</div>
+  </div>
+
+  <div class="arrow-down">&darr;</div>
+
+  <!-- 동시 판정 -->
+  <div class="stage">
+    <div class="stage-title">Stage 2: 동시 판정 &mdash; 같은 5장으로 두 게임을 판정합니다</div>
+
+    <div class="stage-desc">이 5장으로 Badugi와 2-7 Lowball을 동시에 판정합니다</div>
+    <div class="card-row" style="margin-bottom:10px">
+      <span class="c sm blk"><span class="r">2</span><span class="s">&spades;</span></span>
+      <span class="c sm red"><span class="r">3</span><span class="s">&hearts;</span></span>
+      <span class="c sm red"><span class="r">4</span><span class="s">&diams;</span></span>
+      <span class="c sm blk"><span class="r">5</span><span class="s">&clubs;</span></span>
+      <span class="c sm blk hl"><span class="r">8</span><span class="s">&spades;</span></span>
+    </div>
+
+    <div class="arrow-down">&darr;</div>
+
+    <div class="pot-split">
+      <div class="pot-half hi">
+        <div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:6px">Badugi 판정 (최강 4장 자동 선택)</div>
+        <div class="card-row">
+          <span class="c xs blk dis"><span class="r">8</span><span class="s">&spades;</span></span>
+          <span class="c xs blk ok"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span class="c xs red ok"><span class="r">3</span><span class="s">&hearts;</span></span>
+          <span class="c xs red ok"><span class="r">4</span><span class="s">&diams;</span></span>
+          <span class="c xs blk ok"><span class="r">5</span><span class="s">&clubs;</span></span>
+        </div>
+        <div style="font-size:9px;color:#6b9a75;margin-top:3px">&spades; 중복 &rarr; 높은 8&spades; 제거</div>
+        <div class="badge green" style="margin-top:6px">4-card Badugi!</div>
+      </div>
+      <div style="text-align:center;flex-shrink:0">
+        <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,#fbbf24,#d97706);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(251,191,36,.3)">
+          <div style="font-size:9px;font-weight:700;color:#78350f">판정</div>
+        </div>
+      </div>
+      <div class="pot-half lo">
+        <div style="font-size:11px;font-weight:700;color:#38bdf8;margin-bottom:6px">2-7 Lowball 판정 (5장 전체)</div>
+        <div class="card-row">
+          <span class="c xs blk"><span class="r">2</span><span class="s">&spades;</span></span>
+          <span class="c xs red"><span class="r">3</span><span class="s">&hearts;</span></span>
+          <span class="c xs red"><span class="r">4</span><span class="s">&diams;</span></span>
+          <span class="c xs blk"><span class="r">5</span><span class="s">&clubs;</span></span>
+          <span class="c xs blk"><span class="r">8</span><span class="s">&spades;</span></span>
+        </div>
+        <div style="font-size:9px;color:#6b9a75;margin-top:3px">8-5-4-3-2</div>
+        <div class="badge green" style="margin-top:6px">좋은 Low!</div>
+      </div>
+    </div>
+    <div class="note" style="background:rgba(120,53,15,.15);border-left:3px solid #f97316;padding:8px 10px;border-radius:6px;font-size:11px;color:#fdba74;margin-top:10px;text-align:center">
+      양쪽 다 이기면 &rarr; Scoop! (팟 전부 독식). 4장 선택은 시스템이 자동으로 최적 조합을 찾아줍니다.
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 7. Badacey -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="sec">
+  <div class="st">7. Badacey &mdash; Badugi + A-5 Lowball 동시</div>
+
+  <div class="stage">
+    <div class="stage-title">&sect;6(Badeucy)에서 Lowball 절반만 바뀝니다</div>
+
+    <div class="cmp">
+      <div class="cmp-box">
+        <div class="cmp-title" style="color:#38bdf8">Badeucy</div>
+        <div style="font-size:11px;color:#6b9a75;margin:4px 0">Lowball 절반:</div>
+        <div class="badge blue">2-7 Lowball</div>
+        <div style="font-size:10px;color:#6b9a75;margin-top:4px">A = High (불리)</div>
+        <div style="font-size:10px;color:#6b9a75">S/F = 페널티</div>
+      </div>
+      <div class="cmp-box" style="border:1px solid rgba(251,191,36,.3)">
+        <div class="cmp-title" style="color:#fbbf24">Badacey</div>
+        <div style="font-size:11px;color:#6b9a75;margin:4px 0">Lowball 절반:</div>
+        <div class="badge gold">A-5 Lowball</div>
+        <div style="font-size:10px;color:#22c55e;margin-top:4px">A = Low (유리!)</div>
+        <div style="font-size:10px;color:#22c55e">S/F = 무시!</div>
+      </div>
+    </div>
+    <div class="cap">Badugi 절반은 동일. Badeucy보다 두 게임의 방향이 비슷해서 전략이 약간 쉽습니다.</div>
+  </div>
+</div>
+
+</body>
+</html>

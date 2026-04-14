@@ -1,0 +1,110 @@
+### CCR-017 §1 — EventFlightStatus enum 공유
+###
+### 검증:
+### - Flight status가 정수 enum (0~6, 3 skip)
+### - is_registerable, day_index, is_pause 필드 반영
+### - is_restricted = (status==1 && day_index>=1) 판정
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 60.1 GET /api/v1/events/1/flights — 목록 조회
+GET {{host}}/api/v1/events/1/flights
+Authorization: Bearer {{admin_token}}
+
+# 예상 응답: 200 OK
+# {
+#   "flights": [
+#     {
+#       "id": "fl_01HVQK...",
+#       "event_id": "ev_...",
+#       "display_name": "Day 1A",
+#       "status": 1,                    // 정수 enum (Announce)
+#       "status_label": "Announce",     // UI 표시용
+#       "is_registerable": true,
+#       "day_index": 0,
+#       "is_pause": false
+#     },
+#     {
+#       "display_name": "Day 2",
+#       "status": 1,                    // Announce
+#       "day_index": 1,
+#       "is_registerable": true
+#       // is_restricted = true (status==Announce && day_index>=1)
+#     }
+#   ]
+# }
+
+### 60.2 PATCH /api/v1/flights/{id} — status 전이 (Announce → Running)
+PATCH {{host}}/api/v1/flights/fl_01HVQK-day1a
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "status": 4
+}
+
+# Announce(1) → Running(4): 정상 전이
+# 3 skip이므로 2 → 4는 허용
+# 예상: 200 OK
+
+### 60.3 PATCH — 역방향 전이 (Running → Announce)
+PATCH {{host}}/api/v1/flights/fl_01HVQK-day1a
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "status": 1
+}
+
+# 예상: 422 Unprocessable Entity
+# { "error": "INVALID_STATUS_TRANSITION", "from": 4, "to": 1 }
+
+### 60.4 PATCH — status == 3 (skip 값)
+PATCH {{host}}/api/v1/flights/fl_01HVQK-day1a
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "status": 3
+}
+
+# 예상: 422 Unprocessable Entity
+# { "error": "INVALID_STATUS_VALUE", "value": 3, "valid": [0,1,2,4,5,6] }
+
+### 60.5 PATCH — is_pause toggle (Late Reg 타이머 stop)
+PATCH {{host}}/api/v1/flights/fl_01HVQK-day1a
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "is_pause": true
+}
+
+# 예상: 200 OK
+# 부수효과: Late Reg 남은 시간 계산에서 elapsed_in_current_level 증가 중단
+
+### 60.6 GET /api/v1/flights/{id}/late-reg-remaining — pause 동작 확인
+GET {{host}}/api/v1/flights/fl_01HVQK-day1a/late-reg-remaining
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK
+# {
+#   "late_reg_remaining_seconds": 1800,
+#   "is_pause": true,
+#   "last_tick_at": "2026-04-10T14:30:00Z"  // pause 시작 시각
+# }
+#
+# pause 해제 후 재조회 시 last_tick_at 이후 경과한 초가 차감됨
+
+### 60.7 마이그레이션 검증 — 기존 문자열 status → 정수 enum
+###
+### 수동 SQL 검증:
+### SELECT id, display_name, status FROM flights;
+### - 모든 status 값이 INTEGER 타입
+### - NULL 없음
+### - 'active' → 4, 'pending' → 1 or 0, 'done' → 5 로 변환됐는지

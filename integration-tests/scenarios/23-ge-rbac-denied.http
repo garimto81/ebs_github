@@ -1,0 +1,109 @@
+### CCR-013 RBAC + BS-08-04 GER-04 — API Gate
+###
+### 검증:
+### - Operator가 mutation 엔드포인트 호출 → 403 Forbidden
+### - Viewer는 조회조차 제한
+### - Admin은 모든 엔드포인트 허용
+### - 에러 body: AUTH_ROLE_DENIED
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+@operator_token = {{$dotenv OPERATOR_JWT}}
+@viewer_token = {{$dotenv VIEWER_JWT}}
+
+### 23.1 Operator POST /skins → 403 (GER-01, GER-04)
+POST {{host}}/api/v1/skins
+Authorization: Bearer {{operator_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="test.gfskin"
+Content-Type: application/zip
+
+< ./fixtures/wsop-2026-test.gfskin
+------WebKitFormBoundary--
+
+# 예상: 403 Forbidden
+# {
+#   "error": "AUTH_ROLE_DENIED",
+#   "message": "이 작업은 Admin 권한이 필요합니다.",
+#   "required_role": "Admin",
+#   "current_role": "Operator"
+# }
+
+### 23.2 Operator PATCH /skins/{id}/metadata → 403
+PATCH {{host}}/api/v1/skins/sk_01HVQK-test/metadata
+Authorization: Bearer {{operator_token}}
+If-Match: W/"3-etag"
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{ "skin_name": "operator-attempt" }
+
+# 예상: 403 Forbidden
+
+### 23.3 Operator PUT /skins/{id}/activate → 403
+PUT {{host}}/api/v1/skins/sk_01HVQK-test/activate
+Authorization: Bearer {{operator_token}}
+If-Match: W/"3-etag"
+X-Game-State: IDLE
+Idempotency-Key: {{$guid}}
+
+# 예상: 403 Forbidden
+
+### 23.4 Operator GET /skins → 200 (조회는 허용)
+GET {{host}}/api/v1/skins?limit=20
+Authorization: Bearer {{operator_token}}
+
+# 예상: 200 OK
+
+### 23.5 Operator GET /skins/{id}/metadata → 200 (조회는 허용)
+GET {{host}}/api/v1/skins/sk_01HVQK-test/metadata
+Authorization: Bearer {{operator_token}}
+
+# 예상: 200 OK + ETag 헤더
+
+### 23.6 Viewer GET /skins → 403 (GER-03 탭 접근 차단)
+GET {{host}}/api/v1/skins?limit=20
+Authorization: Bearer {{viewer_token}}
+
+# 예상: 403 Forbidden
+# { "error": "AUTH_ROLE_DENIED", "required_role": "Operator" }
+
+### 23.7 Admin — 전체 CRUD 허용
+POST {{host}}/api/v1/skins
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="test.gfskin"
+Content-Type: application/zip
+
+< ./fixtures/wsop-2026-test.gfskin
+------WebKitFormBoundary--
+
+# 예상: 201 Created
+
+### 23.8 CC 서비스 계정 GET /skins/{id} → 200 (.gfskin 다운로드 허용)
+GET {{host}}/api/v1/skins/sk_01HVQK-test
+Authorization: Bearer {{$dotenv CC_SERVICE_JWT}}
+Accept: application/octet-stream
+
+# 예상: 200 OK (CC가 skin_updated 이벤트 수신 후 다운로드)
+
+### 23.9 CC 서비스 계정 POST /skins → 403
+POST {{host}}/api/v1/skins
+Authorization: Bearer {{$dotenv CC_SERVICE_JWT}}
+Idempotency-Key: {{$guid}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="cc-attempt.gfskin"
+Content-Type: application/zip
+
+< ./fixtures/wsop-2026-test.gfskin
+------WebKitFormBoundary--
+
+# 예상: 403 Forbidden (CC는 read-only)

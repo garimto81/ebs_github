@@ -1,0 +1,43 @@
+# Scenario 30: NLH Run It Twice
+# 2 players (heads-up), all-in on flop, then run it twice
+# dealer=seat0=SB, seat1=BB
+# Preflop: seat0 calls 5, seat1 checks
+# pot = 10+10 = 20
+# Flop: deal [Ah, 7d, 2c]. seat1 all-in 990, seat0 calls 990
+# pot = 20 + 990 + 990 = 2000
+# RunItChoice(2) → state transitions to runItMultiple street
+# Deal remaining boards (turn+river for each runout)
+# For this scenario, we just verify the RunItChoice event sets state correctly
+# Then hand ends manually. Each player gets back half.
+# Final: seat0=1000, seat1=1000 (split both runouts)
+variant: nlh
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "Hero", stack: 1000 }
+  - { label: "Villain", stack: 1000 }
+events:
+  - deal_hole:
+      0: [As, Kh]
+      1: [Qd, Qc]
+  # HU preflop
+  - action: { seat: 0, type: call, amount: 5 }
+  - action: { seat: 1, type: check }
+  # Flop
+  - street_advance: flop
+  - deal_community: [Ah, 7d, 2c]
+  - action: { seat: 1, type: allin, amount: 990 }
+  - action: { seat: 0, type: call, amount: 990 }
+  # Run it twice
+  - run_it_choice: { times: 2 }
+  # Split — each runout splits the pot. Both get 1000 back.
+  - pot_awarded: { 0: 1000, 1: 1000 }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  stacks:
+    0: 1000
+    1: 1000

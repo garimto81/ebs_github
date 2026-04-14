@@ -1,0 +1,105 @@
+### CCR-017 §5 — Permission Bit Flag RBAC
+###
+### 검증:
+### - JWT payload에 permission 정수 필드
+### - None=0, Read=1, Write=2, Delete=4, 조합 가능
+### - 리소스별 세분화된 권한 판정
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+@operator_token = {{$dotenv OPERATOR_JWT}}
+@viewer_token = {{$dotenv VIEWER_JWT}}
+
+### 62.1 GET /api/v1/auth/me — JWT payload 확인
+GET {{host}}/api/v1/auth/me
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK
+# {
+#   "sub": "user_01HVQK-admin",
+#   "role": "admin",
+#   "permission": 7,                    // Read + Write + Delete
+#   "assigned_tables": [],              // Admin은 전체 접근
+#   "exp": 1743251456
+# }
+
+### 62.2 GET /auth/me — Operator
+GET {{host}}/api/v1/auth/me
+Authorization: Bearer {{operator_token}}
+
+# 예상:
+# {
+#   "role": "operator",
+#   "permission": 3,                    // Read + Write (자기 할당 테이블)
+#   "assigned_tables": ["tbl_01", "tbl_05"]
+# }
+
+### 62.3 GET /auth/me — Viewer
+GET {{host}}/api/v1/auth/me
+Authorization: Bearer {{viewer_token}}
+
+# 예상:
+# {
+#   "role": "viewer",
+#   "permission": 1,                    // Read only
+#   "assigned_tables": []
+# }
+
+### 62.4 PATCH /api/v1/tables/1 — Operator가 자기 할당 테이블 수정 (permission=3)
+PATCH {{host}}/api/v1/tables/1
+Authorization: Bearer {{operator_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "name": "Operator updated name"
+}
+
+# tbl_01 이 operator_token의 assigned_tables에 포함:
+# 예상: 200 OK (permission & Write != 0 + 할당됨)
+
+### 62.5 PATCH /api/v1/tables/99 — Operator가 미할당 테이블
+PATCH {{host}}/api/v1/tables/99
+Authorization: Bearer {{operator_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{
+  "name": "Unauthorized attempt"
+}
+
+# tbl_99 는 assigned_tables 에 없음:
+# 예상: 403 Forbidden
+# {
+#   "error": "AUTH_PERMISSION_DENIED",
+#   "required_permission": 2,
+#   "current_permission": 1,           // 미할당 테이블은 Read only
+#   "resource": "tables.99"
+# }
+
+### 62.6 DELETE /api/v1/tables/1 — Operator는 Delete 불가
+DELETE {{host}}/api/v1/tables/1
+Authorization: Bearer {{operator_token}}
+Idempotency-Key: {{$guid}}
+If-Match: W/"1-etag"
+
+# 자기 할당이라도 Delete 권한 없음 (permission=3, Delete=4):
+# 예상: 403 Forbidden
+# { "required_permission": 4, "current_permission": 3 }
+
+### 62.7 PATCH /api/v1/tables/1 — Viewer 거부
+PATCH {{host}}/api/v1/tables/1
+Authorization: Bearer {{viewer_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/merge-patch+json
+
+{ "name": "viewer attempt" }
+
+# 예상: 403 Forbidden
+# { "required_permission": 2, "current_permission": 1 }
+
+### 62.8 GET /api/v1/tables/1 — Viewer 허용
+GET {{host}}/api/v1/tables/1
+Authorization: Bearer {{viewer_token}}
+
+# 예상: 200 OK (permission & Read != 0)

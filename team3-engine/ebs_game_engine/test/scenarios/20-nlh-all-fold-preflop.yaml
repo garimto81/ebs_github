@@ -1,0 +1,38 @@
+# Scenario 20: NLH All Fold to BB Preflop
+# 3 players, BB=10, SB=5
+# dealer=seat0, SB=seat1, BB=seat2
+# UTG=seat0 folds, SB=seat1 folds → BB wins
+# pot = 5(SB) + 10(BB) = 15. BB gets 15.
+# Final: seat0=1000, seat1=995, seat2=1000-10+15=1005
+# Check: 1000+995+1005 = 3000 ✓
+variant: nlh
+dealer: 0
+blinds:
+  sb: 5
+  bb: 10
+seats:
+  - { label: "UTG", stack: 1000 }
+  - { label: "SB", stack: 1000 }
+  - { label: "BB", stack: 1000 }
+events:
+  - deal_hole:
+      0: [7h, 2c]
+      1: [8d, 3c]
+      2: [As, Kh]
+  # Preflop: UTG folds, SB folds → BB wins
+  - action: { seat: 0, type: fold }
+  - action: { seat: 1, type: fold }
+  # BB wins uncontested
+  - pot_awarded: { 2: 15 }
+  - hand_end: true
+expectations:
+  hand_ended: true
+  pot_total: 0
+  community_count: 0
+  stacks:
+    0: 1000
+    1: 995
+    2: 1005
+  seat_statuses:
+    0: folded
+    1: folded

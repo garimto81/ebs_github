@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FL 베팅 범위 비교 — 시각 가이드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a1a0e;color:#e8f5e9;font-family:'Segoe UI','Apple SD Gothic Neo',sans-serif;font-size:14px;padding:20px 14px;max-width:720px;margin:0 auto}
+.ph{text-align:center;padding:24px 0 16px;border-bottom:1px solid #1b4d2a;margin-bottom:28px}
+.ph h1{font-size:21px;font-weight:700;color:#fbbf24;letter-spacing:-.02em;margin-bottom:5px}
+.ph .sub{font-size:12px;color:#6b9a75}
+.ph .disc{margin-top:8px;padding:7px 14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:6px;font-size:11px;color:#a8cc9e;display:inline-block}
+.sec{margin-bottom:36px}
+.st{font-size:12px;font-weight:600;color:#fbbf24;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;padding-bottom:5px;border-bottom:1px solid #1b4d2a}
+.cap{text-align:center;font-size:11px;color:#6b9a75;margin-top:7px}
+.pt{background:radial-gradient(ellipse at center,#0d7a3a 0%,#0a5c2f 70%,#083d1f 100%);border-radius:90px;border:8px solid #3d2010;box-shadow:0 0 0 3px #5c3a1e,0 8px 28px rgba(0,0,0,.6);padding:24px 20px;margin:0 auto;max-width:640px}
+.pot-sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,#1b4d2a 20%,#1b4d2a 80%,transparent);margin:20px 0}
+
+/* ── Section 1: range compare ── */
+.range-subtitle{text-align:center;font-size:11px;color:#a8cc9e;margin-bottom:18px;letter-spacing:.03em}
+.range-struct{display:flex;flex-direction:column;gap:16px}
+.range-row{display:flex;align-items:flex-start;gap:10px}
+.range-label{font-size:12px;font-weight:700;width:28px;flex-shrink:0;text-align:right;padding-top:6px}
+.range-label.nl{color:#ef4444}
+.range-label.pl{color:#f97316}
+.range-label.fl{color:#38bdf8}
+.range-col{flex:1;display:flex;flex-direction:column;gap:4px}
+.range-bar-wrap{position:relative;height:28px;display:flex;align-items:center}
+.range-bar{height:20px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:0 7px;min-width:10px;position:relative}
+.range-bar.nl{background:linear-gradient(90deg,#991b1b,#ef4444);width:100%}
+.range-bar.pl{background:linear-gradient(90deg,#9a3412,#f97316);width:55%}
+.range-bar.fl{background:linear-gradient(90deg,#1e40af,#3b82f6);width:6%;min-width:8px;padding:0 3px}
+.range-bar-min{font-size:9px;font-weight:700;color:#fff;white-space:nowrap}
+.range-bar-max{font-size:9px;font-weight:700;color:rgba(255,255,255,.9);white-space:nowrap}
+.range-note{font-size:10px;color:#6b9a75;padding-left:2px}
+.range-note.nl{color:#fca5a5}
+.range-note.pl{color:#fdba74}
+.range-note.fl{color:#7dd3fc}
+.range-callout{margin-top:18px;padding:11px 14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:8px;text-align:center;font-size:12px;color:#fbbf24;line-height:1.6;font-style:italic}
+
+/* fl bar amount label outside bar */
+.range-fl-label{font-size:9px;font-weight:700;color:#7dd3fc;margin-left:6px;white-space:nowrap;align-self:center}
+
+/* ── Section 2: cap progression ── */
+.cap-subtitle{text-align:center;font-size:11px;color:#a8cc9e;margin-bottom:20px;letter-spacing:.03em}
+.cap-steps{display:flex;align-items:flex-start;justify-content:center;gap:0;flex-wrap:nowrap}
+.cap-step{display:flex;flex-direction:column;align-items:center;flex:1;min-width:0}
+.cap-badge{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;position:relative}
+.cap-badge.active{background:radial-gradient(circle,#22c55e,#15803d);color:#fff;box-shadow:0 0 8px rgba(34,197,94,.3)}
+.cap-badge.capped{background:radial-gradient(circle,#fbbf24,#d97706);color:#78350f;box-shadow:0 0 0 2px #ef4444,0 0 10px rgba(239,68,68,.4)}
+.cap-badge.blocked{background:radial-gradient(circle,#374151,#1f2937);color:#9ca3af;opacity:.6}
+.cap-arrow{font-size:14px;color:#2d5a3d;padding:0 2px;margin-top:14px;flex-shrink:0}
+.cap-step-label{margin-top:6px;text-align:center;min-width:0}
+.cap-step-label .action{font-size:9px;font-weight:700;color:#a8cc9e;letter-spacing:.03em;white-space:nowrap}
+.cap-step-label .action.capped{color:#fbbf24}
+.cap-step-label .action.blocked{color:#6b7280}
+.cap-step-label .amount{font-size:10px;font-weight:700;color:#e8f5e9;margin-top:1px}
+.cap-step-label .amount.capped{color:#fbbf24}
+.cap-step-label .total{font-size:9px;color:#6b9a75;margin-top:1px}
+
+/* running total bar */
+.cap-total-wrap{margin-top:18px}
+.cap-total-title{font-size:10px;color:#6b9a75;text-align:center;margin-bottom:6px;letter-spacing:.03em}
+.cap-total-track{background:rgba(0,0,0,.3);border-radius:6px;height:18px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.06)}
+.cap-total-fill{height:100%;background:linear-gradient(90deg,#15803d,#22c55e,#fbbf24);border-radius:6px;width:100%;display:flex;align-items:center}
+.cap-total-segments{display:flex;width:100%;height:100%}
+.cap-seg{flex:1;border-right:1px solid rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:rgba(255,255,255,.8)}
+.cap-seg:last-child{border-right:none;background:linear-gradient(90deg,#b45309,#fbbf24)}
+.cap-seg.s1{background:#15803d}
+.cap-seg.s2{background:#16a34a}
+.cap-seg.s3{background:#22c55e}
+.cap-seg.s4{background:linear-gradient(90deg,#b45309,#fbbf24)}
+.cap-total-label{text-align:center;font-size:10px;color:#a8cc9e;margin-top:5px}
+.cap-total-label span{color:#fbbf24;font-weight:700}
+
+/* compare box */
+.cap-compare{margin-top:14px;background:rgba(0,0,0,.25);border-radius:8px;border:1px solid rgba(255,255,255,.06);overflow:hidden}
+.cap-compare-row{display:flex;align-items:center;gap:0;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04)}
+.cap-compare-row:last-child{border-bottom:none}
+.cap-compare-label{font-size:10px;font-weight:700;color:#38bdf8;width:100px;flex-shrink:0}
+.cap-compare-seq{font-size:11px;color:#a8cc9e;flex:1;font-weight:600}
+.cap-compare-seq .cap-tag{display:inline-block;padding:1px 6px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:3px;font-size:9px;font-weight:700;color:#fbbf24;margin-left:4px}
+</style>
+</head>
+<body>
+
+<div class="ph">
+  <h1>Fixed Limit 베팅 — 시각 비교 가이드</h1>
+  <div class="sub">NL / PL / FL 베팅 범위 비교 · Cap 규칙 진행도</div>
+  <div class="disc">이 가이드는 텍스트 문서를 보충하는 시각 자료입니다. 전체 규칙은 PRD를 참조하세요.</div>
+</div>
+
+<!-- Section 1: NL / PL / FL 베팅 범위 비교 -->
+<div class="sec" id="fl-range-compare">
+  <div class="st">NL / PL / FL — 같은 상황에서 Raise 가능 범위</div>
+  <div class="pt">
+    <div class="range-subtitle">BB = 100 &nbsp;·&nbsp; 내 칩 = 5,000</div>
+    <div class="range-struct">
+
+      <!-- NL row -->
+      <div class="range-row">
+        <div class="range-label nl">NL</div>
+        <div class="range-col">
+          <div class="range-bar-wrap">
+            <div class="range-bar nl">
+              <span class="range-bar-min">200</span>
+              <span class="range-bar-max">5,000</span>
+            </div>
+          </div>
+          <div class="range-note nl">자유롭게 아무 금액 (200 ~ 전액)</div>
+        </div>
+      </div>
+
+      <!-- PL row -->
+      <div class="range-row">
+        <div class="range-label pl">PL</div>
+        <div class="range-col">
+          <div class="range-bar-wrap">
+            <div class="range-bar pl">
+              <span class="range-bar-min">200</span>
+              <span class="range-bar-max">~팟 크기</span>
+            </div>
+          </div>
+          <div class="range-note pl">팟까지만 (200 ~ 현재 팟 금액)</div>
+        </div>
+      </div>
+
+      <!-- FL row -->
+      <div class="range-row">
+        <div class="range-label fl">FL</div>
+        <div class="range-col">
+          <div class="range-bar-wrap" style="align-items:center">
+            <div class="range-bar fl"></div>
+            <span class="range-fl-label">200 (딱 이 금액만!)</span>
+          </div>
+          <div class="range-note fl">선택의 여지 없음 — 금액은 항상 고정</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="range-callout">
+      NL은 &ldquo;얼마나 걸까&rdquo;를 고민하지만, FL은 &ldquo;걸까 말까&rdquo;만 결정합니다
+    </div>
+  </div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- Section 2: Fixed Limit Cap 진행도 -->
+<div class="sec" id="fl-cap">
+  <div class="st">FL Cap — 한 라운드 최대 4번 베팅</div>
+  <div class="pt">
+    <div class="cap-subtitle">2/4 Fixed Limit &nbsp;·&nbsp; Flop (Small Bet = 2)</div>
+
+    <!-- 5 step badges -->
+    <div class="cap-steps">
+
+      <!-- Step 1: Bet -->
+      <div class="cap-step">
+        <div class="cap-badge active">2</div>
+        <div class="cap-step-label">
+          <div class="action">1st Bet</div>
+          <div class="amount">+2</div>
+          <div class="total">합계 2</div>
+        </div>
+      </div>
+
+      <div class="cap-arrow">→</div>
+
+      <!-- Step 2: Raise -->
+      <div class="cap-step">
+        <div class="cap-badge active">4</div>
+        <div class="cap-step-label">
+          <div class="action">Raise</div>
+          <div class="amount">+2</div>
+          <div class="total">합계 4</div>
+        </div>
+      </div>
+
+      <div class="cap-arrow">→</div>
+
+      <!-- Step 3: Re-Raise -->
+      <div class="cap-step">
+        <div class="cap-badge active">6</div>
+        <div class="cap-step-label">
+          <div class="action">Re-Raise</div>
+          <div class="amount">+2</div>
+          <div class="total">합계 6</div>
+        </div>
+      </div>
+
+      <div class="cap-arrow">→</div>
+
+      <!-- Step 4: Cap -->
+      <div class="cap-step">
+        <div class="cap-badge capped">CAP</div>
+        <div class="cap-step-label">
+          <div class="action capped">Cap!</div>
+          <div class="amount capped">+2</div>
+          <div class="total">합계 8</div>
+        </div>
+      </div>
+
+      <div class="cap-arrow">→</div>
+
+      <!-- Step 5: Blocked -->
+      <div class="cap-step">
+        <div class="cap-badge blocked">✕</div>
+        <div class="cap-step-label">
+          <div class="action blocked">Raise 불가</div>
+          <div class="amount blocked" style="font-size:9px">Call 8</div>
+          <div class="total">또는 Fold</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Running total bar -->
+    <div class="cap-total-wrap">
+      <div class="cap-total-title">누적 베팅 진행도</div>
+      <div class="cap-total-track">
+        <div class="cap-total-segments">
+          <div class="cap-seg s1">2</div>
+          <div class="cap-seg s2">4</div>
+          <div class="cap-seg s3">6</div>
+          <div class="cap-seg s4">8 ★</div>
+        </div>
+      </div>
+      <div class="cap-total-label">Cap 달성 — 최대 누적: <span>8</span> (4번 × Small Bet 2)</div>
+    </div>
+
+    <!-- Flop vs Turn comparison -->
+    <div class="cap-compare">
+      <div class="cap-compare-row">
+        <div class="cap-compare-label">Flop (Small Bet)</div>
+        <div class="cap-compare-seq">2 → 4 → 6 → 8 <span class="cap-tag">Cap</span></div>
+      </div>
+      <div class="cap-compare-row">
+        <div class="cap-compare-label">Turn (Big Bet)</div>
+        <div class="cap-compare-seq">4 → 8 → 12 → 16 <span class="cap-tag">Cap</span></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="cap">Cap은 라운드와 상관없이 항상 4번 — 금액만 달라집니다</div>
+</div>
+
+</body>
+</html>

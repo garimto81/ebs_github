@@ -1,7 +1,0 @@
-{
-  "active": true,
-  "started_at": "2026-02-17T12:27:23.369Z",
-  "original_prompt": "/auto   10 tasks (5 done, 2 in progress, 3 open)                                                                                     ◼ W6: Part III-IV 수정 + 번호 재배정     \n  ◼ W7: Part VIII 수정 + 부록 확장                                                                                           \n  ◻ W8: screen-specs.md 보강\n  ◻ W9: feature-mapping.md 보강\n  ◻ W10: 변경 이력 + 최종 정합성 검증\n  ✔ W1: Part I 인터페이스 멘탈 모델 생성                                                                                       ✔ W2: Part II 기술 아키텍처 신규 섹션 (8-11) 생성                                                                            ✔ W3: Part V Action Tracker 상세 생성                                                                                        ✔ W4: Part VI Viewer Overlay 명세 생성                                                                                       ✔ W5: Part VII 에러/로딩/비활성 상태 설계 생성     \nralplan ulw pdca , ulw 는 agent teams 로 처리\n",
-  "reinforcement_count": 0,
-  "last_checked_at": "2026-02-17T12:27:23.370Z"
-}

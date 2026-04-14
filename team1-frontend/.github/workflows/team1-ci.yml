@@ -1,0 +1,63 @@
+name: team1-frontend CI
+on:
+  pull_request:
+    paths:
+      - 'team1-frontend/**'
+      - '.github/workflows/team1-ci.yml'
+  push:
+    branches: [main, 'team1/**']
+    paths:
+      - 'team1-frontend/**'
+
+# Run Phase 0.4 Universal Test Gate on every PR/push.
+# Falls back to local commands if ~/.claude/lib/test-adapter is absent.
+jobs:
+  test-gate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: team1-frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: team1-frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit + component tests (with coverage)
+        run: pnpm test:coverage
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E tests
+        run: pnpm e2e
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: team1-frontend/coverage/
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: team1-frontend/playwright-report/

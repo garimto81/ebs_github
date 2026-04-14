@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1000">
+<title>EBS Flow — Table Status Lifecycle</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; }
+  .cc-btn { background: #333; color: #fff; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  .flow { display: flex; align-items: flex-start; gap: 0; padding: 10px 12px; }
+  .step { flex: 1; border: 1px solid #ddd; padding: 10px; background: #fafafa; min-width: 0; }
+  .step.live { border-color: #28a745; background: #f8fff8; }
+  .step.done { border-color: #ccc; background: #f5f5f5; opacity: 0.7; }
+  .step-num { font-size: 7px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 4px; }
+  .step.live .step-num { color: #28a745; }
+
+  .arrow { display: flex; align-items: center; justify-content: center; width: 22px; flex-shrink: 0; font-size: 16px; color: #ccc; font-weight: 300; padding-top: 20px; }
+
+  .status-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 6px; margin-bottom: 6px; }
+  .badge-empty { background: #f0f0f0; color: #999; }
+  .badge-setup { background: #fff3cd; color: #856404; }
+  .badge-live { background: #28a745; color: #fff; }
+  .badge-done { background: #d6d8db; color: #383d41; }
+
+  .field { margin-bottom: 4px; font-size: 9px; }
+  .field-label { color: #999; font-weight: 600; }
+  .field-val { font-weight: 600; }
+  .field-na { color: #ccc; }
+
+  .btn-sm { font-size: 8px; font-weight: 700; padding: 2px 8px; border: 1px solid #222; cursor: pointer; margin-top: 4px; }
+  .btn-primary { background: #222; color: #fff; border-color: #222; }
+  .btn-disabled { background: #eee; color: #bbb; border-color: #ddd; cursor: default; }
+  .btn-outline { background: #fff; color: #222; }
+  .btn-reset { background: #fff; color: #666; border-color: #999; }
+
+  .lock-indicator { font-size: 9px; color: #dc3545; font-weight: 700; margin-top: 6px; padding: 3px 6px; background: #fff5f5; border: 1px solid #f5c6cb; }
+  .progress-item { font-size: 9px; color: #666; margin: 1px 0; }
+  .progress-item .check { color: #28a745; }
+  .progress-item .pending { color: #ffc107; }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC<span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+  </div>
+</div>
+<div class="bc"><span class="cur">Table Status Lifecycle</span></div>
+
+<div class="flow">
+  <!-- Empty -->
+  <div class="step">
+    <div class="step-num">Empty</div>
+    <span class="status-badge badge-empty">EMPTY</span>
+    <div class="field"><span class="field-label">Game Type:</span> <span class="field-na">Not set</span></div>
+    <div class="field"><span class="field-label">Players:</span> <span class="field-na">0/9</span></div>
+    <div class="field"><span class="field-label">RFID:</span> <span class="field-na">—</span></div>
+    <button class="btn-sm btn-primary">Start Setup</button>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Setup -->
+  <div class="step">
+    <div class="step-num">Setup</div>
+    <span class="status-badge badge-setup">SETUP</span>
+    <div class="progress-item"><span class="check">✓</span> Game Type: NLHE</div>
+    <div class="progress-item"><span class="check">✓</span> RFID: Reader-01 assigned</div>
+    <div class="progress-item"><span class="check">✓</span> Deck: 52/52 registered</div>
+    <div class="progress-item"><span class="pending">◌</span> Players: 6/9 seated</div>
+    <button class="btn-sm btn-primary" style="margin-top:6px;">Go Live</button>
+    <div style="font-size:8px; color:#888; margin-top:2px;">All conditions met</div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Live -->
+  <div class="step live">
+    <div class="step-num">Live</div>
+    <span class="status-badge badge-live">● LIVE</span>
+    <div class="field"><span class="field-val">Op.A · Hand #23</span></div>
+    <div class="field"><span class="field-label">NLHE</span> · Blinds 100/200</div>
+    <div class="lock-indicator">🔒 Game Type, RFID — Change blocked</div>
+    <button class="btn-sm btn-outline" style="margin-top:6px;">Complete</button>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Completed -->
+  <div class="step done">
+    <div class="step-num">Completed</div>
+    <span class="status-badge badge-done">COMPLETED</span>
+    <div class="field"><span class="field-label">Hands:</span> <span class="field-val">47</span></div>
+    <div class="field"><span class="field-label">Duration:</span> 3h 42m</div>
+    <div class="field"><span class="field-label">Showdowns:</span> 12</div>
+    <button class="btn-sm btn-reset" style="margin-top:6px;">Reset</button>
+  </div>
+</div>
+
+</body>
+</html>

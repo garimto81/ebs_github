@@ -1,0 +1,63 @@
+name: ebs_cc
+description: EBS Command Center + Overlay (Flutter/Dart, Team 4)
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # 상태관리 (WSOP Fatima.app 표준)
+  flutter_riverpod: ^2.5.0
+  riverpod_annotation: ^2.3.5
+
+  # HTTP + 직렬화
+  dio: ^5.4.0
+  json_annotation: ^4.9.0
+  freezed_annotation: ^2.4.1
+
+  # WebSocket (CCR-015 skin_updated, CCR-021 seq/replay)
+  web_socket_channel: ^2.4.5
+
+  # Rive 애니메이션 (Overlay Layer 1 렌더링)
+  rive: ^0.13.4
+
+  # .gfskin ZIP in-memory 압축 해제 (CCR-012)
+  archive: ^3.6.1
+
+  # JSON Schema 검증 (DATA-07 .gfskin manifest)
+  json_schema: ^5.1.1
+
+  # UUID (CCR-019 Idempotency-Key 헤더)
+  uuid: ^4.4.0
+
+  # 오디오 (BS-07-05, 1 BGM + 2 Effect + Temp pattern)
+  just_audio: ^0.9.39
+
+  # 에러 리포팅 (WSOP 조직 표준 Sentry)
+  sentry_flutter: ^8.3.0
+
+  # 유틸
+  collection: ^1.18.0
+  logging: ^1.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+  # 코드 생성
+  build_runner: ^2.4.11
+  riverpod_generator: ^2.4.0
+  freezed: ^2.5.2
+  json_serializable: ^6.8.0
+
+  # 테스트 mock
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true

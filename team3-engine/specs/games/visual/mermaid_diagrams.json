@@ -1,0 +1,82 @@
+[
+  {
+    "id": 0,
+    "code": "flowchart LR\n    A[\"Step 1<br/>카드 배분\"] --> B[\"Step 2<br/>베팅\"]\n    B --> C[\"Step 3~4<br/>보드 공개\"]\n    C --> D[\"Step 5<br/>승부\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 1,
+    "code": "flowchart LR\n    A[\"★ Step 1<br/>카드 배분\"] --> B[\"Step 2<br/>베팅\"]\n    B --> C[\"Step 3~4<br/>보드 공개\"]\n    C --> D[\"Step 5<br/>승부\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 2,
+    "code": "flowchart LR\n    A[\"Step 1 ✓<br/>카드 배분\"] --> B[\"★ Step 2<br/>베팅\"]\n    B --> C[\"Step 3~4<br/>보드 공개\"]\n    C --> D[\"Step 5<br/>승부\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 3,
+    "code": "flowchart LR\n    A[\"카드 배분 ✓\"] --> B[\"★ Flop<br/>보드 3장\"]\n    B --> C[\"Turn<br/>+1장\"]\n    C --> D[\"River<br/>+1장\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 4,
+    "code": "flowchart LR\n    A[\"Flop ✓<br/>3장\"] --> B[\"★ Turn<br/>+1장\"]\n    B --> C[\"River<br/>+1장\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 5,
+    "code": "flowchart LR\n    A[\"Flop ✓\"] --> B[\"Turn ✓\"]\n    B --> C[\"★ River<br/>보드 5장\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 6,
+    "code": "flowchart LR\n    A[\"카드 배분 ✓\"] --> B[\"보드 공개 ✓\"]\n    B --> C[\"★ 승부 판정!\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 7,
+    "code": "flowchart LR\n    A[\"카드 3장<br/>배분\"] --> B[\"1장 버림<br/>(Flop 전)\"]\n    B --> C[\"2장으로<br/>Hold'em 진행\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 8,
+    "code": "flowchart LR\n    A[\"Hold'em<br/>홀카드 2장\"] --> C[\"선택지 적음\"]\n    B[\"Omaha<br/>홀카드 4장\"] --> D[\"선택지 많음!\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 9,
+    "code": "flowchart LR\n    A[\"Omaha<br/>홀카드 먼저\"] --> B[\"Flop<br/>보드 3장 한번에\"]\n    C[\"Courchevel<br/>보드 1장 먼저!\"] --> D[\"나머지 2장<br/>추가\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 10,
+    "code": "flowchart TD\n    A[\"IDLE\"] --> B[\"SETUP_HAND\"]\n    B --> C[\"PRE_FLOP\"]\n    C --> D[\"FLOP\"]\n    D --> E[\"TURN\"]\n    E --> F[\"RIVER\"]\n    F --> G[\"SHOWDOWN\"]\n    G --> H[\"HAND_COMPLETE\"]\n    H --> A",
+    "preview": "flowchart TD"
+  },
+  {
+    "id": 11,
+    "code": "flowchart LR\n    A[\"베팅 라운드\"] --> B{\"남은 플레이어\"}\n    B -->|\"1명\"| C[\"즉시 PAYOUT<br/>(Showdown 생략)\"]\n    B -->|\"전원 All-in\"| D[\"남은 카드<br/>자동 공개\"]\n    B -->|\"2명+\"| E[\"다음 상태\"]\n    D --> F[\"SHOWDOWN\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 12,
+    "code": "flowchart LR\n    A[\"PRE_FLOP<br/>3장 배분\"] --> B[\"DISCARD<br/>1장 버림\"]\n    B --> C[\"FLOP<br/>(2장으로)\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 13,
+    "code": "flowchart LR\n    A[\"SETUP_HAND\"] --> B[\"dealBoard(1)<br/>보드 1장 선공개\"]\n    B --> C[\"PRE_FLOP<br/>5장+보드1장\"]\n    C --> D[\"FLOP<br/>나머지 2장\"]",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 14,
+    "code": "flowchart LR\n    A[\"RIVER\"] --> B{\"run_it_times > 1?\"}\n    B -->|\"Yes\"| C[\"RUN_IT_TWICE<br/>추가 보드 딜\"]\n    B -->|\"No\"| D[\"SHOWDOWN\"]\n    C --> D",
+    "preview": "flowchart LR"
+  },
+  {
+    "id": 15,
+    "code": "flowchart LR\n    A[\"카드 배치\"] --> B[\"RFID 태그<br/>감지\"]\n    B --> C[\"OnCardDetected<br/>이벤트\"]\n    C --> D[\"게임 엔진<br/>카드 등록\"]",
+    "preview": "flowchart LR"
+  }
+]

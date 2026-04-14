@@ -1,0 +1,88 @@
+### CCR-013 §1, §3 — GE Upload + Download
+###
+### 검증:
+### - POST /skins 201 Created (multipart upload)
+### - GET /skins/{id} 200 OK (byte-exact 다운로드)
+### - JSON Schema 검증 실패 시 422
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 20.1 POST /api/v1/skins — 정상 업로드
+POST {{host}}/api/v1/skins
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="wsop-2026-test.gfskin"
+Content-Type: application/zip
+
+< ./fixtures/wsop-2026-test.gfskin
+------WebKitFormBoundary
+Content-Disposition: form-data; name="name"
+
+wsop-2026-test-override
+------WebKitFormBoundary--
+
+# 예상 응답: 201 Created
+# {
+#   "id": "sk_01HVQK...",
+#   "version": 1,
+#   "etag": "W/\"1-abc...\"",
+#   "url": "/api/v1/skins/sk_01HVQK..."
+# }
+
+### 20.2 GET /api/v1/skins — 목록 조회
+GET {{host}}/api/v1/skins?limit=20&offset=0&sort=-modified_at
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK + items[] + total
+
+### 20.3 GET /api/v1/skins/{id} — .gfskin bytes 다운로드
+GET {{host}}/api/v1/skins/sk_01HVQK-test
+Authorization: Bearer {{admin_token}}
+Accept: application/octet-stream
+
+# 예상: 200 OK
+# Content-Type: application/octet-stream
+# Content-Disposition: attachment; filename="wsop-2026-test.gfskin"
+# Body: ZIP binary (upload와 byte-exact 동일)
+
+### 20.4 POST /api/v1/skins — JSON Schema 검증 실패
+POST {{host}}/api/v1/skins
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="invalid-colors.gfskin"
+Content-Type: application/zip
+
+< ./fixtures/invalid-colors.gfskin
+------WebKitFormBoundary--
+
+# invalid-colors.gfskin 내부:
+#   skin.json 의 colors.badge_check = "not-a-hex-color"
+#
+# 예상 응답: 422 Unprocessable Entity
+# {
+#   "error": "SCHEMA_VIOLATION",
+#   "path": "colors.badge_check",
+#   "message": "Pattern mismatch: expected ^#[0-9A-Fa-f]{6}$"
+# }
+
+### 20.5 POST /api/v1/skins — 파일 크기 초과
+POST {{host}}/api/v1/skins
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="huge.gfskin"
+Content-Type: application/zip
+
+< ./fixtures/huge-51mb.gfskin
+------WebKitFormBoundary--
+
+# 예상: 413 Payload Too Large (50MB 제한)

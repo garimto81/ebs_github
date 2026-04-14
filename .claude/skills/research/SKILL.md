@@ -1,8 +1,13 @@
 ---
 name: research
-description: >
-  This skill should be used when the user requests codebase analysis, external research, or AI-powered code review (RPI Phase 1).
-version: 2.0.0
+description: RPI Phase 1 - 코드베이스 분석, 리서치, AI 리뷰
+version: 3.0.0
+team_pattern: true
+agents:
+  - researcher
+  - researcher-low
+  - scientist
+  - explore
 triggers:
   keywords:
     - "research"
@@ -13,16 +18,35 @@ triggers:
 
 # /research - 통합 리서치 커맨드
 
-## 실행 방법
+## Agent Teams 실행
+
+이 스킬은 Agent Teams 패턴으로 리서치를 실행합니다.
+
+### 실행 방법
 
 ```
-TeamCreate(team_name="research-session")
-Agent(subagent_type="researcher", name="researcher",
-     description="리서치 실행",
-     team_name="research-session",
-     prompt="리서치: [주제]")
-SendMessage(type="message", recipient="researcher", content="리서치 시작.")
-# 완료 대기 → shutdown_request → TeamDelete()
+# Step 1: 팀 생성
+TeamCreate(team_name="research-{topic}")
+
+# Step 2: 리서치 에이전트 스폰
+Agent(
+  subagent_type="researcher",
+  name="researcher",
+  description="리서치 실행: {주제}",
+  team_name="research-{topic}",
+  model="sonnet",
+  prompt="리서치를 수행하세요: {주제}
+
+  분석 항목:
+  1. 관련 코드/문서 탐색
+  2. 오픈소스 대안 조사
+  3. 구현 방안 비교
+  4. 결과 보고서 작성"
+)
+
+# Step 3: 완료 후 정리
+SendMessage(to="researcher", message={type: "shutdown_request"})
+TeamDelete()
 ```
 
 ### 에이전트
@@ -37,13 +61,15 @@ SendMessage(type="message", recipient="researcher", content="리서치 시작.")
 ## 인과관계 (CRITICAL - 절대 보존)
 
 ```
-/auto Phase 1 Step 1.2 (사전 분석)
+/work --loop Tier 3
     └── /research code (코드 분석 필요 시)
     └── /research web (오픈소스 탐색 필요 시)
 
-/auto Phase 1 Step 1.3 (계획 수립)
+/work Phase 1
     └── /research plan (구현 계획 수립)
 ```
+
+**이 인과관계는 Agent Teams 전환과 무관하게 그대로 유지됩니다.**
 
 ## 서브커맨드 (100% 보존)
 

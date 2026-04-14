@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSOP Broadcast Production Pipeline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; background: #fff; padding: 15px; }
+        .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+    <div class="title">WSOP Broadcast Production Pipeline</div>
+
+    <svg viewBox="0 0 950 770" width="1425" height="1155">
+        <defs>
+            <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#000"/>
+            </marker>
+            <marker id="arr-b" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#0066cc"/>
+            </marker>
+        </defs>
+
+        <!-- SECTION A -->
+        <g>
+            <rect x="10" y="10" width="930" height="240" fill="#fafafa" stroke="#000" stroke-width="2"/>
+            <text x="20" y="28" font-size="12" font-weight="bold">SECTION A: ON-SITE PRODUCTION</text>
+
+            <!-- Feature Table -->
+            <g transform="translate(25, 50)">
+                <rect width="170" height="80" fill="#fff" stroke="#333" stroke-width="1.5" rx="3"/>
+                <text x="85" y="15" text-anchor="middle" font-size="9" font-weight="bold">FEATURE TABLE</text>
+                <g transform="translate(10, 25)">
+                    <rect x="0" y="0" width="30" height="16" fill="#f5f5f5" stroke="#666" rx="2"/>
+                    <text x="15" y="12" text-anchor="middle" font-size="7">Cam1</text>
+                    <rect x="35" y="0" width="30" height="16" fill="#f5f5f5" stroke="#666" rx="2"/>
+                    <text x="50" y="12" text-anchor="middle" font-size="7">Cam2</text>
+                    <rect x="70" y="0" width="30" height="16" fill="#f5f5f5" stroke="#666" rx="2"/>
+                    <text x="85" y="12" text-anchor="middle" font-size="7">Cam3</text>
+                    <rect x="105" y="0" width="30" height="16" fill="#f5f5f5" stroke="#666" rx="2"/>
+                    <text x="120" y="12" text-anchor="middle" font-size="7">Cam4</text>
+                </g>
+                <text x="85" y="60" text-anchor="middle" font-size="7" fill="#666">RFID + Camera x4+@</text>
+                <text x="85" y="72" text-anchor="middle" font-size="7" fill="#999">per table</text>
+            </g>
+
+            <path d="M195,90 L240,90" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+            <text x="210" y="84" font-size="7" fill="#666">SDI</text>
+
+            <!-- Switcher -->
+            <g transform="translate(245, 60)">
+                <rect width="110" height="60" fill="#fff" stroke="#000" stroke-width="2" rx="3"/>
+                <text x="55" y="20" text-anchor="middle" font-size="11" font-weight="bold">Switcher</text>
+                <text x="55" y="35" text-anchor="middle" font-size="8" fill="#666">Cut Edit + GFX DSK</text>
+                <text x="55" y="50" text-anchor="middle" font-size="7" fill="#999">PGM Selection</text>
+            </g>
+
+            <!-- EBS -->
+            <g transform="translate(260, 140)">
+                <rect width="80" height="40" fill="#f0f0f0" stroke="#666" stroke-width="1.5" rx="3"/>
+                <text x="40" y="16" text-anchor="middle" font-size="10" font-weight="bold">EBS</text>
+                <text x="40" y="30" text-anchor="middle" font-size="7" fill="#666">Fill & Key</text>
+            </g>
+            <path d="M300,140 L300,120" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <path d="M355,90 L560,90" stroke="#000" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+            <text x="430" y="83" font-size="8" fill="#333">PGM+GFX (SDI 1080p60)</text>
+
+            <!-- LiveU Unit -->
+            <g transform="translate(565, 55)">
+                <rect width="150" height="75" fill="#fff" stroke="#0066cc" stroke-width="2" rx="3"/>
+                <text x="75" y="18" text-anchor="middle" font-size="10" font-weight="bold" fill="#0066cc">LiveU LU800</text>
+                <rect x="10" y="28" width="55" height="25" fill="#e6f2ff" stroke="#0066cc" rx="2"/>
+                <text x="37" y="44" text-anchor="middle" font-size="7" font-weight="bold">Encoder</text>
+                <rect x="85" y="28" width="55" height="25" fill="#e6f2ff" stroke="#0066cc" rx="2"/>
+                <text x="112" y="44" text-anchor="middle" font-size="7" font-weight="bold">Bonding</text>
+                <path d="M65,40 L85,40" stroke="#0066cc" stroke-width="1" fill="none" marker-end="url(#arr-b)"/>
+                <text x="75" y="68" text-anchor="middle" font-size="6" fill="#666">4G x4 + 5G x2</text>
+            </g>
+
+            <!-- Multi-Unit -->
+            <g transform="translate(740, 55)">
+                <rect width="190" height="75" fill="#f5f5f5" stroke="#999" rx="2"/>
+                <text x="95" y="18" text-anchor="middle" font-size="8" font-weight="bold">Multi-Unit Setup</text>
+                <text x="10" y="35" font-size="7" fill="#333">1 LiveU Unit per PGM</text>
+                <text x="10" y="50" font-size="7" fill="#333">Cloud-based monitoring</text>
+                <text x="10" y="65" font-size="7" fill="#333">Remote configuration</text>
+            </g>
+        </g>
+
+        <!-- A → B Arrow -->
+        <path d="M640,250 L640,280" stroke="#0066cc" stroke-width="2.5" fill="none" marker-end="url(#arr-b)"/>
+        <text x="650" y="270" font-size="9" font-weight="bold" fill="#0066cc">LRT™ Bonded Stream</text>
+
+        <!-- SECTION B -->
+        <g>
+            <rect x="10" y="290" width="930" height="120" fill="#e6f2ff" stroke="#0066cc" stroke-width="2"/>
+            <text x="20" y="308" font-size="12" font-weight="bold" fill="#0066cc">SECTION B: LiveU CLOUD</text>
+
+            <g transform="translate(30, 325)">
+                <rect width="130" height="55" fill="#fff" stroke="#0066cc" stroke-width="1.5" rx="3"/>
+                <text x="65" y="16" text-anchor="middle" font-size="10" font-weight="bold" fill="#0066cc">Cloud Channel</text>
+                <text x="65" y="32" text-anchor="middle" font-size="7" fill="#666">LRT Decode</text>
+                <text x="65" y="45" text-anchor="middle" font-size="7" fill="#666">Packet Reassembly</text>
+            </g>
+
+            <path d="M160,352 L185,352" stroke="#0066cc" stroke-width="1.5" fill="none" marker-end="url(#arr-b)"/>
+
+            <g transform="translate(190, 325)">
+                <rect width="150" height="55" fill="#fff" stroke="#0066cc" stroke-width="1.5" rx="3"/>
+                <text x="75" y="16" text-anchor="middle" font-size="10" font-weight="bold" fill="#0066cc">LiveU Matrix</text>
+                <text x="75" y="32" text-anchor="middle" font-size="7" fill="#666">Share / Receive / Record</text>
+                <text x="75" y="45" text-anchor="middle" font-size="7" fill="#666">Cloud Recording</text>
+            </g>
+
+            <path d="M340,352 L365,352" stroke="#0066cc" stroke-width="1.5" fill="none" marker-end="url(#arr-b)"/>
+
+            <g transform="translate(370, 325)">
+                <rect width="120" height="55" fill="#f0f0f0" stroke="#333" rx="3"/>
+                <text x="60" y="16" text-anchor="middle" font-size="9" font-weight="bold">Output Protocols</text>
+                <text x="10" y="30" font-size="6" fill="#333">LRT / SRT / RTMP</text>
+                <text x="10" y="42" font-size="6" fill="#333">NDI / HLS / MPEG-TS</text>
+            </g>
+
+            <g transform="translate(520, 325)">
+                <rect width="160" height="55" fill="#fff" stroke="#0066cc" stroke-width="1.5" rx="3"/>
+                <text x="80" y="16" text-anchor="middle" font-size="10" font-weight="bold" fill="#0066cc">LiveU Central</text>
+                <text x="80" y="32" text-anchor="middle" font-size="7" fill="#666">Orchestration</text>
+                <text x="80" y="45" text-anchor="middle" font-size="7" fill="#666">Unit Monitor / Routing</text>
+            </g>
+        </g>
+
+        <!-- B → C Arrow -->
+        <path d="M285,410 L285,440" stroke="#000" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+        <text x="295" y="430" font-size="8" fill="#333">SRT</text>
+
+        <!-- SECTION C -->
+        <g>
+            <rect x="10" y="445" width="930" height="130" fill="#fafafa" stroke="#000" stroke-width="2"/>
+            <text x="20" y="463" font-size="12" font-weight="bold">SECTION C: POST-PRODUCTION (Seoul)</text>
+
+            <!-- Step 1: Hand Split -->
+            <g transform="translate(20, 478)">
+                <rect width="55" height="35" fill="#fff" stroke="#000" stroke-width="1.5" rx="3"/>
+                <text x="27" y="14" text-anchor="middle" font-size="8" font-weight="bold">Hand Split</text>
+                <text x="27" y="27" text-anchor="middle" font-size="6" fill="#666">Per Table</text>
+            </g>
+            <path d="M75,495 L85,495" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <!-- Step 2: Rating -->
+            <g transform="translate(90, 478)">
+                <rect width="50" height="35" fill="#fff" stroke="#000" stroke-width="1.5" rx="3"/>
+                <text x="25" y="14" text-anchor="middle" font-size="8" font-weight="bold">Rating</text>
+                <text x="25" y="27" text-anchor="middle" font-size="6" fill="#666">A+~D</text>
+            </g>
+            <path d="M140,495 L150,495" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <!-- Step 3: Selection -->
+            <g transform="translate(155, 478)">
+                <rect width="55" height="35" fill="#fff" stroke="#000" stroke-width="1.5" rx="3"/>
+                <text x="27" y="14" text-anchor="middle" font-size="8" font-weight="bold">Selection</text>
+                <text x="27" y="27" text-anchor="middle" font-size="6" fill="#666">Top Hands</text>
+            </g>
+            <path d="M210,495 L220,495" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <!-- Step 4: Arrange -->
+            <g transform="translate(225, 478)">
+                <rect width="55" height="35" fill="#fff" stroke="#000" stroke-width="1.5" rx="3"/>
+                <text x="27" y="14" text-anchor="middle" font-size="8" font-weight="bold">Arrange</text>
+                <text x="27" y="27" text-anchor="middle" font-size="6" fill="#666">Sequence</text>
+            </g>
+            <path d="M280,495 L290,495" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <!-- Step 5: GFX Select (NEW) -->
+            <g transform="translate(295, 475)">
+                <rect width="75" height="40" fill="#e8eaf6" stroke="#3949ab" stroke-width="1.5" rx="3"/>
+                <text x="37" y="14" text-anchor="middle" font-size="7" font-weight="bold" fill="#3949ab">GFX Select</text>
+                <text x="37" y="26" text-anchor="middle" font-size="6" fill="#666">그래픽 선정</text>
+                <text x="37" y="36" text-anchor="middle" font-size="5" fill="#999">큐시트 작성</text>
+            </g>
+            <path d="M370,495 L380,495" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <!-- Step 6: GFX Create (NEW) -->
+            <g transform="translate(385, 475)">
+                <rect width="75" height="40" fill="#e8eaf6" stroke="#3949ab" stroke-width="1.5" rx="3"/>
+                <text x="37" y="14" text-anchor="middle" font-size="7" font-weight="bold" fill="#3949ab">GFX Create</text>
+                <text x="37" y="26" text-anchor="middle" font-size="6" fill="#666">그래픽 생성</text>
+                <text x="37" y="36" text-anchor="middle" font-size="5" fill="#999">데이터→그래픽</text>
+            </g>
+            <path d="M460,495 L470,495" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <!-- Step 7: GFX Insert (NEW) -->
+            <g transform="translate(475, 475)">
+                <rect width="75" height="40" fill="#e8eaf6" stroke="#3949ab" stroke-width="1.5" rx="3"/>
+                <text x="37" y="14" text-anchor="middle" font-size="7" font-weight="bold" fill="#3949ab">GFX Insert</text>
+                <text x="37" y="26" text-anchor="middle" font-size="6" fill="#666">그래픽 삽입</text>
+                <text x="37" y="36" text-anchor="middle" font-size="5" fill="#999">타임라인 배치</text>
+            </g>
+            <path d="M550,495 L560,495" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <!-- Step 8: Render -->
+            <g transform="translate(565, 478)">
+                <rect width="60" height="35" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5" rx="3"/>
+                <text x="30" y="14" text-anchor="middle" font-size="8" font-weight="bold" fill="#2e7d32">Render</text>
+                <text x="30" y="27" text-anchor="middle" font-size="6" fill="#2e7d32">1hr Block</text>
+            </g>
+            <path d="M625,495 L635,495" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <!-- Step 9: Delay -->
+            <g transform="translate(640, 478)">
+                <rect width="55" height="35" fill="#fff3e0" stroke="#ef6c00" stroke-width="1.5" rx="3"/>
+                <text x="27" y="14" text-anchor="middle" font-size="8" font-weight="bold" fill="#ef6c00">Delay</text>
+                <text x="27" y="27" text-anchor="middle" font-size="6" fill="#ef6c00">1-2 hr</text>
+            </g>
+            <path d="M695,495 L705,495" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <!-- Step 10: Broadcast -->
+            <g transform="translate(710, 478)">
+                <rect width="65" height="35" fill="#e3f2fd" stroke="#1565c0" stroke-width="2" rx="3"/>
+                <text x="32" y="14" text-anchor="middle" font-size="8" font-weight="bold" fill="#1565c0">Broadcast</text>
+                <text x="32" y="27" text-anchor="middle" font-size="6" fill="#1565c0">RTMP Out</text>
+            </g>
+
+            <!-- GFX Pipeline bracket -->
+            <path d="M295,520 L550,520" stroke="#3949ab" stroke-width="1" stroke-dasharray="3,2" fill="none"/>
+            <text x="422" y="535" text-anchor="middle" font-size="7" font-weight="bold" fill="#3949ab">Graphics Pipeline</text>
+        </g>
+
+        <!-- C → E-1 Arrow -->
+        <path d="M742,575 L742,600 L230,600 L230,620" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+        <text x="480" y="613" font-size="8" fill="#333">RTMP</text>
+
+        <!-- SECTION E-1 -->
+        <g>
+            <rect x="10" y="625" width="460" height="75" fill="#fafafa" stroke="#000" stroke-width="2"/>
+            <text x="20" y="643" font-size="12" font-weight="bold">E-1: YOUTUBE PATH</text>
+
+            <g transform="translate(40, 655)">
+                <rect width="70" height="30" fill="#fff" stroke="#000" stroke-width="1.5" rx="3"/>
+                <text x="35" y="13" text-anchor="middle" font-size="9" font-weight="bold">YT RTMP</text>
+                <text x="35" y="25" text-anchor="middle" font-size="7" fill="#666">Ingest</text>
+            </g>
+            <path d="M110,670 L130,670" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <g transform="translate(135, 655)">
+                <rect width="70" height="30" fill="#fff" stroke="#000" stroke-width="1.5" rx="3"/>
+                <text x="35" y="13" text-anchor="middle" font-size="9" font-weight="bold">YT Live</text>
+                <text x="35" y="25" text-anchor="middle" font-size="7" fill="#666">Platform</text>
+            </g>
+            <path d="M205,670 L225,670" stroke="#000" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+            <g transform="translate(230, 653)">
+                <rect width="80" height="34" fill="#e8e8e8" stroke="#000" stroke-width="2" rx="3"/>
+                <text x="40" y="14" text-anchor="middle" font-size="9" font-weight="bold">Viewer</text>
+                <text x="40" y="28" text-anchor="middle" font-size="8" fill="#333">Free</text>
+            </g>
+
+            <g transform="translate(330, 653)">
+                <rect width="120" height="34" fill="#f5f5f5" stroke="#999" rx="2"/>
+                <text x="10" y="14" font-size="7">DVR: OFF</text>
+                <text x="10" y="28" font-size="7">Post-Live: Private</text>
+            </g>
+        </g>
+
+        <!-- Delay Summary -->
+        <text x="475" y="720" text-anchor="middle" font-size="9" font-weight="bold">Production 1-2hr | LiveU Transport 3-8s | YouTube Stream 15-30s</text>
+    </svg>
+</body>
+</html>

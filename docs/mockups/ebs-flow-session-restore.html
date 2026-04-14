@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=900">
+<title>EBS Flow — Session Restore</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; }
+  .cc-btn { background: #333; color: #fff; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  .flow { display: flex; align-items: flex-start; gap: 0; padding: 16px; }
+  .step { flex: 1; border: 1px solid #ddd; padding: 12px; background: #fafafa; position: relative; }
+  .step.active { border-color: #28a745; background: #f8fff8; }
+  .step-num { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+  .step.active .step-num { color: #28a745; }
+  .step-title { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+
+  .arrow { display: flex; align-items: center; justify-content: center; width: 32px; flex-shrink: 0; font-size: 18px; color: #ccc; font-weight: 300; padding-top: 30px; }
+
+  .alert-box { background: #fff3cd; border: 1px solid #ffc107; padding: 6px 10px; font-size: 10px; font-weight: 600; margin-bottom: 8px; }
+  .alert-icon { margin-right: 4px; }
+
+  .option-card { border: 1px solid #ddd; padding: 6px 10px; margin-bottom: 4px; font-size: 10px; cursor: pointer; background: #fff; display: flex; align-items: center; gap: 6px; }
+  .option-card:hover { border-color: #111; }
+  .option-card.primary { border-color: #222; background: #222; color: #fff; font-weight: 700; }
+  .option-card .opt-icon { font-size: 12px; }
+
+  .cc-panel { border: 1px solid #28a745; padding: 8px; background: #fff; }
+  .cc-label { font-size: 8px; font-weight: 700; letter-spacing: 1px; color: #28a745; margin-bottom: 4px; }
+  .cc-table { font-size: 13px; font-weight: 700; }
+  .cc-hand { font-size: 10px; color: #666; margin-top: 2px; }
+  .cc-status { display: inline-block; font-size: 9px; font-weight: 700; color: #28a745; margin-top: 4px; }
+
+  .login-info { font-size: 10px; color: #666; margin-bottom: 6px; }
+  .login-user { font-weight: 700; color: #111; }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC<span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+  </div>
+</div>
+<div class="bc"><span class="cur">Session Restore Flow</span></div>
+
+<div class="flow">
+  <div class="step">
+    <div class="step-num">Step 1 — Login</div>
+    <div class="step-title">Login Success</div>
+    <div class="login-info">Welcome, <span class="login-user">Operator A</span></div>
+    <div class="alert-box">
+      <span class="alert-icon">⚠</span> Previous session found
+    </div>
+    <div style="font-size:9px; color:#888;">Table #071 · Hand #48 · 2 min ago</div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <div class="step active">
+    <div class="step-num">Step 2 — Restore Options</div>
+    <div class="step-title">Choose Action</div>
+    <div class="option-card primary">
+      <span class="opt-icon">▶</span> Continue to Table #071 Command Center
+    </div>
+    <div class="option-card">
+      <span class="opt-icon">↔</span> Change Flight
+    </div>
+    <div class="option-card">
+      <span class="opt-icon">📋</span> Change Event
+    </div>
+    <div class="option-card">
+      <span class="opt-icon">✕</span> Start Fresh
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <div class="step">
+    <div class="step-num">Step 3 — Auto Entry</div>
+    <div class="step-title">Command Center</div>
+    <div class="cc-panel">
+      <div class="cc-label">COMMAND CENTER</div>
+      <div class="cc-table">Table #071</div>
+      <div class="cc-hand">Hand #48 · NLHE · Blinds 100/200</div>
+      <div class="cc-status">● LIVE — Session Restored</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

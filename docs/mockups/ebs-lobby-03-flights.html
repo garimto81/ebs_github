@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1000">
+<title>EBS Lobby — Screen 3: Flight List</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  /* Header */
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; }
+  .cc-btn { background: #333; color: #fff; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; cursor: pointer; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  /* Breadcrumb */
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc a { color: #555; text-decoration: none; font-weight: 600; }
+  .bc .s { margin: 0 4px; color: #ccc; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 8px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #999; text-align: center; padding: 5px 6px; border-bottom: 2px solid #ddd; white-space: nowrap; }
+  th:first-child { text-align: left; padding-left: 16px; }
+  td { padding: 5px 6px; border-bottom: 1px solid #f0f0f0; text-align: center; vertical-align: middle; font-size: 10px; }
+  td:first-child { text-align: left; padding-left: 16px; }
+  tr:hover { background: #fafafa; }
+
+  /* Status badges */
+  .badge { display: inline-block; font-size: 8px; font-weight: 700; padding: 2px 6px; letter-spacing: 0.5px; }
+  .b-completed { background: #f0f0f0; color: #666; }
+  .b-registering { background: #fff3cd; color: #856404; }
+  .b-announced { background: #cce5ff; color: #004085; }
+
+  /* Active row highlight */
+  .row-active { background: #fffef5; }
+  .row-active:hover { background: #fffde0; }
+
+  .val-bold { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC<span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+  </div>
+</div>
+
+<!-- Breadcrumb -->
+<div class="bc">
+  <a href="#">WSOP 2026</a><span class="s">›</span>
+  <a href="#">Event #5: €5,300 Main Event</a><span class="s">›</span>
+  <span class="cur">Flights</span>
+</div>
+
+<!-- Flight Table -->
+<table>
+  <thead>
+    <tr>
+      <th style="width:120px;">Start Time</th>
+      <th style="width:40px;">#</th>
+      <th style="width:80px;">Flight</th>
+      <th style="width:100px;">Entries</th>
+      <th style="width:80px;">Players</th>
+      <th style="width:80px;">Tables</th>
+      <th style="width:100px;">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>03/04/2026, 12:00</td>
+      <td>#5</td>
+      <td><b>Day1A</b></td>
+      <td>336 / 803</td>
+      <td class="val-bold">667</td>
+      <td>136</td>
+      <td><span class="badge b-completed">COMPLETED</span></td>
+    </tr>
+    <tr>
+      <td>04/04/2026, 12:00</td>
+      <td>#5</td>
+      <td><b>Day1B</b></td>
+      <td>269 / 653</td>
+      <td class="val-bold">513</td>
+      <td>140</td>
+      <td><span class="badge b-completed">COMPLETED</span></td>
+    </tr>
+    <tr>
+      <td>05/04/2026, 12:00</td>
+      <td>#5</td>
+      <td><b>Day1C</b></td>
+      <td>299 / 713</td>
+      <td class="val-bold">559</td>
+      <td>154</td>
+      <td><span class="badge b-completed">COMPLETED</span></td>
+    </tr>
+    <tr class="row-active">
+      <td><b>06/04/2026, 12:00</b></td>
+      <td>#5</td>
+      <td><b>Day2</b></td>
+      <td><b>918 / 918</b></td>
+      <td class="val-bold" style="color:#b8860b;">918</td>
+      <td>0</td>
+      <td><span class="badge b-registering">REGISTERING</span></td>
+    </tr>
+    <tr>
+      <td>07/04/2026, 12:00</td>
+      <td>#5</td>
+      <td>Day3</td>
+      <td>0 / 0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="badge b-announced">ANNOUNCED</span></td>
+    </tr>
+    <tr>
+      <td>08/04/2026, 12:00</td>
+      <td>#5</td>
+      <td>Day4</td>
+      <td>0 / 0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="badge b-announced">ANNOUNCED</span></td>
+    </tr>
+    <tr>
+      <td>09/04/2026, 12:00</td>
+      <td>#5</td>
+      <td>Day5</td>
+      <td>0 / 0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="badge b-announced">ANNOUNCED</span></td>
+    </tr>
+    <tr>
+      <td>10/04/2026, 12:00</td>
+      <td>#5</td>
+      <td>Day6</td>
+      <td>0 / 0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="badge b-announced">ANNOUNCED</span></td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

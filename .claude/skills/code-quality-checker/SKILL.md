@@ -38,7 +38,7 @@ phase: [2, 2.5]
 auto_trigger: true
 dependencies:
   - code-reviewer
-  - security-reviewer
+  - security-auditor
   - vercel-react-best-practices
 token_budget: 1400
 ---
@@ -235,7 +235,7 @@ python scripts/run_quality_check.py --react
 
 ### 연동 스킬
 
-`vercel-react-best-practices` 스킬의 47개 규칙을 기반으로 검사합니다.
+`vercel-react-best-practices` 스킬의 49개 규칙을 기반으로 검사합니다.
 상세 규칙: `.claude/skills/vercel-react-best-practices/AGENTS.md`
 
 ---
@@ -246,7 +246,7 @@ python scripts/run_quality_check.py --react
 |------|------|
 | `scripts/run_quality_check.py` | 통합 검사 |
 | `code-reviewer` 에이전트 | 코드 리뷰 |
-| `security-reviewer` 에이전트 | 보안 검사 |
+| `security-auditor` 에이전트 | 보안 검사 |
 | `vercel-react-best-practices` 스킬 | React 성능 검사 |
 | `/check` | 통합 검증 커맨드 |
 

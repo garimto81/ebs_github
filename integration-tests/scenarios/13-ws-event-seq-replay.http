@@ -1,0 +1,52 @@
+### CCR-021 — WebSocket Event Seq + Replay
+###
+### 검증:
+### - 모든 WS 이벤트에 seq 필드 (단조증가)
+### - GET /api/v1/events/replay?from_seq=N 으로 누락 이벤트 재전송
+### - 재연결 후 gap 복구 가능
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 13.1 GET /api/v1/events/replay — from_seq 지정
+GET {{host}}/api/v1/events/replay?from_seq=40&channel=cc_event
+Authorization: Bearer {{admin_token}}
+
+# 예상 응답: 200 OK
+# {
+#   "channel": "cc_event",
+#   "from_seq": 40,
+#   "to_seq": 47,
+#   "events": [
+#     { "type": "HandStarted", "seq": 41, "payload": {...}, "timestamp": "..." },
+#     { "type": "ActionPerformed", "seq": 42, "payload": {...} },
+#     ...
+#     { "type": "HandCompleted", "seq": 47, "payload": {...} }
+#   ],
+#   "truncated": false
+# }
+
+### 13.2 GET /api/v1/events/replay — 이벤트 많을 때 pagination
+GET {{host}}/api/v1/events/replay?from_seq=1&channel=cc_event&limit=100
+Authorization: Bearer {{admin_token}}
+
+# 예상: truncated=true + next_from_seq 반환
+
+### 13.3 GET /api/v1/events/replay — 존재하지 않는 seq
+GET {{host}}/api/v1/events/replay?from_seq=99999&channel=cc_event
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK + 빈 events 배열 (또는 204)
+
+### 13.4 WebSocket seq 단조증가 검증 (수동)
+###
+### wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token=<jwt>&format=json'
+###
+### 수신 메시지에서 seq 필드가 항상 monotonically increasing 인지 확인:
+###   seq: 41 → 42 → 43 → ...
+###
+### 중복 seq나 역방향(43 → 42) 발생 시 **계약 위반** (CCR-021)
+###
+### Gap 발생 시 (예: 42 → 45):
+###   CC/Overlay가 /events/replay?from_seq=42&channel=cc_event 호출
+###   → 43, 44 재수신 후 normal flow 재개

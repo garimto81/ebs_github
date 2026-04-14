@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1000">
+<title>EBS Flow — Command Center Lock</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; }
+
+  .hdr { background: #1a1a1a; color: #fff; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .hdr-left { font-weight: 700; letter-spacing: 1px; }
+  .hdr-right { display: flex; align-items: center; gap: 12px; }
+  .cc-btn { background: #333; color: #fff; padding: 3px 10px; font-size: 9px; font-weight: 700; border: none; letter-spacing: 0.5px; }
+  .cc-btn .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #28a745; margin-left: 4px; vertical-align: middle; }
+  .hdr-user { font-size: 9px; color: #999; }
+
+  .bc { padding: 6px 16px; font-size: 10px; color: #888; border-bottom: 1px solid #eee; }
+  .bc .cur { color: #111; font-weight: 700; }
+
+  .settings-title { padding: 10px 16px 4px; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .live-badge { font-size: 9px; font-weight: 700; color: #28a745; background: #e8f5e9; padding: 2px 8px; }
+  .lock-badge { font-size: 10px; }
+
+  .settings { padding: 6px 16px 16px; display: flex; flex-direction: column; gap: 0; }
+
+  /* Section headers */
+  .section { margin-bottom: 10px; }
+  .section-label { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 0 4px; border-bottom: 1px solid #eee; margin-bottom: 4px; }
+  .section-label.locked { color: #dc3545; }
+  .section-label.confirm { color: #e67e00; }
+  .section-label.free { color: #28a745; }
+
+  .field-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+  .field-name { width: 140px; font-size: 10px; font-weight: 600; color: #555; }
+  .field-input { flex: 1; display: flex; align-items: center; gap: 6px; }
+
+  .input-locked { padding: 3px 8px; font-size: 10px; border: 1px solid #e0e0e0; background: #f5f5f5; color: #999; min-width: 140px; cursor: not-allowed; }
+  .input-warn { padding: 3px 8px; font-size: 10px; border: 1px solid #ffc107; background: #fffef5; color: #111; min-width: 140px; }
+  .input-free { padding: 3px 8px; font-size: 10px; border: 1px solid #ccc; background: #fff; color: #111; min-width: 140px; }
+
+  .icon-lock { color: #dc3545; font-size: 11px; }
+  .icon-warn { color: #e67e00; font-size: 11px; }
+  .icon-free { color: #28a745; font-size: 11px; }
+
+  .field-note { font-size: 8px; color: #999; margin-left: 4px; }
+  .field-note.warn { color: #e67e00; font-weight: 600; }
+  .field-note.lock { color: #dc3545; }
+
+  .btn-delete { font-size: 9px; font-weight: 700; padding: 3px 12px; border: 1px solid #e0e0e0; background: #f5f5f5; color: #bbb; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">EBS LOBBY</div>
+  <div class="hdr-right">
+    <button class="cc-btn">Active CC<span class="dot"></span>3</button>
+    <span class="hdr-user">Admin: J.Kim</span>
+  </div>
+</div>
+<div class="bc"><span class="cur">Table #071 Settings</span></div>
+
+<div class="settings-title">
+  Table #071 Settings
+  <span class="live-badge">● LIVE</span>
+  <span class="lock-badge">🔒</span>
+  <span style="font-size:10px; color:#dc3545; font-weight:600;">Command Center Active</span>
+</div>
+
+<div class="settings">
+
+  <!-- LOCKED Section -->
+  <div class="section">
+    <div class="section-label locked">🔒 LOCKED — Command Center Active</div>
+
+    <div class="field-row">
+      <span class="field-name">Game Type</span>
+      <div class="field-input">
+        <span class="input-locked">NLHE ▼</span>
+        <span class="icon-lock">🔒</span>
+        <span class="field-note lock">Command Center active</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <span class="field-name">Max Players</span>
+      <div class="field-input">
+        <span class="input-locked">9</span>
+        <span class="icon-lock">🔒</span>
+        <span class="field-note lock">Command Center active</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <span class="field-name">RFID Reader</span>
+      <div class="field-input">
+        <span class="input-locked">Reader-01</span>
+        <span class="icon-lock">🔒</span>
+        <span class="field-note lock">Command Center active</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <span class="field-name">Deck Registration</span>
+      <div class="field-input">
+        <span class="input-locked">52/52</span>
+        <span class="icon-lock">🔒</span>
+        <span class="field-note lock">Command Center active</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <span class="field-name">Delete Table</span>
+      <div class="field-input">
+        <button class="btn-delete">Delete Table</button>
+        <span class="icon-lock">🔒</span>
+        <span class="field-note lock">Command Center active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM Section -->
+  <div class="section">
+    <div class="section-label confirm">⚠ CONFIRM — Changes Apply with Warning</div>
+
+    <div class="field-row">
+      <span class="field-name">Blinds</span>
+      <div class="field-input">
+        <span class="input-warn">200/400</span>
+        <span class="icon-warn">⚠</span>
+        <span class="field-note warn">Applied from next hand</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <span class="field-name">Output</span>
+      <div class="field-input">
+        <span class="input-warn">NDI ▼</span>
+        <span class="icon-warn">⚠</span>
+        <span class="field-note warn">Momentary interruption possible</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FREE Section -->
+  <div class="section">
+    <div class="section-label free">✅ FREE — No Restrictions</div>
+
+    <div class="field-row">
+      <span class="field-name">GFX Layout</span>
+      <div class="field-input">
+        <span class="input-free">Board Left ▼</span>
+        <span class="icon-free">✅</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <span class="field-name">Display Precision</span>
+      <div class="field-input">
+        <span class="input-free">Smart k-M ▼</span>
+        <span class="icon-free">✅</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <span class="field-name">Player Info (Name/Nationality)</span>
+      <div class="field-input">
+        <span class="input-free">Editable</span>
+        <span class="icon-free">✅</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=800">
+<title>EBS API Sequence</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Suisse Intl', 'Helvetica Neue', sans-serif; background: #fff; color: #111; font-size: 11px; padding: 16px; }
+
+  .title { font-size: 12px; font-weight: 700; margin-bottom: 14px; text-align: center; letter-spacing: 0.5px; }
+
+  .seq { position: relative; width: 760px; height: 310px; margin: 0 auto; }
+
+  /* Lifelines */
+  .ll { position: absolute; top: 0; text-align: center; }
+  .ll-head {
+    font-weight: 700; font-size: 10px; padding: 6px 12px;
+    border: 2px solid #222; background: #fff; display: inline-block;
+    white-space: nowrap;
+  }
+  .ll-line { position: absolute; top: 32px; left: 50%; width: 2px; height: 270px; background: #ddd; }
+  .ll-head-lobby { background: #e8f5e9; border-color: #2e7d32; color: #2e7d32; }
+  .ll-head-server { background: #fff3e0; border-color: #e65100; color: #e65100; }
+  .ll-head-db { background: #efebe9; border-color: #4e342e; color: #4e342e; }
+  .ll-head-cc { background: #f3e5f5; border-color: #6a1b9a; color: #6a1b9a; }
+
+  .ll-1 { left: 60px; }
+  .ll-2 { left: 250px; }
+  .ll-3 { left: 430px; }
+  .ll-4 { left: 610px; }
+
+  /* Arrows */
+  svg { position: absolute; top: 0; left: 0; width: 760px; height: 310px; pointer-events: none; }
+  .msg { stroke: #555; stroke-width: 1.5; fill: none; marker-end: url(#ah); }
+  .msg-ret { stroke: #999; stroke-width: 1; fill: none; marker-end: url(#ah2); stroke-dasharray: 4,3; }
+  .lbl { font-size: 8px; fill: #333; font-weight: 600; }
+  .num { font-size: 8px; fill: #c62828; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="title">API 호출 시퀀스 — Lobby ↔ Server ↔ DB ↔ Command Center</div>
+
+<div class="seq">
+  <!-- Lifelines -->
+  <div class="ll ll-1">
+    <span class="ll-head ll-head-lobby">Lobby</span>
+    <div class="ll-line"></div>
+  </div>
+  <div class="ll ll-2">
+    <span class="ll-head ll-head-server">Server (FastAPI)</span>
+    <div class="ll-line"></div>
+  </div>
+  <div class="ll ll-3">
+    <span class="ll-head ll-head-db">DB</span>
+    <div class="ll-line"></div>
+  </div>
+  <div class="ll ll-4">
+    <span class="ll-head ll-head-cc">Command Center</span>
+    <div class="ll-line"></div>
+  </div>
+
+  <svg xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ah" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#555"/></marker>
+      <marker id="ah2" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#999"/></marker>
+    </defs>
+
+    <!-- 1. Lobby → Server: GET /Series -->
+    <text x="30" y="62" class="num">①</text>
+    <line x1="100" y1="65" x2="280" y2="65" class="msg"/>
+    <text x="130" y="60" class="lbl">GET /Series</text>
+
+    <!-- 2. Server → DB: SELECT -->
+    <text x="225" y="82" class="num">②</text>
+    <line x1="290" y1="85" x2="460" y2="85" class="msg"/>
+    <text x="340" y="80" class="lbl">SELECT</text>
+
+    <!-- 3. DB → Server → Lobby: response -->
+    <text x="225" y="102" class="num">③</text>
+    <line x1="460" y1="105" x2="290" y2="105" class="msg-ret"/>
+    <text x="340" y="100" class="lbl">rows</text>
+    <line x1="280" y1="110" x2="100" y2="110" class="msg-ret"/>
+    <text x="140" y="108" class="lbl">JSON response</text>
+
+    <!-- 4. Lobby → Server: POST settings -->
+    <text x="30" y="132" class="num">④</text>
+    <line x1="100" y1="135" x2="280" y2="135" class="msg"/>
+    <text x="120" y="130" class="lbl">POST settings change</text>
+
+    <!-- 5. Server → DB: UPDATE -->
+    <text x="225" y="152" class="num">⑤</text>
+    <line x1="290" y1="155" x2="460" y2="155" class="msg"/>
+    <text x="340" y="150" class="lbl">UPDATE</text>
+
+    <!-- 6. Server → CC: WebSocket push -->
+    <text x="225" y="177" class="num">⑥</text>
+    <line x1="290" y1="180" x2="645" y2="180" class="msg"/>
+    <text x="400" y="175" class="lbl">WebSocket push (settings updated)</text>
+
+    <!-- 7. CC → Server: POST hand data -->
+    <text x="585" y="202" class="num">⑦</text>
+    <line x1="645" y1="205" x2="290" y2="205" class="msg"/>
+    <text x="380" y="200" class="lbl">POST hand data</text>
+
+    <!-- 8. Server → DB: INSERT -->
+    <text x="225" y="222" class="num">⑧</text>
+    <line x1="290" y1="225" x2="460" y2="225" class="msg"/>
+    <text x="340" y="220" class="lbl">INSERT hand</text>
+
+    <!-- 9. Server → Lobby: WebSocket notify -->
+    <text x="225" y="247" class="num">⑨</text>
+    <line x1="280" y1="250" x2="100" y2="250" class="msg"/>
+    <text x="120" y="245" class="lbl">WebSocket notify (new hand)</text>
+  </svg>
+</div>
+
+</body>
+</html>
