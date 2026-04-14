@@ -11,10 +11,11 @@
 | TOC/Setup | `README.md` | 156 | 기술 스택·setup·dir 구조·빌드 명령 |
 | 아키텍처 | `ui-design/UI-A1-architecture.md` | 930 | 구현 아키텍처 SSOT (Router/Pinia/API/WS/Mock/i18n) |
 | 디자인 | `ui-design/UI-00-design-system.md` | 574 | 디자인 토큰·Quasar 컴포넌트 매핑·WCAG |
-| Lobby 화면 | `ui-design/UI-01-lobby.md` | 1420 | 3계층 + Player 독립 레이어 화면 설계 SSOT |
+| Lobby 화면 | `ui-design/UI-01-lobby.md` | 1293 | 3계층 + Player 독립 레이어 화면 설계 SSOT (2026-04-14 §9 pointer 축약) |
 | Settings 화면 | `ui-design/UI-03-settings.md` | 497 | 6탭 와이어프레임 (Team 1/4 경계) |
 | GE 화면 | `ui-design/UI-04-graphic-editor.md` | 887 | Graphic Editor 허브 와이어프레임 (CCR-011) |
-| Lobby 행동 | `specs/BS-02-lobby/BS-02-00-overview.md` | 1212 | Lobby 행동 명세 SSOT (FSM·불변식) — BS-03/08 관례 정렬 (2026-04-14 rename) |
+| Lobby 행동 | `specs/BS-02-lobby/BS-02-00-overview.md` | 1140 | Lobby 행동 명세 SSOT (FSM·불변식) — 2026-04-14 로그인·세션 분리 + 링크 위생 |
+| └ | `BS-02-01-auth-session.md` | 90 | 로그인 + 세션 보존·복원 (2026-04-14 신설). 외부 anchor `§세션 저장 데이터`·`§화면 0: 로그인` 호환 |
 | └ | `BS-02-02-event-flight.md` | 135 | EventFlightStatus enum (0/1/2/4/5/6) |
 | └ | `BS-02-03-table.md` | 138 | TableFSM 5상태 × is_pause 축 |
 | Settings 행동 | `specs/BS-03-settings/BS-03-00-overview.md` | 156 | 6탭 아키텍처 총괄 + 글로벌 원칙 |

@@ -982,148 +982,21 @@ Table 화면(화면 3)에서도 플레이어를 직접 추가할 수 있다:
 >
 > **구현 시 판정**: Lobby 가 Flight/Event 카드에 §9.1 상태 배지를 그릴 때, `event.mode == "cash"` 이면 본 섹션 규칙을 적용하지 않고 단순 "Active / Closed" 2상태만 사용한다. 단, 2027-01 시점에는 cash mode 자체가 Event 폼에서 선택 불가이므로 실제 분기는 발생하지 않는다.
 
-### 9.1 EventFlightStatus 상태 매트릭스
+### 9.1 도메인 규칙 SSOT — pointer 테이블 (CCR-017 APPLIED, 2026-04-14 정리)
 
-Event 와 Flight 는 같은 상태 enum 을 공유한다 (WSOP LIVE 원본과 동일).
+§9.1~§9.5 에 있던 enum/매트릭스/계산식/권한 매핑(약 140줄)은 모두 **canonical SSOT 로 이미 이관 완료**되었다. UI 구현은 아래 SSOT 를 직접 참조한다 — 본 UI 문서는 화면 설계에 집중한다.
 
-```
-EventFlightStatus {
-  Created   = 0   // 초기 등록만 된 상태
-  Announce  = 1   // 공지 완료, 등록 대기
-  Registering = 2 // 등록 진행 중
-  Running   = 4   // 경기 진행 중 (Late Reg 포함)
-  Completed = 5   // 정상 종료
-  Canceled  = 6   // 취소
-}
-```
+| 개념 | Canonical SSOT | 내용 |
+|------|----------------|------|
+| `EventFlightStatus` enum (`0/1/2/4/5/6`) + 전환 규칙 + Day×isRegisterable 매트릭스 + `Restricted` 배지 + `dayIndex` 필드 | `../specs/BS-02-lobby/BS-02-02-event-flight.md` | 상태값·전환·UI 배지 매핑. WSOP LIVE 원본 값 3 skip. |
+| `BlindDetailType` enum (`Blind/Break/DinnerBreak/HalfBlind/HalfBreak`) + Late Reg 남은 시간 계산식 + Mix Game 특수 규칙(G-02) | `../specs/BS-03-settings/BS-03-04-rules.md §5` | 계산식은 variant 개수와 무관. `flight.is_pause == true` 시 elapsed 증가 멈춤. |
+| `TableFSM` (`EMPTY/SETUP/LIVE/PAUSED/CLOSED`) × `is_pause` 직교 축 + scheduled break vs in-hand pause 구분 (G-04) | `../specs/BS-02-lobby/BS-02-03-table.md` | 일시정지 아이콘(`⏸`)은 `is_pause == true` 로만 판정 — GUI status 단독 판단 금지 |
+| Bit Flag `Permission` enum (`None=0/Read=1/Write=2/Delete=4`) + 역할×리소스 매트릭스 + 액션 단위 권한 4행(G-03: Series 생성/CC Assignment/Flight lifecycle/Blind override) | `../../contracts/specs/BS-01-auth/BS-01-auth.md §Permission Bit Flag` | UI 활성화는 비트 연산 (`role.permission & Permission.Write != 0`). enum 문자열 (`"admin"/"operator"/"viewer"`) 비교 금지. |
+| Entity 필드 정의 (`Flight.dayIndex`, `Table.is_pause` 등 124필드) | `../../contracts/data/DATA-04-db-schema.md`, `../../contracts/data/DATA-02-entities.md` | 서버 응답 스키마. WSOP LIVE API 매핑은 BS-02-00-overview §WSOP LIVE API 데이터 매핑 참조. |
 
-`3` 번 값은 과거 상태의 흔적으로 WSOP LIVE 원본에서 의도적으로 skip 되어 있다. 신규 값 추가 시 `7` 부터 사용한다.
-
-#### Day × isRegisterable 2축 표시 매트릭스
-
-`Flight` 는 위 상태와 독립적으로 `isRegisterable` (불리언) 플래그를 가진다. `Day` 구분(`Day1A`, `Day1B`, `Day2`, `Day3+`)과 조합하여 Lobby 의 Flight 리스트 배지가 결정된다.
-
-> **✅ CCR-017 APPLIED (2026-04-10)** — contracts/ 5개 파일에 반영 완료. `docs/05-plans/ccr-inbox/promoting/CCR-017-wsop-parity.md` 참조.
-
-| 상태 \ Day | Day1 * | Day2 | Day3+ |
-|------------|--------|------|-------|
-| Created | `Created` | `Created` | `Created` |
-| Announce (isRegisterable=true) | `Open` | `Restricted` (Day2+ 는 신규 등록 금지) | `Restricted` |
-| Announce (isRegisterable=false) | `Closed` | `Closed` | `Closed` |
-| Registering | `Registering` | `Re-entry only` | `Day3+: N/A` |
-| Running | `Running` | `Running` | `Running` |
-| Completed | `Completed` | `Completed` | `Completed` |
-| Canceled | `Canceled` | `Canceled` | `Canceled` |
-
-Day1 * 은 `Day1A/1B/1C` 등 첫 날 복수 flight 모두를 의미한다.
-
-### 9.2 Restricted 배지 규칙
-
-Flight 가 `Announce` 상태이면서 동시에 `Day2` 이상일 때 Lobby Flight 카드/행에 **`Restricted`** 배지를 표시한다. 이 배지는 "신규 등록 불가, Day1 생존자만 착석 가능"을 의미한다.
-
-> **✅ CCR-017 APPLIED (2026-04-10)** — contracts/ 5개 파일에 반영 완료. `docs/05-plans/ccr-inbox/promoting/CCR-017-wsop-parity.md` 참조.
-
-판정 조건:
-
-```
-is_restricted = (flight.status == Announce) && (flight.day_index >= 2)
-```
-
-`dayIndex` 는 해당 Event 내부의 Day 순서를 나타내는 0-based 정수이며, CCR-017 APPLIED 로 `contracts/data/DATA-04-db-schema.md` 의 Flight 엔티티에 `Flight.dayIndex: int` 필드가 추가되었다. 구현 시 곧바로 이 필드명을 사용한다.
-
-### 9.3 Late Registration 남은 시간 계산식
-
-Lobby 의 Event/Flight 상세 영역에 "Late Reg 남은 시간" 이 표시된다. 계산은 **현재 blind 레벨부터 Late Reg 종료 레벨까지의 duration 합**이다.
-
-> **✅ CCR-017 APPLIED (2026-04-10)** — contracts/ 5개 파일에 반영 완료. `docs/05-plans/ccr-inbox/promoting/CCR-017-wsop-parity.md` 참조.
-
-```
-late_reg_remaining =
-    sum( level.duration for level in blindStructure
-         if current_level_idx <= level.idx <= late_reg_end_level_idx )
-  - elapsed_in_current_level
-```
-
-주의 사항:
-
-- Break 레벨(`BlindDetailType == Break | DinnerBreak`)도 duration 에 포함한다. WSOP LIVE 원본도 동일하다.
-- `HalfBlind` / `HalfBreak` 는 기존 레벨의 절반 길이로 계산한다.
-- 현재 레벨이 Late Reg 종료 이후면 `late_reg_remaining = 0` 이고, 배지는 "Late Reg Closed" 로 표시한다.
-- 타이머 pause (`flight.isPause == true`) 상태일 때는 `elapsed_in_current_level` 증가를 멈춘다.
-
-#### Mix Game (HORSE / 8-Game / PPC) 특수 규칙 — G-02 gap 보강
-
-Mix Game 모드(BS-02-lobby §Mix 게임 참조, L469-510) 에서도 **blind level 자체는 flight 전역에 공통 적용**된다. variant 회전(Hold'em → Omaha Hi-Lo → Razz → ...)은 매 핸드마다 변하지만, 현재 blind level 의 small/big blind 값은 모든 variant 가 동일하게 사용한다 (WSOP LIVE 표준). 따라서 Late Reg 계산식은 variant 개수와 무관하게 위 공식을 그대로 사용한다.
-
-- `current_level_idx` 는 blind structure 의 인덱스이지 variant 인덱스가 아니다.
-- Dealer's Choice 모드는 blind level 변경과 독립적으로 variant 가 결정되므로 계산에 영향 없음.
-- 단, Mix Game 의 "회전 보드" 표시(UI-01 §화면 3 Table 관리 상세) 는 Late Reg 남은 시간 옆에 별도로 노출한다. 둘은 독립적.
-
-`BlindDetailType` 5 타입(`Blind`, `Break`, `DinnerBreak`, `HalfBlind`, `HalfBreak`) 은 CCR-017 APPLIED 로 `../specs/BS-03-settings/BS-03-04-rules.md` 에 enum 정의되었다. 구현 시 계약 파일의 enum 값을 참조한다.
-
-### 9.4 Table 상태 2축 분리 (GUI status + isPause)
-
-현재 `BS-02-lobby` 의 TableFSM 은 GUI 상태(`EMPTY/SETUP/LIVE/PAUSED/CLOSED`) 하나만 가진다. 그러나 WSOP LIVE 원본은 `isPause: bool` 을 **별도 축** 으로 둔다. 이유는 "Live 상태이면서 행정적으로 일시정지(브레이크, 중재, 카메라 리셋)"와 "Paused 상태로 전이된 것(운영자가 의도적으로 중단)"을 구분해야 하기 때문이다.
-
-> **G-04 gap 보강 — scheduled break vs in-hand pause 구분**
-> `BlindDetailType == Break | DinnerBreak` 인 **scheduled break 레벨** 은 게임 엔진이 blind 타이머에 따라 자동 전이하는 것이며, 이 동안 `isPause` 는 여전히 `false` 다 (엔진 자동 상태 전이). 반대로 `isPause == true` 는 운영자 수동 개입(브레이크 연장, 딜러 교체, 카메라 리셋 등) 으로만 켜진다. 둘은 타이머 로직이 다르다: scheduled break 는 `elapsed_in_current_level` 이 계속 증가하다가 레벨 종료 시 자동으로 다음 레벨로 전이, in-hand pause 는 `elapsed_in_current_level` 증가 자체를 멈춘다.
-
-> **✅ CCR-017 APPLIED (2026-04-10)** — contracts/ 5개 파일에 반영 완료. `docs/05-plans/ccr-inbox/promoting/CCR-017-wsop-parity.md` 참조.
-
-| GUI status | isPause | 의미 | Lobby 카드 표시 |
-|------------|:-------:|------|----------------|
-| `EMPTY` | false | 좌석 없음, 대기 | `EMPTY` |
-| `SETUP` | false | 플레이어 착석 중 | `SETUP` |
-| `LIVE` | false | 정상 진행 | `● LIVE  Hand #N` |
-| `LIVE` | **true** | 핸드는 진행 가능하나 현재 일시정지 | `● LIVE  (Paused ⏸)` |
-| `PAUSED` | true | 운영자 명시적 중단 | `○ PAUSED` |
-| `PAUSED` | false | 잘못된 조합 — 허용하지 않음 | 유효성 오류 |
-| `CLOSED` | false | 종료 | `✓ CLOSED` |
-
-규칙:
-
-- `isPause` 는 `LIVE` 와 `PAUSED` 에서만 의미가 있다. 다른 상태에서는 `false` 고정.
-- `PAUSED` + `isPause=false` 조합은 서버가 거부해야 한다 (계약 불변).
-- Table 카드의 일시정지 아이콘(`⏸`)은 오로지 `isPause == true` 로만 판정한다. GUI status 만으로 판단하지 않는다.
-
-### 9.5 Bit Flag RBAC
-
-Admin / Operator / Viewer 3 역할은 현재 `BS-01-auth` 에 enum 으로만 선언되어 있다. WSOP LIVE 원본은 **bit flag** 권한 체계를 쓰며, 이로 인해 "Operator 지만 특정 리소스에 Read 만 허용" 같은 세분화가 가능하다.
-
-> **✅ CCR-017 APPLIED (2026-04-10)** — contracts/ 5개 파일에 반영 완료. `docs/05-plans/ccr-inbox/promoting/CCR-017-wsop-parity.md` 참조.
-
-```
-Permission {
-  None   = 0  // 0b0000
-  Read   = 1  // 0b0001
-  Write  = 2  // 0b0010
-  Delete = 4  // 0b0100
-  // 장래 확장: Approve = 8, Export = 16 ...
-}
-```
-
-역할 → 권한 매핑 (리소스별):
-
-| 리소스 | Admin | Operator (자기 할당 테이블) | Operator (타 테이블) | Viewer |
-|--------|:-----:|:---------------------------:|:-------------------:|:------:|
-| Series / Event / Flight | `Read|Write|Delete` = 7 | `Read` = 1 | `Read` = 1 | `Read` = 1 |
-| Table | `7` | `Read|Write` = 3 | `Read` = 1 | `Read` = 1 |
-| Seat / Player | `7` | `Read|Write|Delete` = 7 | `Read` = 1 | `Read` = 1 |
-| Settings (Rules/Outputs) | `7` | `Read|Write` = 3 | `Read` = 1 | `Read` = 1 |
-| Settings (GFX/Display) | `7` | `Read` = 1 | `Read` = 1 | `Read` = 1 |
-| Integration Test / Audit Log | `Read` = 1 | `None` = 0 | `None` = 0 | `None` = 0 |
-| **Series 생성** (G-03) | `7` | `1` | `1` | `1` |
-| **CC Assignment** (Operator→Table 할당) (G-03) | `Write` = 2 | `Read` = 1 (자기 자신) | `None` = 0 | `None` = 0 |
-| **Flight lifecycle** (START/PAUSE/RESUME/CANCEL) (G-03) | `7` | `Write` = 2 | `None` = 0 | `None` = 0 |
-| **Blind structure override** (실시간 level 변경) (G-03) | `Write` = 2 | `None` = 0 | `None` = 0 | `None` = 0 |
-
-> **G-03 gap 보강**: 위 4행은 기존 리소스 단위 매트릭스로는 표현되지 않던 "**액션 단위**" 권한이다. 예를 들어 Series 엔티티 자체는 Admin 만 생성할 수 있지만 Read 는 전역 허용, CC Assignment 는 Admin 의 Write + 당사자 Operator 의 Read, Flight lifecycle 은 Admin 또는 **해당 flight 의 할당 Operator** 만 수행 가능한 점을 UI 가 구분해야 한다. Blind structure override 는 중대한 결정이라 Admin 전용.
-
-UI 적용 원칙:
-
-- Lobby 가 버튼/메뉴 활성화를 판단할 때 `role.permission & Permission.Write != 0` 같은 비트 연산으로 체크한다.
-- enum 문자열 (`"admin"/"operator"/"viewer"`) 비교로 UI 로직을 짜지 않는다. 권한 체계가 확장될 때 기획 흐름이 깨진다.
-- CCR-017 APPLIED 로 `contracts/specs/BS-01-auth/BS-01-auth.md §Permission Bit Flag` 에 Bit Flag Permission enum(`None=0, Read=1, Write=2, Delete=4`) 이 정의되어 있다. 서버 응답의 `permission: int` 필드를 비트 연산으로 체크하여 UI 활성화를 판단한다.
+> **CCR-017 승격본**: `docs/05-plans/ccr-inbox/promoting/CCR-017-wsop-parity.md` (5개 파일 반영 완료).
+> **이력**: 2026-04-10 작성된 §9.1~§9.5 본문(약 140줄)은 모든 규칙이 contracts/ 및 팀 행동명세에 APPLIED 되어 2026-04-14 본 pointer 테이블로 축약. WSOP LIVE Staff Page + Confluence 미러(`C:\claude\wsoplive\docs\confluence-mirror\`)가 원 baseline (memory `feedback_staff_page_baseline.md`).
+> **§9.0 (Cash Game scope-out), §9.6 (Session Restore 거동), §9.7 (특수 토너먼트)** 은 UI 고유 콘텐츠로 보존됨.
 
 ### 9.6 Session Restore 거동 (G-07)
 
