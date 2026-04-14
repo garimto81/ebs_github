@@ -280,10 +280,89 @@ Redis 장애 시 Circuit Breaker OPEN → DB 직접 조회 (p95 허용 degradati
 
 ### 7.3 데이터 손실 복구 절차
 
-상세 시나리오는 **BO-03 §4** 참조. 본 문서에서는 용어만 정의:
+> 2026-04-14: BO-03 §4 흡수. DR 시나리오 SSOT.
+
+방송 환경은 완전 가용성을 보장할 수 없다. 부분 장애 발생 시 운영자가 실행할 수 있는 **표준 복구 시나리오**를 정의한다. 모든 시나리오는 `audit_events` 이벤트 스토어(DATA-04 §5.2, §7.1)를 주 복구 소스로 사용한다.
+
+**용어**:
 - **Replay**: `audit_events` 를 순차 apply 하여 상태 재구성 (CCR-001)
 - **Sync cursor**: WSOP LIVE 마지막 성공 동기화 지점 (`sync_cursor:{entity}`) — BO-02 §7.1
 - **Compensating action**: saga 단계 실패 시 역방향 작업 (CCR-010, §3.4)
+
+#### Scenario A: CC 크래시 후 TableState 재구성
+
+**트리거**: Command Center(CC) 프로세스 크래시 또는 네트워크 장기 단절.
+
+**절차**:
+1. CC 자동 재시작 (IMPL-06 §4.3 로컬 모드 유지)
+2. CC 재기동 시 `GET /api/v1/tables/{id}/events?since=0&limit=500` 호출 — API-01 replay 엔드포인트 (CCR-015)
+3. 응답의 `events[]` 를 `seq` 순서로 apply → Riverpod state 재구성
+4. 응답의 `has_more=true` 이면 `since={last_seq}` 로 다음 페이지 호출, `has_more=false` 가 나올 때까지 반복
+5. 최종 `seq` 를 메모리에 기록하고 WebSocket 재연결
+6. 이후 실시간 이벤트는 `seq` 연속성 검증 (§4.2)
+
+**페이징 규칙** (§4.2 및 API-01 replay 계약 준수):
+
+| 항목 | 값 |
+|------|----|
+| `limit` 기본값 | 500 |
+| `limit` 최대값 | 2000 (초과 시 400) |
+| 응답 필드 | `events[]`, `last_seq`, `has_more` |
+| 레이트 리미트 | 10 req/sec per `(table_id, client)` |
+| OOM 방지 | CC 클라이언트는 받은 페이지를 **순차 apply 후 메모리에서 해제**, 전체 버퍼링 금지 |
+| 대회 24h 상한 가정 | `audit_events` 최대 ~50만 rows/table → 약 1000 페이지. 클라는 페이지 당 apply 시 50ms 이내 처리 |
+
+**수용 기준**: 10분 내 복구, GameState 일치율 100%, 페이징 중 OOM 0건.
+
+**Edge case**: 복구 중 운영자가 액션 시도 시 IMPL-04 라우트 가드가 임시 잠금 → "복구 중" 모달 + 진행률(`처리 seq / last_seq`) 표시.
+
+#### Scenario B: BO ↔ WSOP LIVE 동기화 분기
+
+**트리거**: WSOP LIVE 폴링 장기 실패 후 재개. BO와 WSOP LIVE 간 토너먼트/플레이어 데이터 분기 발생.
+
+**절차**:
+1. BO-02 §7.1 서킷브레이커 HALF_OPEN 전환
+2. `sync_cursor:{entity}` 마지막 성공 지점에서 delta 요청 재개
+3. 변경분 merge — **BO 우선 규칙**: BO 측에서 수정된 필드는 WSOP LIVE 값보다 우선 (BO-02 §3 충돌 해결 LWW)
+4. `audit_events` 에 `wsop_sync_resolved` 이벤트 append (`correlation_id` 로 장애 구간 그룹화)
+5. 운영자에게 분기 요약 알림
+
+**수용 기준**: 동기화 cursor 에 기록된 진행 지점만큼 재처리, 중복 0, 누락 0.
+
+**Edge case**: 동일 레코드를 양쪽에서 동시 수정한 경우 → `conflict_detected` 이벤트 + Admin 확인 대기.
+
+#### Scenario C: Redis 캐시 손실
+
+**트리거**: Redis 장애, 재시작, flush. 캐시 계층 전체 소실.
+
+**절차**:
+1. Circuit Breaker OPEN → 모든 요청을 DB 직접 조회로 우회
+2. p95 응답시간 degrade 허용 (방송 중에도 중단 없이 진행)
+3. Redis 복구 후 캐시는 lazy 로딩 (Write-Through 재작동)
+4. 일시 중복 응답/stale 가능성을 감수 (TTL 안전망)
+
+**수용 기준**: Redis 전면 장애 중에도 BO API 연속 응답, p95 < 1.5×평상시.
+
+**Edge case**: 분산락(`lock:*`) 소실되지만 fencing token으로 stale 요청 차단. `idempotency_keys` 는 DB 백업(DATA-04 §5.1)에서 재생성. Phase 1 SQLite 환경에서 Redis 미사용 시 본 시나리오 비대상.
+
+#### Scenario D: 부분 롤백 (Saga Compensation Failure)
+
+**트리거**: `POST /tables/rebalance` (API-01, CCR-010) saga 중간 실패 → compensating action 실행 중 또 실패 → 부분 상태 지속.
+
+**절차**:
+1. API 응답 `500 Manual intervention required` (`status: "compensation_failed"`) + `audit_cursor: {from_seq, to_seq}` 반환 — 계약 정본 참조
+2. 운영자 대시보드에 경고 모달 + `saga_id` 표시
+3. Admin이 `audit_events` 조회: `SELECT * FROM audit_events WHERE table_id=? AND seq BETWEEN :from AND :to ORDER BY seq`
+4. saga 단계별 `status` 를 확인하여 수동 복구 경로 선택:
+   - **재시도 안전**: 동일 `saga_id` + Idempotency-Key 로 재실행 (saga 재개)
+   - **수동 정정**: Admin이 구체적 좌석/상태를 수동 수정 → 해당 변경은 `manual_intervention` 이벤트로 `audit_events` 에 기록
+5. 복구 완료 후 `manual_intervention_resolved` 이벤트 append
+
+**수용 기준**: 10분 내 Admin 수동 개입으로 일관성 복원. 잔여 부분 상태 0.
+
+**Edge case**: saga 로그 자체가 손상된 경우 → DB 백업에서 해당 테이블만 point-in-time 복원.
+
+> 복구 책임 매트릭스, DR 훈련 일정, 운영자 유저 스토리는 BO-03 §4.5/§4.6/§5 참조.
 
 ---
 

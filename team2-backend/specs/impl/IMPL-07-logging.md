@@ -169,17 +169,40 @@
 
 > 참조: DATA-04 §4 audit_logs, DATA-04 §5.2 audit_events, BO-03 §1.2, IMPL-10 §7.
 
-### 4.2 감사 대상 이벤트
+### 4.2 감사 대상 이벤트 (14-카테고리 매트릭스)
 
-| 이벤트 | entity_type | action |
-|--------|-----------|--------|
-| 로그인/로그아웃 | user | login / logout |
-| 사용자 생성/수정/삭제 | user | create / update / delete |
-| 테이블 설정 변경 | table | update |
-| 블라인드 변경 | blind_structure | update |
-| 플레이어 좌석 배치/이동 | seat | assign / move |
-| 핸드 수동 종료 | hand | force_end |
-| Config 변경 | config | update |
+> 2026-04-14: BO-03 §1 흡수. 감사 기록 정책 SSOT.
+
+| 분류 | 이벤트 | 기록 내용 | 저장 |
+|------|--------|----------|:----:|
+| **인증** | 로그인/로그아웃 | 사용자, IP, 역할, 시각 | `audit_logs` |
+| **인증** | 로그인 실패 | 이메일, IP, 실패 사유, 시각 | `audit_logs` |
+| **인증** | 2FA 활성화/비활성화 | 사용자, 시각 | `audit_logs` |
+| **사용자** | 생성/수정/비활성화 | 대상 사용자, 변경 내용, 실행 Admin | `audit_logs` |
+| **사용자** | 역할 변경 | 이전/이후 역할, 실행 Admin | `audit_logs` |
+| **대회** | Series/Event/Flight CRUD | 대상 엔티티, 변경 내용, 실행 Admin | `audit_logs` |
+| **테이블** | 테이블 CRUD | 대상 테이블, 변경 내용, 실행 Admin | `audit_logs` |
+| **테이블** | 상태 전환 | 이전/이후 상태, 실행 사용자 | `audit_logs` |
+| **플레이어** | 등록/제거 | 대상 플레이어, 테이블, 실행 Admin | `audit_logs` |
+| **좌석** | 배치/변경/비우기 (관리 액션) | 이전/이후 좌석, 플레이어, 실행 Admin | `audit_logs` |
+| **RFID** | 리더 할당/해제 | 리더 ID, 테이블, 실행 Admin | `audit_logs` |
+| **설정** | Config 변경 | 키, 이전/이후 값, 실행 Admin | `audit_logs` |
+| **장애** | 발생/복구 | 장애 유형, 시각, 영향 범위 | `audit_logs` |
+| **CC** | 연결/해제 | table_id, operator, 시각 | `audit_logs` |
+| **WSOP LIVE 동기화** | 폴링 성공/실패/회복 | sync_cursor 이전/이후, 에러 유형 | `audit_logs` (BO-02 §7.1 Fallback Queue) |
+| **좌석 이력** (이벤트 소싱) | seat_assigned/released/moved | inverse_payload 포함 | `audit_events` (CCR-001) |
+| **리밸런싱** | rebalance_step_started/completed/compensated | saga 단계별 진행/보상 | `audit_events` (CCR-010) |
+| **Undo/Revive** | 역방향 이벤트 | causation_id로 원 이벤트 연결 | `audit_events` (CCR-001) |
+| **핸드 게임 액션** | Fold/Call/Raise/Check/All-in | 카드, 베팅 | `hand_actions` |
+
+**제외 대상** (감사 비기록):
+| 제외 대상 | 이유 |
+|----------|------|
+| 핸드 개별 액션 (Fold, Bet 등) | `hand_actions` 테이블에 별도 저장 (이벤트 소싱) |
+| API 읽기 요청 (GET) | 볼륨 과다, 보안 가치 낮음 |
+| WebSocket 하트비트 | 시스템 레벨 로그에 별도 기록 |
+
+> **3-way 분리 원칙** (§4.1과 일치): 사람 관리 액션 → `audit_logs`, 상태 변경 이벤트 소싱 → `audit_events`, 핸드 게임 액션 → `hand_actions`. 두 감사 테이블은 `correlation_id` 로 묶인다.
 
 ---
 
