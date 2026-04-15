@@ -1,0 +1,120 @@
+---
+title: conductor 소유 문서
+owner: ci
+tier: generated
+---
+
+# conductor
+
+- `docs/1. Product/1. Product.md` — 1. Product
+- `docs/1. Product/Architecture.md` — Architecture
+- `docs/1. Product/Communication_Rules.md` — Communication Rules
+- `docs/1. Product/Foundation.md` — Foundation
+- `docs/1. Product/Game_Rules/Betting_System.md` — Betting System
+- `docs/1. Product/Game_Rules/Draw.md` — Draw
+- `docs/1. Product/Game_Rules/Flop_Games.md` — Flop Games
+- `docs/1. Product/Game_Rules/Seven_Card_Games.md` — Seven Card Games
+- `docs/1. Product/PokerGFX_Reference.md` — PokerGFX Reference
+- `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` — WSOP Production Structure Analysis
+- `docs/1. Product/Team_Structure.md` — Team Structure
+- `docs/2. Development/2. Development.md` — 2. Development
+- `docs/2. Development/2.5 Shared/Authentication.md` — Authentication
+- `docs/2. Development/2.5 Shared/BS_Overview.md` — BS Overview
+- `docs/2. Development/2.5 Shared/Risk_Matrix.md` — Risk Matrix
+- `docs/3. Change Requests/3. Change Requests.md` — 3. Change Requests
+- `docs/3. Change Requests/done/CR-conductor-20260410-ge-ownership-move.md` — CR-conductor-20260410-ge-ownership-move
+- `docs/3. Change Requests/done/CR-conductor-20260410-gfskin-format-unify.md` — CR-conductor-20260410-gfskin-format-unify
+- `docs/3. Change Requests/done/CR-conductor-20260411-ge-api-spec.md` — CR-conductor-20260411-ge-api-spec
+- `docs/3. Change Requests/done/CR-conductor-20260411-ge-req-id-rework.md` — CR-conductor-20260411-ge-req-id-rework
+- `docs/3. Change Requests/done/CR-conductor-20260414-skin-updated-ws.md` — CR-conductor-20260414-skin-updated-ws
+- `docs/3. Change Requests/done/CR-team1-20260410-tech-stack-ssot.md` — CR-team1-20260410-tech-stack-ssot
+- `docs/3. Change Requests/done/CR-team1-20260410-wsop-parity.md` — CR-team1-20260410-wsop-parity
+- `docs/3. Change Requests/done/CR-team1-20260413-google-oauth.md` — CR-team1-20260413-google-oauth
+- `docs/3. Change Requests/done/CR-team1-20260414-deadlink-cleanup.md` — CR-team1-20260414-deadlink-cleanup
+- `docs/3. Change Requests/done/CR-team2-20260410-data-idempotency-audit.md` — CR-team2-20260410-data-idempotency-audit
+- `docs/3. Change Requests/done/CR-team2-20260410-idempotency-key.md` — CR-team2-20260410-idempotency-key
+- `docs/3. Change Requests/done/CR-team2-20260410-jwt-expiry.md` — CR-team2-20260410-jwt-expiry
+- `docs/3. Change Requests/done/CR-team2-20260410-table-rebalance-saga.md` — CR-team2-20260410-table-rebalance-saga
+- `docs/3. Change Requests/done/CR-team2-20260410-ws-event-seq.md` — CR-team2-20260410-ws-event-seq
+- `docs/3. Change Requests/done/CR-team2-20260413-event-type-catalog.md` — CR-team2-20260413-event-type-catalog
+- `docs/3. Change Requests/done/CR-team2-20260413-refresh-token-policy.md` — CR-team2-20260413-refresh-token-policy
+- `docs/3. Change Requests/done/CR-team2-20260413-seat-waiting-enum.md` — CR-team2-20260413-seat-waiting-enum
+- `docs/3. Change Requests/done/CR-team2-20260413-summary-clock-fsm.md` — CR-team2-20260413-summary-clock-fsm
+- `docs/3. Change Requests/done/CR-team2-20260414-auth-ggpass-pattern.md` — CR-team2-20260414-auth-ggpass-pattern
+- `docs/3. Change Requests/done/CR-team2-20260414-blindstructure-endpoints.md` — CR-team2-20260414-blindstructure-endpoints
+- `docs/3. Change Requests/done/CR-team2-20260414-clock-endpoints-full.md` — CR-team2-20260414-clock-endpoints-full
+- `docs/3. Change Requests/done/CR-team2-20260414-competition-hierarchy.md` — CR-team2-20260414-competition-hierarchy
+- `docs/3. Change Requests/done/CR-team2-20260414-payout-structure-endpoints.md` — CR-team2-20260414-payout-structure-endpoints
+- `docs/3. Change Requests/done/CR-team2-20260414-rate-limit-security.md` — CR-team2-20260414-rate-limit-security
+- `docs/3. Change Requests/done/CR-team2-20260414-users-staff-pattern.md` — CR-team2-20260414-users-staff-pattern
+- `docs/3. Change Requests/done/CR-team2-20260414-ws-event-catalog.md` — CR-team2-20260414-ws-event-catalog
+- `docs/3. Change Requests/done/CR-team2-20260414-wsop-sync-catalog.md` — CR-team2-20260414-wsop-sync-catalog
+- `docs/3. Change Requests/done/CR-team3-20260410-wsop-conformance.md` — CR-team3-20260410-wsop-conformance
+- `docs/3. Change Requests/done/CR-team3-20260414-output-event-buffer-ownership.md` — CR-team3-20260414-output-event-buffer-ownership
+- `docs/3. Change Requests/done/CR-team4-20260410-api03-hal-lifecycle.md` — CR-team4-20260410-api03-hal-lifecycle
+- `docs/3. Change Requests/done/CR-team4-20260410-api05-messagepack.md` — CR-team4-20260410-api05-messagepack
+- `docs/3. Change Requests/done/CR-team4-20260410-api05-writegameinfo-schema.md` — CR-team4-20260410-api05-writegameinfo-schema
+- `docs/3. Change Requests/done/CR-team4-20260410-bs03-graphic-settings-tab.md` — CR-team4-20260410-bs03-graphic-settings-tab
+- `docs/3. Change Requests/done/CR-team4-20260410-bs04-at05-rfid-register.md` — CR-team4-20260410-bs04-at05-rfid-register
+- `docs/3. Change Requests/done/CR-team4-20260410-bs05-07-statistics-screen.md` — CR-team4-20260410-bs05-07-statistics-screen
+- `docs/3. Change Requests/done/CR-team4-20260410-bs05-at-screens.md` — CR-team4-20260410-bs05-at-screens
+- `docs/3. Change Requests/done/CR-team4-20260410-bs05-launch-flow.md` — CR-team4-20260410-bs05-launch-flow
+- `docs/3. Change Requests/done/CR-team4-20260410-bs05-multi-table-ops.md` — CR-team4-20260410-bs05-multi-table-ops
+- `docs/3. Change Requests/done/CR-team4-20260410-bs05-protocol-gaps.md` — CR-team4-20260410-bs05-protocol-gaps
+- `docs/3. Change Requests/done/CR-team4-20260410-bs05-visual-spec.md` — CR-team4-20260410-bs05-visual-spec
+- `docs/3. Change Requests/done/CR-team4-20260410-bs07-audio-layer.md` — CR-team4-20260410-bs07-audio-layer
+- `docs/3. Change Requests/done/CR-team4-20260410-bs07-cc-visual-sync.md` — CR-team4-20260410-bs07-cc-visual-sync
+- `docs/3. Change Requests/done/CR-team4-20260410-bs07-layer-boundary.md` — CR-team4-20260410-bs07-layer-boundary
+- `docs/3. Change Requests/done/CR-team4-20260410-bs07-security-delay.md` — CR-team4-20260410-bs07-security-delay
+- `docs/3. Change Requests/done/CR-team4-20260410-bs08-graphic-editor-new.md` — CR-team4-20260410-bs08-graphic-editor-new
+- `docs/3. Change Requests/in-progress/CR-010-jwt-expiry.md` — CR-010-jwt-expiry
+- `docs/3. Change Requests/in-progress/CR-011-ge-ownership-move.md` — CR-011-ge-ownership-move
+- `docs/3. Change Requests/in-progress/CR-012-gfskin-format-unify.md` — CR-012-gfskin-format-unify
+- `docs/3. Change Requests/in-progress/CR-013-ge-api-spec.md` — CR-013-ge-api-spec
+- `docs/3. Change Requests/in-progress/CR-014-ge-req-id-rework.md` — CR-014-ge-req-id-rework
+- `docs/3. Change Requests/in-progress/CR-015-skin-updated-ws.md` — CR-015-skin-updated-ws
+- `docs/3. Change Requests/in-progress/CR-016-tech-stack-ssot.md` — CR-016-tech-stack-ssot
+- `docs/3. Change Requests/in-progress/CR-017-wsop-parity.md` — CR-017-wsop-parity
+- `docs/3. Change Requests/in-progress/CR-018-data-idempotency-audit.md` — CR-018-data-idempotency-audit
+- `docs/3. Change Requests/in-progress/CR-019-idempotency-key.md` — CR-019-idempotency-key
+- `docs/3. Change Requests/in-progress/CR-020-table-rebalance-saga.md` — CR-020-table-rebalance-saga
+- `docs/3. Change Requests/in-progress/CR-021-ws-event-seq.md` — CR-021-ws-event-seq
+- `docs/3. Change Requests/in-progress/CR-022-api03-hal-lifecycle.md` — CR-022-api03-hal-lifecycle
+- `docs/3. Change Requests/in-progress/CR-023-api05-messagepack.md` — CR-023-api05-messagepack
+- `docs/3. Change Requests/in-progress/CR-024-api05-writegameinfo-schema.md` — CR-024-api05-writegameinfo-schema
+- `docs/3. Change Requests/in-progress/CR-025-bs03-graphic-settings-tab.md` — CR-025-bs03-graphic-settings-tab
+- `docs/3. Change Requests/in-progress/CR-026-bs04-at05-rfid-register.md` — CR-026-bs04-at05-rfid-register
+- `docs/3. Change Requests/in-progress/CR-027-bs05-07-statistics-screen.md` — CR-027-bs05-07-statistics-screen
+- `docs/3. Change Requests/in-progress/CR-028-bs05-at-screens.md` — CR-028-bs05-at-screens
+- `docs/3. Change Requests/in-progress/CR-029-bs05-launch-flow.md` — CR-029-bs05-launch-flow
+- `docs/3. Change Requests/in-progress/CR-030-bs05-multi-table-ops.md` — CR-030-bs05-multi-table-ops
+- `docs/3. Change Requests/in-progress/CR-031-bs05-protocol-gaps.md` — CR-031-bs05-protocol-gaps
+- `docs/3. Change Requests/in-progress/CR-032-bs05-visual-spec.md` — CR-032-bs05-visual-spec
+- `docs/3. Change Requests/in-progress/CR-033-bs07-audio-layer.md` — CR-033-bs07-audio-layer
+- `docs/3. Change Requests/in-progress/CR-034-bs07-cc-visual-sync.md` — CR-034-bs07-cc-visual-sync
+- `docs/3. Change Requests/in-progress/CR-035-bs07-layer-boundary.md` — CR-035-bs07-layer-boundary
+- `docs/3. Change Requests/in-progress/CR-036-bs07-security-delay.md` — CR-036-bs07-security-delay
+- `docs/3. Change Requests/in-progress/CR-037-bs08-graphic-editor-new.md` — CR-037-bs08-graphic-editor-new
+- `docs/3. Change Requests/in-progress/CR-038-google-oauth.md` — CR-038-google-oauth
+- `docs/3. Change Requests/in-progress/CR-039-event-type-catalog.md` — CR-039-event-type-catalog
+- `docs/3. Change Requests/in-progress/CR-040-refresh-token-policy.md` — CR-040-refresh-token-policy
+- `docs/3. Change Requests/in-progress/CR-041-seat-waiting-enum.md` — CR-041-seat-waiting-enum
+- `docs/3. Change Requests/in-progress/CR-042-summary-clock-fsm.md` — CR-042-summary-clock-fsm
+- `docs/3. Change Requests/in-progress/CR-043-wsop-sync-catalog.md` — CR-043-wsop-sync-catalog
+- `docs/3. Change Requests/in-progress/CR-047-competition-hierarchy.md` — CR-047-competition-hierarchy
+- `docs/3. Change Requests/in-progress/CR-048-auth-ggpass-pattern.md` — CR-048-auth-ggpass-pattern
+- `docs/3. Change Requests/in-progress/CR-049-blindstructure-endpoints.md` — CR-049-blindstructure-endpoints
+- `docs/3. Change Requests/in-progress/CR-050-clock-endpoints-full.md` — CR-050-clock-endpoints-full
+- `docs/3. Change Requests/in-progress/CR-051-payout-structure-endpoints.md` — CR-051-payout-structure-endpoints
+- `docs/3. Change Requests/in-progress/CR-052-rate-limit-security.md` — CR-052-rate-limit-security
+- `docs/3. Change Requests/in-progress/CR-053-users-staff-pattern.md` — CR-053-users-staff-pattern
+- `docs/3. Change Requests/in-progress/CR-054-ws-event-catalog.md` — CR-054-ws-event-catalog
+- `docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md` — CR-055-output-event-buffer-ownership
+- `docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md` — CR-056-deadlink-cleanup
+- `docs/4. Operations/4. Operations.md` — 4. Operations
+- `docs/4. Operations/Conductor_Backlog.md` — Conductor Backlog
+- `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
+- `docs/4. Operations/Plans/PLAN-BO-Phase1.md` — PLAN-BO-Phase1
+- `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` — 2026-04-10-ccr-batch-team-impact
+- `docs/4. Operations/Roadmap.md` — Roadmap
+- `docs/README.md` — docs/ README
