@@ -1,8 +1,9 @@
 ---
-title: RFID HAL
+title: RFID HAL — Operator Behavior
 owner: team4
 tier: internal
 legacy-id: BS-04-04
+references: API-03
 last-updated: 2026-04-15
 ---
 
@@ -11,14 +12,15 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | HAL 초기화, 상태 표시, Real/Mock 전환, 에러 대응 가이드 |
+| 2026-04-15 | 자매 문서 개명 반영 | 인터페이스 계약 문서가 `RFID_HAL_Legacy.md` → `RFID_HAL_Interface.md` (API-03) 로 변경됨. 본 문서의 모든 "API-03" 참조는 해당 파일로 연결 |
 
 ---
 
 ## 개요
 
-이 문서는 `API-03-rfid-hal-interface.md`의 **운영자 관점 행동 명세**다. 운영자가 알아야 할 RFID HAL 동작(초기화, 상태 확인, 에러 대응, 모드 전환)을 기술한다. 인터페이스 계약의 기술 상세는 API-03을 참조한다.
+이 문서는 `RFID_HAL_Interface.md` (API-03) 의 **운영자 관점 행동 명세**다. 운영자가 알아야 할 RFID HAL 동작(초기화, 상태 확인, 에러 대응, 모드 전환)을 기술한다. 인터페이스 계약의 기술 상세(`IRfidReader` 시그니처, 이벤트, 에러 코드)는 API-03 을 참조한다.
 
-> **참조**: 인터페이스 계약 정본은 `API-03-rfid-hal-interface.md`, 모드 정의는 `BS-00-definitions.md §9`, 이벤트 합성은 `BS-06-00-triggers.md §4`
+> **참조**: 인터페이스 계약 정본은 `RFID_HAL_Interface.md` (API-03), 모드 정의는 `BS-00-definitions.md §9`, 이벤트 합성은 `BS-06-00-triggers.md §4`
 
 ---
 

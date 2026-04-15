@@ -1,17 +1,20 @@
 ---
-title: RFID HAL Legacy
+title: RFID HAL Interface Contract
 owner: team4
-tier: internal
+tier: contract
 legacy-id: API-03
 last-updated: 2026-04-15
 ---
 
 # API-03 RFID HAL Interface — Real/Mock RFID 교체 계약
 
+> **역할**: 이 문서는 **엔지니어용 인터페이스 계약서** 다 (`IRfidReader` 시그니처, 이벤트 타입, 에러 코드, 리더 생명주기). 운영자 관점 동작 가이드는 `RFID_HAL.md` (BS-04-04) 를 참조한다. 두 문서는 서로를 보완하며 독립 편집된다.
+
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | IRfidReader 인터페이스, 이벤트 타입, Mock HAL 사양, DI 교체, 테스트 케이스 |
 | 2026-04-10 | CCR-022 | §9~§13 — UART 생명주기, 안테나 튜닝 재시도, 펌웨어 감지, 다중 리더, ST25R3916 마이그레이션 |
+| 2026-04-15 | 개명 | `RFID_HAL_Legacy.md` → `RFID_HAL_Interface.md`. "Legacy" 네이밍이 실제 역할(인터페이스 계약서)을 왜곡하여 정정. frontmatter title/tier 갱신 |
 
 ---
 
