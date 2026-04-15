@@ -3,6 +3,7 @@ title: CR-conductor-20260411-ge-req-id-rework
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-conductor-20260411-ge-req-id-rework
 ---
 
 # CCR-DRAFT: GE 요구사항 ID prefix 재편 (범위 축소 반영)

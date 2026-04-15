@@ -3,6 +3,7 @@ title: CR-team2-20260410-jwt-expiry
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260410-jwt-expiry
 ---
 
 # CCR-DRAFT: BS-01에 JWT Access/Refresh 만료 정책 명시

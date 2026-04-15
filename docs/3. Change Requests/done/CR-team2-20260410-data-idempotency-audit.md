@@ -3,6 +3,7 @@ title: CR-team2-20260410-data-idempotency-audit
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260410-data-idempotency-audit
 ---
 
 # CCR-DRAFT: DATA-04에 idempotency_keys, audit_events 테이블 신설

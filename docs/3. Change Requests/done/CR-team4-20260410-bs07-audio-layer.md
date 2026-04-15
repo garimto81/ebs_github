@@ -3,6 +3,7 @@ title: CR-team4-20260410-bs07-audio-layer
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team4-20260410-bs07-audio-layer
 ---
 
 # CCR-DRAFT: BS-07 Overlay 오디오 레이어 추가 (WSOP 1 BGM + 2 Effect 채널)

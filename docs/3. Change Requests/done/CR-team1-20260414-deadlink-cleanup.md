@@ -3,6 +3,7 @@ title: CR-team1-20260414-deadlink-cleanup
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team1-20260414-deadlink-cleanup
 ---
 
 # CCR-DRAFT: 외부 파일의 구 contracts/specs/BS-0X-* 경로 dead link 일괄 정리

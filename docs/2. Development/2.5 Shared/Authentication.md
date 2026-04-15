@@ -3,6 +3,7 @@ title: Authentication
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: BS-01
 ---
 
 # BS-01 Auth — 인증·세션·RBAC 행동 명세

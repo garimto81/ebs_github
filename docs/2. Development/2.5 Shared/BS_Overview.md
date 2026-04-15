@@ -3,6 +3,7 @@ title: BS Overview
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: BS-00
 ---
 
 # BS-00 Definitions — 용어·상태·트리거 총괄 정의서

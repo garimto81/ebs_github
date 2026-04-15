@@ -3,6 +3,7 @@ title: CR-team4-20260410-bs07-cc-visual-sync
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team4-20260410-bs07-cc-visual-sync
 ---
 
 # CCR-DRAFT: BS-07 Overlay 시각 일관성 (CC 색상 체계 재사용)

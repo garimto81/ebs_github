@@ -3,6 +3,7 @@ title: CR-team4-20260410-bs05-multi-table-ops
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team4-20260410-bs05-multi-table-ops
 ---
 
 # CCR-DRAFT: BS-05 Multi-Table 운영자 시나리오 명시

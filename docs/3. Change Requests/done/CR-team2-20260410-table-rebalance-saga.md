@@ -3,6 +3,7 @@ title: CR-team2-20260410-table-rebalance-saga
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260410-table-rebalance-saga
 ---
 
 # CCR-DRAFT: /tables/rebalance 응답에 saga 구조 추가

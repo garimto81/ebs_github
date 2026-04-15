@@ -3,6 +3,7 @@ title: CR-team2-20260414-ws-event-catalog
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260414-ws-event-catalog
 ---
 
 # CCR-DRAFT: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬

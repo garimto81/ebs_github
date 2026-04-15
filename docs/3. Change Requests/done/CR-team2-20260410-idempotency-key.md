@@ -3,6 +3,7 @@ title: CR-team2-20260410-idempotency-key
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260410-idempotency-key
 ---
 
 # CCR-DRAFT: 모든 Mutation API에 Idempotency-Key 헤더 표준 도입

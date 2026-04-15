@@ -3,6 +3,7 @@ title: CR-team1-20260413-google-oauth
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team1-20260413-google-oauth
 ---
 
 # CCR-DRAFT: Google OAuth Phase 1 도입

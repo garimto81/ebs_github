@@ -3,6 +3,7 @@ title: CR-team1-20260414-bs02-overview-rename
 owner: team1
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team1-20260414-bs02-overview-rename
 ---
 
 # CCR-DRAFT: BS-02-lobby.md → BS-02-00-overview.md rename 외부 참조 갱신

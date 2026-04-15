@@ -3,6 +3,7 @@ title: CR-team2-20260413-refresh-token-policy
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260413-refresh-token-policy
 ---
 
 # CCR-DRAFT: BS-01 refresh_token 전달 방식을 환경별 조건부로 통일

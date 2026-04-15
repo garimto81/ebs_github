@@ -3,6 +3,7 @@ title: CR-team2-20260414-blindstructure-endpoints
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260414-blindstructure-endpoints
 ---
 
 # CCR-DRAFT: BlindStructure 관리 엔드포인트 추가 (WSOP LIVE 정렬)

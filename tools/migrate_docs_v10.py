@@ -110,18 +110,20 @@ def render_frontmatter(fm: dict[str, str]) -> str:
 
 
 def derive_legacy_id(old_path: str) -> str | None:
-    """old_path 파일명에서 legacy ID 추출 (BS-02-01, API-04 등)."""
+    """old_path 파일명에서 legacy ID 추출 (BS-02-01, API-04 등). 긴 패턴 우선."""
     stem = Path(old_path).stem
     patterns = [
+        r"(PRD-GAME-\d{2})",
         r"(BS-\d{2}-\d{2})",
         r"(BS-\d{2}-\d[A-Z])",
+        r"(CCR-\d{3})",
+        r"(CCR-DRAFT-[a-z0-9]+-\d{8}(?:-[a-z0-9-]+)?)",
         r"(API-\d{2})",
         r"(DATA-\d{2})",
         r"(IMPL-\d{2})",
         r"(BO-\d{2})",
-        r"(PRD-GAME-\d{2})",
-        r"(CCR-\d{3})",
         r"(UI-\d{2})",
+        r"(BS-\d{2})",
     ]
     for pat in patterns:
         m = re.search(pat, stem)

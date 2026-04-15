@@ -3,6 +3,7 @@ title: CR-team3-20260414-output-event-buffer-ownership
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team3-20260414-output-event-buffer-ownership
 ---
 
 # CCR-DRAFT: OutputEventBuffer 구현 소유팀 명시 (API-04 §3)

@@ -3,6 +3,7 @@ title: CR-team2-20260414-users-staff-pattern
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260414-users-staff-pattern
 ---
 
 # CCR-DRAFT: Users 엔드포인트에 WSOP LIVE Staff 패턴 (Suspend/Lock/Download) 추가

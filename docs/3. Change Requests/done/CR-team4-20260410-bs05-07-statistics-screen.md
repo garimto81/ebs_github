@@ -3,6 +3,7 @@ title: CR-team4-20260410-bs05-07-statistics-screen
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team4-20260410-bs05-07-statistics-screen
 ---
 
 # CCR-DRAFT: BS-05-07 Statistics 화면 (AT-04) 신규 작성

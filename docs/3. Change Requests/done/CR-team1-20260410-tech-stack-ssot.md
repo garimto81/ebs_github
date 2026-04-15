@@ -3,6 +3,7 @@ title: CR-team1-20260410-tech-stack-ssot
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team1-20260410-tech-stack-ssot
 ---
 
 # CCR-DRAFT: Tech Stack SSOT를 BS-00에 명시하고 team2 IMPL 시리즈 동기화

@@ -3,6 +3,7 @@ title: CR-conductor-20260410-ge-ownership-move
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-conductor-20260410-ge-ownership-move
 ---
 
 # CCR-DRAFT: Graphic Editor 소유권 Team 4 → Team 1 이관 (Lobby 허브)

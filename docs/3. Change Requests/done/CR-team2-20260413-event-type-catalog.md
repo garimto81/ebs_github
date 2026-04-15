@@ -3,6 +3,7 @@ title: CR-team2-20260413-event-type-catalog
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260413-event-type-catalog
 ---
 
 # CCR-DRAFT: audit_events.event_type 카탈로그 35값 공식 정의

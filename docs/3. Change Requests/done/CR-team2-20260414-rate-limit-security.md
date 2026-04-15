@@ -3,6 +3,7 @@ title: CR-team2-20260414-rate-limit-security
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260414-rate-limit-security
 ---
 
 # CCR-DRAFT: Rate Limiting & 보안 정책 정의 (OWASP + WSOP LIVE GGPass 준거)

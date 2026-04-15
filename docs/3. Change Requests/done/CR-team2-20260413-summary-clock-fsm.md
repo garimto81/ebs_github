@@ -3,6 +3,7 @@ title: CR-team2-20260413-summary-clock-fsm
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team2-20260413-summary-clock-fsm
 ---
 
 # CCR-DRAFT: API-05에 EventFlightSummary 이벤트 + Clock FSM 행동 명세 신설

@@ -3,6 +3,7 @@ title: CR-team4-20260410-bs03-graphic-settings-tab
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team4-20260410-bs03-graphic-settings-tab
 ---
 
 # CCR-DRAFT: BS-03-02 Graphic Settings Tab 세부화 (team4 담당 영역)

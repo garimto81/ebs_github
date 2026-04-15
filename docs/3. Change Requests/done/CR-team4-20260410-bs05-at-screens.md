@@ -3,6 +3,7 @@ title: CR-team4-20260410-bs05-at-screens
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team4-20260410-bs05-at-screens
 ---
 
 # CCR-DRAFT: BS-05에 AT 화면 체계(AT-00~AT-07) 도입

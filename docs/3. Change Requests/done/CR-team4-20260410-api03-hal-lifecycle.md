@@ -3,6 +3,7 @@ title: CR-team4-20260410-api03-hal-lifecycle
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+legacy-id: CCR-DRAFT-team4-20260410-api03-hal-lifecycle
 ---
 
 # CCR-DRAFT: API-03 RFID HAL 에러 복구 및 생명주기 시나리오 보강
