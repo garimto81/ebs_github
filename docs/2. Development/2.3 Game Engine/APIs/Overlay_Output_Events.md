@@ -1,3 +1,11 @@
+---
+title: Overlay Output Events
+owner: team3
+tier: internal
+legacy-id: API-04
+last-updated: 2026-04-15
+---
+
 # API-04 Overlay Output — 오버레이 출력 계약
 
 | 날짜 | 항목 | 내용 |

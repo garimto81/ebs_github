@@ -1,3 +1,11 @@
+---
+title: Showdown
+owner: team3
+tier: internal
+legacy-id: BS-06-07
+last-updated: 2026-04-15
+---
+
 # BS-06-07: Hold'em 쇼다운
 
 > **존재 이유**: 쇼다운·hand protection 룰 — BS-06-00-REF §7·Rule 71에서 링크되는 심층 사양.

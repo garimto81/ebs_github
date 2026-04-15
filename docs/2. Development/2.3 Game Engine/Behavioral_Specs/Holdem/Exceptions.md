@@ -1,3 +1,11 @@
+---
+title: Exceptions
+owner: team3
+tier: internal
+legacy-id: BS-06-08
+last-updated: 2026-04-15
+---
+
 # BS-06-08: Hold'em 예외 처리 흐름
 
 > **존재 이유**: Misdeal matrix — BS-06-00-REF Rule 88에서 링크되는 예외 처리 사양.

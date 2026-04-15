@@ -1,3 +1,11 @@
+---
+title: Evaluation
+owner: team3
+tier: internal
+legacy-id: BS-06-05
+last-updated: 2026-04-15
+---
+
 # BS-06-05: Hold'em 핸드 평가
 
 > **존재 이유**: `lib/core/rules/showdown.dart`가 BS-06-05:259-262를 직접 인용하는 평가 사양.

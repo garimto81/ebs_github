@@ -1,3 +1,11 @@
+---
+title: Triggers
+owner: team3
+tier: internal
+legacy-id: BS-06-00
+last-updated: 2026-04-15
+---
+
 # BS-06-00 Triggers — CC/RFID/Engine 트리거 경계 정의
 
 | 날짜 | 항목 | 내용 |

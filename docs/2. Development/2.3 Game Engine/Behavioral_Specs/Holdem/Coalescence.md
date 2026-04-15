@@ -1,3 +1,11 @@
+---
+title: Coalescence
+owner: team3
+tier: internal
+legacy-id: BS-06-04
+last-updated: 2026-04-15
+---
+
 # BS-06-04: Hold'em 트리거 Coalescence
 
 > **존재 이유**: `lib/core/rules/coalescence.dart` 구현 사양 (RFID 버스트 병합 알고리즘).

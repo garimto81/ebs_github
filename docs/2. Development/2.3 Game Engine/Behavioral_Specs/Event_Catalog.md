@@ -1,3 +1,11 @@
+---
+title: Event Catalog
+owner: team3
+tier: internal
+legacy-id: BS-06-09
+last-updated: 2026-04-15
+---
+
 # BS-06-09: 게임 엔진 이벤트 카탈로그
 
 > **존재 이유**: `test/contract/spec_contract_test.dart`가 IE-02 등 엔트리를 직접 인용하는 이벤트 카탈로그.

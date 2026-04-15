@@ -1,3 +1,11 @@
+---
+title: Overview
+owner: team3
+tier: internal
+legacy-id: BS-06-00
+last-updated: 2026-04-15
+---
+
 # BS-06-00-REF: EBS 게임 엔진 레퍼런스
 
 > **존재 이유**: 22종 게임 공통 enum·룰 레퍼런스 index — BS-06-04~32 TOC 허브.

@@ -1,3 +1,11 @@
+---
+title: Blinds and Ante
+owner: team3
+tier: internal
+legacy-id: BS-06-03
+last-updated: 2026-04-15
+---
+
 # BS-06-03: Hold'em 블라인드 및 앤티
 
 > **존재 이유**: 블라인드/앤티 7종 구현 타겟 — CCR 초안·구현 코드 공동 참조.

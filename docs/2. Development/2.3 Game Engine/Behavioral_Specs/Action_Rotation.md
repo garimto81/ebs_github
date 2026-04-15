@@ -1,3 +1,11 @@
+---
+title: Action Rotation
+owner: team3
+tier: internal
+legacy-id: BS-06-10
+last-updated: 2026-04-15
+---
+
 # BS-06-10: 액션 순환 알고리즘
 
 > **존재 이유**: `street_machine.dart`가 BS-06-10:78-86을 직접 인용하는 액션 순환 알고리즘 사양.

@@ -1,3 +1,11 @@
+---
+title: Stud Games
+owner: team3
+tier: internal
+legacy-id: BS-06-3X
+last-updated: 2026-04-15
+---
+
 # BS-06-3X: Seven Card Stud — 라이프사이클 + Street + 핸드 평가
 
 > **존재 이유**: Stud 3종(game 19–21) 통합 사양. `coalescence.dart:CoalescenceWindow.stud3rd()`가 §1 Street 시스템을 인용. §2 Hi-Lo/Razz 평가가 Phase 3 구현 타겟.

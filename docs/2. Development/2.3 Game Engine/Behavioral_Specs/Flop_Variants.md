@@ -1,3 +1,11 @@
+---
+title: Flop Variants
+owner: team3
+tier: internal
+legacy-id: BS-06-1X
+last-updated: 2026-04-15
+---
+
 # BS-06-1X: Flop Variants — Hold'em 대비 차이점 통합
 
 > **존재 이유**: Short Deck/Pineapple/Omaha/Courchevel 4종 variant 차이점을 단일 비교 문서로 제공. 각 variant 구현 사양 (`lib/core/variants/short_deck.dart`, `pineapple.dart`, `omaha.dart`, `courchevel.dart`)이 참조.

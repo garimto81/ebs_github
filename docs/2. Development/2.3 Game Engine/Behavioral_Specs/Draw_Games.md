@@ -1,3 +1,11 @@
+---
+title: Draw Games
+owner: team3
+tier: internal
+legacy-id: BS-06-2X
+last-updated: 2026-04-15
+---
+
 # BS-06-2X: Draw Games — 라이프사이클 + 카드 교환 + 핸드 평가
 
 > **존재 이유**: Draw 7종(game 12–18) 통합 사양. `coalescence.dart:CoalescenceWindow.draw()`가 §1 라이프사이클을 인용. §2 평가기 라우팅이 Phase 3 구현 타겟.

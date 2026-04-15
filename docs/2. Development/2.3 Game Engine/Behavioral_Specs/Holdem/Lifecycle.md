@@ -1,3 +1,11 @@
+---
+title: Lifecycle
+owner: team3
+tier: internal
+legacy-id: BS-06-01
+last-updated: 2026-04-15
+---
+
 # BS-06-01: Hold'em 핸드 라이프사이클
 
 > **존재 이유**: Hold'em FSM 타겟 — Team 4 CC 및 contracts/DATA-03 교차 참조의 출처.

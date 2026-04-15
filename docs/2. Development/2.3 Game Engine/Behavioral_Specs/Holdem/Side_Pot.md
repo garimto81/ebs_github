@@ -1,3 +1,11 @@
+---
+title: Side Pot
+owner: team3
+tier: internal
+legacy-id: BS-06-06
+last-updated: 2026-04-15
+---
+
 # BS-06-06: Hold'em 사이드 팟
 
 > **존재 이유**: `lib/core/state/pot.dart:SidePot.calculateSidePots()` 구현 사양.

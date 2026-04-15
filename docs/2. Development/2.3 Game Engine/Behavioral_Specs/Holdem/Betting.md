@@ -1,3 +1,11 @@
+---
+title: Betting
+owner: team3
+tier: internal
+legacy-id: BS-06-02
+last-updated: 2026-04-15
+---
+
 # BS-06-02: Hold'em 베팅 액션
 
 > **존재 이유**: 베팅 액션 계약 — ecosystem 최다 인용. 구현(`bet_limit.dart`)·Team 4 CC·contracts 공동 참조.
