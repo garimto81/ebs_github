@@ -1,0 +1,75 @@
+name: Spec Aggregate
+
+on:
+  push:
+    branches:
+      - main
+      - 'refactor/**'
+    paths:
+      - 'docs/**/*.md'
+      - 'tools/spec_aggregate.py'
+      - '.github/workflows/spec-aggregate.yml'
+  pull_request:
+    paths:
+      - 'docs/**/*.md'
+      - 'tools/spec_aggregate.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: spec-aggregate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Validate frontmatter + legacy-id
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: spec_aggregate --check
+        run: python tools/spec_aggregate.py --check
+
+  generate:
+    name: Regenerate docs/_generated/
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Run spec_aggregate
+        run: python tools/spec_aggregate.py
+
+      - name: Commit _generated changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain docs/_generated/)" ]; then
+            git add docs/_generated/
+            git commit -m "chore(ci): regenerate docs/_generated/ [skip ci]"
+            git push
+          else
+            echo "No changes in docs/_generated/"
+          fi

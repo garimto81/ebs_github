@@ -1,0 +1,52 @@
+name: Validate Markdown Links
+
+on:
+  push:
+    branches:
+      - main
+      - 'refactor/**'
+    paths:
+      - 'docs/**/*.md'
+      - 'team*/**/*.md'
+      - 'contracts/**/*.md'
+      - 'tools/validate_links.py'
+      - '.github/workflows/validate-links.yml'
+  pull_request:
+    paths:
+      - 'docs/**/*.md'
+      - 'team*/**/*.md'
+      - 'contracts/**/*.md'
+      - 'tools/validate_links.py'
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Scope (all | conductor | team1-4)'
+        required: false
+        default: 'all'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: validate-links-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate relative links (${{ matrix.scope }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scope: [conductor, team1, team2, team3, team4]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: validate_links --scope ${{ matrix.scope }}
+        run: python tools/validate_links.py --scope ${{ matrix.scope }}

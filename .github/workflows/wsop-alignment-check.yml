@@ -1,0 +1,54 @@
+name: WSOP LIVE Alignment Check
+
+on:
+  push:
+    branches:
+      - main
+      - 'refactor/**'
+    paths:
+      - 'docs/**'
+      - 'tools/wsop_alignment_check.py'
+      - '.github/workflows/wsop-alignment-check.yml'
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'tools/wsop_alignment_check.py'
+  schedule:
+    - cron: '0 16 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: wsop-alignment-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: EBS ↔ WSOP LIVE structure alignment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: wsop_alignment_check
+        id: align
+        run: |
+          python tools/wsop_alignment_check.py | tee alignment-report.txt
+
+      - name: Upload alignment report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wsop-alignment-report
+          path: alignment-report.txt
+          retention-days: 30
