@@ -16,6 +16,9 @@ last-updated: 2026-04-15
 | 2026-04-14 | Confluence 출처 명시 | WSOP LIVE 준거 구간의 원본 Confluence 페이지 링크 추가 |
 | 2026-04-14 | CCR-047 | `series` 테이블에 `competition_type`/`competition_tag` 컬럼 + CHECK 제약 추가, `event_flights.status` 를 `int` enum (0,1,2,4,5,6) 로 전환. `competitions` 테이블은 Phase 1 호환용으로 유지 (deprecated 주석). SSOT: Confluence Page 1960411325 (Enum) / 1599537917 (Tournament) |
 | 2026-04-14 | CCR-053 | `users` 테이블에 `is_suspended`/`is_locked`/`failed_login_count`/`last_failed_at` 컬럼 추가 + 상태 인덱스. WSOP LIVE Staff 패턴 (SSOT Page 1597768061) |
+| 2026-04-15 | G1 재분류 | §table_seats SeatStatus 의 "WSOP LIVE E/N/P/M/B/R 준거" 주장을 **관측 기반 justified divergence** 로 재분류. WSOP LIVE 공개 문서에 `EventFlightSeat.Status` enum 값 정의 불발견. 6값 CHECK 자체는 유지 (DB 영속 SSOT) |
+| 2026-04-15 | G2 추가 | §events.game_type 뒤에 "WSOP LIVE 정렬 (game_type)" 서브섹션 신설. 22종(EBS) ↔ 9종(WSOP LIVE) divergence justified + adapter 계약 명시 |
+| 2026-04-15 | G7 추가 | §players 뒤에 "WSOP LIVE 대비 미채택 필드" 서브섹션 신설. email/birth/join_type 제외 근거 명문화 (§1.2 매트릭스 KYC/Registration 제거와 일관) |
 
 ---
 
@@ -25,7 +28,7 @@ DATA-04 는 **EBS 고유 BO 운영 스키마** 이며, 일부 개념은 WSOP LIV
 
 | DATA-04 섹션 | 차용 개념 | Confluence 페이지 | Page ID | URL |
 |-------------|-----------|------------------|---------|-----|
-| §table_seats SeatStatus enum | E/N/P/M/B/R 6값 | Action History | `1679556614` | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/1679556614 |
+| §table_seats SeatStatus enum | EBS 내부 6값 (justified divergence) | Action History *(근거 불발견)* | `1679556614` | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/1679556614 |
 | §5.2 event_type 카탈로그 | EventFlightActionType 35값 | Action History | `1679556614` | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/1679556614 |
 | §5.3 waiting_list 테이블 | WaitingPlayerInfo / FlightRoomsInfo 구조 | Waiting API | `2418737362` | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/2418737362 |
 | (참고) ERD 전체 컨텍스트 | Fatima ERD | WSOP+ Database 설명(2023.04.17) | `1652949021` | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/1652949021 |
@@ -229,19 +232,23 @@ class TableSeat(SQLModel, table=True):
     )
 ```
 
-#### SeatStatus enum (2026-04-13, WSOP LIVE E/N/P/M/B/R 준거)
+#### SeatStatus enum (2026-04-15, EBS 내부 justified divergence)
 
-| 값 | 설명 | WSOP 대응 |
+EBS DB 영속 SSOT 는 아래 **6값 CHECK 제약**이다. 위 "WSOP LIVE 준거" 표기는 관측 기반이며 원문 enum 근거 불발견(자세히는 `State_Machines.md §3`). 외부 sync 대상 아님.
+
+| 값 | 설명 | EBS 내부 shorthand |
 |------|------|----------|
 | `empty` | 빈 좌석 | E |
-| `new` | 새로 배치됨 (sit-in 대기) | N |
-| `playing` | 핸드 참여 중 | P (OCCUPIED 세분화) |
+| `new` | 새로 배치됨 (sit-in 대기, WAITING 포함) | N (+ W) |
+| `playing` | 핸드 참여 중 | (PLAYING) |
 | `moved` | 이동됨 (재배치 대기) | M |
 | `busted` | 탈락 요청됨 (확인 대기) | B |
-| `reserved` | 예약됨 | R |
+| `reserved` | 예약/선점 (OCCUPIED/HOLD 포함) | R (+ O + H) |
 
 Phase 1 SQLite: `CHECK(status IN ('empty','new','playing','moved','busted','reserved'))`.
 Phase 3+ PostgreSQL: `CREATE TYPE seat_status AS ENUM(...)`.
+
+> FSM 의 9코드(E/N/M/B/O/R/W/H/PLAYING)는 상태 전이 표현용이며, DB 저장 시 위 6값으로 매핑된다. 매핑 규칙: `State_Machines.md §3` 표 참조.
 
 ```python
 # players

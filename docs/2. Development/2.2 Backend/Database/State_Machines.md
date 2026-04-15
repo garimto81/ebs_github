@@ -11,7 +11,8 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 5개 FSM 상태 전이 다이어그램 + 트리거/가드/부작용 초판 |
-| 2026-04-13 | WSOP LIVE 정합성 수정 | SeatFSM 3→9상태 확장(WSOP LIVE Seat Status 코드), EventFSM Announce→Announced + isRegisterable + 표시 상태, TableFSM RESERVED_TABLE 추가 |
+| 2026-04-13 | WSOP LIVE 정합성 수정 | SeatFSM 3→9상태 확장(관측된 Seat Status 코드), EventFSM Announce→Announced + isRegisterable + 표시 상태, TableFSM RESERVED_TABLE 추가 |
+| 2026-04-15 | G1 재분류 | SeatStatus 코드를 "WSOP LIVE 준거" → **관측 기반 justified divergence** 로 재분류. Confluence 미러 전수 조사(Enum 1960411325 / Action History 1679556614 / Database 설명 2234666099 / SQL 1655537989)에서 `EventFlightSeat.Status` 명시적 enum 값 정의 불발견. 외부 sync 대상 아님 |
 
 ---
 
@@ -159,19 +160,23 @@ stateDiagram-v2
 | EMPTY → OCCUPIED | BO: BreakTable 재배치 예약 | — | `table_seats` UPDATE (status='occupied'). 도착 예정 플레이어 매핑 |
 | OCCUPIED → PLAYING | 시스템: 플레이어 도착 | — | `table_seats` UPDATE (status='playing') |
 
-### WSOP LIVE Seat Status 코드 (Table Dealer Page)
+### EBS 내부 SeatStatus 코드 (2026-04-15 justified divergence)
 
-| 코드 | EBS 상태 | 색상 | 설명 |
-|------|---------|------|------|
-| E | EMPTY | 백색 | 빈 좌석 |
-| N | NEW | — | 신규 배정 (10분 카운트다운) |
-| M | MOVED | — | 이동해 온 좌석 (10분 카운트다운) |
-| B | BUSTED | 적색 | 탈락 요청 (FM/TD confirm 대기) |
-| O | OCCUPIED | — | Break Table 등 예약 점유 |
-| R | RESERVED | 짙은 회색 | Auto Seating 제외 |
-| W | WAITING | 황색 | 웨이팅 플레이어에게 배정됨 |
-| H | HOLD | 회색 | Seat Draw in Advance 선점 |
-| — | PLAYING | 녹색 | 플레이 중 |
+**근거 불발견**: WSOP LIVE Confluence 미러 전수 조사(Enum `1960411325`, Action History `1679556614`, WSOP+ Database 설명 `2234666099`, Sp 자리 배치 `1655537989`)에서 `EventFlightSeat.Status` 의 명시적 enum 값 정의를 찾지 못했다. 공개 자료에서는 `Database 설명: int, 기본값 0` 과 SQL 프로시저의 `Status = 0/1/2` 만 관측되며, 각 정수값의 의미는 문서화되어 있지 않다.
+
+**재분류 판정**: 아래 코드 문자(E/N/M/B/O/R/W/H)는 **WSOP LIVE 원문 enum 이 아닌, EBS Dealer Page UI 관측 기반으로 구성한 내부 shorthand** 다. 외부 sync 대상이 아니며, EBS FSM 내부 표시/전이에만 사용한다. Schema.md §table_seats SeatStatus CHECK 6값(empty/new/playing/moved/busted/reserved)이 DB 영속 enum 의 SSOT 이며, 아래 9상태 중 `occupied`/`waiting`/`hold`는 FSM 전이 표현용 임시 상태로, DB 저장 시 Schema 6값으로 매핑된다(→ 구체 매핑 규칙은 Spec Gap 후속 정리 대상).
+
+| 코드 | EBS 상태 | 색상 | 설명 | DB 저장 값 (Schema 6값 매핑) |
+|------|---------|------|------|---------|
+| E | EMPTY | 백색 | 빈 좌석 | `empty` |
+| N | NEW | — | 신규 배정 (10분 카운트다운) | `new` |
+| M | MOVED | — | 이동해 온 좌석 (10분 카운트다운) | `moved` |
+| B | BUSTED | 적색 | 탈락 요청 (FM/TD confirm 대기) | `busted` |
+| O | OCCUPIED | — | Break Table 등 예약 점유 | `reserved` (예약 점유의 한 형태) |
+| R | RESERVED | 짙은 회색 | Auto Seating 제외 | `reserved` |
+| W | WAITING | 황색 | 웨이팅 플레이어에게 배정됨 | `new` (sit-in 대기의 한 형태) |
+| H | HOLD | 회색 | Seat Draw in Advance 선점 | `reserved` (사전 선점의 한 형태) |
+| — | PLAYING | 녹색 | 플레이 중 | `playing` |
 
 ---
 
