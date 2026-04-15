@@ -28,7 +28,7 @@ EXPECTED_HOME_SECTIONS = ["1. Product", "2. Development", "3. Change Requests", 
 ALLOWED_EXTRA_HOME = {"mockups", "images", "_generated", "README.md"}
 JUSTIFIED_REMOVALS = {
     "0. EBS Rules": "1. Product/ 로 흡수 (Game Rules + PokerGFX Reference)",
-    "4. PokerGFX Reference": "1. Product/PokerGFX_Reference.md 단일 파일로 흡수",
+    "4. PokerGFX Reference": "1. Product/References/PokerGFX_Reference.md 단일 파일로 흡수",
     "5. Roadmap": "4. Operations/Roadmap.md 로 통합",
     "9. 회의록": "실제 파일 0개, 필요 시 미래 4. Operations/Meetings/ 로 추가",
 }

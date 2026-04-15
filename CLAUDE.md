@@ -309,10 +309,8 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 | 문서 | 경로 |
 |------|------|
 | Foundation | `docs/1. Product/Foundation.md` (v41.0.0) |
-| Architecture | `docs/1. Product/Architecture.md` |
-| Team Structure | `docs/1. Product/Team_Structure.md` |
-| Communication Rules | `docs/1. Product/Communication_Rules.md` |
-| PokerGFX Reference | `docs/1. Product/PokerGFX_Reference.md` |
+| Product Landing (Architecture / Team Structure / Communication Rules 통합) | `docs/1. Product/1. Product.md` |
+| PokerGFX Reference | `docs/1. Product/References/PokerGFX_Reference.md` |
 | EBS Core (3입력→오버레이) | `docs/2. Development/2.5 Shared/EBS_Core.md` |
 | Risk Matrix | `docs/2. Development/2.5 Shared/Risk_Matrix.md` |
 | Roadmap | `docs/4. Operations/Roadmap.md` |
