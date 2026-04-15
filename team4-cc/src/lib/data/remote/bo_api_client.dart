@@ -4,8 +4,9 @@
 // `Idempotency-Key` header. API-05 edit history 2026-04-10 records CCR-003
 // making this field required across API-01/API-05/API-06.
 //
-// Endpoint methods follow contracts/api/API-01 (Table), API-05 (WebSocket
-// complement REST), and API-06 (Settings) specifications.
+// Endpoint methods follow docs/2. Development/2.2 Backend/APIs/ :
+// - Auth_and_Session.md (BO session + table REST, legacy API-01/API-06)
+// - WebSocket_Events.md (REST complement for the WS channel, legacy API-05)
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

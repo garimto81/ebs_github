@@ -1,5 +1,5 @@
-// HandFSM states from DATA-03 §2 and BS-06-01.
-// Definitive source: contracts/data/DATA-03-state-enums.md §2 HandFSM.
+// HandFSM states.
+// Definitive source: docs/2. Development/2.2 Backend/Database/State_Machines.md §2 HandFSM.
 
 enum HandFsm {
   idle,

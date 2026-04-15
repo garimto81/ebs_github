@@ -12,8 +12,8 @@
 // - Offline buffering: disconnected CC actions go to LocalEventBuffer;
 //   on reconnect, drain → ReplayEvents batch.
 //
-// See: contracts/api/API-05-websocket-events.md §1.4 (CCR-003 idempotency_key),
-//      §envelope seq field (CCR-015), §reconnect policy.
+// See: docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md
+//      §1 endpoint + envelope (seq, CCR-015), §3 event types, §reconnect policy.
 
 import 'dart:async';
 import 'dart:convert';
