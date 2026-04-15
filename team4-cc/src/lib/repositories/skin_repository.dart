@@ -11,6 +11,7 @@ import 'dart:convert';
 
 import 'package:archive/archive.dart';
 import 'package:dio/dio.dart';
+import 'package:meta/meta.dart';
 
 // ---------------------------------------------------------------------------
 // Skin Load FSM
@@ -171,28 +172,88 @@ class SkinRepository {
 
   // -- Manifest validation (DATA-07) ----------------------------------------
 
-  /// Validates manifest against DATA-07 required fields.
+  /// Public seam for DATA-07 validation tests.
+  @visibleForTesting
+  String? validateManifestForTest(Map<String, dynamic> manifest) =>
+      _validateManifest(manifest);
+
+  /// Validates manifest against DATA-07 required fields + value constraints.
   ///
-  /// Returns null if valid, error string if invalid.
-  /// Full JSON Schema validation via `json_schema` package can be added
-  /// when the DATA-07 schema JSON is finalized.
+  /// Returns null if valid, error string if invalid. Aligns with
+  /// `docs/2. Development/2.2 Backend/Database/GFSkin_Schema.md §2`:
+  /// required = [skin_name, version, resolution, colors, fonts].
+  /// Full JSON Schema (Draft-07) validation via `json_schema` package
+  /// can replace this when the schema JSON asset is shipped.
   String? _validateManifest(Map<String, dynamic> manifest) {
-    // Required fields per DATA-07
-    const requiredFields = ['version', 'name'];
+    const requiredFields = [
+      'skin_name',
+      'version',
+      'resolution',
+      'colors',
+      'fonts',
+    ];
     for (final field in requiredFields) {
       if (!manifest.containsKey(field)) {
         return 'Missing required field: $field';
       }
     }
 
-    final version = manifest['version'];
-    if (version is! String) {
-      return 'Field "version" must be a string';
+    // skin_name: string, 1..40
+    final skinName = manifest['skin_name'];
+    if (skinName is! String || skinName.isEmpty || skinName.length > 40) {
+      return 'Field "skin_name" must be a non-empty string (max 40 chars)';
     }
 
-    final name = manifest['name'];
-    if (name is! String || name.isEmpty) {
-      return 'Field "name" must be a non-empty string';
+    // version: string matching /^\d+\.\d+\.\d+$/
+    final version = manifest['version'];
+    if (version is! String ||
+        !RegExp(r'^\d+\.\d+\.\d+$').hasMatch(version)) {
+      return 'Field "version" must follow semver like "1.0.0"';
+    }
+
+    // resolution: { width in {1920,2560,3840}, height in {1080,1440,2160} }
+    final resolution = manifest['resolution'];
+    if (resolution is! Map<String, dynamic>) {
+      return 'Field "resolution" must be an object';
+    }
+    const allowedWidth = {1920, 2560, 3840};
+    const allowedHeight = {1080, 1440, 2160};
+    final width = resolution['width'];
+    final height = resolution['height'];
+    if (width is! int || !allowedWidth.contains(width)) {
+      return 'Field "resolution.width" must be one of $allowedWidth';
+    }
+    if (height is! int || !allowedHeight.contains(height)) {
+      return 'Field "resolution.height" must be one of $allowedHeight';
+    }
+
+    // colors: object containing 8 required role keys, values hex RGB strings
+    final colors = manifest['colors'];
+    if (colors is! Map<String, dynamic>) {
+      return 'Field "colors" must be an object';
+    }
+    const requiredColors = [
+      'background',
+      'text_primary',
+      'text_secondary',
+      'badge_check',
+      'badge_fold',
+      'badge_bet',
+      'badge_call',
+      'badge_allin',
+    ];
+    final hexRgb = RegExp(r'^#[0-9A-Fa-f]{6}$');
+    for (final role in requiredColors) {
+      final v = colors[role];
+      if (v is! String || !hexRgb.hasMatch(v)) {
+        return 'Field "colors.$role" must be a hex color like "#RRGGBB"';
+      }
+    }
+
+    // fonts: object (detailed shape validated at consumption time)
+    final fonts = manifest['fonts'];
+    if (fonts is! Map<String, dynamic> || fonts.isEmpty) {
+      return 'Field "fonts" must be a non-empty object';
     }
 
     return null;
