@@ -1,3 +1,11 @@
+---
+title: CR-016-tech-stack-ssot
+owner: conductor
+tier: internal
+legacy-id: CCR-016
+last-updated: 2026-04-15
+---
+
 # CCR-016: Tech Stack SSOT를 BS-00에 명시하고 team2 IMPL 시리즈 동기화
 
 | 필드 | 값 |

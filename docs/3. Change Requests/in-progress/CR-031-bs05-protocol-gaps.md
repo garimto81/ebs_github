@@ -1,3 +1,11 @@
+---
+title: CR-031-bs05-protocol-gaps
+owner: conductor
+tier: internal
+legacy-id: CCR-031
+last-updated: 2026-04-15
+---
+
 # CCR-031: BS-05 서버 프로토콜 매핑 및 내부 모호성 해소
 
 | 필드 | 값 |

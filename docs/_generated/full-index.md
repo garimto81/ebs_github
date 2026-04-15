@@ -1,3 +1,10 @@
+---
+title: full-index
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # EBS 백로그 — 집계 뷰 (읽기 전용)
 
 > **생성 시각**: 2026-04-14 18:22:02

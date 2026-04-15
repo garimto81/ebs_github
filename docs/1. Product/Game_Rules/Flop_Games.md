@@ -1,3 +1,11 @@
+---
+title: Flop Games
+owner: conductor
+tier: internal
+legacy-id: PRD-GAME-01
+last-updated: 2026-04-15
+---
+
 # Flop Games 계열 — 12종 게임 규칙 가이드
 
 | 날짜 | 항목 | 내용 |

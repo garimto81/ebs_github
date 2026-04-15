@@ -1,3 +1,11 @@
+---
+title: CR-020-table-rebalance-saga
+owner: conductor
+tier: internal
+legacy-id: CCR-020
+last-updated: 2026-04-15
+---
+
 # CCR-020: /tables/rebalance 응답에 saga 구조 추가
 
 | 필드 | 값 |

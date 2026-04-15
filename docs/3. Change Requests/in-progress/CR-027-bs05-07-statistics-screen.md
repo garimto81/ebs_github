@@ -1,3 +1,11 @@
+---
+title: CR-027-bs05-07-statistics-screen
+owner: conductor
+tier: internal
+legacy-id: CCR-027
+last-updated: 2026-04-15
+---
+
 # CCR-027: BS-05-07 Statistics 화면 (AT-04) 신규 작성
 
 | 필드 | 값 |

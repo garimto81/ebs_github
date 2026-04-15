@@ -1,3 +1,11 @@
+---
+title: Betting System
+owner: conductor
+tier: internal
+legacy-id: PRD-GAME-04
+last-updated: 2026-04-15
+---
+
 # 베팅 액션·구조·강제 베팅 완전 가이드
 
 | 날짜 | 항목 | 내용 |

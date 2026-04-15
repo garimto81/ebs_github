@@ -1,3 +1,11 @@
+---
+title: CR-021-ws-event-seq
+owner: conductor
+tier: internal
+legacy-id: CCR-021
+last-updated: 2026-04-15
+---
+
 # CCR-021: WebSocket 이벤트에 단조증가 seq 필드 + replay 엔드포인트 추가
 
 | 필드 | 값 |

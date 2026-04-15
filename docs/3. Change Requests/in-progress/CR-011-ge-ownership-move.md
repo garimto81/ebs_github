@@ -1,3 +1,11 @@
+---
+title: CR-011-ge-ownership-move
+owner: conductor
+tier: internal
+legacy-id: CCR-011
+last-updated: 2026-04-15
+---
+
 # CCR-011: Graphic Editor 소유권 Team 4 → Team 1 이관 (Lobby 허브)
 
 | 필드 | 값 |

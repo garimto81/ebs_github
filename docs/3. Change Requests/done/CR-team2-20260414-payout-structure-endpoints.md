@@ -1,3 +1,10 @@
+---
+title: CR-team2-20260414-payout-structure-endpoints
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: PayoutStructure (PrizePool) 엔드포인트 추가 (WSOP LIVE 정렬)
 
 - **제안팀**: team2

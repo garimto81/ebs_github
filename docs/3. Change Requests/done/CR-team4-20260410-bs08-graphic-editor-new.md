@@ -1,3 +1,10 @@
+---
+title: CR-team4-20260410-bs08-graphic-editor-new
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드)
 
 - **제안팀**: team4

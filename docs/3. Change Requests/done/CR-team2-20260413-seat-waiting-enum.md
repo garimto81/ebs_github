@@ -1,3 +1,10 @@
+---
+title: CR-team2-20260413-seat-waiting-enum
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: DATA-04에 Seat Status enum 정의 + waiting_list 테이블 신설
 
 - **제안팀**: team2

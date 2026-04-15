@@ -1,3 +1,10 @@
+---
+title: CR-team1-20260410-wsop-parity
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC
 
 - **제안팀**: team1

@@ -1,3 +1,11 @@
+---
+title: CR-012-gfskin-format-unify
+owner: conductor
+tier: internal
+legacy-id: CCR-012
+last-updated: 2026-04-15
+---
+
 # CCR-012: .gfskin ZIP 포맷 단일화 및 DATA-07 신설
 
 | 필드 | 값 |

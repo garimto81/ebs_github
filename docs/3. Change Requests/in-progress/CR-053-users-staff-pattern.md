@@ -1,3 +1,11 @@
+---
+title: CR-053-users-staff-pattern
+owner: conductor
+tier: internal
+legacy-id: CCR-053
+last-updated: 2026-04-15
+---
+
 # CCR-053: Users 엔드포인트에 WSOP LIVE Staff 패턴 (Suspend/Lock/Download) 추가
 
 | 필드 | 값 |

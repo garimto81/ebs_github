@@ -1,3 +1,11 @@
+---
+title: CR-025-bs03-graphic-settings-tab
+owner: conductor
+tier: internal
+legacy-id: CCR-025
+last-updated: 2026-04-15
+---
+
 # CCR-025: BS-03-02 Graphic Settings Tab 세부화 (team4 담당 영역)
 
 | 필드 | 값 |

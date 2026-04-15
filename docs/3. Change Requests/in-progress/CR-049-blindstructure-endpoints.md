@@ -1,3 +1,11 @@
+---
+title: CR-049-blindstructure-endpoints
+owner: conductor
+tier: internal
+legacy-id: CCR-049
+last-updated: 2026-04-15
+---
+
 # CCR-049: BlindStructure 관리 엔드포인트 추가 (WSOP LIVE 정렬)
 
 | 필드 | 값 |

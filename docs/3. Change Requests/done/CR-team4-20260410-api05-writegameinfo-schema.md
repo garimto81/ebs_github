@@ -1,3 +1,10 @@
+---
+title: CR-team4-20260410-api05-writegameinfo-schema
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: API-05 WriteGameInfo 프로토콜 22+ 필드 스키마 완전 명세
 
 - **제안팀**: team4

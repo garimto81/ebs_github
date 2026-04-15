@@ -1,3 +1,10 @@
+---
+title: CR-team2-20260414-auth-ggpass-pattern
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: 인증 체계 WSOP LIVE GGPass 패턴 정렬
 
 - **제안팀**: team2

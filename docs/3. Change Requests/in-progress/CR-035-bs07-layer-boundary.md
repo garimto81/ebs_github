@@ -1,3 +1,11 @@
+---
+title: CR-035-bs07-layer-boundary
+owner: conductor
+tier: internal
+legacy-id: CCR-035
+last-updated: 2026-04-15
+---
+
 # CCR-035: BS-07 Overlay Layer 1/2/3 경계 및 자동화 범위 명시
 
 | 필드 | 값 |

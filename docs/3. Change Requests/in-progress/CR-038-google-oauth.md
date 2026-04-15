@@ -1,3 +1,11 @@
+---
+title: CR-038-google-oauth
+owner: conductor
+tier: internal
+legacy-id: CCR-038
+last-updated: 2026-04-15
+---
+
 # CCR-038: Google OAuth Phase 1 도입
 
 | 필드 | 값 |

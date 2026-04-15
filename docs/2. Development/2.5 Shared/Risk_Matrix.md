@@ -1,3 +1,10 @@
+---
+title: Risk Matrix
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR 리스크 분류 기준 (Risk Matrix)
 
 | 날짜 | 항목 | 내용 |

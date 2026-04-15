@@ -1,3 +1,10 @@
+---
+title: Foundation
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # EBS — 라이브 포커 방송 시스템 기획서
 
 > **Version**: 41.0.0

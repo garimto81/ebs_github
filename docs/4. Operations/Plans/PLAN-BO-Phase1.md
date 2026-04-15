@@ -1,3 +1,10 @@
+---
+title: PLAN-BO-Phase1
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # PLAN-BO-Phase1 — Back Office Phase 1 실행 계획
 
 | 날짜 | 항목 | 내용 |

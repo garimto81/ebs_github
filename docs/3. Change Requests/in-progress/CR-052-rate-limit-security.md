@@ -1,3 +1,11 @@
+---
+title: CR-052-rate-limit-security
+owner: conductor
+tier: internal
+legacy-id: CCR-052
+last-updated: 2026-04-15
+---
+
 # CCR-052: Rate Limiting & 보안 정책 정의 (OWASP + WSOP LIVE GGPass 준거)
 
 | 필드 | 값 |

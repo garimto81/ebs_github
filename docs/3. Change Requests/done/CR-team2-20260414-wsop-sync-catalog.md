@@ -1,3 +1,10 @@
+---
+title: CR-team2-20260414-wsop-sync-catalog
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: WSOP LIVE Sync 대상 엔드포인트 카탈로그 + GGPass 통합 전략
 
 - **제안팀**: team2

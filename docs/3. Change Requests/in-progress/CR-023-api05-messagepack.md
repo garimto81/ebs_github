@@ -1,3 +1,11 @@
+---
+title: CR-023-api05-messagepack
+owner: conductor
+tier: internal
+legacy-id: CCR-023
+last-updated: 2026-04-15
+---
+
 # CCR-023: API-05 MessagePack 직렬화 프로토콜 채택 (WSOP Fatima.app 패턴)
 
 | 필드 | 값 |

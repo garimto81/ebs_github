@@ -1,3 +1,11 @@
+---
+title: CR-054-ws-event-catalog
+owner: conductor
+tier: internal
+legacy-id: CCR-054
+last-updated: 2026-04-15
+---
+
 # CCR-054: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬
 
 | 필드 | 값 |

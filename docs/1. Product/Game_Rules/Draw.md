@@ -1,3 +1,11 @@
+---
+title: Draw
+owner: conductor
+tier: internal
+legacy-id: PRD-GAME-02
+last-updated: 2026-04-15
+---
+
 # Draw 계열 — 7종 게임 규칙 가이드
 
 | 날짜 | 항목 | 내용 |

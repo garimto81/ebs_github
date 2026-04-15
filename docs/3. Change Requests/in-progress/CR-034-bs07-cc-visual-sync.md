@@ -1,3 +1,11 @@
+---
+title: CR-034-bs07-cc-visual-sync
+owner: conductor
+tier: internal
+legacy-id: CCR-034
+last-updated: 2026-04-15
+---
+
 # CCR-034: BS-07 Overlay 시각 일관성 (CC 색상 체계 재사용)
 
 | 필드 | 값 |

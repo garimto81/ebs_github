@@ -1,3 +1,10 @@
+---
+title: CR-team2-20260410-ws-event-seq
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: WebSocket 이벤트에 단조증가 seq 필드 + replay 엔드포인트 추가
 
 - **제안팀**: team2

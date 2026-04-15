@@ -1,3 +1,11 @@
+---
+title: CR-022-api03-hal-lifecycle
+owner: conductor
+tier: internal
+legacy-id: CCR-022
+last-updated: 2026-04-15
+---
+
 # CCR-022: API-03 RFID HAL 에러 복구 및 생명주기 시나리오 보강
 
 | 필드 | 값 |

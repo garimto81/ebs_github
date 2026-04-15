@@ -1,3 +1,11 @@
+---
+title: CR-048-auth-ggpass-pattern
+owner: conductor
+tier: internal
+legacy-id: CCR-048
+last-updated: 2026-04-15
+---
+
 # CCR-048: 인증 체계 WSOP LIVE GGPass 패턴 정렬
 
 | 필드 | 값 |

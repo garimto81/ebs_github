@@ -1,3 +1,11 @@
+---
+title: CR-051-payout-structure-endpoints
+owner: conductor
+tier: internal
+legacy-id: CCR-051
+last-updated: 2026-04-15
+---
+
 # CCR-051: PayoutStructure (PrizePool) 엔드포인트 추가 (WSOP LIVE 정렬)
 
 | 필드 | 값 |

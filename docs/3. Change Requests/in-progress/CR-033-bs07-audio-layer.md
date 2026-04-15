@@ -1,3 +1,11 @@
+---
+title: CR-033-bs07-audio-layer
+owner: conductor
+tier: internal
+legacy-id: CCR-033
+last-updated: 2026-04-15
+---
+
 # CCR-033: BS-07 Overlay 오디오 레이어 추가 (WSOP 1 BGM + 2 Effect 채널)
 
 | 필드 | 값 |

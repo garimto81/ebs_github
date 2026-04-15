@@ -1,3 +1,11 @@
+---
+title: CR-036-bs07-security-delay
+owner: conductor
+tier: internal
+legacy-id: CCR-036
+last-updated: 2026-04-15
+---
+
 # CCR-036: BS-07 Security Delay (홀카드 공개 지연) 명세
 
 | 필드 | 값 |

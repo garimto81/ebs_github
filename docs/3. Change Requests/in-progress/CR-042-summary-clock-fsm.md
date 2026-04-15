@@ -1,3 +1,11 @@
+---
+title: CR-042-summary-clock-fsm
+owner: conductor
+tier: internal
+legacy-id: CCR-042
+last-updated: 2026-04-15
+---
+
 # CCR-042: API-05에 EventFlightSummary 이벤트 + Clock FSM 행동 명세 신설
 
 | 필드 | 값 |

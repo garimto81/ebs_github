@@ -1,3 +1,10 @@
+---
+title: Roadmap
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # SSOT Alignment Roadmap — EBS ↔ WSOP LIVE Confluence
 
 ## 목적

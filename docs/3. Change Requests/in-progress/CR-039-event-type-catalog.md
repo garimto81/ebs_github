@@ -1,3 +1,11 @@
+---
+title: CR-039-event-type-catalog
+owner: conductor
+tier: internal
+legacy-id: CCR-039
+last-updated: 2026-04-15
+---
+
 # CCR-039: audit_events.event_type 카탈로그 35값 공식 정의
 
 | 필드 | 값 |

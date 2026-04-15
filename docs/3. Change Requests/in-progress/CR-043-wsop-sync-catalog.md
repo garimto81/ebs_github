@@ -1,3 +1,11 @@
+---
+title: CR-043-wsop-sync-catalog
+owner: conductor
+tier: internal
+legacy-id: CCR-043
+last-updated: 2026-04-15
+---
+
 # CCR-043: WSOP LIVE Sync 대상 엔드포인트 카탈로그 + GGPass 통합 전략
 
 | 필드 | 값 |

@@ -1,3 +1,10 @@
+---
+title: CR-team4-20260410-bs05-protocol-gaps
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: BS-05 서버 프로토콜 매핑 및 내부 모호성 해소
 
 - **제안팀**: team4

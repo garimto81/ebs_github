@@ -1,3 +1,10 @@
+---
+title: Conductor Backlog
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # Conductor — 크로스팀/인프라 백로그
 
 > 이 파일은 해당 팀이 소유합니다. 다른 팀은 수정 금지 (hook 차단).

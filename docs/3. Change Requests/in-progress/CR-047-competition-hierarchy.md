@@ -1,3 +1,11 @@
+---
+title: CR-047-competition-hierarchy
+owner: conductor
+tier: internal
+legacy-id: CCR-047
+last-updated: 2026-04-15
+---
+
 # CCR-047: Competition 계층 WSOP LIVE 정렬 (Series→Event→EventFlight)
 
 | 필드 | 값 |

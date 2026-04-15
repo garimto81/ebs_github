@@ -1,3 +1,10 @@
+---
+title: CR-team4-20260410-bs05-visual-spec
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: BS-05 시각/동작 명세 구체화 (카드 슬롯 FSM, 포지션 색상, 애니메이션)
 
 - **제안팀**: team4

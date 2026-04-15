@@ -1,3 +1,11 @@
+---
+title: CR-029-bs05-launch-flow
+owner: conductor
+tier: internal
+legacy-id: CCR-029
+last-updated: 2026-04-15
+---
+
 # CCR-029: BS-05 Lobby → BO → CC Launch 플로우 상세 명세
 
 | 필드 | 값 |

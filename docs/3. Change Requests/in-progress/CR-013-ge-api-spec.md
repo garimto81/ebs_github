@@ -1,3 +1,11 @@
+---
+title: CR-013-ge-api-spec
+owner: conductor
+tier: internal
+legacy-id: CCR-013
+last-updated: 2026-04-15
+---
+
 # CCR-013: API-07 Graphic Editor 엔드포인트 신설
 
 | 필드 | 값 |

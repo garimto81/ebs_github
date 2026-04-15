@@ -1,3 +1,10 @@
+---
+title: BS Overview
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # BS-00 Definitions — 용어·상태·트리거 총괄 정의서
 
 | 날짜 | 항목 | 내용 |

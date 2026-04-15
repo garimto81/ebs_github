@@ -1,3 +1,11 @@
+---
+title: CR-010-jwt-expiry
+owner: conductor
+tier: internal
+legacy-id: CCR-010
+last-updated: 2026-04-15
+---
+
 # CCR-010: BS-01에 JWT Access/Refresh 만료 정책 명시
 
 | 필드 | 값 |

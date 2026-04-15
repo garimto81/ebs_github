@@ -1,3 +1,10 @@
+---
+title: CR-team3-20260410-wsop-conformance
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: WSOP LIVE 공식 규칙 준수 — Engine 기획서 18건 수정 제안
 
 - **제안팀**: team3

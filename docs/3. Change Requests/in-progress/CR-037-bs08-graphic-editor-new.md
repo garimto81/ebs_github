@@ -1,3 +1,11 @@
+---
+title: CR-037-bs08-graphic-editor-new
+owner: conductor
+tier: internal
+legacy-id: CCR-037
+last-updated: 2026-04-15
+---
+
 # CCR-037: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드)
 
 | 필드 | 값 |

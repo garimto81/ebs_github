@@ -1,3 +1,11 @@
+---
+title: CR-056-deadlink-cleanup
+owner: conductor
+tier: internal
+legacy-id: CCR-056
+last-updated: 2026-04-15
+---
+
 # CCR-056: 외부 파일의 구 contracts/specs/BS-0X-* 경로 dead link 일괄 정리
 
 | 필드 | 값 |

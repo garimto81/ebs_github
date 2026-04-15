@@ -1,3 +1,11 @@
+---
+title: CR-055-output-event-buffer-ownership
+owner: conductor
+tier: internal
+legacy-id: CCR-055
+last-updated: 2026-04-15
+---
+
 # CCR-055: OutputEventBuffer 구현 소유팀 명시 (API-04 §3)
 
 | 필드 | 값 |

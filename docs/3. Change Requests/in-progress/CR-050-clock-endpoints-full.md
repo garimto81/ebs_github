@@ -1,3 +1,11 @@
+---
+title: CR-050-clock-endpoints-full
+owner: conductor
+tier: internal
+legacy-id: CCR-050
+last-updated: 2026-04-15
+---
+
 # CCR-050: Clock 엔드포인트 10종 완성 (WSOP LIVE Staff App 정렬)
 
 | 필드 | 값 |

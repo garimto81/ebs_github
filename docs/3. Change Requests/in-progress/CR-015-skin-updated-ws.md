@@ -1,3 +1,11 @@
+---
+title: CR-015-skin-updated-ws
+owner: conductor
+tier: internal
+legacy-id: CCR-015
+last-updated: 2026-04-15
+---
+
 # CCR-015: API-05에 skin_updated WebSocket 이벤트 추가
 
 | 필드 | 값 |

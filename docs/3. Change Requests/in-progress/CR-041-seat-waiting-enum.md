@@ -1,3 +1,11 @@
+---
+title: CR-041-seat-waiting-enum
+owner: conductor
+tier: internal
+legacy-id: CCR-041
+last-updated: 2026-04-15
+---
+
 # CCR-041: DATA-04에 Seat Status enum 정의 + waiting_list 테이블 신설
 
 | 필드 | 값 |

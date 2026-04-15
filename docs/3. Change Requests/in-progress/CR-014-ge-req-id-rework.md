@@ -1,3 +1,11 @@
+---
+title: CR-014-ge-req-id-rework
+owner: conductor
+tier: internal
+legacy-id: CCR-014
+last-updated: 2026-04-15
+---
+
 # CCR-014: GE 요구사항 ID prefix 재편 (범위 축소 반영)
 
 | 필드 | 값 |

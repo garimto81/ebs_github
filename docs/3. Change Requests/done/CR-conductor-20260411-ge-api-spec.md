@@ -1,3 +1,10 @@
+---
+title: CR-conductor-20260411-ge-api-spec
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: API-07 Graphic Editor 엔드포인트 신설
 
 - **제안팀**: conductor

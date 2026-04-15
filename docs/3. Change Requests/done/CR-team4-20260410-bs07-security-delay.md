@@ -1,3 +1,10 @@
+---
+title: CR-team4-20260410-bs07-security-delay
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: BS-07 Security Delay (홀카드 공개 지연) 명세
 
 - **제안팀**: team4

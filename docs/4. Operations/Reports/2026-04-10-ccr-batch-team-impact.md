@@ -1,3 +1,10 @@
+---
+title: 2026-04-10-ccr-batch-team-impact
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # 2026-04-10 CCR Batch — 팀별 영향 리포트
 
 | 날짜 | 항목 | 내용 |

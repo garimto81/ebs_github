@@ -1,3 +1,10 @@
+---
+title: CR-team2-20260414-competition-hierarchy
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: Competition 계층 WSOP LIVE 정렬 (Series→Event→EventFlight)
 
 - **제안팀**: team2

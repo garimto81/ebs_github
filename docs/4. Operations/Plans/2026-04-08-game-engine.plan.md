@@ -1,3 +1,10 @@
+---
+title: 2026-04-08-game-engine.plan
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # EBS Game Engine Implementation Plan
 
 > **[ARCHIVED 2026-04-14]** 구현 착수 완료. SSOT는 `ebs_game_engine/` 코드·테스트로 이동. 본 문서는 역사 기록용.

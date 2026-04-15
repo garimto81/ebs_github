@@ -9,6 +9,10 @@ framework: "Quasar Framework (Vue.js)"
 design_style: "White Tone Minimal"
 target_width: "640px (1/3 tiling)"
 density: "compact (desktop keyboard-first)"
+title: PokerGFX Reference
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
 ---
 
 # EBS Action Tracker — 통합 Reference (v8.5.0)

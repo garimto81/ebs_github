@@ -1,3 +1,10 @@
+---
+title: CR-team4-20260410-api05-messagepack
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: API-05 MessagePack 직렬화 프로토콜 채택 (WSOP Fatima.app 패턴)
 
 - **제안팀**: team4

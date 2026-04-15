@@ -1,3 +1,11 @@
+---
+title: CR-026-bs04-at05-rfid-register
+owner: conductor
+tier: internal
+legacy-id: CCR-026
+last-updated: 2026-04-15
+---
+
 # CCR-026: BS-04 AT-05 RFID Register 화면 명세 추가
 
 | 필드 | 값 |

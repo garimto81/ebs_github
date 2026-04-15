@@ -1,3 +1,10 @@
+---
+title: CR-conductor-20260410-gfskin-format-unify
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: .gfskin ZIP 포맷 단일화 및 DATA-07 신설
 
 - **제안팀**: conductor

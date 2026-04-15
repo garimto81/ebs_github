@@ -1,3 +1,11 @@
+---
+title: CR-017-wsop-parity
+owner: conductor
+tier: internal
+legacy-id: CCR-017
+last-updated: 2026-04-15
+---
+
 # CCR-017: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC
 
 | 필드 | 값 |

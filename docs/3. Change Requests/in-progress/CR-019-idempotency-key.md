@@ -1,3 +1,11 @@
+---
+title: CR-019-idempotency-key
+owner: conductor
+tier: internal
+legacy-id: CCR-019
+last-updated: 2026-04-15
+---
+
 # CCR-019: 모든 Mutation API에 Idempotency-Key 헤더 표준 도입
 
 | 필드 | 값 |

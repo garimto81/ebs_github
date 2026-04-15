@@ -1,3 +1,10 @@
+---
+title: CR-team2-20260414-clock-endpoints-full
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # CCR-DRAFT: Clock 엔드포인트 10종 완성 (WSOP LIVE Staff App 정렬)
 
 - **제안팀**: team2

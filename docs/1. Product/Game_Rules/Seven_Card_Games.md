@@ -1,3 +1,11 @@
+---
+title: Seven Card Games
+owner: conductor
+tier: internal
+legacy-id: PRD-GAME-03
+last-updated: 2026-04-15
+---
+
 # Seven Card Games 계열 — 3종 게임 규칙 가이드
 
 | 날짜 | 항목 | 내용 |

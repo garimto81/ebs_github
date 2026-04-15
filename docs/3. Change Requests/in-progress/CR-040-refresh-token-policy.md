@@ -1,3 +1,11 @@
+---
+title: CR-040-refresh-token-policy
+owner: conductor
+tier: internal
+legacy-id: CCR-040
+last-updated: 2026-04-15
+---
+
 # CCR-040: BS-01 refresh_token 전달 방식을 환경별 조건부로 통일
 
 | 필드 | 값 |

@@ -1,3 +1,11 @@
+---
+title: CR-018-data-idempotency-audit
+owner: conductor
+tier: internal
+legacy-id: CCR-018
+last-updated: 2026-04-15
+---
+
 # CCR-018: DATA-04에 idempotency_keys, audit_events 테이블 신설
 
 | 필드 | 값 |

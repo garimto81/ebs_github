@@ -1,3 +1,11 @@
+---
+title: CR-030-bs05-multi-table-ops
+owner: conductor
+tier: internal
+legacy-id: CCR-030
+last-updated: 2026-04-15
+---
+
 # CCR-030: BS-05 Multi-Table 운영자 시나리오 명시
 
 | 필드 | 값 |
