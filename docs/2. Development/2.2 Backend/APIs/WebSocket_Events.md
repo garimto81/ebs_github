@@ -19,6 +19,7 @@ last-updated: 2026-04-15
 | 2026-04-14 | CCR-054 | §4.2.0 WSOP LIVE SignalR ↔ EBS 이벤트 매핑표 신설. `blind_structure_changed`/`prize_pool_changed` 2종 추가 (SSOT Page 1793328277) |
 | 2026-04-14 | 경계 pointer 보강 | API-04↔API-05 상호 참조 추가. in-process vs 네트워크 관심사 분리 명시 |
 | 2026-04-15 | §3.3 신설 | 소비자 로컬 state 전이 맵 (CC/Lobby). HandStarted/ActionPerformed/StreetAdvanced/HandCompleted/SeatUpdated 5종 결정적 규칙 + 미확정 영역 목록. decision_owner: team2 (필요 시 team4 가 소비자 관점 보강) |
+| 2026-04-15 | envelope + edge 보강 | §2.1 `version` 필드 추가. §2.1.1 forward-compat (version drift). §3.3.2 동일 seq 순서 보장 재작성. §7.4 REST 4xx/5xx consumer 처리 매트릭스 |
 
 ---
 
@@ -127,6 +128,7 @@ WebSocket 프로토콜은 HTTP `Authorization` 헤더를 직접 지원하지 않
 | `source_id` | string | O | 발신자 식별 (`cc-table-{id}` / `lobby` / `bo`) |
 | `message_id` | string (UUID) | O | 메시지 고유 ID (중복 방지) |
 | `idempotency_key` | string (UUID/ULID) | 조건부 | **client→server command 메시지** 권장 (CCR-003). BO는 이 키로 중복 command 차단 + audit_events에 기록. |
+| `version` | int | 선택 | Envelope schema version. 2026-04-15 현재 publisher 는 이 필드를 emit 하지 않음 (암묵적으로 v1). consumer 는 missing = 1 로 해석. v2 도입 시 publisher 가 명시적으로 세팅 후 consumer 가 분기 처리. forward-compatibility 원칙: 미지 version 은 §2.2.1 에 따라 log-and-ignore |
 
 #### Seq 보장 규칙 (CCR-015)
 
@@ -138,6 +140,19 @@ WebSocket 프로토콜은 HTTP `Authorization` 헤더를 직접 지원하지 않
 | HA failover | 재시작 시 DB에서 `SELECT MAX(seq) FROM audit_events WHERE table_id=...` 로 이어간다. |
 | 순서 보장 범위 | **같은 테이블 내부만**. 테이블 간 순서는 `server_time` 기반으로 비교. |
 | gap 복구 | 클라이언트가 `seq` 연속성 깨짐 감지 → `GET /api/v1/tables/{id}/events?since={last_seq}` 호출하여 누락 이벤트 replay (API-01 §5.7). |
+
+### 2.1.1 Forward compatibility (version drift)
+
+WebSocket 계약은 publisher-first 로 진화한다. 신규 event type 또는 `version` 의 상승이 있을 때 consumer 가 **구 version 으로 배포된 상태로도 깨지지 않아야** 한다.
+
+| 시나리오 | 기대 동작 |
+|----------|-----------|
+| consumer 가 알 수 없는 `type` 수신 | debug log 후 **무시**. 예외 throw 금지. 재시도 금지. (§3.3.4 운영 이벤트와 동일) |
+| consumer 가 알 수 없는 `version` 수신 | 해당 envelope 의 `type`/`payload` 해석은 best-effort. 필수 필드 접근 실패 시 debug log + 무시 |
+| consumer 가 이미 알고 있던 `type` 의 payload 에 **새 필드** 추가됨 | 알려진 필드만 소비. 모르는 필드는 drop. JSON 파서가 strict 모드면 `additionalProperties: true` 로 설정 |
+| consumer 가 이미 알고 있던 `type` 의 payload 에서 기존 필드 **삭제됨** | publisher 가 먼저 1 sprint 사전 공지 + Edit History 기록. consumer 는 미리 필드 optional 처리로 배포 |
+
+publisher 쪽 책임: 필드 삭제·의미 변경은 버전 상승 동반. 증분 추가는 같은 version 내에서 허용.
 
 ### 2.2 응답/확인 메시지
 
@@ -258,7 +273,9 @@ CC가 게임 진행 중 BO에 발행하는 이벤트. BO는 DB에 저장 후 Lob
 #### 3.3.2 순서 보장
 
 - 이벤트는 envelope `seq` (§2.1 CCR-015) 순서로 적용. gap 감지 시 §6.5 replay 먼저.
-- 동일 `seq` 범위 안에서 여러 이벤트가 동일 seat 를 건드릴 수 있다 — 위 표의 "적용 순서" 를 그대로 직역한다.
+- **WebSocket 은 테이블당 단일 연결** 이므로 TCP 레벨에서 도착 순서 = `seq` 순서가 자연스럽게 보장된다. publisher 는 `(table_id, seq)` 가 UNIQUE 이므로 **동일 seq 의 여러 이벤트는 emit 하지 않는다** — 각 이벤트는 독립 seq 를 부여받는다.
+- Replay REST (`GET /events?since={last_seq}`) 응답은 JSON array 로 반환. 배열 순서 = 적용 순서. consumer 는 **array index 순** 으로 하나씩 적용하며, 적용 사이에 새로 도착하는 live WebSocket 이벤트는 버퍼에 쌓아 replay 완료 후 seq 비교하여 중복 drop + 나머지 적용.
+- 핸드 내 같은 seat 에 복수 필드 변경이 필요한 경우(예: 폴드 + 팟 갱신) publisher 가 **하나의 이벤트 payload 에 모든 필드** 를 넣어 발행 — consumer 가 "적용 순서" 를 고민할 일이 없다.
 
 #### 3.3.3 Lobby 쪽 차이
 
@@ -755,6 +772,25 @@ WebSocket 연결 후 첫 메시지로 인증 토큰을 전송해야 한다. 5초
   "message_id": "msg-uuid-err-1"
 }
 ```
+
+### 7.4 REST 계열 4xx / 5xx 응답 처리 (consumer 관점)
+
+WebSocket 외에 consumer 가 호출하는 REST (`GET /events?since=…`, `GET /tables/.../state`, `POST /tables/.../game-settings` 등) 의 에러 응답도 아래 정책으로 처리한다.
+
+| HTTP | 원인 | CC 처리 |
+|------|------|---------|
+| 400 | 요청 포맷 오류 (클라이언트 버그) | Sentry 로그 + "잘못된 요청" 토스트. 재시도 금지 |
+| 401 | Access Token 만료·서명 불일치 | Refresh flow 트리거 → 성공 시 원본 요청 1회 재시도. 재시도도 401 이면 로그아웃 |
+| 403 | RBAC 권한 부족 | "권한 없음" 모달. 재시도 금지 |
+| 404 | 리소스 부재 (table_id 등) | UI 화면 전환 (예: Lobby 로 복귀) + 토스트 |
+| 409 | 상태 충돌 (예: 핸드 진행 중 category A 필드 변경) | Game_Settings_Modal.md §2.3 참조 — Sentry 로그 + "상태 불일치 감지됨" 토스트 |
+| 429 | Rate limit 초과 | `Retry-After` 헤더 값 만큼 대기 후 1회 자동 재시도. 계속 429 면 "잠시 후 다시 시도" 메시지 |
+| 5xx | 서버 내부 오류 | 지수 백오프 (500ms → 1s → 2s, 최대 3회). 실패 시 circuit-breaker 10초 OPEN → HALF_OPEN 1 probe → 성공 시 CLOSED |
+
+**공통**:
+- 모든 4xx (401, 429 외) 는 **재시도 금지**. 재시도가 문제를 해결할 수 없는 범주.
+- 모든 5xx 는 위 백오프 후 재시도.
+- 에러 payload `{"error": "...", "field": "..."}` 형식이 있으면 Sentry 이벤트에 그대로 attach.
 
 ---
 
