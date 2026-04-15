@@ -17,7 +17,7 @@ last-updated: 2026-04-15
 |------|------|
 | 거버넌스 모델 | `free_write_with_decision_owner` (`docs/2. Development/2.5 Shared/team-policy.json` v6) |
 | 브랜치 전략 | 팀별 작업 브랜치 `work/team{N}/*` → `/team-merge` 로 main 통합 |
-| 실 안전 게이트 | decision_owner 규율 (hook 강제는 미구현) |
+| 실 안전 게이트 | decision_owner 규율 + L1/L2 hook (commit `4b41699`, `2ed152a` 이후) |
 | 결정 날짜 | 2026-04-15 |
 
 ## 핵심 원칙
@@ -82,10 +82,27 @@ git branch -D work/team{N}/<slug>  # 병합 후
 | `ebs-wt-*` 접두사 신규 worktree 생성 | 네이밍 규약 위반 |
 | `.worktrees/` 하위에 worktree 생성 | sibling-dir 규약 위반 |
 
+## Hybrid Support — Subdir · Worktree 동시 지원
+
+Worktree 모델은 **선택적**이며 기존 in-repo subdir 모델과 **공존 가능**. 두 모델은 동일한 자산(브랜치 이름 `work/team{N}/*`, `/team-merge`, `meta/active-edits`)을 공유하고, 차이는 오직 **작업자의 물리적 위치** 뿐.
+
+| 용도 | Subdir 모델 | Worktree 모델 |
+|------|-------------|---------------|
+| Team 세션 CWD | `C:/claude/ebs/team{N}-frontend/` 등 | `C:/claude/ebs-team{N}-<slug>/` |
+| 브랜치 전환 | 세션 시작 시 `git checkout work/team{N}/*` | 각 worktree = 1 브랜치 상주 |
+| 병렬 팀 세션 | ❌ 한 repo에서 본질적 직렬 | ✅ 5 worktree 동시 |
+| 디스크 비용 | repo 1개 | × 팀 수 |
+| hook 지원 | ✅ `detect_team` Pattern B | ✅ `detect_team` Pattern A |
+
+**선택 기준**:
+- 세션 자주 재시작 + 디스크 제약 → **Subdir**
+- 세션 유지 + 5팀 상시 병렬 → **Worktree**
+- 혼합 가능 (일부 팀만 worktree)
+
 ## 알려진 리스크
 
 1. **격리 착시**: worktree 가 별개 폴더라는 이유로 공유 `docs/` 규율이 이완될 수 있음. decision_owner 규율 강화 필요.
-2. **hook 미구현**: PreToolUse 기반 scope 차단이 없음. 위반은 리뷰 단계에서만 포착됨.
+2. **Scope-block hook 미구현**: PreToolUse 기반 경로 소유권 차단은 없음 (v6 `free_write` 정책상 의도적). L1(branch) · L2(active-edits) hook은 구현됨.
 3. **디스크 비용**: 팀별 worktree 상주 시 repo 파일 × N 배. SSD 용량 모니터링.
 
 ## 관련 자산

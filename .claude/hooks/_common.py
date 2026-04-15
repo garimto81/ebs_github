@@ -20,17 +20,26 @@ def load_policy() -> dict:
 
 
 def detect_team(cwd: str | None = None) -> str:
-    """CWD 또는 env로 현재 팀 식별. fallback 'conductor'."""
+    """CWD 또는 env로 현재 팀 식별. fallback 'conductor'.
+
+    두 운영 모델 지원 (Multi_Session_Workflow.md "Hybrid Support"):
+    - Subdir: `ebs/team{N}-frontend/...` — in-repo 팀 폴더
+    - Worktree: `ebs-team{N}-<slug>/...` — sibling 디렉토리 worktree
+    """
+    import re
     env = os.environ.get("EBS_TEAM", "").strip().lower()
     if env in ("conductor", "team1", "team2", "team3", "team4"):
         return env
     cwd = (cwd or os.getcwd()).replace("\\", "/").lower()
+    # Pattern A: sibling-dir worktree — `/ebs-team{N}-<slug>` or `/ebs-team{N}/`
+    m = re.search(r"/ebs-team([1-4])[-/]", cwd + "/")
+    if m:
+        return f"team{m.group(1)}"
+    # Pattern B: in-repo subdir — `/team{N}-frontend/`, `/team{N}-backend/`, etc.
     for n in (1, 2, 3, 4):
-        if f"/team{n}-" in cwd or cwd.endswith(f"/team{n}-frontend") \
-                or cwd.endswith(f"/team{n}-backend") or cwd.endswith(f"/team{n}-engine") \
-                or cwd.endswith(f"/team{n}-cc"):
+        if cwd.endswith(f"/team{n}-frontend") or cwd.endswith(f"/team{n}-backend") \
+                or cwd.endswith(f"/team{n}-engine") or cwd.endswith(f"/team{n}-cc"):
             return f"team{n}"
-        # CWD 가 team{N}-* 폴더 내부 어디든
         if f"/team{n}-frontend/" in cwd or f"/team{n}-backend/" in cwd \
                 or f"/team{n}-engine/" in cwd or f"/team{n}-cc/" in cwd:
             return f"team{n}"

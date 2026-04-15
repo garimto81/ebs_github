@@ -90,7 +90,7 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 
 | Layer | 메커니즘 | 자산 |
 |-------|---------|------|
-| **L1. 세션-당-브랜치** | Conductor=`main` 직접, 팀=`work/team{N}/{date}-{slug}` 자동 체크아웃, `/team-merge` 로 ff merge | `.claude/hooks/session_branch_init.py`, `.claude/hooks/branch_guard.py`, `tools/team_merge.py` |
+| **L1. 세션-당-브랜치** | Conductor=`main` 직접, 팀=`work/team{N}/{date}-{slug}` 자동 체크아웃, `/team-merge` 로 ff merge. **Subdir(`ebs/team{N}-*/`) · Worktree(`ebs-team{N}-<slug>/`) 모두 지원** (→ `docs/4. Operations/Multi_Session_Workflow.md`) | `.claude/hooks/session_branch_init.py`, `.claude/hooks/branch_guard.py`, `tools/team_merge.py` |
 | **L2. Active-edit 레지스트리** | `meta/active-edits` orphan 브랜치에 세션별 claim JSON. SessionStart 시 활성 항목 컨텍스트 주입, PreEdit 시 충돌 1회 경고(같은 호출 재시도 시 통과). bypass 시 침묵. TTL 2h. | `.claude/hooks/_registry.py`, `active_edits_session_start.py`, `active_edits_preedit.py`, `active_edits_session_end.py`, `tools/active_edits_gc.py` |
 | **L3. 핫스팟 파일 분해** | `Backlog/`, `Spec_Gaps/`, `Conductor_Backlog/` 디렉토리 + 항목당 1파일. 집계는 `tools/backlog_aggregate.py` 가 `_generated/` 에 자동 생성 | `tools/backlog_decompose.py` (1회), `tools/backlog_aggregate.py` |
 
