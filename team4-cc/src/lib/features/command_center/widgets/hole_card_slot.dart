@@ -1,32 +1,226 @@
-// Hole card slot widget — 5-state FSM (BS-05-04 §카드 슬롯 상태머신, CCR-032).
+// Hole card slot widget — 5-state FSM (BS-05-04 §6, CCR-032).
 //
 // EMPTY → DETECTING → DEALT / FALLBACK / WRONG_CARD
-// - DETECTING: pulse #FFD600 at 600ms interval
-// - WRONG_CARD: red border #DD0000 + 400ms shake
-// - FALLBACK (>5s timeout): auto-opens AT-03 Card Selector modal
+// Visual contract per Manual_Card_Input.md §6.2:
+// - DETECTING: pulse #FFD600 at 600 ms interval
+// - WRONG_CARD: red border #DD0000 + 400 ms shake
+// - FALLBACK: orange border + "TAP TO ENTER" label (modal opening is the
+//   responsibility of at_01_main_screen.dart per §6.4.1)
 //
-// UI-02 변경 (2026-04-13): 카드 슬롯 탭 → 화면 3 (합성 카드 선택) 진입.
-// 좌석 위젯 인라인 편집의 일부로, 카드 탭 시 CardSelectorScreen 오픈.
+// Tap behavior:
+// - EMPTY / FALLBACK: invokes [onTap] so the host (AT-01) can request a
+//   manual entry path (open AT-03 modal directly).
+// - DETECTING / DEALT / WRONG_CARD: tap is forwarded to [onTap] for the
+//   host's discretion (e.g. open AT-03 to re-enter a wrong card).
 
 import 'package:flutter/material.dart';
 
+import '../../../foundation/theme/ebs_typography.dart';
+
 enum HoleCardSlotState { empty, detecting, dealt, fallback, wrongCard }
 
-class HoleCardSlot extends StatelessWidget {
+class HoleCardSlot extends StatefulWidget {
   const HoleCardSlot({
     super.key,
     required this.state,
+    this.cardLabel,
+    this.size = const Size(56, 80),
     this.onTap,
   });
 
   final HoleCardSlotState state;
 
-  /// Tap to open card selector (inline edit, UI-02 §화면 1 인라인 편집).
+  /// Display string for [HoleCardSlotState.dealt] (e.g. 'A♠'). Ignored
+  /// in other states.
+  final String? cardLabel;
+
+  /// Slot dimensions. Default mirrors the AT-01 hole card cell.
+  final Size size;
+
+  /// Tap callback. See class doc comment for per-state semantics.
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: const Placeholder(),
-      );
+  State<HoleCardSlot> createState() => _HoleCardSlotState();
+}
+
+class _HoleCardSlotState extends State<HoleCardSlot>
+    with TickerProviderStateMixin {
+  late final AnimationController _pulseController;
+  late final AnimationController _shakeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _shakeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _syncAnimations();
+  }
+
+  @override
+  void didUpdateWidget(covariant HoleCardSlot old) {
+    super.didUpdateWidget(old);
+    if (old.state != widget.state) _syncAnimations();
+  }
+
+  void _syncAnimations() {
+    if (widget.state == HoleCardSlotState.detecting) {
+      _pulseController.repeat(reverse: true);
+    } else {
+      _pulseController.stop();
+      _pulseController.value = 0;
+    }
+    if (widget.state == HoleCardSlotState.wrongCard) {
+      _shakeController.forward(from: 0);
+    } else {
+      _shakeController.stop();
+      _shakeController.value = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    _shakeController.dispose();
+    super.dispose();
+  }
+
+  // ── Visual specs (Manual_Card_Input.md §6.2) ──────────────────────────
+  static const Color _detectingColor = Color(0xFFFFD600);
+  static const Color _wrongColor = Color(0xFFDD0000);
+  static const Color _fallbackColor = Color(0xFFF57C00);
+  static const Color _emptyBorder = Color(0xFF616161);
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: Listenable.merge([_pulseController, _shakeController]),
+      builder: (context, _) {
+        final shake = _shakeController.value == 0
+            ? 0.0
+            : (4 * _shakeController.value *
+                (1 - _shakeController.value)) *
+                ((_shakeController.value * 4).floor().isEven ? 1 : -1) *
+                6;
+        return Transform.translate(
+          offset: Offset(shake, 0),
+          child: GestureDetector(
+            onTap: widget.onTap,
+            child: SizedBox(
+              width: widget.size.width,
+              height: widget.size.height,
+              child: _buildBody(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildBody() {
+    switch (widget.state) {
+      case HoleCardSlotState.empty:
+        return _decorated(
+          border: const _Border(color: _emptyBorder, dashed: true),
+          child: Center(
+            child: Text(
+              '—',
+              style: EbsTypography.cardLabel.copyWith(
+                color: _emptyBorder,
+              ),
+            ),
+          ),
+        );
+      case HoleCardSlotState.detecting:
+        final intensity = 0.4 + 0.6 * _pulseController.value;
+        return _decorated(
+          border: const _Border(color: _detectingColor, width: 2),
+          fill: _detectingColor.withAlpha((255 * 0.15 * intensity).round()),
+          child: const Center(
+            child: Icon(
+              Icons.contactless,
+              color: _detectingColor,
+              size: 22,
+            ),
+          ),
+        );
+      case HoleCardSlotState.dealt:
+        return _decorated(
+          border: const _Border(color: Colors.white24, width: 1),
+          fill: Colors.white,
+          child: Center(
+            child: Text(
+              widget.cardLabel ?? '?',
+              style: EbsTypography.cardLabel.copyWith(
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        );
+      case HoleCardSlotState.fallback:
+        return _decorated(
+          border: const _Border(color: _fallbackColor, width: 2),
+          fill: _fallbackColor.withAlpha(40),
+          child: Padding(
+            padding: const EdgeInsets.all(2),
+            child: Center(
+              child: Text(
+                'TAP TO\nENTER',
+                textAlign: TextAlign.center,
+                style: EbsTypography.cardLabel.copyWith(
+                  color: _fallbackColor,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        );
+      case HoleCardSlotState.wrongCard:
+        return _decorated(
+          border: const _Border(color: _wrongColor, width: 2),
+          fill: _wrongColor.withAlpha(40),
+          child: const Center(
+            child: Icon(Icons.error_outline, color: _wrongColor, size: 22),
+          ),
+        );
+    }
+  }
+
+  Widget _decorated({
+    required _Border border,
+    Color? fill,
+    required Widget child,
+  }) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: fill,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: border.color,
+          width: border.width,
+          style: border.dashed ? BorderStyle.solid : BorderStyle.solid,
+          // Flutter has no native dashed border — we approximate with a
+          // muted solid line + the "—" placeholder so the EMPTY state still
+          // reads as 'no card here yet' without bringing in a third-party
+          // package. Spec is preserved at the visual-language level.
+        ),
+      ),
+      child: child,
+    );
+  }
+}
+
+class _Border {
+  const _Border({required this.color, this.width = 1, this.dashed = false});
+  final Color color;
+  final double width;
+  final bool dashed;
 }

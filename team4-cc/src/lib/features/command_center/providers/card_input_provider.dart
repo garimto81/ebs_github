@@ -104,13 +104,17 @@ class CardInputState {
 // Notifier
 // ---------------------------------------------------------------------------
 
-/// RFID fallback timeout duration.
+/// RFID fallback timeout duration (Manual_Card_Input.md §6.5).
 const _rfidTimeoutDuration = Duration(seconds: 5);
+
+/// WRONG_CARD auto-revert window (Manual_Card_Input.md §6.5).
+const _wrongCardRevertDuration = Duration(seconds: 1);
 
 class CardInputNotifier extends StateNotifier<CardInputState> {
   CardInputNotifier() : super(const CardInputState());
 
   final Map<int, Timer> _slotTimers = {};
+  final Map<int, Timer> _wrongCardTimers = {};
 
   /// Enter card input mode for [seatNo].
   void enterCardInput(int seatNo, {int slotCount = 2}) {
@@ -136,6 +140,7 @@ class CardInputNotifier extends StateNotifier<CardInputState> {
   /// Start RFID detection for slot [index]. Sets DETECTING + 5s timeout.
   void startDetecting(int index) {
     _cancelTimer(index);
+    _cancelWrongTimer(index);
     _updateSlot(index, (s) => s.copyWith(status: CardSlotStatus.detecting));
 
     _slotTimers[index] = Timer(_rfidTimeoutDuration, () {
@@ -146,15 +151,37 @@ class CardInputNotifier extends StateNotifier<CardInputState> {
     });
   }
 
+  /// Skip the 5-second wait and force [index] into FALLBACK immediately.
+  ///
+  /// Called when the operator taps a slot while the RFID reader is in a
+  /// failed state — Manual_Fallback.md §5.5 maps `disconnected` /
+  /// `connectionFailed` / `reconnecting` to "즉시 FALLBACK".
+  void requestManualForSlot(int index) {
+    _cancelTimer(index);
+    _cancelWrongTimer(index);
+    _updateSlot(index, (s) => s.copyWith(status: CardSlotStatus.fallback));
+  }
+
   /// RFID detected a card for slot [index].
   void cardDetected(int index, Suit suit, Rank rank) {
     _cancelTimer(index);
 
     final key = _cardKey(suit, rank);
 
-    // Duplicate check.
+    // Duplicate check — Manual_Card_Input.md §6.5 WRONG_CARD 1s revert.
     if (state.dealtCards.contains(key)) {
+      final prevStatus = state.slots[index].status;
       _updateSlot(index, (s) => s.copyWith(status: CardSlotStatus.wrongCard));
+      _cancelWrongTimer(index);
+      _wrongCardTimers[index] = Timer(_wrongCardRevertDuration, () {
+        if (!mounted) return;
+        // Revert to the prior non-error status (typically DETECTING or
+        // EMPTY) so the operator can immediately retry.
+        final revertTo = prevStatus == CardSlotStatus.wrongCard
+            ? CardSlotStatus.empty
+            : prevStatus;
+        _updateSlot(index, (s) => s.copyWith(status: revertTo));
+      });
       return;
     }
 
@@ -204,11 +231,20 @@ class CardInputNotifier extends StateNotifier<CardInputState> {
     _slotTimers.remove(index);
   }
 
+  void _cancelWrongTimer(int index) {
+    _wrongCardTimers[index]?.cancel();
+    _wrongCardTimers.remove(index);
+  }
+
   void _cancelAllTimers() {
     for (final t in _slotTimers.values) {
       t.cancel();
     }
     _slotTimers.clear();
+    for (final t in _wrongCardTimers.values) {
+      t.cancel();
+    }
+    _wrongCardTimers.clear();
   }
 
   @override

@@ -27,6 +27,9 @@ import '../providers/seat_provider.dart';
 import '../providers/table_state_provider.dart';
 import '../providers/undo_provider.dart';
 import '../services/undo_stack.dart';
+import '../../../rfid/providers/rfid_reader_provider.dart';
+import '../providers/card_input_provider.dart';
+import 'at_03_card_selector.dart';
 import 'at_04_statistics_screen.dart';
 import 'at_05_rfid_register_screen.dart';
 import 'at_06_game_settings_modal.dart';
@@ -44,6 +47,7 @@ class At01MainScreen extends ConsumerStatefulWidget {
 
 class _At01MainScreenState extends ConsumerState<At01MainScreen> {
   late final FocusNode _focusNode;
+  bool _isFallbackModalOpen = false;
 
   @override
   void initState() {
@@ -71,6 +75,11 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
       clearLastKeyboardAction(ref);
     });
 
+    // Manual_Card_Input.md §6.4.1 — auto-open AT-03 on FALLBACK transition.
+    ref.listen<CardInputState>(cardInputProvider, (prev, next) {
+      _maybeOpenFallbackModal(prev, next);
+    });
+
     return Focus(
       focusNode: _focusNode,
       autofocus: true,
@@ -87,6 +96,7 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
           child: Column(
             children: [
               const _Toolbar(),
+              const _RfidStatusBanner(),
               const _InfoBar(),
               const Expanded(
                 child: _SeatArea(),
@@ -100,6 +110,49 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
         ),
       ),
     );
+  }
+
+  /// Manual_Card_Input.md §6.4.1 — auto-open AT-03 on FALLBACK transition.
+  Future<void> _maybeOpenFallbackModal(
+    CardInputState? prev,
+    CardInputState next,
+  ) async {
+    if (_isFallbackModalOpen) return;
+    if (next.mode != CardInputMode.cardInput) return;
+    final seatNo = next.targetSeatNo;
+    if (seatNo == null) return;
+
+    final newlyFallbackIdx = _firstNewlyFallback(prev, next);
+    if (newlyFallbackIdx == null) return;
+
+    _isFallbackModalOpen = true;
+    try {
+      final result = await showCardSelectorModal(
+        context,
+        targetSeatNo: seatNo,
+        targetSlotIndex: newlyFallbackIdx,
+        usedCards: next.dealtCards,
+      );
+      if (result == null) return; // ESC / Cancel keeps slot in FALLBACK.
+      ref.read(cardInputProvider.notifier).manualSelect(
+            newlyFallbackIdx,
+            result.$1,
+            result.$2,
+          );
+    } finally {
+      _isFallbackModalOpen = false;
+    }
+  }
+
+  int? _firstNewlyFallback(CardInputState? prev, CardInputState next) {
+    for (var i = 0; i < next.slots.length; i++) {
+      final isFallback = next.slots[i].status == CardSlotStatus.fallback;
+      final wasFallback = prev != null &&
+          i < prev.slots.length &&
+          prev.slots[i].status == CardSlotStatus.fallback;
+      if (isFallback && !wasFallback) return i;
+    }
+    return null;
   }
 }
 
@@ -392,6 +445,86 @@ class _Toolbar extends ConsumerWidget {
       default:
         debugPrint('Unknown menu: $value');
     }
+  }
+}
+
+// =============================================================================
+// _RfidStatusBanner — Manual_Fallback.md §5.6
+// =============================================================================
+
+class _RfidStatusBanner extends ConsumerWidget {
+  const _RfidStatusBanner();
+
+  static const _heightPx = 36.0;
+  static const _animMs = 200;
+  static const Color _infoBg = Color(0xFF1976D2);
+  static const Color _warnBg = Color(0xFFF57C00);
+  static const Color _errorBg = Color(0xFFE53935);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notification = ref.watch(rfidNotificationProvider);
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: _animMs),
+      transitionBuilder: (child, anim) => SizeTransition(
+        sizeFactor: anim,
+        axisAlignment: -1,
+        child: FadeTransition(opacity: anim, child: child),
+      ),
+      child: notification == null
+          ? const SizedBox.shrink()
+          : _BannerBody(notification: notification),
+    );
+  }
+}
+
+class _BannerBody extends StatelessWidget {
+  const _BannerBody({required this.notification});
+
+  final RfidNotification notification;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _bg(notification);
+    final icon = _icon(notification);
+    return Container(
+      key: ValueKey(notification.message),
+      height: _RfidStatusBanner._heightPx,
+      width: double.infinity,
+      color: color,
+      padding: const EdgeInsets.symmetric(horizontal: EbsSpacing.md),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 18),
+          const SizedBox(width: EbsSpacing.sm),
+          Expanded(
+            child: Text(
+              notification.message,
+              style: EbsTypography.toolbarTitle.copyWith(
+                color: Colors.white,
+                fontSize: 13,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _bg(RfidNotification n) {
+    if (n.isError) return _RfidStatusBanner._errorBg;
+    // info vs warn distinguished by message prefix per §5.6.
+    if (n.message.startsWith('RFID 재연결')) {
+      return _RfidStatusBanner._warnBg;
+    }
+    return _RfidStatusBanner._infoBg;
+  }
+
+  IconData _icon(RfidNotification n) {
+    if (n.isError) return Icons.error_outline;
+    if (n.message.startsWith('RFID 재연결')) return Icons.warning_amber;
+    return Icons.wifi_tethering;
   }
 }
 

@@ -261,3 +261,56 @@ class RfidNotification {
 
 final rfidNotificationProvider =
     StateProvider<RfidNotification?>((ref) => null);
+
+/// Bridges the local hardware status stream into [rfidNotificationProvider].
+///
+/// Watches `rfidStatusProvider` (which forwards `IRfidReader.onStatusChanged`)
+/// and updates the notification using the same builder ws_provider uses for
+/// server-side `RfidStatusChanged` events. Both code paths therefore agree
+/// on banner content per Manual_Fallback.md §5.5/§5.6.
+///
+/// The bridge function is intentionally exposed (not done as a side-effect
+/// inside a Provider) so the host app can opt in via
+/// `ref.listen(rfidStatusBridgeProvider, (_, __) {})` from a top-level
+/// widget. This avoids accidentally creating duplicate listeners.
+final rfidStatusBridgeProvider = Provider<void>((ref) {
+  ref.listen<AsyncValue<RfidReaderStatus>>(rfidStatusProvider, (_, next) {
+    next.whenData((status) {
+      ref.read(rfidNotificationProvider.notifier).state =
+          _localBuildRfidNotification(status);
+    });
+  });
+});
+
+/// Local notification builder — kept here to avoid a circular import on
+/// ws_provider. Mirrors `buildRfidNotification` exactly per the §5.6 spec.
+RfidNotification? _localBuildRfidNotification(RfidReaderStatus status) {
+  switch (status) {
+    case RfidReaderStatus.connected:
+      return null;
+    case RfidReaderStatus.connecting:
+      return RfidNotification(
+        message: 'RFID 리더 연결 중…',
+        isError: false,
+        timestamp: DateTime.now(),
+      );
+    case RfidReaderStatus.reconnecting:
+      return RfidNotification(
+        message: 'RFID 재연결 중 — 수동 입력으로 진행 가능',
+        isError: false,
+        timestamp: DateTime.now(),
+      );
+    case RfidReaderStatus.connectionFailed:
+      return RfidNotification(
+        message: 'RFID 연결 실패 — 수동 입력으로 진행하세요',
+        isError: true,
+        timestamp: DateTime.now(),
+      );
+    case RfidReaderStatus.disconnected:
+      return RfidNotification(
+        message: 'RFID 장애 — 수동 입력 모드',
+        isError: true,
+        timestamp: DateTime.now(),
+      );
+  }
+}

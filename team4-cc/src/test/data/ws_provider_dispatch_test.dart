@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:ebs_cc/data/remote/ws_provider.dart';
 import 'package:ebs_cc/foundation/audio/audio_player_provider.dart';
+import 'package:ebs_cc/rfid/providers/rfid_reader_provider.dart';
 import 'package:ebs_cc/features/command_center/providers/action_button_provider.dart';
 import 'package:ebs_cc/features/command_center/providers/hand_display_provider.dart';
 import 'package:ebs_cc/features/command_center/providers/hand_fsm_provider.dart';
@@ -214,6 +215,33 @@ void main() {
       );
 
       expect(container.read(boardCardsProvider), isEmpty);
+    });
+  });
+
+  group('WS dispatch — RfidStatusChanged (Manual_Fallback §5.5/§5.6)', () {
+    final cases = <String, ({bool? isError, String? messageContains})>{
+      'connected': (isError: null, messageContains: null),
+      'connecting': (isError: false, messageContains: '연결 중'),
+      'reconnecting': (isError: false, messageContains: '재연결 중'),
+      'connectionFailed': (isError: true, messageContains: '연결 실패'),
+      'disconnected': (isError: true, messageContains: '장애'),
+    };
+    cases.forEach((status, expected) {
+      test('$status -> ${expected.isError == null ? 'no banner' : expected.messageContains}', () {
+        container = _freshContainer();
+        dispatchIncomingEventForTest(container, <String, dynamic>{
+          'type': 'RfidStatusChanged',
+          'status': status,
+        });
+        final n = container.read(rfidNotificationProvider);
+        if (expected.isError == null) {
+          expect(n, isNull);
+        } else {
+          expect(n, isNotNull);
+          expect(n!.isError, expected.isError);
+          expect(n.message, contains(expected.messageContains!));
+        }
+      });
     });
   });
 

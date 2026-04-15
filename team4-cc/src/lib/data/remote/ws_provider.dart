@@ -28,6 +28,8 @@ import '../../features/overlay/services/skin_consumer.dart';
 import '../../foundation/audio/audio_player_provider.dart';
 import '../../foundation/configs/security_delay_config.dart';
 import '../../models/enums/hand_fsm.dart';
+import '../../rfid/abstract/i_rfid_reader.dart';
+import '../../rfid/providers/rfid_reader_provider.dart';
 import 'bo_api_client.dart';
 import 'bo_websocket_client.dart';
 
@@ -110,6 +112,58 @@ void _fireSfx(ProviderReadFn read, SfxId? sfx) {
   if (sfx == null) return;
   // ignore: discarded_futures
   read(audioSfxPortProvider).playSfx(sfx).catchError((_) {});
+}
+
+/// Parses the wire `status` string into RfidReaderStatus. Unknown values
+/// return null — caller should ignore the event.
+RfidReaderStatus? _parseRfidStatus(String name) {
+  switch (name) {
+    case 'connected':
+      return RfidReaderStatus.connected;
+    case 'connecting':
+      return RfidReaderStatus.connecting;
+    case 'reconnecting':
+      return RfidReaderStatus.reconnecting;
+    case 'connectionFailed':
+    case 'connection_failed':
+      return RfidReaderStatus.connectionFailed;
+    case 'disconnected':
+      return RfidReaderStatus.disconnected;
+  }
+  return null;
+}
+
+/// Builds the RfidNotification payload per Manual_Fallback.md §5.5 + §5.6.
+/// Returns null when the reader is `connected` (banner hidden).
+RfidNotification? buildRfidNotification(RfidReaderStatus status) {
+  switch (status) {
+    case RfidReaderStatus.connected:
+      return null;
+    case RfidReaderStatus.connecting:
+      return RfidNotification(
+        message: 'RFID 리더 연결 중…',
+        isError: false,
+        timestamp: DateTime.now(),
+      );
+    case RfidReaderStatus.reconnecting:
+      return RfidNotification(
+        message: 'RFID 재연결 중 — 수동 입력으로 진행 가능',
+        isError: false,
+        timestamp: DateTime.now(),
+      );
+    case RfidReaderStatus.connectionFailed:
+      return RfidNotification(
+        message: 'RFID 연결 실패 — 수동 입력으로 진행하세요',
+        isError: true,
+        timestamp: DateTime.now(),
+      );
+    case RfidReaderStatus.disconnected:
+      return RfidNotification(
+        message: 'RFID 장애 — 수동 입력 모드',
+        isError: true,
+        timestamp: DateTime.now(),
+      );
+  }
 }
 
 /// Maps an ActionPerformed action_type to the BS-07-05 SFX catalogue.
@@ -201,9 +255,19 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
       final cfg = SecurityDelayConfig.fromConfigChanged(payload);
       read(securityDelayConfigProvider.notifier).state = cfg;
 
+    // BS-04-03 §5.5 RfidStatusChanged — drives the AT-01 banner +
+    // slot-timer fallback policy. Server pushes one of the
+    // RfidReaderStatus names verbatim.
+    case 'RfidStatusChanged':
+      final statusName = payload['status'] as String? ?? '';
+      final status = _parseRfidStatus(statusName);
+      if (status != null) {
+        read(rfidNotificationProvider.notifier).state =
+            buildRfidNotification(status);
+      }
+
     // §3.3.4 operational — no FSM effect on CC. Observability only.
     case 'GameChanged':
-    case 'RfidStatusChanged':
     case 'OutputStatusChanged':
       debugPrint('[WS→CC] Operational event: $type');
 
