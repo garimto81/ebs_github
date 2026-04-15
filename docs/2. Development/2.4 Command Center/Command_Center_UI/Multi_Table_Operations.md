@@ -91,9 +91,25 @@ EBS는 **"1 CC = 1 Table = 1 Overlay"** 인스턴스 관계를 유지한다. 그
 ### 3.3 포커스 오인식 방지
 
 운영자가 "잘못된 테이블"에 키를 눌러 실수할 위험이 있다. 방지책:
-- **포커스 진입 시 애니메이션** (노란 배너 "Table 5 active for 0.5s")
-- **핫키 FOCUS_MISMATCH_GUARD**: 포커스 전환 직후 200ms간 단축키 입력 무시 (오토 키 충돌 방지)
-- **설정 옵션** (BS-05-06): "Show table number overlay when focused" 토글
+- **포커스 진입 시 애니메이션** — 노란 배너 `"Table 5 active"` 를 **500ms (FOCUS_BANNER_DURATION_MS)** 동안 표시 후 페이드 아웃.
+- **핫키 FOCUS_MISMATCH_GUARD** — 아래 §3.3.1 명세.
+- **설정 옵션** (BS-05-06): "Show table number overlay when focused" 토글.
+
+#### 3.3.1 FOCUS_MISMATCH_GUARD 상세 명세
+
+- **구현 위치**: Flutter 레벨. OS 레벨 훅 사용 안 함.
+  - 최상위 `FocusScope` 의 `onFocusChange` 콜백 + `ShortcutManager` 가드 로직.
+  - `AppLifecycleState.resumed` 리스너로 창 전환(Alt+Tab, OS 창 클릭) 감지.
+- **발동 조건** (OR): 창 포커스 획득 직후 어느 하나라도 true 면 가드 시작.
+  1. `AppLifecycleState` 가 `inactive`/`paused` → `resumed` 로 전이.
+  2. `Window.onFocus` 가 true 로 재진입.
+  3. Flutter `FocusScope` 가 `hasFocus: false → true` 전이 감지.
+- **가드 동작**: 발동 시점부터 `FOCUS_MISMATCH_GUARD_MS = 200ms` 동안 `ShortcutManager.handleKeypress` 가 모든 액션 키(N/D/F/C/B/R/A, Ctrl+Z 포함)를 **no-op 으로 소비**. 시각 피드백 없음(가드 발동 자체는 운영자에게 보이지 않음 — 노란 배너가 상위 피드백).
+- **해제 조건** (OR): 가장 먼저 발생하는 것:
+  1. 가드 시작 이후 200ms 경과.
+  2. 운영자가 **마우스 클릭** 으로 포커스를 의도적으로 확인 (마우스 이벤트는 가드 대상 아님).
+- **적용 제외 키**: ESC, F-keys 는 가드 대상이 아님 (취소·도움말 등 파괴 위험 없는 키).
+- **로그**: 가드 시간 동안 억제된 키는 `debugPrint('[FOCUS_GUARD] suppressed: $keyLabel')` 로 기록, Sentry 전송 안 함(정상 동작).
 
 ---
 
