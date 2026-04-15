@@ -15,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
 import '../models/output_config.dart';
+import 'ndi_output_sink.dart';
 import 'security_delay_buffer.dart';
 
 final _log = Logger('DualOutputManager');
@@ -131,3 +132,29 @@ final securityDelayBufferProvider = Provider<SecurityDelayBuffer>((ref) {
     delay: const Duration(seconds: 30),
   );
 });
+
+/// Factory: creates a DualOutputManager whose broadcast callback forwards
+/// frames to the active [NdiOutputSink]. Callers retain ownership and
+/// must call `dispose()` when the widget hosting it goes away.
+///
+/// Backstage rendering is caller-supplied (typically the Flutter overlay
+/// widget tree); this helper only wires the broadcast half.
+DualOutputManager createDualOutputWithNdi({
+  required Ref ref,
+  required RenderCallback onBackstageRender,
+  Duration tickInterval = const Duration(milliseconds: 50),
+}) {
+  final buffer = ref.read(securityDelayBufferProvider);
+  final sink = ref.read(ndiOutputSinkProvider);
+  return DualOutputManager(
+    delayBuffer: buffer,
+    onBackstageRender: onBackstageRender,
+    onBroadcastRender: (frame) {
+      // Fire-and-forget — send is async but the tick callback is sync.
+      // Errors are logged by the sink itself.
+      // ignore: discarded_futures
+      sink.send(frame);
+    },
+    tickInterval: tickInterval,
+  );
+}

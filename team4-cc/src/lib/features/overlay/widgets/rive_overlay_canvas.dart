@@ -3,20 +3,34 @@
 // Wraps OverlayRoot with an animation layer that consumes the animation queue
 // from OverlayAnimationService and applies visual transitions.
 //
-// Phase 1: Flutter-native animations (AnimatedContainer, FadeTransition,
-//          SlideTransition, AnimatedOpacity).
-// Phase 2: Rive StateMachine integration — replace Flutter transitions
-//          with Rive artboard inputs driven by AnimationSpec.
+// Dual rendering path:
+//  - If the active skin bundle shipped a valid skin.riv, load the Rive
+//    artboard and drive a StateMachineController with the animation spec
+//    (Phase 2 path).
+//  - Otherwise, run the Flutter-native animations already wired to
+//    seatAnimationProvider / globalAnimationProvider (Phase 1 fallback).
+//
+// The selection is decided once per SkinBundle change via [_loadRiveArtboard].
+// A failure loading the Rive file logs and downgrades to the Phase 1 path.
 
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
+import 'package:rive/rive.dart' as rive;
 
 import '../../../models/entities/card_model.dart';
 import '../providers/animation_provider.dart';
 import '../services/animation_controller_service.dart';
+import '../services/skin_consumer.dart';
 import 'overlay_root.dart';
+
+final _log = Logger('RiveOverlayCanvas');
+
+/// State-machine name agreed with team1 graphic editor export pipeline.
+const _kStateMachineName = 'EBS';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -85,10 +99,9 @@ class RiveOverlayCanvas extends ConsumerStatefulWidget {
 
 class _RiveOverlayCanvasState extends ConsumerState<RiveOverlayCanvas> {
   Timer? _pollTimer;
-
-  // Phase 2 placeholder: Rive artboard and state machine controller.
-  // Artboard? _riveArtboard;
-  // StateMachineController? _stateMachineController;
+  rive.Artboard? _riveArtboard;
+  rive.StateMachineController? _stateMachineController;
+  List<int>? _loadedRiveBytesFingerprint;
 
   @override
   void initState() {
@@ -99,7 +112,49 @@ class _RiveOverlayCanvasState extends ConsumerState<RiveOverlayCanvas> {
   @override
   void dispose() {
     _pollTimer?.cancel();
+    _stateMachineController?.dispose();
     super.dispose();
+  }
+
+  // ── Rive artboard loading ─────────────────────────────────────────────
+
+  Future<void> _loadRiveArtboard(List<int> bytes) async {
+    // Avoid reloading the same bundle twice.
+    if (identical(_loadedRiveBytesFingerprint, bytes)) return;
+    _loadedRiveBytesFingerprint = bytes;
+
+    _stateMachineController?.dispose();
+    _stateMachineController = null;
+    _riveArtboard = null;
+
+    try {
+      final file = rive.RiveFile.import(
+        ByteData.view(Uint8List.fromList(bytes).buffer),
+      );
+      final artboard = file.mainArtboard.instance();
+      final controller = rive.StateMachineController.fromArtboard(
+        artboard,
+        _kStateMachineName,
+      );
+      if (controller == null) {
+        _log.warning(
+          'Skin Rive file has no "$_kStateMachineName" state machine; '
+          'falling back to Flutter animations.',
+        );
+        return;
+      }
+      artboard.addController(controller);
+      if (!mounted) {
+        controller.dispose();
+        return;
+      }
+      setState(() {
+        _riveArtboard = artboard;
+        _stateMachineController = controller;
+      });
+    } catch (e, st) {
+      _log.warning('Rive artboard load failed; using Flutter path.', e, st);
+    }
   }
 
   // ── Queue polling ─────────────────────────────────────────────────────
@@ -153,8 +208,43 @@ class _RiveOverlayCanvasState extends ConsumerState<RiveOverlayCanvas> {
 
   @override
   Widget build(BuildContext context) {
-    // Phase 1: Wrap OverlayRoot with animation-aware layer.
-    // Phase 2: Replace with RiveAnimation widget + artboard.
+    // Track active skin bundle and (re)load Rive artboard when it changes.
+    ref.listen<SkinConsumerState>(skinConsumerProvider, (prev, next) {
+      final bundle = next.bundle;
+      if (bundle == null) return;
+      if (bundle.riveBytes.isEmpty) return;
+      _loadRiveArtboard(bundle.riveBytes);
+    });
+
+    final artboard = _riveArtboard;
+    if (artboard != null) {
+      // Phase 2 render path — Rive artboard stacked over OverlayRoot so
+      // data-driven widgets (chips, cards, pot) still render while the
+      // artboard drives transitions and ambient animations.
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          OverlayRoot(
+            chromaKeyColor: widget.chromaKeyColor,
+            communityCards: widget.communityCards,
+            mainPot: widget.mainPot,
+            sidePots: widget.sidePots,
+            equities: widget.equities,
+            outsMap: widget.outsMap,
+            lastActions: widget.lastActions,
+            revealedSeats: widget.revealedSeats,
+          ),
+          IgnorePointer(
+            child: rive.Rive(
+              artboard: artboard,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Phase 1 fallback — Flutter-native animations via providers.
     return OverlayRoot(
       chromaKeyColor: widget.chromaKeyColor,
       communityCards: widget.communityCards,
