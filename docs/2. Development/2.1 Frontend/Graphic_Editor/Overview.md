@@ -1,3 +1,11 @@
+---
+title: Overview
+owner: team1
+tier: internal
+legacy-id: BS-08-00
+last-updated: 2026-04-15
+---
+
 # BS-08-00 Graphic Editor — Overview
 
 | 날짜 | 항목 | 내용 |

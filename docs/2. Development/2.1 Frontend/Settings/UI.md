@@ -1,3 +1,11 @@
+---
+title: UI
+owner: team1
+tier: internal
+legacy-id: UI-03
+last-updated: 2026-04-15
+---
+
 # UI-03 Settings — 6탭 와이어프레임
 
 | 날짜 | 항목 | 내용 |

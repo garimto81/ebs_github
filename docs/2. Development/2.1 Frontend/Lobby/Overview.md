@@ -1,3 +1,11 @@
+---
+title: Overview
+owner: team1
+tier: internal
+legacy-id: BS-02-00
+last-updated: 2026-04-15
+---
+
 # BS-02 Lobby — 테이블 관리
 
 | 날짜 | 항목 | 내용 |

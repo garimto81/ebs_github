@@ -1,3 +1,11 @@
+---
+title: Rules
+owner: team1
+tier: internal
+legacy-id: BS-03-04
+last-updated: 2026-04-15
+---
+
 # BS-03-04 Rules — 게임 규칙 설정
 
 | 날짜 | 항목 | 내용 |

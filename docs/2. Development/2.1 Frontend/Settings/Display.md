@@ -1,3 +1,11 @@
+---
+title: Display
+owner: team1
+tier: internal
+legacy-id: BS-03-03
+last-updated: 2026-04-15
+---
+
 # BS-03-03 Display — 수치 표시 형식
 
 | 날짜 | 항목 | 내용 |

@@ -1,3 +1,11 @@
+---
+title: Preferences
+owner: team1
+tier: internal
+legacy-id: BS-03-06
+last-updated: 2026-04-15
+---
+
 # BS-03-06 Preferences — 테이블/진단/내보내기
 
 | 날짜 | 항목 | 내용 |

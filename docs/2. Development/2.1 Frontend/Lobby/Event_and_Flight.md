@@ -1,3 +1,11 @@
+---
+title: Event and Flight
+owner: team1
+tier: internal
+legacy-id: BS-02-02
+last-updated: 2026-04-15
+---
+
 # BS-02-02 Event/Flight 상태 — `EventFlightStatus` enum
 
 | 날짜 | 항목 | 내용 |

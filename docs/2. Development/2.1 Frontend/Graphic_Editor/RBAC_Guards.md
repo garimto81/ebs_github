@@ -1,3 +1,11 @@
+---
+title: RBAC Guards
+owner: team1
+tier: internal
+legacy-id: BS-08-04
+last-updated: 2026-04-15
+---
+
 # BS-08-04 RBAC Guards — Admin/Operator/Viewer 게이트
 
 | 날짜 | 항목 | 내용 |

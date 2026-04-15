@@ -1,3 +1,11 @@
+---
+title: Overview
+owner: team1
+tier: internal
+legacy-id: BS-03-00
+last-updated: 2026-04-15
+---
+
 # BS-03-00 Overview — Settings 총괄
 
 | 날짜 | 항목 | 내용 |

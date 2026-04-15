@@ -1,3 +1,10 @@
+---
+title: Engineering
+owner: team1
+tier: internal
+last-updated: 2026-04-15
+---
+
 # UI-A1 Frontend Architecture — Router / Pinia / API Client / WebSocket
 
 | 날짜 | 항목 | 내용 |

@@ -1,3 +1,11 @@
+---
+title: Outputs
+owner: team1
+tier: internal
+legacy-id: BS-03-01
+last-updated: 2026-04-15
+---
+
 # BS-03-01 Outputs — 송출 설정
 
 | 날짜 | 항목 | 내용 |

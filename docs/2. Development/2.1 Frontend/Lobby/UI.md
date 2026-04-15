@@ -1,3 +1,11 @@
+---
+title: UI
+owner: team1
+tier: internal
+legacy-id: UI-01
+last-updated: 2026-04-15
+---
+
 # UI-01 Lobby — 화면 설계 (3계층 + 독립 레이어)
 
 | 날짜 | 항목 | 내용 |

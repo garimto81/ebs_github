@@ -1,3 +1,11 @@
+---
+title: Statistics
+owner: team1
+tier: internal
+legacy-id: BS-03-05
+last-updated: 2026-04-15
+---
+
 # BS-03-05 Stats — 통계/승률 설정
 
 | 날짜 | 항목 | 내용 |

@@ -3,21 +3,22 @@ doc_type: "prd"
 doc_id: "EBS-UI-Design-v3"
 version: "9.7.0"
 status: "approved"
-owner: "BRACELET STUDIO"
+owner: team1
 created: "2026-03-05"
 last_updated: "2026-03-12"
 phase: "phase-1"
 priority: "critical"
-
-depends_on:
-  - "ebs_reverse: C:/claude/ebs_reverse/docs/pokergfx-prd-v2.md (기능/규칙/시나리오)"
-  - "ebs: docs/00-prd/EBS-UI-Design-v2.prd.md (archived, 기술 아키텍처 — v3에 통합)"
-  - "ui_overlay: C:/claude/ui_overlay/docs/03-analysis/pokergfx-v3.2-complete-whitepaper.md (247개 요소 분석)"
-
-source_analysis:
-  - ref: "pokergfx-v3.2-complete-whitepaper"
-    path: "C:/claude/ui_overlay/docs/03-analysis/pokergfx-v3.2-complete-whitepaper.md"
-    desc: "PokerGFX 247개 요소 분석, 54개 비활성화 식별, 15종 오버레이 상세"
+depends_on: 
+- "ebs_reverse: C:/claude/ebs_reverse/docs/pokergfx-prd-v2.md (기능/규칙/시나리오)"
+- "ebs: docs/00-prd/EBS-UI-Design-v2.prd.md (archived, 기술 아키텍처 — v3에 통합)"
+- "ui_overlay: C:/claude/ui_overlay/docs/03-analysis/pokergfx-v3.2-complete-whitepaper.md (247개 요소 분석)"
+source_analysis: 
+- ref: "pokergfx-v3.2-complete-whitepaper"
+path: "C:/claude/ui_overlay/docs/03-analysis/pokergfx-v3.2-complete-whitepaper.md"
+desc: "PokerGFX 247개 요소 분석, 54개 비활성화 식별, 15종 오버레이 상세"
+title: Console UI
+tier: internal
+last-updated: 2026-04-15
 ---
 
 # EBS UI Design — 앱 레이아웃 & 오버레이 그래픽 설계

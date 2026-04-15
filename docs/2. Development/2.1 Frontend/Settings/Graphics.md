@@ -1,3 +1,11 @@
+---
+title: Graphics
+owner: team1
+tier: internal
+legacy-id: BS-03-02
+last-updated: 2026-04-15
+---
+
 # BS-03-02 GFX — 그래픽 설정
 
 | 날짜 | 항목 | 내용 |
