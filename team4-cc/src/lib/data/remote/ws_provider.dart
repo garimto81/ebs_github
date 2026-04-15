@@ -24,6 +24,7 @@ import '../../features/command_center/providers/action_button_provider.dart';
 import '../../features/command_center/providers/hand_display_provider.dart';
 import '../../features/command_center/providers/hand_fsm_provider.dart';
 import '../../features/command_center/providers/undo_provider.dart';
+import '../../features/overlay/services/skin_consumer.dart';
 import '../../models/enums/hand_fsm.dart';
 import 'bo_api_client.dart';
 import 'bo_websocket_client.dart';
@@ -155,6 +156,11 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
           read(handFsmProvider.notifier).forceState(HandFsm.river);
           read(hasBetToMatchProvider.notifier).state = false;
       }
+
+    // CCR-015 skin_updated — forwards payload to SkinConsumer which
+    // re-fetches the skin bundle from BO and notifies the Overlay renderer.
+    case 'skin_updated':
+      read(skinConsumerProvider.notifier).handleSkinUpdatedEvent(payload);
 
     // §3.3.4 operational — no FSM effect on CC. Observability only.
     case 'GameChanged':

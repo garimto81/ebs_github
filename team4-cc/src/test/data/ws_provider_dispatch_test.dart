@@ -211,6 +211,29 @@ void main() {
     });
   });
 
+  group('WS dispatch — CCR-015 skin_updated', () {
+    test('valid payload forwards to SkinConsumer (no throw)', () {
+      container = _freshContainer();
+      expect(
+        () => dispatchIncomingEventForTest(container, <String, dynamic>{
+          'type': 'skin_updated',
+          'skin_id': 'wsop-2026',
+        }),
+        returnsNormally,
+      );
+    });
+
+    test('missing skin_id is tolerated (SkinConsumer logs warning)', () {
+      container = _freshContainer();
+      expect(
+        () => dispatchIncomingEventForTest(container, <String, dynamic>{
+          'type': 'skin_updated',
+        }),
+        returnsNormally,
+      );
+    });
+  });
+
   group('WS dispatch — forward compatibility (§3.3 version drift)', () {
     test('unknown event types are ignored without throwing', () {
       container = _freshContainer();
