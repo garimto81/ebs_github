@@ -19,7 +19,7 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 | Lobby | `../docs/2. Development/2.1 Frontend/Lobby/` |
 | Settings 6탭 | `../docs/2. Development/2.1 Frontend/Settings/` |
 | Graphic Editor | `../docs/2. Development/2.1 Frontend/Graphic_Editor/` |
-| Console 참조 | `../docs/2. Development/2.1 Frontend/Console_UI.md` |
+| Legacy Console UI (역사 기록) | `../docs/2. Development/2.1 Frontend/Settings/Legacy_Console_UI.md` |
 | Engineering / Architecture | `../docs/2. Development/2.1 Frontend/Engineering.md` |
 | Backlog | `../docs/2. Development/2.1 Frontend/Backlog.md` |
 

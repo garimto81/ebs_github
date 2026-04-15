@@ -20,7 +20,7 @@ last-updated: 2026-04-15
 
 Settings는 EBS **Lobby의 별도 하위 페이지**로, 오버레이 출력 파이프라인, 그래픽 배치, 수치 표시 형식, 게임 규칙, 통계/리더보드, 테이블 인증/진단/내보내기를 관리한다. **Settings는 글로벌 단위**로 모든 Command Center 인스턴스에 동일하게 적용된다 (테이블별 Settings 없음). Console PRD v9.7의 5탭(Outputs/GFX/Display/Rules/Stats) + Settings 다이얼로그(Preferences)를 행동 명세 6섹션으로 매핑한다.
 
-> 참조: Console PRD v9.7 §2.7~§2.10
+> 참조: [`Legacy_Console_UI.md`](./Legacy_Console_UI.md) §2.7~§2.10 (구 Console PRD v9.7 역사 기록)
 
 ---
 
