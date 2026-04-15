@@ -12,6 +12,7 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 카드 그리드 UI, 홀카드/보드 입력, 취소/되돌리기, RFID 폴백 전환 |
 | 2026-04-13 | UI-02 redesign | 합성 카드 선택으로 변경 (4×13 수트×랭크 → 합성 카드 이미지) |
+| 2026-04-15 | 구현 계약 보강 | §6.4.1 AT-03 자동 오픈 규칙 (트리거·타이틀·중복·닫기), §6.5 타이머/슬롯 경계 규칙 (재시작·DEALT 후 동작·WRONG_CARD 1초 auto-revert·`requestManualForSlot`) |
 
 ---
 
@@ -301,5 +302,36 @@ AT-01 Main의 카드 슬롯을 탭하거나 FALLBACK 상태로 전이하면 **AT
 - **이미 사용된 카드**: 흐리게 표시(opacity 0.4), 선택 불가
 
 **예시**: TURN 상태에서 SEAT1(2장) + SEAT2(2장) + 보드(3장) = 7장이 흐리게 표시되고, 나머지 45장만 선택 가능.
+
+#### 6.4.1 자동 오픈 규칙 (구현 계약)
+
+CC 코드(`at_01_main_screen.dart`) 가 `cardInputProvider` 를 listen 하여 다음 규칙으로 모달을 띄운다.
+
+| 항목 | 규칙 |
+|------|------|
+| 자동 오픈 트리거 | 어느 슬롯이 `CardSlotStatus.fallback` 으로 **전이하는 최초 순간 1회** 호출 |
+| 모달 타이틀 | `"Select Card — Seat {seatNo} Slot {i+1}"` (slot index 는 1-based 표시) |
+| 중복 진입 가드 | `_isFallbackModalOpen` 플래그 유지. 모달이 열려 있는 동안 다른 슬롯 fallback 전이는 큐잉 X (먼저 닫힌 후 다시 listen 으로 처리) |
+| 진행 중 슬롯 변경 요청 | 운영자가 다른 슬롯을 탭해 새 모달 요청 → 기존 모달 dismiss + 새 모달 open. 다이얼로그 스택 쌓지 않음 |
+| `Cancel` / `ESC` 동작 | 슬롯은 FALLBACK 상태 유지(카드 미주입). 운영자가 다시 탭하면 재오픈 |
+| 카드 선택 확정 | `cardInputProvider.manualSelect(slotIndex, suit, rank)` 호출 후 모달 dismiss |
+| 다음 슬롯 자동 이동 | **하지 않는다**. 운영자가 명시적으로 다음 슬롯을 탭해야 다음 DETECTING / 모달이 시작. 근거: hole card 순서 오류 방지 |
+
+### 6.5 타이머 / 슬롯 경계 규칙 (구현 계약)
+
+`CardInputNotifier` 의 슬롯별 5초 타이머가 다음과 같이 결정적으로 동작한다.
+
+| 사건 | 동작 |
+|------|------|
+| `startDetecting(index)` 호출 | DETECTING 진입 + 5초 타이머 시작 |
+| DETECTING 중 `startDetecting(index)` 재호출 | 기존 타이머 `cancel()` + 새 5초 타이머 시작 |
+| 타이머 만료 (>5s, 카드 미감지) | `CardSlotStatus.fallback` 전이 (§6.4.1 자동 오픈 트리거) |
+| `cardDetected(index, suit, rank)` 정상 매핑 | 타이머 취소 + DEALT 전이. **다음 슬롯 자동 진행 X** (운영자 탭 대기) |
+| `cardDetected` dupe 감지 | `CardSlotStatus.wrongCard` 전이 + 1초 자동 복귀 타이머. 1초 후 직전 상태(DETECTING 또는 EMPTY) 로 복귀하여 재시도 가능 |
+| `clearSlot(index)` | 타이머 취소 + EMPTY 전이 |
+| `requestManualForSlot(index)` (신규) | RFID 장애 상태에서 호출 시 5초 대기 생략 + **즉시** FALLBACK 전이. §Manual_Fallback §5.5 매핑과 연동 |
+
+> **WRONG_CARD 1초 auto-revert** 는 운영자가 동일 카드 두 번 탭한 경우의 회복 경로. 1초 동안 빨강 shake 노출 → 자동으로 DETECTING 또는 EMPTY 로 복귀해 다음 카드 입력이 자연스럽다.
+
 | BS-06-00-triggers | RFID vs CC 카드 입력 경계 규칙 |
 | BS-04-rfid (추후) | RFID HAL 인터페이스, Mock HAL 합성 |
