@@ -372,8 +372,11 @@ CREATE TABLE table_seats (
     country_code TEXT,
     chip_count INTEGER NOT NULL DEFAULT 0,
     profile_image TEXT,
-    status TEXT NOT NULL DEFAULT 'empty',
-    player_move_status TEXT,
+    status TEXT NOT NULL DEFAULT 'empty'
+        CHECK (status IN ('empty','new','playing','moved','busted','reserved')),
+    -- 2026-04-15 Gap-Final-1a: WSOP LIVE PlayerMoveStatus {0=None, 1=New, 2=Move} 정렬
+    player_move_status TEXT
+        CHECK (player_move_status IS NULL OR player_move_status IN ('none','new','move')),
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     UNIQUE(table_id, seat_no),

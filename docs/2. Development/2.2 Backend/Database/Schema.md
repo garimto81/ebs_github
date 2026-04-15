@@ -23,6 +23,7 @@ last-updated: 2026-04-15
 | 2026-04-15 | G4-C 확장 | `configs` 테이블에 `scope` / `scope_id` 컬럼 추가 (global/series/event/table). `(key, scope, scope_id)` UNIQUE 로 PK 변경. CHECK 2개 신설. Override 체인: `resolve_config(key, table_id)` → table→event→series→global 순 fallback (BO 서비스 레이어 `src/services/config_service.py` 후속 구현). G4-A Overview 와 일관 |
 | 2026-04-15 | G6 판정 | WSOP LIVE `EventDay`/`EventFlightSection` 엔티티 추가 검토 결과: **justified divergence (미채택)**. EventDay 는 `event_flights.start_time + duration` 으로 흡수, EventFlightSection 의 PokerRoom/TableColor 는 `skins` + `output_presets` 로 흡수 가능. 상세는 §2 대회 계층 끝 "EventDay/EventFlightSection 미채택" 블록 |
 | 2026-04-15 | G-A3 상세화 | §configs 뒤에 `resolve_config()` **Python 의사코드 + 동등 SQL + 캐시/격리수준/write 경로** 추가. `src/services/config_service.py` Phase 1 작성 대상 — 실존 구현이 없어 문서로 SSOT 확보 |
+| 2026-04-15 | Gap-Final-1a | §table_seats 에 **PlayerMoveStatus enum 서브섹션** 신설. WSOP LIVE Tables API (Confluence page 1653833763 Staff, 1912668498 Player App) `PlayerMoveStatus {0=None, 1=New, 2=Move}` 완전 정렬. CHECK 제약 + SeatStatus 6값 × PlayerMoveStatus 3값 조합 매트릭스. Alembic 0004_player_move_status_check |
 
 ---
 
@@ -253,6 +254,41 @@ Phase 1 SQLite: `CHECK(status IN ('empty','new','playing','moved','busted','rese
 Phase 3+ PostgreSQL: `CREATE TYPE seat_status AS ENUM(...)`.
 
 > FSM 의 9코드(E/N/M/B/O/R/W/H/PLAYING)는 상태 전이 표현용이며, DB 저장 시 위 6값으로 매핑된다. 매핑 규칙: `State_Machines.md §3` 표 참조.
+
+#### PlayerMoveStatus enum (2026-04-15 Gap-Final-1a, WSOP LIVE 1:1 정렬)
+
+WSOP LIVE `PlayerMoveStatus` (Confluence Page `1653833763` Staff Tables API L92, Page `1912668498` Player App Table Tab SeatPlayerInfo) 와 완전 정렬. `table_seats.player_move_status` 는 문자열로 저장하되 WSOP LIVE 정수 enum 과 순서 일치.
+
+| EBS 값 | WSOP LIVE 값 | 의미 | 타이머 | 오버레이/Lobby 표시 |
+|:------:|:------------:|------|:------:|---------------------|
+| `none` | `0 None` | 이동 중 아님 | — | 뱃지 없음 |
+| `new` | `1 New` | 새로 배정됨 (등록 직후 sit-in 대기) | **10분 카운트다운** | "NEW" 뱃지 |
+| `move` | `2 Move` | 다른 테이블/좌석에서 이동해 옴 | **10분 카운트다운** | "MOVED" 뱃지 |
+
+**CHECK 제약** (SQLite): `CHECK(player_move_status IS NULL OR player_move_status IN ('none','new','move'))` — NULL 허용 (빈 좌석 호환).
+
+**SeatStatus × PlayerMoveStatus 조합 매트릭스**:
+
+| SeatStatus | PlayerMoveStatus | 의미 | 표시 우선순위 |
+|-----------|:----------------:|------|:-------------:|
+| `empty` | — (NULL) | 빈 좌석 | EMPTY 표시 |
+| `new` | `new` | 등록 직후 10분 카운트다운 | **NEW 뱃지 + 카운트다운** |
+| `playing` | `none` | 정상 플레이 중 | PLAYING (녹색) |
+| `playing` | `move` | 이동 후 플레이 시작했으나 10분 이내 | **MOVED 뱃지** + PLAYING 색 |
+| `moved` | `move` | 이동 중 sit-in 대기 (10분 경과 전) | MOVED 뱃지 + 카운트다운 |
+| `busted` | — | 탈락 요청 | BUSTED (적색) |
+| `reserved` | — | 예약/HOLD/OCCUPIED | RESERVED (짙은 회색) |
+
+10분 카운트다운 만료 시 PlayerMoveStatus → `none` 자동 전이 (서비스 레이어 scheduler 또는 조회 시점 lazy update). 상세는 `State_Machines.md §3 SeatFSM`.
+
+**변환 헬퍼** (Python, `src/models/table.py` 에 상수로 배치):
+
+```python
+PLAYER_MOVE_STATUS_TO_WSOP = {"none": 0, "new": 1, "move": 2}
+WSOP_TO_PLAYER_MOVE_STATUS = {v: k for k, v in PLAYER_MOVE_STATUS_TO_WSOP.items()}
+```
+
+WSOP sync adapter 가 UPSERT 시 `int → str` 변환 필수.
 
 ```python
 # players
@@ -623,7 +659,7 @@ LIMIT 1;
 **캐시 전략**:
 - per-worker in-memory LRU (key = `(key, table_id)`, TTL 60s, maxsize 1024). `functools.lru_cache` 불가 (TTL 없음) → 간단 custom cache 또는 `cachetools.TTLCache` 사용.
 - WebSocket `ConfigChanged` 수신 시 해당 scope 매칭 entry 만 invalidate (전체 flush 금지 — 고빈도 변경 시 성능 저하).
-- Redis 공유 캐시는 **Phase 2+** — 멀티 워커 일관성 요구 시 도입 (invalidation broadcast 포함).
+- Redis 공유 캐시는 **조건부 활성** — 환경변수 `EBS_SHARED_CONFIG_CACHE=redis` 설정 시 per-worker in-memory + Redis pub/sub invalidation 이중화. 기본값은 per-worker in-memory (단일 워커 가정).
 
 **트랜잭션 격리수준**: `READ COMMITTED` (Postgres) / SQLite 기본. scope 체인 조회 중 `UPDATE configs` 가 섞여도 최종값은 "조회 시점의 최상위 scope" 로 결정 — eventual consistency 허용 (UI 반영 지연 ≤ 1초).
 

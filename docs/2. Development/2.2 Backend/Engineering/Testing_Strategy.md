@@ -477,16 +477,17 @@ python -m locust -f tests/load/smoke_locustfile.py \
     --html tests/load/reports/smoke-$(date +%Y%m%d-%H%M).html
 ```
 
-### 9.5 CI 통합 (Phase 2+)
+### 9.5 CI 통합 (조건부 활성)
 
-- main 머지 후 nightly GitHub Actions job 에서 실행
+- `.github/workflows/smoke-load.yml` 파일 생성 시 nightly 자동 실행
 - 결과를 `docs/4. Operations/Reports/load-smoke/` 에 append
 - 회귀 기준: p95 가 이전 7일 baseline + 20% 초과 시 FAIL (Sentry 경보)
 - 환경: 전용 staging 인스턴스 (prod-live 부하 방지)
+- 기획 완비 — 운영 환경 준비 시점에 workflow 파일만 추가하면 즉시 가동
 
-### 9.6 Phase 3+ 정규 부하 (B-055)
+### 9.6 정규 부하 / Soak / Chaos
 
-- 1,000 concurrent × 30min, prod-live 용량 사이징 검증
-- soak test (4h 지속 부하) — 메모리 누수 감지
-- chaos engineering (Redis kill, DB failover) 시나리오 포함
-- 별도 plan: `docs/4. Operations/Plans/Load_Testing_Phase_3.md` (예정)
+- **정규 부하**: 1,000 concurrent × 30min, prod-live 용량 사이징 검증 (확장 slot: `tests/load/regular_locustfile.py`)
+- **Soak test**: 4h 지속 부하 — 메모리 누수 감지 (확장 slot: `tests/load/soak_locustfile.py`)
+- **Chaos engineering**: Redis kill, DB failover, WSOP LIVE timeout 시나리오 (확장 slot: `tests/chaos/`)
+- 실행 계획 문서: `docs/4. Operations/Plans/Load_Testing.md` — 기획 완비, 조직 운영 환경 성숙 시점 활성화

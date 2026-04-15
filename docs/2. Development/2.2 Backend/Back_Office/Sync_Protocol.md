@@ -59,7 +59,7 @@ Content-Type: application/x-www-form-urlencoded
 - `asyncio.Lock` 으로 동시 재발급 race 방지.
 - 만료 30초 전 선제 재발급 (REFRESH_MARGIN_SEC=30).
 
-**환경변수** (Phase 2+ 실통합 시 필수):
+**환경변수** (실통합 활성화 조건 — `WSOP_LIVE_AUTH_URL` 설정 시 자동 활성):
 
 | 변수 | 값 예시 |
 |------|---------|
@@ -67,7 +67,9 @@ Content-Type: application/x-www-form-urlencoded
 | `WSOP_LIVE_CLIENT_ID` | `ebs-bo-prod` (secret manager 관리) |
 | `WSOP_LIVE_CLIENT_SECRET` | (secret manager 관리, 평문 저장 금지) |
 
-**Phase 1 (mock)**: 환경변수 미설정 허용. `wsop_sync_service` 가 mock 데이터 경로로 진입 시 `WsopAuthClient.get_access_token()` 호출을 skip. Phase 2 실통합 전환 시 환경변수 필수로 전환.
+**Mock 모드 (기본값)**: 환경변수 미설정 시 `wsop_sync_service` 가 mock 데이터 경로로 진입 + `WsopAuthClient.get_access_token()` 호출 skip. 3개 환경변수 모두 설정 시 실통합 자동 활성.
+
+> **기획 완성도**: mock 과 실통합 두 경로 모두 본 문서 + `src/adapters/wsop_auth.py` 에 완전 기재. phase 간 별도 작업 없이 환경변수만으로 전환.
 
 **장애 처리**:
 - 401/403 응답 → 즉시 재발급 1회 재시도. 실패 시 Circuit Breaker OPEN (§7.1).

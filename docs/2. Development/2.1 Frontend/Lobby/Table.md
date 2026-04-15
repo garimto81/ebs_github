@@ -12,6 +12,7 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-10 | 신규 작성 | Table 상태 2축 분리: TableFSM × `is_pause` (CCR-017) |
 | 2026-04-15 | UI 표시 + WSOP LIVE 통합 | §6 LIVE+is_pause UI 매트릭스 신설 (배지·색·CSS class). §7 WSOP LIVE Table Management 매핑 (Player Add/Move/Stack/Eliminate, Auto/Manual Seating, Seat 색상 코드, Reserved Seat/Table, Breaking Order). team1 발신, Round 2 Phase A. |
+| 2026-04-15 | Gap-Final-1b PlayerMoveStatus UX | §8 신설 — WSOP LIVE `PlayerMoveStatus {0=None, 1=New, 2=Move}` (Confluence 1653833763) Lobby UX. SeatStatus × PlayerMoveStatus 조합 뱃지·색상·타이머 규정. 스크린샷: `visual/screenshots/ebs-flow-table-status.png` (EBS 버전). team2 draft, **team1 decision_owner — PR 통지 필요**. |
 
 ---
 
@@ -266,7 +267,51 @@ Reserved Seat 는 클릭 비활성. 적색은 TD 컨펌 후 백색으로 전환.
 
 ---
 
-## 8. 연관 문서
+## 8. PlayerMoveStatus UX (Seat 단위, WSOP LIVE 정렬)
+
+WSOP LIVE `PlayerMoveStatus {0=None, 1=New, 2=Move}` (Confluence page `1653833763` Staff Tables API, `1912668498` Player App Table Tab) 의 Lobby 화면 표시 규정. Back-end SSOT: `DATA-04 Schema.md §table_seats PlayerMoveStatus enum`.
+
+### 8.1 뱃지 · 타이머 · 색상
+
+| PlayerMoveStatus | 뱃지 텍스트 | 뱃지 색 | 카운트다운 | 카운트다운 위치 | 만료 시 전이 |
+|:----------------:|:----------:|:------:|:----------:|:---------------:|:-----------:|
+| `none` (NULL) | — (표시 없음) | — | 없음 | — | — |
+| `new` | **NEW** | #F4A742 (황색) | 10분 | 좌석 우상단 (mm:ss) | `none` 자동 전이 |
+| `move` | **MOVED** | #4A7BF4 (청색) | 10분 | 좌석 우상단 (mm:ss) | `none` 자동 전이 |
+
+10분 카운트다운은 `table_seats.updated_at` (PlayerMoveStatus 변경 시점) 기준. 만료 시 프론트엔드는 서버의 다음 `SeatUpdated` 이벤트를 기다리지 않고 **뱃지만 숨김** (optimistic hide). 서버는 별도 scheduler 또는 lazy update 로 실제 DB 값을 `none` 으로 정리.
+
+### 8.2 SeatStatus × PlayerMoveStatus 조합 표시 우선순위
+
+`DATA-04 §PlayerMoveStatus` 매트릭스를 UI 에서 렌더할 때의 우선순위:
+
+| SeatStatus | PlayerMoveStatus | 좌석 색 | 뱃지 | 비고 |
+|-----------|:----------------:|:------:|:----:|-----|
+| `empty` | NULL | 백색 | — | "Open" 표시 |
+| `new` | `new` | 황색 | NEW | **뱃지 우선** — sit-in 전 대기 |
+| `playing` | `none` | 녹색 | — | 정상 플레이 |
+| `playing` | `move` | 녹색 | MOVED | 이동 후 10분 이내 플레이 시작 |
+| `moved` | `move` | — | MOVED + 카운트다운 | 이동 중 sit-in 대기 |
+| `busted` | any | 적색 | BUSTED | confirm 대기 |
+| `reserved` | any | 짙은 회색 | RESERVED | Seat Draw/Hold/Occupied |
+
+### 8.3 스크린샷 참조
+
+- EBS 현재 구현 스크린샷: `visual/screenshots/ebs-flow-table-status.png` (기존)
+- EBS 좌석 배치 화면: `visual/screenshots/ebs-lobby-04-tables.png`
+- WSOP LIVE 원본 UI 는 Confluence page `1653833763` 첨부 (로컬 미러 `C:/claude/wsoplive/docs/confluence-mirror/.../Tables API.md` 인접 `_attachments/` 폴더)
+
+**일치 기준**: 뱃지 텍스트·카운트다운·색상·만료 규칙 모두 WSOP LIVE 원본과 동일. divergence 없음 (이전에는 enum 자체 미채택이었으므로 뱃지 표시가 없던 상태).
+
+### 8.4 Back-end 이벤트 연계
+
+- `SeatUpdated` WebSocket 이벤트에 `player_move_status: 'none' | 'new' | 'move'` 필드 포함 (API-05 §4.x)
+- Lobby / CC 수신 시 위 매트릭스 따라 리렌더
+- 10분 타이머는 서버 `updated_at` 기준 client-side 계산 (clock skew 보정: envelope `server_time`)
+
+---
+
+## 9. 연관 문서
 
 - `BS-00-definitions.md §3.1` — TableFSM 정의
 - `DATA-04-db-schema.md §1.5` — Table 필드 정의

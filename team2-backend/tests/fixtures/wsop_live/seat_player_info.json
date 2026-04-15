@@ -1,0 +1,64 @@
+{
+  "_metadata": {
+    "confluence_pages": ["1912668498", "1653833763"],
+    "collected_at": "2026-04-15",
+    "source": "expected_schema (not actual response)"
+  },
+  "seats": [
+    {
+      "seatId": 1001,
+      "seatNo": 0,
+      "playerId": 501,
+      "wsopId": "WS-12345",
+      "playerName": "Daniel Negreanu",
+      "realName": "Daniel Negreanu",
+      "nickName": "Kid Poker",
+      "nationality": "Canadian",
+      "profileImageUrl": "https://cdn.wsop.example/p/501.jpg",
+      "chipCount": 150000,
+      "reEntryCount": 0,
+      "status": 0,
+      "tableId": 42,
+      "playerMoveStatus": 0,
+      "playerSeatBeginAt": "2026-05-27T14:30:00Z",
+      "playerRegisteredAt": "2026-05-27T10:00:00Z",
+      "accountStatus": 0
+    },
+    {
+      "seatId": 1002,
+      "seatNo": 1,
+      "playerId": 502,
+      "wsopId": "WS-67890",
+      "playerName": "Phil Ivey",
+      "realName": "Phillip Dennis Ivey Jr.",
+      "nickName": "Tiger Woods of Poker",
+      "nationality": "American",
+      "profileImageUrl": "https://cdn.wsop.example/p/502.jpg",
+      "chipCount": 95000,
+      "reEntryCount": 1,
+      "status": 0,
+      "tableId": 42,
+      "playerMoveStatus": 1,
+      "playerSeatBeginAt": "2026-05-27T15:45:00Z",
+      "playerRegisteredAt": "2026-05-27T10:15:00Z",
+      "accountStatus": 0
+    },
+    {
+      "seatId": 1003,
+      "seatNo": 2,
+      "playerId": 503,
+      "wsopId": "WS-24680",
+      "playerName": "Fedor Holz",
+      "nationality": "German",
+      "profileImageUrl": "https://cdn.wsop.example/p/503.jpg",
+      "chipCount": 220000,
+      "reEntryCount": 0,
+      "status": 0,
+      "tableId": 42,
+      "playerMoveStatus": 2,
+      "playerSeatBeginAt": "2026-05-27T16:10:00Z",
+      "playerRegisteredAt": "2026-05-27T10:00:00Z",
+      "accountStatus": 0
+    }
+  ]
+}

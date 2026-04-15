@@ -1,0 +1,39 @@
+{
+  "_metadata": {
+    "confluence_pages": ["1599537917"],
+    "collected_at": "2026-04-15",
+    "source": "expected_schema (not actual response)"
+  },
+  "series": [
+    {
+      "id": 100,
+      "competitionId": 1,
+      "competitionType": 0,
+      "competitionTag": 1,
+      "name": "2026 WSOP",
+      "year": 2026,
+      "beginAt": "2026-05-27",
+      "endAt": "2026-07-16",
+      "timeZone": "America/Los_Angeles",
+      "currency": "USD",
+      "countryCode": "US",
+      "isCompleted": false,
+      "isDisplayed": true
+    },
+    {
+      "id": 101,
+      "competitionId": 2,
+      "competitionType": 1,
+      "competitionTag": 2,
+      "name": "2026 WSOPC Seoul",
+      "year": 2026,
+      "beginAt": "2026-03-15",
+      "endAt": "2026-03-25",
+      "timeZone": "Asia/Seoul",
+      "currency": "KRW",
+      "countryCode": "KR",
+      "isCompleted": true,
+      "isDisplayed": true
+    }
+  ]
+}

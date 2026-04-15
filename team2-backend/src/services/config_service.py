@@ -38,6 +38,28 @@ _cache: dict[tuple, tuple[Optional[str], float]] = {}
 _cache_lock = Lock()
 
 
+# ──────────────────────────────────────────────────────────────────
+# applied_at_hint 판정 (Gap-Final-2)
+# ──────────────────────────────────────────────────────────────────
+
+_NEXT_HAND_KEY_PREFIXES = ("game.", "rule.", "blind.")
+_MANUAL_KEY_PREFIXES = ("overlay.force_reload", "ops.maintenance")
+
+
+def hint_for_key(key: str) -> str:
+    """config key → applied_at_hint (immediate/next_hand/manual).
+
+    Back_Office/Overview.md §3.6 핸드 중간 설정 변경 지연 규정 기반.
+    """
+    for p in _MANUAL_KEY_PREFIXES:
+        if key.startswith(p):
+            return "manual"
+    for p in _NEXT_HAND_KEY_PREFIXES:
+        if key.startswith(p):
+            return "next_hand"
+    return "immediate"
+
+
 def _cache_key(key: str, table_id, event_id, series_id) -> tuple:
     return (key, table_id, event_id, series_id)
 
@@ -168,7 +190,7 @@ def resolve_config(
     return resolved if resolved is not None else default
 
 
-def upsert_config(
+async def upsert_config(
     session: Session,
     key: str,
     value: str,
@@ -177,6 +199,8 @@ def upsert_config(
     scope_id: Optional[int] = None,
     category: str = "system",
     description: Optional[str] = None,
+    actor_user_id: Optional[int] = None,
+    ws_manager: Optional[Any] = None,
 ) -> tuple[Config, Optional[str]]:
     """Config upsert + cache invalidate.
 
@@ -227,5 +251,30 @@ def upsert_config(
 
     # cache invalidate (해당 key 전체)
     invalidate_config(key, scope, scope_id)
+
+    # Gap-Final-2 (2026-04-15): ConfigChanged WebSocket broadcast
+    if ws_manager is not None:
+        event = {
+            "type": "ConfigChanged",
+            "table_id": "*" if scope != "table" else str(scope_id),
+            "payload": {
+                "scope": scope,
+                "scope_id": scope_id,
+                "config_key": key,
+                "old_value": old_value,
+                "new_value": value,
+                "actor_user_id": actor_user_id,
+                "applied_at_hint": hint_for_key(key),
+            },
+        }
+        # Lobby: 모든 CC/Lobby 구독자에게 (table scope 필터링은 client 측)
+        await ws_manager.broadcast("lobby", "*", event)
+        # CC 채널: table scope 면 해당 테이블만, 그 외는 fan-out
+        cc_key = str(scope_id) if scope == "table" else "*"
+        try:
+            await ws_manager.broadcast("cc", cc_key, event)
+        except Exception:
+            # cc 채널 없음 허용 (Lobby-Only 배포)
+            pass
 
     return row, old_value
