@@ -13,6 +13,8 @@ last-updated: 2026-04-15
 | 2026-04-09 | 신규 작성 | BO-09 + BO-10 병합. 동기화 정책, 오프라인 대응, 충돌 해결, WSOP LIVE 폴링/UPSERT/장애 대응, Mock 모드 |
 | 2026-04-10 | 서킷브레이커/Fallback Queue | §7.1 WSOP LIVE 폴링 실패 시 Circuit Breaker + `sync:wsop:pending` Redis Stream fallback queue + cursor 기반 delta 재개 (IMPL-10 §3.3 / GAP-BO-009 정합) |
 | 2026-04-14 | L0 중복 제거 | §5 폴링 주기·§5.2 config 키·§6 UPSERT 규칙을 `contracts/api/API-01` Part II 인용으로 축약. team2 구현 노트만 유지. drift 위험 제거 |
+| 2026-04-15 | Task #7 outbound 인증 | "BO → WSOP LIVE outbound 인증" 섹션 신설. OAuth 2.0 client_credentials, Basic 헤더, 토큰 캐시 전략, 환경변수 명시. 구현: `src/adapters/wsop_auth.py`. BS-01 §방향별 2-스택과 cross-ref |
+| 2026-04-15 | Task #3 game_type 변환 | `wsop_sync_service.poll_series()` UPSERT 전 `src/adapters/wsop_game_type.map_to_ebs()` 호출 명시. WSOP LIVE 9종 ↔ EBS 22종 silent corruption 방지 |
 
 ---
 
@@ -27,13 +29,66 @@ Lobby↔BO↔CC 동기화 + WSOP LIVE 외부 데이터 수집의 **정책과 장
 
 ## 1. 동기화 개요
 
-| 채널 | 방향 | 역할 |
-|------|------|------|
-| **REST API** | Lobby → BO | CRUD 작업 (생성/수정/삭제) |
-| **WebSocket** | CC ↔ BO ↔ Lobby | 실시간 이벤트 (핸드, 상태, 설정 변경) |
-| **폴링** | BO → WSOP LIVE | 외부 데이터 주기적 수집 |
+| 채널 | 방향 | 역할 | 인증 |
+|------|------|------|------|
+| **REST API** | Lobby → BO | CRUD 작업 (생성/수정/삭제) | JWT Bearer (내부) |
+| **WebSocket** | CC ↔ BO ↔ Lobby | 실시간 이벤트 (핸드, 상태, 설정 변경) | JWT Bearer (내부) |
+| **폴링** | BO → WSOP LIVE | 외부 데이터 주기적 수집 | **OAuth 2.0 client_credentials (outbound)** — §1.1 참조 |
 
-> 상세: API-05 §1 연결 아키텍처, API-01 REST 엔드포인트
+> 상세: API-05 §1 연결 아키텍처, API-01 REST 엔드포인트, BS-01 §방향별 2-스택
+
+### 1.1 BO → WSOP LIVE outbound 인증 (2026-04-15 Task #7)
+
+**프로토콜**: OAuth 2.0 client_credentials grant type.
+
+```
+POST {WSOP_LIVE_AUTH_URL}?grant_type=client_credentials
+Authorization: Basic base64({WSOP_LIVE_CLIENT_ID}:{WSOP_LIVE_CLIENT_SECRET})
+Content-Type: application/x-www-form-urlencoded
+```
+
+응답:
+```json
+{ "access_token": "...", "token_type": "Bearer", "expires_in": 3600 }
+```
+
+**구현**: `team2-backend/src/adapters/wsop_auth.py` (`WsopAuthClient.get_access_token()`).
+
+**토큰 캐시 정책**:
+- per-worker 메모리 캐시 (Redis 공유 불필요 — stateless client_credentials).
+- `asyncio.Lock` 으로 동시 재발급 race 방지.
+- 만료 30초 전 선제 재발급 (REFRESH_MARGIN_SEC=30).
+
+**환경변수** (Phase 2+ 실통합 시 필수):
+
+| 변수 | 값 예시 |
+|------|---------|
+| `WSOP_LIVE_AUTH_URL` | `https://auth.wsoplive.example/auth/token` |
+| `WSOP_LIVE_CLIENT_ID` | `ebs-bo-prod` (secret manager 관리) |
+| `WSOP_LIVE_CLIENT_SECRET` | (secret manager 관리, 평문 저장 금지) |
+
+**Phase 1 (mock)**: 환경변수 미설정 허용. `wsop_sync_service` 가 mock 데이터 경로로 진입 시 `WsopAuthClient.get_access_token()` 호출을 skip. Phase 2 실통합 전환 시 환경변수 필수로 전환.
+
+**장애 처리**:
+- 401/403 응답 → 즉시 재발급 1회 재시도. 실패 시 Circuit Breaker OPEN (§7.1).
+- 5xx 응답 → 지수 백오프 (최대 3회).
+- 네트워크 타임아웃 → 10s 기본, `httpx.AsyncClient` 설정.
+
+### 1.2 WSOP LIVE GameType 변환 (2026-04-15 Task #3)
+
+WSOP LIVE `EventGameType` (9종, 0~8) 은 EBS `game_type` (22종, 0~21) 과 **값 의미가 완전히 상이**하다. `wsop_sync_service.poll_series()` 가 WSOP LIVE 응답을 `events` 테이블에 UPSERT 하기 전 반드시 `src/adapters/wsop_game_type.map_to_ebs()` 를 호출해야 한다.
+
+```python
+from src.adapters.wsop_game_type import map_to_ebs
+
+ebs_game_type, ebs_game_mode = map_to_ebs(
+    wsop_game_type=wsop_event["game_type"],
+    event_game_mode=wsop_event.get("game_mode"),
+)
+# events 테이블 UPSERT 시 ebs_game_type / ebs_game_mode 사용
+```
+
+상세: `../Database/Schema.md §events WSOP LIVE 정렬 (game_type)`. 회귀 방지: `tests/test_wsop_enum_parity.py`.
 
 ---
 

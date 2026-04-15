@@ -599,17 +599,41 @@ Lobby(또는 Settings)에서 설정을 변경하면 BO를 경유하여 CC에 실
 
 **Replay**: Overlay 재연결 또는 network gap 후 복구 시 `GET /api/v1/skins/active`로 current active 확인 후 `GET /events/replay?from_seq={last_seq}&channel=cc_event`로 놓친 `skin_updated` 이벤트 재생 (CCR-015 seq 단조증가 정책 활용).
 
-### 5.1 ConfigChanged payload 상세
+### 5.1 ConfigChanged payload 상세 (2026-04-15 scope 확장)
 
 ```json
 {
-  "table_id": 5,
+  "scope": "event",
+  "scope_id": 17,
   "config_key": "overlay.security_delay_ms",
   "old_value": 30000,
   "new_value": 60000,
-  "changed_by": "admin-user-1"
+  "actor_user_id": 3,
+  "applied_at_hint": "next_hand"
 }
 ```
+
+**scope 매칭 필터** (CC 수신 측 로직):
+
+```python
+if scope == "global":
+    apply(event)
+elif scope == "series" and my_table.series_id == scope_id:
+    apply(event)
+elif scope == "event" and my_table.event_id == scope_id:
+    apply(event)
+elif scope == "table" and my_table.table_id == scope_id:
+    apply(event)
+else:
+    ignore(event)
+```
+
+BO 브로드캐스트는 `cc_event` 채널 전체로 송출한다 (fan-out). 필터링은 각 CC 가 자기 context(series/event/table ID) 를 알고 있으므로 수신 측에서 수행한다. 상세: `../2.4 Command Center/Settings.md §WebSocket 전달`.
+
+`applied_at_hint` 값:
+- `immediate`: IDLE 상태 즉시 반영
+- `next_hand`: 핸드 진행 중이면 다음 핸드 시작 시 반영
+- `manual`: 오퍼레이터가 명시적으로 적용 버튼을 눌러야 반영 (특수 케이스)
 
 ### 5.2 핸드 중간 설정 변경 지연
 

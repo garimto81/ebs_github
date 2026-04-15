@@ -20,6 +20,8 @@ last-updated: 2026-04-15
 | 2026-04-15 | G2 추가 | §events.game_type 뒤에 "WSOP LIVE 정렬 (game_type)" 서브섹션 신설. 22종(EBS) ↔ 9종(WSOP LIVE) divergence justified + adapter 계약 명시 |
 | 2026-04-15 | G7 추가 | §players 뒤에 "WSOP LIVE 대비 미채택 필드" 서브섹션 신설. email/birth/join_type 제외 근거 명문화 (§1.2 매트릭스 KYC/Registration 제거와 일관) |
 | 2026-04-15 | G3 확장 | `blind_structure_levels.detail_type` enum 을 3값(0=Blind/1=Break/2=DinnerBreak) → **5값(+ 3=HalfBlind, 4=HalfBreak)** 으로 확장. CHECK 제약 명시. WSOP LIVE `BlindDetailType` (Confluence 1960411325) 와 1:1 정렬. DDL/migration 은 team2-backend/src/db/init.sql 및 Alembic revision 로 후속 반영 |
+| 2026-04-15 | G4-C 확장 | `configs` 테이블에 `scope` / `scope_id` 컬럼 추가 (global/series/event/table). `(key, scope, scope_id)` UNIQUE 로 PK 변경. CHECK 2개 신설. Override 체인: `resolve_config(key, table_id)` → table→event→series→global 순 fallback (BO 서비스 레이어 `src/services/config_service.py` 후속 구현). G4-A Overview 와 일관 |
+| 2026-04-15 | G6 판정 | WSOP LIVE `EventDay`/`EventFlightSection` 엔티티 추가 검토 결과: **justified divergence (미채택)**. EventDay 는 `event_flights.start_time + duration` 으로 흡수, EventFlightSection 의 PokerRoom/TableColor 는 `skins` + `output_presets` 로 흡수 가능. 상세는 §2 대회 계층 끝 "EventDay/EventFlightSection 미채택" 블록 |
 
 ---
 
@@ -318,6 +320,30 @@ WSOP LIVE `Player` 엔티티에는 있으나 EBS 가 **의도적으로 채택하
 
 > 구현: `src/models/player.py` (SQLModel 5필드) / WSOP LIVE Confluence Page `1652949021` (Fatima ERD)
 
+#### EventDay / EventFlightSection 미채택 (2026-04-15 G6 판정)
+
+**WSOP LIVE 계층**: `Event → EventDay → EventFlight → EventFlightSection → EventFlightTable → EventFlightSeat` (6단)
+**EBS 계층**: `events → event_flights → tables → table_seats` (4단)
+
+| WSOP LIVE 엔티티 | 주요 필드 | EBS 판정 | 흡수 방식 |
+|------------------|----------|:--------:|-----------|
+| `EventDay` | `LevelDuration`, `CloseCondition`, `DinnerDuration` | ❌ 미채택 | `event_flights.start_time + duration_minutes + blind_structure_levels.duration_minutes` 조합으로 충분. EventDay 는 "여러 Flight 을 Day 단위로 묶는 운영 편의" 엔티티이나 EBS 는 Flight 을 최소 단위로 다룸 |
+| `EventFlightSection` | `PokerRoom`, `TableColor`, `TableBeginNo`, `TableEndNo` | ❌ 미채택 | PokerRoom/TableColor 는 EBS 에서 `skins` (시각 스타일) + `output_presets` (출력 라우팅) 로 흡수 가능. 테이블 번호 범위는 `tables.event_flight_id + table_no` 정렬로 질의 |
+
+**Why justified**:
+- **운영 범위**: WSOP LIVE 는 물리 포커룸 여러 동·색상 그룹·시간대 분할 운영 → 엔티티 분리 필요. EBS 는 방송 테이블 중심으로 범위가 좁음 (§1.2 매트릭스 #10 Registration, #4 Table 관리 간소화 선언과 일관).
+- **Settings 스코프**: G4 에서 configs scope 를 `series/event/table` 3단으로 정의 — EventDay/Section 은 scope enum 에 포함시키지 않았다. 만약 향후 Day 단위 Settings 요구가 발생하면 scope enum 에 추가하는 방식으로 확장 가능 (이 경우 EventDay 엔티티가 필요해짐).
+- **Physical 구분**: PokerRoom/TableColor 로 Lobby 를 그룹핑하는 UI 요구는 현재 미발견 (Lobby 는 단일 방송 회차 내 전 테이블을 플랫하게 보여줌).
+
+**역전 조건** (이 판정을 뒤집어야 할 신호):
+1. Lobby 에서 "룸 별 필터" 또는 "Day 별 탭" 요구 확정
+2. WSOP LIVE API 에서 pull 되는 `EventFlight.EventDayId` 를 EBS 가 참조해야 하는 시나리오 확정
+3. Settings override chain 이 4단(+day) 이 필요하다는 BS-03 명세
+
+위 3개 중 하나라도 확정되면 이 판정을 뒤집고 EventDay 테이블 신설.
+
+> 구현 없음 (justified divergence). Schema.md 는 계층을 4단으로 유지.
+
 ---
 
 ## 3. 게임 도메인 테이블
@@ -494,16 +520,24 @@ class AuditLog(SQLModel, table=True):
     created_at: str = Field(default_factory=utcnow)
 
 
-# configs
+# configs (2026-04-15 G4-C: scope 확장, WSOP LIVE Series/Event 정렬)
 class Config(SQLModel, table=True):
     __tablename__ = "configs"
 
     id: int = Field(primary_key=True)
-    key: str = Field(nullable=False, unique=True)
+    key: str = Field(nullable=False)
     value: str = Field(nullable=False)
+    scope: str = Field(default="global")         # global | series | event | table
+    scope_id: int | None = None                  # scope='global' 이면 NULL, 그 외 해당 엔티티 PK
     category: str = Field(default="system")
     description: str | None = None
     updated_at: str = Field(default_factory=utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("key", "scope", "scope_id", name="uq_configs_key_scope"),
+        CheckConstraint("scope IN ('global','series','event','table')", name="ck_configs_scope"),
+        CheckConstraint("(scope = 'global' AND scope_id IS NULL) OR (scope != 'global' AND scope_id IS NOT NULL)", name="ck_configs_scope_id"),
+    )
 
 
 # blind_structures (CCR-049: Series 템플릿 + EventFlight 적용 분리, WSOP LIVE Page 1603666061 준거)

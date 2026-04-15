@@ -7,6 +7,7 @@ from typing import Optional
 
 from sqlmodel import Session, select
 
+from src.adapters.wsop_game_type import map_to_ebs
 from src.models.competition import Competition, Series, Event, EventFlight
 from src.models.table import Player
 from src.observability.circuit_breaker import CircuitBreaker
@@ -143,12 +144,21 @@ class WsopSyncService:
             series_count += 1
 
             for ei in range(10):
+                # 2026-04-15 Task #3: WSOP LIVE GameType → EBS game_type 변환.
+                # Mock 데이터는 WSOP LIVE "0=Holdem" 을 시뮬레이션 (실 통합에서는
+                # wsop_event["game_type"] 을 입력). map_to_ebs 는 silent corruption
+                # 방지를 위해 반드시 UPSERT 전에 호출.
+                ebs_game_type, ebs_game_mode = map_to_ebs(
+                    wsop_game_type=0,  # mock: Holdem
+                    event_game_mode=None,
+                )
                 event = Event(
                     series_id=series.series_id,
                     event_no=ei + 1,
                     event_name=f"Event #{si * 10 + ei + 1} NL Holdem",
                     buy_in=(ei + 1) * 1000,
-                    game_type=0,
+                    game_type=ebs_game_type,
+                    game_mode=ebs_game_mode,
                     bet_structure=0,
                     source="api",
                     synced_at=now,

@@ -218,6 +218,7 @@ CREATE TABLE blind_structures (
     updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );
 
+-- 2026-04-15 G3: detail_type CHECK 5값 (WSOP LIVE BlindDetailType Confluence 1960411325 정렬)
 CREATE TABLE blind_structure_levels (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     blind_structure_id INTEGER NOT NULL REFERENCES blind_structures(blind_structure_id),
@@ -226,7 +227,8 @@ CREATE TABLE blind_structure_levels (
     big_blind INTEGER NOT NULL,
     ante INTEGER NOT NULL DEFAULT 0,
     duration_minutes INTEGER NOT NULL,
-    detail_type INTEGER NOT NULL DEFAULT 0,
+    detail_type INTEGER NOT NULL DEFAULT 0
+        CHECK (detail_type IN (0, 1, 2, 3, 4)),
     UNIQUE(blind_structure_id, level_no)
 );
 
@@ -527,14 +529,23 @@ CREATE TABLE audit_logs (
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );
 
+-- 2026-04-15 G4-C: scope 확장 (WSOP LIVE Series/Event 단위 정렬)
+-- UNIQUE(key) 제약 제거, UNIQUE(key, scope, scope_id) 로 대체
+-- scope='global' 이면 scope_id=NULL, 그 외는 해당 엔티티 PK
 CREATE TABLE configs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    key TEXT NOT NULL UNIQUE,
+    key TEXT NOT NULL,
     value TEXT NOT NULL,
+    scope TEXT NOT NULL DEFAULT 'global'
+        CHECK (scope IN ('global','series','event','table')),
+    scope_id INTEGER,
     category TEXT NOT NULL DEFAULT 'system',
     description TEXT,
-    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    UNIQUE(key, scope, scope_id),
+    CHECK ((scope = 'global' AND scope_id IS NULL) OR (scope != 'global' AND scope_id IS NOT NULL))
 );
+CREATE INDEX idx_configs_lookup ON configs(key, scope, scope_id);
 
 CREATE TABLE skins (
     skin_id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -21,6 +21,7 @@ legacy-id: BS-01
 | 2026-04-14 | CCR-048 | 2FA Level 4-단계(Off/Low/Medium/High), 자동 잠금 10회 실패, Refresh Token TTL 48h 명시. WSOP LIVE GGPass 정렬 (SSOT Page 1972863063, 2202861710) |
 | 2026-04-14 | CCR-052 | Rate Limiting 정책 섹션 신설 (카테고리별 한계, 응답 헤더, 저장소 전략, IP whitelist). OWASP + WSOP LIVE 준거 |
 | 2026-04-14 | CCR-053 | Provisioning 전략 (Phase별 유저 생성 방식) + Suspend vs Lock 의미 차이 섹션 신설. WSOP LIVE Staff 패턴 정렬 (SSOT Page 1597768061) |
+| 2026-04-15 | G5 추가 | **방향별 인증 2-스택** 섹션 신설. EBS 내부(UI→BO) = JWT Bearer (기존), EBS outbound(BO→WSOP LIVE) = OAuth 2.0 client_credentials (신규). 구현: `team2-backend/src/adapters/wsop_auth.py`. **decision_owner = Conductor** — team2 브랜치에서 직접 편집 + PR 로 리뷰 요청 (v6 거버넌스, CR draft 파일 미생성) |
 
 ---
 
@@ -60,6 +61,60 @@ legacy-id: BS-01
 | **BO** (Back Office) | EBS 중앙 서버. 데이터베이스, API, 인증을 관리 |
 | **CC** (Command Center) | 실시간 방송 입력 Flutter 앱. 테이블당 1개 실행 |
 | **FastAPI** | Python 기반 웹 서버 프레임워크. BO 서버 구현에 사용 |
+
+---
+
+## 방향별 인증 2-스택 (2026-04-15 G5)
+
+EBS 는 **2가지 독립된 인증 스택**을 운영한다. 방향별 프로토콜·TTL·자격증명이 다르며, 구현도 분리된다.
+
+| 방향 | 프로토콜 | 자격증명 | 토큰 TTL | 구현 |
+|------|---------|---------|---------|------|
+| **내부 UI → BO** (Lobby, CC) | JWT Bearer | email + password + TOTP(옵션) | Access 1~12h / Refresh 48h (환경별 차등, CCR-006/048) | `src/security/jwt.py` (기존) |
+| **BO → WSOP LIVE (outbound)** | OAuth 2.0 client_credentials | Basic base64(client_id:secret) | access_token `expires_in` 그대로 (보통 3600s). 만료 30초 전 선제 재발급 | `team2-backend/src/adapters/wsop_auth.py` (2026-04-15 신설) |
+
+### Outbound 요청 플로우 (BO → WSOP LIVE)
+
+```
+1. BO → WSOP Auth URL:
+   POST /auth/token?grant_type=client_credentials
+   Authorization: Basic base64(CLIENT_ID:CLIENT_SECRET)
+
+2. WSOP 응답:
+   { access_token, token_type: "Bearer", expires_in: 3600 }
+
+3. BO 캐시:
+   in-memory (per-worker). expires_at = now + expires_in.
+   재발급 임박(30초 전) 시 자동 갱신 (asyncio.Lock 보호).
+
+4. WSOP LIVE API 호출:
+   GET /Series/{id}/Events
+   Authorization: Bearer <access_token>
+```
+
+### 환경변수
+
+| 변수 | 용도 |
+|------|------|
+| `WSOP_LIVE_AUTH_URL` | 토큰 발급 엔드포인트 전체 URL |
+| `WSOP_LIVE_CLIENT_ID` | OAuth client_id |
+| `WSOP_LIVE_CLIENT_SECRET` | OAuth client_secret (secret manager 권장) |
+
+> Phase 1 (mock) 은 환경변수 미설정 허용. `wsop_sync_service` 가 mock 데이터를 사용할 때 auth 호출을 생략. Phase 2 실통합 시 위 3개 변수 필수.
+
+### 캐시 정책
+
+- **per-worker 메모리 캐시** — Redis 공유 불필요. OAuth client_credentials 는 stateless 이므로 각 워커가 독립 발급해도 정합.
+- **asyncio.Lock** 으로 동시 재발급 race 방지 (하나의 워커 내에서).
+- 만료 임박(30초 전) 선제 재발급 → 요청 경계에서 만료된 토큰 사용 방지.
+
+### 영향 받는 영역
+
+| 영역 | 영향 | 담당팀 |
+|------|------|-------|
+| `team1-frontend` Lobby 인증 | 영향 없음 (내부 JWT 스택 유지) | team1 |
+| `team4-cc` CC 인증 | 영향 없음 (Lobby-Only Launch 토큰 전달) | team4 |
+| `team2-backend` BO | **outbound 호출부만 신규** (`src/adapters/wsop_auth.py` + `src/services/wsop_sync_service.py` 에서 사용) | team2 |
 
 ---
 
