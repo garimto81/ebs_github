@@ -93,6 +93,8 @@ EBS Core는 **Layer 1만 책임**한다. Layer 2/3은 외부 팀(포스트프로
 
 ## 3. 데이터 제공 API 요약
 
+### 3.1 Layer 2/3 외부 시스템용 API
+
 Layer 2/3 시스템이 EBS에서 필요로 하는 데이터:
 
 | API | 용도 | Layer |
@@ -103,6 +105,35 @@ Layer 2/3 시스템이 EBS에서 필요로 하는 데이터:
 | `API-05 WebSocket` | 실시간 이벤트 스트림 | 2 |
 
 Layer 2/3 외부 시스템은 이 API를 소비하여 자체 렌더링 파이프라인을 구축한다.
+
+### 3.2 Layer 1 — team3 ↔ team4 내부 계약 (API-04)
+
+Layer 1 의 8종 그래픽은 **team3 Game Engine** 이 GameState 변경 시 발행하는 `OutputEvent` 를 **team4 Overlay renderer** 가 수신하여 Rive 애니메이션을 트리거한다. 이 in-process 계약은 `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` (API-04) 가 정본이다.
+
+| 구분 | 위치 |
+|------|------|
+| OutputEvent sealed class 정의 (18종) | team3 `ebs_game_engine/lib/core/actions/output_event.dart` |
+| 이벤트 카탈로그 + payload 스키마 | `Overlay_Output_Events.md §6 씬 업데이트 이벤트` |
+| OutputEventBuffer (security delay) 구현 | team4 `src/lib/features/overlay/services/output_event_buffer.dart` (CCR-056) |
+| Backstage/Broadcast 이중 출력 | team4 `src/lib/features/overlay/services/dual_output_manager.dart` |
+
+**핵심 18종 요약** (상세 payload 는 API-04 참조):
+
+| # | Event | 트리거 | Layer 1 영향 |
+|---|-------|--------|-------------|
+| OE-01 | `StateChanged` | HandFSM phase 전환 | Phase 배너, 전환 애니메이션 |
+| OE-02 | `ActionProcessed` | 플레이어 액션 확정 | 액션 라벨, seat glow |
+| OE-03 | `PotUpdated` | pot 변동 | Pot Display 숫자 애니메이션 |
+| OE-04 | `EquityUpdated` | 승률 재계산 | Equity Bar |
+| OE-05 | `CardRevealed` | 보드·홀카드 공개 | Card Slot reveal 애니메이션 |
+| OE-06 | `HandCompleted` | 핸드 종료 | Winner 하이라이트 + Pot sweep |
+| OE-07..18 | (나머지 12종) | — | API-04 카탈로그 참조 |
+
+**소비자(team4) 가 계약 외 동작을 하지 않도록 하는 규칙**:
+
+1. 새 Layer 1 기능을 추가하려면 먼저 API-04 에 OutputEvent 를 추가 (team3 소유).
+2. team4 는 신규 이벤트를 수신할 때 **정의되지 않은 필드에 의존하지 않는다**. Freezed / sealed class pattern 으로 컴파일 시점 exhaustiveness 보장.
+3. team3 가 이벤트를 deprecate 하려면 최소 1 sprint 사전 공지 + API-04 Edit History 업데이트.
 
 ---
 

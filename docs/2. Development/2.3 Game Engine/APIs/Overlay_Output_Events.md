@@ -12,6 +12,7 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-14 | 경계 pointer 보강 | API-04↔API-05 상호 참조 추가. in-process vs 네트워크 관심사 분리 명시 |
 | 2026-04-14 | OutputEventBuffer 구현 소유권 명시 | §3.6에 Team 4 소유 확정, Team 3 harness 역할 명시 |
+| 2026-04-15 | §6.0 OutputEvent 카탈로그 요약 신설 | team4 `Overlay/Layer_Boundary.md §3.2` 와 cross-ref. 18종 이벤트 한눈에 보기 |
 | 2026-04-08 | 신규 작성 | CC→Overlay 데이터 흐름, 출력 채널, Security Delay, 해상도, 크로마키 |
 
 ---
@@ -327,6 +328,22 @@ MediaQuery(
 ---
 
 ## 6. 씬 업데이트 이벤트
+
+### 6.0 OutputEvent 카탈로그 (요약)
+
+team3 Game Engine 이 발행하는 `OutputEvent` sealed class 의 18 종 요약. 정본 시그니처는 `team3-engine/ebs_game_engine/lib/core/actions/output_event.dart`. team4 소비자(`docs/2. Development/2.4 Command Center/Overlay/Layer_Boundary.md §3.2`) 는 이 표를 기준으로 Rive 트리거·버퍼링·렌더링을 수행한다.
+
+| # | Event | 주요 필드 | 발행 시점 | 소비자 영향 |
+|---|-------|-----------|-----------|-------------|
+| OE-01 | `StateChanged` | fromPhase, toPhase | HandFSM phase 전환 시 | Phase 배너 + §6.1 씬 전환 |
+| OE-02 | `ActionProcessed` | seatIndex, actionType, amount | 플레이어 액션 확정 | 액션 라벨, seat glow, §6.1 `current_action` |
+| OE-03 | `PotUpdated` | potIndex, amount | pot 변동 | §6.1 pot 숫자 롤링 |
+| OE-04 | `EquityUpdated` | equities: Map<seat, float> | 보드 오픈·플레이어 폴드 | Equity Bar 업데이트 |
+| OE-05 | `CardRevealed` | seat 또는 board, card | 홀카드/보드 공개 | Rive 카드 reveal/slide |
+| OE-06 | `HandCompleted` | winners, finalStacks | 핸드 종료 | Winner 하이라이트 + pot sweep |
+| OE-07..18 | (나머지 12종) | `output_event.dart` 참조 | — | Rive 애니메이션 트리거 |
+
+**세부 필드/페이로드 스키마는 아래 §6.1 GameState 매핑** 을 병행 참조.
 
 ### 6.1 Overlay 위젯 rebuild 트리거
 
