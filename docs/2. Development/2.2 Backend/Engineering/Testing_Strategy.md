@@ -430,3 +430,63 @@ Push / PR
 | Unit | PR 머지 차단 |
 | Integration | PR 머지 차단 |
 | E2E | 경고 + 수동 검토 (flaky 허용) |
+
+---
+
+## 9. 부하 스모크 테스트 (2026-04-15 G-C4)
+
+Phase 1 POC 는 수동 실행, Phase 2+ 부터 CI 자동화. 목표는 **IMPL-10 §1 성능 목표** (p95 < 500ms / p99 < 2×p95) 회귀 감지.
+
+### 9.1 도구 선택
+
+| 도구 | 선택 근거 | 스크립트 |
+|------|----------|---------|
+| **locust** (기본) | Python DSL → 팀 익숙. 분산 모드 쉬움. | `tests/load/smoke_locustfile.py` |
+| k6 | 대안 (Go 기반, 성능 우수) — 대형 부하 시 전환 | `tests/load/smoke.js` |
+
+### 9.2 Smoke 시나리오 (100 concurrent × 5min)
+
+| 시나리오 | 가중치 | 엔드포인트 조합 |
+|---------|:------:|-----------------|
+| Lobby browse | 40% | `GET /series` → `GET /series/{id}/events` → `GET /events/{id}/flights` |
+| Table mutation | 20% | `POST /auth/login` → `POST /tables` (with Idempotency-Key) → `PUT /tables/{id}/seats/{no}` |
+| Player lookup | 20% | `GET /players?search=...` (paginated) |
+| WebSocket connection | 15% | `ws://.../ws/lobby?token=...` 연결 + 구독 + 30s 유지 |
+| Sync trigger (Admin) | 5% | `POST /sync/trigger/wsop_live` (rate limited) |
+
+### 9.3 수용 기준
+
+| 지표 | Phase 1 smoke | Phase 2+ 정규 부하 |
+|------|:-------------:|:-----------------:|
+| p50 응답 시간 | < 100ms | < 50ms |
+| p95 응답 시간 | < 500ms | < 200ms |
+| p99 응답 시간 | < 1000ms | < 500ms |
+| Error rate (5xx) | < 1% | < 0.1% |
+| WebSocket 연결 성공률 | > 99% | > 99.9% |
+
+### 9.4 실행 방법
+
+```bash
+# 로컬 개발자 수동 실행
+cd team2-backend
+python -m locust -f tests/load/smoke_locustfile.py \
+    --host http://localhost:8000 \
+    --users 100 --spawn-rate 10 \
+    --run-time 5m \
+    --headless \
+    --html tests/load/reports/smoke-$(date +%Y%m%d-%H%M).html
+```
+
+### 9.5 CI 통합 (Phase 2+)
+
+- main 머지 후 nightly GitHub Actions job 에서 실행
+- 결과를 `docs/4. Operations/Reports/load-smoke/` 에 append
+- 회귀 기준: p95 가 이전 7일 baseline + 20% 초과 시 FAIL (Sentry 경보)
+- 환경: 전용 staging 인스턴스 (prod-live 부하 방지)
+
+### 9.6 Phase 3+ 정규 부하 (B-055)
+
+- 1,000 concurrent × 30min, prod-live 용량 사이징 검증
+- soak test (4h 지속 부하) — 메모리 누수 감지
+- chaos engineering (Redis kill, DB failover) 시나리오 포함
+- 별도 plan: `docs/4. Operations/Plans/Load_Testing_Phase_3.md` (예정)

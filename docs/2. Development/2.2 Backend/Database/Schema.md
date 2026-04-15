@@ -22,6 +22,7 @@ last-updated: 2026-04-15
 | 2026-04-15 | G3 확장 | `blind_structure_levels.detail_type` enum 을 3값(0=Blind/1=Break/2=DinnerBreak) → **5값(+ 3=HalfBlind, 4=HalfBreak)** 으로 확장. CHECK 제약 명시. WSOP LIVE `BlindDetailType` (Confluence 1960411325) 와 1:1 정렬. DDL/migration 은 team2-backend/src/db/init.sql 및 Alembic revision 로 후속 반영 |
 | 2026-04-15 | G4-C 확장 | `configs` 테이블에 `scope` / `scope_id` 컬럼 추가 (global/series/event/table). `(key, scope, scope_id)` UNIQUE 로 PK 변경. CHECK 2개 신설. Override 체인: `resolve_config(key, table_id)` → table→event→series→global 순 fallback (BO 서비스 레이어 `src/services/config_service.py` 후속 구현). G4-A Overview 와 일관 |
 | 2026-04-15 | G6 판정 | WSOP LIVE `EventDay`/`EventFlightSection` 엔티티 추가 검토 결과: **justified divergence (미채택)**. EventDay 는 `event_flights.start_time + duration` 으로 흡수, EventFlightSection 의 PokerRoom/TableColor 는 `skins` + `output_presets` 로 흡수 가능. 상세는 §2 대회 계층 끝 "EventDay/EventFlightSection 미채택" 블록 |
+| 2026-04-15 | G-A3 상세화 | §configs 뒤에 `resolve_config()` **Python 의사코드 + 동등 SQL + 캐시/격리수준/write 경로** 추가. `src/services/config_service.py` Phase 1 작성 대상 — 실존 구현이 없어 문서로 SSOT 확보 |
 
 ---
 
@@ -538,8 +539,119 @@ class Config(SQLModel, table=True):
         CheckConstraint("scope IN ('global','series','event','table')", name="ck_configs_scope"),
         CheckConstraint("(scope = 'global' AND scope_id IS NULL) OR (scope != 'global' AND scope_id IS NOT NULL)", name="ck_configs_scope_id"),
     )
+```
 
+#### resolve_config() 의사코드 (2026-04-15 G-A3)
 
+**구현 위치**: `team2-backend/src/services/config_service.py` (Phase 1 작성 예정).
+
+**Python 의사코드**:
+
+```python
+from functools import lru_cache
+from typing import Literal
+
+ScopePriority = {"global": 1, "series": 2, "event": 3, "table": 4}
+
+async def resolve_config(
+    session: Session,
+    key: str,
+    *,
+    table_id: int | None = None,
+    event_id: int | None = None,
+    series_id: int | None = None,
+    default: str | None = None,
+) -> str | None:
+    """Configs override chain: table → event → series → global.
+
+    table_id 만 주면 `events.event_id`, `event_flights.series_id` 를 역참조해 3단 조회.
+    상위 scope 를 명시적으로 받으면 역참조 비용 절감.
+    """
+    # 1) scope_id 역참조 (table_id 만 받은 경우)
+    if table_id and not event_id:
+        row = session.exec(
+            select(EventFlight.event_id, Event.series_id)
+            .join(Table, Table.event_flight_id == EventFlight.event_flight_id)
+            .join(Event, Event.event_id == EventFlight.event_id)
+            .where(Table.table_id == table_id)
+        ).first()
+        if row:
+            event_id, series_id = row
+
+    # 2) scope 후보 + 우선순위 수집
+    candidates = [
+        ("table", table_id),
+        ("event", event_id),
+        ("series", series_id),
+        ("global", None),
+    ]
+
+    # 3) 가장 좁은 scope 부터 1건 조회 (LIMIT 1 단락)
+    for scope, scope_id in candidates:
+        if scope != "global" and scope_id is None:
+            continue
+        row = session.exec(
+            select(Config.value)
+            .where(Config.key == key, Config.scope == scope, Config.scope_id == scope_id)
+        ).first()
+        if row is not None:
+            return row
+
+    return default
+```
+
+**동등 SQL 단일 쿼리** (성능 경로 — 1번 round-trip):
+
+```sql
+SELECT value
+FROM configs
+WHERE key = :key AND (
+    (scope = 'table'  AND scope_id = :table_id)
+ OR (scope = 'event'  AND scope_id = :event_id)
+ OR (scope = 'series' AND scope_id = :series_id)
+ OR (scope = 'global' AND scope_id IS NULL)
+)
+ORDER BY CASE scope
+    WHEN 'table'  THEN 4
+    WHEN 'event'  THEN 3
+    WHEN 'series' THEN 2
+    WHEN 'global' THEN 1
+END DESC
+LIMIT 1;
+```
+
+**캐시 전략**:
+- per-worker in-memory LRU (key = `(key, table_id)`, TTL 60s, maxsize 1024). `functools.lru_cache` 불가 (TTL 없음) → 간단 custom cache 또는 `cachetools.TTLCache` 사용.
+- WebSocket `ConfigChanged` 수신 시 해당 scope 매칭 entry 만 invalidate (전체 flush 금지 — 고빈도 변경 시 성능 저하).
+- Redis 공유 캐시는 **Phase 2+** — 멀티 워커 일관성 요구 시 도입 (invalidation broadcast 포함).
+
+**트랜잭션 격리수준**: `READ COMMITTED` (Postgres) / SQLite 기본. scope 체인 조회 중 `UPDATE configs` 가 섞여도 최종값은 "조회 시점의 최상위 scope" 로 결정 — eventual consistency 허용 (UI 반영 지연 ≤ 1초).
+
+**write 경로 레퍼런스** (Lobby/CC 가 POST/PUT 으로 config 변경 시):
+
+```python
+async def upsert_config(session, key: str, value: str, scope: str, scope_id: int | None, actor_user_id: int) -> None:
+    # UNIQUE(key, scope, scope_id) 제약으로 자동 UPSERT
+    row = session.exec(
+        select(Config).where(Config.key == key, Config.scope == scope, Config.scope_id == scope_id)
+    ).first()
+    old_value = row.value if row else None
+    if row:
+        row.value = value
+        row.updated_at = utcnow()
+    else:
+        row = Config(key=key, value=value, scope=scope, scope_id=scope_id)
+        session.add(row)
+    # WebSocket ConfigChanged 브로드캐스트 (API-05 §5.1)
+    await ws_broadcast("ConfigChanged", {
+        "scope": scope, "scope_id": scope_id,
+        "config_key": key, "old_value": old_value, "new_value": value,
+        "actor_user_id": actor_user_id,
+        "applied_at_hint": _hint_for(key),  # immediate | next_hand | manual
+    })
+```
+
+```python
 # blind_structures (CCR-049: Series 템플릿 + EventFlight 적용 분리, WSOP LIVE Page 1603666061 준거)
 class BlindStructure(SQLModel, table=True):
     __tablename__ = "blind_structures"

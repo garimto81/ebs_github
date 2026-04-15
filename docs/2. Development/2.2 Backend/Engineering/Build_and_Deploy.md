@@ -346,6 +346,62 @@ CMD ["npm", "start"]
 
 > **Deprecated**: `ACCESS_TOKEN_EXPIRE_MINUTES`, `REFRESH_TOKEN_EXPIRE_DAYS` 는 CCR-006 활성 후 `AUTH_PROFILE` + `JWT_ACCESS_TTL_S` / `JWT_REFRESH_TTL_S` 로 대체됨.
 
+#### 7.1.1 환경별 프로파일 (2026-04-15 G-C1)
+
+| 환경 | AUTH_PROFILE | JWT Access TTL | Refresh TTL | DB | 시크릿 관리 | CORS_ORIGINS |
+|------|:------------:|:--------------:|:-----------:|----|-----------|--------------|
+| dev (로컬) | `dev` | 1h | 24h | SQLite | `.env.dev` 평문 (로컬) | `["http://localhost:3000"]` |
+| staging | `staging` | 2h | 48h | PostgreSQL | AWS SSM Parameter Store | staging domain allowlist |
+| prod | `prod` | 2h | 48h | PostgreSQL (RDS) | AWS Secrets Manager | prod domain allowlist |
+| **prod-live** | `live` | **12h** | 48h | PostgreSQL (RDS Multi-AZ) | AWS Secrets Manager | live domain allowlist |
+
+**`.env.prod-live` 템플릿** (secret manager 에서 주입):
+
+```bash
+# 인증
+AUTH_PROFILE=live
+JWT_SECRET=<32+ char random, rotated quarterly>
+JWT_ACCESS_TTL_S=43200         # 12h
+JWT_REFRESH_TTL_S=172800       # 48h
+REFRESH_TOKEN_DELIVERY=cookie  # HttpOnly + SameSite=Strict (CCR-013)
+
+# DB
+DATABASE_URL=postgresql+asyncpg://<user>:<pwd>@<rds-endpoint>/ebs
+DATABASE_POOL_SIZE=20
+
+# WSOP LIVE outbound (Phase 2+ 실통합 시 설정)
+WSOP_LIVE_AUTH_URL=https://auth.wsoplive.example/auth/token
+WSOP_LIVE_CLIENT_ID=<from secrets manager>
+WSOP_LIVE_CLIENT_SECRET=<from secrets manager>
+
+# 관측
+SENTRY_DSN=<from secrets manager>
+LOG_LEVEL=INFO
+PROMETHEUS_PUSHGATEWAY_URL=<optional>
+
+# 보안
+CORS_ORIGINS=["https://lobby.ebs.example","https://admin.ebs.example"]
+FORCE_HTTPS=true
+CSP_POLICY=default-src 'self'; frame-ancestors 'none'
+
+# RFID
+RFID_MODE=real
+```
+
+**시크릿 관리 정책**:
+- **금지**: `JWT_SECRET`, `WSOP_LIVE_CLIENT_SECRET`, `DATABASE_URL` 평문을 git/이미지에 포함
+- **필수**: prod/prod-live 는 AWS Secrets Manager (또는 HashiCorp Vault) 에서 런타임 주입. k8s 는 External Secrets Operator 권장
+- **순환 (Rotation)**: `JWT_SECRET` 분기별(quarterly) 교체, `WSOP_LIVE_CLIENT_SECRET` WSOP 정책 따름. 교체 시 무중단: 이중 검증 창(old/new 동시 허용 24h) 적용
+
+**prod-live 배포 체크리스트**:
+- [ ] `JWT_SECRET` 32자 이상 무작위 (openssl rand -base64 32) 검증
+- [ ] `FORCE_HTTPS=true` + ELB/ALB HTTPS redirect 확인
+- [ ] `CORS_ORIGINS` 가 실제 lobby/admin 도메인만 포함 (* 금지)
+- [ ] `DATABASE_URL` Multi-AZ 엔드포인트 사용
+- [ ] Sentry DSN 구성 확인 (`curl sentry-dsn/0/capture` 테스트 이벤트)
+- [ ] Secret Manager rotation 정책 활성화
+- [ ] Alembic `upgrade head` 실행 후 health check 통과
+
 ### 7.2 CC 환경 변수 (커맨드라인 인자)
 
 | 인자 | 환경 변수 | 기본값 | 설명 |
