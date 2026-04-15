@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/remote/bo_api_client.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../resources/constants.dart';
@@ -83,8 +84,61 @@ class _At04StatisticsScreenState extends ConsumerState<At04StatisticsScreen> {
     );
   }
 
-  void _pushTableStatsToGfx() {
-    debugPrint('Push Table Stats to GFX');
+  Future<void> _pushTableStatsToGfx() async {
+    final config = ref.read(launchConfigProvider);
+    if (config == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('LaunchConfig 없음 — 로그인 필요')),
+      );
+      return;
+    }
+    final api = ref.read(boApiClientProvider);
+    try {
+      // Table-wide stats push (no playerId) per Statistics.md §6.1.
+      await api.pushGfxStats(config.tableId);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Table Stats를 GFX로 송출했습니다.')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('GFX 송출 실패: $e')),
+      );
+    }
+  }
+
+}
+
+/// Per-seat GFX push. Exposed as a top-level helper so the stateless
+/// row widget inside `_PlayerStatsTable` can call it directly with its
+/// own `ref`. PlayerStats model does not yet expose `playerId`; the
+/// server endpoint (`POST /api/tables/{id}/gfx-stats`) treats missing
+/// `player_id` as "table-wide push" — for now the per-seat IconButton
+/// narrows the push via an explicit `seat_no` body parameter which the
+/// server resolves to the current occupant.
+Future<void> _pushSeatStatsToGfx(
+  BuildContext context,
+  WidgetRef ref,
+  int seatNo,
+) async {
+  final config = ref.read(launchConfigProvider);
+  if (config == null) return;
+  final api = ref.read(boApiClientProvider);
+  try {
+    await api.raw.post(
+      '/api/tables/${config.tableId}/gfx-stats',
+      data: {'seat_no': seatNo},
+    );
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Seat $seatNo Stats 송출')),
+    );
+  } catch (e) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Seat $seatNo 송출 실패: $e')),
+    );
   }
 }
 
@@ -207,7 +261,7 @@ class _PlayerStatsTable extends ConsumerWidget {
                     icon: const Icon(Icons.play_arrow, size: 18),
                     tooltip: 'Push to GFX',
                     onPressed: () =>
-                        debugPrint('Push S${s.seatNo} stats to GFX'),
+                        _pushSeatStatsToGfx(context, ref, s.seatNo),
                     splashRadius: 16,
                   ),
                 ),
