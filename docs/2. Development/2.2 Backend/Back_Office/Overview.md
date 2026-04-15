@@ -15,6 +15,7 @@ last-updated: 2026-04-15
 | 2026-04-14 | 서두 정리 | §개요 BO-01과 중복되던 "중앙 데이터 계층" 단락 제거. PRD 고유 관점(채택/제거 결정 문서)만 유지 |
 | 2026-04-14 | L0 중복 제거 | §3.9 WSOP LIVE 폴링 주기 표 → 정본 pointer로 축약 (정본: contracts/api/API-01 Part II §7, BO-02 §5). PRD는 "왜 동기화하는가"만 유지 |
 | 2026-04-14 | BO-01 흡수 | BO-01-overview.md 폐기. §2 아키텍처에 §2.3 핵심 원칙, §2.4 성능 요구사항 추가. §2.2 기술 스택에 Phase 진화표 흡수. PRD가 BO 아키텍처 SSOT |
+| 2026-04-15 | G4-A Settings 스코프 복구 | §1.2 #8 Sysop Config 를 "✅ 글로벌" → "✅ Series/Event/Table 단위 (WSOP LIVE 정렬)" 로 수정. §3.6 시스템 설정 표의 EBS 열 "글로벌" 도 "Series/Event/Table 단위" 로 복구. 2026-04-09 글로벌 단일 세트 결정이 CLAUDE.md 원칙1 (WSOP LIVE 정렬) 과 충돌해 역전. 후속: Schema.md §configs 에 `scope`/`scope_id` 컬럼 추가 (G4-C, Task #10), BS-03 Settings 진입 경로 재구성 (G4-B, team4 decision), ConfigChanged payload 확장 (Task #13) |
 
 ---
 
@@ -70,7 +71,7 @@ WSOP LIVE Staff Page는 아래 BO 기능을 제공한다 (Confluence Staff App A
 | 5 | Seat Draw | ✅ 그대로 | 자동/수동 좌석 배치. 드래그 앤 드롭 | BO-04 |
 | 6 | Player 관리 | ✅ 간소화 | 오버레이 표시용 정보만 (KYC/Wallet 제거) | BO-05 |
 | 7 | Role/Permission | ✅ 간소화 | 3역할만 (Admin/Operator/Viewer) | BO-02 |
-| 8 | Sysop Config | ✅ 글로벌 | 모든 CC에 동일 적용. 테이블별 Settings 없음 | BO-07, BS-03 |
+| 8 | Sysop Config | ✅ Series/Event/Table 단위 | WSOP LIVE 와 동일하게 스코프 분리. override 체인: table → event → series → global (글로벌은 fallback 기본값 전용) | BO-07, BS-03 |
 | 9 | Audit Log | ✅ 그대로 | 운영 추적 필수 | BO-08 |
 | 10 | ~~Registration~~ | ❌ 제거 | 토너먼트 운영 (플레이어 등록/리엔트리) — EBS 범위 외 |
 | 11 | ~~Cashier~~ (Chip Master) | ❌ 제거 / **Phase 2+** | 금융 (칩 매매/환불) — EBS 범위 외. 단, WSOP LIVE의 InitialChipSet / RequireChips / CheckChipsQuantity 3종 실시간 이벤트 및 칩 물류 데이터 모델(chipDetailList: chipName, chipColor, value, quantity)은 **Phase 2에서 CCR 제출 예정** (방송 오버레이 칩 카운트 표시 등 연동 가능성 검토) |
@@ -226,12 +227,12 @@ WSOP LIVE Staff Page는 아래 BO 기능을 제공한다 (Confluence Staff App A
 
 > 상세: BS-02 Lobby §Hand History, API-01 §Hands, DATA-04 §hands
 
-### 3.6 시스템 설정 (글로벌 Config)
+### 3.6 시스템 설정 (Series/Event/Table 스코프)
 
 | 항목 | WSOP LIVE | EBS |
 |------|----------|-----|
-| 설정 범위 | Series/Event 단위 | **글로벌** (모든 CC 동일 적용, 테이블별 없음) |
-| 6탭 | — | Outputs / GFX / Display / Rules / Stats / Preferences |
+| 설정 범위 | Series/Event 단위 | **Series/Event/Table 단위 (WSOP LIVE 정렬)** + global fallback. override 체인: table → event → series → global |
+| 6탭 | — | Outputs / GFX / Display / Rules / Stats / Preferences (탭별 기본 스코프는 BS-03 에서 정의) |
 | 적용 시점 | — | IDLE → 즉시, 핸드 진행 중 → 다음 핸드 |
 | RFID 모드 | — | Real / Mock 전환 (IDLE 상태에서만) |
 
