@@ -16,7 +16,7 @@ last-updated: 2026-04-15
 
 ## 개요
 
-AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑**하는 운영자 화면이다. 덱 교체, 신규 덱 도입, 카드 손상 시 개별 재등록에 사용된다. 기본 덱 크기는 **52장 (4 suits × 13 ranks)**. 일부 게임 variant 에서 필요한 Joker 는 §1 의 `include_jokers` 옵션으로 추가 가능.
+AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑**하는 운영자 화면이다. 덱 교체, 신규 덱 도입, 카드 손상 시 개별 재등록에 사용된다. **Phase 1 은 52장 고정** (4 suits × 13 ranks). Joker 포함 덱은 **Phase 2 범위** 이며 현재 구현되지 않는다 (아래 §1 참조).
 
 > **참조**: `BS-04-01-deck-registration` (정책), `BS-04-04-hal-contract` (IRfidReader 이벤트), `API-03-rfid-hal-interface` (DeckRegistered 이벤트), `BS-05-00-overview §AT 화면 카탈로그` (AT-05 위치).
 
@@ -26,12 +26,13 @@ AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑
 
 | 항목 | 내용 |
 |------|------|
-| **역할** | 덱의 52장(표준) 또는 54장(+Joker 2) 을 순차적으로 RFID 리더에 탭하여 UID↔카드 매핑 |
+| **역할** | 덱의 52장을 순차적으로 RFID 리더에 탭하여 UID↔카드 매핑 |
 | **페르소나** | Operator 이상 (Viewer 접근 불가) |
 | **사용 시점** | 방송 준비 단계, 덱 교체 시, 카드 손상 시 개별 재등록 |
-| **총 카드 수** | 기본 **52장** (4 suits × 13 ranks). `include_jokers` 옵션 ON 시 54장 (+ Joker 1, Joker 2). 옵션 default = OFF (Hold'em/PLO/Omaha/Razz 등 표준 포커에서는 Joker 미사용) |
+| **총 카드 수 (Phase 1)** | **52장** (4 suits × 13 ranks). Hold'em/PLO/Omaha/Razz 등 표준 포커에서는 Joker 미사용 |
+| **Phase 2 (미구현)** | `include_jokers` 설정 옵션 도입 예정. ON 시 54장 (+ Joker 1, Joker 2). Phase 2 착수 시 `at_05_rfid_register_screen.dart:_buildDeck()` 에 옵션 분기 추가 + 아래 §3 레이아웃의 `[Joker 1] [Joker 2]` 셀 조건부 렌더 |
 
-> **구현 기준**: 현재 `at_05_rfid_register_screen.dart:_buildDeck()` 은 52장만 생성(옵션 OFF 기본값). Joker 활성화 UI 는 BS-04-01 에서 설정하는 `include_jokers` flag 와 바인딩되며, ON 일 때 아래 §3 레이아웃의 `[Joker 1] [Joker 2]` 셀이 추가 노출된다.
+> **구현 기준 (Phase 1)**: `at_05_rfid_register_screen.dart:_buildDeck()` 이 52장 고정 생성. 옵션 설정 UI 는 Phase 2 에서 신설. 현재는 어떠한 Joker 관련 분기도 실행되지 않는다.
 
 ---
 
@@ -50,7 +51,7 @@ AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑
 │ ← Back                              RFID Register   │
 │                                                     │
 │ Deck Name: [__________]                             │
-│ Progress: [██████░░░░░░] 18 / 52 (or 54 w/ Jokers)  │
+│ Progress: [██████░░░░░░] 18 / 52                    │
 │                                                     │
 │ ┌─────────────────────────────────────────────┐     │
 │ │  4 × 13 Grid (수트 × 랭크)                    │     │
@@ -58,7 +59,7 @@ AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑
 │ │  ♥ A K Q J T 9 8 7 6 5 4 3 2                 │     │
 │ │  ♦ A K Q J T 9 8 7 6 5 4 3 2                 │     │
 │ │  ♣ A K Q J T 9 8 7 6 5 4 3 2                 │     │
-│ │  [Joker 1] [Joker 2]  ← include_jokers=ON만 │     │
+│ │  (Phase 2: [Joker 1] [Joker 2] 셀 추가 예정) │     │
 │ └─────────────────────────────────────────────┘     │
 │                                                     │
 │ Currently expecting: ♠ A                            │
@@ -75,7 +76,7 @@ AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑
    │
 2. [Start Registration] 버튼 클릭
    │
-3. 시스템이 ♠A → ♠K → ... → ♣2 순서로 순차 요청 (include_jokers=ON 시 → Joker1 → Joker2 까지)
+3. 시스템이 ♠A → ♠K → ... → ♣2 순서로 순차 요청 (Phase 1 은 52장으로 종료. Phase 2 에서 Joker 1 → Joker 2 추가 예정)
    │
    ├─ 운영자가 물리 카드를 RFID 리더에 탭
    │   ├─ 성공 → 해당 셀 녹색 전환 + 다음 카드로 진행
@@ -86,7 +87,7 @@ AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑
    │
    └─ [Restart] → 모든 등록 초기화
    │
-4. 52장 (또는 54장 if include_jokers) 등록 완료 → "Registration Complete" 다이얼로그
+4. 52장 등록 완료 → "Registration Complete" 다이얼로그 (Phase 2: 54장 옵션 지원 예정)
    │
 5. [Save & Exit] → Backend POST /decks
    │
@@ -127,7 +128,7 @@ AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑
 
 ## 8. 저장 검증
 
-- Backend 전송 전 기대 카드 수(기본 52, include_jokers ON 시 54) 가 모두 등록되었는지 확인
+- Backend 전송 전 52장이 모두 등록되었는지 확인 (Phase 2: include_jokers 옵션 시 54장)
 - 중복 UID 없는지 재검증
 - Deck Name 중복 검사 (동일 테이블 내)
 
