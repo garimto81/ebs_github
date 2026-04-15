@@ -19,6 +19,7 @@ last-updated: 2026-04-15
 | 2026-04-14 | CCR-054 | §4.2.0 WSOP LIVE SignalR ↔ EBS 이벤트 매핑표 신설. `blind_structure_changed`/`prize_pool_changed` 2종 추가 (SSOT Page 1793328277) |
 | 2026-04-14 | 경계 pointer 보강 | API-04↔API-05 상호 참조 추가. in-process vs 네트워크 관심사 분리 명시 |
 | 2026-04-15 | §3.3 신설 | 소비자 로컬 state 전이 맵 (CC/Lobby). HandStarted/ActionPerformed/StreetAdvanced/HandCompleted/SeatUpdated 5종 결정적 규칙 + 미확정 영역 목록. decision_owner: team2 (필요 시 team4 가 소비자 관점 보강) |
+| 2026-04-15 | §3.3.1 publisher 실측 정합 | StreetAdvanced/SeatUpdated 는 publisher 가 발행하지 않음 (cc_handler.py:44-52 실측). §3.3.1 을 실제 3종(HandStarted/ActionPerformed/HandEnded) 로 축소. 대체 경로는 §3.3.4 재정의 |
 | 2026-04-15 | envelope + edge 보강 | §2.1 `version` 필드 추가. §2.1.1 forward-compat (version drift). §3.3.2 동일 seq 순서 보장 재작성. §7.4 REST 4xx/5xx consumer 처리 매트릭스 |
 
 ---
@@ -258,15 +259,15 @@ CC가 게임 진행 중 BO에 발행하는 이벤트. BO는 DB에 저장 후 Lob
 
 `TableState`, `HandState`, `SeatState` 는 CC `src/lib/features/command_center/providers/` 및 Lobby 해당 store 의 공통 명명 규칙을 따른다.
 
-#### 3.3.1 핵심 매핑 (필수 5종)
+#### 3.3.1 핵심 매핑 (publisher 실측 기준 3종)
+
+> **실측**: 2026-04-15 기준 team2 publisher (`team2-backend/src/websocket/cc_handler.py:44-52`) 는 CC→BO 게임 이벤트로 `HandStarted`, `HandEnded`, `ActionPerformed`, `CardDetected`, `GameChanged`, `RfidStatusChanged`, `OutputStatusChanged` 만 전달한다. 이 중 state 전이 규칙이 결정적인 3종은 아래와 같다. `StreetAdvanced` / `SeatUpdated` 는 계약에 존재하지 않으므로 §3.3.4 로 이동했다 (대체 경로 병기).
 
 | 이벤트 | 적용 순서 | 로컬 state 전이 (CC) |
 |--------|-----------|---------------------|
 | `HandStarted` | 1. `TableState.current_hand` 교체 (`id=payload.hand_id`, `number=payload.hand_number`) | 2. `HandState.phase = PRE_FLOP`, `dealer_seat = payload.dealer_seat`, `blind_level = payload.blind_level` | 3. `biggest_bet_amt = 0`, `seats[*].current_bet = 0`, `seats[*].has_folded = false` | 4. `action_on = null` (엔진의 `ActionOnResponse` 이후 세팅) |
 | `ActionPerformed` | 1. 대상 seat = `payload.seat` | 2. `seats[seat].current_bet += payload.amount`, `seats[seat].stack = payload.stack_after` | 3. action_type 별 분기: `fold` → `seats[seat].has_folded = true`, `bet`/`raise` → `biggest_bet_amt = max(biggest_bet_amt, seats[seat].current_bet)`, `allin` → `seats[seat].is_all_in = true` + biggest_bet_amt 동일 갱신, `check`/`call` → biggest_bet_amt 유지 | 4. `HandState.pot_total = payload.pot_after` | 5. `action_on = null` (다음 `ActionOnResponse` 대기) |
-| `StreetAdvanced` (FLOP/TURN/RIVER) | 1. `HandState.phase = payload.new_phase` | 2. `HandState.community_cards += payload.cards` | 3. `seats[*].current_bet = 0` (새 스트리트 시작) | 4. `biggest_bet_amt = 0` |
-| `HandCompleted` | 1. `HandState.phase = HAND_COMPLETE` | 2. `seats[*].stack = payload.seats[*].final_stack` 반영 | 3. `TableState.current_hand = null` (다음 `HandStarted` 까지) | 4. `hand_history.append(snapshot)` |
-| `SeatUpdated` | 1. 대상 seat = `payload.seat` | 2. payload 기준으로 `seats[seat]` 필드 덮어쓰기 (`occupant`, `display_name`, `country`, `sitting_out`, etc.) | 3. `hand_in_progress == true` 이고 `occupant` 가 변경되면 현재 핸드에서 해당 seat 는 관전자 처리 |
+| `HandEnded` (= HandCompleted) | 1. `HandState.phase = HAND_COMPLETE` | 2. `seats[*].stack = payload.seats[*].final_stack` 반영 | 3. `TableState.current_hand = null` (다음 `HandStarted` 까지) | 4. `hand_history.append(snapshot)` |
 
 > **불변식**: 각 이벤트 적용 후 `sum(seats[i].current_bet) + HandState.pot_start <= HandState.pot_total` 이 유지되어야 한다. 위반 시 `ReplayEvents` 요청으로 복구.
 
@@ -281,11 +282,16 @@ CC가 게임 진행 중 BO에 발행하는 이벤트. BO는 DB에 저장 후 Lob
 
 Lobby 는 CC 와 거의 동일하게 적용하되, **hole cards** 는 수신하지 않으므로 `seats[seat].hole_cards` 필드는 항상 `null`. 카드 공개는 §4 `HoleCardsRevealed` 이벤트 도달 시에만 (§4.2 참조).
 
-#### 3.3.4 미확정 영역 — 아래 이벤트들의 state 전이는 본 §3.3 이 아직 정의하지 않는다. 소비자 팀이 구현 착수 시 발견하면 본 섹션을 즉시 보강한다.
+#### 3.3.4 publisher 미구현 / 대체 경로
 
-- `CardDetected` — 공개 카드 vs holecards 구분, `game_phase` 와의 정합 규칙
-- `GameChanged` — Mix 게임 모드에서 진행 중 hand snapshot 처리
-- `RfidStatusChanged`, `OutputStatusChanged` — operational alert 영역 (game state 에는 영향 없음)
+| 원래 가정한 이벤트 | 실제 publisher 상태 | 대체 경로 |
+|-------------------|---------------------|-----------|
+| `StreetAdvanced` | publisher 에 없음 | (a) `CardDetected(is_board=true)` 로 community_cards 누적 → 총 개수로 street 추론 (`3장=FLOP`, `4장=TURN`, `5장=RIVER`). (b) 스트리트별 `seats[*].current_bet=0` 리셋은 각 스트리트 첫 `ActionPerformed` 수신 시 이전 스트리트 bet 을 pot 에 sweep 하는 로직으로 대체 |
+| `SeatUpdated` | publisher 에 없음 | 좌석 metadata 변경 (플레이어 이름/국기/앉기-쉬기) 은 REST `PATCH /api/v1/tables/{id}/seats/{seat_no}` + 응답 기반 로컬 state 갱신. 실시간 push 는 현재 미지원 — 다른 CC 세션이 동일 테이블 열고 있으면 주기적 GET 폴링으로 동기화 |
+| `CardDetected` | publisher O | 공개 카드(`is_board=true`) 는 `TableState.community_cards` 에 append. holecards(`is_board=false`) 는 CC 에서는 무시하고 Overlay 파이프라인이 처리 |
+| `GameChanged` | publisher O | Mix 게임 모드에서 게임 전환 시 현재 `HandState` snapshot 을 hand_history 에 저장 후 초기화. 상세 규칙 TBD — Mix 게임 구현 착수 시 본 섹션 확장 |
+| `RfidStatusChanged`, `OutputStatusChanged` | publisher O | Operational alert 영역. game state 에는 영향 없음. 상단 info bar 표시만 |
+| `HoleCardsRevealed` | publisher 에 없음 | Showdown 시 card reveal 은 Overlay 전용 API-04 `CardRevealed` 이벤트 (in-process). WebSocket 경유 X |
 
 ---
 

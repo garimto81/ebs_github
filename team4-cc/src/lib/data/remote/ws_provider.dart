@@ -132,8 +132,9 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
       read(undoStackProvider.notifier).clearOnHandComplete();
       read(hasBetToMatchProvider.notifier).state = false;
 
-    // §3.3.4 uncovered — CardDetected for board cards only (hole cards
-    // belong to the Overlay pipeline).
+    // §3.3.4 CardDetected board branch — publishes don't emit StreetAdvanced,
+    // so the CC derives street phase from cumulative community_cards count
+    // (3=FLOP, 4=TURN, 5=RIVER).
     case 'CardDetected':
       final isBoard = payload['is_board'] as bool? ?? false;
       if (!isBoard) break;
@@ -141,7 +142,19 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
       final rank = payload['rank'] as String? ?? '';
       if (suit.isEmpty || rank.isEmpty) break;
       final current = read(boardCardsProvider);
-      read(boardCardsProvider.notifier).state = [...current, '$rank$suit'];
+      final next = [...current, '$rank$suit'];
+      read(boardCardsProvider.notifier).state = next;
+      switch (next.length) {
+        case 3:
+          read(handFsmProvider.notifier).forceState(HandFsm.flop);
+          read(hasBetToMatchProvider.notifier).state = false;
+        case 4:
+          read(handFsmProvider.notifier).forceState(HandFsm.turn);
+          read(hasBetToMatchProvider.notifier).state = false;
+        case 5:
+          read(handFsmProvider.notifier).forceState(HandFsm.river);
+          read(hasBetToMatchProvider.notifier).state = false;
+      }
 
     // §3.3.4 operational — no FSM effect on CC. Observability only.
     case 'GameChanged':

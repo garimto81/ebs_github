@@ -121,7 +121,61 @@ void main() {
     });
   });
 
-  group('WS dispatch — §3.3.4 CardDetected (board only)', () {
+  group('WS dispatch — §3.3.4 CardDetected derives street', () {
+    test('3rd board card advances HandFSM to FLOP + resets hasBet', () {
+      container = _freshContainer();
+      container.read(boardCardsProvider.notifier).state = const ['As', 'Kh'];
+      container.read(handFsmProvider.notifier).forceState(HandFsm.preFlop);
+      container.read(hasBetToMatchProvider.notifier).state = true;
+
+      dispatchIncomingEventForTest(container, <String, dynamic>{
+        'type': 'CardDetected',
+        'is_board': true,
+        'suit': 'd',
+        'rank': 'Q',
+      });
+
+      expect(container.read(boardCardsProvider), ['As', 'Kh', 'Qd']);
+      expect(container.read(handFsmProvider), HandFsm.flop);
+      expect(container.read(hasBetToMatchProvider), false);
+    });
+
+    test('4th board card advances to TURN', () {
+      container = _freshContainer();
+      container.read(boardCardsProvider.notifier).state =
+          const ['As', 'Kh', 'Qd'];
+      container.read(handFsmProvider.notifier).forceState(HandFsm.flop);
+
+      dispatchIncomingEventForTest(container, <String, dynamic>{
+        'type': 'CardDetected',
+        'is_board': true,
+        'suit': 's',
+        'rank': 'J',
+      });
+
+      expect(container.read(boardCardsProvider).length, 4);
+      expect(container.read(handFsmProvider), HandFsm.turn);
+    });
+
+    test('5th board card advances to RIVER', () {
+      container = _freshContainer();
+      container.read(boardCardsProvider.notifier).state =
+          const ['As', 'Kh', 'Qd', 'Js'];
+      container.read(handFsmProvider.notifier).forceState(HandFsm.turn);
+
+      dispatchIncomingEventForTest(container, <String, dynamic>{
+        'type': 'CardDetected',
+        'is_board': true,
+        'suit': 'c',
+        'rank': 'T',
+      });
+
+      expect(container.read(boardCardsProvider).length, 5);
+      expect(container.read(handFsmProvider), HandFsm.river);
+    });
+  });
+
+  group('WS dispatch — §3.3.4 CardDetected (board/hole branch)', () {
     test('is_board=true appends to boardCardsProvider', () {
       container = _freshContainer();
       container.read(boardCardsProvider.notifier).state = ['As'];
