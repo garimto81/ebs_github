@@ -19,6 +19,7 @@ last-updated: 2026-04-15
 | 2026-04-15 | G1 재분류 | §table_seats SeatStatus 의 "WSOP LIVE E/N/P/M/B/R 준거" 주장을 **관측 기반 justified divergence** 로 재분류. WSOP LIVE 공개 문서에 `EventFlightSeat.Status` enum 값 정의 불발견. 6값 CHECK 자체는 유지 (DB 영속 SSOT) |
 | 2026-04-15 | G2 추가 | §events.game_type 뒤에 "WSOP LIVE 정렬 (game_type)" 서브섹션 신설. 22종(EBS) ↔ 9종(WSOP LIVE) divergence justified + adapter 계약 명시 |
 | 2026-04-15 | G7 추가 | §players 뒤에 "WSOP LIVE 대비 미채택 필드" 서브섹션 신설. email/birth/join_type 제외 근거 명문화 (§1.2 매트릭스 KYC/Registration 제거와 일관) |
+| 2026-04-15 | G3 확장 | `blind_structure_levels.detail_type` enum 을 3값(0=Blind/1=Break/2=DinnerBreak) → **5값(+ 3=HalfBlind, 4=HalfBreak)** 으로 확장. CHECK 제약 명시. WSOP LIVE `BlindDetailType` (Confluence 1960411325) 와 1:1 정렬. DDL/migration 은 team2-backend/src/db/init.sql 및 Alembic revision 로 후속 반영 |
 
 ---
 
@@ -270,6 +271,53 @@ class Player(SQLModel, table=True):
     updated_at: str = Field(default_factory=utcnow)
 ```
 
+#### game_type enum (2026-04-15, WSOP LIVE 정렬 — Justified Divergence)
+
+**Divergence 유형**: Justified (RFID/rule engine 요구로 EBS 세분화)
+
+EBS `events.game_type` 는 22종(0–21), WSOP LIVE `EventGameType` 은 9종(0–8). **값 의미가 완전히 상이**하므로 sync 경계에서 adapter 를 통한 변환이 필수다. 원시 값을 그대로 저장하면 silent corruption 발생 (예: WSOP `3=Razz` 를 EBS 에 그대로 저장하면 EBS `3=Pineapple` 로 해석됨).
+
+| WSOP LIVE (9종 운영 분류) | EBS (22종 rule 세분화) |
+|---|---|
+| `0 Holdem` | `0 NLHE` / `1 LHE` / `2 Short Deck` |
+| `1 Omaha` | `4 PLO` / `5 Omaha Hi-Lo` / `6~11 PLO 변형` |
+| `2 Stud` | `19 7-Card Stud` / `20 Stud Hi-Lo` |
+| `3 Razz` | `21 Razz` |
+| `4 Lowball` | `12 NL 2-7 Single Draw` / `13 2-7 Triple` / `14 A-5 Triple` |
+| `5 HORSE` | `events.game_mode='fixed_rotation'` + `allowed_games` JSON 조합 |
+| `6 DealerChoice` | `events.game_mode='dealers_choice'` + `allowed_games` JSON |
+| `7 Mixed` | `events.game_mode='fixed_rotation'` + 커스텀 `rotation_order` |
+| `8 Badugi` | `15 Badugi` / `16 Badacey` / `17 Badeucey` |
+
+**Adapter 계약** (`team2-backend/src/adapters/wsop_game_type.py`, 구현 대상):
+- `map_to_ebs(wsop_game_type: int, event_game_mode: str | None) -> int`: WSOP → EBS 기본값 매핑 (1:N 은 기본값 선택 — NLHE=0 / PLO=4 / 7-Card Stud=19 / Razz=21 / Badugi=15)
+- `map_to_wsop(ebs_game_type: int) -> int`: EBS → WSOP 역인덱스 (N:1 손실 없음)
+- HORSE/Mixed/DealerChoice 는 `game_type` 단일 정수로 표현 불가 → `game_type + game_mode + allowed_games` 3필드 조합이 SSOT
+
+**sync 경계 원칙**: `wsop_sync_service` 가 WSOP LIVE API 응답을 `events` 테이블에 UPSERT 하기 전 `map_to_ebs()` 를 반드시 호출. Mock 데이터에도 동일 적용해 회귀 방지 (enum parity 테스트: `team2-backend/tests/test_wsop_enum_parity.py`).
+
+**Why justified**: EBS 는 RFID 기반 rule engine 이 게임 변형(카드 수·핸드 평가·hi-lo 분할·short-deck A-5 low 등)을 정확히 구분해야 하므로 22종 세분화가 불가피. WSOP LIVE 는 운영 분류 단위로 충분한 9종을 사용. 둘은 "같은 개념의 다른 수준" 이며 adapter 로만 정합.
+
+> 구현 참조: `team2-backend/seed/README.md §2 게임 변형 레코드 (22종)` / WSOP LIVE Confluence Page `1960411325` Enum §EventGameType
+
+#### Player 미채택 필드 (2026-04-15, WSOP LIVE 대비)
+
+WSOP LIVE `Player` 엔티티에는 있으나 EBS 가 **의도적으로 채택하지 않은** 필드와 그 근거.
+
+| WSOP LIVE 필드 | EBS 채택 | 사유 |
+|---|:---:|---|
+| `WsopId` | ✅ 부분 (`wsop_id`) | 외부 ID 식별용. int → `str` 로 완화 (prefix 변동 대응) |
+| `Email` | ❌ | 오버레이 / Lobby 렌더 체인 어디에도 표시 안 함. Back_Office/Overview.md §1.2 매트릭스 #11 (Cashier) / #15 (Wallet) 제거와 일관 |
+| `Birth` | ❌ | 연령/생일 표시 미요구. §1.2 매트릭스 #16 (KYC) 제거와 일관 — EBS 는 규정 검증 주체가 아님 |
+| `Nationality` | ✅ (`nationality`) | 오버레이 국가명 텍스트 |
+| `ImageUrl` → `profile_image` | ✅ | 오버레이 프로필 사진 (Foundation.md §4.2 플레이어 표시 필수) |
+| `JoinType` | ❌ | §1.2 매트릭스 #10 (Registration) 제거 — 등록 경로/채널 추적 불필요. Online sit-in 등의 구분은 EBS 오버레이 책임 외 |
+| `country_code` (EBS 추가) | — | ISO 2자리 코드. 국기 이미지 매핑용 (WSOP LIVE `Nationality` 텍스트만으로는 국기 렌더 불가) |
+
+**Why**: EBS Core = 실시간 오버레이 렌더. Foundation.md §4.2 의 오버레이 요소 중 플레이어 표시에 쓰이는 필드는 **이름·국기·사진·칩 스택** 4개뿐. `Email`/`Birth`/`JoinType` 은 렌더 체인에 진입하지 않으며, Back_Office/Overview.md §1.2 채택/제거 매트릭스에서 "금융/KYC/Registration = EBS 범위 외" 로 이미 선언되었다. 필드 미채택은 누락이 아니라 **설계 의도**다.
+
+> 구현: `src/models/player.py` (SQLModel 5필드) / WSOP LIVE Confluence Page `1652949021` (Fatima ERD)
+
 ---
 
 ## 3. 게임 도메인 테이블
@@ -501,13 +549,31 @@ class BlindStructureLevel(SQLModel, table=True):
     big_blind: int = Field(nullable=False)
     ante: int = Field(default=0)
     duration_minutes: int = Field(nullable=False)
-    detail_type: int = Field(default=0)         # BlindDetailType (BS-00 §3.8)
+    detail_type: int = Field(default=0)         # BlindDetailType 5값 (WSOP LIVE Confluence 1960411325 §BlindDetailType)
 
     __table_args__ = (
         UniqueConstraint("blind_structure_id", "level_no"),
+        CheckConstraint("detail_type IN (0, 1, 2, 3, 4)", name="ck_blind_detail_type"),
     )
+```
 
+#### BlindDetailType enum (2026-04-15, WSOP LIVE 1:1 정렬)
 
+| 값 | 이름 | 설명 |
+|:--:|------|------|
+| `0` | Blind | 정규 블라인드 레벨 (small/big/ante 모두 적용) |
+| `1` | Break | 정규 휴식 (클럭 중단, 통상 15~20분) |
+| `2` | DinnerBreak | 식사 휴식 (통상 60~75분, 별도 카운트다운 UI) |
+| `3` | HalfBlind | 레벨 중간 시점에 블라인드만 인상 (ante 는 직전 값 유지). 예: Big Blind Ante 방식에서 ante 만 고정하고 blind 중간 인상 시 |
+| `4` | HalfBreak | 15분 미만 짧은 휴식 (클럭 중단 없음 또는 초단시간). 예: 색상 교환/정리 시간 |
+
+**sync 경계**: WSOP LIVE `BlindStructureDetail.BlindJson` 에 `HalfBlind(3)` 또는 `HalfBreak(4)` 이 포함된 구조를 pull 할 때, 기존 3값 CHECK 제약(0/1/2)에서는 UPSERT 가 실패했다. 이번 확장으로 정합.
+
+**Why**: WSOP LIVE Enum.md (Confluence `1960411325`) 에 공식 정의된 5값 중 3·4를 EBS 에서 미채택했던 것은 명시적 근거 없는 누락이었음 (2026-04-15 critic G3 에서 식별). 정렬 원칙(CLAUDE.md 원칙 1) 상 추가 전용 채택이 기본값.
+
+> 후속 작업: `team2-backend/src/db/init.sql` L? `blind_structure_levels` CHECK 제약 확장 + Alembic revision `add_half_blind_break_to_detail_type` — Task #5.
+
+```python
 # skins
 class Skin(SQLModel, table=True):
     __tablename__ = "skins"
