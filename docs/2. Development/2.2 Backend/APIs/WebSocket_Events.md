@@ -18,6 +18,7 @@ last-updated: 2026-04-15
 | 2026-04-14 | CCR-050 | §4.2 에 `clock_detail_changed`/`clock_reload_requested`/`stack_adjusted`/`tournament_status_changed` 4종 추가 (SSOT Page 1793328277, 3728441546) |
 | 2026-04-14 | CCR-054 | §4.2.0 WSOP LIVE SignalR ↔ EBS 이벤트 매핑표 신설. `blind_structure_changed`/`prize_pool_changed` 2종 추가 (SSOT Page 1793328277) |
 | 2026-04-14 | 경계 pointer 보강 | API-04↔API-05 상호 참조 추가. in-process vs 네트워크 관심사 분리 명시 |
+| 2026-04-15 | §3.3 신설 | 소비자 로컬 state 전이 맵 (CC/Lobby). HandStarted/ActionPerformed/StreetAdvanced/HandCompleted/SeatUpdated 5종 결정적 규칙 + 미확정 영역 목록. decision_owner: team2 (필요 시 team4 가 소비자 관점 보강) |
 
 ---
 
@@ -235,6 +236,39 @@ CC가 게임 진행 중 BO에 발행하는 이벤트. BO는 DB에 저장 후 Lob
 
 > `action_type` 값: `fold`, `check`, `bet`, `call`, `raise`, `allin`
 > `game_phase` 값: BS-00 §3.2 참조 (0=IDLE ~ 7=HAND_COMPLETE)
+
+### 3.3 소비자 로컬 state 전이 맵 (CC / Lobby)
+
+본 섹션은 위 §3.1~§3.2 의 이벤트가 **소비자 쪽 로컬 state** 를 어떻게 갱신해야 하는지 규정한다. publisher (BO) 는 이벤트 payload 만 전송하고, 소비자(CC, Lobby) 는 아래 규칙을 결정적으로 따른다. 구현 시 개별 판단 금지 — 규칙이 부족하면 본 섹션을 **먼저 보강**한 뒤 구현한다.
+
+`TableState`, `HandState`, `SeatState` 는 CC `src/lib/features/command_center/providers/` 및 Lobby 해당 store 의 공통 명명 규칙을 따른다.
+
+#### 3.3.1 핵심 매핑 (필수 5종)
+
+| 이벤트 | 적용 순서 | 로컬 state 전이 (CC) |
+|--------|-----------|---------------------|
+| `HandStarted` | 1. `TableState.current_hand` 교체 (`id=payload.hand_id`, `number=payload.hand_number`) | 2. `HandState.phase = PRE_FLOP`, `dealer_seat = payload.dealer_seat`, `blind_level = payload.blind_level` | 3. `biggest_bet_amt = 0`, `seats[*].current_bet = 0`, `seats[*].has_folded = false` | 4. `action_on = null` (엔진의 `ActionOnResponse` 이후 세팅) |
+| `ActionPerformed` | 1. 대상 seat = `payload.seat` | 2. `seats[seat].current_bet += payload.amount`, `seats[seat].stack = payload.stack_after` | 3. action_type 별 분기: `fold` → `seats[seat].has_folded = true`, `bet`/`raise` → `biggest_bet_amt = max(biggest_bet_amt, seats[seat].current_bet)`, `allin` → `seats[seat].is_all_in = true` + biggest_bet_amt 동일 갱신, `check`/`call` → biggest_bet_amt 유지 | 4. `HandState.pot_total = payload.pot_after` | 5. `action_on = null` (다음 `ActionOnResponse` 대기) |
+| `StreetAdvanced` (FLOP/TURN/RIVER) | 1. `HandState.phase = payload.new_phase` | 2. `HandState.community_cards += payload.cards` | 3. `seats[*].current_bet = 0` (새 스트리트 시작) | 4. `biggest_bet_amt = 0` |
+| `HandCompleted` | 1. `HandState.phase = HAND_COMPLETE` | 2. `seats[*].stack = payload.seats[*].final_stack` 반영 | 3. `TableState.current_hand = null` (다음 `HandStarted` 까지) | 4. `hand_history.append(snapshot)` |
+| `SeatUpdated` | 1. 대상 seat = `payload.seat` | 2. payload 기준으로 `seats[seat]` 필드 덮어쓰기 (`occupant`, `display_name`, `country`, `sitting_out`, etc.) | 3. `hand_in_progress == true` 이고 `occupant` 가 변경되면 현재 핸드에서 해당 seat 는 관전자 처리 |
+
+> **불변식**: 각 이벤트 적용 후 `sum(seats[i].current_bet) + HandState.pot_start <= HandState.pot_total` 이 유지되어야 한다. 위반 시 `ReplayEvents` 요청으로 복구.
+
+#### 3.3.2 순서 보장
+
+- 이벤트는 envelope `seq` (§2.1 CCR-015) 순서로 적용. gap 감지 시 §6.5 replay 먼저.
+- 동일 `seq` 범위 안에서 여러 이벤트가 동일 seat 를 건드릴 수 있다 — 위 표의 "적용 순서" 를 그대로 직역한다.
+
+#### 3.3.3 Lobby 쪽 차이
+
+Lobby 는 CC 와 거의 동일하게 적용하되, **hole cards** 는 수신하지 않으므로 `seats[seat].hole_cards` 필드는 항상 `null`. 카드 공개는 §4 `HoleCardsRevealed` 이벤트 도달 시에만 (§4.2 참조).
+
+#### 3.3.4 미확정 영역 — 아래 이벤트들의 state 전이는 본 §3.3 이 아직 정의하지 않는다. 소비자 팀이 구현 착수 시 발견하면 본 섹션을 즉시 보강한다.
+
+- `CardDetected` — 공개 카드 vs holecards 구분, `game_phase` 와의 정합 규칙
+- `GameChanged` — Mix 게임 모드에서 진행 중 hand snapshot 처리
+- `RfidStatusChanged`, `OutputStatusChanged` — operational alert 영역 (game state 에는 영향 없음)
 
 ---
 
