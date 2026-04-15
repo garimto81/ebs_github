@@ -19,7 +19,7 @@ last-updated: 2026-04-15
 
 > **통합 노트 (2026-04-14)**: PokerGFX Action Tracker 역설계 자료 12개 문서를 본 통합본 1개로 정리. 원본 (분석 6,596줄, 분석 도구 + HTML 목업 + 스크린샷 + 구버전 PRD 포함) 은 `C:/claude/ebs-archive-backup/07-archive/team4-cc-cleanup-20260414/at-reference/` 에 보존.
 >
-> **소비자**: team4 Command Center 구현 시 참고. 현재 설계 SSOT 는 `../../UI-02-command-center.md` + `../../../specs/BS-05-command-center/`.
+> **소비자**: team4 Command Center 구현 시 참고. 현재 설계 SSOT 는 `../../2. Development/2.4 Command Center/Command_Center_UI/Overview.md` + `../../2. Development/2.4 Command Center/` 하위 모듈 문서.
 >
 > **백업된 원본 13개 (역사 추적용)**:
 > - `analysis/` 4개 — Annotation, Workflow Mapping, Design Rationale, annotation-plan
