@@ -1,3 +1,11 @@
+---
+title: Schema
+owner: team2
+tier: internal
+legacy-id: DATA-04
+last-updated: 2026-04-15
+---
+
 # DATA-04 DB Schema
 
 | 날짜 | 항목 | 내용 |

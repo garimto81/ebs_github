@@ -1,3 +1,11 @@
+---
+title: Error Handling
+owner: team2
+tier: internal
+legacy-id: IMPL-06
+last-updated: 2026-04-15
+---
+
 # IMPL-06 Error Handling — 에러 분류 + 복구 전략
 
 | 날짜 | 항목 | 내용 |

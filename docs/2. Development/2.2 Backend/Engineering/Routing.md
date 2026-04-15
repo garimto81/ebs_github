@@ -1,3 +1,11 @@
+---
+title: Routing
+owner: team2
+tier: internal
+legacy-id: IMPL-04
+last-updated: 2026-04-15
+---
+
 # IMPL-04 Routing — CC go_router + Lobby 라우팅
 
 | 날짜 | 항목 | 내용 |

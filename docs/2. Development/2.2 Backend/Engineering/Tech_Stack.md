@@ -1,3 +1,11 @@
+---
+title: Tech Stack
+owner: team2
+tier: internal
+legacy-id: IMPL-01
+last-updated: 2026-04-15
+---
+
 # IMPL-01 Tech Stack — 3-앱 기술 스택 선정 근거
 
 | 날짜 | 항목 | 내용 |

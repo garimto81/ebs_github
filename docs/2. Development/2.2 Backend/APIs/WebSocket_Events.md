@@ -1,3 +1,11 @@
+---
+title: WebSocket Events
+owner: team2
+tier: internal
+legacy-id: API-05
+last-updated: 2026-04-15
+---
+
 # API-05 WebSocket Events — CC ↔ BO ↔ Lobby 실시간 이벤트 프로토콜
 
 | 날짜 | 항목 | 내용 |

@@ -1,3 +1,11 @@
+---
+title: Project Structure
+owner: team2
+tier: internal
+legacy-id: IMPL-02
+last-updated: 2026-04-15
+---
+
 # IMPL-02 Project Structure — 레포 분리 전략 + 패키지 레이아웃
 
 | 날짜 | 항목 | 내용 |

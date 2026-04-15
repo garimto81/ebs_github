@@ -1,3 +1,11 @@
+---
+title: Auth and Session
+owner: team2
+tier: internal
+legacy-id: API-06
+last-updated: 2026-04-15
+---
+
 # API-06 Auth & Session — 인증·토큰·세션·RBAC API
 
 | 날짜 | 항목 | 내용 |

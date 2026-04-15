@@ -1,3 +1,11 @@
+---
+title: Logging
+owner: team2
+tier: internal
+legacy-id: IMPL-07
+last-updated: 2026-04-15
+---
+
 # IMPL-07 Logging — 로그 레벨, 필드, 저장 전략
 
 | 날짜 | 항목 | 내용 |

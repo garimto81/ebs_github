@@ -1,3 +1,11 @@
+---
+title: Build and Deploy
+owner: team2
+tier: internal
+legacy-id: IMPL-09
+last-updated: 2026-04-15
+---
+
 # IMPL-09 Build & Deployment — 빌드 타겟, Docker, 환경 변수
 
 | 날짜 | 항목 | 내용 |

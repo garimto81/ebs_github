@@ -1,3 +1,11 @@
+---
+title: State Machines
+owner: team2
+tier: internal
+legacy-id: DATA-03
+last-updated: 2026-04-15
+---
+
 # DATA-03 State Machines
 
 | 날짜 | 항목 | 내용 |

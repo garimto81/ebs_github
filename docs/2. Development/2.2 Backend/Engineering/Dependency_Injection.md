@@ -1,3 +1,11 @@
+---
+title: Dependency Injection
+owner: team2
+tier: internal
+legacy-id: IMPL-05
+last-updated: 2026-04-15
+---
+
 # IMPL-05 Dependency Injection — Real/Mock HAL 교체 + 테스트 패턴
 
 | 날짜 | 항목 | 내용 |

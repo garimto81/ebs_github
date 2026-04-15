@@ -1,3 +1,11 @@
+---
+title: Backend HTTP
+owner: team2
+tier: internal
+legacy-id: API-01
+last-updated: 2026-04-15
+---
+
 # API-01 Backend API — BO REST API + WSOP LIVE Integration
 
 | 날짜 | 항목 | 내용 |

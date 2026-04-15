@@ -1,3 +1,11 @@
+---
+title: Testing Strategy
+owner: team2
+tier: internal
+legacy-id: IMPL-08
+last-updated: 2026-04-15
+---
+
 # IMPL-08 Testing Strategy — 테스트 피라미드
 
 | 날짜 | 항목 | 내용 |

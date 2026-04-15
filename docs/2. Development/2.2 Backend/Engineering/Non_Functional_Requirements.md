@@ -1,3 +1,11 @@
+---
+title: Non Functional Requirements
+owner: team2
+tier: internal
+legacy-id: IMPL-10
+last-updated: 2026-04-15
+---
+
 # IMPL-10 NFR — 비기능 요구사항 (신뢰성·일관성·복구 포함)
 
 | 날짜 | 항목 | 내용 |

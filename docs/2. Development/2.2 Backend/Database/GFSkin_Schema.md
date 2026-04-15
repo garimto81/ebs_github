@@ -1,3 +1,11 @@
+---
+title: GFSkin Schema
+owner: team2
+tier: internal
+legacy-id: DATA-07
+last-updated: 2026-04-15
+---
+
 # DATA-07 .gfskin Schema — Graphic Editor 아티팩트 포맷 SSOT
 
 | 날짜 | 항목 | 내용 |

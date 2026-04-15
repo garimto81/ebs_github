@@ -1,3 +1,11 @@
+---
+title: Graphic Editor API
+owner: team2
+tier: internal
+legacy-id: API-07
+last-updated: 2026-04-15
+---
+
 # API-07 Graphic Editor Endpoints
 
 | 날짜 | 항목 | 내용 |

@@ -1,3 +1,11 @@
+---
+title: Operations
+owner: team2
+tier: internal
+legacy-id: BO-03
+last-updated: 2026-04-15
+---
+
 # BO-03 Operations — 감사 보존 정책 & 리포팅
 
 | 날짜 | 항목 | 내용 |

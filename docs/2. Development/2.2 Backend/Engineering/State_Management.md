@@ -1,3 +1,11 @@
+---
+title: State Management
+owner: team2
+tier: internal
+legacy-id: IMPL-03
+last-updated: 2026-04-15
+---
+
 # IMPL-03 State Management — CC Riverpod + Lobby 웹 상태 관리
 
 | 날짜 | 항목 | 내용 |

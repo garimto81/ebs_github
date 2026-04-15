@@ -1,3 +1,10 @@
+---
+title: Overview
+owner: team2
+tier: internal
+last-updated: 2026-04-15
+---
+
 # PRD-EBS_BackOffice — Back Office PRD
 
 | 날짜 | 항목 | 내용 |

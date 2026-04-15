@@ -1,3 +1,11 @@
+---
+title: Sync Protocol
+owner: team2
+tier: internal
+legacy-id: BO-02
+last-updated: 2026-04-15
+---
+
 # BO-02 Sync Protocol — 동기화 프로토콜
 
 | 날짜 | 항목 | 내용 |

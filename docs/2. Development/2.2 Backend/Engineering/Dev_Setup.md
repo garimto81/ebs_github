@@ -1,3 +1,11 @@
+---
+title: Dev Setup
+owner: team2
+tier: internal
+legacy-id: IMPL-00
+last-updated: 2026-04-15
+---
+
 # IMPL-00 Dev Setup — 개발 환경 셋업
 
 | 날짜 | 항목 | 내용 |

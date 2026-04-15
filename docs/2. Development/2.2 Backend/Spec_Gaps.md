@@ -1,3 +1,10 @@
+---
+title: Spec Gaps
+owner: team2
+tier: internal
+last-updated: 2026-04-15
+---
+
 # Team 2 Backend — Spec Gap Log
 
 | 날짜 | 항목 | 내용 |
