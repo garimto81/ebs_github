@@ -148,41 +148,26 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 
 ---
 
-## Spec Gap 프로세스 (CCR-first)
+## 기획 공백 발견 시 프로세스
 
-구현 중 기획 문서에 명시되지 않은 판단 필요 시, **임의 구현 금지**.
+**원칙**: 구현 중 기획 문서에 명시되지 않은 판단이 필요하면, 그 자체가 **기획 공백**이다. 공백은 로그에 적는 것이 아니라 **해당 기획 문서를 즉시 보강**해서 없앤다.
 
-### 경로 분기
+### 절차
 
-**1단계: `docs/2. Development/2.N {팀}/**` (팀 내부) 외 변경이 필요한가?**
+1. **공백 식별** — "이 판단은 어느 문서가 답해야 하는가?" 를 먼저 정한다. 답이 없으면 가장 근접한 기획 문서를 택한다.
+2. **해당 문서 보강** — `team-policy.json` v6 자유 편집 정책에 따라 누구든 편집 가능. 원칙은 "추가 전용(additive)" — 기존 문단·스키마·코드 블록을 가급적 건드리지 않고 새 하위 섹션을 만든다.
+3. **`decision_owner` notify** — `teams[*].owns` 또는 `contract_ownership[*].publisher` 에 해당하는 팀이 의미적 결정권자. 편집 후 커밋 메시지 또는 active-edits 레지스트리를 통해 알린다.
+4. **구현 계속** — 보강된 문서에 기반하여 결정적으로 구현. 임의 판단 금지.
+5. **충돌 시** — 동일 구간을 동시 편집한 흔적이 rebase 중 감지되면 `decision_owner` 가 판정 (§"멀티 세션 충돌 방지 (v6, 3계층 방어)" 참조).
 
-#### Path A — Shared/다른 팀 경로 변경 필요
-1. **CR draft 먼저 작성**: `docs/3. Change Requests/pending/CR-teamN-YYYYMMDD-slug.md`
-2. 임시 구현 (workaround 문서화)
-3. 해당 팀의 `Spec_Gaps.md` 에는 **pointer만** 기록:
-   ```markdown
-   ### GAP-{팀}-NNN {제목}
-   - **발견일**: YYYY-MM-DD
-   - **CR**: `CR-teamN-YYYYMMDD-slug.md` 제출됨 (Conductor 승격 대기)
-   - **임시 구현**: {workaround 1줄}
-   - **Status**: OPEN (CR 승격 대기)
-   ```
-4. Conductor 승격 → 실제 반영
-5. Gap 항목 RESOLVED 업데이트
+### 금지 (폐지된 옛 절차)
 
-#### Path B — 팀 내부 판단만 필요
-1. 팀 `Spec_Gaps.md` 에 직접 기록
-2. 임시 구현
-3. 팀 내부 결정 후 RESOLVED
+- `Spec_Gaps.md` 파일 · `GAP-*-NNN` ID 체계 · "팀 내부 판단 vs Shared 변경" 의 2-path 분기 — **모두 폐지**.
+- `docs/3. Change Requests/pending/CR-teamN-*.md` draft 선행 규칙 — **폐지**. 자유 편집으로 해결. 단 `docs/3. Change Requests/{in-progress,done}/` 는 역사 기록으로 보존.
 
-### Gap 문서 위치 (v10)
+### Backlog 규칙은 유지
 
-| 팀 | 경로 |
-|----|------|
-| team1 | `docs/2. Development/2.1 Frontend/Spec_Gaps.md` |
-| team2 | `docs/2. Development/2.2 Backend/Spec_Gaps.md` |
-| team3 | `docs/2. Development/2.3 Game Engine/Spec_Gaps.md` |
-| team4 | `docs/2. Development/2.4 Command Center/Spec_Gaps.md` |
+구현 대상은 여전히 팀 `Backlog.md` (또는 `Backlog/` 항목 파일) 에 등재한다. 공백을 발견하고 기획 문서를 보강한 뒤, 후속 구현 작업을 Backlog 에 추가해야 구현 추적이 끊기지 않는다.
 
 ---
 
