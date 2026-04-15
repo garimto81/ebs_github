@@ -6,6 +6,5 @@ tier: generated
 
 # unknown
 
-- `docs/00-reference/WSOP-Production-Structure-Analysis.md` — WSOP-Production-Structure-Analysis
+- `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` — WSOP-Production-Structure-Analysis
 - `docs/README.md` — README
-- `docs/backlog.md` — backlog

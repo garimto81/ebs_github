@@ -17,6 +17,7 @@ import argparse
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -75,7 +76,7 @@ def is_external(url: str) -> bool:
 
 def resolve_target(source: Path, url: str) -> Path:
     """상대 URL 을 대상 Path 로 해석."""
-    clean = url.split("#")[0].split("?")[0]
+    clean = unquote(url.split("#")[0].split("?")[0])
     if not clean:
         return source
     if clean.startswith("/"):

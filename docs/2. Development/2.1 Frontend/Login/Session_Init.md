@@ -2,7 +2,7 @@
 title: Session Init
 owner: team1
 tier: internal
-legacy-id: BS-02-01
+legacy-id: BS-02-01-session-init
 last-updated: 2026-04-15
 ---
 

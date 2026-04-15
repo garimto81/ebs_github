@@ -318,9 +318,9 @@ flowchart TD
 
 **480×360** | 앱을 시작하면 가장 먼저 표시되는 화면. 인증 성공 시 AT-01로 이동.
 
-![AT-00 Login](../mockups/v6/at-07-login.png)
+![AT-00 Login](../../team4-cc-cleanup-20260414/mockups/v6/at-07-login.png)
 
-![AT-00 Login Annotated](../mockups/v6/at-07-login-annotated.png)
+![AT-00 Login Annotated](../../team4-cc-cleanup-20260414/mockups/v6/at-07-login-annotated.png)
 
 EBS Server에 연결하고 운영자 인증을 수행하는 진입 화면.
 
@@ -341,9 +341,9 @@ EBS Server에 연결하고 운영자 인증을 수행하는 진입 화면.
 
 **640×auto** | 로그인 성공 또는 핸드 완료 시 표시. NEW HAND를 누르면 AT-02로 이동.
 
-![AT-01 Main Layout](../mockups/v6/at-01-setup.png)
+![AT-01 Main Layout](../../team4-cc-cleanup-20260414/mockups/v6/at-01-setup.png)
 
-![AT-01 Main Layout Annotated](../mockups/v6/at-01-setup-annotated.png)
+![AT-01 Main Layout Annotated](../../team4-cc-cleanup-20260414/mockups/v6/at-01-setup-annotated.png)
 
 핸드를 시작하기 전에 좌석 배치, 블라인드/칩 설정, 게임 타입을 선택하는 Setup 허브. 7개 영역으로 구성되어 있다.
 
@@ -464,9 +464,9 @@ AT-01은 핸드 사이에 빠르게 조작하는 **퀵 토글** 화면이고, AT
 
 **400×480** | AT-01에서 좌석을 클릭하면 열리는 팝업. OK 또는 CANCEL로 닫으면 AT-01로 돌아감.
 
-![AT-07 Player Edit](../mockups/v6/at-09-player-edit.png)
+![AT-07 Player Edit](../../team4-cc-cleanup-20260414/mockups/v6/at-09-player-edit.png)
 
-![AT-07 Player Edit Annotated](../mockups/v6/at-09-player-edit-annotated.png)
+![AT-07 Player Edit Annotated](../../team4-cc-cleanup-20260414/mockups/v6/at-09-player-edit-annotated.png)
 
 플레이어의 이름, 국가, SIT OUT 상태를 편집하는 다이얼로그 팝업.
 
@@ -487,9 +487,9 @@ AT-01은 핸드 사이에 빠르게 조작하는 **퀵 토글** 화면이고, AT
 
 **640×auto** | AT-01에서 SETTINGS 버튼을 누르면 열림. SAVE 또는 CANCEL로 AT-01에 돌아감.
 
-![AT-06 Game Settings](../mockups/v6/at-08-game-settings.png)
+![AT-06 Game Settings](../../team4-cc-cleanup-20260414/mockups/v6/at-08-game-settings.png)
 
-![AT-06 Game Settings Annotated](../mockups/v6/at-08-game-settings-annotated.png)
+![AT-06 Game Settings Annotated](../../team4-cc-cleanup-20260414/mockups/v6/at-08-game-settings-annotated.png)
 
 게임 종목, 블라인드 구조, 특수 규칙을 상세하게 편집하는 화면. AT-01의 퀵 토글과 달리, 여기서는 모든 설정을 개별적으로 입력할 수 있다.
 
@@ -561,13 +561,13 @@ AT-01은 핸드 사이에 빠르게 조작하는 **퀵 토글** 화면이고, AT
 
 **640×auto** | NEW HAND를 누르면 표시됨. 핸드가 완료되면(COMPLETE) AT-01로 돌아감.
 
-![AT-02 Action View Pre-Flop](../mockups/v6/at-02-action-preflop.png)
+![AT-02 Action View Pre-Flop](../../team4-cc-cleanup-20260414/mockups/v6/at-02-action-preflop.png)
 
-![AT-02 Action View Pre-Flop Annotated](../mockups/v6/at-02-action-preflop-annotated.png)
+![AT-02 Action View Pre-Flop Annotated](../../team4-cc-cleanup-20260414/mockups/v6/at-02-action-preflop-annotated.png)
 
-![AT-02 Action View Post-Flop](../mockups/v6/at-04-action-postflop.png)
+![AT-02 Action View Post-Flop](../../team4-cc-cleanup-20260414/mockups/v6/at-04-action-postflop.png)
 
-![AT-02 Action View Post-Flop Annotated](../mockups/v6/at-04-action-postflop-annotated.png)
+![AT-02 Action View Post-Flop Annotated](../../team4-cc-cleanup-20260414/mockups/v6/at-04-action-postflop-annotated.png)
 
 핸드가 진행되는 동안 실시간으로 액션을 입력하는 핵심 화면. Pre-Flop과 Post-Flop을 하나의 화면으로 통합했다 (83%의 요소가 동일하므로 화면 전환 비용을 제거). 화면은 6개 수평 층으로 구성된다.
 
@@ -746,9 +746,9 @@ sequenceDiagram
 
 **560×auto** | 카드 아이콘을 클릭하거나 RFID Fallback이 발생하면 열림. OK를 누르면 서버에 전송 후 AT-02로 복귀. Back(또는 Esc)을 누르면 전송 없이 복귀.
 
-![AT-03 Card Selector](../mockups/v6/at-03-card-selector.png)
+![AT-03 Card Selector](../../team4-cc-cleanup-20260414/mockups/v6/at-03-card-selector.png)
 
-![AT-03 Card Selector Annotated](../mockups/v6/at-03-card-selector-annotated.png)
+![AT-03 Card Selector Annotated](../../team4-cc-cleanup-20260414/mockups/v6/at-03-card-selector-annotated.png)
 
 52장 카드 그리드에서 수동으로 1장을 선택하는 팝업. **1회 진입에 1장만 선택** 가능하며, 여러 장이 필요하면 반복 진입한다.
 
@@ -817,9 +817,9 @@ sequenceDiagram
 
 **640×auto** | AT-02에서 Stats 버튼을 누르면 열림. CLOSE를 누르면 AT-02로 복귀.
 
-![AT-04 Statistics Panel](../mockups/v6/at-05-statistics.png)
+![AT-04 Statistics Panel](../../team4-cc-cleanup-20260414/mockups/v6/at-05-statistics.png)
 
-![AT-04 Statistics Panel Annotated](../mockups/v6/at-05-statistics-annotated.png)
+![AT-04 Statistics Panel Annotated](../../team4-cc-cleanup-20260414/mockups/v6/at-05-statistics-annotated.png)
 
 10좌석 통계 테이블과 방송 그래픽 제어 버튼을 함께 보여주는 화면. 방송 감독이 통계를 확인하면서 동시에 방송 그래픽을 제어할 수 있다.
 
@@ -868,9 +868,9 @@ sequenceDiagram
 
 **480×auto** | AT-02에서 REGISTER 버튼을 누르면 열림. CANCEL을 누르거나 등록이 완료되면 AT-01로 돌아감.
 
-![AT-05 RFID Registration](../mockups/v6/at-06-rfid-register.png)
+![AT-05 RFID Registration](../../team4-cc-cleanup-20260414/mockups/v6/at-06-rfid-register.png)
 
-![AT-05 RFID Registration Annotated](../mockups/v6/at-06-rfid-register-annotated.png)
+![AT-05 RFID Registration Annotated](../../team4-cc-cleanup-20260414/mockups/v6/at-06-rfid-register-annotated.png)
 
 52장의 카드를 RFID 안테나에 순서대로 올려놓아 등록하거나 검증하는 화면.
 

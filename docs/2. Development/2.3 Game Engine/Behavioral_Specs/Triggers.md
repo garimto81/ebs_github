@@ -2,7 +2,7 @@
 title: Triggers
 owner: team3
 tier: internal
-legacy-id: BS-06-00
+legacy-id: BS-06-00-triggers
 last-updated: 2026-04-15
 ---
 

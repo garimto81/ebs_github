@@ -10,13 +10,19 @@ tier: generated
 
 | 경로 | 제목 | Owner | Tier | Legacy |
 |------|------|-------|------|--------|
-| `docs/00-reference/WSOP-Production-Structure-Analysis.md` | WSOP-Production-Structure-Analysis | - | - | - |
+| `docs/1. Product/1. Product.md` | 1. Product | conductor | internal | - |
+| `docs/1. Product/Architecture.md` | Architecture | conductor | internal | - |
+| `docs/1. Product/Communication_Rules.md` | Communication Rules | conductor | internal | - |
 | `docs/1. Product/Foundation.md` | Foundation | conductor | internal | - |
 | `docs/1. Product/Game_Rules/Betting_System.md` | Betting System | conductor | internal | PRD-GAME-04 |
 | `docs/1. Product/Game_Rules/Draw.md` | Draw | conductor | internal | PRD-GAME-02 |
 | `docs/1. Product/Game_Rules/Flop_Games.md` | Flop Games | conductor | internal | PRD-GAME-01 |
 | `docs/1. Product/Game_Rules/Seven_Card_Games.md` | Seven Card Games | conductor | internal | PRD-GAME-03 |
 | `docs/1. Product/PokerGFX_Reference.md` | PokerGFX Reference | conductor | internal | - |
+| `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` | WSOP Production Structure Analysis | conductor | internal | - |
+| `docs/1. Product/Team_Structure.md` | Team Structure | conductor | internal | - |
+| `docs/2. Development/2. Development.md` | 2. Development | conductor | internal | - |
+| `docs/2. Development/2.1 Frontend/2.1 Frontend.md` | 2.1 Frontend | ci | generated | - |
 | `docs/2. Development/2.1 Frontend/Backlog.md` | Backlog | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Console_UI.md` | Console UI | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Engineering.md` | Engineering | team1 | internal | - |
@@ -25,15 +31,31 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/Metadata_Editing.md` | Metadata Editing | team1 | internal | BS-08-02 |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/Overview.md` | Overview | team1 | internal | BS-08-00 |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/RBAC_Guards.md` | RBAC Guards | team1 | internal | BS-08-04 |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/EBS-Skin-Editor_v3.prd.md` | EBS-Skin-Editor_v3.prd | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/README.md` | README | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/EBS-Skin-Editor-UI-Design.prd.md` | EBS-Skin-Editor-UI-Design.prd | BRACELET STUDIO | - | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/EBS-Skin-Editor.prd.md` | EBS-Skin-Editor.prd | BRACELET STUDIO | - | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/EBS-Skin-Editor_v2.prd.md` | EBS-Skin-Editor_v2.prd | BRACELET STUDIO | - | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/board-re-crosscheck.md` | board-re-crosscheck | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/data/layout-css-extraction.md` | layout-css-extraction | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ebs-ui-design-plan.md` | ebs-ui-design-plan | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ebs-ui-design-strategy.md` | ebs-ui-design-strategy | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ebs-ui-layout-anatomy.md` | ebs-ui-layout-anatomy | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/pokergfx-vs-ebs-skin-editor.prd.md` | pokergfx-vs-ebs-skin-editor.prd | BRACELET STUDIO | - | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-compact-mockup-design-system.prd.md` | prd-compact-mockup-design-system.prd | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-skin-editor-layout-references.prd.md` | prd-skin-editor-layout-references.prd | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-skin-editor.prd.md` | prd-skin-editor.prd | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/skin-editor-layout-balance-solutions.md` | skin-editor-layout-balance-solutions | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` | ui-feature-verification-workflow | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md` | UI | team1 | internal | UI-04 |
 | `docs/2. Development/2.1 Frontend/Lobby/Event_and_Flight.md` | Event and Flight | team1 | internal | BS-02-02 |
 | `docs/2. Development/2.1 Frontend/Lobby/Overview.md` | Overview | team1 | internal | BS-02-00 |
-| `docs/2. Development/2.1 Frontend/Lobby/Session_Restore.md` | Session Restore | team1 | internal | BS-02-01 |
+| `docs/2. Development/2.1 Frontend/Lobby/Session_Restore.md` | Session Restore | team1 | internal | BS-02-01-session-restore |
 | `docs/2. Development/2.1 Frontend/Lobby/Table.md` | Table | team1 | internal | BS-02-03 |
 | `docs/2. Development/2.1 Frontend/Lobby/UI.md` | UI | team1 | internal | UI-01 |
-| `docs/2. Development/2.1 Frontend/Login/Error_Handling.md` | Error Handling | team1 | internal | BS-02-01 |
-| `docs/2. Development/2.1 Frontend/Login/Form.md` | Form | team1 | internal | BS-02-01 |
-| `docs/2. Development/2.1 Frontend/Login/Session_Init.md` | Session Init | team1 | internal | BS-02-01 |
+| `docs/2. Development/2.1 Frontend/Login/Error_Handling.md` | Error Handling | team1 | internal | BS-02-01-error |
+| `docs/2. Development/2.1 Frontend/Login/Form.md` | Form | team1 | internal | BS-02-01-form |
+| `docs/2. Development/2.1 Frontend/Login/Session_Init.md` | Session Init | team1 | internal | BS-02-01-session-init |
 | `docs/2. Development/2.1 Frontend/Settings/Display.md` | Display | team1 | internal | BS-03-03 |
 | `docs/2. Development/2.1 Frontend/Settings/Graphics.md` | Graphics | team1 | internal | BS-03-02 |
 | `docs/2. Development/2.1 Frontend/Settings/Outputs.md` | Outputs | team1 | internal | BS-03-01 |
@@ -42,6 +64,7 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Settings/Rules.md` | Rules | team1 | internal | BS-03-04 |
 | `docs/2. Development/2.1 Frontend/Settings/Statistics.md` | Statistics | team1 | internal | BS-03-05 |
 | `docs/2. Development/2.1 Frontend/Settings/UI.md` | UI | team1 | internal | UI-03 |
+| `docs/2. Development/2.2 Backend/2.2 Backend.md` | 2.2 Backend | ci | generated | - |
 | `docs/2. Development/2.2 Backend/APIs/Auth_and_Session.md` | Auth and Session | team2 | internal | API-06 |
 | `docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md` | Backend HTTP | team2 | internal | API-01 |
 | `docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md` | Graphic Editor API | team2 | internal | API-07 |
@@ -66,6 +89,7 @@ tier: generated
 | `docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md` | Tech Stack | team2 | internal | IMPL-01 |
 | `docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md` | Testing Strategy | team2 | internal | IMPL-08 |
 | `docs/2. Development/2.2 Backend/Spec_Gaps.md` | Spec Gaps | team2 | internal | - |
+| `docs/2. Development/2.3 Game Engine/2.3 Game Engine.md` | 2.3 Game Engine | ci | generated | - |
 | `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | Overlay Output Events | team3 | internal | API-04 |
 | `docs/2. Development/2.3 Game Engine/Backlog.md` | Backlog | team3 | internal | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` | Action Rotation | team3 | internal | BS-06-10 |
@@ -82,7 +106,8 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Side_Pot.md` | Side Pot | team3 | internal | BS-06-06 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md` | Overview | team3 | internal | BS-06-00 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md` | Stud Games | team3 | internal | BS-06-3X |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | internal | BS-06-00 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | internal | BS-06-00-triggers |
+| `docs/2. Development/2.4 Command Center/2.4 Command Center.md` | 2.4 Command Center | ci | generated | - |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | RFID HAL | team4 | internal | BS-04-04 |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Legacy.md` | RFID HAL Legacy | team4 | internal | API-03 |
 | `docs/2. Development/2.4 Command Center/Backlog.md` | Backlog | team4 | internal | - |
@@ -113,6 +138,7 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/RFID_Cards/Manual_Fallback.md` | Manual Fallback | team4 | internal | BS-04-03 |
 | `docs/2. Development/2.4 Command Center/RFID_Cards/Overview.md` | Overview | team4 | internal | BS-04-00 |
 | `docs/2. Development/2.4 Command Center/RFID_Cards/Register_Screen.md` | Register Screen | team4 | internal | BS-04-05 |
+| `docs/2. Development/2.5 Shared/2.5 Shared.md` | 2.5 Shared | ci | generated | - |
 | `docs/2. Development/2.5 Shared/Authentication.md` | Authentication | conductor | internal | BS-01 |
 | `docs/2. Development/2.5 Shared/BS_Overview.md` | BS Overview | conductor | internal | BS-00 |
 | `docs/2. Development/2.5 Shared/Risk_Matrix.md` | Risk Matrix | conductor | internal | - |
@@ -207,10 +233,10 @@ tier: generated
 | `docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md` | CR-055-output-event-buffer-ownership | conductor | internal | CCR-055 |
 | `docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md` | CR-056-deadlink-cleanup | conductor | internal | CCR-056 |
 | `docs/3. Change Requests/pending/CR-team1-20260414-bs02-overview-rename.md` | CR-team1-20260414-bs02-overview-rename | team1 | internal | CCR-DRAFT-team1-20260414-bs02-overview-rename |
+| `docs/4. Operations/4. Operations.md` | 4. Operations | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog.md` | Conductor Backlog | conductor | internal | - |
 | `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` | 2026-04-08-game-engine.plan | conductor | internal | - |
 | `docs/4. Operations/Plans/PLAN-BO-Phase1.md` | PLAN-BO-Phase1 | conductor | internal | - |
 | `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` | 2026-04-10-ccr-batch-team-impact | conductor | internal | - |
 | `docs/4. Operations/Roadmap.md` | Roadmap | conductor | internal | - |
-| `docs/README.md` | README | - | - | - |
-| `docs/backlog.md` | backlog | - | - | - |
+| `docs/README.md` | docs/ README | conductor | internal | - |

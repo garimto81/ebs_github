@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>팟 리밋(PL) 베팅 — 시각 가이드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a1a0e;color:#e8f5e9;font-family:'Segoe UI','Apple SD Gothic Neo',sans-serif;font-size:14px;padding:20px 14px;max-width:720px;margin:0 auto}
+.ph{text-align:center;padding:24px 0 16px;border-bottom:1px solid #1b4d2a;margin-bottom:28px}
+.ph h1{font-size:21px;font-weight:700;color:#fbbf24;letter-spacing:-.02em;margin-bottom:5px}
+.ph .sub{font-size:12px;color:#6b9a75}
+.ph .disc{margin-top:8px;padding:7px 14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:6px;font-size:11px;color:#a8cc9e;display:inline-block}
+.sec{margin-bottom:36px}
+.st{font-size:12px;font-weight:600;color:#fbbf24;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;padding-bottom:5px;border-bottom:1px solid #1b4d2a}
+.cap{text-align:center;font-size:11px;color:#6b9a75;margin-top:7px;line-height:1.6}
+
+/* poker table */
+.pt{background:radial-gradient(ellipse at center,#0d7a3a 0%,#0a5c2f 70%,#083d1f 100%);border-radius:90px;border:8px solid #3d2010;box-shadow:0 0 0 3px #5c3a1e,0 8px 28px rgba(0,0,0,.6);padding:20px 16px;text-align:center;margin:0 auto;max-width:640px}
+
+/* chip base */
+.chip{width:40px;height:40px;border-radius:50%;border:3px dashed rgba(255,255,255,.3);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;box-shadow:0 2px 4px rgba(0,0,0,.4);position:relative;flex-shrink:0}
+.chip.r{background:radial-gradient(circle,#ef4444,#b91c1c)}
+.chip.b{background:radial-gradient(circle,#3b82f6,#1d4ed8)}
+.chip.g{background:radial-gradient(circle,#22c55e,#15803d)}
+.chip.k{background:radial-gradient(circle,#1f2937,#111827)}
+.chip.gold{background:radial-gradient(circle,#fbbf24,#d97706);color:#78350f;border-color:rgba(120,53,15,.4)}
+.chip.ghost{background:radial-gradient(circle,#3b82f6,#1d4ed8);opacity:0.45;border:3px dashed rgba(255,255,255,.5)}
+
+/* chip stack */
+.cstack{display:inline-flex;flex-direction:column-reverse;align-items:center;position:relative}
+.cstack .chip{margin-top:-24px}
+.cstack .chip:first-child{margin-top:0}
+.cstack-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.cstack-wrap .clbl{font-size:10px;color:#a8cc9e;font-weight:600;text-align:center;margin-top:6px}
+
+/* pot badge */
+.pc2{width:62px;height:62px;border-radius:50%;background:radial-gradient(circle,#fbbf24,#d97706);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 0 14px rgba(251,191,36,.3)}
+.pc2 .ptl{font-size:9px;font-weight:700;color:#78350f}
+.pc2 .pta{font-size:15px;font-weight:800;color:#1a0a00}
+.pc2.lg{width:78px;height:78px}
+.pc2.lg .ptl{font-size:10px}
+.pc2.lg .pta{font-size:19px}
+
+/* separator */
+.pot-sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,#1b4d2a 20%,#1b4d2a 80%,transparent);margin:20px 0}
+
+/* calc box */
+.calc-box{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:10px 14px;text-align:center;margin-top:10px}
+.calc-box .ctitle{font-size:10px;color:#6b9a75;margin-bottom:4px;letter-spacing:.04em;text-transform:uppercase}
+.calc-box .cexpr{font-size:14px;font-weight:700;color:#fbbf24}
+.calc-box .cnote{font-size:10px;color:#a8cc9e;margin-top:3px}
+
+/* question box */
+.q-box{background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.3);border-radius:8px;padding:10px 14px;text-align:center;margin-top:10px}
+.q-box .qtxt{font-size:13px;font-weight:700;color:#f97316}
+.q-box .qsub{font-size:10px;color:#6b9a75;margin-top:3px}
+
+/* range bar */
+.range-wrap{padding:10px 0;margin:0 8px}
+.range-bar-track{position:relative;height:24px;background:rgba(0,0,0,.3);border-radius:12px;margin:0 0 6px;overflow:hidden}
+.range-bar-fill{height:100%;background:linear-gradient(90deg,#22c55e,#f97316);border-radius:12px;width:100%}
+.range-labels{display:flex;justify-content:space-between;align-items:center;font-size:10px}
+.range-min{color:#22c55e;font-weight:700}
+.range-max{color:#f97316;font-weight:700}
+.range-mid{color:#6b9a75}
+
+/* action grid */
+.ag{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 auto}
+.abox{background:rgba(0,0,0,.3);border-radius:10px;padding:12px 8px 10px;text-align:center;border:1px solid rgba(255,255,255,.07)}
+.abox .aname{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.abox .adesc{font-size:10px;color:#6b9a75;margin-top:4px;line-height:1.4}
+.abox .achip-wrap{min-height:52px;display:flex;align-items:center;justify-content:center}
+.abox.fold .aname{color:#9ca3af}
+.abox.call .aname{color:#22c55e}
+.abox.raise-pl .aname{color:#f97316}
+.abox.raise-pl{border-color:rgba(249,115,22,.25);background:rgba(249,115,22,.05)}
+.abox .abadge{display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;margin-top:3px;background:rgba(249,115,22,.2);color:#f97316}
+
+/* fold cards */
+.fold-cards{display:flex;gap:3px;justify-content:center;opacity:.35;transform:rotate(-5deg)}
+.fc{width:28px;height:40px;border-radius:4px;background:repeating-linear-gradient(135deg,#374151 0,#374151 4px,#4b5563 4px,#4b5563 8px);border:1px solid #6b7280}
+.fc:last-child{transform:rotate(10deg) translateX(-4px)}
+
+/* comparison columns */
+.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.compare-col{background:rgba(0,0,0,.25);border-radius:12px;padding:12px 10px;text-align:center;border:1px solid rgba(255,255,255,.06)}
+.compare-col .col-title{font-size:10px;font-weight:700;color:#a8cc9e;margin-bottom:10px;letter-spacing:.03em}
+.compare-col .col-result{font-size:11px;font-weight:700;color:#fbbf24;margin-top:8px}
+.compare-arrow{display:flex;align-items:center;justify-content:center;font-size:22px;color:#2d5a3d;padding:0 4px;align-self:center}
+
+/* step cards for summary */
+.step-cards{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.step-card{display:flex;align-items:center;gap:14px;background:rgba(0,0,0,.25);border-radius:12px;padding:14px 16px;border:1px solid rgba(255,255,255,.06)}
+.step-num{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle,#fbbf24,#d97706);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#1a0a00;flex-shrink:0}
+.step-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.step-icon.ghost-ico{background:rgba(59,130,246,.15);border:2px dashed rgba(59,130,246,.4)}
+.step-icon.pot-ico{background:rgba(251,191,36,.15);border:2px solid rgba(251,191,36,.3)}
+.step-icon.stack-ico{background:rgba(34,197,94,.15);border:2px solid rgba(34,197,94,.3)}
+.step-text .stitle{font-size:13px;font-weight:700;color:#e8f5e9;margin-bottom:2px}
+.step-text .ssub{font-size:10px;color:#6b9a75}
+
+/* calc steps list */
+.calc-steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.calc-step-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(0,0,0,.2);border-radius:7px;border-left:3px solid transparent}
+.calc-step-row.s1{border-left-color:#6b9a75}
+.calc-step-row.s2{border-left-color:#3b82f6}
+.calc-step-row.s3{border-left-color:#f97316}
+.calc-step-row .cslbl{font-size:10px;font-weight:700;color:#6b9a75;width:72px;flex-shrink:0}
+.calc-step-row.s2 .cslbl{color:#60a5fa}
+.calc-step-row.s3 .cslbl{color:#f97316}
+.calc-step-row .csval{font-size:11px;font-weight:700;color:#e8f5e9}
+.calc-step-row.s3 .csval{color:#fbbf24;font-size:13px}
+
+/* chip row layout inside poker table */
+.pt-inner-row{display:flex;justify-content:center;align-items:flex-end;gap:20px;flex-wrap:wrap}
+
+/* my chips row below table */
+.my-chips-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px;padding:8px 12px;background:rgba(0,0,0,.2);border-radius:8px;border:1px solid rgba(255,255,255,.05)}
+.my-chips-row .mclbl{font-size:10px;color:#6b9a75;font-weight:600}
+.my-chips-row .mcval{font-size:12px;font-weight:700;color:#a8cc9e}
+
+/* calc with chips visual */
+.chip-calc-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+.chip-calc-op{font-size:18px;font-weight:700;color:#2d5a3d}
+.chip-calc-eq{font-size:18px;font-weight:700;color:#fbbf24}
+.chip-calc-total{display:flex;flex-direction:column;align-items:center;gap:4px}
+.chip-calc-total .ctlbl{font-size:10px;color:#6b9a75}
+.chip-calc-total .ctval{font-size:16px;font-weight:800;color:#fbbf24}
+</style>
+</head>
+<body>
+
+<div class="ph">
+  <h1>팟 리밋(PL) 베팅 — 시각 가이드</h1>
+  <div class="sub">Pot Limit 베팅 한도 계산법 단계별 시각화</div>
+  <div class="disc">PL에서는 현재 팟 크기가 최대 Raise 한도를 결정합니다.</div>
+</div>
+
+<!-- 섹션 1: 상황 A — 아무도 안 걸었을 때 -->
+<div class="sec" id="pl-situation-a">
+  <div class="st">상황 A: 아무도 안 걸었을 때</div>
+
+  <div class="pt">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+      <!-- 팟 뱃지 -->
+      <div>
+        <div class="pc2">
+          <div class="ptl">POT</div>
+          <div class="pta">300</div>
+        </div>
+      </div>
+      <!-- 범위 바 -->
+      <div style="width:100%;max-width:380px">
+        <div class="range-wrap">
+          <div class="range-bar-track">
+            <div class="range-bar-fill"></div>
+          </div>
+          <div class="range-labels">
+            <div class="range-min">최소: BB 100</div>
+            <div class="range-mid">Bet 범위</div>
+            <div class="range-max">최대: 팟 300</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 나의 칩 -->
+  <div class="my-chips-row">
+    <div class="cstack" style="flex-direction:row;gap:2px;align-items:center">
+      <div class="chip k" style="width:32px;height:32px;font-size:9px">100</div>
+      <div class="chip k" style="width:32px;height:32px;font-size:9px">100</div>
+      <div class="chip k" style="width:32px;height:32px;font-size:9px">100</div>
+    </div>
+    <div class="mclbl">나의 칩:</div>
+    <div class="mcval">2,000</div>
+  </div>
+
+  <div class="cap">아무도 안 걸었으므로 팟에 있는 금액까지만 걸 수 있습니다</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 2: 상황 B — 누군가 걸었을 때 -->
+<div class="sec" id="pl-situation-b">
+  <div class="st">상황 B: 누군가 걸었을 때</div>
+
+  <div class="pt">
+    <div class="pt-inner-row">
+      <!-- 팟 -->
+      <div class="cstack-wrap">
+        <div class="pc2" style="width:54px;height:54px">
+          <div class="ptl" style="font-size:8px">POT</div>
+          <div class="pta" style="font-size:13px">300</div>
+        </div>
+        <div class="clbl">팟</div>
+      </div>
+      <!-- 상대 베팅 -->
+      <div class="cstack-wrap">
+        <div class="cstack">
+          <div class="chip r">100</div>
+          <div class="chip r">100</div>
+        </div>
+        <div class="clbl" style="color:#fca5a5">상대 베팅: 200</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 나의 칩 -->
+  <div class="my-chips-row">
+    <div class="cstack" style="flex-direction:row;gap:2px;align-items:center">
+      <div class="chip k" style="width:32px;height:32px;font-size:9px">100</div>
+      <div class="chip k" style="width:32px;height:32px;font-size:9px">100</div>
+      <div class="chip k" style="width:32px;height:32px;font-size:9px">100</div>
+    </div>
+    <div class="mclbl">나의 칩:</div>
+    <div class="mcval">2,000</div>
+  </div>
+
+  <div class="q-box">
+    <div class="qtxt">내 최대 Raise는 얼마?</div>
+    <div class="qsub">팟 + 상대 베팅이 있을 때 어떻게 계산하나요?</div>
+  </div>
+
+  <div class="cap">PL의 핵심 — 최대 Raise를 계산하려면 머릿속에서 먼저 콜한 척해야 합니다</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 3: 단계 ① 머릿속 콜 -->
+<div class="sec" id="pl-step1">
+  <div class="st">단계 ① 머릿속 콜 (가상의 콜)</div>
+
+  <div class="pt">
+    <div class="pt-inner-row">
+      <!-- 팟 -->
+      <div class="cstack-wrap">
+        <div class="pc2" style="width:54px;height:54px">
+          <div class="ptl" style="font-size:8px">POT</div>
+          <div class="pta" style="font-size:13px">300</div>
+        </div>
+        <div class="clbl">팟</div>
+      </div>
+      <!-- 상대 -->
+      <div class="cstack-wrap">
+        <div class="cstack">
+          <div class="chip r">100</div>
+          <div class="chip r">100</div>
+        </div>
+        <div class="clbl" style="color:#fca5a5">상대: 200</div>
+      </div>
+      <!-- 나 (고스트) -->
+      <div class="cstack-wrap" style="opacity:0.5">
+        <div class="cstack">
+          <div class="chip ghost">100</div>
+          <div class="chip ghost">100</div>
+        </div>
+        <div class="clbl" style="color:#93c5fd;font-style:italic">[나: 200]</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:10px;color:rgba(147,197,253,.6);font-style:italic;letter-spacing:.03em">점선 = 실제로 내지 않은 머릿속의 콜</div>
+  </div>
+
+  <div class="calc-box">
+    <div class="ctitle">머릿속 합계</div>
+    <div class="cexpr">300 + 200 + 200 = 700</div>
+    <div class="cnote">팟(300) + 상대 베팅(200) + 가상의 내 콜(200)</div>
+  </div>
+
+  <div class="cap">이 700이 내가 Raise할 수 있는 최대 금액이 됩니다</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 4: 단계 ② 실제 지출 + 선택지 -->
+<div class="sec" id="pl-step2">
+  <div class="st">단계 ② 실제 지출 + 선택지</div>
+
+  <!-- 칩 계산식 시각화 -->
+  <div class="chip-calc-row">
+    <!-- 콜분 -->
+    <div class="cstack-wrap">
+      <div class="cstack">
+        <div class="chip b">100</div>
+        <div class="chip b">100</div>
+      </div>
+      <div class="clbl" style="color:#60a5fa">콜분: 200</div>
+    </div>
+    <div class="chip-calc-op">+</div>
+    <!-- Raise분 -->
+    <div class="cstack-wrap">
+      <div class="cstack">
+        <div class="chip r">100</div>
+        <div class="chip r">100</div>
+        <div class="chip r">100</div>
+        <div class="chip r">100</div>
+        <div class="chip r">100</div>
+        <div class="chip gold">200</div>
+      </div>
+      <div class="clbl" style="color:#fca5a5">Raise분: 700</div>
+    </div>
+    <div class="chip-calc-eq">=</div>
+    <!-- 총액 -->
+    <div class="chip-calc-total">
+      <div class="ctval">900</div>
+      <div class="ctlbl">내 총 지출</div>
+    </div>
+  </div>
+
+  <!-- 액션 그리드 -->
+  <div class="pt" style="padding:16px">
+    <div class="ag">
+      <!-- Fold -->
+      <div class="abox fold">
+        <div class="aname">Fold</div>
+        <div class="achip-wrap">
+          <div class="fold-cards">
+            <div class="fc"></div>
+            <div class="fc"></div>
+          </div>
+        </div>
+        <div class="adesc">포기</div>
+      </div>
+      <!-- Call -->
+      <div class="abox call">
+        <div class="aname">Call</div>
+        <div class="achip-wrap">
+          <div class="cstack">
+            <div class="chip b" style="width:34px;height:34px;font-size:10px">100</div>
+            <div class="chip b" style="width:34px;height:34px;font-size:10px">100</div>
+          </div>
+        </div>
+        <div class="adesc">콜: 200</div>
+      </div>
+      <!-- Raise -->
+      <div class="abox raise-pl">
+        <div class="aname">Raise</div>
+        <div class="achip-wrap">
+          <div class="cstack">
+            <div class="chip r" style="width:34px;height:34px;font-size:10px">100</div>
+            <div class="chip r" style="width:34px;height:34px;font-size:10px">100</div>
+            <div class="chip r" style="width:34px;height:34px;font-size:10px">100</div>
+          </div>
+        </div>
+        <div class="adesc">200 ~ 900</div>
+        <div class="abadge">최대 900</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="calc-box" style="margin-top:10px">
+    <div class="cexpr" style="font-size:13px">900 = 콜(200) + Raise분(700)</div>
+    <div class="cnote">내 주머니에서 나가는 총액</div>
+  </div>
+
+  <div class="cap">Raise를 최대로 할 경우 총 900을 지출하며, 그 중 200은 콜분, 700은 Raise분입니다</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 5: 상황 C — 팟이 커지면 한도도 커진다 -->
+<div class="sec" id="pl-situation-c">
+  <div class="st">상황 C: 팟이 커지면 한도도 커진다</div>
+
+  <div class="compare-row">
+    <!-- 작은 팟 -->
+    <div class="compare-col">
+      <div class="col-title">팟: 300</div>
+      <div class="pt" style="padding:16px 10px;border-radius:60px">
+        <div class="pc2" style="width:52px;height:52px">
+          <div class="ptl" style="font-size:8px">POT</div>
+          <div class="pta" style="font-size:12px">300</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:8px;font-size:11px;color:#6b9a75">머릿속 합계</div>
+      <div style="text-align:center;font-size:12px;font-weight:700;color:#a8cc9e">300 + 100 + 100 = 500</div>
+      <div class="col-result">최대 Raise: 500</div>
+      <div style="text-align:center;font-size:10px;color:#6b9a75;margin-top:2px">총 지출: 콜(100) + 500 = 600</div>
+    </div>
+
+    <!-- 화살표 -->
+    <div class="compare-arrow">→</div>
+
+    <!-- 큰 팟 -->
+    <div class="compare-col">
+      <div class="col-title">팟: 1,000</div>
+      <div class="pt" style="padding:16px 10px;border-radius:60px">
+        <div class="pc2 lg">
+          <div class="ptl">POT</div>
+          <div class="pta">1000</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:8px;font-size:11px;color:#6b9a75">머릿속 합계</div>
+      <div style="text-align:center;font-size:12px;font-weight:700;color:#a8cc9e">1000 + 500 + 500 = 2000</div>
+      <div class="col-result">최대 Raise: 2,000</div>
+      <div style="text-align:center;font-size:10px;color:#6b9a75;margin-top:2px">총 지출: 콜(500) + 2000 = 2,500</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:12px;padding:8px 0;font-size:12px;font-weight:700;color:#f97316;letter-spacing:.02em">
+    팟이 커지면 → 한도도 커진다
+  </div>
+
+  <div class="cap">PL의 자연스러운 브레이크 — 팟 크기가 자동으로 게임의 흐름을 조절합니다</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 6: 상황 D — 여러 명이 베팅한 경우 -->
+<div class="sec" id="pl-situation-d">
+  <div class="st">상황 D: 여러 명이 베팅한 경우</div>
+
+  <div class="pt">
+    <div class="pt-inner-row">
+      <!-- 팟 -->
+      <div class="cstack-wrap">
+        <div class="pc2" style="width:52px;height:52px">
+          <div class="ptl" style="font-size:8px">POT</div>
+          <div class="pta" style="font-size:12px">400</div>
+        </div>
+        <div class="clbl">팟</div>
+      </div>
+      <!-- Player A -->
+      <div class="cstack-wrap">
+        <div class="cstack">
+          <div class="chip r">100</div>
+          <div class="chip r">100</div>
+        </div>
+        <div class="clbl" style="color:#fca5a5">Player A: 200</div>
+      </div>
+      <!-- Player B -->
+      <div class="cstack-wrap">
+        <div class="cstack">
+          <div class="chip b">100</div>
+          <div class="chip b">100</div>
+        </div>
+        <div class="clbl" style="color:#93c5fd">Player B: 200</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3단계 계산 -->
+  <div class="calc-steps">
+    <div class="calc-step-row s1">
+      <div class="cslbl">팟 합계</div>
+      <div class="csval">400 + 200 + 200 = 800</div>
+    </div>
+    <div class="calc-step-row s2">
+      <div class="cslbl">머릿속 콜 추가</div>
+      <div class="csval">800 + 200(콜) = 1,000 → Raise 한도</div>
+    </div>
+    <div class="calc-step-row s3">
+      <div class="cslbl">내 총 지출</div>
+      <div class="csval">콜(200) + Raise(1,000) = 1,200</div>
+    </div>
+  </div>
+
+  <div class="cap">여러 명이 콜할수록 팟이 빠르게 커지고, 최대 Raise도 함께 커집니다</div>
+</div>
+
+<div class="pot-sep"></div>
+
+<!-- 섹션 7: 3줄 요약 -->
+<div class="sec" id="pl-summary">
+  <div class="st">PL 베팅 계산 — 3줄 요약</div>
+
+  <div class="step-cards">
+    <!-- Step 1 -->
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <div class="step-icon ghost-ico">
+        <div class="chip ghost" style="width:32px;height:32px;font-size:9px;opacity:0.6">콜</div>
+      </div>
+      <div class="step-text">
+        <div class="stitle">머릿속에서 콜한다</div>
+        <div class="ssub">실제로 내지 않고, 콜했다고 가정한 금액을 더한다</div>
+      </div>
+    </div>
+    <!-- Step 2 -->
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <div class="step-icon pot-ico">
+        <div style="font-size:16px">⬤</div>
+      </div>
+      <div class="step-text">
+        <div class="stitle">테이블 위 합계를 본다 = Raise 한도</div>
+        <div class="ssub">팟 + 모든 베팅 + 가상 콜 = 내가 Raise할 수 있는 최대금</div>
+      </div>
+    </div>
+    <!-- Step 3 -->
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <div class="step-icon stack-ico">
+        <div class="cstack" style="transform:scale(.65);margin-top:4px">
+          <div class="chip g" style="width:32px;height:32px;font-size:9px">+</div>
+          <div class="chip r" style="width:32px;height:32px;font-size:9px">+</div>
+        </div>
+      </div>
+      <div class="step-text">
+        <div class="stitle">실제 지출 = 콜 + Raise분</div>
+        <div class="ssub">내 주머니에서 나가는 총액은 콜 금액 + Raise 금액의 합산</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cap" style="margin-top:12px">PL은 팟 크기가 한도를 결정하므로, 팟이 커질수록 더 큰 베팅이 가능해집니다</div>
+</div>
+
+</body>
+</html>

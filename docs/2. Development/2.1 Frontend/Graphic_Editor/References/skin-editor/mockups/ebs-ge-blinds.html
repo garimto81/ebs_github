@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>GE — Blinds</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ── EBS Dark Tokens ── */
+  body.body--dark {
+    --ebs-surface: #2d2d30;
+    --ebs-panel: #252526;
+    --ebs-border: #3e3e42;
+    --ebs-bg: #1e1e1e;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    line-height: 1.2;
+    background: var(--ebs-bg);
+    margin: 0;
+    padding: 0;
+    max-width: 720px;
+  }
+
+  /* ── Annotation Tokens ── */
+  .eid { font-size: 10px; color: #808080; font-weight: 400; margin-left: 4px; }
+  .eid-block { font-size: 9px; color: #808080; font-weight: 400; display: block; margin-bottom: 0; }
+  .p2-label { font-size: 10px; color: #808080; margin-left: 4px; }
+
+  /* ── Mode Toggle ── */
+  body.clean .eid,
+  body.clean .eid-block,
+  body.clean .p2-label { display: none !important; }
+
+  body.annotated .eid,
+  body.annotated .eid-block { display: none !important; }
+
+  /* Zone bounding boxes */
+  body.annotated .zone-canvas {
+    outline: 2px solid #9C27B0; outline-offset: 3px; position: relative;
+  }
+  body.annotated .zone-transform {
+    outline: 2px solid #2196F3; outline-offset: 3px; position: relative;
+  }
+  body.annotated .zone-text {
+    outline: 2px solid #FF9800; outline-offset: 3px; position: relative;
+  }
+  body.annotated .zone-animation {
+    outline: 2px solid #E91E63; outline-offset: 3px; position: relative;
+  }
+  body.annotated .zone-adjust {
+    outline: 2px solid #4CAF50; outline-offset: 3px; position: relative;
+  }
+  body.annotated .zone-actions {
+    outline: 2px solid #F44336; outline-offset: 3px; position: relative;
+  }
+
+  /* Zone labels */
+  body.annotated .zone-canvas::before {
+    content: 'Canvas 790:52 (4 elements)';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #9C27B0; color: white; border-radius: 2px; z-index: 10;
+  }
+  body.annotated .zone-transform::before {
+    content: 'Transform  GE-03 ~ GE-08f';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #2196F3; color: white; border-radius: 2px; z-index: 10;
+  }
+  body.annotated .zone-text::before {
+    content: 'Text  GE-15 ~ GE-22c';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #FF9800; color: white; border-radius: 2px; z-index: 10;
+  }
+  body.annotated .zone-animation::before {
+    content: 'Animation  GE-09 ~ GE-14';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #E91E63; color: white; border-radius: 2px; z-index: 10;
+  }
+  body.annotated .zone-adjust::before {
+    content: 'Adjust Colours';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #4CAF50; color: white; border-radius: 2px; z-index: 10;
+  }
+  body.annotated .zone-actions::before {
+    content: 'Actions';
+    position: absolute; top: -14px; left: 0;
+    font-size: 9px; font-weight: 600; padding: 1px 6px;
+    background: #F44336; color: white; border-radius: 2px; z-index: 10;
+  }
+
+  /* Individual field bounding boxes */
+  body.annotated .af {
+    position: relative;
+    outline: 1px solid var(--zc, #999);
+    outline-offset: 1px;
+    border-radius: 3px;
+  }
+  body.annotated .af::before {
+    content: attr(data-eid);
+    position: absolute; top: -11px; left: 0;
+    font-size: 8px; font-weight: 600; padding: 0px 3px;
+    background: var(--zc, #999); color: white;
+    border-radius: 2px; line-height: 1.4;
+    z-index: 10; white-space: nowrap;
+  }
+
+  /* AF color inheritance */
+  .zone-canvas .af { --zc: #9C27B0; }
+  .zone-transform .af { --zc: #2196F3; }
+  .zone-text .af { --zc: #FF9800; }
+  .zone-animation .af { --zc: #E91E63; }
+  .zone-adjust .af { --zc: #4CAF50; }
+  .zone-actions .af { --zc: #F44336; }
+
+  /* Legend bar */
+  .legend-bar {
+    display: none; justify-content: center; gap: 8px;
+    padding: 3px 10px; font-size: 9px; font-weight: 500;
+    border-top: 1px solid var(--ebs-border); background: var(--ebs-panel);
+    color: #cccccc; flex-wrap: wrap;
+  }
+  body.annotated .legend-bar { display: flex; }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── Layout ── */
+  .ebs-dialog {
+    background: var(--ebs-panel);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    overflow: hidden;
+    width: max-content;
+    max-width: 720px;
+  }
+  .ebs-titlebar {
+    background: #1a1a1b;
+    color: #cccccc;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--ebs-border);
+    height: 24px;
+    box-sizing: border-box;
+    gap: 6px;
+  }
+  .ebs-titlebar .spacer { flex: 1; }
+  .ebs-titlebar .close-btn {
+    font-size: 13px; color: #808080; cursor: default;
+    background: none; border: none; padding: 0 2px;
+    font-family: 'Inter', sans-serif; line-height: 1;
+  }
+
+  /* ── Canvas Zone (140px total: 120px canvas + 20px BG inline) ── */
+  .ge-canvas-zone {
+    contain: inline-size;
+    height: 140px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+  .ge-canvas-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a1a;
+    height: 120px;
+    box-sizing: border-box;
+    padding: 0 4px;
+  }
+  .ge-canvas {
+    aspect-ratio: 790 / 52;
+    height: 48px;
+    max-width: 100%;
+    position: relative;
+    background: #2a2a2a;
+    overflow: hidden;
+  }
+  .ge-canvas-el {
+    position: absolute;
+    border: 1px dashed rgba(255,255,255,0.2);
+    font-size: 9px;
+    color: #bdbdbd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1px;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ge-canvas-el.selected {
+    border: 1px dashed #FFD700;
+    color: #FFD700;
+  }
+  .ge-bg-inline {
+    height: 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 6px;
+    font-size: 9px;
+    color: #aaaaaa;
+    background: var(--ebs-panel);
+    border-bottom: 1px solid var(--ebs-border);
+  }
+  .ge-bg-inline .spacer { flex: 1; }
+  .ge-bg-inline .btn-xs {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px; font-weight: 500; color: #aaaaaa;
+    background: transparent; border: none; padding: 0 2px;
+    cursor: default;
+  }
+
+  /* ── Properties 3-Col Grid (284px) ── */
+  .ge-props-grid {
+    display: grid;
+    grid-template-columns: 180px 180px auto;
+    width: max-content;
+    height: 284px;
+    box-sizing: border-box;
+  }
+  .ge-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .ge-col + .ge-col {
+    border-left: 1px solid var(--ebs-border);
+  }
+
+  /* ── Alternating rows ── */
+  .alt-row:nth-child(odd)  { background: #2d2d30; }
+  .alt-row:nth-child(even) { background: #252526; }
+  .alt-row {
+    padding: 1px 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 2px;
+  }
+
+  /* ── Expansion section ── */
+  .ebs-section-header {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 4px;
+    cursor: default;
+    border-bottom: 1px solid var(--ebs-border);
+    background: #1e1e1e;
+    flex-shrink: 0;
+  }
+  .ebs-section-chevron { font-size: 8px; color: #808080; }
+  .ebs-section-title { font-size: 10px; font-weight: 600; color: #cccccc; }
+  .ebs-expansion-body {
+    padding: 0 4px 1px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .ebs-expansion-body.collapsed { display: none; }
+
+  /* ── Transform 2-col grid ── */
+  .prop-grid-2 {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 0;
+  }
+  .prop-grid-2 .alt-row {
+    padding: 1px 4px;
+  }
+  /* Fix alternating colors for 2-col grid (by visual row) */
+  .prop-grid-2 .alt-row:nth-child(4n+1) { background: #2d2d30; }
+  .prop-grid-2 .alt-row:nth-child(4n+2) { background: #2d2d30; }
+  .prop-grid-2 .alt-row:nth-child(4n+3) { background: #252526; }
+  .prop-grid-2 .alt-row:nth-child(4n+4) { background: #252526; }
+
+  /* ── Row helpers ── */
+  .row { display: flex; align-items: center; gap: 4px; }
+  .row-between { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+  .row-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; }
+  .col { display: flex; flex-direction: column; gap: 2px; }
+  .flex-1 { flex: 1; }
+
+  /* ── Label ── */
+  .label { font-size: 9px; font-weight: 500; color: #aaaaaa; white-space: nowrap; }
+  .label-tiny { font-size: 8px; font-weight: 500; color: #888888; white-space: nowrap; }
+
+  /* ── Number inputs ── */
+  .num-input {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #cccccc;
+    border: 1px solid var(--ebs-border);
+    border-radius: 5px;
+    padding: 1px 3px;
+    width: 40px;
+    text-align: center;
+    background: var(--ebs-surface);
+  }
+  .num-input-sm {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #cccccc;
+    border: 1px solid var(--ebs-border);
+    border-radius: 5px;
+    padding: 1px 3px;
+    width: 34px;
+    text-align: center;
+    background: var(--ebs-surface);
+  }
+
+  /* ── Text input ── */
+  .text-input {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #cccccc;
+    border: 1px solid var(--ebs-border);
+    border-radius: 5px;
+    padding: 1px 4px;
+    background: var(--ebs-surface);
+    outline: none;
+  }
+
+  /* ── Select ── */
+  select {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #cccccc;
+    border: 1px solid var(--ebs-border);
+    border-radius: 5px;
+    padding: 1px 3px;
+    background: var(--ebs-surface);
+    cursor: default;
+  }
+  select:disabled { opacity: 0.4; }
+
+  /* ── Color swatch ── */
+  .color-swatch {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 1px solid var(--ebs-border);
+    border-radius: 4px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .color-swatch-sm {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border: 1px solid var(--ebs-border);
+    border-radius: 3px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  /* ── Custom toggle ── */
+  .toggle { position: relative; display: inline-block; width: 24px; height: 12px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .toggle .track {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: #3e3e42; border-radius: 6px;
+  }
+  .toggle .track::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #808080;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .toggle input:checked + .track { background: #0e639c; }
+  .toggle input:checked + .track::after { background: #ffffff; margin-left: 12px; }
+
+  /* ── Custom slider ── */
+  .slider-track {
+    position: relative; height: 3px;
+    background: #3e3e42; border-radius: 2px;
+    flex: 1; min-width: 60px;
+  }
+  .slider-fill { position: absolute; top: 0; left: 0; height: 3px; background: #0e639c; border-radius: 2px; }
+  .slider-handle {
+    position: absolute; top: -4px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #cccccc; border: 2px solid #0e639c;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #cccccc;
+    background: transparent;
+    border: 1px solid var(--ebs-border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    cursor: default;
+    white-space: nowrap;
+  }
+  .btn-primary { background: #0e639c; color: #ffffff; border-color: #0e639c; font-weight: 600; }
+  .btn-sm { font-size: 10px; padding: 2px 5px; }
+  .btn-flat { border-color: transparent; background: transparent; }
+  .btn-flat:hover { background: rgba(255,255,255,0.05); }
+
+  /* ── Action bar ── */
+  .action-bar {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 2px 6px;
+    border-top: 1px solid var(--ebs-border);
+    height: 28px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    background: var(--ebs-panel);
+  }
+  .action-bar .spacer { flex: 1; }
+
+  /* ── Footer ── */
+  .ebs-footer {
+    text-align: center;
+    padding: 1px 0;
+    font-size: 9px;
+    color: #555;
+    background: var(--ebs-bg);
+    line-height: 1;
+    overflow: hidden;
+    height: 4px;
+  }
+
+  /* ── Colour Replace ── */
+  .cr-rule-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 4px;
+  }
+  .cr-rule-row:nth-child(odd)  { background: #2d2d30; }
+  .cr-rule-row:nth-child(even) { background: #252526; }
+  .cr-arrow { font-size: 9px; color: #808080; }
+
+  /* ── Tint slider row ── */
+  .tint-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 4px;
+  }
+  .tint-row:nth-child(odd)  { background: #2d2d30; }
+  .tint-row:nth-child(even) { background: #252526; }
+  .tint-label {
+    font-size: 9px; font-weight: 600; color: #aaaaaa;
+    width: 28px; text-align: right; flex-shrink: 0;
+  }
+  .tint-value {
+    font-size: 9px; color: #808080; width: 24px; text-align: right; flex-shrink: 0;
+  }
+
+  /* ── Suffix ── */
+  .suffix { font-size: 9px; color: #808080; }
+
+</style>
+</head>
+<body class="body--dark">
+
+<div class="ebs-dialog">
+
+  <!-- ═══ Titlebar (24px) ═══ -->
+  <div class="ebs-titlebar">
+    GE &mdash; Blinds
+    <span class="spacer"></span>
+    <button class="close-btn">&#10005;</button>
+  </div>
+
+  <!-- ═══ Canvas Zone (140px = 120px canvas + 20px BG inline) ═══ -->
+  <div class="ge-canvas-zone zone-canvas">
+    <div class="ge-canvas-area af" data-eid="GE-01">
+      <div class="ge-canvas">
+        <!-- Blinds strip elements (790×52, 4 elements) -->
+        <div class="ge-canvas-el selected" style="left:0%;top:0%;width:14%;height:100%;">Blinds</div>
+        <div class="ge-canvas-el" style="left:14%;top:0%;width:48%;height:100%;">50,000/100,000</div>
+        <div class="ge-canvas-el" style="left:62%;top:0%;width:10%;height:100%;">Hand</div>
+        <div class="ge-canvas-el" style="left:72%;top:0%;width:28%;height:100%;">123</div>
+      </div>
+    </div>
+    <div class="ge-bg-inline af" data-eid="GE-23">
+      <span class="label">BG:</span>
+      <button class="btn btn-sm" style="font-size:9px;padding:1px 4px;">Import</button>
+      <button class="btn btn-sm" style="font-size:9px;padding:1px 4px;">Delete</button>
+      <span class="spacer"></span>
+      <span class="label">Mode</span>
+      <select style="font-size:9px;padding:1px 2px;">
+        <option selected>Blinds with Hand #</option>
+        <option>Ante</option>
+      </select>
+      <span class="eid">GE-23</span>
+    </div>
+  </div>
+
+  <!-- ═══ Properties 3-Col Grid (284px) ═══ -->
+  <div class="ge-props-grid">
+
+    <!-- ── Col 1: Transform (180px) ── -->
+    <div class="ge-col zone-transform">
+      <div class="ebs-section-header">
+        <span class="ebs-section-chevron">&#9660;</span>
+        <span class="ebs-section-title">Transform</span>
+        <select class="af" data-eid="GE-02" style="font-size:9px;padding:1px 2px;margin-left:4px;">
+          <option selected>Blinds</option>
+          <option>50,000/100,000</option>
+          <option>Hand</option>
+          <option>123</option>
+        </select>
+        <span class="eid">GE-02</span>
+      </div>
+      <div class="ebs-expansion-body">
+        <!-- 6 rows × 2 cols via prop-grid-2 -->
+        <div class="prop-grid-2">
+          <!-- Row 1: Left | Anchor H -->
+          <div class="alt-row row-between af" data-eid="GE-03">
+            <span class="label">Left</span>
+            <input class="num-input-sm" type="text" value="0" readonly>
+            <span class="eid">GE-03</span>
+          </div>
+          <div class="alt-row row-between af" data-eid="GE-08a">
+            <span class="label">AncH</span>
+            <select style="font-size:9px;padding:1px 2px;">
+              <option selected>Left</option>
+              <option>Right</option>
+            </select>
+            <span class="eid">GE-08a</span>
+          </div>
+          <!-- Row 2: Top | Anchor V -->
+          <div class="alt-row row-between af" data-eid="GE-04">
+            <span class="label">Top</span>
+            <input class="num-input-sm" type="text" value="0" readonly>
+            <span class="eid">GE-04</span>
+          </div>
+          <div class="alt-row row-between af" data-eid="GE-08b">
+            <span class="label">AncV</span>
+            <select style="font-size:9px;padding:1px 2px;">
+              <option selected>Top</option>
+              <option>Bottom</option>
+            </select>
+            <span class="eid">GE-08b</span>
+          </div>
+          <!-- Row 3: Width | Z-order -->
+          <div class="alt-row row-between af" data-eid="GE-05">
+            <span class="label">Wid</span>
+            <input class="num-input-sm" type="text" value="790" readonly>
+            <span class="eid">GE-05</span>
+          </div>
+          <div class="alt-row row-between af" data-eid="GE-07">
+            <span class="label">Zord</span>
+            <input class="num-input-sm" type="text" value="1" readonly>
+            <span class="eid">GE-07</span>
+          </div>
+          <!-- Row 4: Height | Angle -->
+          <div class="alt-row row-between af" data-eid="GE-06">
+            <span class="label">Hgt</span>
+            <input class="num-input-sm" type="text" value="52" readonly>
+            <span class="eid">GE-06</span>
+          </div>
+          <div class="alt-row row-between af" data-eid="GE-08">
+            <span class="label">Angl</span>
+            <div class="row">
+              <input class="num-input-sm" type="text" value="0" readonly>
+              <span class="suffix">&deg;</span>
+            </div>
+            <span class="eid">GE-08</span>
+          </div>
+          <!-- Row 5: Margin X | Margin Y -->
+          <div class="alt-row row-between af" data-eid="GE-08c">
+            <span class="label">MgnX</span>
+            <input class="num-input-sm" type="text" value="0" readonly>
+            <span class="eid">GE-08c</span>
+          </div>
+          <div class="alt-row row-between af" data-eid="GE-08d">
+            <span class="label">MgnY</span>
+            <input class="num-input-sm" type="text" value="0" readonly>
+            <span class="eid">GE-08d</span>
+          </div>
+          <!-- Row 6: Corner R | Flip X -->
+          <div class="alt-row row-between af" data-eid="GE-08e">
+            <span class="label">CrnR</span>
+            <input class="num-input-sm" type="text" value="0" readonly>
+            <span class="eid">GE-08e</span>
+          </div>
+          <div class="alt-row row-between af" data-eid="GE-08f">
+            <span class="label">Flip</span>
+            <label class="toggle"><input type="checkbox"><span class="track"></span></label>
+            <span class="eid">GE-08f</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Col 2: Text + Animation (180px) ── -->
+    <div class="ge-col">
+
+      <!-- Text section -->
+      <div class="zone-text">
+        <div class="ebs-section-header">
+          <span class="ebs-section-chevron">&#9660;</span>
+          <span class="ebs-section-title">Text</span>
+        </div>
+        <div class="ebs-expansion-body">
+          <!-- Row 1: Visible -->
+          <div class="alt-row row-between af" data-eid="GE-15">
+            <span class="label">Visible</span>
+            <label class="toggle"><input type="checkbox" checked><span class="track"></span></label>
+            <span class="eid">GE-15</span>
+          </div>
+          <!-- Row 2: Font -->
+          <div class="alt-row row-between af" data-eid="GE-16">
+            <span class="label">Font</span>
+            <select style="font-size:9px;padding:1px 2px;max-width:80px;">
+              <option selected>Font 1</option>
+              <option>Font 2</option>
+            </select>
+            <span class="eid">GE-16</span>
+          </div>
+          <!-- Row 3: Colour + Hilite (inline) -->
+          <div class="alt-row af" data-eid="GE-17" style="gap:3px;">
+            <span class="label">Col</span>
+            <span class="color-swatch-sm" style="background:#FFFFFF;"></span>
+            <span class="label" style="margin-right:4px;">Hilite</span>
+            <span class="color-swatch-sm af" data-eid="GE-18" style="background:#FFD700;"></span>
+            <span class="eid">17/18</span>
+          </div>
+          <!-- Row 4: Align -->
+          <div class="alt-row row-between af" data-eid="GE-19">
+            <span class="label">Align</span>
+            <select style="font-size:9px;padding:1px 2px;">
+              <option>Left</option>
+              <option selected>Centre</option>
+              <option>Right</option>
+            </select>
+            <span class="eid">GE-19</span>
+          </div>
+          <!-- Row 5: Shadow + Direction + ShadowCol (inline) -->
+          <div class="alt-row af" data-eid="GE-20" style="gap:3px;">
+            <span class="label">Shd</span>
+            <label class="toggle"><input type="checkbox" checked><span class="track"></span></label>
+            <select style="font-size:8px;padding:0 2px;width:32px;">
+              <option selected>SE</option>
+              <option>N</option><option>NE</option><option>E</option>
+              <option>S</option><option>SW</option><option>W</option><option>NW</option>
+            </select>
+            <span class="label">Col</span>
+            <span class="color-swatch-sm af" data-eid="GE-21" style="background:#000000;"></span>
+            <span class="eid">20/21</span>
+          </div>
+          <!-- Row 6: ByLang + Outline (inline) -->
+          <div class="alt-row af" data-eid="GE-22" style="gap:3px;">
+            <span class="label">ByLg</span>
+            <label class="toggle"><input type="checkbox"><span class="track"></span></label>
+            <span class="label" style="margin-left:4px;">Outl</span>
+            <label class="toggle af" data-eid="GE-22a"><input type="checkbox"><span class="track"></span></label>
+            <span class="eid">GE-22</span>
+          </div>
+          <!-- Row 7: Outline Width + Col (conditional, shown when Outline ON) -->
+          <div class="alt-row af" data-eid="GE-22b" style="gap:3px;">
+            <span class="label">OutW</span>
+            <input class="num-input-sm" type="text" value="0" readonly style="width:26px;">
+            <span class="label">OutCol</span>
+            <span class="color-swatch-sm af" data-eid="GE-22c" style="background:#000000;"></span>
+            <span class="eid">22bc</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Animation section -->
+      <div class="zone-animation">
+        <div class="ebs-section-header">
+          <span class="ebs-section-chevron">&#9660;</span>
+          <span class="ebs-section-title">Animation</span>
+        </div>
+        <div class="ebs-expansion-body">
+          <!-- Row 1: Trans In -->
+          <div class="alt-row row-between af" data-eid="GE-09">
+            <span class="label">TransIn</span>
+            <select style="font-size:9px;padding:1px 2px;">
+              <option selected>Global</option>
+              <option>Fade</option><option>Slide</option>
+              <option>Pop</option><option>Expand</option>
+            </select>
+            <span class="eid">GE-09</span>
+          </div>
+          <!-- Row 2: Trans Out -->
+          <div class="alt-row row-between af" data-eid="GE-10">
+            <span class="label">TransOut</span>
+            <select style="font-size:9px;padding:1px 2px;">
+              <option selected>Global</option>
+              <option>Fade</option><option>Slide</option>
+              <option>Pop</option><option>Expand</option>
+            </select>
+            <span class="eid">GE-10</span>
+          </div>
+          <!-- Row 3: AnimIn File + Speed (inline) -->
+          <div class="alt-row af" data-eid="GE-11" style="gap:3px;">
+            <span class="label">AIn</span>
+            <button class="btn btn-sm" style="font-size:8px;padding:1px 3px;">Imp</button>
+            <button class="btn btn-sm" style="font-size:8px;padding:1px 3px;">&#10005;</button>
+            <div class="slider-track af" data-eid="GE-12" style="min-width:30px;">
+              <div class="slider-fill" style="width:30%;"></div>
+              <div class="slider-handle" style="left:calc(30% - 5px);"></div>
+            </div>
+            <span class="eid">11/12</span>
+          </div>
+          <!-- Row 4: AnimOut File + Speed (inline) -->
+          <div class="alt-row af" data-eid="GE-13" style="gap:3px;">
+            <span class="label">AOut</span>
+            <button class="btn btn-sm" style="font-size:8px;padding:1px 3px;">Imp</button>
+            <button class="btn btn-sm" style="font-size:8px;padding:1px 3px;">&#10005;</button>
+            <div class="slider-track af" data-eid="GE-14" style="min-width:30px;">
+              <div class="slider-fill" style="width:30%;"></div>
+              <div class="slider-handle" style="left:calc(30% - 5px);"></div>
+            </div>
+            <span class="eid">13/14</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Col 3: Adjust Colours (flex) ── -->
+    <div class="ge-col zone-adjust">
+
+      <!-- Colour Replace section -->
+      <div class="ebs-section-header">
+        <span class="ebs-section-chevron">&#9660;</span>
+        <span class="ebs-section-title">Colour Replace</span>
+      </div>
+      <div class="ebs-expansion-body">
+        <!-- Header row -->
+        <div class="cr-rule-row" style="padding:1px 4px;">
+          <span class="label-tiny" style="width:18px;text-align:center;">En</span>
+          <span class="label-tiny" style="flex:1;text-align:center;">Src &rarr; Dest</span>
+          <span class="label-tiny">Threshold</span>
+        </div>
+        <!-- Rule 1 -->
+        <div class="cr-rule-row">
+          <input type="checkbox" style="width:10px;height:10px;margin:0;accent-color:#0e639c;">
+          <span class="color-swatch-sm" style="background:#FF0000;"></span>
+          <span class="cr-arrow">&rarr;</span>
+          <span class="color-swatch-sm" style="background:#00FF00;"></span>
+          <div class="slider-track" style="min-width:40px;">
+            <div class="slider-fill" style="width:50%;"></div>
+            <div class="slider-handle" style="left:calc(50% - 5px);"></div>
+          </div>
+        </div>
+        <!-- Rule 2 -->
+        <div class="cr-rule-row">
+          <input type="checkbox" style="width:10px;height:10px;margin:0;accent-color:#0e639c;">
+          <span class="color-swatch-sm" style="background:#0000FF;"></span>
+          <span class="cr-arrow">&rarr;</span>
+          <span class="color-swatch-sm" style="background:#FFFF00;"></span>
+          <div class="slider-track" style="min-width:40px;">
+            <div class="slider-fill" style="width:40%;"></div>
+            <div class="slider-handle" style="left:calc(40% - 5px);"></div>
+          </div>
+        </div>
+        <!-- Rule 3 -->
+        <div class="cr-rule-row">
+          <input type="checkbox" style="width:10px;height:10px;margin:0;accent-color:#0e639c;">
+          <span class="color-swatch-sm" style="background:#808080;"></span>
+          <span class="cr-arrow">&rarr;</span>
+          <span class="color-swatch-sm" style="background:#FFFFFF;"></span>
+          <div class="slider-track" style="min-width:40px;">
+            <div class="slider-fill" style="width:60%;"></div>
+            <div class="slider-handle" style="left:calc(60% - 5px);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tint & Hue section -->
+      <div class="ebs-section-header">
+        <span class="ebs-section-chevron">&#9660;</span>
+        <span class="ebs-section-title">Tint &amp; Hue</span>
+      </div>
+      <div class="ebs-expansion-body">
+        <!-- RED -->
+        <div class="tint-row">
+          <span class="tint-label" style="color:#F44336;">RED</span>
+          <div class="slider-track">
+            <div class="slider-fill" style="width:50%;"></div>
+            <div class="slider-handle" style="left:calc(50% - 5px);"></div>
+          </div>
+          <span class="tint-value">0</span>
+        </div>
+        <!-- GREEN -->
+        <div class="tint-row">
+          <span class="tint-label" style="color:#4CAF50;">GRN</span>
+          <div class="slider-track">
+            <div class="slider-fill" style="width:50%;"></div>
+            <div class="slider-handle" style="left:calc(50% - 5px);"></div>
+          </div>
+          <span class="tint-value">0</span>
+        </div>
+        <!-- BLUE -->
+        <div class="tint-row">
+          <span class="tint-label" style="color:#2196F3;">BLU</span>
+          <div class="slider-track">
+            <div class="slider-fill" style="width:50%;"></div>
+            <div class="slider-handle" style="left:calc(50% - 5px);"></div>
+          </div>
+          <span class="tint-value">0</span>
+        </div>
+        <!-- HUE -->
+        <div class="tint-row">
+          <span class="tint-label" style="color:#9C27B0;">HUE</span>
+          <div class="slider-track">
+            <div class="slider-fill" style="width:40%;"></div>
+            <div class="slider-handle" style="left:calc(40% - 5px);"></div>
+          </div>
+          <span class="tint-value">0</span>
+        </div>
+        <!-- Reset button -->
+        <div style="padding:2px 4px;">
+          <button class="btn btn-sm" style="width:100%;text-align:center;">Reset to Default</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- .ge-props-grid -->
+
+  <!-- ═══ Action Bar (28px) ═══ -->
+  <div class="action-bar zone-actions">
+    <span class="spacer"></span>
+    <button class="btn">Cancel</button>
+    <button class="btn btn-primary">OK</button>
+  </div>
+
+  <!-- ═══ Footer (4px) ═══ -->
+  <div class="ebs-footer">mockups/ebs-ge-blinds.html</div>
+
+  <!-- Legend Bar -->
+  <div class="legend-bar">
+    <div class="legend-item"><div class="legend-swatch" style="background:#9C27B0;"></div>Canvas</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#2196F3;"></div>Transform</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#FF9800;"></div>Text</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#E91E63;"></div>Animation</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4CAF50;"></div>Adjust Colours</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#F44336;"></div>Actions</div>
+  </div>
+
+</div><!-- .ebs-dialog -->
+
+<script>
+var q = location.search;
+if (q.includes('clean')) document.body.classList.add('clean');
+if (q.includes('annotated')) document.body.classList.add('annotated');
+</script>
+</body>
+</html>

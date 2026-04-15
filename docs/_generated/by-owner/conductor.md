@@ -6,12 +6,18 @@ tier: generated
 
 # conductor
 
+- `docs/1. Product/1. Product.md` — 1. Product
+- `docs/1. Product/Architecture.md` — Architecture
+- `docs/1. Product/Communication_Rules.md` — Communication Rules
 - `docs/1. Product/Foundation.md` — Foundation
 - `docs/1. Product/Game_Rules/Betting_System.md` — Betting System
 - `docs/1. Product/Game_Rules/Draw.md` — Draw
 - `docs/1. Product/Game_Rules/Flop_Games.md` — Flop Games
 - `docs/1. Product/Game_Rules/Seven_Card_Games.md` — Seven Card Games
 - `docs/1. Product/PokerGFX_Reference.md` — PokerGFX Reference
+- `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` — WSOP Production Structure Analysis
+- `docs/1. Product/Team_Structure.md` — Team Structure
+- `docs/2. Development/2. Development.md` — 2. Development
 - `docs/2. Development/2.5 Shared/Authentication.md` — Authentication
 - `docs/2. Development/2.5 Shared/BS_Overview.md` — BS Overview
 - `docs/2. Development/2.5 Shared/Risk_Matrix.md` — Risk Matrix
@@ -105,8 +111,10 @@ tier: generated
 - `docs/3. Change Requests/in-progress/CR-054-ws-event-catalog.md` — CR-054-ws-event-catalog
 - `docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md` — CR-055-output-event-buffer-ownership
 - `docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md` — CR-056-deadlink-cleanup
+- `docs/4. Operations/4. Operations.md` — 4. Operations
 - `docs/4. Operations/Conductor_Backlog.md` — Conductor Backlog
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
 - `docs/4. Operations/Plans/PLAN-BO-Phase1.md` — PLAN-BO-Phase1
 - `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` — 2026-04-10-ccr-batch-team-impact
 - `docs/4. Operations/Roadmap.md` — Roadmap
+- `docs/README.md` — docs/ README

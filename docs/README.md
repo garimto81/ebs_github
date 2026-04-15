@@ -1,3 +1,10 @@
+---
+title: docs/ README
+owner: conductor
+tier: internal
+last-updated: 2026-04-15
+---
+
 # EBS Documentation — v10
 
 모든 EBS 문서는 이 폴더(`docs/`) 아래에만 존재한다. 팀 폴더(`team1-frontend/` 등)는 코드 전용.
