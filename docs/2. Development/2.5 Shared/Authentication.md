@@ -22,6 +22,7 @@ legacy-id: BS-01
 | 2026-04-14 | CCR-052 | Rate Limiting 정책 섹션 신설 (카테고리별 한계, 응답 헤더, 저장소 전략, IP whitelist). OWASP + WSOP LIVE 준거 |
 | 2026-04-14 | CCR-053 | Provisioning 전략 (Phase별 유저 생성 방식) + Suspend vs Lock 의미 차이 섹션 신설. WSOP LIVE Staff 패턴 정렬 (SSOT Page 1597768061) |
 | 2026-04-15 | G5 추가 | **방향별 인증 2-스택** 섹션 신설. EBS 내부(UI→BO) = JWT Bearer (기존), EBS outbound(BO→WSOP LIVE) = OAuth 2.0 client_credentials (신규). 구현: `team2-backend/src/adapters/wsop_auth.py`. **decision_owner = Conductor** — team2 브랜치에서 직접 편집 + PR 로 리뷰 요청 (v6 거버넌스, CR draft 파일 미생성) |
+| 2026-04-15 | SSOT 선언 블록 추가 | 토큰 TTL · refresh · 2FA · Lockout · Rate Limit 정책 수치의 단일 진실임을 명시. Login/* 및 Backend/APIs/Auth_and_Session.md 가 본 문서를 참조하도록 규정 (team1 발신, 기획 문서 충분성 보강). |
 
 ---
 
@@ -30,6 +31,41 @@ legacy-id: BS-01
 운영자가 EBS 시스템에 **로그인하고 권한을 부여받는 과정**을 정의한다. Lobby(웹)에서 로그인 후 테이블을 선택하여 Command Center(CC, 실시간 방송 입력 Flutter 앱)를 Launch한다. CC는 독립 로그인 없이 Lobby에서 전달받은 토큰으로 BO(EBS 중앙 서버)에 인증한다.
 
 > 참조: BS-00 §1 앱 아키텍처 용어, API-06 Auth & Session, BO-02 User Management, Foundation PRD Ch.8 RBAC
+
+---
+
+## 이 문서의 SSOT 범위 (정책 수치의 정답 위치)
+
+본 문서는 EBS 전체 인증 정책의 **단일 진실 (Single Source of Truth)** 이다. 아래 항목의 값은 오직 이 문서에서만 정의되며, 다른 문서는 반드시 이 문서를 가리켜야 한다. 다른 문서에서 수치가 재정의되어 있으면 **해당 중복을 제거하고 본 문서를 참조하도록 고치는 것이 옳다**.
+
+| 주제 | 본 문서 섹션 | 다른 문서의 의무 |
+|------|-------------|----------------|
+| **Access Token TTL** (환경별: dev/staging/prod/live) | `## Session & Token Lifecycle` | 수치 재정의 금지. placeholder 또는 참조 링크만 |
+| **Refresh Token TTL** (dev 24h / staging·prod·live 48h) | `## Session & Token Lifecycle` | 동 위 |
+| **Refresh Token 전달 방식** (dev~prod JSON body / live HttpOnly Cookie) | `## Session & Token Lifecycle` | `../2.2 Backend/APIs/Auth_and_Session.md` 의 `refresh_token_delivery` 필드 정합 유지 |
+| **2FA Level 정책** (Off/Low/Medium/High 4단계) | CCR-048 통합 섹션 | Login 화면 문서는 UI 표시만, 규칙 값은 본 문서 |
+| **Lockout Policy** (최대 시도 10회, 잠금 시간) | CCR-048 통합 섹션 | `../2.1 Frontend/Login/Error_Handling.md` 는 UI 표시만, 수치는 본 문서 |
+| **Rate Limit 정책** (카테고리별 한계, 응답 헤더) | CCR-052 통합 섹션 | 동 위 |
+| **RBAC Permission Bit Flag** (역할별 권한 비트) | CCR-017 통합 섹션 | Frontend `authStore.permissions` 필드 규격은 본 문서 기준 |
+| **Provisioning 전략** (Phase별 유저 생성) | CCR-053 통합 섹션 | — |
+
+### 이 문서에서 다루지 않는 것
+
+| 주제 | 정답 위치 |
+|------|----------|
+| 로그인 API 요청/응답 HTTP 스키마 | `../2.2 Backend/APIs/Auth_and_Session.md` |
+| 로그인 화면 UI · 폼 요소 · Phase 별 인증 방식 선택지 | `../2.1 Frontend/Login/Form.md` |
+| 로그인 에러 코드 → 한글 문구 · i18n 키 매핑 | `../2.1 Frontend/Login/Error_Handling.md` |
+| Pinia `authStore` 구현 · 401 refresh 시퀀스 | `../2.1 Frontend/Engineering.md §4.4` |
+| 세션 복원 Fallback Ladder (Table→Flight→Event→Series→fresh) | `../2.1 Frontend/Lobby/Session_Restore.md` |
+
+### 중복 탐지 규칙
+
+개발자·리뷰어는 PR 에서 다음을 검증한다:
+
+- 본 문서 SSOT 표의 값이 다른 문서에 **상수로 하드코딩** 되어 있으면 즉시 참조로 교체.
+- 본 문서가 가리키는 정책 이름(`AUTH_ACCOUNT_LOCKED` 등)을 다른 문서가 **재정의** 하면 즉시 제거.
+- 값이 환경별로 다른 경우(dev/staging/prod/live), 다른 문서는 "`## Session & Token Lifecycle` 참조" 로만 기재.
 
 ---
 

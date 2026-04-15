@@ -84,7 +84,48 @@ is_restricted = (flight.status == Announce) && (flight.dayIndex >= 1)
 
 Flight는 `is_pause: bool` 필드도 보유한다 (DATA-04 참조). Late Reg 남은 시간 계산 시 `is_pause == true`면 `elapsed_in_current_level` 증가가 **중단**된다. Flight 단위의 일시정지(브레이크/카메라 리셋/중재)에 사용된다.
 
-계산식은 `BS-03-04-rules.md §5.1` 참조.
+### 3.1 계산 공식 (2026-04-15 명시)
+
+WSOP LIVE Blind Type별 Tournament Clock 문서의 정의를 EBS 에 그대로 채택. 클라이언트는 매 `clock_tick` 이벤트마다 본 공식으로 남은 시간을 계산한다.
+
+```text
+late_reg_remaining_sec =
+    sum(blind_levels[0..N-1].duration_sec)         # 1번째~N번째 레벨 누적 시간
+  + (blind_levels[N].duration_sec - elapsed_in_current_level)  # 현재 레벨 잔여
+  - sum(applied_pauses_in_current_period)          # is_pause 였던 누적 시간 차감
+```
+
+여기서:
+- `N` = `late_reg_until_level` (Late Reg 가 종료되는 레벨 번호, Flight 메타). Level 1~N 동안 Late Reg 가 열려있음
+- `elapsed_in_current_level` = 현재 레벨이 시작된 시각부터 경과한 초. **`is_pause == true` 인 동안 증가 중단**
+- `applied_pauses_in_current_period` = 현재 Late Reg 기간 누적 일시정지 시간
+
+**Edge cases**:
+- `current_level > N` → `late_reg_remaining_sec = 0` (Late Reg 종료됨)
+- `current_level == N` → 현재 레벨 잔여만 계산
+- Day 2 이후 시작 (Late Reg = Start of Day 2 모드) → `current_day_index >= 2` 일 때 즉시 0
+- `Late Reg Override` 발동 시 (Clock_Control `[Adjust Late Reg]`) → `late_reg_until_level` 이 동적으로 변경. 다음 `clock_level_changed` 이벤트로 갱신
+
+### 3.2 Day 2 등록 가능 여부 모드
+
+WSOP LIVE 의 두 모드를 EBS 에서도 지원:
+
+| 모드 | 설명 | EBS 필드 |
+|------|------|---------|
+| **Levels 기준** (기본) | Level 1~N 동안 Late Reg 가능 | `late_reg_mode = "levels"`, `late_reg_until_level = N` |
+| **Start of Day 2** | Day 1 종료 + Day 2 시작 직전까지 등록 가능 | `late_reg_mode = "day_start"`, `late_reg_until_day = 2` |
+
+UI 표시: `late_reg_mode` 에 따라 "Level N 까지" 또는 "Day 2 시작까지" 로 인간 친화 표시.
+
+### 3.3 Restricted 판정 보강
+
+`isRegisterable` 필드는 위 공식의 `late_reg_remaining_sec > 0` 결과 + `status in {Announce, Registering, Running}` AND.
+
+기존 §2 의 "Restricted = `Announce && dayIndex >= 1`" 은 다음과 동치:
+- `Announce` 면 등록 불가 (아직 시작 안 함)
+- `dayIndex >= 1` (Day 2+) 이면 Day 1 의 결과를 가진 플레이어만 진행. 신규 등록 시점 이미 종료된 케이스가 일반적
+
+세부는 `Registration.md §1.3 Entry Type 별 등록 규칙` 참조.
 
 ---
 

@@ -21,6 +21,7 @@ last-updated: 2026-04-15
 | 2026-04-15 | §3.3 신설 | 소비자 로컬 state 전이 맵 (CC/Lobby). HandStarted/ActionPerformed/StreetAdvanced/HandCompleted/SeatUpdated 5종 결정적 규칙 + 미확정 영역 목록. decision_owner: team2 (필요 시 team4 가 소비자 관점 보강) |
 | 2026-04-15 | §3.3.1 publisher 실측 정합 | StreetAdvanced/SeatUpdated 는 publisher 가 발행하지 않음 (cc_handler.py:44-52 실측). §3.3.1 을 실제 3종(HandStarted/ActionPerformed/HandEnded) 로 축소. 대체 경로는 §3.3.4 재정의 |
 | 2026-04-15 | envelope + edge 보강 | §2.1 `version` 필드 추가. §2.1.1 forward-compat (version drift). §3.3.2 동일 seq 순서 보장 재작성. §7.4 REST 4xx/5xx consumer 처리 매트릭스 |
+| 2026-04-15 | §6.4.1~4 추가 | 재연결 + replay 통합 시퀀스, 수신 버퍼링 정책(MAX 500), replay 실패 처리 4케이스, 글로벌 이벤트 replay 경로. team1 발신, 기획 문서 충분성 보강. Frontend `../../2.1 Frontend/Engineering.md §5.4` 와 정합. |
 
 ---
 
@@ -727,6 +728,62 @@ WebSocket 연결 후 첫 메시지로 인증 토큰을 전송해야 한다. 5초
 | 서버 재시작 | 동일 지수 백오프 + 이전 구독 재등록 |
 | 토큰 만료 중 재연결 | Refresh Token으로 갱신 후 재연결 |
 | 5분 이상 연결 실패 | 사용자에게 연결 실패 알림 + 수동 재연결 버튼 |
+
+#### 6.4.1 재연결 + replay 통합 절차 (클라이언트 구현 규약)
+
+> 2026-04-15 추가 (team1 발신). 클라이언트가 gap 을 안전하게 복구하기 위한 단계별 절차. Backend_HTTP.md §5.7 `GET /tables/:id/events` 와 1:1 대응.
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant WS as WebSocket
+    participant API as REST API
+
+    Note over C: 연결 단절 감지 (heartbeat miss x2)
+    C->>C: connectionState = RECONNECTING
+    C->>C: incoming events → buffer (§6.4.2)
+    C->>WS: reconnect (백오프)
+    WS-->>C: connected + resubscribe
+    C->>API: GET /tables/{id}/events?since={lastSeq}&limit=500
+    API-->>C: events[], last_seq, has_more
+    C->>C: 각 event 를 seq 순서대로 processEvent()
+    alt has_more == true
+        C->>API: 다음 page (since=마지막 seq)
+    end
+    C->>C: buffer drain (seq 검증으로 중복 자동 필터)
+    C->>C: connectionState = CONNECTED
+```
+
+#### 6.4.2 재연결 중 수신 메시지 버퍼링 정책
+
+| 상태 | 처리 | 한계 |
+|------|------|------|
+| `CONNECTED` | 즉시 `processEvent` | — |
+| `RECONNECTING` | 큐에 append. replay 완료 후 drain. seq 검증으로 중복은 자동 무시 | MAX 500건 |
+| `DISCONNECTED` (5분+) | 큐 폐기. 수동 재연결 시 `since=lastSeq` 로 replay 호출하여 초기화 | — |
+
+#### 6.4.3 replay 실패 처리
+
+`GET /tables/:id/events` 호출 자체가 실패하는 경우:
+
+| 상황 | 처리 |
+|------|------|
+| 5xx / 타임아웃 | 1회 재시도 (2s 후). 그래도 실패하면 페이지 전체 refresh — `lobbyStore.$reset()` 후 `GET /series` 부터 재조회 |
+| 410 Gone (seq 너무 오래됨) | 페이지 전체 refresh (replay 불가, 전체 재조회) |
+| 401/403 | `authStore.tryRestoreSession()` → 성공 시 재시도, 실패 시 `/login` |
+| 200 이지만 `has_more=true` 무한 루프 (10페이지 초과) | 페이지 전체 refresh (데이터량 과다) |
+
+#### 6.4.4 글로벌(테이블 비특정) 이벤트 replay
+
+`event_flight_summary`, `clock_tick`, `ConfigChanged` 등 `table_id="*"` 또는 flight 단위 이벤트의 replay 는 아래 중 하나로 처리:
+
+| 방법 | 현재 지원 | 비고 |
+|------|:--------:|------|
+| `GET /flights/:id/events?since=N` | **Phase 2 예정** | flight 단위 replay 엔드포인트 신설 필요 (별도 CCR) |
+| `GET /series` + `GET /flights/:id/summary` 로 전체 재조회 | ✓ 현재 | replay 미구현 영역의 임시 전략. 초기 load 와 동일 |
+| `ConfigChanged` 재생은 `GET /configs/*` 로 현재값만 재조회 | ✓ 현재 | settings 는 시점 상태만 중요 |
+
+> 클라이언트는 §2 이벤트 매트릭스(Frontend `../../2.1 Frontend/Engineering.md §5.4`) 에 따라 어느 경로를 쓸지 결정한다. 테이블 범위 이벤트는 `/tables/:id/events` 로, 그 외는 전체 재조회로.
 
 ### 6.5 연결 끊김 처리
 

@@ -15,6 +15,13 @@ last-updated: 2026-04-15
 
 ---
 
+<!--
+Edit History:
+| 날짜 | 항목 | 내용 |
+|------|------|------|
+| 2026-04-15 | §3.1a·§4.4~§4.6·§6.7 추가 | Store 초기화 순서 시퀀스 + 401 자동 refresh 상세 시퀀스 + 무한루프 방지 조건 표 + authStore 필드 정의 + WebSocket 개발 환경 (MSW 는 HTTP 만) 대체 전략. team1 발신, 기획 문서 충분성 보강 작업. |
+-->
+
 ## 0. 이 문서를 읽는 법
 
 이 문서는 **"무엇을"이 아니라 "어떻게"를 말한다.** Team 1 frontend 가 Quasar + Vue 3 + TypeScript 로 실제 구현을 시작할 때 필요한 **아키텍처 결정**을 기록한다.
@@ -308,6 +315,53 @@ router.beforeEach(async (to) => {
 | **UI 선호만 localStorage** | `uiStore` 같은 건 만들지 않고, 필요 시 sessionStorage 보조 |
 | **WS 상태는 전용 store** | 재연결 상태, seq cursor, 이벤트 버퍼는 `wsStore` 에만 |
 
+### 3.1a Store 초기화 순서 (부팅 시퀀스)
+
+`boot/session-bootstrap.ts` 에서 아래 순서로 초기화한다. 뒤 store 가 앞 store 의 상태(토큰·role)에 의존하므로 순서 변경 금지.
+
+```mermaid
+flowchart TD
+    Start[App 부팅] --> A[1. authStore.tryRestoreSession]
+    A -->|refresh 성공| B[2. wsStore.connect '/ws/lobby']
+    A -->|refresh 실패| Login[/login 리다이렉트]
+    B -->|connected| C[3. lobbyStore.hydrate from GET /series]
+    C --> D[4. settingsStore.hydrate from GET /configs]
+    D --> E[5. geStore.hydrateActiveSkin from GET /skins/active]
+    E --> Ready[Router next]
+```
+
+| 순서 | store | 초기화 내용 | 실패 시 |
+|:----:|-------|-------------|---------|
+| 1 | `authStore` | cookie → refresh token 검증 → accessToken 발급 | `/login` 리다이렉트, 이후 단계 skip |
+| 2 | `wsStore` | `/ws/lobby` 연결 + DEFAULT_SUBSCRIPTIONS 구독 | 배너 표시 후 HTTP 데이터만으로 계속 |
+| 3 | `lobbyStore` | `GET /series` (초기 목록만) | 에러 배너 + 빈 목록 렌더 |
+| 4 | `settingsStore` | `GET /configs/*` 6카테고리 병렬 | 기본값 폴백 |
+| 5 | `geStore` | `GET /skins/active` | Active skin 미상 배너 |
+
+### 3.1b Store 종속성 규칙
+
+| 종속 | 허용 | 금지 |
+|------|------|------|
+| `lobbyStore` → `authStore` (role 읽기) | ○ | — |
+| `settingsStore` → `authStore` (Admin 여부) | ○ | — |
+| `wsStore` → `authStore` (JWT 헤더) | ○ | — |
+| `lobbyStore` → `wsStore` (이벤트 구독) | — (역방향만 허용) | `wsStore.$onAction` 에서 `lobbyStore` 변경은 `wsStore` 의 이벤트 핸들러에서 직접 |
+| `authStore` → 다른 store | — | 금지 (auth 는 가장 안쪽) |
+| 순환 의존 | — | 절대 금지 |
+
+### 3.1c 로그아웃 시 역순 정리
+
+```ts
+async function logout() {
+  geStore.$reset()
+  settingsStore.$reset()
+  lobbyStore.$reset()
+  wsStore.disconnect()
+  authStore.clearTokens()
+  router.push({ name: 'login' })
+}
+```
+
 ### 3.2 Store 5개 설계
 
 #### 3.2.1 `useAuthStore`
@@ -398,6 +452,15 @@ interface LobbyState {
   tables: Record<string, Table[]>;        // flightId → tables
   players: Record<string, Player[]>;      // tableId → players
 
+  // WebSocket 이벤트 반영 필드 (§5.4 매트릭스)
+  tablesByHand: Record<string, { handNumber: number; dealerSeat: number; lastWinners?: number[] }>;
+  liveActions: Record<string, RingBuffer<Action>>;  // TableDetail 전용, MAX 20건
+  eventFlightSummary: Record<number, EventFlightSummary>;  // flight_id → 25 필드 요약
+  clocks: Record<number, { level: number; remainingSec: number; onBreak: boolean }>;
+  clockDetail: Record<number, ClockDetail>;
+  blindStructure: Record<number, BlindStructure>;
+  prizePool: Record<number, PrizePool>;
+
   selection: {
     seriesId: string | null;
     eventId: string | null;
@@ -411,7 +474,7 @@ interface LobbyState {
 }
 ```
 
-Actions: `fetchSeries()`, `fetchEvents(seriesId)`, `fetchFlights(eventId)`, `fetchTables(flightId)`, `fetchPlayers(tableId)`, `select({seriesId?, eventId?, ...})`, `rebalance(flightId)` — 마지막은 CCR-020 saga 를 구독.
+Actions: `fetchSeries()`, `fetchEvents(seriesId)`, `fetchFlights(eventId)`, `fetchTables(flightId)`, `fetchPlayers(tableId)`, `select({seriesId?, eventId?, ...})`, `rebalance(flightId)` — 마지막은 CCR-020 saga 를 구독. WS 이벤트 핸들러는 §5.4 매트릭스에 따라 해당 필드를 갱신.
 
 persist: 없음. 새로고침 시 현재 route 기반 재요청.
 
@@ -419,20 +482,34 @@ persist: 없음. 새로고침 시 현재 route 기반 재요청.
 
 ```typescript
 interface SettingsState {
+  activeConfig: Record<string, unknown>;  // 현재 실효 중인 설정 (ConfigChanged 반영)
   outputs: OutputsConfig | null;
-  gfx: GfxConfig | null;
+  graphics: GraphicsConfig | null;         // 구 gfx 필드 (Graphics 탭, 5탭 구조)
   display: DisplayConfig | null;
   rules: RulesConfig | null;
   stats: StatsConfig | null;
-  preferences: PreferencesConfig | null;
+  // preferences 는 Lobby/Operations.md 로 이전 (Round 2). 본 store 에서 제거
+
+  // CONFIRM 분류 대기 큐 (Settings/Overview.md §3.5 적용 시점 규칙)
+  pendingConfigChanges: Array<{
+    key: string;
+    value: unknown;
+    category: 'Outputs' | 'Graphics' | 'Display' | 'Rules' | 'Stats';
+    stagedAt: string;    // ISO
+    stagedBy: string;    // user_id
+  }>;
+  gameState: 'IDLE' | 'RUNNING' | 'UNKNOWN';  // HandStarted/HandEnded 로 갱신
+  handNumber: number;                          // HandStarted 에서 갱신
+  connectionLost: boolean;                     // WS 단절 배너 트리거
+
   dirty: Record<keyof SettingsState, boolean>;
   status: 'idle' | 'loading' | 'saving' | 'error';
 }
 ```
 
-Actions: `fetchSection(section)`, `updateField(section, key, value)` (dirty=true), `saveSection(section)` (`PUT /configs/{section}`), `revertSection(section)`.
+Actions: `fetchSection(section)`, `updateField(section, key, value)` (dirty=true), `saveSection(section)` (`PUT /configs/{section}`), `revertSection(section)`, `drainPending()` (HandStarted 수신 시 큐 전체 → activeConfig 적용).
 
-WS 구독: `ConfigChanged` 이벤트 → 해당 섹션만 덮어쓰기 (다른 탭에서 변경 시 반영).
+WS 구독: `ConfigChanged` 이벤트 → 해당 섹션만 덮어쓰기. CONFIRM 분류 처리는 `Settings/Overview.md §3.5`. `HandStarted` → `gameState='RUNNING'` + `drainPending()`. `HandEnded` → `gameState='IDLE'`.
 
 #### 3.2.4 `useGeStore`
 
@@ -457,16 +534,16 @@ WS 구독: `skin_updated` (CCR-015) → `skins` 배열 동기화.
 
 ```typescript
 interface WsState {
-  status: 'disconnected' | 'connecting' | 'connected' | 'reconnecting';
-  lastSeq: number;                          // CCR-021 단조증가 cursor
-  subscriptions: Set<string>;               // 구독 중인 채널/토픽
-  eventBuffer: WsEvent[];                   // 재연결 중 수신 이벤트 버퍼
-  reconnectAttempts: number;
-  reconnectDelay: number;                   // ms, exponential backoff
+  connectionState: 'CONNECTED' | 'RECONNECTING' | 'DISCONNECTED' | 'connecting';
+  lastSeqByChannel: Record<string, number>;   // 채널별 단조증가 cursor (CCR-021)
+  bufferingByChannel: Record<string, unknown[] | null>;  // 재연결 중 수신 버퍼 (MAX 500)
+  subscriptions: Set<string>;                 // 구독 중인 이벤트 타입
+  reconnectAttempt: number;
+  lastError: { code: string; message: string } | null;
 }
 ```
 
-Actions: `connect()`, `disconnect()`, `subscribe(topic)`, `unsubscribe(topic)`, `replay(fromSeq)` (`GET /ws/replay?from_seq=N`). 내부적으로 WebSocket 인스턴스 1개 유지. §5 상세.
+Actions: `connect()`, `disconnect()`, `subscribe({event_types, scope?, table_id?})`, `unsubscribe(...)`, `replay(channel, fromSeq, toSeq)` (`GET /ws/replay?channel=...&from_seq=N&to_seq=M`). 내부적으로 WebSocket 인스턴스 1개 유지. 이벤트 → store 매핑과 구독 대상은 **§5.4 이벤트 구독 매트릭스 참조**.
 
 ---
 
@@ -547,11 +624,19 @@ export const api = createApiClient();
 
 ### 4.2 재시도 정책
 
-- **5xx** (서버 오류): 최대 3회, exponential backoff (500ms → 1s → 2s). Idempotency-Key 는 **원래 값 재사용** (서버가 중복 요청 감지 가능).
-- **4xx** (클라이언트 오류): 즉시 실패. 재시도 금지.
-- **network error**: 5xx 와 동일 취급.
+| 에러 유형 | 자동 재시도 | 백오프 | 수동 재시도 UI |
+|----------|:---------:|-------|---------------|
+| `NETWORK_ERROR` (연결 실패) | 5회 | 1s → 2s → 4s → 8s → 16s (max 30s) | ErrorAlert + 재시도 버튼 |
+| `SERVER_ERROR` 5xx | 3회 | 500ms → 1s → 2s | 동 위 |
+| `RATE_LIMITED` 429 | 1회 | 서버 `retry_after_sec` 존중 | 동 위 |
+| `AUTH_TOKEN_EXPIRED` 401 | 1회 (refresh 시도) | 즉시 | 없음 (실패 시 logout) |
+| 4xx (그 외) | 0회 | — | ErrorAlert + 재시도 |
+| WebSocket 단절 | 무제한 | 1s → 2s → 4s (max 10s, 지터 ±20%) | 수동 재연결 |
 
-재시도 로직은 각 API 모듈에서 `withRetry()` 래퍼로 감싼다:
+자동 재시도 중에는 `ErrorAlert` 를 **회색** 으로 (복구 시도 중). 수동 재시도 필요 시점에 **빨강** 으로 전환.
+
+Idempotency-Key 는 재시도 시 **원래 값 재사용** (CCR-019). 재시도 로직은 각 API 모듈에서 `withRetry()` 래퍼로 감싼다:
+
 ```typescript
 // src/api/series.ts
 export const fetchSeries = () => withRetry(() => api.get<Series[]>('/series'));
@@ -563,6 +648,199 @@ export const fetchSeries = () => withRetry(() => api.get<Series[]>('/series'));
 - **Idempotency-Key 는 재시도 시 동일 값**. 매 요청 새로 발급하면 CCR-019 의미가 없어진다.
 - **401 루프 방지**. `_retry` 플래그로 재시도 1회 제한.
 - **CORS**: dev 는 Vite proxy (`vite.config.ts` / `quasar.config.js > devServer.proxy`), prod 는 동일 도메인 가정.
+
+### 4.4 401 자동 refresh 시퀀스 (상세)
+
+`client.interceptors.response` 의 401 처리 흐름을 다이어그램으로 고정한다. 무한 루프·동시 refresh 경쟁을 방지하기 위한 규약.
+
+```mermaid
+sequenceDiagram
+    participant UI as UI/Component
+    participant API as api client
+    participant AUTH as authStore
+    participant BO as Backend /auth/refresh
+
+    UI->>API: GET /series
+    API->>BO: GET /series (401 Unauthorized)
+    BO-->>API: 401 AUTH_TOKEN_EXPIRED
+    API->>API: err.config._retry == undefined?
+    API->>AUTH: tryRestoreSession()
+    AUTH->>AUTH: refreshInFlight == null?
+    AUTH->>BO: POST /auth/refresh (쿠키)
+    BO-->>AUTH: 200 { access_token }
+    AUTH-->>API: refreshed = true
+    API->>API: _retry = true
+    API->>BO: GET /series (새 Bearer)
+    BO-->>API: 200 OK
+    API-->>UI: data
+
+    Note over AUTH: 두 번째 요청이 동시에 401 받으면<br/>같은 refreshInFlight Promise 에 await<br/>→ refresh 1회만 실행
+```
+
+### 4.5 무한 루프 방지 조건
+
+| 조건 | 처리 | 이유 |
+|------|------|------|
+| 첫 401 + `_retry=undefined` | refresh 시도 → 성공 시 원래 요청 재시도 | 정상 경로 |
+| 첫 401 + refresh 실패 | `authStore.logout()` → `/login` 리다이렉트 | 토큰 완전 만료 |
+| 재시도 요청에서 또 401 (`_retry=true`) | refresh 재시도 금지 → logout | 루프 방지 |
+| 복수 요청 동시 401 | `authStore.refreshInFlight` 단일 Promise 공유 | refresh 1회만 |
+| `/auth/refresh` 자체가 401 | 즉시 logout, 재시도 불가 | 리프레시 토큰 만료 |
+| `/auth/refresh` 5xx | 지수 백오프 1회만 재시도 후 logout | 서버 일시 장애는 재로그인으로 전환 |
+
+### 4.6 authStore 필수 필드
+
+```ts
+interface AuthStoreState {
+  accessToken: string | null
+  user: UserProfile | null
+  role: 'Admin' | 'Operator' | 'Viewer' | null
+  refreshInFlight: Promise<boolean> | null   // 동시 refresh 경쟁 방지
+  lastRefreshAt: string | null               // ISO 시각, 디버깅용
+}
+```
+
+```ts
+// tryRestoreSession 구현 요약
+async tryRestoreSession(): Promise<boolean> {
+  if (this.refreshInFlight) return this.refreshInFlight
+  this.refreshInFlight = (async () => {
+    try {
+      const res = await axios.post('/auth/refresh', null, { withCredentials: true })
+      this.accessToken = res.data.access_token
+      this.lastRefreshAt = new Date().toISOString()
+      return true
+    } catch {
+      this.logout()
+      return false
+    } finally {
+      this.refreshInFlight = null
+    }
+  })()
+  return this.refreshInFlight
+}
+```
+
+> Shared 측 토큰 TTL/rotation 정책은 `../2.5 Shared/Authentication.md` 가 SSOT. 본 섹션은 그 정책을 구현하는 방법만 다룬다.
+
+### 4.7 공통 UI 상태 (로딩·에러·빈·성공)
+
+모든 화면은 네트워크 요청·WebSocket 구독·사용자 입력 중 **loading / error / empty / success** 4가지 상태 중 하나를 표현한다. 본 섹션은 해당 스펙의 **단일 진실**.
+
+#### 4.7.1 상태 분류
+
+| 상태 | 정의 | 트리거 |
+|------|------|--------|
+| `idle` | 사용자 입력 대기 | 초기 렌더, 작업 완료 후 복귀 |
+| `loading` | 비동기 작업 진행 중 | HTTP 요청, WebSocket 초기 구독 |
+| `error` | 실패, 복구 UI 필요 | 4xx/5xx, 타임아웃, WS 단절 |
+| `empty` | 요청 성공 + 표시 데이터 0건 | `data.length === 0` |
+| `success` (transient) | 작업 완료 피드백 | 저장/삭제/생성 성공 |
+
+`loading` 과 `error` 배타. `loading + error` (재시도 중 이전 에러 유지) 는 허용. `success` 는 3s 자동 dismiss.
+
+#### 4.7.2 컴포넌트 스펙
+
+**Skeleton (구조 로딩)**
+| 속성 | 값 |
+|------|-----|
+| Quasar | `QSkeleton` |
+| 개수 | 실제 예상 아이템 수 (리스트 10개 예상 → skeleton 10개) |
+| 애니메이션 | `animation="wave"` (pulse 금지) |
+| 색 | `bg-grey-3` (light) / `bg-grey-8` (dark) |
+| 높이 | 실제 아이템 ±4px |
+| 최소 표시 시간 | 200ms (깜빡임 방지) |
+| 최대 표시 시간 | 10s → `error` 자동 전환 (`NETWORK_ERROR`) |
+
+**Spinner (포인트 로딩)**
+| 속성 | 값 |
+|------|-----|
+| Quasar | `QSpinner` 또는 `QSpinnerDots` |
+| 크기 | 버튼 `size="sm"` (16px) · 카드 `size="md"` (32px) · 페이지 `size="lg"` (48px) |
+| 색 | 버튼: `color="white"` · 카드: `color="primary"` |
+| 최소 | 없음 (즉시) / 카드·페이지: 300ms |
+| 최대 | 30s → `error` 전환 |
+
+버튼 내부 스피너는 좌측 배치 + 버튼 텍스트 유지 + `disable`.
+
+**ErrorAlert (복구 가능한 에러)**
+| 표시 위치 | Quasar | Dismiss | 색 |
+|-----------|--------|:-------:|-----|
+| 폼 필드 하위 | `q-field--error` + hint | 입력 수정 시 | `text-negative` |
+| 영역 상단 | `QBanner class="bg-red-1 text-red-10"` | X 버튼 | red-1 |
+| 화면 상단 고정 | `QBanner dense class="bg-red-1"` | 재연결/성공 시 자동 | red-1 |
+| 단발성 | `Notify.create({type:'negative'})` | 5s | negative 토스트 |
+
+필수 요소: (1) 문구, (2) 재시도 버튼/대안 액션, (3) 기술 상세 접기.
+
+```vue
+<q-banner class="bg-red-1 text-red-10" rounded>
+  {{ $t('error.network') }}
+  <template #action>
+    <q-btn flat :label="$t('common.retry')" @click="retry" />
+  </template>
+</q-banner>
+```
+
+**EmptyState (빈 데이터)**
+| 속성 | 값 |
+|------|-----|
+| 일러스트 | `src/assets/empty/{domain}.svg` 120×120px 중앙 |
+| 문구 | H6 "아직 없습니다" + caption "첫 {항목}을 만들어보세요" |
+| 액션 | Primary 버튼 1개 (Admin 만 표시). 예: "+ 새 Series 생성" |
+| Admin 외 | 일러스트 + 문구만, 버튼 숨김 |
+
+**Success Toast**
+- `Notify.create({type:'positive', position:'top', message, timeout:3000})`
+- 파괴적 작업(삭제) 의 성공은 토스트 대신 전체 페이지 상태 변화로 확인.
+
+#### 4.7.3 비즈니스 상태 × UI 상태 조합
+
+컴포넌트 prop 으로 **비즈니스 도메인 상태** 와 **UI 상태** 를 직교 축으로 받는다.
+
+```ts
+interface UIStatefulProps<T> {
+  data: T | null
+  uiState: 'idle' | 'loading' | 'error' | 'empty'
+  error?: { code: string; message?: string } | null
+  onRetry?: () => void
+}
+```
+
+```vue
+<template>
+  <Skeleton v-if="uiState === 'loading'" />
+  <ErrorAlert v-else-if="uiState === 'error'" :error="error" @retry="onRetry" />
+  <EmptyState v-else-if="uiState === 'empty'" />
+  <ActualContent v-else :data="data" />
+</template>
+```
+
+**조합 금지**:
+- `loading + empty` 금지 — loading 중 empty 판정 불가
+- `error + empty` 금지 — error 우선
+- `success + error` 금지 — 마지막 결과만 표시
+
+**화면별 대표 조합**: 각 화면 UI 문서(`Lobby/UI.md`, `Lobby/Table.md §6`, `Graphic_Editor/UI.md`, `Settings/Overview.md`) 에서 필요 시 본 섹션 기준으로 작성. 여기서는 규약만 고정.
+
+#### 4.7.4 접근성
+
+| 항목 | 규칙 |
+|------|------|
+| 스크린 리더 | 상태 전환 시 `aria-live="polite"`. 에러는 `aria-live="assertive"` |
+| 키보드 | ErrorAlert 재시도 버튼 `tabindex="0"` + Enter/Space |
+| 색 외 신호 | 에러 = 빨강만 금지. 아이콘(warning/error) + 텍스트 동반 |
+
+#### 4.7.5 최소 표시 시간 (깜빡임 방지)
+
+| 컴포넌트 | 최소 |
+|----------|:----:|
+| Skeleton | 200ms |
+| Spinner (버튼) | 없음 |
+| Spinner (카드/페이지) | 300ms |
+| Success Toast | 3000ms |
+
+서버 응답이 200ms 이내 와도 Skeleton 은 200ms 유지.
 
 ---
 
@@ -663,9 +941,120 @@ actions: {
 
 ### 5.3 재연결 정책
 
-- Exponential backoff: 1s → 2s → 4s → 8s → 16s → 30s (max) → 30s → ...
-- 최대 10회 시도 후 `disconnected` 로 전환, 사용자에게 알림
-- `accessToken` 이 없으면 연결 시도 하지 않음 (logout 후)
+| 시도 | 지연 | 한도 |
+|:----:|-----|-----|
+| 1 | 1s | — |
+| 2 | 2s | — |
+| 3 | 4s | — |
+| 4 | 8s | — |
+| 5+ | 10s | 무제한 반복 |
+
+지터: 각 지연값에 ±20% 랜덤 가산. 사용자 수동 재연결 클릭 시 카운터 리셋. `accessToken` 이 없으면 연결 시도 안 함 (logout 후).
+
+**재연결 중 수신 메시지 버퍼링**:
+| 상태 | 처리 | 한계 |
+|------|------|------|
+| `CONNECTED` | 즉시 `processEvent` | — |
+| `RECONNECTING` | 큐에 append. replay 완료 후 drain. seq 검증으로 중복 자동 무시 | MAX 500건 |
+| `DISCONNECTED` (5회+ 실패) | 사용자 액션 대기. 큐 MAX 500 유지, 초과 시 오래된 것부터 폐기 | — |
+
+**타임아웃**:
+| 대상 | 값 | 실패 시 |
+|------|-----|---------|
+| 초기 연결 | 10s | 백오프 진입 |
+| 핸드셰이크 + 인증 | 5s | 재시도 |
+| heartbeat interval | 30s | 클라이언트 → 서버 ping |
+| heartbeat miss | 2회 연속 | 단절 판정 → 재연결 |
+| replay HTTP | 15s | 1회 재시도 후 실패 시 페이지 전체 refresh |
+
+### 5.4 이벤트 구독 매트릭스 (Lobby 클라이언트 관점)
+
+Backend `../2.2 Backend/APIs/WebSocket_Events.md` 의 이벤트 카탈로그를 **Lobby Frontend 관점** 에서 뒤집어 "어느 이벤트를 어느 store 에 저장하고 어느 UI 가 재렌더링되는가" 로 정리. `wsStore`/`lobbyStore`/`settingsStore`/`geStore` 설계의 SSOT.
+
+**엔드포인트별 구독자**:
+| 엔드포인트 | 구독자 | 목적 |
+|-----------|--------|------|
+| `ws://host/ws/lobby` | Lobby (Quasar) | 모니터링. 읽기 전용 |
+| `ws://host/ws/cc` | Command Center (Flutter, team4) | 게임 조작 + 이벤트 송수신 |
+| `ws://host/ws/overlay` | Overlay (team3 Dart) | 실시간 그래픽 렌더링 |
+
+팀1(Lobby) 은 `/ws/lobby` **만** 구독. `/ws/cc`, `/ws/overlay` 구독 금지.
+
+**이벤트 → Store → UI (Lobby 기준)**:
+| 이벤트 | 구독 | 저장 store · 필드 | 트리거 UI |
+|--------|:---:|------------------|----------|
+| `HandStarted` | ● | `lobbyStore.tablesByHand[table_id]` | TableCard "HAND #NN" 배지 |
+| `HandEnded` | ● | 동 위 + `lastWinners` | TableCard 배지 초기화 |
+| `ActionPerformed` | ○ | `lobbyStore.liveActions[table_id]` ring MAX 20 | TableDetail 만 렌더. 리스트 뷰 무시 |
+| `OperatorConnected` | ● | `lobbyStore.tables[id].operator` | 프로필 아이콘 on |
+| `OperatorDisconnected` | ● | 동 위 null | 아이콘 off + "Operator 단절" 배너 |
+| `event_flight_summary` | ● | `lobbyStore.eventFlightSummary[flight_id]` | Lobby 대시보드 카드 (30s 주기) |
+| `clock_tick` | ● | `lobbyStore.clocks[flight_id]` (throttle 500ms) | Flight 헤더 블라인드 타이머 |
+| `clock_level_changed` | ● | 동 위 + `levelIndex`, `onBreak` | 레벨 배지 + 토스트 |
+| `clock_detail_changed` | ● | `lobbyStore.clockDetail[flight_id]` | 대시보드 테마/공지/이벤트명 |
+| `clock_reload_requested` | ● | 즉시 처리 (상태 저장 X) | 대시보드 강제 페이지 리로드 |
+| `tournament_status_changed` | ● | `lobbyStore.eventFlightSummary[flight_id].status` | Flight 상태 배지 + 잠금 규칙 |
+| `blind_structure_changed` | ● | `lobbyStore.blindStructure[flight_id]` | 편집 화면 열려있으면 dirty 경고 |
+| `prize_pool_changed` | ● | `lobbyStore.prizePool[flight_id]` | 상금 풀 카드 + highlight |
+| `stack_adjusted` | ● | `lobbyStore.eventFlightSummary[flight_id].avg_stack` | avg_stack 카드 + 토스트 |
+| `ConfigChanged` | ● | `settingsStore.activeConfig[key]` (CONFIRM 큐 drain 규칙은 `Settings/Overview.md §3.5`) | Settings 열려있으면 필드 동기화 + 배너 |
+| `skin_updated` | ● | `geStore.activeSkin` | GE 리스트 active 배지 이동 + 토스트 |
+| (모든 에러 이벤트) | ● | `wsStore.lastError` | ErrorAlert 배너 (§4.7.2) |
+
+**구독 아이콘**: ● = 항상 구독, ○ = 특정 화면 진입 시만
+
+**CC/Overlay 전용 이벤트**(RFID, HandLocal, render tick 등) 는 Lobby 구독 **금지**.
+
+**구독 필터링** (초기 연결 시):
+```ts
+const DEFAULT_SUBSCRIPTIONS = [
+  'HandStarted', 'HandEnded',
+  'OperatorConnected', 'OperatorDisconnected',
+  'event_flight_summary', 'clock_tick', 'clock_level_changed',
+  'clock_detail_changed', 'clock_reload_requested',
+  'tournament_status_changed', 'blind_structure_changed',
+  'prize_pool_changed', 'stack_adjusted',
+  'ConfigChanged', 'skin_updated',
+] as const
+
+wsStore.subscribe({ event_types: DEFAULT_SUBSCRIPTIONS })
+
+// TableDetail 진입 시 추가 구독
+wsStore.subscribe({
+  scope: 'table',
+  table_id: route.params.id,
+  event_types: ['ActionPerformed'],
+})
+// 떠날 때 unsubscribe
+```
+
+**Replay 트리거** (gap 감지 시):
+```ts
+async function onGapDetected(channel: string, fromSeq: number, toSeq: number) {
+  wsStore.bufferingByChannel[channel] = []
+  const events = await api.get('/ws/replay', { params: { channel, from_seq: fromSeq, to_seq: toSeq } })
+  for (const e of events) processEvent(e)
+  for (const e of wsStore.bufferingByChannel[channel]) processEvent(e)
+  wsStore.bufferingByChannel[channel] = null
+}
+```
+
+**Replay 실패 처리**:
+| 상황 | 처리 |
+|------|------|
+| 5xx/timeout | 1회 재시도(2s). 실패 시 `lobbyStore.$reset()` + 페이지 전체 refresh |
+| 410 Gone (seq 너무 오래됨) | 페이지 전체 refresh |
+| 401/403 | `authStore.tryRestoreSession()` → 성공 시 재시도, 실패 시 `/login` |
+| `has_more=true` 10페이지 초과 | 페이지 전체 refresh (데이터량 과다) |
+
+**글로벌(flight 단위) 이벤트 replay**: `GET /tables/:id/events` 는 테이블 단위. `event_flight_summary`/`clock_*` 등 flight 단위 이벤트의 replay 엔드포인트는 Phase 2 에 `/flights/:id/events?since=N` 예정. 현재는 `GET /series` + `GET /flights/:id/summary` 로 전체 재조회로 대체. `ConfigChanged` 는 `GET /configs/*` 로 현재값만 재조회.
+
+**UI 반영**:
+- `wsStore.connectionState` (`CONNECTED`/`RECONNECTING`/`DISCONNECTED`) 기반 전역 배너
+- `CONNECTED` → 배너 없음
+- `RECONNECTING` → 회색 배너 "연결 복구 중... ({시도회차})"
+- `DISCONNECTED` → 빨강 배너 "연결이 끊어졌습니다" + 수동 재연결 버튼
+- 배너 컴포넌트는 `§4.7 ErrorAlert` 규약 사용
 
 ---
 
@@ -783,6 +1172,39 @@ VITE_WS_BASE_URL=ws://localhost:8000
 
 `VITE_USE_MOCK=false` 로 바꾸고 `pnpm dev` 재시작하면 MSW 는 로드되지 않는다. 코드 변경 0.
 
+### 6.7 WebSocket 개발 환경 (MSW 는 HTTP 만)
+
+MSW 는 HTTP 요청만 intercept 한다. WebSocket 은 지원하지 않으므로 WS 이벤트 기반 화면(Lobby 대시보드 실시간 타이머, Settings 대기 큐, GE `skin_updated` 등)의 로컬 개발은 별도 전략이 필요하다.
+
+**전략 매트릭스**:
+
+| 상황 | 방법 | 파일 |
+|------|------|------|
+| Unit/컴포넌트 테스트 | `wsStore` 를 vitest 에서 stub — `vi.spyOn(wsStore, 'subscribe')` 로 직접 이벤트 주입 | `test/**/*.test.ts` |
+| E2E 테스트 (Playwright) | `playwright-ws-mock` 또는 자체 `ws` 서버 (`tools/dev-ws-mock.ts`) 구동 후 시나리오 이벤트 전송 | `e2e/fixtures/ws-server.ts` |
+| 로컬 개발 중 실시간 시뮬레이션 | 경량 Node WS 서버 `pnpm dev:ws-mock` 를 별도 터미널에서 구동 (포트 9080). `.env.development` 의 `VITE_WS_BASE_URL=ws://localhost:9080` | `tools/dev-ws-mock.ts` |
+| Backend 가 일부 연결된 상태 (HTTP only) | `VITE_USE_MOCK=true` + `VITE_WS_BASE_URL=` 빈 값 → `wsStore.connect()` 스킵 조건 감지 → 배너 "WebSocket 개발 모드 비활성" 후 화면은 HTTP 응답만으로 동작 | — |
+
+**`tools/dev-ws-mock.ts` 최소 구현**:
+
+```ts
+import { WebSocketServer } from 'ws'
+const wss = new WebSocketServer({ port: 9080 })
+let seq = 0
+wss.on('connection', (ws) => {
+  ws.send(JSON.stringify({ type: 'connected', seq: ++seq, server_time: new Date().toISOString() }))
+  // 1초마다 clock_tick 보내기
+  const tick = setInterval(() => {
+    ws.send(JSON.stringify({ type: 'clock_tick', seq: ++seq, payload: { level: 8, remaining: 720 } }))
+  }, 1000)
+  ws.on('close', () => clearInterval(tick))
+})
+```
+
+시나리오 이벤트(HandStarted, ConfigChanged 등) 주입은 CLI 파라미터 또는 로컬 HTTP admin 엔드포인트로 추가. 이 도구는 "실제 Backend 없이 화면 렌더를 보기" 만을 목적으로 하며, 계약 검증은 `integration-tests/` 로 한다.
+
+> 구현 가이드의 이벤트 명단은 `§5.4 이벤트 구독 매트릭스` 를 그대로 따른다. 이 외 이벤트를 dev-ws-mock 이 발행하면 안 된다 (실제 Backend 와 drift 방지).
+
 ---
 
 ## 7. i18n 전략
@@ -863,6 +1285,39 @@ const { t, locale } = useI18n();
 - 개발자는 `ko.json` 에만 key 추가. `en`/`es` 는 추후 번역가 담당
 - 누락 key 는 개발 환경에서 콘솔 경고 + `ko` fallback
 - **절대 문자열 하드코딩 금지**. 새 UI 추가 시 즉시 i18n key 도 같이 추가
+
+### 7.6 복수형·성별 규칙
+
+vue-i18n 9 의 `@linked` 와 `{n, plural, ...}` 구문을 사용.
+
+| locale | 복수형 규칙 |
+|--------|----------|
+| `ko` | 단·복수 구분 없음. `"{n}명의 플레이어"` 하나로 충분 |
+| `en` | `one / other` 2형. `"{n, plural, one {# player} other {# players}}"` |
+| `es` | `one / other` 2형 (영어 동일). `"{n, plural, one {# jugador} other {# jugadores}}"` |
+
+예시 i18n key:
+```json
+{
+  "lobby.players_count": {
+    "ko": "{n}명의 플레이어",
+    "en": "{n, plural, one {# player} other {# players}}",
+    "es": "{n, plural, one {# jugador} other {# jugadores}}"
+  }
+}
+```
+
+성별이 필요한 경우(스페인어 형용사 일치 등) 는 `@linked` 로 별도 key 사용. 대화 메시지는 중성적 어휘 우선.
+
+### 7.7 접근성 (i18n 연계)
+
+| 항목 | 규칙 |
+|------|------|
+| `aria-label` | i18n key 사용 필수 (하드코딩 금지) |
+| `aria-live` | 상태 전환 시 `polite`, 에러 시 `assertive` (§4.7.4 참조) |
+| `aria-busy` | `uiState === 'loading'` 시 해당 영역에 설정 |
+| 키보드 포커스 순서 | `tabindex` 는 논리 순서만, 기본 `0` 또는 `-1` 만 사용 |
+| 색 외 신호 | §4.7.4 — 색 단독 금지, 아이콘/텍스트 동반 |
 
 ---
 

@@ -12,12 +12,70 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-10 | 신규 작성 | CCR-011 APPLIED 기반 GE 허브 기획서. 3-Zone 레이아웃, rive-js 프리뷰, GEM-01~25 메타데이터 폼, Upload Dropzone, Activate 흐름, BS-08-04 RBAC gate |
 | 2026-04-10 | routes drift fix | §2 라우터 메타의 route name 을 `graphic-editor-hub/detail` → `ge-hub/ge-detail` 로 교정. `src/router/routes.ts` + UI-A1 §2.1 SSOT 와 정합 |
+| 2026-04-15 | Skin Editor 자산 참조 추가 | Lobby 헤더 독립 `[Graphic Editor]` 진입점 반영 (Round 2). References/skin-editor/ 의 세부 레이아웃 자산(ebs-ui-layout-anatomy.md / EBS-Skin-Editor_v3.prd.md / 17 HTML 목업 / 8 컴포넌트 / 디자인 토큰) 을 상단 포인터로 연결. team1 발신. |
 
 ---
 
 ## 0. 이 문서를 읽는 법
 
-이 문서는 Team 1 frontend Lobby 탭에 구현될 **Graphic Editor 허브의 와이어프레임과 상호작용 스펙**을 정의한다. 계약(BS-08-*, API-07, DATA-07)은 변경하지 않고 참조한다. 실제 Vue 컴포넌트 구조/stores/router 는 `UI-A1-architecture.md §2.1 (route)`, `§3.2.4 (useGeStore)`, `§5 (WS client)` 에 정의되어 있으며, 본 문서는 그 위에서 **화면이 어떻게 보이고 동작하는지**만 다룬다.
+이 문서는 Team 1 frontend Lobby 헤더 독립 `[Graphic Editor]` 진입점에서 렌더링되는 **Graphic Editor 허브의 와이어프레임과 상호작용 스펙**을 정의한다. 계약(BS-08-*, API-07, DATA-07)은 변경하지 않고 참조한다.
+
+### 0.1 세부 레이아웃 설계 자산 (2026-04-15 추가)
+
+이미 완성된 **Skin Editor 설계 자산** 이 `References/skin-editor/` 에 있다. 본 문서의 §3~§5 를 구현할 때 아래 자산을 우선 참조한다.
+
+| 자산 | 경로 | 용도 |
+|------|------|------|
+| **전술 레이아웃 (L1)** | `References/skin-editor/ebs-ui-layout-anatomy.md` | SkinEditorDialog 컴포넌트 트리 (Element 01~61), T1/T2/T3 배치, GE A/B/C 적응형 패턴 |
+| **최신 정본 PRD (v3.0)** | `References/skin-editor/EBS-Skin-Editor_v3.prd.md` | Element ID (S-##/GE-##), 187 필드 매핑, 8 GE 모드 상세 |
+| **설계 원칙** | `References/skin-editor/ebs-ui-design-strategy.md` | WYSIWYG-First · Progressive Disclosure · Spatial Consistency · Density Balance · PokerGFX Parity |
+| **구현 계획** | `References/skin-editor/ebs-ui-design-plan.md` | 8 공유 컴포넌트 (`EbsSectionHeader`, `EbsSlider`, `EbsColorPicker` 등), 폴더 구조, `quasar.variables.scss` 디자인 토큰 |
+| **18 에디터 벤치마크** | `References/skin-editor/prd-skin-editor-layout-references.prd.md` | Figma UI3, Unity Inspector, vMix GT Designer 등 7 분석 기준 |
+| **CSS 추출** | `References/skin-editor/data/layout-css-extraction.md` | Grid/Flex 치수·여백·색 명세 |
+| **HTML 목업 (Skin Editor)** | `References/skin-editor/mockups/ebs-skin-editor.html` | 메인 화면 인터랙티브 (29KB) |
+| **HTML 목업 (GE 8 모드)** | `References/skin-editor/mockups/ebs-ge-{board,field,blinds,strip,history,leaderboard,player,outs}.html` | 각 모드별 인터랙티브 (30~33KB) |
+| **스크린샷** | `References/skin-editor/images/ebs-*.png` (50+) | 클린/주석(annotated) 버전 |
+| **레이아웃 밸런스 솔루션** | `References/skin-editor/skin-editor-layout-balance-solutions.md` | 6 CSS/컴포넌트 솔루션 (높이 균형, flex-grow, 접이식 T1/T2/T3) |
+| **UI 트리 JSON** | `References/skin-editor/data/skin-editor-ui-tree.json` | Element 부모-자식 관계 프로그래매틱 |
+
+### 0.2 8 GE 모드 목업 경로 표
+
+| 모드 | Element ID | HTML 목업 |
+|------|-----------|----------|
+| Board | GE-01 | `mockups/ebs-ge-board.html` |
+| Field | GE-02 | `mockups/ebs-ge-field.html` |
+| Blinds | GE-03 | `mockups/ebs-ge-blinds.html` (+ `ebs-ge-blinds-ante.html`) |
+| Strip (Score Strip) | GE-04 | `mockups/ebs-ge-strip.html` |
+| History | GE-05 | `mockups/ebs-ge-history.html` (+ footer·repeat 변형) |
+| Leaderboard | GE-06 | `mockups/ebs-ge-leaderboard.html` (+ repeat·footer 변형) |
+| Player | GE-07 | `mockups/ebs-ge-player.html` (+ compact·vertical 변형) |
+| Outs | GE-08 | `mockups/ebs-ge-outs.html` |
+
+### 0.3 구현 순서 (Phase 1~4)
+
+`ebs-ui-design-plan.md §6 Phase 로드맵` 을 따른다:
+1. Phase 1: `SkinMetadata.vue` (Element 01~05, 상단 전폭)
+2. Phase 2: `ElementGrid.vue` (06, 좌상) + `ColourAdjust.vue` (27~30, 좌중하)
+3. Phase 3: `VisualSettings.vue` (07~20, 중앙) + `BehaviourSettings.vue` (31~61, 우측)
+4. Phase 4: GE 8 모드 (`GfxEditorBase.vue` + 패턴 A/B/C)
+
+### 0.4 이 문서와 Skin Editor 자산의 역할 분담
+
+| 주제 | 본 문서 (`UI.md`) | Skin Editor 자산 |
+|------|-----------------|-----------------|
+| 3-Zone 레이아웃 큰 그림 | ✓ | ✓ (상세는 자산) |
+| Element 01~61 좌표·치수 | 포인터만 | ✓ (`ebs-ui-layout-anatomy.md`) |
+| 디자인 토큰 (색·폰트·간격) | 포인터만 | ✓ (`ebs-ui-design-plan.md §3`) |
+| 적응형 패턴 A/B/C | 포인터만 | ✓ |
+| 상태 머신 (Upload/Activate FSM) | ✓ (§4 Use Case Flows, §8 Activate) | — |
+| RBAC gate | ✓ (§9) | — |
+| 라우터·Vue 컴포넌트 구조 | ✓ (§2) + `../Engineering.md §2.1` | — |
+
+본 문서는 **허브 차원 와이어프레임 + 상호작용 스펙** 만 유지. Element 단위 세부는 Skin Editor 자산에서 이관하지 않고 참조.
+
+---
+
+실제 Vue 컴포넌트 구조/stores/router 는 `UI-A1-architecture.md §2.1 (route)`, `§3.2.4 (useGeStore)`, `§5 (WS client)` 에 정의되어 있으며, 본 문서는 그 위에서 **화면이 어떻게 보이고 동작하는지**만 다룬다.
 
 | 당신이 | 참조할 곳 |
 |--------|-----------|

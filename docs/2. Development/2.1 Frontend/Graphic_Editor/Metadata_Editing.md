@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-10 | 신규 작성 | GEM-01~25 편집 매트릭스 + PATCH + ETag 낙관적 동시성 (CCR-011) |
+| 2026-04-15 | Element ID 매핑 | §1.1 GEM ↔ Skin Editor Element ID (S-## / GE-##) ↔ 폼 위젯 매핑 신설. team1 발신, Round 2 Phase F. |
 
 ---
 
@@ -38,6 +39,48 @@ last-updated: 2026-04-15
 - `seats[*]` 배열 — Rive artboard 소유
 - `created_at` / `modified_at` — 서버 자동 갱신
 - `.riv` 파일 내부 구조 — Rive 공식 에디터 영역
+
+### 1.1 GEM ↔ Skin Editor Element ID ↔ 폼 위젯 매핑
+
+본 표는 GEM 필드 25개를 Skin Editor 설계의 Element ID (`References/skin-editor/EBS-Skin-Editor_v3.prd.md`) 와 1:1 대응시켜 **폼 구현 시 어느 Quasar 위젯을 쓸지** 를 고정한다.
+
+| GEM | 필드 | Element ID | 폼 위젯 | 제약 |
+|-----|------|-----------|---------|------|
+| **GEM-01** | `skin_name` | S-01 | `QInput` | 1~100자, `^[\w가-힣\-\s]+$` |
+| **GEM-02** | `version` | S-02 | `QInput` (placeholder "1.0.0") | semver |
+| **GEM-03** | `author` | S-03 | `QInput` | 1~50자 |
+| **GEM-04** | `resolution` | S-04 | `QSelect` (enum combo) | {1920×1080, 1080×1920, 3840×2160} |
+| **GEM-05** | `background_color` | S-05 | `QInput type="color"` | hex |
+| **GEM-06** | `colors.badge_check` | GE-07 inputs | `EbsColorPicker` | hex |
+| **GEM-07** | `colors.badge_fold` | 동 위 | `EbsColorPicker` | hex |
+| **GEM-08** | `colors.badge_win` | 동 위 | `EbsColorPicker` | hex |
+| **GEM-09** | `colors.card_back` | GE-01 inputs | `EbsColorPicker` | hex |
+| **GEM-10** | `colors.pot_label` | GE-03 inputs | `EbsColorPicker` | hex |
+| **GEM-11** | `colors.pot_amount` | 동 위 | `EbsColorPicker` | hex |
+| **GEM-12** | `colors.timer_active` | GE-03 inputs | `EbsColorPicker` | hex |
+| **GEM-13** | `colors.timer_warning` | 동 위 | `EbsColorPicker` | hex |
+| **GEM-14** | `colors.leaderboard_bg` | GE-06 inputs | `EbsColorPicker` | hex |
+| **GEM-15** | `fonts.pot.family` | GE-03 inputs | `QSelect` (Google Fonts list) | 폰트 패밀리 |
+| **GEM-16** | `fonts.pot.size` | 동 위 | `EbsSlider` | 12~96 px |
+| **GEM-17** | `fonts.pot.weight` | 동 위 | `QSelect` | 100~900 in 100 |
+| **GEM-18** | `fonts.player_name.family` | GE-07 inputs | `QSelect` | 동 위 |
+| **GEM-19** | `fonts.player_name.size` | 동 위 | `EbsSlider` | 12~48 px |
+| **GEM-20** | `fonts.player_name.weight` | 동 위 | `QSelect` | 동 위 |
+| **GEM-21** | `animations.card_fade_duration_ms` | GE-01 anim | `EbsSlider` | 0~2000 ms |
+| **GEM-22** | `animations.badge_pulse_duration_ms` | GE-07 anim | `EbsSlider` | 0~2000 ms |
+| **GEM-23** | `animations.pot_update_duration_ms` | GE-03 anim | `EbsSlider` | 0~2000 ms |
+| **GEM-24** | `animations.timer_tick_duration_ms` | GE-03 anim | `EbsSlider` | 0~500 ms |
+| **GEM-25** | `animations.leaderboard_scroll_duration_ms` | GE-06 anim | `EbsSlider` | 0~5000 ms |
+
+**위젯 구현 위치**: `References/skin-editor/ebs-ui-design-plan.md §2` 의 8 공유 컴포넌트 (`EbsColorPicker`, `EbsSlider` 등) 사용. 컴포넌트 경로는 `src/components/ge/` 아래.
+
+**편집 화면 매핑**:
+- GEM-01~05 → Skin Metadata 영역 (상단 전폭, `SkinMetadata.vue`)
+- GEM-06~14 → ColourAdjust 영역 (좌중하, `ColourAdjust.vue`)
+- GEM-15~20 → VisualSettings 영역 (중앙, `VisualSettings.vue`)
+- GEM-21~25 → BehaviourSettings 영역 (우측, `BehaviourSettings.vue`)
+
+자세한 컴포넌트 트리·배치는 `References/skin-editor/ebs-ui-layout-anatomy.md §2 (SkinEditorDialog 트리)` 참조.
 
 ---
 

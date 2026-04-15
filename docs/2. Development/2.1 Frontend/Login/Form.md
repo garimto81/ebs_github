@@ -12,6 +12,8 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-14 | 분리 신설 | `BS-02-00-overview.md` 의 §화면 0: 로그인 분리. CCR-DRAFT-team1-20260414-bs02-overview-rename.md 가 API-06 redirect 위임. |
 | 2026-04-15 | v10 분할 | 구 `BS-02-01-auth-session.md` 를 Login/Form, Login/Session_Init, Login/Error_Handling, Lobby/Session_Restore 4파일로 분할. 본 파일은 **로그인 입력 폼 + 인증 방식**만 담당. |
+| 2026-04-15 | SSOT 선언 | Quasar 구현자 대상으로 "이 문서의 담당 범위 vs 외부 SSOT" 블록 추가 (team1 발신, 기획 문서 충분성 보강 작업의 일부). |
+| 2026-04-15 | Error_Handling 역참조 주석 | §화면 0 아래에 "에러 발생 시 `Error_Handling.md §에러 매핑 테이블` 참조" 한 줄 추가. 개발자가 구현 중 즉시 찾을 수 있도록. team1 발신, Round 2 Phase G. |
 
 ---
 
@@ -19,11 +21,18 @@ last-updated: 2026-04-15
 
 로그인 폼의 입력 요소·인증 방식·Phase 별 전략을 정의한다.
 
-> **참조**:
-> - 글로벌 인증 계약: `../../2.5 Shared/Authentication.md`
-> - 로그인 성공 후 세션 저장·네비게이션: `Session_Init.md`
-> - 로그인 실패·가드·에러 처리: `Error_Handling.md`
-> - 재접속·세션 복원: `../Lobby/Session_Restore.md`
+### 이 문서의 담당 범위 (SSOT)
+
+| 주제 | 정답 문서 | 비고 |
+|------|-----------|------|
+| **로그인 폼 UI · 필드 · Phase 별 인증 방식 매트릭스** | **이 문서** | Quasar/Vue 구현 시 이 문서를 그대로 반영 |
+| 토큰 TTL · refresh 전략 · 2FA 정책 · Lockout 규칙 | `../../2.5 Shared/Authentication.md` | 수치·정책 변경은 그 문서에서만 |
+| 로그인 API 요청/응답 스키마 · HTTP 경로 | `../../2.2 Backend/APIs/Auth_and_Session.md` | 필드명·코드 변경은 그 문서에서만 |
+| 로그인 성공 후 세션 저장 · breadcrumb · 네비게이션 | `Session_Init.md` | — |
+| 실패·가드·에러 코드 → UI 메시지 매핑 | `Error_Handling.md` | — |
+| 재접속·세션 복원 | `../Lobby/Session_Restore.md` | — |
+
+> 이 문서는 "화면 요소와 Phase 별 선택지" 만 다룬다. 구현 중 TTL 수치·API 응답 구조·에러 코드 문구가 불명확하면 위 SSOT 문서를 봐야 하며, 이 문서에서 해당 값을 **재정의하지 말아야 한다**. 중복이 발견되면 본 문서 쪽을 삭제하고 참조로 바꾼다.
 
 ---
 
@@ -41,6 +50,8 @@ last-updated: 2026-04-15
 | Forgot your Password? | O — 그대로 사용 |
 | Login 버튼 | O — 그대로 사용 |
 | Sign In With Entra ID | TBD — 아래 인증 방식 매트릭스 참조 |
+
+> **에러 처리**: 로그인 실패·2FA 실패·계정 잠금·토큰 만료·네트워크 오류 등 모든 에러 경로의 UI 메시지·i18n 키·사용자 액션은 `Error_Handling.md §로그인 실패 처리 — 에러 매핑 테이블` 과 `§UI 상태 머신 — OTP 재시도·계정 잠금` 을 따른다. 본 문서에서 에러 문구를 재정의하지 말 것.
 
 ---
 

@@ -148,3 +148,117 @@ Team 4 원안의 "8모드(Board/Player/Dealer/House/Logo/Ticker/SSD/Action Clock
 | **GEM-01 ~ 25** | `BS-08-02-metadata-editing.md` |
 | **GEA-01 ~ 06** | `BS-08-03-activate-broadcast.md` |
 | **GER-01 ~ 05** | `BS-08-04-rbac-guards.md` |
+
+---
+
+## 8. Rive 호환성 (rive-js 프리뷰 구현 가이드)
+
+> 2026-04-15 추가 (team1 발신). GE 의 프리뷰 canvas 및 메타데이터 cross-validation 구현에 필요한 버전·스키마·코드 예제를 고정한다.
+
+### 8.1 지원 `@rive-app/canvas` 버전 범위
+
+| 라이브러리 | 버전 | 채택 이유 |
+|-----------|------|----------|
+| `@rive-app/canvas` | **2.21.x** (허용 범위 `^2.21.0 <3`) | 2.x 는 runtime 3 호환. 3.x 는 breaking (API 변경) — 채택 보류 |
+| 내부 `rive-wasm` | 2.21.x 에 번들 | 별도 설치 불요 |
+| Rive 파일 포맷 runtime | `runtime >= 7` 만 허용 | 구버전 파일은 파싱 실패 유도 (`AUTH_INVALID_RIVE` 유사 에러) |
+
+**Breaking 업그레이드 정책**: 3.x 검토는 별도 스토리. 업그레이드 전 본 문서 §8 과 `../Engineering.md §5.4` 의 `skin_updated` 처리, team3 Overlay 렌더러 간 통합 테스트 필수.
+
+### 8.2 `skin.json` 필수 필드 cross-validation
+
+> **SSOT**: `skin.json` 공식 스키마의 정답은 `../../2.2 Backend/APIs/Graphic_Editor_API.md §4.1` (team2 소유). 본 섹션은 그 스키마를 **클라이언트 fast-fail** 검증용으로 요약한 것이며, 필드 추가/변경 시 반드시 Backend SSOT 를 먼저 갱신한다.
+
+`.gfskin` ZIP 의 `skin.json` 을 클라이언트에서도 검증한다. Backend 검증과 중복 허용 (fast-fail 목적).
+
+| 필드 | 타입 | 제약 | 검증 위치 |
+|------|------|------|----------|
+| `schema_version` | int | `== 1` | 클라이언트 + 서버 |
+| `skin_name` | string | 1~100자, `^[\w가-힣\-\s]+$` | 클라이언트 + 서버 |
+| `resolution.width` | int | enum `{1920, 1080, 3840}` | 클라이언트 + 서버 |
+| `resolution.height` | int | enum `{1080, 1920, 2160}` | 클라이언트 + 서버 |
+| `resolution.width × height 조합` | — | 허용: 1920×1080, 1080×1920, 3840×2160 | **클라이언트 cross-check** |
+| `layout_type` | string | enum `"horizontal" \| "vertical" \| "both"` | 클라이언트 + 서버 |
+| `rive_runtime_version` | int | `>= 7` (현행 클라이언트 `@rive-app/canvas` 2.21.x 는 `7` 만 허용) | 클라이언트 + 서버 |
+| `state_machines[]` | array | 각 항목 `{name, inputs: [...]}` | 클라이언트 |
+| `state_machines[].inputs[].type` | string | enum `"boolean" \| "number" \| "trigger"` | 클라이언트 |
+
+클라이언트 cross-check 예 (ajv 스키마와 별도 코드로):
+
+```ts
+function validateSkinJson(skin: SkinJson): ValidationError[] {
+  const errors: ValidationError[] = []
+  const { width, height } = skin.resolution
+  const combos = [[1920,1080], [1080,1920], [3840,2160]]
+  if (!combos.some(([w,h]) => w===width && h===height)) {
+    errors.push({ field: 'resolution', code: 'INVALID_COMBO',
+                  message: `${width}x${height} 는 지원 해상도 조합이 아닙니다` })
+  }
+  if (skin.layout_type === 'horizontal' && width < height) {
+    errors.push({ field: 'layout_type', code: 'MISMATCH',
+                  message: 'horizontal 레이아웃은 width > height 여야 합니다' })
+  }
+  // vertical 동일 체크...
+  return errors
+}
+```
+
+### 8.3 Rive state machine input 주입 (프리뷰 조작)
+
+메타데이터 편집 화면의 프리뷰 canvas 에서 상태 전환·숫자 입력·트리거를 사용자가 직접 조작할 수 있어야 한다.
+
+```ts
+import { Rive, StateMachineInput } from '@rive-app/canvas'
+
+const rive = new Rive({
+  src: skinBlobUrl,            // ZIP 에서 추출한 .riv blob URL
+  canvas: canvasRef.value,
+  autoplay: true,
+  stateMachines: ['MainSM'],   // skin.json.state_machines[0].name
+  onLoad: () => {
+    // 입력 핸들 가져오기
+    const inputs = rive.stateMachineInputs('MainSM')
+    const boolHandFeatured = inputs.find(i => i.name === 'handFeatured') as StateMachineInput
+    const numSeatCount = inputs.find(i => i.name === 'seatCount') as StateMachineInput
+    const trigRevealCards = inputs.find(i => i.name === 'revealCards') as StateMachineInput
+
+    // UI 에서 주입
+    toggleBtn.addEventListener('click', () => { boolHandFeatured.value = !boolHandFeatured.value })
+    numberInput.addEventListener('input', (e) => { numSeatCount.value = Number(e.target.value) })
+    actionBtn.addEventListener('click', () => { trigRevealCards.fire() })
+  },
+})
+```
+
+| 입력 타입 | 주입 방법 | UI |
+|----------|----------|-----|
+| `boolean` | `input.value = true/false` | Quasar `QToggle` |
+| `number` | `input.value = N` | `QInput type="number"` 또는 `QSlider` |
+| `trigger` | `input.fire()` | `QBtn` |
+
+입력 목록은 `skin.json.state_machines[].inputs` 와 자동 대조하여 UI 를 동적 생성 (하드코딩 금지). 누락된 input 은 "스킨 정의와 불일치" 경고로 표시.
+
+### 8.4 프리뷰 해상도 전환
+
+| 설정 | 처리 |
+|------|------|
+| skin.layout_type == 'horizontal' | 프리뷰 canvas 16:9 고정, `width:100%` |
+| skin.layout_type == 'vertical' | 프리뷰 canvas 9:16 고정, 높이 600px 기준 |
+| skin.layout_type == 'both' | 드롭다운 토글 "Horizontal / Vertical" 제공, 선택 시 `rive.resizeDrawingSurfaceToCanvas()` 호출 |
+
+### 8.5 리소스 정리
+
+Rive 인스턴스는 메모리를 크게 점유한다. 컴포넌트 언마운트 시 반드시 cleanup:
+
+```ts
+onBeforeUnmount(() => {
+  rive?.cleanup()
+  rive = null
+  // Blob URL 도 해제
+  if (skinBlobUrl) URL.revokeObjectURL(skinBlobUrl)
+})
+```
+
+메모리 누수 체크: Import 후 프리뷰 5회 반복 후 Chrome DevTools Memory 탭에서 Rive 관련 detached DOM 이 없어야 함 (QA 체크리스트).
+
+> `skin.json` 스키마의 SSOT 는 `../../2.2 Backend/Database/Schema.md` (또는 `../../2.5 Shared/Skin_Schema.md` 신설 시 그쪽). 본 §8 은 그 스키마를 프리뷰 클라이언트에 적용하는 방법만 다룬다. 필드 추가/변경 시 Backend SSOT 선행 후 본 문서 §8.2 동기화.
