@@ -6,7 +6,7 @@
 2. 작업 브랜치에서 git rebase main
 3. main 체크아웃 + git merge --ff-only work/...
 4. 작업 브랜치 삭제 (--delete-branch 시)
-5. 원격 push (--push 시, conductor만 권장)
+5. 원격 push (--push 시, 모든 팀 허용 — rebase+ff 규율로 race 회피)
 
 Usage:
     python tools/team_merge.py                    # rebase + ff merge (push 안 함)
