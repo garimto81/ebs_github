@@ -95,6 +95,49 @@ Overlay가 렌더링에 사용하는 GameState 필드:
 
 > 전체 GameState 필드: `BS-06-00-REF-game-engine-spec.md Ch.2`
 
+### 1.4 PokerGFX 스키마 대응
+
+> **PokerGFX 역설계 기반**: `C:/claude/ebs_reverse/docs/02-design/pokergfx-reverse-engineering-complete.md §8.6-8.7` 에서 추출한 `GameInfoResponse` (75필드) 및 `PlayerInfoResponse` (20필드) 를 EBS OutputEvent / GameState 에 정규화한 대응표. 레거시 역사를 추적 가능하도록 명시하며, EBS는 필드명·타입·흐름을 Dart/BS-06-00 엔티티 관례에 맞춰 재설계한다.
+
+**정렬 원칙**
+
+- 채택 등급: **직접 계승** (이름·의미 유지) / **재명명** (의미 유지·네이밍 변경 또는 계산값 유도) / **폐기** (EBS 범위 밖).
+- 출처 필드는 참조용. 구현 시 EBS 엔티티(`BS-06-00-REF-game-engine-spec.md`) 를 1차 근거로 한다.
+- `OutputEvent` 카탈로그는 §6.0 과 교차 참조.
+
+**GameInfoResponse → OutputEvent / GameState 대응 (핵심 발췌)**
+
+| PokerGFX 필드 | EBS 대응 | OutputEvent | 등급 |
+|---------------|----------|-------------|------|
+| `HandId` | `hand_id` | OE-01~18 공통 메타 | 직접 계승 |
+| `GameId` | `game_type` (enum) | OE-01 StateChanged | 재명명 |
+| `Ante / SmallBlind / BigBlind` | `blinds.{ante, sb, bb}` | OE-01 phase 전환 시 | 직접 계승 |
+| `BoardCards[]` | `community_cards[]` | OE-05 CardRevealed(board) | 재명명 |
+| `Pots[]` | `pots[]` | OE-03 PotUpdated | 직접 계승 |
+| `RunItTwice` | `run_it_twice` | OE-06 HandCompleted | 직접 계승 |
+| `BombPot` | `bomb_pot_active` | OE-01 StateChanged | 직접 계승 |
+| `Payouts[]` | — | — | **폐기** (대회 메타, WSOP LIVE sync 담당) |
+| `LicenseInfo` | — | — | **폐기** (EBS DRM 미도입) |
+| (그 외 ~65 필드) | — | — | 필요 시 역설계 §8.6 직접 참조 |
+
+**PlayerInfoResponse → GameState.players[] / OutputEvent 대응**
+
+| PokerGFX 필드 | EBS 대응 | OutputEvent | 등급 |
+|---------------|----------|-------------|------|
+| `Name / Nationality` | `player.name` / `player.nationality` | (WSOP sync 영역) | 직접 계승 |
+| `Stack` | `player.stack` | OE-02 ActionProcessed / OE-06 | 직접 계승 |
+| `Cards[]` | `player.hole_cards[]` | OE-05 CardRevealed(hole) | 직접 계승 |
+| `Vpip / Pfr / Agr / Wtsd` | `player_stats.{vpip, pfr, agr, wtsd}` | OE-stats (TBD) | 직접 계승 |
+| `CumWin` | `player_stats.cumulative_winnings` | — | 직접 계승 |
+| `Position` | (dealer_seat 에서 도출) | — | **재명명** (계산값) |
+| (그 외 ~13 필드) | — | — | 필요 시 역설계 §8.7 직접 참조 |
+
+**정렬 비원칙 (Non-Alignment)**
+
+- **네트워크 프로토콜**: PokerGFX 113+ 명령 체계 미채택. EBS 는 in-process Dart 호출 (§1.2) + WebSocket (API-05) 분리.
+- **AES 암호화 / KEYLOK 동글**: PokerGFX DRM 스택 전체 폐기.
+- **Graphics 필드 (PiP, Camera 등)**: team4 Overlay 내부 결정 영역 (BS-07-01 Elements).
+
 ---
 
 ## 2. 출력 채널
