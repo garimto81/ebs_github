@@ -21,7 +21,6 @@
 | Behavioral Specs (BS-06-*) | `../docs/2. Development/2.3 Game Engine/Behavioral_Specs/` |
 | Holdem 상세 | `../docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/` |
 | Game Rules (Confluence 발행) | `../docs/1. Product/Game_Rules/` |
-| Spec Gaps | `../docs/2. Development/2.3 Game Engine/Spec_Gaps.md` (없으면 생성) |
 | Backlog | `../docs/2. Development/2.3 Game Engine/Backlog.md` |
 
 ### Publisher Fast-Track
@@ -82,12 +81,9 @@ ebs_game_engine/
 - 다른 문서명 언급 금지
 - 각 문서는 독립 완결적
 
-## Spec Gap (CCR-first)
+## 기획 공백 발견 시
 
-- **Shared/다른 팀 경로 변경 필요 시**: CR draft 먼저. Spec_Gaps.md 에는 pointer + 임시 구현 1줄만.
-- **팀 내부 판단만 필요 시**: Spec_Gaps.md 에 직접.
-- 형식: `GAP-GE-{NNN}`
-- 상세: `../CLAUDE.md` §"Spec Gap 프로세스"
+개발 중 기획 문서에 없는 판단이 필요하면 해당 기획 문서를 **즉시 보강**한다. Spec_Gaps.md · CR draft · CCR-first 프로세스는 폐지되었다. 상세: `../CLAUDE.md` §"기획 공백 발견 시 프로세스".
 
 ## 금지
 
