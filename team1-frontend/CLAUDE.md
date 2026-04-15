@@ -21,7 +21,6 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 | Graphic Editor | `../docs/2. Development/2.1 Frontend/Graphic_Editor/` |
 | Console 참조 | `../docs/2. Development/2.1 Frontend/Console_UI.md` |
 | Engineering / Architecture | `../docs/2. Development/2.1 Frontend/Engineering.md` |
-| Spec Gaps | `../docs/2. Development/2.1 Frontend/Spec_Gaps.md` |
 | Backlog | `../docs/2. Development/2.1 Frontend/Backlog.md` |
 
 ## 소유 경로 (코드)
@@ -63,12 +62,9 @@ MSW 2.x (`src/mocks/`). `.env.development` 의 `VITE_USE_MOCK=true` (기본값).
 
 vue-i18n 9.x, locale 3종 (`ko` 기본, `en` Vegas, `es` Vegas sub). 위치: `src/i18n/{ko,en,es}.json`.
 
-## Spec Gap (CCR-first)
+## 기획 공백 발견 시
 
-- **`docs/2. Development/2.5 Shared/` 등 다른 팀 경로 변경 필요 시**: `../docs/3. Change Requests/pending/CR-team1-YYYYMMDD-slug.md` 작성. Spec_Gaps.md 에는 pointer + 임시 구현 1줄만.
-- **팀 내부 판단만 필요 시**: `Spec_Gaps.md` 에 직접 기록.
-- 형식: `GAP-L-{NNN}`
-- 상세: `../CLAUDE.md` §"Spec Gap 프로세스"
+개발 중 기획 문서에 없는 판단이 필요하면 해당 기획 문서를 **즉시 보강**한다. Spec_Gaps.md · CR draft · CCR-first 프로세스는 폐지되었다. 상세: `../CLAUDE.md` §"기획 공백 발견 시 프로세스".
 
 ## 금지
 
