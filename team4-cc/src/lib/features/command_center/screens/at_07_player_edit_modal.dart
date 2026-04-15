@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/remote/bo_api_client.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../models/enums/hand_fsm.dart';
@@ -373,35 +374,56 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
     );
   }
 
-  void _handleSave() {
+  Future<void> _handleSave() async {
     final seatNotifier = ref.read(seatsProvider.notifier);
     final seat =
         ref.read(seatsProvider).firstWhere((s) => s.seatNo == widget.seatNo);
 
-    if (seat.player != null) {
-      // Update player info
-      final updatedPlayer = seat.player!.copyWith(
-        name: _nameController.text.trim(),
-        stack: int.tryParse(_stackController.text) ?? seat.player!.stack,
-        countryCode: _countryCode,
-        avatarUrl: _avatarUrlController.text.trim().isNotEmpty
-            ? _avatarUrlController.text.trim()
-            : null,
-      );
-
-      // Apply player update via seat notifier
-      seatNotifier.seatPlayer(widget.seatNo, updatedPlayer);
-
-      // Apply activity change
-      seatNotifier.setActivity(widget.seatNo, _activity);
-
-      // Apply seat status if changed
-      // (seatPlayer sets newSeat, so we may need to override)
+    if (seat.player == null) {
+      Navigator.of(context).pop(false);
+      return;
     }
 
-    // TODO: PATCH /players/{id} via BO API client
-    debugPrint('Save player S${widget.seatNo}');
-    Navigator.of(context).pop(true);
+    final name = _nameController.text.trim();
+    final stack = int.tryParse(_stackController.text) ?? seat.player!.stack;
+    final avatarUrl = _avatarUrlController.text.trim();
+    final countryCode = _countryCode;
+
+    // Optimistic local update (UI latency-first).
+    final updatedPlayer = seat.player!.copyWith(
+      name: name,
+      stack: stack,
+      countryCode: countryCode,
+      avatarUrl: avatarUrl.isNotEmpty ? avatarUrl : null,
+    );
+    seatNotifier.seatPlayer(widget.seatNo, updatedPlayer);
+    seatNotifier.setActivity(widget.seatNo, _activity);
+
+    // Server sync — PATCH /api/tables/{id}/seats/{seat_no}/player.
+    final config = ref.read(launchConfigProvider);
+    if (config == null) {
+      // Launch config missing (dev/test) — skip server call.
+      if (mounted) Navigator.of(context).pop(true);
+      return;
+    }
+    final api = ref.read(boApiClientProvider);
+    try {
+      await api.updatePlayer(config.tableId, widget.seatNo, {
+        'name': name,
+        'stack': stack,
+        if (countryCode.isNotEmpty) 'country_code': countryCode,
+        if (avatarUrl.isNotEmpty) 'avatar_url': avatarUrl,
+        'activity': _activity.name,
+      });
+      if (mounted) Navigator.of(context).pop(true);
+    } catch (e) {
+      debugPrint('[AT-07] updatePlayer failed: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('저장 실패 — 서버 동기화 오류: $e')),
+      );
+      // Keep local state applied; operator may retry via Save.
+    }
   }
 
   void _handleResetSeat(BuildContext context) {

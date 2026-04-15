@@ -10,6 +10,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/remote/bo_api_client.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../models/enums/deck_fsm.dart';
@@ -97,6 +98,8 @@ class _At05RfidRegisterScreenState
     extends ConsumerState<At05RfidRegisterScreen> {
   late _DeckRegState _state;
   final Set<String> _usedUids = {};
+  final TextEditingController _deckNameController = TextEditingController();
+  bool _isSubmitting = false;
   StreamSubscription<CardDetectedEvent>? _cardSub;
   StreamSubscription<RfidReaderStatus>? _statusSub;
 
@@ -105,6 +108,14 @@ class _At05RfidRegisterScreenState
     super.initState();
     _state = _DeckRegState();
     _initReader();
+  }
+
+  @override
+  void dispose() {
+    _deckNameController.dispose();
+    _cardSub?.cancel();
+    _statusSub?.cancel();
+    super.dispose();
   }
 
   void _initReader() {
@@ -163,13 +174,6 @@ class _At05RfidRegisterScreenState
   }
 
   @override
-  void dispose() {
-    _cardSub?.cancel();
-    _statusSub?.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final isMock = ref.watch(rfidReaderProvider) is MockRfidReader;
@@ -189,6 +193,25 @@ class _At05RfidRegisterScreenState
           _StatusBar(
             state: _state,
             isMock: isMock,
+          ),
+
+          // -- Deck name (§3 layout) --
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: EbsSpacing.md,
+              vertical: EbsSpacing.sm,
+            ),
+            child: TextField(
+              controller: _deckNameController,
+              enabled: !_isSubmitting,
+              maxLength: 40,
+              decoration: const InputDecoration(
+                labelText: 'Deck Name',
+                border: OutlineInputBorder(),
+                isDense: true,
+                counterText: '',
+              ),
+            ),
           ),
 
           // -- Progress --
@@ -268,10 +291,50 @@ class _At05RfidRegisterScreenState
     }
   }
 
-  void _handleComplete() {
-    // TODO: POST /decks with registered UIDs
-    debugPrint('Complete registration: ${_state.registeredCount} cards');
-    Navigator.of(context).pop();
+  Future<void> _handleComplete() async {
+    if (_isSubmitting) return;
+    final deckName = _deckNameController.text.trim();
+    if (deckName.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Deck Name 을 입력하세요.')),
+      );
+      return;
+    }
+    if (_state.registeredCount < _state.cards.length) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '아직 ${_state.cards.length - _state.registeredCount}장 등록되지 않았습니다.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+    try {
+      final api = ref.read(boApiClientProvider);
+      final payload = <Map<String, String>>[
+        for (final c in _state.cards)
+          if (c.uid != null) {'uid': c.uid!, 'rank': c.rank, 'suit': c.suit}
+      ];
+      final deckId = await api.registerDeck(
+        deckName: deckName,
+        cards: payload,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Deck registered: $deckId')),
+      );
+      Navigator.of(context).pop(deckId);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('등록 실패: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 }
 

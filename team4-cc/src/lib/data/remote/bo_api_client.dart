@@ -141,6 +141,28 @@ class BoApiClient {
   }
 
   // =========================================================================
+  // Deck endpoints (BS-04-01 Deck Registration)
+  // =========================================================================
+
+  /// Register a newly scanned deck with BO. Returns the server-assigned deck_id.
+  /// Payload per `docs/2. Development/2.4 Command Center/RFID_Cards/Register_Screen.md §5`:
+  ///   { "deck_name": "...", "cards": [{"uid": "...", "rank": "A", "suit": "s"}, ...] }
+  Future<String> registerDeck({
+    required String deckName,
+    required List<Map<String, String>> cards,
+  }) async {
+    final response = await _dio.post(
+      '/api/decks',
+      data: {
+        'deck_name': deckName,
+        'cards': cards,
+      },
+    );
+    final data = response.data as Map<String, dynamic>;
+    return data['deck_id'] as String;
+  }
+
+  // =========================================================================
   // Config / Settings endpoints (API-06)
   // =========================================================================
 
