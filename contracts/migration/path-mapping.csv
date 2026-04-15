@@ -1,0 +1,206 @@
+old_path,new_path,owner,phase,rename_rule,note
+contracts/specs/BS-00-definitions.md,docs/2. Development/2.5 Shared/BS_Overview.md,conductor,2,number-strip+pascal,BS-00 정의 문서 → Shared
+contracts/specs/BS-01-auth/BS-01-auth.md,docs/2. Development/2.5 Shared/Authentication.md,conductor,2,number-strip+pascal,BS-01 인증 공통 계약
+contracts/team-policy.json,docs/2. Development/2.5 Shared/team-policy.json,conductor,2,keep-name,SSOT policy (v5로 업데이트)
+contracts/ccr-risk-matrix.md,docs/2. Development/2.5 Shared/Risk_Matrix.md,conductor,2,pascal,CCR 리스크 매트릭스
+contracts/api/API-01-backend-api.md,docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md,team2,3,number-strip+pascal+rename,API-01 → Backend_HTTP
+contracts/api/API-04-overlay-output.md,docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md,team3,3,number-strip+pascal+rename,API-04 → Overlay_Output_Events
+contracts/api/API-05-websocket-events.md,docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md,team2,3,number-strip+pascal,API-05
+contracts/api/API-06-auth-session.md,docs/2. Development/2.2 Backend/APIs/Auth_and_Session.md,team2,3,number-strip+pascal+and,API-06
+contracts/api/API-03-rfid-hal-interface.md,docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Legacy.md,team4,3,number-strip+pascal,API-03 (BS-04-04와 통합 검토 필요)
+contracts/api/API-07-graphic-editor.md,docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md,team2,3,number-strip+pascal,API-07
+contracts/data/DATA-01-er-diagram.md,docs/2. Development/2.2 Backend/Database/ER_Diagram.md,team2,3,number-strip+pascal,DATA-01
+contracts/data/DATA-03-state-machines.md,docs/2. Development/2.2 Backend/Database/State_Machines.md,team2,3,number-strip+pascal,DATA-03
+contracts/data/DATA-04-db-schema.md,docs/2. Development/2.2 Backend/Database/Schema.md,team2,3,number-strip+pascal+rename,DATA-04 → Schema
+contracts/data/DATA-07-gfskin-schema.md,docs/2. Development/2.2 Backend/Database/GFSkin_Schema.md,team2,3,number-strip+pascal,DATA-07
+contracts/specs/BS-04-rfid/BS-04-04-hal-contract.md,docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md,team4,3,number-strip+pascal+rename,BS-04-04 → RFID_HAL (publisher)
+contracts/specs/BS-06-game-engine/BS-06-00-triggers.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md,team3,3,number-strip+pascal,BS-06-00 트리거
+contracts/_templates/SSOT-ALIGNED-SPEC-TEMPLATE.md,contracts/_templates/SSOT-ALIGNED-SPEC-TEMPLATE.md,conductor,6,keep,템플릿 유지 (이동 없음)
+contracts/README.md,contracts/README.md,conductor,6,keep,contracts 폴더 README (빈 폴더 정리 시 삭제)
+docs/01-strategy/PRD-EBS_Foundation.md,docs/1. Product/Foundation.md,conductor,2,rename,Foundation PRD
+docs/00-reference/field-registry.json,docs/2. Development/2.2 Backend/Database/Field_Registry.json,team2,2,keep-name,Field registry
+docs/00-reference/PokerGFX-User-Manual.md,docs/1. Product/PokerGFX_Reference.md,conductor,2,merge,PokerGFX 매뉴얼 → 단일 Reference로 머지
+docs/00-reference/PokerGFX-Data-Analysis.md,docs/2. Development/2.5 Shared/Data_Analysis.md,conductor,2,rename,PokerGFX Data 분석
+docs/06-reports/2026-04-10-ccr-batch-team-impact.md,docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md,conductor,2,keep-name,CCR 배치 영향 보고
+docs/backlog/conductor.md,docs/4. Operations/Conductor_Backlog.md,conductor,2,rename,Conductor 백로그
+docs/backlog/_aggregate.md,docs/_generated/full-index.md,conductor,2,regenerate,집계는 재생성 대상
+docs/backlog/team1.md,docs/2. Development/2.1 Frontend/Backlog.md,team1,3,rename,team1 백로그
+docs/backlog/team2.md,docs/2. Development/2.2 Backend/Backlog.md,team2,3,rename,team2 백로그
+docs/backlog/team3.md,docs/2. Development/2.3 Game Engine/Backlog.md,team3,3,rename,team3 백로그
+docs/backlog/team4.md,docs/2. Development/2.4 Command Center/Backlog.md,team4,3,rename,team4 백로그
+docs/05-plans/PLAN-BO-Phase1.md,docs/4. Operations/Plans/PLAN-BO-Phase1.md,conductor,2,keep-name,BO Phase1 계획
+docs/05-plans/SSOT-ALIGNMENT-ROADMAP.md,docs/4. Operations/Roadmap.md,conductor,2,rename,SSOT 정렬 로드맵 → Roadmap
+docs/05-plans/ccr-inbox/README.md,docs/3. Change Requests/3. Change Requests.md,conductor,2,rename,CCR inbox README → landing
+docs/05-plans/ccr-inbox/CCR-DRAFT-team1-20260414-bs02-overview-rename.md,docs/3. Change Requests/pending/CR-team1-20260414-bs02-overview-rename.md,team1,2,prefix-rename,DRAFT → CR prefix
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team1-20260410-wsop-parity.md,docs/3. Change Requests/done/CR-team1-20260410-wsop-parity.md,conductor,2,prefix-rename,archived → done
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260410-data-idempotency-audit.md,docs/3. Change Requests/done/CR-team2-20260410-data-idempotency-audit.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260410-jwt-expiry.md,docs/3. Change Requests/done/CR-team2-20260410-jwt-expiry.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs05-visual-spec.md,docs/3. Change Requests/done/CR-team4-20260410-bs05-visual-spec.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs05-protocol-gaps.md,docs/3. Change Requests/done/CR-team4-20260410-bs05-protocol-gaps.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team3-20260410-wsop-conformance.md,docs/3. Change Requests/done/CR-team3-20260410-wsop-conformance.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs07-audio-layer.md,docs/3. Change Requests/done/CR-team4-20260410-bs07-audio-layer.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team1-20260410-tech-stack-ssot.md,docs/3. Change Requests/done/CR-team1-20260410-tech-stack-ssot.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs07-cc-visual-sync.md,docs/3. Change Requests/done/CR-team4-20260410-bs07-cc-visual-sync.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-api03-hal-lifecycle.md,docs/3. Change Requests/done/CR-team4-20260410-api03-hal-lifecycle.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-api05-messagepack.md,docs/3. Change Requests/done/CR-team4-20260410-api05-messagepack.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-conductor-20260410-ge-ownership-move.md,docs/3. Change Requests/done/CR-conductor-20260410-ge-ownership-move.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-conductor-20260410-gfskin-format-unify.md,docs/3. Change Requests/done/CR-conductor-20260410-gfskin-format-unify.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-conductor-20260411-ge-api-spec.md,docs/3. Change Requests/done/CR-conductor-20260411-ge-api-spec.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-conductor-20260411-ge-req-id-rework.md,docs/3. Change Requests/done/CR-conductor-20260411-ge-req-id-rework.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-api05-writegameinfo-schema.md,docs/3. Change Requests/done/CR-team4-20260410-api05-writegameinfo-schema.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs07-security-delay.md,docs/3. Change Requests/done/CR-team4-20260410-bs07-security-delay.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs05-multi-table-ops.md,docs/3. Change Requests/done/CR-team4-20260410-bs05-multi-table-ops.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs03-graphic-settings-tab.md,docs/3. Change Requests/done/CR-team4-20260410-bs03-graphic-settings-tab.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-conductor-20260414-skin-updated-ws.md,docs/3. Change Requests/done/CR-conductor-20260414-skin-updated-ws.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team1-20260413-google-oauth.md,docs/3. Change Requests/done/CR-team1-20260413-google-oauth.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260413-event-type-catalog.md,docs/3. Change Requests/done/CR-team2-20260413-event-type-catalog.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260413-refresh-token-policy.md,docs/3. Change Requests/done/CR-team2-20260413-refresh-token-policy.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260413-summary-clock-fsm.md,docs/3. Change Requests/done/CR-team2-20260413-summary-clock-fsm.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260413-seat-waiting-enum.md,docs/3. Change Requests/done/CR-team2-20260413-seat-waiting-enum.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260414-ws-event-catalog.md,docs/3. Change Requests/done/CR-team2-20260414-ws-event-catalog.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260414-auth-ggpass-pattern.md,docs/3. Change Requests/done/CR-team2-20260414-auth-ggpass-pattern.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team3-20260414-output-event-buffer-ownership.md,docs/3. Change Requests/done/CR-team3-20260414-output-event-buffer-ownership.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team1-20260414-deadlink-cleanup.md,docs/3. Change Requests/done/CR-team1-20260414-deadlink-cleanup.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260414-wsop-sync-catalog.md,docs/3. Change Requests/done/CR-team2-20260414-wsop-sync-catalog.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260410-idempotency-key.md,docs/3. Change Requests/done/CR-team2-20260410-idempotency-key.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260410-table-rebalance-saga.md,docs/3. Change Requests/done/CR-team2-20260410-table-rebalance-saga.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260410-ws-event-seq.md,docs/3. Change Requests/done/CR-team2-20260410-ws-event-seq.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260414-blindstructure-endpoints.md,docs/3. Change Requests/done/CR-team2-20260414-blindstructure-endpoints.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260414-clock-endpoints-full.md,docs/3. Change Requests/done/CR-team2-20260414-clock-endpoints-full.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260414-competition-hierarchy.md,docs/3. Change Requests/done/CR-team2-20260414-competition-hierarchy.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260414-payout-structure-endpoints.md,docs/3. Change Requests/done/CR-team2-20260414-payout-structure-endpoints.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260414-rate-limit-security.md,docs/3. Change Requests/done/CR-team2-20260414-rate-limit-security.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team2-20260414-users-staff-pattern.md,docs/3. Change Requests/done/CR-team2-20260414-users-staff-pattern.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs05-launch-flow.md,docs/3. Change Requests/done/CR-team4-20260410-bs05-launch-flow.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs07-layer-boundary.md,docs/3. Change Requests/done/CR-team4-20260410-bs07-layer-boundary.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs05-07-statistics-screen.md,docs/3. Change Requests/done/CR-team4-20260410-bs05-07-statistics-screen.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs04-at05-rfid-register.md,docs/3. Change Requests/done/CR-team4-20260410-bs04-at05-rfid-register.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs08-graphic-editor-new.md,docs/3. Change Requests/done/CR-team4-20260410-bs08-graphic-editor-new.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team4-20260410-bs05-at-screens.md,docs/3. Change Requests/done/CR-team4-20260410-bs05-at-screens.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-010-jwt-expiry.md,docs/3. Change Requests/in-progress/CR-010-jwt-expiry.md,conductor,2,prefix-rename,promoting → in-progress
+docs/05-plans/ccr-inbox/promoting/CCR-011-ge-ownership-move.md,docs/3. Change Requests/in-progress/CR-011-ge-ownership-move.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-012-gfskin-format-unify.md,docs/3. Change Requests/in-progress/CR-012-gfskin-format-unify.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-013-ge-api-spec.md,docs/3. Change Requests/in-progress/CR-013-ge-api-spec.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-014-ge-req-id-rework.md,docs/3. Change Requests/in-progress/CR-014-ge-req-id-rework.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-015-skin-updated-ws.md,docs/3. Change Requests/in-progress/CR-015-skin-updated-ws.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-016-tech-stack-ssot.md,docs/3. Change Requests/in-progress/CR-016-tech-stack-ssot.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-017-wsop-parity.md,docs/3. Change Requests/in-progress/CR-017-wsop-parity.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-018-data-idempotency-audit.md,docs/3. Change Requests/in-progress/CR-018-data-idempotency-audit.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-019-idempotency-key.md,docs/3. Change Requests/in-progress/CR-019-idempotency-key.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-020-table-rebalance-saga.md,docs/3. Change Requests/in-progress/CR-020-table-rebalance-saga.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-021-ws-event-seq.md,docs/3. Change Requests/in-progress/CR-021-ws-event-seq.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-022-api03-hal-lifecycle.md,docs/3. Change Requests/in-progress/CR-022-api03-hal-lifecycle.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-023-api05-messagepack.md,docs/3. Change Requests/in-progress/CR-023-api05-messagepack.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-024-api05-writegameinfo-schema.md,docs/3. Change Requests/in-progress/CR-024-api05-writegameinfo-schema.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-025-bs03-graphic-settings-tab.md,docs/3. Change Requests/in-progress/CR-025-bs03-graphic-settings-tab.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-026-bs04-at05-rfid-register.md,docs/3. Change Requests/in-progress/CR-026-bs04-at05-rfid-register.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-027-bs05-07-statistics-screen.md,docs/3. Change Requests/in-progress/CR-027-bs05-07-statistics-screen.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-028-bs05-at-screens.md,docs/3. Change Requests/in-progress/CR-028-bs05-at-screens.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-029-bs05-launch-flow.md,docs/3. Change Requests/in-progress/CR-029-bs05-launch-flow.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-030-bs05-multi-table-ops.md,docs/3. Change Requests/in-progress/CR-030-bs05-multi-table-ops.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-031-bs05-protocol-gaps.md,docs/3. Change Requests/in-progress/CR-031-bs05-protocol-gaps.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-032-bs05-visual-spec.md,docs/3. Change Requests/in-progress/CR-032-bs05-visual-spec.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-033-bs07-audio-layer.md,docs/3. Change Requests/in-progress/CR-033-bs07-audio-layer.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-034-bs07-cc-visual-sync.md,docs/3. Change Requests/in-progress/CR-034-bs07-cc-visual-sync.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-035-bs07-layer-boundary.md,docs/3. Change Requests/in-progress/CR-035-bs07-layer-boundary.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-036-bs07-security-delay.md,docs/3. Change Requests/in-progress/CR-036-bs07-security-delay.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-037-bs08-graphic-editor-new.md,docs/3. Change Requests/in-progress/CR-037-bs08-graphic-editor-new.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-038-google-oauth.md,docs/3. Change Requests/in-progress/CR-038-google-oauth.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-039-event-type-catalog.md,docs/3. Change Requests/in-progress/CR-039-event-type-catalog.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-040-refresh-token-policy.md,docs/3. Change Requests/in-progress/CR-040-refresh-token-policy.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-041-seat-waiting-enum.md,docs/3. Change Requests/in-progress/CR-041-seat-waiting-enum.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-042-summary-clock-fsm.md,docs/3. Change Requests/in-progress/CR-042-summary-clock-fsm.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-043-wsop-sync-catalog.md,docs/3. Change Requests/in-progress/CR-043-wsop-sync-catalog.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-047-competition-hierarchy.md,docs/3. Change Requests/in-progress/CR-047-competition-hierarchy.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-048-auth-ggpass-pattern.md,docs/3. Change Requests/in-progress/CR-048-auth-ggpass-pattern.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-049-blindstructure-endpoints.md,docs/3. Change Requests/in-progress/CR-049-blindstructure-endpoints.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-050-clock-endpoints-full.md,docs/3. Change Requests/in-progress/CR-050-clock-endpoints-full.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-051-payout-structure-endpoints.md,docs/3. Change Requests/in-progress/CR-051-payout-structure-endpoints.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-052-rate-limit-security.md,docs/3. Change Requests/in-progress/CR-052-rate-limit-security.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-053-users-staff-pattern.md,docs/3. Change Requests/in-progress/CR-053-users-staff-pattern.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-054-ws-event-catalog.md,docs/3. Change Requests/in-progress/CR-054-ws-event-catalog.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-055-output-event-buffer-ownership.md,docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md,conductor,2,prefix-rename,
+docs/05-plans/ccr-inbox/promoting/CCR-056-deadlink-cleanup.md,docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md,conductor,2,prefix-rename,
+team1-frontend/specs/BS-02-lobby/BS-02-00-overview.md,docs/2. Development/2.1 Frontend/Lobby/Overview.md,team1,3,number-strip+pascal,Lobby Overview
+team1-frontend/specs/BS-02-lobby/BS-02-01-auth-session.md,docs/2. Development/2.1 Frontend/Login/Form.md,team1,3,split,로그인 Form (분할 원본)
+team1-frontend/specs/BS-02-lobby/BS-02-02-event-flight.md,docs/2. Development/2.1 Frontend/Lobby/Event_and_Flight.md,team1,3,number-strip+pascal+and,
+team1-frontend/specs/BS-02-lobby/BS-02-03-table.md,docs/2. Development/2.1 Frontend/Lobby/Table.md,team1,3,number-strip+pascal,
+team1-frontend/specs/BS-03-settings/BS-03-00-overview.md,docs/2. Development/2.1 Frontend/Settings/Overview.md,team1,3,number-strip+pascal,
+team1-frontend/specs/BS-03-settings/BS-03-01-outputs.md,docs/2. Development/2.1 Frontend/Settings/Outputs.md,team1,3,number-strip+pascal,
+team1-frontend/specs/BS-03-settings/BS-03-02-gfx.md,docs/2. Development/2.1 Frontend/Settings/Graphics.md,team1,3,number-strip+pascal+rename,gfx → Graphics
+team1-frontend/specs/BS-03-settings/BS-03-03-display.md,docs/2. Development/2.1 Frontend/Settings/Display.md,team1,3,number-strip+pascal,
+team1-frontend/specs/BS-03-settings/BS-03-04-rules.md,docs/2. Development/2.1 Frontend/Settings/Rules.md,team1,3,number-strip+pascal,
+team1-frontend/specs/BS-03-settings/BS-03-05-stats.md,docs/2. Development/2.1 Frontend/Settings/Statistics.md,team1,3,number-strip+pascal+rename,stats → Statistics
+team1-frontend/specs/BS-03-settings/BS-03-06-preferences.md,docs/2. Development/2.1 Frontend/Settings/Preferences.md,team1,3,number-strip+pascal,
+team1-frontend/specs/BS-08-graphic-editor/BS-08-00-overview.md,docs/2. Development/2.1 Frontend/Graphic_Editor/Overview.md,team1,3,number-strip+pascal,
+team1-frontend/specs/BS-08-graphic-editor/BS-08-01-import-flow.md,docs/2. Development/2.1 Frontend/Graphic_Editor/Import_Flow.md,team1,3,number-strip+pascal,
+team1-frontend/specs/BS-08-graphic-editor/BS-08-02-metadata-editing.md,docs/2. Development/2.1 Frontend/Graphic_Editor/Metadata_Editing.md,team1,3,number-strip+pascal,
+team1-frontend/specs/BS-08-graphic-editor/BS-08-03-activate-broadcast.md,docs/2. Development/2.1 Frontend/Graphic_Editor/Activate_Broadcast.md,team1,3,number-strip+pascal,
+team1-frontend/specs/BS-08-graphic-editor/BS-08-04-rbac-guards.md,docs/2. Development/2.1 Frontend/Graphic_Editor/RBAC_Guards.md,team1,3,number-strip+pascal,
+team1-frontend/ui-design/UI-01-lobby.md,docs/2. Development/2.1 Frontend/Lobby/UI.md,team1,3,consolidate,UI-01 → Lobby/UI.md (통합)
+team1-frontend/ui-design/UI-03-settings.md,docs/2. Development/2.1 Frontend/Settings/UI.md,team1,3,consolidate,
+team1-frontend/ui-design/UI-04-graphic-editor.md,docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md,team1,3,consolidate,
+team1-frontend/ui-design/UI-A1-architecture.md,docs/2. Development/2.1 Frontend/Engineering.md,team1,3,rename,UI 아키텍처 → Engineering
+team1-frontend/ui-design/reference/console/EBS-UI-Design-Console.md,docs/2. Development/2.1 Frontend/Console_UI.md,team1,3,rename,Console 단일 파일
+team2-backend/specs/back-office/PRD-EBS_BackOffice.md,docs/2. Development/2.2 Backend/Back_Office/Overview.md,team2,3,rename,BO Overview
+team2-backend/specs/back-office/BO-02-sync-protocol.md,docs/2. Development/2.2 Backend/Back_Office/Sync_Protocol.md,team2,3,number-strip+pascal,
+team2-backend/specs/back-office/BO-03-operations.md,docs/2. Development/2.2 Backend/Back_Office/Operations.md,team2,3,number-strip+pascal,
+team2-backend/specs/impl/IMPL-00-dev-setup.md,docs/2. Development/2.2 Backend/Engineering/Dev_Setup.md,team2,3,number-strip+pascal,
+team2-backend/specs/impl/IMPL-01-tech-stack.md,docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md,team2,3,number-strip+pascal,
+team2-backend/specs/impl/IMPL-02-project-structure.md,docs/2. Development/2.2 Backend/Engineering/Project_Structure.md,team2,3,number-strip+pascal,
+team2-backend/specs/impl/IMPL-03-state-management.md,docs/2. Development/2.2 Backend/Engineering/State_Management.md,team2,3,number-strip+pascal,
+team2-backend/specs/impl/IMPL-04-routing.md,docs/2. Development/2.2 Backend/Engineering/Routing.md,team2,3,number-strip+pascal,
+team2-backend/specs/impl/IMPL-05-dependency-injection.md,docs/2. Development/2.2 Backend/Engineering/Dependency_Injection.md,team2,3,number-strip+pascal,
+team2-backend/specs/impl/IMPL-06-error-handling.md,docs/2. Development/2.2 Backend/Engineering/Error_Handling.md,team2,3,number-strip+pascal,
+team2-backend/specs/impl/IMPL-07-logging.md,docs/2. Development/2.2 Backend/Engineering/Logging.md,team2,3,number-strip+pascal,
+team2-backend/specs/impl/IMPL-08-testing-strategy.md,docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md,team2,3,number-strip+pascal,
+team2-backend/specs/impl/IMPL-09-build-deployment.md,docs/2. Development/2.2 Backend/Engineering/Build_and_Deploy.md,team2,3,number-strip+pascal+and,
+team2-backend/specs/impl/IMPL-10-nfr.md,docs/2. Development/2.2 Backend/Engineering/Non_Functional_Requirements.md,team2,3,number-strip+pascal+expand,nfr → Non_Functional_Requirements
+team2-backend/qa/spec-gap.md,docs/2. Development/2.2 Backend/Spec_Gaps.md,team2,3,pascal,
+team3-engine/specs/games/PRD-GAME-01-flop-games.md,docs/1. Product/Game_Rules/Flop_Games.md,conductor,2,number-strip+pascal,Confluence 발행용
+team3-engine/specs/games/PRD-GAME-02-draw.md,docs/1. Product/Game_Rules/Draw.md,conductor,2,number-strip+pascal,
+team3-engine/specs/games/PRD-GAME-03-seven-card-games.md,docs/1. Product/Game_Rules/Seven_Card_Games.md,conductor,2,number-strip+pascal,
+team3-engine/specs/games/PRD-GAME-04-betting-system.md,docs/1. Product/Game_Rules/Betting_System.md,conductor,2,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-00-REF-game-engine-spec.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md,team3,3,number-strip+pascal+rename,
+team3-engine/specs/engine-spec/BS-06-01-holdem-lifecycle.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Lifecycle.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-02-holdem-betting.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Betting.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-03-holdem-blinds-ante.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Blinds_and_Ante.md,team3,3,number-strip+pascal+and,
+team3-engine/specs/engine-spec/BS-06-04-holdem-coalescence.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Coalescence.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-05-holdem-evaluation.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Evaluation.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-06-holdem-side-pot.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Side_Pot.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-07-holdem-showdown.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Showdown.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-08-holdem-exceptions.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Exceptions.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-09-event-catalog.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Event_Catalog.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-10-action-rotation.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-1X-flop-variants.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Flop_Variants.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-2X-draw-games.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md,team3,3,number-strip+pascal,
+team3-engine/specs/engine-spec/BS-06-3X-stud-games.md,docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md,team3,3,number-strip+pascal,
+team3-engine/specs/plans/archived/2026-04-08-game-engine.plan.md,docs/4. Operations/Plans/2026-04-08-game-engine.plan.md,conductor,2,keep-name,게임 엔진 계획 아카이브
+team4-cc/specs/BS-04-rfid/BS-04-00-overview.md,docs/2. Development/2.4 Command Center/RFID_Cards/Overview.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-04-rfid/BS-04-01-deck-registration.md,docs/2. Development/2.4 Command Center/RFID_Cards/Deck_Registration.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-04-rfid/BS-04-02-card-detection.md,docs/2. Development/2.4 Command Center/RFID_Cards/Card_Detection.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-04-rfid/BS-04-03-manual-fallback.md,docs/2. Development/2.4 Command Center/RFID_Cards/Manual_Fallback.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-04-rfid/BS-04-05-register-screen.md,docs/2. Development/2.4 Command Center/RFID_Cards/Register_Screen.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-00-overview.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-01-hand-lifecycle.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Hand_Lifecycle.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-02-action-buttons.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Action_Buttons.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-03-seat-management.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Seat_Management.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-04-manual-card-input.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Manual_Card_Input.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-05-undo-recovery.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Undo_Recovery.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-06-keyboard-shortcuts.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Keyboard_Shortcuts.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-07-statistics.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Statistics.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-08-game-settings-modal.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Game_Settings_Modal.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-09-player-edit-modal.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Player_Edit_Modal.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-05-command-center/BS-05-10-multi-table-ops.md,docs/2. Development/2.4 Command Center/Command_Center_UI/Multi_Table_Operations.md,team4,3,number-strip+pascal+expand,ops → Operations
+team4-cc/specs/BS-07-overlay/BS-07-00-overview.md,docs/2. Development/2.4 Command Center/Overlay/Overview.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-07-overlay/BS-07-01-elements.md,docs/2. Development/2.4 Command Center/Overlay/Elements.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-07-overlay/BS-07-02-animations.md,docs/2. Development/2.4 Command Center/Overlay/Animations.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-07-overlay/BS-07-03-skin-loading.md,docs/2. Development/2.4 Command Center/Overlay/Skin_Loading.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-07-overlay/BS-07-04-scene-schema.md,docs/2. Development/2.4 Command Center/Overlay/Scene_Schema.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-07-overlay/BS-07-05-audio.md,docs/2. Development/2.4 Command Center/Overlay/Audio.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-07-overlay/BS-07-06-layer-boundary.md,docs/2. Development/2.4 Command Center/Overlay/Layer_Boundary.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-07-overlay/BS-07-07-security-delay.md,docs/2. Development/2.4 Command Center/Overlay/Security_Delay.md,team4,3,number-strip+pascal,
+team4-cc/specs/BS-07-overlay/BS-07-08-sequences.md,docs/2. Development/2.4 Command Center/Overlay/Sequences.md,team4,3,number-strip+pascal,
+team4-cc/specs/testing/TEST-PLAN.md,docs/2. Development/2.4 Command Center/Integration_Test_Plan.md,team4,3,rename,
+team4-cc/ui-design/UI-02-command-center.md,docs/2. Development/2.4 Command Center/Command_Center_UI/UI.md,team4,3,consolidate,
+team4-cc/ui-design/reference/action-tracker/EBS-AT-Reference.md,docs/1. Product/PokerGFX_Reference.md,conductor,2,merge,Action Tracker → PokerGFX Reference (머지 통합)
