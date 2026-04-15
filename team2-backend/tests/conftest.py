@@ -13,6 +13,7 @@ from src.models.competition import Competition, Series, Event, EventFlight  # no
 from src.models.table import Table, TableSeat, Player  # noqa: F401
 from src.models.audit_event import AuditEvent, IdempotencyKey  # noqa: F401
 from src.models.audit_log import AuditLog  # noqa: F401 — register table
+from src.models.config import Config  # noqa: F401 — register configs table (G4-C)
 from src.security.password import hash_password
 
 
