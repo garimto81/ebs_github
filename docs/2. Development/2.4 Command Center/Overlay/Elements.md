@@ -376,3 +376,72 @@ Game Engine (BS-06)
   └─ CC 수신
       └─ BS-05-03 §6에 따른 동일 렌더링 (같은 색상 코드)
 ```
+
+---
+
+## PokerGFX 스킨 시스템 참조 (ConfigurationPreset)
+
+> **PokerGFX 역설계 기반**: `ebs_reverse/docs/02-design/pokergfx-reverse-engineering-complete.md §11` 에서 추출한 `ConfigurationPreset` (99+ 필드) 중 EBS Overlay 요소 설계에 직접 영향을 주는 핵심 카테고리. EBS 는 Flutter/Rive 기술 스택 + docs v10 용어로 재해석하되, 레거시 필드명을 "출처" 로 병기해 추적성을 유지한다.
+
+### 레이아웃 필드
+
+| PokerGFX 필드 | 가능 값 | EBS 매핑 | 비고 |
+|---------------|---------|----------|------|
+| `board_pos` | `left=0 / centre=1 / right=2` | 스킨 설정 `board_position` | 3 위치 유지 |
+| `heads_up_layout_mode` | `split_screen_only=0 / heads_up_hands_only=1 / all_hands_when_heads_up=2` | 스킨 설정 `heads_up_mode` (3값 enum) | heads-up 시 렌더링 정책 |
+| `heads_up_layout_direction` | `left_right=0 / right_left=1` | 스킨 설정 `heads_up_direction` | 2값 enum |
+| `gfx_vertical` / `gfx_bottom_up` / `gfx_fit` | bool | 스킨 설정 `vertical`, `bottom_up`, `fit` | 레이아웃 방향·맞춤 |
+| `x_margin`, `y_margin_top`, `y_margin_bot`, `heads_up_custom_ypos` | int (px) | 스킨 설정 margin 객체 | 여백 4값 |
+
+### 표시 제어 필드
+
+| PokerGFX 필드 | 가능 값 | EBS 매핑 |
+|---------------|---------|----------|
+| `card_reveal` | `immediate=0 / after_action=1 / end_of_hand=2 / never=3 / showdown_cash=4 / showdown_tourney=5` | 스킨 설정 `card_reveal_policy` (6값) |
+| `at_show` | `immediate=0 / action_on=1 / after_bet=2 / action_on_next=3` | 스킨 설정 `badge_show_timing` (4값) |
+| `fold_hide` | `immediate=0 / delayed=1` | 스킨 설정 `fold_hide_timing` (2값) |
+| `show_rank` / `show_seat_num` / `show_eliminated` / `show_action_on_text` | bool | 개별 토글 |
+| `trans_in` / `trans_out` | `fade=0 / slide=1 / pop=2 / expand=3` | BS-07-02 §2 transition_type 4종 (이미 반영) |
+
+### 칩 정밀도 (Chip Precision) — 8 독립 슬롯
+
+> PokerGFX 는 화면 영역별 칩 표기 정밀도를 독립 설정한다. 타입: `chipcount_precision_type: full=0 / smart=1 / smart_ext=2`. EBS 는 스킨 설정 객체 `chip_precision.{slot}` 로 매핑.
+
+| 슬롯 | PokerGFX 필드 | EBS 용도 |
+|------|--------------|---------|
+| 1 | `cp_leaderboard` | 리더보드 (순위판) |
+| 2 | `cp_pl_stack` | 플레이어 칩 스택 (BS-07-01 §4) |
+| 3 | `cp_pl_action` | 플레이어 베팅 액션 배지 |
+| 4 | `cp_blinds` | 블라인드 레벨 표시 |
+| 5 | `cp_pot` | 팟 (BS-07-01 §5) |
+| 6 | `cp_twitch` | Twitch 영역 (EBS 미도입 시 폐기) |
+| 7 | `cp_ticker` | 하단 자막/티커 (BS-07-01 §10) |
+| 8 | `cp_strip` | 사이드 스트립 |
+
+### 통화·언어
+
+| PokerGFX 필드 | 타입 | EBS 매핑 |
+|---------------|------|----------|
+| `currency_symbol` | string | `skin.currency.symbol` |
+| `show_currency` / `trailing_currency_symbol` | bool | `skin.currency.{show, trailing}` |
+| `divide_amts_by_100` | bool | `skin.currency.divide_by_100` (센트↔달러) |
+
+### 로고·식별자
+
+| PokerGFX 필드 | 타입 | EBS 매핑 |
+|---------------|------|----------|
+| `panel_logo` / `board_logo` / `strip_logo` | byte[] (PNG) | 스킨 에셋 `logo.{panel,board,strip}.png` |
+| `vanity_text` | string | `skin.vanity.text` |
+| `game_name_in_vanity` | bool | `skin.vanity.include_game_name` |
+
+### 비정렬 (EBS 폐기 / 재해석)
+
+- **`cp_twitch`**: Twitch 전용 슬롯. EBS 1차 런칭에 Twitch 직접 연동 미포함 → 슬롯 예약만, 실제 필드 미노출.
+- **WinForms 기반 설정 UI 구조**: Flutter `flutter_form_builder` 또는 커스텀 스킨 에디터로 재구현 (BS-07-03 Skin Loading §2 참조).
+- **`byte[]` 직렬화**: PNG 바이너리 내장 방식은 `.gfskin` ZIP 내 파일 참조로 대체.
+
+### 연관 문서
+
+- BS-07-01 §1~10 개별 요소 정의 (본 문서)
+- BS-07-03 Skin Loading — `.gfskin` ZIP 포맷과 ConfigurationPreset 필드 맵핑
+- BS-07-02 Animations — `trans_in`/`trans_out` 애니메이션 구현

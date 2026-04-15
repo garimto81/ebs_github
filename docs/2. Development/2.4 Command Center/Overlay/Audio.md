@@ -136,3 +136,32 @@ skin.gfskin (ZIP)
 - `BS-07-03-skin-loading` — `.gfskin` 로드 시 audio 에셋 파싱
 - `BS-03-02-gfx §8` — 볼륨/매너모드 설정 UI
 - `DATA-07-gfskin-schema` — `.gfskin` 포맷 정의
+
+---
+
+## 8. PokerGFX 역설계 참조 및 A/V Sync
+
+> **PokerGFX 역설계 상태**: `ebs_reverse/docs/02-design/pokergfx-reverse-engineering-complete.md` 에 **명시적 오디오 섹션 없음**. 역설계 문서에서 확인된 오디오 관련 요소는 아래뿐이며, 나머지는 EBS 독립 설계다.
+
+| 항목 | PokerGFX | EBS 대응 |
+|------|----------|----------|
+| `thread_worker_audio` | `ext_audio_buffer` + `AutoResetEvent are_audio` 기반 캡처 | Flutter `audioplayers` (in-process, §1 Multi-channel) |
+| `audio_source` enum | `Embedded / External / Mixed` | `.gfskin` 내 audio 에셋 + 외부 스트림 (Phase 2+) |
+| MFFormats SDK | `MFAudioBufferClass` 프레임 동기화 | 해당 없음 (Flutter 처리) |
+
+### 8.1 A/V Sync (Security Delay 연계)
+
+Security Delay 버퍼(API-04 §3) 로 **영상만 지연**되면 오디오와 어긋나(lip-sync 깨짐) 방송 품질 저하.
+
+**동기화 규칙**:
+
+- 카드 딜·액션·pot 사운드는 **영상과 동일한 delay_seconds 만큼 지연** 재생한다.
+- Backstage 스트림(무지연)은 사운드도 즉시 재생.
+- Broadcast 스트림은 delayed buffer 의 이벤트 재생 타이밍과 오디오 큐를 동기.
+- 구현 소유: **Team 4** (OutputEventBuffer §API-04 §3.6 이 영상·오디오 공통 버퍼).
+
+### 8.2 검증 항목 (Team 4 구현 시)
+
+- [ ] Security Delay 값 0·30·120초에서 lip-sync 드리프트 ≤ 1 frame (60fps 기준 16.7ms)
+- [ ] delay_seconds 핸드 중 변경 시 오디오 큐 drop/flush 정책 명시
+- [ ] 매너모드(Mute) 해제 순간 지연된 오디오 재생 여부 (policy: **drop**, 즉시 스트림만 재생)
