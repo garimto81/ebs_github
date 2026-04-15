@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>EBS Command Center — Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif; }
+  html, body { width: 1280px; height: 720px; background: #0f1115; color: #e8eaed; overflow: hidden; }
+  .app { width: 1280px; height: 720px; display: grid; grid-template-rows: 48px 1fr 80px; }
+
+  /* Topbar */
+  .topbar { display: flex; align-items: center; padding: 0 16px; background: #16181d; border-bottom: 1px solid #262a31; }
+  .topbar .logo { font-weight: 700; letter-spacing: 0.5px; font-size: 13px; color: #b6f09c; }
+  .topbar .sep { width: 1px; height: 20px; background: #2c313a; margin: 0 14px; }
+  .topbar .meta { display: flex; gap: 18px; font-size: 12px; color: #9aa0a6; }
+  .topbar .meta b { color: #e8eaed; font-weight: 600; }
+  .topbar .right { margin-left: auto; display: flex; gap: 10px; align-items: center; font-size: 11px; color: #9aa0a6; }
+  .topbar .dot { width: 8px; height: 8px; border-radius: 50%; background: #44d17c; box-shadow: 0 0 6px #44d17c80; }
+
+  /* Main */
+  .main { display: grid; grid-template-columns: 1fr 260px; }
+  .table-area { position: relative; background: radial-gradient(ellipse at center, #1a2230 0%, #0f1115 70%); }
+
+  /* 타원형 포커 테이블 */
+  .felt {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 780px; height: 360px; border-radius: 180px / 180px;
+    background: radial-gradient(ellipse at center, #1e5731 0%, #14422a 80%);
+    border: 6px solid #2a1d0e; box-shadow: inset 0 0 40px #00000080, 0 10px 30px #00000060;
+  }
+  .felt .brand { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -90px); font-size: 11px; letter-spacing: 4px; color: #ffffff25; text-align: center; }
+  .felt .pot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, 10px); text-align: center; }
+  .felt .pot .lbl { font-size: 10px; letter-spacing: 2px; color: #ffffff80; }
+  .felt .pot .amt { font-size: 28px; font-weight: 700; color: #fff; margin-top: 2px; }
+  .felt .board { position: absolute; top: 50%; left: 50%; transform: translate(-50%, 50px); display: flex; gap: 6px; }
+  .felt .board .card { width: 38px; height: 54px; border-radius: 4px; background: #fff; color: #111; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; box-shadow: 0 2px 4px #00000080; }
+  .felt .board .card.red { color: #c23b3b; }
+  .felt .board .card.back { background: linear-gradient(135deg, #3a4a6b, #1b2436); color: transparent; }
+  .felt .board .card .r { font-size: 14px; line-height: 1; }
+  .felt .board .card .s { font-size: 12px; line-height: 1; margin-top: 2px; }
+
+  /* 좌석 10개 - 타원형 주위 배치 */
+  .seat {
+    position: absolute; width: 104px; transform: translate(-50%, -50%);
+    background: #1c2028; border: 1px solid #2f343e; border-radius: 8px;
+    padding: 6px 8px; font-size: 10px;
+  }
+  .seat .name { font-size: 11px; font-weight: 600; color: #e8eaed; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .seat .stack { font-size: 10px; color: #9aa0a6; margin-top: 1px; }
+  .seat .cards { display: flex; gap: 3px; margin-top: 4px; }
+  .seat .c { width: 14px; height: 20px; border-radius: 2px; background: linear-gradient(135deg, #3a4a6b, #1b2436); }
+  .seat.dealer::after { content: "D"; position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: #fff; color: #111; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .seat.active { border-color: #ffcf40; box-shadow: 0 0 0 2px #ffcf4030; }
+  .seat.folded { opacity: 0.35; }
+  .seat .badge { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 3px; margin-top: 4px; }
+  .seat .badge.bet { background: #ffcf40; color: #111; }
+  .seat .badge.fold { background: #5a616e; color: #e8eaed; }
+  .seat .badge.allin { background: #e05a5a; color: #fff; }
+
+  /* 좌석 배치 */
+  .s1  { left: 640px; top: 140px; }
+  .s2  { left: 820px; top: 170px; }
+  .s3  { left: 960px; top: 250px; }
+  .s4  { left: 1010px; top: 360px; }
+  .s5  { left: 960px; top: 470px; }
+  .s6  { left: 820px; top: 550px; }
+  .s7  { left: 640px; top: 580px; }
+  .s8  { left: 460px; top: 550px; }
+  .s9  { left: 320px; top: 470px; }
+  .s10 { left: 270px; top: 360px; }
+
+  /* Right panel */
+  .sidebar { background: #13161b; border-left: 1px solid #262a31; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+  .sidebar h3 { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #9aa0a6; margin-bottom: 4px; }
+  .sidebar .card-box { background: #191d24; border: 1px solid #262a31; border-radius: 6px; padding: 10px 12px; }
+  .sidebar .row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+  .sidebar .row .l { color: #9aa0a6; }
+  .sidebar .row .v { font-weight: 600; color: #e8eaed; }
+  .sidebar .phase { display: flex; gap: 4px; margin-top: 4px; }
+  .sidebar .phase span { flex: 1; text-align: center; font-size: 10px; padding: 4px 0; border-radius: 3px; background: #262a31; color: #9aa0a6; }
+  .sidebar .phase span.active { background: #ffcf40; color: #111; font-weight: 700; }
+  .hist { font-size: 11px; color: #9aa0a6; line-height: 1.5; }
+  .hist .item { padding: 3px 0; border-bottom: 1px solid #1e2229; }
+  .hist .item b { color: #e8eaed; font-weight: 600; }
+
+  /* Bottom action bar */
+  .action-bar { background: #16181d; border-top: 1px solid #262a31; display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; padding: 12px 16px; }
+  .action-bar button {
+    height: 56px; border: 1px solid #2f343e; background: #1c2028; color: #e8eaed;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.8px; border-radius: 6px;
+    cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .action-bar button .key { font-size: 9px; color: #9aa0a6; margin-top: 2px; font-weight: 400; }
+  .action-bar button.primary { background: #1e5731; border-color: #2a7a45; color: #d8f0dd; }
+  .action-bar button.warn { background: #7a4a14; border-color: #a5631c; color: #ffe4b8; }
+  .action-bar button.danger { background: #5a1e1e; border-color: #882a2a; color: #ffd0d0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="logo">EBS · COMMAND CENTER</div>
+    <div class="sep"></div>
+    <div class="meta">
+      <span>Table <b>#4</b></span>
+      <span>Event <b>WSOP Day 3 — Holdem NL</b></span>
+      <span>Hand <b>#1,204</b></span>
+      <span>Street <b>FLOP</b></span>
+      <span>Blinds <b>1,500 / 3,000 (500 ante)</b></span>
+    </div>
+    <div class="right">
+      <span class="dot"></span><span>OVERLAY LIVE</span>
+      <span style="margin-left: 10px;">RFID <b style="color:#44d17c">READY</b></span>
+      <span style="margin-left: 10px;">delay <b>8s</b></span>
+    </div>
+  </div>
+
+  <!-- Main (table + sidebar) -->
+  <div class="main">
+    <div class="table-area">
+      <div class="felt">
+        <div class="brand">EBS · TABLE 4</div>
+        <div class="pot">
+          <div class="lbl">POT</div>
+          <div class="amt">84,500</div>
+        </div>
+        <div class="board">
+          <div class="card"><div class="r">A</div><div class="s">♠</div></div>
+          <div class="card red"><div class="r">K</div><div class="s">♥</div></div>
+          <div class="card"><div class="r">7</div><div class="s">♣</div></div>
+          <div class="card back"><div class="r">?</div><div class="s">?</div></div>
+          <div class="card back"><div class="r">?</div><div class="s">?</div></div>
+        </div>
+      </div>
+
+      <!-- Seats -->
+      <div class="seat s1 dealer"><div class="name">Negreanu</div><div class="stack">128,000</div><div class="cards"><div class="c"></div><div class="c"></div></div></div>
+      <div class="seat s2 folded"><div class="name">Ivey</div><div class="stack">0</div><div class="cards"></div><span class="badge fold">FOLD</span></div>
+      <div class="seat s3"><div class="name">Hellmuth</div><div class="stack">94,500</div><div class="cards"><div class="c"></div><div class="c"></div></div></div>
+      <div class="seat s4 active"><div class="name">Seidel</div><div class="stack">56,000</div><div class="cards"><div class="c"></div><div class="c"></div></div><span class="badge bet">BET 12K</span></div>
+      <div class="seat s5"><div class="name">Moneymaker</div><div class="stack">72,300</div><div class="cards"><div class="c"></div><div class="c"></div></div></div>
+      <div class="seat s6 folded"><div class="name">Dwan</div><div class="stack">0</div><div class="cards"></div><span class="badge fold">FOLD</span></div>
+      <div class="seat s7"><div class="name">Brunson</div><div class="stack">41,200</div><div class="cards"><div class="c"></div><div class="c"></div></div><span class="badge allin">ALL-IN</span></div>
+      <div class="seat s8"><div class="name">Chan</div><div class="stack">88,000</div><div class="cards"><div class="c"></div><div class="c"></div></div></div>
+      <div class="seat s9 folded"><div class="name">Ferguson</div><div class="stack">0</div><div class="cards"></div><span class="badge fold">FOLD</span></div>
+      <div class="seat s10"><div class="name">Duke</div><div class="stack">105,800</div><div class="cards"><div class="c"></div><div class="c"></div></div></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div>
+        <h3>Hand Progress</h3>
+        <div class="phase">
+          <span>PRE</span><span class="active">FLOP</span><span>TURN</span><span>RIVER</span>
+        </div>
+      </div>
+      <div class="card-box">
+        <div class="row"><div class="l">Pot</div><div class="v">84,500</div></div>
+        <div class="row"><div class="l">Main Pot</div><div class="v">60,500</div></div>
+        <div class="row"><div class="l">Side Pot</div><div class="v">24,000</div></div>
+        <div class="row"><div class="l">To Call</div><div class="v">12,000</div></div>
+        <div class="row" style="margin-bottom:0"><div class="l">Players in</div><div class="v">6 / 10</div></div>
+      </div>
+      <div>
+        <h3>Recent Actions</h3>
+        <div class="hist">
+          <div class="item"><b>Seidel</b> bets 12,000</div>
+          <div class="item"><b>Moneymaker</b> checks</div>
+          <div class="item"><b>Hellmuth</b> calls 3,000</div>
+          <div class="item"><b>Dwan</b> folds</div>
+          <div class="item"><b>Ivey</b> folds</div>
+        </div>
+      </div>
+      <div class="card-box" style="margin-top:auto">
+        <div class="row" style="margin-bottom:0"><div class="l">Delay Buffer</div><div class="v" style="color:#44d17c">8 s</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action bar -->
+  <div class="action-bar">
+    <button class="primary">NEW HAND<span class="key">F1</span></button>
+    <button class="primary">DEAL<span class="key">F2</span></button>
+    <button class="danger">FOLD<span class="key">F</span></button>
+    <button>CHECK<span class="key">C</span></button>
+    <button>BET<span class="key">B</span></button>
+    <button>CALL<span class="key">X</span></button>
+    <button class="warn">RAISE<span class="key">R</span></button>
+    <button class="danger">ALL-IN<span class="key">A</span></button>
+  </div>
+</div>
+</body>
+</html>

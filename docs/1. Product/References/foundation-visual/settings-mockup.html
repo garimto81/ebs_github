@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>EBS Settings — Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif; }
+  html, body { width: 1280px; height: 720px; background: #fafbfc; color: #1f232a; overflow: hidden; }
+  .app { width: 1280px; height: 720px; display: grid; grid-template-rows: 56px 1fr 56px; }
+
+  /* Topbar */
+  .topbar { display: flex; align-items: center; padding: 0 20px; background: #fff; border-bottom: 1px solid #e4e7eb; }
+  .topbar .crumb { font-size: 12px; color: #6b7280; }
+  .topbar .crumb b { color: #1f232a; font-weight: 600; }
+  .topbar h1 { font-size: 18px; font-weight: 700; margin-left: 16px; }
+  .topbar .badge { font-size: 10px; padding: 3px 8px; background: #1f232a; color: #fff; border-radius: 10px; margin-left: 10px; letter-spacing: 1px; }
+  .topbar .right { margin-left: auto; display: flex; gap: 14px; align-items: center; font-size: 12px; color: #6b7280; }
+  .topbar .right .dot { width: 7px; height: 7px; border-radius: 50%; background: #22a06b; display: inline-block; margin-right: 5px; }
+  .topbar .scope { font-size: 11px; padding: 4px 10px; border: 1px solid #d1d5db; border-radius: 3px; background: #f9fafb; color: #1f232a; }
+
+  /* Main: tabs + content */
+  .main { display: grid; grid-template-columns: 200px 1fr 360px; height: 100%; }
+
+  /* Left tabs */
+  .tabs { background: #fff; border-right: 1px solid #e4e7eb; padding: 16px 0; }
+  .tabs .tab {
+    display: flex; align-items: center; gap: 10px; padding: 11px 20px;
+    font-size: 13px; color: #4b5563; cursor: pointer; border-left: 3px solid transparent;
+  }
+  .tabs .tab .icon { width: 16px; height: 16px; border: 1.5px solid currentColor; border-radius: 3px; flex-shrink: 0; }
+  .tabs .tab .count { margin-left: auto; font-size: 10px; color: #9ca3af; font-weight: 600; }
+  .tabs .tab.active { background: #f3f4f6; color: #1f232a; border-left-color: #1f232a; font-weight: 600; }
+
+  /* Center: content area */
+  .content { padding: 24px 28px; overflow: auto; }
+  .content h2 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .content .sub { font-size: 12px; color: #6b7280; margin-bottom: 20px; }
+  .group { background: #fff; border: 1px solid #e4e7eb; border-radius: 6px; padding: 16px 18px; margin-bottom: 14px; }
+  .group h3 { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #6b7280; margin-bottom: 12px; }
+  .field { display: grid; grid-template-columns: 160px 1fr 88px; align-items: center; gap: 12px; padding: 7px 0; border-bottom: 1px solid #f3f4f6; }
+  .field:last-child { border-bottom: none; }
+  .field .lbl { font-size: 12px; color: #1f232a; font-weight: 500; }
+  .field .lbl .hint { font-weight: 400; color: #9ca3af; font-size: 11px; display: block; margin-top: 1px; }
+  .field .ctl { display: flex; align-items: center; gap: 10px; }
+  .field select, .field input[type="text"], .field input[type="number"] {
+    height: 30px; padding: 0 10px; font-size: 12px; border: 1px solid #d1d5db; border-radius: 3px; background: #fff; min-width: 180px;
+  }
+  .field .tag {
+    font-size: 9px; padding: 3px 7px; border-radius: 10px; letter-spacing: 0.8px;
+    font-weight: 700;
+  }
+  .tag.lock { background: #fee2e2; color: #991b1b; }
+  .tag.confirm { background: #fef3c7; color: #92400e; }
+  .tag.free { background: #d1fae5; color: #065f46; }
+  .toggle {
+    width: 34px; height: 18px; background: #22a06b; border-radius: 10px; position: relative; flex-shrink: 0;
+  }
+  .toggle::after { content: ""; position: absolute; top: 2px; right: 2px; width: 14px; height: 14px; background: #fff; border-radius: 50%; }
+  .toggle.off { background: #d1d5db; }
+  .toggle.off::after { left: 2px; right: auto; }
+
+  /* Right: Preview */
+  .preview { background: #f3f4f6; border-left: 1px solid #e4e7eb; padding: 20px; display: flex; flex-direction: column; }
+  .preview h3 { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #6b7280; margin-bottom: 10px; }
+  .preview .screen {
+    aspect-ratio: 16/9; background: #0d1014; border-radius: 4px; border: 1px solid #1f232a;
+    position: relative; overflow: hidden; margin-bottom: 12px;
+  }
+  .preview .screen .felt {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 80%; height: 60%; border-radius: 50%; background: #1e5731; border: 3px solid #2a1d0e;
+  }
+  .preview .screen .overlay-row {
+    position: absolute; left: 10px; bottom: 10px; right: 10px; display: flex; justify-content: space-between; color: #fff; font-size: 9px;
+  }
+  .preview .screen .overlay-row .p {
+    background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 3px;
+  }
+  .preview .screen .blinds {
+    position: absolute; top: 10px; left: 10px; color: #ffcf40; font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  }
+  .preview .screen .pot {
+    position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); padding: 4px 8px; color: #fff; font-size: 11px; border-radius: 3px;
+  }
+  .preview .meta { font-size: 11px; color: #6b7280; line-height: 1.6; }
+  .preview .meta div { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #e4e7eb; }
+  .preview .meta b { color: #1f232a; font-weight: 600; }
+  .preview .legend { margin-top: auto; font-size: 10px; color: #6b7280; line-height: 1.5; padding-top: 14px; border-top: 1px solid #e4e7eb; }
+  .preview .legend .tag { font-size: 9px; padding: 2px 6px; border-radius: 8px; margin-right: 4px; }
+
+  /* Bottom bar */
+  .bottom {
+    background: #fff; border-top: 1px solid #e4e7eb; display: flex; align-items: center;
+    padding: 0 20px; gap: 10px;
+  }
+  .bottom .info { font-size: 11px; color: #6b7280; }
+  .bottom .spacer { margin-left: auto; }
+  .bottom button {
+    height: 34px; padding: 0 16px; border: 1px solid #d1d5db; background: #fff; color: #1f232a;
+    font-size: 12px; font-weight: 600; border-radius: 3px; cursor: pointer;
+  }
+  .bottom button.primary { background: #1f232a; color: #fff; border-color: #1f232a; }
+  .bottom button.ghost { border-color: transparent; color: #6b7280; }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="crumb">Lobby › Settings ›</div>
+    <h1>Settings</h1>
+    <span class="badge">ADMIN ONLY</span>
+    <div class="right">
+      <span class="scope">Scope: <b>Global</b></span>
+      <span><span class="dot"></span>BO connected</span>
+      <span>6 CC active</span>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab"><div class="icon"></div><span>Outputs</span><span class="count">13</span></div>
+      <div class="tab"><div class="icon"></div><span>GFX</span><span class="count">14</span></div>
+      <div class="tab active"><div class="icon" style="background:#1f232a"></div><span>Display</span><span class="count">17</span></div>
+      <div class="tab"><div class="icon"></div><span>Rules</span><span class="count">11</span></div>
+      <div class="tab"><div class="icon"></div><span>Stats</span><span class="count">15</span></div>
+      <div class="tab"><div class="icon"></div><span>Preferences</span><span class="count">9</span></div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <h2>Display — 수치 표시 형식</h2>
+      <div class="sub">통화·정밀도·BB 모드 등 오버레이 표시 수치의 포맷을 제어합니다. BS-03-03 참조.</div>
+
+      <div class="group">
+        <h3>Currency &amp; Amounts</h3>
+        <div class="field">
+          <div class="lbl">Currency<span class="hint">표시 단위</span></div>
+          <div class="ctl"><select><option>USD ($)</option><option>KRW (₩)</option><option>EUR (€)</option></select></div>
+          <div><span class="tag confirm">CONFIRM</span></div>
+        </div>
+        <div class="field">
+          <div class="lbl">Decimal Precision<span class="hint">소수점 자릿수</span></div>
+          <div class="ctl"><input type="number" value="0" style="min-width:80px"></div>
+          <div><span class="tag free">FREE</span></div>
+        </div>
+        <div class="field">
+          <div class="lbl">Thousand Separator<span class="hint">1,000 vs 1000</span></div>
+          <div class="ctl"><div class="toggle"></div><span style="font-size:11px;color:#6b7280">On</span></div>
+          <div><span class="tag free">FREE</span></div>
+        </div>
+      </div>
+
+      <div class="group">
+        <h3>Stack Display Mode</h3>
+        <div class="field">
+          <div class="lbl">Chip Display Mode<span class="hint">절대값 또는 BB 단위</span></div>
+          <div class="ctl"><select><option>Absolute (3,000)</option><option>BB Mode (15 BB)</option></select></div>
+          <div><span class="tag confirm">CONFIRM</span></div>
+        </div>
+        <div class="field">
+          <div class="lbl">Short Stack Highlight<span class="hint">10BB 이하 빨강</span></div>
+          <div class="ctl"><div class="toggle"></div></div>
+          <div><span class="tag free">FREE</span></div>
+        </div>
+        <div class="field">
+          <div class="lbl">Pot Multi-line<span class="hint">Main/Side 분리 표시</span></div>
+          <div class="ctl"><div class="toggle off"></div></div>
+          <div><span class="tag free">FREE</span></div>
+        </div>
+      </div>
+
+      <div class="group">
+        <h3>Player Display</h3>
+        <div class="field">
+          <div class="lbl">Name Case<span class="hint">UPPER / Title / As-is</span></div>
+          <div class="ctl"><select><option>UPPER</option><option>Title Case</option><option>As-is</option></select></div>
+          <div><span class="tag free">FREE</span></div>
+        </div>
+        <div class="field">
+          <div class="lbl">Show Nationality<span class="hint">국기 아이콘</span></div>
+          <div class="ctl"><div class="toggle"></div></div>
+          <div><span class="tag free">FREE</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="preview">
+      <h3>Live Preview</h3>
+      <div class="screen">
+        <div class="blinds">BLINDS 1,500 / 3,000</div>
+        <div class="pot">POT 84,500</div>
+        <div class="felt"></div>
+        <div class="overlay-row">
+          <div class="p">NEGREANU · 128,000</div>
+          <div class="p">SEIDEL · BET 12K</div>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div><span>Scope</span><b>Global</b></div>
+        <div><span>Applies to</span><b>6 CC instances</b></div>
+        <div><span>Apply Timing</span><b>Next hand</b></div>
+        <div><span>Last Saved</span><b>2026-04-15 14:22</b></div>
+      </div>
+
+      <div class="legend">
+        <div style="margin-bottom:6px"><b>LOCK / CONFIRM / FREE</b></div>
+        <span class="tag lock">LOCK</span> 변경 불가 (게임 설정)<br>
+        <span class="tag confirm">CONFIRM</span> 다음 핸드부터 적용<br>
+        <span class="tag free">FREE</span> 즉시 적용
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom -->
+  <div class="bottom">
+    <div class="info">수정 3건 · 저장되지 않음</div>
+    <div class="spacer"></div>
+    <button class="ghost">Reset to Default</button>
+    <button>Cancel</button>
+    <button class="primary">Save</button>
+  </div>
+</div>
+</body>
+</html>
