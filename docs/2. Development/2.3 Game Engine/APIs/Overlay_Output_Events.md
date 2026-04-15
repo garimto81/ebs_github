@@ -13,6 +13,7 @@ last-updated: 2026-04-15
 | 2026-04-14 | 경계 pointer 보강 | API-04↔API-05 상호 참조 추가. in-process vs 네트워크 관심사 분리 명시 |
 | 2026-04-14 | OutputEventBuffer 구현 소유권 명시 | §3.6에 Team 4 소유 확정, Team 3 harness 역할 명시 |
 | 2026-04-15 | §6.0 OutputEvent 카탈로그 요약 신설 | team4 `Overlay/Layer_Boundary.md §3.2` 와 cross-ref. 18종 이벤트 한눈에 보기 |
+| 2026-04-15 | §6.0 실측 정정 | publisher(`output_event.dart`) 실측 결과 18종 → 21종. 누락됐던 OE-04 BoardUpdated / OE-05 ActionOnChanged / OE-06 WinnerDetermined / OE-07 Rejected / OE-08 UndoApplied / OE-12 CardMismatchDetected / OE-13 SevenDeuceBonusAwarded / OE-14 HandTabled / OE-15 HandRetrieved / OE-16 HandKilled / OE-17 MuckRetrieved / OE-18 FlopRecovered / OE-19 DeckIntegrityWarning / OE-20 DeckChangeStarted / OE-21 GameTransitioned 전수 추가 |
 | 2026-04-08 | 신규 작성 | CC→Overlay 데이터 흐름, 출력 채널, Security Delay, 해상도, 크로마키 |
 
 ---
@@ -372,21 +373,35 @@ MediaQuery(
 
 ## 6. 씬 업데이트 이벤트
 
-### 6.0 OutputEvent 카탈로그 (요약)
+### 6.0 OutputEvent 카탈로그 (실측 21종)
 
-team3 Game Engine 이 발행하는 `OutputEvent` sealed class 의 18 종 요약. 정본 시그니처는 `team3-engine/ebs_game_engine/lib/core/actions/output_event.dart`. team4 소비자(`docs/2. Development/2.4 Command Center/Overlay/Layer_Boundary.md §3.2`) 는 이 표를 기준으로 Rive 트리거·버퍼링·렌더링을 수행한다.
+team3 Game Engine 이 발행하는 `OutputEvent` sealed class 멤버는 2026-04-15 실측 기준 **21종**. 정본 시그니처는 `team3-engine/ebs_game_engine/lib/core/actions/output_event.dart`. team4 소비자(`docs/2. Development/2.4 Command Center/Overlay/Layer_Boundary.md §3.2`) 는 이 표를 기준으로 Rive 트리거·버퍼링·렌더링을 수행한다.
 
-| # | Event | 주요 필드 | 발행 시점 | 소비자 영향 |
-|---|-------|-----------|-----------|-------------|
-| OE-01 | `StateChanged` | fromPhase, toPhase | HandFSM phase 전환 시 | Phase 배너 + §6.1 씬 전환 |
-| OE-02 | `ActionProcessed` | seatIndex, actionType, amount | 플레이어 액션 확정 | 액션 라벨, seat glow, §6.1 `current_action` |
-| OE-03 | `PotUpdated` | potIndex, amount | pot 변동 | §6.1 pot 숫자 롤링 |
-| OE-04 | `EquityUpdated` | equities: Map<seat, float> | 보드 오픈·플레이어 폴드 | Equity Bar 업데이트 |
-| OE-05 | `CardRevealed` | seat 또는 board, card | 홀카드/보드 공개 | Rive 카드 reveal/slide |
-| OE-06 | `HandCompleted` | winners, finalStacks | 핸드 종료 | Winner 하이라이트 + pot sweep |
-| OE-07..18 | (나머지 12종) | `output_event.dart` 참조 | — | Rive 애니메이션 트리거 |
+| # | Event | 분류 | 발행 시점 | 소비자 영향 |
+|---|-------|------|-----------|-------------|
+| OE-01 | `StateChanged` | 진행 | HandFSM phase 전환 | Phase 배너 + §6.1 씬 전환 |
+| OE-02 | `ActionProcessed` | 진행 | 플레이어 액션 확정 | 액션 라벨, seat glow |
+| OE-03 | `PotUpdated` | 진행 | pot 변동 | Pot 숫자 롤링 |
+| OE-04 | `BoardUpdated` | 진행 | 보드 community_cards 추가 | 카드 슬라이드 |
+| OE-05 | `ActionOnChanged` | 진행 | 다음 액션 seat 결정 | action-on glow 이동 |
+| OE-06 | `WinnerDetermined` | 종결 | Showdown 결과 확정 | Winner 하이라이트 준비 |
+| OE-07 | `Rejected` | 에러 | 잘못된 액션 거부 | 거부 배너 |
+| OE-08 | `UndoApplied` | 복구 | 운영자 Undo 수행 | 이전 scene 롤백 |
+| OE-09 | `HandCompleted` | 종결 | 핸드 완전 종료 | Pot sweep + Winner reveal |
+| OE-10 | `EquityUpdated` | 진행 | equity 재계산 | Equity Bar |
+| OE-11 | `CardRevealed` | 카드 | 홀/보드 카드 공개 | Rive 카드 reveal |
+| OE-12 | `CardMismatchDetected` | 에러 | RFID↔수동 불일치 | 경고 배너 |
+| OE-13 | `SevenDeuceBonusAwarded` | 특별 | 7-2 보너스 충족 | 보너스 배너 |
+| OE-14 | `HandTabled` | 특별 | 모든 남은 플레이어 tabling | 카드 공개 연출 |
+| OE-15 | `HandRetrieved` | 복구 | 폐기 hand 복원 | 복구 애니메이션 |
+| OE-16 | `HandKilled` | 복구 | hand 폐기 확정 | 회수 애니메이션 |
+| OE-17 | `MuckRetrieved` | 복구 | 머크된 카드 재공개 | reveal |
+| OE-18 | `FlopRecovered` | 복구 | 잘못 공개된 flop 회수 | 카드 숨김 |
+| OE-19 | `DeckIntegrityWarning` | 에러 | 덱 무결성 경고 | 경고 배너 |
+| OE-20 | `DeckChangeStarted` | 운영 | 덱 교체 개시 | "덱 교체 중" 표시 |
+| OE-21 | `GameTransitioned` | 운영 | Mix 게임 전환 | 게임 타이틀 변경 |
 
-**세부 필드/페이로드 스키마는 아래 §6.1 GameState 매핑** 을 병행 참조.
+세부 필드/페이로드는 sealed class 각 서브클래스가 정본. 본 표는 개요이며 §6.1 GameState 매핑도 병행 참조.
 
 ### 6.1 Overlay 위젯 rebuild 트리거
 

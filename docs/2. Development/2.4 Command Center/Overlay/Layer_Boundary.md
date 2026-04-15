@@ -108,31 +108,45 @@ Layer 2/3 외부 시스템은 이 API를 소비하여 자체 렌더링 파이프
 
 ### 3.2 Layer 1 — team3 ↔ team4 내부 계약 (API-04)
 
-Layer 1 의 8종 그래픽은 **team3 Game Engine** 이 GameState 변경 시 발행하는 `OutputEvent` 를 **team4 Overlay renderer** 가 수신하여 Rive 애니메이션을 트리거한다. 이 in-process 계약은 `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` (API-04) 가 정본이다.
+Layer 1 의 그래픽들은 **team3 Game Engine** 이 GameState 변경 시 발행하는 `OutputEvent` 를 **team4 Overlay renderer** 가 수신하여 Rive 애니메이션을 트리거한다. 이 in-process 계약은 `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` (API-04) 가 정본이다.
 
 | 구분 | 위치 |
 |------|------|
-| OutputEvent sealed class 정의 (18종) | team3 `ebs_game_engine/lib/core/actions/output_event.dart` |
+| OutputEvent sealed class 정의 **(21종, 실측)** | team3 `ebs_game_engine/lib/core/actions/output_event.dart` |
 | 이벤트 카탈로그 + payload 스키마 | `Overlay_Output_Events.md §6 씬 업데이트 이벤트` |
 | OutputEventBuffer (security delay) 구현 | team4 `src/lib/features/overlay/services/output_event_buffer.dart` (CCR-056) |
 | Backstage/Broadcast 이중 출력 | team4 `src/lib/features/overlay/services/dual_output_manager.dart` |
 
-**핵심 18종 요약** (상세 payload 는 API-04 참조):
+**21종 요약** (2026-04-15 실측, 상세 payload 는 API-04 참조):
 
-| # | Event | 트리거 | Layer 1 영향 |
-|---|-------|--------|-------------|
-| OE-01 | `StateChanged` | HandFSM phase 전환 | Phase 배너, 전환 애니메이션 |
-| OE-02 | `ActionProcessed` | 플레이어 액션 확정 | 액션 라벨, seat glow |
-| OE-03 | `PotUpdated` | pot 변동 | Pot Display 숫자 애니메이션 |
-| OE-04 | `EquityUpdated` | 승률 재계산 | Equity Bar |
-| OE-05 | `CardRevealed` | 보드·홀카드 공개 | Card Slot reveal 애니메이션 |
-| OE-06 | `HandCompleted` | 핸드 종료 | Winner 하이라이트 + Pot sweep |
-| OE-07..18 | (나머지 12종) | — | API-04 카탈로그 참조 |
+| # | Event | 분류 | Layer 1 영향 |
+|---|-------|------|-------------|
+| OE-01 | `StateChanged` | 진행 | Phase 배너, 전환 애니메이션 |
+| OE-02 | `ActionProcessed` | 진행 | 액션 라벨, seat glow |
+| OE-03 | `PotUpdated` | 진행 | Pot Display 숫자 애니메이션 |
+| OE-04 | `BoardUpdated` | 진행 | 보드 카드 슬라이드 |
+| OE-05 | `ActionOnChanged` | 진행 | action-on 좌석 glow 이동 |
+| OE-06 | `WinnerDetermined` | 종결 | Winner 하이라이트 준비 |
+| OE-07 | `Rejected` | 에러 | 액션 거부 토스트 |
+| OE-08 | `UndoApplied` | 복구 | 이전 scene 으로 롤백 애니메이션 |
+| OE-09 | `HandCompleted` | 종결 | Pot sweep + winner reveal |
+| OE-10 | `EquityUpdated` | 진행 | Equity Bar |
+| OE-11 | `CardRevealed` | 카드 | 홀/보드 카드 reveal 애니메이션 |
+| OE-12 | `CardMismatchDetected` | 에러 | 경고 배너 (RFID↔수동 불일치) |
+| OE-13 | `SevenDeuceBonusAwarded` | 특별 | 보너스 배너 (7-2 룰) |
+| OE-14 | `HandTabled` | 특별 | table hand 공개 |
+| OE-15 | `HandRetrieved` | 복구 | 취소된 hand 복원 |
+| OE-16 | `HandKilled` | 복구 | hand 폐기 처리 |
+| OE-17 | `MuckRetrieved` | 복구 | 머크된 카드 재공개 |
+| OE-18 | `FlopRecovered` | 복구 | 잘못 공개된 flop 회수 |
+| OE-19 | `DeckIntegrityWarning` | 에러 | 덱 무결성 경고 |
+| OE-20 | `DeckChangeStarted` | 운영 | 덱 교체 진행 표시 |
+| OE-21 | `GameTransitioned` | 운영 | Mix 게임 종목 전환 |
 
 **소비자(team4) 가 계약 외 동작을 하지 않도록 하는 규칙**:
 
 1. 새 Layer 1 기능을 추가하려면 먼저 API-04 에 OutputEvent 를 추가 (team3 소유).
-2. team4 는 신규 이벤트를 수신할 때 **정의되지 않은 필드에 의존하지 않는다**. Freezed / sealed class pattern 으로 컴파일 시점 exhaustiveness 보장.
+2. team4 는 신규 이벤트를 수신할 때 **정의되지 않은 필드에 의존하지 않는다**. sealed class pattern 의 컴파일 시점 exhaustiveness 로 누락 감지.
 3. team3 가 이벤트를 deprecate 하려면 최소 1 sprint 사전 공지 + API-04 Edit History 업데이트.
 
 ---
