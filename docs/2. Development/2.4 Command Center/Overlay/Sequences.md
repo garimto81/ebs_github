@@ -580,7 +580,7 @@ sequenceDiagram
 | `BS-07-05-audio.md` | 오디오 트리거 (시퀀스 병렬 트랙) |
 | `BS-07-06-layer-boundary.md` | Layer 1/2/3 경계 (본 문서는 Layer 1만 다룸) |
 | `BS-07-07-security-delay.md` | Security Delay 아키텍처 (본 문서 §1~§2 전반의 전제) |
-| `contracts/api/API-04-overlay-output.md` | 프로세스 모델 + 데이터 계약 SSOT |
-| `contracts/api/API-05-websocket-events.md` | skin_updated 이벤트 (§2.11) |
+| `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | 프로세스 모델 + 데이터 계약 SSOT (team3 publisher) |
+| `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` | skin_updated 이벤트 (§2.11) |
 | `BS-06-00-triggers.md` | 트리거 이벤트 정의 SSOT |
 | `BS-06-00-REF-game-engine-spec.md` | AnimationState/transition_type Enum |

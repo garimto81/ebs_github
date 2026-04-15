@@ -37,7 +37,7 @@ last-updated: 2026-04-15
 
 ### 2.1 배포 포맷: `.gfskin` ZIP (CCR-012)
 
-스킨은 `.gfskin` 확장자의 ZIP 컨테이너로 배포된다. 상세 스키마는 `contracts/data/DATA-07-gfskin-schema.md` 참조.
+스킨은 `.gfskin` 확장자의 ZIP 컨테이너로 배포된다. 상세 스키마는 `docs/2. Development/2.2 Backend/Database/GFSkin_Schema.md` 참조.
 
 ```
 my-skin.gfskin (ZIP)
