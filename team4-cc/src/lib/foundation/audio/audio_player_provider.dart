@@ -47,10 +47,20 @@ const _sfxAssets = <SfxId, String>{
 };
 
 // ---------------------------------------------------------------------------
+// Audio SFX port — narrow interface for consumers that only need to fire
+// sound effects. Lets tests inject a silent double without constructing a
+// real ChannelPool / just_audio platform channel.
+// ---------------------------------------------------------------------------
+
+abstract class AudioSfxPort {
+  Future<void> playSfx(SfxId sfx);
+}
+
+// ---------------------------------------------------------------------------
 // Audio controller (wraps ChannelPool with SFX mapping)
 // ---------------------------------------------------------------------------
 
-class AudioController {
+class AudioController implements AudioSfxPort {
   AudioController({required ChannelPool channelPool})
       : _pool = channelPool;
 
@@ -129,3 +139,16 @@ final audioControllerProvider = Provider<AudioController>((ref) {
   ref.onDispose(controller.dispose);
   return controller;
 });
+
+/// Narrow SFX port used by dispatchers / providers that only need
+/// playSfx. Defaults to the full [AudioController] but can be overridden
+/// in tests with a silent implementation.
+final audioSfxPortProvider = Provider<AudioSfxPort>((ref) {
+  return ref.watch(audioControllerProvider);
+});
+
+/// Silent stand-in for tests / builds without audio assets.
+class SilentAudioSfxPort implements AudioSfxPort {
+  @override
+  Future<void> playSfx(SfxId sfx) async {}
+}

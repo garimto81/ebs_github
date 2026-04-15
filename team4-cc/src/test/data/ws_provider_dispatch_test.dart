@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:ebs_cc/data/remote/ws_provider.dart';
+import 'package:ebs_cc/foundation/audio/audio_player_provider.dart';
 import 'package:ebs_cc/features/command_center/providers/action_button_provider.dart';
 import 'package:ebs_cc/features/command_center/providers/hand_display_provider.dart';
 import 'package:ebs_cc/features/command_center/providers/hand_fsm_provider.dart';
@@ -14,9 +15,14 @@ import 'package:ebs_cc/features/command_center/services/undo_stack.dart';
 import 'package:ebs_cc/models/enums/hand_fsm.dart';
 
 void main() {
+  // Audio SFX dispatch uses platform channels; binding must exist.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late ProviderContainer container;
 
-  ProviderContainer _freshContainer() => ProviderContainer();
+  ProviderContainer _freshContainer() => ProviderContainer(overrides: [
+        audioSfxPortProvider.overrideWithValue(SilentAudioSfxPort()),
+      ]);
 
   tearDown(() => container.dispose());
 
@@ -248,3 +254,4 @@ void main() {
     });
   });
 }
+

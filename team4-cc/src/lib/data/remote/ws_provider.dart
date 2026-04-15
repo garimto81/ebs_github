@@ -25,6 +25,7 @@ import '../../features/command_center/providers/hand_display_provider.dart';
 import '../../features/command_center/providers/hand_fsm_provider.dart';
 import '../../features/command_center/providers/undo_provider.dart';
 import '../../features/overlay/services/skin_consumer.dart';
+import '../../foundation/audio/audio_player_provider.dart';
 import '../../foundation/configs/security_delay_config.dart';
 import '../../models/enums/hand_fsm.dart';
 import 'bo_api_client.dart';
@@ -103,6 +104,33 @@ void dispatchIncomingEventForTest(
 ) =>
     _dispatchIncomingEvent(<T>(p) => container.read(p), payload);
 
+/// Fires an SFX through the active AudioController. Errors are swallowed
+/// so missing assets (e.g. in widget tests) never break the dispatcher.
+void _fireSfx(ProviderReadFn read, SfxId? sfx) {
+  if (sfx == null) return;
+  // ignore: discarded_futures
+  read(audioSfxPortProvider).playSfx(sfx).catchError((_) {});
+}
+
+/// Maps an ActionPerformed action_type to the BS-07-05 SFX catalogue.
+SfxId? _sfxForAction(String actionType) {
+  switch (actionType) {
+    case 'fold':
+      return SfxId.foldSound;
+    case 'check':
+      return SfxId.checkTap;
+    case 'call':
+      return SfxId.chipSlide;
+    case 'bet':
+    case 'raise':
+      return SfxId.chipSlide;
+    case 'allin':
+      return SfxId.allInDramatic;
+    default:
+      return null;
+  }
+}
+
 void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
   final type = payload['type'] as String? ?? '';
 
@@ -115,6 +143,7 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
       read(potTotalProvider.notifier).state = 0;
       read(boardCardsProvider.notifier).state = const [];
       read(hasBetToMatchProvider.notifier).state = false;
+      _fireSfx(read, SfxId.newHandShuffle);
 
     // §3.3.1 ActionPerformed — pot updated, action-on bet context derived
     // from action_type. Pre-flop seat bets update triggers hasBetToMatch.
@@ -127,12 +156,14 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
           actionType == 'allin') {
         read(hasBetToMatchProvider.notifier).state = true;
       }
+      _fireSfx(read, _sfxForAction(actionType));
 
     // §3.3.1 HandEnded — phase -> HAND_COMPLETE, clear undo, reset context.
     case 'HandEnded':
       read(handFsmProvider.notifier).forceState(HandFsm.handComplete);
       read(undoStackProvider.notifier).clearOnHandComplete();
       read(hasBetToMatchProvider.notifier).state = false;
+      _fireSfx(read, SfxId.potWin);
 
     // §3.3.4 CardDetected board branch — publishes don't emit StreetAdvanced,
     // so the CC derives street phase from cumulative community_cards count
@@ -146,6 +177,7 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
       final current = read(boardCardsProvider);
       final next = [...current, '$rank$suit'];
       read(boardCardsProvider.notifier).state = next;
+      _fireSfx(read, SfxId.cardDeal);
       switch (next.length) {
         case 3:
           read(handFsmProvider.notifier).forceState(HandFsm.flop);
