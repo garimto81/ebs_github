@@ -24,7 +24,6 @@ Command Center (실시간 운영) + Overlay (방송 그래픽 출력, Skin Consu
 | Command Center UI | `../docs/2. Development/2.4 Command Center/Command_Center_UI/` |
 | Overlay | `../docs/2. Development/2.4 Command Center/Overlay/` |
 | Integration Test Plan | `../docs/2. Development/2.4 Command Center/Integration_Test_Plan.md` |
-| Spec Gaps | `../docs/2. Development/2.4 Command Center/Spec_Gaps.md` |
 | Backlog | `../docs/2. Development/2.4 Command Center/Backlog.md` |
 
 ### Publisher Fast-Track
@@ -91,13 +90,12 @@ dependencies:
 | CCR-019 | Idempotency-Key 헤더 | `lib/data/remote/bo_api_client.dart` Dio 인터셉터 |
 | CCR-021 | WebSocket `seq` + replay | `lib/foundation/utils/seq_tracker.dart` + `bo_websocket_client.dart` |
 
-## Spec Gap (CCR-first)
+## 기획 공백 발견 시
 
-- **Shared/다른 팀 경로 변경 필요 시**: CR draft 먼저. Spec_Gaps.md 에는 pointer + 임시 구현 1줄만.
-- **팀 내부 판단만 필요 시**: Spec_Gaps.md 에 직접.
-- CC 형식: `GAP-CC-{NNN}`
-- Graphic Editor: team1 소유. team4에서 GE Gap 기록 금지.
-- 상세: `../CLAUDE.md` §"Spec Gap 프로세스"
+개발 중 기획 문서에 없는 판단이 필요하면 해당 기획 문서를 **즉시 보강**한다. Spec_Gaps.md · CR draft · CCR-first 프로세스는 폐지되었다.
+
+- Graphic Editor 관련 공백은 team1 이 `decision_owner` — 편집 시 team1 notify.
+- 상세: `../CLAUDE.md` §"기획 공백 발견 시 프로세스".
 
 ## 금지
 
