@@ -37,10 +37,30 @@ from datetime import datetime
 from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parent.parent
-INBOX = PROJECT / "docs" / "05-plans" / "ccr-inbox"
-ARCHIVED = INBOX / "archived"
-# 승격 로그 저장 폴더 (ccr-inbox 내부).
-PROMOTING = INBOX / "promoting"
+
+# v5 (default): docs/3. Change Requests/{pending,in-progress,done}/
+# v4 (fallback): docs/05-plans/ccr-inbox/{,promoting,archived}/
+# 환경변수 EBS_SCOPE_GUARD_VERSION=v4 로 구 경로 강제.
+import os
+
+_SCOPE_VERSION = os.environ.get("EBS_SCOPE_GUARD_VERSION", "v5").lower()
+
+if _SCOPE_VERSION == "v4":
+    INBOX = PROJECT / "docs" / "05-plans" / "ccr-inbox"
+    ARCHIVED = INBOX / "archived"
+    PROMOTING = INBOX / "promoting"
+    _INBOX_DOC_REF = "docs/05-plans/ccr-inbox"
+    _PROMOTING_DOC_REF = "docs/05-plans/ccr-inbox/promoting"
+    _ARCHIVED_DOC_REF = "docs/05-plans/ccr-inbox/archived"
+else:
+    _CCR_ROOT = PROJECT / "docs" / "3. Change Requests"
+    INBOX = _CCR_ROOT / "pending"
+    PROMOTING = _CCR_ROOT / "in-progress"
+    ARCHIVED = _CCR_ROOT / "done"
+    _INBOX_DOC_REF = "docs/3. Change Requests/pending"
+    _PROMOTING_DOC_REF = "docs/3. Change Requests/in-progress"
+    _ARCHIVED_DOC_REF = "docs/3. Change Requests/done"
+
 BACKLOG_DIR = PROJECT / "docs" / "backlog"
 
 VALID_TEAMS = {"team1", "team2", "team3", "team4", "conductor"}
@@ -339,7 +359,7 @@ def render_ccr_log(
         f"\n"
         f"## 원본 Draft\n"
         f"\n"
-        f"`docs/05-plans/ccr-inbox/archived/{archived_draft_name}` 참조\n"
+        f"`{_ARCHIVED_DOC_REF}/{archived_draft_name}` 참조\n"
         f"\n"
         f"## 체크리스트\n"
         f"\n"
@@ -379,7 +399,7 @@ def append_notification(team: str, ccr_number: int, draft: dict) -> str:
     entry = (
         f"\n\n### [NOTIFY-CCR-{nnn}] 검토 요청: {draft['title']}\n"
         f"- **알림일**: {datetime.now():%Y-%m-%d}\n"
-        f"- **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-{nnn}-*.md`\n"
+        f"- **CCR**: `{_PROMOTING_DOC_REF}/CCR-{nnn}-*.md`\n"
         f"- **제안팀**: {draft['proposing']}\n"
         f"- **변경 대상**: `{draft['target_file']}`\n"
         f"- **조치**: 영향 범위 검토 후 승인 또는 이의 제기\n"
@@ -537,7 +557,7 @@ def cmd_legacy_main() -> int:
         "  python tools/ccr_promote.py --complete <draft-filename> \\\n"
         "      --number <NNN> --skipped\n"
         "\n"
-        "상세: docs/05-plans/ccr-inbox/README.md\n",
+        f"상세: {_INBOX_DOC_REF}/README.md\n",
         file=sys.stderr,
     )
     return 2

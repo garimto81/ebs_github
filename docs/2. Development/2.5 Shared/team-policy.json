@@ -1,23 +1,23 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": 4,
-  "description": "EBS 4팀 병렬 작업 충돌 방지를 위한 팀 경계/소유권 SSOT. Conductor 단독 소유 — 팀 수정 금지. v4: 팀 내부 specs 이관 (BS-02,03,05,07,08 → 팀 폴더). contracts/specs/는 팀 간 계약만 보유.",
+  "version": 5,
+  "previous_version": 4,
+  "description": "EBS 4팀 병렬 작업 충돌 방지 + v10 문서 재설계 적용. v5: 홈 레벨 4개 (1. Product / 2. Development / 3. Change Requests / 4. Operations), publisher Fast-Track 경로 재매핑. contracts/ 루트는 폐지(migration/, _templates/만 잔존).",
   "teams": {
     "conductor": {
       "cwd_match": null,
       "owns": [
-        "contracts/",
-        "docs/01-strategy/",
-        "docs/05-plans/",
-        "docs/00-reference/",
-        "docs/06-reports/",
-        "C:/claude/ebs-archive-backup/07-archive/",
-        "docs/backlog/_aggregate.md",
-        "docs/backlog/conductor.md",
-        "docs/backlog.md",
-        "docs/README.md",
+        "docs/1. Product/",
+        "docs/2. Development/2.5 Shared/",
+        "docs/3. Change Requests/in-progress/",
+        "docs/3. Change Requests/done/",
+        "docs/3. Change Requests/3. Change Requests.md",
+        "docs/4. Operations/",
         "docs/mockups/",
         "docs/images/",
+        "docs/README.md",
+        "contracts/migration/",
+        "contracts/_templates/",
         "integration-tests/",
         "tools/",
         "CLAUDE.md",
@@ -25,104 +25,158 @@
         ".gitignore",
         ".claude/"
       ],
-      "backlog_file": "docs/backlog/conductor.md",
-      "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-conductor-"
+      "backlog_file": "docs/4. Operations/Conductor_Backlog.md",
+      "ccr_draft_prefix": "docs/3. Change Requests/pending/CR-conductor-"
     },
     "team1": {
       "cwd_match": ["team1-frontend"],
-      "owns": ["team1-frontend/"],
-      "backlog_file": "docs/backlog/team1.md",
-      "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-team1-",
-      "reads": ["contracts/api/", "contracts/specs/", "contracts/data/"],
-      "api_subscribes": ["API-01", "API-05", "API-06"]
+      "owns": [
+        "team1-frontend/",
+        "docs/2. Development/2.1 Frontend/"
+      ],
+      "backlog_file": "docs/2. Development/2.1 Frontend/Backlog.md",
+      "ccr_draft_prefix": "docs/3. Change Requests/pending/CR-team1-",
+      "reads": [
+        "docs/2. Development/2.2 Backend/APIs/",
+        "docs/2. Development/2.3 Game Engine/APIs/",
+        "docs/2. Development/2.4 Command Center/APIs/",
+        "docs/2. Development/2.5 Shared/",
+        "docs/1. Product/"
+      ],
+      "api_subscribes": ["Backend_HTTP", "WebSocket_Events", "Auth_and_Session"]
     },
     "team2": {
       "cwd_match": ["team2-backend"],
-      "owns": ["team2-backend/"],
-      "backlog_file": "docs/backlog/team2.md",
-      "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-team2-",
-      "reads": ["contracts/api/", "contracts/data/", "contracts/specs/"],
-      "api_publishes": ["API-01", "API-05", "API-06"]
+      "owns": [
+        "team2-backend/",
+        "docs/2. Development/2.2 Backend/"
+      ],
+      "backlog_file": "docs/2. Development/2.2 Backend/Backlog.md",
+      "ccr_draft_prefix": "docs/3. Change Requests/pending/CR-team2-",
+      "reads": [
+        "docs/2. Development/2.3 Game Engine/APIs/",
+        "docs/2. Development/2.4 Command Center/APIs/",
+        "docs/2. Development/2.5 Shared/",
+        "docs/1. Product/"
+      ],
+      "api_publishes": ["Backend_HTTP", "WebSocket_Events", "Auth_and_Session", "Graphic_Editor_API"]
     },
     "team3": {
       "cwd_match": ["team3-engine"],
-      "owns": ["team3-engine/", "ebs_game_engine/"],
-      "backlog_file": "docs/backlog/team3.md",
-      "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-team3-",
-      "reads": ["contracts/api/", "contracts/specs/"],
-      "api_publishes": ["API-04"]
+      "owns": [
+        "team3-engine/",
+        "ebs_game_engine/",
+        "docs/2. Development/2.3 Game Engine/"
+      ],
+      "backlog_file": "docs/2. Development/2.3 Game Engine/Backlog.md",
+      "ccr_draft_prefix": "docs/3. Change Requests/pending/CR-team3-",
+      "reads": [
+        "docs/2. Development/2.2 Backend/APIs/",
+        "docs/2. Development/2.5 Shared/",
+        "docs/1. Product/Game_Rules/"
+      ],
+      "api_publishes": ["Overlay_Output_Events"]
     },
     "team4": {
       "cwd_match": ["team4-cc"],
-      "owns": ["team4-cc/"],
-      "backlog_file": "docs/backlog/team4.md",
-      "ccr_draft_prefix": "docs/05-plans/ccr-inbox/CCR-DRAFT-team4-",
-      "reads": ["contracts/api/", "contracts/specs/"],
-      "api_subscribes": ["API-04", "API-05"],
-      "api_publishes": ["API-03"]
+      "owns": [
+        "team4-cc/",
+        "docs/2. Development/2.4 Command Center/"
+      ],
+      "backlog_file": "docs/2. Development/2.4 Command Center/Backlog.md",
+      "ccr_draft_prefix": "docs/3. Change Requests/pending/CR-team4-",
+      "reads": [
+        "docs/2. Development/2.2 Backend/APIs/",
+        "docs/2. Development/2.3 Game Engine/APIs/",
+        "docs/2. Development/2.5 Shared/",
+        "docs/1. Product/"
+      ],
+      "api_subscribes": ["Overlay_Output_Events", "WebSocket_Events"],
+      "api_publishes": ["RFID_HAL"]
     }
   },
   "shared_blocked_for_teams": [
-    "contracts/",
-    "docs/01-strategy/",
-    "docs/05-plans/CCR-",
-    "docs/05-plans/PLAN-",
-    "docs/05-plans/ROAD",
-    "docs/05-plans/ebs-",
-    "docs/05-plans/b020-",
-    "docs/backlog/_aggregate.md",
-    "docs/backlog/conductor.md",
-    "docs/backlog.md",
+    "docs/1. Product/",
+    "docs/2. Development/2.5 Shared/",
+    "docs/3. Change Requests/in-progress/",
+    "docs/3. Change Requests/done/",
+    "docs/4. Operations/",
+    "contracts/migration/",
     "integration-tests/",
     "CLAUDE.md",
     "README.md",
     "tools/"
   ],
-  "ccr_inbox_dir": "docs/05-plans/ccr-inbox/",
+  "ccr_inbox_dir": "docs/3. Change Requests/pending/",
+  "ccr_in_progress_dir": "docs/3. Change Requests/in-progress/",
+  "ccr_done_dir": "docs/3. Change Requests/done/",
+  "generated_dir": "docs/_generated/",
   "api_dependencies": {
-    "API-01": ["team2", "team1"],
-"API-03": ["team4", "team1"],
-    "API-04": ["team3", "team4"],
-    "API-05": ["team2", "team1", "team4"],
-    "API-06": ["team2", "team1"],
-    "API-07": ["team2", "team1", "team4"]
+    "Backend_HTTP": ["team2", "team1"],
+    "WebSocket_Events": ["team2", "team1", "team3", "team4"],
+    "Auth_and_Session": ["team2", "team1"],
+    "Overlay_Output_Events": ["team3", "team4"],
+    "RFID_HAL": ["team4", "team1"],
+    "Graphic_Editor_API": ["team2", "team1", "team4"]
   },
   "audit_log_path": ".claude/logs/scope-guard-{YYYYMMDD}.jsonl",
   "contract_ownership": {
-    "contracts/api/API-01-backend-api.md": {
+    "docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md": {
       "publisher": "team2",
       "subscribers": ["team1", "team4"],
-      "direct_edit": "LOW"
+      "direct_edit": "LOW",
+      "legacy_id": "API-01"
     },
-    "contracts/api/API-03-rfid-hal-interface.md": {
-      "publisher": "team4",
-      "subscribers": ["team1"],
-      "direct_edit": "LOW"
-    },
-    "contracts/api/API-04-overlay-output.md": {
-      "publisher": "team3",
-      "subscribers": ["team4"],
-      "direct_edit": "LOW"
-    },
-    "contracts/api/API-05-websocket-events.md": {
+    "docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md": {
       "publisher": "team2",
       "subscribers": ["team1", "team3", "team4"],
-      "direct_edit": "LOW"
+      "direct_edit": "LOW",
+      "legacy_id": "API-05"
     },
-    "contracts/api/API-06-auth-session.md": {
+    "docs/2. Development/2.2 Backend/APIs/Auth_and_Session.md": {
       "publisher": "team2",
       "subscribers": ["team1"],
-      "direct_edit": "LOW"
+      "direct_edit": "LOW",
+      "legacy_id": "API-06"
     },
-    "contracts/api/API-07-graphic-editor.md": {
+    "docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md": {
       "publisher": "team2",
       "subscribers": ["team1", "team4"],
-      "direct_edit": "LOW"
+      "direct_edit": "LOW",
+      "legacy_id": "API-07"
     },
-    "contracts/specs/BS-04-rfid/BS-04-04-hal-contract.md": {
+    "docs/2. Development/2.2 Backend/Database/Schema.md": {
+      "publisher": "team2",
+      "subscribers": ["team1", "team3", "team4"],
+      "direct_edit": "MEDIUM",
+      "legacy_id": "DATA-04"
+    },
+    "docs/2. Development/2.2 Backend/Database/ER_Diagram.md": {
+      "publisher": "team2",
+      "subscribers": ["team1", "team3", "team4"],
+      "direct_edit": "LOW",
+      "legacy_id": "DATA-01"
+    },
+    "docs/2. Development/2.2 Backend/Back_Office/Sync_Protocol.md": {
+      "publisher": "team2",
+      "subscribers": ["team1"],
+      "direct_edit": "MEDIUM",
+      "legacy_id": "BO-02"
+    },
+    "docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md": {
+      "publisher": "team3",
+      "subscribers": ["team4"],
+      "direct_edit": "LOW",
+      "legacy_id": "API-04"
+    },
+    "docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md": {
       "publisher": "team4",
       "subscribers": ["team1"],
-      "direct_edit": "LOW"
+      "direct_edit": "LOW",
+      "legacy_id": "BS-04-04"
     }
-  }
+  },
+  "scope_guard_version": "v5",
+  "scope_guard_env_var": "EBS_SCOPE_GUARD_VERSION",
+  "scope_guard_rollback_value": "v4"
 }

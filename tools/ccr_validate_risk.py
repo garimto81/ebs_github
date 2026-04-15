@@ -20,7 +20,15 @@ from ccr_promote import (  # noqa: E402
     BREAKING_KEYWORDS, classify_risk, _extract_diff_section,
 )
 
-TEAM_POLICY = PROJECT / "contracts" / "team-policy.json"
+# v5: docs/2. Development/2.5 Shared/team-policy.json (신규 SSOT)
+# v4 fallback: contracts/team-policy.json
+import os as _os
+_V5_POLICY = PROJECT / "docs" / "2. Development" / "2.5 Shared" / "team-policy.json"
+_V4_POLICY = PROJECT / "contracts" / "team-policy.json"
+if _os.environ.get("EBS_SCOPE_GUARD_VERSION", "v5").lower() == "v4":
+    TEAM_POLICY = _V4_POLICY
+else:
+    TEAM_POLICY = _V5_POLICY if _V5_POLICY.exists() else _V4_POLICY
 
 
 def load_team_policy() -> dict:
