@@ -7,12 +7,14 @@
 // - Token-aware [BoApiClient] is created inside the provider scope so that
 //   fetchReplayEvents (CCR-021 seq-gap replay) uses the correct JWT.
 //
-// Incoming event routing (_dispatchIncomingEvent) forwards server pushes to:
-//   HandFsmNotifier  — forceState on HandFsmUpdated
-//   TableStateNotifier — forceState on TableFsmUpdated
-//   hasBetToMatchProvider — updated on ActionOnUpdated
-//   handNumberProvider, potTotalProvider, boardCardsProvider — display state
-//   undoStackProvider — clearOnHandComplete on HandFsmUpdated(handComplete)
+// Incoming event routing (_dispatchIncomingEvent) implements the consumer-
+// side of the state-transition contract in
+//   docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md §3.3
+// Publisher-emitted event names are authoritative (measured 2026-04-15
+// against team2-backend/src/websocket/cc_handler.py:44-52):
+//   HandStarted, HandEnded, ActionPerformed, CardDetected, GameChanged,
+//   RfidStatusChanged, OutputStatusChanged, OperatorConnected/Disconnected,
+//   event_flight_summary, clock_tick, clock_level_changed, Ack.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,10 +23,8 @@ import '../../features/auth/auth_provider.dart';
 import '../../features/command_center/providers/action_button_provider.dart';
 import '../../features/command_center/providers/hand_display_provider.dart';
 import '../../features/command_center/providers/hand_fsm_provider.dart';
-import '../../features/command_center/providers/table_state_provider.dart';
 import '../../features/command_center/providers/undo_provider.dart';
 import '../../models/enums/hand_fsm.dart';
-import '../../models/enums/table_fsm.dart';
 import 'bo_api_client.dart';
 import 'bo_websocket_client.dart';
 
@@ -62,7 +62,8 @@ final boWsClientProvider = Provider<BoWebSocketClient?>((ref) {
     wsUrl: launchConfig.wsUrl,
     tableId: launchConfig.tableId,
     token: launchConfig.token,
-    onEvent: (payload) => _dispatchIncomingEvent(ref, payload),
+    onEvent: (payload) =>
+        _dispatchIncomingEvent(<T>(p) => ref.read(p), payload),
     fetchReplay: apiClient.fetchReplayEvents,
   );
 
@@ -83,84 +84,79 @@ final boWsClientProvider = Provider<BoWebSocketClient?>((ref) {
 });
 
 // ---------------------------------------------------------------------------
-// Incoming event router
+// Incoming event router (§3.3 consumer contract)
 // ---------------------------------------------------------------------------
 
-/// Routes server-pushed events to appropriate Riverpod notifiers.
-///
-/// Called by [BoWebSocketClient.onEvent] after seq validation and
-/// gap-replay (CCR-021).
-void _dispatchIncomingEvent(Ref ref, Map<String, dynamic> payload) {
+/// Reader closure: same `read(provider)` semantics for both [Ref] and
+/// [ProviderContainer]. Lets the dispatcher be unit-tested with a plain
+/// container without pulling in a full widget tree.
+typedef ProviderReadFn = T Function<T>(ProviderListenable<T> provider);
+
+/// Test-only entry point. Production flow uses `ref.read` via
+/// [boWsClientProvider].
+@visibleForTesting
+void dispatchIncomingEventForTest(
+  ProviderContainer container,
+  Map<String, dynamic> payload,
+) =>
+    _dispatchIncomingEvent(<T>(p) => container.read(p), payload);
+
+void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
   final type = payload['type'] as String? ?? '';
 
   switch (type) {
-    // ---- Hand FSM (server-authoritative sync) --------------------------------
-    case 'HandFsmUpdated':
-      final next = _parseHandFsm(payload['state'] as String? ?? '');
-      if (next != null) {
-        ref.read(handFsmProvider.notifier).forceState(next);
-        if (next == HandFsm.handComplete) {
-          // Clear undo stack on hand completion (BS-05-05).
-          ref.read(undoStackProvider.notifier).clearOnHandComplete();
-        }
+    // §3.3.1 HandStarted — new hand begins; phase auto-advances to PRE_FLOP.
+    case 'HandStarted':
+      final handNumber = payload['hand_number'] as int? ?? 0;
+      read(handFsmProvider.notifier).forceState(HandFsm.preFlop);
+      read(handNumberProvider.notifier).state = handNumber;
+      read(potTotalProvider.notifier).state = 0;
+      read(boardCardsProvider.notifier).state = const [];
+      read(hasBetToMatchProvider.notifier).state = false;
+
+    // §3.3.1 ActionPerformed — pot updated, action-on bet context derived
+    // from action_type. Pre-flop seat bets update triggers hasBetToMatch.
+    case 'ActionPerformed':
+      final pot = payload['pot_after'] as int? ?? 0;
+      final actionType = payload['action_type'] as String? ?? '';
+      read(potTotalProvider.notifier).state = pot;
+      if (actionType == 'bet' ||
+          actionType == 'raise' ||
+          actionType == 'allin') {
+        read(hasBetToMatchProvider.notifier).state = true;
       }
 
-    // ---- Table FSM (server-authoritative sync) -------------------------------
-    case 'TableFsmUpdated':
-      final next = _parseTableFsm(payload['state'] as String? ?? '');
-      if (next != null) {
-        ref.read(tableStateProvider.notifier).forceState(next);
-      }
+    // §3.3.1 HandEnded — phase -> HAND_COMPLETE, clear undo, reset context.
+    case 'HandEnded':
+      read(handFsmProvider.notifier).forceState(HandFsm.handComplete);
+      read(undoStackProvider.notifier).clearOnHandComplete();
+      read(hasBetToMatchProvider.notifier).state = false;
 
-    // ---- Action-on seat (which player must act) ------------------------------
-    case 'ActionOnUpdated':
-      final hasBet = payload['has_bet'] as bool? ?? false;
-      ref.read(hasBetToMatchProvider.notifier).state = hasBet;
+    // §3.3.4 uncovered — CardDetected for board cards only (hole cards
+    // belong to the Overlay pipeline).
+    case 'CardDetected':
+      final isBoard = payload['is_board'] as bool? ?? false;
+      if (!isBoard) break;
+      final suit = payload['suit'] as String? ?? '';
+      final rank = payload['rank'] as String? ?? '';
+      if (suit.isEmpty || rank.isEmpty) break;
+      final current = read(boardCardsProvider);
+      read(boardCardsProvider.notifier).state = [...current, '$rank$suit'];
 
-    // ---- Board cards updated (community cards) --------------------------------
-    case 'BoardUpdated':
-      final cards =
-          (payload['cards'] as List<dynamic>?)?.cast<String>() ?? const [];
-      ref.read(boardCardsProvider.notifier).state = cards;
+    // §3.3.4 operational — no FSM effect on CC. Observability only.
+    case 'GameChanged':
+    case 'RfidStatusChanged':
+    case 'OutputStatusChanged':
+      debugPrint('[WS→CC] Operational event: $type');
 
-    // ---- Pot total updated ---------------------------------------------------
-    case 'PotUpdated':
-      final amount = payload['amount'] as int? ?? 0;
-      ref.read(potTotalProvider.notifier).state = amount;
+    // Lobby-only. CC sees Ack responses to its own commands elsewhere.
+    case 'OperatorConnected':
+    case 'OperatorDisconnected':
+    case 'Ack':
+      break;
 
-    // ---- Hand number updated -------------------------------------------------
-    case 'HandNumberUpdated':
-      final number = payload['hand_number'] as int? ?? 0;
-      ref.read(handNumberProvider.notifier).state = number;
-
+    // Forward-compatible (§3.3 version drift): log + ignore unknown types.
     default:
-      debugPrint('[WS→CC] Unhandled event: $type');
+      debugPrint('[WS→CC] Unknown event type (ignored): $type');
   }
 }
-
-// ---------------------------------------------------------------------------
-// Parse helpers
-// ---------------------------------------------------------------------------
-
-HandFsm? _parseHandFsm(String s) => switch (s) {
-      'idle' => HandFsm.idle,
-      'setup_hand' => HandFsm.setupHand,
-      'pre_flop' => HandFsm.preFlop,
-      'flop' => HandFsm.flop,
-      'turn' => HandFsm.turn,
-      'river' => HandFsm.river,
-      'showdown' => HandFsm.showdown,
-      'hand_complete' => HandFsm.handComplete,
-      'run_it_multiple' => HandFsm.runItMultiple,
-      _ => null,
-    };
-
-TableFsm? _parseTableFsm(String s) => switch (s) {
-      'empty' => TableFsm.empty,
-      'setup' => TableFsm.setup,
-      'live' => TableFsm.live,
-      'paused' => TableFsm.paused,
-      'closed' => TableFsm.closed,
-      'reserved_table' => TableFsm.reservedTable,
-      _ => null,
-    };
