@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+"""SessionStart hook: 팀 세션이면 work/{team}/{date}-{slug} 브랜치 자동 체크아웃.
+
+Conductor 세션은 main 유지. 충돌 시(작업 중인 변경 존재) 침묵 통과.
+bypass 모드 시에도 안전하게 동작 (실패 시 침묵).
+"""
+from __future__ import annotations
+
+import datetime
+import subprocess
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+from _common import detect_team, read_payload, PROJECT  # noqa: E402
+
+
+def _git(*args: str) -> tuple[int, str]:
+    try:
+        r = subprocess.run(["git", *args], cwd=PROJECT, capture_output=True, text=True, timeout=10)
+        return r.returncode, (r.stdout + r.stderr).strip()
+    except Exception as e:
+        return 1, str(e)
+
+
+def _current_branch() -> str:
+    code, out = _git("branch", "--show-current")
+    return out if code == 0 else ""
+
+
+def _has_uncommitted() -> bool:
+    code, out = _git("status", "--porcelain")
+    return bool(out.strip()) if code == 0 else False
+
+
+def main() -> int:
+    payload = read_payload()
+    team = detect_team(payload.get("cwd"))
+    if team == "conductor":
+        sys.stderr.write(f"[session-branch] conductor session, staying on {_current_branch()}\n")
+        return 0
+
+    cur = _current_branch()
+    if cur.startswith(f"work/{team}/"):
+        sys.stderr.write(f"[session-branch] {team}: already on {cur}\n")
+        return 0
+
+    if cur != "main":
+        sys.stderr.write(f"[session-branch] {team}: not on main ({cur}), skipping auto-branch\n")
+        return 0
+
+    if _has_uncommitted():
+        sys.stderr.write(f"[session-branch] {team}: uncommitted changes on main — manual handling required\n")
+        return 0
+
+    today = datetime.date.today().strftime("%Y%m%d")
+    slug = "session"
+    branch = f"work/{team}/{today}-{slug}"
+
+    code, out = _git("rev-parse", "--verify", branch)
+    if code == 0:
+        _git("checkout", branch)
+        sys.stderr.write(f"[session-branch] {team}: switched to existing {branch}\n")
+    else:
+        _git("checkout", "-b", branch)
+        sys.stderr.write(f"[session-branch] {team}: created and switched to {branch}\n")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -80,9 +80,21 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 | `team{N}-*/**` (코드/설정) | 해당 팀 |
 | `integration-tests/**` | Conductor |
 
-> **SSOT**: `docs/2. Development/2.5 Shared/team-policy.json`. Hook · `tools/*` 모두 이 파일 하나만 참조.
+> **SSOT**: `docs/2. Development/2.5 Shared/team-policy.json` (v6, `governance_model: free_write_with_decision_owner`). Hook · `tools/*` 모두 이 파일 하나만 참조.
 >
-> **자동화 상태**: 정책 SSOT + `tools/ccr_*.py` 검증은 구현되어 있으나, **PreToolUse hook 기반 강제 차단은 미구현**(가정 컴포넌트). 실제 경계는 정책 파일 + CCR 프로세스 + 사람 규율로 운영한다.
+> **거버넌스 모델 (v6, 2026-04-15)**: **쓰기 권한 ≠ 결정 권한**. 모든 세션이 모든 docs 를 자유 편집할 수 있다. 위 표의 "owner" 컬럼은 **결정 권한자**(decision_owner) — 의미적 충돌 발생 시 최종 판정. 쓰기 제한은 hook 으로 차단하지 않는다.
+
+---
+
+## 멀티 세션 충돌 방지 (v6, 3계층 방어)
+
+| Layer | 메커니즘 | 자산 |
+|-------|---------|------|
+| **L1. 세션-당-브랜치** | Conductor=`main` 직접, 팀=`work/team{N}/{date}-{slug}` 자동 체크아웃, `/team-merge` 로 ff merge | `.claude/hooks/session_branch_init.py`, `.claude/hooks/branch_guard.py`, `tools/team_merge.py` |
+| **L2. Active-edit 레지스트리** | `meta/active-edits` orphan 브랜치에 세션별 claim JSON. SessionStart 시 활성 항목 컨텍스트 주입, PreEdit 시 충돌 1회 경고(같은 호출 재시도 시 통과). bypass 시 침묵. TTL 2h. | `.claude/hooks/_registry.py`, `active_edits_session_start.py`, `active_edits_preedit.py`, `active_edits_session_end.py`, `tools/active_edits_gc.py` |
+| **L3. 핫스팟 파일 분해** | `Backlog/`, `Spec_Gaps/`, `Conductor_Backlog/` 디렉토리 + 항목당 1파일. 집계는 `tools/backlog_aggregate.py` 가 `_generated/` 에 자동 생성 | `tools/backlog_decompose.py` (1회), `tools/backlog_aggregate.py` |
+
+상세 설계 근거: `~/.claude/plans/shimmering-roaming-neumann.md`
 
 ---
 

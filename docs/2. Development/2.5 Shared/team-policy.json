@@ -1,8 +1,26 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": 5,
-  "previous_version": 4,
-  "description": "EBS 4팀 병렬 작업 충돌 방지 + v10 문서 재설계 적용. v5: 홈 레벨 4개 (1. Product / 2. Development / 3. Change Requests / 4. Operations), publisher Fast-Track 경로 재매핑. contracts/ 루트는 폐지(migration/, _templates/만 잔존).",
+  "version": 6,
+  "previous_version": 5,
+  "description": "EBS 5팀 멀티 세션 충돌 방지 + v10 문서 구조. v6: 거버넌스 모델 명시 (free_write_with_decision_owner) — 쓰기 권한 폐지(누구나 모든 docs 편집 가능), 단 의미적 충돌 시 decision_owner가 최종 판정. 기존 owns/contract_ownership는 decision_owner 매핑으로 재해석(키는 호환 유지). branch_strategy 추가.",
+  "governance_model": {
+    "name": "free_write_with_decision_owner",
+    "rationale": "문서 구조 일원화 + 자유 편집 + 작업 시작 시 active-edit 레지스트리 가시화 + 머지 충돌 시 명시된 decision_owner가 의미적 결정. 쓰기 권한 ≠ 결정 권한.",
+    "write_access": "all_sessions_all_docs",
+    "decision_authority_source": "teams[*].owns and contract_ownership[*].publisher",
+    "conflict_resolution": {
+      "syntactic": "merge_author_resolves",
+      "semantic": "decision_owner_adjudicates",
+      "escalation": "conductor"
+    }
+  },
+  "branch_strategy": {
+    "main_push_allowed_for": ["conductor"],
+    "team_branch_pattern": "work/{team}/{YYYYMMDD}-{slug}",
+    "registry_branch": "meta/active-edits",
+    "merge_method": "rebase_then_fast_forward",
+    "merge_tool": "tools/team_merge.py"
+  },
   "teams": {
     "conductor": {
       "cwd_match": null,

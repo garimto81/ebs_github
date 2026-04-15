@@ -57,37 +57,106 @@ def _resolve_paths() -> tuple[dict[str, Path], Path, Path]:
     return team_paths, conductor, output
 
 
+_FRONTMATTER_RE = __import__("re").compile(r"^---\n(.*?)\n---\n", __import__("re").DOTALL)
+
+
+def _read_dir_items(d: Path) -> list[dict]:
+    """디렉토리 내 *.md 파일을 frontmatter 기반으로 읽어 항목 리스트 반환.
+    frontmatter 누락 시 파일명을 ID로 fallback.
+    """
+    if not d.exists() or not d.is_dir():
+        return []
+    items = []
+    for f in sorted(d.glob("*.md")):
+        text = f.read_text(encoding="utf-8")
+        meta = {"id": f.stem, "title": "", "status": "UNKNOWN"}
+        m = _FRONTMATTER_RE.match(text)
+        if m:
+            for line in m.group(1).splitlines():
+                if ":" in line:
+                    k, _, v = line.partition(":")
+                    meta[k.strip()] = v.strip().strip('"')
+            body = text[m.end():]
+        else:
+            body = text
+        items.append({**meta, "body": body.rstrip(), "file": f})
+    return items
+
+
+def _section_for(team_dir: Path, team_label: str, lines: list[str]) -> int:
+    """팀 디렉토리에서 항목을 읽어 status별로 그룹화하여 lines에 추가. 항목 수 반환."""
+    items = _read_dir_items(team_dir)
+    if not items:
+        return 0
+    by_status: dict[str, list[dict]] = {}
+    for it in items:
+        by_status.setdefault(it["status"], []).append(it)
+    lines.append(f"## {team_label.upper()}")
+    lines.append("")
+    lines.append(f"> 원본 디렉토리: `{team_dir.relative_to(PROJECT).as_posix()}` ({len(items)} 항목)")
+    lines.append("")
+    for status in ("PENDING", "IN_PROGRESS", "OPEN", "DONE", "RESOLVED",
+                   "ARCHIVE", "TODO", "UNCATEGORIZED", "UNKNOWN"):
+        if status not in by_status:
+            continue
+        lines.append(f"### {status}")
+        for it in by_status[status]:
+            title = it.get("title") or it["id"]
+            lines.append(f"- **[{it['id']}]** {title} — `{it['file'].name}`")
+        lines.append("")
+    return len(items)
+
+
 def main() -> None:
     team_paths, conductor_path, output = _resolve_paths()
-    sources: list[tuple[str, Path]] = list(team_paths.items()) + [("conductor", conductor_path)]
 
     lines: list[str] = [
         "# EBS 백로그 — 집계 뷰 (읽기 전용)",
         "",
         f"> **생성 시각**: {datetime.now():%Y-%m-%d %H:%M:%S}",
         "> **편집 금지**: 이 파일은 `tools/backlog_aggregate.py`가 덮어씁니다.",
-        "> **수정은 팀별 원본 파일에서만**.",
+        "> **수정은 항목 파일에서만** (디렉토리화 후 항목당 1파일 구조).",
         "",
         "---",
         "",
     ]
-    for team, path in sources:
-        if not path.exists():
-            continue
-        lines.append(f"## {team.upper()}")
+    total = 0
+    # 1) v6: 디렉토리화된 구조 우선
+    team_dirs = {team: (path.parent / "Backlog") for team, path in team_paths.items()}
+    conductor_dir = conductor_path.parent / "Conductor_Backlog"
+    for team, d in team_dirs.items():
+        n = _section_for(d, team, lines)
+        if n:
+            total += n
+            lines += ["---", ""]
+        elif team_paths[team].exists():
+            # 구 단일파일 fallback
+            lines.append(f"## {team.upper()} (legacy single-file)")
+            lines.append("")
+            lines.append(team_paths[team].read_text(encoding="utf-8").rstrip())
+            lines += ["", "---", ""]
+    n = _section_for(conductor_dir, "conductor", lines)
+    if n:
+        total += n
+        lines += ["---", ""]
+    elif conductor_path.exists():
+        lines.append("## CONDUCTOR (legacy single-file)")
         lines.append("")
-        try:
-            rel = path.relative_to(PROJECT).as_posix()
-        except ValueError:
-            rel = str(path)
-        lines.append(f"> 원본: `{rel}`")
-        lines.append("")
-        lines.append(path.read_text(encoding="utf-8").rstrip())
-        lines += ["", "", "---", ""]
+        lines.append(conductor_path.read_text(encoding="utf-8").rstrip())
+        lines += ["", "---", ""]
+
+    # Spec_Gaps 디렉토리도 동일 규칙으로 추가 (있는 팀만)
+    for team, path in team_paths.items():
+        gap_dir = path.parent / "Spec_Gaps"
+        if gap_dir.exists() and gap_dir.is_dir():
+            _section_for(gap_dir, f"{team}-spec-gaps", lines)
+            lines += ["---", ""]
+
+    lines.append(f"_총 항목: {total}_")
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text("\n".join(lines), encoding="utf-8")
-    print(f"wrote {output}")
+    print(f"wrote {output} ({total} items)")
 
 
 if __name__ == "__main__":

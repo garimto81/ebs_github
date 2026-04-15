@@ -2,6 +2,12 @@
 .omc/
 nul
 
+# Active-edits registry 로컬 캐시 (meta/active-edits 브랜치로 sync, main에 커밋 금지)
+.claude/.active-edits-cache/
+.claude/.active-edits-overrides/
+.claude/.session-id
+.git/active-edits.index
+
 # Git Worktrees
 .worktrees/
 
