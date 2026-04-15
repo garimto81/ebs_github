@@ -24,13 +24,42 @@ final _log = Logger('RfidReaderProvider');
 // Core RFID reader provider (DI interface)
 // ---------------------------------------------------------------------------
 
+/// Detected RFID chip family (CCR-022 §13 migration path).
+enum RfidChipFamily { st25r3911b, st25r3916, unknown }
+
+/// Probes connected hardware to decide which reader driver to instantiate.
+///
+/// Phase 1: always returns [RfidChipFamily.unknown] because Features.useMockRfid
+/// is the supported path.
+/// Phase 2: extend with actual firmware handshake over UART — read
+/// `IC_IDENTITY_REGISTER` and map the value per ST25R3911B datasheet
+/// (0x08 = 3911B, 0x05 = 3916). Until hardware integration lands the
+/// caller should not reach this code unless [Features.useMockRfid] is
+/// false AND a reader is physically attached.
+RfidChipFamily detectChipFamily() {
+  // Phase 2 hook: replace with real UART probe (st25r3911b_reader.dart
+  // exposes a static probe method once wired to serial_port_win32).
+  return RfidChipFamily.unknown;
+}
+
 final rfidReaderProvider = Provider<IRfidReader>((ref) {
   if (Features.useMockRfid) {
     return MockRfidReader();
   }
-  // TODO(Phase 2): detect chip (ST25R3911B vs ST25R3916) and return
-  // appropriate concrete reader (CCR-022 §13 migration path).
-  return St25r3911bReader();
+  switch (detectChipFamily()) {
+    case RfidChipFamily.st25r3911b:
+    case RfidChipFamily.unknown:
+      // Default to 3911B until Phase 2 chip-detection lands.
+      return St25r3911bReader();
+    case RfidChipFamily.st25r3916:
+      // Phase 2: St25r3916Reader will be introduced (CCR-022 §13).
+      // For now, 3911B driver is a close-enough superset; log a warning.
+      _log.warning(
+        'ST25R3916 detected but Phase 2 driver missing; '
+        'falling back to ST25R3911B driver. CCR-022 §13.',
+      );
+      return St25r3911bReader();
+  }
 });
 
 // ---------------------------------------------------------------------------
