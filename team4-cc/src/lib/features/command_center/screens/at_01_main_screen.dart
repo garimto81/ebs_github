@@ -27,6 +27,9 @@ import '../providers/seat_provider.dart';
 import '../providers/table_state_provider.dart';
 import '../providers/undo_provider.dart';
 import '../services/undo_stack.dart';
+import 'at_04_statistics_screen.dart';
+import 'at_05_rfid_register_screen.dart';
+import 'at_06_game_settings_modal.dart';
 
 // ---------------------------------------------------------------------------
 // AT-01 Main Screen
@@ -359,12 +362,36 @@ class _Toolbar extends ConsumerWidget {
   }
 
   void _pushScreen(BuildContext context, String screenId) {
-    // TODO: Wire to GoRouter once P4-3 navigation is implemented.
-    debugPrint('Navigate to $screenId');
+    switch (screenId) {
+      case 'AT-04':
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const At04StatisticsScreen()),
+        );
+      case 'AT-05':
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const At05RfidRegisterScreen()),
+        );
+      default:
+        debugPrint('Unknown screen: $screenId');
+    }
   }
 
   void _handleMenu(BuildContext context, String value) {
-    debugPrint('Menu action: $value');
+    switch (value) {
+      case 'game_settings':
+        // ignore: discarded_futures
+        showGameSettingsModal(context);
+      case 'undo_history':
+        // Undo history is handled by the in-place Undo panel; menu entry
+        // is a no-op pending BS-05-05 side-panel spec.
+        debugPrint('Undo History — handled by ActionPanel UI');
+      case 'miss_deal':
+        // Miss Deal dispatch path is owned by ActionPanel (8-button grid);
+        // this menu entry is a redundant fallback.
+        debugPrint('Miss Deal — use ACT panel button');
+      default:
+        debugPrint('Unknown menu: $value');
+    }
   }
 }
 
