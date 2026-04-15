@@ -3,7 +3,10 @@
 // run_it_multiple, cap_bb_multiplier. Global settings remain in team1 Lobby.
 //
 // 600×auto Dialog, 3 Tabs: Game / Blinds / Rules.
-// IDLE-only fields greyed during hand with tooltip.
+// Per Game_Settings_Modal.md §2.1, category A (hand-boundary-only) fields are
+// NOT merely disabled during a hand — the entire section is replaced with an
+// info placeholder ("현재 {N}번 핸드 진행 중. 핸드 종료 후 변경 가능.") so
+// the operator cannot reach or focus the field at all.
 // RBAC: Admin/Operator only.
 
 import 'package:flutter/material.dart';
@@ -15,6 +18,7 @@ import '../../../models/enums/game_type.dart';
 import '../../../models/enums/hand_fsm.dart';
 import '../../auth/auth_provider.dart';
 import '../providers/config_provider.dart';
+import '../providers/hand_display_provider.dart';
 import '../providers/hand_fsm_provider.dart';
 
 // ---------------------------------------------------------------------------
@@ -83,7 +87,9 @@ class _At06GameSettingsModalState extends ConsumerState<At06GameSettingsModal>
     final cs = Theme.of(context).colorScheme;
     final auth = ref.watch(authProvider);
     final handFsm = ref.watch(handFsmProvider);
-    final isIdle =
+    // "핸드 간격" per Game_Settings_Modal.md §0.
+    // handNumber 은 _IdleOnlyField 내부에서 자체 watch.
+    final isHandBoundary =
         handFsm == HandFsm.idle || handFsm == HandFsm.handComplete;
     final canEdit = auth.role == 'Admin' || auth.role == 'Operator';
 
@@ -147,7 +153,7 @@ class _At06GameSettingsModalState extends ConsumerState<At06GameSettingsModal>
                     gameType: _gameType,
                     betStructure: _betStructure,
                     blindStructureId: _blindStructureId,
-                    isIdle: isIdle,
+                    isHandBoundary: isHandBoundary,
                     onGameTypeChanged: (v) =>
                         setState(() => _gameType = v),
                     onBetStructureChanged: (v) =>
@@ -158,7 +164,7 @@ class _At06GameSettingsModalState extends ConsumerState<At06GameSettingsModal>
                   _BlindsTab(
                     anteOverride: _anteOverride,
                     straddleSeats: _straddleSeats,
-                    isIdle: isIdle,
+                    isHandBoundary: isHandBoundary,
                     onAnteChanged: (v) =>
                         setState(() => _anteOverride = v),
                     onStraddleToggled: (seat) => setState(() {
@@ -229,7 +235,7 @@ class _GameTab extends StatelessWidget {
     required this.gameType,
     required this.betStructure,
     required this.blindStructureId,
-    required this.isIdle,
+    required this.isHandBoundary,
     required this.onGameTypeChanged,
     required this.onBetStructureChanged,
     required this.onBlindStructureIdChanged,
@@ -238,7 +244,7 @@ class _GameTab extends StatelessWidget {
   final GameType gameType;
   final BetStructure betStructure;
   final String? blindStructureId;
-  final bool isIdle;
+  final bool isHandBoundary;
   final ValueChanged<GameType> onGameTypeChanged;
   final ValueChanged<BetStructure> onBetStructureChanged;
   final ValueChanged<String?> onBlindStructureIdChanged;
@@ -253,7 +259,7 @@ class _GameTab extends StatelessWidget {
           // Game type
           _IdleOnlyField(
             label: 'Game Type',
-            isIdle: isIdle,
+            isHandBoundary: isHandBoundary,
             child: DropdownButtonFormField<GameType>(
               value: gameType,
               decoration: const InputDecoration(
@@ -266,7 +272,7 @@ class _GameTab extends StatelessWidget {
                   child: Text(_gameTypeLabel(g)),
                 );
               }).toList(),
-              onChanged: isIdle ? (v) => onGameTypeChanged(v!) : null,
+              onChanged: isHandBoundary ? (v) => onGameTypeChanged(v!) : null,
             ),
           ),
 
@@ -275,7 +281,7 @@ class _GameTab extends StatelessWidget {
           // Bet structure (always part of game type selection)
           _IdleOnlyField(
             label: 'Bet Structure',
-            isIdle: isIdle,
+            isHandBoundary: isHandBoundary,
             child: DropdownButtonFormField<BetStructure>(
               value: betStructure,
               decoration: const InputDecoration(
@@ -288,7 +294,7 @@ class _GameTab extends StatelessWidget {
                   child: Text(_betStructureLabel(b)),
                 );
               }).toList(),
-              onChanged: isIdle ? (v) => onBetStructureChanged(v!) : null,
+              onChanged: isHandBoundary ? (v) => onBetStructureChanged(v!) : null,
             ),
           ),
 
@@ -297,10 +303,10 @@ class _GameTab extends StatelessWidget {
           // Blind structure ID (tournament only)
           _IdleOnlyField(
             label: 'Blind Structure ID',
-            isIdle: isIdle,
+            isHandBoundary: isHandBoundary,
             child: TextFormField(
               initialValue: blindStructureId ?? '',
-              enabled: isIdle,
+              enabled: isHandBoundary,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 isDense: true,
@@ -343,14 +349,14 @@ class _BlindsTab extends StatelessWidget {
   const _BlindsTab({
     required this.anteOverride,
     required this.straddleSeats,
-    required this.isIdle,
+    required this.isHandBoundary,
     required this.onAnteChanged,
     required this.onStraddleToggled,
   });
 
   final int anteOverride;
   final List<int> straddleSeats;
-  final bool isIdle;
+  final bool isHandBoundary;
   final ValueChanged<int> onAnteChanged;
   final ValueChanged<int> onStraddleToggled;
 
@@ -364,10 +370,10 @@ class _BlindsTab extends StatelessWidget {
           // Ante override
           _IdleOnlyField(
             label: 'Ante Override',
-            isIdle: isIdle,
+            isHandBoundary: isHandBoundary,
             child: TextFormField(
               initialValue: '$anteOverride',
-              enabled: isIdle,
+              enabled: isHandBoundary,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -476,44 +482,83 @@ class _RulesTab extends StatelessWidget {
 // IDLE-only field wrapper
 // =============================================================================
 
-class _IdleOnlyField extends StatelessWidget {
+/// Category A (hand-boundary-only) field wrapper.
+///
+/// Per `Game_Settings_Modal.md §2.1`, during a hand the whole section
+/// disappears and is replaced by an info placeholder. This prevents the
+/// field from being focused via keyboard or pointer events — a merely
+/// disabled widget is NOT compliant with the spec.
+class _IdleOnlyField extends ConsumerWidget {
   const _IdleOnlyField({
     required this.label,
-    required this.isIdle,
+    required this.isHandBoundary,
     required this.child,
   });
 
   final String label;
-  final bool isIdle;
+  final bool isHandBoundary;
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!isHandBoundary) {
+      final handNumber = ref.watch(handNumberProvider);
+      return _HandInProgressPlaceholder(label: label, handNumber: handNumber);
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text(
-              label,
-              style: EbsTypography.playerName.copyWith(fontSize: 13),
-            ),
-            if (!isIdle) ...[
-              const SizedBox(width: EbsSpacing.xs),
-              Tooltip(
-                message: 'Can only be changed between hands (IDLE state)',
-                child: Icon(
-                  Icons.lock_outline,
-                  size: 14,
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
-                ),
-              ),
-            ],
-          ],
+        Text(
+          label,
+          style: EbsTypography.playerName.copyWith(fontSize: 13),
         ),
         const SizedBox(height: EbsSpacing.xs),
         child,
       ],
+    );
+  }
+}
+
+/// Info placeholder replacing a category A field when the hand is in progress.
+class _HandInProgressPlaceholder extends StatelessWidget {
+  const _HandInProgressPlaceholder({
+    required this.label,
+    required this.handNumber,
+  });
+
+  final String label;
+  final int handNumber;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: EbsSpacing.md,
+        vertical: EbsSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerHighest.withAlpha(60),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: cs.outlineVariant, width: 1),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.hourglass_empty, size: 16, color: cs.onSurfaceVariant),
+          const SizedBox(width: EbsSpacing.xs),
+          Expanded(
+            child: Text(
+              handNumber > 0
+                  ? '$label — 현재 $handNumber번 핸드 진행 중. 핸드 종료 후 변경 가능.'
+                  : '$label — 핸드 진행 중. 핸드 종료 후 변경 가능.',
+              style: EbsTypography.playerName.copyWith(
+                fontSize: 12,
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
