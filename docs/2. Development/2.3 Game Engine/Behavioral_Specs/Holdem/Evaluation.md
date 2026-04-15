@@ -249,6 +249,21 @@ class HandDetail:
 
 ---
 
+## Short Deck (6+ Hold'em) Wheel 처리
+
+> **WSOP LIVE 미정의 — 독립 설계**: WSOP LIVE Confluence 에 Short Deck variant 핸드 랭킹 명시 없음. 일반 6+ Hold'em 관례를 채택.
+
+| 항목 | 값 |
+|------|------|
+| Deck 크기 | 36장 (2~5 제거, 6~A 유지) |
+| Wheel 정의 | **A-6-7-8-9 = low straight** (표준 A-2-3-4-5 아님) |
+| Flush vs Full House | Flush > Full House (카드 장수 감소로 확률 역전) |
+| 구현 위치 | `lib/core/variants/short_deck.dart` |
+
+Hold'em standard_high evaluator 가 Short Deck variant 로 동작할 때 enum `HandRank` 값은 동일하되 **straight 판정 로직이 분기**된다. 미래 Short Deck 런칭 시 evaluator 별 테스트 케이스 보강 필요.
+
+---
+
 ## 특수 케이스
 
 ### 케이스 1: Multi-way Tie (보드 결정적)

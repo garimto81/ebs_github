@@ -20,6 +20,8 @@ last-updated: 2026-04-15
 
 이 문서는 **Command Center(CC) Game Engine에서 Overlay까지의 데이터 흐름과 출력 채널 계약**을 정의한다. CC와 Overlay는 동일 Flutter 앱 내에서 실행되며, 네트워크 통신 없이 in-process Dart 함수 호출로 데이터를 전달한다.
 
+> **WSOP LIVE 정렬 상태**: WSOP LIVE Confluence 의 BS-07 Overlay 문서 = **TBD (미완성)**. 본 문서는 선행 설계이며 BS-07 완성 시 OutputEvent 용어·스키마 재검증 예정. 추적 항목: `../Backlog/B-320-WSOP-LIVE-BS-07-감시.md`.
+
 > **참조**: Game Engine 상태는 `BS-06-00-REF-game-engine-spec.md`, 엔티티 정의는 `BS-00-definitions.md §2.2`, 출력 프리셋은 `DATA-04-db-schema.md §OutputPreset`
 
 ### 핵심 원칙
@@ -156,6 +158,8 @@ Flutter 렌더링 텍스처를 캡처하여 NDI 네트워크 스트림으로 전
 ### 3.1 목적
 
 RFID로 인식된 홀카드 정보가 방송 화면에 **즉시 노출되면 부정행위 가능**. Security Delay는 GameState를 지정 시간만큼 버퍼링하여 지연 출력한다.
+
+> **의도**: 부정행위 방지(홀카드 선노출 차단) + 방송 오케스트레이션(운영진 Backstage 실시간 모니터링) 동시 달성.
 
 ### 3.2 동작 원리
 
