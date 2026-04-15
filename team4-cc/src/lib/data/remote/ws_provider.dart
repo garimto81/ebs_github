@@ -25,6 +25,7 @@ import '../../features/command_center/providers/hand_display_provider.dart';
 import '../../features/command_center/providers/hand_fsm_provider.dart';
 import '../../features/command_center/providers/undo_provider.dart';
 import '../../features/overlay/services/skin_consumer.dart';
+import '../../foundation/configs/security_delay_config.dart';
 import '../../models/enums/hand_fsm.dart';
 import 'bo_api_client.dart';
 import 'bo_websocket_client.dart';
@@ -161,6 +162,12 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
     // re-fetches the skin bundle from BO and notifies the Overlay renderer.
     case 'skin_updated':
       read(skinConsumerProvider.notifier).handleSkinUpdatedEvent(payload);
+
+    // API-05 §5 ConfigChanged — BO pushes operator config updates, incl.
+    // Security Delay (BS-07-07). Parse + publish to securityDelayConfigProvider.
+    case 'ConfigChanged':
+      final cfg = SecurityDelayConfig.fromConfigChanged(payload);
+      read(securityDelayConfigProvider.notifier).state = cfg;
 
     // §3.3.4 operational — no FSM effect on CC. Observability only.
     case 'GameChanged':
