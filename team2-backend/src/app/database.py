@@ -1,8 +1,8 @@
 """Database engine & session dependency."""
 from collections.abc import Generator
-from typing import Optional
 
-from sqlmodel import Session, SQLModel, create_engine
+from passlib.hash import bcrypt
+from sqlmodel import Session, SQLModel, create_engine, select
 
 from src.app.config import settings
 
@@ -28,8 +28,27 @@ def set_engine(engine) -> None:
 
 
 def init_db() -> None:
-    """Create all tables from SQLModel metadata."""
+    """Create all tables from SQLModel metadata + seed admin account."""
     SQLModel.metadata.create_all(get_engine())
+    _seed_admin()
+
+
+def _seed_admin() -> None:
+    """Ensure default admin account exists (idempotent)."""
+    from src.models.user import User
+
+    with Session(get_engine()) as db:
+        existing = db.exec(select(User).where(User.email == "admin@ebs.local")).first()
+        if existing is None:
+            admin = User(
+                email="admin@ebs.local",
+                password_hash=bcrypt.hash("admin123"),
+                display_name="System Admin",
+                role="admin",
+                is_active=True,
+            )
+            db.add(admin)
+            db.commit()
 
 
 def get_db() -> Generator[Session, None, None]:

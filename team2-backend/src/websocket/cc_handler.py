@@ -4,7 +4,6 @@ import logging
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import WebSocket, WebSocketDisconnect
 from sqlmodel import Session
 
 from src.repositories.event_repository import event_repository

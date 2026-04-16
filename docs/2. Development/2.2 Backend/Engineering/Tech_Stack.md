@@ -269,9 +269,9 @@ last-updated: 2026-04-15
 
 | Phase | Lobby | CC | BO | Engine | Overlay |
 |:-----:|:-----:|:--:|:--:|:------:|:-------:|
-| 1 | Next.js 15 | Flutter 3.x | FastAPI + SQLite | Dart 3.x | Flutter + Rive |
-| 2 | 확정 | 동일 | + Google OAuth | 동일 | 동일 |
-| 3+ | 동일 | 동일 | PostgreSQL + Entra ID | 동일 | 동일 |
+| 1 | Next.js 15 | Flutter 3.x | FastAPI + SQLite + Google OAuth (Mock) | Dart 3.x | Flutter + Rive |
+| 2 | 확정 | 동일 | Google OAuth 실제 전환 | 동일 | 동일 |
+| 3+ | 동일 | 동일 | PostgreSQL | 동일 | 동일 |
 | 5 | 동일 | 동일 | + AI 파이프라인 | + AI Advisor | 동일 |
 
 ---

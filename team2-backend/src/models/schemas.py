@@ -3,7 +3,6 @@ from typing import Any, Optional
 
 from pydantic import BaseModel
 
-
 # ── Common envelope ────────────────────────────────
 
 class ApiResponse(BaseModel):
@@ -196,3 +195,287 @@ class PlayerResponse(BaseModel):
     source: str
     created_at: str
     updated_at: str
+
+
+# ── User ──────────────────────────────────────────
+
+class UserCreate(BaseModel):
+    email: str
+    password: str
+    display_name: str
+    role: str = "viewer"
+
+
+class UserUpdate(BaseModel):
+    email: Optional[str] = None
+    display_name: Optional[str] = None
+    role: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class UserResponse(BaseModel):
+    user_id: int
+    email: str
+    display_name: str
+    role: str
+    is_active: bool
+    totp_enabled: bool
+    last_login_at: Optional[str] = None
+    created_at: str
+    updated_at: str
+
+
+# ── Config ────────────────────────────────────────
+
+class ConfigResponse(BaseModel):
+    id: int
+    key: str
+    value: str
+    scope: str
+    scope_id: Optional[int] = None
+    category: str
+    description: Optional[str] = None
+    updated_at: str
+
+
+class ConfigUpdate(BaseModel):
+    value: str
+    description: Optional[str] = None
+
+
+class ConfigBulkItem(BaseModel):
+    key: str
+    value: str
+    scope: Optional[str] = None
+    scope_id: Optional[int] = None
+    description: Optional[str] = None
+
+
+# ── Competition ───────────────────────────────────
+
+class CompetitionCreate(BaseModel):
+    name: str
+    competition_type: int = 0
+    competition_tag: int = 0
+
+
+class CompetitionUpdate(BaseModel):
+    name: Optional[str] = None
+    competition_type: Optional[int] = None
+    competition_tag: Optional[int] = None
+
+
+class CompetitionResponse(BaseModel):
+    competition_id: int
+    name: str
+    competition_type: int
+    competition_tag: int
+    created_at: str
+    updated_at: str
+
+
+# ── Event / Flight Update ────────────────────────
+
+class EventUpdate(BaseModel):
+    event_name: Optional[str] = None
+    buy_in: Optional[int] = None
+    game_type: Optional[int] = None
+    bet_structure: Optional[int] = None
+    game_mode: Optional[str] = None
+    table_size: Optional[int] = None
+    start_time: Optional[str] = None
+    status: Optional[str] = None
+
+
+class FlightUpdate(BaseModel):
+    display_name: Optional[str] = None
+    start_time: Optional[str] = None
+    is_tbd: Optional[bool] = None
+    play_level: Optional[int] = None
+    status: Optional[str] = None
+
+
+# ── Table Update ─────────────────────────────────
+
+class TableUpdate(BaseModel):
+    name: Optional[str] = None
+    type: Optional[str] = None
+    max_players: Optional[int] = None
+    game_type: Optional[int] = None
+    delay_seconds: Optional[int] = None
+    status: Optional[str] = None
+
+
+# ── Skin ─────────────────────────────────────────
+
+class SkinCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    theme_data: str = "{}"
+
+
+class SkinUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    theme_data: Optional[str] = None
+
+
+class SkinResponse(BaseModel):
+    skin_id: int
+    name: str
+    description: Optional[str] = None
+    theme_data: str
+    is_default: bool
+    created_at: str
+    updated_at: str
+
+
+# ── Hand ──────────────────────────────────────────
+
+class HandResponse(BaseModel):
+    hand_id: int
+    table_id: int
+    hand_number: int
+    game_type: int
+    bet_structure: int
+    dealer_seat: int
+    board_cards: str
+    pot_total: int
+    side_pots: str
+    current_street: Optional[str] = None
+    started_at: str
+    ended_at: Optional[str] = None
+    duration_sec: int
+    created_at: str
+
+
+class HandPlayerResponse(BaseModel):
+    id: int
+    hand_id: int
+    seat_no: int
+    player_id: Optional[int] = None
+    player_name: str
+    hole_cards: str
+    start_stack: int
+    end_stack: int
+    final_action: Optional[str] = None
+    is_winner: int
+    pnl: int
+    hand_rank: Optional[str] = None
+    created_at: str
+
+
+class HandActionResponse(BaseModel):
+    id: int
+    hand_id: int
+    seat_no: int
+    action_type: str
+    action_amount: int
+    pot_after: Optional[int] = None
+    street: str
+    action_order: int
+    action_time: Optional[str] = None
+    created_at: str
+
+
+# ── BlindStructure ────────────────────────────────
+
+class BlindStructureLevelCreate(BaseModel):
+    level_no: int
+    small_blind: int
+    big_blind: int
+    ante: int = 0
+    duration_minutes: int
+    detail_type: int = 0
+
+
+class BlindStructureLevelResponse(BaseModel):
+    id: int
+    blind_structure_id: int
+    level_no: int
+    small_blind: int
+    big_blind: int
+    ante: int
+    duration_minutes: int
+    detail_type: int
+
+
+class BlindStructureCreate(BaseModel):
+    name: str
+    levels: list[BlindStructureLevelCreate]
+
+
+class BlindStructureUpdate(BaseModel):
+    name: Optional[str] = None
+    levels: Optional[list[BlindStructureLevelCreate]] = None
+
+
+class BlindStructureResponse(BaseModel):
+    blind_structure_id: int
+    name: str
+    levels: list[BlindStructureLevelResponse]
+    created_at: str
+    updated_at: str
+
+
+class BlindStructureApply(BaseModel):
+    blind_structure_id: int
+
+
+# ── PayoutStructure ──────────────────────────────────
+
+class PayoutStructureLevelCreate(BaseModel):
+    position_from: int
+    position_to: int
+    payout_pct: float
+    payout_amount: Optional[int] = None
+
+
+class PayoutStructureLevelResponse(BaseModel):
+    id: int
+    payout_structure_id: int
+    position_from: int
+    position_to: int
+    payout_pct: float
+    payout_amount: Optional[int] = None
+
+
+class PayoutStructureCreate(BaseModel):
+    name: str
+    levels: list[PayoutStructureLevelCreate]
+
+
+class PayoutStructureUpdate(BaseModel):
+    name: Optional[str] = None
+    levels: Optional[list[PayoutStructureLevelCreate]] = None
+
+
+class PayoutStructureResponse(BaseModel):
+    payout_structure_id: int
+    name: str
+    levels: list[PayoutStructureLevelResponse]
+    created_at: str
+    updated_at: str
+
+
+# ── Clock ────────────────────────────────────────────
+
+class ClockState(BaseModel):
+    event_flight_id: int
+    status: str
+    play_level: int
+    remain_time: Optional[int] = None
+
+
+class ClockAdjust(BaseModel):
+    level_diff: int = 0
+    time_diff: int = 0
+
+
+# ── Rebalance ───────────────────────────────────────
+
+class RebalanceRequest(BaseModel):
+    event_flight_id: int
+    strategy: str = "balanced"
+    target_players_per_table: int = 9
+    dry_run: bool = False

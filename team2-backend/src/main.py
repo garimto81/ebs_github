@@ -1,33 +1,40 @@
 """EBS Back Office — FastAPI Application."""
-import json
 import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
-from fastapi import Depends, FastAPI, WebSocket, WebSocketDisconnect, Query
+from fastapi import Depends, FastAPI, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import text as sa_text
 from sqlmodel import Session
 
 from src.app.config import settings
-from src.app.database import get_engine, init_db, get_db
+from src.app.database import get_db, init_db
 from src.middleware.idempotency import IdempotencyMiddleware
-from src.observability.distributed_lock import DistributedLock
 from src.observability.circuit_breaker import CircuitBreaker
+from src.observability.distributed_lock import DistributedLock
+from src.repositories.event_repository import event_repository
+from src.routers.audit import router as audit_router
 from src.routers.auth import router as auth_router
-from src.routers.series import router as series_router
-from src.routers.tables import router as tables_router
+from src.routers.blind_structures import router as blind_structures_router
+from src.routers.competitions import router as competitions_router
+from src.routers.configs import router as configs_router
+from src.routers.hands import router as hands_router
+from src.routers.payout_structures import router as payout_structures_router
 from src.routers.players import router as players_router
 from src.routers.replay import router as replay_router
+from src.routers.reports import router as reports_router
+from src.routers.series import router as series_router
+from src.routers.skins import router as skins_router
 from src.routers.sync import router as sync_router
-from src.routers.audit import router as audit_router
-from src.services.wsop_sync_service import WsopSyncService
+from src.routers.tables import router as tables_router
+from src.routers.users import router as users_router
 from src.services.undo_service import UndoService
-from src.repositories.event_repository import event_repository
-from src.websocket.manager import ConnectionManager
+from src.services.wsop_sync_service import WsopSyncService
 from src.websocket.cc_handler import handle_cc_message
 from src.websocket.lobby_handler import handle_lobby_message
+from src.websocket.manager import ConnectionManager
 
 
 @asynccontextmanager
@@ -65,6 +72,14 @@ app.include_router(players_router)
 app.include_router(replay_router)
 app.include_router(sync_router)
 app.include_router(audit_router)
+app.include_router(users_router)
+app.include_router(configs_router)
+app.include_router(competitions_router)
+app.include_router(hands_router)
+app.include_router(blind_structures_router)
+app.include_router(skins_router)
+app.include_router(payout_structures_router)
+app.include_router(reports_router)
 
 
 @app.get("/health")

@@ -6,25 +6,43 @@ from src.app.database import get_db
 from src.middleware.rbac import get_current_user, require_role
 from src.models.schemas import (
     ApiResponse,
+    RebalanceRequest,
     SeatResponse,
     SeatUpdate,
     TableCreate,
     TableResponse,
+    TableUpdate,
 )
 from src.models.user import User
 from src.services.table_service import (
     assign_seat,
     create_table,
+    delete_table,
     get_table,
     get_table_seats,
+    launch_cc,
     list_tables,
+    rebalance_tables,
     update_seat_status,
+    update_table,
 )
 
 router = APIRouter(prefix="/api/v1", tags=["tables"])
 
 
-# ── Tables ──────────────────────────────────────────
+# ── Tables (static paths first) ────────────────────
+
+
+@router.post("/tables/rebalance")
+def api_rebalance(
+    body: RebalanceRequest,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    result = rebalance_tables(
+        body.event_flight_id, body.strategy, body.target_players_per_table, body.dry_run, db
+    )
+    return ApiResponse(data=result)
 
 
 @router.get("/flights/{flight_id}/tables")
@@ -61,6 +79,37 @@ def api_get_table(
 ):
     t = get_table(table_id, db)
     return ApiResponse(data=TableResponse.model_validate(t, from_attributes=True))
+
+
+@router.put("/tables/{table_id}")
+def api_update_table(
+    table_id: int,
+    body: TableUpdate,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    t = update_table(table_id, body, db)
+    return ApiResponse(data=TableResponse.model_validate(t, from_attributes=True))
+
+
+@router.delete("/tables/{table_id}")
+def api_delete_table(
+    table_id: int,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    delete_table(table_id, db)
+    return ApiResponse(data={"deleted": True})
+
+
+@router.post("/tables/{table_id}/launch-cc")
+def api_launch_cc(
+    table_id: int,
+    user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    result = launch_cc(table_id, user, db)
+    return ApiResponse(data=result)
 
 
 # ── Seats ───────────────────────────────────────────

@@ -13,6 +13,7 @@ from src.models.schemas import (
 from src.models.user import User
 from src.services.table_service import (
     create_player,
+    delete_player,
     get_player,
     list_players,
     update_player,
@@ -46,6 +47,21 @@ def api_create_player(
     return ApiResponse(data=PlayerResponse.model_validate(p, from_attributes=True))
 
 
+@router.get("/players/search")
+def api_search_players(
+    q: str = Query(""),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    items, total = list_players(db, skip, limit, q or None)
+    return ApiResponse(
+        data=[PlayerResponse.model_validate(p, from_attributes=True) for p in items],
+        meta={"skip": skip, "limit": limit, "total": total},
+    )
+
+
 @router.get("/players/{player_id}")
 def api_get_player(
     player_id: int,
@@ -65,3 +81,13 @@ def api_update_player(
 ):
     p = update_player(player_id, body, db)
     return ApiResponse(data=PlayerResponse.model_validate(p, from_attributes=True))
+
+
+@router.delete("/players/{player_id}")
+def api_delete_player(
+    player_id: int,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    delete_player(player_id, db)
+    return ApiResponse(data={"deleted": True})

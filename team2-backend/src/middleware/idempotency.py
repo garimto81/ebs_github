@@ -2,9 +2,9 @@
 import hashlib
 
 from fastapi import Request, Response
+from sqlmodel import Session
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import JSONResponse
-from sqlmodel import Session
 
 from src.app.database import get_engine
 from src.repositories.idempotency_store import IdempotencyStore

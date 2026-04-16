@@ -1,7 +1,7 @@
 """JWT token creation & decoding — python-jose."""
 from datetime import datetime, timedelta, timezone
 
-from jose import JWTError, jwt
+from jose import jwt
 
 from src.app.config import settings
 
@@ -78,6 +78,32 @@ def create_refresh_token(user_id: int) -> str:
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 
+def create_2fa_temp_token(user_id: int) -> str:
+    """Create a short-lived token for 2FA verification step."""
+    now = datetime.now(timezone.utc)
+    expire = now + timedelta(minutes=5)
+    payload = {
+        "sub": str(user_id),
+        "type": "2fa_temp",
+        "iat": int(now.timestamp()),
+        "exp": int(expire.timestamp()),
+    }
+    return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
+
+
 def decode_token(token: str) -> dict:
     """Decode and validate JWT. Raises JWTError on failure."""
     return jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
+
+
+def create_password_reset_token(user_id: int) -> str:
+    """Create a self-contained password reset JWT (1h expiry)."""
+    now = datetime.now(timezone.utc)
+    expire = now + timedelta(hours=1)
+    payload = {
+        "sub": str(user_id),
+        "type": "password_reset",
+        "iat": int(now.timestamp()),
+        "exp": int(expire.timestamp()),
+    }
+    return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)

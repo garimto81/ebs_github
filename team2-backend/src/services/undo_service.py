@@ -1,6 +1,5 @@
 """Undo Service — IMPL-10 §7.2 Undo/Revive rules."""
 import json
-from typing import Optional
 
 from fastapi import HTTPException, status
 from sqlmodel import Session

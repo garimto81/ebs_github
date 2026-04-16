@@ -1,10 +1,9 @@
 """WebSocket ConnectionManager — API-05 §1 connection architecture."""
 import json
 import logging
-from datetime import datetime, timezone
 from typing import Optional
 
-from fastapi import WebSocket, WebSocketDisconnect
+from fastapi import WebSocket
 from jose import JWTError
 
 from src.security.jwt import decode_token

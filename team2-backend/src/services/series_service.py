@@ -7,7 +7,9 @@ from sqlmodel import Session, select
 from src.models.competition import Competition, Event, EventFlight, Series
 from src.models.schemas import (
     EventCreate,
+    EventUpdate,
     FlightCreate,
+    FlightUpdate,
     SeriesCreate,
     SeriesUpdate,
 )
@@ -152,3 +154,69 @@ def get_flight(flight_id: int, db: Session) -> EventFlight:
             detail={"code": "RESOURCE_NOT_FOUND", "message": f"Flight {flight_id} not found"},
         )
     return f
+
+
+# ── Event extended CRUD ────────────────────────────
+
+
+def list_all_events(
+    db: Session, skip: int = 0, limit: int = 20, series_id: int | None = None,
+) -> tuple[list[Event], int]:
+    stmt = select(Event)
+    if series_id is not None:
+        stmt = stmt.where(Event.series_id == series_id)
+    total = len(db.exec(stmt).all())
+    items = db.exec(stmt.offset(skip).limit(limit)).all()
+    return items, total
+
+
+def update_event(event_id: int, data: EventUpdate, db: Session) -> Event:
+    e = get_event(event_id, db)
+    updates = data.model_dump(exclude_unset=True)
+    for k, v in updates.items():
+        setattr(e, k, v)
+    e.updated_at = _utcnow()
+    db.add(e)
+    db.commit()
+    db.refresh(e)
+    return e
+
+
+def delete_event(event_id: int, db: Session) -> None:
+    e = get_event(event_id, db)
+    children = db.exec(select(EventFlight).where(EventFlight.event_id == event_id)).all()
+    if children:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"code": "HAS_CHILDREN", "message": f"Event {event_id} has {len(children)} flight(s)"},
+        )
+    db.delete(e)
+    db.commit()
+
+
+# ── Flight extended CRUD ───────────────────────────
+
+
+def update_flight(flight_id: int, data: FlightUpdate, db: Session) -> EventFlight:
+    f = get_flight(flight_id, db)
+    updates = data.model_dump(exclude_unset=True)
+    for k, v in updates.items():
+        setattr(f, k, v)
+    f.updated_at = _utcnow()
+    db.add(f)
+    db.commit()
+    db.refresh(f)
+    return f
+
+
+def delete_flight(flight_id: int, db: Session) -> None:
+    from src.models.table import Table
+    f = get_flight(flight_id, db)
+    children = db.exec(select(Table).where(Table.event_flight_id == flight_id)).all()
+    if children:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"code": "HAS_CHILDREN", "message": f"Flight {flight_id} has {len(children)} table(s)"},
+        )
+    db.delete(f)
+    db.commit()

@@ -19,6 +19,7 @@ last-updated: 2026-04-15
 | 2026-04-13 | 네이밍 규칙 | snake_case 통일 규칙 명시 (WSOP LIVE camelCase와의 변환 책임 = API-01 Part II) |
 | 2026-04-14 | CCR-048 | Password Reset 3-step 엔드포인트 추가 (§8). WSOP LIVE GGPass 패턴 준거. SSOT: Confluence Page 1701380121 |
 | 2026-04-14 | SSOT 슬림화 | §1.1 토큰 TTL 표·§5 RBAC 매트릭스·§6.3-6.4 클라이언트 저장 정책을 BS-01-auth.md로 위임. 본 문서는 순수 기술 계약(Request/Response)만 유지. user_id 필드명 통일(§4 user.id→user.user_id, username→email). 잠금 정책(5회→10회) BS-01 정렬. |
+| 2026-04-16 | Google OAuth Mock | §7 Phase 테이블→단일 테이블로 전환. Entra ID 제거. Google OAuth Mock 엔드포인트 명세 추가 (`GET /auth/google`, `GET /auth/google/callback`). |
 
 ---
 
@@ -328,17 +329,18 @@ Refresh Token으로 새 Access Token을 발급한다.
 
 ---
 
-## 7. Phase 1 인증 방식
+## 7. 인증 방식
 
 > **참조**: `BS-02-lobby.md §화면 0: 로그인` 인증 방식 매트릭스
 
-| Phase | 인증 방식 | 2FA |
-|:-----:|----------|:---:|
-| **1** | Email + Password + TOTP | O |
-| 2 | + Google OAuth | Google 자체 |
-| 3 | + Entra ID (Azure AD) | Entra 자체 |
+| 인증 방식 | 2FA | 구현 상태 |
+|----------|:---:|:---------:|
+| Email + Password + TOTP | O | 구현 완료 |
+| Google OAuth 2.0 | Google 자체 | Mock 구현 (dev/staging 전용) |
 
-Phase 1에서는 Email + Password를 기본으로 구현하며, TOTP(Time-based One-Time Password) 2단계 인증을 지원한다.
+> **Entra ID (Azure AD)**: 사업 요건 재검토에 따라 지원 대상에서 **제외**. 향후 필요 시 별도 CR로 재도입.
+
+Email + Password를 기본으로 구현하며, TOTP(Time-based One-Time Password) 2단계 인증을 지원한다. Google OAuth는 Mock Provider로 구현되어 dev/staging 환경에서 테스트 가능하며, 프로덕션 배포 전 실제 Google OAuth Client ID/Secret 설정으로 전환한다.
 
 ### 2FA 흐름 (Phase 1)
 
@@ -354,6 +356,30 @@ POST /auth/login (username, password)
 | `POST /auth/verify-2fa` | TOTP 코드 검증 후 최종 토큰 발급 |
 | `POST /auth/2fa/setup` | 2FA 초기 설정 (QR 코드 반환) |
 | `POST /auth/2fa/disable` | 2FA 비활성화 (Admin만) |
+
+### Google OAuth 2.0 흐름
+
+```
+GET /auth/google
+  → 302 Redirect to Google consent page (mock: 즉시 callback redirect)
+  → GET /auth/google/callback?code=xxx&state=yyy
+    → 200 { access_token, refresh_token, ... } (login 응답과 동일)
+```
+
+| 엔드포인트 | 설명 | 역할 제한 |
+|-----------|------|:---------:|
+| `GET /auth/google` | Google OAuth 인증 시작 (consent redirect) | 미인증 |
+| `GET /auth/google/callback` | Google callback → JWT 발급 | 미인증 |
+
+**Mock 동작 (dev/staging)**:
+
+| 단계 | 실제 OAuth | Mock |
+|------|-----------|------|
+| `/auth/google` | Google consent URL redirect | `callback?code=mock_code&state=mock` redirect |
+| `/auth/google/callback` | Google token exchange → userinfo API | Mock user 자동 생성/매칭 (`mock-google@ebs.dev`) |
+| JWT 발급 | 동일 | 동일 (create_session) |
+
+> **프로덕션 전환**: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` 환경 변수 설정 시 실제 Google API 호출로 전환. 미설정 시 mock 동작 유지.
 
 ---
 

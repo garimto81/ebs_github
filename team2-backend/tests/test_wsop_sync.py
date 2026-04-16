@@ -24,16 +24,25 @@ def _auth(client, role="admin"):
 
 
 def test_seed_mock_data(client, seed_users, db_session):
-    """Seed creates Competition 1, Series 3, Events 30, Flights 60, Players 100."""
+    """Seed creates README-aligned data: 2 Comp, 2 Series, 3 Events, 4 Flights, 9 Players, 3 Tables, etc."""
     headers = _auth(client, "admin")
     resp = client.post("/api/v1/sync/mock/seed", headers=headers)
     assert resp.status_code == 200
     data = resp.json()["data"]
-    assert data["competitions"] == 1
-    assert data["series"] == 3
-    assert data["events"] == 30
-    assert data["flights"] == 60
-    assert data["players"] == 100
+    assert data["competitions"] == 2
+    assert data["series"] == 2
+    assert data["events"] == 3
+    assert data["flights"] == 4
+    assert data["players"] == 9
+    assert data["tables"] == 3
+    assert data["seats"] == 26
+    assert data["blind_structures"] == 1
+    assert data["blind_structure_levels"] == 14
+    assert data["decks"] == 2
+    assert data["deck_cards"] == 104
+    assert data["configs"] == 10
+    assert data["skins"] == 3
+    assert data["output_presets"] == 4
 
 
 # ── Gate 5-2: GET /sync/status → 200 + source info ──

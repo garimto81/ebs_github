@@ -3,7 +3,6 @@
 Phase 3 will swap to Redis SET NX EX with identical interface.
 """
 import asyncio
-from typing import Optional
 
 
 class LockUnavailableError(Exception):
