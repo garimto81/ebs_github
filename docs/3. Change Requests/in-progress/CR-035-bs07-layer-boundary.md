@@ -20,7 +20,7 @@ last-updated: 2026-04-15
 
 ## 변경 근거
 
-현재 BS-07-00-overview.md §3에 "EBS Layer 1 — Overlay 그래픽 8종"이 정의되어 있으나, **Layer 2와 Layer 3의 경계**가 계약 레벨에 명시되지 않았다. Foundation PRD Ch.6를 참조만 하는 상태. EBS Core 정의(v41.0.0)에 따르면 "EBS=Layer 1만 책임, Layer 2/3는 외부 팀 담당"이 핵심 원칙이지만, BS-07 계약 내에 명시되지 않아 Team 2/3/4가 구현 범위를 혼동할 위험이 있다. 또한 Layer 1 8종 중 일부(Action Badge, Position)는 "반자동"으로 표시되어 운영자 개입 시점이 불명확하다. 본 CCR은 Layer 경계와 자동화 정도를 계약에 확정한다.
+현재 BS-07-00-overview.md §3에 "EBS Layer 1 — Overlay 그래픽 8종"이 정의되어 있으나, **Layer 2와 Layer 3의 경계**가 계약 레벨에 명시되지 않았다. Foundation (Confluence SSOT) Ch.4를 참조만 하는 상태. EBS Core 정의에 따르면 "EBS=Layer 1만 책임, Layer 2/3는 외부 팀 담당"이 핵심 원칙이지만, BS-07 계약 내에 명시되지 않아 Team 2/3/4가 구현 범위를 혼동할 위험이 있다. 또한 Layer 1 8종 중 일부(Action Badge, Position)는 "반자동"으로 표시되어 운영자 개입 시점이 불명확하다. 본 CCR은 Layer 경계와 자동화 정도를 계약에 확정한다.
 
 ## 적용된 파일
 

@@ -308,7 +308,7 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 
 | 문서 | 경로 |
 |------|------|
-| Foundation | `docs/1. Product/Foundation.md` (v41.0.0) |
+| Foundation | `docs/1. Product/Foundation.md` (EBS 기초 기획서, Confluence SSOT: page 3625189547) |
 | Product Landing (Architecture / Team Structure / Communication Rules 통합) | `docs/1. Product/1. Product.md` |
 | PokerGFX Reference | `docs/1. Product/References/PokerGFX_Reference.md` |
 | EBS Core (3입력→오버레이) | `docs/2. Development/2.5 Shared/EBS_Core.md` |

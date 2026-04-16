@@ -30,7 +30,7 @@ legacy-id: BS-01
 
 운영자가 EBS 시스템에 **로그인하고 권한을 부여받는 과정**을 정의한다. Lobby(웹)에서 로그인 후 테이블을 선택하여 Command Center(CC, 실시간 방송 입력 Flutter 앱)를 Launch한다. CC는 독립 로그인 없이 Lobby에서 전달받은 토큰으로 BO(EBS 중앙 서버)에 인증한다.
 
-> 참조: BS-00 §1 앱 아키텍처 용어, API-06 Auth & Session, BO-02 User Management, Foundation PRD Ch.8 RBAC
+> 참조: BS-00 §1 앱 아키텍처 용어, API-06 Auth & Session, BO-02 User Management, Foundation Ch.5 §5.4
 
 ---
 
@@ -747,5 +747,5 @@ def compute_permission(user: User, resource: str) -> int:
 | API-06 Auth & Session | 이 문서의 API 계약 (JWT, 엔드포인트, 에러 코드) |
 | BO-02 User Management | 계정 CRUD, 역할 할당, 비활성화 |
 | BO-08 Audit Log | 로그인/로그아웃/역할 변경/잠금 이벤트 기록 |
-| Foundation PRD Ch.8 | RBAC 3역할 정의 원본 |
+| Foundation Ch.5 §5.4 | RBAC 3역할 정의 원본 |
 | BS-08-04 rbac-guards | Graphic Editor RBAC 특화 규칙 (Viewer = permission 0) |

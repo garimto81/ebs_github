@@ -349,11 +349,11 @@ WSOP LIVE `Player` 엔티티에는 있으나 EBS 가 **의도적으로 채택하
 | `Email` | ❌ | 오버레이 / Lobby 렌더 체인 어디에도 표시 안 함. Back_Office/Overview.md §1.2 매트릭스 #11 (Cashier) / #15 (Wallet) 제거와 일관 |
 | `Birth` | ❌ | 연령/생일 표시 미요구. §1.2 매트릭스 #16 (KYC) 제거와 일관 — EBS 는 규정 검증 주체가 아님 |
 | `Nationality` | ✅ (`nationality`) | 오버레이 국가명 텍스트 |
-| `ImageUrl` → `profile_image` | ✅ | 오버레이 프로필 사진 (Foundation.md §4.2 플레이어 표시 필수) |
+| `ImageUrl` → `profile_image` | ✅ | 오버레이 프로필 사진 (Foundation Ch.2 §2.1 플레이어 표시 필수) |
 | `JoinType` | ❌ | §1.2 매트릭스 #10 (Registration) 제거 — 등록 경로/채널 추적 불필요. Online sit-in 등의 구분은 EBS 오버레이 책임 외 |
 | `country_code` (EBS 추가) | — | ISO 2자리 코드. 국기 이미지 매핑용 (WSOP LIVE `Nationality` 텍스트만으로는 국기 렌더 불가) |
 
-**Why**: EBS Core = 실시간 오버레이 렌더. Foundation.md §4.2 의 오버레이 요소 중 플레이어 표시에 쓰이는 필드는 **이름·국기·사진·칩 스택** 4개뿐. `Email`/`Birth`/`JoinType` 은 렌더 체인에 진입하지 않으며, Back_Office/Overview.md §1.2 채택/제거 매트릭스에서 "금융/KYC/Registration = EBS 범위 외" 로 이미 선언되었다. 필드 미채택은 누락이 아니라 **설계 의도**다.
+**Why**: EBS Core = 실시간 오버레이 렌더. Foundation Ch.2 §2.1 의 오버레이 요소 중 플레이어 표시에 쓰이는 필드는 **이름·국기·사진·칩 스택** 4개뿐. `Email`/`Birth`/`JoinType` 은 렌더 체인에 진입하지 않으며, Back_Office/Overview.md §1.2 채택/제거 매트릭스에서 "금융/KYC/Registration = EBS 범위 외" 로 이미 선언되었다. 필드 미채택은 누락이 아니라 **설계 의도**다.
 
 > 구현: `src/models/player.py` (SQLModel 5필드) / WSOP LIVE Confluence Page `1652949021` (Fatima ERD)
 
