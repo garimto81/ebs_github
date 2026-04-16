@@ -1,10 +1,10 @@
-# Team 1: Frontend Web — CLAUDE.md (코드 전용)
+# Team 1: Frontend — CLAUDE.md (코드 전용)
 
 ## Role
 
 Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Preferences) + Graphic Editor Import/Activate 허브 (CCR-011)
 
-**기술 스택**: Quasar Framework (Vue 3) + TypeScript + `@rive-app/canvas` (rive-js, GE 프리뷰 전용)
+**기술 스택**: Flutter/Dart + Riverpod + Freezed + Dio + go_router + `rive` (GE 프리뷰 전용)
 
 ---
 
@@ -27,9 +27,39 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 
 | 경로 | 내용 |
 |------|------|
-| `src/` | Quasar 소스 코드 |
-| `test/`, `e2e/` | Vitest + Playwright |
-| `index.html`, `quasar.config.js`, `package.json`, `tsconfig.json`, `eslint.config.js`, `vitest.config.ts`, `playwright.config.ts` | 프로젝트 설정 |
+| `lib/` | Flutter/Dart 소스 코드 |
+| `test/` | flutter_test + mocktail |
+| `windows/` | Windows runner |
+| `pubspec.yaml`, `analysis_options.yaml`, `l10n.yaml` | 프로젝트 설정 |
+| `_archive-quasar/` | Quasar 아카이브 (참조 전용, 수정 금지) |
+
+## 아키텍처 (team4 CC 패턴 채택)
+
+```
+lib/
+├── data/remote/          # Dio API client + WS client (CCR-019/021)
+├── data/local/           # MockDioAdapter (MSW 대체)
+├── features/             # 기능별 screens + providers + widgets
+│   ├── auth/             # 로그인 + 2FA (StateNotifier)
+│   ├── lobby/            # Series→Event→Table 드릴다운
+│   ├── players/
+│   ├── staff/
+│   ├── settings/         # 6탭 (family provider by section)
+│   ├── graphic_editor/   # 스킨 허브 + Rive 프리뷰
+│   ├── audit_log/
+│   └── hand_history/
+├── models/               # Freezed entities + enums
+├── repositories/         # 11 repository 클래스
+├── foundation/           # theme, router, configs, i18n, widgets
+└── resources/            # constants, l10n ARB 파일
+```
+
+## Shared Package
+
+`../shared/ebs_common/` — team1/team4 공통 유틸리티:
+- CCR-017 Permission (RBAC bit-flag)
+- CCR-019 UuidIdempotency
+- CCR-021 SeqTracker
 
 ## 계약 참조 (읽기 전용)
 
@@ -51,16 +81,16 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 - 모든 HTTP 호출은 Backend (team2)로만 전송
 - CC, Game Engine과의 직접 통신 금지
 - WebSocket `ws://[host]/ws/lobby` — 모니터링 전용 (write 명령 없음)
-- CCR-019 Idempotency-Key 자동 주입 (`src/api/client.ts` axios interceptor)
-- CCR-021 seq 단조증가 검증 + `/ws/replay?from_seq=N` (`src/stores/wsStore.ts`)
+- CCR-019 Idempotency-Key 자동 주입 (`lib/data/remote/bo_api_client.dart` Dio interceptor)
+- CCR-021 seq 단조증가 검증 + `/ws/replay?from_seq=N` (`lib/data/remote/lobby_websocket_client.dart`)
 
 ## Mock Server (병렬 개발)
 
-MSW 2.x (`src/mocks/`). `.env.development` 의 `VITE_USE_MOCK=true` (기본값).
+MockDioAdapter (`lib/data/local/`). `--dart-define=USE_MOCK=true` (기본값).
 
 ## i18n
 
-vue-i18n 9.x, locale 3종 (`ko` 기본, `en` Vegas, `es` Vegas sub). 위치: `src/i18n/{ko,en,es}.json`.
+flutter_localizations + intl, locale 3종 (`ko` 기본, `en` Vegas, `es` Vegas sub). 위치: `lib/resources/l10n/app_{ko,en,es}.arb` (231 keys).
 
 ## 기획 공백 발견 시
 
@@ -71,27 +101,28 @@ vue-i18n 9.x, locale 3종 (`ko` 기본, `en` Vegas, `es` Vegas sub). 위치: `sr
 - `../docs/1. Product/`, `../docs/2. Development/2.{2,3,4,5}*/`, `../docs/3. Change Requests/{in-progress,done}/`, `../docs/4. Operations/` 수정 금지 (CR 프로세스)
 - 다른 팀 코드 폴더(`../team2-backend/`, `../team3-engine/`, `../team4-cc/`) 접근 금지
 - **Overlay 실제 렌더링 구현 금지** (team4 영역)
-- **Rive 에디터 기능 재구현 금지** (CCR-011 out-of-scope) — rive-js 프리뷰만
+- **Rive 에디터 기능 재구현 금지** (CCR-011 out-of-scope) — rive 프리뷰만
 
 ## Build / Dev
 
 ```bash
 cd team1-frontend
-pnpm install
-pnpm dev                      # http://localhost:9000
-pnpm build                    # → dist/spa/
-pnpm lint
-pnpm typecheck                # vue-tsc --noEmit
-pnpm test                     # Vitest
-pnpm e2e                      # Playwright
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs  # Freezed 코드 생성
+flutter analyze                   # 정적 분석
+flutter test                      # Unit + Widget 테스트
+flutter run -d windows            # 개발 실행
+flutter build windows --release   # 프로덕션 빌드
 ```
 
-**커밋 전 필수**: `pnpm lint && pnpm typecheck && pnpm test` 통과.
+**커밋 전 필수**: `flutter analyze && flutter test` 통과.
 
-**환경변수**:
-- `.env.development` — `VITE_USE_MOCK=true`, `VITE_API_BASE_URL=/api/v1`, `VITE_WS_BASE_URL=ws://localhost:9080`
-- `.env.production` — 배포 시점 주입
+**환경변수** (`--dart-define`):
+- `API_BASE_URL` — 기본 `http://localhost:8000/api/v1`
+- `WS_BASE_URL` — 기본 `ws://localhost:8000`
+- `USE_MOCK` — 기본 `true` (Mock 모드)
 
 ## 이전 코드 참조
 
-React 19 + Vite 6 선행 작업물: `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_lobby-react/` (Quasar 전환으로 아카이브)
+- Quasar (Vue 3) 선행 작업물: `_archive-quasar/` (Flutter 전환으로 아카이브)
+- React 19 + Vite 6 선행 작업물: `C:/claude/ebs-archive-backup/07-archive/legacy-repos/ebs_lobby-react/` (Quasar 전환으로 아카이브)

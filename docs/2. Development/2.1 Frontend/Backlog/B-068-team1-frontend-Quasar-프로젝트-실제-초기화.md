@@ -1,7 +1,7 @@
 ---
 id: B-068
 title: team1-frontend Quasar 프로젝트 실제 초기화
-status: IN_PROGRESS
+status: DONE
 source: docs/2. Development/2.1 Frontend/Backlog.md
 ---
 
@@ -13,4 +13,4 @@ source: docs/2. Development/2.1 Frontend/Backlog.md
 - **관련 PRD**: CLAUDE.md §Team 1, contracts/specs/BS-02-lobby/, team1-frontend/CLAUDE.md, `UI-A1-architecture.md`, `UI-04-graphic-editor.md`, `QA-LOBBY-06-quasar-test-strategy.md`
 - **진행 상황 (2026-04-10)**: Phase A 완료 (UI-A1 아키텍처 문서 작성, UI-00 §9-12 확장, CLAUDE.md 보강). Phase D 진행 예정.
 
-_기존 IN_PROGRESS placeholder 는 본 항목으로 대체_
+- **완료 (2026-04-16)**: Quasar 초기화 후 Flutter Desktop으로 전면 전환 완료. lib/ 103 파일, 16,427 LOC. Riverpod + Freezed + go_router. 기존 Quasar 소스는 `_archive-quasar/` 보존.
