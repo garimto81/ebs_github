@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:ebs_cc/features/command_center/providers/seat_provider.dart';
 import 'package:ebs_cc/features/command_center/widgets/seat_cell.dart';
-import 'package:ebs_cc/models/enums/seat_status.dart';
 
 /// Helper to pump a SeatCell inside a MaterialApp + ProviderScope.
 Widget _buildTestWidget({

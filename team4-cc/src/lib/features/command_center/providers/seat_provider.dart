@@ -1,122 +1,62 @@
 // 10-seat state management (BS-05-03).
-//
-// Uses inline SeatState / PlayerInfo classes instead of Freezed entities
-// (generated .freezed.dart files not yet available). Will be replaced
-// with Freezed Seat / Player when build_runner runs.
 
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../models/enums/seat_status.dart';
 
+part 'seat_provider.freezed.dart';
+
 // ---------------------------------------------------------------------------
-// Lightweight value objects (Freezed-free, copyWith included)
+// Value objects (Freezed)
 // ---------------------------------------------------------------------------
 
 /// Minimal card representation for holecards.
-class HoleCard {
-  const HoleCard({required this.suit, required this.rank});
+@freezed
+class HoleCard with _$HoleCard {
+  const HoleCard._();
 
-  final String suit; // "s", "h", "d", "c"
-  final String rank; // "A", "2"-"9", "T", "J", "Q", "K"
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is HoleCard && suit == other.suit && rank == other.rank;
-
-  @override
-  int get hashCode => Object.hash(suit, rank);
+  const factory HoleCard({
+    required String suit, // "s", "h", "d", "c"
+    required String rank, // "A", "2"-"9", "T", "J", "Q", "K"
+  }) = _HoleCard;
 
   @override
   String toString() => '$rank$suit';
 }
 
 /// Player info embedded in a seat.
-class PlayerInfo {
-  const PlayerInfo({
-    required this.id,
-    required this.name,
-    this.stack = 0,
-    this.countryCode = '',
-    this.avatarUrl,
-  });
-
-  final int id;
-  final String name;
-  final int stack;
-  final String countryCode;
-  final String? avatarUrl;
-
-  PlayerInfo copyWith({
-    int? id,
-    String? name,
-    int? stack,
-    String? countryCode,
+@freezed
+class PlayerInfo with _$PlayerInfo {
+  const factory PlayerInfo({
+    required int id,
+    required String name,
+    @Default(0) int stack,
+    @Default('') String countryCode,
     String? avatarUrl,
-  }) =>
-      PlayerInfo(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        stack: stack ?? this.stack,
-        countryCode: countryCode ?? this.countryCode,
-        avatarUrl: avatarUrl ?? this.avatarUrl,
-      );
+  }) = _PlayerInfo;
 }
 
 /// Single seat state.
-class SeatState {
-  const SeatState({
-    required this.seatNo,
-    this.status = SeatStatus.empty,
-    this.activity = PlayerActivity.active,
-    this.player,
-    this.isDealer = false,
-    this.isSB = false,
-    this.isBB = false,
-    this.actionOn = false,
-    this.holeCards = const [],
-    this.currentBet = 0,
-  });
+@freezed
+class SeatState with _$SeatState {
+  const SeatState._();
 
-  final int seatNo; // 1-based (1..10)
-  final SeatStatus status;
-  final PlayerActivity activity;
-  final PlayerInfo? player;
-  final bool isDealer;
-  final bool isSB;
-  final bool isBB;
-  final bool actionOn;
-  final List<HoleCard> holeCards;
-  final int currentBet;
+  const factory SeatState({
+    required int seatNo, // 1-based (1..10)
+    @Default(SeatStatus.empty) SeatStatus status,
+    @Default(PlayerActivity.active) PlayerActivity activity,
+    PlayerInfo? player,
+    @Default(false) bool isDealer,
+    @Default(false) bool isSB,
+    @Default(false) bool isBB,
+    @Default(false) bool actionOn,
+    @Default([]) List<HoleCard> holeCards,
+    @Default(0) int currentBet,
+  }) = _SeatState;
 
   bool get isOccupied => player != null;
   bool get isEmpty => player == null && status == SeatStatus.empty;
-
-  SeatState copyWith({
-    int? seatNo,
-    SeatStatus? status,
-    PlayerActivity? activity,
-    PlayerInfo? player,
-    bool clearPlayer = false,
-    bool? isDealer,
-    bool? isSB,
-    bool? isBB,
-    bool? actionOn,
-    List<HoleCard>? holeCards,
-    int? currentBet,
-  }) =>
-      SeatState(
-        seatNo: seatNo ?? this.seatNo,
-        status: status ?? this.status,
-        activity: activity ?? this.activity,
-        player: clearPlayer ? null : (player ?? this.player),
-        isDealer: isDealer ?? this.isDealer,
-        isSB: isSB ?? this.isSB,
-        isBB: isBB ?? this.isBB,
-        actionOn: actionOn ?? this.actionOn,
-        holeCards: holeCards ?? this.holeCards,
-        currentBet: currentBet ?? this.currentBet,
-      );
 }
 
 // ---------------------------------------------------------------------------
@@ -159,17 +99,7 @@ class SeatNotifier extends StateNotifier<List<SeatState>> {
   void vacateSeat(int seatNo) {
     state = _update(
       seatNo,
-      (s) => s.copyWith(
-        clearPlayer: true,
-        status: SeatStatus.empty,
-        activity: PlayerActivity.active,
-        holeCards: const [],
-        currentBet: 0,
-        isDealer: false,
-        isSB: false,
-        isBB: false,
-        actionOn: false,
-      ),
+      (_) => SeatState(seatNo: seatNo),
     );
   }
 
@@ -180,12 +110,7 @@ class SeatNotifier extends StateNotifier<List<SeatState>> {
 
     final player = source.player!;
     // Vacate source
-    state = _update(from, (s) => s.copyWith(
-      clearPlayer: true,
-      status: SeatStatus.empty,
-      holeCards: const [],
-      currentBet: 0,
-    ));
+    state = _update(from, (s) => SeatState(seatNo: s.seatNo));
     // Place at destination with moved status
     state = _update(to, (s) => s.copyWith(
       player: player,

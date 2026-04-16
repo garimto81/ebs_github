@@ -11,13 +11,16 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app.dart';
 import '../../../data/remote/ws_provider.dart';
 import '../../../features/auth/auth_provider.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../models/enums/hand_fsm.dart';
 import '../../../resources/constants.dart';
+import '../../../routing/app_router.dart';
 import '../providers/action_button_provider.dart';
 import '../providers/config_provider.dart';
 import '../providers/hand_display_provider.dart';
@@ -29,9 +32,8 @@ import '../providers/undo_provider.dart';
 import '../services/undo_stack.dart';
 import '../../../rfid/providers/rfid_reader_provider.dart';
 import '../providers/card_input_provider.dart';
+import '../widgets/seat_cell.dart';
 import 'at_03_card_selector.dart';
-import 'at_04_statistics_screen.dart';
-import 'at_05_rfid_register_screen.dart';
 import 'at_06_game_settings_modal.dart';
 
 // ---------------------------------------------------------------------------
@@ -417,13 +419,9 @@ class _Toolbar extends ConsumerWidget {
   void _pushScreen(BuildContext context, String screenId) {
     switch (screenId) {
       case 'AT-04':
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const At04StatisticsScreen()),
-        );
+        context.push(AppRoutes.stats);
       case 'AT-05':
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const At05RfidRegisterScreen()),
-        );
+        context.push(AppRoutes.rfid);
       default:
         debugPrint('Unknown screen: $screenId');
     }
@@ -770,7 +768,7 @@ class _SeatArea extends ConsumerWidget {
               Positioned(
                 left: seatPositions[i].dx - EbsSpacing.seatCellWidth / 2,
                 top: seatPositions[i].dy - EbsSpacing.seatCellHeight / 2,
-                child: _SeatCellPlaceholder(seat: seats[i]),
+                child: SeatCell(seatIndex: i + 1),
               ),
           ],
         );
@@ -810,73 +808,6 @@ class _SeatArea extends ConsumerWidget {
     ];
   }
 
-}
-
-// ---------------------------------------------------------------------------
-// Seat cell placeholder (will be replaced by full SeatCell widget in P2-3)
-// ---------------------------------------------------------------------------
-
-class _SeatCellPlaceholder extends StatelessWidget {
-  const _SeatCellPlaceholder({required this.seat});
-
-  final SeatState seat;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final isOccupied = seat.isOccupied;
-    final isDealer = seat.isDealer;
-    final isActionOn = seat.actionOn;
-
-    Color borderColor;
-    if (isActionOn) {
-      borderColor = const Color(0xFFFDD835); // yellow — action on
-    } else if (isDealer) {
-      borderColor = cs.secondary;
-    } else if (isOccupied) {
-      borderColor = cs.primary;
-    } else {
-      borderColor = Theme.of(context).dividerColor;
-    }
-
-    return Container(
-      width: EbsSpacing.seatCellWidth,
-      height: EbsSpacing.seatCellHeight,
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: borderColor, width: isActionOn ? 2 : 1),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'S${seat.seatNo}',
-            style: EbsTypography.playerName.copyWith(
-              color: isOccupied ? cs.onSurface : cs.onSurface.withAlpha(100),
-            ),
-          ),
-          if (isOccupied)
-            Text(
-              seat.player!.name,
-              style: EbsTypography.infoBar,
-              overflow: TextOverflow.ellipsis,
-            ),
-          if (isOccupied)
-            Text(
-              _formatStack(seat.player!.stack),
-              style: EbsTypography.stackAmount.copyWith(fontSize: 12),
-            ),
-        ],
-      ),
-    );
-  }
-
-  static String _formatStack(int stack) {
-    if (stack >= 1000000) return '${(stack / 1000000).toStringAsFixed(1)}M';
-    if (stack >= 1000) return '${(stack / 1000).toStringAsFixed(1)}K';
-    return stack.toString();
-  }
 }
 
 // ---------------------------------------------------------------------------

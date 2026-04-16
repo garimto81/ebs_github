@@ -4,20 +4,19 @@
 // and connection details via command-line arguments:
 //   --table_id=1 --token=<jwt> --cc_instance_id=<uuid> --ws_url=ws://host/ws/cc
 
-class LaunchConfig {
-  const LaunchConfig({
-    required this.tableId,
-    required this.token,
-    required this.ccInstanceId,
-    required this.wsUrl,
-    this.boBaseUrl = 'http://localhost:8000',
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final int tableId;
-  final String token; // JWT launch token
-  final String ccInstanceId; // UUID
-  final String wsUrl; // ws://host/ws/cc
-  final String boBaseUrl; // REST API base URL
+part 'launch_config.freezed.dart';
+
+@freezed
+class LaunchConfig with _$LaunchConfig {
+  const factory LaunchConfig({
+    required int tableId,
+    required String token, // JWT launch token
+    required String ccInstanceId, // UUID
+    required String wsUrl, // ws://host/ws/cc
+    @Default('http://localhost:8000') String boBaseUrl, // REST API base URL
+  }) = _LaunchConfig;
 
   /// Parse from command-line args.
   ///

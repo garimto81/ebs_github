@@ -8,9 +8,12 @@
 
 import 'dart:convert';
 
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/launch_config.dart';
+
+part 'auth_provider.freezed.dart';
 
 // ---------------------------------------------------------------------------
 // State
@@ -18,35 +21,15 @@ import '../../models/launch_config.dart';
 
 enum AuthStatus { unauthenticated, authenticating, authenticated, error }
 
-class AuthState {
-  const AuthState({
-    this.status = AuthStatus.unauthenticated,
-    this.config,
-    this.errorMessage,
-    this.role,
-    this.assignedTables,
-  });
-
-  final AuthStatus status;
-  final LaunchConfig? config;
-  final String? errorMessage;
-  final String? role; // Admin | Operator | Viewer
-  final List<int>? assignedTables;
-
-  AuthState copyWith({
-    AuthStatus? status,
+@freezed
+class AuthState with _$AuthState {
+  const factory AuthState({
+    @Default(AuthStatus.unauthenticated) AuthStatus status,
     LaunchConfig? config,
     String? errorMessage,
-    String? role,
+    String? role, // Admin | Operator | Viewer
     List<int>? assignedTables,
-  }) =>
-      AuthState(
-        status: status ?? this.status,
-        config: config ?? this.config,
-        errorMessage: errorMessage ?? this.errorMessage,
-        role: role ?? this.role,
-        assignedTables: assignedTables ?? this.assignedTables,
-      );
+  }) = _AuthState;
 }
 
 // ---------------------------------------------------------------------------
