@@ -402,15 +402,16 @@ class _Toolbar extends ConsumerWidget {
             tooltip: 'RFID Register (AT-05)',
             onPressed: () => _pushScreen(context, 'AT-05'),
           ),
+          _ToolbarIconButton(
+            icon: Icons.settings_rounded,
+            tooltip: 'Table Settings',
+            onPressed: () => showGameSettingsModal(context),
+          ),
           PopupMenuButton<String>(
             icon: Icon(Icons.menu, color: cs.onSurface),
             tooltip: 'Menu',
             onSelected: (value) => _handleMenu(context, value, ref),
             itemBuilder: (_) => [
-              const PopupMenuItem(
-                value: 'game_settings',
-                child: Text('Game Settings'),
-              ),
               const PopupMenuItem(
                 value: 'undo_history',
                 child: Text('Undo History'),
@@ -448,9 +449,6 @@ class _Toolbar extends ConsumerWidget {
 
   void _handleMenu(BuildContext context, String value, WidgetRef ref) {
     switch (value) {
-      case 'game_settings':
-        // ignore: discarded_futures
-        showGameSettingsModal(context);
       case 'undo_history':
         debugPrint('Undo History — handled by ActionPanel UI');
       case 'miss_deal':

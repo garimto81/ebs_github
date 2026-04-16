@@ -3,14 +3,15 @@ title: Settings
 owner: team4
 tier: internal
 legacy-id: BS-03
-last-updated: 2026-04-15
+last-updated: 2026-04-16
 ---
 
 # BS-03 Settings — Command Center 설정 행동 명세
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
-| 2026-04-15 | 신규 작성 (G4-B) | WSOP LIVE Series/Event/Table 스코프 정렬을 위해 Settings 전용 문서 분리. Back_Office/Overview.md §3.6 에 흡수돼 있던 규정을 여기로 이동 + 확장. team2 세션이 draft, **decision_owner = team4** (PR 승인 필수, CR draft 파일 미생성 — v6 거버넌스) |
+| 2026-04-15 | 신규 작성 (G4-B) | WSOP LIVE Series/Event/Table 스코프 정렬을 위해 Settings 전용 문서 분리 |
+| 2026-04-16 | Rules 탭 통합 | 구 AT-06 Game Settings Modal 필드를 Rules 탭으로 흡수. AT-06 독립 모달 → Table Settings Rules 탭 재정의 |
 
 ---
 
@@ -62,7 +63,7 @@ CHECK((scope='global' AND scope_id IS NULL) OR (scope!='global' AND scope_id IS 
 | **Outputs** | NDI/HDMI 라우팅, 해상도, 프레임레이트 | `event` | 이벤트마다 송출 목적지 달라짐 (Feature Table 전용 채널 등) |
 | **GFX** | 스킨, 로고, 자막 스타일 | `series` | 시즌 브랜딩 단위. 개별 이벤트 override 가능 |
 | **Display** | 보안 딜레이, 그래픽 레이어 on/off | `event` | 규정상 이벤트별 딜레이 설정 (Main Event 30초 등) |
-| **Rules** | 게임 규칙 변형 (bomb pot 등) | `event` | 이벤트 자체 특성 |
+| **Rules** | 게임 유형, 블라인드, 앤티, 스트래들, cap, 변형 규칙 | `event` | 이벤트 자체 특성. 상세: §Rules 탭 상세 |
 | **Stats** | 통계 표시 범위 (핸드 최근 N개 등) | `table` | 테이블별 하이라이트 다름 |
 | **Preferences** | 오퍼레이터 단축키, UI 선호 | `global` | 전사 기본값, 유저 단위 override 는 별도 `user_preferences` 로 분리 |
 
@@ -150,6 +151,42 @@ else:
 ## RFID 모드
 
 `rfid_mode` (Real / Mock) 는 **`scope='table'`** 로만 저장 가능 (각 테이블의 물리 리더 상태는 독립적). Global/Series/Event scope 사용 금지 — 테이블 단위 CHECK 는 UI 레이어에서 가드.
+
+---
+
+## Rules 탭 상세 (구 AT-06 Game Settings 통합)
+
+> 2026-04-16: 구 `Game_Settings_Modal.md` (BS-05-08, AT-06)의 필드를 Rules 탭으로 통합. AT-06은 독립 모달이 아닌 **Table Settings Rules 탭**으로 재정의. 진입 경로: CC Toolbar `[⚙]` → Table Settings → Rules 탭.
+
+### 필드 목록 및 카테고리
+
+3개 용어 축 정의는 `Game_Settings_Modal.md §0` 참조.
+
+| 필드 | 설명 | 카테고리 | 편집 가능 시점 |
+|------|------|:--------:|----------------|
+| `game_type` | Hold'em / PLO / Mix 등 | **A** | 핸드 간격 only |
+| `blind_structure_id` | 블라인드 구조 전환 | **A** | 핸드 간격 only |
+| `ante_override` | 앤티 금액 임시 조정 | **A** | 핸드 간격 only |
+| `straddle_enabled_seats` | 좌석별 Straddle ON/OFF | **B** | 항상 가능 (다음 핸드부터 적용) |
+| `allow_run_it_twice` | Run It Twice 허용 | **A** | 핸드 간격 only |
+| `cap_bb_multiplier` | Cap Game BB 배수 (None = 무제한) | **A** | 핸드 간격 only |
+| `rfid_mode` | RFID Real/Mock | **C** | 테이블 라이브 중 항상 가능 |
+| `shot_clock_seconds` | 샷 클럭 초 | **B** | 항상 가능 (다음 핸드부터) |
+| `time_bank_seconds` | 타임 뱅크 초 | **B** | 항상 가능 (다음 핸드부터) |
+
+### 카테고리 렌더링 규칙
+
+| 카테고리 | 핸드 간격 | 핸드 진행 중 |
+|:--------:|:---------:|:----------:|
+| **A** | 표시 + 편집 가능 | **숨김** (placeholder: "현재 {N}번 핸드 진행 중") |
+| **B** | 표시 + 편집 가능 | 표시 + 편집 가능 |
+| **C** | 표시 + 편집 가능 | 표시 + 편집 가능 |
+
+> 카테고리 A 필드는 핸드 진행 중 disabled가 아니라 **섹션 자체가 비노출** — 운영자가 실수로 건드릴 경로를 원천 차단.
+
+### 필드 상세 규격
+
+구현 상세(검증 규칙, UI 컴포넌트, 에러 메시지)는 `Command_Center_UI/Game_Settings_Modal.md` 참조. 해당 문서는 이 탭의 **상세 규격 부록**으로 기능한다.
 
 ---
 

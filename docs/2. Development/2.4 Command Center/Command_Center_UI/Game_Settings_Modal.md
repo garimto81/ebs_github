@@ -1,25 +1,30 @@
 ---
-title: Game Settings Modal
+title: Game Settings — Rules 탭 상세 규격
 owner: team4
 tier: internal
 legacy-id: BS-05-08
-last-updated: 2026-04-15
+last-updated: 2026-04-16
 ---
 
-# BS-05-08 Game Settings Modal (AT-06)
+# BS-05-08 Game Settings — Table Settings Rules 탭 상세 규격
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-10 | 신규 작성 | AT-06 Game Settings 모달 — CC 내부 즉시 편집 범위 (CCR-028, Option A) |
-| 2026-04-15 | 용어/접근 설계 명확화 | "IDLE 전용" 모호 표현 제거 → `핸드 간격` / `핸드 진행 중` / `테이블 라이브` 3축 정의. 필드 3 카테고리(A/B/C) + 섹션 조건부 렌더링 규약 신설 |
+| 2026-04-15 | 용어/접근 설계 명확화 | 3축 정의 + 카테고리 A/B/C + 섹션 조건부 렌더링 |
+| 2026-04-16 | Settings 통합 | 독립 모달(AT-06) → Table Settings Rules 탭으로 통합. 본 문서는 Rules 탭의 **상세 규격 부록**으로 재정의 |
 
 ---
 
 ## 개요
 
-AT-06은 운영자가 테이블 단위 게임 규칙을 편집하는 모달이다. BS-03 Settings Global과 의도적으로 **경계를 분리**하며, Lobby 경유 원격 변경이 방송 지연 원인이 되는 것을 방지한다.
+이 문서는 `Settings.md §Rules 탭 상세` 의 **구현 상세 규격** (필드별 검증 규칙, UI 컴포넌트, 에러 메시지, 조건부 렌더링 시나리오)을 정의한다.
 
-> **참조**: `BS-05-00 §6 AT 카탈로그`, `BS-03-settings` (글로벌 설정과의 경계).
+**진입 경로**: CC Toolbar `[⚙]` 버튼 → Table Settings → **Rules 탭**
+
+> **참조**: `Settings.md §Rules 탭 상세`, `BS-05-00 §6 AT 카탈로그`
+>
+> **변경 이력**: 2026-04-16 이전에는 독립 모달(AT-06, Toolbar Menu → Game Settings)로 정의됨. Settings.md 4단 스코프 체계와 중복 진입 경로 발생 → Rules 탭으로 통합.
 
 ## 0. 핵심 용어 정의
 
