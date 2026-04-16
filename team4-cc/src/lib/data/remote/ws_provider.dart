@@ -106,6 +106,14 @@ void dispatchIncomingEventForTest(
 ) =>
     _dispatchIncomingEvent(<T>(p) => container.read(p), payload);
 
+/// Demo Mode entry point (Demo_Test_Mode.md §6).
+/// Injects events into the provider graph without WebSocket.
+void dispatchLocalDemoEvent(
+  ProviderContainer container,
+  Map<String, dynamic> payload,
+) =>
+    _dispatchIncomingEvent(<T>(p) => container.read(p), payload);
+
 /// Fires an SFX through the active AudioController. Errors are swallowed
 /// so missing assets (e.g. in widget tests) never break the dispatcher.
 void _fireSfx(ProviderReadFn read, SfxId? sfx) {

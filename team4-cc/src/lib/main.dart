@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
 import 'features/auth/auth_provider.dart';
+import 'foundation/configs/features.dart';
 import 'foundation/error_reporting/sentry_init.dart';
 import 'models/launch_config.dart';
 
@@ -17,7 +18,12 @@ Future<void> main(List<String> args) async {
 
   // Parse launch args (BS-05-00 §7 Launch Flow, CCR-029).
   // Lobby passes --table_id, --token, --cc_instance_id, --ws_url.
+  // Demo_Test_Mode.md §1: --demo flag enables offline game progression.
   final config = LaunchConfig.tryFromArgs(args);
+
+  if (config?.demoMode == true) {
+    Features.enableDemoMode = true;
+  }
 
   await initSentry(
     appRunner: () async {

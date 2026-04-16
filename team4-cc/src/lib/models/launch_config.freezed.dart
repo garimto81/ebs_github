@@ -20,7 +20,9 @@ mixin _$LaunchConfig {
   String get token => throw _privateConstructorUsedError; // JWT launch token
   String get ccInstanceId => throw _privateConstructorUsedError; // UUID
   String get wsUrl => throw _privateConstructorUsedError; // ws://host/ws/cc
-  String get boBaseUrl => throw _privateConstructorUsedError;
+  String get boBaseUrl =>
+      throw _privateConstructorUsedError; // REST API base URL
+  bool get demoMode => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $LaunchConfigCopyWith<LaunchConfig> get copyWith =>
@@ -38,7 +40,8 @@ abstract class $LaunchConfigCopyWith<$Res> {
       String token,
       String ccInstanceId,
       String wsUrl,
-      String boBaseUrl});
+      String boBaseUrl,
+      bool demoMode});
 }
 
 /// @nodoc
@@ -59,6 +62,7 @@ class _$LaunchConfigCopyWithImpl<$Res, $Val extends LaunchConfig>
     Object? ccInstanceId = null,
     Object? wsUrl = null,
     Object? boBaseUrl = null,
+    Object? demoMode = null,
   }) {
     return _then(_value.copyWith(
       tableId: null == tableId
@@ -81,6 +85,10 @@ class _$LaunchConfigCopyWithImpl<$Res, $Val extends LaunchConfig>
           ? _value.boBaseUrl
           : boBaseUrl // ignore: cast_nullable_to_non_nullable
               as String,
+      demoMode: null == demoMode
+          ? _value.demoMode
+          : demoMode // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -98,7 +106,8 @@ abstract class _$$LaunchConfigImplCopyWith<$Res>
       String token,
       String ccInstanceId,
       String wsUrl,
-      String boBaseUrl});
+      String boBaseUrl,
+      bool demoMode});
 }
 
 /// @nodoc
@@ -117,6 +126,7 @@ class __$$LaunchConfigImplCopyWithImpl<$Res>
     Object? ccInstanceId = null,
     Object? wsUrl = null,
     Object? boBaseUrl = null,
+    Object? demoMode = null,
   }) {
     return _then(_$LaunchConfigImpl(
       tableId: null == tableId
@@ -139,6 +149,10 @@ class __$$LaunchConfigImplCopyWithImpl<$Res>
           ? _value.boBaseUrl
           : boBaseUrl // ignore: cast_nullable_to_non_nullable
               as String,
+      demoMode: null == demoMode
+          ? _value.demoMode
+          : demoMode // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -151,7 +165,8 @@ class _$LaunchConfigImpl implements _LaunchConfig {
       required this.token,
       required this.ccInstanceId,
       required this.wsUrl,
-      this.boBaseUrl = 'http://localhost:8000'});
+      this.boBaseUrl = 'http://localhost:8000',
+      this.demoMode = false});
 
   @override
   final int tableId;
@@ -167,10 +182,14 @@ class _$LaunchConfigImpl implements _LaunchConfig {
   @override
   @JsonKey()
   final String boBaseUrl;
+// REST API base URL
+  @override
+  @JsonKey()
+  final bool demoMode;
 
   @override
   String toString() {
-    return 'LaunchConfig(tableId: $tableId, token: $token, ccInstanceId: $ccInstanceId, wsUrl: $wsUrl, boBaseUrl: $boBaseUrl)';
+    return 'LaunchConfig(tableId: $tableId, token: $token, ccInstanceId: $ccInstanceId, wsUrl: $wsUrl, boBaseUrl: $boBaseUrl, demoMode: $demoMode)';
   }
 
   @override
@@ -184,12 +203,14 @@ class _$LaunchConfigImpl implements _LaunchConfig {
                 other.ccInstanceId == ccInstanceId) &&
             (identical(other.wsUrl, wsUrl) || other.wsUrl == wsUrl) &&
             (identical(other.boBaseUrl, boBaseUrl) ||
-                other.boBaseUrl == boBaseUrl));
+                other.boBaseUrl == boBaseUrl) &&
+            (identical(other.demoMode, demoMode) ||
+                other.demoMode == demoMode));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, tableId, token, ccInstanceId, wsUrl, boBaseUrl);
+  int get hashCode => Object.hash(
+      runtimeType, tableId, token, ccInstanceId, wsUrl, boBaseUrl, demoMode);
 
   @JsonKey(ignore: true)
   @override
@@ -204,7 +225,8 @@ abstract class _LaunchConfig implements LaunchConfig {
       required final String token,
       required final String ccInstanceId,
       required final String wsUrl,
-      final String boBaseUrl}) = _$LaunchConfigImpl;
+      final String boBaseUrl,
+      final bool demoMode}) = _$LaunchConfigImpl;
 
   @override
   int get tableId;
@@ -216,6 +238,8 @@ abstract class _LaunchConfig implements LaunchConfig {
   String get wsUrl;
   @override // ws://host/ws/cc
   String get boBaseUrl;
+  @override // REST API base URL
+  bool get demoMode;
   @override
   @JsonKey(ignore: true)
   _$$LaunchConfigImplCopyWith<_$LaunchConfigImpl> get copyWith =>

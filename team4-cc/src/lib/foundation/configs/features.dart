@@ -29,4 +29,9 @@ class Features {
 
   /// Default Security Delay seconds when enabled (CCR-036).
   static const securityDelayDefaultSeconds = 30;
+
+  /// Enable Demo & Test Mode (Demo_Test_Mode.md §1).
+  /// Allows game progression verification without RFID or WebSocket.
+  /// Activated at runtime via `--demo` CLI flag or Toolbar menu toggle.
+  static bool enableDemoMode = false;
 }

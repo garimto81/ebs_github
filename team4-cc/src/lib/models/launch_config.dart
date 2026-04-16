@@ -16,6 +16,7 @@ class LaunchConfig with _$LaunchConfig {
     required String ccInstanceId, // UUID
     required String wsUrl, // ws://host/ws/cc
     @Default('http://localhost:8000') String boBaseUrl, // REST API base URL
+  @Default(false) bool demoMode, // --demo flag (Demo_Test_Mode.md §1)
   }) = _LaunchConfig;
 
   /// Parse from command-line args.
@@ -47,6 +48,20 @@ class LaunchConfig with _$LaunchConfig {
     final token = map['token'];
     final ccInstanceId = map['cc_instance_id'];
     final wsUrl = map['ws_url'];
+
+    final hasDemoFlag = args.contains('--demo');
+
+    // In demo mode, required args are optional (auto-filled with defaults).
+    if (hasDemoFlag) {
+      return LaunchConfig(
+        tableId: int.tryParse(tableIdStr ?? '1') ?? 1,
+        token: token ?? 'demo-token',
+        ccInstanceId: ccInstanceId ?? 'demo-instance',
+        wsUrl: wsUrl ?? 'ws://localhost:8000/ws/cc',
+        boBaseUrl: map['bo_base_url'] ?? 'http://localhost:8000',
+        demoMode: true,
+      );
+    }
 
     if (tableIdStr == null || token == null || ccInstanceId == null || wsUrl == null) {
       return null;

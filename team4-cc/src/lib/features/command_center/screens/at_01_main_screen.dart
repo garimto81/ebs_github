@@ -33,6 +33,9 @@ import '../services/undo_stack.dart';
 import '../../../rfid/providers/rfid_reader_provider.dart';
 import '../providers/card_input_provider.dart';
 import '../widgets/seat_cell.dart';
+import '../demo/scenario_runner.dart';
+import '../providers/demo_provider.dart';
+import '../widgets/demo_control_panel.dart';
 import 'at_03_card_selector.dart';
 import 'at_06_game_settings_modal.dart';
 
@@ -50,6 +53,7 @@ class At01MainScreen extends ConsumerStatefulWidget {
 class _At01MainScreenState extends ConsumerState<At01MainScreen> {
   late final FocusNode _focusNode;
   bool _isFallbackModalOpen = false;
+  ScenarioRunner? _scenarioRunner;
 
   @override
   void initState() {
@@ -99,6 +103,12 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
             children: [
               const _Toolbar(),
               const _RfidStatusBanner(),
+              if (ref.watch(demoProvider).isActive)
+                DemoControlPanel(
+                  runner: _scenarioRunner ??= ScenarioRunner(
+                    ProviderScope.containerOf(context),
+                  ),
+                ),
               const _InfoBar(),
               const Expanded(
                 child: _SeatArea(),
@@ -354,9 +364,9 @@ class _Toolbar extends ConsumerWidget {
       height: EbsSpacing.toolbarHeight,
       padding: const EdgeInsets.symmetric(horizontal: EbsSpacing.md),
       decoration: BoxDecoration(
-        color: cs.surface,
+        color: cs.surfaceContainerHigh,
         border: Border(
-          bottom: BorderSide(color: Theme.of(context).dividerColor),
+          bottom: BorderSide(color: cs.outlineVariant),
         ),
       ),
       child: Row(
@@ -395,19 +405,28 @@ class _Toolbar extends ConsumerWidget {
           PopupMenuButton<String>(
             icon: Icon(Icons.menu, color: cs.onSurface),
             tooltip: 'Menu',
-            onSelected: (value) => _handleMenu(context, value),
-            itemBuilder: (_) => const [
-              PopupMenuItem(
+            onSelected: (value) => _handleMenu(context, value, ref),
+            itemBuilder: (_) => [
+              const PopupMenuItem(
                 value: 'game_settings',
                 child: Text('Game Settings'),
               ),
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 'undo_history',
                 child: Text('Undo History'),
               ),
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 'miss_deal',
                 child: Text('Miss Deal'),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                value: 'demo_toggle',
+                child: Text(
+                  ref.read(demoProvider).isActive
+                      ? 'Demo Mode OFF'
+                      : 'Demo Mode ON',
+                ),
               ),
             ],
           ),
@@ -427,19 +446,22 @@ class _Toolbar extends ConsumerWidget {
     }
   }
 
-  void _handleMenu(BuildContext context, String value) {
+  void _handleMenu(BuildContext context, String value, WidgetRef ref) {
     switch (value) {
       case 'game_settings':
         // ignore: discarded_futures
         showGameSettingsModal(context);
       case 'undo_history':
-        // Undo history is handled by the in-place Undo panel; menu entry
-        // is a no-op pending BS-05-05 side-panel spec.
         debugPrint('Undo History — handled by ActionPanel UI');
       case 'miss_deal':
-        // Miss Deal dispatch path is owned by ActionPanel (8-button grid);
-        // this menu entry is a redundant fallback.
         debugPrint('Miss Deal — use ACT panel button');
+      case 'demo_toggle':
+        final notifier = ref.read(demoProvider.notifier);
+        if (ref.read(demoProvider).isActive) {
+          notifier.deactivate();
+        } else {
+          notifier.activate();
+        }
       default:
         debugPrint('Unknown menu: $value');
     }
@@ -676,9 +698,9 @@ class _InfoBar extends ConsumerWidget {
       height: EbsSpacing.infoBarHeight,
       padding: const EdgeInsets.symmetric(horizontal: EbsSpacing.md),
       decoration: BoxDecoration(
-        color: cs.surface.withAlpha(180),
+        color: cs.surfaceContainer,
         border: Border(
-          bottom: BorderSide(color: Theme.of(context).dividerColor),
+          bottom: BorderSide(color: cs.outlineVariant),
         ),
       ),
       child: Row(
@@ -751,7 +773,7 @@ class _SeatArea extends ConsumerWidget {
           children: [
             // Board area (center)
             Positioned(
-              left: cx - 160,
+              left: cx - 175,
               top: cy - 50,
               child: const _BoardArea(),
             ),
@@ -784,28 +806,16 @@ class _SeatArea extends ConsumerWidget {
     double rx,
     double ry,
   ) {
-    // Angular positions (radians) for seats 1-10, clockwise from bottom-right.
-    // Seat 1 = ~5 o'clock, Seat 6 = ~11 o'clock
-    const angles = <double>[
-      0.35,  // S1  — bottom right
-      0.75,  // S2  — bottom center-right
-      1.15,  // S3  — bottom center
-      1.55,  // S4  — bottom center-left
-      1.95,  // S5  — bottom left
-      2.55,  // S6  — top left
-      2.95,  // S7  — top center-left
-      3.35,  // S8  — top center
-      3.75,  // S9  — top center-right
-      4.15,  // S10 — top right
-    ];
-
-    return [
-      for (final a in angles)
-        Offset(
-          cx + rx * math.cos(a),
-          cy + ry * math.sin(a),
-        ),
-    ];
+    // 10 seats around full 360° oval, clockwise from bottom-center (dealer).
+    // Seat 1 = bottom-center-right, Seat 6 = top-center-left.
+    // Start at π/2 (bottom), go clockwise (subtract angle).
+    return List.generate(10, (i) {
+      final angle = math.pi / 2 - (2 * math.pi * i / 10);
+      return Offset(
+        cx + rx * math.cos(angle),
+        cy - ry * math.sin(angle),
+      );
+    });
   }
 
 }
@@ -857,7 +867,7 @@ class _BoardArea extends ConsumerWidget {
     final cs = Theme.of(context).colorScheme;
 
     return Container(
-      width: 320,
+      width: 350,
       height: 100,
       decoration: BoxDecoration(
         color: cs.surface.withAlpha(120),
@@ -936,9 +946,9 @@ class _ActionPanel extends ConsumerWidget {
         vertical: EbsSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: cs.surface,
+        color: cs.surfaceContainerHigh,
         border: Border(
-          top: BorderSide(color: Theme.of(context).dividerColor),
+          top: BorderSide(color: cs.outlineVariant),
         ),
       ),
       child: Row(
