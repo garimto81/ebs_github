@@ -67,7 +67,7 @@ Game Engine은 이벤트가 발생할 때마다 **전체 게임 상태 스냅샷
 
 ## 3. EBS Layer 1 — Overlay 그래픽 8종
 
-> 참조: Foundation PRD Ch.6 Layer 1
+> 참조: Foundation (Confluence SSOT) Ch.4 Layer 1
 
 RFID가 카드를 읽거나, 운영자가 CC에서 액션을 입력하는 순간 **자동으로 즉시 생성**되는 그래픽이다.
 

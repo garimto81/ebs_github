@@ -22,7 +22,7 @@ last-updated: 2026-04-15
 
 Lobby는 EBS의 테이블 관리 웹 앱이다. **Series > Event(Day) > Table** 3계층 drill-down으로 Feature Table을 찾아 Command Center로 진입한다. Player는 3계층과 독립된 레이어로, 어디서든 상시 접근 가능하다. Staff Management(Admin)와 Settings(글로벌)도 독립 레이어이다.
 
-> 참조: BS-02-lobby, BS-00 §1, PRD Ch.8
+> 참조: BS-02-lobby, BS-00 §1, Foundation Ch.5
 
 ---
 

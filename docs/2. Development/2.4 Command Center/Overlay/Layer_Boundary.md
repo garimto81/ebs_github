@@ -18,7 +18,7 @@ last-updated: 2026-04-15
 
 EBS Core는 **Layer 1만 책임**한다. Layer 2/3은 외부 팀(포스트프로덕션, 방송 디자인)이 담당하며, EBS는 Layer 2/3에 필요한 **데이터만 API로 제공**한다.
 
-> **인용**: Foundation PRD v41.0.0 §6
+> **인용**: Foundation (Confluence SSOT) Ch.4
 > "EBS = 실시간 라이브(경쟁: PokerGFX) / 포스트프로덕션 = 종합편집(경쟁: Adobe)"
 
 ---
@@ -168,6 +168,6 @@ Layer 1이 아닌 경우 EBS는 **API 제공**만 하고 렌더링은 외부에 
 ## 5. 연관 문서
 
 - `BS-07-00-overview §3` — Layer 1 그래픽 8종 원본 정의
-- `Foundation PRD v41.0.0 §6` — EBS Core 경계 원칙
+- `Foundation (Confluence SSOT) Ch.4` — EBS Core 경계 원칙
 - `BS-05-07-statistics` — Layer 2 통계 Push 트리거 (AT-04)
 - `API-01-backend-api §통계` — Layer 2 데이터 엔드포인트

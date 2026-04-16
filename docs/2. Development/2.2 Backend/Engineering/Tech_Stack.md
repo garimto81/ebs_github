@@ -20,7 +20,7 @@ last-updated: 2026-04-15
 
 이 문서는 EBS 3-앱 아키텍처(Lobby, Command Center, Back Office) + Game Engine + Overlay의 기술 스택 선정 근거를 기술한다. 각 컴포넌트별로 **선정 이유**, **대안 기각 사유**, **Phase별 진화 계획**을 명시한다.
 
-> 참조: BS-00 §1 앱 아키텍처 용어, PRD-EBS_Foundation Ch.10 기술 스택
+> 참조: BS-00 §1 앱 아키텍처 용어, Foundation Ch.9 기술 스택
 
 ---
 

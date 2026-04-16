@@ -486,7 +486,7 @@ Equity, Outs, Rabbit Hunting, Leaderboard, Score Strip.
 | BS-03-04 Rules | `../specs/BS-03-settings/BS-03-04-rules.md` |
 | BS-03-05 Stats | `../specs/BS-03-settings/BS-03-05-stats.md` |
 | BS-03-06 Preferences | `../specs/BS-03-settings/BS-03-06-preferences.md` |
-| Foundation PRD | `docs/01-strategy/PRD-EBS_Foundation.md` |
+| Foundation PRD | `docs/1. Product/Foundation.md` |
 
 ---
 

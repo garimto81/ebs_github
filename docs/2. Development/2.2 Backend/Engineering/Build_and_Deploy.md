@@ -19,7 +19,7 @@ last-updated: 2026-04-15
 
 이 문서는 EBS의 **빌드 및 배포 전략**을 정의한다. **BO + Lobby는 Docker 컨테이너로 통합 실행**하며, CC와 Overlay는 Flutter 데스크톱 빌드, Engine은 Dart 패키지를 사용한다.
 
-> 참조: IMPL-01 기술 스택, IMPL-02 프로젝트 구조, PRD-EBS_Foundation Ch.10 5-Phase 로드맵
+> 참조: IMPL-01 기술 스택, IMPL-02 프로젝트 구조, Foundation Ch.9 §9.3 로드맵
 
 ---
 

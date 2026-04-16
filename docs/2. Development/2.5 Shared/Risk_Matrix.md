@@ -100,6 +100,18 @@ Draft 분석
 - 기한 내 NACK 없으면 자동 승인 (silence = consent)
 - Phase 2 구현 시 이 문서에 상세 추가 예정
 
+## 프로젝트 리스크 (Foundation Ch.9 기반)
+
+CCR 리스크와 별도로, EBS 프로젝트 전체에 적용되는 전략적 리스크 5건.
+
+| # | 리스크 | 영향 | 완화 전략 | 상태 |
+|---|--------|------|----------|------|
+| R1 | RFID 통합 공급 파트너 미확보 | 높음 | 3개 업체 병행 RFI (Sun-Fly 회신, Angel/엠포플러스 진행 중) | Phase 0 진행 |
+| R2 | 22종 게임 엔진 복잡도 과소평가 | 높음 | 1종(Hold'em) → 9종 → 22종 점진적 확장 | Phase 1 대응 |
+| R3 | PokerGFX 역설계 IP 리스크 | 중 | 클린룸 설계 원칙 (기능 스펙만 참조, 코드 독립 작성) | 상시 적용 |
+| R4 | RFID 리더+안테나 호환성 | 높음 | Phase 1 POC에서 조기 검증 (ST25R3911B + ESP32) | Phase 1 검증 |
+| R5 | 운영 무인화 시 기존 스태프 저항 | 중 | Phase 5까지 단계적 전환, AI 도입은 보조 도구로 시작 | Phase 5 대응 |
+
 ## 참고
 
 - DORA: Streamlining Change Approval (dora.dev)
