@@ -8,9 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/remote/ws_provider.dart' show dispatchLocalDemoEvent;
 import '../../../models/enums/hand_fsm.dart';
+import '../../../models/enums/table_fsm.dart';
 import '../providers/hand_display_provider.dart';
 import '../providers/hand_fsm_provider.dart';
 import '../providers/seat_provider.dart';
+import '../providers/table_state_provider.dart';
 
 /// Dispatches a raw event payload into the provider graph, exactly
 /// as if it arrived over WebSocket.
@@ -44,12 +46,17 @@ void seedDemoPlayers(ProviderContainer container) {
 
   // Set dealer to S1 (prerequisite for hand start).
   notifier.setDealer(1);
+
+  // TableFSM → LIVE (prerequisite for all action buttons).
+  final table = container.read(tableStateProvider.notifier);
+  table.forceState(TableFsm.live);
 }
 
 /// Reset all demo state to clean IDLE.
 void resetDemoState(ProviderContainer container) {
   container.read(seatsProvider.notifier).resetAll();
   container.read(handFsmProvider.notifier).forceState(HandFsm.idle);
+  container.read(tableStateProvider.notifier).forceState(TableFsm.live);
   container.read(potTotalProvider.notifier).state = 0;
   container.read(boardCardsProvider.notifier).state = [];
   container.read(handNumberProvider.notifier).state = 0;

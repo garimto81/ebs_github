@@ -19,6 +19,7 @@ import '../../../features/auth/auth_provider.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../models/enums/hand_fsm.dart';
+import '../../../models/enums/table_fsm.dart';
 import '../../../resources/constants.dart';
 import '../../../routing/app_router.dart';
 import '../providers/action_button_provider.dart';
@@ -63,6 +64,15 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(keyboardShortcutProvider); // initialise singleton
       _focusNode.requestFocus();
+
+      // Ensure TableFSM is LIVE on screen entry so action buttons work.
+      // In production, the server sends TableFSM state via WS on connect.
+      // Until that WS event arrives, auto-promote to LIVE so the operator
+      // can interact immediately (BS-05-00 §2.1 Launch Flow step 6).
+      final tableFsm = ref.read(tableStateProvider);
+      if (tableFsm == TableFsm.empty) {
+        ref.read(tableStateProvider.notifier).forceState(TableFsm.live);
+      }
     });
   }
 
