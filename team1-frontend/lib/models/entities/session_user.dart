@@ -8,7 +8,7 @@ class SessionUser with _$SessionUser {
   const factory SessionUser({
     @JsonKey(name: 'user_id') required int userId,
     required String email,
-    @JsonKey(name: 'display_name') required String displayName,
+    @JsonKey(name: 'display_name') String? displayName,
     required String role,
     @Default({}) Map<String, int> permissions,
     @JsonKey(name: 'table_ids') @Default([]) List<int> tableIds,

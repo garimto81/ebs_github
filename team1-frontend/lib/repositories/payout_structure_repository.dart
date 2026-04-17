@@ -29,11 +29,15 @@ class PayoutStructureRepository {
   PayoutStructureRepository(this._client);
   final BoApiClient _client;
 
-  Future<List<PayoutStructure>> listPayoutStructures({
+  // Backend_HTTP.md §PayoutStructure: series-nested CRUD.
+  // Flight 적용 Payout는 /flights/:id/payout-structure 별도 경로 (team2 소유).
+
+  Future<List<PayoutStructure>> listPayoutStructures(
+    int seriesId, {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<PayoutStructure>>(
-      '/payout-structures',
+      '/series/$seriesId/payout-structures',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => PayoutStructure.fromJson(e as Map<String, dynamic>))
@@ -41,19 +45,20 @@ class PayoutStructureRepository {
     );
   }
 
-  Future<PayoutStructure> getPayoutStructure(int id) async {
+  Future<PayoutStructure> getPayoutStructure(int seriesId, int psId) async {
     return _client.get<PayoutStructure>(
-      '/payout-structures/$id',
+      '/series/$seriesId/payout-structures/$psId',
       fromJson: (json) =>
           PayoutStructure.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<PayoutStructure> createPayoutStructure(
+    int seriesId,
     Map<String, dynamic> data,
   ) async {
     return _client.post<PayoutStructure>(
-      '/payout-structures',
+      '/series/$seriesId/payout-structures',
       data: data,
       fromJson: (json) =>
           PayoutStructure.fromJson(json as Map<String, dynamic>),
@@ -61,19 +66,22 @@ class PayoutStructureRepository {
   }
 
   Future<PayoutStructure> updatePayoutStructure(
-    int id,
+    int seriesId,
+    int psId,
     Map<String, dynamic> data,
   ) async {
     return _client.put<PayoutStructure>(
-      '/payout-structures/$id',
+      '/series/$seriesId/payout-structures/$psId',
       data: data,
       fromJson: (json) =>
           PayoutStructure.fromJson(json as Map<String, dynamic>),
     );
   }
 
-  Future<void> deletePayoutStructure(int id) async {
-    await _client.delete<dynamic>('/payout-structures/$id');
+  Future<void> deletePayoutStructure(int seriesId, int psId) async {
+    await _client.delete<dynamic>(
+      '/series/$seriesId/payout-structures/$psId',
+    );
   }
 }
 

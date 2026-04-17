@@ -24,7 +24,7 @@ mixin _$SessionUser {
   int get userId => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   @JsonKey(name: 'display_name')
-  String get displayName => throw _privateConstructorUsedError;
+  String? get displayName => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
   Map<String, int> get permissions => throw _privateConstructorUsedError;
   @JsonKey(name: 'table_ids')
@@ -49,7 +49,7 @@ abstract class $SessionUserCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'user_id') int userId,
       String email,
-      @JsonKey(name: 'display_name') String displayName,
+      @JsonKey(name: 'display_name') String? displayName,
       String role,
       Map<String, int> permissions,
       @JsonKey(name: 'table_ids') List<int> tableIds});
@@ -72,7 +72,7 @@ class _$SessionUserCopyWithImpl<$Res, $Val extends SessionUser>
   $Res call({
     Object? userId = null,
     Object? email = null,
-    Object? displayName = null,
+    Object? displayName = freezed,
     Object? role = null,
     Object? permissions = null,
     Object? tableIds = null,
@@ -86,10 +86,10 @@ class _$SessionUserCopyWithImpl<$Res, $Val extends SessionUser>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      displayName: null == displayName
+      displayName: freezed == displayName
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       role: null == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -117,7 +117,7 @@ abstract class _$$SessionUserImplCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'user_id') int userId,
       String email,
-      @JsonKey(name: 'display_name') String displayName,
+      @JsonKey(name: 'display_name') String? displayName,
       String role,
       Map<String, int> permissions,
       @JsonKey(name: 'table_ids') List<int> tableIds});
@@ -138,7 +138,7 @@ class __$$SessionUserImplCopyWithImpl<$Res>
   $Res call({
     Object? userId = null,
     Object? email = null,
-    Object? displayName = null,
+    Object? displayName = freezed,
     Object? role = null,
     Object? permissions = null,
     Object? tableIds = null,
@@ -152,10 +152,10 @@ class __$$SessionUserImplCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      displayName: null == displayName
+      displayName: freezed == displayName
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       role: null == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -178,7 +178,7 @@ class _$SessionUserImpl implements _SessionUser {
   const _$SessionUserImpl(
       {@JsonKey(name: 'user_id') required this.userId,
       required this.email,
-      @JsonKey(name: 'display_name') required this.displayName,
+      @JsonKey(name: 'display_name') this.displayName,
       required this.role,
       final Map<String, int> permissions = const {},
       @JsonKey(name: 'table_ids') final List<int> tableIds = const []})
@@ -195,7 +195,7 @@ class _$SessionUserImpl implements _SessionUser {
   final String email;
   @override
   @JsonKey(name: 'display_name')
-  final String displayName;
+  final String? displayName;
   @override
   final String role;
   final Map<String, int> _permissions;
@@ -267,7 +267,7 @@ abstract class _SessionUser implements SessionUser {
   const factory _SessionUser(
           {@JsonKey(name: 'user_id') required final int userId,
           required final String email,
-          @JsonKey(name: 'display_name') required final String displayName,
+          @JsonKey(name: 'display_name') final String? displayName,
           required final String role,
           final Map<String, int> permissions,
           @JsonKey(name: 'table_ids') final List<int> tableIds}) =
@@ -283,7 +283,7 @@ abstract class _SessionUser implements SessionUser {
   String get email;
   @override
   @JsonKey(name: 'display_name')
-  String get displayName;
+  String? get displayName;
   @override
   String get role;
   @override

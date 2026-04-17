@@ -7,17 +7,23 @@ part 'skin.g.dart';
 
 @freezed
 class Skin with _$Skin {
+  const Skin._();
+
   const factory Skin({
     @JsonKey(name: 'skin_id') required int skinId,
     required String name,
-    required String version,
-    required String status,
-    required SkinMetadata metadata,
-    @JsonKey(name: 'file_size') required int fileSize,
-    @JsonKey(name: 'uploaded_at') required String uploadedAt,
+    @Default('1.0.0') String version,
+    @Default('inactive') String status,
+    SkinMetadata? metadata,
+    @JsonKey(name: 'file_size') @Default(0) int fileSize,
+    @JsonKey(name: 'uploaded_at') String? uploadedAt,
     @JsonKey(name: 'activated_at') String? activatedAt,
     @JsonKey(name: 'preview_url') String? previewUrl,
   }) = _Skin;
 
   factory Skin.fromJson(Map<String, dynamic> json) => _$SkinFromJson(json);
+
+  /// 메타데이터가 없을 때 안전 fallback 제공.
+  /// 호출부에서 `skin.metadata.title` 대신 `skin.safeMetadata.title` 사용 가능.
+  SkinMetadata get safeMetadata => metadata ?? SkinMetadata.empty();
 }

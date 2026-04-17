@@ -15,7 +15,7 @@ _$PlayerImpl _$$PlayerImplFromJson(Map<String, dynamic> json) => _$PlayerImpl(
       countryCode: json['country_code'] as String?,
       profileImage: json['profile_image'] as String?,
       playerStatus: json['player_status'] as String,
-      isDemo: json['is_demo'] as bool,
+      isDemo: json['is_demo'] as bool? ?? false,
       source: json['source'] as String,
       syncedAt: json['synced_at'] as String?,
       createdAt: json['created_at'] as String,

@@ -10,7 +10,7 @@ _$SessionUserImpl _$$SessionUserImplFromJson(Map<String, dynamic> json) =>
     _$SessionUserImpl(
       userId: (json['user_id'] as num).toInt(),
       email: json['email'] as String,
-      displayName: json['display_name'] as String,
+      displayName: json['display_name'] as String?,
       role: json['role'] as String,
       permissions: (json['permissions'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, (e as num).toInt()),

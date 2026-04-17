@@ -34,13 +34,16 @@ class SettingsRepository {
     );
   }
 
-  // -- Blind Structures ---------------------------------------------------
+  // -- Blind Structures (series-nested per Backend_HTTP.md §BlindStructure) ----
+  // 모든 blind-structure 조회/변경은 series 컨텍스트 필수.
+  // Flight 적용 구조는 /flights/:id/blind-structure 별도 경로 (BO team2 소유).
 
-  Future<List<BlindStructure>> listBlindStructures({
+  Future<List<BlindStructure>> listBlindStructures(
+    int seriesId, {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<BlindStructure>>(
-      '/blind-structures',
+      '/series/$seriesId/blind-structures',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => BlindStructure.fromJson(e as Map<String, dynamic>))
@@ -48,18 +51,20 @@ class SettingsRepository {
     );
   }
 
-  Future<BlindStructure> getBlindStructure(int id) async {
+  Future<BlindStructure> getBlindStructure(int seriesId, int bsId) async {
     return _client.get<BlindStructure>(
-      '/blind-structures/$id',
+      '/series/$seriesId/blind-structures/$bsId',
       fromJson: (json) =>
           BlindStructure.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<BlindStructure> createBlindStructure(
-      Map<String, dynamic> data) async {
+    int seriesId,
+    Map<String, dynamic> data,
+  ) async {
     return _client.post<BlindStructure>(
-      '/blind-structures',
+      '/series/$seriesId/blind-structures',
       data: data,
       fromJson: (json) =>
           BlindStructure.fromJson(json as Map<String, dynamic>),
@@ -67,22 +72,27 @@ class SettingsRepository {
   }
 
   Future<BlindStructure> updateBlindStructure(
-    int id,
+    int seriesId,
+    int bsId,
     Map<String, dynamic> data,
   ) async {
     return _client.put<BlindStructure>(
-      '/blind-structures/$id',
+      '/series/$seriesId/blind-structures/$bsId',
       data: data,
       fromJson: (json) =>
           BlindStructure.fromJson(json as Map<String, dynamic>),
     );
   }
 
-  Future<void> deleteBlindStructure(int id) async {
-    await _client.delete<dynamic>('/blind-structures/$id');
+  Future<void> deleteBlindStructure(int seriesId, int bsId) async {
+    await _client.delete<dynamic>(
+      '/series/$seriesId/blind-structures/$bsId',
+    );
   }
 
-  // -- Blind Structure Levels ---------------------------------------------
+  // -- Blind Structure Levels (문서 명세 없음 — B-F004 보강 대기) -------------
+  // 현재 경로는 team1 자의적 설계. BO 문서 확정 후 재조정 필요.
+  // 호출 유지하되 BO 구현 완료까지 호출 실패 시 graceful degradation 가정.
 
   Future<List<BlindStructureLevel>> listBlindStructureLevels(
     int blindStructureId,

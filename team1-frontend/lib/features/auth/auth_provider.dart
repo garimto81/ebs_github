@@ -22,6 +22,7 @@ class AuthState {
     this.status = AuthStatus.anonymous,
     this.user,
     this.accessToken,
+    this.refreshToken,
     this.tempToken,
     this.permissions,
     this.error,
@@ -30,6 +31,7 @@ class AuthState {
   final AuthStatus status;
   final SessionUser? user;
   final String? accessToken;
+  final String? refreshToken;
   final String? tempToken;
   final Map<String, int>? permissions;
   final String? error;
@@ -38,11 +40,13 @@ class AuthState {
     AuthStatus? status,
     SessionUser? user,
     String? accessToken,
+    String? refreshToken,
     String? tempToken,
     Map<String, int>? permissions,
     String? error,
     bool clearUser = false,
     bool clearAccessToken = false,
+    bool clearRefreshToken = false,
     bool clearTempToken = false,
     bool clearPermissions = false,
     bool clearError = false,
@@ -52,6 +56,8 @@ class AuthState {
       user: clearUser ? null : (user ?? this.user),
       accessToken:
           clearAccessToken ? null : (accessToken ?? this.accessToken),
+      refreshToken:
+          clearRefreshToken ? null : (refreshToken ?? this.refreshToken),
       tempToken: clearTempToken ? null : (tempToken ?? this.tempToken),
       permissions:
           clearPermissions ? null : (permissions ?? this.permissions),
@@ -111,7 +117,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
         );
       }
 
-      state = state.copyWith(accessToken: res.accessToken);
+      state = state.copyWith(
+        accessToken: res.accessToken,
+        refreshToken: res.refreshToken,
+      );
+      _repo.setToken(res.accessToken);        // ← Dio interceptor가 Bearer 헤더 붙이도록
       await _loadSession();
       state = state.copyWith(status: AuthStatus.authenticated);
       return const LoginResult(success: true);
@@ -144,6 +154,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         accessToken: res.accessToken,
         clearTempToken: true,
       );
+      _repo.setToken(res.accessToken);
       await _loadSession();
       state = state.copyWith(status: AuthStatus.authenticated);
       return const LoginResult(success: true);
@@ -187,13 +198,25 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  /// Attempt to restore a session using the refresh token cookie.
+  /// Attempt to restore a session using a previously stored refresh token.
   /// Called on app boot and on 401 responses.
+  ///
+  /// 현재 refresh_token은 인메모리 state에만 저장되므로 페이지 새로고침 후에는 null.
+  /// null이면 /auth/refresh 호출을 skip하여 422 console noise 제거.
+  /// (TODO: localStorage persistence는 별도 이슈)
   Future<bool> tryRestoreSession() async {
+    final storedRefresh = state.refreshToken;
+    if (storedRefresh == null || storedRefresh.isEmpty) {
+      // 저장된 refresh token 없음 → refresh 호출 skip, 조용히 anonymous 상태.
+      _repo.setToken(null);
+      state = const AuthState();
+      return false;
+    }
     try {
-      final res = await _repo.refreshToken();
+      final res = await _repo.refreshToken(refreshToken: storedRefresh);
       if (res.accessToken != null) {
         state = state.copyWith(accessToken: res.accessToken);
+        _repo.setToken(res.accessToken);
         try {
           await _loadSession();
           state = state.copyWith(status: AuthStatus.authenticated);
@@ -205,7 +228,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (_) {
       // Treat as unauthenticated.
     }
-    state = const AuthState(); // Reset to anonymous.
+    _repo.setToken(null);
+    state = const AuthState();
     return false;
   }
 
@@ -215,6 +239,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final res = await _repo.refreshToken();
       if (res.accessToken != null) {
         state = state.copyWith(accessToken: res.accessToken);
+        _repo.setToken(res.accessToken);
         return res.accessToken;
       }
     } catch (_) {}
@@ -229,6 +254,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (_) {
       // Server may be unreachable; clear state anyway.
     }
+    _repo.setToken(null);
     state = const AuthState();
   }
 

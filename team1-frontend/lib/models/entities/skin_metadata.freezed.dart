@@ -141,8 +141,8 @@ class __$$SkinMetadataImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SkinMetadataImpl implements _SkinMetadata {
   const _$SkinMetadataImpl(
-      {required this.title,
-      required this.description,
+      {this.title = '',
+      this.description = '',
       this.author,
       final List<String> tags = const []})
       : _tags = tags;
@@ -151,8 +151,10 @@ class _$SkinMetadataImpl implements _SkinMetadata {
       _$$SkinMetadataImplFromJson(json);
 
   @override
+  @JsonKey()
   final String title;
   @override
+  @JsonKey()
   final String description;
   @override
   final String? author;
@@ -205,8 +207,8 @@ class _$SkinMetadataImpl implements _SkinMetadata {
 
 abstract class _SkinMetadata implements SkinMetadata {
   const factory _SkinMetadata(
-      {required final String title,
-      required final String description,
+      {final String title,
+      final String description,
       final String? author,
       final List<String> tags}) = _$SkinMetadataImpl;
 

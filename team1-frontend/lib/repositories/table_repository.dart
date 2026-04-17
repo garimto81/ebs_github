@@ -99,11 +99,24 @@ class TableRepository {
     await _client.delete<dynamic>('/tables/$tableId/seats/$seatNo');
   }
 
-  // -- Rebalance -----------------------------------------------------------
+  // -- Rebalance (Backend_HTTP.md §Table.POST /tables/rebalance — Saga) ----
+  // 다중 테이블 플레이어 재배치. body 로 event_flight_id + 전략 전달.
+  // Idempotency-Key 헤더는 Dio interceptor 가 자동 주입.
 
-  Future<Map<String, dynamic>> rebalance(int flightId) async {
+  Future<Map<String, dynamic>> rebalance(
+    int eventFlightId, {
+    String strategy = 'balanced',
+    int targetPlayersPerTable = 9,
+    bool dryRun = false,
+  }) async {
     return _client.post<Map<String, dynamic>>(
-      '/flights/$flightId/rebalance',
+      '/tables/rebalance',
+      data: {
+        'event_flight_id': eventFlightId,
+        'strategy': strategy,
+        'target_players_per_table': targetPlayersPerTable,
+        'dry_run': dryRun,
+      },
       fromJson: (json) => json as Map<String, dynamic>,
     );
   }

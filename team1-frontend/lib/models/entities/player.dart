@@ -14,7 +14,7 @@ class Player with _$Player {
     @JsonKey(name: 'country_code') String? countryCode,
     @JsonKey(name: 'profile_image') String? profileImage,
     @JsonKey(name: 'player_status') required String playerStatus,
-    @JsonKey(name: 'is_demo') required bool isDemo,
+    @JsonKey(name: 'is_demo') @Default(false) bool isDemo,
     required String source,
     @JsonKey(name: 'synced_at') String? syncedAt,
     @JsonKey(name: 'created_at') required String createdAt,

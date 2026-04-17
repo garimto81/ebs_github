@@ -90,10 +90,10 @@ class _GeDetailScreenState extends ConsumerState<GeDetailScreen> {
   void _startEdit(Skin skin) {
     setState(() {
       _editing = true;
-      _titleCtrl.text = skin.metadata.title;
-      _descCtrl.text = skin.metadata.description;
-      _authorCtrl.text = skin.metadata.author ?? '';
-      _tagsDraft = List<String>.from(skin.metadata.tags);
+      _titleCtrl.text = skin.safeMetadata.title;
+      _descCtrl.text = skin.safeMetadata.description;
+      _authorCtrl.text = skin.safeMetadata.author ?? '';
+      _tagsDraft = List<String>.from(skin.safeMetadata.tags);
     });
   }
 
@@ -157,7 +157,7 @@ class _GeDetailScreenState extends ConsumerState<GeDetailScreen> {
       builder: (ctx) => AlertDialog(
         title: const Text('Delete Skin'),
         content: Text(
-          'Delete "${skin.metadata.title.isNotEmpty ? skin.metadata.title : skin.name}"? This cannot be undone.',
+          'Delete "${skin.safeMetadata.title.isNotEmpty ? skin.safeMetadata.title : skin.name}"? This cannot be undone.',
         ),
         actions: [
           TextButton(
@@ -311,7 +311,7 @@ class _GeDetailScreenState extends ConsumerState<GeDetailScreen> {
             const SizedBox(height: 12),
             _infoRow('Version', 'v${skin.version}'),
             _infoRow('File size', _formatFileSize(skin.fileSize)),
-            _infoRow('Uploaded', skin.uploadedAt),
+            _infoRow('Uploaded', skin.uploadedAt ?? '\u2014'),
             if (skin.activatedAt != null)
               _infoRow('Activated', skin.activatedAt!),
             const SizedBox(height: 12),
@@ -446,7 +446,7 @@ class _GeDetailScreenState extends ConsumerState<GeDetailScreen> {
   }
 
   Widget _buildReadOnlyMeta(Skin skin) {
-    final meta = skin.metadata;
+    final meta = skin.safeMetadata;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

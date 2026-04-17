@@ -63,9 +63,9 @@ mixin _$EbsEvent {
   @JsonKey(name: 'synced_at')
   String? get syncedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
-  String get createdAt => throw _privateConstructorUsedError;
+  String? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
-  String get updatedAt => throw _privateConstructorUsedError;
+  String? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this EbsEvent to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -105,8 +105,8 @@ abstract class $EbsEventCopyWith<$Res> {
       String status,
       String source,
       @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'created_at') String? createdAt,
+      @JsonKey(name: 'updated_at') String? updatedAt});
 }
 
 /// @nodoc
@@ -146,8 +146,8 @@ class _$EbsEventCopyWithImpl<$Res, $Val extends EbsEvent>
     Object? status = null,
     Object? source = null,
     Object? syncedAt = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_value.copyWith(
       eventId: null == eventId
@@ -238,14 +238,14 @@ class _$EbsEventCopyWithImpl<$Res, $Val extends EbsEvent>
           ? _value.syncedAt
           : syncedAt // ignore: cast_nullable_to_non_nullable
               as String?,
-      createdAt: null == createdAt
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
+              as String?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -281,8 +281,8 @@ abstract class _$$EbsEventImplCopyWith<$Res>
       String status,
       String source,
       @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'created_at') String? createdAt,
+      @JsonKey(name: 'updated_at') String? updatedAt});
 }
 
 /// @nodoc
@@ -320,8 +320,8 @@ class __$$EbsEventImplCopyWithImpl<$Res>
     Object? status = null,
     Object? source = null,
     Object? syncedAt = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_$EbsEventImpl(
       eventId: null == eventId
@@ -412,14 +412,14 @@ class __$$EbsEventImplCopyWithImpl<$Res>
           ? _value.syncedAt
           : syncedAt // ignore: cast_nullable_to_non_nullable
               as String?,
-      createdAt: null == createdAt
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
+              as String?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
@@ -430,28 +430,28 @@ class _$EbsEventImpl implements _EbsEvent {
   const _$EbsEventImpl(
       {@JsonKey(name: 'event_id') required this.eventId,
       @JsonKey(name: 'series_id') required this.seriesId,
-      @JsonKey(name: 'event_no') required this.eventNo,
+      @JsonKey(name: 'event_no') this.eventNo = 0,
       @JsonKey(name: 'event_name') required this.eventName,
       @JsonKey(name: 'buy_in') this.buyIn,
       @JsonKey(name: 'display_buy_in') this.displayBuyIn,
-      @JsonKey(name: 'game_type') required this.gameType,
-      @JsonKey(name: 'bet_structure') required this.betStructure,
-      @JsonKey(name: 'event_game_type') required this.eventGameType,
-      @JsonKey(name: 'game_mode') required this.gameMode,
+      @JsonKey(name: 'game_type') this.gameType = 0,
+      @JsonKey(name: 'bet_structure') this.betStructure = 0,
+      @JsonKey(name: 'event_game_type') this.eventGameType = 0,
+      @JsonKey(name: 'game_mode') this.gameMode = 'single',
       @JsonKey(name: 'allowed_games') this.allowedGames,
       @JsonKey(name: 'rotation_order') this.rotationOrder,
       @JsonKey(name: 'rotation_trigger') this.rotationTrigger,
       @JsonKey(name: 'blind_structure_id') this.blindStructureId,
       @JsonKey(name: 'starting_chip') this.startingChip,
-      @JsonKey(name: 'table_size') required this.tableSize,
-      @JsonKey(name: 'total_entries') required this.totalEntries,
-      @JsonKey(name: 'players_left') required this.playersLeft,
+      @JsonKey(name: 'table_size') this.tableSize = 9,
+      @JsonKey(name: 'total_entries') this.totalEntries = 0,
+      @JsonKey(name: 'players_left') this.playersLeft = 0,
       @JsonKey(name: 'start_time') this.startTime,
-      required this.status,
-      required this.source,
+      this.status = 'created',
+      this.source = 'api',
       @JsonKey(name: 'synced_at') this.syncedAt,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt});
+      @JsonKey(name: 'created_at') this.createdAt,
+      @JsonKey(name: 'updated_at') this.updatedAt});
 
   factory _$EbsEventImpl.fromJson(Map<String, dynamic> json) =>
       _$$EbsEventImplFromJson(json);
@@ -514,18 +514,20 @@ class _$EbsEventImpl implements _EbsEvent {
   @JsonKey(name: 'start_time')
   final String? startTime;
   @override
+  @JsonKey()
   final String status;
   @override
+  @JsonKey()
   final String source;
   @override
   @JsonKey(name: 'synced_at')
   final String? syncedAt;
   @override
   @JsonKey(name: 'created_at')
-  final String createdAt;
+  final String? createdAt;
   @override
   @JsonKey(name: 'updated_at')
-  final String updatedAt;
+  final String? updatedAt;
 
   @override
   String toString() {
@@ -630,31 +632,30 @@ class _$EbsEventImpl implements _EbsEvent {
 
 abstract class _EbsEvent implements EbsEvent {
   const factory _EbsEvent(
-          {@JsonKey(name: 'event_id') required final int eventId,
-          @JsonKey(name: 'series_id') required final int seriesId,
-          @JsonKey(name: 'event_no') required final int eventNo,
-          @JsonKey(name: 'event_name') required final String eventName,
-          @JsonKey(name: 'buy_in') final int? buyIn,
-          @JsonKey(name: 'display_buy_in') final String? displayBuyIn,
-          @JsonKey(name: 'game_type') required final int gameType,
-          @JsonKey(name: 'bet_structure') required final int betStructure,
-          @JsonKey(name: 'event_game_type') required final int eventGameType,
-          @JsonKey(name: 'game_mode') required final String gameMode,
-          @JsonKey(name: 'allowed_games') final String? allowedGames,
-          @JsonKey(name: 'rotation_order') final String? rotationOrder,
-          @JsonKey(name: 'rotation_trigger') final String? rotationTrigger,
-          @JsonKey(name: 'blind_structure_id') final int? blindStructureId,
-          @JsonKey(name: 'starting_chip') final int? startingChip,
-          @JsonKey(name: 'table_size') required final int tableSize,
-          @JsonKey(name: 'total_entries') required final int totalEntries,
-          @JsonKey(name: 'players_left') required final int playersLeft,
-          @JsonKey(name: 'start_time') final String? startTime,
-          required final String status,
-          required final String source,
-          @JsonKey(name: 'synced_at') final String? syncedAt,
-          @JsonKey(name: 'created_at') required final String createdAt,
-          @JsonKey(name: 'updated_at') required final String updatedAt}) =
-      _$EbsEventImpl;
+      {@JsonKey(name: 'event_id') required final int eventId,
+      @JsonKey(name: 'series_id') required final int seriesId,
+      @JsonKey(name: 'event_no') final int eventNo,
+      @JsonKey(name: 'event_name') required final String eventName,
+      @JsonKey(name: 'buy_in') final int? buyIn,
+      @JsonKey(name: 'display_buy_in') final String? displayBuyIn,
+      @JsonKey(name: 'game_type') final int gameType,
+      @JsonKey(name: 'bet_structure') final int betStructure,
+      @JsonKey(name: 'event_game_type') final int eventGameType,
+      @JsonKey(name: 'game_mode') final String gameMode,
+      @JsonKey(name: 'allowed_games') final String? allowedGames,
+      @JsonKey(name: 'rotation_order') final String? rotationOrder,
+      @JsonKey(name: 'rotation_trigger') final String? rotationTrigger,
+      @JsonKey(name: 'blind_structure_id') final int? blindStructureId,
+      @JsonKey(name: 'starting_chip') final int? startingChip,
+      @JsonKey(name: 'table_size') final int tableSize,
+      @JsonKey(name: 'total_entries') final int totalEntries,
+      @JsonKey(name: 'players_left') final int playersLeft,
+      @JsonKey(name: 'start_time') final String? startTime,
+      final String status,
+      final String source,
+      @JsonKey(name: 'synced_at') final String? syncedAt,
+      @JsonKey(name: 'created_at') final String? createdAt,
+      @JsonKey(name: 'updated_at') final String? updatedAt}) = _$EbsEventImpl;
 
   factory _EbsEvent.fromJson(Map<String, dynamic> json) =
       _$EbsEventImpl.fromJson;
@@ -725,10 +726,10 @@ abstract class _EbsEvent implements EbsEvent {
   String? get syncedAt;
   @override
   @JsonKey(name: 'created_at')
-  String get createdAt;
+  String? get createdAt;
   @override
   @JsonKey(name: 'updated_at')
-  String get updatedAt;
+  String? get updatedAt;
 
   /// Create a copy of EbsEvent
   /// with the given fields replaced by the non-null parameter values.

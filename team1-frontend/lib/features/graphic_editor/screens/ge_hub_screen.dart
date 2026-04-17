@@ -69,7 +69,7 @@ class _GeHubScreenState extends ConsumerState<GeHubScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Delete Skin'),
-        content: Text('Delete "${skin.metadata.title.isNotEmpty ? skin.metadata.title : skin.name}"? This cannot be undone.'),
+        content: Text('Delete "${skin.safeMetadata.title.isNotEmpty ? skin.safeMetadata.title : skin.name}"? This cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -284,8 +284,8 @@ class _SkinCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          skin.metadata.title.isNotEmpty
-                              ? skin.metadata.title
+                          skin.safeMetadata.title.isNotEmpty
+                              ? skin.safeMetadata.title
                               : skin.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

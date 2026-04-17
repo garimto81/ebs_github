@@ -44,9 +44,9 @@ mixin _$EventFlight {
   @JsonKey(name: 'synced_at')
   String? get syncedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
-  String get createdAt => throw _privateConstructorUsedError;
+  String? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
-  String get updatedAt => throw _privateConstructorUsedError;
+  String? get updatedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'flight_id')
   int get flightId => throw _privateConstructorUsedError;
   @JsonKey(name: 'day_index')
@@ -86,8 +86,8 @@ abstract class $EventFlightCopyWith<$Res> {
       @JsonKey(name: 'remain_time') int? remainTime,
       String source,
       @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt,
+      @JsonKey(name: 'created_at') String? createdAt,
+      @JsonKey(name: 'updated_at') String? updatedAt,
       @JsonKey(name: 'flight_id') int flightId,
       @JsonKey(name: 'day_index') int dayIndex,
       @JsonKey(name: 'flight_name') String flightName,
@@ -122,8 +122,8 @@ class _$EventFlightCopyWithImpl<$Res, $Val extends EventFlight>
     Object? remainTime = freezed,
     Object? source = null,
     Object? syncedAt = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
     Object? flightId = null,
     Object? dayIndex = null,
     Object? flightName = null,
@@ -182,14 +182,14 @@ class _$EventFlightCopyWithImpl<$Res, $Val extends EventFlight>
           ? _value.syncedAt
           : syncedAt // ignore: cast_nullable_to_non_nullable
               as String?,
-      createdAt: null == createdAt
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
+              as String?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       flightId: null == flightId
           ? _value.flightId
           : flightId // ignore: cast_nullable_to_non_nullable
@@ -232,8 +232,8 @@ abstract class _$$EventFlightImplCopyWith<$Res>
       @JsonKey(name: 'remain_time') int? remainTime,
       String source,
       @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt,
+      @JsonKey(name: 'created_at') String? createdAt,
+      @JsonKey(name: 'updated_at') String? updatedAt,
       @JsonKey(name: 'flight_id') int flightId,
       @JsonKey(name: 'day_index') int dayIndex,
       @JsonKey(name: 'flight_name') String flightName,
@@ -266,8 +266,8 @@ class __$$EventFlightImplCopyWithImpl<$Res>
     Object? remainTime = freezed,
     Object? source = null,
     Object? syncedAt = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
     Object? flightId = null,
     Object? dayIndex = null,
     Object? flightName = null,
@@ -326,14 +326,14 @@ class __$$EventFlightImplCopyWithImpl<$Res>
           ? _value.syncedAt
           : syncedAt // ignore: cast_nullable_to_non_nullable
               as String?,
-      createdAt: null == createdAt
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
+              as String?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       flightId: null == flightId
           ? _value.flightId
           : flightId // ignore: cast_nullable_to_non_nullable
@@ -360,22 +360,22 @@ class _$EventFlightImpl implements _EventFlight {
   const _$EventFlightImpl(
       {@JsonKey(name: 'event_flight_id') required this.eventFlightId,
       @JsonKey(name: 'event_id') required this.eventId,
-      @JsonKey(name: 'display_name') required this.displayName,
+      @JsonKey(name: 'display_name') this.displayName = '',
       @JsonKey(name: 'start_time') this.startTime,
-      @JsonKey(name: 'is_tbd') required this.isTbd,
-      required this.entries,
-      @JsonKey(name: 'players_left') required this.playersLeft,
-      @JsonKey(name: 'table_count') required this.tableCount,
-      required this.status,
-      @JsonKey(name: 'play_level') required this.playLevel,
+      @JsonKey(name: 'is_tbd') this.isTbd = false,
+      this.entries = 0,
+      @JsonKey(name: 'players_left') this.playersLeft = 0,
+      @JsonKey(name: 'table_count') this.tableCount = 0,
+      this.status = 'created',
+      @JsonKey(name: 'play_level') this.playLevel = 1,
       @JsonKey(name: 'remain_time') this.remainTime,
-      required this.source,
+      this.source = 'api',
       @JsonKey(name: 'synced_at') this.syncedAt,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt,
-      @JsonKey(name: 'flight_id') required this.flightId,
-      @JsonKey(name: 'day_index') required this.dayIndex,
-      @JsonKey(name: 'flight_name') required this.flightName,
+      @JsonKey(name: 'created_at') this.createdAt,
+      @JsonKey(name: 'updated_at') this.updatedAt,
+      @JsonKey(name: 'flight_id') this.flightId = 0,
+      @JsonKey(name: 'day_index') this.dayIndex = 0,
+      @JsonKey(name: 'flight_name') this.flightName = '',
       @JsonKey(name: 'player_count') this.playerCount});
 
   factory _$EventFlightImpl.fromJson(Map<String, dynamic> json) =>
@@ -397,6 +397,7 @@ class _$EventFlightImpl implements _EventFlight {
   @JsonKey(name: 'is_tbd')
   final bool isTbd;
   @override
+  @JsonKey()
   final int entries;
   @override
   @JsonKey(name: 'players_left')
@@ -405,6 +406,7 @@ class _$EventFlightImpl implements _EventFlight {
   @JsonKey(name: 'table_count')
   final int tableCount;
   @override
+  @JsonKey()
   final String status;
   @override
   @JsonKey(name: 'play_level')
@@ -413,16 +415,17 @@ class _$EventFlightImpl implements _EventFlight {
   @JsonKey(name: 'remain_time')
   final int? remainTime;
   @override
+  @JsonKey()
   final String source;
   @override
   @JsonKey(name: 'synced_at')
   final String? syncedAt;
   @override
   @JsonKey(name: 'created_at')
-  final String createdAt;
+  final String? createdAt;
   @override
   @JsonKey(name: 'updated_at')
-  final String updatedAt;
+  final String? updatedAt;
   @override
   @JsonKey(name: 'flight_id')
   final int flightId;
@@ -526,22 +529,22 @@ abstract class _EventFlight implements EventFlight {
   const factory _EventFlight(
           {@JsonKey(name: 'event_flight_id') required final int eventFlightId,
           @JsonKey(name: 'event_id') required final int eventId,
-          @JsonKey(name: 'display_name') required final String displayName,
+          @JsonKey(name: 'display_name') final String displayName,
           @JsonKey(name: 'start_time') final String? startTime,
-          @JsonKey(name: 'is_tbd') required final bool isTbd,
-          required final int entries,
-          @JsonKey(name: 'players_left') required final int playersLeft,
-          @JsonKey(name: 'table_count') required final int tableCount,
-          required final String status,
-          @JsonKey(name: 'play_level') required final int playLevel,
+          @JsonKey(name: 'is_tbd') final bool isTbd,
+          final int entries,
+          @JsonKey(name: 'players_left') final int playersLeft,
+          @JsonKey(name: 'table_count') final int tableCount,
+          final String status,
+          @JsonKey(name: 'play_level') final int playLevel,
           @JsonKey(name: 'remain_time') final int? remainTime,
-          required final String source,
+          final String source,
           @JsonKey(name: 'synced_at') final String? syncedAt,
-          @JsonKey(name: 'created_at') required final String createdAt,
-          @JsonKey(name: 'updated_at') required final String updatedAt,
-          @JsonKey(name: 'flight_id') required final int flightId,
-          @JsonKey(name: 'day_index') required final int dayIndex,
-          @JsonKey(name: 'flight_name') required final String flightName,
+          @JsonKey(name: 'created_at') final String? createdAt,
+          @JsonKey(name: 'updated_at') final String? updatedAt,
+          @JsonKey(name: 'flight_id') final int flightId,
+          @JsonKey(name: 'day_index') final int dayIndex,
+          @JsonKey(name: 'flight_name') final String flightName,
           @JsonKey(name: 'player_count') final int? playerCount}) =
       _$EventFlightImpl;
 
@@ -586,10 +589,10 @@ abstract class _EventFlight implements EventFlight {
   String? get syncedAt;
   @override
   @JsonKey(name: 'created_at')
-  String get createdAt;
+  String? get createdAt;
   @override
   @JsonKey(name: 'updated_at')
-  String get updatedAt;
+  String? get updatedAt;
   @override
   @JsonKey(name: 'flight_id')
   int get flightId;

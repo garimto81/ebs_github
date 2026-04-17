@@ -22,9 +22,14 @@ class BlindStructureScreen extends ConsumerStatefulWidget {
 class _BlindStructureScreenState extends ConsumerState<BlindStructureScreen> {
   int? _expandedId;
 
+  // TODO(B-F005): series selector 도입 시 selected seriesId로 교체.
+  // Backend_HTTP.md §BlindStructure: blind-structure는 series-nested.
+  static const int _defaultSeriesId = 1;
+
   @override
   Widget build(BuildContext context) {
-    final structuresAsync = ref.watch(blindStructureListProvider);
+    final structuresAsync =
+        ref.watch(blindStructureListProvider(_defaultSeriesId));
 
     return structuresAsync.when(
       loading: () => const LoadingState(),
@@ -146,8 +151,8 @@ class _BlindStructureScreenState extends ConsumerState<BlindStructureScreen> {
     );
     if (result != null && result.isNotEmpty) {
       final repo = ref.read(settingsRepositoryProvider);
-      await repo.createBlindStructure({'name': result});
-      ref.invalidate(blindStructureListProvider);
+      await repo.createBlindStructure(_defaultSeriesId, {'name': result});
+      ref.invalidate(blindStructureListProvider(_defaultSeriesId));
     }
   }
 
@@ -178,10 +183,11 @@ class _BlindStructureScreenState extends ConsumerState<BlindStructureScreen> {
     if (result != null && result.isNotEmpty && result != structure.name) {
       final repo = ref.read(settingsRepositoryProvider);
       await repo.updateBlindStructure(
+        _defaultSeriesId,
         structure.blindStructureId,
         {'name': result},
       );
-      ref.invalidate(blindStructureListProvider);
+      ref.invalidate(blindStructureListProvider(_defaultSeriesId));
     }
   }
 
@@ -211,8 +217,11 @@ class _BlindStructureScreenState extends ConsumerState<BlindStructureScreen> {
     );
     if (confirmed == true) {
       final repo = ref.read(settingsRepositoryProvider);
-      await repo.deleteBlindStructure(structure.blindStructureId);
-      ref.invalidate(blindStructureListProvider);
+      await repo.deleteBlindStructure(
+        _defaultSeriesId,
+        structure.blindStructureId,
+      );
+      ref.invalidate(blindStructureListProvider(_defaultSeriesId));
       if (_expandedId == structure.blindStructureId) {
         setState(() => _expandedId = null);
       }

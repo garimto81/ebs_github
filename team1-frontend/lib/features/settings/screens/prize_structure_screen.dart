@@ -12,9 +12,13 @@ import '../providers/payout_structure_provider.dart';
 class PrizeStructureScreen extends ConsumerWidget {
   const PrizeStructureScreen({super.key});
 
+  // TODO(B-F005): series selector 도입 시 교체. 현재는 series 1 기본.
+  static const int _defaultSeriesId = 1;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final structuresAsync = ref.watch(payoutStructureListProvider);
+    final structuresAsync =
+        ref.watch(payoutStructureListProvider(_defaultSeriesId));
 
     return structuresAsync.when(
       loading: () => const LoadingState(),
@@ -180,8 +184,11 @@ class PrizeStructureScreen extends ConsumerWidget {
     );
     if (result != null && result.isNotEmpty) {
       final repo = ref.read(payoutStructureRepositoryProvider);
-      await repo.createPayoutStructure({'name': result, 'payouts': {}});
-      ref.invalidate(payoutStructureListProvider);
+      await repo.createPayoutStructure(
+        _defaultSeriesId,
+        {'name': result, 'payouts': {}},
+      );
+      ref.invalidate(payoutStructureListProvider(_defaultSeriesId));
     }
   }
 
@@ -215,10 +222,11 @@ class PrizeStructureScreen extends ConsumerWidget {
     if (result != null && result.isNotEmpty && result != structure.name) {
       final repo = ref.read(payoutStructureRepositoryProvider);
       await repo.updatePayoutStructure(
+        _defaultSeriesId,
         structure.payoutStructureId,
         {'name': result},
       );
-      ref.invalidate(payoutStructureListProvider);
+      ref.invalidate(payoutStructureListProvider(_defaultSeriesId));
     }
   }
 
@@ -251,8 +259,11 @@ class PrizeStructureScreen extends ConsumerWidget {
     );
     if (confirmed == true) {
       final repo = ref.read(payoutStructureRepositoryProvider);
-      await repo.deletePayoutStructure(structure.payoutStructureId);
-      ref.invalidate(payoutStructureListProvider);
+      await repo.deletePayoutStructure(
+        _defaultSeriesId,
+        structure.payoutStructureId,
+      );
+      ref.invalidate(payoutStructureListProvider(_defaultSeriesId));
     }
   }
 }

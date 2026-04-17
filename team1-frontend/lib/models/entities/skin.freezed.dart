@@ -25,11 +25,11 @@ mixin _$Skin {
   String get name => throw _privateConstructorUsedError;
   String get version => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
-  SkinMetadata get metadata => throw _privateConstructorUsedError;
+  SkinMetadata? get metadata => throw _privateConstructorUsedError;
   @JsonKey(name: 'file_size')
   int get fileSize => throw _privateConstructorUsedError;
   @JsonKey(name: 'uploaded_at')
-  String get uploadedAt => throw _privateConstructorUsedError;
+  String? get uploadedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'activated_at')
   String? get activatedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'preview_url')
@@ -54,13 +54,13 @@ abstract class $SkinCopyWith<$Res> {
       String name,
       String version,
       String status,
-      SkinMetadata metadata,
+      SkinMetadata? metadata,
       @JsonKey(name: 'file_size') int fileSize,
-      @JsonKey(name: 'uploaded_at') String uploadedAt,
+      @JsonKey(name: 'uploaded_at') String? uploadedAt,
       @JsonKey(name: 'activated_at') String? activatedAt,
       @JsonKey(name: 'preview_url') String? previewUrl});
 
-  $SkinMetadataCopyWith<$Res> get metadata;
+  $SkinMetadataCopyWith<$Res>? get metadata;
 }
 
 /// @nodoc
@@ -82,9 +82,9 @@ class _$SkinCopyWithImpl<$Res, $Val extends Skin>
     Object? name = null,
     Object? version = null,
     Object? status = null,
-    Object? metadata = null,
+    Object? metadata = freezed,
     Object? fileSize = null,
-    Object? uploadedAt = null,
+    Object? uploadedAt = freezed,
     Object? activatedAt = freezed,
     Object? previewUrl = freezed,
   }) {
@@ -105,18 +105,18 @@ class _$SkinCopyWithImpl<$Res, $Val extends Skin>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as String,
-      metadata: null == metadata
+      metadata: freezed == metadata
           ? _value.metadata
           : metadata // ignore: cast_nullable_to_non_nullable
-              as SkinMetadata,
+              as SkinMetadata?,
       fileSize: null == fileSize
           ? _value.fileSize
           : fileSize // ignore: cast_nullable_to_non_nullable
               as int,
-      uploadedAt: null == uploadedAt
+      uploadedAt: freezed == uploadedAt
           ? _value.uploadedAt
           : uploadedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       activatedAt: freezed == activatedAt
           ? _value.activatedAt
           : activatedAt // ignore: cast_nullable_to_non_nullable
@@ -132,8 +132,12 @@ class _$SkinCopyWithImpl<$Res, $Val extends Skin>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $SkinMetadataCopyWith<$Res> get metadata {
-    return $SkinMetadataCopyWith<$Res>(_value.metadata, (value) {
+  $SkinMetadataCopyWith<$Res>? get metadata {
+    if (_value.metadata == null) {
+      return null;
+    }
+
+    return $SkinMetadataCopyWith<$Res>(_value.metadata!, (value) {
       return _then(_value.copyWith(metadata: value) as $Val);
     });
   }
@@ -151,14 +155,14 @@ abstract class _$$SkinImplCopyWith<$Res> implements $SkinCopyWith<$Res> {
       String name,
       String version,
       String status,
-      SkinMetadata metadata,
+      SkinMetadata? metadata,
       @JsonKey(name: 'file_size') int fileSize,
-      @JsonKey(name: 'uploaded_at') String uploadedAt,
+      @JsonKey(name: 'uploaded_at') String? uploadedAt,
       @JsonKey(name: 'activated_at') String? activatedAt,
       @JsonKey(name: 'preview_url') String? previewUrl});
 
   @override
-  $SkinMetadataCopyWith<$Res> get metadata;
+  $SkinMetadataCopyWith<$Res>? get metadata;
 }
 
 /// @nodoc
@@ -177,9 +181,9 @@ class __$$SkinImplCopyWithImpl<$Res>
     Object? name = null,
     Object? version = null,
     Object? status = null,
-    Object? metadata = null,
+    Object? metadata = freezed,
     Object? fileSize = null,
-    Object? uploadedAt = null,
+    Object? uploadedAt = freezed,
     Object? activatedAt = freezed,
     Object? previewUrl = freezed,
   }) {
@@ -200,18 +204,18 @@ class __$$SkinImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as String,
-      metadata: null == metadata
+      metadata: freezed == metadata
           ? _value.metadata
           : metadata // ignore: cast_nullable_to_non_nullable
-              as SkinMetadata,
+              as SkinMetadata?,
       fileSize: null == fileSize
           ? _value.fileSize
           : fileSize // ignore: cast_nullable_to_non_nullable
               as int,
-      uploadedAt: null == uploadedAt
+      uploadedAt: freezed == uploadedAt
           ? _value.uploadedAt
           : uploadedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       activatedAt: freezed == activatedAt
           ? _value.activatedAt
           : activatedAt // ignore: cast_nullable_to_non_nullable
@@ -226,17 +230,18 @@ class __$$SkinImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$SkinImpl implements _Skin {
+class _$SkinImpl extends _Skin {
   const _$SkinImpl(
       {@JsonKey(name: 'skin_id') required this.skinId,
       required this.name,
-      required this.version,
-      required this.status,
-      required this.metadata,
-      @JsonKey(name: 'file_size') required this.fileSize,
-      @JsonKey(name: 'uploaded_at') required this.uploadedAt,
+      this.version = '1.0.0',
+      this.status = 'inactive',
+      this.metadata,
+      @JsonKey(name: 'file_size') this.fileSize = 0,
+      @JsonKey(name: 'uploaded_at') this.uploadedAt,
       @JsonKey(name: 'activated_at') this.activatedAt,
-      @JsonKey(name: 'preview_url') this.previewUrl});
+      @JsonKey(name: 'preview_url') this.previewUrl})
+      : super._();
 
   factory _$SkinImpl.fromJson(Map<String, dynamic> json) =>
       _$$SkinImplFromJson(json);
@@ -247,17 +252,19 @@ class _$SkinImpl implements _Skin {
   @override
   final String name;
   @override
+  @JsonKey()
   final String version;
   @override
+  @JsonKey()
   final String status;
   @override
-  final SkinMetadata metadata;
+  final SkinMetadata? metadata;
   @override
   @JsonKey(name: 'file_size')
   final int fileSize;
   @override
   @JsonKey(name: 'uploaded_at')
-  final String uploadedAt;
+  final String? uploadedAt;
   @override
   @JsonKey(name: 'activated_at')
   final String? activatedAt;
@@ -312,17 +319,18 @@ class _$SkinImpl implements _Skin {
   }
 }
 
-abstract class _Skin implements Skin {
+abstract class _Skin extends Skin {
   const factory _Skin(
       {@JsonKey(name: 'skin_id') required final int skinId,
       required final String name,
-      required final String version,
-      required final String status,
-      required final SkinMetadata metadata,
-      @JsonKey(name: 'file_size') required final int fileSize,
-      @JsonKey(name: 'uploaded_at') required final String uploadedAt,
+      final String version,
+      final String status,
+      final SkinMetadata? metadata,
+      @JsonKey(name: 'file_size') final int fileSize,
+      @JsonKey(name: 'uploaded_at') final String? uploadedAt,
       @JsonKey(name: 'activated_at') final String? activatedAt,
       @JsonKey(name: 'preview_url') final String? previewUrl}) = _$SkinImpl;
+  const _Skin._() : super._();
 
   factory _Skin.fromJson(Map<String, dynamic> json) = _$SkinImpl.fromJson;
 
@@ -336,13 +344,13 @@ abstract class _Skin implements Skin {
   @override
   String get status;
   @override
-  SkinMetadata get metadata;
+  SkinMetadata? get metadata;
   @override
   @JsonKey(name: 'file_size')
   int get fileSize;
   @override
   @JsonKey(name: 'uploaded_at')
-  String get uploadedAt;
+  String? get uploadedAt;
   @override
   @JsonKey(name: 'activated_at')
   String? get activatedAt;
