@@ -22,6 +22,8 @@ mixin _$LaunchConfig {
   String get wsUrl => throw _privateConstructorUsedError; // ws://host/ws/cc
   String get boBaseUrl =>
       throw _privateConstructorUsedError; // REST API base URL
+  String get engineUrl =>
+      throw _privateConstructorUsedError; // Game Engine harness
   bool get demoMode => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -41,6 +43,7 @@ abstract class $LaunchConfigCopyWith<$Res> {
       String ccInstanceId,
       String wsUrl,
       String boBaseUrl,
+      String engineUrl,
       bool demoMode});
 }
 
@@ -62,6 +65,7 @@ class _$LaunchConfigCopyWithImpl<$Res, $Val extends LaunchConfig>
     Object? ccInstanceId = null,
     Object? wsUrl = null,
     Object? boBaseUrl = null,
+    Object? engineUrl = null,
     Object? demoMode = null,
   }) {
     return _then(_value.copyWith(
@@ -85,6 +89,10 @@ class _$LaunchConfigCopyWithImpl<$Res, $Val extends LaunchConfig>
           ? _value.boBaseUrl
           : boBaseUrl // ignore: cast_nullable_to_non_nullable
               as String,
+      engineUrl: null == engineUrl
+          ? _value.engineUrl
+          : engineUrl // ignore: cast_nullable_to_non_nullable
+              as String,
       demoMode: null == demoMode
           ? _value.demoMode
           : demoMode // ignore: cast_nullable_to_non_nullable
@@ -107,6 +115,7 @@ abstract class _$$LaunchConfigImplCopyWith<$Res>
       String ccInstanceId,
       String wsUrl,
       String boBaseUrl,
+      String engineUrl,
       bool demoMode});
 }
 
@@ -126,6 +135,7 @@ class __$$LaunchConfigImplCopyWithImpl<$Res>
     Object? ccInstanceId = null,
     Object? wsUrl = null,
     Object? boBaseUrl = null,
+    Object? engineUrl = null,
     Object? demoMode = null,
   }) {
     return _then(_$LaunchConfigImpl(
@@ -149,6 +159,10 @@ class __$$LaunchConfigImplCopyWithImpl<$Res>
           ? _value.boBaseUrl
           : boBaseUrl // ignore: cast_nullable_to_non_nullable
               as String,
+      engineUrl: null == engineUrl
+          ? _value.engineUrl
+          : engineUrl // ignore: cast_nullable_to_non_nullable
+              as String,
       demoMode: null == demoMode
           ? _value.demoMode
           : demoMode // ignore: cast_nullable_to_non_nullable
@@ -166,6 +180,7 @@ class _$LaunchConfigImpl implements _LaunchConfig {
       required this.ccInstanceId,
       required this.wsUrl,
       this.boBaseUrl = 'http://localhost:8000',
+      this.engineUrl = 'http://localhost:8080',
       this.demoMode = false});
 
   @override
@@ -185,11 +200,15 @@ class _$LaunchConfigImpl implements _LaunchConfig {
 // REST API base URL
   @override
   @JsonKey()
+  final String engineUrl;
+// Game Engine harness
+  @override
+  @JsonKey()
   final bool demoMode;
 
   @override
   String toString() {
-    return 'LaunchConfig(tableId: $tableId, token: $token, ccInstanceId: $ccInstanceId, wsUrl: $wsUrl, boBaseUrl: $boBaseUrl, demoMode: $demoMode)';
+    return 'LaunchConfig(tableId: $tableId, token: $token, ccInstanceId: $ccInstanceId, wsUrl: $wsUrl, boBaseUrl: $boBaseUrl, engineUrl: $engineUrl, demoMode: $demoMode)';
   }
 
   @override
@@ -204,13 +223,15 @@ class _$LaunchConfigImpl implements _LaunchConfig {
             (identical(other.wsUrl, wsUrl) || other.wsUrl == wsUrl) &&
             (identical(other.boBaseUrl, boBaseUrl) ||
                 other.boBaseUrl == boBaseUrl) &&
+            (identical(other.engineUrl, engineUrl) ||
+                other.engineUrl == engineUrl) &&
             (identical(other.demoMode, demoMode) ||
                 other.demoMode == demoMode));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, tableId, token, ccInstanceId, wsUrl, boBaseUrl, demoMode);
+  int get hashCode => Object.hash(runtimeType, tableId, token, ccInstanceId,
+      wsUrl, boBaseUrl, engineUrl, demoMode);
 
   @JsonKey(ignore: true)
   @override
@@ -226,6 +247,7 @@ abstract class _LaunchConfig implements LaunchConfig {
       required final String ccInstanceId,
       required final String wsUrl,
       final String boBaseUrl,
+      final String engineUrl,
       final bool demoMode}) = _$LaunchConfigImpl;
 
   @override
@@ -239,6 +261,8 @@ abstract class _LaunchConfig implements LaunchConfig {
   @override // ws://host/ws/cc
   String get boBaseUrl;
   @override // REST API base URL
+  String get engineUrl;
+  @override // Game Engine harness
   bool get demoMode;
   @override
   @JsonKey(ignore: true)

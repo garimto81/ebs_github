@@ -6,10 +6,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/remote/engine_client.dart';
+import '../../../features/auth/auth_provider.dart';
 
 /// Engine client provider — creates EngineClient with configured base URL.
+/// Reads engineUrl from LaunchConfig (default: http://localhost:8080).
 final engineClientProvider = Provider<EngineClient>((ref) {
-  return EngineClient();
+  final config = ref.watch(launchConfigProvider);
+  return EngineClient(baseUrl: config?.engineUrl ?? 'http://localhost:8080');
 });
 
 /// Current engine session ID.

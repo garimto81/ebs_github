@@ -16,7 +16,8 @@ class LaunchConfig with _$LaunchConfig {
     required String ccInstanceId, // UUID
     required String wsUrl, // ws://host/ws/cc
     @Default('http://localhost:8000') String boBaseUrl, // REST API base URL
-  @Default(false) bool demoMode, // --demo flag (Demo_Test_Mode.md §1)
+    @Default('http://localhost:8080') String engineUrl, // Game Engine harness
+    @Default(false) bool demoMode, // --demo flag (Demo_Test_Mode.md §1)
   }) = _LaunchConfig;
 
   /// Parse from command-line args.
@@ -59,6 +60,7 @@ class LaunchConfig with _$LaunchConfig {
         ccInstanceId: ccInstanceId ?? 'demo-instance',
         wsUrl: wsUrl ?? 'ws://localhost:8000/ws/cc',
         boBaseUrl: map['bo_base_url'] ?? 'http://localhost:8000',
+        engineUrl: map['engine_url'] ?? 'http://localhost:8080',
         demoMode: true,
       );
     }
@@ -76,6 +78,7 @@ class LaunchConfig with _$LaunchConfig {
       ccInstanceId: ccInstanceId,
       wsUrl: wsUrl,
       boBaseUrl: map['bo_base_url'] ?? 'http://localhost:8000',
+      engineUrl: map['engine_url'] ?? 'http://localhost:8080',
     );
   }
 }

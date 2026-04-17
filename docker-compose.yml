@@ -1,0 +1,94 @@
+# EBS 통합 Docker Compose — LAN 네트워크 배포
+#
+# 서비스 4개: BO (Backend) + Redis + Engine (Game Harness) + Lobby (Flutter Web)
+# CC (Command Center)는 Flutter 데스크톱 앱 — 호스트에서 별도 실행.
+#
+# 사용법:
+#   docker compose up -d              # 전체 시작
+#   docker compose up -d bo redis engine  # CC 개발 시 필수 서비스만
+#   docker compose logs -f bo         # BO 로그 추적
+#   docker compose down               # 전체 중지
+#
+# CC 호스트 실행 (LAN IP 예시):
+#   cd team4-cc/src
+#   flutter run -d windows --dart-define=DEMO_MODE=true \
+#     --dart-define=BO_URL=http://192.168.1.100:8000 \
+#     --dart-define=ENGINE_URL=http://192.168.1.100:8080
+
+services:
+  # ── Backend / Back Office (team2) ──────────────────────────────────────────
+  bo:
+    build: team2-backend/
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///data/ebs.db
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me-in-production}
+      - JWT_ALGORITHM=HS256
+      - AUTH_PROFILE=dev
+      - JWT_ACCESS_TTL_S=3600
+      - RFID_MODE=mock
+      - LOG_LEVEL=DEBUG
+      # LAN 접근 허용: 모든 오리진 + CC Flutter 앱
+      - CORS_ORIGINS=["*"]
+      # 외부 호스트명 (launch-cc 응답의 ws_url 생성용)
+      - EBS_EXTERNAL_HOST=${EBS_EXTERNAL_HOST:-localhost}
+    volumes:
+      - bo-data:/app/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # ── Redis ──────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ── Game Engine Harness (team3) ────────────────────────────────────────────
+  engine:
+    build: team3-engine/ebs_game_engine/
+    ports:
+      - "8080:8080"
+    environment:
+      - LOG_LEVEL=debug
+    restart: unless-stopped
+
+  # ── Lobby (team1, Flutter Web) — 개발 전용 ────────────────────────────────
+  # team1-frontend는 Flutter 데스크톱 앱이지만 웹 빌드도 지원.
+  # 프로덕션에서는 Nginx 등 별도 서빙. 여기서는 개발 편의용.
+  # lobby:
+  #   build: team1-frontend/
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - API_BASE_URL=http://bo:8000/api/v1
+  #     - WS_BASE_URL=ws://bo:8000
+
+volumes:
+  bo-data:
+    driver: local
+  redis-data:
+    driver: local
+
+# ── 네트워크 ────────────────────────────────────────────────────────────────
+# Docker Compose 기본 네트워크에서 서비스 간 통신:
+#   bo → redis (redis://redis:6379)
+#   engine → 독립 (외부 요청만 수신)
+#   호스트 → bo (localhost:8000), engine (localhost:8080)
+#   CC (호스트) → bo (LAN_IP:8000), engine (LAN_IP:8080)
