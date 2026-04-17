@@ -89,9 +89,13 @@ class EngineClient {
     return response.data as Map<String, dynamic>;
   }
 
-  /// Close a session.
+  /// Close a session. Tolerates 404 (team3 harness may not implement DELETE).
   Future<void> closeSession(String sessionId) async {
-    await _dio.delete('/api/session/$sessionId');
+    try {
+      await _dio.delete('/api/session/$sessionId');
+    } on DioException catch (e) {
+      if (e.response?.statusCode != 404) rethrow;
+    }
   }
 
   // ---------------------------------------------------------------------------

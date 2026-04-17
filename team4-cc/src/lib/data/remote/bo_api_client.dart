@@ -43,21 +43,21 @@ class BoApiClient {
   // Table endpoints (API-01)
   // =========================================================================
 
-  /// Launch (activate) a table. Returns table state.
+  /// Launch CC for a table. Returns { cc_instance_id, launch_token, ws_url }.
   Future<Map<String, dynamic>> launchTable(int tableId) async {
-    final response = await _dio.post('/api/tables/$tableId/launch');
+    final response = await _dio.post('/api/v1/tables/$tableId/launch-cc');
     return response.data as Map<String, dynamic>;
   }
 
   /// Get current table state.
   Future<Map<String, dynamic>> getTableState(int tableId) async {
-    final response = await _dio.get('/api/tables/$tableId/state');
+    final response = await _dio.get('/api/v1/tables/$tableId');
     return response.data as Map<String, dynamic>;
   }
 
-  /// Close a table.
+  /// Close (delete) a table.
   Future<void> closeTable(int tableId) async {
-    await _dio.post('/api/tables/$tableId/close');
+    await _dio.delete('/api/v1/tables/$tableId');
   }
 
   // =========================================================================
@@ -70,27 +70,31 @@ class BoApiClient {
     List<Map<String, dynamic>> events,
   ) async {
     final response = await _dio.post(
-      '/api/tables/$tableId/events/replay',
+      '/api/v1/tables/$tableId/events/replay',
       data: {'events': events},
     );
     return response.data as Map<String, dynamic>;
   }
 
-  /// Get hand recap/history for a specific hand.
+  /// Get hand detail for a specific hand.
   Future<Map<String, dynamic>> getHandRecap(int handId) async {
-    final response = await _dio.get('/api/hands/$handId/recap');
+    final response = await _dio.get('/api/v1/hands/$handId');
     return response.data as Map<String, dynamic>;
   }
 
-  /// Get hand history for a table (paginated).
+  /// Get hand history (paginated).
   Future<List<dynamic>> getHandHistory(
     int tableId, {
     int page = 1,
     int perPage = 20,
   }) async {
     final response = await _dio.get(
-      '/api/tables/$tableId/hands',
-      queryParameters: {'page': page, 'per_page': perPage},
+      '/api/v1/hands',
+      queryParameters: {
+        'table_id': tableId,
+        'page': page,
+        'per_page': perPage,
+      },
     );
     return response.data as List<dynamic>;
   }
@@ -102,7 +106,7 @@ class BoApiClient {
   /// Search players by name or ID.
   Future<List<Map<String, dynamic>>> searchPlayers(String query) async {
     final response = await _dio.get(
-      '/api/players/search',
+      '/api/v1/players/search',
       queryParameters: {'q': query},
     );
     final data = response.data;
@@ -114,14 +118,14 @@ class BoApiClient {
 
   /// Get player stats (chip count history, hands played, etc.).
   Future<Map<String, dynamic>> getPlayerStats(int playerId) async {
-    final response = await _dio.get('/api/players/$playerId/stats');
+    final response = await _dio.get('/api/v1/players/$playerId/stats');
     return response.data as Map<String, dynamic>;
   }
 
   /// Push GFX stats for overlay display (per table or per player).
   Future<void> pushGfxStats(int tableId, {int? playerId}) async {
     await _dio.post(
-      '/api/tables/$tableId/gfx-stats',
+      '/api/v1/tables/$tableId/gfx-stats',
       data: {
         if (playerId != null) 'player_id': playerId,
       },
@@ -135,7 +139,7 @@ class BoApiClient {
     Map<String, dynamic> data,
   ) async {
     await _dio.patch(
-      '/api/tables/$tableId/seats/$seatNo/player',
+      '/api/v1/tables/$tableId/seats/$seatNo/player',
       data: data,
     );
   }
@@ -152,7 +156,7 @@ class BoApiClient {
     required List<Map<String, String>> cards,
   }) async {
     final response = await _dio.post(
-      '/api/decks',
+      '/api/v1/decks',
       data: {
         'deck_name': deckName,
         'cards': cards,
@@ -166,21 +170,18 @@ class BoApiClient {
   // Config / Settings endpoints (API-06)
   // =========================================================================
 
-  /// Get game settings for a table.
-  Future<Map<String, dynamic>> getGameSettings(int tableId) async {
-    final response = await _dio.get('/api/tables/$tableId/settings');
+  /// Get config for a section (Settings.md §6탭).
+  Future<Map<String, dynamic>> getConfig(String section) async {
+    final response = await _dio.get('/api/v1/configs/$section');
     return response.data as Map<String, dynamic>;
   }
 
-  /// Update game settings for a table.
-  Future<void> updateGameSettings(
-    int tableId,
-    Map<String, dynamic> settings,
+  /// Update config for a section.
+  Future<void> updateConfig(
+    String section,
+    Map<String, dynamic> values,
   ) async {
-    await _dio.patch(
-      '/api/tables/$tableId/settings',
-      data: settings,
-    );
+    await _dio.put('/api/v1/configs/$section', data: values);
   }
 
   // =========================================================================
@@ -189,7 +190,7 @@ class BoApiClient {
 
   /// Get the active skin bundle URL for download.
   Future<Map<String, dynamic>> getSkinInfo(String skinId) async {
-    final response = await _dio.get('/api/skins/$skinId');
+    final response = await _dio.get('/api/v1/skins/$skinId');
     return response.data as Map<String, dynamic>;
   }
 
@@ -199,13 +200,15 @@ class BoApiClient {
 
   /// Fetch missing events for a seq gap range (inclusive).
   /// Used by BoWebSocketClient for CCR-021 gap replay.
+  /// WebSocket_Events.md §6.4: GET /tables/:id/events?since={last_seq}
   Future<List<Map<String, dynamic>>> fetchReplayEvents(
-    int fromSeq,
-    int toSeq,
-  ) async {
+    int tableId,
+    int sinceSeq, {
+    int limit = 100,
+  }) async {
     final response = await _dio.get(
-      '/api/events/replay',
-      queryParameters: {'from_seq': fromSeq, 'to_seq': toSeq},
+      '/api/v1/tables/$tableId/events',
+      queryParameters: {'since': sinceSeq, 'limit': limit},
     );
     final data = response.data;
     if (data is List) {

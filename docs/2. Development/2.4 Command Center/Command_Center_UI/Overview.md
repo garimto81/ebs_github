@@ -12,6 +12,7 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-08 | 신규 작성 | CC 전체 구조, Launch 플로우, 상태 표시, 화면 레이아웃 정의 |
 | 2026-04-13 | UI-02 redesign | 좌석 S1~S10 변경, 대칭 배치, 수동 편집 우선 원칙, 인라인 편집 전환 |
+| 2026-04-17 | 연동 아키텍처 명확화 | §1.1 데이터 흐름 신설 — CC↔Engine(직접 HTTP) + CC↔BO(WS 이벤트 발행) |
 
 ---
 
@@ -33,6 +34,42 @@ CC는 Lobby(웹)와 별도 앱이다. Lobby에서 테이블을 선택하고 [Lau
 | **Overlay** | CC와 1:1 대응하는 시청자용 방송 그래픽 출력 |
 | **Game Engine** | CC에 import되는 순수 Dart 패키지. 게임 규칙·상태 관리 |
 | **Back Office (BO)** | Lobby↔CC 간 데이터 간접 공유 계층 (REST API + WebSocket + DB) |
+
+---
+
+## 1.1 CC 연동 데이터 흐름 (2026-04-17 실측 기준)
+
+CC는 3개 외부 서비스와 통신한다. BO→Engine 직접 경로는 존재하지 않는다.
+
+```
+  운영자 입력 (FOLD/BET/RAISE/NEW HAND)
+       │
+       ▼
+  ┌─────────────────────────────────────────┐
+  │            CC (Flutter)                 │
+  │                                         │
+  │  ① Engine HTTP ──────► Game Engine      │
+  │     POST /api/session/:id/event         │
+  │     (게임 로직 검증 + outputEvents)      │
+  │                                         │
+  │  ② BO WebSocket ─────► Back Office      │
+  │     WriteAction / WriteGameInfo         │
+  │     (이벤트 발행 → DB 저장 → Lobby 포워딩)│
+  │                                         │
+  │  ③ BO REST ──────────► Back Office      │
+  │     테이블/핸드/플레이어 CRUD            │
+  └─────────────────────────────────────────┘
+```
+
+| 경로 | 프로토콜 | 용도 | 문서 |
+|------|:--------:|------|------|
+| CC → Engine | HTTP | 게임 로직 검증 (fold/bet/raise → outputEvents) | `Harness_REST_API.md` |
+| CC → BO (WS) | WebSocket | 이벤트 발행 + 설정 수신 | `WebSocket_Events.md §3, §9-§12` |
+| CC → BO (REST) | HTTP | 테이블/핸드/플레이어 CRUD | `Backend_HTTP.md` |
+| BO → Lobby (WS) | WebSocket | CC 이벤트 포워딩 | `WebSocket_Events.md §4` |
+| BO → Engine | — | **없음** (CC가 Engine 직접 호출) | — |
+
+> **설계 근거**: CC가 Engine을 직접 호출하므로 BO는 게임 로직에 관여하지 않는다. BO는 이벤트 저장·포워딩·감사 로그 역할만 수행. 이 분리는 BO 장애 시에도 CC←→Engine 게임 진행이 계속되도록 보장한다.
 
 ---
 
