@@ -42,11 +42,27 @@ class ConnectionManager:
         except (JWTError, ValueError, KeyError) as exc:
             raise ValueError(f"Authentication failed: {exc}")
 
+        role = payload.get("role", "viewer")
+        assigned_tables = payload.get("assigned_tables")  # None = unrestricted
+
+        # SSOT §4.3 L573 — Operator is bound to assigned tables.
+        # Enforce on /ws/cc (which requires a specific table_id).
+        if (
+            channel == "cc"
+            and role == "operator"
+            and assigned_tables is not None
+            and table_id not in assigned_tables
+        ):
+            raise ValueError(
+                f"AUTH_TABLE_NOT_ASSIGNED: operator not assigned to table {table_id}"
+            )
+
         user_info = {
             "user_id": payload["sub"],
             "email": payload.get("email", ""),
-            "role": payload.get("role", "viewer"),
+            "role": role,
             "table_id": table_id,
+            "assigned_tables": assigned_tables,
         }
 
         await websocket.accept()

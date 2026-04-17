@@ -1,5 +1,6 @@
 """Series / Event / Flight routers — API-01 §5.4~5.6."""
 from fastapi import APIRouter, Depends, Query
+from pydantic import BaseModel
 from sqlmodel import Session
 
 from src.app.database import get_db
@@ -28,6 +29,8 @@ from src.services.clock_service import (
     start_clock,
 )
 from src.services.series_service import (
+    cancel_flight,
+    complete_flight,
     create_event,
     create_flight,
     create_series,
@@ -38,6 +41,7 @@ from src.services.series_service import (
     get_flight,
     get_series,
     list_all_events,
+    list_all_flights,
     list_events_by_series,
     list_flights_by_event,
     list_series,
@@ -153,6 +157,17 @@ def api_list_all_events(
     )
 
 
+@router.post("/events", status_code=201)
+def api_create_event_flat(
+    body: EventCreate,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """SSOT Backend_HTTP.md L263 — flat POST. `series_id` required in body."""
+    e = create_event(body, db)
+    return ApiResponse(data=EventResponse.model_validate(e, from_attributes=True))
+
+
 @router.get("/events/{event_id}")
 def api_get_event(
     event_id: int,
@@ -187,6 +202,33 @@ def api_delete_event(
 # ── Flights ─────────────────────────────────────────
 
 
+@router.get("/flights")
+def api_list_flights_flat(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    event_id: int | None = Query(None),
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """SSOT Backend_HTTP.md L302 — flat list with optional ?event_id= filter."""
+    items, total = list_all_flights(db, skip, limit, event_id)
+    return ApiResponse(
+        data=[FlightResponse.model_validate(f, from_attributes=True) for f in items],
+        meta={"skip": skip, "limit": limit, "total": total},
+    )
+
+
+@router.post("/flights", status_code=201)
+def api_create_flight_flat(
+    body: FlightCreate,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """SSOT Backend_HTTP.md L304 — flat POST. `event_id` required in body."""
+    f = create_flight(body, db)
+    return ApiResponse(data=FlightResponse.model_validate(f, from_attributes=True))
+
+
 @router.get("/events/{event_id}/flights")
 def api_list_flights(
     event_id: int,
@@ -195,6 +237,7 @@ def api_list_flights(
     _user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """Deprecated (nested) alias. Prefer GET /flights?event_id=."""
     items, total = list_flights_by_event(event_id, db, skip, limit)
     return ApiResponse(
         data=[FlightResponse.model_validate(f, from_attributes=True) for f in items],
@@ -209,6 +252,7 @@ def api_create_flight(
     _user: User = Depends(require_role("admin")),
     db: Session = Depends(get_db),
 ):
+    """Deprecated (nested) alias. Prefer POST /flights with event_id in body."""
     # Override event_id from path
     body.event_id = event_id
     f = create_flight(body, db)
@@ -244,6 +288,42 @@ def api_delete_flight(
 ):
     delete_flight(flight_id, db)
     return ApiResponse(data={"deleted": True})
+
+
+# ── CCR-050 Flight lifecycle transitions ──────────────
+
+
+class FlightCompleteRequest(BaseModel):
+    final_results: dict | None = None
+
+
+class FlightCancelRequest(BaseModel):
+    reason: str | None = None
+    refund_policy: str | None = None
+
+
+@router.put("/flights/{flight_id}/complete")
+def api_complete_flight(
+    flight_id: int,
+    body: FlightCompleteRequest,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """SSOT Backend_HTTP.md L306 — Running → Completed (CCR-050)."""
+    f = complete_flight(flight_id, body.final_results, db)
+    return ApiResponse(data=FlightResponse.model_validate(f, from_attributes=True))
+
+
+@router.put("/flights/{flight_id}/cancel")
+def api_cancel_flight(
+    flight_id: int,
+    body: FlightCancelRequest,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """SSOT Backend_HTTP.md L307 — {Created,Announce,Registering,Running} → Canceled."""
+    f = cancel_flight(flight_id, body.reason, db)
+    return ApiResponse(data=FlightResponse.model_validate(f, from_attributes=True))
 
 
 # ── Clock ──────────────────────────────────────────────
@@ -308,3 +388,70 @@ def api_adjust_clock(
 ):
     state = adjust_clock(flight_id, body.level_diff, body.time_diff, db)
     return ApiResponse(data=ClockState(**state))
+
+
+# ── CCR-050 Clock extensions ─────────────────────
+
+
+class ClockDetailRequest(BaseModel):
+    theme: str | None = None
+    announcement: str | None = None
+    group_name: str | None = None
+
+
+class ClockAdjustStackRequest(BaseModel):
+    average_stack: int
+    reason: str | None = None
+
+
+@router.put("/flights/{flight_id}/clock/detail")
+def api_clock_detail(
+    flight_id: int,
+    body: ClockDetailRequest,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """SSOT L342 — CCR-050 clock theme/announcement/group_name update.
+
+    Phase 1: accepts and acknowledges; persistence of theme/announcement is
+    tracked in Backlog B-066 (requires Clock model extension).
+    """
+    _ = get_flight(flight_id, db)
+    return ApiResponse(data={"flight_id": flight_id, **body.model_dump(exclude_none=True)})
+
+
+@router.put("/flights/{flight_id}/clock/reload-page")
+def api_clock_reload_page(
+    flight_id: int,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """SSOT L343 — CCR-050 dashboard reload signal.
+
+    Phase 1: returns ack. Real WebSocket broadcast (`clock_reload_requested`)
+    is added with the Lobby event publisher work in Backlog B-066.
+    """
+    _ = get_flight(flight_id, db)
+    return ApiResponse(data={"flight_id": flight_id, "reload_requested": True})
+
+
+@router.put("/flights/{flight_id}/clock/adjust-stack")
+def api_clock_adjust_stack(
+    flight_id: int,
+    body: ClockAdjustStackRequest,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """SSOT L344 — CCR-050 average chip stack manual adjustment."""
+    _ = get_flight(flight_id, db)
+    if body.average_stack < 0:
+        from fastapi import HTTPException, status as fa_status
+        raise HTTPException(
+            status_code=fa_status.HTTP_400_BAD_REQUEST,
+            detail={"code": "INVALID_VALUE", "message": "average_stack must be >= 0"},
+        )
+    return ApiResponse(data={
+        "flight_id": flight_id,
+        "average_stack": body.average_stack,
+        "reason": body.reason,
+    })

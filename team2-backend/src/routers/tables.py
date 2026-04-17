@@ -21,6 +21,7 @@ from src.services.table_service import (
     get_table,
     get_table_seats,
     launch_cc,
+    list_all_tables,
     list_tables,
     rebalance_tables,
     update_seat_status,
@@ -45,6 +46,39 @@ def api_rebalance(
     return ApiResponse(data=result)
 
 
+@router.get("/tables")
+def api_list_tables_flat(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    flight_id: int | None = Query(None),
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """SSOT Backend_HTTP.md L402 — flat list with optional ?flight_id= filter."""
+    items, total = list_all_tables(db, skip, limit, flight_id)
+    return ApiResponse(
+        data=[TableResponse.model_validate(t, from_attributes=True) for t in items],
+        meta={"skip": skip, "limit": limit, "total": total},
+    )
+
+
+@router.post("/tables", status_code=201)
+def api_create_table_flat(
+    body: TableCreate,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """SSOT Backend_HTTP.md L404 — flat POST. `event_flight_id` required in body."""
+    from fastapi import HTTPException, status as fa_status
+    if body.event_flight_id is None:
+        raise HTTPException(
+            status_code=fa_status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"code": "FIELD_REQUIRED", "message": "event_flight_id required for flat POST /tables"},
+        )
+    t = create_table(body.event_flight_id, body, db)
+    return ApiResponse(data=TableResponse.model_validate(t, from_attributes=True))
+
+
 @router.get("/flights/{flight_id}/tables")
 def api_list_tables(
     flight_id: int,
@@ -53,6 +87,7 @@ def api_list_tables(
     _user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """Deprecated (nested) alias. Prefer GET /tables?flight_id=."""
     items, total = list_tables(flight_id, db, skip, limit)
     return ApiResponse(
         data=[TableResponse.model_validate(t, from_attributes=True) for t in items],
@@ -67,6 +102,7 @@ def api_create_table(
     _user: User = Depends(require_role("admin")),
     db: Session = Depends(get_db),
 ):
+    """Deprecated (nested) alias. Prefer POST /tables with event_flight_id in body."""
     t = create_table(flight_id, body, db)
     return ApiResponse(data=TableResponse.model_validate(t, from_attributes=True))
 
@@ -110,6 +146,24 @@ def api_launch_cc(
 ):
     result = launch_cc(table_id, user, db)
     return ApiResponse(data=result)
+
+
+@router.get("/tables/{table_id}/status")
+def api_get_table_status(
+    table_id: int,
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """SSOT Backend_HTTP.md L408 — real-time table status."""
+    t = get_table(table_id, db)
+    seats = get_table_seats(table_id, db)
+    occupied = sum(1 for s in seats if s.status != "empty")
+    return ApiResponse(data={
+        "table_id": t.table_id,
+        "status": t.status,
+        "occupied_seats": occupied,
+        "max_players": t.max_players,
+    })
 
 
 # ── Seats ───────────────────────────────────────────

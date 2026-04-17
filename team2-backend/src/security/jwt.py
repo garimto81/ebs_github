@@ -13,12 +13,12 @@ _ACCESS_TTL_MAP: dict[str, int] = {
     "live": 43200,     # 12h
 }
 
-# Refresh TTL defaults
+# Refresh TTL defaults — BS-01 CCR-048 정본
 _REFRESH_TTL_MAP: dict[str, int] = {
-    "dev": 86400,      # 24h
-    "staging": 604800,  # 7d
-    "prod": 604800,
-    "live": 604800,
+    "dev": 86400,       # 24h
+    "staging": 172800,  # 48h
+    "prod": 172800,     # 48h
+    "live": 172800,     # 48h
 }
 
 
@@ -52,7 +52,18 @@ def get_refresh_ttl() -> int:
     return _get_refresh_ttl()
 
 
-def create_access_token(user_id: int, email: str, role: str) -> str:
+def create_access_token(
+    user_id: int,
+    email: str,
+    role: str,
+    assigned_tables: list[str] | None = None,
+) -> str:
+    """Mint an access JWT.
+
+    `assigned_tables` — optional list of table_ids the Operator is bound to.
+    Absent/None = unrestricted (admin, viewer, or pre-CCR-006 tokens).
+    Empty list = Operator with no assignments (denied on /ws/cc).
+    """
     now = datetime.now(timezone.utc)
     expire = now + timedelta(seconds=_get_access_ttl())
     payload = {
@@ -63,6 +74,8 @@ def create_access_token(user_id: int, email: str, role: str) -> str:
         "iat": int(now.timestamp()),
         "exp": int(expire.timestamp()),
     }
+    if assigned_tables is not None:
+        payload["assigned_tables"] = assigned_tables
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 

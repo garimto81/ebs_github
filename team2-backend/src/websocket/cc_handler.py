@@ -11,6 +11,60 @@ from src.repositories.event_repository import event_repository
 logger = logging.getLogger(__name__)
 
 
+# ── SSOT §9-11: Write* command validation ─────────────────────
+
+_VALID_POKER_ACTIONS: frozenset[str] = frozenset({
+    "fold", "check", "call", "bet", "raise", "all_in",
+})
+
+# Commands → (required payload fields, ack/rejected type names)
+_WRITE_COMMANDS: dict[str, tuple[list[str], str, str]] = {
+    "WriteGameInfo": (
+        ["game_type", "bet_structure", "small_blind", "big_blind"],
+        "GameInfoAck",
+        "GameInfoRejected",
+    ),
+    "WriteDeal": (
+        ["hand_number"],
+        "DealAck",
+        "DealRejected",
+    ),
+    "WriteAction": (
+        ["hand_number", "seat_no", "action"],
+        "ActionAck",
+        "ActionRejected",
+    ),
+}
+
+
+def _build_envelope(type_: str, payload: dict, message_id: str, now_iso: str) -> dict:
+    return {
+        "type": type_,
+        "payload": payload,
+        "timestamp": now_iso,
+        "server_time": now_iso,
+        "source_id": "bo",
+        "message_id": str(uuid.uuid4()),
+        "original_message_id": message_id,
+    }
+
+
+def _validate_write_command(
+    command_type: str, payload: dict,
+) -> tuple[bool, str | None]:
+    """Return (is_valid, reason_if_invalid)."""
+    required, _, _ = _WRITE_COMMANDS[command_type]
+    missing = [k for k in required if k not in payload]
+    if missing:
+        return False, f"missing_required_fields: {missing}"
+    # Domain checks
+    if command_type == "WriteAction":
+        action = payload.get("action")
+        if action not in _VALID_POKER_ACTIONS:
+            return False, f"invalid_action: {action!r}"
+    return True, None
+
+
 async def handle_cc_message(
     message_text: str,
     table_id: str,
@@ -26,10 +80,12 @@ async def handle_cc_message(
         msg = json.loads(message_text)
     except json.JSONDecodeError:
         return {
-            "type": "Ack",
-            "payload": {"status": "error", "error_code": "invalid_json"},
+            "type": "Error",
+            "payload": {"code": "invalid_json", "message": "malformed JSON"},
             "source_id": "bo",
             "message_id": str(uuid.uuid4()),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "server_time": datetime.now(timezone.utc).isoformat(),
         }
 
     event_type = msg.get("type", "unknown")
@@ -38,6 +94,52 @@ async def handle_cc_message(
     idempotency_key = msg.get("idempotency_key")
     correlation_id = msg.get("correlation_id")
     causation_id = msg.get("causation_id")
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    # ── Explicit Write commands (SSOT §9-11) ─────────────
+    if event_type in _WRITE_COMMANDS:
+        required, ack_type, rejected_type = _WRITE_COMMANDS[event_type]
+        ok, reason = _validate_write_command(event_type, payload)
+        if not ok:
+            return _build_envelope(
+                rejected_type,
+                {"original_message_id": message_id, "reason": reason},
+                message_id,
+                now_iso,
+            )
+        # Valid — append to audit_events and forward to lobby
+        audit_event = event_repository.append(
+            table_id=table_id,
+            event_type=event_type.lower(),
+            payload=payload,
+            correlation_id=correlation_id,
+            causation_id=causation_id,
+            idempotency_key=idempotency_key,
+            actor_user_id=user_info.get("user_id"),
+            db=db,
+        )
+        lobby_event = {
+            "type": event_type,
+            "table_id": table_id,
+            "seq": audit_event.seq,
+            "payload": payload,
+            "timestamp": msg.get("timestamp", now_iso),
+            "server_time": now_iso,
+            "source_id": msg.get("source_id", f"cc-table-{table_id}"),
+            "message_id": message_id,
+        }
+        await manager.broadcast("lobby", table_id, lobby_event)
+        return _build_envelope(
+            ack_type,
+            {
+                "original_message_id": message_id,
+                "status": "ok",
+                "seq": audit_event.seq,
+            },
+            message_id,
+            now_iso,
+        )
 
     # Map PascalCase event types to snake_case for audit_events
     event_type_map = {

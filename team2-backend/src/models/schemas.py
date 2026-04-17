@@ -128,6 +128,7 @@ class TableCreate(BaseModel):
     max_players: int = 9
     game_type: int = 0
     delay_seconds: int = 0
+    event_flight_id: Optional[int] = None  # required for flat POST /tables; nested path supplies via URL
 
 
 class TableResponse(BaseModel):

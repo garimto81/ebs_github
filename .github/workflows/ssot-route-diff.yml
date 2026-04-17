@@ -1,0 +1,48 @@
+name: SSOT Route Diff (Backend_HTTP.md ↔ FastAPI)
+
+on:
+  push:
+    branches:
+      - main
+      - 'work/team2/**'
+    paths:
+      - 'team2-backend/src/routers/**'
+      - 'team2-backend/src/main.py'
+      - 'team2-backend/tools/ssot_route_diff.py'
+      - 'docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md'
+      - '.github/workflows/ssot-route-diff.yml'
+  pull_request:
+    paths:
+      - 'team2-backend/src/routers/**'
+      - 'team2-backend/src/main.py'
+      - 'team2-backend/tools/ssot_route_diff.py'
+      - 'docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diff:
+    name: SSOT ↔ FastAPI route parity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: team2-backend/pyproject.toml
+
+      - name: Install team2 backend deps
+        working-directory: team2-backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Run SSOT route diff
+        working-directory: team2-backend
+        env:
+          AUTH_PROFILE: dev
+        run: python tools/ssot_route_diff.py

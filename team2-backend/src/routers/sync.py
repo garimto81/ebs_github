@@ -19,8 +19,49 @@ async def sync_status(
     _user: User = Depends(get_current_user),
     sync_service=Depends(_get_sync_service),
 ):
-    """Return sync status for each source."""
+    """Return sync status for each source (legacy route)."""
     return {"data": await sync_service.get_sync_status()}
+
+
+@router.get("/wsop-live/status")
+async def sync_wsop_live_status(
+    _user: User = Depends(get_current_user),
+    sync_service=Depends(_get_sync_service),
+):
+    """SSOT Backend_HTTP.md L966 — canonical WSOP LIVE sync status."""
+    return {"data": await sync_service.get_sync_status()}
+
+
+@router.post("/wsop-live")
+async def sync_wsop_live_trigger(
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+    sync_service=Depends(_get_sync_service),
+):
+    """SSOT Backend_HTTP.md L965 — canonical WSOP LIVE sync trigger."""
+    result = await sync_service.poll_series(db)
+    return {
+        "data": {
+            "source": result.source,
+            "created": result.created,
+            "updated": result.updated,
+            "skipped": result.skipped,
+            "errors": result.errors,
+        }
+    }
+
+
+@router.get("/conflicts")
+async def sync_conflicts(
+    _user: User = Depends(require_role("admin")),
+    sync_service=Depends(_get_sync_service),
+):
+    """SSOT Backend_HTTP.md L967 — sync conflict report.
+
+    Phase 1 returns empty conflicts list; real conflict detection lands with
+    the wsop-live conflict registry (Backlog B-066).
+    """
+    return {"data": {"conflicts": []}}
 
 
 @router.post("/trigger/{source}")
@@ -30,7 +71,7 @@ async def trigger_sync(
     db: Session = Depends(get_db),
     sync_service=Depends(_get_sync_service),
 ):
-    """Manually trigger sync for a source."""
+    """Deprecated — prefer POST /sync/wsop-live."""
     if source == "wsop_live":
         result = await sync_service.poll_series(db)
         return {

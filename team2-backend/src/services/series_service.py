@@ -146,6 +146,18 @@ def list_flights_by_event(event_id: int, db: Session, skip: int = 0, limit: int 
     return items, total
 
 
+def list_all_flights(
+    db: Session, skip: int = 0, limit: int = 20, event_id: int | None = None,
+) -> tuple[list[EventFlight], int]:
+    """SSOT Backend_HTTP.md L302 — flat GET /flights with optional ?event_id= filter."""
+    stmt = select(EventFlight)
+    if event_id is not None:
+        stmt = stmt.where(EventFlight.event_id == event_id)
+    total = len(db.exec(stmt).all())
+    items = db.exec(stmt.offset(skip).limit(limit)).all()
+    return items, total
+
+
 def get_flight(flight_id: int, db: Session) -> EventFlight:
     f = db.exec(select(EventFlight).where(EventFlight.event_flight_id == flight_id)).first()
     if f is None:
@@ -220,3 +232,50 @@ def delete_flight(flight_id: int, db: Session) -> None:
         )
     db.delete(f)
     db.commit()
+
+
+# ── CCR-050 Flight lifecycle transitions ────────────
+
+# Valid predecessors per SSOT Backend_HTTP.md L306-307
+_COMPLETE_FROM: frozenset[str] = frozenset({"running"})
+_CANCEL_FROM: frozenset[str] = frozenset({
+    "created", "announce", "registering", "running",
+})
+
+
+def complete_flight(flight_id: int, final_results: dict | None, db: Session) -> EventFlight:
+    """Transition Running → Completed. 409 on invalid predecessor."""
+    f = get_flight(flight_id, db)
+    if f.status not in _COMPLETE_FROM:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "INVALID_STATE",
+                "message": f"Cannot complete from status '{f.status}'",
+            },
+        )
+    f.status = "completed"
+    f.updated_at = _utcnow()
+    db.add(f)
+    db.commit()
+    db.refresh(f)
+    return f
+
+
+def cancel_flight(flight_id: int, reason: str | None, db: Session) -> EventFlight:
+    """Transition {Created,Announce,Registering,Running} → Canceled. 409 from Completed."""
+    f = get_flight(flight_id, db)
+    if f.status not in _CANCEL_FROM:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "INVALID_STATE",
+                "message": f"Cannot cancel from status '{f.status}'",
+            },
+        )
+    f.status = "canceled"
+    f.updated_at = _utcnow()
+    db.add(f)
+    db.commit()
+    db.refresh(f)
+    return f

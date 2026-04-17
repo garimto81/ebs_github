@@ -503,6 +503,8 @@ CREATE TABLE users (
     totp_secret TEXT,
     totp_enabled INTEGER NOT NULL DEFAULT 0,
     last_login_at TEXT,
+    failed_login_count INTEGER NOT NULL DEFAULT 0,
+    locked_until TEXT,
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );

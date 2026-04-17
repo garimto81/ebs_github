@@ -4,6 +4,11 @@ from datetime import datetime, timezone
 
 from sqlmodel import Session, select
 
+from src.adapters.event_flight_status import (
+    EventFlightStatusError,
+    normalize as normalize_event_flight_status,
+)
+from src.adapters.wsop_game_type import map_to_ebs
 from src.models.competition import Competition, Event, EventFlight, Series
 from src.models.config import Config
 from src.models.table import Player, Table, TableSeat
@@ -99,6 +104,133 @@ class WsopSyncService:
 
         db.commit()
         self.sync_cursors["series"] = _utcnow()
+        return result
+
+    def upsert_events(self, data: list[dict], db: Session) -> SyncResult:
+        """UPSERT events with map_to_ebs game_type conversion.
+
+        Sync_Protocol §1.2: WSOP LIVE wsop_game_type → EBS game_type MUST
+        flow through `adapters.wsop_game_type.map_to_ebs` before write.
+        Previously this adapter had 0 callers; events UPSERT path was absent.
+        """
+        result = SyncResult(source="wsop_live_events")
+
+        for item in data:
+            # Resolve series by (name, year) composite key
+            series_row = db.exec(
+                select(Series).where(
+                    Series.series_name == item["series_name"],
+                    Series.year == item["year"],
+                )
+            ).first()
+            if series_row is None:
+                result.errors.append(
+                    f"Series not found for event {item.get('event_no')}"
+                )
+                continue
+
+            # MANDATORY: run through adapter before UPSERT
+            try:
+                ebs_game_type, ebs_game_mode = map_to_ebs(
+                    item["wsop_game_type"],
+                    item.get("wsop_game_mode"),
+                )
+            except ValueError as exc:
+                result.errors.append(str(exc))
+                continue
+
+            existing = db.exec(
+                select(Event).where(
+                    Event.series_id == series_row.series_id,
+                    Event.event_no == item["event_no"],
+                )
+            ).first()
+
+            if existing:
+                existing.event_name = item.get("event_name", existing.event_name)
+                existing.game_type = ebs_game_type
+                existing.game_mode = ebs_game_mode
+                existing.synced_at = _utcnow()
+                existing.updated_at = _utcnow()
+                db.add(existing)
+                result.updated += 1
+            else:
+                ev = Event(
+                    series_id=series_row.series_id,
+                    event_no=item["event_no"],
+                    event_name=item.get("event_name", "Untitled"),
+                    game_type=ebs_game_type,
+                    game_mode=ebs_game_mode,
+                    bet_structure=0,
+                    table_size=item.get("table_size", 9),
+                    source="api",
+                    synced_at=_utcnow(),
+                )
+                db.add(ev)
+                result.created += 1
+
+        db.commit()
+        self.sync_cursors["events"] = _utcnow()
+        return result
+
+    async def poll_events(self, db: Session, payload_fn=None) -> SyncResult:
+        """CB-wrapped WSOP LIVE events poll. `payload_fn` injectable for tests."""
+        async def _fetch():
+            return payload_fn() if payload_fn else []
+        data = await self.cb.call(_fetch)
+        return self.upsert_events(data, db)
+
+    def upsert_event_flights(self, data: list[dict], db: Session) -> SyncResult:
+        """UPSERT event_flights with status INT→TEXT adapter (CCR-047).
+
+        `status` in payload may be WSOP LIVE integer (0,1,2,4,5,6). The column
+        is TEXT, so we convert via the adapter. Rejects unknown values instead
+        of silent cast.
+        """
+        result = SyncResult(source="wsop_live_event_flights")
+
+        for item in data:
+            event_row = db.exec(
+                select(Event).where(Event.event_id == item["event_id"])
+            ).first()
+            if event_row is None:
+                result.errors.append(
+                    f"Event {item['event_id']} not found for flight"
+                )
+                continue
+
+            raw_status = item.get("status", 0)
+            try:
+                status_text = normalize_event_flight_status(raw_status)
+            except EventFlightStatusError as exc:
+                result.errors.append(str(exc))
+                continue
+
+            existing = db.exec(
+                select(EventFlight).where(
+                    EventFlight.event_id == item["event_id"],
+                    EventFlight.display_name == item["display_name"],
+                )
+            ).first()
+            if existing:
+                existing.status = status_text
+                existing.synced_at = _utcnow()
+                existing.updated_at = _utcnow()
+                db.add(existing)
+                result.updated += 1
+            else:
+                ef = EventFlight(
+                    event_id=item["event_id"],
+                    display_name=item["display_name"],
+                    status=status_text,
+                    source="api",
+                    synced_at=_utcnow(),
+                )
+                db.add(ef)
+                result.created += 1
+
+        db.commit()
+        self.sync_cursors["event_flights"] = _utcnow()
         return result
 
     async def get_sync_status(self) -> dict:

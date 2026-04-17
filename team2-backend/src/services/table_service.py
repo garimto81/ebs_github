@@ -19,13 +19,18 @@ def _utcnow() -> str:
 
 
 def create_table(flight_id: int, data: TableCreate, db: Session) -> Table:
-    """Create a table + auto-generate 10 seats (0-9, status=empty)."""
+    """Create a table + auto-generate 10 seats (0-9, status=empty).
+
+    `flight_id` (path param) is authoritative; body's `event_flight_id` is only
+    used by the flat POST /tables route to supply this value and is excluded
+    from the model dump to avoid duplicate kwargs.
+    """
     # Validate flight FK
     _ = get_flight(flight_id, db)
 
     t = Table(
         event_flight_id=flight_id,
-        **data.model_dump(),
+        **data.model_dump(exclude={"event_flight_id"}),
     )
     db.add(t)
     db.commit()
@@ -43,6 +48,19 @@ def create_table(flight_id: int, data: TableCreate, db: Session) -> Table:
 def list_tables(flight_id: int, db: Session, skip: int = 0, limit: int = 20) -> tuple[list[Table], int]:
     _ = get_flight(flight_id, db)
     stmt = select(Table).where(Table.event_flight_id == flight_id)
+    total = len(db.exec(stmt).all())
+    items = db.exec(stmt.offset(skip).limit(limit)).all()
+    return items, total
+
+
+def list_all_tables(
+    db: Session, skip: int = 0, limit: int = 20, flight_id: int | None = None,
+) -> tuple[list[Table], int]:
+    """SSOT Backend_HTTP.md L402 — flat GET /tables with optional ?flight_id= filter."""
+    stmt = select(Table)
+    if flight_id is not None:
+        _ = get_flight(flight_id, db)
+        stmt = stmt.where(Table.event_flight_id == flight_id)
     total = len(db.exec(stmt).all())
     items = db.exec(stmt.offset(skip).limit(limit)).all()
     return items, total

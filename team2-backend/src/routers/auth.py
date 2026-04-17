@@ -1,7 +1,7 @@
 """Auth router — API-06 endpoints."""
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel
 from sqlmodel import Session
 
@@ -14,6 +14,30 @@ from src.security.jwt import (
     decode_token,
     get_refresh_ttl,
 )
+
+
+# ── Refresh cookie helper (CCR-048 live delivery) ──
+
+
+REFRESH_COOKIE_NAME = "refresh_token"
+REFRESH_COOKIE_PATH = "/auth/refresh"
+
+
+def _set_refresh_cookie(response: Response, refresh_token: str) -> None:
+    """Emit HttpOnly Secure SameSite=Strict refresh cookie for `live` profile.
+
+    SSOT Auth_and_Session.md §2 + BS-01 — without this, `delivery="cookie"`
+    silently dropped the token (the cookie header was never set).
+    """
+    response.set_cookie(
+        key=REFRESH_COOKIE_NAME,
+        value=refresh_token,
+        max_age=get_refresh_ttl(),
+        path=REFRESH_COOKIE_PATH,
+        secure=True,
+        httponly=True,
+        samesite="strict",
+    )
 from src.services.auth_service import (
     authenticate,
     create_password_reset,
@@ -123,7 +147,7 @@ class MeResponse(BaseModel):
 
 
 @router.post("/login")
-def login(body: LoginRequest, db: Session = Depends(get_db)):
+def login(body: LoginRequest, response: Response, db: Session = Depends(get_db)):
     # Check if account is locked (return 403 before authenticate for clarity)
     from sqlmodel import select as sel
 
@@ -162,6 +186,8 @@ def login(body: LoginRequest, db: Session = Depends(get_db)):
     access_token, refresh_token, expires_in, expires_at = create_session(user, db)
 
     delivery = "cookie" if settings.auth_profile == "live" else "body"
+    if delivery == "cookie":
+        _set_refresh_cookie(response, refresh_token)
 
     return LoginResponse(
         data=LoginData(
@@ -236,7 +262,7 @@ def get_session(
 
 
 @router.post("/verify-2fa")
-def verify_2fa(body: Verify2faRequest, db: Session = Depends(get_db)):
+def verify_2fa(body: Verify2faRequest, response: Response, db: Session = Depends(get_db)):
     """Verify TOTP code with temp_token from login. Public endpoint."""
     from jose import JWTError
 
@@ -264,6 +290,8 @@ def verify_2fa(body: Verify2faRequest, db: Session = Depends(get_db)):
 
     access_token, refresh_token, expires_in, expires_at = create_session(user, db)
     delivery = "cookie" if settings.auth_profile == "live" else "body"
+    if delivery == "cookie":
+        _set_refresh_cookie(response, refresh_token)
 
     return LoginResponse(
         data=LoginData(
@@ -400,6 +428,7 @@ def google_oauth_start():
 
 @router.get("/google/callback")
 def google_oauth_callback(
+    response: Response,
     code: str = "",
     state: str = "",
     db: Session = Depends(get_db),
@@ -420,6 +449,8 @@ def google_oauth_callback(
     )
 
     delivery = "cookie" if settings.auth_profile == "live" else "body"
+    if delivery == "cookie":
+        _set_refresh_cookie(response, refresh_token)
 
     return LoginResponse(
         data=LoginData(

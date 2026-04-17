@@ -64,23 +64,48 @@ def api_create_skin(
     return ApiResponse(data=SkinResponse.model_validate(s, from_attributes=True))
 
 
-@router.patch("/skins/{skin_id}/metadata")
-def api_update_skin_metadata(
+@router.put("/skins/{skin_id}")
+def api_update_skin(
     skin_id: int,
     body: SkinUpdate,
     _user: User = Depends(require_role("admin")),
     db: Session = Depends(get_db),
 ):
+    """SSOT Backend_HTTP.md L745 — canonical metadata update."""
     s = update_skin(skin_id, body, db)
     return ApiResponse(data=SkinResponse.model_validate(s, from_attributes=True))
 
 
-@router.put("/skins/{skin_id}/activate")
+@router.patch("/skins/{skin_id}/metadata")
+def api_update_skin_metadata_legacy(
+    skin_id: int,
+    body: SkinUpdate,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """Deprecated alias. Prefer PUT /skins/:id."""
+    s = update_skin(skin_id, body, db)
+    return ApiResponse(data=SkinResponse.model_validate(s, from_attributes=True))
+
+
+@router.post("/skins/{skin_id}/activate")
 def api_activate_skin(
     skin_id: int,
     _user: User = Depends(require_role("admin")),
     db: Session = Depends(get_db),
 ):
+    """SSOT Backend_HTTP.md L749 — POST is canonical method."""
+    s = activate_skin(skin_id, db)
+    return ApiResponse(data=SkinResponse.model_validate(s, from_attributes=True))
+
+
+@router.put("/skins/{skin_id}/activate")
+def api_activate_skin_legacy(
+    skin_id: int,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """Deprecated method alias. Prefer POST."""
     s = activate_skin(skin_id, db)
     return ApiResponse(data=SkinResponse.model_validate(s, from_attributes=True))
 
