@@ -330,12 +330,16 @@ class BoWebSocketClient {
   ///
   /// Returns `true` if sent or buffered successfully, `false` if the offline
   /// buffer is full (caller should show "Hand Reset Required" warning).
-  bool sendCommand(String type, Map<String, dynamic> data) {
+  bool sendCommand(String type, Map<String, dynamic> data, {
+    String? idempotencyKey,
+  }) {
     final envelope = <String, dynamic>{
       'type': type,
-      'data': data,
+      'payload': data,
       'seq': _outSeq++,
       'timestamp': DateTime.now().toUtc().toIso8601String(),
+      'source_id': 'cc-table-$tableId',
+      if (idempotencyKey != null) 'idempotency_key': idempotencyKey,
     };
 
     if (_state == WsConnectionState.connected) {
@@ -358,6 +362,36 @@ class BoWebSocketClient {
       _onBufferFull?.call();
     }
     return accepted;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Typed commands (WebSocket_Events.md §9-§12)
+  // ---------------------------------------------------------------------------
+
+  /// §10 WriteAction — operator submits a player action.
+  bool sendAction({
+    required int handId,
+    required int seat,
+    required String actionType,
+    int amount = 0,
+    String? idempotencyKey,
+  }) {
+    return sendCommand('WriteAction', {
+      'hand_id': handId,
+      'seat': seat,
+      'action_type': actionType,
+      'amount': amount,
+    }, idempotencyKey: idempotencyKey);
+  }
+
+  /// §11 WriteDeal — operator presses DEAL button.
+  bool sendDeal({
+    required int handId,
+    String? idempotencyKey,
+  }) {
+    return sendCommand('WriteDeal', {
+      'hand_id': handId,
+    }, idempotencyKey: idempotencyKey);
   }
 
   // ---------------------------------------------------------------------------

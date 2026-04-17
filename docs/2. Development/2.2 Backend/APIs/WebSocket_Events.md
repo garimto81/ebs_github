@@ -1036,3 +1036,120 @@ CC는 이 응답 수신 후 DEAL 버튼을 활성화한다.
   }
 }
 ```
+
+---
+
+## 10. WriteAction 프로토콜 (CC → BO 액션 커맨드)
+
+### 10.1 용도
+
+CC 운영자가 액션 버튼(FOLD/CHECK/BET/CALL/RAISE/ALL-IN)을 누르면 BO에 전송하는 **플레이어 액션 커맨드**. BO는 Game Engine에 전달하여 게임 로직 검증 후, 검증 성공 시 `ActionPerformed` 이벤트를 브로드캐스트한다.
+
+- **발행자**: CC (BS-05-02 액션 버튼)
+- **수신자**: BO → Game Engine
+- **응답**: `ActionAck { hand_id, action_index }` 또는 `ActionRejected { reason }`
+
+### 10.2 필드 스키마
+
+```json
+{
+  "type": "WriteAction",
+  "payload": {
+    "hand_id": 248,
+    "seat": 5,
+    "action_type": "raise",
+    "amount": 1200
+  },
+  "timestamp": "2026-04-17T10:30:00.123Z",
+  "source_id": "cc-table-5",
+  "message_id": "msg-uuid-5678",
+  "idempotency_key": "01HZ..."
+}
+```
+
+### 10.3 필드 정의
+
+| # | 필드 | 타입 | 필수 | 설명 |
+|:-:|------|------|:----:|------|
+| 1 | `hand_id` | int | ✓ | 현재 핸드 ID |
+| 2 | `seat` | int (1~10) | ✓ | 액션 수행 좌석 (1-based) |
+| 3 | `action_type` | enum | ✓ | `fold` / `check` / `bet` / `call` / `raise` / `allin` |
+| 4 | `amount` | int | △ | `bet`/`raise`/`allin` 시 필수. `fold`/`check`/`call` 시 0 또는 생략 |
+
+### 10.4 검증 규칙
+
+- `seat`는 현재 `action_on` 좌석과 일치해야 함
+- `action_type`은 현재 HandFSM 상태에서 허용된 액션이어야 함
+- `amount`는 해당 좌석의 스택 이하
+- `bet`/`raise` 시 `amount`는 최소 베팅 규칙 충족 (BS-06-02 참조)
+- `allin` 시 `amount`는 해당 좌석의 전체 스택
+
+### 10.5 응답
+
+**`ActionAck` (성공)**:
+```json
+{
+  "type": "ActionAck",
+  "payload": {
+    "hand_id": 248,
+    "action_index": 3,
+    "next_action_seat": 6
+  }
+}
+```
+
+CC는 이 응답 수신 후 `action_on`을 `next_action_seat`으로 이동한다. 동시에 BO가 `ActionPerformed` 이벤트를 브로드캐스트하므로 CC의 state 전이는 §3.3.1 규칙을 따른다.
+
+**`ActionRejected` (실패)**:
+```json
+{
+  "type": "ActionRejected",
+  "payload": {
+    "hand_id": 248,
+    "seat": 5,
+    "reason": "NOT_YOUR_TURN",
+    "message": "Action on seat 6, not seat 5"
+  }
+}
+```
+
+CC는 거부 시 UI에 에러 토스트를 표시하고 현재 상태를 유지한다.
+
+---
+
+## 11. WriteDeal 프로토콜 (CC → BO 딜 커맨드)
+
+### 11.1 용도
+
+CC 운영자가 DEAL 버튼을 누르면 BO에 전송. `SETUP_HAND → PRE_FLOP` 전이를 요청한다.
+
+### 11.2 필드 스키마
+
+```json
+{
+  "type": "WriteDeal",
+  "payload": {
+    "hand_id": 248
+  },
+  "timestamp": "2026-04-17T10:30:01.000Z",
+  "source_id": "cc-table-5",
+  "message_id": "msg-uuid-6789",
+  "idempotency_key": "01HZ..."
+}
+```
+
+### 11.3 응답
+
+**`DealAck`**: `{ hand_id, phase: "PRE_FLOP" }` — CC HandFSM을 PRE_FLOP으로 전이.
+**`DealRejected`**: `{ hand_id, reason }` — 전제조건 미충족 시.
+
+---
+
+## 12. CC → BO 커맨드 요약
+
+| 커맨드 | §참조 | 발동 조건 | 응답 Ack | 응답 Rejected |
+|--------|:-----:|----------|---------|--------------|
+| `WriteGameInfo` | §9 | NEW HAND 버튼 | `GameInfoAck` | `GameInfoRejected` |
+| `WriteDeal` | §11 | DEAL 버튼 | `DealAck` | `DealRejected` |
+| `WriteAction` | §10 | FOLD/CHECK/BET/CALL/RAISE/ALL-IN | `ActionAck` | `ActionRejected` |
+```

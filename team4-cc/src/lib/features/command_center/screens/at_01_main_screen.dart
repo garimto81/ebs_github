@@ -182,12 +182,14 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
 // Action dispatch — HandFSM + WebSocket + UndoStack (BS-05-02, CCR-021)
 // ---------------------------------------------------------------------------
 
-/// Executes a CC action: guard check → HandFsm transition → WS send → UndoStack.
+/// Executes a CC action (WebSocket_Events.md §9-§12).
 ///
-/// Called by both UI button taps (_ActionPanel.onAction) and keyboard
-/// shortcuts (ref.listen on lastKeyboardActionProvider).
+/// **Online mode** (WS connected): sends typed command to BO → server responds
+/// with broadcast event → ws_provider dispatcher updates local state.
+///
+/// **Demo/offline mode** (WS null): applies local FSM transition directly
+/// via dispatchLocalDemoEvent so the UI still functions.
 void _dispatchAction(WidgetRef ref, CcAction action, {int? amount}) {
-  // Guard: reject if this action is currently disabled by the FSM matrix.
   if (!ref.read(actionButtonProvider).isEnabled(action)) return;
 
   final handFsm = ref.read(handFsmProvider.notifier);
@@ -196,14 +198,12 @@ void _dispatchAction(WidgetRef ref, CcAction action, {int? amount}) {
   final seats = ref.read(seatsProvider);
   final config = ref.read(configProvider);
   final launchConfig = ref.read(launchConfigProvider);
-
-  // Seat that currently has action_on (used for player-action commands).
+  final handNum = ref.read(handNumberProvider);
   final actionSeat = seats.where((s) => s.actionOn).firstOrNull;
+  final seatNo = actionSeat?.seatNo ?? 0;
 
   switch (action) {
-    // ------------------------------------------------------------------
-    // NEW HAND — idle|handComplete → setupHand + WriteGameInfo (24 fields)
-    // ------------------------------------------------------------------
+    // -- NEW HAND (§9 WriteGameInfo) ------------------------------------
     case CcAction.newHand:
       final activePlayers = seats.where((s) => s.isOccupied).length;
       final dealerSet = seats.any((s) => s.isDealer);
@@ -211,148 +211,131 @@ void _dispatchAction(WidgetRef ref, CcAction action, {int? amount}) {
           activePlayers: activePlayers, dealerSet: dealerSet)) {
         return;
       }
-      handFsm.startHand();
-      ws?.sendCommand('WriteGameInfo', {
-        'table_id': config.tableNumber,
-        'game_type': config.gameType.name,
-        'bet_structure': config.betStructure.name,
-        'small_blind': config.smallBlind,
-        'big_blind': config.bigBlind,
-        'ante': config.ante,
-        'big_blind_ante': config.bigBlindAnte,
-        'straddle_seats': config.straddleSeats,
-        'blind_structure_id': config.blindStructureId,
-        'time_bank_seconds': config.timeBankSeconds,
-        'shot_clock_seconds': config.shotClockSeconds,
-        'max_buy_in': config.maxBuyIn,
-        'min_buy_in': config.minBuyIn,
-        'table_name': config.tableName,
-        'table_number': config.tableNumber,
-        'seat_count': seats.length,
-        'active_seats': activePlayers,
-        'dealer_seat': seats.where((s) => s.isDealer).firstOrNull?.seatNo,
-        'cc_instance_id': launchConfig?.ccInstanceId,
-        'players': seats
-            .where((s) => s.isOccupied)
-            .map((s) => {
-                  'seat_no': s.seatNo,
-                  'player_id': s.player?.id,
-                  'name': s.player?.name,
-                  'stack': s.player?.stack,
-                })
-            .toList(),
-        'is_tournament': config.isTournament,
-        'timestamp': DateTime.now().toIso8601String(),
-      });
+      final dealerSeat =
+          seats.where((s) => s.isDealer).firstOrNull?.seatNo ?? 1;
+      if (ws != null) {
+        ws.sendCommand('WriteGameInfo', {
+          'table_id': config.tableNumber,
+          'dealer_seat': dealerSeat,
+          'sb_seat': _nextOccupied(seats, dealerSeat),
+          'bb_seat': _nextOccupied(seats, _nextOccupied(seats, dealerSeat)),
+          'sb_amount': config.smallBlind,
+          'bb_amount': config.bigBlind,
+          'ante_amount': config.ante,
+          'big_blind_ante': config.bigBlindAnte,
+          'straddle_seats': config.straddleSeats,
+          'blind_structure_id': config.blindStructureId,
+          'game_type': config.gameType.name,
+          'active_seats': seats
+              .where((s) => s.isOccupied)
+              .map((s) => s.seatNo)
+              .toList(),
+        });
+      } else {
+        // Demo: local transition
+        handFsm.startHand();
+      }
 
-    // ------------------------------------------------------------------
-    // DEAL — setupHand → preFlop + DealCards
-    // ------------------------------------------------------------------
+    // -- DEAL (§11 WriteDeal) -------------------------------------------
     case CcAction.deal:
       if (!handFsm.canDeal) return;
-      handFsm.deal();
-      ws?.sendCommand('DealCards', {'table_id': config.tableNumber});
+      if (ws != null) {
+        ws.sendDeal(handId: handNum);
+      } else {
+        handFsm.deal();
+      }
 
-    // ------------------------------------------------------------------
-    // FOLD — ActionPerformed + UndoStack push
-    // ------------------------------------------------------------------
+    // -- FOLD (§10 WriteAction) -----------------------------------------
     case CcAction.fold:
-      ws?.sendCommand('ActionPerformed', {
-        'table_id': config.tableNumber,
-        'action': 'fold',
-        'seat_no': actionSeat?.seatNo,
-        'amount': 0,
-      });
+      if (ws != null) {
+        ws.sendAction(
+            handId: handNum, seat: seatNo, actionType: 'fold');
+      }
       undo.push(UndoableEvent(
         eventType: 'ActionPerformed',
-        payload: {'action': 'fold', 'seat_no': actionSeat?.seatNo},
+        payload: {'action': 'fold', 'seat': seatNo},
         timestamp: DateTime.now(),
-        description: 'Fold – S${actionSeat?.seatNo ?? '?'}',
+        description: 'Fold – S$seatNo',
       ));
 
-    // ------------------------------------------------------------------
-    // CHECK / CALL — ActionPerformed + UndoStack push
-    // ------------------------------------------------------------------
+    // -- CHECK / CALL (§10 WriteAction) ---------------------------------
     case CcAction.checkCall:
       final label = ref.read(actionButtonProvider).checkCallLabel;
-      ws?.sendCommand('ActionPerformed', {
-        'table_id': config.tableNumber,
-        'action': 'check_call',
-        'seat_no': actionSeat?.seatNo,
-        'amount': amount ?? 0,
-      });
+      final actionType = label == 'CALL' ? 'call' : 'check';
+      if (ws != null) {
+        ws.sendAction(
+            handId: handNum,
+            seat: seatNo,
+            actionType: actionType,
+            amount: amount ?? 0);
+      }
       undo.push(UndoableEvent(
         eventType: 'ActionPerformed',
-        payload: {
-          'action': 'check_call',
-          'seat_no': actionSeat?.seatNo,
-          'amount': amount ?? 0,
-        },
+        payload: {'action': actionType, 'seat': seatNo, 'amount': amount ?? 0},
         timestamp: DateTime.now(),
-        description: '$label – S${actionSeat?.seatNo ?? '?'}',
+        description: '$label – S$seatNo',
       ));
 
-    // ------------------------------------------------------------------
-    // BET / RAISE — ActionPerformed + UndoStack push
-    // ------------------------------------------------------------------
+    // -- BET / RAISE (§10 WriteAction) ----------------------------------
     case CcAction.betRaise:
       final label = ref.read(actionButtonProvider).betRaiseLabel;
-      ws?.sendCommand('ActionPerformed', {
-        'table_id': config.tableNumber,
-        'action': 'bet_raise',
-        'seat_no': actionSeat?.seatNo,
-        'amount': amount ?? 0,
-      });
+      final actionType = label == 'RAISE' ? 'raise' : 'bet';
+      if (ws != null) {
+        ws.sendAction(
+            handId: handNum,
+            seat: seatNo,
+            actionType: actionType,
+            amount: amount ?? 0);
+      }
       undo.push(UndoableEvent(
         eventType: 'ActionPerformed',
-        payload: {
-          'action': 'bet_raise',
-          'seat_no': actionSeat?.seatNo,
-          'amount': amount ?? 0,
-        },
+        payload: {'action': actionType, 'seat': seatNo, 'amount': amount ?? 0},
         timestamp: DateTime.now(),
-        description: '$label ${amount ?? 0} – S${actionSeat?.seatNo ?? '?'}',
+        description: '$label ${amount ?? 0} – S$seatNo',
       ));
 
-    // ------------------------------------------------------------------
-    // ALL-IN — ActionPerformed (full stack) + UndoStack push
-    // ------------------------------------------------------------------
+    // -- ALL-IN (§10 WriteAction) ---------------------------------------
     case CcAction.allIn:
       final stack = actionSeat?.player?.stack ?? 0;
-      ws?.sendCommand('ActionPerformed', {
-        'table_id': config.tableNumber,
-        'action': 'all_in',
-        'seat_no': actionSeat?.seatNo,
-        'amount': stack,
-      });
+      if (ws != null) {
+        ws.sendAction(
+            handId: handNum,
+            seat: seatNo,
+            actionType: 'allin',
+            amount: stack);
+      }
       undo.push(UndoableEvent(
         eventType: 'ActionPerformed',
-        payload: {'action': 'all_in', 'seat_no': actionSeat?.seatNo, 'amount': stack},
+        payload: {'action': 'allin', 'seat': seatNo, 'amount': stack},
         timestamp: DateTime.now(),
-        description: 'All-In $stack – S${actionSeat?.seatNo ?? '?'}',
+        description: 'All-In $stack – S$seatNo',
       ));
 
-    // ------------------------------------------------------------------
-    // UNDO — pop UndoStack + UndoAction WS command
-    // ------------------------------------------------------------------
+    // -- UNDO -----------------------------------------------------------
     case CcAction.undo:
       final event = undo.undo();
       if (event != null) {
         ws?.sendCommand('UndoAction', {
-          'table_id': config.tableNumber,
           'event_type': event.eventType,
           'payload': event.payload,
         });
       }
 
-    // ------------------------------------------------------------------
-    // MISS DEAL — void hand → force idle + clear undo stack
-    // ------------------------------------------------------------------
+    // -- MISS DEAL ------------------------------------------------------
     case CcAction.missDeal:
       handFsm.forceState(HandFsm.idle);
       undo.clearOnHandComplete();
-      ws?.sendCommand('MissDeal', {'table_id': config.tableNumber});
+      ws?.sendCommand('MissDeal', {'hand_id': handNum});
   }
+}
+
+/// Find next occupied seat clockwise from [fromSeat].
+int _nextOccupied(List<SeatState> seats, int fromSeat) {
+  for (var offset = 1; offset < 10; offset++) {
+    final idx = (fromSeat - 1 + offset) % 10;
+    if (seats[idx].isOccupied) return seats[idx].seatNo;
+  }
+  return fromSeat;
 }
 
 // =============================================================================
