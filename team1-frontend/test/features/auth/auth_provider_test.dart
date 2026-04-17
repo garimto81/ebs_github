@@ -15,7 +15,7 @@ void main() {
   late ProviderContainer container;
   late MockAuthRepository mockRepo;
 
-  final testUser = SessionUser(
+  const testUser = SessionUser(
     userId: 1,
     email: 'op@ebs.test',
     displayName: 'Operator',
@@ -24,7 +24,7 @@ void main() {
     tableIds: [10, 20],
   );
 
-  final adminUser = SessionUser(
+  const adminUser = SessionUser(
     userId: 2,
     email: 'admin@ebs.test',
     displayName: 'Admin',
@@ -33,8 +33,8 @@ void main() {
     tableIds: [],
   );
 
-  final sessionResponse = SessionResponse(user: testUser);
-  final adminSessionResponse = SessionResponse(user: adminUser);
+  const sessionResponse = SessionResponse(user: testUser);
+  const adminSessionResponse = SessionResponse(user: adminUser);
 
   setUp(() {
     mockRepo = MockAuthRepository();

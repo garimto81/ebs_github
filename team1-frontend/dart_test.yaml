@@ -1,0 +1,3 @@
+tags:
+  e2e:
+    skip: "Requires running backend (run with: flutter test --tags e2e)"

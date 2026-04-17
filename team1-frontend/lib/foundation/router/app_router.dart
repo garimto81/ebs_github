@@ -5,22 +5,17 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/auth_provider.dart';
 import '../../features/auth/screens/forgot_password_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
-import '../../features/audit_log/screens/audit_log_screen.dart';
-import '../../features/hand_history/screens/hand_history_screen.dart';
-import '../../features/players/screens/player_detail_screen.dart';
-import '../../features/players/screens/player_list_screen.dart';
 import '../../features/graphic_editor/screens/ge_detail_screen.dart';
 import '../../features/graphic_editor/screens/ge_hub_screen.dart';
-import '../../features/lobby/screens/event_list_screen.dart';
-import '../../features/lobby/screens/series_list_screen.dart';
-import '../../features/lobby/screens/table_detail_screen.dart';
-import '../../features/lobby/screens/table_list_screen.dart';
+import '../../features/lobby/screens/lobby_dashboard_screen.dart';
+import '../../features/reports/screens/reports_screen.dart';
 import '../../features/staff/screens/staff_list_screen.dart';
 import '../../features/settings/screens/settings_layout.dart';
+import '../../features/lobby/screens/table_detail_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/series',
+    initialLocation: '/lobby',
     redirect: (context, state) {
       final auth = ref.read(authProvider);
       final isAuth = auth.status == AuthStatus.authenticated;
@@ -29,7 +24,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (!isAuth && !isLoginRoute) {
         return '/login?redirect=${state.matchedLocation}';
       }
-      if (isAuth && isLoginRoute) return '/series';
+      if (isAuth && isLoginRoute) return '/lobby';
       return null;
     },
     routes: [
@@ -45,24 +40,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state, child) => _AppShell(child: child),
         routes: [
           GoRoute(
-            path: '/series',
-            builder: (context, state) => const SeriesListScreen(),
-          ),
-          GoRoute(
-            path: '/series/:seriesId/events',
-            builder: (context, state) => EventListScreen(
-              seriesId: int.parse(state.pathParameters['seriesId']!),
-            ),
-          ),
-          GoRoute(
-            path: '/events/:eventId/tables',
-            builder: (context, state) {
-              final dayParam = state.uri.queryParameters['day'];
-              return TableListScreen(
-                eventId: int.parse(state.pathParameters['eventId']!),
-                initialDay: dayParam != null ? int.tryParse(dayParam) : null,
-              );
-            },
+            path: '/lobby',
+            builder: (context, state) => const LobbyDashboardScreen(),
           ),
           GoRoute(
             path: '/tables/:tableId',
@@ -71,33 +50,17 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ),
           GoRoute(
-            path: '/players',
-            builder: (context, state) =>
-                const PlayerListScreen(),
-          ),
-          GoRoute(
-            path: '/players/:playerId',
-            builder: (context, state) => PlayerDetailScreen(
-              playerId: state.pathParameters['playerId']!,
-            ),
-          ),
-          GoRoute(
             path: '/staff',
-            builder: (context, state) =>
-                const StaffListScreen(),
-          ),
-          GoRoute(
-            path: '/hand-history',
-            builder: (context, state) => const HandHistoryScreen(),
+            builder: (context, state) => const StaffListScreen(),
           ),
           GoRoute(
             path: '/settings',
-            redirect: (context, state) => '/settings/outputs',
+            redirect: (context, state) => '/settings/blind-structure',
           ),
           GoRoute(
             path: '/settings/:section',
             builder: (context, state) => SettingsLayout(
-              section: state.pathParameters['section'] ?? 'outputs',
+              section: state.pathParameters['section'] ?? 'blind-structure',
             ),
           ),
           GoRoute(
@@ -111,8 +74,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ),
           GoRoute(
-            path: '/audit-logs',
-            builder: (context, state) => const AuditLogScreen(),
+            path: '/reports',
+            redirect: (context, state) => '/reports/hands-summary',
+          ),
+          GoRoute(
+            path: '/reports/:type',
+            builder: (context, state) => ReportsScreen(
+              reportType: state.pathParameters['type'] ?? 'hands-summary',
+            ),
           ),
         ],
       ),
@@ -139,20 +108,12 @@ class _AppShell extends StatelessWidget {
             labelType: NavigationRailLabelType.all,
             destinations: const [
               NavigationRailDestination(
-                icon: Icon(Icons.emoji_events),
-                label: Text('Series'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.people),
-                label: Text('Players'),
+                icon: Icon(Icons.dashboard),
+                label: Text('Lobby'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.badge),
                 label: Text('Staff'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.history),
-                label: Text('Hands'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.settings),
@@ -160,11 +121,11 @@ class _AppShell extends StatelessWidget {
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.brush),
-                label: Text('GFX Editor'),
+                label: Text('GFX'),
               ),
               NavigationRailDestination(
-                icon: Icon(Icons.receipt_long),
-                label: Text('Audit'),
+                icon: Icon(Icons.assessment),
+                label: Text('Reports'),
               ),
             ],
           ),
@@ -176,29 +137,23 @@ class _AppShell extends StatelessWidget {
   }
 
   int _selectedIndex(String location) {
-    if (location.startsWith('/series') ||
-        location.startsWith('/events') ||
-        location.startsWith('/tables')) {
+    if (location.startsWith('/lobby') || location.startsWith('/tables')) {
       return 0;
     }
-    if (location.startsWith('/players')) return 1;
-    if (location.startsWith('/staff')) return 2;
-    if (location.startsWith('/hand-history')) return 3;
-    if (location.startsWith('/settings')) return 4;
-    if (location.startsWith('/graphic-editor')) return 5;
-    if (location.startsWith('/audit')) return 6;
+    if (location.startsWith('/staff')) return 1;
+    if (location.startsWith('/settings')) return 2;
+    if (location.startsWith('/graphic-editor')) return 3;
+    if (location.startsWith('/reports')) return 4;
     return 0;
   }
 
   void _navigate(BuildContext context, int index) {
     const routes = [
-      '/series',
-      '/players',
+      '/lobby',
       '/staff',
-      '/hand-history',
-      '/settings',
+      '/settings/blind-structure',
       '/graphic-editor',
-      '/audit-logs',
+      '/reports/hands-summary',
     ];
     context.go(routes[index]);
   }

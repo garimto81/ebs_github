@@ -69,9 +69,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _resolvePostLogin() {
-    // Navigation context is not stored in SessionUser in the Flutter port,
-    // so go directly to /series.
-    if (mounted) context.go('/series');
+    // Navigate to the lobby dashboard after successful login.
+    if (mounted) context.go('/lobby');
   }
 
   // -- Credential login -------------------------------------------------------

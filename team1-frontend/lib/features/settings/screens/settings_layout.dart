@@ -9,27 +9,37 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../providers/settings_provider.dart';
+import 'blind_structure_screen.dart';
 import 'display_screen.dart';
 import 'gfx_screen.dart';
 import 'outputs_screen.dart';
 import 'preferences_screen.dart';
+import 'prize_structure_screen.dart';
 import 'rules_screen.dart';
 import 'stats_screen.dart';
 
 /// Maps URL slug to [SettingsSection] enum.
 SettingsSection _sectionFromSlug(String? slug) {
   return switch (slug) {
+    'blind-structure' => SettingsSection.blindStructure,
+    'prize-structure' => SettingsSection.prizeStructure,
     'outputs' => SettingsSection.outputs,
     'gfx' => SettingsSection.gfx,
     'display' => SettingsSection.display,
     'rules' => SettingsSection.rules,
     'stats' => SettingsSection.stats,
     'preferences' => SettingsSection.preferences,
-    _ => SettingsSection.outputs,
+    _ => SettingsSection.blindStructure,
   };
 }
 
-String _slugFromSection(SettingsSection s) => s.name;
+String _slugFromSection(SettingsSection s) {
+  return switch (s) {
+    SettingsSection.blindStructure => 'blind-structure',
+    SettingsSection.prizeStructure => 'prize-structure',
+    _ => s.name,
+  };
+}
 
 class SettingsLayout extends ConsumerStatefulWidget {
   final String section;
@@ -161,6 +171,8 @@ class _SettingsLayoutState extends ConsumerState<SettingsLayout>
 
   Widget _buildTabBody(SettingsSection section) {
     return switch (section) {
+      SettingsSection.blindStructure => const BlindStructureScreen(),
+      SettingsSection.prizeStructure => const PrizeStructureScreen(),
       SettingsSection.outputs => const OutputsScreen(),
       SettingsSection.gfx => const GfxScreen(),
       SettingsSection.display => const DisplayScreen(),
@@ -172,6 +184,8 @@ class _SettingsLayoutState extends ConsumerState<SettingsLayout>
 
   String _tabLabel(SettingsSection s) {
     return switch (s) {
+      SettingsSection.blindStructure => 'Blind Structure',
+      SettingsSection.prizeStructure => 'Prize Structure',
       SettingsSection.outputs => 'Outputs',
       SettingsSection.gfx => 'GFX',
       SettingsSection.display => 'Display',

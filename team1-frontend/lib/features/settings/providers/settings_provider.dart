@@ -19,7 +19,16 @@ part 'settings_provider.freezed.dart';
 // Section enum
 // ---------------------------------------------------------------------------
 
-enum SettingsSection { outputs, gfx, display, rules, stats, preferences }
+enum SettingsSection {
+  blindStructure,
+  prizeStructure,
+  outputs,
+  gfx,
+  display,
+  rules,
+  stats,
+  preferences,
+}
 
 // ---------------------------------------------------------------------------
 // Section state (Freezed)

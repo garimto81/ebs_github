@@ -9,15 +9,12 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:ebs_lobby/data/remote/ws_dispatch.dart';
 import 'package:ebs_lobby/features/graphic_editor/providers/ge_provider.dart';
-import 'package:ebs_lobby/features/lobby/providers/nav_provider.dart';
 import 'package:ebs_lobby/features/lobby/providers/series_provider.dart';
-import 'package:ebs_lobby/features/lobby/providers/table_provider.dart';
 import 'package:ebs_lobby/features/settings/providers/settings_provider.dart';
 import 'package:ebs_lobby/models/models.dart';
 import 'package:ebs_lobby/repositories/series_repository.dart';
 import 'package:ebs_lobby/repositories/settings_repository.dart';
 import 'package:ebs_lobby/repositories/skin_repository.dart';
-import 'package:ebs_lobby/repositories/table_repository.dart';
 
 // ---------------------------------------------------------------------------
 // Mocks
@@ -28,8 +25,6 @@ class MockSeriesRepository extends Mock implements SeriesRepository {}
 class MockSettingsRepository extends Mock implements SettingsRepository {}
 
 class MockSkinRepository extends Mock implements SkinRepository {}
-
-class MockTableRepository extends Mock implements TableRepository {}
 
 // ---------------------------------------------------------------------------
 // Helpers

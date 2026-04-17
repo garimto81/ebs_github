@@ -1,8 +1,7 @@
-// Navigation / selection state providers — ported from navStore.ts.
+// Navigation / selection state providers — simplified for single-page dashboard.
 //
-// Cascading reset: when a parent level changes, all children reset to null.
-// This is enforced by the select* helper functions which should be called
-// instead of setting providers directly.
+// Series and Event selection drive the dashboard sections.
+// Flight is auto-derived from the selected event (active flight).
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,14 +15,15 @@ final currentSeriesNameProvider = StateProvider<String?>((ref) => null);
 final currentEventIdProvider = StateProvider<int?>((ref) => null);
 final currentEventNameProvider = StateProvider<String?>((ref) => null);
 
+// Flight ID is auto-set by the dashboard when an event's active flight resolves.
+// Kept as StateProvider for ws_dispatch.dart compatibility.
 final currentFlightIdProvider = StateProvider<int?>((ref) => null);
-final currentFlightNameProvider = StateProvider<String?>((ref) => null);
 
 final currentTableIdProvider = StateProvider<int?>((ref) => null);
 final currentTableNameProvider = StateProvider<String?>((ref) => null);
 
 // ---------------------------------------------------------------------------
-// Cascading selection helpers
+// Selection helpers
 // ---------------------------------------------------------------------------
 
 /// Select a series — resets event, flight, and table.
@@ -33,7 +33,6 @@ void selectSeries(WidgetRef ref, int? id, {String? name}) {
   ref.read(currentEventIdProvider.notifier).state = null;
   ref.read(currentEventNameProvider.notifier).state = null;
   ref.read(currentFlightIdProvider.notifier).state = null;
-  ref.read(currentFlightNameProvider.notifier).state = null;
   ref.read(currentTableIdProvider.notifier).state = null;
   ref.read(currentTableNameProvider.notifier).state = null;
 }
@@ -43,15 +42,6 @@ void selectEvent(WidgetRef ref, int? id, {String? name}) {
   ref.read(currentEventIdProvider.notifier).state = id;
   ref.read(currentEventNameProvider.notifier).state = name;
   ref.read(currentFlightIdProvider.notifier).state = null;
-  ref.read(currentFlightNameProvider.notifier).state = null;
-  ref.read(currentTableIdProvider.notifier).state = null;
-  ref.read(currentTableNameProvider.notifier).state = null;
-}
-
-/// Select a flight — resets table.
-void selectFlight(WidgetRef ref, int? id, {String? name}) {
-  ref.read(currentFlightIdProvider.notifier).state = id;
-  ref.read(currentFlightNameProvider.notifier).state = name;
   ref.read(currentTableIdProvider.notifier).state = null;
   ref.read(currentTableNameProvider.notifier).state = null;
 }
@@ -76,10 +66,9 @@ final hasSelectionProvider = Provider<bool>((ref) {
   return ref.watch(currentSeriesIdProvider) != null;
 });
 
-/// Current breadcrumb depth (0 = nothing selected, 4 = table selected).
+/// Current breadcrumb depth (0 = nothing, 3 = table selected).
 final breadcrumbDepthProvider = Provider<int>((ref) {
-  if (ref.watch(currentTableIdProvider) != null) return 4;
-  if (ref.watch(currentFlightIdProvider) != null) return 3;
+  if (ref.watch(currentTableIdProvider) != null) return 3;
   if (ref.watch(currentEventIdProvider) != null) return 2;
   if (ref.watch(currentSeriesIdProvider) != null) return 1;
   return 0;
