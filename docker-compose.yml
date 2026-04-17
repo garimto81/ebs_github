@@ -69,16 +69,21 @@ services:
       - LOG_LEVEL=debug
     restart: unless-stopped
 
-  # ── Lobby (team1, Flutter Web) — 개발 전용 ────────────────────────────────
-  # team1-frontend는 Flutter 데스크톱 앱이지만 웹 빌드도 지원.
-  # 프로덕션에서는 Nginx 등 별도 서빙. 여기서는 개발 편의용.
-  # lobby:
-  #   build: team1-frontend/
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - API_BASE_URL=http://bo:8000/api/v1
-  #     - WS_BASE_URL=ws://bo:8000
+  # ── CC Web (team4, Flutter Web 빌드) ────────────────────────────────────
+  # Demo Mode 전용. LAN 내 브라우저 접속: http://LAN_IP:3100
+  # 빌드 전 실행 필요: cd team4-cc/src && flutter build web --release --dart-define=DEMO_MODE=true
+  cc-web:
+    image: nginx:alpine
+    ports:
+      - "3100:80"
+    volumes:
+      - ./team4-cc/src/build/web:/usr/share/nginx/html:ro
+    depends_on:
+      - bo
+      - engine
+    restart: unless-stopped
+    profiles:
+      - web  # docker compose --profile web up -d 로 활성화
 
 volumes:
   bo-data:

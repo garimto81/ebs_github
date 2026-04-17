@@ -10,6 +10,7 @@ last-updated: 2026-04-16
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-16 | 신규 작성 | RFID 미연결 상태에서 게임 엔진·핸드 진행 검증 가능한 데모 모드 설계 |
+| 2026-04-17 | Web 배포 추가 | Flutter Web 빌드로 LAN 내 브라우저 접속 지원. §1.4 신설 |
 
 ---
 
@@ -22,6 +23,8 @@ last-updated: 2026-04-16
 **사용 대상**: 개발자, QA, 운영 교육.
 
 **비목적**: 프로덕션 운영용이 아님. 실제 테이블에서는 사용하지 않는다.
+
+**접속 방식**: 데스크톱 앱(로컬) 또는 **Flutter Web 빌드 → 브라우저 접속**(LAN 내 원격).
 
 ---
 
@@ -52,6 +55,22 @@ Demo Mode 진입 시 아래 상태가 자동 초기화된다:
 | 테이블 설정 | 기본 NL 홀덤 (SB 50 / BB 100) | 즉시 시작 가능 |
 | 좌석 | 3명 자동 착석 (S1, S4, S7) | 최소 핸드 진행 조건 |
 | 딜러 | S1 자동 할당 | 핸드 시작 전제조건 충족 |
+
+### §1.4 Web 배포 (LAN 브라우저 접속)
+
+CC는 Flutter 데스크톱 앱이지만, **Flutter Web 빌드**로 동일 네트워크의 다른 머신에서 브라우저 접속이 가능하다.
+
+| 항목 | 값 |
+|------|-----|
+| 빌드 명령 | `flutter build web --release --dart-define=DEMO_MODE=true` |
+| 서빙 | Docker Compose `cc-web` 서비스 (Nginx, 포트 3100) |
+| 접속 URL | `http://<LAN_IP>:3100` |
+| 지원 기능 | 게임 진행, Demo Mode, WebSocket, REST — **전부 동작** |
+| 미지원 | RFID 하드웨어, NDI 출력, 로컬 파일 접근 (플랫폼 채널) |
+
+> **Demo Mode에서는 Web 미지원 기능이 전부 불필요** (MockRfid, StubNdi 사용). 따라서 Web 빌드가 Demo Mode의 최적 배포 형태.
+
+상세: `docs/4. Operations/Network_Deployment.md §CC 웹 배포`
 
 ---
 

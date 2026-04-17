@@ -142,6 +142,65 @@ flutter run -d windows -- \
 
 ---
 
+## CC 웹 배포 (Flutter Web)
+
+CC는 기본적으로 Flutter 데스크톱 앱이지만, **Flutter Web 빌드**로 브라우저 접속이 가능하다. 동일 네트워크의 다른 머신에서 URL만으로 CC에 접근할 수 있는 유일한 방법.
+
+### 제약 사항
+
+| 기능 | 데스크톱 | 웹 | 비고 |
+|------|:--------:|:---:|------|
+| 게임 진행 (HandFSM, 액션) | O | O | |
+| Demo Mode (시나리오) | O | O | |
+| WebSocket 연결 | O | O | |
+| RFID 하드웨어 | O | X | 플랫폼 채널 미지원 — MockRfid만 |
+| NDI 출력 | O | X | 네이티브 플러그인 미지원 |
+| 로컬 파일 접근 | O | X | .gfskin 로드 등 |
+
+> **결론**: Demo Mode + 게임 진행 검증에는 Web 빌드로 충분. 프로덕션 운영은 데스크톱 빌드 필수.
+
+### 빌드 + 서빙
+
+```bash
+# 1. Web 빌드
+cd team4-cc/src
+flutter build web --release --dart-define=DEMO_MODE=true
+
+# 2. 결과물 위치
+# team4-cc/src/build/web/
+
+# 3. Docker Compose로 Nginx 서빙 (docker-compose.yml cc-web 서비스)
+cd C:/claude/ebs
+docker compose up -d cc-web
+
+# 4. 접속
+# http://LAN_IP:3100
+```
+
+### 브라우저 접속 흐름
+
+```
+다른 머신 브라우저
+  │
+  ├─ http://192.168.1.100:3100     → CC Web UI (Nginx)
+  │    └─ JS에서 WS 연결 ──────────→ ws://192.168.1.100:8000/ws/cc
+  │    └─ JS에서 REST 호출 ─────────→ http://192.168.1.100:8000/api/v1
+  │    └─ JS에서 Engine 호출 ───────→ http://192.168.1.100:8080
+  │
+  └─ Demo Mode 자동 활성화 (DEMO_MODE=true 빌드)
+```
+
+### 환경변수 주입 (Web)
+
+Flutter Web에서는 CLI 인자(`--table_id` 등)를 사용할 수 없다. 대신 **`--dart-define`** 으로 빌드 시 주입하거나, URL 쿼리 파라미터로 전달:
+
+| 방법 | 예시 | 용도 |
+|------|------|------|
+| `--dart-define` | `flutter build web --dart-define=BO_URL=http://192.168.1.100:8000` | 빌드 시 고정 |
+| URL 쿼리 | `http://IP:3100/?bo_url=http://192.168.1.100:8000` | 런타임 변경 (구현 필요) |
+
+---
+
 ## Phase 2: mDNS 서비스 디스커버리
 
 현재는 LAN IP를 수동 지정합니다. Phase 2에서 mDNS 도입 시:
