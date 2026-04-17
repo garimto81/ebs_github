@@ -332,9 +332,20 @@ flutter build windows --release
 
 | 키 | 개발 기본값 | 프로덕션 |
 |----|-----------|---------|
-| `USE_MOCK` | `true` | `false` |
-| `API_BASE_URL` | `http://localhost:8000/api/v1` | 배포 시점 주입 |
-| `WS_BASE_URL` | `ws://localhost:9080` | 배포 시점 주입 |
+| `EBS_BO_HOST` | (미설정 → localhost) | LAN IP 주입 |
+| `EBS_BO_PORT` | `8000` | 배포 시점 주입 |
+| `USE_MOCK` | `false` | `false` |
+| `API_BASE_URL` | `http://localhost:8000/api/v1` | fallback (호스트 미설정 시) |
+| `WS_BASE_URL` | `ws://localhost:8000` | fallback (호스트 미설정 시) |
+
+### 네트워크 배포
+
+| 시나리오 | 명령 |
+|----------|------|
+| 개발 (localhost) | `flutter run -d windows` |
+| LAN | `flutter run -d windows --dart-define=EBS_BO_HOST=192.168.1.100` |
+| 빌드 (LAN) | `flutter build windows --release --dart-define=EBS_BO_HOST=192.168.1.100` |
+| 커스텀 | `flutter run -d windows --dart-define=API_BASE_URL=http://host:port/api/v1 --dart-define=WS_BASE_URL=ws://host:port` |
 
 ---
 

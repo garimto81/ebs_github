@@ -1,19 +1,31 @@
 # EBS 통합 Docker Compose — LAN 네트워크 배포
 #
-# 서비스 4개: BO (Backend) + Redis + Engine (Game Harness) + Lobby (Flutter Web)
+# 서비스 4개: BO (Backend) + Redis + Engine (Game Harness) + CC Web (Flutter Web)
 # CC (Command Center)는 Flutter 데스크톱 앱 — 호스트에서 별도 실행.
 #
 # 사용법:
-#   docker compose up -d              # 전체 시작
-#   docker compose up -d bo redis engine  # CC 개발 시 필수 서비스만
-#   docker compose logs -f bo         # BO 로그 추적
-#   docker compose down               # 전체 중지
+#   개발 (localhost):  docker compose up -d
+#   LAN:              EBS_EXTERNAL_HOST=192.168.1.100 docker compose up -d
+#   LAN + CC Web:     EBS_EXTERNAL_HOST=192.168.1.100 docker compose --profile web up -d
+#   CC 개발 최소:     docker compose up -d bo redis engine
+#   로그 추적:        docker compose logs -f bo
+#   전체 중지:        docker compose down
 #
 # CC 호스트 실행 (LAN IP 예시):
 #   cd team4-cc/src
 #   flutter run -d windows --dart-define=DEMO_MODE=true \
 #     --dart-define=BO_URL=http://192.168.1.100:8000 \
 #     --dart-define=ENGINE_URL=http://192.168.1.100:8080
+#
+# ── 환경 변수 설명 ──────────────────────────────────────────────────────────
+# EBS_EXTERNAL_HOST  — BO 서버의 LAN/WAN IP (default: localhost)
+#                      launch-cc 응답의 ws_url, rest_url 생성에 사용됨
+# CORS_ORIGINS       — CORS 허용 오리진 JSON 배열 (default: ["*"])
+#                      prod 환경에서는 명시적 Origin 목록 설정 필수
+# JWT_SECRET         — JWT 서명 시크릿 (prod에서 반드시 변경)
+# AUTH_PROFILE       — 인증 프로파일: dev (자동 로그인) / prod (정식 인증)
+# LOG_LEVEL          — 로그 레벨: DEBUG / INFO / WARNING / ERROR
+# RFID_MODE          — RFID 모드: mock (시뮬) / real (하드웨어)
 
 services:
   # ── Backend / Back Office (team2) ──────────────────────────────────────────
@@ -22,17 +34,21 @@ services:
     ports:
       - "8000:8000"
     environment:
+      # DB: SQLite (dev) — prod에서 PostgreSQL 전환 가능
       - DATABASE_URL=sqlite:///data/ebs.db
+      # Redis: 세션/캐시/pub-sub
       - REDIS_URL=redis://redis:6379/0
+      # JWT 인증 설정
       - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me-in-production}
       - JWT_ALGORITHM=HS256
-      - AUTH_PROFILE=dev
-      - JWT_ACCESS_TTL_S=3600
-      - RFID_MODE=mock
+      - AUTH_PROFILE=dev          # dev=자동 로그인, prod=정식 인증
+      - JWT_ACCESS_TTL_S=3600     # 토큰 만료: 1시간
+      # 하드웨어 모드
+      - RFID_MODE=mock            # mock=시뮬레이션, real=ST25R3911B
       - LOG_LEVEL=DEBUG
-      # LAN 접근 허용: 모든 오리진 + CC Flutter 앱
-      - CORS_ORIGINS=["*"]
-      # 외부 호스트명 (launch-cc 응답의 ws_url 생성용)
+      # CORS: dev 기본값 ["*"] — prod에서는 명시적 Origin 설정 필수
+      - CORS_ORIGINS=${CORS_ORIGINS:-["*"]}
+      # LAN 배포: BO 서버의 외부 IP (launch-cc 응답의 ws_url/rest_url 생성용)
       - EBS_EXTERNAL_HOST=${EBS_EXTERNAL_HOST:-localhost}
     volumes:
       - bo-data:/app/data
@@ -51,7 +67,7 @@ services:
     image: redis:7-alpine
     command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis-data:/data
     healthcheck:

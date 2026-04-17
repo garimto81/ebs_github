@@ -123,10 +123,27 @@ flutter build windows --release   # 프로덕션 빌드
 
 **커밋 전 필수**: `flutter analyze && flutter test` 통과.
 
-**환경변수** (`--dart-define`):
-- `API_BASE_URL` — 기본 `http://localhost:8000/api/v1`
-- `WS_BASE_URL` — 기본 `ws://localhost:8000`
-- `USE_MOCK` — 기본 `true` (Mock 모드)
+## 환경변수
+
+### 방법 1: 호스트 지정 (권장)
+```bash
+flutter run -d windows --dart-define=EBS_BO_HOST=192.168.1.100
+```
+→ API: `http://192.168.1.100:8000/api/v1`, WS: `ws://192.168.1.100:8000` 자동 구성
+
+### 방법 2: 직접 URL 지정
+```bash
+flutter run -d windows \
+  --dart-define=API_BASE_URL=http://custom-host:9000/api/v1 \
+  --dart-define=WS_BASE_URL=ws://custom-host:9000
+```
+
+### 기본값 (개발)
+| 변수 | 기본값 |
+|------|--------|
+| `EBS_BO_HOST` | (미설정 → localhost) |
+| `EBS_BO_PORT` | 8000 |
+| `USE_MOCK` | false |
 
 ## 이전 코드 참조
 
