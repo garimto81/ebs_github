@@ -1,8 +1,14 @@
 # Team 1: Frontend — CLAUDE.md (코드 전용)
 
+## 브랜치 규칙
+
+- **작업 브랜치**: `work/team1/{YYYYMMDD}-session` (SessionStart hook 자동 생성)
+- **main 직접 작업 금지** — commit/push 차단됨
+- **병합**: `/team-merge` 커맨드로만 main 병합 (Conductor 세션 권장)
+
 ## Role
 
-Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Preferences) + Graphic Editor Import/Activate 허브 (CCR-011)
+Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Preferences) + Graphic Editor Skin hub
 
 **기술 스택**: Flutter/Dart + Riverpod + Freezed + Dio + go_router + `rive` (GE 프리뷰 전용)
 
@@ -37,7 +43,7 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 
 ```
 lib/
-├── data/remote/          # Dio API client + WS client (CCR-019/021)
+├── data/remote/          # Dio API client + WS client (Idempotency-Key + seq)
 ├── data/local/           # MockDioAdapter (MSW 대체)
 ├── features/             # 기능별 screens + providers + widgets
 │   ├── auth/             # 로그인 + 2FA (StateNotifier)
@@ -57,9 +63,9 @@ lib/
 ## Shared Package
 
 `../shared/ebs_common/` — team1/team4 공통 유틸리티:
-- CCR-017 Permission (RBAC bit-flag)
-- CCR-019 UuidIdempotency
-- CCR-021 SeqTracker
+- Permission (RBAC bit-flag)
+- UuidIdempotency
+- SeqTracker
 
 ## 계약 참조 (읽기 전용)
 
@@ -74,15 +80,15 @@ lib/
 | BS-00 공통 정의 | `../docs/2. Development/2.5 Shared/BS_Overview.md` | conductor |
 | BS-01 Authentication | `../docs/2. Development/2.5 Shared/Authentication.md` | conductor |
 
-수정은 CR 프로세스 경유 (`../docs/3. Change Requests/pending/CR-team1-YYYYMMDD-*.md`).
+수정 필요 시 해당 문서를 직접 보강 (additive). decision_owner 는 publisher 팀.
 
 ## API / WebSocket 경계
 
 - 모든 HTTP 호출은 Backend (team2)로만 전송
 - CC, Game Engine과의 직접 통신 금지
 - WebSocket `ws://[host]/ws/lobby` — 모니터링 전용 (write 명령 없음)
-- CCR-019 Idempotency-Key 자동 주입 (`lib/data/remote/bo_api_client.dart` Dio interceptor)
-- CCR-021 seq 단조증가 검증 + `/ws/replay?from_seq=N` (`lib/data/remote/lobby_websocket_client.dart`)
+- Idempotency-Key 자동 주입 (`lib/data/remote/bo_api_client.dart` Dio interceptor)
+- seq 단조증가 검증 + `/ws/replay?from_seq=N` (`lib/data/remote/lobby_websocket_client.dart`)
 
 ## Mock Server (병렬 개발)
 
@@ -94,14 +100,14 @@ flutter_localizations + intl, locale 3종 (`ko` 기본, `en` Vegas, `es` Vegas s
 
 ## 기획 공백 발견 시
 
-개발 중 기획 문서에 없는 판단이 필요하면 해당 기획 문서를 **즉시 보강**한다. Spec_Gaps.md · CR draft · CCR-first 프로세스는 폐지되었다. 상세: `../CLAUDE.md` §"기획 공백 발견 시 프로세스".
+개발 중 기획 문서에 없는 판단이 필요하면 해당 기획 문서를 **즉시 보강**한다 (additive). decision_owner 는 `team-policy.json` 참조. 상세: `../CLAUDE.md` §"문서 변경 거버넌스".
 
 ## 금지
 
-- `../docs/1. Product/`, `../docs/2. Development/2.{2,3,4,5}*/`, `../docs/3. Change Requests/{in-progress,done}/`, `../docs/4. Operations/` 수정 금지 (CR 프로세스)
+- `../docs/1. Product/`, `../docs/2. Development/2.{2,3,4,5}*/`, `../docs/4. Operations/` 수정 금지 (다른 팀 소유)
 - 다른 팀 코드 폴더(`../team2-backend/`, `../team3-engine/`, `../team4-cc/`) 접근 금지
 - **Overlay 실제 렌더링 구현 금지** (team4 영역)
-- **Rive 에디터 기능 재구현 금지** (CCR-011 out-of-scope) — rive 프리뷰만
+- **Rive 에디터 기능 재구현 금지** (out-of-scope) — rive 프리뷰만
 
 ## Build / Dev
 

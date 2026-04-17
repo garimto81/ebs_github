@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": "6.2",
-  "previous_version": "6.1",
-  "description": "EBS 5팀 멀티 세션 충돌 방지 + v10 문서 구조. v6: 거버넌스 모델 명시 (free_write_with_decision_owner) — 쓰기 권한 폐지(누구나 모든 docs 편집 가능), 단 의미적 충돌 시 decision_owner가 최종 판정. 기존 owns/contract_ownership는 decision_owner 매핑으로 재해석(키는 호환 유지). branch_strategy 추가. v6.1: 기획 공백(spec gap) 프로세스를 '해당 기획 문서 즉시 보강' 방식으로 확정. Spec_Gaps.md · CR draft · CCR-first 프로세스 폐지. teams.*.ccr_draft_prefix 필드 제거. v6.2: branch_strategy.main_push_allowed_for 를 [\"conductor\"] → [\"all\"] 로 완화. 병렬 워크트리 모델 + rebase+ff 규율로 race 를 이미 회피하므로 push 직렬화는 중복 제약.",
+  "version": "7.0",
+  "previous_version": "6.2",
+  "description": "EBS 5팀 멀티 세션 충돌 방지 + v11 문서 구조. v7: CCR 프로세스 완전 폐기. ccr_inbox_dir/ccr_in_progress_dir/ccr_done_dir 필드 제거. main_push_allowed_for 를 [conductor] 로 복원 (팀 브랜치 우회 방지). docs/3. Change Requests/ 는 역사 폴더로 존치.",
   "governance_model": {
     "name": "free_write_with_decision_owner",
     "rationale": "문서 구조 일원화 + 자유 편집 + 작업 시작 시 active-edit 레지스트리 가시화 + 머지 충돌 시 명시된 decision_owner가 의미적 결정. 쓰기 권한 ≠ 결정 권한.",
@@ -15,7 +15,7 @@
     }
   },
   "branch_strategy": {
-    "main_push_allowed_for": ["all"],
+    "main_push_allowed_for": ["conductor"],
     "team_branch_pattern": "work/{team}/{YYYYMMDD}-{slug}",
     "registry_branch": "meta/active-edits",
     "merge_method": "rebase_then_fast_forward",
@@ -27,9 +27,6 @@
       "owns": [
         "docs/1. Product/",
         "docs/2. Development/2.5 Shared/",
-        "docs/3. Change Requests/in-progress/",
-        "docs/3. Change Requests/done/",
-        "docs/3. Change Requests/3. Change Requests.md",
         "docs/4. Operations/",
         "docs/mockups/",
         "docs/images/",
@@ -111,8 +108,6 @@
   "shared_blocked_for_teams": [
     "docs/1. Product/",
     "docs/2. Development/2.5 Shared/",
-    "docs/3. Change Requests/in-progress/",
-    "docs/3. Change Requests/done/",
     "docs/4. Operations/",
     "contracts/migration/",
     "integration-tests/",
@@ -120,9 +115,6 @@
     "README.md",
     "tools/"
   ],
-  "ccr_inbox_dir": "docs/3. Change Requests/pending/",
-  "ccr_in_progress_dir": "docs/3. Change Requests/in-progress/",
-  "ccr_done_dir": "docs/3. Change Requests/done/",
   "generated_dir": "docs/_generated/",
   "api_dependencies": {
     "Backend_HTTP": ["team2", "team1"],

@@ -77,7 +77,7 @@ ebs/
 ├── team3-engine/               Pure Dart Game Engine — 코드 전용
 ├── team4-cc/                   Flutter + Rive — 코드 전용
 │
-└── tools/                      Python 유틸 (ccr_promote, validate_links, spec_aggregate 등)
+└── tools/                      Python 유틸 (validate_links, spec_aggregate, team_merge 등)
 ```
 
 ---

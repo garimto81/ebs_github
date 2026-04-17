@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PreToolUse hook (Bash 대상): 팀 세션이 main으로 직접 push/commit 시 block.
 
-bypass 모드에선 warning으로 완화.
+v7: bypass 모드 제거, 항상 block.
 """
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from _common import detect_team, is_bypass_mode, read_payload, emit  # noqa: E402
+from _common import detect_team, read_payload, emit  # noqa: E402
 
 # 위험 명령 패턴
 PUSH_MAIN_RE = re.compile(r"\bgit\s+push\b.*\bmain\b", re.IGNORECASE)
@@ -30,7 +30,6 @@ def main() -> int:
     if team == "conductor":
         return 0
 
-    bypass = is_bypass_mode(payload)
     reason = None
 
     if PUSH_MAIN_RE.search(cmd):
@@ -53,10 +52,7 @@ def main() -> int:
             pass
 
     if reason:
-        if bypass:
-            emit(warning=True, reason=reason)
-        else:
-            emit(decision="block", reason=reason)
+        emit(decision="block", reason=reason)
     return 0
 
 

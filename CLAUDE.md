@@ -8,9 +8,9 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
-| 2026-04-15 | v5.0.0 (docs v10) | 단일 `docs/` 원칙. 4 홈 폴더(1 Product / 2 Development / 3 Change Requests / 4 Operations). `contracts/`, `docs/01-strategy`, `docs/05-plans`, `team*/specs|ui-design|qa` 폐지 — 모두 `docs/2. Development/2.N {팀}/` 로 흡수 |
-| 2026-04-10 | v4.1.0 | Layered Scope Guard (hook + team-policy.json + backlog 분할 + CCR inbox) |
-| 2026-04-10 | v4.0.0 | 5팀 구조 확정, `contracts/` 분리 |
+| 2026-04-17 | v6.0.0 (docs v11) | CCR 완전 폐기. 3 홈 폴더(1 Product / 2 Development / 4 Operations). `free_write_with_decision_owner` v7 거버넌스. 브랜치 강제 hook 강화. |
+| 2026-04-15 | v5.0.0 (docs v10) | 단일 `docs/` 원칙. `contracts/`, `docs/01-strategy`, `docs/05-plans`, `team*/specs|ui-design|qa` 폐지 |
+| 2026-04-10 | v4.0.0 | 5팀 구조 확정 |
 
 ---
 
@@ -38,14 +38,15 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 
 ## 문서 구조 (v10)
 
-### 4 홈 레벨
+### 3 홈 레벨
 
 | 폴더 | 답하는 질문 | 소유 |
 |------|-------------|------|
 | `docs/1. Product/` | "이 제품이 무엇인가?" (Foundation, Architecture, Game Rules, PokerGFX Reference) | Conductor |
 | `docs/2. Development/` | "어떻게 만드나?" (팀별 상세 설계 + 공통 계약) | 각 팀 / Conductor |
-| `docs/3. Change Requests/` | "무엇을 바꾸나?" (CR lifecycle: pending → in-progress → done) | 팀(draft) / Conductor(승격 이후) |
 | `docs/4. Operations/` | "어떻게 운영하나?" (Roadmap, Backlog, Plans, Reports) | Conductor |
+
+> `docs/3. Change Requests/` 는 역사 폴더로 존치 (활성 프로세스 아님).
 
 추가:
 - `docs/mockups/`, `docs/images/` — 공유 그래픽 자산
@@ -72,17 +73,15 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 | `docs/2. Development/2.3 Game Engine/**` | team3 (Overlay API 포함, publisher Fast-Track) |
 | `docs/2. Development/2.4 Command Center/**` | team4 (RFID HAL 포함, publisher Fast-Track) |
 | `docs/2. Development/2.5 Shared/**` | Conductor |
-| `docs/3. Change Requests/pending/CR-teamN-*.md` | 해당 팀 |
-| `docs/3. Change Requests/{in-progress,done}/**` | Conductor |
 | `docs/4. Operations/**` | Conductor |
 | `docs/mockups/**`, `docs/images/**` | Conductor |
 | `docs/_generated/**` | CI only (수작업 편집 금지) |
 | `team{N}-*/**` (코드/설정) | 해당 팀 |
 | `integration-tests/**` | Conductor |
 
-> **SSOT**: `docs/2. Development/2.5 Shared/team-policy.json` (v6, `governance_model: free_write_with_decision_owner`). Hook · `tools/*` 모두 이 파일 하나만 참조.
+> **SSOT**: `docs/2. Development/2.5 Shared/team-policy.json` (v7, `governance_model: free_write_with_decision_owner`). Hook · `tools/*` 모두 이 파일 하나만 참조.
 >
-> **거버넌스 모델 (v6, 2026-04-15)**: **쓰기 권한 ≠ 결정 권한**. 모든 세션이 모든 docs 를 자유 편집할 수 있다. 위 표의 "owner" 컬럼은 **결정 권한자**(decision_owner) — 의미적 충돌 발생 시 최종 판정. 쓰기 제한은 hook 으로 차단하지 않는다.
+> **거버넌스 모델 (v7, 2026-04-17)**: **쓰기 권한 ≠ 결정 권한**. 모든 세션이 모든 docs 를 자유 편집할 수 있다. 위 표의 "owner" 컬럼은 **결정 권한자**(decision_owner) — 의미적 충돌 발생 시 최종 판정. 쓰기 제한은 hook 으로 차단하지 않는다.
 
 ---
 
@@ -98,33 +97,25 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 
 ---
 
-## CCR 프로세스 (docs v10 경로)
+## 문서 변경 거버넌스 (v7 — free_write + decision_owner)
 
-### CR 라이프사이클 파일 위치
+모든 세션이 모든 docs 를 자유 편집할 수 있다. 의미적 충돌 시 decision_owner 가 최종 판정.
 
-| 상태 | 경로 | 파일명 | 편집 권한 |
-|------|------|--------|----------|
-| **Draft** | `docs/3. Change Requests/pending/` | `CR-teamN-YYYYMMDD[-slug].md` | 제안팀만 |
-| **Promoted (진행 중)** | `docs/3. Change Requests/in-progress/` | `CR-NNN-{slug}.md` | Conductor |
-| **Archived (완료)** | `docs/3. Change Requests/done/` | 원본 draft + 승격본 | read-only |
+### 원칙
 
-> 구 `docs/05-plans/ccr-inbox/{,promoting,archived}/` 은 v10 에서 폐기. `CCR-DRAFT-*.md` → `CR-teamN-*.md` 접두사 변경.
+1. **자유 편집**: hook 으로 쓰기를 차단하지 않음
+2. **추가 전용 (additive)**: 기존 문단·스키마·코드 블록을 가급적 건드리지 않고 새 하위 섹션으로 보강
+3. **decision_owner notify**: 커밋 메시지 또는 active-edits 레지스트리로 알림
+4. **충돌 시**: rebase 중 감지 → decision_owner 가 의미적 판정 (§"멀티 세션 충돌 방지" 참조)
+5. **Backlog 연동**: 기획 보강 후 후속 구현 작업을 Backlog 에 추가
 
-### 리스크 분류 (v4 Fast-Track)
+### decision_owner 매핑
 
-| 등급 | 처리 경로 | Conductor 필요 |
-|------|----------|---------------|
-| LOW (추가 전용, 영향팀 ≤1) | publisher 직접 반영 + 영향팀 1명 approve | 불필요 |
-| MEDIUM (비파괴 수정, 영향팀 ≤2) | publisher 직접 반영 + 영향팀 전원 approve | 불필요 |
-| HIGH (파괴적 변경, 영향팀 3+) | 풀 프로세스 (Phase A–E) | **필수** |
+`team-policy.json` 의 `teams[*].owns` + `contract_ownership[*].publisher` 참조.
 
-- 리스크 판정: `python tools/ccr_validate_risk.py --draft <파일명>`
-- 승격 도구: `python tools/ccr_promote.py` (신규 경로 인식)
-- 정책: `docs/2. Development/2.5 Shared/team-policy.json` + `docs/2. Development/2.5 Shared/Risk_Matrix.md`
+### Publisher 직접 편집 권한
 
-### Publisher Fast-Track
-
-`team-policy.json`의 `contract_ownership` 에 등록된 publisher 팀은 자기 소유 계약 파일을 직접 수정할 수 있다.
+`team-policy.json`의 `contract_ownership` 에 등록된 publisher 팀은 자기 소유 계약 파일을 직접 수정 가능:
 
 | 팀 | 직접 수정 가능 경로 |
 |----|---------------------|
@@ -132,42 +123,20 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 | team3 | `docs/2. Development/2.3 Game Engine/APIs/**` |
 | team4 | `docs/2. Development/2.4 Command Center/APIs/**` |
 
-**단**, 수정 후 `python tools/ccr_validate_risk.py --draft <파일명>` 사후 검증 실행 필수. 리스크 등급이 허용 범위를 초과하면 풀 CCR 절차로 전환.
+파괴적 변경(remove/rename/breaking) 시 subscriber 팀 전원 사전 합의 + Conductor 에스컬레이션 필수.
 
-### Conductor 승격 워크플로우 (v3 배치 모드)
+### 기획 공백 발견 시
 
-트리거: 사용자가 "ccr promote" / "CCR 승격" 자연어 입력.
+구현 중 기획 문서에 명시되지 않은 판단이 필요하면:
 
-1. **Phase A — Collection**: `python tools/ccr_promote.py --validate-only` → JSON 으로 전체 `pending/` 메타 획득. 유효 draft 일괄 Read.
-2. **Phase B — Planning**: `target_files` 교집합으로 그룹핑, target 파일은 그룹당 1회만 Read, Intent 추출 + 충돌 검사 + 병합 순서(add → modify → rename → remove).
-3. **Phase C — Execution**: 그룹별 1회 통합 Edit 으로 실제 docs 수정. 편집 완료 후 `python tools/ccr_promote.py --complete <draft> --number N --applied-files "<csv>"` 마감.
-4. **Phase D — Clarification**: 충돌·모호·Spec Gap 그룹만 `AskUserQuestion` 으로 에스컬레이션.
-5. **Phase E — Finalize**: `python tools/backlog_aggregate.py` → 사용자 리포트 → git commit `[CR-NNN..MMM] ...`.
+1. **공백 식별** — "이 판단은 어느 문서가 답해야 하는가?" 를 먼저 정한다
+2. **해당 문서 보강** — 추가 전용(additive) 원칙으로 즉시 보강
+3. **decision_owner notify** — 커밋 메시지 또는 active-edits 레지스트리로 알림
+4. **구현 계속** — 보강된 문서에 기반하여 결정적으로 구현. 임의 판단 금지
 
-**핵심**: "작업 실행" = 실제 docs 파일을 Read/Edit/Write 로 수정하는 것이 본체. `--complete` 는 로그·NOTIFY·archive 마감 절차일 뿐. 편집 없이 `--complete` 만 호출 금지.
+### Backlog 규칙
 
----
-
-## 기획 공백 발견 시 프로세스
-
-**원칙**: 구현 중 기획 문서에 명시되지 않은 판단이 필요하면, 그 자체가 **기획 공백**이다. 공백은 로그에 적는 것이 아니라 **해당 기획 문서를 즉시 보강**해서 없앤다.
-
-### 절차
-
-1. **공백 식별** — "이 판단은 어느 문서가 답해야 하는가?" 를 먼저 정한다. 답이 없으면 가장 근접한 기획 문서를 택한다.
-2. **해당 문서 보강** — `team-policy.json` v6 자유 편집 정책에 따라 누구든 편집 가능. 원칙은 "추가 전용(additive)" — 기존 문단·스키마·코드 블록을 가급적 건드리지 않고 새 하위 섹션을 만든다.
-3. **`decision_owner` notify** — `teams[*].owns` 또는 `contract_ownership[*].publisher` 에 해당하는 팀이 의미적 결정권자. 편집 후 커밋 메시지 또는 active-edits 레지스트리를 통해 알린다.
-4. **구현 계속** — 보강된 문서에 기반하여 결정적으로 구현. 임의 판단 금지.
-5. **충돌 시** — 동일 구간을 동시 편집한 흔적이 rebase 중 감지되면 `decision_owner` 가 판정 (§"멀티 세션 충돌 방지 (v6, 3계층 방어)" 참조).
-
-### 금지 (폐지된 옛 절차)
-
-- `Spec_Gaps.md` 파일 · `GAP-*-NNN` ID 체계 · "팀 내부 판단 vs Shared 변경" 의 2-path 분기 — **모두 폐지**.
-- `docs/3. Change Requests/pending/CR-teamN-*.md` draft 선행 규칙 — **폐지**. 자유 편집으로 해결. 단 `docs/3. Change Requests/{in-progress,done}/` 는 역사 기록으로 보존.
-
-### Backlog 규칙은 유지
-
-구현 대상은 여전히 팀 `Backlog.md` (또는 `Backlog/` 항목 파일) 에 등재한다. 공백을 발견하고 기획 문서를 보강한 뒤, 후속 구현 작업을 Backlog 에 추가해야 구현 추적이 끊기지 않는다.
+구현 대상은 팀 `Backlog.md` (또는 `Backlog/` 항목 파일) 에 등재한다. 공백을 발견하고 기획 문서를 보강한 뒤, 후속 구현 작업을 Backlog 에 추가해야 구현 추적이 끊기지 않는다.
 
 ---
 
@@ -256,7 +225,6 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 | Confluence 프론트매터 | `confluence-page-id` | O |
 | 단방향 pull (`confluence_sync.py`) | 동일 패턴 | O |
 | — | `2.5 Shared/` (EBS 고유 다팀 병렬 + BS-00/01) | △ EBS 고유 |
-| — | `3. Change Requests/` (CCR 프로세스) | X EBS 고유 |
 
 ---
 
@@ -287,7 +255,7 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 | Team 4 | `C:/claude/ebs/team4-cc/` | `team4-cc/CLAUDE.md` |
 
 **팀 세션 금지**:
-- `docs/2. Development/2.5 Shared/`, `docs/1. Product/`, `docs/3. Change Requests/in-progress,done/`, `docs/4. Operations/` 수정 (CR 프로세스 경유)
+- `docs/2. Development/2.5 Shared/`, `docs/1. Product/`, `docs/4. Operations/` 수정 (Conductor 소유)
 - 다른 팀 문서 폴더(`docs/2. Development/2.N`) 수정
 - 다른 팀 코드 폴더 접근
 
@@ -317,4 +285,4 @@ Team 0 — Conductor. 최상위 오케스트레이션, 문서 구조 소유, 통
 
 ---
 
-**마지막 업데이트**: 2026-04-15 (v5.0.0 — docs v10 단일 경로 구조 전환)
+**마지막 업데이트**: 2026-04-17 (v6.0.0 — CCR 완전 폐기, v7 거버넌스, 브랜치 강제 강화)

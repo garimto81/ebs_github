@@ -1,5 +1,11 @@
 # Team 3: Game Engine — CLAUDE.md (코드 전용)
 
+## 브랜치 규칙
+
+- **작업 브랜치**: `work/team3/{YYYYMMDD}-session` (SessionStart hook 자동 생성)
+- **main 직접 작업 금지** — commit/push 차단됨
+- **병합**: `/team-merge` 커맨드로만 main 병합 (Conductor 세션 권장)
+
 ## Role
 
 순수 Dart 포커 엔진 패키지. 22종 게임의 규칙/상태/평가 엔진.
@@ -23,7 +29,7 @@
 | Game Rules (Confluence 발행) | `../docs/1. Product/Game_Rules/` |
 | Backlog | `../docs/2. Development/2.3 Game Engine/Backlog.md` |
 
-### Publisher Fast-Track
+### Publisher 직접 편집 권한
 
 team3은 API-04 OutputEvent 를 직접 수정 가능:
 
@@ -31,7 +37,7 @@ team3은 API-04 OutputEvent 를 직접 수정 가능:
 |------|---------------|
 | `../docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | ✓ |
 
-**단**, 수정 후 `python ../tools/ccr_validate_risk.py --draft <파일명>` 실행 필수.
+파괴적 변경(remove/rename/breaking) 시 subscriber 팀 전원 사전 합의 필수.
 
 ## 소유 경로 (코드)
 
@@ -68,7 +74,7 @@ ebs_game_engine/
 | API-03 RFID HAL | `../docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | team4 |
 | DATA Schema (FSM 등) | `../docs/2. Development/2.2 Backend/Database/Schema.md` | team2 |
 
-수정 필요 시 CR 프로세스 경유 (`../docs/3. Change Requests/pending/CR-team3-*.md`).
+수정 필요 시 해당 문서를 직접 보강 (additive). decision_owner 는 publisher 팀.
 
 ## Harness 서비스
 
@@ -83,12 +89,12 @@ ebs_game_engine/
 
 ## 기획 공백 발견 시
 
-개발 중 기획 문서에 없는 판단이 필요하면 해당 기획 문서를 **즉시 보강**한다. Spec_Gaps.md · CR draft · CCR-first 프로세스는 폐지되었다. 상세: `../CLAUDE.md` §"기획 공백 발견 시 프로세스".
+개발 중 기획 문서에 없는 판단이 필요하면 해당 기획 문서를 **즉시 보강**한다 (additive). decision_owner 는 `team-policy.json` 참조. 상세: `../CLAUDE.md` §"문서 변경 거버넌스".
 
 ## 금지
 
 - Flutter, `dart:io` 서버, HTTP 패키지 임포트 금지 (순수 Dart만)
-- `../docs/1. Product/`, `../docs/2. Development/2.{1,2,4,5}*/`, `../docs/3. Change Requests/{in-progress,done}/`, `../docs/4. Operations/` 수정 금지
+- `../docs/1. Product/`, `../docs/2. Development/2.{1,2,4,5}*/`, `../docs/4. Operations/` 수정 금지 (다른 팀 소유)
 - 다른 팀 코드 폴더(`../team1-frontend/`, `../team2-backend/`, `../team4-cc/`) 접근 금지
 
 ## Build

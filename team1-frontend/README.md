@@ -7,10 +7,10 @@ EBS (Event Broadcast System) Team 1 frontend: Login + Lobby + Settings 6탭 + Gr
 - **Quasar Framework** (Vue 3) + **TypeScript**
 - **Pinia** — 상태 관리 (5 stores: auth/lobby/settings/ge/ws)
 - **vue-router** — SPA 라우팅 (history 모드)
-- **axios** — HTTP 클라이언트 (CCR-019 Idempotency-Key 자동 주입)
-- **네이티브 WebSocket** + 커스텀 래퍼 (CCR-021 seq 검증 + replay)
+- **axios** — HTTP 클라이언트 ( Idempotency-Key 자동 주입)
+- **네이티브 WebSocket** + 커스텀 래퍼 ( seq 검증 + replay)
 - **MSW 2.x** — 개발/테스트 mock server
-- **@rive-app/canvas** — Graphic Editor 허브의 `.gfskin` 프리뷰 (CCR-011)
+- **@rive-app/canvas** — Graphic Editor 허브의 `.gfskin` 프리뷰 (team1 소유)
 - **vue-i18n** — 다국어 (ko/en/es)
 - **Vitest** + **@vue/test-utils** + **Playwright** — 테스트 피라미드
 
@@ -72,8 +72,8 @@ team1-frontend/
 │   ├── boot/                  # Quasar boot files
 │   │   ├── i18n.ts
 │   │   ├── pinia.ts
-│   │   ├── axios.ts           # Idempotency-Key interceptor (CCR-019)
-│   │   ├── ws-client.ts       # WS seq validation (CCR-021)
+│   │   ├── axios.ts           # Idempotency-Key interceptor ()
+│   │   ├── ws-client.ts       # WS seq validation ()
 │   │   ├── msw.ts             # MSW worker (dev only)
 │   │   └── router-guards.ts   # Auth + RBAC guards
 │   ├── router/
@@ -83,7 +83,7 @@ team1-frontend/
 │   │   ├── authStore.ts       # Bit Flag RBAC
 │   │   ├── lobbyStore.ts
 │   │   ├── settingsStore.ts
-│   │   ├── geStore.ts         # Graphic Editor (CCR-011)
+│   │   ├── geStore.ts         # Graphic Editor (team1 소유)
 │   │   └── wsStore.ts         # WS seq cursor
 │   ├── api/                   # API client modules
 │   │   ├── client.ts          # axios instance
@@ -149,7 +149,7 @@ Quasar 이식 원본: `../C:/claude/ebs-archive-backup/07-archive/legacy-repos/e
 
 ## 금지
 
-- `../contracts/**` 직접 수정 금지 (CCR 프로세스 경유)
+- `../contracts/**` 직접 수정 금지 (publisher 팀 소유)
 - `../team2-backend/`, `../team3-engine/`, `../team4-cc/` 접근 금지
 - Overlay 실제 렌더링 구현 금지 (Team 4 BS-07)
-- Rive 에디터 기능 재구현 금지 (CCR-011 out-of-scope, Rive 공식 에디터 외부 사용)
+- Rive 에디터 기능 재구현 금지 (out-of-scope, Rive 공식 에디터 외부 사용)

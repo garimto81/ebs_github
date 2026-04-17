@@ -106,9 +106,9 @@ v10 에서 CR(구 CCR) 라이프사이클:
 
 ---
 
-## Publisher Fast-Track
+## Publisher 직접 편집 권한
 
-publisher 팀은 자기 소유 계약 파일을 CR 없이 직접 수정 가능 (단, 사후 `tools/ccr_validate_risk.py` 검증 필수):
+publisher 팀은 자기 소유 계약 파일을 직접 수정 가능 (additive 원칙, 파괴적 변경 시 subscriber 합의 필수):
 
 | 팀 | 직접 수정 경로 |
 |----|---------------|
@@ -127,7 +127,6 @@ publisher 팀은 자기 소유 계약 파일을 CR 없이 직접 수정 가능 (
 | `python tools/spec_aggregate.py --check` | frontmatter 누락 검증 |
 | `python tools/find_by_legacy.py <legacy-id>` | 옛 번호 → 새 경로 |
 | `python tools/wsop_alignment_check.py` | WSOP LIVE 정렬 확인 |
-| `python tools/ccr_promote.py --validate-only` | CR draft 검증 |
 
 ---
 

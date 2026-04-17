@@ -1,5 +1,11 @@
 # Team 4: Command Center + Overlay — CLAUDE.md (코드 전용)
 
+## 브랜치 규칙
+
+- **작업 브랜치**: `work/team4/{YYYYMMDD}-session` (SessionStart hook 자동 생성)
+- **main 직접 작업 금지** — commit/push 차단됨
+- **병합**: `/team-merge` 커맨드로만 main 병합 (Conductor 세션 권장)
+
 ## Role
 
 Command Center (실시간 운영) + Overlay (방송 그래픽 출력, Skin Consumer)
@@ -8,7 +14,7 @@ Command Center (실시간 운영) + Overlay (방송 그래픽 출력, Skin Consu
 
 **Publisher**: RFID HAL (API-03).
 
-> Graphic Editor는 team1 Lobby 소유 (CCR-011). team4는 `skin_updated` WebSocket 이벤트 수신 후 Overlay 를 reload 하는 **Skin Consumer**. GE UI 구현 금지.
+> Graphic Editor는 team1 소유. team4는 `skin_updated` WebSocket 이벤트 수신 후 Overlay 를 reload 하는 **Skin Consumer**. GE UI 구현 금지.
 
 ---
 
@@ -26,7 +32,7 @@ Command Center (실시간 운영) + Overlay (방송 그래픽 출력, Skin Consu
 | Integration Test Plan | `../docs/2. Development/2.4 Command Center/Integration_Test_Plan.md` |
 | Backlog | `../docs/2. Development/2.4 Command Center/Backlog.md` |
 
-### Publisher Fast-Track
+### Publisher 직접 편집 권한
 
 team4는 RFID HAL 을 직접 수정 가능:
 
@@ -34,7 +40,7 @@ team4는 RFID HAL 을 직접 수정 가능:
 |------|---------------|
 | `../docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | ✓ |
 
-**단**, 수정 후 `python ../tools/ccr_validate_risk.py --draft <파일명>` 실행 필수.
+파괴적 변경(remove/rename/breaking) 시 subscriber 팀 전원 사전 합의 필수.
 
 ## 2개 화면 — 동일 Flutter 앱
 
@@ -69,41 +75,38 @@ dependencies:
 | API-04 Overlay Output | `../docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | team3 |
 | API-05 WebSocket | `../docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` | team2 |
 | API-06 Auth | `../docs/2. Development/2.2 Backend/APIs/Auth_and_Session.md` | team2 |
-| BS-08 Graphic Editor | `../docs/2. Development/2.1 Frontend/Graphic_Editor/` | team1 (CCR-011) |
+| BS-08 Graphic Editor | `../docs/2. Development/2.1 Frontend/Graphic_Editor/` | team1 |
 | DATA-07 .gfskin Schema | `../docs/2. Development/2.2 Backend/Database/` | team2 |
 
-수정 필요 시 CR 프로세스 경유 (`../docs/3. Change Requests/pending/CR-team4-*.md`).
+수정 필요 시 해당 문서를 직접 보강 (additive). decision_owner 는 publisher 팀.
 
 ## RFID HAL 규칙
 
 `IRfidReader`는 추상 인터페이스:
-- 실제 HAL (`ST25R3911BReader`) — 시리얼 UART, Phase 2 대응 (CCR-022 §ST25R3916 마이그레이션 경로)
+- 실제 HAL (`ST25R3911BReader`) — 시리얼 UART, Phase 2 대응 (ST25R3916 마이그레이션 경로)
 - 모의 HAL (`MockRfidReader`) — Phase 1 주력. 결정적 타이밍 + 장애 주입 API
 - **의존성 주입 필수** — `rfidReaderProvider` Riverpod Provider로만 접근
 
-## 인프라 CCR 구현 (소비자)
+## 인프라 구현 (소비자)
 
-| CCR | 요약 | 구현 위치 |
-|-----|------|---------|
-| CCR-012 | `.gfskin` ZIP 포맷 단일화 | `lib/repositories/skin_repository.dart` |
-| CCR-015 | `skin_updated` WebSocket 이벤트 | `lib/features/overlay/services/skin_consumer.dart` |
-| CCR-019 | Idempotency-Key 헤더 | `lib/data/remote/bo_api_client.dart` Dio 인터셉터 |
-| CCR-021 | WebSocket `seq` + replay | `lib/foundation/utils/seq_tracker.dart` + `bo_websocket_client.dart` |
+| 기능 | 요약 | 구현 위치 |
+|------|------|---------|
+| .gfskin | ZIP 포맷 단일화 | `lib/repositories/skin_repository.dart` |
+| skin_updated | WebSocket 이벤트 | `lib/features/overlay/services/skin_consumer.dart` |
+| Idempotency-Key | 헤더 자동 주입 | `lib/data/remote/bo_api_client.dart` Dio 인터셉터 |
+| seq + replay | WebSocket 단조증가 검증 | `lib/foundation/utils/seq_tracker.dart` + `bo_websocket_client.dart` |
 
 ## 기획 공백 발견 시
 
-개발 중 기획 문서에 없는 판단이 필요하면 해당 기획 문서를 **즉시 보강**한다. Spec_Gaps.md · CR draft · CCR-first 프로세스는 폐지되었다.
-
-- Graphic Editor 관련 공백은 team1 이 `decision_owner` — 편집 시 team1 notify.
-- 상세: `../CLAUDE.md` §"기획 공백 발견 시 프로세스".
+개발 중 기획 문서에 없는 판단이 필요하면 해당 기획 문서를 **즉시 보강**한다 (additive). Graphic Editor 관련 공백은 team1 이 `decision_owner` — 편집 시 team1 notify. decision_owner 는 `team-policy.json` 참조. 상세: `../CLAUDE.md` §"문서 변경 거버넌스".
 
 ## 금지
 
-- `../docs/1. Product/`, `../docs/2. Development/2.{1,2,3,5}*/`, `../docs/3. Change Requests/{in-progress,done}/`, `../docs/4. Operations/` 수정 금지
+- `../docs/1. Product/`, `../docs/2. Development/2.{1,2,3,5}*/`, `../docs/4. Operations/` 수정 금지 (다른 팀 소유)
 - 다른 팀 코드 폴더(`../team1-frontend/`, `../team2-backend/`, `../team3-engine/ebs_game_engine/lib/`) 수정 금지
-- **Graphic Editor UI 구현 금지** (CCR-011 — team1 소유)
+- **Graphic Editor UI 구현 금지** (team1 소유)
 - IRfidReader 구현체 직접 인스턴스화 금지 (Riverpod DI 사용)
-- `lib/features/overlay/layer2_push/` 영역 구현 금지 (CCR-035 Phase 2 외)
+- `lib/features/overlay/layer2_push/` 영역 구현 금지 (Phase 2 영역)
 
 ## Build
 

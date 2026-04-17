@@ -49,9 +49,15 @@ def main() -> int:
         sys.stderr.write(f"[session-branch] {team}: not on main ({cur}), skipping auto-branch\n")
         return 0
 
+    stashed = False
     if _has_uncommitted():
-        sys.stderr.write(f"[session-branch] {team}: uncommitted changes on main — manual handling required\n")
-        return 0
+        sys.stderr.write(f"[session-branch] {team}: stashing uncommitted changes on main...\n")
+        code, out = _git("stash", "push", "-m", f"auto-stash-{team}-{datetime.date.today().strftime('%Y%m%d')}")
+        if code == 0:
+            stashed = True
+        else:
+            sys.stderr.write(f"[session-branch] {team}: stash failed ({out}), staying on main\n")
+            return 0
 
     today = datetime.date.today().strftime("%Y%m%d")
     slug = "session"
@@ -64,6 +70,14 @@ def main() -> int:
     else:
         _git("checkout", "-b", branch)
         sys.stderr.write(f"[session-branch] {team}: created and switched to {branch}\n")
+
+    if stashed:
+        code, out = _git("stash", "pop")
+        if code == 0:
+            sys.stderr.write(f"[session-branch] {team}: restored stashed changes on {branch}\n")
+        else:
+            sys.stderr.write(f"[session-branch] {team}: stash pop failed ({out}), changes remain in stash\n")
+
     return 0
 
 
