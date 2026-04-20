@@ -36,13 +36,13 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 
 | 계약 | D1 | D2 | D3 | D4 | Total | 핵심 조치 |
 |------|:--:|:--:|:--:|:--:|:-----:|-----------|
-| REST API | 10 | 43 | 89 | 18 | 160 | D1 즉시 정정, D3 대부분 Auth_and_Session 병합 필요 |
+| REST API | 8 | 40 | 89 | 20 | 157 | D1 prefix 정정. D3 는 SG-008 3분류 (a 기획 추가 / b SG 승격 / c 코드 삭제) |
 | OutputEvent | 0 | 0 | 0 | 21 | 21 | **PASS** (2026-04-15 실측 정정 후 정렬) |
-| FSM | 1 | 6 | 0 | 17 | 24 | TableFSM case 통일 SG 승격 |
-| DB Schema | 0 | 3 | 25 | 0 | 28 | scanner 미완 — 후속 재측정 |
-| RFID HAL | 0 | 0 | 5 | 3 | 8 | 문서 보강 (추가 스트림/메서드 누락) |
-| Settings | 0 | 13 | 0 | 0 | 13 | scanner false positive — 후속 정밀화 |
-| WebSocket | — | — | — | — | — | stub. 후속 구현. |
+| FSM | 1 | 6 | 0 | 17 | 24 | TableFSM case 통일 SG-009 |
+| DB Schema | 0 | 1 | 2 | 23 | 26 | scanner 정밀화 (SQLModel detector 추가). D3 `cards`/`settings_kv` + D2 `payout_structures` |
+| RFID HAL | 0 | 0 | 0 | 8 | 8 | SG-011 **OUT_OF_SCOPE** (프로토타입 범위 밖 TBD) |
+| Settings | 0 | 13 | 0 | 0 | 13 | scanner false positive 잔존 — 탭별 scope 파싱 후속 |
+| WebSocket | 0 | 89 | 2 | 3 | 94 | detector 신규 구현. spec 측 backtick 휴리스틱이라 D2 후보 noise 다수. D3 2개 (Ack/Error 는 internal envelope wrapper) |
 
 > 스캐너 자체가 정규식 기반 best-effort 이므로 D2/D3 에는 false positive 가 섞여 있다. D1 은 신뢰도 높음.
 
@@ -54,7 +54,7 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | 2 | API | D1 | 10 개 엔드포인트 문서에 `/api/v1` prefix 누락 | Conductor 즉시 정정 (본 커밋) |
 | 3 | API | D3 | 89 개 code-only 엔드포인트 — 주로 CRUD DELETE/PATCH, audit, auth | Conductor 이번 커밋에서 핵심군은 문서에 표기. 전량 정리는 SG-008 |
 | 4 | Schema | D3 | Schema.md 의 테이블 declaration 이 inline code (\`table_name\`) 기반이라 스캐너가 CREATE TABLE 문을 놓침 | 스캐너 정밀화 SG-010 |
-| 5 | RFID | D3 | `onDeckRegistered`, `onAntennaStatusChanged`, `onError`, `onStatusChanged`, `onCardRemoved` 기획에 언급 없음 | RFID_HAL_Interface.md 보강 (이번 커밋 보강 후 재측정) |
+| 5 | RFID | D3 | `onDeckRegistered`, `onAntennaStatusChanged`, `onError`, `onStatusChanged`, `onCardRemoved` 기획에 언급 없음 | SG-011 **OUT_OF_SCOPE** — 프로토타입 범위 밖, 개발팀 인계 후 제조사 SDK 기반 재결정 (2026-04-20 재정의) |
 
 ### 4.3 즉시 해소 (이번 커밋)
 
@@ -71,7 +71,7 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | SG-008 | spec_drift | api | PENDING | D3 대량 endpoint 문서화 (CRUD, auth) |
 | SG-009 | spec_drift | fsm | IN_PROGRESS | TableFSM case 통일 — 이번 커밋에서 BS_Overview §3.1 직렬화 규약 추가 |
 | SG-010 | tooling | meta | PENDING | spec_drift_check.py 정밀화 (Settings, Schema, WebSocket) |
-| SG-011 | spec_drift | rfid | PENDING | RFID_HAL_Interface §2.1 single-stream vs code 6-stream |
+| SG-011 | spec_drift | rfid | **OUT_OF_SCOPE** | RFID_HAL_Interface §2.1. **프로토타입 범위 밖** — 실제 HAL 은 개발팀 + 제조사 SDK 확정 후 결정 (2026-04-20 재정의) |
 
 ## 5. 스캔 명령 레퍼런스
 
@@ -114,3 +114,4 @@ python tools/spec_drift_check.py --settings
 | 날짜 | 변경 | 비고 |
 |------|------|------|
 | 2026-04-20 | v1.0 최초 등록 | 7 계약 scan, 3 drift 즉시 해소, SG-008~010 승격 |
+| 2026-04-20 | v1.1 — SG-008 재정의 + SG-011 OUT_OF_SCOPE | "기획이 진실" 원칙 복구: SG-008 을 3분류 (a/b/c) 로 재작성. SG-011 은 프로토타입 범위 밖 TBD 로 재마킹. Spec_Gap_Triage §7.2.1 "코드가 진실 판정 요건" 추가. scanner 정밀화 (schema SQLModel detector + websocket detector + WSOP-native 필터) |

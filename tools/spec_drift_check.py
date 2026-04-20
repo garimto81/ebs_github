@@ -87,6 +87,15 @@ def _read(path: Path) -> str:
 # ------------------------------------------------------------------ Detectors
 
 
+# EBS 고유 엔드포인트 prefix. WSOP LIVE 참조 경로(`/Series/...`)는 EBS 계약이 아니므로 scan 제외
+EBS_API_PREFIXES = ("/api/v1", "/auth", "/health", "/metrics")
+
+
+def _is_ebs_endpoint(path: str) -> bool:
+    """EBS 엔드포인트 경로인지 판별. WSOP LIVE 참조 경로는 False."""
+    return any(path.startswith(p) for p in EBS_API_PREFIXES)
+
+
 def detect_api() -> ContractReport:
     """REST 엔드포인트 drift — Backend_HTTP.md / Auth_and_Session.md ↔ team2 routers."""
     rep = ContractReport(contract="api")
@@ -108,14 +117,29 @@ def detect_api() -> ContractReport:
     spec_pat = re.compile(
         r"(?:[^A-Za-z]|^)(GET|POST|PUT|PATCH|DELETE)\s+(/[A-Za-z0-9_\-/\{\}:\.]+)"
     )
-    spec_set: set[tuple[str, str]] = set()
+    spec_set_all: set[tuple[str, str]] = set()
     for m in spec_pat.finditer(spec_text):
         method = m.group(1).upper()
         raw_path = m.group(2)
         # 잡음: / 로만 끝나는 경로 또는 너무 짧은 경로
         if len(raw_path) < 2:
             continue
-        spec_set.add((method, _normalize_path(raw_path)))
+        spec_set_all.add((method, _normalize_path(raw_path)))
+
+    # WSOP LIVE 참조 경로 필터 — EBS 엔드포인트 규약 외 경로는 기획 본문 서술용 차용
+    wsop_native_skipped: list[tuple[str, str]] = []
+    spec_set: set[tuple[str, str]] = set()
+    for method, path in spec_set_all:
+        # /api/v1 prefix 없는 경로지만 stripped 형태로 문서화된 경우(예: /events) 는
+        # code_set 매칭 단계에서 D1 prefix 차이로 흡수되므로 유지.
+        # /Series/, /EventFlights/ 같은 WSOP 원본 경로(PascalCase segment) 만 필터.
+        # 휴리스틱: path segment 첫 글자가 대문자이고 /api/v1 prefix 가 아닌 경우
+        segments = path.strip("/").split("/")
+        first_seg = segments[0] if segments else ""
+        if first_seg and first_seg[0].isupper() and not _is_ebs_endpoint(path):
+            wsop_native_skipped.append((method, path))
+            continue
+        spec_set.add((method, path))
 
     # 코드: @router.get("/flights/{id}/clock")
     code_set: set[tuple[str, str]] = set()
@@ -184,8 +208,9 @@ def detect_api() -> ContractReport:
 
     rep.d4_count = len(shared)
     rep.scanner_note = (
-        f"scanned {len(spec_set)} spec endpoints / {len(code_set)} code endpoints. "
-        "정규식 기반 best-effort."
+        f"scanned {len(spec_set)} spec endpoints "
+        f"(+ {len(wsop_native_skipped)} WSOP-native refs skipped) / "
+        f"{len(code_set)} code endpoints. 정규식 기반 best-effort."
     )
     return rep
 
@@ -399,8 +424,20 @@ def _diff_states(
     rep.d4_count += len(spec & code)
 
 
+def _extract_sql_code_blocks(text: str) -> str:
+    """Markdown 의 ```sql ... ``` fenced code block 만 추출. inline backtick 은 제외."""
+    pattern = re.compile(r"```sql\s*\n(.*?)```", re.DOTALL | re.IGNORECASE)
+    blocks = pattern.findall(text)
+    return "\n".join(blocks)
+
+
 def detect_schema() -> ContractReport:
-    """DB 스키마 drift — Schema.md ↔ init.sql / migrations."""
+    """DB 스키마 drift — Schema.md ↔ init.sql / migrations.
+
+    R1-a 정제: inline backtick `table_name` 을 CREATE TABLE 로 오인하지 않도록
+    - 문서측: ```sql fenced block 안의 실제 CREATE TABLE 문만 추출
+    - 헤더 패턴(### 테이블 `foo`) 도 보조로 사용. CREATE TABLE 과 별개로 카운트 합집합.
+    """
     rep = ContractReport(contract="schema")
     schema_doc = (
         REPO / "docs" / "2. Development" / "2.2 Backend" / "Database" / "Schema.md"
@@ -410,19 +447,42 @@ def detect_schema() -> ContractReport:
         rep.scanner_note = "Schema.md 또는 init.sql 없음"
         return rep
 
-    # 기획: ### 테이블 `foo_bar` 패턴 또는 CREATE TABLE
     spec_text = _read(schema_doc)
     code_text = _read(init_sql)
 
-    spec_tables = set(
-        re.findall(r"(?:###?\s+(?:테이블\s+)?|CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?)`?([a-z_][a-z0-9_]*)`?",
-                   spec_text)
+    # 1) 문서측: SQL fenced block 안의 CREATE TABLE 문만
+    sql_blocks = _extract_sql_code_blocks(spec_text)
+    spec_tables_sql = set(
+        re.findall(
+            r"CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?`?([a-z_][a-z0-9_]*)`?",
+            sql_blocks,
+            re.IGNORECASE,
+        )
     )
-    # 잡음 제거 (일반 단어)
+    # 2) 문서측: Python fenced block 안의 SQLModel `__tablename__ = "foo"` 패턴
+    #    Schema.md 는 SQLModel 스타일로 작성되어 있음
+    py_blocks_pat = re.compile(r"```python\s*\n(.*?)```", re.DOTALL | re.IGNORECASE)
+    py_blocks = "\n".join(py_blocks_pat.findall(spec_text))
+    spec_tables_sqlmodel = set(
+        re.findall(
+            r'__tablename__\s*=\s*["\']([a-z_][a-z0-9_]*)["\']',
+            py_blocks,
+        )
+    )
+    # 3) 문서측 보조: 헤더 패턴 `### 테이블 \`foo_bar\`` 또는 `### \`foo_bar\``
+    spec_tables_header = set(
+        re.findall(
+            r"(?m)^#{2,4}\s+(?:테이블\s+)?`([a-z_][a-z0-9_]*)`",
+            spec_text,
+        )
+    )
+    spec_tables = spec_tables_sql | spec_tables_sqlmodel | spec_tables_header
+
+    # 잡음 제거 (일반 단어 / SQL 예약어)
     _noise = {
         "string", "integer", "boolean", "timestamp", "id", "type", "status",
         "value", "bigint", "text", "varchar", "primary", "foreign", "default",
-        "null", "cascade",
+        "null", "cascade", "key", "exists", "table",
     }
     spec_tables = {t for t in spec_tables if t not in _noise and len(t) > 2}
 
@@ -457,20 +517,20 @@ def detect_schema() -> ContractReport:
             )
         )
     for t in sorted(spec_tables - code_tables):
-        # 그러나 Schema.md 에는 staff, operator 등 미구현 테이블도 포함될 수 있음
         rep.d2.append(
             DriftItem(
                 contract="schema",
                 drift_type="D2",
                 identifier=t,
                 spec_value=f"table {t}",
-                note="기획에만 존재 (미구현 또는 정규식 false positive)",
+                note="기획에만 존재 (미구현)",
             )
         )
     rep.d4_count = len(spec_tables & code_tables)
     rep.scanner_note = (
-        f"spec tables={len(spec_tables)} code tables={len(code_tables)}. "
-        "정규식이 본문 inline code (`table_name`) 도 추출하므로 false positive 가능."
+        f"spec tables={len(spec_tables)} "
+        f"(sql={len(spec_tables_sql)} + sqlmodel={len(spec_tables_sqlmodel)} + header={len(spec_tables_header)}) "
+        f"code tables={len(code_tables)}. SQL/Python fenced block + header 패턴만 매칭 (inline code 제외)."
     )
     return rep
 
@@ -604,12 +664,106 @@ def detect_settings() -> ContractReport:
 
 
 def detect_websocket() -> ContractReport:
-    """WebSocket event drift — WebSocket_Events.md ↔ team2 websocket handlers.
+    """WebSocket event drift — WebSocket_Events.md §event catalog ↔ team2 websocket handlers.
 
-    간이 스캐너: stub. 후속 구현 예정.
+    R1-b 구현: 문서 §4 이벤트 카탈로그에서 event type 이름 추출.
+    코드측은 `{ "type": "EventName", ... }` 패턴 추출.
     """
     rep = ContractReport(contract="websocket")
-    rep.scanner_note = "stub — 후속 구현. WebSocket_Events.md §4 event catalog ↔ websocket/*.py 비교 예정."
+    doc = (
+        REPO / "docs" / "2. Development" / "2.2 Backend" / "APIs" / "WebSocket_Events.md"
+    )
+    ws_dir = REPO / "team2-backend" / "src" / "websocket"
+
+    if not doc.exists():
+        rep.scanner_note = "WebSocket_Events.md 없음"
+        return rep
+    if not ws_dir.exists():
+        rep.scanner_note = "team2 websocket/ 경로 없음 — code source not found"
+        return rep
+
+    spec_text = _read(doc)
+    # 기획: backtick-wrapped event type 이름 — `event_flight_summary`, `clock_tick` 등
+    # snake_case 또는 PascalCase 둘 다 등장 (Ack, Error, HandStarted, clock_tick)
+    # 테이블 형태 `| event_name | ...` 와 인라인 참조 모두 포착
+    spec_events = set(
+        re.findall(
+            r"`([A-Za-z][A-Za-z0-9_]{2,})`",
+            spec_text,
+        )
+    )
+    # 이벤트형 이름 휴리스틱: 소문자_snake 또는 PascalCase 로 시작
+    def _looks_like_event(name: str) -> bool:
+        if len(name) < 3:
+            return False
+        # 제외: SQL 예약어, 일반 단어
+        _noise = {
+            "type", "name", "value", "status", "token", "key", "id", "data",
+            "role", "true", "false", "null", "seq", "version", "envelope",
+            "ts", "timestamp", "payload", "from", "to", "this", "that",
+            "string", "int", "bool", "event", "message", "table",
+            "API-04", "API-05",
+        }
+        if name.lower() in {n.lower() for n in _noise}:
+            return False
+        # snake_case: 2어 이상 또는 이름 끝이 event 류
+        if "_" in name and name.islower():
+            return True
+        # PascalCase: 첫 글자 대문자 + 다른 대문자 또는 길이 8+
+        if name[0].isupper() and any(c.isupper() for c in name[1:]):
+            return True
+        if name[0].isupper() and len(name) >= 8:
+            return True
+        return False
+
+    spec_events = {e for e in spec_events if _looks_like_event(e)}
+
+    # 코드: "type": "EventName" 패턴
+    code_events: set[str] = set()
+    type_pat = re.compile(r'["\']type["\']\s*:\s*["\']([A-Za-z_][A-Za-z0-9_]*)["\']')
+    for py in ws_dir.glob("*.py"):
+        text = _read(py)
+        for m in type_pat.finditer(text):
+            code_events.add(m.group(1))
+
+    if not code_events:
+        rep.scanner_note = (
+            "code source found but no event types extracted — "
+            "detector returns empty (수동 확인 필요)"
+        )
+        return rep
+
+    # Diff — spec 기준 후보군에서 code 와 비교
+    for e in sorted(code_events - spec_events):
+        rep.d3.append(
+            DriftItem(
+                contract="websocket",
+                drift_type="D3",
+                identifier=e,
+                code_value=f'"type": "{e}"',
+                note="WebSocket_Events.md 에 언급 없음",
+            )
+        )
+    # spec-only 는 후보군이 noisy 할 수 있어 "관심 리스트" 만 표시
+    # (backtick snake_case 이면서 code 에 없는 것)
+    for e in sorted(spec_events - code_events):
+        # snake_case 만 D2 로. PascalCase 는 후보가 너무 많음
+        if "_" in e and e.islower():
+            rep.d2.append(
+                DriftItem(
+                    contract="websocket",
+                    drift_type="D2",
+                    identifier=e,
+                    spec_value=e,
+                    note="기획에만 존재 (미구현 또는 발행자 미확인)",
+                )
+            )
+
+    rep.d4_count = len(spec_events & code_events)
+    rep.scanner_note = (
+        f"spec candidates={len(spec_events)} code events={len(code_events)}. "
+        "spec 측 backtick 휴리스틱이라 false positive 가능."
+    )
     return rep
 
 
