@@ -3,8 +3,10 @@ title: Reports & Statistics
 owner: team1
 tier: feature
 last-updated: 2026-04-16
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "Reports & Statistics 기획 완결 (SG-007 연관)"
 ---
-
 # Reports & Statistics
 
 | 날짜 | 항목 | 내용 |

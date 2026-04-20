@@ -4,8 +4,10 @@ owner: team3
 tier: internal
 legacy-id: API-04
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "API-04 Overlay 출력 21종 이벤트 카탈로그 (21KB). TBD 5건은 NDI/BS-07 WSOP LIVE 정렬/stats 계산 등 외부 의존"
 ---
-
 # API-04 Overlay Output — 오버레이 출력 계약
 
 | 날짜 | 항목 | 내용 |

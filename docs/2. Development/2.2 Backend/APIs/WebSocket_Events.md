@@ -4,8 +4,10 @@ owner: team2
 tier: internal
 legacy-id: API-05
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "API-05 WebSocket 이벤트 계약 (52KB). 미정 1건은 Mix 게임 전용 필드 (구현 시 확장)"
 ---
-
 # API-05 WebSocket Events — CC ↔ BO ↔ Lobby 실시간 이벤트 프로토콜
 
 | 날짜 | 항목 | 내용 |

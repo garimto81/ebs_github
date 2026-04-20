@@ -4,8 +4,10 @@ owner: team1
 tier: internal
 legacy-id: BS-02-02
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "BS-02-02 EventFlightStatus enum 완결 (WSOP LIVE parity)"
 ---
-
 # BS-02-02 Event/Flight 상태 — `EventFlightStatus` enum
 
 | 날짜 | 항목 | 내용 |

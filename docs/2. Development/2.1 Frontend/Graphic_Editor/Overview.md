@@ -4,8 +4,10 @@ owner: team1
 tier: internal
 legacy-id: BS-08-00
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "BS-08-00 Graphic Editor 총괄 기획 완결 (11KB)"
 ---
-
 # BS-08-00 Graphic Editor — Overview
 
 | 날짜 | 항목 | 내용 |

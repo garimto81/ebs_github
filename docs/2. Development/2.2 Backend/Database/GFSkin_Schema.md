@@ -4,8 +4,10 @@ owner: team2
 tier: internal
 legacy-id: DATA-07
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "DATA-07 GFSkin 스키마 (SG-004 RESOLVED 반영)"
 ---
-
 # DATA-07 .gfskin Schema — Graphic Editor 아티팩트 포맷 SSOT
 
 | 날짜 | 항목 | 내용 |

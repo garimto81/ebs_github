@@ -14,8 +14,10 @@ affects_chapter:
   - docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md
   - docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md
 protocol: Spec_Gap_Triage
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "status=RESOLVED, EBS_Core 병합 완료"
 ---
-
 # SG-005 — Foundation Ch.6 시스템 연결 도식
 
 ## 공백 서술

@@ -3,8 +3,10 @@ title: Structure Templates (Blind & Payout)
 owner: team1
 tier: feature
 last-updated: 2026-04-16
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "Blind/Payout 템플릿 기획 완결"
 ---
-
 # Structure Templates — Blind & Payout
 
 | 날짜 | 항목 | 내용 |

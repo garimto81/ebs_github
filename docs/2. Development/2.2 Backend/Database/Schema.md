@@ -4,8 +4,10 @@ owner: team2
 tier: internal
 legacy-id: DATA-04
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "DATA-04 DB 스키마 정본 (51KB)"
 ---
-
 # DATA-04 DB Schema
 
 | 날짜 | 항목 | 내용 |

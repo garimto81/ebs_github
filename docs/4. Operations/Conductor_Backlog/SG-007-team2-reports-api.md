@@ -13,8 +13,10 @@ affects_chapter:
   - docs/2. Development/2.1 Frontend/Settings/Statistics.md  (SG-003 §Tab 5)
   - team2-backend/src/routers/reports.py
 protocol: Spec_Gap_Triage
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "status=RESOLVED, Reports API 통합 확정"
 ---
-
 # SG-007 — team2 Reports API 통합 기획
 
 ## 공백 서술

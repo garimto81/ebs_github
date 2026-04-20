@@ -4,8 +4,10 @@ owner: team1
 tier: internal
 legacy-id: UI-01
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "UI-01 Lobby UI 스펙 (68KB) 정본"
 ---
-
 # UI-01 Lobby — 화면 설계 (3계층 + 독립 레이어)
 
 | 날짜 | 항목 | 내용 |

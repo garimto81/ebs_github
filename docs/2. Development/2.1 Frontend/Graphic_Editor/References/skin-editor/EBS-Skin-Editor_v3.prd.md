@@ -3,8 +3,10 @@ title: EBS-Skin-Editor_v3.prd
 owner: team1
 tier: internal
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "Skin Editor v3 PRD (74KB) 완결본 — team1 BS-08 참조"
 ---
-
 # EBS Skin Editor — UI Design PRD v3
 
 > PokerGFX 내재화를 통한 EBS 자체 Skin Editor UI 설계 통합 문서.

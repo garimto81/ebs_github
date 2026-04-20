@@ -3,8 +3,10 @@ title: Network Configuration Contract
 owner: conductor
 tier: contract
 last-updated: 2026-04-17
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "네트워크 구성 계약 (tier=contract, 3KB)"
 ---
-
 # Network Configuration Contract
 
 | 날짜 | 항목 | 내용 |

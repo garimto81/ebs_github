@@ -12,8 +12,10 @@ affects_chapter:
   - docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md §2.1
   - team4-cc/src/lib/rfid/abstract/i_rfid_reader.dart
 protocol: Spec_Gap_Triage §7 (Type D1 / D3)
+reimplementability: N/A
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "status=out_of_scope_prototype — 프로토타입 범위 밖, 개발팀 인계 후 확정"
 ---
-
 # SG-011 — RFID_HAL_Interface §2.1 single-stream vs code 6-stream
 
 > ## ⚠️ [TBD — 개발팀 인계] 본 drift 는 프로토타입 범위 밖

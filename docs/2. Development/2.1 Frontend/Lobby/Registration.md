@@ -3,8 +3,10 @@ title: Registration
 owner: team1
 tier: internal
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "플레이어 등록 기획 완결 (11KB)"
 ---
-
 # Lobby — Tournament Registration · Sit-in · Seating
 
 | 날짜 | 항목 | 내용 |

@@ -12,8 +12,10 @@ affects_chapter:
   - team2-backend/src/db/init.sql
   - team2-backend/src/services/table_service.py
 protocol: Spec_Gap_Triage §7 (Type D1)
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "status=IN_PROGRESS, BS_Overview 직렬화 규약 note 추가 중"
 ---
-
 # SG-009 — TableFSM / SeatFSM display label vs serialized value case
 
 ## 공백 서술

@@ -4,8 +4,10 @@ owner: team1
 tier: internal
 legacy-id: BS-03-06
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "BS-03-06 테이블 운영 기획 완결 (8KB)"
 ---
-
 # Lobby — Operations (테이블 인증·진단·내보내기)
 
 | 날짜 | 항목 | 내용 |

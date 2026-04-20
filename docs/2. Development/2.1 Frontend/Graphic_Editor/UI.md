@@ -4,8 +4,10 @@ owner: team1
 tier: internal
 legacy-id: UI-04
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "UI-04 Graphic Editor UI 스펙 (46KB) 완결"
 ---
-
 # UI-04 Graphic Editor — Lobby 허브 와이어프레임
 
 | 날짜 | 항목 | 내용 |

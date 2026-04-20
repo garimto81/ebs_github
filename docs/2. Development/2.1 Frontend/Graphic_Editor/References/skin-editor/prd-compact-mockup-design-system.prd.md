@@ -8,8 +8,10 @@ depends_on:
   - "EBS-Skin-Editor_v2.prd.md (01~61, GE-01~GE-23)"
 owner: team1
 tier: internal
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "PRD-CMD001 status=approved (20KB) — 디자인 시스템 확정"
 ---
-
 # EBS Compact Mockup Design System
 
 ## 1장. 개요

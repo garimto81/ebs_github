@@ -3,8 +3,10 @@ title: Staff Management
 owner: team1
 tier: feature
 last-updated: 2026-04-16
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "Staff 관리 기획 완결 (WSOP LIVE parity)"
 ---
-
 # Staff Management
 
 | 날짜 | 항목 | 내용 |

@@ -9,8 +9,10 @@ depends_on:
   - "EBS-Skin-Editor.prd.md (UI 설계 v1.4.0)"
 owner: team1
 tier: internal
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "PRD-0007 status=draft (23KB) — 레이아웃 레퍼런스 초안"
 ---
-
 # Skin Editor Layout References — 세계 수준 에디터 UI 벤치마크
 
 ## Executive Summary

@@ -9,8 +9,10 @@ depends_on:
   - "EBS-Skin-Editor.prd.md (UI 설계 v1.4.0)"
 owner: team1
 tier: internal
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "PRD-0007-S2 status=draft (14KB) — 설계 전략 초안"
 ---
-
 # EBS UI Design 전략 제안서
 
 ## 1장. 전략 프레임워크

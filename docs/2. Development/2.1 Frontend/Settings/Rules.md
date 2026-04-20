@@ -157,3 +157,42 @@ late_reg_remaining =
 
 - `contracts/data/DATA-04-db-schema.md` — Flight/Blind 구조 필드
 - `../BS-02-lobby/BS-02-02-event-flight.md` — Flight 상태 및 Late Reg 로직
+
+---
+
+## 6. Bomb Pot 서브그룹 (2026-04-20 추가 — SG-008-b13 D3→기획 보강)
+
+Bomb Pot 은 §1.1 Game Rules Move Button Bomb Pot (ID 2) 를 통해 시각적 동작만 제어되고 있었다. team1 settings provider 에 이미 존재하는 code-only 필드 `bombPotEnabled` / `bombPotFrequency` 를 기획에 편입한다.
+
+| ID | 이름 | 타입 (shadcn/ui) | 기본값 | 설명 | 오버레이 영향 |
+|:--:|------|-----------------|--------|------|-------------|
+| 12 | Bomb Pot Enabled | Switch | OFF | Bomb Pot 발생 가능 여부 | Bomb Pot 배너 활성 조건 |
+| 13 | Bomb Pot Frequency | Select | Every 10 Hands | Bomb Pot 발동 빈도 (Off / Every 5 / 10 / 20 / Custom) | 자동 트리거 주기 |
+
+**상호작용**: `bombPotEnabled == false` 일 때 Bomb Pot Frequency (13) 와 Move Button Bomb Pot (2) 는 회색 비활성.
+
+**적용 시점**: CC IDLE 또는 핸드 사이에만 변경 가능 (CONFIRM 분류).
+
+**코드 연동**: `team1-frontend/src/stores/settings_provider.ts` `draft['bombPotEnabled']`, `draft['bombPotFrequency']`.
+
+---
+
+## 7. Straddle 세부 서브그룹 (2026-04-20 추가 — SG-008-b13 D3→기획 보강)
+
+§1.1 Straddle Sleeper (ID 4) 의 확장 옵션. team1 settings provider 에 존재하는 `straddleEnabled` / `straddleType` 를 기획에 편입.
+
+| ID | 이름 | 타입 | 기본값 | 설명 |
+|:--:|------|------|--------|------|
+| 14 | Straddle Enabled | Switch | OFF | Straddle 기능 전체 토글 (OFF 시 ID 4/5 비활성) |
+| 15 | Straddle Type | Select | Classic | Classic / Mississippi / Sleeper — 스트래들 종류 |
+
+> `straddleEnabled == false` 이면 Straddle Sleeper (ID 4), Sleeper Final Action (ID 5) 는 회색 비활성.
+
+**적용 시점**: 방송 시작 전 CC IDLE 시 변경 권장 (CONFIRM 분류). 핸드 진행 중 변경 금지.
+
+## Changelog
+
+| 날짜 | 버전 | 변경 내용 | 변경 유형 |
+|------|------|-----------|----------|
+| 2026-04-20 | v1.1 | §6 Bomb Pot 서브그룹 + §7 Straddle 세부 서브그룹 추가 (SG-008-b13 D3 필드 기획 보강) | PRODUCT |
+| 2026-04-10 | v1.0 | CCR-017 BlindDetailType 5-타입 enum | - |

@@ -4,8 +4,10 @@ owner: team2
 tier: internal
 legacy-id: API-07
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "API-07 Graphic Editor 전용 엔드포인트 완결"
 ---
-
 # API-07 Graphic Editor Endpoints
 
 | 날짜 | 항목 | 내용 |

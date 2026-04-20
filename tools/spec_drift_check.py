@@ -814,16 +814,33 @@ def detect_settings() -> ContractReport:
 
 
 def detect_websocket() -> ContractReport:
-    """WebSocket event drift — WebSocket_Events.md §event catalog ↔ team2 websocket handlers.
+    """WebSocket event drift — WebSocket_Events.md ↔ team2 websocket handlers.
 
-    R1-b 구현: 문서 §4 이벤트 카탈로그에서 event type 이름 추출.
-    코드측은 `{ "type": "EventName", ... }` 패턴 추출.
+    F2 정밀화 (2026-04-20):
+      - 이전 버전은 backtick identifier 전체에서 휴리스틱으로 event type 을 추출해
+        payload 필드(`table_id`, `event_id`, `bb_amount` 등)까지 D2 로 보고하는
+        false positive 가 심각 (D2=89).
+      - 신 알고리즘은 **"이벤트 카탈로그" 구조** 만 신뢰 소스로 사용.
+
+    Spec 측 추출 전략 (명시적 event type 만):
+      1. Markdown 이벤트 카탈로그 테이블: 헤더가 `| 이벤트 |` 로 시작하는
+         테이블의 첫 컬럼 값이 backtick-wrapped identifier 일 때만 수집.
+      2. Envelope 예시의 `"type": "EventName"` JSON 리터럴.
+      3. Subscribe 예시의 `event_types: [...]` 배열 원소.
+      4. WSOP LIVE ↔ EBS 매핑 테이블 (CCR-054) 의 `EBS 이벤트` 컬럼.
+
+    Code 측 추출 전략:
+      1. 정적 `"type": "EventName"` 문자열 리터럴.
+      2. 동적 forwarding: cc_handler.py `event_type_map` dict 의 key (PascalCase
+         CC 이벤트) — publisher 가 `msg.get("type")` 로 그대로 포워딩.
+      3. Write command dict `_WRITE_COMMANDS` 의 key + (ack_type, rejected_type).
     """
     rep = ContractReport(contract="websocket")
     doc = (
         REPO / "docs" / "2. Development" / "2.2 Backend" / "APIs" / "WebSocket_Events.md"
     )
     ws_dir = REPO / "team2-backend" / "src" / "websocket"
+    backend_src = REPO / "team2-backend" / "src"
 
     if not doc.exists():
         rep.scanner_note = "WebSocket_Events.md 없음"
@@ -833,48 +850,156 @@ def detect_websocket() -> ContractReport:
         return rep
 
     spec_text = _read(doc)
-    # 기획: backtick-wrapped event type 이름 — `event_flight_summary`, `clock_tick` 등
-    # snake_case 또는 PascalCase 둘 다 등장 (Ack, Error, HandStarted, clock_tick)
-    # 테이블 형태 `| event_name | ...` 와 인라인 참조 모두 포착
-    spec_events = set(
-        re.findall(
-            r"`([A-Za-z][A-Za-z0-9_]{2,})`",
-            spec_text,
-        )
-    )
-    # 이벤트형 이름 휴리스틱: 소문자_snake 또는 PascalCase 로 시작
-    def _looks_like_event(name: str) -> bool:
-        if len(name) < 3:
-            return False
-        # 제외: SQL 예약어, 일반 단어
-        _noise = {
-            "type", "name", "value", "status", "token", "key", "id", "data",
-            "role", "true", "false", "null", "seq", "version", "envelope",
-            "ts", "timestamp", "payload", "from", "to", "this", "that",
-            "string", "int", "bool", "event", "message", "table",
-            "API-04", "API-05",
-        }
-        if name.lower() in {n.lower() for n in _noise}:
-            return False
-        # snake_case: 2어 이상 또는 이름 끝이 event 류
-        if "_" in name and name.islower():
-            return True
-        # PascalCase: 첫 글자 대문자 + 다른 대문자 또는 길이 8+
-        if name[0].isupper() and any(c.isupper() for c in name[1:]):
-            return True
-        if name[0].isupper() and len(name) >= 8:
-            return True
-        return False
 
-    spec_events = {e for e in spec_events if _looks_like_event(e)}
+    # ── Spec 추출: 명시적 event type source 4가지 ──
+    spec_events: set[str] = set()
 
-    # 코드: "type": "EventName" 패턴
+    # (1) 이벤트 카탈로그 테이블: 헤더 `| 이벤트 |` 로 시작하는 섹션의 첫 컬럼
+    # 테이블 헤더 라인과 body 라인을 함께 스캔
+    lines = spec_text.splitlines()
+    in_event_table = False
+    for i, line in enumerate(lines):
+        # 헤더 감지: `| 이벤트 | ...` 또는 `| EBS 이벤트 | ...`
+        if re.match(r"^\|\s*(이벤트|EBS 이벤트)\s*\|", line):
+            in_event_table = True
+            continue
+        # 테이블 종료: 빈 줄 또는 non-table 라인
+        if in_event_table:
+            if not line.strip().startswith("|"):
+                in_event_table = False
+                continue
+            # 구분자 라인 (`|---|---|`) skip
+            if re.match(r"^\|\s*:?-+:?\s*\|", line):
+                continue
+            # 첫 컬럼 추출
+            cols = [c.strip() for c in line.split("|")]
+            if len(cols) >= 2:
+                first = cols[1]
+                # backtick-wrapped identifier?
+                m = re.match(r"`([A-Za-z_][A-Za-z0-9_]*)`", first)
+                if m:
+                    spec_events.add(m.group(1))
+
+    # (2) Envelope JSON 예시의 `"type": "EventName"` 리터럴
+    for m in re.finditer(
+        r'["\']type["\']\s*:\s*["\']([A-Za-z_][A-Za-z0-9_]*)["\']',
+        spec_text,
+    ):
+        spec_events.add(m.group(1))
+
+    # (3) Subscribe `event_types: [...]` 배열 원소
+    for arr_m in re.finditer(r'"event_types"\s*:\s*\[([^\]]+)\]', spec_text):
+        arr_body = arr_m.group(1)
+        for e in re.findall(r'["\']([A-Za-z_][A-Za-z0-9_]*)["\']', arr_body):
+            spec_events.add(e)
+
+    # (4) CC → BO 커맨드 요약 테이블 (§12): `응답 Ack | 응답 Rejected` 컬럼
+    #     헤더가 `| 커맨드 | ... | 응답 Ack | 응답 Rejected |` 인 테이블의
+    #     모든 backtick identifier (command + ack + rejected).
+    in_cmd_table = False
+    for line in lines:
+        if re.match(r"^\|\s*커맨드\s*\|.*응답\s*Ack", line):
+            in_cmd_table = True
+            continue
+        if in_cmd_table:
+            if not line.strip().startswith("|"):
+                in_cmd_table = False
+                continue
+            if re.match(r"^\|\s*:?-+:?\s*\|", line):
+                continue
+            for m in re.finditer(r"`([A-Za-z_][A-Za-z0-9_]*)`", line):
+                spec_events.add(m.group(1))
+
+    # (5) Subsection 헤더 패턴: `#### N.N.N event_name (...)` — 4.2.N event_name
+    # event_name 은 plain text 이므로 엄격한 snake_case 식별자만
+    for m in re.finditer(
+        r"(?m)^#{2,4}\s+\d+\.\d+(?:\.\d+)?\s+([a-z][a-z_]+[a-z])(?:\s|\(|$)",
+        spec_text,
+    ):
+        name = m.group(1)
+        if "_" in name:
+            spec_events.add(name)
+
+    # Spec 추출 공용 noise — envelope meta 필드 (event type 아님)
+    _meta_noise = {
+        "Auth",
+        "Subscribe",
+        "access",
+        "refresh",
+        "password_reset",
+        "ok",
+        "error",
+        "ok_replayed",
+    }
+    spec_events -= _meta_noise
+
+    # ── Code 추출 ──
     code_events: set[str] = set()
     type_pat = re.compile(r'["\']type["\']\s*:\s*["\']([A-Za-z_][A-Za-z0-9_]*)["\']')
     for py in ws_dir.glob("*.py"):
         text = _read(py)
         for m in type_pat.finditer(text):
             code_events.add(m.group(1))
+
+    # main.py 의 OperatorConnected / OperatorDisconnected 등 직접 broadcast
+    main_py = backend_src / "main.py"
+    if main_py.exists():
+        main_text = _read(main_py)
+        for m in type_pat.finditer(main_text):
+            # jwt/security 류 token type 은 제외 (access/refresh/password_reset)
+            name = m.group(1)
+            if name not in {"access", "refresh", "password_reset"}:
+                code_events.add(name)
+
+    # config_service.py 의 ConfigChanged broadcast
+    cfg_svc = backend_src / "services" / "config_service.py"
+    if cfg_svc.exists():
+        cfg_text = _read(cfg_svc)
+        for m in type_pat.finditer(cfg_text):
+            code_events.add(m.group(1))
+
+    # 동적 forwarding: cc_handler.py 의 event_type_map dict key (PascalCase CC 이벤트)
+    cc_handler = ws_dir / "cc_handler.py"
+    if cc_handler.exists():
+        cc_text = _read(cc_handler)
+        # event_type_map = { "HandStarted": "hand_started", ... } block
+        map_m = re.search(
+            r"event_type_map\s*=\s*\{([^}]+)\}",
+            cc_text,
+            re.DOTALL,
+        )
+        if map_m:
+            for k in re.findall(
+                r'["\']([A-Za-z_][A-Za-z0-9_]*)["\']\s*:\s*["\'][A-Za-z_]',
+                map_m.group(1),
+            ):
+                code_events.add(k)
+        # _WRITE_COMMANDS dict key + tuple ack/rejected types
+        wc_m = re.search(
+            r"_WRITE_COMMANDS[^=]*=\s*\{([^\}]+?)\}\s*\n\n",
+            cc_text,
+            re.DOTALL,
+        )
+        if wc_m:
+            body = wc_m.group(1)
+            # command name (key)
+            for k in re.findall(
+                r'^\s*["\']([A-Za-z_][A-Za-z0-9_]*)["\']\s*:\s*\(',
+                body,
+                re.MULTILINE,
+            ):
+                code_events.add(k)
+            # ack/rejected type names — tuple 2nd/3rd string entries
+            for ack_m in re.finditer(
+                r'\(\s*\[[^\]]*\]\s*,\s*["\']([A-Za-z_][A-Za-z0-9_]*)["\']\s*,\s*["\']([A-Za-z_][A-Za-z0-9_]*)["\']',
+                body,
+            ):
+                code_events.add(ack_m.group(1))
+                code_events.add(ack_m.group(2))
+
+    # Code 측 noise: envelope meta / JWT payload types
+    _code_noise = {"access", "refresh", "password_reset"}
+    code_events -= _code_noise
 
     if not code_events:
         rep.scanner_note = (
@@ -883,7 +1008,7 @@ def detect_websocket() -> ContractReport:
         )
         return rep
 
-    # Diff — spec 기준 후보군에서 code 와 비교
+    # Diff
     for e in sorted(code_events - spec_events):
         rep.d3.append(
             DriftItem(
@@ -894,25 +1019,22 @@ def detect_websocket() -> ContractReport:
                 note="WebSocket_Events.md 에 언급 없음",
             )
         )
-    # spec-only 는 후보군이 noisy 할 수 있어 "관심 리스트" 만 표시
-    # (backtick snake_case 이면서 code 에 없는 것)
     for e in sorted(spec_events - code_events):
-        # snake_case 만 D2 로. PascalCase 는 후보가 너무 많음
-        if "_" in e and e.islower():
-            rep.d2.append(
-                DriftItem(
-                    contract="websocket",
-                    drift_type="D2",
-                    identifier=e,
-                    spec_value=e,
-                    note="기획에만 존재 (미구현 또는 발행자 미확인)",
-                )
+        rep.d2.append(
+            DriftItem(
+                contract="websocket",
+                drift_type="D2",
+                identifier=e,
+                spec_value=e,
+                note="기획에만 존재 (미구현 또는 발행자 미확인)",
             )
+        )
 
     rep.d4_count = len(spec_events & code_events)
     rep.scanner_note = (
-        f"spec candidates={len(spec_events)} code events={len(code_events)}. "
-        "spec 측 backtick 휴리스틱이라 false positive 가능."
+        f"spec events={len(spec_events)} code events={len(code_events)}. "
+        "F2 정밀화: 이벤트 카탈로그 테이블 + JSON literal + event_types 배열만 수집, "
+        "payload 필드 제외."
     )
     return rep
 

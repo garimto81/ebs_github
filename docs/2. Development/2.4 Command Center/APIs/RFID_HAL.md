@@ -5,8 +5,10 @@ tier: internal
 legacy-id: BS-04-04
 references: API-03
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "BS-04-04 RFID HAL Operator 동작 명세 완결"
 ---
-
 # BS-04-04 HAL Contract — 운영자 관점 RFID HAL 동작 명세
 
 | 날짜 | 항목 | 내용 |

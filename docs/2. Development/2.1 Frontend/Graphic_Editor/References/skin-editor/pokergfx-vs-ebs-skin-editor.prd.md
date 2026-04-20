@@ -8,8 +8,10 @@ created: "2026-03-12"
 depends_on:
   - "PRD-0005: prd-skin-editor.prd.md (PokerGFX 역공학 분석)"
   - "EBS-Skin-Editor.prd.md (EBS UI 설계 v1.2.0)"
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "PRD-0006 status=draft (48KB) — 비교 PRD 초안"
 ---
-
 # PokerGFX → EBS Skin Editor UI Design 비교
 
 ## 스냅샷 목차 (총 851줄)

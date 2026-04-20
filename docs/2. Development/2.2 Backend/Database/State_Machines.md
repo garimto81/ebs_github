@@ -4,8 +4,10 @@ owner: team2
 tier: internal
 legacy-id: DATA-03
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "DATA-03 상태 기계 완결 (15KB) — SG-009 직렬화 규약 반영"
 ---
-
 # DATA-03 State Machines
 
 | 날짜 | 항목 | 내용 |

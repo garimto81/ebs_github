@@ -10,8 +10,10 @@ depends_on:
   - "PRD-0007-S1: skin-editor-layout-balance-solutions.md (솔루션)"
 owner: team1
 tier: internal
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "PLAN-UI-001 status=draft (15KB) — 구현 계획 초안"
 ---
-
 # EBS UI Design 구현 계획
 
 ## 1장. 개요

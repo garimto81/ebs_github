@@ -4,8 +4,10 @@ owner: team1
 tier: internal
 legacy-id: BS-02-03
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "BS-02-03 Table 상태/운영 기획 완결 (16KB)"
 ---
-
 # BS-02-03 Table 상태 — TableFSM + `is_pause` 직교 축
 
 | 날짜 | 항목 | 내용 |

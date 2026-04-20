@@ -12,8 +12,10 @@ affects_chapter:
   - docs/2. Development/2.1 Frontend/Graphic_Editor/  (Import/Activate 플로우)
   - docs/2. Development/2.4 Command Center/Overlay/  (.riv 소비)
 protocol: Spec_Gap_Triage
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "status=RESOLVED, ZIP 포맷 + manifest 확정"
 ---
-
 # SG-004 — .gfskin ZIP 포맷 명세 (DATA-07)
 
 ## 공백 서술

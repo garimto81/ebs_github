@@ -3,8 +3,10 @@ title: ebs-ui-layout-anatomy
 owner: team1
 tier: internal
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "UI 레이아웃 해부 분석 (26KB) 완결"
 ---
-
 # EBS UI Layout Anatomy — 화면별 상세 레이아웃 명세서
 
 > **버전**: v1.0.0 | **날짜**: 2026-03-16

@@ -3,8 +3,10 @@ title: layout-css-extraction
 owner: team1
 tier: internal
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "레이아웃 CSS 추출 데이터 (15KB) 완결"
 ---
-
 # SE & GE 목업 CSS 레이아웃 추출 문서
 
 **생성일**: 2026-03-16 | **대상**: Skin Editor (SE) + Graphic Editor (GE) 4가지 모드 (Board, Player, Blinds, Leaderboard)

@@ -3,8 +3,10 @@ title: prd-skin-editor.prd
 owner: team1
 tier: internal
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "PRD-0005 Skin Editor 정본 (104KB, 1809줄) — 최대 참조 문서"
 ---
-
 # EBS Skin Editor PRD
 
 > **Version**: 3.1.0 | **Date**: 2026-03-12

@@ -14,8 +14,10 @@ affects_chapter:
   - docs/1. Product/Foundation.md Ch.5
 protocol: Spec_Gap_Triage
 discovered_via: 2026-04-20 direct-critic Phase 3 재해석
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "status=DONE, spec_contradiction 해소 완료"
 ---
-
 # SG-001 — Lobby/GE 기술 스택 SSOT 3중화 (Type C 해소)
 
 ## 공백 서술

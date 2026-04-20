@@ -4,8 +4,10 @@ owner: team2
 tier: internal
 legacy-id: API-06
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "API-06 인증/세션 계약 완결 (17KB)"
 ---
-
 # API-06 Auth & Session — 인증·토큰·세션·RBAC API
 
 | 날짜 | 항목 | 내용 |

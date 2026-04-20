@@ -4,8 +4,10 @@ owner: team3
 tier: contract
 legacy-id: API-04.2
 last-updated: 2026-04-16
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "API-04.2 Harness REST 계약 완결"
 ---
-
 # Harness REST API 명세 (API-04.2)
 
 ## 개요

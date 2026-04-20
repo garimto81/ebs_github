@@ -3,8 +3,10 @@ title: Risk Matrix
 owner: conductor
 tier: internal
 last-updated: 2026-04-17
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "Risk Matrix 완결 (4KB)"
 ---
-
 # 문서 변경 리스크 분류 기준 (Risk Matrix)
 
 | 날짜 | 항목 | 내용 |

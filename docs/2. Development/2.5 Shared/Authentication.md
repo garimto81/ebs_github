@@ -4,8 +4,10 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: BS-01
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "BS-01 Authentication 정본 (46KB)"
 ---
-
 # BS-01 Auth — 인증·세션·RBAC 행동 명세
 
 | 날짜 | 항목 | 내용 |

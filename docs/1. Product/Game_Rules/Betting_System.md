@@ -4,8 +4,10 @@ owner: conductor
 tier: internal
 legacy-id: PRD-GAME-04
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "PRD-GAME-04 완결 본문 (34KB) + Confluence 발행 대상, 독립 완결"
 ---
-
 # 베팅 액션·구조·강제 베팅 완전 가이드
 
 | 날짜 | 항목 | 내용 |

@@ -12,8 +12,10 @@ affects_chapter:
   - docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md
   - team4-cc/lib/features/command_center/services/  (rfid)
 protocol: Spec_Gap_Triage
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "status=RESOLVED, codemap + 초기 등록 절차 확정"
 ---
-
 # SG-006 — RFID 52 카드 codemap
 
 ## 공백 서술

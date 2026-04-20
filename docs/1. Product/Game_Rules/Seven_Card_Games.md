@@ -4,8 +4,10 @@ owner: conductor
 tier: internal
 legacy-id: PRD-GAME-03
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "PRD-GAME-03 완결 본문 (34KB) + Confluence 발행 대상, 독립 완결"
 ---
-
 # Seven Card Games 계열 — 3종 게임 규칙 가이드
 
 | 날짜 | 항목 | 내용 |

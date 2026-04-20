@@ -4,8 +4,10 @@ owner: team4
 tier: contract
 legacy-id: API-03
 last-updated: 2026-04-15
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "API-03 — SG-011 out_of_scope_prototype. single vs 6-stream divergence 는 개발팀 인계 후 확정"
 ---
-
 # API-03 RFID HAL Interface — Real/Mock RFID 교체 계약
 
 > **역할**: 이 문서는 **엔지니어용 인터페이스 계약서** 다 (`IRfidReader` 시그니처, 이벤트 타입, 에러 코드, 리더 생명주기). 운영자 관점 동작 가이드는 `RFID_HAL.md` (BS-04-04) 를 참조한다. 두 문서는 서로를 보완하며 독립 편집된다.

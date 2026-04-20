@@ -4,8 +4,10 @@ owner: conductor
 tier: internal
 legacy-id: PRD-GAME-02
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "PRD-GAME-02 완결 본문 (29KB) + Confluence 발행 대상, 독립 완결"
 ---
-
 # Draw 계열 — 7종 게임 규칙 가이드
 
 | 날짜 | 항목 | 내용 |

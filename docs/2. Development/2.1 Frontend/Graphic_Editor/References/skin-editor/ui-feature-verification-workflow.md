@@ -3,8 +3,10 @@ title: ui-feature-verification-workflow
 owner: team1
 tier: internal
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "UI 검증 워크플로우 (8KB) 완결"
 ---
-
 # UI Feature Verification Workflow
 
 > **목적**: RE(역설계) 문서 기준으로 UI 모듈의 기능 커버리지를 검증하고, 모듈 간 중복을 식별하여 SSOT를 결정하는 6단계 범용 프로세스.

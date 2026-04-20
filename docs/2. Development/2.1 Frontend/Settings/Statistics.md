@@ -149,3 +149,15 @@ Stats 섹션은 Settings의 다섯 번째 탭으로, 에퀴티(승률), 아웃, 
 | Admin이 아닌 역할 | Stats 탭 접근 불가 |
 | CC LIVE + 핸드 진행 중 | Equity 설정: CONFIRM 분류 |
 | BO 서버 미실행 | 읽기 전용 |
+
+---
+
+## 2026-04-20 — SG-008-b13 D3 기획 보강
+
+**코드 키 → 기획 매핑** (team1 settings provider code-only 필드 해소):
+
+| 코드 키 | 기획 매핑 | 비고 |
+|---------|----------|------|
+| `showEquity` | §1.1 Show Hand Equities (ID 12) — 단순 bool 토글 | Select(4-option) vs Switch 간 계약 미확정. Select 가 기획 정본, bool 은 legacy 추정 |
+
+> 참조: `docs/4. Operations/Conductor_Backlog/SG-008-b13-settings-code-only-cleanup.md`

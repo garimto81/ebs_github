@@ -3,8 +3,10 @@ title: Clock Control
 owner: team1
 tier: internal
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "Clock control 스펙 완결 (8KB)"
 ---
-
 # Lobby — Clock Control (블라인드 타이머·레벨·브레이크 제어)
 
 | 날짜 | 항목 | 내용 |

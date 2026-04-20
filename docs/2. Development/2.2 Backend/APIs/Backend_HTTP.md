@@ -4,8 +4,10 @@ owner: team2
 tier: internal
 legacy-id: API-01
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "API-01 REST 카탈로그 + WSOP LIVE 연동 (53KB). TBD 3건은 프로덕션 호스트/WSOP API 인증 등 외부 계약"
 ---
-
 # API-01 Backend API — BO REST API + WSOP LIVE Integration
 
 | 날짜 | 항목 | 내용 |

@@ -12,8 +12,10 @@ affects_chapter:
   - docs/2. Development/2.2 Backend/Database/Schema.md  (Settings 저장 테이블)
   - team1-frontend/lib/features/settings/**
 protocol: Spec_Gap_Triage
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "status=PARTIAL — 마스터 인덱스 확정, 필드 상세는 후속 task"
 ---
-
 # SG-003 — Settings 6탭 스키마 (마스터)
 
 ## 공백 서술

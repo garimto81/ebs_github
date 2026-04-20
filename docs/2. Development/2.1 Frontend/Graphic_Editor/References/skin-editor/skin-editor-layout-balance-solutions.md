@@ -9,8 +9,10 @@ depends_on:
   - "mockups/ebs-skin-editor.html (현재 CSS 구조)"
 owner: team1
 tier: internal
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "PRD-0007-S1 status=draft (14KB) — 레이아웃 밸런스 제안"
 ---
-
 # Skin Editor 레이아웃 밸런스 솔루션 제안서
 
 ## 1. 근본 원인 진단

@@ -3,8 +3,10 @@ title: Chip Management
 owner: team1
 tier: feature
 last-updated: 2026-04-16
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "WSOP LIVE parity 기획 완결되었으나 §6 미결 3건 (CCR 필요 - Multi-Table Add/Pull/Total Removal 일괄 API, Chip Discrepancy, Color-up/Race-off)"
 ---
-
 # Chip Management
 
 | 날짜 | 항목 | 내용 |

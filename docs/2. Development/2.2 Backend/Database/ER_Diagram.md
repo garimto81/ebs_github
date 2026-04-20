@@ -4,8 +4,10 @@ owner: team2
 tier: internal
 legacy-id: DATA-01
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "DATA-01 ER 다이어그램 완결"
 ---
-
 # DATA-01 ER 다이어그램
 
 | 날짜 | 항목 | 내용 |

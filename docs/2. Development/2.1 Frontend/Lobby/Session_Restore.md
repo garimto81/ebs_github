@@ -4,8 +4,10 @@ owner: team1
 tier: internal
 legacy-id: BS-02-01-session-restore
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "BS-02-01-session-restore 복구 플로우 완결"
 ---
-
 # Lobby — Session Restore (재진입 세션 복원)
 
 | 날짜 | 항목 | 내용 |

@@ -4,8 +4,10 @@ owner: team3
 tier: contract
 legacy-id: API-04.1
 last-updated: 2026-04-16
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "API-04.1 OutputEvent 직렬화 계약 완결"
 ---
-
 # OutputEvent JSON 직렬화 계약 (API-04.1)
 
 ## 개요

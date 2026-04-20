@@ -4,8 +4,10 @@ owner: team1
 tier: internal
 legacy-id: UI-03
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "UI-03 Settings UI 스펙 (29KB) 완결"
 ---
-
 # UI-03 Settings — 6탭 와이어프레임
 
 | 날짜 | 항목 | 내용 |

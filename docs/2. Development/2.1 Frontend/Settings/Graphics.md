@@ -123,6 +123,27 @@ Graphics 섹션은 Settings의 두 번째 탭으로, 오버레이의 **시각적
 
 시간 범위: 0.1~2.0초. Indent와 Bounce는 동시 활성화 가능.
 
+### 1.4 Player Display Toggles 서브그룹 (2026-04-20 추가 — SG-008-b13 D3→기획 보강)
+
+§1.2 Card & Player 서브그룹 확장. team1 settings provider 에 존재하는 code-only 플레이어 표시 토글 필드들을 기획에 편입.
+
+| ID | 이름 | 코드 키 | 타입 | 기본값 | 설명 | 오버레이 영향 |
+|:--:|------|---------|------|--------|------|-------------|
+| 14 | Card Style | `cardStyle` | Select | Classic | 카드 덱 시각 스타일 (Classic / Modern / Minimal) | 카드 렌더링 스타일 |
+| 15 | Highlight Active Player | `highlightActivePlayer` | Switch | ON | 액션-온 플레이어 하이라이트 | 테두리/배경 강조 |
+| 16 | Show Player Flag | `showPlayerFlag` | Switch | ON | 플레이어 국적 국기 표시 | Player Graphic flag icon |
+| 17 | Show Player Order | `showPlayerOrder` | Switch | OFF | 좌석 순서 번호 표시 | Player Graphic order badge |
+| 18 | Show Player Photo | `showPlayerPhoto` | Switch | ON | 플레이어 사진 표시 | Player Graphic photo slot |
+| 19 | Show Seat Number | `showSeatNumber` | Switch | OFF | 좌석 번호 표시 | Player Graphic seat# |
+| 20 | Show Chip Count | `showChipCount` | Switch | ON | 플레이어 칩 수량 표시 | Player Graphic stack text |
+| 21 | Show Score Strip | `showScoreStrip` | Switch | OFF | 상단 스코어 스트립 표시 | Score Strip overlay |
+
+**적용 시점**: ID 14 (Card Style) 만 CONFIRM (카드 딜 사이 변경), 나머지 7개는 FREE (즉시 반영).
+
+**코드 연동**: `team1-frontend/src/stores/settings_provider.ts` 내 `updateField(...)` 호출.
+
+> **WSOP LIVE 정렬**: Player Display 토글 8개는 WSOP LIVE Confluence §Player Graphic 표시 옵션과 1:1 매핑.
+
 ---
 
 ## 2. Skin Editor 진입 (참조)

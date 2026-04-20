@@ -4,8 +4,10 @@ owner: team1
 tier: internal
 legacy-id: BS-03-00
 last-updated: 2026-04-15
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "BS-03-00 Settings 총괄 완결. TBD 1건은 키보드 단축키 (블로커 아님)"
 ---
-
 # BS-03-00 Overview — Settings 총괄
 
 | 날짜 | 항목 | 내용 |
