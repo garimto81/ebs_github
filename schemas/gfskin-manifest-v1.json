@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ebs.local/schemas/gfskin-manifest-v1.json",
+  "title": "EBS .gfskin Manifest v1",
+  "description": "EBS .gfskin ZIP archive manifest schema. SG-004 resolution 2026-04-20.",
+  "type": "object",
+  "required": [
+    "spec_version",
+    "skin_id",
+    "name",
+    "version",
+    "rive_file",
+    "rive_artboard",
+    "supported_output_events",
+    "element_mapping",
+    "min_ebs_version"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "const": "https://ebs.local/schemas/gfskin-manifest-v1.json"
+    },
+    "spec_version": {
+      "type": "string",
+      "description": "Manifest schema version (semver). Breaking changes increment major.",
+      "pattern": "^1\\.[0-9]+$",
+      "examples": ["1.0"]
+    },
+    "skin_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique skin identifier (UUID v4)"
+    },
+    "name": {
+      "type": "object",
+      "description": "Localized skin display name",
+      "required": ["en"],
+      "properties": {
+        "ko": {"type": "string", "maxLength": 100},
+        "en": {"type": "string", "maxLength": 100},
+        "es": {"type": "string", "maxLength": 100}
+      }
+    },
+    "version": {
+      "type": "string",
+      "description": "Skin content version (semver). Independent of spec_version.",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "examples": ["1.2.3"]
+    },
+    "author": {"type": "string", "maxLength": 200},
+    "created_at": {"type": "string", "format": "date-time"},
+    "rive_file": {
+      "type": "string",
+      "description": "Path to .riv file inside the .gfskin ZIP",
+      "pattern": "^[a-zA-Z0-9_/.-]+\\.riv$",
+      "examples": ["overlay.riv"]
+    },
+    "rive_artboard": {
+      "type": "string",
+      "description": "Rive artboard name to render as top-level overlay",
+      "minLength": 1,
+      "examples": ["MainOverlay"]
+    },
+    "supported_output_events": {
+      "type": "array",
+      "description": "Subset of API-04 OutputEvent 21 types this skin handles",
+      "items": {
+        "type": "string",
+        "enum": [
+          "holecards_revealed",
+          "holecards_hidden",
+          "community_board_updated",
+          "pot_updated",
+          "side_pot_updated",
+          "equity_updated",
+          "outs_updated",
+          "action_badge",
+          "player_info_updated",
+          "player_status_updated",
+          "position_indicator",
+          "dealer_button_moved",
+          "hand_start",
+          "hand_end",
+          "showdown_reveal",
+          "timer_tick",
+          "clock_state_changed",
+          "blind_level_changed",
+          "skin_activated",
+          "security_delay_active",
+          "error_indicator"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "element_mapping": {
+      "type": "object",
+      "description": "Mapping from Foundation Ch.2 '8 visual elements' to Rive artboard layers/text runs",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^(layer|text|state_machine):[a-zA-Z0-9_]+$",
+        "examples": ["layer:holecards", "text:pot_value", "state_machine:action_controller"]
+      }
+    },
+    "audio_layers": {
+      "type": "array",
+      "description": "Optional audio triggers mapped to game events",
+      "items": {
+        "type": "object",
+        "required": ["event", "file"],
+        "properties": {
+          "event": {"type": "string"},
+          "file": {
+            "type": "string",
+            "pattern": "^assets/audio/[a-zA-Z0-9_.-]+\\.(ogg|mp3|wav)$"
+          },
+          "volume": {"type": "number", "minimum": 0.0, "maximum": 1.0, "default": 1.0}
+        }
+      }
+    },
+    "security_delay_compatible": {
+      "type": "boolean",
+      "description": "Whether this skin honors BS-07 security delay for holecard reveal",
+      "default": true
+    },
+    "min_ebs_version": {
+      "type": "string",
+      "description": "Minimum EBS runtime version required (semver)",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "license": {
+      "type": "string",
+      "examples": ["proprietary", "CC-BY-4.0", "MIT"]
+    },
+    "tags": {
+      "type": "array",
+      "items": {"type": "string", "maxLength": 30},
+      "maxItems": 10
+    }
+  },
+  "additionalProperties": false
+}

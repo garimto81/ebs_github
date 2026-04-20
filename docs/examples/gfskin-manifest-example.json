@@ -1,0 +1,50 @@
+{
+  "$schema": "https://ebs.local/schemas/gfskin-manifest-v1.json",
+  "spec_version": "1.0",
+  "skin_id": "01234567-89ab-4cdef-0123-456789abcdef",
+  "name": {
+    "ko": "기본 스킨",
+    "en": "Default Skin",
+    "es": "Tema Predeterminado"
+  },
+  "version": "1.0.0",
+  "author": "EBS Conductor (2026-04-20 reference sample)",
+  "created_at": "2026-04-20T15:00:00Z",
+  "rive_file": "overlay.riv",
+  "rive_artboard": "MainOverlay",
+  "supported_output_events": [
+    "holecards_revealed",
+    "holecards_hidden",
+    "community_board_updated",
+    "pot_updated",
+    "equity_updated",
+    "action_badge",
+    "player_info_updated",
+    "position_indicator",
+    "outs_updated",
+    "hand_start",
+    "hand_end",
+    "showdown_reveal"
+  ],
+  "element_mapping": {
+    "holecards": "layer:holecards_group",
+    "community": "layer:community_cards",
+    "pot": "text:pot_value",
+    "side_pot": "text:side_pot_value",
+    "equity": "text:equity_percent",
+    "outs": "text:outs_count",
+    "action_badge": "layer:action_badge",
+    "player_info": "layer:player_info_panel",
+    "position": "layer:position_chip",
+    "dealer_button": "layer:dealer_button"
+  },
+  "audio_layers": [
+    {"event": "card_dealt", "file": "assets/audio/card-flip.ogg", "volume": 0.8},
+    {"event": "chip_bet", "file": "assets/audio/chip-push.ogg", "volume": 0.6},
+    {"event": "showdown", "file": "assets/audio/sting.ogg", "volume": 1.0}
+  ],
+  "security_delay_compatible": true,
+  "min_ebs_version": "0.1.0",
+  "license": "proprietary",
+  "tags": ["default", "wsop-style", "dark-theme"]
+}

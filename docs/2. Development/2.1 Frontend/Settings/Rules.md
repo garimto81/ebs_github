@@ -3,7 +3,12 @@ title: Rules
 owner: team1
 tier: internal
 legacy-id: BS-03-04
-last-updated: 2026-04-15
+last-updated: 2026-04-20
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "SG-003 §Tab 4 Rules. game_variant(22종)/blind_structure_id/ante_schedule_id/time_bank_seconds/straddle_*/showdown_order/under_raise(BS-06 R95)/short_all_in(BS-06 R96)/dead_button"
+sg_reference: SG-003
+scope: event
 ---
 
 # BS-03-04 Rules — 게임 규칙 설정

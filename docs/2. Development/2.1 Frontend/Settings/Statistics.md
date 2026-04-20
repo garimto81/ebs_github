@@ -3,7 +3,12 @@ title: Statistics
 owner: team1
 tier: internal
 legacy-id: BS-03-05
-last-updated: 2026-04-15
+last-updated: 2026-04-20
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "SG-003 §Tab 5 Stats. equity_display_mode/history_window/hud_enabled/hud_fields/player_photo_enabled. Reports API(SG-007) 연동"
+sg_reference: SG-003, SG-007
+scope: event
 ---
 
 # BS-03-05 Stats — 통계/승률 설정

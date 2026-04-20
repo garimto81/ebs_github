@@ -3,7 +3,12 @@ title: Graphics
 owner: team1
 tier: internal
 legacy-id: BS-03-02
-last-updated: 2026-04-15
+last-updated: 2026-04-20
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "SG-003 §Tab 2 GFX + SG-004 .gfskin 포맷 확정 필요. active_skin_id/color_theme/animation_speed/element_visibility(8요소)/language"
+sg_reference: SG-003, SG-004
+scope: event
 ---
 
 # BS-03-02 GFX — 그래픽 설정

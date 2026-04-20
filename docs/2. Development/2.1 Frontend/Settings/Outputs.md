@@ -3,7 +3,12 @@ title: Outputs
 owner: team1
 tier: internal
 legacy-id: BS-03-01
-last-updated: 2026-04-15
+last-updated: 2026-04-20
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "기존 기획 존재. SG-003 §Tab 1 Outputs 필드 스키마(output_targets/active_overlay_preset_id/security_delay_ms/watermark_*) 와 교차검증 후 PASS"
+sg_reference: SG-003
+scope: table
 ---
 
 # BS-03-01 Outputs — 송출 설정
