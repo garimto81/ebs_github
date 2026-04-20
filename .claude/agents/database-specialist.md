@@ -3,6 +3,7 @@ name: database-specialist
 description: DB 설계, 최적화, Supabase 통합 전문가. Use PROACTIVELY for database design, query optimization, migrations, RLS policies, or data modeling.
 tools: Read, Write, Edit, Bash, Grep
 model: sonnet
+isolation: worktree
 ---
 
 ## Role

@@ -3,6 +3,7 @@ name: devops-engineer
 description: DevOps 통합 전문가 (CI/CD, K8s, Terraform, 트러블슈팅). Use PROACTIVELY for pipelines, containerization, infrastructure as code, or production issues.
 tools: Read, Write, Edit, Bash, Grep
 model: sonnet
+isolation: worktree
 ---
 
 ## Role

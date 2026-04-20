@@ -4,8 +4,7 @@
     "SessionStart": [
       {
         "hooks": [
-          {"type": "command", "command": "python .claude/hooks/session_branch_init.py"},
-          {"type": "command", "command": "python .claude/hooks/active_edits_session_start.py"}
+          {"type": "command", "command": "python .claude/hooks/session_branch_init.py"}
         ]
       }
     ],
@@ -19,14 +18,14 @@
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
-          {"type": "command", "command": "python .claude/hooks/active_edits_preedit.py"}
+          {"type": "command", "command": "python .claude/hooks/file_lock_preedit.py"}
         ]
       }
     ],
     "Stop": [
       {
         "hooks": [
-          {"type": "command", "command": "python .claude/hooks/active_edits_session_end.py"}
+          {"type": "command", "command": "python .claude/hooks/conductor_stop_cleanup.py"}
         ]
       }
     ]

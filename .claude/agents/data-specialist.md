@@ -3,6 +3,7 @@ name: data-specialist
 description: 데이터 분석, 엔지니어링, ML 파이프라인 통합 전문가. Use PROACTIVELY for data analysis, ETL pipelines, ML systems, or data infrastructure.
 tools: Read, Write, Edit, Bash, Grep
 model: sonnet
+isolation: worktree
 ---
 
 # Data Specialist
