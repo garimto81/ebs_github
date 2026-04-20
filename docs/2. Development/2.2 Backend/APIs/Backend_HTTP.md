@@ -68,6 +68,20 @@ http://{bo_host}:{bo_port}/api/v1
 | 테스트 | `192.168.x.x` | 8000 |
 | 프로덕션 | TBD | 443 (HTTPS) |
 
+### 1.1 경로 표기 규약 (2026-04-20 SG-008 정렬)
+
+본 문서의 엔드포인트 예시(`POST /users`, `GET /tables/{id}` 등)는 모두 **Base URL 기준 상대 경로**이다. 실제 요청 시에는 `/api/v1` prefix 를 붙여야 한다:
+
+| 예시 표기 | 실제 요청 |
+|-----------|-----------|
+| `POST /users` | `POST /api/v1/users` |
+| `GET /flights/{id}/clock` | `GET /api/v1/flights/{id}/clock` |
+| `POST /tables/rebalance` | `POST /api/v1/tables/rebalance` |
+
+**예외**: `/auth/*` 엔드포인트는 Base URL `/api/v1` 과 **무관**하게 루트 경로에서 제공된다 (`POST /auth/login` = `POST /auth/login`). 상세: `Auth_and_Session.md`.
+
+> 이 규약을 따르지 않는 endpoint 발견 시 `tools/spec_drift_check.py --api` 에서 D1 으로 감지된다.
+
 ---
 
 ## 2. 공통 요청 헤더

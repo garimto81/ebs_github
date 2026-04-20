@@ -129,3 +129,59 @@ related:
 - Conductor_Backlog/Spec_Gaps/ 의 평균 해결 시간
 - Spec_Gap → Implementation 전환율 (Backlog 분석)
 - post_build_fail hook 발동 빈도 + Type 분류 결과 분포
+
+## 7. Type D — 기획-코드 불일치 (Spec Drift)
+
+**정의**: 기획 문서와 구현 코드 사이에 선언적 불일치가 존재. Type A/B/C 와 달리 빌드 실패 없이 은밀히 누적되어 외부 인계 시 재구현 불가 위험을 만든다.
+
+### 7.1 Sub-type 분류
+
+| ID | 정의 | 예시 |
+|----|------|------|
+| **D1** | 기획 有 / 코드 有 / 값 불일치 | 문서 "POST /users" vs 코드 "POST /api/v1/users" |
+| **D2** | 기획 有 / 코드 無 (미구현) | 문서에 엔드포인트 있으나 router 미구현. TODO skeleton 존재 시 D4 로 승격 |
+| **D3** | 기획 無 / 코드 有 (undocumented) | router 에 DELETE 구현, 문서에는 언급 없음 |
+| **D4** | 기획 ↔ 코드 PASS | 스캐너가 양쪽 일치 확인 |
+
+### 7.2 해소 규칙
+
+| Sub-type | 진실 판정 | 조치 |
+|---|---|---|
+| **D1 (코드가 진실)** | 최근 커밋으로 검증된 스펙. 테스트 통과 이력. | **기획 정정 PR** (Conductor 즉시, additive) |
+| **D1 (기획이 진실)** | 문서가 공식 설계이고 코드가 drift. | **코드 수정 PR** (팀 세션 위임, SG 승격) |
+| **D1 (둘 다 틀림)** | 양쪽 모두 stale 또는 모순. | **SG 신규** (`type: spec_drift`) — 재판정 |
+| **D2** | 기획만 존재. | 기존 TODO / Backlog 조회 후 등재. 없으면 SG 승격. |
+| **D3 (코드 유지)** | 구현은 타당한 기능. | **기획 보강 PR** (Conductor 즉시, additive) |
+| **D3 (코드 삭제)** | 실수로 추가된 dead endpoint. | **코드 삭제 PR** (팀 세션) + Backlog 등재 |
+
+### 7.3 감지 도구
+
+**`tools/spec_drift_check.py`** — 7 계약 자동 스캔 (정규식 기반 best-effort):
+- `--api` REST 엔드포인트 (Backend_HTTP.md / Auth_and_Session.md ↔ team2 routers)
+- `--events` OutputEvent (Overlay_Output_Events.md §6.0 ↔ output_event.dart)
+- `--fsm` BS_Overview §3 FSM 상태 ↔ 각 팀 enum
+- `--schema` Database/Schema.md ↔ init.sql + Alembic migrations
+- `--rfid` RFID_HAL_Interface.md ↔ i_rfid_reader.dart
+- `--settings` Settings.md ↔ migration 0005
+- `--websocket` (stub — WebSocket_Events.md §4 ↔ websocket/*.py, 후속 구현)
+
+실행:
+```bash
+python tools/spec_drift_check.py --all
+python tools/spec_drift_check.py --all --format=json  # Registry 자동 갱신
+```
+
+`.claude/hooks/pre_push_drift_check.py` — `git push` 전 drift 증가를 경고 (non-blocking).
+
+### 7.4 Registry
+
+**Source of Truth**: `docs/4. Operations/Spec_Gap_Registry.md`
+- 현재 drift 목록 + 해소 상태
+- SG 승격 index
+- 정기 scan 결과 기록
+
+### 7.5 Cross-reference
+
+- **Type A** 와의 차이: Type A 는 빌드 실패가 원인, Type D 는 빌드 통과하나 선언이 불일치.
+- **Type B** 와의 차이: Type B 는 기획이 공백, Type D 는 기획 있으나 코드와 값이 다름.
+- **Type C** 와의 차이: Type C 는 기획끼리 모순, Type D 는 기획-코드 간 모순.

@@ -73,6 +73,8 @@ last-updated: 2026-04-15
 
 ## 2. IRfidReader — Dart Abstract Class
 
+> **2026-04-20 drift 경고 (Type D3)**: 본 §2.1 의 단일 `Stream<RfidEvent> get events` 와 `team4-cc/src/lib/rfid/abstract/i_rfid_reader.dart` 의 **6개 분리 스트림**(`onCardDetected`, `onCardRemoved`, `onDeckRegistered`, `onAntennaStatusChanged`, `onError`, `onStatusChanged`) 이 일치하지 않는다. 현재 **코드 구현이 정본** (type-safe 스트림 분리 의도 명확). 본 문서는 역사적 이유로 단일 스트림 설계를 기재했으며, 후속 Revision 에서 6-스트림으로 정정 예정. 즉각 통합 작업은 `SG-011` 참조.
+
 ### 2.1 전체 인터페이스
 
 ```dart

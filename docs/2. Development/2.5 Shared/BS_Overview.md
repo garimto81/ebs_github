@@ -103,13 +103,15 @@ Competition → Series → Event → Flight → Table → Seat → Player
 
 ### 3.1 Table 상태 (TableFSM)
 
-| 상태 | 의미 | 진입 조건 | 퇴장 조건 |
-|------|------|----------|----------|
-| **EMPTY** | 미설정 — 게임 유형, 플레이어 없음 | 테이블 생성 시 | 게임 설정 완료 |
-| **SETUP** | 설정 중 — 게임·좌석 배치 진행 | 게임 설정 시작 | CC Launch 시 |
-| **LIVE** | 방송 중 — CC가 활성화되어 핸드 진행 | CC Launch 완료 | Pause 또는 Close |
-| **PAUSED** | 일시 중단 — 휴식, 테이블 브레이크 | 운영자 Pause | Resume → LIVE |
-| **CLOSED** | 종료 — 해당 Flight/Event 내 테이블 폐쇄 | 운영자 Close | 재사용 시 EMPTY |
+| 상태 (display) | 직렬화 값 (DB / API) | 의미 | 진입 조건 | 퇴장 조건 |
+|------|------|------|----------|----------|
+| **EMPTY** | `empty` | 미설정 — 게임 유형, 플레이어 없음 | 테이블 생성 시 | 게임 설정 완료 |
+| **SETUP** | `setup` | 설정 중 — 게임·좌석 배치 진행 | 게임 설정 시작 | CC Launch 시 |
+| **LIVE** | `live` | 방송 중 — CC가 활성화되어 핸드 진행 | CC Launch 완료 | Pause 또는 Close |
+| **PAUSED** | `paused` | 일시 중단 — 휴식, 테이블 브레이크 | 운영자 Pause | Resume → LIVE |
+| **CLOSED** | `closed` | 종료 — 해당 Flight/Event 내 테이블 폐쇄 | 운영자 Close | 재사용 시 EMPTY |
+
+> **직렬화 규약 (2026-04-20 SG-009 정렬)**: 본 문서의 display label 은 UPPERCASE 이지만, DB column (`tables.status`) 및 REST/WebSocket payload 직렬화 값은 **lowercase** 이다. 참조 구현: `team2-backend/src/db/init.sql L328`, `team2-backend/src/services/table_service.py`. Seat 상태 (§3.3) 도 동일 규약. `tools/spec_drift_check.py --fsm` 가 이 규약 일치를 자동 검증한다.
 
 ### 3.2 Hand 상태 (HandFSM / game_phase)
 
