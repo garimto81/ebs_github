@@ -2,15 +2,54 @@
 title: Engineering — Frontend (Flutter)
 owner: team1
 tier: internal
-last-updated: 2026-04-16
+last-updated: 2026-04-20
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "아키텍처 문서는 충실(§1-11). 단 features 선언 8개(auth/lobby/settings/graphic_editor/staff/players/audit_log/hand_history) vs 실측 6개(players/audit_log/hand_history 미구현) 공백 있음 — §0 참조"
 ---
 
 # Engineering — Frontend (Flutter)
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-04-20 | Conductor audit | SG-001 resolution 반영 + features 실측/선언 공백 §0 명시 |
 | 2026-04-16 | Flutter 전환 | Quasar→Flutter 전면 재작성. Riverpod+Freezed+Dio+go_router+rive |
 | 2026-04-15 | (이전) | Quasar/Vue 3 아키텍처 최종본 — §12 아카이브 참조 |
+
+---
+
+## 0. 선언 vs 실측 features 공백 (2026-04-20 Conductor audit)
+
+team1 CLAUDE.md §"아키텍처" 에서 features 8개 선언:
+
+```
+auth / lobby / players / staff / settings / graphic_editor / audit_log / hand_history
+```
+
+실제 `team1-frontend/lib/features/` 디렉토리 6개 (2026-04-20 실측):
+
+```
+auth / graphic_editor / lobby / reports / settings / staff
+```
+
+| 선언 | 실측 | 상태 |
+|------|:---:|------|
+| auth | ✓ | 일치 |
+| lobby | ✓ | 일치 |
+| settings | ✓ | 일치 (SG-003 스키마 후속) |
+| graphic_editor | ✓ | 일치 (SG-004 DATA-07 후속) |
+| staff | ✓ | 일치 |
+| **players** | ✗ | **미구현 — lobby 하위 통합 또는 독립?** |
+| **audit_log** | ✗ | **미구현 — BO 에서 읽기 전용 뷰?** |
+| **hand_history** | ✗ | **미구현 — reports 로 통합됨?** |
+| — | **reports** (신규) | **CLAUDE.md 미선언** |
+
+**조치**: team1 세션이 아래 결정:
+1. players/audit_log/hand_history 를 **별도 feature 로 추가** 할지, **기존 feature 에 통합 (예: reports)** 할지 결정
+2. reports feature 를 CLAUDE.md §아키텍처 에 추가
+3. 결정 후 Roadmap §2.1 Frontend 의 해당 라인 재판정
+
+관련 SG: 없음 (team1 내부 결정, Type A/B 경계 사례). 공식 spec_gap 으로 승격 시 `SG-00X-team1-features-alignment.md` 생성.
 
 ---
 
