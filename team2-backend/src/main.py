@@ -20,12 +20,14 @@ from src.routers.auth import router as auth_router
 from src.routers.blind_structures import router as blind_structures_router
 from src.routers.competitions import router as competitions_router
 from src.routers.configs import router as configs_router
+from src.routers.decks import router as decks_router
 from src.routers.hands import router as hands_router
 from src.routers.payout_structures import router as payout_structures_router
 from src.routers.players import router as players_router
 from src.routers.replay import router as replay_router
 from src.routers.reports import router as reports_router
 from src.routers.series import router as series_router
+from src.routers.settings_kv import router as settings_kv_router
 from src.routers.skins import router as skins_router
 from src.routers.sync import router as sync_router
 from src.routers.tables import router as tables_router
@@ -80,6 +82,8 @@ app.include_router(blind_structures_router)
 app.include_router(skins_router)
 app.include_router(payout_structures_router)
 app.include_router(reports_router)
+app.include_router(decks_router)  # SG-006 in-memory deck router
+app.include_router(settings_kv_router)  # SG-003 Settings 6탭 skeleton (501)
 
 
 @app.get("/health")

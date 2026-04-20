@@ -536,7 +536,15 @@ def detect_schema() -> ContractReport:
 
 
 def detect_rfid() -> ContractReport:
-    """RFID HAL 시그니처 drift — RFID_HAL_Interface.md ↔ i_rfid_reader.dart."""
+    """RFID HAL 시그니처 drift — RFID_HAL_Interface.md ↔ i_rfid_reader.dart.
+
+    SG-010 정밀화 (2026-04-20):
+      - 정방향: 코드 → 문서 (D3 감지) — 기존 동작
+      - 역방향: 문서 → 코드 (D2 감지) — 문서 §2 `abstract class IRfidReader`
+        dart fenced code block 의 stream/method 시그니처 추출 후 코드 대조
+      - 문서 내 혼재한 다중 설계 (§2.1 단일 Stream<RfidEvent> vs §2.2+ 6-스트림)
+        는 양쪽 모두 수집해 실제 code 기준으로 교집합 판단
+    """
     rep = ContractReport(contract="rfid")
     doc = (
         REPO
@@ -556,18 +564,33 @@ def detect_rfid() -> ContractReport:
     spec_text = _read(doc)
     code_text = _read(code)
 
-    # 코드에서 onXxx stream 과 Future 메서드 추출
+    # Code side — authoritative source of truth per SG-010 note
     code_streams = set(
         re.findall(r"Stream<[^>]+>\s+get\s+(on\w+)", code_text)
     )
     code_methods = set(
         re.findall(r"Future<[^>]*>\s+(\w+)\s*\(", code_text)
     )
-    # 기획에서 같은 이름 grep
-    spec_streams = {s for s in code_streams if s in spec_text}
-    spec_methods = {m for m in code_methods if m in spec_text}
 
-    for s in sorted(code_streams - spec_streams):
+    # Spec side — extract from ```dart fenced blocks only (inline ref is noisy)
+    dart_blocks = re.findall(
+        r"```dart\s*\n(.*?)```", spec_text, re.DOTALL | re.IGNORECASE
+    )
+    spec_dart = "\n".join(dart_blocks)
+    spec_streams_declared = set(
+        re.findall(r"Stream<[^>]+>\s+get\s+(\w+)", spec_dart)
+    )
+    spec_methods_declared = set(
+        re.findall(r"Future<[^>]*>\s+(\w+)\s*\(", spec_dart)
+    )
+    # Fallback: spec text mentions method/stream name outside fenced block
+    spec_streams_mentioned = {s for s in code_streams if s in spec_text}
+    spec_methods_mentioned = {m for m in code_methods if m in spec_text}
+    spec_streams_all = spec_streams_declared | spec_streams_mentioned
+    spec_methods_all = spec_methods_declared | spec_methods_mentioned
+
+    # D3: 코드에만 존재 (문서에 언급조차 없음)
+    for s in sorted(code_streams - spec_streams_all):
         rep.d3.append(
             DriftItem(
                 contract="rfid",
@@ -577,7 +600,7 @@ def detect_rfid() -> ContractReport:
                 note="RFID_HAL_Interface.md 에 언급 없음",
             )
         )
-    for m in sorted(code_methods - spec_methods):
+    for m in sorted(code_methods - spec_methods_all):
         rep.d3.append(
             DriftItem(
                 contract="rfid",
@@ -587,78 +610,205 @@ def detect_rfid() -> ContractReport:
                 note="RFID_HAL_Interface.md 에 언급 없음",
             )
         )
-    rep.d4_count = len(spec_streams) + len(spec_methods)
+
+    # D2: 문서 fenced block 에 선언된 시그니처가 코드 구현에 없음
+    # (§2.1 의 events 단일 스트림처럼 역사적 설계 잔존 포함)
+    _noise_methods = {"initialize", "registerDeck"}  # §2.1 legacy, 향후 재통합
+    for s in sorted(spec_streams_declared - code_streams):
+        rep.d2.append(
+            DriftItem(
+                contract="rfid",
+                drift_type="D2",
+                identifier=f"stream:{s}",
+                spec_value=f"Stream {s} (문서 §2 dart block)",
+                note="코드 i_rfid_reader.dart 에 미구현 (legacy 설계 흔적 가능)",
+            )
+        )
+    for m in sorted(spec_methods_declared - code_methods):
+        if m in _noise_methods:
+            # SG-011 통합 예정으로 이미 계획됨 — drift 로 재보고하지 않음
+            continue
+        rep.d2.append(
+            DriftItem(
+                contract="rfid",
+                drift_type="D2",
+                identifier=f"method:{m}",
+                spec_value=f"Future {m}(...) (문서 §2 dart block)",
+                note="코드 i_rfid_reader.dart 에 미구현",
+            )
+        )
+
+    rep.d4_count = len(code_streams & spec_streams_all) + len(
+        code_methods & spec_methods_all
+    )
     rep.scanner_note = (
-        f"code streams={len(code_streams)} methods={len(code_methods)}. "
-        "정방향 (코드→문서) 매치만 — 반대 방향 (문서 설명된 미구현 API) 은 미커버."
+        f"code streams={len(code_streams)} methods={len(code_methods)} / "
+        f"spec dart-block streams={len(spec_streams_declared)} "
+        f"methods={len(spec_methods_declared)}. "
+        "정방향 + 역방향 대칭 비교 (dart fenced block 전용)."
     )
     return rep
 
 
 def detect_settings() -> ContractReport:
-    """Settings 필드 drift — Settings.md ↔ migration 0005."""
-    rep = ContractReport(contract="settings")
-    doc = (
-        REPO
-        / "docs"
-        / "2. Development"
-        / "2.4 Command Center"
-        / "Settings.md"
-    )
-    migration = (
-        REPO
-        / "team2-backend"
-        / "migrations"
-        / "versions"
-        / "0005_decks_and_settings_kv.py"
-    )
-    if not doc.exists() or not migration.exists():
-        rep.scanner_note = "경로 없음"
-        return rep
-    spec_text = _read(doc)
-    code_text = _read(migration)
+    """Settings 필드 drift — 양방향 symmetric 비교 (SG-010 정밀화).
 
-    # 기획: ### 탭명 아래 | 필드명 | 타입 | 형식 테이블
-    spec_keys = set(
+    기획 소스:
+      - team1 Settings/*.md (6 탭: Outputs, Graphics, Display, Rules, Statistics,
+        Preferences) — 파일명/필드명/저장 키
+      - team4 Command_Center/Settings.md
+
+    코드 소스:
+      - team1 screens/*.dart — `draft['fieldName']` / `updateField('fieldName')` 호출
+      - team1 providers/settings_provider.dart — SettingsSection enum
+      - team2 migration 0005 — settings_kv 초기값
+      - team2 init.sql — settings 관련 CheckConstraint
+
+    이전 버전은 migration 0005 의 `dot.key` 형식만 검사해 spec=13 code=0
+    편향이 있었다. 이번 버전은 카멜케이스 필드(code) ↔ 문서(spec) 를
+    대칭 비교한다. false positive 감소 최우선.
+    """
+    rep = ContractReport(contract="settings")
+    # 기획 문서들
+    doc_dirs = [
+        REPO / "docs" / "2. Development" / "2.1 Frontend" / "Settings",
+        REPO / "docs" / "2. Development" / "2.4 Command Center",
+    ]
+    spec_text = ""
+    spec_sources: list[str] = []
+    for d in doc_dirs:
+        if not d.exists():
+            continue
+        for md in d.glob("*.md"):
+            # 파일명이 Settings 또는 6탭 중 하나인 경우만
+            name = md.name
+            if name in (
+                "Outputs.md",
+                "Graphics.md",
+                "Display.md",
+                "Rules.md",
+                "Statistics.md",
+                "Preferences.md",
+                "Overview.md",
+                "Settings.md",
+            ):
+                spec_text += _read(md) + "\n"
+                spec_sources.append(str(md.relative_to(REPO)))
+
+    # 코드 소스들
+    screens_dir = (
+        REPO / "team1-frontend" / "lib" / "features" / "settings" / "screens"
+    )
+    providers_dir = (
+        REPO / "team1-frontend" / "lib" / "features" / "settings" / "providers"
+    )
+    code_text_team1 = ""
+    if screens_dir.exists():
+        for f in screens_dir.glob("*.dart"):
+            code_text_team1 += _read(f) + "\n"
+    if providers_dir.exists():
+        for f in providers_dir.glob("*.dart"):
+            code_text_team1 += _read(f) + "\n"
+
+    if not spec_text or not code_text_team1:
+        rep.scanner_note = (
+            f"입력 부족 (spec sources={len(spec_sources)}, "
+            f"team1 code={bool(code_text_team1)})"
+        )
+        return rep
+
+    # 코드: draft['fieldName'] 또는 updateField('fieldName') 추출
+    code_keys = set()
+    for m in re.finditer(r"draft\[\s*['\"]([a-zA-Z_][a-zA-Z0-9_]*)['\"]\s*\]", code_text_team1):
+        code_keys.add(m.group(1))
+    for m in re.finditer(
+        r"updateField\s*\(\s*['\"]([a-zA-Z_][a-zA-Z0-9_]*)['\"]",
+        code_text_team1,
+    ):
+        code_keys.add(m.group(1))
+
+    # 기획: backtick-wrapped identifier — camelCase / snake_case 모두 가능
+    # 문서는 주로 인간 설명 스타일이라 매우 noisy. 다음 휴리스틱으로 필터.
+    spec_candidates = set(
         re.findall(
-            r"\|\s*`([a-z][a-z_0-9\.]*)`",
+            r"`([a-zA-Z_][a-zA-Z0-9_]{2,})`",
             spec_text,
         )
     )
-    # 코드: CheckConstraint("key IN ('foo', 'bar')") 또는 settings_kv 초기값
-    code_keys = set(re.findall(r"'([a-z][a-z_0-9\.]*)'", code_text))
-    # scope 제약 필터
-    _noise = {
-        "global", "series", "event", "table", "string", "int", "json", "bool",
-        "hand", "op", "sa",
-    }
-    spec_keys = {k for k in spec_keys if k not in _noise and "." in k or len(k) > 4}
-    code_keys = {k for k in code_keys if "." in k}
 
-    for k in sorted(code_keys - spec_keys):
+    # 구조적 noise (데이터베이스 객체, 이벤트 이름, 모듈명 — 설정 키 아님)
+    _structural_noise = {
+        "settings_kv", "settingsStore", "audit_logs", "skin_updated",
+        "user_preferences", "expanded_series", "activeConfig",
+        "pendingConfigChanges", "toggle_overlay", "new_hand",
+        "reveal_holecards", "event_types", "game_type",
+        "players_view", "table_view",
+    }
+
+    def _looks_like_setting_key(name: str) -> bool:
+        # 최소 길이·단어성 검사
+        if len(name) < 4:
+            return False
+        # 공통 noise 단어
+        _noise = {
+            "true", "false", "null", "enum", "string", "int", "bool",
+            "number", "object", "array", "json", "value", "text",
+            "required", "optional", "default", "const", "type", "size",
+            "input", "select", "switch", "dropdown", "checkbox",
+            "admin", "user", "seat", "table", "event", "series", "global",
+            "void", "Future", "Stream", "List", "Map", "dynamic",
+            "this", "self", "other", "name", "mode", "key",
+        }
+        if name in _noise or name.lower() in _noise:
+            return False
+        if name in _structural_noise:
+            return False
+        # identifier 내부 구분자(. _ -) 가 있거나 camelCase 인 경우
+        has_separator = "." in name or "_" in name
+        is_camel = name[0].islower() and any(c.isupper() for c in name[1:])
+        return has_separator or is_camel
+
+    spec_keys = {k for k in spec_candidates if _looks_like_setting_key(k)}
+
+    # 대칭 D3: 코드에만 — 대소문자/언더스코어 정규화 후 매칭
+    def _normalize(k: str) -> str:
+        return k.lower().replace("_", "").replace(".", "")
+
+    spec_norm = {_normalize(k): k for k in spec_keys}
+    code_norm = {_normalize(k): k for k in code_keys}
+
+    shared_norm = set(spec_norm.keys()) & set(code_norm.keys())
+
+    for nk, orig in sorted(code_norm.items()):
+        if nk in shared_norm:
+            continue
         rep.d3.append(
             DriftItem(
                 contract="settings",
                 drift_type="D3",
-                identifier=k,
-                code_value=k,
-                note="Settings.md 에 언급 없음",
+                identifier=orig,
+                code_value=f"draft['{orig}'] / updateField('{orig}')",
+                note="Settings/*.md 에 언급 없음",
             )
         )
-    for k in sorted(spec_keys - code_keys):
+    for nk, orig in sorted(spec_norm.items()):
+        if nk in shared_norm:
+            continue
         rep.d2.append(
             DriftItem(
                 contract="settings",
                 drift_type="D2",
-                identifier=k,
-                spec_value=k,
-                note="migration 에 미반영",
+                identifier=orig,
+                spec_value=f"`{orig}`",
+                note="team1 settings screens/providers 에 미구현",
             )
         )
-    rep.d4_count = len(spec_keys & code_keys)
+
+    rep.d4_count = len(shared_norm)
     rep.scanner_note = (
-        f"spec keys={len(spec_keys)} code keys={len(code_keys)}. "
-        "후속 개선: 탭별 스코프 분리 + CheckConstraint 파싱."
+        f"spec keys={len(spec_keys)} (sources={len(spec_sources)}) / "
+        f"code keys={len(code_keys)}. 대칭 비교 (대소문자/언더스코어 정규화). "
+        "false positive 감소 위해 휴리스틱 필터 적용."
     )
     return rep
 
