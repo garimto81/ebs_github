@@ -3,9 +3,9 @@ title: Backend HTTP — 구현 현황 (2026-04-20)
 owner: team2
 tier: internal
 last-updated: 2026-04-20
-reimplementability: PARTIAL
+reimplementability: UNKNOWN
 reimplementability_checked: 2026-04-20
-reimplementability_notes: "96 엔드포인트 선언. 17 라우터 모듈 구현. 각 엔드포인트 스펙 완결도 검증 미완"
+reimplementability_notes: "96 엔드포인트 선언 / 17 라우터 모듈 구현. Auth/Tables/Skins 는 PASS 가능. Reports 6건 + Settings(configs.py) 는 FAIL (B). 전체 평균 UNKNOWN"
 parent: Backend_HTTP.md
 ---
 
