@@ -1,0 +1,131 @@
+---
+title: Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜
+owner: conductor
+tier: internal
+last-updated: 2026-04-20
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "프로토콜 자체는 독립 해석·적용 가능"
+related:
+  - CLAUDE.md §"프로토타입 실패 대응 프로토콜"
+  - Roadmap.md
+  - Conductor_Backlog/_template_spec_gap.md
+  - memory: feedback_prototype_failure_as_spec_signal.md
+---
+
+# Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜
+
+> **전제 (2026-04-20 재정의)**: EBS = 개발팀 인계용 기획서 완결 프로젝트. 프로토타입 완벽 동작 ↔ 기획서 완벽.
+> 따라서 프로토타입 실패는 **기획 공백/모순의 신호**. "빌드 에러 수정" 으로 단순 환원 금지.
+
+## 1. 프로토콜 개요 (Flow)
+
+```
+프로토타입 실패 감지 (빌드/테스트/런타임)
+  └─ Step 1: 해당 증상이 연결되는 docs/ 챕터 탐색
+  └─ Step 2: Type 분류 (A/B/C)
+  └─ Step 3: Type 별 대응 순서 결정
+  └─ Step 4: 결과 추적 (Roadmap.md reimplementability + Backlog)
+```
+
+## 2. Type 분류 기준
+
+### Type A — 빌드 실수
+
+**정의**: 기획에 명확한 답이 있고, 팀 간 해석도 일치. 구현만 틀림.
+
+**판정 조건 (모두 충족)**:
+- [ ] 관련 docs 챕터가 단일 파일에 명시됨
+- [ ] 4팀 CLAUDE.md / API 문서 간 해석 일치
+- [ ] 기획 문서에 "수락 기준" 이 구체적으로 존재
+- [ ] 증상이 즉시 재현되고 스택 트레이스가 코드 줄을 가리킴
+
+**대응 순서**:
+1. 구현 PR 작성
+2. 테스트 통과 확인
+3. 관련 `Prototype_Scenario` 재실행 → PASS 전환
+
+### Type B — 기획 공백
+
+**정의**: 기획에 결정이 없거나 불완전. 팀마다 다른 가정으로 구현.
+
+**판정 조건 (하나 이상 해당)**:
+- [ ] 관련 챕터가 존재하지 않음 (e.g. `ENGINE_URL` 환경변수 표준 문서 부재)
+- [ ] 챕터가 "TODO / TBD" 표시를 남김
+- [ ] 팀 간 CLAUDE.md 가 다른 기본값/패턴 명시
+- [ ] API 문서에 해당 엔드포인트/이벤트 스펙 없음
+
+**대응 순서**:
+1. **먼저** `Conductor_Backlog/SG-XXX-<slug>.md` 생성 (`_template_spec_gap.md` 사용)
+2. decision_owner (챕터 소유자) 에게 notify
+3. 결정 확정 후 관련 챕터 additive 보강 PR
+4. `Roadmap.md` 의 해당 챕터 `reimplementability` 업데이트
+5. 그 다음 구현 PR (Implementation Backlog)
+
+### Type C — 기획 모순
+
+**정의**: 기획 문서 간에 서로 다른 답이 적혀 있어 구현 자체가 결정 불가.
+
+**판정 조건 (하나 이상 해당)**:
+- [ ] 두 문서가 같은 대상에 다른 값 명시 (e.g. Conductor "Quasar" vs 팀 "Flutter")
+- [ ] 같은 규칙의 두 해석이 양립 불가 (e.g. "순수 Dart 금지" vs harness `dart:io` 필연)
+- [ ] 구현이 문서보다 앞서 있으나 문서 미동기화 (e.g. OutputEvent 21종 vs 18종)
+
+**대응 순서**:
+1. **먼저** `Conductor_Backlog/SG-XXX-<slug>.md` 생성, `type: spec_contradiction` 명시
+2. 충돌하는 모든 문서 목록화
+3. Conductor 또는 decision_owner 가 단일 SSOT 확정
+4. **모든** 충돌 문서 일괄 정렬 PR (분산 수정 금지)
+5. `Roadmap.md` 해당 챕터 재판정
+6. 그 다음 구현 PR
+
+## 3. Hook 연동
+
+`.claude/hooks/post_build_fail.py` 가 Bash 실행 후 exit_code != 0 인 build/test 명령을 감지하여 이 프로토콜을 세션에 리마인드합니다.
+
+감지 대상 패턴:
+- `flutter pub|run|test|build|analyze`
+- `dart run|test|pub`
+- `pytest`, `ruff check`, `uvicorn`, `python -m alembic|pytest|uvicorn`
+- `pnpm|npm install|run|test|build`
+- `quasar dev|build`
+- `docker compose up|build`, `build_runner`
+
+감지 시 stdout 에 3-Type 분류 요청 출력 (차단 아님, 리마인드만).
+
+## 4. Backlog 이동 흐름
+
+```
+발견 (빌드 실패)
+  └─ Type A → Conductor_Backlog/Implementation/IMPL-XXX.md (spec_ready: true)
+  └─ Type B → Conductor_Backlog/Spec_Gaps/SG-XXX.md
+     └─ 해결 후 → Conductor_Backlog/Implementation/IMPL-XXX.md
+  └─ Type C → Conductor_Backlog/Spec_Gaps/SG-XXX.md (type: spec_contradiction)
+     └─ SSOT 정렬 PR → Roadmap 재판정 → Implementation/
+```
+
+팀 소유 Backlog 에서 동일 패턴 발견 시 Conductor 에게 notify (cross-team decision 필요).
+
+## 5. 위반 전례 (학습 데이터)
+
+### 2026-04-20 direct-critic P0 권고의 오판
+
+**증상**: "앱 실행 거의 모두 실패"
+
+**초기 critic 리포트 진단** (잘못됨):
+- P0-2: "team1-frontend/src/, package.json, quasar.config.js 등 Quasar 잔재 삭제"
+- Type A 로 암묵적 가정
+
+**사용자 재정의 후 재분석**:
+- 실제 원인: Conductor CLAUDE.md "Quasar" vs 팀 "Flutter" vs BS_Overview §1 "Quasar" 의 **3중 SSOT 모순**
+- 실제 Type: **C (기획 모순)**
+- 올바른 순서: (1) 기술 스택 SSOT 단일화 PR → (2) 파일 정리 PR
+
+**교훈**: 빠른 파일 정리는 허점을 코드에 각인시킨다. 먼저 기획 정렬 후 정리.
+
+## 6. 메트릭 (집계 대상)
+
+- Roadmap.md 의 reimplementability 분포 (PASS / UNKNOWN / FAIL)
+- Conductor_Backlog/Spec_Gaps/ 의 평균 해결 시간
+- Spec_Gap → Implementation 전환율 (Backlog 분석)
+- post_build_fail hook 발동 빈도 + Type 분류 결과 분포

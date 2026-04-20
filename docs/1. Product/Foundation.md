@@ -6,6 +6,9 @@ confluence-page-id: 3625189547
 confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
 source: confluence (SSOT)
 last-updated: 2026-04-16
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "Ch.5 Lobby/CC 기술 스택 3중화(FAIL) + Ch.7 ENGINE_URL 표준 부재(FAIL). Roadmap.md §1 참조"
 ---
 
 #### Part I — Concept: EBS는 무엇인가? (What it is)

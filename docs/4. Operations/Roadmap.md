@@ -2,114 +2,146 @@
 title: Roadmap
 owner: conductor
 tier: internal
-last-updated: 2026-04-15
+last-updated: 2026-04-20
+intent: spec-completeness (not product-launch)
+reimplementability: PASS
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "자립 가능: 기획서 완결성 로드맵 구조 자체는 독립 해석 가능"
 ---
 
-# SSOT Alignment Roadmap — EBS ↔ WSOP LIVE Confluence
+# EBS 기획서 완결성 로드맵
 
-## 목적
+> **프로젝트 의도** (2026-04-20 재정의): EBS 는 **개발팀 인계용 기획서 완결** 프로젝트. 실제 제품 출시가 아님. 프로토타입(`team1~4/`)은 **기획서 검증 도구**.
+> **쌍방향 인과**: 프로토타입 완벽 동작 ↔ 기획서 완벽.
+>
+> **이 문서는** 각 기획 챕터가 "외부 개발팀이 받아 재구현 가능한 상태" 인가를 추적합니다. 제품 출시 로드맵이 아닙니다.
+>
+> SSOT 정렬 진척표 → `SSOT_Alignment_Progress.md` 로 분리 (2026-04-20).
 
-EBS contracts/ 26 파일 + 팀별 specs/ui-design/qa 를 WSOP LIVE Confluence 원본과 1:1 정렬.
-`/ssot-align` 스킬이 이 문서를 auto_update 로 유지.
+## 성공 기준 (Reimplementability)
 
-## 실행 방법
+| 상태 | 의미 |
+|:---:|------|
+| **PASS** | 외부 개발팀이 이 챕터 + 프로토타입 해당 컴포넌트만으로 재구현 가능 |
+| **UNKNOWN** | 미판정 (재구현 가능성 검증 필요) |
+| **FAIL** | 기획 공백(Type B) 또는 기획 모순(Type C) 존재. 인계 불가 |
+| **N/A** | 보조 문서 (landing, README, template). 챕터 아님 |
 
-각 팀 세션에서:
+검증 방법:
+1. 챕터 독립성 (다른 챕터 참조 없이 자립 가능)
+2. 프로토타입 해당 컴포넌트가 챕터 시나리오 완주
+3. 챕터 간 용어/계약 일관성
 
-```
-/ssot-align                 # 자기 팀 스코프 전체 자동
-/ssot-align --audit         # drift 검증만
-/ssot-align --dry-run       # 미리보기
-```
+---
 
-Conductor 세션에서 contracts/ 전체:
+## 1. Product — 개념·비전·참조
 
-```
-cd C:/claude/ebs && /ssot-align
-```
+| 챕터 / 문서 | 소유 | 재구현 가능성 | 프로토타입 검증 시나리오 | 공백/모순 메모 |
+|-------------|:---:|:---:|-------------------------|----------------|
+| Foundation Ch.1 숨겨진 패의 마법 | conductor | PASS | (개념 문서, 프로토타입 무관) | — |
+| Foundation Ch.2 시청자 화면 해부 | conductor | UNKNOWN | Overlay 가 8가지 요소 모두 렌더 | §4.2 Overlay 요소 수 확정 필요 |
+| Foundation Ch.3 EBS 공간 경계 | conductor | PASS | (개념) | — |
+| Foundation Ch.4 시스템 퍼즐 6조각 | conductor | UNKNOWN | 5 App + 1 HW 전부 기동 가능 | Mock RFID HAL 검증 완료 필요 |
+| Foundation Ch.5 Lobby & CC 프론트엔드 | team1 + team4 | **FAIL (C)** | 기술 스택 SSOT 3중(Conductor CLAUDE.md / BS_Overview §1 / 팀 CLAUDE.md) 충돌. Flutter 확정 후 재정렬 필요 |
+| Foundation Ch.6 Backend & Engine | team2 + team3 | UNKNOWN | BO REST + WS 3채널 + Engine harness 동시 기동 | — |
+| Foundation Ch.7 Overlay & RFID | team4 | **FAIL (B)** | CC 기동 시 engine 없으면 graceful 대기 계약 부재 | `ENGINE_URL` 환경변수 표준 누락 |
+| Foundation Ch.8 현장의 하루 | conductor | UNKNOWN | 체크리스트 시나리오 프로토타입 완주 | — |
+| Foundation Ch.9 비전/전략 | conductor | N/A | (비전 문서) | — |
+| References/PokerGFX_Reference | conductor | PASS | — | — |
+| Game_Rules/** | team3 | UNKNOWN | 22 게임 규칙 엔진 통과 | Confluence 발행 검증 필요 |
 
-## 스코프 진행 현황
+## 2. Development — 팀별 기획 + 프로토타입
 
-상태: `PENDING` (미처리) / `IN_PROGRESS` (진행 중) / `COMPLETED` (완료) / `NATIVE` (SSOT 없음) / `DEFERRED` (후순위)
+### 2.1 Frontend (team1)
 
-### contracts/ (26 파일 / Conductor 소유)
+| 챕터 / 문서 | 재구현 가능성 | 프로토타입 검증 시나리오 | 공백/모순 |
+|-------------|:---:|-------------------------|-----------|
+| Login/** | UNKNOWN | 로그인 → JWT → Lobby 진입 | — |
+| Lobby/** | UNKNOWN | Series→Event→Table 드릴다운 | — |
+| Settings/** (6탭) | UNKNOWN | Outputs/GFX/Display/Rules/Stats/Preferences 각 저장-복원 | — |
+| Graphic_Editor/** | UNKNOWN | `.gfskin` 업로드 → 프리뷰 → Activate | `.gfskin` 스키마 DATA-07 확정 필요 |
+| Engineering.md | **FAIL (C)** | Quasar vs Flutter SSOT 3중. 아키텍처 결정 문서화 재필요 |
 
-| 파일 | 주요 섹션 추정 | WSOP 소스 | 상태 | 최종 확인 |
-|------|-------------|----------|------|----------|
-| api/API-01-backend-api.md | 엔드포인트 목록 + WSOP LIVE Integration (Part II) | Staff App API 계열 + WSOPLIVE → EBS 데이터 연동 PRD (3659071655) | PENDING | — |
-| api/API-03-rfid-hal-interface.md | 전체 | — | NATIVE | — |
-| api/API-04-overlay-output.md | 전체 | EBS UI Design Console (3646783501) 부분 | PENDING | — |
-| api/API-05-websocket-events.md | 이벤트 목록 | Staff App Live (실시간 데이터 처리) | PENDING | — |
-| api/API-06-auth-session.md | 전체 | GGPass 연동 | PENDING | — |
-| api/API-07-graphic-editor.md | 전체 | — | NATIVE | — |
-| api/README.md | — | — | NATIVE | — |
-| data/DATA-01-er-diagram.md | ERD | WSOP+ Database 설명 (1652949021) | PENDING | — |
-| data/DATA-03-state-machines.md | 상태 머신 | (혼합) | PENDING | — |
-| data/DATA-04-db-schema.md | table_seats / event_type / waiting_list | Action History (1679556614), Waiting API (2418737362) | PENDING | 2026-04-14 (critic) |
-| data/DATA-07-gfskin-schema.md | 전체 | — | NATIVE | — |
-| data/README.md | — | — | NATIVE | — |
-| specs/BS-00-definitions.md | 정의 | (혼합) | PENDING | — |
-| specs/BS-01-auth/BS-01-auth.md | 인증 | GGPass 연동 | PENDING | — |
-| specs/BS-04-rfid/BS-04-04-hal-contract.md | HAL | — | NATIVE | — |
-| specs/BS-06-game-engine/BS-06-00-triggers.md | 트리거 | (부분) Action History | PENDING | — |
-| specs/BS-06-game-engine/README.md | — | — | NATIVE | — |
-| specs/README.md | — | — | NATIVE | — |
-| ccr-risk-matrix.md | — | — | NATIVE | — |
-| README.md | — | — | NATIVE | — |
-| _templates/SSOT-ALIGNED-SPEC-TEMPLATE.md | — | — | NATIVE (template) | — |
+### 2.2 Backend (team2)
 
-### team1-frontend/
+| 챕터 / 문서 | 재구현 가능성 | 프로토타입 검증 시나리오 | 공백/모순 |
+|-------------|:---:|-------------------------|-----------|
+| APIs/Backend_HTTP | UNKNOWN | 66+ 엔드포인트 contract test | — |
+| APIs/WebSocket_Events | UNKNOWN | seq 단조증가 + replay 시나리오 | — |
+| APIs/Auth_and_Session | UNKNOWN | JWT access/refresh + OAuth | — |
+| Database/Schema | UNKNOWN | init.sql ↔ SQLModel 일관 | Alembic baseline 검증 |
+| Back_Office/Overview §1.2 matrix | PASS | — | — |
+| Engineering/** | UNKNOWN | — | — |
 
-| 파일 | 상태 | 비고 |
-|------|------|------|
-| ui-design/UI-01-lobby.md | PENDING | EBS UI Design Console (3646783501) 참조 |
-| specs/** | PENDING | 팀 세션에서 `/ssot-align` 실행 |
+### 2.3 Game Engine (team3)
 
-### team2-backend/
+| 챕터 / 문서 | 재구현 가능성 | 프로토타입 검증 시나리오 | 공백/모순 |
+|-------------|:---:|-------------------------|-----------|
+| APIs/Overlay_Output_Events | **FAIL (C)** | OutputEvent 구현 21종 vs 문서 18종 불일치 |
+| Behavioral_Specs/Holdem/** | UNKNOWN | Holdem 전 스트릿 시나리오 | — |
+| Behavioral_Specs/ (기타) | UNKNOWN | — | Draw 7종·Stud 3종 커버리지 검증 |
+| (규칙) 순수 Dart 강제 | **FAIL (C)** | `bin/harness.dart` 가 `dart:io` 사용 필연. CLAUDE.md 금지 문구 수정 필요 |
 
-| 파일 | 상태 | 비고 |
-|------|------|------|
-| specs/BO-02-wsop-sync.md | PENDING | WSOPLIVE → EBS 데이터 연동 (3659071655) + Staff App API 계열 |
-| qa/** | PENDING | 팀 세션 집행 |
+### 2.4 Command Center (team4)
 
-### team3-engine/
+| 챕터 / 문서 | 재구현 가능성 | 프로토타입 검증 시나리오 | 공백/모순 |
+|-------------|:---:|-------------------------|-----------|
+| APIs/RFID_HAL | UNKNOWN | Mock + 실제 HAL 인터페이스 호환 | — |
+| RFID_Cards/** | UNKNOWN | 52 카드 코드맵 | — |
+| Command_Center_UI/** | UNKNOWN | 좌석 관리 + 액션 버튼 + 카드 입력 | — |
+| Overlay/** | **FAIL (B)** | engine 미기동 시 graceful 계약 없음 | `ENGINE_URL` 환경변수 미명시 |
+| Manual_Card_Input | PASS | RFID 실패 → 수동 입력 전환 | 2026-04-17 보강 완료 |
 
-| 파일 | 상태 | 비고 |
-|------|------|------|
-| specs/games/** | NATIVE | EBS 게임 규칙 (Confluence 발행 대상, 역참조 아님) |
-| 기타 | PENDING | 팀 세션 집행 |
+### 2.5 Shared (conductor)
 
-### team4-cc/
+| 챕터 / 문서 | 재구현 가능성 | 공백/모순 |
+|-------------|:---:|-----------|
+| BS_Overview (§1 Tech Stack) | **FAIL (C)** | team1 Lobby=Quasar 기재, 실제 Flutter. CCR-016 SSOT 선언과 현실 괴리 |
+| Authentication | UNKNOWN | — |
+| Network_Config | UNKNOWN | — |
+| Risk_Matrix | UNKNOWN | — |
+| team-policy.json | PASS | v7 governance 명시 |
+| EBS_Core.md (참조됨) | **FAIL (B)** | 파일 부재. CLAUDE.md L286 이 존재하지 않는 파일 참조 |
 
-| 파일 | 상태 | 비고 |
-|------|------|------|
-| specs/BS-05-command-center/** | PENDING | Action Tracker (3702325397) 참조 |
-| ui-design/** | PENDING | 팀 세션 집행 |
+## 4. Operations
 
-## 핵심 WSOP LIVE 페이지 맵
+| 문서 | 재구현 가능성 | 비고 |
+|------|:---:|------|
+| Roadmap (이 문서) | PASS | — |
+| SSOT_Alignment_Progress | PASS | 2026-04-20 분리 |
+| Multi_Session_Workflow | UNKNOWN | L2 레지스트리 상태 검증 필요 |
+| Network_Deployment | UNKNOWN | — |
+| Conductor_Backlog | N/A | 추적 문서 |
+| Spec_Gap_Triage (신규) | PASS | 프로토타입 실패 → 기획 환원 프로토콜 |
 
-| page_id | 제목 | 참조되는 EBS 영역 |
-|---------|------|-----------------|
-| 1679556614 | Action History | SeatStatus, EventFlightActionType |
-| 2418737362 | Waiting API | waiting_list |
-| 1652949021 | WSOP+ Database 설명(2023.04.17) | ERD, 엔티티 |
-| 3659071655 | WSOPLIVE → EBS 데이터 연동 통합 PRD | 전반적 데이터 흐름 |
-| 3646783501 | EBS UI Design Console | UI, Overlay |
-| 3702325397 | EBS UI Design - Action Tracker | CC |
-| 3625189547 | EBS 기초 기획서 | Foundation PRD |
+---
 
-추가는 `/con-lookup` 으로 수시 발견/확장.
+## 집계 (2026-04-20 기준)
 
-## 완료 조건
+| 상태 | 개수 | 비율 |
+|:---:|:---:|:---:|
+| PASS | 8 | ~18% |
+| UNKNOWN | 26 | ~59% |
+| **FAIL** | 8 | ~18% |
+| N/A | 2 | ~5% |
 
-- 모든 PENDING 파일이 COMPLETED / NATIVE / DEFERRED 중 하나로 분류됨
-- COMPLETED 파일의 모든 WSOP-참조 섹션이 5-블록 템플릿 적용
-- 매핑표 모든 행에 판정 존재, DEFERRED 는 Phase 계획 보유
-- sprint 시작마다 `/ssot-align --audit` 로 drift 검증
+**최우선 FAIL 8건 (기획 공백/모순)**:
+1. Foundation Ch.5 — 기술 스택 SSOT 3중화 (C)
+2. Foundation Ch.7 — ENGINE_URL 표준 부재 (B)
+3. team1 Engineering — Quasar/Flutter 결정 미문서화 (C)
+4. team3 API-04 — 구현 21종 vs 문서 18종 (C)
+5. team3 순수 Dart 규칙 vs harness `dart:io` (C)
+6. team4 Overlay — engine 의존 graceful 계약 부재 (B)
+7. Shared BS_Overview §1 — Tech Stack SSOT 현실 괴리 (C)
+8. Shared EBS_Core.md — 참조되지만 파일 부재 (B)
 
-## 마지막 업데이트
+## 거버넌스
 
-2026-04-14 초기 작성 — 스킬 제작 후 초기 스켈레톤. 실 집행은 각 팀 세션에서 `/ssot-align` 실행 시 auto_update.
+- 챕터 상태 변경은 Conductor 판정 (decision_owner) + 해당 팀 공동 서명
+- `tools/reimplementability_audit.py` 가 챕터 frontmatter `reimplementability` 필드 자동 집계
+- 새 챕터 추가 시 frontmatter 에 `reimplementability: UNKNOWN` 기본값
+- 관련 프로토콜: `Spec_Gap_Triage.md` (프로토타입 실패 시 Type A/B/C 환원)
 
-<!-- ssot-align auto-update 2026-04-14 09:27 UTC -->
-- **2026-04-14 09:27 UTC** — rendered=7
+## 이력
+
+- **2026-04-20** — 전면 재설계. "SSOT Alignment Roadmap" → "기획서 완결성 로드맵" 전환. SSOT 정렬 진척표는 `SSOT_Alignment_Progress.md` 로 분리.

@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: BS-00
+reimplementability: FAIL
+reimplementability_checked: 2026-04-20
+reimplementability_notes: "§1 Tech Stack 표가 Lobby=Quasar 로 기재되어 있으나 team1 은 Flutter 로 전환(커밋 70d6d7a). CCR-016 의 SSOT 선언과 현실 괴리. Type C 모순. Roadmap.md §2.5 참조"
 ---
 
 # BS-00 Definitions — 용어·상태·트리거 총괄 정의서
