@@ -216,8 +216,15 @@ def detect_api() -> ContractReport:
 
 
 def _normalize_path(path: str) -> str:
-    """FastAPI `{id}` ↔ 문서 `:id` 차이 흡수."""
+    """FastAPI `{id}` ↔ 문서 `:id` 차이 흡수 + placeholder 이름 통일 (J3 2026-04-20).
+
+    - `:id` 형태 → `{id}`
+    - `{user_id}` / `{table_id}` 등 모든 named placeholder → `{_}` (이름 무관 위치 매칭)
+    - trailing slash 제거
+    """
     path = re.sub(r":([A-Za-z_]+)", r"{\1}", path)
+    # J3: placeholder 이름 차이 (spec {id} vs code {user_id}) 흡수 — 위치 기반 매칭만
+    path = re.sub(r"\{[A-Za-z_][A-Za-z0-9_]*\}", "{_}", path)
     path = path.rstrip("/")
     if not path:
         path = "/"
