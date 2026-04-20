@@ -10,7 +10,7 @@
 
 순수 Dart 포커 엔진 패키지. 22종 게임의 규칙/상태/평가 엔진.
 
-**기술 스택**: Dart ^3.11.0 (순수 패키지 — Flutter/HTTP/IO 임포트 절대 금지)
+**기술 스택**: Dart ^3.11.0 — `lib/` 엔진 코어는 순수 Dart (Flutter/HTTP/IO 임포트 금지). `bin/harness.dart` 와 `lib/harness/` 는 외부 인터페이스 제공 위해 `dart:io` HTTP 서버 허용 (SG-001 resolution 2026-04-20, BS_Overview §1 참조)
 
 **Publisher**: API-04 Overlay Output Events (유일한 외부 인터페이스).
 
@@ -93,7 +93,8 @@ ebs_game_engine/
 
 ## 금지
 
-- Flutter, `dart:io` 서버, HTTP 패키지 임포트 금지 (순수 Dart만)
+- **엔진 코어 `lib/core/`, `lib/engine.dart`**: Flutter, `dart:io` 서버, HTTP 패키지 임포트 금지 (순수 Dart만)
+- **예외**: `bin/harness.dart`, `lib/harness/**` 는 외부 인터페이스(HTTP 서비스) 제공 위해 `dart:io` 허용 (BS_Overview §1 SSOT / SG-001 resolution)
 - `../docs/1. Product/`, `../docs/2. Development/2.{1,2,4,5}*/`, `../docs/4. Operations/` 수정 금지 (다른 팀 소유)
 - 다른 팀 코드 폴더(`../team1-frontend/`, `../team2-backend/`, `../team4-cc/`) 접근 금지
 
