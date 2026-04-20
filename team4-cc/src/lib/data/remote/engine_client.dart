@@ -37,14 +37,27 @@ class EngineEvents {
 }
 
 class EngineClient {
-  EngineClient({String baseUrl = 'http://localhost:8080'})
+  /// Default Engine URL resolution order (SG-002):
+  ///   1. `--dart-define=ENGINE_URL=http://host:port` (highest priority)
+  ///   2. Explicit constructor arg
+  ///   3. `http://localhost:8080` fallback
+  static const String kDefaultEngineUrl = String.fromEnvironment(
+    'ENGINE_URL',
+    defaultValue: 'http://localhost:8080',
+  );
+
+  EngineClient({String? baseUrl})
       : _dio = Dio(BaseOptions(
-          baseUrl: baseUrl,
+          baseUrl: baseUrl ?? kDefaultEngineUrl,
           connectTimeout: const Duration(seconds: 5),
-          receiveTimeout: const Duration(seconds: 10),
+          sendTimeout: const Duration(seconds: 3),
+          receiveTimeout: const Duration(seconds: 3),
         ));
 
   final Dio _dio;
+
+  /// Current configured base URL (for diagnostics/UI).
+  String get baseUrl => _dio.options.baseUrl;
 
   // ---------------------------------------------------------------------------
   // Session management
