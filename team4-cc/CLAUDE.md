@@ -66,6 +66,41 @@ dependencies:
     path: ../team3-engine/ebs_game_engine
 ```
 
+### ENGINE_URL 환경변수 (SG-002)
+
+| 방법 | 문법 | 기본값 |
+|------|------|--------|
+| dart-define (권장) | `--dart-define=ENGINE_URL=http://host:port` | `http://localhost:8080` |
+| launch_config JSON (보조) | BO 가 WS 로 푸시 | — |
+
+```dart
+const kEngineUrl = String.fromEnvironment('ENGINE_URL',
+    defaultValue: 'http://localhost:8080');
+```
+
+### 3-stage 상태 머신 (SG-002)
+
+| Stage | 조건 | UI | 사용자 행동 |
+|:---:|------|----|------------|
+| **Connecting** | 앱 시작 ~ 초기 연결 5초 내 | `SplashScreen` ("엔진 연결 중...") — router redirect 로 강제 진입 | 대기 |
+| **Degraded** | 초기 연결 실패, 재시도 진행 중 (backoff 1s → 2s → 4s, 최대 3회) | CC UI 활성 + `EngineConnectionBanner` (orange 경고) + Demo Mode 자동 | 대기 or 계속 조작 |
+| **Offline** | 재시도 3회 모두 실패 | `EngineConnectionBanner` (red, "ENGINE_URL 확인 필요" + "재연결" 버튼) — Demo Mode 유지 | 수동 재연결 or Demo Mode 지속 |
+| **Online** | `/engine/health` 2xx | 배너 숨김 (`SizedBox.shrink`) | 정상 조작 |
+
+**타임아웃**: `connectTimeout 5s / sendTimeout 3s / receiveTimeout 3s` (`engine_connection_provider.dart`).
+
+### 구현 위치
+
+| 책임 | 파일 |
+|------|------|
+| 상태 머신 | `src/lib/features/command_center/providers/engine_connection_provider.dart` |
+| 배너 위젯 | `src/lib/features/command_center/widgets/engine_connection_banner.dart` |
+| Splash | `src/lib/features/splash/splash_screen.dart` |
+| Router redirect guard | `src/lib/routing/app_router.dart` (`AppRoutes.splash` + `refreshListenable`) |
+| Stub 엔진 | `src/lib/features/command_center/services/stub_engine.dart` |
+
+상세 계약: `../docs/2. Development/2.4 Command Center/Overlay/Engine_Dependency_Contract.md`
+
 ## 다른 팀이 소유하는 공통 계약 (읽기 전용)
 
 | 계약 | 경로 | 소유 |

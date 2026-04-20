@@ -14,18 +14,19 @@ Spec: docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md
 Scope hierarchy (lowest → highest precedence):
   global → series → event → table   (user-tab uses 'user' scope_level, scope_id=user_id)
 
-This router is **skeleton only**. team2 session wires:
-  [TODO-T2-011] DB session dependency + settings_kv table (migration 0002)
+2026-04-20: in-memory 실동작 (pre-DB). 구조는 settings_kv 테이블과 1:1 매핑되어
+있어 추후 db.session 교체가 기계적이다. (migration 0005 적용 완료 시 교체 예정)
+
+team2 session TODO markers:
+  [TODO-T2-011] DB session dependency + settings_kv table (migration 0005)
   [TODO-T2-012] RBAC gating (admin only for global; operator for table within assignment)
-  [TODO-T2-013] resolved endpoint — run SELECT with WHERE scope_level IN (...) and
-               ORDER BY CASE scope_level ('global'=1,'series'=2,'event'=3,'table'=4)
-               then overlay rows in ascending precedence per (tab, key).
   [TODO-T2-014] audit_events: settings_changed (old_value, new_value, scope, actor)
   [TODO-T2-015] validate `value` JSON against per-(tab,key) schema when catalog exists
 """
 from __future__ import annotations
 
-from datetime import datetime
+import uuid
+from datetime import datetime, timezone
 from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, Query, status
@@ -50,6 +51,15 @@ SettingsTab = Literal[
 
 VALID_SCOPE_LEVELS = {"global", "series", "event", "table", "user"}
 VALID_TABS = {"outputs", "gfx", "display", "rules", "stats", "preferences"}
+
+# Override precedence (lowest → highest)
+PRECEDENCE: dict[str, int] = {
+    "global": 0,
+    "series": 1,
+    "event": 2,
+    "table": 3,
+    "user": 4,
+}
 
 
 # ---------------------------------------------------------------------------
@@ -113,6 +123,27 @@ class SettingsResolvedOut(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# In-memory store — [TODO-T2-011] replace with db.session on migration 0005
+# ---------------------------------------------------------------------------
+
+# Primary key tuple: (scope_level, scope_id, tab, key) → row dict
+_settings_store: dict[tuple[str, str | None, str, str], dict] = {}
+
+
+def _now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _reset_store_for_tests() -> None:
+    """Test helper — full reset. Not exported via router."""
+    _settings_store.clear()
+
+
+def _row_out(row: dict) -> SettingsKvOut:
+    return SettingsKvOut(**row)
+
+
+# ---------------------------------------------------------------------------
 # Validation helpers (reusable by team2 DB-wired impl)
 # ---------------------------------------------------------------------------
 
@@ -144,7 +175,7 @@ def _validate_tab(tab: str) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Endpoints — skeleton (501) with complete arg validation + schema
+# Endpoints — in-memory implementation
 # ---------------------------------------------------------------------------
 
 
@@ -158,48 +189,71 @@ async def list_settings(
     """List settings rows, optionally filtered.
 
     No filter → full catalog (Admin only). Typical usage: (scope_level, scope_id, tab).
-
-    [TODO-T2-011]: replace with db.exec(select(SettingsKv).where(...))
     """
     if scope_level is not None:
         _validate_scope(scope_level, scope_id)
     if tab is not None:
         _validate_tab(tab)
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="skeleton: team2 session to implement [TODO-T2-011]",
-    )
+
+    rows = list(_settings_store.values())
+    if scope_level is not None:
+        rows = [r for r in rows if r["scope_level"] == scope_level]
+    if scope_id is not None:
+        rows = [r for r in rows if r["scope_id"] == scope_id]
+    if tab is not None:
+        rows = [r for r in rows if r["tab"] == tab]
+    if key is not None:
+        rows = [r for r in rows if r["key"] == key]
+
+    rows.sort(key=lambda r: (PRECEDENCE.get(r["scope_level"], 99), r["tab"], r["key"]))
+    return [_row_out(r) for r in rows]
 
 
 @router.put("", response_model=SettingsKvOut)
 async def upsert_setting(payload: SettingsKvIn) -> SettingsKvOut:
     """Upsert one setting row. Idempotent on (scope_level, scope_id, tab, key).
 
-    [TODO-T2-011]: INSERT ... ON CONFLICT (scope_level, scope_id, tab, key) DO UPDATE.
     [TODO-T2-014]: emit audit_event settings_changed with old/new value.
     [TODO-T2-015]: validate payload.value against tab+key schema (when catalog ready).
     """
     _validate_scope(payload.scope_level, payload.scope_id)
     _validate_tab(payload.tab)
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="skeleton: team2 session to implement [TODO-T2-011]",
-    )
+
+    pk = (payload.scope_level, payload.scope_id, payload.tab, payload.key)
+    existing = _settings_store.get(pk)
+    row_id = existing["id"] if existing else str(uuid.uuid4())
+
+    row = {
+        "id": row_id,
+        "scope_level": payload.scope_level,
+        "scope_id": payload.scope_id,
+        "tab": payload.tab,
+        "key": payload.key,
+        "value": payload.value,
+        "updated_at": _now(),
+        "updated_by": None,  # [TODO-T2-012] fill from current user
+    }
+    _settings_store[pk] = row
+    return _row_out(row)
 
 
 @router.delete("", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_setting(payload: SettingsKvDeleteIn) -> None:
     """Delete a single (scope, tab, key). Scope falls back to next level on resolve.
 
-    [TODO-T2-011]: DELETE FROM settings_kv WHERE ... .
     [TODO-T2-014]: emit audit_event settings_deleted.
     """
     _validate_scope(payload.scope_level, payload.scope_id)
     _validate_tab(payload.tab)
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="skeleton: team2 session to implement [TODO-T2-011]",
-    )
+
+    pk = (payload.scope_level, payload.scope_id, payload.tab, payload.key)
+    if pk not in _settings_store:
+        raise HTTPException(
+            status_code=404,
+            detail={"code": "SETTING_NOT_FOUND"},
+        )
+    del _settings_store[pk]
+    return None
 
 
 @router.get("/resolved", response_model=SettingsResolvedOut)
@@ -218,43 +272,42 @@ async def get_resolved_settings(
       3. event  (if event_id  given)       — overrides series
       4. table  (if table_id  given)       — overrides event
       5. user   (if user_id   given, only for preferences/display tabs)
-
-    Implementation sketch [TODO-T2-013]:
-    ```
-    scopes = [('global', None)]
-    if series_id: scopes.append(('series', series_id))
-    if event_id:  scopes.append(('event',  event_id))
-    if table_id:  scopes.append(('table',  table_id))
-    if user_id and tab in ('preferences','display'):
-        scopes.append(('user', user_id))
-
-    rows = db.exec(
-        select(SettingsKv).where(
-            SettingsKv.tab == tab,
-            or_(*[(SettingsKv.scope_level==lvl) & (SettingsKv.scope_id==sid) for lvl,sid in scopes])
-        )
-    ).all()
-
-    # Overlay in ascending precedence (later overrides earlier)
-    PRECEDENCE = {'global':0,'series':1,'event':2,'table':3,'user':4}
-    rows.sort(key=lambda r: PRECEDENCE[r.scope_level])
-
-    values, provenance = {}, {}
-    for r in rows:
-        values[r.key] = r.value
-        provenance[r.key] = r.scope_level
-    return SettingsResolvedOut(
-        tab=tab,
-        target={'series_id':series_id,'event_id':event_id,'table_id':table_id,'user_id':user_id},
-        values=values,
-        provenance=provenance,
-    )
-    ```
     """
     _validate_tab(tab)
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="skeleton: team2 session to implement [TODO-T2-013]",
+
+    scopes: list[tuple[str, str | None]] = [("global", None)]
+    if series_id:
+        scopes.append(("series", series_id))
+    if event_id:
+        scopes.append(("event", event_id))
+    if table_id:
+        scopes.append(("table", table_id))
+    if user_id and tab in ("preferences", "display"):
+        scopes.append(("user", user_id))
+
+    scope_set = set(scopes)
+    rows = [
+        r for r in _settings_store.values()
+        if r["tab"] == tab and (r["scope_level"], r["scope_id"]) in scope_set
+    ]
+    rows.sort(key=lambda r: PRECEDENCE[r["scope_level"]])
+
+    values: dict[str, Any] = {}
+    provenance: dict[str, str] = {}
+    for r in rows:
+        values[r["key"]] = r["value"]
+        provenance[r["key"]] = r["scope_level"]
+
+    return SettingsResolvedOut(
+        tab=tab,
+        target={
+            "series_id": series_id,
+            "event_id": event_id,
+            "table_id": table_id,
+            "user_id": user_id,
+        },
+        values=values,
+        provenance=provenance,
     )
 
 

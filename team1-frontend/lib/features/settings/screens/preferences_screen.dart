@@ -6,7 +6,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/preferences_provider.dart';
 import '../providers/settings_provider.dart';
+import '../widgets/setting_field.dart';
+import '../widgets/setting_section.dart';
 
 class PreferencesScreen extends ConsumerStatefulWidget {
   const PreferencesScreen({super.key});
@@ -175,6 +178,13 @@ class _PreferencesScreenState extends ConsumerState<PreferencesScreen> {
         ),
         const SizedBox(height: 16),
 
+        const Divider(height: 48),
+
+        // ── SG-003 Extended Fields (user-scope) ──────────────────
+        _SG003PrefsBlock(),
+
+        const Divider(height: 48),
+
         if (!twoFactorEnabled)
           ElevatedButton(
             onPressed: _twoFactorLoading ? null : () => _showSetup2faDialog(),
@@ -333,6 +343,201 @@ class _PreferencesScreenState extends ConsumerState<PreferencesScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// SG-003 user-scope preferences block (consumes PreferencesProvider).
+// ─────────────────────────────────────────────────────────────────
+
+class _SG003PrefsBlock extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final prefs = ref.watch(preferencesProvider);
+    final notifier = ref.read(preferencesProvider.notifier);
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Advanced Preferences',
+          style: theme.textTheme.titleMedium
+              ?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 12),
+
+        SettingSection(
+          title: 'Shortcuts',
+          subtitle: 'Keyboard bindings for frequent operator actions.',
+          children: [
+            _ShortcutTable(shortcuts: prefs.shortcuts, notifier: notifier),
+          ],
+        ),
+
+        SettingSection(
+          title: 'Notifications',
+          children: [
+            SwitchListTile(
+              title: const Text('Enable notifications'),
+              value: prefs.notification.enabled,
+              onChanged: (v) =>
+                  notifier.updateNotificationEnabled(v),
+            ),
+            SwitchListTile(
+              title: const Text('Sound alerts'),
+              value: prefs.notification.soundEnabled,
+              onChanged: (v) =>
+                  notifier.updateNotificationSoundEnabled(v),
+            ),
+            SettingField(
+              label: 'Volume',
+              helperText: '${(prefs.notification.volume * 100).toInt()}%',
+              child: Slider(
+                value: prefs.notification.volume.clamp(0.0, 1.0),
+                min: 0,
+                max: 1,
+                onChanged: (v) => notifier.updateNotificationVolume(v),
+              ),
+            ),
+          ],
+        ),
+
+        SettingSection(
+          title: 'Default View',
+          children: [
+            SettingField(
+              label: 'Table view',
+              child: SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'grid', label: Text('Grid')),
+                  ButtonSegment(value: 'list', label: Text('List')),
+                ],
+                selected: {prefs.defaultView.tableView},
+                onSelectionChanged: (s) =>
+                    notifier.updateDefaultTableView(s.first),
+              ),
+            ),
+          ],
+        ),
+
+        SettingSection(
+          title: 'Auto Logout',
+          children: [
+            SwitchListTile(
+              title: const Text('Enable idle auto-logout'),
+              value: prefs.autoLogout.enabled,
+              onChanged: (v) => notifier.updateAutoLogoutEnabled(v),
+            ),
+            SettingField(
+              label: 'Idle minutes',
+              helperText: '${prefs.autoLogout.idleMinutes} minutes',
+              child: Slider(
+                value: prefs.autoLogout.idleMinutes
+                    .clamp(15, 240)
+                    .toDouble(),
+                min: 15,
+                max: 240,
+                divisions: 15,
+                onChanged: (v) =>
+                    notifier.updateAutoLogoutIdleMinutes(v.toInt()),
+              ),
+            ),
+          ],
+        ),
+
+        SettingSection(
+          title: 'Locale',
+          children: [
+            SettingField(
+              label: 'Language',
+              child: DropdownButtonFormField<String>(
+                value: prefs.locale,
+                decoration: const InputDecoration(isDense: true),
+                items: const [
+                  DropdownMenuItem(value: 'auto', child: Text('Auto')),
+                  DropdownMenuItem(value: 'ko', child: Text('한국어')),
+                  DropdownMenuItem(value: 'en', child: Text('English')),
+                  DropdownMenuItem(value: 'es', child: Text('Español')),
+                ],
+                onChanged: (v) {
+                  if (v != null) notifier.updateLocale(v);
+                },
+              ),
+            ),
+          ],
+        ),
+
+        SettingSection(
+          title: 'Export Defaults',
+          children: [
+            SettingField(
+              label: 'Format',
+              child: SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'csv', label: Text('CSV')),
+                  ButtonSegment(value: 'json', label: Text('JSON')),
+                  ButtonSegment(value: 'xlsx', label: Text('XLSX')),
+                ],
+                selected: {prefs.exportDefaults.format},
+                onSelectionChanged: (s) =>
+                    notifier.updateExportFormat(s.first),
+              ),
+            ),
+            SwitchListTile(
+              title: const Text('Include headers'),
+              value: prefs.exportDefaults.includeHeaders,
+              onChanged: (v) =>
+                  notifier.updateExportIncludeHeaders(v),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ShortcutTable extends StatelessWidget {
+  const _ShortcutTable({required this.shortcuts, required this.notifier});
+
+  final Map<String, String> shortcuts;
+  final PreferencesController notifier;
+
+  @override
+  Widget build(BuildContext context) {
+    if (shortcuts.isEmpty) {
+      return const Text('No shortcuts configured.');
+    }
+    return DataTable(
+      columnSpacing: 16,
+      columns: const [
+        DataColumn(label: Text('Action')),
+        DataColumn(label: Text('Binding')),
+      ],
+      rows: shortcuts.entries.map((e) {
+        return DataRow(cells: [
+          DataCell(Text(e.key)),
+          DataCell(
+            SizedBox(
+              width: 160,
+              child: TextFormField(
+                initialValue: e.value,
+                decoration: const InputDecoration(isDense: true),
+                onFieldSubmitted: (v) {
+                  final next = Map<String, String>.from(shortcuts);
+                  next[e.key] = v;
+                  try {
+                    notifier.updateShortcuts(next);
+                  } catch (_) {
+                    // validator error — silently ignore in skeleton.
+                  }
+                },
+              ),
+            ),
+          ),
+        ]);
+      }).toList(),
     );
   }
 }

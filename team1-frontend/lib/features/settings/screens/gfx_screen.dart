@@ -7,12 +7,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/settings_provider.dart';
+import '../widgets/setting_field.dart';
+import '../widgets/setting_section.dart';
 
 class GfxScreen extends ConsumerStatefulWidget {
   const GfxScreen({super.key});
 
   @override
   ConsumerState<GfxScreen> createState() => _GfxScreenState();
+}
+
+String _humaniseElementKey(String key) {
+  return key
+      .split('_')
+      .map((s) => s.isEmpty ? s : '${s[0].toUpperCase()}${s.substring(1)}')
+      .join(' ');
+}
+
+bool _readVisibility(Map<String, dynamic> draft, String key) {
+  final ev = draft['element_visibility'];
+  if (ev is Map && ev[key] is bool) return ev[key] as bool;
+  return true; // default visible
 }
 
 class _GfxScreenState extends ConsumerState<GfxScreen> {
@@ -123,6 +138,85 @@ class _GfxScreenState extends ConsumerState<GfxScreen> {
           divisions: 10,
           label: '${animSpeed.toStringAsFixed(2)}x',
           onChanged: (v) => _notifier.updateField('animationSpeed', v),
+        ),
+
+        const Divider(height: 40),
+
+        // ── SG-003 Extended Fields ───────────────────────────────
+        SettingSection(
+          title: 'Skin & Theme',
+          children: [
+            SettingField(
+              label: 'Active Skin',
+              child: DropdownButtonFormField<String>(
+                value: (draft['active_skin_id'] as String?) ?? 'default',
+                decoration: const InputDecoration(isDense: true),
+                items: const [
+                  DropdownMenuItem(value: 'default', child: Text('Default')),
+                  DropdownMenuItem(value: 'wsop-live', child: Text('WSOP Live')),
+                  DropdownMenuItem(value: 'heritage', child: Text('Heritage')),
+                ],
+                onChanged: (v) =>
+                    _notifier.updateField('active_skin_id', v),
+              ),
+            ),
+            SettingField(
+              label: 'Color Theme',
+              child: DropdownButtonFormField<String>(
+                value: (draft['color_theme'] as String?) ?? 'dark',
+                decoration: const InputDecoration(isDense: true),
+                items: const [
+                  DropdownMenuItem(value: 'dark', child: Text('Dark')),
+                  DropdownMenuItem(value: 'light', child: Text('Light')),
+                  DropdownMenuItem(value: 'high-contrast',
+                      child: Text('High Contrast')),
+                ],
+                onChanged: (v) => _notifier.updateField('color_theme', v),
+              ),
+            ),
+            SettingField(
+              label: 'Language',
+              child: DropdownButtonFormField<String>(
+                value: (draft['language'] as String?) ?? 'auto',
+                decoration: const InputDecoration(isDense: true),
+                items: const [
+                  DropdownMenuItem(value: 'auto', child: Text('Auto')),
+                  DropdownMenuItem(value: 'ko', child: Text('Korean')),
+                  DropdownMenuItem(value: 'en', child: Text('English')),
+                  DropdownMenuItem(value: 'es', child: Text('Spanish')),
+                ],
+                onChanged: (v) => _notifier.updateField('language', v),
+              ),
+            ),
+          ],
+        ),
+
+        SettingSection(
+          title: 'Element Visibility',
+          subtitle: 'Toggle individual overlay elements.',
+          children: [
+            for (final key in const [
+              'pot',
+              'blinds',
+              'hole_cards',
+              'player_names',
+              'player_stacks',
+              'equity',
+              'leaderboard',
+              'timer',
+            ])
+              SwitchListTile(
+                dense: true,
+                title: Text(_humaniseElementKey(key)),
+                value: _readVisibility(draft, key),
+                onChanged: (v) {
+                  final ev = Map<String, dynamic>.from(
+                      (draft['element_visibility'] as Map?) ?? const {});
+                  ev[key] = v;
+                  _notifier.updateField('element_visibility', ev);
+                },
+              ),
+          ],
         ),
 
         // Error banner

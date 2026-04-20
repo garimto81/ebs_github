@@ -185,6 +185,138 @@ class PreferencesController extends StateNotifier<UserPreferences> {
     state = state.copyWith(locale: locale);
     // [TODO-T1-005] trigger flutter_localizations reload
   }
+
+  // ───────────────────────────────────────────────────────────────
+  // SG-003 field-level updaters (partial PUT /preferences payloads).
+  // ───────────────────────────────────────────────────────────────
+
+  /// Generic field updater keyed by dotted path (`notification.volume`,
+  /// `auto_logout.idle_minutes`, …). Mirrors the backend payload so callers
+  /// can stay declarative.
+  ///
+  /// [TODO-T1-004] once Dio is wired, dispatch a partial PUT with the same
+  /// key used here.
+  Future<void> updateField(String key, dynamic value) async {
+    switch (key) {
+      case 'notification.enabled':
+        updateNotificationEnabled(value as bool);
+      case 'notification.sound_enabled':
+        updateNotificationSoundEnabled(value as bool);
+      case 'notification.volume':
+        updateNotificationVolume((value as num).toDouble());
+      case 'default_view.table_view':
+        updateDefaultTableView(value as String);
+      case 'default_view.players_view':
+        updateDefaultPlayersView(value as String);
+      case 'auto_logout.enabled':
+        updateAutoLogoutEnabled(value as bool);
+      case 'auto_logout.idle_minutes':
+        updateAutoLogoutIdleMinutes((value as num).toInt());
+      case 'locale':
+        await updateLocale(value as String);
+      case 'export_defaults.format':
+        updateExportFormat(value as String);
+      case 'export_defaults.include_headers':
+        updateExportIncludeHeaders(value as bool);
+      default:
+        throw ArgumentError('Unknown preferences field: $key');
+    }
+  }
+
+  void updateNotificationEnabled(bool v) {
+    state = state.copyWith(
+      notification: NotificationPref(
+        enabled: v,
+        soundEnabled: state.notification.soundEnabled,
+        eventTypes: state.notification.eventTypes,
+        volume: state.notification.volume,
+      ),
+    );
+  }
+
+  void updateNotificationSoundEnabled(bool v) {
+    state = state.copyWith(
+      notification: NotificationPref(
+        enabled: state.notification.enabled,
+        soundEnabled: v,
+        eventTypes: state.notification.eventTypes,
+        volume: state.notification.volume,
+      ),
+    );
+  }
+
+  void updateNotificationVolume(double v) {
+    state = state.copyWith(
+      notification: NotificationPref(
+        enabled: state.notification.enabled,
+        soundEnabled: state.notification.soundEnabled,
+        eventTypes: state.notification.eventTypes,
+        volume: v.clamp(0.0, 1.0),
+      ),
+    );
+  }
+
+  void updateDefaultTableView(String v) {
+    state = state.copyWith(
+      defaultView: DefaultViewPref(
+        tableView: v,
+        playersView: state.defaultView.playersView,
+        expandedSeries: state.defaultView.expandedSeries,
+      ),
+    );
+  }
+
+  void updateDefaultPlayersView(String v) {
+    state = state.copyWith(
+      defaultView: DefaultViewPref(
+        tableView: state.defaultView.tableView,
+        playersView: v,
+        expandedSeries: state.defaultView.expandedSeries,
+      ),
+    );
+  }
+
+  void updateAutoLogoutEnabled(bool v) {
+    state = state.copyWith(
+      autoLogout: AutoLogoutPref(
+        enabled: v,
+        idleMinutes: state.autoLogout.idleMinutes,
+        warnBeforeSeconds: state.autoLogout.warnBeforeSeconds,
+      ),
+    );
+  }
+
+  void updateAutoLogoutIdleMinutes(int v) {
+    state = state.copyWith(
+      autoLogout: AutoLogoutPref(
+        enabled: state.autoLogout.enabled,
+        idleMinutes: v,
+        warnBeforeSeconds: state.autoLogout.warnBeforeSeconds,
+      ),
+    );
+  }
+
+  void updateExportFormat(String v) {
+    state = state.copyWith(
+      exportDefaults: ExportDefaults(
+        format: v,
+        includeHeaders: state.exportDefaults.includeHeaders,
+        timezoneMode: state.exportDefaults.timezoneMode,
+        filenamePattern: state.exportDefaults.filenamePattern,
+      ),
+    );
+  }
+
+  void updateExportIncludeHeaders(bool v) {
+    state = state.copyWith(
+      exportDefaults: ExportDefaults(
+        format: state.exportDefaults.format,
+        includeHeaders: v,
+        timezoneMode: state.exportDefaults.timezoneMode,
+        filenamePattern: state.exportDefaults.filenamePattern,
+      ),
+    );
+  }
 }
 
 final preferencesProvider =

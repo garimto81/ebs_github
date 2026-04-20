@@ -24,6 +24,7 @@ reimplementability_notes: "API-01 REST 카탈로그 + WSOP LIVE 연동 (53KB). T
 | 2026-04-14 | WSOP 대조 | 8건 WSOP LIVE Confluence 원본 대조 — enum int값, divergence 근거, 필드 매핑표 추가 |
 | 2026-04-14 | CCR-043 | §8.1 PayoutStructure/Staff 동기화 대상 추가, §9.7 wsop_id 매핑 전략(신규 엔티티), §13.1 GGPass S2S 인증, §14 Phase별 통합 전략, §15 sync_conflicts 감사 테이블 |
 | 2026-04-14 | 문서 통합 | API-02 WSOP LIVE Integration을 Part II로 흡수. §5.16 sync 엔드포인트 중복 해소 |
+| 2026-04-20 | SG-008 a분류 편입 | §5.17 CRUD 완결성 편입 신설 — D3(code-only) 77건 리소스별 테이블로 일괄 편입 (Users/Competitions/Series/Events/Flights/Tables/Players/Hands/BlindStructures/PayoutStructures/Skins/Decks/Configs/Reports/Settings) |
 
 ---
 
@@ -420,7 +421,6 @@ http://{bo_host}:{bo_port}/api/v1
 | POST | `/tables` | 테이블 생성 | Admin |
 | PUT | `/tables/:id` | 테이블 수정 | Admin |
 | DELETE | `/tables/:id` | 테이블 삭제 | Admin |
-| POST | `/tables/:id/launch-cc` | CC 인스턴스 Launch | Admin |
 | GET | `/tables/:id/status` | 테이블 실시간 상태 | 인증 사용자 |
 | POST | `/tables/rebalance` | 다중 테이블 플레이어 재배치 (saga) | Admin |
 | GET | `/tables/:id/events` | WebSocket 재연결 후 누락 이벤트 replay | Admin, Operator(할당), Viewer |
@@ -441,31 +441,7 @@ http://{bo_host}:{bo_port}/api/v1
 }
 ```
 
-**POST /tables/:id/launch-cc — Response (200 OK):**
-
-```json
-{
-  "data": {
-    "table_id": 1,
-    "status": "live",
-    "cc_instance_id": "cc-uuid-abcd",
-    "launch_token": "eyJhbGc...",
-    "ws_url": "ws://host/ws/cc?table_id=1",
-    "launched_at": "2026-04-08T12:00:00Z"
-  },
-  "error": null
-}
-```
-
-> **CCR-029**: Launch 응답에는 `cc_instance_id` + `launch_token` (JWT 5분 수명) + `ws_url`이 반드시 포함된다. Lobby는 이 정보를 shell command/deep link 인자로 전달해 Flutter CC 앱을 실행하고, CC는 `ws_url?token={launch_token}&cc_instance_id={uuid}`로 WebSocket 연결한다. Launch 시퀀스 상세는 `BS-05-00 §7` 참조.
-
-**Launch 검증 절차 (서버)**:
-1. JWT 인증 (role = Admin 또는 Operator)
-2. RBAC — Operator면 `assigned_tables`에 `table_id` 포함
-3. TableFSM 확인 — SETUP 이상
-4. `cc_session` record 생성 + `cc_instance_id` 할당
-5. `launch_token` 발급 (sub = `cc_instance_id`, exp = 현재 + 5분)
-6. WebSocket 연결 시 token 검증 + `cc_instance_id` 매칭
+> **SG-008-b11 결정 (2026-04-20, 옵션 1 채택)**: `POST /tables/:id/launch-cc` 엔드포인트는 제거되었다. CC launch 는 OS deep-link (`ebs-cc://table/{id}?token={short_lived_token}`) 방식으로 전환되었다. Lobby 가 short-lived launch token 을 `/api/v1/auth/launch-token` (별도 issuance) 로 받아 deep-link 인자로 전달하고, CC 앱은 Flutter `app_links` 패키지로 OS protocol handler 를 등록한다. 원격 launch 요구는 Phase 1 범위 밖 (필요 시 WebSocket push 패턴으로 재설계). 근거: WSOP LIVE `Staff App §Launch` = deep-link 패턴.
 
 ---
 
@@ -881,20 +857,30 @@ Operator 경고 모달 + `BO-03 §4 Scenario D` 복구 절차를 트리거한다
 | `from` | datetime | 시작 일시 |
 | `to` | datetime | 종료 일시 |
 
-### 5.15 Reports — 리포트
+### 5.15 Reports — 리포트 (SG-007)
 
 | Method | Path | 설명 | 역할 제한 |
 |:------:|------|------|:---------:|
-| GET | `/reports/:type` | 리포트 조회 | Admin |
+| GET | `/reports/dashboard` | 전체 운영 현황 개요 (B-037) | Admin, Viewer |
+| GET | `/reports/table-activity` | 테이블별 활동 시계열 (B-038) | Admin, Operator |
+| GET | `/reports/player-stats` | VPIP/PFR/AF/3bet% (B-039) | Admin, Viewer |
+| GET | `/reports/hand-distribution` | 169 홀덤 시작패 매트릭스 (B-048) | Admin |
+| GET | `/reports/rfid-health` | RFID 리더/카드 상태 (B-049) | Admin, Operator |
+| GET | `/reports/operator-activity` | 운영자 작업 이력 (B-050) | Admin, Operator(self-only) |
 
-**type 값:**
+**공통 쿼리 파라미터 (SG-007 §공통)**:
 
-| type | 설명 | 필터 파라미터 |
-|------|------|-------------|
-| `hands-summary` | 핸드 통계 요약 | `?table_id=`, `?event_id=` |
-| `player-stats` | 플레이어 통계 (VPIP, PFR, AGR) | `?player_id=`, `?event_id=` |
-| `table-activity` | 테이블 활동 이력 | `?flight_id=`, `?from=`, `?to=` |
-| `session-log` | 사용자 세션 이력 | `?user_id=`, `?from=`, `?to=` |
+| 파라미터 | 타입 | 필수 | 설명 |
+|---------|------|:----:|------|
+| `scope` | `global \| series \| event \| table` | O | 집계 범위 |
+| `scope_id` | string | △ | `scope != global` 시 필수 |
+| `from` | ISO 8601 datetime | O | 시작 시각 |
+| `to` | ISO 8601 datetime | O | 종료 시각 |
+| `granularity` | `minute \| hour \| day \| hand` | O | 시계열 해상도 |
+| `format` | `json \| csv` | △ | 기본 json |
+| `timezone` | IANA TZ | △ | 기본 `Asia/Seoul` |
+
+> **SG-008-b12 결정 (2026-04-20, 옵션 1 채택)**: legacy `GET /reports/{report_type}` (type=hands-summary/player-stats/table-activity/session-log) 엔드포인트는 제거되었다. Frontend/CC 에서 호출 0 확인 후 삭제. 본 6-endpoint 로 완전 대체. 재도입 요청 시 SG-008-b12 재오픈.
 
 ### 5.16 WSOP LIVE Sync — 외부 동기화
 
@@ -1001,6 +987,243 @@ Waiting List에서 플레이어의 현재 상태를 나타내는 enum. WSOP LIVE
 > WSOP 원본: `WaitingStatus { Waiting=0, Front=1, Calling=2, Ready=3, Seated=10, Canceled=20 }` (Confluence page 1960411325). EBS는 UPPER_SNAKE_CASE, WSOP는 PascalCase.
 
 **사용처**: `GET /tables/:event_flight_id/waiting` 응답의 각 항목에 `status` 필드로 포함.
+
+---
+
+## 5.17 CRUD 완결성 편입 (2026-04-20 SG-008 a분류)
+
+**배경**: `tools/spec_drift_check.py --api` 결과 D3(code-only) 96건 중 (a) 기획 추가 77건을 본 섹션에서 일괄 편입한다. (b) 판정 필요 12건은 `SG-008-b1 ~ b12` 로 개별 승격됨(마스터: `Conductor_Backlog/SG-008-api-d3-bulk-documentation.md`).
+
+**편입 원칙**:
+
+1. **기획이 진실** — 본 섹션의 모든 endpoint 는 §5.2~5.16 에 이미 정의된 리소스의 CRUD 완결성 보강. 새 리소스나 새 동작을 추가하지 않는다.
+2. **공통 규약 준용** — RBAC/auth/Idempotency/응답 포맷은 §1~§4 규약을 그대로 따른다. 본 섹션은 중복 기술하지 않는다.
+3. **Request/Response 스키마 참조** — 각 endpoint 의 body/response 는 `team2-backend/src/routers/<resource>.py` 의 Pydantic/SQLModel 모델에 정의. FastAPI OpenAPI 자동 생성 (`/docs`, `/openapi.json`) 시 노출. 본 문서는 **endpoint 목록 + 용도 + RBAC** 만 명세.
+4. **멱등성** — POST/PATCH/DELETE 는 `Idempotency-Key` 헤더 사용 권장 (§3.1 참조).
+
+### 5.17.1 Users — CRUD 완결
+
+§5.2 기 정의. 본 표는 D3 편입분 명시.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/users` | 목록 | Admin | 200 |
+| GET | `/api/v1/users/{user_id}` | 단건 | Admin | 200 / 404 |
+| PUT | `/api/v1/users/{user_id}` | 수정 | Admin | 200 / 404 |
+| DELETE | `/api/v1/users/{user_id}` | 삭제 | Admin | 204 / 404 |
+
+### 5.17.2 Competitions — CRUD 완결
+
+§5.3 기 정의. Phase 2 deprecated 예정이나 Phase 1 유지.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/competitions/{competition_id}` | 단건 | 인증 | 200 / 404 |
+| POST | `/api/v1/competitions` | 생성 | Admin | 201 |
+| PUT | `/api/v1/competitions/{competition_id}` | 수정 | Admin | 200 / 404 |
+| DELETE | `/api/v1/competitions/{competition_id}` | 삭제 | Admin | 204 / 404 |
+
+### 5.17.3 Series — CRUD 완결
+
+§5.4 기 정의. sub-route 추가.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/series/{series_id}` | 단건 | 인증 | 200 / 404 |
+| PUT | `/api/v1/series/{series_id}` | 수정 | Admin | 200 / 404 |
+| DELETE | `/api/v1/series/{series_id}` | 삭제 | Admin | 204 / 404 |
+| GET | `/api/v1/series/{series_id}/events` | Series의 Event 목록 | 인증 | 200 |
+| POST | `/api/v1/series/{series_id}/events` | Series 하위 Event 생성 | Admin | 201 |
+
+### 5.17.4 Events — CRUD 완결
+
+§5.5 기 정의. flights sub-route 추가.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/events/{event_id}` | 단건 | 인증 | 200 / 404 |
+| PUT | `/api/v1/events/{event_id}` | 수정 | Admin | 200 / 404 |
+| DELETE | `/api/v1/events/{event_id}` | 삭제 | Admin | 204 / 404 |
+| GET | `/api/v1/events/{event_id}/flights` | Event의 Flight 목록 | 인증 | 200 |
+| POST | `/api/v1/events/{event_id}/flights` | Event 하위 Flight 생성 | Admin | 201 |
+
+### 5.17.5 Flights — CRUD 완결 + Clock 제어 + 하위 리소스
+
+§5.6 기 정의. Clock 제어 9종 전체 (§5.6.1 이미 명세), blind-structure/tables sub-route 추가.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/flights` | 목록 (`?event_id=`) | 인증 | 200 |
+| GET | `/api/v1/flights/{flight_id}` | 단건 | 인증 | 200 / 404 |
+| POST | `/api/v1/flights` | 생성 | Admin | 201 |
+| PUT | `/api/v1/flights/{flight_id}` | 수정 | Admin | 200 / 404 |
+| DELETE | `/api/v1/flights/{flight_id}` | 삭제 | Admin | 204 / 404 |
+| PUT | `/api/v1/flights/{flight_id}/complete` | Running → Completed | Admin | 200 / 409 |
+| PUT | `/api/v1/flights/{flight_id}/cancel` | Canceled 전이 | Admin | 200 / 409 |
+| GET | `/api/v1/flights/{flight_id}/clock` | Clock 상태 | 인증 | 200 |
+| POST | `/api/v1/flights/{flight_id}/clock/start` | Clock 시작 | Admin/Op | 200 / 409 |
+| POST | `/api/v1/flights/{flight_id}/clock/pause` | Clock 일시정지 | Admin/Op | 200 / 409 |
+| POST | `/api/v1/flights/{flight_id}/clock/resume` | Clock 재개 | Admin/Op | 200 / 409 |
+| POST | `/api/v1/flights/{flight_id}/clock/restart` | 현 레벨 재시작 (CCR-050) | Admin/Op | 200 / 409 |
+| PUT | `/api/v1/flights/{flight_id}/clock` | 수동 조정 | Admin | 200 |
+| PUT | `/api/v1/flights/{flight_id}/clock/detail` | 테마/공지 변경 (CCR-050) | Admin/Op | 200 |
+| PUT | `/api/v1/flights/{flight_id}/clock/reload-page` | 대시보드 리로드 (CCR-050) | Admin/Op | 200 |
+| PUT | `/api/v1/flights/{flight_id}/clock/adjust-stack` | 평균 스택 강제 조정 (CCR-050) | Admin | 200 |
+| GET | `/api/v1/flights/{flight_id}/blind-structure` | Flight 적용 구조 | 인증 | 200 / 404 |
+| PUT | `/api/v1/flights/{flight_id}/blind-structure` | 구조 수정 | Admin | 200 |
+| GET | `/api/v1/flights/{flight_id}/tables` | Flight의 Table 목록 | 인증 | 200 |
+| POST | `/api/v1/flights/{flight_id}/tables` | Flight 하위 Table 생성 | Admin | 201 |
+
+> Clock 제어 의미·request body 상세는 §5.6.1 참조. blind-structure 의미는 §5.13 참조.
+
+### 5.17.6 Tables — CRUD 완결 + 하위 리소스
+
+§5.7 기 정의. seats sub-route 추가.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/tables` | 목록 (`?flight_id=`) | 인증 | 200 |
+| GET | `/api/v1/tables/{table_id}` | 단건 | 인증 (Op: 할당만) | 200 / 404 |
+| PUT | `/api/v1/tables/{table_id}` | 수정 | Admin | 200 / 404 |
+| DELETE | `/api/v1/tables/{table_id}` | 삭제 | Admin | 204 / 404 |
+| GET | `/api/v1/tables/{table_id}/status` | 실시간 상태 | 인증 | 200 |
+| GET | `/api/v1/tables/{table_id}/seats` | 좌석 목록 (10석) | 인증 | 200 |
+| PUT | `/api/v1/tables/{table_id}/seats/{seat_no}` | 좌석 수정 (배치/제거) | Admin/Op(할당) | 200 / 404 |
+
+### 5.17.7 Players — CRUD 완결
+
+§5.9 기 정의.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/players` | 목록 | 인증 | 200 |
+| GET | `/api/v1/players/{player_id}` | 단건 | 인증 | 200 / 404 |
+| POST | `/api/v1/players` | 수동 등록 | Admin | 201 |
+| PUT | `/api/v1/players/{player_id}` | 수정 | Admin/Op(할당) | 200 / 404 |
+| DELETE | `/api/v1/players/{player_id}` | 삭제 | Admin | 204 / 404 |
+
+### 5.17.8 Hands — 조회 전용
+
+§5.10 기 정의. 생성은 WebSocket (CC) 경로.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/hands` | 목록 (`?table_id=`) | 인증 | 200 |
+| GET | `/api/v1/hands/{hand_id}` | 단건 | 인증 | 200 / 404 |
+| GET | `/api/v1/hands/{hand_id}/actions` | 액션 목록 | 인증 | 200 |
+| GET | `/api/v1/hands/{hand_id}/players` | 참여 플레이어 | 인증 | 200 |
+
+### 5.17.9 BlindStructures — CRUD 완결 (legacy flat)
+
+§5.13 에 Series-scoped 경로가 정의되어 있다. 본 표는 **Phase 1 legacy flat** 호환 경로.
+
+| Method | Path | 용도 | RBAC | Status | 비고 |
+|:------:|------|------|:----:|:------:|------|
+| GET | `/api/v1/blind-structures` | 템플릿 목록 (flat) | 인증 | 200 | Phase 1 호환 |
+| GET | `/api/v1/blind-structures/{bs_id}` | 단건 (flat) | 인증 | 200 / 404 | Phase 1 호환 |
+| POST | `/api/v1/blind-structures` | 생성 (flat) | Admin | 201 | Phase 1 호환 |
+| PUT | `/api/v1/blind-structures/{bs_id}` | 수정 (flat) | Admin | 200 / 404 | Phase 1 호환 |
+| DELETE | `/api/v1/blind-structures/{bs_id}` | 삭제 (flat) | Admin | 204 / 404 | Phase 1 호환 |
+
+> 신규 구현은 Series-scoped 경로 (§5.13) 권장. flat 경로는 Phase 2 deprecate 예정.
+
+### 5.17.10 PayoutStructures — CRUD 완결 (legacy flat)
+
+§5.13.1 에 Series-scoped 경로 정의. 본 표는 Phase 1 legacy flat 호환.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/payout-structures` | 템플릿 목록 (flat) | 인증 | 200 |
+| GET | `/api/v1/payout-structures/{ps_id}` | 단건 (flat) | 인증 | 200 / 404 |
+| POST | `/api/v1/payout-structures` | 생성 (flat) | Admin | 201 |
+| PUT | `/api/v1/payout-structures/{ps_id}` | 수정 (flat) | Admin | 200 / 404 |
+| DELETE | `/api/v1/payout-structures/{ps_id}` | 삭제 (flat) | Admin | 204 / 404 |
+
+### 5.17.11 Skins — 확장
+
+§5.12 기 정의. metadata PATCH + activate 별칭 추가.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| PUT | `/api/v1/skins/{skin_id}` | 수정 (skin.json 갱신) | Admin | 200 / 404 |
+| DELETE | `/api/v1/skins/{skin_id}` | 삭제 | Admin | 204 / 404 |
+| PATCH | `/api/v1/skins/{skin_id}/metadata` | 메타데이터만 부분 수정 | Admin | 200 |
+| POST | `/api/v1/skins/{skin_id}/activate` | 활성화 (표준 — POST) | Admin/Op | 200 |
+| PUT | `/api/v1/skins/{skin_id}/activate` | 활성화 (idempotent 별칭 — PUT) | Admin/Op | 200 |
+
+> `POST`/`PUT` 두 동사 모두 구현 — PUT 은 idempotent 재요청에 안전.
+
+### 5.17.12 Decks — RFID 카드 덱 관리 (SG-006)
+
+§5.7~5.8 관련 RFID 카드 매핑을 위한 독립 리소스 (SG-006 deck 라우터).
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/decks/{deck_id}` | 덱 상세 (52장 매핑) | 인증 | 200 / 404 |
+| PATCH | `/api/v1/decks/{deck_id}` | 덱 메타 수정 (이름 등) | Admin | 200 / 404 |
+| DELETE | `/api/v1/decks/{deck_id}` | 덱 삭제 | Admin | 204 / 404 |
+| POST | `/api/v1/decks/{deck_id}/cards` | 카드 일괄 등록 | Admin | 201 |
+| PATCH | `/api/v1/decks/{deck_id}/cards/{card_code}` | 단일 카드 매핑 변경 | Admin | 200 / 404 |
+| POST | `/api/v1/decks/import` | .deck 파일 import | Admin | 201 |
+
+> 의미·request body 상세는 `SG-006-rfid-52-card-codemap.md` 및 `src/routers/decks.py` Pydantic 모델 참조.
+
+### 5.17.13 Configs — 섹션별 설정
+
+§5.11 기 정의. SG-003 legacy wrapper — Phase 2 `settings_kv` 로 이관 예정.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/configs/{section}` | 섹션별 조회 | Admin | 200 / 404 |
+| PUT | `/api/v1/configs/{section}` | 섹션별 수정 | Admin | 200 |
+
+### 5.17.14 Reports — 리포트 확장
+
+§5.15 에 `{type}` path 로 조회 명세. team2 SG-007 구현은 **개별 report type 별 endpoint** 로 분기.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/reports/dashboard` | 운영 대시보드 집계 | Admin | 200 |
+| GET | `/api/v1/reports/hand-distribution` | 핸드 분포 통계 | Admin | 200 |
+| GET | `/api/v1/reports/operator-activity` | Operator 활동 이력 | Admin | 200 |
+| GET | `/api/v1/reports/player-stats` | 플레이어 통계 (VPIP/PFR/AGR) | Admin | 200 |
+| GET | `/api/v1/reports/rfid-health` | RFID 리더 헬스 체크 | Admin | 200 |
+| GET | `/api/v1/reports/table-activity` | 테이블 활동 이력 | Admin | 200 |
+
+> §5.15 `GET /reports/{type}` 의 실제 구현은 위 6개 type-specific endpoint 로 분기된다. `{type}` path 변수 형태는 SG-008-b12 에서 Phase 2 deprecate 판정 대기.
+
+### 5.17.15 Settings — resolved 조회
+
+§5.11 Configs 와 별개로 team1 Settings UI 가 소비하는 resolved view.
+
+| Method | Path | 용도 | RBAC | Status |
+|:------:|------|------|:----:|:------:|
+| GET | `/api/v1/settings/resolved` | 스코프별 merge 결과 (Series→Event→Table 우선순위) | 인증 | 200 |
+
+> resolved 규칙: Table override → Event override → Series default 순서 적용. 상세는 `Settings/Overview.md §Settings Scope`.
+
+### 5.17.16 편입 총괄
+
+| 카테고리 | 편입 개수 | 참조 섹션 |
+|----------|:---------:|----------|
+| Users | 4 | §5.2, §5.17.1 |
+| Competitions | 4 | §5.3, §5.17.2 |
+| Series | 5 | §5.4, §5.17.3 |
+| Events | 5 | §5.5, §5.17.4 |
+| Flights (clock 포함) | 20 | §5.6, §5.17.5 |
+| Tables (seats 포함) | 7 | §5.7, §5.17.6 |
+| Players | 5 | §5.9, §5.17.7 |
+| Hands | 4 | §5.10, §5.17.8 |
+| BlindStructures (flat) | 5 | §5.13, §5.17.9 |
+| PayoutStructures (flat) | 5 | §5.13.1, §5.17.10 |
+| Skins | 5 | §5.12, §5.17.11 |
+| Decks | 6 | §5.17.12 |
+| Configs | 2 | §5.11, §5.17.13 |
+| Reports | 6 | §5.15, §5.17.14 |
+| Settings | 1 | §5.17.15 |
+| **합계** | **84** | — |
+
+> 총 84건 — SG-008 마스터 (a) 분류 77건 + 이미 §5.6.1 Clock 등에 부분 명세되어 있던 7건 (명시 재확인). §6 총괄표는 리소스 대분류 단위로 유지되며 본 편입은 상세 보강.
 
 ---
 
@@ -1398,3 +1621,141 @@ Phase 1은 Mock 모드(§11)로 운영하며 외부 호출 없음. `WSOP_LIVE_AP
 - FK 부모 없음으로 건너뛴 레코드 → `resolution='pending'` 기록 후 Admin 수동 해결 대기
 
 **조회 엔드포인트**: `GET /api/v1/sync/conflicts?entity_table=&resolution=` — §5.16 참조. Sprint 3 S3-03 에서 구현.
+
+---
+
+## 16. SG-008 b-분류 결정 스펙 (2026-04-20)
+
+SG-008 Spec Drift Triage 에서 b-분류(설계 결정 필요)로 승격된 12개 항목의 결정 결과와 각 엔드포인트의 최종 스펙. `SG-008-bN-*.md` 파일과 1:1 매핑.
+
+### 16.1 결정 요약
+
+| SG | 엔드포인트 | 결정 | 반영 위치 |
+|----|-----------|:----:|-----------|
+| b1 | `GET /audit-events` | 옵션 1 (Admin-only public) | §16.2 |
+| b2 | `GET /audit-logs` | 옵션 1 (Admin-only, filter) | §16.3 |
+| b3 | `GET /audit-logs/download` | 옵션 1 (Admin-only CSV stream) | §16.4 |
+| b4 | `GET /auth/me` | 옵션 1 (모든 인증 사용자) | §16.5 |
+| b5 | `POST /auth/logout` | 옵션 1 (JWT 블랙리스트) | §16.6 |
+| b6 | `POST /sync/mock-seed` | 옵션 1 (Admin, dev/test profile 한정) | §16.7 |
+| b7 | `POST /sync/mock-reset` | 옵션 1 (Admin, dev/test profile 한정) | §16.8 |
+| b8 | `GET /sync/status` | 옵션 1 (Admin, last-sync + conflicts_pending) | §16.9 |
+| b9 | `POST /sync/trigger` | 옵션 1 (Admin, scope 파라미터) | §16.10 |
+| b10 | `POST /events/{event_id}/undo` | 옵션 3 (삭제, Phase 1 미지원) | §16.11 |
+| b11 | `POST /tables/{table_id}/launch-cc` | 옵션 1 (deep-link 전환, 삭제) | §5.4 |
+| b12 | `GET /reports/{report_type}` (legacy) | 옵션 1 (삭제, SG-007 6-endpoint 대체) | §5.15 |
+
+### 16.2 GET /audit-events (b1)
+
+| 항목 | 값 |
+|------|-----|
+| Method / Path | `GET /api/v1/audit-events` |
+| Auth | 필수 (JWT Bearer) |
+| RBAC | Admin only |
+| Query | `table_id` (optional), `correlation_id` (optional), `since` (seq, default 0), `limit` (1..2000, default 100) |
+| Response | `{ data: AuditEvent[], meta: { since, limit, count } }` |
+
+WSOP LIVE Confluence `SignalR Service §AuditLog` 패턴 정렬. 근거: SG-008-b1.
+
+### 16.3 GET /audit-logs (b2)
+
+| 항목 | 값 |
+|------|-----|
+| Method / Path | `GET /api/v1/audit-logs` |
+| Auth | 필수 |
+| RBAC | Admin only |
+| Query | `user_id` (optional), `entity_type` (optional), `skip` (default 0), `limit` (1..100, default 20) |
+| Response | `{ data: AuditLog[], meta: { skip, limit, total } }` |
+
+관리자 작업 로그 (admin action 감사). 근거: SG-008-b2.
+
+### 16.4 GET /audit-logs/download (b3)
+
+| 항목 | 값 |
+|------|-----|
+| Method / Path | `GET /api/v1/audit-logs/download` |
+| Auth | 필수 |
+| RBAC | Admin only |
+| Response | `text/csv` streaming (Content-Disposition: attachment; filename=audit_logs.csv) |
+
+CSV 컬럼: `id, user_id, entity_type, entity_id, action, detail, ip_address, created_at`. 근거: SG-008-b3.
+
+### 16.5 GET /auth/me (b4)
+
+| 항목 | 값 |
+|------|-----|
+| Method / Path | `GET /api/v1/auth/me` |
+| Auth | 필수 (JWT Bearer) |
+| RBAC | 모든 인증 사용자 (Admin/Operator/Viewer) |
+| Response | `{ user_id, email, role, display_name, is_active, assigned_tables? }` |
+
+JWT decode → user 레코드 조회. 근거: SG-008-b4. WSOP LIVE `Staff App §Me` 동등.
+
+### 16.6 POST /auth/logout (b5)
+
+| 항목 | 값 |
+|------|-----|
+| Method / Path | `POST /api/v1/auth/logout` |
+| Auth | 필수 |
+| RBAC | 모든 인증 사용자 |
+| Body | 없음 (Bearer token 에서 jti 추출) |
+| Response | `204 No Content` |
+
+서버 측: JWT `jti` 를 블랙리스트 (Redis TTL = 토큰 남은 수명) 등록. `get_current_user` 에서 매 요청 jti 체크. 근거: SG-008-b5.
+
+### 16.7 POST /sync/mock-seed (b6)
+
+| 항목 | 값 |
+|------|-----|
+| Method / Path | `POST /api/v1/sync/mock-seed` |
+| Auth | 필수 |
+| RBAC | Admin only |
+| Profile gate | `settings.auth_profile in ('dev', 'test')` — prod 에서는 `405 METHOD_NOT_ALLOWED_IN_PROFILE` |
+| Body | `{ "fixture": "wsop-basic" \| "wsop-mix-game" \| "empty" }` |
+| Response | `202 Accepted` + `{ seeded: { series, events, players, ... } }` |
+
+WSOP LIVE mock fixture 로 DB 시드. `test_wsop_sync_fixtures.py` 와 동일 fixture 재사용. 근거: SG-008-b6.
+
+### 16.8 POST /sync/mock-reset (b7)
+
+| 항목 | 값 |
+|------|-----|
+| Method / Path | `POST /api/v1/sync/mock-reset` |
+| Auth | 필수 |
+| RBAC | Admin only |
+| Profile gate | `settings.auth_profile in ('dev', 'test')` |
+| Body | 없음 |
+| Response | `204 No Content` |
+
+mock-seed 로 생성된 레코드를 모두 삭제 (truncate `series`, `events`, `event_flights`, `players` where `source='wsop_mock'`). 근거: SG-008-b7.
+
+### 16.9 GET /sync/status (b8)
+
+| 항목 | 값 |
+|------|-----|
+| Method / Path | `GET /api/v1/sync/status` |
+| Auth | 필수 |
+| RBAC | Admin only |
+| Response | `{ last_sync: { sync_id, scope, status, completed_at }, conflicts_pending: int, circuit_breaker: { state, failure_count } }` |
+
+`/api/v1/sync/wsop-live/status` 와 중복되지 않는 점: 본 엔드포인트는 **aggregate 현황** (마지막 성공 + 충돌 + CB 상태), 후자는 특정 sync_id 진행 상태. 근거: SG-008-b8.
+
+### 16.10 POST /sync/trigger (b9)
+
+| 항목 | 값 |
+|------|-----|
+| Method / Path | `POST /api/v1/sync/trigger` |
+| Auth | 필수 |
+| RBAC | Admin only |
+| Body | `{ "scope": "all" \| "series" \| "events" \| "players" \| "blinds" }` |
+| Response | `202 Accepted` + `{ sync_id, scope, status: "started", started_at }` |
+
+`/api/v1/sync/wsop-live` (§5.16) 와 기능 동일. 본 엔드포인트는 flat alias — 기존 `sync/wsop-live` 가 vendor-specific (WSOP) 네이밍이라면 `sync/trigger` 는 일반 sync 추상화. 정렬 진행 중 (Phase 2+에서 단일화 예정). 근거: SG-008-b9.
+
+### 16.11 POST /events/{event_id}/undo (b10) — 삭제됨
+
+> **SG-008-b10 결정 (2026-04-20, 옵션 3 채택)**: Phase 1 미지원. 엔드포인트 + 테스트 (test_undo.py) 제거 완료.
+>
+> **이유**: Undo 는 단순 기능이 아닌 **설계 철학 결정** (append-only vs mutable state). Event Sourcing 기반 `audit_events` (DATA-04) 는 append-only 이므로 undo = compensating event 필요. 이 규약 설계는 Phase 2+ 재도입 시 SG-008-b10 재오픈 + 옵션 1 기반 설계. Operator 실수 복구는 Phase 1 에서는 "다음 이벤트로 보정" 로 대체 가능.
+>
+> 참조: WSOP LIVE `Staff App` 은 Undo 를 Operator UI-local 상태로만 구현, 서버 이벤트 무효화 없음.

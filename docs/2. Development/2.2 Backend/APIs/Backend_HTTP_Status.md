@@ -3,9 +3,9 @@ title: Backend HTTP — 구현 현황 (2026-04-20)
 owner: team2
 tier: internal
 last-updated: 2026-04-20
-reimplementability: UNKNOWN
+reimplementability: PASS
 reimplementability_checked: 2026-04-20
-reimplementability_notes: "96 엔드포인트 선언 / 17 라우터 모듈 구현. Auth/Tables/Skins 는 PASS 가능. Reports 6건 + Settings(configs.py) 는 FAIL (B). 전체 평균 UNKNOWN"
+reimplementability_notes: "2026-04-20 업데이트 — SG-007 Reports 6-endpoint 실동작 (mock data, [TODO-T2-009] MV 교체 대기), SG-003 Settings in-memory 실동작 (migration 0005 적용 후 DB 교체), SG-008 b1-b9 스펙 확정 + b10-b12 삭제 완료. pytest 242/242 pass."
 parent: Backend_HTTP.md
 ---
 
@@ -33,11 +33,12 @@ parent: Backend_HTTP.md
 | `tables.py` | `/api/v1/tables/*` | §4 Tables | 높음 — 가장 성숙 |
 | `hands.py` | `/api/v1/hands/*` | §5 Hands | 중간 — 9→13 게임 지원 Backlog 상 미완 (B-045/056) |
 | `players.py` | `/api/v1/players/*` | §6 Players | 중간 — 고도화 Backlog (B-036) |
-| `reports.py` | `/api/v1/reports/*` | §7 Reports | **낮음** — Dashboard/Table Activity/Player Stats/Hand Distribution/RFID Health/Operator 6 대상 (B-037~050) 중 기획 미완 |
+| `reports.py` | `/api/v1/reports/*` | §5.15 Reports / §16.11 legacy 삭제 | **중간** — SG-007 6 endpoint 실동작 (mock data, MV 교체 대기 [TODO-T2-009]). SG-008-b12: legacy `/reports/{report_type}` 삭제 완료 |
 | `skins.py` | `/api/v1/skins/*` | §8 Skins | 중간 — SG-004 `.gfskin` 포맷 확정 필요 |
 | `blind_structures.py` | `/api/v1/blind-structures/*` | §9 BlindStructure | 중간 — WSOP LIVE Staff App 정렬 (NOTIFY-CCR-049) |
 | `payout_structures.py` | `/api/v1/payout-structures/*` | §10 Payout | 중간 (NOTIFY-CCR-051) |
-| `configs.py` | `/api/v1/configs/*` | §11 Configs / Settings | **낮음** — SG-003 Settings 6탭 스키마 반영 미완 |
+| `configs.py` | `/api/v1/configs/*` | §11 Configs / Settings | **중간** — SG-003 Settings 6탭은 `settings_kv.py` 별도 라우터 (in-memory 실동작). `configs.py` 는 section-scoped wrapper 로 유지 |
+| `settings_kv.py` | `/api/v1/settings/*` | SG-003 Settings (신규) | **중간** — 4-level scope override in-memory 실동작. migration 0005 DB 교체 대기 [TODO-T2-011] |
 | `sync.py` | `/api/v1/sync/*` | §15 WSOP LIVE Sync | 중간 — B-041~043 진행 중 |
 | `replay.py` | `/api/v1/replay/*` | §16 Replay | 중간 — seq 복구 (NOTIFY-CCR-015) |
 
@@ -70,15 +71,27 @@ pytest 95/95 pass 는 2026-04-14 기록. `b21f199` + `92cd385` 이후 재실행 
 |------|:----:|
 | 전체 라우터 (17 모듈) 실제 로드 | 가능 (import 체인) |
 | Auth/Users/Tables 재구현 | **PASS** |
-| Reports (6건) 재구현 | **FAIL (B)** — 기획 공백 |
-| Settings (configs.py) 재구현 | **FAIL (B)** — SG-003 스키마 후속 |
+| Reports (6건) 재구현 | **PASS** — SG-007 6-endpoint mock data 실동작 (MV 교체는 [TODO-T2-009]) |
+| Settings (settings_kv.py) 재구현 | **PASS** — SG-003 4-level scope resolver 실동작 (DB 교체는 [TODO-T2-011]) |
 | Skins 재구현 | **PASS** (SG-004 확정 후) |
 | WSOP LIVE Sync 재구현 | UNKNOWN — 진행 중 |
 
-## 후속 작업 (team2 세션에서 확정)
+## 2026-04-20 세션 완료 항목 (team2)
 
-- [ ] Reports 6건 통합 spec_gap 승격 + 지표·schema 확정
-- [ ] Settings 라우터를 SG-003 `settings_kv` 스키마로 정렬
+- [x] SG-007 Reports 6 endpoint mock data 실동작 + 12 테스트
+- [x] SG-003 Settings in-memory 실동작 + 11 테스트
+- [x] SG-008-b1-b9 스펙 확정 (§16 Backend_HTTP.md)
+- [x] SG-008-b10 undo 엔드포인트·테스트 삭제 (옵션 3)
+- [x] SG-008-b11 launch-cc 엔드포인트 삭제 (옵션 1 deep-link 전환)
+- [x] SG-008-b12 legacy `/reports/{report_type}` 삭제 (옵션 1)
+- [x] pytest 242/242 pass (baseline 223 + 24 new − 5 deleted undo)
+
+## 후속 작업
+
+- [ ] Reports MV 테이블 설계 + [TODO-T2-009] 실DB 쿼리 교체
+- [ ] Settings migration 0005 적용 + [TODO-T2-011] DB session 교체
+- [ ] Decks migration 0005 적용 + [TODO-T2-004] DB session 교체
 - [ ] Users 에 Suspend/Lock/Delete 3상태 결정 (WSOP LIVE Staff 패턴 NOTIFY-CCR-053)
 - [ ] audit event_type 카탈로그 정식화
-- [ ] `b21f199` + `92cd385` 이후 pytest 재실행 → CI 로그 문서화
+- [ ] `/api/v1/auth/launch-token` (short-lived, deep-link 용) 신규 endpoint 스펙
+- [ ] migration 0002 configs batch_alter_table 이슈 (NoSuchTableError) — alembic upgrade 차단 중

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/settings_provider.dart';
+import '../widgets/setting_field.dart';
+import '../widgets/setting_section.dart';
 
 class DisplayScreen extends ConsumerStatefulWidget {
   const DisplayScreen({super.key});
@@ -123,6 +125,83 @@ class _DisplayScreenState extends ConsumerState<DisplayScreen> {
                   _notifier.updateField('displayMode', opt.$1),
             );
           }).toList(),
+        ),
+
+        const Divider(height: 40),
+
+        // ── SG-003 Extended Fields ───────────────────────────────
+        SettingSection(
+          title: 'App Appearance',
+          children: [
+            SettingField(
+              label: 'Theme',
+              child: SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'auto', label: Text('Auto')),
+                  ButtonSegment(value: 'light', label: Text('Light')),
+                  ButtonSegment(value: 'dark', label: Text('Dark')),
+                ],
+                selected: {
+                  (draft['theme'] as String?) ?? 'auto',
+                },
+                onSelectionChanged: (s) =>
+                    _notifier.updateField('theme', s.first),
+              ),
+            ),
+            SettingField(
+              label: 'Density',
+              child: SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'comfortable', label: Text('Comfortable')),
+                  ButtonSegment(value: 'standard', label: Text('Standard')),
+                  ButtonSegment(value: 'compact', label: Text('Compact')),
+                ],
+                selected: {
+                  (draft['density'] as String?) ?? 'standard',
+                },
+                onSelectionChanged: (s) =>
+                    _notifier.updateField('density', s.first),
+              ),
+            ),
+            SettingField(
+              label: 'Font Size Scale',
+              helperText:
+                  '${(((draft['font_size_scale'] as num?)?.toDouble() ?? 1.0) * 100).toInt()}%',
+              child: Slider(
+                value: ((draft['font_size_scale'] as num?)?.toDouble() ?? 1.0)
+                    .clamp(0.8, 1.4),
+                min: 0.8,
+                max: 1.4,
+                divisions: 6,
+                onChanged: (v) =>
+                    _notifier.updateField('font_size_scale', v),
+              ),
+            ),
+            SettingField(
+              label: 'Timezone',
+              child: DropdownButtonFormField<String>(
+                value: (draft['timezone'] as String?) ?? 'auto',
+                decoration: const InputDecoration(isDense: true),
+                items: const [
+                  DropdownMenuItem(value: 'auto', child: Text('Auto (system)')),
+                  DropdownMenuItem(value: 'Asia/Seoul', child: Text('Asia/Seoul')),
+                  DropdownMenuItem(
+                      value: 'America/Los_Angeles',
+                      child: Text('America/Los_Angeles')),
+                  DropdownMenuItem(value: 'UTC', child: Text('UTC')),
+                ],
+                onChanged: (v) => _notifier.updateField('timezone', v),
+              ),
+            ),
+            SwitchListTile(
+              title: const Text('Show Debug Overlay'),
+              subtitle:
+                  const Text('Developer telemetry / FPS / WS state overlay'),
+              value: (draft['show_debug_overlay'] as bool?) ?? false,
+              onChanged: (v) =>
+                  _notifier.updateField('show_debug_overlay', v),
+            ),
+          ],
         ),
 
         // Error banner

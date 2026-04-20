@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/settings_provider.dart';
+import '../widgets/setting_field.dart';
+import '../widgets/setting_section.dart';
 
 class RulesScreen extends ConsumerStatefulWidget {
   const RulesScreen({super.key});
@@ -152,6 +154,159 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
           value: (draft['highlightActivePlayer'] as bool?) ?? true,
           onChanged: (v) =>
               _notifier.updateField('highlightActivePlayer', v),
+        ),
+
+        const Divider(height: 40),
+
+        // ── SG-003 Extended Fields ───────────────────────────────
+        SettingSection(
+          title: 'Game Variant',
+          children: [
+            SettingField(
+              label: 'Game Variant',
+              child: DropdownButtonFormField<String>(
+                value:
+                    (draft['game_variant'] as String?) ?? 'NLHE',
+                decoration: const InputDecoration(isDense: true),
+                items: const [
+                  // 22 variants (NLHE + Omaha family + Stud + Mix)
+                  DropdownMenuItem(value: 'NLHE', child: Text("NL Hold'em")),
+                  DropdownMenuItem(value: 'LHE', child: Text("Limit Hold'em")),
+                  DropdownMenuItem(value: 'PLHE', child: Text("PL Hold'em")),
+                  DropdownMenuItem(value: 'PLO4', child: Text('PL Omaha 4')),
+                  DropdownMenuItem(value: 'PLO5', child: Text('PL Omaha 5')),
+                  DropdownMenuItem(value: 'PLO6', child: Text('PL Omaha 6')),
+                  DropdownMenuItem(value: 'PLO8', child: Text('PLO Hi/Lo 8')),
+                  DropdownMenuItem(value: 'LOMAHA', child: Text('Limit Omaha')),
+                  DropdownMenuItem(value: 'COURCHEVEL', child: Text('Courchevel')),
+                  DropdownMenuItem(value: 'BIGO', child: Text('Big O')),
+                  DropdownMenuItem(value: 'SHORTDECK', child: Text('Short Deck')),
+                  DropdownMenuItem(value: 'STUD', child: Text('7-Card Stud')),
+                  DropdownMenuItem(value: 'STUD8', child: Text('Stud Hi/Lo')),
+                  DropdownMenuItem(value: 'RAZZ', child: Text('Razz')),
+                  DropdownMenuItem(value: 'DRAW5', child: Text('5-Card Draw')),
+                  DropdownMenuItem(value: 'LOWBALL', child: Text('2-7 Lowball')),
+                  DropdownMenuItem(value: 'BADUGI', child: Text('Badugi')),
+                  DropdownMenuItem(value: 'HORSE', child: Text('HORSE')),
+                  DropdownMenuItem(value: '8GAME', child: Text('8-Game')),
+                  DropdownMenuItem(value: 'PPC', child: Text('PPC')),
+                  DropdownMenuItem(
+                      value: 'DEALERS_CHOICE', child: Text("Dealer's Choice")),
+                  DropdownMenuItem(value: 'MIXED', child: Text('Mixed')),
+                ],
+                onChanged: (v) =>
+                    _notifier.updateField('game_variant', v),
+              ),
+            ),
+            SettingField(
+              label: 'Blind Structure',
+              child: DropdownButtonFormField<String>(
+                value:
+                    (draft['blind_structure_id'] as String?) ?? 'standard',
+                decoration: const InputDecoration(isDense: true),
+                items: const [
+                  DropdownMenuItem(value: 'standard', child: Text('Standard')),
+                  DropdownMenuItem(value: 'turbo', child: Text('Turbo')),
+                  DropdownMenuItem(value: 'hyper', child: Text('Hyper')),
+                  DropdownMenuItem(value: 'deep', child: Text('Deep Stack')),
+                ],
+                onChanged: (v) =>
+                    _notifier.updateField('blind_structure_id', v),
+              ),
+            ),
+            SettingField(
+              label: 'Ante Schedule',
+              child: DropdownButtonFormField<String>(
+                value:
+                    (draft['ante_schedule_id'] as String?) ?? 'bb-ante',
+                decoration: const InputDecoration(isDense: true),
+                items: const [
+                  DropdownMenuItem(value: 'none', child: Text('No ante')),
+                  DropdownMenuItem(value: 'bb-ante', child: Text('Big Blind Ante')),
+                  DropdownMenuItem(value: 'classic', child: Text('Classic ante')),
+                ],
+                onChanged: (v) =>
+                    _notifier.updateField('ante_schedule_id', v),
+              ),
+            ),
+            SettingField(
+              label: 'Time Bank (seconds)',
+              child: TextFormField(
+                initialValue:
+                    '${(draft['time_bank_seconds'] as int?) ?? 30}',
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(isDense: true),
+                onChanged: (v) {
+                  final parsed = int.tryParse(v);
+                  if (parsed != null && parsed >= 0 && parsed <= 600) {
+                    _notifier.updateField('time_bank_seconds', parsed);
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+
+        SettingSection(
+          title: 'House Rules',
+          children: [
+            SettingField(
+              label: 'Showdown Order',
+              child: SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'clockwise', label: Text('Clockwise')),
+                  ButtonSegment(value: 'last-aggressor', label: Text('Aggressor')),
+                ],
+                selected: {
+                  (draft['showdown_order'] as String?) ?? 'last-aggressor',
+                },
+                onSelectionChanged: (s) =>
+                    _notifier.updateField('showdown_order', s.first),
+              ),
+            ),
+            SettingField(
+              label: 'Under-Raise Rule',
+              child: SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'reopen', label: Text('Reopen')),
+                  ButtonSegment(value: 'no-reopen', label: Text('No reopen')),
+                ],
+                selected: {
+                  (draft['under_raise_rule'] as String?) ?? 'no-reopen',
+                },
+                onSelectionChanged: (s) =>
+                    _notifier.updateField('under_raise_rule', s.first),
+              ),
+            ),
+            SettingField(
+              label: 'Short All-In Rule',
+              child: SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'full-reopen', label: Text('Full reopen')),
+                  ButtonSegment(value: 'partial', label: Text('Partial')),
+                ],
+                selected: {
+                  (draft['short_all_in_rule'] as String?) ?? 'full-reopen',
+                },
+                onSelectionChanged: (s) =>
+                    _notifier.updateField('short_all_in_rule', s.first),
+              ),
+            ),
+            SettingField(
+              label: 'Dead Button Rule',
+              child: SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'dead-button', label: Text('Dead button')),
+                  ButtonSegment(value: 'moving-button', label: Text('Moving button')),
+                ],
+                selected: {
+                  (draft['dead_button_rule'] as String?) ?? 'dead-button',
+                },
+                onSelectionChanged: (s) =>
+                    _notifier.updateField('dead_button_rule', s.first),
+              ),
+            ),
+          ],
         ),
 
         // Error banner

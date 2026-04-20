@@ -10,9 +10,11 @@
 //
 // Retry policy: exponential backoff 1s → 2s → 4s, max 3 attempts.
 //
-// team4 session TODO markers:
-//   [TODO-T4-006] wire this provider into AppRouter redirect guards
-//   [TODO-T4-008] add manual reconnect action button
+// SG-002 resolved (banner + guard) 2026-04-20:
+//   - AppRouter redirect guard routes `connecting` stage → /splash
+//     (see lib/routing/app_router.dart).
+//   - EngineConnectionBanner widget exposes manual 재연결 on Offline
+//     (see lib/features/command_center/widgets/engine_connection_banner.dart).
 
 import 'dart:async';
 

@@ -33,6 +33,7 @@ import '../providers/undo_provider.dart';
 import '../services/undo_stack.dart';
 import '../../../rfid/providers/rfid_reader_provider.dart';
 import '../providers/card_input_provider.dart';
+import '../widgets/engine_connection_banner.dart';
 import '../widgets/seat_cell.dart';
 import '../demo/scenario_runner.dart';
 import '../providers/demo_provider.dart';
@@ -112,6 +113,7 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
           child: Column(
             children: [
               const _Toolbar(),
+              const EngineConnectionBanner(),
               const _RfidStatusBanner(),
               if (ref.watch(demoProvider).isActive)
                 DemoControlPanel(

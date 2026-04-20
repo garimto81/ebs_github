@@ -680,7 +680,7 @@ def detect_settings() -> ContractReport:
         if not d.exists():
             continue
         for md in d.glob("*.md"):
-            # 파일명이 Settings 또는 6탭 중 하나인 경우만
+            # 파일명이 Settings 또는 6탭 + UI.md (legacy SG-003 consolidated spec) 경우만
             name = md.name
             if name in (
                 "Outputs.md",
@@ -691,6 +691,7 @@ def detect_settings() -> ContractReport:
                 "Preferences.md",
                 "Overview.md",
                 "Settings.md",
+                "UI.md",  # SG-003 통합 settings spec (dotted namespace: gfx.*/output.*/pref.* 등)
             ):
                 spec_text += _read(md) + "\n"
                 spec_sources.append(str(md.relative_to(REPO)))
@@ -727,14 +728,50 @@ def detect_settings() -> ContractReport:
     ):
         code_keys.add(m.group(1))
 
-    # 기획: backtick-wrapped identifier — camelCase / snake_case 모두 가능
+    # 기획: backtick-wrapped identifier — camelCase / snake_case / dotted 모두 가능
     # 문서는 주로 인간 설명 스타일이라 매우 noisy. 다음 휴리스틱으로 필터.
+    # (a) plain identifier: `animation_speed`, `showLeaderboard`
+    # (b) dotted namespace: `gfx.show_leaderboard`, `output.frame_rate`, `pref.table_password`
+    #     → 네임스페이스 제거 후 마지막 segment 만 수집
     spec_candidates = set(
         re.findall(
             r"`([a-zA-Z_][a-zA-Z0-9_]{2,})`",
             spec_text,
         )
     )
+    # 점/슬래시로 등장한 identifier 는 필터 없이 확정 spec key 로 사용 (whitelist)
+    # 일반 산문의 명사 noise 와 구분하기 위해 구조적 맥락만 추출
+    spec_whitelist: set[str] = set()
+
+    # 점 구분 identifier 에서 마지막 segment 추출 (예: `gfx.show_leaderboard` → show_leaderboard)
+    # dotted ref 는 명백한 setting key 이므로 whitelist 로 필터 bypass
+    for m in re.finditer(
+        r"`([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)+)`",
+        spec_text,
+    ):
+        dotted = m.group(1)
+        last_segment = dotted.rsplit(".", 1)[-1]
+        if len(last_segment) >= 3:
+            spec_whitelist.add(last_segment)
+    # YAML frontmatter 의 `reimplementability_notes` 값 안의 slash-separated list 에서
+    # snake_case identifier 추출
+    # (예: "active_skin_id/color_theme/animation_speed/..." → 각 token)
+    # frontmatter key 자체(예: reimplementability_checked) 는 수집하지 않는다.
+
+    for notes_m in re.finditer(
+        r'reimplementability_notes:\s*"([^"]+)"',
+        spec_text,
+    ):
+        notes_val = notes_m.group(1)
+        # snake_case (multi-word) token
+        for tok in re.findall(r"\b([a-z][a-z0-9]*(?:_[a-z0-9]+)+)\b", notes_val):
+            spec_whitelist.add(tok)
+        # 슬래시 구분 list 안의 단일 단어 token (예: "a/b/language" 끝의 language)
+        for tok in re.findall(
+            r"(?<=[/])([a-z][a-z0-9]{2,})(?=[/(\s,.]|$)",
+            notes_val,
+        ):
+            spec_whitelist.add(tok)
 
     # 구조적 noise (데이터베이스 객체, 이벤트 이름, 모듈명 — 설정 키 아님)
     _structural_noise = {
@@ -769,6 +806,11 @@ def detect_settings() -> ContractReport:
         return has_separator or is_camel
 
     spec_keys = {k for k in spec_candidates if _looks_like_setting_key(k)}
+    # whitelist (dotted/slash 컨텍스트로 명시적 setting 키) 는 filter bypass
+    # 단 structural noise 는 계속 제외
+    for k in spec_whitelist:
+        if k not in _structural_noise and len(k) >= 3:
+            spec_keys.add(k)
 
     # 대칭 D3: 코드에만 — 대소문자/언더스코어 정규화 후 매칭
     def _normalize(k: str) -> str:

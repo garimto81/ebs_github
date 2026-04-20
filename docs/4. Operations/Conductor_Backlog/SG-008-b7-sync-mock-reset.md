@@ -4,16 +4,16 @@ title: "DELETE /api/v1/sync/mock/reset 운영 환경 노출 판정"
 type: spec_gap
 sub_type: spec_drift_b_escalated
 parent_sg: SG-008
-status: PENDING
+status: RESOLVED
 owner: conductor
 decision_owners_notified: [team2]
 created: 2026-04-20
 affects_chapter:
   - docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md
 protocol: Spec_Gap_Triage §7.2
-reimplementability: UNKNOWN
+reimplementability: PASS
 reimplementability_checked: 2026-04-20
-reimplementability_notes: "SG-008-b PENDING. decision_owner 판정 대기"
+reimplementability_notes: "2026-04-20 RESOLVED — 옵션 1 채택 (team2 세션 구현 완료)"
 ---
 
 # SG-008-b7 — `DELETE /api/v1/sync/mock/reset` 운영 환경 노출
@@ -59,8 +59,19 @@ SG-008-b6 과 동일 — 운영 환경에서 **DB 전체 wipe 가능성**이 있
 - [ ] 옵션 2: confirmation token 메커니즘 별도 SG 로 승격
 - [ ] 옵션 3: team2 코드 삭제
 
+
+## Resolution
+
+**2026-04-20: 옵션 1 채택** — Admin + profile gate (dev/test only)
+
+team2 세션에서 코드·스펙 반영 완료:
+- Backend_HTTP.md §16 "SG-008 b-분류 결정 스펙" 에 최종 스펙 기록
+- 코드 변경: `C:/claude/ebs/team2-backend/src/routers/`
+- 상세: Backend_HTTP.md §16 참조
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 | 비고 |
 |------|------|------|------|
 | 2026-04-20 | v1.0 | SG-008 (b) 승격 신규 작성 | Conductor |
+| 2026-04-20 | v1.1 | RESOLVED — 옵션 1 채택: Admin + profile gate (dev/test only) | team2 session |

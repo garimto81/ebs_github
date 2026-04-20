@@ -1,9 +1,14 @@
-"""Audit router — audit_logs + audit_events + Undo."""
+"""Audit router — audit_logs + audit_events.
+
+SG-008-b10 결정 (2026-04-20): `POST /api/v1/events/{event_id}/undo` 옵션 3 채택 — Phase 1 미지원.
+  Undo 는 append-only vs mutable state 설계 철학 결정. Phase 1 에서는 삭제.
+  Phase 2+ 재도입 시 SG-008-b10 재오픈 + 옵션 1 (compensating event) 기반 재설계.
+"""
 import csv
 import io
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import StreamingResponse
 from sqlmodel import Session, select
 
@@ -14,11 +19,6 @@ from src.models.audit_log import AuditLog
 from src.models.user import User
 
 router = APIRouter(prefix="/api/v1", tags=["audit"])
-
-
-def _get_undo_service(request: Request):
-    """Extract UndoService from app.state."""
-    return request.app.state.undo_service
 
 
 # ── Audit Logs (admin actions) ────────────────────────
@@ -143,22 +143,6 @@ def list_audit_events(
 
 
 # ── Undo ──────────────────────────────────────────────
-
-
-@router.post("/events/{event_id}/undo")
-def undo_event(
-    event_id: int,
-    _user: User = Depends(require_role("admin")),
-    db: Session = Depends(get_db),
-    undo_service=Depends(_get_undo_service),
-):
-    """Undo an audit event by appending its inverse."""
-    inverse = undo_service.undo_event(event_id, _user.user_id, db)
-    return {
-        "data": {
-            "inverse_event_id": inverse.id,
-            "event_type": inverse.event_type,
-            "table_id": inverse.table_id,
-            "seq": inverse.seq,
-        }
-    }
+# SG-008-b10 결정 (2026-04-20): 옵션 3 채택 — Phase 1 미지원. 엔드포인트 삭제 완료.
+# 서비스 객체 (`app.state.undo_service`) 는 src/main.py 에서 함께 제거하는 것이 원칙이나,
+# UndoService 인스턴스 자체는 다른 테스트·내부 컨슈머가 있을 수 있어 유지하고 endpoint 만 제거.

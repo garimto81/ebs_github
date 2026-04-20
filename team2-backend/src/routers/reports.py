@@ -8,12 +8,11 @@ Endpoints (SG-007 spec):
   GET /api/v1/reports/rfid-health         (B-049) — RFID 리더/카드 상태
   GET /api/v1/reports/operator-activity   (B-050) — 운영자 작업 이력
 
-Legacy (retained for backward compat, to be phased out in SG-007 Phase 2):
-  GET /api/v1/reports/{report_type}       — 4-type stub (hands-summary|player-stats|
-                                            table-activity|session-log)
-
 Spec: docs/4. Operations/Conductor_Backlog/SG-007-team2-reports-api.md
       docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md §7 Reports
+
+SG-008-b12 결정 (2026-04-20): legacy `/api/v1/reports/{report_type}` 옵션 3 채택
+  — Frontend/CC 에서 호출 0 (grep 검증). 삭제 완료. SG-007 6-endpoint 만 유지.
 
 Common query parameters (SG-007 §공통):
   scope (required)       : global | series | event | table
@@ -29,6 +28,9 @@ RBAC matrix (SG-007 §공통 계약):
   operator : table-activity + rfid-health + own operator-activity
   viewer   : dashboard summary + own-related only
 
+2026-04-20: mock-data 실동작 (pre-MV). 실제 DB 연결·MV 쿼리는 [TODO-T2-009] 에서
+  replace. Response 형태는 spec 준수 — swap-out 은 data 블록만 교체 가능.
+
 team2 session TODO markers:
   [TODO-T2-009] materialized view reports_aggregated + Redis 1h cache
   [TODO-T2-010] RBAC guard per endpoint (see matrix above)
@@ -41,12 +43,10 @@ from datetime import datetime
 from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import text
 from sqlmodel import Session
 
 from src.app.database import get_db
 from src.middleware.rbac import require_role
-from src.models.schemas import ApiResponse
 from src.models.user import User
 
 router = APIRouter(prefix="/api/v1", tags=["reports"])
@@ -115,28 +115,20 @@ def report_dashboard(
     granularity: Granularity = Query(...),
     format: OutputFormat = Query(default="json"),
     timezone: str = Query(default="Asia/Seoul"),
-    _user: User = Depends(require_role("admin", "viewer")),  # [TODO-T2-010] viewer sees summary only
+    _user: User = Depends(require_role("admin", "viewer")),
     db: Session = Depends(get_db),
 ):
-    """B-037 — 전체 운영 현황 개요.
-
-    Response `data`:
-      {
-        "tables": {"active": int, "paused": int, "closed_today": int},
-        "players": {"seated": int, "sitting_out": int, "registered_total": int},
-        "hands": {"in_progress": int, "completed_today": int, "avg_duration_sec": int},
-        "rfid_health": {"readers_online": int, "readers_offline": int, "error_rate_1h": float},
-        "operators_online": int,
-        "wsop_sync": {"last_success_at": str, "conflicts_pending": int}
-      }
-
-    [TODO-T2-009] implement via MV reports_aggregated; cache 30s Redis.
-    """
+    """B-037 — 전체 운영 현황 개요. mock data pre-MV [TODO-T2-009]."""
     _validate_common(scope, scope_id, granularity, format)
-    raise HTTPException(
-        status_code=501,
-        detail={"code": "NOT_IMPLEMENTED", "spec": "SG-007 §1 Dashboard", "todo": "T2-009"},
-    )
+    data = {
+        "tables": {"active": 0, "paused": 0, "closed_today": 0},
+        "players": {"seated": 0, "sitting_out": 0, "registered_total": 0},
+        "hands": {"in_progress": 0, "completed_today": 0, "avg_duration_sec": 0},
+        "rfid_health": {"readers_online": 0, "readers_offline": 0, "error_rate_1h": 0.0},
+        "operators_online": 0,
+        "wsop_sync": {"last_success_at": None, "conflicts_pending": 0},
+    }
+    return _envelope("dashboard", scope, scope_id, from_, to, granularity, data)
 
 
 # ---------------------------------------------------------------------------
@@ -156,29 +148,11 @@ def report_table_activity(
     _user: User = Depends(require_role("admin", "operator")),
     db: Session = Depends(get_db),
 ):
-    """B-038 — 테이블별 활동 지표 (시계열).
-
-    Response `data` (list of buckets):
-      [
-        {
-          "bucket": ISO datetime,
-          "table_id": str,
-          "hands_completed": int,
-          "avg_pot": int,
-          "vpip_avg": float,
-          "time_per_hand_sec": int,
-          "flops_seen_pct": float
-        }
-      ]
-
-    [TODO-T2-009] MV table_activity_hourly.
-    [TODO-T2-017] cursor pagination when > 5000 buckets.
-    """
+    """B-038 — 테이블별 활동 지표 (시계열). mock data pre-MV [TODO-T2-009]."""
     _validate_common(scope, scope_id, granularity, format)
-    raise HTTPException(
-        status_code=501,
-        detail={"code": "NOT_IMPLEMENTED", "spec": "SG-007 §2 Table Activity", "todo": "T2-009"},
-    )
+    # mock empty buckets — list form
+    data: list[dict] = []
+    return _envelope("table-activity", scope, scope_id, from_, to, granularity, data)
 
 
 # ---------------------------------------------------------------------------
@@ -199,24 +173,24 @@ def report_player_stats(
     _user: User = Depends(require_role("admin", "viewer")),
     db: Session = Depends(get_db),
 ):
-    """B-039 — 플레이어 통계 (VPIP/PFR/AF/3bet%).
-
-    Response `data`:
-      {
-        "player_id": str,
-        "metrics": {"vpip":..,"pfr":..,"af":..,"threebet_pct":..,
-                    "wtsd":..,"won_at_showdown":..,"total_hands":..,"net_chips":..},
-        "by_position": {"button":{...},"sb":{...}, ...},
-        "time_series": [...]
-      }
-
-    [TODO-T2-009] on-demand aggregation (no MV; Redis 5m cache).
-    """
+    """B-039 — 플레이어 통계 (VPIP/PFR/AF/3bet%). mock data pre-aggregation [TODO-T2-009]."""
     _validate_common(scope, scope_id, granularity, format)
-    raise HTTPException(
-        status_code=501,
-        detail={"code": "NOT_IMPLEMENTED", "spec": "SG-007 §3 Player Stats", "todo": "T2-009"},
-    )
+    data = {
+        "player_id": player_id,
+        "metrics": {
+            "vpip": 0.0,
+            "pfr": 0.0,
+            "af": 0.0,
+            "threebet_pct": 0.0,
+            "wtsd": 0.0,
+            "won_at_showdown": 0.0,
+            "total_hands": 0,
+            "net_chips": 0,
+        },
+        "by_position": {},
+        "time_series": [],
+    }
+    return _envelope("player-stats", scope, scope_id, from_, to, granularity, data)
 
 
 # ---------------------------------------------------------------------------
@@ -237,22 +211,14 @@ def report_hand_distribution(
     _user: User = Depends(require_role("admin")),
     db: Session = Depends(get_db),
 ):
-    """B-048 — 169 Holdem 시작패 매트릭스 (AA~72o) × 빈도·승률.
-
-    Response `data`:
-      {
-        "matrix": {"AA": {"count": int, "won_pct": float}, ..., "72o": {...}},
-        "total_hands": int,
-        "showdown_only": bool
-      }
-
-    [TODO-T2-009] 1h batch MV hand_distribution_mv.
-    """
+    """B-048 — 169 Holdem 시작패 매트릭스 (AA~72o) × 빈도·승률. mock data [TODO-T2-009]."""
     _validate_common(scope, scope_id, granularity, format)
-    raise HTTPException(
-        status_code=501,
-        detail={"code": "NOT_IMPLEMENTED", "spec": "SG-007 §4 Hand Distribution", "todo": "T2-009"},
-    )
+    data = {
+        "matrix": {},
+        "total_hands": 0,
+        "showdown_only": showdown_only,
+    }
+    return _envelope("hand-distribution", scope, scope_id, from_, to, granularity, data)
 
 
 # ---------------------------------------------------------------------------
@@ -272,23 +238,14 @@ def report_rfid_health(
     _user: User = Depends(require_role("admin", "operator")),
     db: Session = Depends(get_db),
 ):
-    """B-049 — RFID 리더 헬스 + 카드 상태 + deck 상태.
-
-    Response `data`:
-      {
-        "readers": [{"reader_id":..,"table_id":..,"status":..,
-                     "error_rate_1h":..,"last_error_at":..,"last_error_code":..}],
-        "cards": {"registered": int, "missing": int, "damaged": int},
-        "decks": [{"deck_id":..,"status":..,"last_verified_at":..}]
-      }
-
-    [TODO-T2-009] real-time RFID telemetry + decks joined via SG-006 router.
-    """
+    """B-049 — RFID 리더 헬스 + 카드 상태 + deck 상태. mock data [TODO-T2-009]."""
     _validate_common(scope, scope_id, granularity, format)
-    raise HTTPException(
-        status_code=501,
-        detail={"code": "NOT_IMPLEMENTED", "spec": "SG-007 §5 RFID Health", "todo": "T2-009"},
-    )
+    data = {
+        "readers": [],
+        "cards": {"registered": 0, "missing": 0, "damaged": 0},
+        "decks": [],
+    }
+    return _envelope("rfid-health", scope, scope_id, from_, to, granularity, data)
 
 
 # ---------------------------------------------------------------------------
@@ -309,83 +266,28 @@ def report_operator_activity(
     _user: User = Depends(require_role("admin", "operator")),  # operator can only see own
     db: Session = Depends(get_db),
 ):
-    """B-050 — 운영자 작업 이력.
-
-    Response `data`:
-      {
-        "user_id": str,
-        "sessions": [{"login_at":..,"logout_at":..,"duration_sec":..}],
-        "actions": {
-          "total": int,
-          "by_type": {"new_hand":..,"reveal_holecards":..,"undo":..,"settings_change":..}
-        },
-        "audit_trail_link": "/api/v1/audit?user_id=..."
-      }
-
-    [TODO-T2-010] enforce operator → user_id == self.user_id (403 otherwise).
-    [TODO-T2-009] join user_sessions + audit_events.
-    """
+    """B-050 — 운영자 작업 이력. mock data [TODO-T2-009]."""
     _validate_common(scope, scope_id, granularity, format)
-    raise HTTPException(
-        status_code=501,
-        detail={"code": "NOT_IMPLEMENTED", "spec": "SG-007 §6 Operator Activity", "todo": "T2-009"},
-    )
-
-
-# ---------------------------------------------------------------------------
-# Legacy — /api/v1/reports/{report_type} (SG-007 Phase 2 로 대체 예정)
-# ---------------------------------------------------------------------------
-# 이 엔드포인트는 기존 테스트/클라이언트 보호용으로 유지. 신규 구현은 위 6개를 사용.
-
-VALID_REPORT_TYPES = {"hands-summary", "player-stats", "table-activity", "session-log"}
-
-
-@router.get("/reports/{report_type}")
-def api_get_report(
-    report_type: str,
-    _user: User = Depends(require_role("admin")),
-    db: Session = Depends(get_db),
-):
-    """Legacy 4-type stub. [TODO-T2-018] deprecate after SG-007 §1-6 rollout."""
-    if report_type not in VALID_REPORT_TYPES:
-        raise HTTPException(
-            status_code=400,
-            detail={
-                "code": "INVALID_REPORT_TYPE",
-                "message": f"Valid types: {', '.join(sorted(VALID_REPORT_TYPES))}",
+    # [TODO-T2-010] enforce operator → user_id == _user.user_id (403 otherwise).
+    data = {
+        "user_id": user_id,
+        "sessions": [],
+        "actions": {
+            "total": 0,
+            "by_type": {
+                "new_hand": 0,
+                "reveal_holecards": 0,
+                "undo": 0,
+                "settings_change": 0,
             },
-        )
+        },
+        "audit_trail_link": f"/api/v1/audit-events?user_id={user_id}",
+    }
+    return _envelope("operator-activity", scope, scope_id, from_, to, granularity, data)
 
-    if report_type == "hands-summary":
-        result = db.execute(
-            text(
-                "SELECT COUNT(*) as total_hands, "
-                "COALESCE(SUM(pot_total),0) as total_pot, "
-                "COALESCE(AVG(duration_sec),0) as avg_duration "
-                "FROM hands"
-            )
-        ).first()
-        data = (
-            {"total_hands": result[0], "total_pot": result[1], "avg_duration_sec": round(result[2], 1)}
-            if result
-            else {}
-        )
-    elif report_type == "player-stats":
-        result = db.execute(text("SELECT COUNT(*) as total_players FROM players")).first()
-        data = {"total_players": result[0]} if result else {}
-    elif report_type == "table-activity":
-        result = db.execute(
-            text(
-                "SELECT COUNT(*) as total_tables, "
-                "SUM(CASE WHEN status='live' THEN 1 ELSE 0 END) as active_tables "
-                "FROM tables"
-            )
-        ).first()
-        data = {"total_tables": result[0], "active_tables": result[1] or 0} if result else {}
-    elif report_type == "session-log":
-        result = db.execute(text("SELECT COUNT(*) as total_sessions FROM user_sessions")).first()
-        data = {"total_sessions": result[0]} if result else {}
-    else:
-        data = {}
 
-    return ApiResponse(data={"report_type": report_type, **data})
+# ---------------------------------------------------------------------------
+# SG-008-b12 결정 (2026-04-20): legacy `/api/v1/reports/{report_type}` 옵션 3 삭제
+# ---------------------------------------------------------------------------
+# Frontend/CC 에서 호출 0 (grep 검증 통과). SG-007 6-endpoint 로 완전 대체.
+# 본 엔드포인트는 제거되었다. 재도입 요청 시 SG-008-b12 재오픈.

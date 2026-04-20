@@ -20,13 +20,15 @@ from src.services.table_service import (
     delete_table,
     get_table,
     get_table_seats,
-    launch_cc,
     list_all_tables,
     list_tables,
     rebalance_tables,
     update_seat_status,
     update_table,
 )
+
+# SG-008-b11 결정 (2026-04-20): launch_cc() 서비스는 삭제하지 않음 — 다른 내부 소비자 가능성.
+# 엔드포인트만 삭제. deep-link 패턴 전환은 team1 (Lobby) + team4 (CC protocol handler) 소관.
 
 router = APIRouter(prefix="/api/v1", tags=["tables"])
 
@@ -138,14 +140,10 @@ def api_delete_table(
     return ApiResponse(data={"deleted": True})
 
 
-@router.post("/tables/{table_id}/launch-cc")
-def api_launch_cc(
-    table_id: int,
-    user: User = Depends(require_role("admin")),
-    db: Session = Depends(get_db),
-):
-    result = launch_cc(table_id, user, db)
-    return ApiResponse(data=result)
+# SG-008-b11 결정 (2026-04-20): `POST /tables/{table_id}/launch-cc` 옵션 1 채택 — deep-link 전환 + 엔드포인트 삭제.
+#   WSOP LIVE Staff App §Launch 는 deep-link (`wsop-staff://table/{id}`) 패턴 — EBS 도 동일하게 정렬.
+#   Lobby: `window.location = ebs-cc://table/${id}?token=${short_lived_token}` (team1 Backlog)
+#   CC: Flutter `app_links` 패키지로 OS protocol handler 등록 (team4 Backlog)
 
 
 @router.get("/tables/{table_id}/status")
