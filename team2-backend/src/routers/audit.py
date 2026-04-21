@@ -52,13 +52,13 @@ def list_audit_logs(
     for row in results:
         items.append({
             "id": row.id,
-            "user_id": row.user_id,
-            "entity_type": row.entity_type,
-            "entity_id": row.entity_id,
+            "userId": row.user_id,
+            "entityType": row.entity_type,
+            "entityId": row.entity_id,
             "action": row.action,
             "detail": row.detail,
-            "ip_address": row.ip_address,
-            "created_at": row.created_at,
+            "ipAddress": row.ip_address,
+            "createdAt": row.created_at,
         })
 
     return {
@@ -79,7 +79,7 @@ def download_audit_logs(
     def generate():
         output = io.StringIO()
         writer = csv.writer(output)
-        writer.writerow(["id", "user_id", "entity_type", "entity_id", "action", "detail", "ip_address", "created_at"])
+        writer.writerow(["id", "userId", "entityType", "entityId", "action", "detail", "ipAddress", "createdAt"])
         yield output.getvalue()
         output.seek(0)
         output.truncate(0)
@@ -125,15 +125,15 @@ def list_audit_events(
     for row in results:
         items.append({
             "id": row.id,
-            "table_id": row.table_id,
+            "tableId": row.table_id,
             "seq": row.seq,
-            "event_type": row.event_type,
-            "actor_user_id": row.actor_user_id,
-            "correlation_id": row.correlation_id,
-            "causation_id": row.causation_id,
+            "eventType": row.event_type,
+            "actorUserId": row.actor_user_id,
+            "correlationId": row.correlation_id,
+            "causationId": row.causation_id,
             "payload": row.payload,
-            "inverse_payload": row.inverse_payload,
-            "created_at": row.created_at,
+            "inversePayload": row.inverse_payload,
+            "createdAt": row.created_at,
         })
 
     return {

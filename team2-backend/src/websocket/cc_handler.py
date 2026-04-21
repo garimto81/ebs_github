@@ -18,19 +18,21 @@ _VALID_POKER_ACTIONS: frozenset[str] = frozenset({
 })
 
 # Commands → (required payload fields, ack/rejected type names)
-_WRITE_COMMANDS: dict[str, tuple[list[str], str, str]] = {
+# 각 required field 는 camelCase / snake_case 둘 다 허용 (populate_by_name 정책).
+_WRITE_COMMANDS: dict[str, tuple[list[list[str]], str, str]] = {
     "WriteGameInfo": (
-        ["game_type", "bet_structure", "small_blind", "big_blind"],
+        [["gameType", "game_type"], ["betStructure", "bet_structure"],
+         ["smallBlind", "small_blind"], ["bigBlind", "big_blind"]],
         "GameInfoAck",
         "GameInfoRejected",
     ),
     "WriteDeal": (
-        ["hand_number"],
+        [["handNumber", "hand_number"]],
         "DealAck",
         "DealRejected",
     ),
     "WriteAction": (
-        ["hand_number", "seat_no", "action"],
+        [["handNumber", "hand_number"], ["seatNo", "seat_no"], ["action"]],
         "ActionAck",
         "ActionRejected",
     ),
@@ -42,19 +44,22 @@ def _build_envelope(type_: str, payload: dict, message_id: str, now_iso: str) ->
         "type": type_,
         "payload": payload,
         "timestamp": now_iso,
-        "server_time": now_iso,
-        "source_id": "bo",
-        "message_id": str(uuid.uuid4()),
-        "original_message_id": message_id,
+        "serverTime": now_iso,
+        "sourceId": "bo",
+        "messageId": str(uuid.uuid4()),
+        "originalMessageId": message_id,
     }
 
 
 def _validate_write_command(
     command_type: str, payload: dict,
 ) -> tuple[bool, str | None]:
-    """Return (is_valid, reason_if_invalid)."""
+    """Return (is_valid, reason_if_invalid). Accept camelCase or snake_case alias."""
     required, _, _ = _WRITE_COMMANDS[command_type]
-    missing = [k for k in required if k not in payload]
+    missing: list[str] = []
+    for aliases in required:
+        if not any(k in payload for k in aliases):
+            missing.append(aliases[0])  # canonical (camelCase) name
     if missing:
         return False, f"missing_required_fields: {missing}"
     # Domain checks
@@ -82,18 +87,18 @@ async def handle_cc_message(
         return {
             "type": "Error",
             "payload": {"code": "invalid_json", "message": "malformed JSON"},
-            "source_id": "bo",
-            "message_id": str(uuid.uuid4()),
+            "sourceId": "bo",
+            "messageId": str(uuid.uuid4()),
             "timestamp": datetime.now(timezone.utc).isoformat(),
-            "server_time": datetime.now(timezone.utc).isoformat(),
+            "serverTime": datetime.now(timezone.utc).isoformat(),
         }
 
     event_type = msg.get("type", "unknown")
     payload = msg.get("payload", {})
-    message_id = msg.get("message_id", str(uuid.uuid4()))
-    idempotency_key = msg.get("idempotency_key")
-    correlation_id = msg.get("correlation_id")
-    causation_id = msg.get("causation_id")
+    message_id = msg.get("messageId") or msg.get("message_id") or str(uuid.uuid4())
+    idempotency_key = msg.get("idempotencyKey") or msg.get("idempotency_key")
+    correlation_id = msg.get("correlationId") or msg.get("correlation_id")
+    causation_id = msg.get("causationId") or msg.get("causation_id")
 
     now_iso = datetime.now(timezone.utc).isoformat()
 
@@ -104,7 +109,7 @@ async def handle_cc_message(
         if not ok:
             return _build_envelope(
                 rejected_type,
-                {"original_message_id": message_id, "reason": reason},
+                {"originalMessageId": message_id, "reason": reason},
                 message_id,
                 now_iso,
             )
@@ -121,19 +126,19 @@ async def handle_cc_message(
         )
         lobby_event = {
             "type": event_type,
-            "table_id": table_id,
+            "tableId": table_id,
             "seq": audit_event.seq,
             "payload": payload,
             "timestamp": msg.get("timestamp", now_iso),
-            "server_time": now_iso,
-            "source_id": msg.get("source_id", f"cc-table-{table_id}"),
-            "message_id": message_id,
+            "serverTime": now_iso,
+            "sourceId": msg.get("sourceId") or msg.get("source_id") or f"cc-table-{table_id}",
+            "messageId": message_id,
         }
         await manager.broadcast("lobby", table_id, lobby_event)
         return _build_envelope(
             ack_type,
             {
-                "original_message_id": message_id,
+                "originalMessageId": message_id,
                 "status": "ok",
                 "seq": audit_event.seq,
             },
@@ -170,13 +175,13 @@ async def handle_cc_message(
     # Build envelope for Lobby forwarding
     lobby_event = {
         "type": event_type,
-        "table_id": table_id,
+        "tableId": table_id,
         "seq": audit_event.seq,
         "payload": payload if isinstance(payload, dict) else json.loads(payload),
         "timestamp": msg.get("timestamp", now),
-        "server_time": now,
-        "source_id": msg.get("source_id", f"cc-table-{table_id}"),
-        "message_id": message_id,
+        "serverTime": now,
+        "sourceId": msg.get("sourceId") or msg.get("source_id") or f"cc-table-{table_id}",
+        "messageId": message_id,
     }
 
     # Forward to Lobby channel
@@ -186,12 +191,12 @@ async def handle_cc_message(
     ack = {
         "type": "Ack",
         "payload": {
-            "original_message_id": message_id,
+            "originalMessageId": message_id,
             "status": "ok",
             "seq": audit_event.seq,
         },
         "timestamp": now,
-        "source_id": "bo",
-        "message_id": str(uuid.uuid4()),
+        "sourceId": "bo",
+        "messageId": str(uuid.uuid4()),
     }
     return ack

@@ -26,8 +26,8 @@ async def handle_lobby_message(
         return {
             "type": "Ack",
             "payload": {"status": "error", "error_code": "invalid_json"},
-            "source_id": "bo",
-            "message_id": str(uuid.uuid4()),
+            "sourceId": "bo",
+            "messageId": str(uuid.uuid4()),
         }
 
     msg_type = msg.get("type", "")
@@ -49,8 +49,8 @@ async def handle_lobby_message(
                 "subscribed": True,
             },
             "timestamp": now,
-            "source_id": "bo",
-            "message_id": str(uuid.uuid4()),
+            "sourceId": "bo",
+            "messageId": str(uuid.uuid4()),
         }
 
     elif msg_type == "Unsubscribe":
@@ -63,8 +63,8 @@ async def handle_lobby_message(
                 "subscribed": False,
             },
             "timestamp": now,
-            "source_id": "bo",
-            "message_id": str(uuid.uuid4()),
+            "sourceId": "bo",
+            "messageId": str(uuid.uuid4()),
         }
 
     # Unknown message type — just ack
@@ -75,8 +75,8 @@ async def handle_lobby_message(
             "status": "ok",
         },
         "timestamp": now,
-        "source_id": "bo",
-        "message_id": str(uuid.uuid4()),
+        "sourceId": "bo",
+        "messageId": str(uuid.uuid4()),
     }
 
 
@@ -88,12 +88,12 @@ async def broadcast_event_flight_summary(manager, payload: dict) -> int:
     now = datetime.now(timezone.utc).isoformat()
     event = {
         "type": "event_flight_summary",
-        "table_id": "*",
+        "tableId": "*",
         "payload": payload,
         "timestamp": now,
-        "server_time": now,
-        "source_id": "bo",
-        "message_id": str(uuid.uuid4()),
+        "serverTime": now,
+        "sourceId": "bo",
+        "messageId": str(uuid.uuid4()),
     }
     return await manager.broadcast("lobby", "*", event)
 
@@ -103,12 +103,12 @@ async def broadcast_clock_tick(manager, payload: dict) -> int:
     now = datetime.now(timezone.utc).isoformat()
     event = {
         "type": "clock_tick",
-        "table_id": "*",
+        "tableId": "*",
         "payload": payload,
         "timestamp": now,
-        "server_time": now,
-        "source_id": "bo",
-        "message_id": str(uuid.uuid4()),
+        "serverTime": now,
+        "sourceId": "bo",
+        "messageId": str(uuid.uuid4()),
     }
     return await manager.broadcast("lobby", "*", event)
 
@@ -118,11 +118,11 @@ async def broadcast_clock_level_changed(manager, payload: dict) -> int:
     now = datetime.now(timezone.utc).isoformat()
     event = {
         "type": "clock_level_changed",
-        "table_id": "*",
+        "tableId": "*",
         "payload": payload,
         "timestamp": now,
-        "server_time": now,
-        "source_id": "bo",
-        "message_id": str(uuid.uuid4()),
+        "serverTime": now,
+        "sourceId": "bo",
+        "messageId": str(uuid.uuid4()),
     }
     return await manager.broadcast("lobby", "*", event)

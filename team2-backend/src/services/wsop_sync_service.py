@@ -67,7 +67,7 @@ class WsopSyncService:
         for item in data:
             existing = db.exec(
                 select(Series).where(
-                    Series.series_name == item["series_name"],
+                    Series.series_name == (item["seriesName"] if "seriesName" in item else item["series_name"]),
                     Series.year == item["year"],
                 )
             ).first()
@@ -89,7 +89,7 @@ class WsopSyncService:
 
                 series = Series(
                     competition_id=comp.competition_id,
-                    series_name=item["series_name"],
+                    series_name=(item["seriesName"] if "seriesName" in item else item["series_name"]),
                     year=item["year"],
                     begin_at=item["begin_at"],
                     end_at=item["end_at"],
@@ -119,7 +119,7 @@ class WsopSyncService:
             # Resolve series by (name, year) composite key
             series_row = db.exec(
                 select(Series).where(
-                    Series.series_name == item["series_name"],
+                    Series.series_name == (item["seriesName"] if "seriesName" in item else item["series_name"]),
                     Series.year == item["year"],
                 )
             ).first()
@@ -131,10 +131,9 @@ class WsopSyncService:
 
             # MANDATORY: run through adapter before UPSERT
             try:
-                ebs_game_type, ebs_game_mode = map_to_ebs(
-                    item["wsop_game_type"],
-                    item.get("wsop_game_mode"),
-                )
+                wsop_gt = item["wsopGameType"] if "wsopGameType" in item else item["wsop_game_type"]
+                wsop_gm = item.get("wsopGameMode", item.get("wsop_game_mode"))
+                ebs_game_type, ebs_game_mode = map_to_ebs(wsop_gt, wsop_gm)
             except ValueError as exc:
                 result.errors.append(str(exc))
                 continue
@@ -142,12 +141,12 @@ class WsopSyncService:
             existing = db.exec(
                 select(Event).where(
                     Event.series_id == series_row.series_id,
-                    Event.event_no == item["event_no"],
+                    Event.event_no == (item["eventNo"] if "eventNo" in item else item["event_no"]),
                 )
             ).first()
 
             if existing:
-                existing.event_name = item.get("event_name", existing.event_name)
+                existing.event_name = (item.get("eventName") or item.get("event_name") or existing.event_name)
                 existing.game_type = ebs_game_type
                 existing.game_mode = ebs_game_mode
                 existing.synced_at = _utcnow()
@@ -157,12 +156,12 @@ class WsopSyncService:
             else:
                 ev = Event(
                     series_id=series_row.series_id,
-                    event_no=item["event_no"],
-                    event_name=item.get("event_name", "Untitled"),
+                    event_no=(item["eventNo"] if "eventNo" in item else item["event_no"]),
+                    event_name=(item.get("eventName") or item.get("event_name") or "Untitled"),
                     game_type=ebs_game_type,
                     game_mode=ebs_game_mode,
                     bet_structure=0,
-                    table_size=item.get("table_size", 9),
+                    table_size=(item.get("tableSize") or item.get("table_size") or 9),
                     source="api",
                     synced_at=_utcnow(),
                 )
@@ -191,11 +190,11 @@ class WsopSyncService:
 
         for item in data:
             event_row = db.exec(
-                select(Event).where(Event.event_id == item["event_id"])
+                select(Event).where(Event.event_id == (item["eventId"] if "eventId" in item else item["event_id"]))
             ).first()
             if event_row is None:
                 result.errors.append(
-                    f"Event {item['event_id']} not found for flight"
+                    f"Event {(item["eventId"] if "eventId" in item else item["event_id"])} not found for flight"
                 )
                 continue
 
@@ -208,8 +207,8 @@ class WsopSyncService:
 
             existing = db.exec(
                 select(EventFlight).where(
-                    EventFlight.event_id == item["event_id"],
-                    EventFlight.display_name == item["display_name"],
+                    EventFlight.event_id == (item["eventId"] if "eventId" in item else item["event_id"]),
+                    EventFlight.display_name == (item["displayName"] if "displayName" in item else item["display_name"]),
                 )
             ).first()
             if existing:
@@ -220,8 +219,8 @@ class WsopSyncService:
                 result.updated += 1
             else:
                 ef = EventFlight(
-                    event_id=item["event_id"],
-                    display_name=item["display_name"],
+                    event_id=(item["eventId"] if "eventId" in item else item["event_id"]),
+                    display_name=(item["displayName"] if "displayName" in item else item["display_name"]),
                     status=status_text,
                     source="api",
                     synced_at=_utcnow(),

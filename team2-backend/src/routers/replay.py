@@ -40,19 +40,19 @@ def replay_events(
         events_out.append({
             "type": evt.event_type,
             "seq": evt.seq,
-            "table_id": evt.table_id,
+            "tableId": evt.table_id,
             "ts": evt.created_at,
-            "server_time": evt.created_at,
+            "serverTime": evt.created_at,
             "payload": payload,
-            "can_undo": event_repository.get_can_undo(evt),
+            "canUndo": event_repository.get_can_undo(evt),
         })
 
     return {
         "data": {
-            "table_id": table_id,
+            "tableId": table_id,
             "events": events_out,
-            "last_seq": result.last_seq,
-            "has_more": result.has_more,
+            "lastSeq": result.last_seq,
+            "hasMore": result.has_more,
         },
         "error": None,
     }

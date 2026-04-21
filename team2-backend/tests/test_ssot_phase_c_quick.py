@@ -44,7 +44,7 @@ def test_table_status_endpoint(client, seed_users, db_session):
     data = resp.json()["data"]
     assert data["tableId"] == tid
     assert "status" in data
-    assert "occupied_seats" in data
+    assert "occupiedSeats" in data
     assert "maxPlayers" in data
 
 

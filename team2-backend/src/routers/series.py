@@ -454,6 +454,6 @@ def api_clock_adjust_stack(
         )
     return ApiResponse(data={
         "flight_id": flight_id,
-        "average_stack": body.average_stack,
+        "averageStack": body.average_stack,
         "reason": body.reason,
     })

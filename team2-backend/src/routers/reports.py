@@ -91,13 +91,13 @@ def _envelope(
 ) -> dict:
     """SG-007 §공통 응답 구조."""
     return {
-        "report_type": report_type,
+        "reportType": report_type,
         "scope": {"level": scope, "id": scope_id},
         "range": {"from": str(from_), "to": str(to)},
         "granularity": granularity,
-        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "generatedAt": datetime.utcnow().isoformat() + "Z",
         "data": data,
-        "pagination": {"cursor": None, "has_more": False},
+        "pagination": {"cursor": None, "hasMore": False},
     }
 
 
@@ -121,12 +121,12 @@ def report_dashboard(
     """B-037 — 전체 운영 현황 개요. mock data pre-MV [TODO-T2-009]."""
     _validate_common(scope, scope_id, granularity, format)
     data = {
-        "tables": {"active": 0, "paused": 0, "closed_today": 0},
-        "players": {"seated": 0, "sitting_out": 0, "registered_total": 0},
-        "hands": {"in_progress": 0, "completed_today": 0, "avg_duration_sec": 0},
-        "rfid_health": {"readers_online": 0, "readers_offline": 0, "error_rate_1h": 0.0},
-        "operators_online": 0,
-        "wsop_sync": {"last_success_at": None, "conflicts_pending": 0},
+        "tables": {"active": 0, "paused": 0, "closedToday": 0},
+        "players": {"seated": 0, "sittingOut": 0, "registeredTotal": 0},
+        "hands": {"inProgress": 0, "completedToday": 0, "avgDurationSec": 0},
+        "rfidHealth": {"readersOnline": 0, "readersOffline": 0, "errorRate1h": 0.0},
+        "operatorsOnline": 0,
+        "wsopSync": {"lastSuccessAt": None, "conflictsPending": 0},
     }
     return _envelope("dashboard", scope, scope_id, from_, to, granularity, data)
 
@@ -176,19 +176,19 @@ def report_player_stats(
     """B-039 — 플레이어 통계 (VPIP/PFR/AF/3bet%). mock data pre-aggregation [TODO-T2-009]."""
     _validate_common(scope, scope_id, granularity, format)
     data = {
-        "player_id": player_id,
+        "playerId": player_id,
         "metrics": {
             "vpip": 0.0,
             "pfr": 0.0,
             "af": 0.0,
-            "threebet_pct": 0.0,
+            "threebetPct": 0.0,
             "wtsd": 0.0,
-            "won_at_showdown": 0.0,
-            "total_hands": 0,
-            "net_chips": 0,
+            "wonAtShowdown": 0.0,
+            "totalHands": 0,
+            "netChips": 0,
         },
-        "by_position": {},
-        "time_series": [],
+        "byPosition": {},
+        "timeSeries": [],
     }
     return _envelope("player-stats", scope, scope_id, from_, to, granularity, data)
 
@@ -215,8 +215,8 @@ def report_hand_distribution(
     _validate_common(scope, scope_id, granularity, format)
     data = {
         "matrix": {},
-        "total_hands": 0,
-        "showdown_only": showdown_only,
+        "totalHands": 0,
+        "showdownOnly": showdown_only,
     }
     return _envelope("hand-distribution", scope, scope_id, from_, to, granularity, data)
 
@@ -270,18 +270,18 @@ def report_operator_activity(
     _validate_common(scope, scope_id, granularity, format)
     # [TODO-T2-010] enforce operator → user_id == _user.user_id (403 otherwise).
     data = {
-        "user_id": user_id,
+        "userId": user_id,
         "sessions": [],
         "actions": {
             "total": 0,
-            "by_type": {
-                "new_hand": 0,
-                "reveal_holecards": 0,
+            "byType": {
+                "newHand": 0,
+                "revealHolecards": 0,
                 "undo": 0,
-                "settings_change": 0,
+                "settingsChange": 0,
             },
         },
-        "audit_trail_link": f"/api/v1/audit-events?user_id={user_id}",
+        "auditTrailLink": f"/api/v1/audit-events?user_id={user_id}",
     }
     return _envelope("operator-activity", scope, scope_id, from_, to, granularity, data)
 

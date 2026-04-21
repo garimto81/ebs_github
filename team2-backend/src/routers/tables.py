@@ -157,10 +157,10 @@ def api_get_table_status(
     seats = get_table_seats(table_id, db)
     occupied = sum(1 for s in seats if s.status != "empty")
     return ApiResponse(data={
-        "table_id": t.table_id,
+        "tableId": t.table_id,
         "status": t.status,
-        "occupied_seats": occupied,
-        "max_players": t.max_players,
+        "occupiedSeats": occupied,
+        "maxPlayers": t.max_players,
     })
 
 

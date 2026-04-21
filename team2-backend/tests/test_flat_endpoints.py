@@ -168,7 +168,7 @@ def test_flat_post_tables_uses_body_flight_id(client, seed_users, db_session):
 def test_nested_endpoints_still_work_for_backcompat(client, seed_users, db_session):
     headers = _auth(client, "admin")
     ids = _bootstrap(client, db_session, headers)
-    er = client.post(f"/api/v1/series/{ids['series_id']}/events", json={
+    er = client.post(f"/api/v1/series/{ids['seriesId']}/events", json={
         "seriesId": ids["seriesId"], "eventNo": 99, "eventName": "Nested",
     }, headers=headers)
     assert er.status_code == 201

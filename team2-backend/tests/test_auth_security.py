@@ -61,7 +61,7 @@ def test_login_non_live_returns_body_token(client, seed_users):
     resp = _login(client, "admin@test.com", "Admin123!")
     assert resp.status_code == 200
     data = resp.json()["data"]
-    assert data["refresh_token_delivery"] == "body"
+    assert data["refreshTokenDelivery"] == "body"
     assert data["refreshToken"]  # non-empty
 
 
@@ -70,5 +70,5 @@ def test_login_live_empty_body_refresh_token(client, seed_users):
     with patch("src.app.config.settings.auth_profile", "live"):
         resp = _login(client, "admin@test.com", "Admin123!")
     data = resp.json()["data"]
-    assert data["refresh_token_delivery"] == "cookie"
+    assert data["refreshTokenDelivery"] == "cookie"
     assert data["refreshToken"] == ""

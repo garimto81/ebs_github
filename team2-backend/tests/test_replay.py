@@ -119,8 +119,8 @@ def test_replay_events_with_pagination(client: TestClient, seed_users, db_sessio
     assert len(data["events"]) == 5
     assert data["events"][0]["seq"] == 1
     assert data["events"][4]["seq"] == 5
-    assert data["last_seq"] == 5
-    assert data["has_more"] is True
+    assert data["lastSeq"] == 5
+    assert data["hasMore"] is True
 
 
 # ── Gate 3-12: GET /tables/:id/events?since=5&limit=5 → rest + has_more=false ──
@@ -153,8 +153,8 @@ def test_replay_events_second_page(client: TestClient, seed_users, db_session: S
 
     assert len(data["events"]) == 3  # seq 6, 7, 8
     assert data["events"][0]["seq"] == 6
-    assert data["last_seq"] == 8
-    assert data["has_more"] is False
+    assert data["lastSeq"] == 8
+    assert data["hasMore"] is False
 
 
 # ── Replay can_undo field ──
@@ -191,8 +191,8 @@ def test_replay_events_include_can_undo(client: TestClient, seed_users, db_sessi
     assert resp.status_code == 200
     events = resp.json()["data"]["events"]
 
-    assert events[0]["can_undo"] is True   # has inverse_payload
-    assert events[1]["can_undo"] is False  # no inverse_payload
+    assert events[0]["canUndo"] is True   # has inverse_payload
+    assert events[1]["canUndo"] is False  # no inverse_payload
 
 
 # ── Replay requires auth ──

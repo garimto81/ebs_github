@@ -50,13 +50,13 @@ def test_dashboard_admin(client, seed_users):
     r = client.get(f"/api/v1/reports/dashboard?{COMMON_Q}", headers=headers)
     assert r.status_code == 200
     body = r.json()
-    assert body["report_type"] == "dashboard"
+    assert body["reportType"] == "dashboard"
     assert body["scope"]["level"] == "global"
     assert body["scope"]["id"] is None
-    assert "generated_at" in body
+    assert "generatedAt" in body
     assert "tables" in body["data"]
     assert "hands" in body["data"]
-    assert "rfid_health" in body["data"]
+    assert "rfidHealth" in body["data"]
 
 
 # 2. dashboard viewer (RBAC) ──────────────────────────────────────
@@ -76,7 +76,7 @@ def test_table_activity_admin(client, seed_users):
     r = client.get(f"/api/v1/reports/table-activity?{COMMON_Q}", headers=headers)
     assert r.status_code == 200
     body = r.json()
-    assert body["report_type"] == "table-activity"
+    assert body["reportType"] == "table-activity"
     assert isinstance(body["data"], list)
 
 
@@ -103,7 +103,7 @@ def test_player_stats_admin(client, seed_users):
     assert body["data"]["playerId"] == "p-1"
     assert "metrics" in body["data"]
     m = body["data"]["metrics"]
-    for k in ("vpip", "pfr", "af", "threebet_pct", "total_hands"):
+    for k in ("vpip", "pfr", "af", "threebetPct", "totalHands"):
         assert k in m
 
 
@@ -118,7 +118,7 @@ def test_hand_distribution_admin(client, seed_users):
     assert r.status_code == 200
     body = r.json()
     assert "matrix" in body["data"]
-    assert "showdown_only" in body["data"]
+    assert "showdownOnly" in body["data"]
 
 
 # 7. hand-distribution viewer → 403 ───────────────────────────────

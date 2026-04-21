@@ -145,6 +145,6 @@ def test_game_info_ack_envelope_includes_server_time(client, seed_users):
             "messageId": "m7",
         }))
         ack = json.loads(ws.receive_text())
-        assert "server_time" in ack
-        assert "source_id" in ack
-        assert ack["source_id"] == "bo"
+        assert "serverTime" in ack
+        assert "sourceId" in ack
+        assert ack["sourceId"] == "bo"

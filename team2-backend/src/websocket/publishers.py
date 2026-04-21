@@ -40,7 +40,7 @@ async def publish_clock_detail_changed(
     """CCR-050: clock 상태 (running/paused/break/endOfDay) 변경 시 발행."""
     return await manager.broadcast("lobby", table_id, {
         "type": "clock_detail_changed",
-        "table_id": table_id,
+        "tableId": table_id,
         "detail": detail,
         "seq": seq,  # [TODO-T2-012] seq auto
     })
@@ -56,7 +56,7 @@ async def publish_clock_reload_requested(
     """CCR-050: clock 설정 변경 후 클라이언트에게 재로드 요청."""
     return await manager.broadcast("lobby", table_id, {
         "type": "clock_reload_requested",
-        "table_id": table_id,
+        "tableId": table_id,
         "reason": reason,
         "seq": seq,
     })
@@ -88,7 +88,7 @@ async def publish_blind_structure_changed(
     """블라인드 구조 교체 알림."""
     return await manager.broadcast("lobby", table_id, {
         "type": "blind_structure_changed",
-        "table_id": table_id,
+        "tableId": table_id,
         "blind_structure_id": blind_structure_id,
         "seq": seq,
     })
@@ -122,7 +122,7 @@ async def publish_stack_adjusted(
     """운영자 수동 스택 조정."""
     return await manager.broadcast("lobby", table_id, {
         "type": "stack_adjusted",
-        "table_id": table_id,
+        "tableId": table_id,
         "seat": seat,
         "delta": delta,
         "reason": reason,
@@ -141,8 +141,8 @@ async def publish_skin_updated(
     """스킨 활성화/업데이트 (CCR-015 + SG-004 .gfskin)."""
     return await manager.broadcast("lobby", table_id, {
         "type": "skin_updated",
-        "table_id": table_id,
-        "skin_id": skin_id,
+        "tableId": table_id,
+        "skinId": skin_id,
         "version": version,
         "seq": seq,
     })
@@ -293,9 +293,9 @@ async def publish_assign_seat_command(
     """운영자 → CC 좌석 배정 명령 broadcast."""
     return await manager.broadcast("cc", table_id, {
         "type": "AssignSeatCommand",
-        "table_id": table_id,
+        "tableId": table_id,
         "seat": seat,
-        "player_id": player_id,
+        "playerId": player_id,
         "seq": seq,
     })
 
@@ -310,7 +310,7 @@ async def publish_blind_structure_changed_cc(
     """CC 채널에 블라인드 구조 변경 알림 (PascalCase 버전)."""
     return await manager.broadcast("cc", table_id, {
         "type": "BlindStructureChanged",
-        "table_id": table_id,
+        "tableId": table_id,
         "blind_structure_id": blind_structure_id,
         "seq": seq,
     })
@@ -327,7 +327,7 @@ async def publish_player_updated(
     """플레이어 정보 (이름/사진/국적/stats) 변경 알림."""
     return await manager.broadcast("lobby", table_id, {
         "type": "PlayerUpdated",
-        "player_id": player_id,
+        "playerId": player_id,
         "changes": changes,
         "seq": seq,
     })
@@ -344,7 +344,7 @@ async def publish_table_assigned(
     """오퍼레이터가 테이블에 배정됨."""
     return await manager.broadcast("lobby", table_id, {
         "type": "TableAssigned",
-        "table_id": table_id,
+        "tableId": table_id,
         "operator_id": operator_id,
         "role": role,
     })

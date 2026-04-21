@@ -193,7 +193,7 @@ def test_auth_profile_dev_ttl(client, seed_users):
 
 def test_auth_profile_live_ttl(client, seed_users, monkeypatch):
     """Live profile → expires_in = 43200."""
-    monkeypatch.setattr(settings, "authProfile", "live")
+    monkeypatch.setattr(settings, "auth_profile", "live")
     monkeypatch.setattr(settings, "jwt_access_ttl_s", 43200)
 
     resp = _login(client, email="viewer@test.com", password="View123!")
@@ -202,5 +202,5 @@ def test_auth_profile_live_ttl(client, seed_users, monkeypatch):
     assert data["authProfile"] == "live"
 
     # Restore
-    monkeypatch.setattr(settings, "authProfile", "dev")
+    monkeypatch.setattr(settings, "auth_profile", "dev")
     monkeypatch.setattr(settings, "jwt_access_ttl_s", 3600)

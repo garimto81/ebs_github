@@ -119,7 +119,7 @@ async def ws_cc_endpoint(
         "table_id": table_id,
         "payload": {
             "table_id": table_id,
-            "operator_id": user_info["user_id"],
+            "operatorId": user_info["user_id"],
             "username": user_info["email"],
         },
         "timestamp": now,
@@ -160,7 +160,7 @@ async def ws_cc_endpoint(
                 "table_id": user_info.get("table_id", ""),
                 "payload": {
                     "table_id": user_info.get("table_id", ""),
-                    "operator_id": user_info["user_id"],
+                    "operatorId": user_info["user_id"],
                     "reason": "disconnected",
                 },
                 "timestamp": now,
