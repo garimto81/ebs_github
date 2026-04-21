@@ -46,45 +46,52 @@ last-updated: 2026-04-15
 
 ---
 
-## 2. Lobby — 웹 앱
+## 2. Lobby — Flutter Desktop 앱
+
+> **2026-04-21 Foundation §5.1 확정** — 기존 Quasar/Vue 및 Next.js 제안 모두 폐기. Lobby/Settings/Graphic Editor 를 CC/Overlay 와 동일한 Flutter Desktop 단일 스택으로 통일.
 
 ### 2.1 선정 기술
 
 | 항목 | 기술 | 버전 |
 |------|------|------|
-| 프레임워크 | **Next.js (App Router)** | 15.x |
-| 상태 관리 | **Zustand** | 5.x |
-| HTTP 클라이언트 | fetch (내장) | — |
-| WebSocket | 네이티브 WebSocket API + Zustand store | — |
-| 빌드 | Next.js 내장 (Turbopack) | — |
-| UI 라이브러리 | shadcn/ui + Tailwind CSS 4.x | — |
+| 프레임워크 | **Flutter Desktop** | 3.x (Windows/macOS/Linux) |
+| 언어 | **Dart** | 3.x |
+| 상태 관리 | **Riverpod** (Notifier / StateNotifier) | 2.x |
+| 데이터 클래스 | **Freezed** | 최신 |
+| 라우팅 | **go_router** | 14.x |
+| HTTP 클라이언트 | **Dio** | 최신 |
+| WebSocket | `web_socket_channel` | 최신 |
+| Rive 애니메이션 | **rive** (Flutter 공식) | 최신 |
+| 보안 저장 | `flutter_secure_storage` | 최신 |
+| 파일 선택 | `file_picker` | 최신 |
+| 분할 뷰 | `multi_split_view` (GE 3-Zone 용) | 최신 |
 
-### 2.2 선정 근거
+### 2.2 선정 근거 (Foundation §5.1 결정 근거)
 
 | 근거 | 설명 |
 |------|------|
-| 브라우저 접근성 | 설치 없이 브라우저에서 접속. Admin/Viewer 진입 장벽 최소화 |
-| CC와 기술 분리 | Lobby는 관제/설정 허브로 CC(Flutter)와 독립 배포 필요 |
-| 웹 생태계 | 차트, 테이블, 대시보드 컴포넌트 풍부 |
-| REST API 소비 | BO REST API와 자연스러운 연동 |
+| Rive 런타임 일치 | GE 프리뷰 ≡ Overlay 송출 렌더 자동 보증. parity CI 게이트 불필요 |
+| `ebs_common` Dart 패키지 재사용 | 엔티티/DTO/WebSocket 클라이언트 코드를 CC 와 공유 |
+| 내부 앱 개발팀 생산성 | Flutter 단일 스택으로 팀 스킬 집중 |
+| Desktop 배포 모델 | CC 동시 접속 3~5 대 규모에서 웹 URL 배포 이점 축소, Desktop 설치 모델 충분 |
+| IPC/로컬 자산 접근 | Lobby 가 `.gfskin` 파일 직접 읽기, 시리얼 리더 상태 모니터링 등 로컬 리소스 접근 수월 |
 
-### 2.3 대안 기각
+### 2.3 대안 기각 (2026-04-21 재검토)
 
 | 대안 | 기각 사유 |
 |------|----------|
-| Flutter Web | Lobby와 CC를 동일 기술로 통합 가능하나, Flutter Web은 SEO/초기 로딩/번들 크기에서 웹 네이티브 대비 열세. 관제 대시보드에 적합하지 않음 |
-| Vue.js | 팀 내 React 경험이 더 풍부. 컴포넌트 생태계 규모 차이 |
-| Angular | 소규모 프로젝트에 과도한 보일러플레이트. 학습 곡선 높음 |
-| SvelteKit | 생태계 미성숙. Enterprise 레퍼런스 부족 |
+| Next.js + Zustand + shadcn/ui (기존 2026-04-09 제안) | Rive 브라우저 런타임과 CC Flutter 런타임이 달라 GE 프리뷰 ≡ Overlay parity CI 가 필요. 내부 앱 개발팀 스킬 분산. 운영 규모상 브라우저 배포 이점 실익 없음 |
+| Quasar (Vue 3) + TypeScript (기존 CCR-016 APPLIED) | Foundation §5.1 재결정으로 폐기. _archive-quasar/ 로 보존 |
+| Flutter Web | 브라우저 배포 편의성은 있으나 Desktop 성능/IPC/보안 저장 장점이 더 큼 |
 
-### 2.4 결정 완료 사항 (2026-04-09)
+### 2.4 결정 완료 사항
 
 | 항목 | 결정 | 근거 |
 |------|------|------|
-| React SPA vs Next.js | **Next.js 15 (App Router)** | 파일 기반 라우팅이 5계층 구조에 자연스러움. SSR 불필요하지만 라우팅/빌드/배포 통합이 실용적 |
-| 상태 관리 라이브러리 | **Zustand 5.x** | 보일러플레이트 최소, WebSocket 상태 통합 용이. Context는 리렌더링 문제, Jotai는 atom 남발 위험 |
-| HTTP 클라이언트 | **fetch (내장)** | Next.js와 자연스러운 통합. Axios 추가 의존성 불필요 |
-| UI 라이브러리 | **shadcn/ui + Tailwind CSS** | 커스터마이징 자유도 높고 번들 경량. 방송 운영 대시보드에 적합 |
+| Lobby 기술 스택 | **Flutter Desktop (Dart)** | Foundation §5.1 (2026-04-21) |
+| 상태 관리 라이브러리 | **Riverpod 2.x** | Notifier/StateNotifier 기반. `ref.watch` 로 dependency 자동 추적. CC 와 동일 패턴 |
+| HTTP 클라이언트 | **Dio** | Interceptor 로 인증/재시도/로깅 중앙 관리. `ebs_common` 에서 공유 |
+| UI 라이브러리 | **Material 3 + Flutter widgets** | ThemeData 로 커스터마이징. Material Banner/Dialog/DataTable 기본 제공. 레이아웃 분할은 `multi_split_view` |
 
 ---
 
