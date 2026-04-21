@@ -208,9 +208,6 @@ class MockData {
         source: 'manual',
         createdAt: _now,
         updatedAt: _now,
-        flightId: f.id,
-        dayIndex: dayCounters[f.eventId]!,
-        flightName: f.displayName,
       );
     }).toList();
   }

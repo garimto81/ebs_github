@@ -4,18 +4,20 @@ import '../../../models/models.dart';
 
 /// Day tabs for flight-based navigation (Day 1, Day 2, ...).
 ///
-/// Each tab corresponds to one [EventFlight]. Shows flight name and
-/// summary stats (player count, table count).
+/// Each tab corresponds to one [EventFlight]. Shows flight display name and
+/// summary stats (player count, table count). Callback payload is
+/// `eventFlightId` (backend PK); day ordering is derived from the passed
+/// flight list ordering (caller responsibility).
 class DayTabs extends StatelessWidget {
   final List<EventFlight> flights;
-  final int selectedDayIndex;
-  final ValueChanged<int> onDaySelected;
+  final int selectedFlightId;
+  final ValueChanged<int> onFlightSelected;
 
   const DayTabs({
     super.key,
     required this.flights,
-    required this.selectedDayIndex,
-    required this.onDaySelected,
+    required this.selectedFlightId,
+    required this.onFlightSelected,
   });
 
   @override
@@ -32,7 +34,7 @@ class DayTabs extends StatelessWidget {
         unselectedLabelColor: Colors.grey.shade600,
         onTap: (index) {
           if (index < flights.length) {
-            onDaySelected(flights[index].dayIndex);
+            onFlightSelected(flights[index].eventFlightId);
           }
         },
         tabs: [
@@ -42,11 +44,11 @@ class DayTabs extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    flight.flightName,
+                    flight.displayName,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '${flight.playerCount ?? 0} players \u00b7 ${flight.tableCount} tables',
+                    '${flight.playerCount ?? 0} players · ${flight.tableCount} tables',
                     style: TextStyle(
                       fontSize: 11,
                       color: Colors.grey.shade500,
@@ -61,7 +63,7 @@ class DayTabs extends StatelessWidget {
   }
 
   int get _initialIndex {
-    final idx = flights.indexWhere((f) => f.dayIndex == selectedDayIndex);
+    final idx = flights.indexWhere((f) => f.eventFlightId == selectedFlightId);
     return idx >= 0 ? idx : 0;
   }
 }

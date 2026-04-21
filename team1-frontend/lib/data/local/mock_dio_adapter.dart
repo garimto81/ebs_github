@@ -278,7 +278,7 @@ class MockDioAdapter implements HttpClientAdapter {
       return _ok(newTable);
     }
     if (p == '/tables' && method == 'GET') {
-      final flightId = queryParams['event_flight_id'];
+      final flightId = queryParams['flight_id'];
       final filtered = flightId != null
           ? _tables.where((t) => t['event_flight_id'] == int.tryParse(flightId))
           : _tables;

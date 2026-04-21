@@ -21,9 +21,6 @@ class EventFlight with _$EventFlight {
     @JsonKey(name: 'synced_at') String? syncedAt,
     @JsonKey(name: 'created_at') String? createdAt,
     @JsonKey(name: 'updated_at') String? updatedAt,
-    @JsonKey(name: 'flight_id') @Default(0) int flightId,
-    @JsonKey(name: 'day_index') @Default(0) int dayIndex,
-    @JsonKey(name: 'flight_name') @Default('') String flightName,
     @JsonKey(name: 'player_count') int? playerCount,
   }) = _EventFlight;
 

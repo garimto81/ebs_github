@@ -21,7 +21,7 @@ class TableListNotifier extends StateNotifier<AsyncValue<List<EbsTable>>> {
     state = const AsyncValue.loading();
     try {
       final list = await _repo.listTables(
-        params: {'event_flight_id': flightId},
+        params: {'flight_id': flightId},
       );
       state = AsyncValue.data(list);
     } catch (e, st) {

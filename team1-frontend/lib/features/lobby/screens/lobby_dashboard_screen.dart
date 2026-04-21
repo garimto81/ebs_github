@@ -303,7 +303,7 @@ class _LobbyDashboardScreenState extends ConsumerState<LobbyDashboardScreen> {
               orElse: () => null,
             ) ??
         flights.first;
-    return active.flightName;
+    return active.displayName;
   }
 
   int _tableCountForEvent(EbsEvent event) {
@@ -338,7 +338,7 @@ class _LobbyDashboardScreenState extends ConsumerState<LobbyDashboardScreen> {
     }
 
     // Sync active flight ID to nav state for ws_dispatch compatibility.
-    final flightId = activeFlight.flightId;
+    final flightId = activeFlight.eventFlightId;
     final currentFlight = ref.watch(currentFlightIdProvider);
     if (currentFlight != flightId) {
       Future.microtask(
@@ -404,7 +404,7 @@ class _LobbyDashboardScreenState extends ConsumerState<LobbyDashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Tables \u2014 ${flight.flightName}',
+              'Tables \u2014 ${flight.displayName}',
               style: Theme.of(context)
                   .textTheme
                   .titleMedium

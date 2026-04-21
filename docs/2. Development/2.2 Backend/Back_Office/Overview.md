@@ -96,7 +96,7 @@ WSOP LIVE Staff Page는 아래 BO 기능을 제공한다 (Confluence Staff App A
 | 1 | **RFID 디바이스 관리** | 리더 등록, 상태 추적, Mock 모드 전환 | RFID 카드 인식이 EBS Core 핵심 | BO-04 |
 | 2 | **덱 등록 관리** | RFID 카드 52장 매핑, 덱 교체 이력 | Feature Table 방송에 덱 등록 필수 | BO-04 |
 | 3 | **출력 장비 관리** | NDI/SDI/RTMP 출력 상태 추적 | 방송 출력 모니터링 | BO-07 |
-| 4 | **오버레이 프리셋** | 스킨/레이아웃/애니메이션 관리 | 방송별 오버레이 커스터마이징 | BO-07 |
+| 4 | **오버레이 프리셋 (= Graphic Editor)** | 스킨/레이아웃/애니메이션 관리 | 방송별 오버레이 커스터마이징 | `docs/2. Development/2.1 Frontend/Graphic_Editor/Overview.md` (team1 소유) |
 | 5 | **CC 인스턴스 추적** | 테이블당 CC 연결 상태 모니터링 | 1:N Lobby↔CC 관계에서 실시간 관제 | BO-04 |
 | 6 | **핸드 기록 (Event Sourcing)** | 핸드별 카드/액션/결과 영구 저장 | RFID 기반 자동 핸드 기록 (WSOP LIVE는 별도 시스템) | BO-06 |
 | 7 | **통계 계산 엔진** | VPIP/PFR/AGR 자동 계산 | 방송 오버레이 실시간 통계 표시 | BO-06, BO-11 |
@@ -158,7 +158,7 @@ WSOP LIVE Staff Page는 아래 BO 기능을 제공한다 (Confluence Staff App A
 |------|------|------|
 | REST API 응답 | < 200ms (95th percentile) | 목록 조회 포함 |
 | WebSocket 지연 | < 100ms | CC → Lobby 실시간 갱신 |
-| 동시 CC 연결 | 최소 12개 | Feature Table 12대 기준 |
+| 동시 CC 연결 | 3~5개 | 방송 운영 규모 기준 (2026-04-21 보정) |
 | DB 쓰기 | 초당 50+ INSERT | 핸드 액션 burst 대응 |
 | 가동 시간 | 99.5% (방송 시간 내) | 방송 중 다운타임 0 목표 |
 

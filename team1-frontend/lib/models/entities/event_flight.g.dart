@@ -23,9 +23,6 @@ _$EventFlightImpl _$$EventFlightImplFromJson(Map<String, dynamic> json) =>
       syncedAt: json['synced_at'] as String?,
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
-      flightId: (json['flight_id'] as num?)?.toInt() ?? 0,
-      dayIndex: (json['day_index'] as num?)?.toInt() ?? 0,
-      flightName: json['flight_name'] as String? ?? '',
       playerCount: (json['player_count'] as num?)?.toInt(),
     );
 
@@ -46,8 +43,5 @@ Map<String, dynamic> _$$EventFlightImplToJson(_$EventFlightImpl instance) =>
       'synced_at': instance.syncedAt,
       'created_at': instance.createdAt,
       'updated_at': instance.updatedAt,
-      'flight_id': instance.flightId,
-      'day_index': instance.dayIndex,
-      'flight_name': instance.flightName,
       'player_count': instance.playerCount,
     };

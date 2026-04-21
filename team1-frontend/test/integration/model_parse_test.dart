@@ -153,9 +153,6 @@ void main() {
       expect(flight.status, 'running');
       expect(flight.playLevel, 1);
       expect(flight.source, 'api');
-      expect(flight.flightId, 1);
-      expect(flight.dayIndex, 0);
-      expect(flight.flightName, 'Day 1A');
     });
   });
 

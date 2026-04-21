@@ -47,12 +47,6 @@ mixin _$EventFlight {
   String? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
   String? get updatedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'flight_id')
-  int get flightId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'day_index')
-  int get dayIndex => throw _privateConstructorUsedError;
-  @JsonKey(name: 'flight_name')
-  String get flightName => throw _privateConstructorUsedError;
   @JsonKey(name: 'player_count')
   int? get playerCount => throw _privateConstructorUsedError;
 
@@ -88,9 +82,6 @@ abstract class $EventFlightCopyWith<$Res> {
       @JsonKey(name: 'synced_at') String? syncedAt,
       @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'updated_at') String? updatedAt,
-      @JsonKey(name: 'flight_id') int flightId,
-      @JsonKey(name: 'day_index') int dayIndex,
-      @JsonKey(name: 'flight_name') String flightName,
       @JsonKey(name: 'player_count') int? playerCount});
 }
 
@@ -124,9 +115,6 @@ class _$EventFlightCopyWithImpl<$Res, $Val extends EventFlight>
     Object? syncedAt = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
-    Object? flightId = null,
-    Object? dayIndex = null,
-    Object? flightName = null,
     Object? playerCount = freezed,
   }) {
     return _then(_value.copyWith(
@@ -190,18 +178,6 @@ class _$EventFlightCopyWithImpl<$Res, $Val extends EventFlight>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String?,
-      flightId: null == flightId
-          ? _value.flightId
-          : flightId // ignore: cast_nullable_to_non_nullable
-              as int,
-      dayIndex: null == dayIndex
-          ? _value.dayIndex
-          : dayIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      flightName: null == flightName
-          ? _value.flightName
-          : flightName // ignore: cast_nullable_to_non_nullable
-              as String,
       playerCount: freezed == playerCount
           ? _value.playerCount
           : playerCount // ignore: cast_nullable_to_non_nullable
@@ -234,9 +210,6 @@ abstract class _$$EventFlightImplCopyWith<$Res>
       @JsonKey(name: 'synced_at') String? syncedAt,
       @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'updated_at') String? updatedAt,
-      @JsonKey(name: 'flight_id') int flightId,
-      @JsonKey(name: 'day_index') int dayIndex,
-      @JsonKey(name: 'flight_name') String flightName,
       @JsonKey(name: 'player_count') int? playerCount});
 }
 
@@ -268,9 +241,6 @@ class __$$EventFlightImplCopyWithImpl<$Res>
     Object? syncedAt = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
-    Object? flightId = null,
-    Object? dayIndex = null,
-    Object? flightName = null,
     Object? playerCount = freezed,
   }) {
     return _then(_$EventFlightImpl(
@@ -334,18 +304,6 @@ class __$$EventFlightImplCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String?,
-      flightId: null == flightId
-          ? _value.flightId
-          : flightId // ignore: cast_nullable_to_non_nullable
-              as int,
-      dayIndex: null == dayIndex
-          ? _value.dayIndex
-          : dayIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      flightName: null == flightName
-          ? _value.flightName
-          : flightName // ignore: cast_nullable_to_non_nullable
-              as String,
       playerCount: freezed == playerCount
           ? _value.playerCount
           : playerCount // ignore: cast_nullable_to_non_nullable
@@ -373,9 +331,6 @@ class _$EventFlightImpl implements _EventFlight {
       @JsonKey(name: 'synced_at') this.syncedAt,
       @JsonKey(name: 'created_at') this.createdAt,
       @JsonKey(name: 'updated_at') this.updatedAt,
-      @JsonKey(name: 'flight_id') this.flightId = 0,
-      @JsonKey(name: 'day_index') this.dayIndex = 0,
-      @JsonKey(name: 'flight_name') this.flightName = '',
       @JsonKey(name: 'player_count') this.playerCount});
 
   factory _$EventFlightImpl.fromJson(Map<String, dynamic> json) =>
@@ -427,21 +382,12 @@ class _$EventFlightImpl implements _EventFlight {
   @JsonKey(name: 'updated_at')
   final String? updatedAt;
   @override
-  @JsonKey(name: 'flight_id')
-  final int flightId;
-  @override
-  @JsonKey(name: 'day_index')
-  final int dayIndex;
-  @override
-  @JsonKey(name: 'flight_name')
-  final String flightName;
-  @override
   @JsonKey(name: 'player_count')
   final int? playerCount;
 
   @override
   String toString() {
-    return 'EventFlight(eventFlightId: $eventFlightId, eventId: $eventId, displayName: $displayName, startTime: $startTime, isTbd: $isTbd, entries: $entries, playersLeft: $playersLeft, tableCount: $tableCount, status: $status, playLevel: $playLevel, remainTime: $remainTime, source: $source, syncedAt: $syncedAt, createdAt: $createdAt, updatedAt: $updatedAt, flightId: $flightId, dayIndex: $dayIndex, flightName: $flightName, playerCount: $playerCount)';
+    return 'EventFlight(eventFlightId: $eventFlightId, eventId: $eventId, displayName: $displayName, startTime: $startTime, isTbd: $isTbd, entries: $entries, playersLeft: $playersLeft, tableCount: $tableCount, status: $status, playLevel: $playLevel, remainTime: $remainTime, source: $source, syncedAt: $syncedAt, createdAt: $createdAt, updatedAt: $updatedAt, playerCount: $playerCount)';
   }
 
   @override
@@ -474,40 +420,30 @@ class _$EventFlightImpl implements _EventFlight {
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
-            (identical(other.flightId, flightId) ||
-                other.flightId == flightId) &&
-            (identical(other.dayIndex, dayIndex) ||
-                other.dayIndex == dayIndex) &&
-            (identical(other.flightName, flightName) ||
-                other.flightName == flightName) &&
             (identical(other.playerCount, playerCount) ||
                 other.playerCount == playerCount));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hashAll([
-        runtimeType,
-        eventFlightId,
-        eventId,
-        displayName,
-        startTime,
-        isTbd,
-        entries,
-        playersLeft,
-        tableCount,
-        status,
-        playLevel,
-        remainTime,
-        source,
-        syncedAt,
-        createdAt,
-        updatedAt,
-        flightId,
-        dayIndex,
-        flightName,
-        playerCount
-      ]);
+  int get hashCode => Object.hash(
+      runtimeType,
+      eventFlightId,
+      eventId,
+      displayName,
+      startTime,
+      isTbd,
+      entries,
+      playersLeft,
+      tableCount,
+      status,
+      playLevel,
+      remainTime,
+      source,
+      syncedAt,
+      createdAt,
+      updatedAt,
+      playerCount);
 
   /// Create a copy of EventFlight
   /// with the given fields replaced by the non-null parameter values.
@@ -542,9 +478,6 @@ abstract class _EventFlight implements EventFlight {
           @JsonKey(name: 'synced_at') final String? syncedAt,
           @JsonKey(name: 'created_at') final String? createdAt,
           @JsonKey(name: 'updated_at') final String? updatedAt,
-          @JsonKey(name: 'flight_id') final int flightId,
-          @JsonKey(name: 'day_index') final int dayIndex,
-          @JsonKey(name: 'flight_name') final String flightName,
           @JsonKey(name: 'player_count') final int? playerCount}) =
       _$EventFlightImpl;
 
@@ -593,15 +526,6 @@ abstract class _EventFlight implements EventFlight {
   @override
   @JsonKey(name: 'updated_at')
   String? get updatedAt;
-  @override
-  @JsonKey(name: 'flight_id')
-  int get flightId;
-  @override
-  @JsonKey(name: 'day_index')
-  int get dayIndex;
-  @override
-  @JsonKey(name: 'flight_name')
-  String get flightName;
   @override
   @JsonKey(name: 'player_count')
   int? get playerCount;
