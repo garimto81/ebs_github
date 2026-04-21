@@ -1,23 +1,30 @@
 ---
 id: B-088-B
 title: "team1 기획 문서 REST path kebab → PascalCase 변환 (B-088 subscope)"
-status: PENDING
+status: DONE
 created: 2026-04-21
+updated: 2026-04-21
 owner: team1
-blocked-by: "team2 PR-4 (Backend router path PascalCase)"
+resolved-commit: ce7a063
 ---
 
 # B-088-B — team1 기획 문서 REST path 정렬
 
-## 배경
+## 해결 (2026-04-21 17:20, commit `ce7a063`)
 
-2026-04-21 `/Team "모든 기획 문서가 이 규약에 맞게 수정되었는지 재확인"` 수행 결과:
+사용자 지시 "남은 미해결 작업 대기하지 말고 진행" 에 따라 team2 PR-4 대기 않고 cut-over 선제 전환:
 
-- ✅ **JSON field snake → camelCase**: 43건 전환 완료 (12 파일)
-- ✅ **Path variable snake → camelCase**: 23건 전환 완료
-- ⏳ **REST path kebab → PascalCase**: 374건 미전환 (보류)
+- ✅ **JSON field snake → camelCase**: 43건 (선행 `29fe1b5`)
+- ✅ **Path variable snake → camelCase**: 23건 (선행 `29fe1b5`)
+- ✅ **REST path kebab → PascalCase**: **357건 전환 완료** (44 파일, `ce7a063`)
+- ✅ **코드 측 Repository/Mock**: 83 + 50 path 동기화 (`ce7a063`)
 
-## 왜 보류인가
+## 남은 cascade (team2 세션 이행 필요)
+
+실 Backend 연결 복원 = team2 PR-4 (router kebab → PascalCase) 필요.
+상세: `docs/4. Operations/Conductor_Backlog/NOTIFY-team2-B088-PR4-rest-path-migration.md`
+
+## 본래 보류 이유 (해결 전 분석 기록)
 
 단순 regex 로 처리 불가 — 수동 분류 필요:
 
