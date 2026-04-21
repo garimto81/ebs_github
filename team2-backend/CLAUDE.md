@@ -1,5 +1,35 @@
 # Team 2: Backend (BO) — CLAUDE.md (코드 전용)
 
+## 🎯 2026-04-21 이관 시 우선 작업 (MUST READ)
+
+**전체 이관 가이드**: `docs/4. Operations/Multi_Session_Handoff.md` — 세션 시작 시 필독.
+
+### team2 우선 작업 (기준 커밋 `7543452`)
+
+1. **Fresh DB workflow 확립** — `python team2-backend/tools/init_db.py --force` (init.sql + alembic stamp head 자동, 25 tables). 이 한 명령으로 DB 재빌드.
+2. **IMPL-003 decks.py DB session 교체** — `docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md`. 현재 in-memory (13 test PASS). `TODO-T2-004` 마커 해소
+3. **settings_kv.py DB session 교체** — `src/routers/settings_kv.py` 현재 in-memory 4-level resolver 실동작 (11 test PASS). `TODO-T2-011` 마커 해소
+4. **reports.py MV 실DB 쿼리** — `src/routers/reports.py` 6 endpoint 현재 mock data 실동작 (13 test PASS). `TODO-T2-009` MV 설계 + aggregation 실구현
+5. **publishers.py trigger 연결** — `src/websocket/publishers.py` 20 event publisher skeleton 완료 (5 test PASS, drift D2 20→0). `TODO-T2-014` 실제 trigger (router/service) 에서 호출 wiring
+6. **SG-008 (a) 77 endpoint 실구현** — `Backend_HTTP.md §5.17` 편입 완료. 코드는 대부분 skeleton/존재. 실제 response schema + DB 연결 + RBAC 가드 완결
+7. **SG-008 (b1~b9) 9 endpoint 실구현** — audit-events/logs-read/download, auth-me/logout, sync-status/trigger, sync-mock-seed/reset
+8. **SG-008-b14 2FA migration 0006** — users 테이블 twofa_enabled/secret/backup_codes 컬럼 + 6 endpoint 구현
+9. **Users Suspend/Lock/Delete 3상태** (NOTIFY-CCR-053) + **audit_events event_type 카탈로그** (NOTIFY-CCR-039)
+10. **SG-004 .gfskin 업로드 검증 endpoint** — `tools/validate_gfskin.py` 재사용하여 POST /api/v1/skins 에 8 단계 검증
+
+### 주요 도구
+
+- `python team2-backend/tools/init_db.py --force` — fresh DB
+- `python -m pytest team2-backend/tests/` — 247 tests baseline
+- `python tools/spec_drift_check.py --api --websocket --schema --fsm --settings`
+
+### 현 baseline
+- pytest 247 tests 0 errors
+- drift: events/fsm/websocket **완전 PASS**, api D3=0, schema D4=23
+- FSM enums: `src/db/enums.py` 7종 canonical (TableFSM/HandFSM/SeatFSM/PlayerStatus/DeckFSM/EventFSM/ClockFSM)
+
+---
+
 ## 브랜치 규칙
 
 - **작업 브랜치**: `work/team2/{YYYYMMDD}-session` (SessionStart hook 자동 생성)

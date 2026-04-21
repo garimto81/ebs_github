@@ -1,5 +1,30 @@
 # Team 1: Frontend — CLAUDE.md (코드 전용)
 
+## 🎯 2026-04-21 이관 시 우선 작업 (MUST READ)
+
+**전체 이관 가이드**: `docs/4. Operations/Multi_Session_Handoff.md` — 세션 시작 시 필독.
+
+### team1 우선 작업 (기준 커밋 `7543452`)
+
+1. **IMPL-002 Engine Connection UI 완결** — `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md` 참조 (일부 team4 작업 포함되나 team1 splash/router 연동 부분 협력)
+2. **Settings 5탭 교차검증** — `lib/features/settings/screens/` 의 레거시 필드 vs SG-003 Extended Fields (Conductor 가 추가한 섹션) 의 일관성. 현재 `UNKNOWN 5`. `docs/2. Development/2.1 Frontend/Settings/{Outputs,Graphics,Display,Rules,Statistics}.md` 와 교차검증 후 PASS 전환
+3. **Quasar 잔재 정리 (SG-001 후속)** — `team1-frontend/src/`, `package.json`, `quasar.config.js`, `node_modules/`, `pnpm-lock.yaml`, `build/`, `.quasar/` 삭제. `_archive-quasar/` 는 보존
+4. **skin-editor drafts 5 완결** — `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/` 의 PRD-0006/7/7-S1/7-S2 + PLAN-UI-001 (모두 `status: draft`) → 본문 보강 후 `reimplementability: PASS`
+5. **Chip_Management §6 미결 3건** — Multi-Table 일괄 API / Chip Discrepancy / Color-up/Race-off 설계 결정 (Conductor 협의)
+6. **features 정렬** — 선언 8 (auth/lobby/settings/GE/staff/**players**/**audit_log**/**hand_history**) vs 실측 6 (auth/lobby/settings/GE/staff/**reports**). 결정: (a) reports 를 선언에 편입 (b) 미구현 3개 신규 기능 추가. `Engineering.md §0` 참조
+
+### 주요 도구
+
+- `python tools/spec_drift_check.py --settings` — settings drift 실시간 확인
+- `python tools/reimplementability_audit.py --path docs/2.*Frontend*` — team1 계약 문서 재구현성
+
+### 금지 / 범위 밖
+
+- Graphic Editor 실제 Rive 에디터 기능 재구현 (rive 프리뷰 허용만)
+- `docs/1. Product/`, `docs/2. Development/2.{2,3,4,5}*/`, `docs/4. Operations/` 수정 (다른 팀 소유, 단 v7 free_write 하 notify 후 가능)
+
+---
+
 ## 브랜치 규칙
 
 - **작업 브랜치**: `work/team1/{YYYYMMDD}-session` (SessionStart hook 자동 생성)

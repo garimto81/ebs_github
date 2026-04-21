@@ -1,5 +1,45 @@
 # Team 4: Command Center + Overlay — CLAUDE.md (코드 전용)
 
+## 🎯 2026-04-21 이관 시 우선 작업 (MUST READ)
+
+**전체 이관 가이드**: `docs/4. Operations/Multi_Session_Handoff.md` — 세션 시작 시 필독.
+
+### team4 우선 작업 (기준 커밋 `7543452`)
+
+1. **IMPL-002 Engine Connection UI 완결** — `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md`
+   - ✅ 기본 구현 완료: `engine_connection_provider.dart` (3-stage state machine + health check + stub bridge), `engine_connection_banner.dart`, `splash_screen.dart`, `app_router.dart` redirect guard
+   - 🟡 남은 작업: widget test + integration test, `/engine/health` endpoint 응답 정합 검증
+2. **SG-002 stub_engine 연동** — `features/command_center/services/stub_engine.dart` 를 `engine_connection_provider.stubEngineBridgeProvider` 의 Overlay 로 실제 스트리밍 (Pre-flop/Flop/Turn/River → Overlay Rive render 테스트)
+3. **Overlay Rive 21 OutputEvent consume** — `Overlay_Output_Events.md §6.0` 의 21 종 전부 Rive state machine 매핑. 현재 skeleton 수준
+4. **SG-006 Deck 등록 3 모드 UI** — Scan (기본) / Bulk JSON import / 자동 순서. `team2 src/routers/decks.py` API 호출 연동
+5. **Manual_Fallback 유지** — `docs/.../Manual_Card_Input.md` §6 기반 수동 입력 시나리오 e2e 검증
+
+### ENGINE_URL 환경변수 (SG-002)
+
+```bash
+flutter run -d windows --dart-define=ENGINE_URL=http://host:port
+```
+default: `http://localhost:8080`. 미연결 시 3-stage (Connecting → Degraded → Offline) 자동 전환 + Demo Mode (stub_engine).
+
+### 주요 도구
+
+- `dart analyze C:/claude/ebs/team4-cc/src` — 0 errors 유지
+- `python tools/spec_drift_check.py --rfid` (OUT_OF_SCOPE 검증)
+
+### 현 baseline
+- rfid drift: OUT_OF_SCOPE D4=8 (SG-011 유지, 하드웨어 팀 인계)
+- websocket drift: **완전 PASS** (team2 publisher 완결)
+- MockRfidReader 로 프로토타입 시연 충분
+
+### 금지 / 범위 밖
+
+- **SG-011 RFID 하드웨어 구현** — 제조사 SDK (ST25R3911B/ESP32 펌웨어) 기반. 프로토타입 범위 밖
+- Graphic Editor UI (team1 소유)
+- `IRfidReader` 직접 인스턴스화 (`rfidReaderProvider` Riverpod DI 사용)
+- `lib/features/overlay/layer2_push/` (Phase 2 영역)
+
+---
+
 ## 브랜치 규칙
 
 - **작업 브랜치**: `work/team4/{YYYYMMDD}-session` (SessionStart hook 자동 생성)

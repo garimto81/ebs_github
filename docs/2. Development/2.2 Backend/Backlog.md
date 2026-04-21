@@ -6,6 +6,32 @@ decomposed: true
 
 # Backlog (디렉토리화됨)
 
+## 🎯 2026-04-21 이관 우선 작업 (baseline 커밋 `7543452`)
+
+팀 세션 시작 시 `team2-backend/CLAUDE.md §"2026-04-21 이관 시 우선 작업"` 섹션 필독.
+전체 이관 가이드: `docs/4. Operations/Multi_Session_Handoff.md`
+
+1. **Fresh DB** — `python team2-backend/tools/init_db.py --force` (init.sql + alembic stamp head)
+2. **IMPL-003 decks.py DB session** — `Conductor_Backlog/IMPL-003-team2-decks-db-session.md` (`TODO-T2-004`)
+3. **settings_kv.py DB session** — `src/routers/settings_kv.py` in-memory → DB (`TODO-T2-011`)
+4. **reports.py MV 실DB** — 6 endpoint mock → MV 쿼리 (`TODO-T2-009`)
+5. **publishers.py trigger 연결** — `src/websocket/publishers.py` 20 event → router/service 호출 wiring (`TODO-T2-014`)
+6. **SG-008 (a) 77 endpoint 실구현** — `Backend_HTTP.md §5.17` 편입 완료 → 코드 response schema + DB 연결
+7. **SG-008 (b1~b9) 9 endpoint** — audit/auth/sync (`SG-008-b1~b9` 파일 참조)
+8. **SG-008-b14 2FA migration 0006** — users 테이블 twofa_* 컬럼 + 6 endpoint
+9. **NOTIFY-CCR-053 Users Suspend/Lock/Delete** + **NOTIFY-CCR-039 audit event_type 카탈로그**
+10. **SG-004 .gfskin 업로드 검증** — `tools/validate_gfskin.py` 재사용 POST /api/v1/skins
+
+### 관련 SG / IMPL
+- SG-002/003/006/007/008/009 (RESOLVED/PARTIAL/DONE) · IMPL-003 · b1~b15 (승격 완료)
+
+### 현 baseline
+- pytest **247 tests 0 errors**
+- drift: events/fsm/websocket 완전 PASS, api D3=0
+- FSM canonical: `src/db/enums.py` 7종
+
+---
+
 이 파일은 멀티 세션 충돌 방지를 위해 **항목별 파일**로 분해되었습니다.
 
 - 항목 위치: `./Backlog/` (66개 항목)

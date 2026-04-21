@@ -1,5 +1,35 @@
 # Team 3: Game Engine — CLAUDE.md (코드 전용)
 
+## 🎯 2026-04-21 이관 시 우선 작업 (MUST READ)
+
+**전체 이관 가이드**: `docs/4. Operations/Multi_Session_Handoff.md` — 세션 시작 시 필독.
+
+### team3 우선 작업 (기준 커밋 `7543452`)
+
+1. **CCR-050 Clock FSM 세부 구체화** — `BS_Overview §3.7 ClockFSM` 스펙 준수 + engine 내 구현 검증. `team2 websocket publisher` (publish_clock_detail_changed / publish_clock_reload_requested) 와 정합
+2. **NOTIFY-CCR-024 WriteGameInfo 22 필드 스키마** — `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` 의 21 OutputEvent 에서 WriteGameInfo 관련 payload 완결
+3. **Draw 7종 + Stud 3종 variant 완결성** — `test/phase1~5` 에 기반 테스트 존재. 커버리지 검증 + 누락 edge case 보강
+4. **HandEvaluator 완결성** — Low hand (Razz, Stud 8-or-better, Omaha Hi-Lo), Split pot, Sidepot 계산
+5. **harness HTTP 인터페이스 안정화** — `bin/harness.dart` (port 8080) 를 team4 가 Option A HTTP 로 호출. `/engine/health` endpoint 추가 (team4 engine_connection_provider 가 health probe)
+
+### 주요 도구
+
+- `dart analyze C:/claude/ebs/team3-engine/ebs_game_engine` — 0 errors 유지 (현재 170 info/warning)
+- `dart test` — 39 test file
+
+### 현 baseline
+- events drift: **완전 PASS** (21/21 D4)
+- OutputEvent 21종 카탈로그 확정 (§6.0, 2026-04-15 실측 정정 반영)
+- 순수 Dart 규칙: `lib/core/` 엄격 / `bin/harness.dart` + `lib/harness/` 만 `dart:io` 허용
+
+### 금지 / 범위 밖
+
+- Flutter import (lib/core)
+- HTTP package import (lib/core — harness 만 허용)
+- OutputEvent 신규 추가 시 `Overlay_Output_Events.md §6.0` 동시 업데이트 필수
+
+---
+
 ## 브랜치 규칙
 
 - **작업 브랜치**: `work/team3/{YYYYMMDD}-session` (SessionStart hook 자동 생성)
