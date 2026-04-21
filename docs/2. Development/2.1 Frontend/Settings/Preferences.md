@@ -48,13 +48,13 @@ scope: user
 ```json
 {
   "enabled": true,
-  "sound_enabled": true,
-  "event_types": {
-    "hand_start": false,
-    "rfid_error": true,
-    "engine_offline": true,
-    "sync_conflict": true,
-    "new_hand_from_operator": false
+  "soundEnabled": true,
+  "eventTypes": {
+    "handStart": false,
+    "rfidError": true,
+    "engineOffline": true,
+    "syncConflict": true,
+    "newHandFromOperator": false
   },
   "volume": 0.7
 }
@@ -81,8 +81,8 @@ scope: user
 ```json
 {
   "enabled": true,
-  "idle_minutes": 60,
-  "warn_before_seconds": 30
+  "idleMinutes": 60,
+  "warnBeforeSeconds": 30
 }
 ```
 
@@ -121,9 +121,9 @@ scope: user
 ```json
 {
   "format": "csv",  // csv | json | xlsx
-  "include_headers": true,
-  "timezone_mode": "local",  // local | utc
-  "filename_pattern": "{type}_{date}_{user}"
+  "includeHeaders": true,
+  "timezoneMode": "local",  // local | utc
+  "filenamePattern": "{type}_{date}_{user}"
 }
 ```
 
@@ -149,7 +149,7 @@ RBAC: 자기 preferences 만 GET/PUT. Admin 은 다른 사용자 preferences 조
 
 ```sql
 INSERT INTO settings_kv (scope_level, scope_id, tab, key, value)
-VALUES ('user', '{user.id}', 'preferences', 'shortcuts', '{"new_hand":"Ctrl+N",...}');
+VALUES ('user', '{user.id}', 'preferences', 'shortcuts', '{"newHand":"Ctrl+N",...}');
 ```
 
 ## 10. 수락 기준

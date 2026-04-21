@@ -95,7 +95,7 @@ saved
 
 - **요청**: `POST /api/v1/skins` (API-07 §1)
   - `Content-Type: multipart/form-data`
-  - `Authorization: Bearer {admin_jwt}`
+  - `Authorization: Bearer {adminJwt}`
   - `Idempotency-Key: {uuid4}` (필수, CCR-003)
   - body: `file` (`.gfskin`), `name` (선택 override)
 - **응답 201**: `{id, version, etag, url}` → 리스트에 새 스킨 추가, FSM saved

@@ -97,9 +97,9 @@ Hand History 는 Command Center 에서 기록된 포커 핸드(1판) 의 전체 
 
 #### 데이터
 
-- `GET /api/v1/hands/{hand_id}` — 메타
-- `GET /api/v1/hands/{hand_id}/actions` — `hand_actions` 시퀀스
-- `GET /api/v1/hands/{hand_id}/players` — `hand_seats` (player_id, hole_card_1, hole_card_2)
+- `GET /api/v1/hands/{handId}` — 메타
+- `GET /api/v1/hands/{handId}/actions` — `hand_actions` 시퀀스
+- `GET /api/v1/hands/{handId}/players` — `hand_seats` (player_id, hole_card_1, hole_card_2)
 
 ### 2.3 Player Hand Stats
 

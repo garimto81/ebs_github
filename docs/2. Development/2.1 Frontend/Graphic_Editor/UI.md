@@ -312,7 +312,7 @@ GET /api/v1/game-state   (BS-08-03 §2.2 GameState 가드)
   ├→ state = "IDLE" → confirming (작은 confirm dialog)
   └→ state = "RUNNING" → warning_dialog (q-dialog)
        제목: "방송 진행 중입니다"
-       본문: "Table {id} Hand {hand_id} 진행 중.
+       본문: "Table {id} Hand {handId} 진행 중.
               스킨 교체 시 시청자에게 시각 단절 발생.
               핸드 종료 후 Activate 를 권장합니다."
        [취소] or [강제 Activate]
@@ -383,7 +383,7 @@ Delete:
   비활성 스킨에서만 [🗑 Delete] 버튼 활성화
   (활성 스킨은 disabled + tooltip "활성 스킨은 삭제할 수 없습니다")
   ↓
-  q-dialog 확인: "'{skin_name}' 을 삭제합니다. 되돌릴 수 없습니다."
+  q-dialog 확인: "'{skinName}' 을 삭제합니다. 되돌릴 수 없습니다."
   ↓
   DELETE /api/v1/skins/{id}  (If-Match)
   ↓
@@ -439,7 +439,7 @@ DATA-07 `colors` required 배열 + optional 키를 포함해 총 9개.
 | GEM-11 | `colors.badge_bet` | 동일 | 동일 | "#FFAA00" |
 | GEM-12 | `colors.badge_call` | 동일 | 동일 | "#44AAFF" |
 | GEM-13 | `colors.badge_allin` | 동일 | 동일 | "#FF3355" |
-| GEM-14 | `colors.*` (1 optional key) | `TextField` (key 이름) + `q-color` (값) | additionalProperties | "badge_raise": "#FF00AA" |
+| GEM-14 | `colors.*` (1 optional key) | `TextField` (key 이름) + `q-color` (값) | additionalProperties | "badgeRaise": "#FF00AA" |
 
 **UI 규칙**:
 
@@ -664,7 +664,7 @@ if (gameState === 'RUNNING'):
   activationState = 'warning'
   q-dialog 표시 (GEA-02):
     title: "방송 진행 중입니다"
-    message: "Table {id} Hand {hand_id} 진행 중.
+    message: "Table {id} Hand {handId} 진행 중.
               스킨을 교체하면 시청자에게 급격한 시각 전환이
               발생합니다. 핸드 종료 후 Activate 를 권장합니다."
     ok: "강제 Activate"  (color=warning)
@@ -682,7 +682,7 @@ else:
 ### 8.3 PUT 요청 헤더
 
 ```
-Authorization: Bearer {admin_jwt}
+Authorization: Bearer {adminJwt}
 If-Match: W/"{etag}"
 X-Game-State: IDLE
 Idempotency-Key: {crypto.randomUUID()}

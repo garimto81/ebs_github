@@ -108,8 +108,8 @@ FastAPI dependency:
 {
   "error": "AUTH_ROLE_DENIED",
   "message": "이 작업은 Admin 권한이 필요합니다.",
-  "required_role": "Admin",
-  "current_role": "Operator"
+  "requiredRole": "Admin",
+  "currentRole": "Operator"
 }
 ```
 

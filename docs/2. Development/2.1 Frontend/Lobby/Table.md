@@ -86,13 +86,13 @@ EMPTY → SETUP → LIVE → PAUSED → CLOSED
 ```json
 {
   "id": "tbl_01HVQK...",
-  "flight_id": "fl_...",
-  "table_no": 5,
+  "flightId": "fl_...",
+  "tableNo": 5,
   "name": "Feature Table",
   "type": "feature",
   "status": "live",
-  "is_pause": true,
-  "max_players": 9
+  "isPause": true,
+  "maxPlayers": 9
 }
 ```
 
@@ -130,11 +130,11 @@ Table 상태 변경은 `ConfigChanged` 또는 `TableStatusChanged` WebSocket 이
 {
   "type": "TableStatusChanged",
   "payload": {
-    "table_id": "tbl_...",
-    "old_status": "live",
-    "new_status": "live",
-    "old_is_pause": false,
-    "new_is_pause": true,
+    "tableId": "tbl_...",
+    "oldStatus": "live",
+    "newStatus": "live",
+    "oldIsPause": false,
+    "newIsPause": true,
     "reason": "break"
   }
 }
@@ -186,11 +186,11 @@ Table 상태 변경은 `ConfigChanged` 또는 `TableStatusChanged` WebSocket 이
 |------|------|---------------|---------|
 | **Add (Random)** | Random | 자리 미지정, 빈 테이블 없으면 동작 안 함 | `POST /tables/seats/random` — 서버가 Auto Seating 알고리즘 적용 |
 | **Add (Manual table only)** | Manual A | 테이블 지정, 시트 랜덤 | `POST /tables/{id}/seats/random` |
-| **Add (Manual full)** | Manual B | 테이블 + 시트 모두 지정 | `POST /tables/{id}/seats/{seat_no}` |
+| **Add (Manual full)** | Manual B | 테이블 + 시트 모두 지정 | `POST /tables/{id}/seats/{seatNo}` |
 | **Move (Random)** | Random | 마지막 테이블 정리 시 사용 | `POST /tables/move-random?from_table_id=...` |
 | **Move (Manual table only)** | Manual A | 테이블 지정, 시트 랜덤 | `POST /tables/{id}/seats/random?from_player_id=...` |
-| **Move (Manual full)** | Manual B | 테이블 + 시트 지정 | `POST /tables/{id}/seats/{seat_no}?from_player_id=...` |
-| **Stat 수정** | — | Add Chips / Remove Chips / Kick Out / Eliminate | `PATCH /seats/{seat_id}` body `{chips, eliminated, kicked_out}` |
+| **Move (Manual full)** | Manual B | 테이블 + 시트 지정 | `POST /tables/{id}/seats/{seatNo}?from_player_id=...` |
+| **Stat 수정** | — | Add Chips / Remove Chips / Kick Out / Eliminate | `PATCH /seats/{seatId}` body `{chips, eliminated, kicked_out}` |
 | **Eliminate (마지막 1~2명)** | confirm | "There is The Last Player Standing" / "This is The Last Player CANNOT be eliminated" 확인 | 클라이언트 모달 + `POST /tables/{id}/complete` 트리거 |
 
 권한: Floor Manager·Tournament Director (= EBS Admin). Table Dealer 는 칩 변동 + Bust 신청만 (= EBS Operator 해당 테이블 한정).

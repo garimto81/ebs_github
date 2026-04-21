@@ -112,12 +112,12 @@ saving
 
 ```http
 PATCH /api/v1/skins/{id}/metadata HTTP/1.1
-Authorization: Bearer {admin_jwt}
+Authorization: Bearer {adminJwt}
 If-Match: W/"{etag}"
 Content-Type: application/merge-patch+json
 
 {
-  "colors": { "badge_check": "#00FF00" },
+  "colors": { "badgeCheck": "#00FF00" },
   "fonts": { "pot": { "size": 48 } }
 }
 ```

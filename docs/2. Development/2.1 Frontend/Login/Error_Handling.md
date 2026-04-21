@@ -69,20 +69,20 @@ last-updated: 2026-04-15
 | `AUTH_2FA_INVALID` | 401 | `error.auth.otp_invalid` | 인증 코드가 일치하지 않습니다 | OTP 입력 박스 아래 inline | OTP 입력 clear + focus, 5회 실패 시 `AUTH_ACCOUNT_LOCKED` 전환 |
 | `AUTH_2FA_EXPIRED` | 401 | `error.auth.otp_expired` | 인증 코드가 만료되었습니다. 다시 받으세요 | OTP 박스 아래 inline | "코드 재발송" 버튼 활성화, 재발송 쿨다운 30s 표시 |
 | `AUTH_2FA_SEND_FAILED` | 502 | `error.auth.otp_send_failed` | 인증 코드 발송에 실패했습니다 | OTP 단계 상단 배너 | 재시도 버튼 + 대체 채널 안내 (관리자에게 문의) |
-| `AUTH_ACCOUNT_LOCKED` | 423 | `error.auth.account_locked` | 계정이 잠겼습니다. {unlock_at} 이후 다시 시도하세요 | 전체 모달 | 모달 dismiss 불가. 잠금 해제 시각 카운트다운 + "관리자 문의" 링크 |
+| `AUTH_ACCOUNT_LOCKED` | 423 | `error.auth.account_locked` | 계정이 잠겼습니다. {unlockAt} 이후 다시 시도하세요 | 전체 모달 | 모달 dismiss 불가. 잠금 해제 시각 카운트다운 + "관리자 문의" 링크 |
 | `AUTH_ACCOUNT_DISABLED` | 403 | `error.auth.account_disabled` | 비활성화된 계정입니다. 관리자에게 문의하세요 | 전체 모달 | 관리자 이메일 mailto: 링크 |
 | `AUTH_TOKEN_EXPIRED` | 401 | `error.auth.token_expired` | 세션이 만료되었습니다. 다시 로그인하세요 | 토스트(상단) | 토큰 폐기 + 로그인 화면 리다이렉트 (`Form.md`) |
 | `AUTH_TOKEN_INVALID` | 401 | `error.auth.token_invalid` | 인증 정보가 유효하지 않습니다 | 토스트 | 토큰 폐기 + 로그인 화면 리다이렉트 |
 | `AUTH_FORBIDDEN` | 403 | `error.auth.forbidden` | 권한이 없습니다 | 토스트 | 이전 화면 유지, 액션만 취소 |
 | `VALIDATION_FAILED` | 422 | `error.validation.failed` | 입력 값이 올바르지 않습니다. 확인 후 다시 시도하세요 | 폼 아래 inline | 서버 응답의 `details[]` 를 필드별로 매핑하여 개별 표시 |
-| `RATE_LIMITED` | 429 | `error.rate_limited` | 요청이 너무 많습니다. {retry_after}초 후 다시 시도하세요 | 토스트 | Login 버튼 disable + 카운트다운 |
+| `RATE_LIMITED` | 429 | `error.rate_limited` | 요청이 너무 많습니다. {retryAfter}초 후 다시 시도하세요 | 토스트 | Login 버튼 disable + 카운트다운 |
 | `NETWORK_ERROR` | — (클라이언트) | `error.network` | 네트워크에 연결할 수 없습니다 | 전체 배너 | 재시도 버튼, 5회 자동 재시도(지수 백오프) 후 수동 모드 |
 | `SERVER_ERROR` | 5xx | `error.server` | 일시적 오류가 발생했습니다. 잠시 후 다시 시도하세요 | 토스트 + Sentry 보고 | 재시도 버튼 |
 
 ### 매핑 규칙
 
 - **i18n 키 네이밍**: `error.{영역}.{코드_snake_case}`. 영역은 `auth`, `validation`, `network`, `rate_limited`, `server` 중 하나.
-- **`{placeholder}` 치환**: 서버 응답의 `details` 에서 해당 키를 i18n interpolation 으로 주입. 예: `AUTH_ACCOUNT_LOCKED` 의 `{unlock_at}` 은 서버가 보낸 ISO 시각을 로컬 포맷으로 변환.
+- **`{placeholder}` 치환**: 서버 응답의 `details` 에서 해당 키를 i18n interpolation 으로 주입. 예: `AUTH_ACCOUNT_LOCKED` 의 `{unlockAt}` 은 서버가 보낸 ISO 시각을 로컬 포맷으로 변환.
 - **표시 위치 규정**:
   - *inline*: 해당 입력 필드 바로 아래, 빨강 텍스트 (Flutter `TextField(decoration: InputDecoration(errorText: ..))`)
   - *토스트*: Flutter `SnackBar` (또는 `ScaffoldMessenger.showSnackBar`) 상단, 자동 dismiss 5s
@@ -90,7 +90,7 @@ last-updated: 2026-04-15
   - *전체 모달*: `showDialog(barrierDismissible: false)` dismiss 불가
 - **신규 에러 추가 절차**: Backend 에서 새 코드 정의 → 본 표 + `i18n/{ko,en,es}.json` 3개 파일 동시 업데이트 → 구현.
 
-> 수치(잠금 시간, 재시도 횟수, 쿨다운 등)는 본 표가 아닌 `../../2.5 Shared/Authentication.md` §Lockout Policy 와 §Rate Limit 이 SSOT. 본 표에는 `{unlock_at}` 처럼 placeholder 만 쓰고 값을 하드코딩하지 않는다.
+> 수치(잠금 시간, 재시도 횟수, 쿨다운 등)는 본 표가 아닌 `../../2.5 Shared/Authentication.md` §Lockout Policy 와 §Rate Limit 이 SSOT. 본 표에는 `{unlockAt}` 처럼 placeholder 만 쓰고 값을 하드코딩하지 않는다.
 
 ---
 
