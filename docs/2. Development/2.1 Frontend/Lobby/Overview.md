@@ -284,10 +284,14 @@ Lobby가 BO DB 데이터를 읽고 갱신하는 전략.
 | **Settings** | 글로벌 Settings (5탭: Outputs/Graphics/Display/Rules/Stats) | Lobby 헤더 `[Settings ⚙]` |
 | **Graphic Editor** (2026-04-15 신설) | Skin Editor — Import/Metadata/Activate/GE 8모드 편집 | Lobby 헤더 `[Graphic Editor]` 독립 버튼 |
 | **Operations** (2026-04-15 이전) | 테이블 인증·진단·내보내기 (구 Settings/Preferences) | Lobby 헤더 `[Operations ⚙]` 또는 `Ctrl+,` |
+| **Hand History** (2026-04-21 신설) | EBS 고유 — Hand Browser / Detail / Player Stats 3 서브메뉴, 당일 한정 | Lobby 사이드바 `■ Hand History` (`Hand_History.md` SSOT) |
 
 > **변경 2026-04-15 (team1 발신, Round 2)**:
 > - 구 Settings/Preferences 탭 → `Operations.md` 로 이전 (대회 운영 성격)
 > - Graphic Editor(= Skin Editor) 는 Settings 탭 내 진입이 아닌 **Lobby 헤더 독립 진입점** 으로 승격. Settings/Graphics 에는 런타임 설정만 유지
+
+> **변경 2026-04-21 (Conductor 발신, SG-016 revised)**:
+> - Hand History 사이드바 섹션 신설 (`Hand_History.md` SSOT). 25개 분산 참조 통합. EBS Core §1.2 (3입력→오버레이 결과물) 의 사후 조회 도구. (Migration Plan: `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md`)
 
 **선택 컨텍스트 유지**: 한 번 선택한 계층은 해당 단위가 종료될 때까지 세션에 유지된다. 재접속 시 이전 선택이 복원되어 불필요한 탐색을 제거한다.
 

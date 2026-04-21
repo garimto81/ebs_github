@@ -409,6 +409,10 @@ i18n key: `$t('login.restoreTitle')`, `$t('login.restoreContinue')`, `$t('login.
 |   Player Verif. |                                              |
 | ■ History       |                                              |
 |   Staff Action  |                                              |
+| ■ Hand History  |                                              |
+|   Hand Browser  |                                              |
+|   Hand Detail   |                                              |
+|   Player Stats  |                                              |
 +-----------------+----------------------------------------------+
 ```
 
@@ -442,6 +446,11 @@ i18n key: `$t('login.restoreTitle')`, `$t('login.restoreContinue')`, `$t('login.
 | **Players** | Create Player | 플레이어 등록 |
 | | Player Verification | 플레이어 검증 |
 | **History** | Staff Action History | 감사 로그 뷰어 |
+| **Hand History** | Hand Browser | `Hand_History.md` §2.1 (Event/Day/Table/Player/Date 필터) |
+| | Hand Detail | `Hand_History.md` §2.2 (액션 timeline + hole card RBAC) |
+| | Player Hand Stats | `Hand_History.md` §2.3 (당일 한정 VPIP/PFR/AGR/WTSD) |
+
+> **Hand History 섹션 (2026-04-21 신설)**: SG-016 revised. EBS 고유 기능. WSOP LIVE Staff App 에는 없으나 EBS Core §1.2 (3입력→오버레이 결과물) 의 사후 조회 도구로 필수. `BS-02-HH Hand_History.md` 가 SSOT — 진입 경로/RBAC/데이터 바인딩/Overlay 경계 정의. (Migration Plan: `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` Phase 2)
 
 **WSOP에 있지만 EBS에서 제외하는 메뉴** (§10 Divergence 참조):
 Cage, Cashier Page, Wallet Status, Payroll, Payout, Chip Master, Series Chips, Tournament Ticket, Player Rating (EBS Core 범위 외). Floor Staff, Edit Tournament Entries, Auto Sequences, Player Message, Invite New Staff, Staff Notes (Phase 2+ 검토).
