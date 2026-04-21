@@ -11,6 +11,11 @@ reimplementability_notes: "멀티 세션 이관 체크리스트 + 각 팀 지침
 # Multi-Session Handoff Guide
 
 > 2026-04-20~21 Conductor 세션에서 구조적 재정비 완료. 이제 팀별 세션으로 이관.
+>
+> **역할 구분** (두 멀티세션 문서):
+> - **이 문서 (`Multi_Session_Handoff.md`)** — **2026-04-21 이관 스냅샷**: 현재 우선 작업, 21 문제 해결 대비표, 팀별 작업 list. "What to work on now?"
+> - **`Multi_Session_Workflow.md`** — **영구 운영 방법**: worktree/subdir 선택, 팀 작업 표준 절차(시작/진행/병합/정리), 금지사항. "How to run multi-session?"
+> 팀 세션 시작 시 둘 다 읽기 권장.
 
 ## 1. 이전 문제 → 해결 대비
 

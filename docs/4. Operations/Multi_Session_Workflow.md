@@ -11,6 +11,11 @@ last-updated: 2026-04-15
 
 4팀 병렬 개발에서 세션 전환 비용을 낮추고 브랜치 격리를 강화하기 위한 워크트리 기반 멀티 세션 워크플로우. 기존 `team-policy.json` v6 `free_write_with_decision_owner` 모델과 정합하며, CR draft 프로세스(폐기) 이후의 표준 운영 방식.
 
+> **역할 구분** (두 멀티세션 문서):
+> - **이 문서 (`Multi_Session_Workflow.md`)** — **영구 운영 방법**: 브랜치 전략, worktree vs subdir, 팀 작업 표준 절차, 금지·리스크. "How to run multi-session?"
+> - **`Multi_Session_Handoff.md`** — **현재 이관 스냅샷**: 2026-04-21 구조 재정비 완료 상태, 각 팀 우선 작업, 이관 체크리스트. "What to work on now?"
+> 팀 세션 시작 시 둘 다 읽기 권장. Handoff 는 주기적으로 갱신.
+
 ## 배경
 
 | 항목 | 내용 |
