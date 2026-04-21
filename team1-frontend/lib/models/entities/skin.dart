@@ -10,15 +10,15 @@ class Skin with _$Skin {
   const Skin._();
 
   const factory Skin({
-    @JsonKey(name: 'skin_id') required int skinId,
+    @JsonKey(name: 'skinId') required int skinId,
     required String name,
     @Default('1.0.0') String version,
     @Default('inactive') String status,
     SkinMetadata? metadata,
-    @JsonKey(name: 'file_size') @Default(0) int fileSize,
-    @JsonKey(name: 'uploaded_at') String? uploadedAt,
-    @JsonKey(name: 'activated_at') String? activatedAt,
-    @JsonKey(name: 'preview_url') String? previewUrl,
+    @JsonKey(name: 'fileSize') @Default(0) int fileSize,
+    @JsonKey(name: 'uploadedAt') String? uploadedAt,
+    @JsonKey(name: 'activatedAt') String? activatedAt,
+    @JsonKey(name: 'previewUrl') String? previewUrl,
   }) = _Skin;
 
   factory Skin.fromJson(Map<String, dynamic> json) => _$SkinFromJson(json);

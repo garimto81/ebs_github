@@ -7,12 +7,12 @@ part 'blind_structure_level.g.dart';
 class BlindStructureLevel with _$BlindStructureLevel {
   const factory BlindStructureLevel({
     required int id,
-    @JsonKey(name: 'blind_structure_id') required int blindStructureId,
-    @JsonKey(name: 'level_no') required int levelNo,
-    @JsonKey(name: 'small_blind') required int smallBlind,
-    @JsonKey(name: 'big_blind') required int bigBlind,
+    @JsonKey(name: 'blindStructureId') required int blindStructureId,
+    @JsonKey(name: 'levelNo') required int levelNo,
+    @JsonKey(name: 'smallBlind') required int smallBlind,
+    @JsonKey(name: 'bigBlind') required int bigBlind,
     required int ante,
-    @JsonKey(name: 'duration_minutes') required int durationMinutes,
+    @JsonKey(name: 'durationMinutes') required int durationMinutes,
   }) = _BlindStructureLevel;
 
   factory BlindStructureLevel.fromJson(Map<String, dynamic> json) =>

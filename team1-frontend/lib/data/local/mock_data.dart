@@ -313,10 +313,10 @@ class MockData {
   );
 
   static const sessionPayload = <String, dynamic>{
-    'last_series_id': 1,
-    'last_event_id': 5,
-    'last_flight_id': 4,
-    'last_table_id': 1,
+    'lastSeriesId': 1,
+    'lastEventId': 5,
+    'lastFlightId': 4,
+    'lastTableId': 1,
   };
 
   // ---- Users (Staff) ----
@@ -457,35 +457,35 @@ class MockData {
   // ---- Configs (per-section map) ----
   static final Map<String, Map<String, dynamic>> configs = {
     'outputs': {
-      'primary_output': 'NDI',
-      'ndi_port': 5960,
-      'hdmi_enabled': false,
-      'delay_seconds': 30,
+      'primaryOutput': 'NDI',
+      'ndiPort': 5960,
+      'hdmiEnabled': false,
+      'delaySeconds': 30,
     },
     'gfx': {
       'theme': 'default',
-      'overlay_position': 'bottom',
-      'font_size': 'medium',
+      'overlayPosition': 'bottom',
+      'fontSize': 'medium',
     },
     'display': {
       'language': 'en',
       'timezone': 'Europe/Paris',
-      'date_format': 'YYYY-MM-DD',
+      'dateFormat': 'YYYY-MM-DD',
     },
     'rules': {
-      'late_registration_minutes': 180,
-      'break_interval_hours': 2,
-      'break_duration_minutes': 15,
+      'lateRegistrationMinutes': 180,
+      'breakIntervalHours': 2,
+      'breakDurationMinutes': 15,
     },
     'stats': {
-      'show_vpip': true,
-      'show_pfr': true,
-      'show_chip_count': true,
+      'showVpip': true,
+      'showPfr': true,
+      'showChipCount': true,
     },
     'preferences': {
-      'auto_refresh': true,
-      'refresh_interval_seconds': 5,
-      'confirm_destructive': true,
+      'autoRefresh': true,
+      'refreshIntervalSeconds': 5,
+      'confirmDestructive': true,
     },
   };
 }

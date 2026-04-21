@@ -22,22 +22,22 @@ void main() {
   group('Series.fromJson', () {
     test('parses real backend response', () {
       final json = {
-        'series_id': 1,
-        'competition_id': 1,
-        'series_name': '2026 WSOP',
+        'seriesId': 1,
+        'competitionId': 1,
+        'seriesName': '2026 WSOP',
         'year': 2026,
-        'begin_at': '2026-05-27',
-        'end_at': '2026-07-16',
-        'time_zone': 'UTC',
+        'beginAt': '2026-05-27',
+        'endAt': '2026-07-16',
+        'timeZone': 'UTC',
         'currency': 'USD',
-        'country_code': null,
-        'image_url': null,
-        'is_completed': false,
-        'is_displayed': true,
-        'is_demo': false,
+        'countryCode': null,
+        'imageUrl': null,
+        'isCompleted': false,
+        'isDisplayed': true,
+        'isDemo': false,
         'source': 'api',
-        'created_at': '2026-04-16T08:48:47.145018+00:00',
-        'updated_at': '2026-04-16T08:48:47.145018+00:00',
+        'createdAt': '2026-04-16T08:48:47.145018+00:00',
+        'updatedAt': '2026-04-16T08:48:47.145018+00:00',
       };
 
       final series = Series.fromJson(json);
@@ -61,20 +61,20 @@ void main() {
 
     test('parses with is_demo present', () {
       final json = {
-        'series_id': 2,
-        'competition_id': 2,
-        'series_name': 'Demo Series',
+        'seriesId': 2,
+        'competitionId': 2,
+        'seriesName': 'Demo Series',
         'year': 2026,
-        'begin_at': '2026-01-01',
-        'end_at': '2026-01-02',
-        'time_zone': 'UTC',
+        'beginAt': '2026-01-01',
+        'endAt': '2026-01-02',
+        'timeZone': 'UTC',
         'currency': 'USD',
-        'is_completed': false,
-        'is_displayed': true,
-        'is_demo': true,
+        'isCompleted': false,
+        'isDisplayed': true,
+        'isDemo': true,
         'source': 'api',
-        'created_at': '2026-01-01T00:00:00+00:00',
-        'updated_at': '2026-01-01T00:00:00+00:00',
+        'createdAt': '2026-01-01T00:00:00+00:00',
+        'updatedAt': '2026-01-01T00:00:00+00:00',
       };
 
       final series = Series.fromJson(json);
@@ -85,23 +85,23 @@ void main() {
   group('EbsEvent.fromJson', () {
     test('parses real backend response', () {
       final json = {
-        'event_id': 1,
-        'series_id': 1,
-        'event_no': 1,
-        'event_name': r"$10,000 NL Hold'em Main Event",
-        'buy_in': null,
-        'game_type': 0,
-        'bet_structure': 0,
-        'event_game_type': 0,
-        'game_mode': 'single',
-        'table_size': 9,
-        'total_entries': 0,
-        'players_left': 0,
+        'eventId': 1,
+        'seriesId': 1,
+        'eventNo': 1,
+        'eventName': r"$10,000 NL Hold'em Main Event",
+        'buyIn': null,
+        'gameType': 0,
+        'betStructure': 0,
+        'eventGameType': 0,
+        'gameMode': 'single',
+        'tableSize': 9,
+        'totalEntries': 0,
+        'playersLeft': 0,
         'status': 'created',
-        'start_time': null,
+        'startTime': null,
         'source': 'api',
-        'created_at': '2026-04-16T08:48:47.146517+00:00',
-        'updated_at': '2026-04-16T08:48:47.146517+00:00',
+        'createdAt': '2026-04-16T08:48:47.146517+00:00',
+        'updatedAt': '2026-04-16T08:48:47.146517+00:00',
       };
 
       final event = EbsEvent.fromJson(json);
@@ -124,22 +124,22 @@ void main() {
   group('EventFlight.fromJson', () {
     test('parses real backend response', () {
       final json = {
-        'event_flight_id': 1,
-        'event_id': 1,
-        'display_name': 'Day 1A',
-        'start_time': null,
-        'is_tbd': false,
+        'eventFlightId': 1,
+        'eventId': 1,
+        'displayName': 'Day 1A',
+        'startTime': null,
+        'isTbd': false,
         'entries': 0,
-        'players_left': 0,
-        'table_count': 0,
+        'playersLeft': 0,
+        'tableCount': 0,
         'status': 'running',
-        'play_level': 1,
-        'flight_id': 1,
-        'day_index': 0,
-        'flight_name': 'Day 1A',
+        'playLevel': 1,
+        'flightId': 1,
+        'dayIndex': 0,
+        'flightName': 'Day 1A',
         'source': 'api',
-        'created_at': '2026-04-16T08:48:47.147520+00:00',
-        'updated_at': '2026-04-16T08:48:47.147520+00:00',
+        'createdAt': '2026-04-16T08:48:47.147520+00:00',
+        'updatedAt': '2026-04-16T08:48:47.147520+00:00',
       };
 
       final flight = EventFlight.fromJson(json);
@@ -159,22 +159,22 @@ void main() {
   group('EbsTable.fromJson', () {
     test('parses real backend response', () {
       final json = {
-        'table_id': 1,
-        'event_flight_id': 1,
-        'table_no': 1,
+        'tableId': 1,
+        'eventFlightId': 1,
+        'tableNo': 1,
         'name': 'Feature Table 1',
         'type': 'feature',
         'status': 'live',
-        'max_players': 9,
-        'game_type': 0,
-        'ante_type': 0,
-        'ante_amount': 0,
-        'deck_registered': false,
-        'delay_seconds': 0,
-        'is_breaking_table': false,
+        'maxPlayers': 9,
+        'gameType': 0,
+        'anteType': 0,
+        'anteAmount': 0,
+        'deckRegistered': false,
+        'delaySeconds': 0,
+        'isBreakingTable': false,
         'source': 'api',
-        'created_at': '2026-04-16T08:48:47.149540+00:00',
-        'updated_at': '2026-04-16T08:48:47.149540+00:00',
+        'createdAt': '2026-04-16T08:48:47.149540+00:00',
+        'updatedAt': '2026-04-16T08:48:47.149540+00:00',
       };
 
       final table = EbsTable.fromJson(json);
@@ -198,16 +198,16 @@ void main() {
   group('TableSeat.fromJson', () {
     test('parses real backend response', () {
       final json = {
-        'seat_id': 1,
-        'table_id': 1,
-        'seat_no': 0,
-        'player_id': 1,
-        'player_name': 'D. Negreanu',
+        'seatId': 1,
+        'tableId': 1,
+        'seatNo': 0,
+        'playerId': 1,
+        'playerName': 'D. Negreanu',
         'nationality': null,
-        'chip_count': 85000,
+        'chipCount': 85000,
         'status': 'new',
-        'created_at': '2026-04-16T08:48:47.151040+00:00',
-        'updated_at': '2026-04-16T08:48:47.151040+00:00',
+        'createdAt': '2026-04-16T08:48:47.151040+00:00',
+        'updatedAt': '2026-04-16T08:48:47.151040+00:00',
       };
 
       final seat = TableSeat.fromJson(json);
@@ -224,17 +224,17 @@ void main() {
   group('Player.fromJson', () {
     test('parses real backend response', () {
       final json = {
-        'player_id': 1,
-        'wsop_id': null,
-        'first_name': 'Daniel',
-        'last_name': 'Negreanu',
+        'playerId': 1,
+        'wsopId': null,
+        'firstName': 'Daniel',
+        'lastName': 'Negreanu',
         'nationality': 'Canadian',
-        'country_code': 'CA',
-        'player_status': 'active',
-        'is_demo': false,
+        'countryCode': 'CA',
+        'playerStatus': 'active',
+        'isDemo': false,
         'source': 'api',
-        'created_at': '2026-04-16T08:48:47.148535+00:00',
-        'updated_at': '2026-04-16T08:48:47.148535+00:00',
+        'createdAt': '2026-04-16T08:48:47.148535+00:00',
+        'updatedAt': '2026-04-16T08:48:47.148535+00:00',
       };
 
       final player = Player.fromJson(json);
@@ -252,9 +252,9 @@ void main() {
   group('SessionUser.fromJson', () {
     test('parses real backend response', () {
       final json = {
-        'user_id': 1,
+        'userId': 1,
         'email': 'admin@ebs.local',
-        'display_name': 'System Admin',
+        'displayName': 'System Admin',
         'role': 'admin',
       };
 
@@ -272,13 +272,13 @@ void main() {
     test('parses expected audit log structure', () {
       final json = {
         'id': 1,
-        'user_id': 1,
-        'entity_type': 'series',
-        'entity_id': 1,
+        'userId': 1,
+        'entityType': 'series',
+        'entityId': 1,
         'action': 'create',
         'detail': 'Created series',
-        'ip_address': '127.0.0.1',
-        'created_at': '2026-04-16T09:00:00+00:00',
+        'ipAddress': '127.0.0.1',
+        'createdAt': '2026-04-16T09:00:00+00:00',
       };
 
       final log = AuditLog.fromJson(json);
@@ -300,15 +300,15 @@ void main() {
   group('User.fromJson', () {
     test('parses user response from /users', () {
       final json = {
-        'user_id': 1,
+        'userId': 1,
         'email': 'admin@ebs.local',
-        'display_name': 'System Admin',
+        'displayName': 'System Admin',
         'role': 'admin',
-        'is_active': true,
-        'totp_enabled': false,
-        'last_login_at': '2026-04-16T10:00:00+00:00',
-        'created_at': '2026-04-15T00:00:00+00:00',
-        'updated_at': '2026-04-16T10:00:00+00:00',
+        'isActive': true,
+        'totpEnabled': false,
+        'lastLoginAt': '2026-04-16T10:00:00+00:00',
+        'createdAt': '2026-04-15T00:00:00+00:00',
+        'updatedAt': '2026-04-16T10:00:00+00:00',
       };
 
       final user = User.fromJson(json);
@@ -325,15 +325,15 @@ void main() {
 
     test('parses with null last_login_at', () {
       final json = {
-        'user_id': 2,
+        'userId': 2,
         'email': 'operator@ebs.local',
-        'display_name': 'Operator',
+        'displayName': 'Operator',
         'role': 'operator',
-        'is_active': true,
-        'totp_enabled': false,
-        'last_login_at': null,
-        'created_at': '2026-04-15T00:00:00+00:00',
-        'updated_at': '2026-04-15T00:00:00+00:00',
+        'isActive': true,
+        'totpEnabled': false,
+        'lastLoginAt': null,
+        'createdAt': '2026-04-15T00:00:00+00:00',
+        'updatedAt': '2026-04-15T00:00:00+00:00',
       };
 
       final user = User.fromJson(json);
@@ -380,7 +380,7 @@ void main() {
   group('Skin.fromJson', () {
     test('parses skin response with nested metadata', () {
       final json = {
-        'skin_id': 1,
+        'skinId': 1,
         'name': 'Default WSOP Skin',
         'version': '1.0.0',
         'status': 'active',
@@ -390,10 +390,10 @@ void main() {
           'author': 'EBS Team',
           'tags': ['wsop', 'default'],
         },
-        'file_size': 2048576,
-        'uploaded_at': '2026-04-15T00:00:00+00:00',
-        'activated_at': '2026-04-15T01:00:00+00:00',
-        'preview_url': 'https://cdn.ebs.local/skins/1/preview.png',
+        'fileSize': 2048576,
+        'uploadedAt': '2026-04-15T00:00:00+00:00',
+        'activatedAt': '2026-04-15T01:00:00+00:00',
+        'previewUrl': 'https://cdn.ebs.local/skins/1/preview.png',
       };
 
       final skin = Skin.fromJson(json);
@@ -413,7 +413,7 @@ void main() {
 
     test('parses skin with null optional fields', () {
       final json = {
-        'skin_id': 2,
+        'skinId': 2,
         'name': 'Custom Skin',
         'version': '0.1.0',
         'status': 'draft',
@@ -421,10 +421,10 @@ void main() {
           'title': 'Custom',
           'description': 'A custom skin',
         },
-        'file_size': 1024,
-        'uploaded_at': '2026-04-16T00:00:00+00:00',
-        'activated_at': null,
-        'preview_url': null,
+        'fileSize': 1024,
+        'uploadedAt': '2026-04-16T00:00:00+00:00',
+        'activatedAt': null,
+        'previewUrl': null,
       };
 
       final skin = Skin.fromJson(json);
@@ -440,10 +440,10 @@ void main() {
   group('BlindStructure.fromJson', () {
     test('parses blind structure response', () {
       final json = {
-        'blind_structure_id': 1,
+        'blindStructureId': 1,
         'name': 'Standard NL Holdem',
-        'created_at': '2026-04-15T00:00:00+00:00',
-        'updated_at': '2026-04-15T00:00:00+00:00',
+        'createdAt': '2026-04-15T00:00:00+00:00',
+        'updatedAt': '2026-04-15T00:00:00+00:00',
       };
 
       final bs = BlindStructure.fromJson(json);
@@ -458,12 +458,12 @@ void main() {
     test('parses nested level within blind structure', () {
       final json = {
         'id': 1,
-        'blind_structure_id': 1,
-        'level_no': 1,
-        'small_blind': 100,
-        'big_blind': 200,
+        'blindStructureId': 1,
+        'levelNo': 1,
+        'smallBlind': 100,
+        'bigBlind': 200,
         'ante': 25,
-        'duration_minutes': 30,
+        'durationMinutes': 30,
       };
 
       final level = BlindStructureLevel.fromJson(json);
@@ -479,12 +479,12 @@ void main() {
     test('parses higher level with larger blinds', () {
       final json = {
         'id': 10,
-        'blind_structure_id': 1,
-        'level_no': 10,
-        'small_blind': 5000,
-        'big_blind': 10000,
+        'blindStructureId': 1,
+        'levelNo': 10,
+        'smallBlind': 5000,
+        'bigBlind': 10000,
         'ante': 1000,
-        'duration_minutes': 60,
+        'durationMinutes': 60,
       };
 
       final level = BlindStructureLevel.fromJson(json);
@@ -499,12 +499,12 @@ void main() {
   group('Competition.fromJson', () {
     test('parses competition response', () {
       final json = {
-        'competition_id': 1,
+        'competitionId': 1,
         'name': 'WSOP',
-        'competition_type': 0,
-        'competition_tag': 1,
-        'created_at': '2026-04-15T00:00:00+00:00',
-        'updated_at': '2026-04-15T00:00:00+00:00',
+        'competitionType': 0,
+        'competitionTag': 1,
+        'createdAt': '2026-04-15T00:00:00+00:00',
+        'updatedAt': '2026-04-15T00:00:00+00:00',
       };
 
       final comp = Competition.fromJson(json);
@@ -520,20 +520,20 @@ void main() {
   group('Hand.fromJson', () {
     test('parses hand response with table_id filter', () {
       final json = {
-        'hand_id': 1,
-        'table_id': 1,
-        'hand_number': 1,
-        'game_type': 0,
-        'bet_structure': 0,
-        'dealer_seat': 3,
-        'board_cards': 'Ah Kd Qc Js 10h',
-        'pot_total': 150000,
-        'side_pots': '[]',
-        'current_street': 'river',
-        'started_at': '2026-04-16T10:00:00+00:00',
-        'ended_at': '2026-04-16T10:05:00+00:00',
-        'duration_sec': 300,
-        'created_at': '2026-04-16T10:00:00+00:00',
+        'handId': 1,
+        'tableId': 1,
+        'handNumber': 1,
+        'gameType': 0,
+        'betStructure': 0,
+        'dealerSeat': 3,
+        'boardCards': 'Ah Kd Qc Js 10h',
+        'potTotal': 150000,
+        'sidePots': '[]',
+        'currentStreet': 'river',
+        'startedAt': '2026-04-16T10:00:00+00:00',
+        'endedAt': '2026-04-16T10:05:00+00:00',
+        'durationSec': 300,
+        'createdAt': '2026-04-16T10:00:00+00:00',
       };
 
       final hand = Hand.fromJson(json);
@@ -554,20 +554,20 @@ void main() {
 
     test('parses hand with null optional fields (in-progress)', () {
       final json = {
-        'hand_id': 2,
-        'table_id': 1,
-        'hand_number': 2,
-        'game_type': 0,
-        'bet_structure': 0,
-        'dealer_seat': 4,
-        'board_cards': '',
-        'pot_total': 300,
-        'side_pots': '[]',
-        'current_street': null,
-        'started_at': '2026-04-16T10:10:00+00:00',
-        'ended_at': null,
-        'duration_sec': 0,
-        'created_at': '2026-04-16T10:10:00+00:00',
+        'handId': 2,
+        'tableId': 1,
+        'handNumber': 2,
+        'gameType': 0,
+        'betStructure': 0,
+        'dealerSeat': 4,
+        'boardCards': '',
+        'potTotal': 300,
+        'sidePots': '[]',
+        'currentStreet': null,
+        'startedAt': '2026-04-16T10:10:00+00:00',
+        'endedAt': null,
+        'durationSec': 0,
+        'createdAt': '2026-04-16T10:10:00+00:00',
       };
 
       final hand = Hand.fromJson(json);
