@@ -50,7 +50,7 @@ reimplementability_notes: "API-01 REST 카탈로그 + WSOP LIVE 연동 (53KB). T
 |------|------|
 | **폴링 기반** | WSOP LIVE가 Push(Webhook)를 지원하지 않는다고 가정. BO가 주기적으로 Pull |
 | **캐싱 우선** | WSOP LIVE 데이터를 BO DB에 캐싱. 클라이언트는 항상 BO DB를 읽음 |
-| **source 필드** | 모든 엔티티에 `source` 필드로 데이터 출처 구분 (`api` / `manual`) |
+| **source 필드** | 모든 엔티티에 `source` 필드로 데이터 출처 구분 (`api` / `manual` / `sandbox`). `sandbox` = dev/staging 전용 자동 생성 토너먼트 (`Engineering/Sandbox_Tournament_Generator.md`). 기본 GET 조회에서 제외, `?include_sandbox=true` 시 포함 |
 | **독립 운영** | API 연동 실패 시에도 수동 입력으로 EBS 단독 운영 가능 |
 
 > **참조**: Lobby CRUD 요구사항은 `BS-02-lobby.md`, BO 전체 범위는 `BO-01-overview.md`
