@@ -59,7 +59,7 @@ EBS 현재 상태:
 - [~] PR 6: team1 ws_dispatch + Repository — **TODO 주석 추가**. 실 전환은 team2 PR-3/4 완료 후
 - [ ] PR 7: team4 CC consumer — **NOTIFY-team4 발행**
 - [ ] PR 8: team3 Engine OutputEvent payload — **NOTIFY-team3 발행**
-- [ ] PR 9: CI naming gate — **NOTIFY-conductor-B088-PR9 발행**
+- [~] PR 9: CI naming gate — **tools/naming_check.py + exceptions.yaml 작성 완료 (2026-04-21)**. CI workflow 등록은 PR 1-8 완료 후.
 
 ## 리스크 & 완화
 

@@ -1,0 +1,54 @@
+# Naming Convention Check — Exception Whitelist
+# ---------------------------------------------------------------
+# tools/naming_check.py 가 이 파일을 로드하여 violation 판정에서 제외.
+# SSOT: docs/2. Development/2.5 Shared/Naming_Conventions.md v2 §6 (예외 / 원칙 1 scope 외)
+#
+# 원칙:
+#   1. RFC/프레임워크/관행으로 고정된 식별자만 등록
+#   2. "귀찮아서" 가 아니라 "spec 상 예외" 인지 근거 기록
+#   3. B-088 마이그레이션이 진행되는 동안 임시 추가된 항목은 주석으로 표시
+# ---------------------------------------------------------------
+
+# WebSocket envelope `"type": "..."` 에서 허용할 예외값
+# (원칙 1 scope: WS event type = PascalCase)
+allow_ws_events:
+  # JWT RFC 7519 type claim — security/jwt.py 에서 생성하는 토큰 payload
+  - access             # JWT access token type — RFC 7519 관행
+  - refresh            # JWT refresh token type — 동상
+  - password_reset     # JWT password-reset token type — RFC 6750 interop
+
+# `@JsonKey(name: '...')` 에서 허용할 예외 field 값
+# (원칙 1 scope: JSON field = camelCase)
+allow_json_keys:
+  # 외부 API 표준 (OAuth / OpenID) snake_case 관행
+  - access_token       # OAuth 2.0 RFC 6749
+  - refresh_token      # 동상
+  - token_type         # 동상
+  - expires_in         # 동상
+  - id_token           # OpenID Connect
+  - grant_type         # OAuth 2.0
+
+# REST path (`/...`) 에서 PascalCase 외에 허용할 전체 경로
+# (원칙 1 scope: REST path = PascalCase)
+allow_rest_paths:
+  # 관행적 소문자 endpoint — k8s / Prometheus / 인프라
+  - /health            # k8s liveness/readiness probe 관행
+  - /healthz           # k8s 관행 (trailing 'z')
+  - /metrics           # Prometheus scrape 관행
+  - /readyz            # k8s readiness
+  - /livez             # k8s liveness
+  - /openapi.json      # OpenAPI 생성 endpoint
+  - /docs              # FastAPI Swagger UI
+  - /redoc             # FastAPI ReDoc UI
+  - /                  # root redirect
+
+# Path variable `{...}` 에서 camelCase 외에 허용할 값
+# (원칙 1 scope: path variable = camelCase)
+allow_path_variables: []
+  # 현재 없음. 마이그레이션 진행 중 임시 추가 시 이유 명시.
+
+# 스캔 자체를 스킵할 파일/경로 (substring 매치)
+skip_files:
+  - tools/naming_check         # 자기 자신
+  - tests/fixtures             # legacy fixture (migrate 후 제거)
+  - .pyi                       # type stub

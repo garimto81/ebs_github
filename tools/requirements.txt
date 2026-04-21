@@ -1,3 +1,6 @@
 # PDF 도구 의존성
 pymupdf>=1.24.0  # PDF 처리 (fitz)
 tiktoken>=0.5.0  # 토큰 계산 (선택적, 없으면 간이 추정)
+
+# B-088 PR-9 naming gate
+pyyaml>=6.0      # naming_check.exceptions.yaml 로드 (없으면 exception 무시 동작)
