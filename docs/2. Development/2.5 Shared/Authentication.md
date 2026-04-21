@@ -419,7 +419,7 @@ EBS 는 **2가지 독립된 인증 스택**을 운영한다. 방향별 프로토
 | Refresh Token 전달 | dev/staging/prod: JSON body `refresh_token` 필드. **live**: `Set-Cookie: refresh_token=...; HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh` 헤더로 전달 (JSON body의 `refresh_token`은 빈 문자열) | Secure Storage(Flutter 보안 저장소) — Cookie 방식 영향 없음 |
 | 자동 갱신 | 만료 전 자동 호출 | 포그라운드 시 만료 2분 전 갱신 |
 | 오프라인 동작 | 읽기 전용 (캐시된 데이터) | 로컬 캐시 모드 (게임 진행 가능) |
-| 다중 탭/인스턴스 | `BroadcastChannel API`(브라우저 탭 간 데이터 공유 API)로 토큰 공유 | 단일 인스턴스 |
+| 다중 인스턴스 | 단일 인스턴스 (Desktop window) | 단일 인스턴스 |
 | WebSocket 재연결 | 새 Access Token으로 재인증 | 새 Access Token으로 재인증 |
 
 ---

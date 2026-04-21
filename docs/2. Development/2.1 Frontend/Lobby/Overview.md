@@ -93,8 +93,8 @@ Lobby와 Command Center는 **별도 앱**이다. WSOP LIVE가 Staff Page(웹) + 
 
 | 전환 | 동작 | Lobby 상태 | Command Center 상태 |
 |------|------|-----------|-------------------|
-| Lobby → Command Center | [Enter Command Center] 클릭 | **브라우저에 그대로 열려있음** | 앱 실행/활성화, 테이블 ID로 설정 로드 |
-| Command Center → Lobby | 브라우저 탭 전환 | 활성화, 이전 상태 유지 | **백그라운드에서 계속 실행** |
+| Lobby → Command Center | [Enter Command Center] 클릭 | **Lobby 창 그대로 활성** | CC 창 실행/활성화, 테이블 ID로 설정 로드 |
+| Command Center → Lobby | OS window 전환 (Alt+Tab / 작업표시줄) | 활성화, 이전 상태 유지 | **백그라운드에서 계속 실행** |
 | 동시 사용 | Admin이 Lobby에서 다른 테이블 관리 + Command Center 방송 | 활성 | 활성 |
 
 > **핵심**: 별도 앱이므로 Command Center 실행 후에도 Lobby는 브라우저에서 계속 사용 가능. Lobby에서 설정 변경 → Back Office DB → WebSocket → Command Center 실시간 반영.
