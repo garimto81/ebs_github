@@ -3,30 +3,16 @@ title: Demo & Test Mode (DEPRECATED)
 owner: team4
 tier: feature
 status: deprecated-2026-04-21
-superseded-by: Standalone_Mode.md
 last-updated: 2026-04-21
 ---
 
 > # ⚠️ DEPRECATED (2026-04-21)
 >
-> 이 문서는 **두 개의 다른 개념**을 섞어 기술했었다:
+> **Demo Scenario (사전 시나리오 자동 재생) 는 scope 제외** (사용자 결정 2026-04-21).
 >
-> 1. **Standalone** (Lobby 없이 CC 독립 실행) — 이관됨 → **[`Standalone_Mode.md`](./Standalone_Mode.md)** (2026-04-21 신설)
-> 2. **Demo Scenario** (사전 시나리오 자동 재생) — **SCOPE 제외** (사용자 결정 2026-04-21)
+> Lobby 없이 CC 를 개발·QA 검증용으로 실행하는 경로는 기획 문서 없음 — 프로토타입 범위에서 `flutter run -d windows` 로 충분 (`Overview.md §2.0`). Engine 없이 실행은 `Overlay/Engine_Dependency_Contract.md §4 StubEngine Fallback` 참조.
 >
-> **무엇을 보면 되는가**:
->
-> | 원했던 것 | 현재 위치 |
-> |----------|-----------|
-> | CC 를 Lobby 없이 개발·QA 검증용으로 실행 | `Standalone_Mode.md` (canonical) |
-> | RFID 없이 게임 진행 검증 | `Standalone_Mode.md §3, §5` |
-> | Engine 없이 게임 진행 검증 | `Overlay/Engine_Dependency_Contract.md §4 StubEngine Fallback` |
-> | 사전 시나리오 자동 재생 (Quick Hand, All-in Preflop 등) | **제외됨** — 범위 밖 |
-> | 수동 이벤트 주입 제어 패널 UI | **제외됨** — 일반 CC UI 로 충분 |
->
-> **본 문서는 역사 참조용**으로 유지. 아래 원문은 편집하지 않는다 (2026-04-16 ~ 2026-04-17 의사결정 흔적).
->
-> 신규 작업은 `Standalone_Mode.md` 만 편집할 것. `notify: team4 (code cleanup: Backlog/B-team4-004)`.
+> 본 문서는 **역사 참조용**. 아래 원문은 편집하지 않는다 (2026-04-16 ~ 2026-04-17 의사결정 흔적).
 
 ---
 
@@ -36,7 +22,7 @@ last-updated: 2026-04-21
 |------|------|------|
 | 2026-04-16 | 신규 작성 | RFID 미연결 상태에서 게임 엔진·핸드 진행 검증 가능한 데모 모드 설계 |
 | 2026-04-17 | Web 배포 추가 | Flutter Web 빌드로 LAN 내 브라우저 접속 지원. §1.4 신설 |
-| 2026-04-21 | DEPRECATED | Standalone 측면은 `Standalone_Mode.md` 로 이관, Demo Scenario 는 scope 제외. 본 문서 역사 참조용. |
+| 2026-04-21 | DEPRECATED | Demo Scenario scope 제외. Standalone 기획 과대로 철회 — 프로토타입은 `flutter run -d windows` 로 충분. |
 
 ---
 

@@ -71,13 +71,12 @@ flowchart LR
 
 ## 4. Fallback — StubEngine
 
-> **2026-04-21 용어 정정**: 본 섹션의 구 제목은 "Demo Mode" 였으나 이는 `Command_Center_UI/Standalone_Mode.md` (Lobby 우회 실행) 와 혼동되어 "StubEngine Fallback" 으로 환원한다. Mode 개념이 아닌 Engine 상태머신의 Degraded/Offline stage 에서 활성화되는 fallback 메커니즘이다.
+> **2026-04-21 용어 정정**: 구 제목 "Demo Mode" 는 Mode 개념과 혼동되어 "StubEngine Fallback" 으로 환원. Engine 상태머신의 Degraded/Offline stage 에서 활성화되는 fallback 메커니즘이다.
 
 - Degraded / Offline 상태에서 `shouldUseStub == true` → `StubEngine` (`src/lib/features/command_center/services/stub_engine.dart`) 가 OutputEvent 를 모방
 - Overlay consumer 는 stub 이벤트를 받아 basic 게임 진행을 렌더
 - 엔진 복구 시 **현재 hand 종료 후에만** 자동 전환 (돌발 상태 변경 방지)
-
-**Standalone Mode 와의 관계**: Standalone (`Standalone_Mode.md`) 도 Engine 미연결 시 동일 StubEngine 을 재사용한다. 즉 StubEngine 은 2 개 상위 개념 (Engine-Fallback 상태머신, Standalone Mode) 의 공통 dependency.
+- `flutter run -d windows` 로 CC 를 args 없이 실행해도 동일 fallback 로 동작 (dev 테스트 경로, `Command_Center_UI/Overview.md §2.0` 참조)
 
 ## 5. 구현 매핑
 
