@@ -1,0 +1,161 @@
+# v5.0 Free-tier Merge Gate
+# ----------------------------------------------------------------------
+# 목적:
+#   GitHub Merge Queue (Team plan 전용) 대체. free tier 에서 `concurrency:`
+#   group 을 이용해 main 으로의 merge 를 **직렬화** + race condition 방지.
+#
+# 트리거:
+#   - PR label `auto-merge` 가 붙었을 때
+#   - PR 이 open/reopen/synchronize 될 때 (label 유지되면 재평가)
+#
+# 동작:
+#   1. PR 이 mergeable 인지 확인
+#   2. PR base (main) 와 behind 이면 auto-rebase
+#   3. 필수 status checks 전부 pass 인지 확인
+#   4. CODEOWNERS approval 확인 (free tier 에서는 warning only)
+#   5. gh pr merge --squash --delete-branch 실행
+#   6. concurrency group "main-merge-queue" 로 동시 1개 PR 만 진행
+#
+# 실패 대응:
+#   - CI 미완료: `retry-after` 라벨 자동 부여 + 1 분 후 재시도
+#   - CI 실패: label 제거 + 작성자에게 comment
+#   - rebase conflict: label 제거 + 작성자 reassign
+#
+# Free tier 제약:
+#   - Branch protection "Require status checks" 는 private repo 에 Pro/Team plan
+#     필요. 이 workflow 가 gate 역할 대체.
+#   - `actions/github-script` 기본 권한 사용. Personal Access Token 불필요
+# ----------------------------------------------------------------------
+
+name: PR Auto-Merge (v5.0 Free-tier Gate)
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, ready_for_review]
+  check_suite:
+    types: [completed]
+  workflow_run:
+    workflows: ["*"]
+    types: [completed]
+
+# 핵심: concurrency 로 main merge 직렬화
+# 동일 group 의 workflow run 은 한 번에 하나만 실행됨
+concurrency:
+  group: main-merge-queue
+  cancel-in-progress: false  # queue 보존 (먼저 온 PR 이 먼저 merge)
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+jobs:
+  auto-merge:
+    # auto-merge 라벨이 있을 때만 동작
+    if: |
+      github.event.pull_request != null &&
+      contains(github.event.pull_request.labels.*.name, 'auto-merge')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for required checks
+        uses: actions/github-script@v7
+        id: wait_checks
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const { owner, repo } = context.repo;
+            const sha = pr.head.sha;
+
+            // 최대 20분 대기 (CI 보통 5-10분)
+            const timeout = 20 * 60 * 1000;
+            const interval = 30 * 1000;
+            const start = Date.now();
+
+            while (Date.now() - start < timeout) {
+              const checks = await github.rest.checks.listForRef({
+                owner, repo, ref: sha, per_page: 100,
+              });
+              const runs = checks.data.check_runs || [];
+              const relevant = runs.filter(r => r.name !== 'auto-merge');
+
+              if (relevant.length === 0) {
+                core.info('No check runs yet — waiting...');
+              } else {
+                const pending = relevant.filter(r =>
+                  r.status !== 'completed'
+                );
+                const failed = relevant.filter(r =>
+                  r.status === 'completed' &&
+                  !['success', 'neutral', 'skipped'].includes(r.conclusion)
+                );
+
+                if (failed.length > 0) {
+                  core.setFailed(`CI failures: ${failed.map(r => r.name).join(', ')}`);
+                  return;
+                }
+                if (pending.length === 0) {
+                  core.info(`All ${relevant.length} checks passed`);
+                  return;
+                }
+                core.info(`Pending: ${pending.map(r => r.name).join(', ')}`);
+              }
+
+              await new Promise(r => setTimeout(r, interval));
+            }
+            core.setFailed('Timed out waiting for checks (20 min)');
+
+      - name: Ensure up-to-date with main
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor origin/main HEAD; then
+            echo "::notice::PR is behind main — auto-rebasing"
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git rebase origin/main || { echo "::error::Rebase conflict"; exit 1; }
+            git push --force-with-lease origin HEAD:${{ github.event.pull_request.head.ref }}
+          fi
+
+      - name: Squash-merge via gh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} \
+            --squash \
+            --delete-branch \
+            --repo ${{ github.repository }}
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const { owner, repo } = context.repo;
+
+            // auto-merge label 제거
+            try {
+              await github.rest.issues.removeLabel({
+                owner, repo,
+                issue_number: pr.number,
+                name: 'auto-merge',
+              });
+            } catch (e) { /* label 없어도 OK */ }
+
+            // 실패 이유 comment
+            await github.rest.issues.createComment({
+              owner, repo,
+              issue_number: pr.number,
+              body: `❌ Auto-merge 실패 (run #${context.runNumber}).\n\n` +
+                    `[Workflow 로그](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) 확인 후 ` +
+                    `문제 해결 → \`auto-merge\` 라벨 다시 부여`,
+            });

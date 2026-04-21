@@ -1,0 +1,48 @@
+# CODEOWNERS — PR 자동 리뷰어 배정 (v5.0 2026-04-21)
+# SSOT: docs/2. Development/2.5 Shared/team-policy.json teams[*].owns
+#
+# 규칙:
+#   - 파일 경로가 여러 패턴과 매칭되면 마지막 패턴의 owner 적용
+#   - PR 생성 시 해당 owner 에게 자동 리뷰 요청
+#   - Branch protection "Require review from Code Owners" 활성화 필요 (Pro/Team plan 만 지원)
+#   - Free tier: CODEOWNERS 는 자동 알림 용도로만 동작 (강제 리뷰 gate 아님)
+#
+# Teams:
+#   @garimto81 — Conductor (단일 사용자 레포 특수 사례)
+#   실제 팀원 추가 시 @team1 @team2 @team3 @team4 로 확장
+
+# ─── Default (fallback) ────────────────────────────────────────────────
+*                                               @garimto81
+
+# ─── Conductor owns ────────────────────────────────────────────────────
+/docs/1. Product/                               @garimto81
+/docs/2. Development/2.5 Shared/                @garimto81
+/docs/4. Operations/                            @garimto81
+/docs/mockups/                                  @garimto81
+/docs/images/                                   @garimto81
+/.claude/                                       @garimto81
+/.github/                                       @garimto81
+/tools/                                         @garimto81
+/integration-tests/                             @garimto81
+/CLAUDE.md                                      @garimto81
+/README.md                                      @garimto81
+
+# ─── Team 1 (Frontend Flutter) ─────────────────────────────────────────
+/team1-frontend/                                @garimto81
+/docs/2. Development/2.1 Frontend/              @garimto81
+
+# ─── Team 2 (Backend FastAPI) ──────────────────────────────────────────
+/team2-backend/                                 @garimto81
+/docs/2. Development/2.2 Backend/               @garimto81
+
+# ─── Team 3 (Game Engine Dart) ─────────────────────────────────────────
+/team3-engine/                                  @garimto81
+/ebs_game_engine/                               @garimto81
+/docs/2. Development/2.3 Game Engine/           @garimto81
+
+# ─── Team 4 (Command Center) ───────────────────────────────────────────
+/team4-cc/                                      @garimto81
+/docs/2. Development/2.4 Command Center/        @garimto81
+
+# ─── Generated (CI only) ───────────────────────────────────────────────
+/docs/_generated/                               @garimto81

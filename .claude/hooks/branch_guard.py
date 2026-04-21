@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """PreToolUse hook (Bash 대상): 팀 세션의 위험 git 명령 차단.
 
+⚠️ **DEPRECATED since v5.0 (2026-04-21)**
+   이 훅의 Rule 1 (팀 세션 main push 차단) 은 v5.0 PR-only 정책으로 불필요해집니다.
+   Rule 2-4 는 subdir 세션 보호 목적이지만 v5.0 은 sibling worktree 강제로 subdir 금지.
+   Pro/Team plan 전환 시 GitHub Branch Protection 이 서버측에서 대체.
+   2026-05-05 까지 warning-only 모드로 축소 예정.
+   상세: docs/4. Operations/V5_Migration_Plan.md D15+
+
 차단 대상:
 1. 팀 세션 → main 직접 push
 2. 팀 세션 → main 위에서 commit

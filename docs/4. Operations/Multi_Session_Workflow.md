@@ -1,262 +1,213 @@
 ---
-title: Multi-Session Workflow (v4.1 — Hybrid PR + Worktree 강제)
+title: Multi-Session Workflow (v5.0 — Worktree + PR + Free-tier Merge Gate)
 owner: conductor
 tier: contract
 last-updated: 2026-04-21
 reimplementability: PASS
 reimplementability_checked: 2026-04-21
-reimplementability_notes: "v4.1 Hybrid PR (Team=PR auto-merge / Conductor=direct) + subdir 차단 hook + PR 2-bis 별도 트랙"
+reimplementability_notes: "v5.0 — 2026 업계 표준 재사용. git worktree + GitHub PR + Actions concurrency. v4.0/v4.1 공식 deprecated"
 ---
 
-# Multi-Session Workflow — v4.1 (Hybrid PR + Worktree)
+# Multi-Session Workflow — v5.0
 
-## 🚀 표준 명령 (v4.1)
+## 🚀 표준 명령
 
 ```bash
-/team "<task description>"     # 팀/Conductor 세션 모두
+/team-v5 "<task description>"     # 팀/Conductor 세션 모두
 ```
 
-**단일 호출로 다음 자동 실행 (10 Phase, v4.0 Pre-Declaration)**:
-0. Declaration — 수정 대상 manifest 선언 (Lease TTL 5분)
-0.5. Conflict Scan — 타 세션 manifest 와 대조
-0.6. Plan Revision — 충돌 파일 제외 + cohesion_ratio 계산
-0.7. Safety Gate — cohesion 기반 go/no-go
-1. Context detect
-2. Pre-sync (fetch + 다른 세션 활동 표시 + rebase)
-3. Branch prep (초단기 work 브랜치)
-4. `/auto "<task>"` 위임
-5. Verify (drift + test + scope guard)
-6. Auto commit (conventional + notify 태그)
-7. **[v4.1 Hybrid]** Merge:
-   - **Team 세션**: `tools/team_pr_merge.py --branch work/team{N}/*` → PR create + auto-merge
-   - **Conductor**: main 직접 push 시도, 플랫폼 차단 시 PR fallback
-8. Report (변경 / drift 변화 / 다른 세션 활동)
+**단일 호출로 실행 (3 Phase)**:
+1. **Work** — sibling worktree 에서 `/auto "<task>"` → commit on `work/team{N}/<slug>`
+2. **PR** — `tools/team_v5_merge.py` 가 rebase + push + `gh pr create` + `auto-merge` 라벨
+3. **Sync** — `.github/workflows/pr-auto-merge.yml` 이 concurrency group 기반 직렬 merge
 
-**세션 시작·종료 개념 없음** — 매 `/team` 이 완결된 트랜잭션.
+**세션 ↔ GitHub 분리**: 팀 세션은 PR 생성까지만. merge 는 GitHub 이 백그라운드 처리. 팀은 다음 작업으로 진행.
 
-## v4.1 변경 사항 (2026-04-21)
+## v4.0/v4.1 → v5.0 전환 이유
 
-### 배경
-- **Main push 차단**: Claude Code 플랫폼이 "bypasses PR review" 사유로 team session `git push origin main` 거부. v3.0 의 "팀도 main 직접 ff-merge" 가 실질적으로 차단됨.
-- **Multi-session race**: subdir 모드 (`C:/claude/ebs/team{N}-*/`) 에서 실행한 `session_branch_init` 이 shared HEAD 를 이동 → Conductor worktree 오염 (reflog 증거 확인, 2026-04-21)
-- **Manifest 비준수**: v4.0 Pre-Declaration 도입했으나 subdir 세션이 manifest 미등록한 채 편집
+### 발견된 문제 (2026-04-21 critic review)
 
-### v4.1 해결책
+| v4.0 약속 | 실제 | 원인 |
+|-----------|------|------|
+| "매 호출 완결 트랜잭션" | 4 단계 수동 조치 필요 | 플랫폼이 main push 차단 |
+| "자동 commit + merge + push" | Push 실패 → 사용자 수동 수습 | PR review bypass 정책 |
+| "세션 시작·종료 개념 없음" | 팀 세션 재시작 필수 | subdir 모드 shared HEAD 오염 |
+| "Pre-Declaration 충돌 방지" | team1 등 manifest 미등록 | enforcement 경로 없음 |
 
-| 항목 | v3.0/v4.0 동작 | v4.1 동작 |
-|------|---------------|-----------|
-| **Team 세션 merge** | `git push origin main` 직접 | `gh pr create --fill --base main` + `gh pr merge --auto --squash --delete-branch` |
-| **Conductor merge** | `git push origin main` | 동일 (변경 없음) — 플랫폼 차단 시 PR fallback |
-| **subdir 세션 auto-branch** | `session_branch_init` 이 shared HEAD 이동 | **차단** — subdir 감지 시 skip + sibling worktree 사용 안내 |
-| **Worktree 정책** | sibling 권장 (optional) | sibling **필수** (subdir 은 session_branch_init 이 거부) |
+### 2026 업계 표준 조사 결과
 
-### 마이그레이션 (2026-04-21 진행중)
+- **The Agentic Blog (2026-03)**: "one task → one branch → one worktree → one agent" canonical pattern
+- **GitHub Merge Queue (2025 GA)**: 복잡 monorepo 표준. 24% PR cycle reduction
+- **Claude Code v2.1.50**: `claude -w` 네이티브 worktree 지원
+- **AddyOsmani (2026)**: 3-5 agent sweet spot. 같은 파일 2 agent 편집 금지
 
-1. **worktree 생성**: `python tools/setup_team_worktrees.py` → `C:/claude/ebs-team{N}-work/` 일괄 생성
-2. **팀 세션 재시작**: `cd C:/claude/ebs-team{N}-work && claude` — sibling worktree 에서 Claude Code 시작
-3. **기존 subdir 세션 종료**: `C:/claude/ebs/team{N}-*/` 에서 띄운 세션은 session_branch_init 이 브랜치 전환을 skip 하므로 작업 불가 → 중단 후 sibling 으로 이동
-4. **SKILL.md 반영**: `~/.claude/skills/team/SKILL.md` Phase 7 을 PR 모드로 업데이트 필요 — **user approval 필요** (self-modification 경계)
+→ **EBS v4.0 = 업계가 이미 Git/GitHub/Claude Code 네이티브로 해결한 문제의 재발명**
 
-### 관련 자산
+## v5.0 아키텍처 (3 Layer)
 
-- `tools/team_pr_merge.py` (NEW) — v4.1 Hybrid PR merge 구현. SKILL.md 업데이트 전 수동 호출용
-- `tools/setup_team_worktrees.py` (NEW) — sibling worktree 일괄 생성 헬퍼
-- `.claude/hooks/session_branch_init.py` — v4.1: subdir 세션 자동 브랜치 전환 차단
-- `.claude/hooks/branch_guard.py` — team session main push 차단 (유지)
-
-### Self-Modification 경계
-
-User-global `~/.claude/skills/team/` 파일은 세션이 자동 수정할 수 없다. v4.1 SKILL.md + team_merge_loop.py 변경은 사용자가 직접 수행 필요. 우회:
-- repo-local `tools/team_pr_merge.py` 가 동등 기능 제공
-- SKILL.md 업데이트 전까지 사용자가 Phase 7 대신 수동 호출: `python tools/team_pr_merge.py --branch <work-branch>`
-
-## 개요
-
-4팀 병렬 개발에서 세션 전환 비용을 낮추고 브랜치 격리를 강화하기 위한 워크트리 기반 멀티 세션 워크플로우. 기존 `team-policy.json` v6 `free_write_with_decision_owner` 모델과 정합.
-
-> **역할 구분** (두 멀티세션 문서):
-> - **이 문서 (`Multi_Session_Workflow.md`)** — **영구 운영 방법**: 브랜치 전략, worktree vs subdir, 팀 작업 표준 절차, 금지·리스크. "How to run multi-session?"
-> - **`Multi_Session_Handoff.md`** — **현재 이관 스냅샷**: 2026-04-21 구조 재정비 완료 상태, 각 팀 우선 작업, 이관 체크리스트. "What to work on now?"
-> 팀 세션 시작 시 둘 다 읽기 권장. Handoff 는 주기적으로 갱신.
-
-## 배경
-
-| 항목 | 내용 |
-|------|------|
-| 거버넌스 모델 | `free_write_with_decision_owner` (`docs/2. Development/2.5 Shared/team-policy.json` v6) |
-| 브랜치 전략 | 팀별 작업 브랜치 `work/team{N}/*` → `/team-merge` 로 main 통합 |
-| 실 안전 게이트 | decision_owner 규율 + L1/L2 hook (commit `4b41699`, `2ed152a` 이후) |
-| 결정 날짜 | 2026-04-15 |
-
-## 핵심 원칙 (v3.0)
-
-1. **`/team` 이 표준 명령** — 모든 팀/Conductor 세션이 `/team "<task>"` 로 작업. 수동 git 조작 최소화.
-2. **매 작업이 완결된 트랜잭션** — 1 `/team` 호출 = 1 commit + main 동기화. 세션 종료 불필요.
-3. **팀도 main 직접 ff-merge** — 기존 Conductor 독점 정책 완화. work 브랜치는 `/team` 1회 내로 초단기 수명.
-4. **Conflict 시 Pause + user confirm** — 자동화 한계선. 다른 모든 실패는 자동 retry 또는 rollback.
-5. **Worktree는 격리가 아니라 비용 절감 도구** — 브랜치 단위 직접 편집 모델에 자연스럽게 매핑됨.
-6. **공유 `docs/` 충돌은 worktree로 해결 안 됨** — decision_owner 규율 + `/team` scope guard 의 notify 태그가 게이트.
-7. **Conductor 는 main worktree 고정** — 팀 작업 브랜치에서 문서 구조/통합 테스트 편집 금지 (`/team` scope guard 가 경고).
+```
+┌──────────────────────────────────────────────────────┐
+│  L3  Free-tier Merge Gate                           │
+│      .github/workflows/pr-auto-merge.yml            │
+│      concurrency: main-merge-queue (직렬 1개)        │
+├──────────────────────────────────────────────────────┤
+│  L2  GitHub PR 동기화                               │
+│      gh pr create --fill --base main                │
+│      CODEOWNERS 자동 리뷰어 배정                    │
+├──────────────────────────────────────────────────────┤
+│  L1  git worktree 격리                              │
+│      C:/claude/ebs-team{N}-work/                    │
+│      work/team{N}/<slug> 브랜치                     │
+└──────────────────────────────────────────────────────┘
+```
 
 ## 표준 디렉토리 레이아웃
 
 | 용도 | 경로 | 브랜치 |
 |------|------|--------|
 | Conductor (main) | `C:/claude/ebs/` | `main` 고정 |
-| Team 1 작업 | `C:/claude/ebs-team1-<slug>/` | `work/team1/<slug>` |
-| Team 2 작업 | `C:/claude/ebs-team2-<slug>/` | `work/team2/<slug>` |
-| Team 3 작업 | `C:/claude/ebs-team3-<slug>/` | `work/team3/<slug>` |
-| Team 4 작업 | `C:/claude/ebs-team4-<slug>/` | `work/team4/<slug>` |
+| Team 1 worktree | `C:/claude/ebs-team1-work/` | `work/team1/<slug>` |
+| Team 2 worktree | `C:/claude/ebs-team2-work/` | `work/team2/<slug>` |
+| Team 3 worktree | `C:/claude/ebs-team3-work/` | `work/team3/<slug>` |
+| Team 4 worktree | `C:/claude/ebs-team4-work/` | `work/team4/<slug>` |
 
-**네이밍 규약**: `ebs-team{N}-<kebab-slug>`. `-wt-` 중간 접두사는 폐기 (과거 `ebs-wt-team1-*` → 신규 생성 시 `ebs-team1-*`).
+**네이밍**: `ebs-team{N}-<slug>`. `ebs-wt-*`, `.worktrees/*`, subdir (`ebs/team{N}-*`) 은 v5.0 금지.
 
-**이유**: sibling-dir 패턴 채택 (repo 내부 `.worktrees/` 회피). 기존 `ebs-team3-wsop` 와 일관성 유지.
-
-## 표준 운영 절차 (v3.0 — /team 스킬)
-
-### 1. 세션 환경 준비 (1회)
+## 세션 환경 준비 (1회)
 
 ```bash
-# Conductor (C:/claude/ebs) 에서 (필요 시 팀 worktree 생성)
-git worktree add -b work/team{N}/_wt ../ebs-team{N}-<slug> main  # 선택적
-cd ../ebs-team{N}-<slug>
+# Conductor 에서 팀별 sibling worktree 생성
+cd C:/claude/ebs
+python tools/setup_team_worktrees.py --team all
 ```
 
-**또는 subdir 모드** (worktree 없이):
+결과:
+- `C:/claude/ebs-team1-work/` ~ `C:/claude/ebs-team4-work/`
+- 각 worktree 는 `work/team{N}/work` 브랜치 (또는 기존 브랜치 재사용)
+
+이후 팀 세션:
 ```bash
-cd C:/claude/ebs/team{N}-frontend
+cd C:/claude/ebs-team2-work
+claude
+# 또는 Claude Code v2.1.50+ 네이티브:
+cd C:/claude/ebs && claude -w --branch work/team2/<slug>
 ```
 
-### 2. 작업 실행 (반복)
+## 3-Phase 실행 상세
 
-```bash
-/team "<task description>"
-```
+### Phase 1 — Work
 
-매 호출이 자동으로:
-- ✓ Pre-sync (fetch + rebase + 다른 세션 표시)
-- ✓ `/auto` 실행
-- ✓ Verify (drift + test + scope guard)
-- ✓ Commit (conventional)
-- ✓ Main ff-merge + push
-- ✓ Report
+팀 세션이 `/team-v5 "<task>"` 호출:
 
-세션 종료 불필요 — 항상 동기화 상태 유지.
+1. **Context detect**: cwd 가 sibling worktree 인지 확인. subdir 이면 error
+2. **`/auto "<task>"` 위임**: 기존 PDCA 워크플로우 (drift/test/scope guard 포함)
+3. **Commit**: conventional commit + `Co-Authored-By` 자동
 
-### 3. 수동 병합 (fallback, 거의 불필요)
+work 브랜치에 commit 완료. 이 시점까지 GitHub 에는 아무것도 push 되지 않음.
 
-`/team` 이 실패하거나 여러 팀 브랜치를 Conductor 가 일괄 병합할 때:
-```bash
-# Conductor worktree 에서
-/team-merge  # work/team{N}/<slug> → main (rebase + ff)
-```
+### Phase 2 — PR
 
-### 4. Worktree 정리 (필요 시)
+`tools/team_v5_merge.py` 실행:
 
 ```bash
-git worktree remove ../ebs-team{N}-<slug>
+python tools/team_v5_merge.py
 ```
 
-**수명 길게 가진 work 브랜치** 는 `/team` 사용 안 할 때만 필요 (구식). `/team` 은 매 호출마다 초단기 work 브랜치 자동 생성·삭제.
+내부 동작:
+1. `git fetch origin`
+2. `git rebase origin/main` (work 브랜치 최신화)
+3. `git push --force-with-lease origin HEAD` (work 브랜치 publish)
+4. `gh pr create --fill --base main --head <branch>`
+5. `gh pr edit <branch> --add-label auto-merge`
 
-## 금지
+PR 생성 완료. CODEOWNERS 가 해당 팀 owner 에게 리뷰 요청 전송.
 
-| 금지 | 이유 |
-|------|------|
-| Conductor worktree (`C:/claude/ebs/`) 에서 `work/team{N}/*` 브랜치 체크아웃 | 세션 경계 오염. Conductor 는 main 고정 |
-| 팀 worktree 에서 다른 팀 문서 폴더 (`docs/2. Development/2.{다른팀}/`) 편집 | Scope 위반 |
-| 팀 worktree 에서 `docs/1. Product/`, `docs/4. Operations/` 직접 편집 | Conductor 소유 (decision_owner 우회) |
-| `ebs-wt-*` 접두사 신규 worktree 생성 | 네이밍 규약 위반 |
-| `.worktrees/` 하위에 worktree 생성 | sibling-dir 규약 위반 |
+### Phase 3 — Sync
 
-## Hybrid Support — Subdir · Worktree 동시 지원
+`.github/workflows/pr-auto-merge.yml` 가 수행 (자동):
 
-Worktree 모델은 **선택적**이며 기존 in-repo subdir 모델과 **공존 가능**. 두 모델은 동일한 자산(브랜치 이름 `work/team{N}/*`, `/team-merge`, `meta/active-edits`)을 공유하고, 차이는 오직 **작업자의 물리적 위치** 뿐.
+1. `concurrency: main-merge-queue` 획득 대기 (동시 1개 PR 만 처리)
+2. 모든 required check 완료 대기 (최대 20분)
+3. main 에 behind 이면 auto-rebase + force-push
+4. `gh pr merge --squash --delete-branch`
 
-| 용도 | Subdir 모델 | Worktree 모델 |
-|------|-------------|---------------|
-| Team 세션 CWD | `C:/claude/ebs/team{N}-frontend/` 등 | `C:/claude/ebs-team{N}-<slug>/` |
-| 브랜치 전환 | 세션 시작 시 `git checkout work/team{N}/*` | 각 worktree = 1 브랜치 상주 |
-| 병렬 팀 세션 | ❌ 한 repo에서 본질적 직렬 | ✅ 5 worktree 동시 |
-| 디스크 비용 | repo 1개 | × 팀 수 |
-| hook 지원 | ✅ `detect_team` Pattern B | ✅ `detect_team` Pattern A |
+팀 세션 측 동작: 없음. worktree 는 다음 작업을 위해 유지.
 
-**선택 기준**:
-- 세션 자주 재시작 + 디스크 제약 → **Subdir**
-- 세션 유지 + 5팀 상시 병렬 → **Worktree**
-- 혼합 가능 (일부 팀만 worktree)
+## Conflict Handling
 
-## 알려진 리스크
+### L1 (worktree) — 파일시스템 격리
+- Git 자체 제약: **같은 브랜치 2개 worktree 체크아웃 불가** → branch 수준 race 원천 차단
+- 다른 worktree 의 commit 이 내 HEAD 이동 안 함 (HEAD 는 per-worktree)
 
-1. **격리 착시**: worktree 가 별개 폴더라는 이유로 공유 `docs/` 규율이 이완될 수 있음. decision_owner 규율 강화 필요.
-2. **Scope-block hook 미구현**: PreToolUse 기반 경로 소유권 차단은 없음 (v6 `free_write` 정책상 의도적). L1(branch) · L2(active-edits) hook은 구현됨.
-3. **디스크 비용**: 팀별 worktree 상주 시 repo 파일 × N 배. SSD 용량 모니터링.
-4. **Subdir 세션의 공유 HEAD race (v3.0 → v3.1 완화)**: Conductor 가 main 에 있고 subdir 팀 세션이 `git checkout -b work/teamN/...` 를 실행하면 subdir 이 공유 `.git/HEAD` 를 움직여 Conductor 도 그 브랜치로 따라 이동함. v3.1 의 session-pinned branch tracking 으로 감지 힌트 제공 (§"Phase 5 강화" 참조). **근본 해결은 sibling worktree 사용**.
+### L2 (PR) — 의미적 충돌
+- 같은 파일을 2 팀이 수정 → 첫 PR merge 후 두 번째 PR rebase 강제
+- `tools/team_v5_merge.py` 의 rebase 단계가 자동 처리
+- rebase conflict 발생 시 workflow 가 `auto-merge` 라벨 제거 + PR 에 comment
 
-## Phase 5 강화 (v3.1, 2026-04-21)
+### L3 (Merge queue) — 순서 보장
+- `concurrency: main-merge-queue` 가 동시 1개 PR 만 merge
+- 선착순 (`cancel-in-progress: false`)
+- CI 실패 시 해당 PR 만 탈락, 다음 PR 은 정상 진행
 
-멀티 세션 동시 실행 시 관찰된 증상을 해소하기 위한 hook 보강. v3.0 정책은 유지.
+## 거버넌스 (v7 유지)
 
-### 관찰된 증상
+`team-policy.json` v7 `free_write_with_decision_owner` 모델은 **v5.0 에서도 유지**:
 
-| 증상 | 원인 |
-|------|------|
-| branch-guard 가 Conductor 에게 "team branch 에 올라감" 재경고 (override 무효화) | override key 가 `sid+cur` 기반이어서 다른 세션이 cur 을 또 다른 team 브랜치로 바꾸면 재발급 |
-| "File has been modified since read, either by the user or by a linter" | 다른 세션이 동일 파일을 동시에 편집 + 같은 cwd 의 `git status` 재생성 |
-| `git commit` 이 다른 파일까지 포함해서 커밋됨 | 다른 세션의 staged 변경이 같은 shared index 에 남아있는 상태 |
-| subdir 팀 세션의 `session_branch_init` 이 Conductor HEAD 도 움직임 | subdir 은 공유 `.git` 을 사용하므로 `git checkout -b` 가 전역 영향 |
+- **Write access**: 모든 세션이 모든 docs 자유 편집 (v5.0 도 동일)
+- **Decision authority**: CODEOWNERS 가 PR 에서 해당 owner 자동 리뷰어 배정 → PR 승인이 decision_owner 판정 경로
+- **Conflict resolution**: syntactic = rebase (`team_v5_merge.py`), semantic = PR 리뷰어 (`CODEOWNERS`)
 
-### Hook 보강
+## Free-tier 제약 (GitHub 플랜)
 
-**`.claude/hooks/branch_guard.py` (v3.1)**:
+| 기능 | GitHub Pro/Team plan | EBS Free tier 대응 |
+|------|:--------------------:|---------------------|
+| Merge Queue (native) | ✓ | `concurrency:` group in workflow |
+| Branch protection (private repo) | ✓ | workflow 가 gate 역할 대체 |
+| Required CODEOWNERS review | ✓ | 자동 알림만, 강제 block 아님 |
+| auto-merge (private) | ✓ | `auto-merge` 라벨 + workflow trigger |
 
-| 개선 | 효과 |
-|------|------|
-| **Override key 를 `sid` 에만 의존** (`kind='conductor-commit-on-team-branch'`, `cur` 제거) | 다른 세션이 branch 를 움직여도 override 5분 내 유지 |
-| **`_wait_for_index_lock()`**: `.git/index.lock` 존재 시 100ms × 30회 대기 | 다른 세션 `git add/commit` 과의 race 완화, 차단 대신 순차화 |
-| **`_pin_session_branch()` / `_get_pinned_branch()`**: Conductor 가 main 에서 commit 할 때 session_id 를 key 로 "main" 기록 | 다음 commit 시 HEAD 가 움직였으면 "다른 세션 탓" 힌트를 경고문에 추가 |
+**위험 수용**: free-tier 는 서버측 강제 없음. `gh pr merge --admin` 으로 CI/concurrency 우회 가능. **EBS 단일 소유자 repo 에서는 실질 위험 없음** (소유자=사용자 자신).
 
-**파일**: `.claude/.session-branches/<sid>.pin` (TTL 1h), `.claude/.branch-guard-overrides/<hash>.flag` (TTL 5분).
+## 금지 (v5.0)
 
-### 권장 운영 (v3.1)
+- subdir 세션 (`C:/claude/ebs/team{N}-*/`) 에서 `/team-v5` 호출 — **sibling worktree 강제**
+- Conductor 직접 `git push origin main` — **PR 경로 사용**
+- `--no-pr` flag 로 v4.0 동작 요청 — **v5.0 은 PR-only**
+- `gh pr merge --admin` 으로 CI/concurrency 우회 — **긴급 hotfix 제외**
+- `~/.claude/skills/team/` v4.0 스킬 직접 호출 — **deprecated, `/team-v5` 사용**
 
-- **Conductor 세션**: 항상 main 에 유지. subdir 세션과 동시 실행 시 **sibling worktree 로 분리** 권장.
-- **Subdir 팀 세션**: `session_branch_init` 이 자동 생성한 branch 유지. 명시적 `git checkout` 금지 (branch_guard Rule 4 차단).
-- **Sibling worktree 팀 세션**: 자체 HEAD 소유 → 자유 checkout 허용.
-- **동시 실행 시**: 한 세션의 `/team` 이 진행 중인 동안 다른 세션은 편집 중단 또는 다른 파일 편집 권장.
+## 마이그레이션 로드맵
 
-### 복구 절차 (다른 세션이 HEAD 움직였을 때)
-
-```bash
-# 1. 증상 확인
-git branch --show-current
-# 현재 branch 가 의도와 다름
-
-# 2. 내 작업 보존
-git stash push -m "branch-race-recovery"
-
-# 3. 원래 branch 복귀
-git checkout main  # Conductor 의 경우
-
-# 4. 작업 복원
-git stash pop
-```
+`docs/4. Operations/V5_Migration_Plan.md` 참조.
 
 ## 관련 자산
 
-| 자산 | 경로 |
-|------|------|
-| 팀 정책 SSOT | `docs/2. Development/2.5 Shared/team-policy.json` |
-| 병합 스킬 | `/team-merge` |
-| Superpowers 가이드 | `superpowers:using-git-worktrees` |
-| Active-edits (정보성) | `meta/active-edits` orphan branch |
+### Repo-local (v5.0 active)
+- `.claude/skills/team-v5/SKILL.md` — project-local skill
+- `.github/workflows/pr-auto-merge.yml` — Phase 3 free-tier gate
+- `.github/CODEOWNERS` — Phase 2 자동 리뷰어
+- `tools/team_v5_merge.py` — Phase 2 구현
+- `tools/setup_team_worktrees.py` — Phase 1 setup
+- `tools/team_pr_merge.py` — v4.1 호환 (2026-05-05 까지 유지)
 
-## Changelog
+### Deprecated (2026-05-05 제거 예정)
+- `~/.claude/skills/team/SKILL.md` (user-global v4.0)
+- `~/.claude/skills/team/scripts/*.py` 11 files
+- `.claude/hooks/session_branch_init.py` → `claude -w` 가 대체
+- `.claude/hooks/branch_guard.py` → GitHub workflow 가 대체 (Pro/Team plan 필요시 Pro/Team plan 필요시 복원)
 
-| 날짜 | 버전 | 변경 내용 | 결정 근거 |
-|------|------|-----------|----------|
-| 2026-04-21 | **v4.0** | **Pre-Declaration + Exclude+Revise 모델 구현**. 10 Phase 확장 (0/0.5/0.6/0.7 신설), session-manifest JSON (`.claude/.session-manifests/{sid}.json`) Lease TTL 5분, team-policy.json 자동 ownership 체크, cohesion_ratio 4 case 분기. 6 scripts: `team_manifest.py`, `team_declare.py`, `team_conflict_scan.py`, `team_plan_revise.py`, `team_safety_gate.py`, `team_cleanup.py`. Hook 연동: `session_branch_init.py` + `conductor_stop_cleanup.py` 에 stale cleanup 추가 | 사용자 지시 "충돌 사전 방지" + 2026 업계 검증 (Kubernetes Lease, Augment Intent, Beads, Cursor locking 실패 교훈). Plan: `Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` (3 revisions) |
-| 2026-04-21 | **v3.1** | Phase 5 Hook 강화: branch_guard 의 override key 를 session_id 만 의존으로 변경 (cur 독립), git index.lock 대기 (100ms × 30회), session-pinned branch tracking (`.claude/.session-branches/`). "알려진 리스크" §4 + "Phase 5 강화" 섹션 신설. | 2026-04-21 실측: 동시 세션 5회 이상 branch-guard 재경고 + `git add` 시 다른 세션 staged 변경 혼입. 근본 해결은 sibling worktree 이나 hook 으로 감지 힌트 추가 |
-| 2026-04-21 | **v3.0** | **`/team` 스킬 도입**. 팀 main 직접 ff-merge 허용, work 브랜치 초단기 수명(`/team` 1회 내), 매 작업 auto commit+merge+push. `/team-merge` 는 fallback 으로 격하. 글로벌 스킬 `~/.claude/skills/team/` | 사용자 요구: "항상 동기화 유지", "세션 종료 개념 제거", 충돌 사전 방지를 작업 단위 분해로 해결 |
-| 2026-04-20 | v2.0 | MVI (Minimum Viable Isolation) 도입. Phase 1-6: Conductor Stop hook, branch_guard 확장(subdir checkout 차단), fs lock(orphan branch 대체), FIFO merge queue, subagent isolation frontmatter. Active-edits orphan branch 레지스트리 비활성화 (파일은 역사 보존) | 2026-04-20 실측 사건 (Conductor worktree 오염 + L2 5일 dormant) + 2026 트렌드 (Worktrunk FIFO queue, Claude Code subagent isolation) |
-| 2026-04-15 | v1.0 | Worktree 기반 멀티 세션 워크플로우 정식화. 기존 부분 채택 상태 표준화 | CR draft 폐기 + free_write 모델 정합, critic 검토 결과 (plan: abundant-skipping-moonbeam) |
+## 변경 이력
+
+| 날짜 | 버전 | 요약 |
+|------|------|------|
+| 2026-04-10 | v4.0 | Pre-Declaration manifest + conflict scan + safety gate 도입 |
+| 2026-04-21 | v4.1 | Hybrid PR (Team=PR / Conductor=direct) patch |
+| 2026-04-21 | **v5.0** | **전체 재설계**. 업계 표준 재사용. 3-Phase. free-tier 호환. v4.0/v4.1 deprecated |
+
+## 근거 Research (2026-04-21)
+
+- [Multi-Agent AI Coding Workflow: Git Worktrees That Scale](https://blog.appxlab.io/2026/03/31/multi-agent-ai-coding-workflow-git-worktrees/)
+- [How GitHub uses merge queue to ship hundreds of changes every day](https://github.blog/engineering/engineering-principles/how-github-uses-merge-queue-to-ship-hundreds-of-changes-every-day/)
+- [Claude Code Common Workflows (official)](https://code.claude.com/docs/en/common-workflows)
+- [The Code Agent Orchestra — AddyOsmani](https://addyosmani.com/blog/code-agent-orchestra/)
+- [Git Worktree Documentation — git-scm.com](https://git-scm.com/docs/git-worktree)

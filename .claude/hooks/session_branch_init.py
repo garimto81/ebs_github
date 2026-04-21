@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """SessionStart hook: 팀 세션이면 work/{team}/{date}-{slug} 브랜치 자동 체크아웃.
 
+⚠️ **DEPRECATED since v5.0 (2026-04-21)**
+   이 훅은 v5.0 에서 `claude -w` 네이티브 worktree 지원 (Claude Code v2.1.50+) 이
+   대체합니다. 2026-05-05 제거 예정. 현재는 v4.x 호환성을 위해 warning-only 로 유지.
+   상세: docs/4. Operations/V5_Migration_Plan.md D15+ 단계
+
 Conductor 세션은 main 유지. 충돌 시(작업 중인 변경 존재) 침묵 통과.
 bypass 모드 시에도 안전하게 동작 (실패 시 침묵).
 

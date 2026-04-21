@@ -15,11 +15,27 @@
     }
   },
   "branch_strategy": {
-    "main_push_allowed_for": ["conductor"],
-    "team_branch_pattern": "work/{team}/{YYYYMMDD}-{slug}",
+    "version": "v5.0",
+    "updated": "2026-04-21",
+    "main_push_allowed_for": [],
+    "_main_push_allowed_for_note": "v5.0: 직접 main push 전면 금지. 모든 팀 (Conductor 포함) PR 경로. v4.x 에서는 ['conductor'] 였음.",
+    "team_branch_pattern": "work/{team}/{slug}",
+    "worktree_layout": "sibling_dir",
+    "worktree_path_pattern": "C:/claude/ebs-{team}-{slug}/",
+    "subdir_mode": "forbidden",
+    "_subdir_mode_note": "v5.0: subdir (C:/claude/ebs/team{N}-*/) 모드 금지. shared HEAD 오염 방지.",
     "registry_branch": "meta/active-edits",
-    "merge_method": "rebase_then_fast_forward",
-    "merge_tool": "tools/team_merge.py"
+    "merge_method": "squash_via_pr",
+    "_merge_method_note": "v5.0: gh pr create --fill + auto-merge 라벨 → .github/workflows/pr-auto-merge.yml",
+    "merge_tool": "tools/team_v5_merge.py",
+    "merge_gate": ".github/workflows/pr-auto-merge.yml",
+    "code_owners": ".github/CODEOWNERS",
+    "free_tier_compat": true,
+    "deprecated_tools": {
+      "tools/team_merge.py": "v4.x direct ff-merge tool. 2026-05-05 제거 예정",
+      "tools/team_pr_merge.py": "v4.1 호환 tool. 2026-05-05 제거 예정",
+      "~/.claude/skills/team/scripts/team_merge_loop.py": "v4.0 user-global. /team-v5 가 대체"
+    }
   },
   "teams": {
     "conductor": {
