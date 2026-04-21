@@ -15,7 +15,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../foundation/theme/seat_colors.dart';
+import '../../../models/enums/hand_fsm.dart';
 import '../../../models/enums/seat_status.dart';
+import '../providers/hand_fsm_provider.dart';
 import '../providers/seat_provider.dart';
 
 // ---------------------------------------------------------------------------
@@ -575,7 +577,7 @@ class _SeatCellState extends ConsumerState<SeatCell>
   }
 
   Widget _buildPositionMarker(String label) {
-    return Padding(
+    final chip = Padding(
       padding: const EdgeInsets.only(top: 1),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
@@ -593,6 +595,55 @@ class _SeatCellState extends ConsumerState<SeatCell>
         ),
       ),
     );
+
+    // Seat_Management.md §2.3.2 — BTN chip click → re-assign dialog (IDLE only).
+    // SB/BB are derived by Game Engine (§2.3.3 렌더링 책임 분리), not user-editable.
+    if (label != 'BTN') return chip;
+
+    return GestureDetector(
+      onTap: _onDealerChipTap,
+      child: MouseRegion(cursor: SystemMouseCursors.click, child: chip),
+    );
+  }
+
+  void _onDealerChipTap() {
+    final fsm = ref.read(handFsmProvider);
+    final isIdle = fsm == HandFsm.idle || fsm == HandFsm.handComplete;
+    if (!isIdle) {
+      // Seat_Management.md §5.2 — "딜러 위치 변경 ❌ 핸드 내 불변"
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('핸드 진행 중에는 딜러 변경 불가 (Seat_Management.md §5.2)'),
+          backgroundColor: Colors.red.shade700,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+    _showDealerReassignDialog();
+  }
+
+  Future<void> _showDealerReassignDialog() async {
+    final seats = ref.read(seatsProvider);
+    final eligible = seats
+        .where((s) =>
+            s.player != null && s.activity != PlayerActivity.sittingOut)
+        .toList();
+    if (eligible.isEmpty) return;
+
+    final currentDealer = seats
+        .firstWhere((s) => s.isDealer, orElse: () => eligible.first)
+        .seatNo;
+
+    final selected = await showDialog<int>(
+      context: context,
+      builder: (ctx) => _DealerReassignDialog(
+        eligible: eligible,
+        initialSeat: currentDealer,
+      ),
+    );
+    if (selected == null || selected == currentDealer) return;
+    ref.read(seatsProvider.notifier).setDealer(selected);
   }
 
   Widget _buildBadge(String text, Color color) {
@@ -623,3 +674,73 @@ class _SeatCellState extends ConsumerState<SeatCell>
 // ---------------------------------------------------------------------------
 // Note: Flutter's `AnimatedBuilder` is the correct widget. The above usage
 // is valid as-is.
+
+// ---------------------------------------------------------------------------
+// Dealer re-assign dialog (Seat_Management.md §2.3.2)
+// ---------------------------------------------------------------------------
+
+class _DealerReassignDialog extends StatefulWidget {
+  const _DealerReassignDialog({
+    required this.eligible,
+    required this.initialSeat,
+  });
+
+  final List<SeatState> eligible;
+  final int initialSeat;
+
+  @override
+  State<_DealerReassignDialog> createState() => _DealerReassignDialogState();
+}
+
+class _DealerReassignDialogState extends State<_DealerReassignDialog> {
+  late int _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.initialSeat;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('딜러 재지정 (BTN)'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Seat_Management.md §2.3.2 — IDLE 상태에서만 변경 가능',
+            style: TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+          const SizedBox(height: 16),
+          DropdownButtonFormField<int>(
+            initialValue: _selected,
+            decoration: const InputDecoration(
+              labelText: 'Dealer 좌석 선택',
+              border: OutlineInputBorder(),
+            ),
+            items: [
+              for (final s in widget.eligible)
+                DropdownMenuItem(
+                  value: s.seatNo,
+                  child: Text('S${s.seatNo} — ${s.player?.name ?? ''}'),
+                ),
+            ],
+            onChanged: (v) => setState(() => _selected = v ?? _selected),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(_selected),
+          child: const Text('Confirm'),
+        ),
+      ],
+    );
+  }
+}

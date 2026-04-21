@@ -243,7 +243,7 @@ void _dispatchAction(WidgetRef ref, CcAction action,
         final reason = activePlayers < 2
             ? '좌석 2명 이상 착석 필요 (현재 $activePlayers명)'
             : !dealerSet
-                ? '딜러 미지정 — 기획 Seat_Management.md §2 "포지션 뱃지 클릭" UX 미구현 (Backlog 필요)'
+                ? '딜러 미지정 — 좌석 착석 시 자동 배정 (§2.3.1). 변경은 BTN 뱃지 클릭'
                 : 'FSM 상태 오류 (idle/handComplete 아님: ${fsmState.name})';
         DebugLog.w('NEW_HAND', 'canStartHand=false — aborted', {'reason': reason});
         if (context != null && context.mounted) {

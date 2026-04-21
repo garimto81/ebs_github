@@ -84,6 +84,10 @@ class SeatNotifier extends StateNotifier<List<SeatState>> {
   // -- mutations -------------------------------------------------------------
 
   /// Seat a player at [seatNo]. Status -> newSeat.
+  ///
+  /// Seat_Management.md §2.3.1 Auto-assign: if no dealer currently set,
+  /// the newly seated player becomes BTN automatically (빈 테이블 → NEW HAND
+  /// 경로를 별도 UI 없이 확보).
   void seatPlayer(int seatNo, PlayerInfo player) {
     state = _update(
       seatNo,
@@ -93,14 +97,37 @@ class SeatNotifier extends StateNotifier<List<SeatState>> {
         activity: PlayerActivity.active,
       ),
     );
+
+    // §2.3.1 — auto-assign dealer on first seat occupation
+    final noDealer = !state.any((s) => s.isDealer);
+    if (noDealer) {
+      setDealer(seatNo);
+    }
   }
 
   /// Remove player from [seatNo]. Status -> empty.
+  ///
+  /// Seat_Management.md §2.3.4 edge case: if vacated seat was BTN, auto-move
+  /// dealer to the next clockwise occupied seat; if none remain, clear BTN
+  /// (dealerSeatProvider -> null, §2.3.1 re-activation on next seatPlayer).
   void vacateSeat(int seatNo) {
+    final wasDealer = _seat(seatNo).isDealer;
     state = _update(
       seatNo,
       (_) => SeatState(seatNo: seatNo),
     );
+
+    if (wasDealer) {
+      final occupied = state.where((s) => s.player != null).toList();
+      if (occupied.isNotEmpty) {
+        final next = occupied.firstWhere(
+          (s) => s.seatNo > seatNo,
+          orElse: () => occupied.first, // wrap
+        );
+        setDealer(next.seatNo);
+      }
+      // else: all vacant → no dealer (next seatPlayer triggers §2.3.1)
+    }
   }
 
   /// Move player from seat [from] to seat [to].
