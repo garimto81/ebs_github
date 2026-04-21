@@ -97,66 +97,56 @@ flowchart LR
     A --> F[foundation/]
 ```
 
-### 2.1 디렉토리 구조
+### 2.1 디렉토리 구조 (2026-04-21 실측 재작성)
 
 ```
 team1-frontend/lib/
 ├── main.dart
-├── app.dart                      # MaterialApp.router + ProviderScope
+├── app.dart                            # MaterialApp.router + ProviderScope
 ├── data/
 │   ├── remote/
-│   │   ├── dio_client.dart       # Dio instance + interceptors
-│   │   └── lobby_ws_client.dart  # WebSocket wrapper
+│   │   ├── bo_api_client.dart          # Dio + Idempotency + Auth refresh interceptor
+│   │   ├── lobby_websocket_client.dart # WS + seq 단조증가 + replay
+│   │   └── ws_dispatch.dart            # 중앙 이벤트 라우터 (25+ 이벤트)
 │   └── local/
-│       └── mock_dio_adapter.dart # MockDioAdapter (개발용)
-├── features/
-│   ├── auth/                     # 로그인 화면
-│   ├── lobby/                    # Series → Event → Flight → Table
-│   ├── player/                   # Player 독립 레이어
-│   ├── settings_output/          # Settings: Outputs 탭
-│   ├── settings_gfx/             # Settings: GFX 탭
-│   ├── settings_display/         # Settings: Display 탭
-│   ├── settings_rules/           # Settings: Rules 탭
-│   └── graphic_editor/           # GE Import/Activate 허브
-├── models/
-│   ├── series.dart               # @freezed
-│   ├── event.dart
-│   ├── flight.dart
-│   ├── table.dart
-│   ├── seat.dart
-│   ├── player.dart
-│   ├── hand.dart
-│   ├── config.dart
-│   ├── skin.dart
-│   ├── blind_structure.dart
-│   └── enums.dart                # GameType, TableStatus, Role 등
-├── repositories/
-│   ├── auth_repository.dart
-│   ├── series_repository.dart
-│   ├── event_repository.dart
-│   ├── flight_repository.dart
-│   ├── table_repository.dart
-│   ├── seat_repository.dart
-│   ├── player_repository.dart
-│   ├── hand_repository.dart
-│   ├── config_repository.dart
-│   ├── skin_repository.dart
-│   └── blind_structure_repository.dart
-└── foundation/
-    ├── theme/
-    │   └── ebs_theme.dart        # Material3 dark (team4 기반)
-    ├── router/
-    │   └── app_router.dart       # go_router 정의 (§4)
-    ├── i18n/
-    │   ├── l10n.yaml
-    │   ├── app_ko.arb
-    │   ├── app_en.arb
-    │   └── app_es.arb
-    ├── configs/
-    │   └── env_config.dart       # --dart-define 환경변수
-    └── widgets/
-        └── ...                   # 공통 위젯 (NavigationRail 등)
+│       ├── mock_dio_adapter.dart       # MockDioAdapter (개발용)
+│       └── mock_data.dart              # 10 competitions / 10 flights / 20 tables / 100 players fixture
+├── features/                           # 6 feature (2026-04-21 정렬)
+│   ├── auth/                           # login_screen + forgot_password + auth_provider
+│   ├── lobby/                          # lobby_dashboard (series/event/flight/table 통합 드릴다운) + table_detail + player 서브뷰
+│   ├── settings/                       # 8 screens (blind_structure / prize_structure / outputs / gfx / display / rules / stats / preferences + layout)
+│   ├── graphic_editor/                 # ge_hub + ge_detail + rive_preview (rive ^0.13)
+│   ├── staff/                          # staff_list + user_form_dialog
+│   └── reports/                        # reports_screen (4탭: hands-summary / player-stats / session-log / table-activity — hand_history + audit_log 통합)
+├── models/entities/                    # 19 @freezed entities
+│   ├── series / ebs_event / event_flight / table / table_seat
+│   ├── player / session_user / user / staff
+│   ├── hand / hand_player / hand_action
+│   ├── config / skin / skin_metadata
+│   ├── blind_structure / blind_structure_level
+│   ├── competition / audit_log / output_preset
+│   └── (각 entity 당 .freezed.dart + .g.dart 자동 생성)
+├── repositories/                       # 14 Repository (API-01 계약 소비)
+│   ├── auth / competition / series / event / flight
+│   ├── table (seat endpoints 통합) / player / hand
+│   ├── settings (configs rename) / skin / staff (users rename)
+│   ├── audit_log / report / payout_structure
+│   └── (blind_structure 는 settings_repository 에 통합 — B-084 재평가 대상)
+├── foundation/
+│   ├── theme/ebs_theme.dart            # Material3 dark (team4 기반 동일 colorSchemeSeed)
+│   ├── router/app_router.dart          # go_router 9 routes (§4.3)
+│   ├── i18n/ (+ resources/l10n/)       # ARB 3 locale (ko/en/es, 231 keys)
+│   ├── configs/env_config.dart         # --dart-define 환경변수
+│   └── widgets/                        # empty_state / error_banner / loading_state 등 공통
+└── resources/l10n/                     # app_{ko,en,es}.arb
 ```
+
+**이전 설계와의 차이** (Quasar 시대 원안 대비):
+- Settings 4 분할 (`settings_output/settings_gfx/settings_display/settings_rules`) → 단일 `settings/` 통합
+- `player/` 독립 feature → `lobby/` 하위 서브뷰 (드릴다운 맥락 보존)
+- `staff/`, `reports/` 신규 feature (Quasar → Flutter 이전 중 분리)
+- 파일명: `dio_client` → `bo_api_client`, `lobby_ws_client` → `lobby_websocket_client`
+- Repository 11 → 14 (staff/audit_log/report/payout_structure 신규, settings rename, seat 통합)
 
 ---
 
@@ -208,22 +198,28 @@ flowchart LR
 
 ### 4.3 Route table (14 routes)
 
-| # | Path | Feature | 비고 |
-|---|------|---------|------|
-| 1 | `/login` | auth | 미인증 진입점 |
-| 2 | `/` | lobby | 리디렉트 → `/series` |
-| 3 | `/series` | lobby | Series 목록 |
-| 4 | `/series/:id/events` | lobby | Event 목록 |
-| 5 | `/series/:sid/events/:eid/flights` | lobby | Flight 목록 |
-| 6 | `/series/:sid/events/:eid/flights/:fid/tables` | lobby | Table 목록 |
-| 7 | `/tables/:id` | lobby | Table 상세 (Seat grid) |
-| 8 | `/players` | player | Player 독립 목록 |
-| 9 | `/players/:id` | player | Player 상세 |
-| 10 | `/settings/outputs` | settings_output | Outputs 탭 |
-| 11 | `/settings/gfx` | settings_gfx | GFX 탭 |
-| 12 | `/settings/display` | settings_display | Display 탭 |
-| 13 | `/settings/rules` | settings_rules | Rules 탭 |
-| 14 | `/graphic-editor` | graphic_editor | GE Import/Activate |
+### 4.3 Route table (9 routes, 2026-04-21 실측)
+
+| # | Path | Feature | Builder | 비고 |
+|---|------|---------|---------|------|
+| 1 | `/login` | auth | `LoginScreen` | 미인증 진입점. `redirect` 로 로그인 후 원래 경로 복원 |
+| 2 | `/forgot-password` | auth | `ForgotPasswordScreen` | 비밀번호 초기화 플로우 |
+| 3 | `/lobby` | lobby | `LobbyDashboardScreen` | **단일 대시보드** — Series selector + Events + Tables 3 section 통합 (이전 `/series`, `/series/:id/events`, `/flights`, `/tables` 드릴다운 라우트를 단일 화면 state 로 통합) |
+| 4 | `/tables/:tableId` | lobby | `TableDetailScreen` | Table 상세 (SeatGrid) |
+| 5 | `/staff` | staff | `StaffListScreen` | 운영자 관리 |
+| 6 | `/settings` → `/settings/blind-structure` | settings | redirect | Settings 진입 시 기본 탭 |
+| 7 | `/settings/:section` | settings | `SettingsLayout(section:)` | dynamic section 파라미터. 허용 값: `blind-structure / prize-structure / outputs / gfx / display / rules / stats / preferences` (8 탭) |
+| 8 | `/graphic-editor` | graphic_editor | `GeHubScreen` | `.gfskin` 허브 |
+| 9 | `/graphic-editor/:skinId` | graphic_editor | `GeDetailScreen` | 스킨 상세 편집 |
+| 10 | `/reports` → `/reports/hands-summary` | reports | redirect | Reports 진입 시 기본 탭 |
+| 11 | `/reports/:type` | reports | `ReportsScreen(reportType:)` | dynamic type 파라미터. 허용 값: `hands-summary / player-stats / session-log / table-activity` (4탭) |
+
+**이전 설계와의 차이** (Quasar 시대 14 routes 대비):
+- Series/Event/Flight 3단계 드릴다운 (4 routes) → 단일 `/lobby` 대시보드 내부 state 로 통합 (UX 단순화 결정)
+- `/players`, `/players/:id` 미구현 — B-080 재평가 대상 (lobby 하위 통합 완결 선언 or Player UI 신규 구현)
+- Settings 4 하드코딩 path → 단일 dynamic `/settings/:section`
+- `/forgot-password`, `/staff`, `/reports/:type`, `/graphic-editor/:skinId` 추가 (Quasar 이후 신규 화면)
+- `errorBuilder: _PlaceholderScreen(title: '404 Not Found')` — 간소화된 NotFound 처리 (Quasar `NotFoundPage.vue` 의 경량 대체)
 
 ---
 
@@ -244,21 +240,29 @@ flowchart LR
 
 **AuthInterceptor**: `Authorization: Bearer {token}` 주입. 401 응답 시 refresh token 으로 재발급 → 원래 요청 재시도. refresh 실패 시 `/login` 으로 리디렉트. 무한 루프 방지를 위해 refresh 요청 자체에는 interceptor 미적용.
 
-### 5.2 Repository 매핑 (11 classes)
+### 5.2 Repository 매핑 (14 classes, 2026-04-21 실측)
 
-| Repository | Base path | 주요 메서드 |
-|------------|-----------|------------|
-| `AuthRepository` | `/auth` | `login`, `refresh`, `logout` |
-| `SeriesRepository` | `/series` | `list`, `get`, `create`, `update`, `delete` |
-| `EventRepository` | `/series/:id/events` | `list`, `get`, `create`, `update` |
-| `FlightRepository` | `/events/:id/flights` | `list`, `get`, `create`, `update` |
-| `TableRepository` | `/flights/:id/tables` | `list`, `get`, `create`, `update`, `assign` |
-| `SeatRepository` | `/tables/:id/seats` | `list`, `seatPlayer`, `unseatPlayer` |
-| `PlayerRepository` | `/players` | `list`, `get`, `create`, `update`, `search` |
-| `HandRepository` | `/tables/:id/hands` | `list`, `current` |
-| `ConfigRepository` | `/configs` | `get`, `update` (scope: series/event/table) |
-| `SkinRepository` | `/skins` | `list`, `get`, `upload`, `activate` |
-| `BlindStructureRepository` | `/blind-structures` | `list`, `get`, `create`, `update` |
+| Repository | Base path | 주요 메서드 | 비고 |
+|------------|-----------|------------|------|
+| `AuthRepository` | `/auth` | `login`, `refresh`, `logout`, `verify2FA` | |
+| `CompetitionRepository` | `/competitions` | `list`, `get` | 신규 (Quasar api 이식) |
+| `SeriesRepository` | `/series` | `list`, `get`, `create`, `update`, `delete` | |
+| `EventRepository` | `/series/:id/events`, `/events/:id` | `list`, `get`, `create`, `update` | |
+| `FlightRepository` | `/events/:id/flights`, `/flights/:id` | `list`, `get`, `create`, `update` | |
+| `TableRepository` | `/tables`, `/flights/:id/tables`, `/tables/:id/seats` | `list` (flight_id query), `get`, `create`, `update`, `updateStatus`, `listSeats`, `seatPlayer`, `unseatPlayer`, `launchCc`, `rebalance` | **SeatRepository 통합** — Seat endpoints 를 테이블 맥락에서 노출 |
+| `PlayerRepository` | `/players` | `list`, `get`, `create`, `update`, `search` | UI 미구현 (B-080) |
+| `HandRepository` | `/tables/:id/hands`, `/hands/:id` | `list`, `current`, `get` | |
+| `SettingsRepository` | `/configs` | `get`, `update` (scope: series/event/table/global) | `ConfigRepository` rename |
+| `SkinRepository` | `/skins` | `list`, `get`, `uploadSkin`, `activate`, `delete`, `updateMetadata` | Graphic Editor 소비 |
+| `StaffRepository` | `/users` | `list`, `get`, `create`, `update`, `delete` | `UsersRepository` rename |
+| `AuditLogRepository` | `/audit-logs` | `list` (filter: actor/action/date) | Reports 소비 |
+| `ReportRepository` | `/reports/{hands-summary/player-stats/session-log/table-activity}` | `getReport(type, filter)`, `exportCsv(type, filter)` | 4탭 통합 |
+| `PayoutStructureRepository` | `/payout-structures` | `list`, `get`, `create`, `update` | 신규 |
+
+**미구현 / 통합 결정**:
+- **BlindStructureRepository** — settings_repository 에 통합 (`blind_structure_screen.dart` 가 settings_provider 경유 접근). 분리 재평가 B-084.
+- **SeatRepository** — `TableRepository` 의 seat* 메서드로 통합 (별도 파일 없음).
+- **SyncRepository** — Backend (team2) 가 WSOP LIVE 폴링 담당. Frontend 미이식. B-085 관찰.
 
 ---
 
