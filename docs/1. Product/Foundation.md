@@ -6,9 +6,9 @@ confluence-page-id: 3625189547
 confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
 source: confluence (SSOT)
 last-updated: 2026-04-16
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "Ch.5 Lobby/CC 기술 스택 3중화(FAIL) + Ch.7 ENGINE_URL 표준 부재(FAIL). Roadmap.md §1 참조"
+reimplementability: FAIL
+reimplementability_checked: 2026-04-21
+reimplementability_notes: "Ch.7 Overlay & RFID: ENGINE_URL 환경변수 표준 부재 + CC engine-absent graceful 대기 계약 부재 (Roadmap.md §1, SG-002 PENDING). Ch.5 Lobby/CC 는 SG-001 (2026-04-20 resolved) 로 UNKNOWN 복귀 (잔재 파일 정리 team1 세션 후속) — FAIL 1개 chapter 존재로 전체 FAIL 유지."
 ---
 
 #### Part I — Concept: EBS는 무엇인가? (What it is)

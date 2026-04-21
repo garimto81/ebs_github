@@ -117,11 +117,24 @@ def detect_api() -> ContractReport:
     spec_pat = re.compile(
         r"(?:[^A-Za-z]|^)(GET|POST|PUT|PATCH|DELETE)\s+(/[A-Za-z0-9_\-/\{\}:\.]+)"
     )
+    # 2026-04-20 SG-008 추가: Markdown table cell 포맷
+    #   `| GET  | \`/api/v1/users\` | 용도 | RBAC | Status |`
+    # 기존 regex 는 method 와 path 사이 `|` 때문에 매칭 실패. §5.17 의 CRUD 편입
+    # 77건이 이 포맷으로 기재되어 D3 로 오보고되던 근본 원인.
+    spec_pat_table = re.compile(
+        r"\|\s*(GET|POST|PUT|PATCH|DELETE)\s*\|\s*`(/[A-Za-z0-9_\-/\{\}:\.]+)`"
+    )
     spec_set_all: set[tuple[str, str]] = set()
     for m in spec_pat.finditer(spec_text):
         method = m.group(1).upper()
         raw_path = m.group(2)
         # 잡음: / 로만 끝나는 경로 또는 너무 짧은 경로
+        if len(raw_path) < 2:
+            continue
+        spec_set_all.add((method, _normalize_path(raw_path)))
+    for m in spec_pat_table.finditer(spec_text):
+        method = m.group(1).upper()
+        raw_path = m.group(2)
         if len(raw_path) < 2:
             continue
         spec_set_all.add((method, _normalize_path(raw_path)))
@@ -324,37 +337,62 @@ def detect_fsm() -> ContractReport:
     )
     schema_text = _read(schema_doc) if schema_doc.exists() else ""
 
-    # HandFSM enum — team3 engine: check state machine files
-    engine_state = (
-        REPO / "team3-engine" / "ebs_game_engine" / "lib" / "core" / "state"
-    )
+    # HandFSM enum — team3 engine: check state machine + rules + engine files
+    # 2026-04-21 SG-010: 범위를 core/state + core/rules + lib/engine.dart 로 확장.
+    # Street enum 사용처는 state/ 외에도 rules/street_machine.dart 및 engine.dart 에 있음.
+    engine_lib = REPO / "team3-engine" / "ebs_game_engine" / "lib"
     engine_state_text = ""
-    if engine_state.exists():
-        for f in engine_state.rglob("*.dart"):
+    if engine_lib.exists():
+        for f in engine_lib.rglob("*.dart"):
             engine_state_text += _read(f) + "\n"
 
-    # TableFSM 검증 (init.sql / routers)
+    # TableFSM 검증 (init.sql / routers / services / models)
+    #
+    # 2026-04-21 SG-010 정밀화:
+    #   - single-quote `'x'` (SQL) + double-quote `"x"` (Python) 둘 다 매칭
+    #   - scan 범위: routers + services + models (init.sql 과 함께)
+    #   - BS_Overview §3.1 의 "직렬화 규약 (UPPERCASE display, lowercase wire)"
+    #     note 에 따라 case-insensitive D4 판정.
     init_sql = REPO / "team2-backend" / "src" / "db" / "init.sql"
     init_sql_text = _read(init_sql) if init_sql.exists() else ""
-    routers_text = ""
-    routers_dir = REPO / "team2-backend" / "src" / "routers"
-    if routers_dir.exists():
-        for f in routers_dir.glob("*.py"):
-            routers_text += _read(f) + "\n"
+
+    def _collect_py(*relative: str) -> str:
+        buf = ""
+        for rel in relative:
+            d = REPO / "team2-backend" / "src" / rel
+            if d.exists():
+                for f in d.glob("*.py"):
+                    buf += _read(f) + "\n"
+        return buf
+
+    # 2026-04-21 SG-010: db/ 도 scan (enums.py 등 FSM 선언의 canonical 위치)
+    py_text = _collect_py("routers", "services", "models", "db")
+
+    # 직렬화 규약이 BS_Overview §3.1 에 명시되어 있는지 탐지 — 있으면 D1 억제
+    serialization_note_declared = (
+        "직렬화 규약" in spec_text and "lowercase" in spec_text
+    )
 
     for fsm_name, spec_states in fsms.items():
-        # TableFSM 은 스키마 / init.sql 에 나타남. 코드는 lowercase 사용.
+        # TableFSM 은 스키마 / init.sql / python 코드에 나타남. 코드는 lowercase 사용.
         if "TableFSM" in fsm_name:
-            # case-insensitive 비교 — 코드가 lowercase 이면 D1 (값 불일치)
+            haystack = init_sql_text + py_text
+            # single-quote 와 double-quote 둘 다 매칭
             code_states_raw = set(
                 re.findall(
-                    r"'(empty|setup|live|paused|closed|EMPTY|SETUP|LIVE|PAUSED|CLOSED)'",
-                    init_sql_text + routers_text,
+                    r"['\"](empty|setup|live|paused|closed|"
+                    r"EMPTY|SETUP|LIVE|PAUSED|CLOSED)['\"]",
+                    haystack,
                 )
             )
             code_states_upper = {s.upper() for s in code_states_raw}
-            # D1 감지 — 값은 존재하지만 case 가 다름
-            if code_states_raw and code_states_raw != {s.upper() for s in code_states_raw}:
+            # D1 감지 — BS_Overview §3.1 직렬화 규약이 명시되어 있으면 D1 억제
+            if (
+                not serialization_note_declared
+                and code_states_raw
+                and code_states_raw
+                != {s.upper() for s in code_states_raw}
+            ):
                 rep.d1.append(
                     DriftItem(
                         contract="fsm",
@@ -365,33 +403,54 @@ def detect_fsm() -> ContractReport:
                         note="init.sql 및 routers 의 status 값이 문서와 case 불일치",
                     )
                 )
-            _diff_states(rep, fsm_name, spec_states, code_states_upper, "table_status")
+            _diff_states(
+                rep, fsm_name, spec_states, code_states_upper, "table_status"
+            )
         elif "HandFSM" in fsm_name:
-            # engine GameState game_phase 열거. lowerCamelCase 사용 경향
+            # engine GameState game_phase 열거. lowerCamelCase 사용 경향.
+            # team2 backend 도 game_phase 컬럼에 enum 값을 저장하므로 함께 scan.
             code_states = set()
             for st in ("IDLE", "SETUP_HAND", "PRE_FLOP", "FLOP", "TURN",
                        "RIVER", "SHOWDOWN", "HAND_COMPLETE", "RUN_IT_MULTIPLE"):
-                aliases = [st, st.lower(), _to_camel(st)]
-                if any(a in engine_state_text for a in aliases):
+                # 2026-04-21 SG-010: Dart 는 underscore 제거 형식 (preflop, handcomplete)
+                # 도 자주 사용. _to_camel(setupHand) + underscore 제거형 모두 허용.
+                compact = st.lower().replace("_", "")  # PRE_FLOP -> preflop
+                aliases = [st, st.lower(), _to_camel(st), compact]
+                hay = engine_state_text + init_sql_text + py_text
+                if any(a in hay for a in aliases):
                     code_states.add(st)
-            _diff_states(rep, fsm_name, spec_states, code_states,
-                         "engine lib/core/state")
+            _diff_states(
+                rep,
+                fsm_name,
+                spec_states,
+                code_states,
+                "engine lib/core/state + team2 (game_phase)",
+            )
         elif "SeatFSM" in fsm_name:
+            haystack = init_sql_text + py_text
             code_states_raw = set(
                 re.findall(
-                    r"'(empty|new|playing|moved|busted|reserved|occupied|waiting|hold)'",
-                    init_sql_text,
+                    r"['\"](empty|new|playing|moved|busted|reserved|"
+                    r"occupied|waiting|hold)['\"]",
+                    haystack,
                 )
             )
             code_states_upper = {s.upper() for s in code_states_raw}
-            _diff_states(rep, fsm_name, spec_states, code_states_upper, "seats CHECK")
+            _diff_states(
+                rep,
+                fsm_name,
+                spec_states,
+                code_states_upper,
+                "seats CHECK + services",
+            )
         else:
             # 그 외 FSM 은 CODE 참조 소유 팀이 불명확 — d4 로 간주하지 않고 noted
             continue
 
     rep.scanner_note = (
-        f"checked {sum(1 for k in fsms if 'TableFSM' in k or 'HandFSM' in k)} "
-        "of %d FSMs (TableFSM/HandFSM 대표)" % len(fsms)
+        f"checked {sum(1 for k in fsms if 'TableFSM' in k or 'HandFSM' in k or 'SeatFSM' in k)} "
+        "of %d FSMs (TableFSM/HandFSM/SeatFSM 대표, "
+        "직렬화 규약=%s)" % (len(fsms), "O" if serialization_note_declared else "X")
     )
     return rep
 
@@ -617,6 +676,24 @@ def detect_rfid() -> ContractReport:
                 note="RFID_HAL_Interface.md 에 언급 없음",
             )
         )
+
+    # M4 (2026-04-21): out_of_scope_prototype frontmatter 플래그 확인 — SG-011 상태면
+    # spec 측 legacy 설계 잔존은 drift 가 아니라 의도적 보류. D2 수집 skip.
+    out_of_scope = (
+        "out_of_scope_prototype: true" in spec_text
+        or "drift_ignore_rfid: true" in spec_text
+    )
+    if out_of_scope:
+        rep.d4_count = len(code_streams & spec_streams_all) + len(
+            code_methods & spec_methods_all
+        )
+        rep.scanner_note = (
+            f"code streams={len(code_streams)} methods={len(code_methods)} / "
+            f"spec dart-block streams={len(spec_streams_declared)} "
+            f"methods={len(spec_methods_declared)}. "
+            "**SG-011 out_of_scope_prototype — D2 수집 skip (legacy 설계 잔존은 drift 아님).**"
+        )
+        return rep
 
     # D2: 문서 fenced block 에 선언된 시그니처가 코드 구현에 없음
     # (§2.1 의 events 단일 스트림처럼 역사적 설계 잔존 포함)

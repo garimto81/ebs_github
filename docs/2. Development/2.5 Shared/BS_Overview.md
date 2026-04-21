@@ -143,6 +143,8 @@ Competition → Series → Event → Flight → Table → Seat → Player
 | 7 | **WAITING** | W | 웨이팅 플레이어 배정됨 (황색) |
 | 8 | **HOLD** | H | Seat Draw in Advance 선점 (회색) |
 
+> **직렬화 규약 (2026-04-20 SG-009 정렬)**: §3.1 과 동일. 본 표의 display label (`EMPTY`, `NEW`, `PLAYING` …) 은 UPPERCASE 이지만, DB column (`table_seats.status`) 및 REST/WebSocket payload 직렬화 값은 **lowercase** (`empty`, `new`, `playing` …). 참조: `team2-backend/src/db/enums.py::SeatFSM`, `team2-backend/src/db/init.sql L376/L384`. `tools/spec_drift_check.py --fsm` 가 이 규약을 자동 검증한다 (2026-04-21 기준 D4=23/23).
+
 ### 3.4 Player 상태 (Hand 내)
 
 | 상태 | 값 | 의미 | 전환 조건 |

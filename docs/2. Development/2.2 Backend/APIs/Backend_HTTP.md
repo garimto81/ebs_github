@@ -1202,7 +1202,19 @@ Waiting List에서 플레이어의 현재 상태를 나타내는 enum. WSOP LIVE
 
 > resolved 규칙: Table override → Event override → Series default 순서 적용. 상세는 `Settings/Overview.md §Settings Scope`.
 
-### 5.17.16 편입 총괄
+### 5.17.16 Sync — 구현 경로 정렬 (SG-008 재정렬 2026-04-20)
+
+§5.16 (`/sync/wsop-live`, `/sync/wsop-live/status`, `/sync/conflicts`) 및 §16.7~16.10 (flat alias `/sync/mock-seed`, `/sync/mock-reset`, `/sync/trigger`) 외에 **실제 team2 `routers/sync.py` 구현**이 사용하는 subpath 변형을 편입한다. flat alias 와 subpath 변형은 동일 동작이며 Phase 2 단일화 대상.
+
+| Method | Path | 용도 | RBAC | Status | 비고 |
+|:------:|------|------|:----:|:------:|------|
+| POST | `/api/v1/sync/mock/seed` | Mock 데이터 seeding (subpath) | Admin (dev/test) | 200 | §16.7 `/sync/mock-seed` 의 subpath 별칭 — 현 코드 구현 경로 |
+| DELETE | `/api/v1/sync/mock/reset` | Mock 데이터 reset (subpath, DELETE 의미론) | Admin (dev/test) | 204 | §16.8 `/sync/mock-reset` POST 와 의미 동일 — subpath + DELETE 로 RESTful 표현 |
+| POST | `/api/v1/sync/trigger/{source}` | 소스별 sync trigger (path 파라미터) | Admin | 200 | §16.10 `/sync/trigger` 의 path-param 변형 — `{source}` ∈ {wsop-live, mock} |
+
+> **Phase 2 단일화 방침**: flat alias (`/sync/mock-seed`, `/sync/trigger`) 또는 subpath 변형 (`/sync/mock/seed`, `/sync/trigger/{source}`) 중 하나로 정리. 최종 판정은 SG-008-b6/b7/b9 업데이트에 귀속.
+
+### 5.17.17 편입 총괄
 
 | 카테고리 | 편입 개수 | 참조 섹션 |
 |----------|:---------:|----------|
@@ -1221,9 +1233,10 @@ Waiting List에서 플레이어의 현재 상태를 나타내는 enum. WSOP LIVE
 | Configs | 2 | §5.11, §5.17.13 |
 | Reports | 6 | §5.15, §5.17.14 |
 | Settings | 1 | §5.17.15 |
-| **합계** | **84** | — |
+| Sync (subpath 변형) | 3 | §5.16, §16.7~16.10, §5.17.16 |
+| **합계** | **87** | — |
 
-> 총 84건 — SG-008 마스터 (a) 분류 77건 + 이미 §5.6.1 Clock 등에 부분 명세되어 있던 7건 (명시 재확인). §6 총괄표는 리소스 대분류 단위로 유지되며 본 편입은 상세 보강.
+> 총 87건 — SG-008 마스터 (a) 분류 77건 + 이미 §5.6.1 Clock 등에 부분 명세되어 있던 7건 + Sync subpath 변형 3건 (2026-04-20 scanner D3 재감지 후 편입). §6 총괄표는 리소스 대분류 단위로 유지되며 본 편입은 상세 보강.
 
 ---
 

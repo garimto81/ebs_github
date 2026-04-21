@@ -3,10 +3,13 @@ title: RFID HAL Interface Contract
 owner: team4
 tier: contract
 legacy-id: API-03
-last-updated: 2026-04-15
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "API-03 — SG-011 out_of_scope_prototype. single vs 6-stream divergence 는 개발팀 인계 후 확정"
+last-updated: 2026-04-21
+reimplementability: N/A
+reimplementability_checked: 2026-04-21
+reimplementability_notes: "SG-011 out_of_scope_prototype 에 맞춰 N/A. 프로토타입 범위 밖 — 실제 HAL 은 하드웨어 팀 인계 후 제조사 SDK (ST25R3911B/ESP32 펌웨어 등) 기반으로 확정. Mock/single-stream spec block 은 legacy 설계 잔존이며 drift 로 간주하지 않음 (drift_ignore_rfid=true)."
+out_of_scope_prototype: true
+drift_ignore_rfid: true
+drift_ignore_reason: "SG-011 OUT_OF_SCOPE — 프로토타입 범위 밖. single-stream spec block 은 legacy 설계안, 실제 HAL 은 개발팀이 제조사 SDK 기반으로 확정"
 ---
 # API-03 RFID HAL Interface — Real/Mock RFID 교체 계약
 
