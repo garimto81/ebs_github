@@ -3,16 +3,34 @@
 
 Conductor 세션은 main 유지. 충돌 시(작업 중인 변경 존재) 침묵 통과.
 bypass 모드 시에도 안전하게 동작 (실패 시 침묵).
+
+v4.1 (2026-04-21): subdir 팀 세션 보호 추가.
+  subdir 모드(cwd 가 `C:/claude/ebs/team{N}-*/`) 는 main worktree 의 shared HEAD 를
+  공유하므로 여기서 `git checkout` 하면 Conductor HEAD 가 오염된다. 이를 방지하기
+  위해 subdir 팀 세션은 브랜치 자동 전환을 **건너뛰고** 사용자에게 sibling-dir
+  worktree 사용을 권고한다.
 """
 from __future__ import annotations
 
 import datetime
+import os
+import re
 import subprocess
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from _common import detect_team, read_payload, PROJECT  # noqa: E402
+
+
+def _is_sibling_worktree(cwd: str | None) -> bool:
+    """sibling-dir worktree 세션인지 판단 (cwd 가 ebs-team{N}-... 패턴).
+
+    branch_guard._is_sibling_worktree 와 정합. True 면 자체 HEAD 소유 → 브랜치 전환 안전.
+    False 면 subdir 모드로 간주되어 shared HEAD 오염 위험.
+    """
+    c = (cwd or os.getcwd()).replace("\\", "/").lower()
+    return bool(re.search(r"/ebs-team[1-4][-/]", c + "/"))
 
 
 def _git(*args: str) -> tuple[int, str]:
@@ -35,9 +53,22 @@ def _has_uncommitted() -> bool:
 
 def main() -> int:
     payload = read_payload()
-    team = detect_team(payload.get("cwd"))
+    cwd = payload.get("cwd")
+    team = detect_team(cwd)
     if team == "conductor":
         sys.stderr.write(f"[session-branch] conductor session, staying on {_current_branch()}\n")
+        return 0
+
+    # v4.1: subdir 팀 세션은 shared HEAD 오염 방지를 위해 자동 브랜치 전환 금지
+    if not _is_sibling_worktree(cwd):
+        sys.stderr.write(
+            f"[session-branch] {team}: subdir mode detected (cwd={cwd}).\n"
+            f"  · 브랜치 자동 전환을 건너뜁니다 — shared HEAD 오염 방지 (v4.1).\n"
+            f"  · 권장: sibling worktree 사용.\n"
+            f"    python tools/setup_team_worktrees.py --team {team}\n"
+            f"    cd C:/claude/ebs-{team}-<slug>/\n"
+            f"  · 상세: docs/4. Operations/Multi_Session_Workflow.md\n"
+        )
         return 0
 
     cur = _current_branch()

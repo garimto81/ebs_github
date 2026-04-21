@@ -1,32 +1,74 @@
 ---
-title: Multi-Session Workflow (v3.0 — /team 스킬 표준)
+title: Multi-Session Workflow (v4.1 — Hybrid PR + Worktree 강제)
 owner: conductor
 tier: contract
 last-updated: 2026-04-21
 reimplementability: PASS
 reimplementability_checked: 2026-04-21
-reimplementability_notes: "v3.0 /team 스킬 도입 — 팀 main 직접 ff-merge 허용, work 브랜치 초단기, 매 작업 auto commit+merge+push"
+reimplementability_notes: "v4.1 Hybrid PR (Team=PR auto-merge / Conductor=direct) + subdir 차단 hook + PR 2-bis 별도 트랙"
 ---
 
-# Multi-Session Workflow — v3.0 (/team 스킬 표준)
+# Multi-Session Workflow — v4.1 (Hybrid PR + Worktree)
 
-## 🚀 표준 명령 (v3.0 이후)
+## 🚀 표준 명령 (v4.1)
 
 ```bash
 /team "<task description>"     # 팀/Conductor 세션 모두
 ```
 
-**단일 호출로 다음 자동 실행**:
-1. Context detect (cwd → team ID)
+**단일 호출로 다음 자동 실행 (10 Phase, v4.0 Pre-Declaration)**:
+0. Declaration — 수정 대상 manifest 선언 (Lease TTL 5분)
+0.5. Conflict Scan — 타 세션 manifest 와 대조
+0.6. Plan Revision — 충돌 파일 제외 + cohesion_ratio 계산
+0.7. Safety Gate — cohesion 기반 go/no-go
+1. Context detect
 2. Pre-sync (fetch + 다른 세션 활동 표시 + rebase)
 3. Branch prep (초단기 work 브랜치)
 4. `/auto "<task>"` 위임
 5. Verify (drift + test + scope guard)
 6. Auto commit (conventional + notify 태그)
-7. Main ff-merge + push (retry 3회)
+7. **[v4.1 Hybrid]** Merge:
+   - **Team 세션**: `tools/team_pr_merge.py --branch work/team{N}/*` → PR create + auto-merge
+   - **Conductor**: main 직접 push 시도, 플랫폼 차단 시 PR fallback
 8. Report (변경 / drift 변화 / 다른 세션 활동)
 
-**세션 시작·종료 개념 없음** — 매 `/team` 이 완결된 트랜잭션. 스킬 상세: `~/.claude/skills/team/SKILL.md`.
+**세션 시작·종료 개념 없음** — 매 `/team` 이 완결된 트랜잭션.
+
+## v4.1 변경 사항 (2026-04-21)
+
+### 배경
+- **Main push 차단**: Claude Code 플랫폼이 "bypasses PR review" 사유로 team session `git push origin main` 거부. v3.0 의 "팀도 main 직접 ff-merge" 가 실질적으로 차단됨.
+- **Multi-session race**: subdir 모드 (`C:/claude/ebs/team{N}-*/`) 에서 실행한 `session_branch_init` 이 shared HEAD 를 이동 → Conductor worktree 오염 (reflog 증거 확인, 2026-04-21)
+- **Manifest 비준수**: v4.0 Pre-Declaration 도입했으나 subdir 세션이 manifest 미등록한 채 편집
+
+### v4.1 해결책
+
+| 항목 | v3.0/v4.0 동작 | v4.1 동작 |
+|------|---------------|-----------|
+| **Team 세션 merge** | `git push origin main` 직접 | `gh pr create --fill --base main` + `gh pr merge --auto --squash --delete-branch` |
+| **Conductor merge** | `git push origin main` | 동일 (변경 없음) — 플랫폼 차단 시 PR fallback |
+| **subdir 세션 auto-branch** | `session_branch_init` 이 shared HEAD 이동 | **차단** — subdir 감지 시 skip + sibling worktree 사용 안내 |
+| **Worktree 정책** | sibling 권장 (optional) | sibling **필수** (subdir 은 session_branch_init 이 거부) |
+
+### 마이그레이션 (2026-04-21 진행중)
+
+1. **worktree 생성**: `python tools/setup_team_worktrees.py` → `C:/claude/ebs-team{N}-work/` 일괄 생성
+2. **팀 세션 재시작**: `cd C:/claude/ebs-team{N}-work && claude` — sibling worktree 에서 Claude Code 시작
+3. **기존 subdir 세션 종료**: `C:/claude/ebs/team{N}-*/` 에서 띄운 세션은 session_branch_init 이 브랜치 전환을 skip 하므로 작업 불가 → 중단 후 sibling 으로 이동
+4. **SKILL.md 반영**: `~/.claude/skills/team/SKILL.md` Phase 7 을 PR 모드로 업데이트 필요 — **user approval 필요** (self-modification 경계)
+
+### 관련 자산
+
+- `tools/team_pr_merge.py` (NEW) — v4.1 Hybrid PR merge 구현. SKILL.md 업데이트 전 수동 호출용
+- `tools/setup_team_worktrees.py` (NEW) — sibling worktree 일괄 생성 헬퍼
+- `.claude/hooks/session_branch_init.py` — v4.1: subdir 세션 자동 브랜치 전환 차단
+- `.claude/hooks/branch_guard.py` — team session main push 차단 (유지)
+
+### Self-Modification 경계
+
+User-global `~/.claude/skills/team/` 파일은 세션이 자동 수정할 수 없다. v4.1 SKILL.md + team_merge_loop.py 변경은 사용자가 직접 수행 필요. 우회:
+- repo-local `tools/team_pr_merge.py` 가 동등 기능 제공
+- SKILL.md 업데이트 전까지 사용자가 Phase 7 대신 수동 호출: `python tools/team_pr_merge.py --branch <work-branch>`
 
 ## 개요
 

@@ -40,6 +40,7 @@ EBS 현재 상태:
 | 0 | Conductor | Naming_Conventions.md v2 확립 | — | S ✅ DONE |
 | **1** | **Conductor** | `Auth_and_Session §4` snake_case 선언 제거 + camelCase 로 대체 / `WebSocket_Events.md line 329` divergence 주석 제거 / `BS_Overview §네이밍` 본 문서 pointer 로 축약 | PR 0 | M |
 | 2 | team2 | Pydantic v2 `alias_generator=to_camel` + `populate_by_name=True` 전역 도입. SQLAlchemy column 은 snake_case 유지 (Postgres 관행) | PR 1 | L |
+| **2-bis** | **team2** | **service/router dict 반환 → Pydantic response model 교체 (PR-2 schema 만으로는 B-089 23 failure 해결 불가)** | PR 2 | **M** |
 | 3 | team2 | WS publisher — snake 10 event → PascalCase, payload 필드 camelCase | PR 2 | M |
 | 4 | team2 | REST path kebab → PascalCase 전수 (`/hand-history` → `/HandHistory` 등 180 endpoint) | PR 2 | M |
 | 5 | team1 | Freezed 19 entity `@JsonKey(name: 'snake_case')` → `'camelCase'` 전수 교체 + `dart run build_runner build` | PR 2 | L |
