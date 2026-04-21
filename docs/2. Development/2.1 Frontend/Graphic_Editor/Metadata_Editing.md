@@ -44,7 +44,7 @@ reimplementability_notes: "BS-08-02 메타데이터 편집 기획 완결"
 
 ### 1.1 GEM ↔ Skin Editor Element ID ↔ 폼 위젯 매핑
 
-본 표는 GEM 필드 25개를 Skin Editor 설계의 Element ID (`References/skin-editor/EBS-Skin-Editor_v3.prd.md`) 와 1:1 대응시켜 **폼 구현 시 어느 Quasar 위젯을 쓸지** 를 고정한다.
+본 표는 GEM 필드 25개를 Skin Editor 설계의 Element ID (`References/skin-editor/EBS-Skin-Editor_v3.prd.md`) 와 1:1 대응시켜 **폼 구현 시 어느 Flutter widget 을 쓸지** 를 고정한다 (2026-04-21 Flutter Desktop 전환).
 
 | GEM | 필드 | Element ID | 폼 위젯 | 제약 |
 |-----|------|-----------|---------|------|

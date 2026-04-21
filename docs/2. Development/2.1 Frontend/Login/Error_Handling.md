@@ -23,7 +23,7 @@ last-updated: 2026-04-15
 
 | 주제 | 정답 문서 | 비고 |
 |------|-----------|------|
-| **로그인·세션 에러 코드 → UI 메시지 · i18n 키 · 사용자 액션 매핑** | **이 문서** | Quasar/Vue 의 `error.*` i18n 키는 이 표를 따른다 |
+| **로그인·세션 에러 코드 → UI 메시지 · i18n 키 · 사용자 액션 매핑** | **이 문서** | Flutter 의 `AppLocalizations` / `easy_localization` `error.*` key 는 이 표를 따른다 |
 | **OTP 재시도 · 계정 잠금 UI 상태 머신** | **이 문서** | 컴포넌트 state 명은 이 표를 따른다 |
 | HTTP 상태 코드 정책 · 서버 에러 본문 포맷 | `../../2.2 Backend/APIs/Auth_and_Session.md` | 코드 추가/변경은 그 문서에서 |
 | Lockout 정책 수치 (최대 시도 횟수 · 잠금 시간) | `../../2.5 Shared/Authentication.md` §Lockout Policy | — |
@@ -61,7 +61,7 @@ last-updated: 2026-04-15
 
 ## 로그인 실패 처리 — 에러 매핑 테이블
 
-본 표는 **서버 에러 코드 → HTTP 상태 → i18n 키 → 한글 문구 → 사용자 액션** 의 단일 진실이다. Quasar 구현은 이 표를 그대로 반영한다. 새 에러 코드 추가는 Backend SSOT 갱신 후 본 표에도 추가한다.
+본 표는 **서버 에러 코드 → HTTP 상태 → i18n 키 → 한글 문구 → 사용자 액션** 의 단일 진실이다. Flutter 구현은 이 표를 그대로 반영한다. 새 에러 코드 추가는 Backend SSOT 갱신 후 본 표에도 추가한다.
 
 | 서버 에러 코드 | HTTP | i18n 키 (`ko` 기준) | 한글 문구 | 표시 위치 | 사용자 액션 · 후속 UI |
 |-------|:----:|--------------------|----------|----------|--------------------|
@@ -84,10 +84,10 @@ last-updated: 2026-04-15
 - **i18n 키 네이밍**: `error.{영역}.{코드_snake_case}`. 영역은 `auth`, `validation`, `network`, `rate_limited`, `server` 중 하나.
 - **`{placeholder}` 치환**: 서버 응답의 `details` 에서 해당 키를 i18n interpolation 으로 주입. 예: `AUTH_ACCOUNT_LOCKED` 의 `{unlock_at}` 은 서버가 보낸 ISO 시각을 로컬 포맷으로 변환.
 - **표시 위치 규정**:
-  - *inline*: 해당 입력 필드 바로 아래, 빨강 텍스트 (`q-field--error` 상태)
-  - *토스트*: Quasar `Notify` 상단, 자동 dismiss 5s
-  - *배너*: 화면 상단 고정 alert, 수동 dismiss
-  - *전체 모달*: `q-dialog` persistent, dismiss 불가
+  - *inline*: 해당 입력 필드 바로 아래, 빨강 텍스트 (Flutter `TextField(decoration: InputDecoration(errorText: ..))`)
+  - *토스트*: Flutter `SnackBar` (또는 `ScaffoldMessenger.showSnackBar`) 상단, 자동 dismiss 5s
+  - *배너*: Flutter `MaterialBanner` 화면 상단 고정, 수동 dismiss
+  - *전체 모달*: `showDialog(barrierDismissible: false)` dismiss 불가
 - **신규 에러 추가 절차**: Backend 에서 새 코드 정의 → 본 표 + `i18n/{ko,en,es}.json` 3개 파일 동시 업데이트 → 구현.
 
 > 수치(잠금 시간, 재시도 횟수, 쿨다운 등)는 본 표가 아닌 `../../2.5 Shared/Authentication.md` §Lockout Policy 와 §Rate Limit 이 SSOT. 본 표에는 `{unlock_at}` 처럼 placeholder 만 쓰고 값을 하드코딩하지 않는다.
