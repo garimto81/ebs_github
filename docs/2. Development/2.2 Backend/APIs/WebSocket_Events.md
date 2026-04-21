@@ -285,6 +285,22 @@ CC가 게임 진행 중 BO에 발행하는 이벤트. BO는 DB에 저장 후 Lob
 
 Lobby 는 CC 와 거의 동일하게 적용하되, **hole cards** 는 수신하지 않으므로 `seats[seat].hole_cards` 필드는 항상 `null`. 카드 공개는 §4 `HoleCardsRevealed` 이벤트 도달 시에만 (§4.2 참조).
 
+##### Lobby Hand History 소비자 (2026-04-21 신설 — SG-016 revised)
+
+`Lobby/Hand_History.md` Hand Browser/Detail 화면이 본 3 이벤트를 실시간 갱신 트리거로 소비한다:
+
+| 이벤트 | Hand Browser 동작 | Hand Detail 동작 |
+|--------|------------------|------------------|
+| `HandStarted` | 현재 필터 매칭 시 목록 prepend (hand_id, hand_number, started_at, table) | 해당 hand_id 진입 시 stream 모드 전환 |
+| `ActionPerformed` | (목록 영향 없음) | timeline 행 append, pot_after 갱신 |
+| `HandEnded` | 행의 `pot_total`/`winner_seats`/`duration` 갱신 | Winner Banner 노출 + stream 종료 |
+
+Lobby Hand History 는 `seats[seat].hole_cards` 마스킹 규칙 (§3.3.3 본문) 을 그대로 따르되 RBAC 별 권한 (`Hand_History.md` §4):
+- Admin/Operator(할당 테이블): 종료 핸드는 hole card 공개 (REST `/hands/:id/players` 응답)
+- Viewer: 모든 hole card `★` 마스킹
+
+> 소비자 SSOT: `docs/2. Development/2.1 Frontend/Lobby/Hand_History.md` §3.3 WebSocket.
+
 #### 3.3.4 publisher 미구현 / 대체 경로
 
 | 원래 가정한 이벤트 | 실제 publisher 상태 | 대체 경로 |

@@ -684,12 +684,44 @@ Operator 경고 모달 + `BO-03 §4 Scenario D` 복구 절차를 트리거한다
 
 | Method | Path | 설명 | 역할 제한 |
 |:------:|------|------|:---------:|
-| GET | `/hands` | 핸드 목록 (테이블 필터: `?table_id=`) | 인증 사용자 |
+| GET | `/hands` | 핸드 목록 (필터: `?event_id=&day=&table_id=&player_id=&date_from=&date_to=&hand_number=&page=&page_size=`) | 인증 사용자 |
 | GET | `/hands/:id` | 핸드 상세 | 인증 사용자 |
 | GET | `/hands/:id/actions` | 핸드 액션 목록 | 인증 사용자 |
 | GET | `/hands/:id/players` | 핸드 참여 플레이어 | 인증 사용자 |
 
 > 핸드 생성(POST)은 CC에서 WebSocket을 통해 수행한다. REST API는 조회 전용.
+
+#### 5.10.1 GET `/hands` 필터 명세 (2026-04-21 확장 — Lobby Hand History 지원)
+
+| 파라미터 | 타입 | 필수 | 의미 | 비고 |
+|---------|------|:----:|------|------|
+| `event_id` | int | N | Event 단위 필터 | Hand Browser Event Select 와 매핑 |
+| `day` | string | N | Day/Flight 식별자 | Day 탭 필터 (`day_1a` 등). `event_id` 동반 권장 |
+| `table_id` | int | N | 테이블 필터 (multi-select 시 CSV `?table_id=1,2,3`) | 기존 호환 유지 |
+| `player_id` | int | N | 핸드 참여자 필터 (`hand_seats` join) | Players 검색과 동일 ID |
+| `date_from` | ISO8601 | N | 시작 시각 (started_at >= ) | 기본: 당일 00:00 (Series timezone) |
+| `date_to` | ISO8601 | N | 종료 시각 (started_at < ) | 기본: 다음날 00:00 |
+| `hand_number` | int | N | 정확 매칭 | 단일 핸드 점프 |
+| `page` | int | N | 페이지 (1-indexed) | 기본 1 |
+| `page_size` | int | N | 페이지 크기 | 기본 20, 최대 200 |
+
+**RBAC 적용**:
+
+| 역할 | 효과 |
+|------|------|
+| Admin | 모든 필터 조합 허용 |
+| Operator | `table_id` 가 본인 할당 테이블이어야 함. 미할당 테이블 요청 시 빈 결과 (403 아님 — 정보 노출 회피) |
+| Viewer | 읽기 전용. `hand_seats` join 시 hole card 필드 마스킹 (`/hands/:id/players` 응답에서 `hole_card_*` = `"★"`) |
+
+**인덱스 권고** (Schema.md decision_owner team2):
+
+```sql
+CREATE INDEX idx_hands_event_table_started ON hands (event_id, table_id, started_at DESC);
+CREATE INDEX idx_hand_seats_player ON hand_seats (player_id, hand_id);
+```
+
+> Migration Plan: `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` Phase 3.
+> 소비자: `docs/2. Development/2.1 Frontend/Lobby/Hand_History.md` §2.1 Hand Browser.
 
 ### 5.11 Configs — 시스템 설정
 
@@ -1108,10 +1140,10 @@ Waiting List에서 플레이어의 현재 상태를 나타내는 enum. WSOP LIVE
 
 | Method | Path | 용도 | RBAC | Status |
 |:------:|------|------|:----:|:------:|
-| GET | `/api/v1/hands` | 목록 (`?table_id=`) | 인증 | 200 |
+| GET | `/api/v1/hands` | 목록 (필터: `?event_id=&day=&table_id=&player_id=&date_from=&date_to=&hand_number=&page=&page_size=`, §5.10.1) | 인증 | 200 |
 | GET | `/api/v1/hands/{hand_id}` | 단건 | 인증 | 200 / 404 |
 | GET | `/api/v1/hands/{hand_id}/actions` | 액션 목록 | 인증 | 200 |
-| GET | `/api/v1/hands/{hand_id}/players` | 참여 플레이어 | 인증 | 200 |
+| GET | `/api/v1/hands/{hand_id}/players` | 참여 플레이어 (Viewer: hole card 마스킹) | 인증 | 200 |
 
 ### 5.17.9 BlindStructures — CRUD 완결 (legacy flat)
 
