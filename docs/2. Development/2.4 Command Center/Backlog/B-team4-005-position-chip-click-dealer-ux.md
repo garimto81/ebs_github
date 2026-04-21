@@ -49,16 +49,23 @@ source: docs/2. Development/2.4 Command Center/Backlog.md
 
 ## 추가 검토 사항 (기획 보강 후보)
 
-기획 Seat_Management.md 이 명시하지 않은 부분 — 별도 critic 필요:
+### ✅ 해소됨 (2026-04-21) — Seat_Management.md §2.3 신설
 
-- Dealer 가 아무도 지정되지 않은 **초기 상태** (빈 테이블 또는 모든 좌석이 BTN 이 아닌 상태) 에서 UX 경로는?
-  - 현재 기획: "포지션 뱃지" 를 클릭해서 재지정 — but 뱃지가 아예 없으면?
-  - 옵션 A: 첫 플레이어 착석 시 자동으로 BTN 배정 (기획 line 217 의 "자동 이동" 연장선)
-  - 옵션 B: 빈 좌석 클릭 (empty seat) 컨텍스트에서도 "Set as Dealer" 허용
-  - 옵션 C: Settings 또는 NEW HAND 이전에 별도 "초기 딜러 지정" UI
-- 첫 핸드 시작 전 dealer 가 **반드시 수동 지정** 되어야 하는가, 아니면 auto-assign 이 기본인가?
+초기 딜러 배정 공백 해소. 채택 결정:
 
-→ 이 공백은 **Type B 기획 공백** 후보. 별도 PR 로 Seat_Management.md §2 에 "초기 딜러 배정" 서브섹션 추가 필요.
+- **§2.3.1 자동 배정**: 첫 플레이어 착석 시 해당 좌석 auto BTN (옵션 A 채택)
+- **§2.3.2 수동 재지정**: 포지션 뱃지 클릭 → IDLE-only 재지정 다이얼로그 (line 86 직접 구현)
+- **§2.3.3 자동 전진**: 핸드 완료 시 auto-rotate (기존 line 217 재수록 + skip + Heads-up)
+- **§2.3.4 Edge Cases**: 5 건 (vacate, move, sit-out, all-vacant, self-redirect)
+- **§2.3.5 Scope 제외**: Dead button / missed blinds / 이동 애니메이션 = Phase 2
+- **§2.3.6 WSOP LIVE divergence**: Staff App dealer UX 없음 확인, EBS 고유 justify
+
+옵션 B (빈 좌석 click → "Set as Dealer") 는 포커 규약 위반 (플레이어 없는 좌석에 BTN 금지) 으로 제외. 옵션 C (별도 UI) 는 프로토타입 오버엔지니어링으로 제외.
+
+### critic 반박 5 반영
+
+"Heads-up 렌더링 책임 불명확" 반박에 대응하여 §2.3.3 에 한 줄 cross-ref 추가:
+> CC UI 는 `dealerSeatProvider` 만 시각화, 포커 규약 연산은 Game Engine 책임.
 
 ## 완료 기준
 

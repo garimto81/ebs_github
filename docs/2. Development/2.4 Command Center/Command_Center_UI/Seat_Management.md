@@ -12,6 +12,7 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 10좌석 배치, 플레이어 등록/이동, Sit In/Out, 핸드 중 제한 |
 | 2026-04-13 | UI-02 redesign | 좌석 S1~S10 변경, 인라인 편집(좌석 상세 패널 대체), 국기/Equity 위젯 요소 추가 |
+| 2026-04-21 | §2.3 딜러 배정/재지정 신설 | 기존 §1.1/§5.3 의 dealer 관련 문장이 흩어져 있어 "초기 빈 테이블 → BTN 없음 → NEW HAND canStartHand=false" 미정의. 3-mechanism 명세 (auto-assign on first seat / position-chip click re-assign / hand-complete auto-rotate) + Edge Case 4 건. Type B 기획 공백 해소. critic 반박 5 (렌더링 책임) 반영 — Heads-up 등 포커 규약 연산은 Game Engine 책임, CC UI 는 `dealerSeatProvider` 시각화만 |
 
 ---
 
@@ -135,6 +136,82 @@ BO DB에 없는 플레이어를 즉석 등록:
 | **스택** | ✅ | 초기 칩 스택 |
 
 > 참조: 플레이어 상세 정보 (KYC, 금융 등)는 EBS 범위 외. 오버레이 표시에 필요한 최소 정보만 수집.
+
+### 2.3 딜러 배정 및 재지정 (2026-04-21 신설)
+
+> **배경**: 기존 기획에 `§1.1 포지션 뱃지 클릭 → 포지션 재지정 (IDLE only)` · `§5.3 딜러 버튼 자동 이동` · `§6.1 Dealer 뱃지 시각` 이 개별 명시되었으나 **"빈 테이블 → 첫 핸드 시작 전 BTN 이 없는 상태"** 의 배정 경로가 undefined. 2026-04-21 NEW HAND silent fail 사용자 제보 (`canStartHand=false — no dealer`) 로 drift 확정 → 본 §2.3 로 해소.
+
+딜러 배정은 **3 mechanism** 이 단계적으로 보완한다. 운영자는 대부분 §2.3.1 자동 배정 + §2.3.3 자동 전진만 겪고, §2.3.2 수동 재지정은 예외 교정 경로.
+
+#### 2.3.1 자동 배정 — 첫 플레이어 착석 시 (Auto-assign on first seat)
+
+| 상태 전이 | CC 반응 |
+|-----------|---------|
+| `dealerSeatProvider == null` 상태에서 `SeatAssign` 이벤트 발생 | 그 좌석을 **BTN 자동 배정** (`setDealer(seatNo)`) |
+| 모든 좌석 VACATE → 다시 첫 착석 | 동일 경로 재적용 |
+| 이미 dealer 배정된 상태에서 추가 플레이어 착석 | 자동 배정 로직 skip (기존 BTN 유지) |
+
+- **Why**: "뱃지가 없어서 §2.3.2 진입점 자체가 없음" 무한 루프 해소. 빈 테이블 → NEW HAND 경로를 별도 UI 없이 확보
+- **How to apply**: `SeatNotifier.seatPlayer(seatNo)` 내부에서 `if (dealerSeatProvider == null) setDealer(seatNo)`. UI 없음 (자동)
+- 시각: BTN 뱃지 즉시 표시 (§6.1)
+
+#### 2.3.2 수동 재지정 — 포지션 뱃지 클릭 (IDLE only)
+
+| 트리거 | CC 반응 |
+|--------|---------|
+| BTN/SB/BB 포지션 뱃지 (§1.1) 클릭 | `Hand FSM == idle/handComplete` 인지 체크 |
+| IDLE 이면 | 포지션 재지정 다이얼로그 open |
+| IDLE 아니면 (PRE_FLOP 이후) | 경고 "핸드 진행 중에는 변경 불가" (§5.2 준수), 다이얼로그 안 뜸 |
+
+**재지정 다이얼로그 내용**:
+
+| 필드 | 설명 |
+|------|------|
+| Dealer (BTN) | 드롭다운 — 현재 occupied 좌석 목록 (sit-out 제외). 기본값: 현재 BTN |
+| Cancel / Confirm | Confirm 시 `SeatMove`-like dealer-only update 이벤트 |
+
+- **Why**: 빈 테이블 외의 상황에서 운영자가 잘못된 배정 또는 수동 조정이 필요한 edge case 교정
+- **How to apply**: 기존 `§1.1 좌석 상세 편집` 테이블의 "포지션 뱃지" 행 (line 86) 을 직접 구현. 포지션 뱃지 원형 위젯에 `GestureDetector(onTap: ...)` 래핑
+- **IDLE 제약 근거**: `§5.2 차단 동작` 의 "딜러 위치 변경 ❌ 핸드 내 불변" 일관성 유지
+
+#### 2.3.3 자동 전진 — 핸드 완료 시 (Auto-rotate)
+
+`§5.3 핸드 종료 후 자동 적용` 의 "딜러 버튼 자동 이동 (다음 좌석)" 규칙 재수록 (flow 명확화):
+
+| 단계 | 동작 |
+|:----:|------|
+| 1 | `HandFsm == handComplete` 전이 시 |
+| 2 | BTN 이 시계방향 **다음 occupied** 좌석으로 auto-advance |
+| 3 | `sitting_out` 좌석은 skip |
+| 4 | Heads-up (2 명 active) 시 Dealer = SB (별도 포커 규칙 문서 참조 — `BS-06-01` Heads-up 블라인드) |
+
+> **렌더링 책임 분리 (critic 반박 5 반영)**: CC UI 는 `dealerSeatProvider` 현재 값만 시각화한다. Heads-up 특수 규칙 (Dealer=SB), missed blinds, dead button 등 포커 규약 연산은 **Game Engine 의 책임** — Engine 이 `dealerSeatProvider` state 를 올바르게 설정하고 CC 는 그 값을 BTN 뱃지로 렌더만. 이 분리로 CC UI 코드는 포커 규칙에 독립적.
+
+#### 2.3.4 Edge Cases
+
+| 상황 | 처리 | Provider 상태 |
+|------|------|--------------|
+| 현재 BTN 좌석의 플레이어가 `SeatVacate` (IDLE 중) | 다른 occupied 좌석으로 이동 (`§2.3.2 self-redirect`), occupied 없으면 `dealerSeatProvider → null` (§2.3.1 재활성) | `setDealer()` 또는 `clearDealer()` |
+| 현재 BTN 좌석의 플레이어가 `SeatMove` (IDLE 중) | **BTN 은 좌석 위치 속성**이므로 플레이어가 이동해도 BTN 은 원 좌석에 유지. 운영자 의도가 "플레이어와 함께 BTN 도 이동" 이면 §2.3.2 로 별도 재지정 | 변경 없음 |
+| BTN 좌석의 플레이어 Sit Out | BTN 유지, 핸드 시작 시 §2.3.3 의 skip 규칙 적용 | 변경 없음 |
+| 모든 좌석 VACANT → 첫 착석까지 BTN 없음 | `§2.3.1` auto-assign 대기. NEW HAND 시도 시 `canStartHand=false` (활성 2명 < 2 부터 차단) | `dealerSeatProvider == null` |
+| 2 좌석만 occupied 에서 `§2.3.2` 재지정 → 자신의 좌석 선택 | no-op (현재 BTN 과 동일), 다이얼로그 그냥 close | — |
+
+#### 2.3.5 프로토타입 제약 (구현 범위)
+
+프로토타입 범위에서는 다음은 **scope 외**:
+
+| 항목 | 사유 |
+|------|------|
+| Dead button rule (heads-up 후 3인 복귀) | 정식 포커 토너먼트 규칙 — Phase 2 |
+| Missed blinds tracking | Sit-out 관련 정밀 규칙, `BS-06-01` 범위 |
+| Dealer 이동 애니메이션 (`§6.3 action-glow` 와 유사) | Overlay 측 애니메이션 필요, 별도 기획 |
+
+#### 2.3.6 WSOP LIVE 정렬 (원칙 1 divergence)
+
+WSOP LIVE Staff App Table Management (`wsoplive/docs/confluence-mirror/WSOP Live 홈/1. Documents/STAFF APP/04. Tournament Admin/Table Management.md`) 는 dealer 설정 UX 를 명시하지 않는다. WSOP LIVE 는 Staff App (토너먼트 관리 — 등록/좌석/지불) 과 Fatima.app (실시간 핸드 입력) 이 분리되어 있으며, dealer UX 는 Fatima.app 내부 로직.
+
+EBS 는 CC 단일 앱에서 좌석 관리 + 실시간 핸드 입력 + RFID 카드 처리를 통합하므로 dealer 설정 UX 가 CC UI 에 필요. **의도적 divergence** — WSOP LIVE 의 테이블 관리 도메인 구조는 따르되, dealer 설정은 EBS 고유.
 
 ---
 
