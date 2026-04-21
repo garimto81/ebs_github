@@ -12,6 +12,7 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-08 | 신규 작성 | CC 전체 구조, Launch 플로우, 상태 표시, 화면 레이아웃 정의 |
 | 2026-04-21 | §2.0 실행 경로 note | Linked (Lobby Launch) / Dev 테스트 (`flutter run -d windows`) 간결 명시. Demo Scenario scope 제외. 과대 기획 제거 (프로토타입). |
+| 2026-04-21 | §1.1.1 호출 순서/책임 분리 신설 | Type C 해소 — `WebSocket_Events §10.1 "BO→Engine 전달"` 과 본 §1.1 "BO→Engine 없음" 모순 해결. CC=Orchestrator (Engine primary + BO secondary 병행), payload 동형성, 실패 처리 4 케이스, multi-CC 독립성. critic 반박 6 건 중 2/3/5 반영. notify: team2 (WebSocket_Events §10.1 정정) |
 | 2026-04-13 | UI-02 redesign | 좌석 S1~S10 변경, 대칭 배치, 수동 편집 우선 원칙, 인라인 편집 전환 |
 | 2026-04-17 | 연동 아키텍처 명확화 | §1.1 데이터 흐름 신설 — CC↔Engine(직접 HTTP) + CC↔BO(WS 이벤트 발행) |
 
@@ -38,7 +39,7 @@ CC는 Lobby(웹)와 별도 앱이다. Lobby에서 테이블을 선택하고 [Lau
 
 ---
 
-## 1.1 CC 연동 데이터 흐름 (2026-04-17 실측 기준)
+## 1.1 CC 연동 데이터 흐름 (2026-04-17 실측 · 2026-04-21 §1.1.1 신설)
 
 CC는 3개 외부 서비스와 통신한다. BO→Engine 직접 경로는 존재하지 않는다.
 
@@ -71,6 +72,83 @@ CC는 3개 외부 서비스와 통신한다. BO→Engine 직접 경로는 존재
 | BO → Engine | — | **없음** (CC가 Engine 직접 호출) | — |
 
 > **설계 근거**: CC가 Engine을 직접 호출하므로 BO는 게임 로직에 관여하지 않는다. BO는 이벤트 저장·포워딩·감사 로그 역할만 수행. 이 분리는 BO 장애 시에도 CC←→Engine 게임 진행이 계속되도록 보장한다.
+
+### 1.1.1 호출 순서 및 책임 분리 (2026-04-21 신설)
+
+> **배경**: 2026-04-21 사용자 제보로 `_dispatchAction` 에서 Engine HTTP 호출 전혀 없음 확인. 더불어 `WebSocket_Events.md §10.1` 이 "BO는 Game Engine에 전달하여 게임 로직 검증" 으로 기술되어 있어 본 문서 §1.1 ("BO→Engine 없음") 과 **Type C 기획 모순** 상태. §1.1.1 신설로 아키텍처 확정 + §10.1 정정 (`notify: team2`).
+
+#### 확정 아키텍처 — CC = Orchestrator
+
+CC 가 **단일 action event 당 2 경로 병행 dispatch** 한다:
+
+| 경로 | 역할 | 응답 | 실패 시 |
+|------|------|------|---------|
+| ① Engine HTTP POST `/api/session/:id/event` | **Primary** — 게임 로직 검증, outputEvents 생성 | `200 { gameState, outputEvents[] }` | StubEngine fallback (`../Overlay/Engine_Dependency_Contract.md §4`), CC UI 상태 롤백 표시 |
+| ② BO WebSocket `WriteAction` | **Secondary** — 이벤트 기록/감사, Lobby 브로드캐스트 | `ActionAck { hand_id, action_index }` | warn-only (debug log WARN). 게임 진행은 Engine 응답으로 계속 |
+
+#### Timeline (결정론적)
+
+```
+t0  CC: 운영자 버튼 클릭 (예: FOLD)
+t0  CC: Engine POST + BO WS send **병렬 dispatch** (동시)
+t1  Engine: game logic 검증 → gameState + outputEvents 반환
+t1' BO: ack + Lobby 브로드캐스트
+t2  CC: Engine 응답 수신 → seats/pot/action_on provider 업데이트 (SSOT)
+t2' CC: BO ack 수신 → audit log 확인만 (action_on 은 Engine 응답 기준, BO ack 무시)
+```
+
+- `t2` 와 `t2'` 는 독립, CC 는 Engine 응답만 대기. BO 응답은 background
+- **게임 상태 SSOT**: Engine 응답 (`gameState`, `outputEvents`)
+- BO ack 의 `next_action_seat` 는 정보 중복 — CC 는 Engine 응답에서 derive (※ `WebSocket_Events.md §10.5` 재정의 필요 — notify: team2)
+
+#### Payload 동형성 규칙 (critic 반박 3 반영)
+
+두 경로가 **같은 물리적 사건 (운영자 1 클릭)** 을 전달해야 하므로:
+
+| 필드 | Engine `POST /event` | BO `WriteAction` | 규칙 |
+|------|---------------------|-----------------|------|
+| action type | `eventType: "fold"` | `action_type: "fold"` | 동일 값 |
+| seat | `payload.seatIndex` | `payload.seat` | 동일 seatNo |
+| amount | `payload.amount` | `payload.amount` | 동일 (bet/raise/allin 시) |
+| timestamp | HTTP request time | WS `timestamp` | 동일 `DateTime.now().toUtc()` |
+| correlation_id | `X-Request-Id` header | `message_id` | 같은 UUID (CC 측 1 회 생성) |
+
+> **구현**: CC 는 `correlation_id` 를 먼저 생성 후 두 경로에 동일 값 주입. 기록 후 Engine 응답의 `outputEvents` 와 BO 의 `ActionPerformed` 브로드캐스트가 같은 `correlation_id` 로 매칭 가능 (추후 audit 용).
+
+#### 실패 처리 (critic 반박 5 반영)
+
+| 상황 | CC 행동 |
+|------|---------|
+| Engine 200 + BO 200 | 정상 — Engine 응답으로 state 업데이트 |
+| Engine 200 + BO 실패 (timeout/5xx) | UI 정상 진행, debug log WARN. BO 는 replay API 로 보완 (`WebSocket_Events §6.5`) |
+| Engine 4xx (`ActionRejected`) | UI 롤백 + SnackBar 경고 "액션 규칙 위반". BO 에 `ActionRejected` 동기화는 CC 책임 |
+| Engine 5xx / timeout | StubEngine fallback (Overlay Rive 만 유지), BO 계속 기록 — prod 에서는 운영자 재시도 권고 |
+| Engine + BO 모두 실패 | Demo mode UI 유지, offline indicator 표시 (Engine_Dependency §3 Offline stage) |
+
+- **atomicity 없음**: Engine 과 BO 는 **eventual consistency**. BO 는 결국 replay 로 정합성 복구
+- Engine 이 primary 이므로 Engine 실패 = 액션 실패. BO 실패는 degraded operation
+
+#### Multi-CC 독립성 (critic 반박 4)
+
+- CC = Table = Overlay 1:1:1 (§1 이하)
+- 각 테이블 → Engine 에 독립 세션 생성 (`POST /api/session` 반환 `sessionId` 보관)
+- Engine 은 `Map<sessionId, GameState>` 내부 관리 (`Harness_REST_API.md §2.2`)
+- 테이블 간 독립 — 한 테이블 Engine 장애가 다른 테이블에 전이하지 않음
+
+#### Harness dev-only vs prod (critic 반박 2)
+
+- `Harness_REST_API.md §개요`: "개발·통합 테스트 전용. 프로덕션 배포 시 인증/인가 레이어 래핑 필요 (현재 미구현)"
+- 프로토타입 범위: Harness = Engine 인터페이스 단일화. prod 인증 레이어는 Phase 2 확장
+- 기획에 "prod 배포 시 Engine HTTP 를 BO reverse-proxy 경유" 옵션 유지 — 현 아키텍처 (CC→Engine 직접) 는 그대로 유지되고, 인증 레이어만 추가
+
+#### 구현 체크리스트 (B-team4-006 후속)
+
+- [ ] NEW HAND: `engineClient.createSession(variant, seatCount, stacks, blinds, dealerSeat)` 호출 → `engineSessionProvider` 설정
+- [ ] 모든 action (FOLD/CHECK/CALL/BET/RAISE/ALL-IN): `engineClient.send*(sessionId, seatIndex, amount?)` + `ws.sendAction(...)` 병행
+- [ ] DEAL: `engineClient.sendDealHole(sessionId)` (Engine 이 auto 배분) + `cardInputProvider.requestManualForSlot()` (Mock 모드 fallback)
+- [ ] Engine 응답의 `outputEvents` 파싱하여 `seatsProvider` / `potProvider` / `handFsmProvider` 업데이트 dispatcher 구현
+- [ ] 모든 경로에 debug log (dispatch 시점, 응답 시점, 실패 시점) 추가
+- [ ] `correlation_id` UUID 생성 + Engine/BO 동형 주입
 
 ---
 
