@@ -85,6 +85,14 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | SG-009 | spec_drift | fsm | IN_PROGRESS | TableFSM case 통일 — 이번 커밋에서 BS_Overview §3.1 직렬화 규약 추가 |
 | SG-010 | tooling | meta | PENDING | spec_drift_check.py 정밀화 (Settings, Schema, WebSocket). **F2 WebSocket detector 정밀화 완료 (2026-04-20)**, **P6 Settings detector 정규화 완료 (2026-04-20)** — camelCase/snake_case/dotted namespace/frontmatter 지원. D4 +39 |
 | SG-011 | spec_drift | rfid | **OUT_OF_SCOPE** | RFID_HAL_Interface §2.1. **프로토타입 범위 밖** — 실제 HAL 은 개발팀 + 제조사 SDK 확정 후 결정 (2026-04-20 재정의) |
+| SG-012 | doc_ssot | 2.1 Frontend/Lobby | 사이드바 SSOT 부재 — UI.md §공통 레이아웃 ASCII 예시만, `nav_sections`/`nav_items` 스펙 테이블 없음. → `Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` §3 |
+| SG-013 | nomenclature | 2.1 Frontend/Lobby | "lobby" 앱명 vs 섹션명 용어 충돌 — WSOP LIVE 원어 "Tournaments" 정렬 필요 (원칙 1). → 동 critic §4.1 |
+| SG-014 | ia_overlap | 2.1 Frontend/Lobby+Settings | Graphic Editor 진입점 이중화 (헤더 [Graphic Editor] 버튼 + Settings/Graphics 탭) — 에셋 vs 런타임 설정 구분 명문화. → 동 critic §4.3 |
+| SG-015 | ia_missing | 2.1 Frontend/Lobby | Players 섹션 유지 근거 미문서화 — user 제안 5탭에 빠짐. WSOP LIVE Player Management 정렬. → 동 critic §3 |
+| SG-016 | ia_missing | 2.1 Frontend/Lobby | Reports/Insights 사이드바 항목 미정의 — UI.md §공통 레이아웃 9 권고 채택 시 신설. → 동 critic §7 |
+| SG-017 | scope_inconsistency | 2.1 Frontend/Settings | "글로벌 단위" Overview.md §개요 vs MEMORY feedback_settings_global 역전(Series/Event/Table 분리) 모순 — decision_owner 판정 필요. → 동 critic §10 #5 |
+| SG-018 | data_model | 2.2 Backend/Database | 5NF 메타모델 테이블 부재 — `nav_sections`/`nav_items`/`report_templates`/`skin_modes`/`setting_categories`/`integration_providers`/`game_rules`/`roles+permissions`. → 동 critic §5.2, §5.3 |
+| SG-019 | scope_boundary | 1. Product/Foundation §1.2 | Reports/Insights 탭 ↔ 포스트프로덕션 경계 정의 부재 — "실시간 운영 지표만" 명문화 권고. → 동 critic §6.2 |
 
 ## 5. 스캔 명령 레퍼런스
 
