@@ -46,15 +46,20 @@ owner: team1
 - Player 등록/수정/삭제 dialog (Add Player 버튼) — `B-F005` 로 분리
 - 좌석 이동/제거 actions — 후속 스토리
 
-### B-087-2. Engineering.md §6.4 WS dispatch 매핑 실측 정렬 + 네이밍 규약 결정 (P2)
+### B-087-2. WS 이벤트 네이밍 규약 정렬 — **규약 확정 DONE, 마이그레이션 PENDING** (2026-04-21)
 
-- **drift**: 기획 5 이벤트 카테고리 vs 실측 25+ 이벤트 처리
-- **규약 충돌**: `WebSocket_Events.md §1` 은 "PascalCase" 명시, `ws_dispatch.dart` 는 snake_case + dot-case 혼재
-- **해결 경로**:
-  1. team2 (WebSocket_Events publisher) 와 네이밍 규약 합의 — PascalCase 유지 or snake_case 공식화
-  2. 결정된 규약으로 `ws_dispatch.dart` switch case 재작성 또는 `WebSocket_Events.md` 예시 재작성
-  3. Engineering.md §6.4 테이블 실측 25+ 이벤트로 재작성
-- **notify**: team2 (publisher)
+- **drift 원인 (확인)**: WSOP LIVE 원본 규약 은 SignalR **PascalCase** (`SeatInfo`). EBS `WebSocket_Events.md line 329` 의 snake_case divergence 주석 은 **근거 없는 임의 divergence** (원칙 1 위반).
+- **확정 규약 (2026-04-21)**: WS event type = **PascalCase** — WSOP LIVE 직접 준수. 상세는 `docs/2. Development/2.5 Shared/Naming_Conventions.md §2` (신규 SSOT).
+- **본 commit 완료**:
+  - [x] `Naming_Conventions.md` SSOT 신규 작성 (Shared, Conductor 영역 — notify conductor)
+  - [x] WSOP LIVE 규약 전수 조사 (SignalR hub naming, JSON field, REST path)
+- **PENDING (별건 PR 체인)**:
+  - [ ] PR-1 (Conductor): `WebSocket_Events.md line 329` divergence 주석 정정 + `BS_Overview.md §이벤트 네이밍` Naming_Conventions.md pointer 로 축약
+  - [ ] PR-2 (team2): publisher backend snake_case 10개 이벤트 → PascalCase migrate (`clock_tick` → `ClockTick` 등)
+  - [ ] PR-3 (team1): `ws_dispatch.dart` 26 switch case PascalCase 통일 + dot.case 제거 + 중복 case 통합
+  - [ ] PR-4 (team4): CC consumer 동일 적용
+  - [ ] PR-5 (Conductor): `tools/ws_naming_check.py` + CI gate (재발 방지)
+- **notify**: conductor (PR-1, PR-5), team2 (PR-2), team4 (PR-4)
 
 ### B-087-3. 누락 widget 이식 판정 — ✅ DONE (2026-04-21)
 
@@ -89,7 +94,7 @@ audit 보고서 `docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migrati
 ## 수락 기준
 
 - [x] B-087-1 결정 확정 (옵션 a or b) + 해당 PR 병합 — **DONE** (옵션 a — Lobby/UI.md §독립 레이어 준수하여 신규 구현)
-- [ ] B-087-2 team2 합의 + WebSocket_Events.md § 갱신 — **PENDING** (cross-team)
+- [x] B-087-2 규약 확정 + Naming_Conventions.md SSOT 확립 — **DONE** (WSOP LIVE PascalCase 직접 준수). PR-1~5 코드 마이그레이션 은 별건
 - [x] B-087-3 4건 widget 판정 및 필요한 것 이식 — **DONE** (3 false positive + hand_detail.dart 신규)
 - [x] B-087-4 Repository 분리 재평가 결과 문서화 — **CLOSE** (유지 권고)
 - [x] B-087-5 필요성 판정 — **CLOSE** (불필요)
