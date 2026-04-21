@@ -8,10 +8,11 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/graphic_editor/screens/ge_detail_screen.dart';
 import '../../features/graphic_editor/screens/ge_hub_screen.dart';
 import '../../features/lobby/screens/lobby_dashboard_screen.dart';
+import '../../features/lobby/screens/table_detail_screen.dart';
+import '../../features/players/screens/players_screen.dart';
 import '../../features/reports/screens/reports_screen.dart';
 import '../../features/staff/screens/staff_list_screen.dart';
 import '../../features/settings/screens/settings_layout.dart';
-import '../../features/lobby/screens/table_detail_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -48,6 +49,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => TableDetailScreen(
               tableId: int.parse(state.pathParameters['tableId']!),
             ),
+          ),
+          GoRoute(
+            path: '/players',
+            builder: (context, state) => const PlayersScreen(),
           ),
           GoRoute(
             path: '/staff',
@@ -112,6 +117,10 @@ class _AppShell extends StatelessWidget {
                 label: Text('Lobby'),
               ),
               NavigationRailDestination(
+                icon: Icon(Icons.people),
+                label: Text('Players'),
+              ),
+              NavigationRailDestination(
                 icon: Icon(Icons.badge),
                 label: Text('Staff'),
               ),
@@ -140,16 +149,18 @@ class _AppShell extends StatelessWidget {
     if (location.startsWith('/lobby') || location.startsWith('/tables')) {
       return 0;
     }
-    if (location.startsWith('/staff')) return 1;
-    if (location.startsWith('/settings')) return 2;
-    if (location.startsWith('/graphic-editor')) return 3;
-    if (location.startsWith('/reports')) return 4;
+    if (location.startsWith('/players')) return 1;
+    if (location.startsWith('/staff')) return 2;
+    if (location.startsWith('/settings')) return 3;
+    if (location.startsWith('/graphic-editor')) return 4;
+    if (location.startsWith('/reports')) return 5;
     return 0;
   }
 
   void _navigate(BuildContext context, int index) {
     const routes = [
       '/lobby',
+      '/players',
       '/staff',
       '/settings/blind-structure',
       '/graphic-editor',

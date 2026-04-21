@@ -3,10 +3,10 @@ title: Statistics
 owner: team1
 tier: internal
 legacy-id: BS-03-05
-last-updated: 2026-04-20
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "SG-003 §Tab 5 Stats. equity_display_mode/history_window/hud_enabled/hud_fields/player_photo_enabled. Reports API(SG-007) 연동"
+last-updated: 2026-04-21
+reimplementability: PASS
+reimplementability_checked: 2026-04-21
+reimplementability_notes: "2026-04-21 교차검증 완료: stats_screen.dart 에 equity_display_mode/history_window/hud_enabled/hud_fields 필드 구현 확인 (grep). SG-003 §Tab 5 + SG-007 Reports API 연동 반영."
 sg_reference: SG-003, SG-007
 scope: event
 ---

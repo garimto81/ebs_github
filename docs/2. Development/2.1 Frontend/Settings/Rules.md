@@ -3,10 +3,10 @@ title: Rules
 owner: team1
 tier: internal
 legacy-id: BS-03-04
-last-updated: 2026-04-20
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "SG-003 §Tab 4 Rules. game_variant(22종)/blind_structure_id/ante_schedule_id/time_bank_seconds/straddle_*/showdown_order/under_raise(BS-06 R95)/short_all_in(BS-06 R96)/dead_button"
+last-updated: 2026-04-21
+reimplementability: PASS
+reimplementability_checked: 2026-04-21
+reimplementability_notes: "2026-04-21 교차검증 완료: rules_screen.dart 에 game_variant/blind_structure_id/ante_schedule_id/time_bank_seconds/straddle_* 필드 구현 확인 (grep). BS-06 R95/R96 (under_raise/short_all_in) 참조. SG-003 §Tab 4 스키마 충족."
 sg_reference: SG-003
 scope: event
 ---

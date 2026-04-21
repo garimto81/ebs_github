@@ -111,9 +111,10 @@ team1-frontend/lib/
 │   └── local/
 │       ├── mock_dio_adapter.dart       # MockDioAdapter (개발용)
 │       └── mock_data.dart              # 10 competitions / 10 flights / 20 tables / 100 players fixture
-├── features/                           # 6 feature (2026-04-21 정렬)
+├── features/                           # 7 feature (2026-04-21 Players 독립 레이어 추가)
 │   ├── auth/                           # login_screen + forgot_password + auth_provider
-│   ├── lobby/                          # lobby_dashboard (series/event/flight/table 통합 드릴다운) + table_detail + player 서브뷰
+│   ├── lobby/                          # lobby_dashboard (series/event/flight/table 통합 드릴다운) + table_detail
+│   ├── players/                        # players_screen + player_detail_dialog (Lobby/UI.md §화면 4 독립 레이어)
 │   ├── settings/                       # 8 screens (blind_structure / prize_structure / outputs / gfx / display / rules / stats / preferences + layout)
 │   ├── graphic_editor/                 # ge_hub + ge_detail + rive_preview (rive ^0.13)
 │   ├── staff/                          # staff_list + user_form_dialog
@@ -198,7 +199,7 @@ flowchart LR
 
 ### 4.3 Route table (14 routes)
 
-### 4.3 Route table (9 routes, 2026-04-21 실측)
+### 4.3 Route table (10 routes, 2026-04-21 실측 — Players 추가)
 
 | # | Path | Feature | Builder | 비고 |
 |---|------|---------|---------|------|
@@ -206,7 +207,8 @@ flowchart LR
 | 2 | `/forgot-password` | auth | `ForgotPasswordScreen` | 비밀번호 초기화 플로우 |
 | 3 | `/lobby` | lobby | `LobbyDashboardScreen` | **단일 대시보드** — Series selector + Events + Tables 3 section 통합 (이전 `/series`, `/series/:id/events`, `/flights`, `/tables` 드릴다운 라우트를 단일 화면 state 로 통합) |
 | 4 | `/tables/:tableId` | lobby | `TableDetailScreen` | Table 상세 (SeatGrid) |
-| 5 | `/staff` | staff | `StaffListScreen` | 운영자 관리 |
+| 5 | `/players` | players | `PlayersScreen` | **독립 레이어** — Player DataTable + 검색 + Status filter + 상세 dialog. `Lobby/UI.md §화면 4` 스펙 |
+| 6 | `/staff` | staff | `StaffListScreen` | 운영자 관리 |
 | 6 | `/settings` → `/settings/blind-structure` | settings | redirect | Settings 진입 시 기본 탭 |
 | 7 | `/settings/:section` | settings | `SettingsLayout(section:)` | dynamic section 파라미터. 허용 값: `blind-structure / prize-structure / outputs / gfx / display / rules / stats / preferences` (8 탭) |
 | 8 | `/graphic-editor` | graphic_editor | `GeHubScreen` | `.gfskin` 허브 |
@@ -216,7 +218,7 @@ flowchart LR
 
 **이전 설계와의 차이** (Quasar 시대 14 routes 대비):
 - Series/Event/Flight 3단계 드릴다운 (4 routes) → 단일 `/lobby` 대시보드 내부 state 로 통합 (UX 단순화 결정)
-- `/players`, `/players/:id` 미구현 — B-080 재평가 대상 (lobby 하위 통합 완결 선언 or Player UI 신규 구현)
+- `/players` — **2026-04-21 구현** (`Lobby/UI.md §화면 4 독립 레이어` 준수). 상세는 dialog (별도 라우트 없음)
 - Settings 4 하드코딩 path → 단일 dynamic `/settings/:section`
 - `/forgot-password`, `/staff`, `/reports/:type`, `/graphic-editor/:skinId` 추가 (Quasar 이후 신규 화면)
 - `errorBuilder: _PlaceholderScreen(title: '404 Not Found')` — 간소화된 NotFound 처리 (Quasar `NotFoundPage.vue` 의 경량 대체)

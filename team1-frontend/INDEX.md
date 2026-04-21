@@ -24,7 +24,7 @@
 | Dio | `lib/data/remote/bo_api_client.dart` | Idempotency-Key + Auth refresh interceptor |
 | WebSocket | `lib/data/remote/lobby_websocket_client.dart` | seq 단조증가 + `/ws/replay?from_seq=N` |
 | Mock | `lib/data/local/mock_dio_adapter.dart`, `mock_data.dart` | `--dart-define=USE_MOCK=true` 토글 |
-| Features | `lib/features/{auth,lobby,settings,graphic_editor,staff,reports}/` | **6개 feature** (2026-04-21 실측 정렬) |
+| Features | `lib/features/{auth,lobby,players,settings,graphic_editor,staff,reports}/` | **7개 feature** (2026-04-21 Players 독립 레이어 추가) |
 | Freezed 모델 | `lib/models/entities/*.dart` | 15+ entities (.freezed.dart + .g.dart 자동 생성) |
 | Repositories | `lib/repositories/*.dart` | 11개 Repository (API-01 계약 소비) |
 | Foundation | `lib/foundation/{theme,router,configs,i18n,widgets}/` | 공통 인프라 |
@@ -67,7 +67,7 @@
 ## 상태 (2026-04-21)
 
 - **Flutter 단일 스택 확정** — Quasar 잔재 (src/, package.json, quasar.config.js, e2e/, node_modules 관련 config) 100건 tracked 파일 제거 완료 (commit `2cc13b1`). `_archive-quasar/` 는 참조 전용 보존
-- **features 6 정렬** — 선언=실측 일치 달성. `auth / lobby / settings / graphic_editor / staff / reports`. (이전 선언 `players/audit_log/hand_history` 는 `reports` 하위로 통합 또는 Backlog 로 이관)
+- **features 7 정렬** — 선언=실측 일치 달성. `auth / lobby / players / settings / graphic_editor / staff / reports`. 2026-04-21 Players 독립 레이어 구현 (`Lobby/UI.md §화면 4` 준수). audit_log/hand_history 는 `reports` 하위로 통합
 - **CI workflow 전환** — `pnpm/node` → `subosito/flutter-action@v2` + build_runner + analyze + test
 - **4팀 계약 subscriber** — Backend API-01/05/06/07 + DATA-04 + BS-00/01 소비만. publisher 자격 없음
 

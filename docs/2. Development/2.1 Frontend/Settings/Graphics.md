@@ -3,10 +3,10 @@ title: Graphics
 owner: team1
 tier: internal
 legacy-id: BS-03-02
-last-updated: 2026-04-20
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "SG-003 §Tab 2 GFX + SG-004 .gfskin 포맷 확정 필요. active_skin_id/color_theme/animation_speed/element_visibility(8요소)/language"
+last-updated: 2026-04-21
+reimplementability: PASS
+reimplementability_checked: 2026-04-21
+reimplementability_notes: "2026-04-21 교차검증 완료: gfx_screen.dart 에 active_skin_id/color_theme/animation_speed/element_visibility 필드 구현 확인 (grep). SG-003 §Tab 2 + SG-004 .gfskin Flutter rive ^0.13 확정 반영."
 sg_reference: SG-003, SG-004
 scope: event
 ---

@@ -1,0 +1,156 @@
+{
+  "$schema": "./fixtures.schema.json",
+  "scenario": "S-11",
+  "description": "Lobby Hand History 조회 + 필터 + RBAC — seed data + expected responses",
+  "generated_at": "2026-04-21",
+  "source_of_truth": {
+    "api_filter": "docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md §5.10.1",
+    "ws_events": "docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md §3.3.3",
+    "ui_consumer": "docs/2. Development/2.1 Frontend/Lobby/Hand_History.md",
+    "scenario_spec": "docs/2. Development/2.4 Command Center/Integration_Test_Plan.md §S-11"
+  },
+
+  "base_urls": {
+    "backend_http": "http://localhost:8000",
+    "backend_ws_lobby": "ws://localhost:8000/ws/lobby",
+    "lobby_flutter_host": "localhost:4444"
+  },
+
+  "accounts": [
+    {
+      "role": "admin",
+      "username": "admin_s11",
+      "password": "admin_s11_pw",
+      "expected_assigned_tables": "all",
+      "expected_hole_card_visible": true
+    },
+    {
+      "role": "operator",
+      "username": "operator_t1",
+      "password": "operator_t1_pw",
+      "expected_assigned_tables": [1],
+      "expected_hole_card_visible": true
+    },
+    {
+      "role": "viewer",
+      "username": "viewer_s11",
+      "password": "viewer_s11_pw",
+      "expected_assigned_tables": "all_read",
+      "expected_hole_card_visible": false,
+      "expected_hole_card_mask": "★"
+    }
+  ],
+
+  "seed": {
+    "events": [
+      { "event_id": 1, "name": "Main Event Day 1A", "series_timezone": "Asia/Seoul" }
+    ],
+    "flights": [
+      { "flight_id": 1, "event_id": 1, "day": "day_1a" }
+    ],
+    "tables": [
+      { "table_id": 1, "flight_id": 1, "name": "Featured Table 1" },
+      { "table_id": 2, "flight_id": 1, "name": "Featured Table 2" }
+    ],
+    "hands_today_table_1": [
+      { "hand_id": 101, "hand_number": 1, "table_id": 1, "started_at_offset_min": -45 },
+      { "hand_id": 102, "hand_number": 2, "table_id": 1, "started_at_offset_min": -30 },
+      { "hand_id": 103, "hand_number": 3, "table_id": 1, "started_at_offset_min": -15 }
+    ],
+    "hands_today_table_2": [
+      { "hand_id": 201, "hand_number": 1, "table_id": 2, "started_at_offset_min": -40 }
+    ],
+    "new_hand_during_test": {
+      "hand_id": 104,
+      "hand_number": 4,
+      "table_id": 1,
+      "dealer_seat": 0,
+      "player_count": 6,
+      "blind_level": 1,
+      "trigger": "CC publishes HandStarted during step 4"
+    }
+  },
+
+  "expected_api_calls": {
+    "step_2_filter": {
+      "method": "GET",
+      "path": "/api/v1/hands",
+      "query": {
+        "event_id": 1,
+        "table_id": 1,
+        "date_from": "{{today_00:00}}"
+      },
+      "expected_status": 200,
+      "expected_hand_ids": [101, 102, 103]
+    },
+    "step_3_detail": [
+      { "method": "GET", "path": "/api/v1/hands/101", "expected_status": 200 },
+      { "method": "GET", "path": "/api/v1/hands/101/actions", "expected_status": 200 },
+      { "method": "GET", "path": "/api/v1/hands/101/players", "expected_status": 200, "assert": "admin: hole_card_1/2 non-masked" }
+    ],
+    "step_6_operator_own_table": {
+      "method": "GET",
+      "path": "/api/v1/hands",
+      "query": { "event_id": 1, "table_id": 1, "date_from": "{{today_00:00}}" },
+      "expected_status": 200,
+      "expected_hand_ids": [101, 102, 103]
+    },
+    "step_7_operator_unassigned_table": {
+      "method": "GET",
+      "path": "/api/v1/hands",
+      "query": { "event_id": 1, "table_id": 2, "date_from": "{{today_00:00}}" },
+      "expected_status": 200,
+      "expected_hand_ids": [],
+      "assert": "empty list, NOT 403 (info leak avoidance per §5.10.1)"
+    },
+    "step_8_viewer_detail": {
+      "method": "GET",
+      "path": "/api/v1/hands/101/players",
+      "expected_status": 200,
+      "assert": "hole_card_1 == '★' && hole_card_2 == '★'"
+    },
+    "step_10_yesterday_filter": {
+      "method": "GET",
+      "path": "/api/v1/hands",
+      "query": {
+        "event_id": 1,
+        "date_from": "{{yesterday_00:00}}",
+        "date_to": "{{yesterday_23:59:59}}"
+      },
+      "expected_status": 200,
+      "expected_hand_ids": [],
+      "assert": "empty (당일 한정 정책). UI: banner '당일 한정'"
+    }
+  },
+
+  "expected_ws_events": {
+    "subscribe": {
+      "url": "ws://localhost:8000/ws/lobby?token={{admin_token}}",
+      "subscribe_payload": {
+        "type": "Subscribe",
+        "event_types": ["HandStarted", "ActionPerformed", "HandEnded"]
+      }
+    },
+    "step_4_hand_started": {
+      "type": "HandStarted",
+      "hand_id": 104,
+      "hand_number": 4,
+      "dealer_seat": 0,
+      "player_count": 6,
+      "blind_level": 1,
+      "consumer_behavior_ref": "WebSocket_Events.md §3.3.3 Hand Browser: prepend",
+      "assert": "Browser 첫 행 = hand_id 104"
+    },
+    "step_5_action_during_detail": {
+      "type": "ActionPerformed",
+      "hand_id": 104,
+      "assert": "Detail(101) 화면 무변화 (hand_id 다름)"
+    }
+  },
+
+  "notes": [
+    "base_urls 는 local dev 기본값. CI 에서는 env var 로 override.",
+    "`{{today_00:00}}` 등 placeholder 는 Playwright 측에서 Series timezone 기준 치환.",
+    "Admin 계정은 seed 단계에서 BO 가 기본 생성. Operator/Viewer 는 admin 이 생성 필요 (seeder script)."
+  ]
+}

@@ -79,9 +79,10 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 lib/
 ├── data/remote/          # Dio API client + WS client (Idempotency-Key + seq)
 ├── data/local/           # MockDioAdapter (MSW 대체)
-├── features/             # 기능별 screens + providers + widgets (6개, 2026-04-21 실측 정렬)
+├── features/             # 기능별 screens + providers + widgets (7개, 2026-04-21 Players 독립 레이어 추가)
 │   ├── auth/             # 로그인 + 2FA (StateNotifier)
-│   ├── lobby/            # Series→Event→Flight→Table 드릴다운 (+ Player 관리 서브뷰)
+│   ├── lobby/            # Series→Event→Flight→Table 드릴다운
+│   ├── players/          # Player 독립 화면 (Lobby/UI.md §화면 4 독립 레이어)
 │   ├── settings/         # 6탭 (family provider by section)
 │   ├── graphic_editor/   # 스킨 허브 + Rive 프리뷰 (Flutter rive ^0.13)
 │   ├── staff/            # Staff 관리 (RBAC 3역할)

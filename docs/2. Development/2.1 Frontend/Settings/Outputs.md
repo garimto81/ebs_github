@@ -3,10 +3,10 @@ title: Outputs
 owner: team1
 tier: internal
 legacy-id: BS-03-01
-last-updated: 2026-04-20
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "기존 기획 존재. SG-003 §Tab 1 Outputs 필드 스키마(output_targets/active_overlay_preset_id/security_delay_ms/watermark_*) 와 교차검증 후 PASS"
+last-updated: 2026-04-21
+reimplementability: PASS
+reimplementability_checked: 2026-04-21
+reimplementability_notes: "2026-04-21 교차검증 완료: lib/features/settings/screens/outputs_screen.dart 에 output_targets/active_overlay_preset_id/security_delay_ms/watermark_* 전 필드 구현 확인 (grep). SG-003 §Tab 1 스키마 충족."
 sg_reference: SG-003
 scope: table
 ---

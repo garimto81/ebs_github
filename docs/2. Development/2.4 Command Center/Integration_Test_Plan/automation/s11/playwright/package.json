@@ -1,0 +1,21 @@
+{
+  "name": "s11-hand-history-automation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "S-11 Lobby Hand History E2E automation (API + WebSocket layer). Companion to flutter_driver/ UI driver.",
+  "scripts": {
+    "install:browsers": "playwright install chromium",
+    "test": "playwright test",
+    "test:api-only": "playwright test --grep @api",
+    "test:ws-only": "playwright test --grep @ws",
+    "test:rbac": "playwright test --grep @rbac",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "typescript": "^5.4.0",
+    "ws": "^8.17.0",
+    "@types/ws": "^8.5.10",
+    "@types/node": "^20.11.0"
+  }
+}

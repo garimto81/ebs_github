@@ -24,15 +24,27 @@ owner: team1
 
 ## PENDING 후속 항목 (sub-tasks)
 
-### B-087-1. Player UI 구현 결정 (P1)
+### B-087-1. Player 독립 화면 구현 — ✅ DONE (2026-04-21)
 
-- **현재**: `player_repository.dart` + `lobby/providers/player_provider.dart` 존재. UI 없음.
-- **Quasar 원본**: `PlayerListPage.vue`, `PlayerDetailPage.vue`
-- **결정 옵션**:
-  - (a) Flutter 로 이식 (`features/lobby/screens/player_list_screen.dart` + `player_detail_screen.dart`) — Lobby 하위 sub-route 로 라우트 2개 추가
-  - (b) "Lobby 하위 통합 완결" 선언 — Player 관리는 Lobby 대시보드 내 inline 확장 패널로만
-- **의사결정 책임**: team1 (UI 기획 확인 후 team1 내부 결정)
-- **관련 기획**: `Lobby/UI.md §Player 독립 레이어` 재확인 필요
+**결정**: `Lobby/UI.md §화면 4 Player (독립 레이어)` 명시 준수 — **옵션 (a) 신규 구현** 채택. 단 detail 은 **dialog** (별도 라우트 없음, 기획 line 943 준수).
+
+**구현**:
+- `features/players/screens/players_screen.dart` (신규 feature 디렉토리) — DataTable (Name/Table/Seat/Stack/Status/Actions) + 검색 + Status filter (All/Active/Waiting/Busted) + Add Player placeholder
+- `features/players/widgets/player_detail_dialog.dart` — 행 클릭 시 읽기 전용 상세 다이얼로그
+- `lib/features/lobby/providers/player_provider.dart` 재사용 (cross-feature import 허용)
+
+**라우팅**:
+- `/players` 라우트 추가 (`app_router.dart`)
+- NavigationRail 에 Players 엔트리 추가 (6개 → 7개, Lobby/Players/Staff/Settings/GFX/Reports)
+
+**문서 동기화**:
+- `team1/CLAUDE.md §아키텍처` features 6 → 7 (+players)
+- `Engineering.md §2.1` + `§4.3` 동기화 (route 9 → 10)
+- `INDEX.md` features 7 반영
+
+**잔여 후속**:
+- Player 등록/수정/삭제 dialog (Add Player 버튼) — `B-F005` 로 분리
+- 좌석 이동/제거 actions — 후속 스토리
 
 ### B-087-2. Engineering.md §6.4 WS dispatch 매핑 실측 정렬 + 네이밍 규약 결정 (P2)
 
@@ -76,7 +88,7 @@ audit 보고서 `docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migrati
 
 ## 수락 기준
 
-- [ ] B-087-1 결정 확정 (옵션 a or b) + 해당 PR 병합 — **PENDING** (사용자 결정)
+- [x] B-087-1 결정 확정 (옵션 a or b) + 해당 PR 병합 — **DONE** (옵션 a — Lobby/UI.md §독립 레이어 준수하여 신규 구현)
 - [ ] B-087-2 team2 합의 + WebSocket_Events.md § 갱신 — **PENDING** (cross-team)
 - [x] B-087-3 4건 widget 판정 및 필요한 것 이식 — **DONE** (3 false positive + hand_detail.dart 신규)
 - [x] B-087-4 Repository 분리 재평가 결과 문서화 — **CLOSE** (유지 권고)
