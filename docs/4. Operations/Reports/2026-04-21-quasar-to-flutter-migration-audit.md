@@ -71,21 +71,25 @@ audit-scope: team1-frontend
 
 ### 2.2 Widgets (컴포넌트) 매핑
 
+> **2026-04-21 correction**: 초기 감사에서 3건을 "미이식" 으로 판정했으나 실측 재확인 결과 commit `70d6d7a` (2026-04-16 Flutter 전면 전환) 이미 포함. audit 스크립트의 false positive. 아래 표는 정정된 최종 상태.
+
 | Quasar component | Flutter widget | 상태 |
 |------------------|----------------|:----:|
 | `common/EmptyState.vue` | `foundation/widgets/empty_state.dart` | ✅ |
 | `common/ErrorBanner.vue` | `foundation/widgets/error_banner.dart` | ✅ |
 | `common/LoadingState.vue` | `foundation/widgets/loading_state.dart` | ✅ |
-| **`common/WsDisconnectBanner.vue`** | **❌ 미이식** | **P2** |
-| **`event/EventFormDialog.vue`** | **❌ 미이식** | **P2** |
-| `hand-history/HandDetail.vue` | ⚠️ (reports_screen 에 인라인 통합 가능성) | 확인 필요 |
+| `common/WsDisconnectBanner.vue` | `foundation/widgets/ws_disconnect_banner.dart` | ✅ (70d6d7a 기존) |
+| `event/EventFormDialog.vue` | `features/lobby/widgets/event_form_dialog.dart` | ✅ (70d6d7a 기존) |
+| `table/TableFormDialog.vue` | `features/lobby/widgets/table_form_dialog.dart` | ✅ (70d6d7a 기존) |
 | `staff/UserFormDialog.vue` | `features/staff/widgets/user_form_dialog.dart` | ✅ |
 | `table/AddPlayerDialog.vue` | `features/lobby/widgets/add_player_dialog.dart` | ✅ |
 | `table/DayTabs.vue` | `features/lobby/widgets/day_tabs.dart` | ✅ (2026-04-21 eventFlightId 정렬) |
 | `table/SeatGrid.vue` | `features/lobby/widgets/seat_grid.dart` | ✅ |
-| **`table/TableFormDialog.vue`** | **❌ 미이식** | **P2** |
+| `hand-history/HandDetail.vue` | `features/reports/widgets/hand_detail.dart` | ✨ **신규 (B-087-3)** |
 
-**P2 누락 widgets**: 3~4건 (WsDisconnectBanner, EventFormDialog, TableFormDialog, HandDetail).
+**Widgets 상태**: 11/11 모두 이식 완료. B-087-3 DONE.
+
+**audit false positive 교훈**: 초기 `find` 명령어가 feature 별 widgets/ 디렉토리를 완전 순회하지 않아 3건 widget 누락으로 오판. 후속 audit 에는 `git ls-files team1-frontend/lib/features/*/widgets/*.dart` 전수 비교 필수.
 
 ### 2.3 Repositories 매핑
 
