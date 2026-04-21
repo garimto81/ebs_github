@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | CC 전체 구조, Launch 플로우, 상태 표시, 화면 레이아웃 정의 |
+| 2026-04-21 | §2.0 Launch Modes 2-분류 추가 | Linked vs Standalone. 상세는 `Standalone_Mode.md` SSOT. Demo Scenario scope 제외. |
 | 2026-04-13 | UI-02 redesign | 좌석 S1~S10 변경, 대칭 배치, 수동 편집 우선 원칙, 인라인 편집 전환 |
 | 2026-04-17 | 연동 아키텍처 명확화 | §1.1 데이터 흐름 신설 — CC↔Engine(직접 HTTP) + CC↔BO(WS 이벤트 발행) |
 
@@ -86,6 +87,19 @@ CC 인스턴스 간에는 직접 통신이 없다. 모든 데이터 공유는 Ba
 ---
 
 ## 2. CC Launch 플로우
+
+### 2.0 Launch Modes — 2-분류 (2026-04-21)
+
+CC 는 두 가지 실행 모드 중 하나로 기동된다. 본 섹션은 개요만 기재하고 상세는 `Standalone_Mode.md` SSOT.
+
+| Mode | 목적 | 진입 | 프로덕션 | 배지 |
+|------|------|------|:--------:|------|
+| **Linked** | 실방송 운영 | Lobby `[Launch]` → args 전달 (§2.1, §7) | ✅ | 없음 |
+| **Standalone** | 개발·QA 검증 (Lobby 우회) | CLI `--standalone[=table_id]` | ❌ | `STANDALONE` 주황 배지 |
+
+> **Demo Scenario (사전 시나리오 자동 재생)** 는 2026-04-21 결정으로 **scope 제외**. 구 `Demo_Test_Mode.md` 는 DEPRECATED.
+
+§2.1~§2.3, §7 은 **Linked 기준 상세**. Standalone 기동 경로·capability 매트릭스·배지 규격은 [`Standalone_Mode.md`](./Standalone_Mode.md) 참조.
 
 ### 2.1 Lobby에서 CC 생성
 
