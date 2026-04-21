@@ -10,6 +10,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,8 +21,11 @@ import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../models/enums/hand_fsm.dart';
 import '../../../models/enums/table_fsm.dart';
+import '../../../foundation/logging/debug_log.dart';
 import '../../../resources/constants.dart';
 import '../../../routing/app_router.dart';
+import '../../debug/debug_log_panel.dart';
+import '../../debug/debug_log_provider.dart';
 import '../providers/action_button_provider.dart';
 import '../providers/config_provider.dart';
 import '../providers/hand_display_provider.dart';
@@ -101,36 +105,49 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
       focusNode: _focusNode,
       autofocus: true,
       onKeyEvent: (node, event) {
+        // Ctrl+L toggles debug log panel (global shortcut — takes precedence)
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.keyL &&
+            HardwareKeyboard.instance.isControlPressed) {
+          final notifier = ref.read(debugLogVisibleProvider.notifier);
+          notifier.state = !notifier.state;
+          return KeyEventResult.handled;
+        }
         final handler = ref.read(keyboardShortcutProvider);
         final consumed = handler.handleKeyEvent(event);
         return consumed ? KeyEventResult.handled : KeyEventResult.ignored;
       },
       child: Scaffold(
-        body: ConstrainedBox(
-          constraints: BoxConstraints(
-            minWidth: AppConstants.minWindowWidthPx.toDouble(),
-          ),
-          child: Column(
-            children: [
-              const _Toolbar(),
-              const EngineConnectionBanner(),
-              const _RfidStatusBanner(),
-              if (ref.watch(demoProvider).isActive)
-                DemoControlPanel(
-                  runner: _scenarioRunner ??= ScenarioRunner(
-                    ProviderScope.containerOf(context),
+        body: Stack(
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: AppConstants.minWindowWidthPx.toDouble(),
+              ),
+              child: Column(
+                children: [
+                  const _Toolbar(),
+                  const EngineConnectionBanner(),
+                  const _RfidStatusBanner(),
+                  if (ref.watch(demoProvider).isActive)
+                    DemoControlPanel(
+                      runner: _scenarioRunner ??= ScenarioRunner(
+                        ProviderScope.containerOf(context),
+                      ),
+                    ),
+                  const _InfoBar(),
+                  const Expanded(
+                    child: _SeatArea(),
                   ),
-                ),
-              const _InfoBar(),
-              const Expanded(
-                child: _SeatArea(),
+                  _ActionPanel(
+                    onAction: (action, {amount}) =>
+                        _dispatchAction(ref, action, amount: amount),
+                  ),
+                ],
               ),
-              _ActionPanel(
-                onAction: (action, {amount}) =>
-                    _dispatchAction(ref, action, amount: amount),
-              ),
-            ],
-          ),
+            ),
+            const DebugLogPanel(),
+          ],
         ),
       ),
     );
@@ -192,7 +209,11 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
 /// **Demo/offline mode** (WS null): applies local FSM transition directly
 /// via dispatchLocalDemoEvent so the UI still functions.
 void _dispatchAction(WidgetRef ref, CcAction action, {int? amount}) {
-  if (!ref.read(actionButtonProvider).isEnabled(action)) return;
+  DebugLog.d('ACTION', 'dispatch requested', {'action': action.name, 'amount': amount});
+  if (!ref.read(actionButtonProvider).isEnabled(action)) {
+    DebugLog.w('ACTION', 'BLOCKED — actionButtonProvider.isEnabled=false', {'action': action.name});
+    return;
+  }
 
   final handFsm = ref.read(handFsmProvider.notifier);
   final ws = ref.read(boWsClientProvider);
@@ -209,13 +230,31 @@ void _dispatchAction(WidgetRef ref, CcAction action, {int? amount}) {
     case CcAction.newHand:
       final activePlayers = seats.where((s) => s.isOccupied).length;
       final dealerSet = seats.any((s) => s.isDealer);
+      final fsmState = ref.read(handFsmProvider);
+      DebugLog.i('NEW_HAND', 'pre-check', {
+        'activePlayers': activePlayers,
+        'dealerSet': dealerSet,
+        'fsmState': fsmState.name,
+        'ws': ws == null ? 'offline' : 'connected',
+      });
       if (!handFsm.canStartHand(
           activePlayers: activePlayers, dealerSet: dealerSet)) {
+        DebugLog.w('NEW_HAND', 'canStartHand=false — aborted', {
+          'reason': activePlayers < 2
+              ? 'activePlayers<2 (need ≥2 occupied seats)'
+              : !dealerSet
+                  ? 'no dealer assigned (click a seat to set dealer)'
+                  : 'fsmState must be idle or handComplete (got ${fsmState.name})',
+        });
         return;
       }
       final dealerSeat =
           seats.where((s) => s.isDealer).firstOrNull?.seatNo ?? 1;
       if (ws != null) {
+        DebugLog.i('NEW_HAND', 'sending WriteGameInfo to BO', {
+          'table_id': config.tableNumber,
+          'dealer_seat': dealerSeat,
+        });
         ws.sendCommand('WriteGameInfo', {
           'table_id': config.tableNumber,
           'dealer_seat': dealerSeat,
@@ -235,7 +274,9 @@ void _dispatchAction(WidgetRef ref, CcAction action, {int? amount}) {
         });
       } else {
         // Demo: local transition
+        DebugLog.i('NEW_HAND', 'WS offline — local handFsm.startHand() only');
         handFsm.startHand();
+        DebugLog.i('NEW_HAND', 'handFsm → setupHand (local)');
       }
 
     // -- DEAL (§11 WriteDeal) -------------------------------------------
@@ -401,6 +442,14 @@ class _Toolbar extends ConsumerWidget {
             icon: Icons.settings_rounded,
             tooltip: 'Table Settings',
             onPressed: () => showGameSettingsModal(context),
+          ),
+          _ToolbarIconButton(
+            icon: Icons.bug_report_rounded,
+            tooltip: 'Toggle Debug Log (Ctrl+L)',
+            onPressed: () {
+              final notifier = ref.read(debugLogVisibleProvider.notifier);
+              notifier.state = !notifier.state;
+            },
           ),
           PopupMenuButton<String>(
             icon: Icon(Icons.menu, color: cs.onSurface),

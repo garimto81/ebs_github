@@ -11,6 +11,7 @@ import 'app.dart';
 import 'features/auth/auth_provider.dart';
 import 'foundation/configs/features.dart';
 import 'foundation/error_reporting/sentry_init.dart';
+import 'foundation/logging/debug_log.dart';
 import 'models/launch_config.dart';
 
 Future<void> main(List<String> args) async {
@@ -24,6 +25,14 @@ Future<void> main(List<String> args) async {
   if (config?.demoMode == true) {
     Features.enableDemoMode = true;
   }
+
+  // Boot diagnostic — visible via Ctrl+L debug panel.
+  DebugLog.i('BOOT', 'ebs_cc starting', {
+    'args': args,
+    'launchConfig': config == null
+        ? 'null (dev standalone — no Lobby args)'
+        : 'parsed (tableId=${config.tableId}, demo=${config.demoMode})',
+  });
 
   await initSentry(
     appRunner: () async {
