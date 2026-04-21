@@ -9,6 +9,14 @@
 Phase 2 추가: subdir 팀 세션이 git checkout/switch 로 다른 worktree 의 HEAD 를
 조작해 Conductor 를 오염시키는 문제 차단. sibling worktree 세션은 허용 (자체 HEAD 소유).
 Phase 4 추가: Conductor 가 team 브랜치에서 commit 시 warn-once (차단 X).
+
+Phase 5 (v3.1, 2026-04-21) 추가:
+- Session-pinned branch tracking: `.claude/.session-branches/<sid>` 에 각 세션의 의도한
+  브랜치(정상 상태) 를 기록. branch_guard 가 실제 HEAD 와 pinned 값을 대조해
+  "다른 세션이 shared HEAD 를 움직인 결과" 를 구분하여 override 재발급 제거.
+- git index lock 대기 (100ms × 30회 retry): 다른 세션의 `git add/commit` 이 index.lock
+  을 쥐고 있을 때 차단 대신 짧게 대기.
+- override key 를 sid 만 의존 (cur 독립): 다른 세션이 branch 를 바꿔도 override 유지.
 """
 from __future__ import annotations
 
@@ -40,14 +48,65 @@ CHECKOUT_PATH_RE = re.compile(
 OVERRIDE_DIR = PROJECT / ".claude" / ".branch-guard-overrides"
 OVERRIDE_TTL_SEC = 300
 
+# --- Phase 5: Session-pinned branch tracking ---
+SESSION_BRANCH_DIR = PROJECT / ".claude" / ".session-branches"
+SESSION_PIN_TTL_SEC = 3600  # 1 hour
 
-def _override_key(sid: str, cmd: str) -> Path:
-    h = hashlib.sha1(f"{sid}:{cmd}".encode("utf-8")).hexdigest()[:16]
+# --- Phase 5: git index lock 대기 ---
+INDEX_LOCK = PROJECT / ".git" / "index.lock"
+LOCK_WAIT_INTERVALS_MS = 100
+LOCK_WAIT_MAX_RETRIES = 30  # 총 3초
+
+
+def _override_key(sid: str, kind: str) -> Path:
+    """Phase 5: kind(예: 'conductor-commit-on-team-branch') 기반. cur 독립.
+
+    다른 세션이 shared HEAD 를 움직여도 override 유지.
+    """
+    h = hashlib.sha1(f"{sid}:{kind}".encode("utf-8")).hexdigest()[:16]
     return OVERRIDE_DIR / f"{h}.flag"
 
 
-def _has_override(sid: str, cmd: str) -> bool:
-    f = _override_key(sid, cmd)
+def _wait_for_index_lock() -> None:
+    """git index.lock 이 있으면 짧게 대기. 다른 세션 commit 과의 race 완화.
+
+    Phase 5 (v3.1): 차단 대신 대기. 실패 시 침묵 통과 (hook 은 방해하지 않음).
+    """
+    retries = 0
+    while INDEX_LOCK.exists() and retries < LOCK_WAIT_MAX_RETRIES:
+        time.sleep(LOCK_WAIT_INTERVALS_MS / 1000)
+        retries += 1
+
+
+def _pin_session_branch(sid: str, branch: str) -> None:
+    """현재 세션의 의도한 브랜치 기록. branch_guard 가 대조 기준으로 사용."""
+    try:
+        SESSION_BRANCH_DIR.mkdir(parents=True, exist_ok=True)
+        f = SESSION_BRANCH_DIR / f"{sid}.pin"
+        f.write_text(branch, encoding="utf-8")
+    except Exception:
+        pass
+
+
+def _get_pinned_branch(sid: str) -> str | None:
+    """세션이 기록한 의도 브랜치. 없거나 stale 면 None."""
+    f = SESSION_BRANCH_DIR / f"{sid}.pin"
+    if not f.exists():
+        return None
+    if time.time() - f.stat().st_mtime > SESSION_PIN_TTL_SEC:
+        try:
+            f.unlink()
+        except Exception:
+            pass
+        return None
+    try:
+        return f.read_text(encoding="utf-8").strip() or None
+    except Exception:
+        return None
+
+
+def _has_override(sid: str, kind: str) -> bool:
+    f = _override_key(sid, kind)
     if not f.exists():
         return False
     if time.time() - f.stat().st_mtime > OVERRIDE_TTL_SEC:
@@ -59,9 +118,9 @@ def _has_override(sid: str, cmd: str) -> bool:
     return True
 
 
-def _set_override(sid: str, cmd: str) -> None:
+def _set_override(sid: str, kind: str) -> None:
     OVERRIDE_DIR.mkdir(parents=True, exist_ok=True)
-    _override_key(sid, cmd).touch()
+    _override_key(sid, kind).touch()
 
 
 def _session_id() -> str:
@@ -114,6 +173,8 @@ def main() -> int:
 
     # Rule 2 & 3: commit on wrong branch
     if COMMIT_RE.search(cmd):
+        # Phase 5: git index lock 기다리기 (다른 세션 commit 과 race 완화)
+        _wait_for_index_lock()
         cur = _current_branch()
         # Rule 2: team session committing on main → block
         if team != "conductor" and cur == "main":
@@ -125,15 +186,30 @@ def main() -> int:
                 ),
             )
         # Rule 3: Conductor committing on team branch → warn-once
+        # Phase 5 개선:
+        # (a) override key 를 cur 독립 ('conductor-commit-on-team-branch') 로 변경 →
+        #     다른 세션이 branch 를 다른 team work 브랜치로 바꿔도 override 유지
+        # (b) pinned branch 가 main 인데 cur 이 team branch 면 "다른 세션이 HEAD 움직임"
+        #     이 확실 → 경고문에 그 사실 명시 (사용자가 원인 바로 파악)
         if team == "conductor" and cur.startswith("work/team"):
-            if not _has_override(sid, f"conductor-commit-{cur}"):
-                _set_override(sid, f"conductor-commit-{cur}")
+            override_kind = "conductor-commit-on-team-branch"
+            pinned = _get_pinned_branch(sid)
+            cause_hint = ""
+            if pinned == "main":
+                cause_hint = (
+                    "\n  · 감지: 이 세션은 main 에 pinned 되어 있으나 현재 HEAD 는 "
+                    f"{cur} — 다른 세션의 checkout 때문일 가능성이 높음.\n"
+                    "  · `git checkout main` 으로 복귀 후 재시도 권장."
+                )
+            if not _has_override(sid, override_kind):
+                _set_override(sid, override_kind)
                 emit(
                     decision="block",
                     reason=(
                         f"[branch-guard] Conductor committing on team branch: {cur}\n"
                         f"  · 의도적이면 동일 명령을 다시 실행하세요 (override 5분).\n"
                         f"  · 권장: cd sibling worktree or switch to main."
+                        f"{cause_hint}"
                     ),
                 )
 
@@ -152,6 +228,13 @@ def main() -> int:
                     f"  · 파일 복원만 필요하면 `git checkout -- <path>` 로."
                 ),
             )
+
+    # Phase 5: Conductor 가 main 에서 commit 시 pinned branch=main 으로 기록
+    # (다음 호출에서 HEAD 가 움직였으면 "다른 세션 탓" 힌트를 줄 수 있음)
+    if team == "conductor" and COMMIT_RE.search(cmd):
+        cur_for_pin = _current_branch()
+        if cur_for_pin == "main":
+            _pin_session_branch(sid, "main")
 
     return 0
 

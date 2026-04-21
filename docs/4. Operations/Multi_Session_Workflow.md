@@ -149,6 +149,56 @@ Worktree 모델은 **선택적**이며 기존 in-repo subdir 모델과 **공존 
 1. **격리 착시**: worktree 가 별개 폴더라는 이유로 공유 `docs/` 규율이 이완될 수 있음. decision_owner 규율 강화 필요.
 2. **Scope-block hook 미구현**: PreToolUse 기반 경로 소유권 차단은 없음 (v6 `free_write` 정책상 의도적). L1(branch) · L2(active-edits) hook은 구현됨.
 3. **디스크 비용**: 팀별 worktree 상주 시 repo 파일 × N 배. SSD 용량 모니터링.
+4. **Subdir 세션의 공유 HEAD race (v3.0 → v3.1 완화)**: Conductor 가 main 에 있고 subdir 팀 세션이 `git checkout -b work/teamN/...` 를 실행하면 subdir 이 공유 `.git/HEAD` 를 움직여 Conductor 도 그 브랜치로 따라 이동함. v3.1 의 session-pinned branch tracking 으로 감지 힌트 제공 (§"Phase 5 강화" 참조). **근본 해결은 sibling worktree 사용**.
+
+## Phase 5 강화 (v3.1, 2026-04-21)
+
+멀티 세션 동시 실행 시 관찰된 증상을 해소하기 위한 hook 보강. v3.0 정책은 유지.
+
+### 관찰된 증상
+
+| 증상 | 원인 |
+|------|------|
+| branch-guard 가 Conductor 에게 "team branch 에 올라감" 재경고 (override 무효화) | override key 가 `sid+cur` 기반이어서 다른 세션이 cur 을 또 다른 team 브랜치로 바꾸면 재발급 |
+| "File has been modified since read, either by the user or by a linter" | 다른 세션이 동일 파일을 동시에 편집 + 같은 cwd 의 `git status` 재생성 |
+| `git commit` 이 다른 파일까지 포함해서 커밋됨 | 다른 세션의 staged 변경이 같은 shared index 에 남아있는 상태 |
+| subdir 팀 세션의 `session_branch_init` 이 Conductor HEAD 도 움직임 | subdir 은 공유 `.git` 을 사용하므로 `git checkout -b` 가 전역 영향 |
+
+### Hook 보강
+
+**`.claude/hooks/branch_guard.py` (v3.1)**:
+
+| 개선 | 효과 |
+|------|------|
+| **Override key 를 `sid` 에만 의존** (`kind='conductor-commit-on-team-branch'`, `cur` 제거) | 다른 세션이 branch 를 움직여도 override 5분 내 유지 |
+| **`_wait_for_index_lock()`**: `.git/index.lock` 존재 시 100ms × 30회 대기 | 다른 세션 `git add/commit` 과의 race 완화, 차단 대신 순차화 |
+| **`_pin_session_branch()` / `_get_pinned_branch()`**: Conductor 가 main 에서 commit 할 때 session_id 를 key 로 "main" 기록 | 다음 commit 시 HEAD 가 움직였으면 "다른 세션 탓" 힌트를 경고문에 추가 |
+
+**파일**: `.claude/.session-branches/<sid>.pin` (TTL 1h), `.claude/.branch-guard-overrides/<hash>.flag` (TTL 5분).
+
+### 권장 운영 (v3.1)
+
+- **Conductor 세션**: 항상 main 에 유지. subdir 세션과 동시 실행 시 **sibling worktree 로 분리** 권장.
+- **Subdir 팀 세션**: `session_branch_init` 이 자동 생성한 branch 유지. 명시적 `git checkout` 금지 (branch_guard Rule 4 차단).
+- **Sibling worktree 팀 세션**: 자체 HEAD 소유 → 자유 checkout 허용.
+- **동시 실행 시**: 한 세션의 `/team` 이 진행 중인 동안 다른 세션은 편집 중단 또는 다른 파일 편집 권장.
+
+### 복구 절차 (다른 세션이 HEAD 움직였을 때)
+
+```bash
+# 1. 증상 확인
+git branch --show-current
+# 현재 branch 가 의도와 다름
+
+# 2. 내 작업 보존
+git stash push -m "branch-race-recovery"
+
+# 3. 원래 branch 복귀
+git checkout main  # Conductor 의 경우
+
+# 4. 작업 복원
+git stash pop
+```
 
 ## 관련 자산
 
@@ -163,6 +213,7 @@ Worktree 모델은 **선택적**이며 기존 in-repo subdir 모델과 **공존 
 
 | 날짜 | 버전 | 변경 내용 | 결정 근거 |
 |------|------|-----------|----------|
+| 2026-04-21 | **v3.1** | Phase 5 Hook 강화: branch_guard 의 override key 를 session_id 만 의존으로 변경 (cur 독립), git index.lock 대기 (100ms × 30회), session-pinned branch tracking (`.claude/.session-branches/`). "알려진 리스크" §4 + "Phase 5 강화" 섹션 신설. | 2026-04-21 실측: 동시 세션 5회 이상 branch-guard 재경고 + `git add` 시 다른 세션 staged 변경 혼입. 근본 해결은 sibling worktree 이나 hook 으로 감지 힌트 추가 |
 | 2026-04-21 | **v3.0** | **`/team` 스킬 도입**. 팀 main 직접 ff-merge 허용, work 브랜치 초단기 수명(`/team` 1회 내), 매 작업 auto commit+merge+push. `/team-merge` 는 fallback 으로 격하. 글로벌 스킬 `~/.claude/skills/team/` | 사용자 요구: "항상 동기화 유지", "세션 종료 개념 제거", 충돌 사전 방지를 작업 단위 분해로 해결 |
 | 2026-04-20 | v2.0 | MVI (Minimum Viable Isolation) 도입. Phase 1-6: Conductor Stop hook, branch_guard 확장(subdir checkout 차단), fs lock(orphan branch 대체), FIFO merge queue, subagent isolation frontmatter. Active-edits orphan branch 레지스트리 비활성화 (파일은 역사 보존) | 2026-04-20 실측 사건 (Conductor worktree 오염 + L2 5일 dormant) + 2026 트렌드 (Worktrunk FIFO queue, Claude Code subagent isolation) |
 | 2026-04-15 | v1.0 | Worktree 기반 멀티 세션 워크플로우 정식화. 기존 부분 채택 상태 표준화 | CR draft 폐기 + free_write 모델 정합, critic 검토 결과 (plan: abundant-skipping-moonbeam) |
