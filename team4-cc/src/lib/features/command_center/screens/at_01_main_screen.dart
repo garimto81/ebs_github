@@ -92,7 +92,7 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
     // Consume keyboard-triggered actions from KeyboardShortcutHandler.
     ref.listen<CcAction?>(lastKeyboardActionProvider, (_, action) {
       if (action == null) return;
-      _dispatchAction(ref, action);
+      _dispatchAction(ref, action, context: context);
       clearLastKeyboardAction(ref);
     });
 
@@ -140,8 +140,8 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
                     child: _SeatArea(),
                   ),
                   _ActionPanel(
-                    onAction: (action, {amount}) =>
-                        _dispatchAction(ref, action, amount: amount),
+                    onAction: (action, {amount}) => _dispatchAction(ref, action,
+                        amount: amount, context: context),
                   ),
                 ],
               ),
@@ -208,7 +208,8 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
 ///
 /// **Demo/offline mode** (WS null): applies local FSM transition directly
 /// via dispatchLocalDemoEvent so the UI still functions.
-void _dispatchAction(WidgetRef ref, CcAction action, {int? amount}) {
+void _dispatchAction(WidgetRef ref, CcAction action,
+    {int? amount, BuildContext? context}) {
   DebugLog.d('ACTION', 'dispatch requested', {'action': action.name, 'amount': amount});
   if (!ref.read(actionButtonProvider).isEnabled(action)) {
     DebugLog.w('ACTION', 'BLOCKED — actionButtonProvider.isEnabled=false', {'action': action.name});
@@ -239,13 +240,28 @@ void _dispatchAction(WidgetRef ref, CcAction action, {int? amount}) {
       });
       if (!handFsm.canStartHand(
           activePlayers: activePlayers, dealerSet: dealerSet)) {
-        DebugLog.w('NEW_HAND', 'canStartHand=false — aborted', {
-          'reason': activePlayers < 2
-              ? 'activePlayers<2 (need ≥2 occupied seats)'
-              : !dealerSet
-                  ? 'no dealer assigned (click a seat to set dealer)'
-                  : 'fsmState must be idle or handComplete (got ${fsmState.name})',
-        });
+        final reason = activePlayers < 2
+            ? '좌석 2명 이상 착석 필요 (현재 $activePlayers명)'
+            : !dealerSet
+                ? '딜러 미지정 — 좌석 Long-press → "Set Dealer"'
+                : 'FSM 상태 오류 (idle/handComplete 아님: ${fsmState.name})';
+        DebugLog.w('NEW_HAND', 'canStartHand=false — aborted', {'reason': reason});
+        if (context != null && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('NEW HAND 불가 — $reason'),
+              backgroundColor: Colors.orange.shade800,
+              duration: const Duration(seconds: 4),
+              action: SnackBarAction(
+                label: 'Debug Log',
+                textColor: Colors.white,
+                onPressed: () => ref
+                    .read(debugLogVisibleProvider.notifier)
+                    .state = true,
+              ),
+            ),
+          );
+        }
         return;
       }
       final dealerSeat =
