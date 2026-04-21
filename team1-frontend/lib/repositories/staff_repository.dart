@@ -11,7 +11,7 @@ class StaffRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<User>>(
-      '/users',
+      '/Users',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => User.fromJson(e as Map<String, dynamic>))
@@ -21,14 +21,14 @@ class StaffRepository {
 
   Future<User> getUser(int id) async {
     return _client.get<User>(
-      '/users/$id',
+      '/Users/$id',
       fromJson: (json) => User.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<User> createUser(Map<String, dynamic> data) async {
     return _client.post<User>(
-      '/users',
+      '/Users',
       data: data,
       fromJson: (json) => User.fromJson(json as Map<String, dynamic>),
     );
@@ -36,18 +36,18 @@ class StaffRepository {
 
   Future<User> updateUser(int id, Map<String, dynamic> data) async {
     return _client.put<User>(
-      '/users/$id',
+      '/Users/$id',
       data: data,
       fromJson: (json) => User.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<void> deleteUser(int id) async {
-    await _client.delete<dynamic>('/users/$id');
+    await _client.delete<dynamic>('/Users/$id');
   }
 
   Future<void> forceLogout(int id) async {
-    await _client.post<dynamic>('/users/$id/force-logout');
+    await _client.post<dynamic>('/Users/$id/ForceLogout');
   }
 }
 

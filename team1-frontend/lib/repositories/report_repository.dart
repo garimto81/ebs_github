@@ -17,14 +17,14 @@ class ReportRepository {
   ReportRepository(this._client);
   final BoApiClient _client;
 
-  /// Fetch a report by type (backend: GET /reports/{report_type}).
+  /// Fetch a report by type (backend: GET /Reports/{reportType}).
   /// Returns the raw report data; shape varies by report type.
   Future<Map<String, dynamic>> getReport(
     ReportType reportType, {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<Map<String, dynamic>>(
-      '/reports/${reportType.value}',
+      '/Reports/${reportType.value}',
       queryParameters: params,
       fromJson: (json) => json as Map<String, dynamic>,
     );

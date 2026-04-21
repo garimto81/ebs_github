@@ -204,8 +204,8 @@ Admin은 GFX 탭에서 현재 테이블에 적용된 **활성 스킨**을 조회
 ### 6.1 UI 요소
 
 - **Current Active**: 현재 적용된 스킨 이름 표시 (드롭다운, 읽기 전용)
-- **Available Skins**: Backend `GET /api/v1/skins` 결과 목록 (이름 · 작성자 · 버전 · is_active 표시)
-- **[Apply]**: `PUT /api/v1/skins/{id}/activate` 호출 → WebSocket `skin_updated` broadcast (API-05)
+- **Available Skins**: Backend `GET /api/v1/Skins` 결과 목록 (이름 · 작성자 · 버전 · is_active 표시)
+- **[Apply]**: `PUT /api/v1/Skins/{id}/Activate` 호출 → WebSocket `skin_updated` broadcast (API-05)
 
 > 스킨 프리뷰·편집·Import 는 Lobby 헤더 `[Graphic Editor]` 진입점 전용. Settings/Graphics 에서는 활성 스킨 전환(Apply) 만 지원.
 
@@ -213,9 +213,9 @@ Admin은 GFX 탭에서 현재 테이블에 적용된 **활성 스킨**을 조회
 
 | 동작 | API |
 |------|-----|
-| 목록 조회 | `GET /api/v1/skins` (API-07 §2) |
-| 현재 active 조회 | `GET /api/v1/skins/active` (API-07 §7) |
-| 활성 설정 | `PUT /api/v1/skins/{id}/activate` (API-07 §6) |
+| 목록 조회 | `GET /api/v1/Skins` (API-07 §2) |
+| 현재 active 조회 | `GET /api/v1/Skins/Active` (API-07 §7) |
+| 활성 설정 | `PUT /api/v1/Skins/{id}/Activate` (API-07 §6) |
 
 ### 6.3 권한
 
@@ -254,8 +254,8 @@ Admin은 GFX 탭에서 현재 테이블에 적용된 **활성 스킨**을 조회
 
 | 동작 | API |
 |------|-----|
-| 조회 | `GET /api/v1/tables/{id}/overlay_colors` |
-| 설정 | `PATCH /api/v1/tables/{id}/overlay_colors` |
+| 조회 | `GET /api/v1/Tables/{id}/overlay_colors` |
+| 설정 | `PATCH /api/v1/Tables/{id}/overlay_colors` |
 
 ---
 

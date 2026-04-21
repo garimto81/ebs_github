@@ -1,46 +1,47 @@
-# Quasar/Vite
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+/build/
+
+# Generated / ephemeral
+**/generated_plugin_registrant.dart
+**/.dart_tool/package_config.json
+
+# Windows runner (generated)
+windows/flutter/ephemeral/
+windows/flutter/generated_plugins.cmake
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugin_registrant.h
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS
 .DS_Store
-.thumbs.db
-node_modules/
-/dist
-/dist-ssr
-/src-capacitor
-/src-cordova
-/.quasar
-/.cache
-/node_modules_bk
+Thumbs.db
+*.swp
 
 # Environment
 .env
 .env.local
 .env.local.*
-.env.*.local
 
-# Editor
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Vite
-vite.config.ts.*
-
-# Playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-
-# Vitest
-/coverage
+# Legacy Quasar residue (아카이브 전 제거 대상)
+node_modules/
+.quasar/
 
 # Claude commands (Junction to root)
 .claude/commands/
+
+# Session-local state (팀 세션 작업용)
+.claude/session_state.json
+.claude/worktrees/

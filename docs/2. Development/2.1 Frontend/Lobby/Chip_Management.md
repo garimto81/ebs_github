@@ -85,8 +85,8 @@ Add Chips와 동일 레이아웃. 제거 수량 입력.
 
 | 동작 | API | 비고 |
 |------|-----|------|
-| 좌석별 칩 수 조회 | `GET /tables/:id/seats` → `chip_count` 필드 | Backend_HTTP §5.9 |
-| 좌석별 칩 수 수정 | `PATCH /seats/:id` → `{chipCount}` | Backend_HTTP §5.9 |
+| 좌석별 칩 수 조회 | `GET /Tables/:id/seats` → `chip_count` 필드 | Backend_HTTP §5.9 |
+| 좌석별 칩 수 수정 | `PATCH /Seats/:id` → `{chipCount}` | Backend_HTTP §5.9 |
 | Multi-Table Add/Pull | 미정의 | 미결: CCR 필요 — 일괄 엔드포인트 |
 | Total Removal | 미정의 | 미결: CCR 필요 |
 | Chip Discrepancy 검증 | 미정의 | 클라이언트 계산 또는 서버 검증 미확정 |

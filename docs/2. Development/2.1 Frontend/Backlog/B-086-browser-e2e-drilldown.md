@@ -11,11 +11,11 @@ source: docs/2. Development/2.1 Frontend/Backlog.md
 
 ## 배경
 
-기존 러너는 `/lobby` 진입까지만 검증. Event 클릭 → Tables 자동 로드나 Settings/Staff/GFX/Reports 탭 전환 시 발생하는 런타임 에러/API 404는 감지 못 함.
+기존 러너는 `/Lobby` 진입까지만 검증. Event 클릭 → Tables 자동 로드나 Settings/Staff/GFX/Reports 탭 전환 시 발생하는 런타임 에러/API 404는 감지 못 함.
 
 ## 완료 내역
 
-- Event 행 클릭 시 `/api/v1/tables` 응답 포착 (5초 타임아웃)
+- Event 행 클릭 시 `/api/v1/Tables` 응답 포착 (5초 타임아웃)
 - Settings/Staff/GFX/Reports 아이콘 순차 클릭 (좌표 기반)
 - 각 단계 스크린샷: `04c-drill-down`, `06-settings`, `07-staff`, `08-gfx`, `09-reports`
 - API 4xx/5xx + Console error + 빨간 에러 박스 픽셀 감지 유지

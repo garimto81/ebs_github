@@ -11,14 +11,14 @@ class SettingsRepository {
 
   Future<Map<String, dynamic>> getConfig(String section) async {
     return _client.get<Map<String, dynamic>>(
-      '/configs/$section',
+      '/Configs/$section',
       fromJson: (json) => json as Map<String, dynamic>,
     );
   }
 
   Future<Map<String, dynamic>> getAllConfigs() async {
     return _client.get<Map<String, dynamic>>(
-      '/configs',
+      '/Configs',
       fromJson: (json) => json as Map<String, dynamic>,
     );
   }
@@ -28,7 +28,7 @@ class SettingsRepository {
     Map<String, dynamic> values,
   ) async {
     return _client.put<Map<String, dynamic>>(
-      '/configs/$section',
+      '/Configs/$section',
       data: values,
       fromJson: (json) => json as Map<String, dynamic>,
     );
@@ -43,7 +43,7 @@ class SettingsRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<BlindStructure>>(
-      '/series/$seriesId/blind-structures',
+      '/Series/$seriesId/BlindStructures',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => BlindStructure.fromJson(e as Map<String, dynamic>))
@@ -53,7 +53,7 @@ class SettingsRepository {
 
   Future<BlindStructure> getBlindStructure(int seriesId, int bsId) async {
     return _client.get<BlindStructure>(
-      '/series/$seriesId/blind-structures/$bsId',
+      '/Series/$seriesId/BlindStructures/$bsId',
       fromJson: (json) =>
           BlindStructure.fromJson(json as Map<String, dynamic>),
     );
@@ -64,7 +64,7 @@ class SettingsRepository {
     Map<String, dynamic> data,
   ) async {
     return _client.post<BlindStructure>(
-      '/series/$seriesId/blind-structures',
+      '/Series/$seriesId/BlindStructures',
       data: data,
       fromJson: (json) =>
           BlindStructure.fromJson(json as Map<String, dynamic>),
@@ -77,7 +77,7 @@ class SettingsRepository {
     Map<String, dynamic> data,
   ) async {
     return _client.put<BlindStructure>(
-      '/series/$seriesId/blind-structures/$bsId',
+      '/Series/$seriesId/BlindStructures/$bsId',
       data: data,
       fromJson: (json) =>
           BlindStructure.fromJson(json as Map<String, dynamic>),
@@ -86,7 +86,7 @@ class SettingsRepository {
 
   Future<void> deleteBlindStructure(int seriesId, int bsId) async {
     await _client.delete<dynamic>(
-      '/series/$seriesId/blind-structures/$bsId',
+      '/Series/$seriesId/BlindStructures/$bsId',
     );
   }
 
@@ -98,7 +98,7 @@ class SettingsRepository {
     int blindStructureId,
   ) async {
     return _client.get<List<BlindStructureLevel>>(
-      '/blind-structures/$blindStructureId/levels',
+      '/BlindStructures/$blindStructureId/Levels',
       fromJson: (json) => (json as List)
           .map((e) =>
               BlindStructureLevel.fromJson(e as Map<String, dynamic>))
@@ -111,7 +111,7 @@ class SettingsRepository {
     Map<String, dynamic> data,
   ) async {
     return _client.post<BlindStructureLevel>(
-      '/blind-structures/$blindStructureId/levels',
+      '/BlindStructures/$blindStructureId/Levels',
       data: data,
       fromJson: (json) =>
           BlindStructureLevel.fromJson(json as Map<String, dynamic>),
@@ -124,7 +124,7 @@ class SettingsRepository {
     Map<String, dynamic> data,
   ) async {
     return _client.put<BlindStructureLevel>(
-      '/blind-structures/$blindStructureId/levels/$levelId',
+      '/BlindStructures/$blindStructureId/Levels/$levelId',
       data: data,
       fromJson: (json) =>
           BlindStructureLevel.fromJson(json as Map<String, dynamic>),
@@ -136,7 +136,7 @@ class SettingsRepository {
     int levelId,
   ) async {
     await _client.delete<dynamic>(
-      '/blind-structures/$blindStructureId/levels/$levelId',
+      '/BlindStructures/$blindStructureId/Levels/$levelId',
     );
   }
 }

@@ -67,7 +67,7 @@ EMPTY → SETUP → LIVE → PAUSED → CLOSED
 - EMPTY / SETUP / CLOSED 상태에서는 `is_pause = false` 로 고정.
 - LIVE 상태에서는 `is_pause`가 독립적으로 true/false 전환 가능.
 - PAUSED 상태는 반드시 `is_pause = true`.
-- `PAUSED + is_pause=false` 조합은 **불변** — `PUT /tables/{id}` 가 이 조합을 거부해야 한다 (422 Unprocessable Entity).
+- `PAUSED + is_pause=false` 조합은 **불변** — `PUT /Tables/{id}` 가 이 조합을 거부해야 한다 (422 Unprocessable Entity).
 
 ### 2.2 LIVE + `is_pause=true`의 의미
 
@@ -81,7 +81,7 @@ EMPTY → SETUP → LIVE → PAUSED → CLOSED
 
 ## 3. API 응답 구조
 
-### `GET /api/v1/tables/{id}`
+### `GET /api/v1/Tables/{id}`
 
 ```json
 {
@@ -96,7 +96,7 @@ EMPTY → SETUP → LIVE → PAUSED → CLOSED
 }
 ```
 
-### `PUT /api/v1/tables/{id}` 유효성
+### `PUT /api/v1/Tables/{id}` 유효성
 
 ```python
 # 서버 측 의사 코드
@@ -184,14 +184,14 @@ Table 상태 변경은 `ConfigChanged` 또는 `TableStatusChanged` WebSocket 이
 
 | 동작 | 모드 | WSOP LIVE 정의 | EBS 구현 |
 |------|------|---------------|---------|
-| **Add (Random)** | Random | 자리 미지정, 빈 테이블 없으면 동작 안 함 | `POST /tables/seats/random` — 서버가 Auto Seating 알고리즘 적용 |
-| **Add (Manual table only)** | Manual A | 테이블 지정, 시트 랜덤 | `POST /tables/{id}/seats/random` |
-| **Add (Manual full)** | Manual B | 테이블 + 시트 모두 지정 | `POST /tables/{id}/seats/{seatNo}` |
-| **Move (Random)** | Random | 마지막 테이블 정리 시 사용 | `POST /tables/move-random?from_table_id=...` |
-| **Move (Manual table only)** | Manual A | 테이블 지정, 시트 랜덤 | `POST /tables/{id}/seats/random?from_player_id=...` |
-| **Move (Manual full)** | Manual B | 테이블 + 시트 지정 | `POST /tables/{id}/seats/{seatNo}?from_player_id=...` |
-| **Stat 수정** | — | Add Chips / Remove Chips / Kick Out / Eliminate | `PATCH /seats/{seatId}` body `{chips, eliminated, kicked_out}` |
-| **Eliminate (마지막 1~2명)** | confirm | "There is The Last Player Standing" / "This is The Last Player CANNOT be eliminated" 확인 | 클라이언트 모달 + `POST /tables/{id}/complete` 트리거 |
+| **Add (Random)** | Random | 자리 미지정, 빈 테이블 없으면 동작 안 함 | `POST /Tables/Seats/Random` — 서버가 Auto Seating 알고리즘 적용 |
+| **Add (Manual table only)** | Manual A | 테이블 지정, 시트 랜덤 | `POST /Tables/{id}/Seats/Random` |
+| **Add (Manual full)** | Manual B | 테이블 + 시트 모두 지정 | `POST /Tables/{id}/Seats/{seatNo}` |
+| **Move (Random)** | Random | 마지막 테이블 정리 시 사용 | `POST /Tables/move-random?from_table_id=...` |
+| **Move (Manual table only)** | Manual A | 테이블 지정, 시트 랜덤 | `POST /Tables/{id}/Seats/random?from_player_id=...` |
+| **Move (Manual full)** | Manual B | 테이블 + 시트 지정 | `POST /Tables/{id}/Seats/{seatNo}?from_player_id=...` |
+| **Stat 수정** | — | Add Chips / Remove Chips / Kick Out / Eliminate | `PATCH /Seats/{seatId}` body `{chips, eliminated, kicked_out}` |
+| **Eliminate (마지막 1~2명)** | confirm | "There is The Last Player Standing" / "This is The Last Player CANNOT be eliminated" 확인 | 클라이언트 모달 + `POST /Tables/{id}/Complete` 트리거 |
 
 권한: Floor Manager·Tournament Director (= EBS Admin). Table Dealer 는 칩 변동 + Bust 신청만 (= EBS Operator 해당 테이블 한정).
 
@@ -301,7 +301,7 @@ WSOP LIVE `PlayerMoveStatus {0=None, 1=New, 2=Move}` (Confluence page `165383376
 
 - EBS 현재 구현 스크린샷: `visual/screenshots/ebs-flow-table-status.png` (기존)
 - EBS 좌석 배치 화면: `visual/screenshots/ebs-lobby-04-tables.png`
-- WSOP LIVE 원본 UI 는 Confluence page `1653833763` 첨부 (로컬 미러 `C:/claude/wsoplive/docs/confluence-mirror/.../Tables API.md` 인접 `_attachments/` 폴더)
+- WSOP LIVE 원본 UI 는 Confluence page `1653833763` 첨부 (로컬 미러 `C:/Claude/Wsoplive/Docs/ConfluenceMirror/.../Tables API.md` 인접 `_attachments/` 폴더)
 
 **일치 기준**: 뱃지 텍스트·카운트다운·색상·만료 규칙 모두 WSOP LIVE 원본과 동일. divergence 없음 (이전에는 enum 자체 미채택이었으므로 뱃지 표시가 없던 상태).
 

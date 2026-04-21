@@ -11,8 +11,8 @@ source: docs/2. Development/2.1 Frontend/Backlog.md
 ## 배경
 
 B-084에서 `SkinRepository.uploadSkin` 단일-step을 제거하고 아래 2가지 메소드로 분리:
-- `createSkin(metadata)` → POST /skins (skin_id 반환)
-- `uploadSkinFile(skinId, bytes, fileName)` → POST /skins/:id/upload
+- `createSkin(metadata)` → POST /Skins (skin_id 반환)
+- `uploadSkinFile(skinId, bytes, fileName)` → POST /Skins/:id/upload
 - `createAndUploadSkin(...)` — 편의 래퍼
 
 현재 GFX 화면에 업로드 UI가 연결되어 있지 않아 호출부 수정은 없었음. 향후 UI 추가 시 `createAndUploadSkin`을 사용하거나 2-step 명시 필요.

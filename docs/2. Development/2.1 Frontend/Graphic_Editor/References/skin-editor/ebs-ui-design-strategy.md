@@ -323,7 +323,7 @@ $ebs-text-muted: #969696;
 
 ```scss
 // src/css/editor-shared.scss (SE + GE 공유)
-@import './quasar.variables';
+@import './Quasar.variables';
 
 // 교차 배경색 (Unity Inspector 패턴)
 .property-row:nth-child(odd)  { background: $ebs-surface; }

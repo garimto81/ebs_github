@@ -74,7 +74,7 @@ reimplementability_notes: "BS-02-01-session-restore 복구 플로우 완결"
 | 기기 A 가 Table T1 진입, 기기 B 가 같은 계정으로 로그인 | B 로그인 허용. B 는 빈 Lobby 에서 시작 (A 의 `last_table_id` 무시) |
 | A 가 활동 중일 때 B 가 Table T2 선택 | B 의 진입 허용. `user_sessions.last_table_id = T2` 갱신 (B 가 마지막 활동) |
 | A 가 다음 페이지 클릭 시도 | A 의 세션 토큰이 여전히 유효하면 A 도 활동 가능. A 와 B 모두 자기 화면을 진행 가능 (서버는 둘 다 별개 세션으로 인지) |
-| A 가 2분간 비활동 (아무 API 호출 없음) | A 의 세션 자동 로그아웃 (서버가 inactive timer 로 강제 만료). A 는 다음 액션 시도 시 401 → `/login` |
+| A 가 2분간 비활동 (아무 API 호출 없음) | A 의 세션 자동 로그아웃 (서버가 inactive timer 로 강제 만료). A 는 다음 액션 시도 시 401 → `/Login` |
 | A 가 명시적 로그아웃 | A 의 세션만 종료. B 는 영향 없음 |
 
 ### 구현 규약

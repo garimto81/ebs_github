@@ -132,10 +132,10 @@ B-051 (CSV/JSON 내보내기 Backlog) 과 연동.
 ## 8. API 계약 (PUT/GET)
 
 ```
-GET  /api/v1/users/{me}/preferences
+GET  /api/v1/Users/{me}/Preferences
   → 200 {shortcuts, notification, default_view, auto_logout, locale, export_defaults, ui_visibility}
 
-PUT  /api/v1/users/{me}/preferences
+PUT  /api/v1/Users/{me}/Preferences
   body: partial 업데이트 허용
   → 200 (갱신된 전체 객체)
   → 400 validation 실패 시 필드별 error 반환

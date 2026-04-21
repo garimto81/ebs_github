@@ -94,7 +94,7 @@ Settings 페이지 내부에 **5개 탭**이 수평 배치된다.
 
 ```
 Admin이 Settings 변경
-  → BO REST API PUT /configs/{category}/{key}
+  → BO REST API PUT /Configs/{category}/{key}
     → BO DB configs 테이블 UPDATE
       → WebSocket ConfigChanged 이벤트 발행
         → 모든 CC가 수신
@@ -125,14 +125,14 @@ flowchart TD
     Change[Admin이 설정 값 변경 + Save] --> Classify{LOCK/CONFIRM/FREE?}
 
     Classify -->|LOCK| Block[저장 버튼 비활성. 변경 시도 무시]
-    Classify -->|FREE| PutFree[PUT /configs/.../{key}]
+    Classify -->|FREE| PutFree[PUT /Configs/.../{key}]
     Classify -->|CONFIRM| ConfirmDlg[확인 다이얼로그 표시]
 
     PutFree --> BroadcastFree[BO가 ConfigChanged 발행]
     BroadcastFree --> ApplyFree[settingsStore.activeConfig 갱신 = 즉시 UI 반영]
 
     ConfirmDlg -->|취소| CancelFlow[변경 폐기]
-    ConfirmDlg -->|확인| PutConfirm[PUT /configs/.../{key}]
+    ConfirmDlg -->|확인| PutConfirm[PUT /Configs/.../{key}]
     PutConfirm --> CheckHand{현재 핸드 상태?}
 
     CheckHand -->|IDLE| ApplyNow[즉시 적용 = FREE 와 동일 경로]
@@ -183,7 +183,7 @@ interface SettingsStoreState {
 
 **4) Reset to Default**
 
-`POST /configs/reset` 은 카테고리 전체 초기화이므로 항상 **CONFIRM 분류로 간주**. 확인 다이얼로그 + 대기 큐 처리. 게임이 IDLE 이어도 시청자 경험 영향을 줄이기 위해 `HandStarted` 경계에서만 적용한다.
+`POST /Configs/Reset` 은 카테고리 전체 초기화이므로 항상 **CONFIRM 분류로 간주**. 확인 다이얼로그 + 대기 큐 처리. 게임이 IDLE 이어도 시청자 경험 영향을 줄이기 위해 `HandStarted` 경계에서만 적용한다.
 
 > 위 규약은 Pinia 설계와 Settings 6탭 전체의 "저장" 동작 구현의 SSOT. 각 탭 문서(Outputs.md 등) 는 자기 필드만 다루고 "언제 적용" 은 본 섹션을 참조한다.
 
@@ -195,10 +195,10 @@ interface SettingsStoreState {
 
 | 메서드 | 경로 | 설명 |
 |:------:|------|------|
-| GET | `/configs/{category}` | 섹션별 설정 조회 |
-| PUT | `/configs/{category}/{key}` | 설정 변경 |
-| POST | `/configs/reset` | 기본값 초기화 |
-| GET | `/configs/presets` | 출력 프리셋 목록 |
+| GET | `/Configs/{category}` | 섹션별 설정 조회 |
+| PUT | `/Configs/{category}/{key}` | 설정 변경 |
+| POST | `/Configs/Reset` | 기본값 초기화 |
+| GET | `/Configs/Presets` | 출력 프리셋 목록 |
 
 ### 4.2 WebSocket 이벤트
 

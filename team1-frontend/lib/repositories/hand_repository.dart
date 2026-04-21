@@ -11,7 +11,7 @@ class HandRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<Hand>>(
-      '/hands',
+      '/Hands',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => Hand.fromJson(e as Map<String, dynamic>))
@@ -21,14 +21,14 @@ class HandRepository {
 
   Future<Hand> getHand(int id) async {
     return _client.get<Hand>(
-      '/hands/$id',
+      '/Hands/$id',
       fromJson: (json) => Hand.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<List<HandAction>> getActions(int handId) async {
     return _client.get<List<HandAction>>(
-      '/hands/$handId/actions',
+      '/Hands/$handId/Actions',
       fromJson: (json) => (json as List)
           .map((e) => HandAction.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -37,7 +37,7 @@ class HandRepository {
 
   Future<List<HandPlayer>> getPlayers(int handId) async {
     return _client.get<List<HandPlayer>>(
-      '/hands/$handId/players',
+      '/Hands/$handId/Players',
       fromJson: (json) => (json as List)
           .map((e) => HandPlayer.fromJson(e as Map<String, dynamic>))
           .toList(),

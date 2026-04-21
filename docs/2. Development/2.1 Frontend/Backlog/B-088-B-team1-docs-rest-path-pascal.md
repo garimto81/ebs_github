@@ -11,7 +11,7 @@ blocked-by: "team2 PR-4 (Backend router path PascalCase)"
 
 ## 배경
 
-2026-04-21 `/team "모든 기획 문서가 이 규약에 맞게 수정되었는지 재확인"` 수행 결과:
+2026-04-21 `/Team "모든 기획 문서가 이 규약에 맞게 수정되었는지 재확인"` 수행 결과:
 
 - ✅ **JSON field snake → camelCase**: 43건 전환 완료 (12 파일)
 - ✅ **Path variable snake → camelCase**: 23건 전환 완료
@@ -23,8 +23,8 @@ blocked-by: "team2 PR-4 (Backend router path PascalCase)"
 
 | 분류 | 예시 | 조치 |
 |------|------|------|
-| Backend REST API path | `/audit-logs`, `/hand-history`, `/blind-structures` | PascalCase 로 변환 필요 |
-| Flutter 라우트 | `/lobby`, `/graphic-editor`, `/forgot-password`, `/reports/hands-summary` | 프레임워크 관행 (원칙 1 scope 외) — 유지 |
+| Backend REST API path | `/AuditLogs`, `/HandHistory`, `/BlindStructures` | PascalCase 로 변환 필요 |
+| Flutter 라우트 | `/Lobby`, `/GraphicEditor`, `/ForgotPassword`, `/Reports/HandsSummary` | 프레임워크 관행 (원칙 1 scope 외) — 유지 |
 | URL 예시 (외부) | `https://example.com/hand-history` | 유지 |
 | 코드 주석 내 경로 | 컨텍스트 의존 | 수동 판정 |
 

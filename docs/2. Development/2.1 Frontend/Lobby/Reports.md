@@ -103,11 +103,11 @@ Export: CSV (전체 리포트), PDF (Prize Pool Report Print 용도)
 
 | 동작 | API | 비고 |
 |------|-----|------|
-| 핸드 통계 | `GET /reports/hands-summary` | Backend_HTTP §5.15 |
-| 플레이어 통계 | `GET /reports/player-stats` | Backend_HTTP §5.15 |
-| 테이블 활동 | `GET /reports/table-activity` | Backend_HTTP §5.15 |
-| 세션 로그 | `GET /reports/session-log` | Backend_HTTP §5.15 |
-| 감사 로그 | `GET /audit-logs` | Backend_HTTP §5.14 |
+| 핸드 통계 | `GET /Reports/HandsSummary` | Backend_HTTP §5.15 |
+| 플레이어 통계 | `GET /Reports/PlayerStats` | Backend_HTTP §5.15 |
+| 테이블 활동 | `GET /Reports/TableActivity` | Backend_HTTP §5.15 |
+| 세션 로그 | `GET /Reports/SessionLog` | Backend_HTTP §5.15 |
+| 감사 로그 | `GET /AuditLogs` | Backend_HTTP §5.14 |
 | Unique Player Report | 미정의 | 미결: CCR 필요 |
 | Prize Pool Summary | 미정의 | 미결: CCR 필요 |
 | 실시간 Players Count | WebSocket `flight_stats_updated` | API-05 |

@@ -96,7 +96,7 @@ Frame Rate는 24/25/30/50/60fps 프리셋 또는 수동 입력(1~120fps 정수).
 | Output Device | Select (자동 탐색) | 자동 선택 | 시스템 연결 출력 장치. 미감지 시 "No device found" |
 | Port | Select | 자동 선택 | 선택 장치의 출력 포트 |
 
-> 해상도/fps는 Video Size(2) + Frame Rate(4) 상속. 물리 포트 지원 해상도 불일치 시 Info Bar 경고.
+> 해상도/Fps는 Video Size(2) + Frame Rate(4) 상속. 물리 포트 지원 해상도 불일치 시 Info Bar 경고.
 
 ### 1.3 Output Mode 서브그룹 (ID 10~13)
 

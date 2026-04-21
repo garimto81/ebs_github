@@ -31,7 +31,7 @@ ready (스킨 선택, 프리뷰 완료)
   ↓ user clicks Activate (GEA-01)
   ↓
 game_state_check
-  ↓ GET /api/v1/game-state
+  ↓ GET /api/v1/GameState
   ├→ IDLE → confirming
   └→ RUNNING → warning_dialog (GEA-02)
                 ├→ user cancels → ready
@@ -41,7 +41,7 @@ confirming
   ↓ user confirms
   ↓
 activating
-  ↓ PUT /skins/{id}/activate (If-Match ETag + X-Game-State)
+  ↓ PUT /Skins/{id}/Activate (If-Match ETag + X-Game-State)
   ├→ 201 → broadcasting
   ├→ 412 ETag 충돌 (GEA-03) → conflict_refetch → ready
   └→ 409 GameState 불일치 → ready (경고 재표시)
@@ -67,7 +67,7 @@ activated
 ```
 Activate 버튼 클릭
   ↓
-GET /api/v1/game-state (Lobby 측 최신 상태 조회)
+GET /api/v1/GameState (Lobby 측 최신 상태 조회)
   ↓
 if state == "RUNNING":
   다이얼로그 표시:
@@ -90,12 +90,12 @@ else:
 
 ---
 
-## 3. PUT /skins/{id}/activate (API-07 §6)
+## 3. PUT /Skins/{id}/Activate (API-07 §6)
 
 ### 3.1 요청
 
 ```http
-PUT /api/v1/skins/{id}/activate HTTP/1.1
+PUT /api/v1/Skins/{id}/Activate HTTP/1.1
 Authorization: Bearer {adminJwt}
 If-Match: W/"{etag}"
 X-Game-State: IDLE | RUNNING
@@ -150,7 +150,7 @@ Backend는 Activate 성공 시 모든 구독자에게 `skin_updated` 이벤트�
 ```
 WS 수신: skin_updated
   ↓
-GET /api/v1/skins/{skinId} (`.gfskin` bytes 다운로드)
+GET /api/v1/Skins/{skinId} (`.gfskin` bytes 다운로드)
   ↓
 BS-07-03 §3 로드 FSM 수행 (in-memory ZIP 해제 + 검증)
   ↓
@@ -163,8 +163,8 @@ Overlay 재렌더 (최대 500ms)
 
 Overlay가 재연결 또는 network gap 후 복구:
 
-1. `GET /api/v1/skins/active` → current `active_skin_id` 확인
-2. `GET /api/v1/events/replay?from_seq={lastSeq}&channel=cc_event` → 놓친 이벤트 재생
+1. `GET /api/v1/Skins/Active` → current `active_skin_id` 확인
+2. `GET /api/v1/Events/replay?from_seq={lastSeq}&channel=cc_event` → 놓친 이벤트 재생
 3. `skin_updated` 이벤트를 만나면 §4.1 Consumer 동작 실행
 
 ---

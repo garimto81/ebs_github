@@ -526,7 +526,7 @@ body.annotated .legend-bar {
 if (location.search.includes('annotated')) {
   document.body.classList.add('annotated');
 }
-</script>
+</Script>
 ```
 
 ### 주석 표시 규칙

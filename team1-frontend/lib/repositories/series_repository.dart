@@ -11,7 +11,7 @@ class SeriesRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<Series>>(
-      '/series',
+      '/Series',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => Series.fromJson(e as Map<String, dynamic>))
@@ -21,14 +21,14 @@ class SeriesRepository {
 
   Future<Series> getSeries(int id) async {
     return _client.get<Series>(
-      '/series/$id',
+      '/Series/$id',
       fromJson: (json) => Series.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<Series> createSeries(Map<String, dynamic> data) async {
     return _client.post<Series>(
-      '/series',
+      '/Series',
       data: data,
       fromJson: (json) => Series.fromJson(json as Map<String, dynamic>),
     );
@@ -36,14 +36,14 @@ class SeriesRepository {
 
   Future<Series> updateSeries(int id, Map<String, dynamic> data) async {
     return _client.put<Series>(
-      '/series/$id',
+      '/Series/$id',
       data: data,
       fromJson: (json) => Series.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<void> deleteSeries(int id) async {
-    await _client.delete<dynamic>('/series/$id');
+    await _client.delete<dynamic>('/Series/$id');
   }
 
   // -- Competitions under a series ----------------------------------------
@@ -52,7 +52,7 @@ class SeriesRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<Competition>>(
-      '/competitions',
+      '/Competitions',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => Competition.fromJson(e as Map<String, dynamic>))
@@ -62,7 +62,7 @@ class SeriesRepository {
 
   Future<Competition> createCompetition(Map<String, dynamic> data) async {
     return _client.post<Competition>(
-      '/competitions',
+      '/Competitions',
       data: data,
       fromJson: (json) => Competition.fromJson(json as Map<String, dynamic>),
     );
@@ -71,28 +71,28 @@ class SeriesRepository {
   Future<Competition> updateCompetition(
       int id, Map<String, dynamic> data) async {
     return _client.put<Competition>(
-      '/competitions/$id',
+      '/Competitions/$id',
       data: data,
       fromJson: (json) => Competition.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<void> deleteCompetition(int id) async {
-    await _client.delete<dynamic>('/competitions/$id');
+    await _client.delete<dynamic>('/Competitions/$id');
   }
 
   // -- WSOP LIVE sync -----------------------------------------------------
 
   Future<Map<String, dynamic>> triggerSync() async {
     return _client.post<Map<String, dynamic>>(
-      '/sync/trigger',
+      '/Sync/Trigger',
       fromJson: (json) => json as Map<String, dynamic>,
     );
   }
 
   Future<Map<String, dynamic>> getSyncStatus() async {
     return _client.get<Map<String, dynamic>>(
-      '/sync/status',
+      '/Sync/Status',
       fromJson: (json) => json as Map<String, dynamic>,
     );
   }

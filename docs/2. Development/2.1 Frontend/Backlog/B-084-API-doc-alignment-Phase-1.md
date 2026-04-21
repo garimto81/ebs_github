@@ -12,10 +12,10 @@ source: docs/2. Development/2.1 Frontend/Backlog.md
 ## 배경
 
 선행 감사(2026-04-17)에서 Frontend가 문서에 반하는 경로를 호출하던 4개 Repository 발견:
-- BlindStructureRepository: flat path (`/blind-structures/:id`) → series-nested 필요
+- BlindStructureRepository: flat path (`/BlindStructures/:id`) → series-nested 필요
 - PayoutStructureRepository: flat path → series-nested 필요
-- SkinRepository.upload: 전역 `/skins/upload` → skin-specific `/skins/:id/upload`
-- TableRepository.rebalance: `/flights/:id/rebalance` → `/tables/rebalance` (Saga)
+- SkinRepository.upload: 전역 `/Skins/Upload` → skin-specific `/Skins/:id/upload`
+- TableRepository.rebalance: `/Flights/:id/rebalance` → `/Tables/Rebalance` (Saga)
 
 ## 완료 내역
 

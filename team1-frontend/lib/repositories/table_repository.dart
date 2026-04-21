@@ -3,15 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/remote/bo_api_client.dart';
 import '../models/models.dart';
 
-// TODO(B-088 PR-6): REST path kebab-case → WSOP LIVE PascalCase 일괄 전환.
-// 현재: /tables, /hand-history, /blind-structures, /payout-structures 등 kebab-case.
-// 목표: /Tables, /HandHistory, /BlindStructures, /PayoutStructures (WSOP LIVE 직접 준수).
-// 전환 시점: team2 PR-4 (Backend router rename) 완료 후 일괄 교체.
-// 상세: docs/2. Development/2.5 Shared/Naming_Conventions.md §1 + B-088 PR-4/6
-//
-// 본 session(B-088 PR-5) 에서는 @JsonKey(name: 'camelCase') Freezed 전환만 수행.
-// Backend 가 PR-2 (Pydantic alias_generator) 전까지 snake_case 응답 → 실 BO 연결 시
-// API 파싱 실패 예상됨 (의도적 breakage — cut-over 전제). Mock 환경은 동시 전환 완료.
+// B-088 PR-6b (2026-04-21): REST path WSOP LIVE PascalCase 100% 준수.
+// /Tables, /HandHistory, /BlindStructures, /PayoutStructures, /AuditLogs, /Auth/Login 등.
+// team2 PR-4 (Backend router rename) 전이지만 cut-over 방식으로 선제 전환.
+// Mock adapter 동시 전환 필수 (USE_MOCK=true 환경에서 정상 동작 유지).
+// 실 Backend 연결 시 team2 PR-4 merge 될 때까지 일시적 404 발생 — 예상된 breakage.
+// 상세: docs/2. Development/2.5 Shared/Naming_Conventions.md §1
 
 class TableRepository {
   TableRepository(this._client);
@@ -21,7 +18,7 @@ class TableRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<EbsTable>>(
-      '/tables',
+      '/Tables',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => EbsTable.fromJson(e as Map<String, dynamic>))
@@ -31,14 +28,14 @@ class TableRepository {
 
   Future<EbsTable> getTable(int id) async {
     return _client.get<EbsTable>(
-      '/tables/$id',
+      '/Tables/$id',
       fromJson: (json) => EbsTable.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<EbsTable> createTable(Map<String, dynamic> data) async {
     return _client.post<EbsTable>(
-      '/tables',
+      '/Tables',
       data: data,
       fromJson: (json) => EbsTable.fromJson(json as Map<String, dynamic>),
     );
@@ -46,26 +43,26 @@ class TableRepository {
 
   Future<EbsTable> updateTable(int id, Map<String, dynamic> data) async {
     return _client.put<EbsTable>(
-      '/tables/$id',
+      '/Tables/$id',
       data: data,
       fromJson: (json) => EbsTable.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<void> deleteTable(int id) async {
-    await _client.delete<dynamic>('/tables/$id');
+    await _client.delete<dynamic>('/Tables/$id');
   }
 
   Future<Map<String, dynamic>> launchCc(int id) async {
     return _client.post<Map<String, dynamic>>(
-      '/tables/$id/launch-cc',
+      '/Tables/$id/LaunchCc',
       fromJson: (json) => json as Map<String, dynamic>,
     );
   }
 
   Future<Map<String, dynamic>> getStatus(int id) async {
     return _client.get<Map<String, dynamic>>(
-      '/tables/$id/status',
+      '/Tables/$id/Status',
       fromJson: (json) => json as Map<String, dynamic>,
     );
   }
@@ -74,7 +71,7 @@ class TableRepository {
 
   Future<List<TableSeat>> listSeats(int tableId) async {
     return _client.get<List<TableSeat>>(
-      '/tables/$tableId/seats',
+      '/Tables/$tableId/Seats',
       fromJson: (json) => (json as List)
           .map((e) => TableSeat.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -87,8 +84,8 @@ class TableRepository {
     required int seatNo,
   }) async {
     return _client.post<TableSeat>(
-      '/tables/$tableId/seats',
-      data: {'player_id': playerId, 'seat_no': seatNo},
+      '/Tables/$tableId/Seats',
+      data: {'playerId': playerId, 'seatNo': seatNo},
       fromJson: (json) => TableSeat.fromJson(json as Map<String, dynamic>),
     );
   }
@@ -99,14 +96,14 @@ class TableRepository {
     Map<String, dynamic> data,
   ) async {
     return _client.put<TableSeat>(
-      '/tables/$tableId/seats/$seatNo',
+      '/Tables/$tableId/Seats/$seatNo',
       data: data,
       fromJson: (json) => TableSeat.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<void> removePlayer(int tableId, int seatNo) async {
-    await _client.delete<dynamic>('/tables/$tableId/seats/$seatNo');
+    await _client.delete<dynamic>('/Tables/$tableId/Seats/$seatNo');
   }
 
   // -- Rebalance (Backend_HTTP.md §Table.POST /tables/rebalance — Saga) ----
@@ -120,12 +117,12 @@ class TableRepository {
     bool dryRun = false,
   }) async {
     return _client.post<Map<String, dynamic>>(
-      '/tables/rebalance',
+      '/Tables/Rebalance',
       data: {
-        'event_flight_id': eventFlightId,
+        'eventFlightId': eventFlightId,
         'strategy': strategy,
-        'target_players_per_table': targetPlayersPerTable,
-        'dry_run': dryRun,
+        'targetPlayersPerTable': targetPlayersPerTable,
+        'dryRun': dryRun,
       },
       fromJson: (json) => json as Map<String, dynamic>,
     );

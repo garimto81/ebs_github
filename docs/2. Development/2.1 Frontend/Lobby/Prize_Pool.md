@@ -81,8 +81,8 @@ Flight Admin 화면 내 Prize Pool / Payout Assignment / Payments 3-탭 구조. 
 
 | 동작 | API | 비고 |
 |------|-----|------|
-| Prize Pool 조회 | `GET /flights/:id/payout-structure` | Backend_HTTP §5.13.1 |
-| Prize Pool 수정 | `PUT /flights/:id/payout-structure` | `prize_pool_changed` WS 이벤트 |
+| Prize Pool 조회 | `GET /Flights/:id/payout-structure` | Backend_HTTP §5.13.1 |
+| Prize Pool 수정 | `PUT /Flights/:id/payout-structure` | `prize_pool_changed` WS 이벤트 |
 | Prize Pool 생성/Publish | 미정의 | 미결: CCR 필요 |
 | Payout Confirm | 미정의 | 미결: CCR 필요 |
 | Payout Combine | 미정의 | 미결: CCR 필요 |

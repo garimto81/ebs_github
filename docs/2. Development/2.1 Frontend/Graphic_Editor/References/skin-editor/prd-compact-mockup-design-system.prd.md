@@ -425,9 +425,9 @@ select:disabled { opacity: 0.4; }
 
 ```html
 <div style="display:flex;align-items:center;gap:3px;padding:1px 0;cursor:default;">
-  <span style="font-size:8px;color:#808080;">▼</span>
-  <span style="font-size:10px;font-weight:600;color:#cccccc;">Section Title</span>
-</div>
+  <span style="font-size:8px;color:#808080;">▼</Span>
+  <span style="font-size:10px;font-weight:600;color:#cccccc;">Section Title</Span>
+</Div>
 ```
 
 - 펼침: `▼` (font-size 8px)
@@ -438,9 +438,9 @@ select:disabled { opacity: 0.4; }
 
 ```html
 <div class="ebs-expansion-body">
-  <div class="alt-row row-between">...</div>
-  <div class="alt-row row">...</div>
-</div>
+  <div class="alt-row row-between">...</Div>
+  <div class="alt-row row">...</Div>
+</Div>
 ```
 
 ```css
@@ -511,7 +511,7 @@ body.annotated .zone-metadata::before {
 ### 8.3 Element AF (Annotated Field)
 
 ```html
-<div class="af" data-eid="07">...</div>
+<div class="af" data-eid="07">...</Div>
 ```
 
 ```css
@@ -642,9 +642,9 @@ Canvas: 전폭 (720px, 높이 ~120px)
 
 ```html
 <div class="prop-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
-  <div class="alt-row row">Left [___]</div>
-  <div class="alt-row row">Top [___]</div>
-</div>
+  <div class="alt-row row">Left [___]</Div>
+  <div class="alt-row row">Top [___]</Div>
+</Div>
 ```
 
 **색상 필드 쌍**: Colour + Hilite를 한 행에 배치

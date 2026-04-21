@@ -11,7 +11,7 @@ class PlayerRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<Player>>(
-      '/players',
+      '/Players',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => Player.fromJson(e as Map<String, dynamic>))
@@ -21,7 +21,7 @@ class PlayerRepository {
 
   Future<Player> getPlayer(int id) async {
     return _client.get<Player>(
-      '/players/$id',
+      '/Players/$id',
       fromJson: (json) => Player.fromJson(json as Map<String, dynamic>),
     );
   }
@@ -31,7 +31,7 @@ class PlayerRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<Player>>(
-      '/players/search',
+      '/Players/Search',
       queryParameters: {'q': query, ...?params},
       fromJson: (json) => (json as List)
           .map((e) => Player.fromJson(e as Map<String, dynamic>))

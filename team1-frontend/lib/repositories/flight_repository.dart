@@ -11,7 +11,7 @@ class FlightRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<EventFlight>>(
-      '/flights',
+      '/Flights',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => EventFlight.fromJson(e as Map<String, dynamic>))
@@ -21,7 +21,7 @@ class FlightRepository {
 
   Future<List<EventFlight>> listByEvent(int eventId) async {
     return _client.get<List<EventFlight>>(
-      '/events/$eventId/flights',
+      '/Events/$eventId/Flights',
       fromJson: (json) => (json as List)
           .map((e) => EventFlight.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -30,14 +30,14 @@ class FlightRepository {
 
   Future<EventFlight> getFlight(int id) async {
     return _client.get<EventFlight>(
-      '/flights/$id',
+      '/Flights/$id',
       fromJson: (json) => EventFlight.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<EventFlight> createFlight(Map<String, dynamic> data) async {
     return _client.post<EventFlight>(
-      '/flights',
+      '/Flights',
       data: data,
       fromJson: (json) => EventFlight.fromJson(json as Map<String, dynamic>),
     );
@@ -45,7 +45,7 @@ class FlightRepository {
 
   Future<EventFlight> updateFlight(int id, Map<String, dynamic> data) async {
     return _client.put<EventFlight>(
-      '/flights/$id',
+      '/Flights/$id',
       data: data,
       fromJson: (json) => EventFlight.fromJson(json as Map<String, dynamic>),
     );

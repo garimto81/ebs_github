@@ -1,11 +1,11 @@
 ---
 id: NOTIFY-LEGACY-CCR-010
-title: [LEGACY] 검토 요청: /tables/rebalance 응답에 saga 구조 추가
+title: [LEGACY] 검토 요청: /Tables/Rebalance 응답에 saga 구조 추가
 status: IN_PROGRESS
 source: docs/2. Development/2.1 Frontend/Backlog.md
 ---
 
-# [NOTIFY-LEGACY-CCR-010] [LEGACY] 검토 요청: /tables/rebalance 응답에 saga 구조 추가
+# [NOTIFY-LEGACY-CCR-010] [LEGACY] 검토 요청: /Tables/Rebalance 응답에 saga 구조 추가
 > ⚠ **LEGACY NOTIFY** — 2026-04-10 CCR 일괄 적용 이전 세션 항목. 현재 CCR 번호 체계와 불일치. 현재 유효 CCR: `docs/05-plans/ccr-inbox/promoting/CCR-*.md`.
 
 - **알림일**: 2026-04-10

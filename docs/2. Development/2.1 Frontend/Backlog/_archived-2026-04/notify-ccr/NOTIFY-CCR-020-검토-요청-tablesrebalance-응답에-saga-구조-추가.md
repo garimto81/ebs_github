@@ -1,11 +1,11 @@
 ---
 id: NOTIFY-CCR-020
-title: 검토 요청: /tables/rebalance 응답에 saga 구조 추가
+title: 검토 요청: /Tables/Rebalance 응답에 saga 구조 추가
 status: IN_PROGRESS
 source: docs/2. Development/2.1 Frontend/Backlog.md
 ---
 
-# [NOTIFY-CCR-020] 검토 요청: /tables/rebalance 응답에 saga 구조 추가
+# [NOTIFY-CCR-020] 검토 요청: /Tables/Rebalance 응답에 saga 구조 추가
 
 - **알림일**: 2026-04-10
 - **CCR**: `docs/05-plans/ccr-inbox/promoting/CCR-020-*.md`

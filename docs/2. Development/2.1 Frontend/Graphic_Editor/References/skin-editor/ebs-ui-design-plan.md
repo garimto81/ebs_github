@@ -109,7 +109,7 @@ $ebs-text-muted: #969696;
 
 ```scss
 // src/css/editor-shared.scss
-@import './quasar.variables';
+@import './Quasar.variables';
 
 // 교차 배경색 (Unity Inspector 패턴)
 .property-row:nth-child(odd)  { background: $ebs-surface; }
@@ -161,10 +161,10 @@ Quasar 의존성: `QExpansionItem`, `QCard`, `QCardSection`
     <q-card flat>
       <q-card-section class="q-pa-sm">
         <slot />
-      </q-card-section>
-    </q-card>
-  </q-expansion-item>
-</template>
+      </QCardSection>
+    </QCard>
+  </QExpansionItem>
+</Template>
 ```
 
 ### EbsPropertyRow.vue
@@ -182,10 +182,10 @@ Quasar 의존성: 없음 (CSS 유틸리티만 사용)
 ```vue
 <template>
   <div class="row items-center q-py-xs property-row">
-    <div class="col-5 text-body2 q-pl-sm">{{ label }}</div>
-    <div class="col-7"><slot /></div>
-  </div>
-</template>
+    <div class="col-5 text-body2 q-pl-sm">{{ label }}</Div>
+    <div class="col-7"><slot /></Div>
+  </Div>
+</Template>
 ```
 
 ### EbsColorPicker.vue
@@ -242,35 +242,35 @@ interface GfxEditorBaseProps {
   <div v-if="pattern === 'A'" class="row items-stretch" style="height: 100%">
     <div class="col-auto q-pa-sm" style="width: 160px; overflow-y: auto;">
       <element-selector :mode="mode" />
-    </div>
+    </Div>
     <div class="col q-pa-sm">
       <ebs-gfx-canvas :mode="mode" />
-    </div>
+    </Div>
     <div class="col-auto q-pa-sm" style="width: 280px; overflow-y: auto;">
       <transform-panel />
       <animation-panel />
       <text-panel v-if="hasText" />
       <background-panel />
-    </div>
-  </div>
+    </Div>
+  </Div>
   <!-- Pattern B: Canvas Top + 2x2 Grid (Blinds, History) -->
   <div v-else-if="pattern === 'B'" class="column">
     <ebs-gfx-canvas :mode="mode" class="q-mb-md" />
     <div class="row q-gutter-md">
-      <div class="col-6"><transform-panel /><text-panel v-if="hasText" /></div>
-      <div class="col-6"><animation-panel /><background-panel /></div>
-    </div>
-  </div>
+      <div class="col-6"><transform-panel /><text-panel v-if="hasText" /></Div>
+      <div class="col-6"><animation-panel /><background-panel /></Div>
+    </Div>
+  </Div>
   <!-- Pattern C: Canvas Top + 3-col (Player, Outs, Leaderboard) -->
   <div v-else class="column">
     <ebs-gfx-canvas :mode="mode" class="q-mb-md" />
     <div class="row q-gutter-md">
-      <div class="col"><transform-panel /></div>
-      <div class="col"><animation-panel /></div>
-      <div class="col"><text-panel v-if="hasText" /><background-panel /></div>
-    </div>
-  </div>
-</template>
+      <div class="col"><transform-panel /></Div>
+      <div class="col"><animation-panel /></Div>
+      <div class="col"><text-panel v-if="hasText" /><background-panel /></Div>
+    </Div>
+  </Div>
+</Template>
 ```
 
 ### SkinEditorDialog.vue (메인 레이아웃)
@@ -287,24 +287,24 @@ interface GfxEditorBaseProps {
           <div class="column q-pa-sm" style="height: 100%">
             <element-grid />
             <colour-adjust class="col" />  <!-- flex-grow: 1 -->
-          </div>
-        </template>
+          </Div>
+        </Template>
         <template #after>
           <q-splitter v-model="rightRatio" :limits="[40, 70]">
             <template #before>
               <visual-settings class="q-pa-sm" style="overflow-y: auto" />
-            </template>
+            </Template>
             <template #after>
               <behaviour-settings class="q-pa-sm" style="overflow-y: auto" />
-            </template>
-          </q-splitter>
-        </template>
-      </q-splitter>
+            </Template>
+          </QSplitter>
+        </Template>
+      </QSplitter>
       <!-- Action Bar (21~26) -->
       <ebs-action-bar :buttons="skinEditorButtons" />
-    </q-card>
-  </q-dialog>
-</template>
+    </QCard>
+  </QDialog>
+</Template>
 ```
 
 ---
@@ -317,7 +317,7 @@ interface GfxEditorBaseProps {
 // stores/useSkinStore.ts
 import { defineStore } from 'pinia';
 import { shallowRef } from 'vue';
-import type { ConfigurationPreset } from '@/types/skin-types';
+import type { ConfigurationPreset } from '@/Types/SkinTypes';
 
 export const useSkinStore = defineStore('skin', () => {
   // shallowRef: deep reactivity 방지 (187+ 필드 성능 보호)

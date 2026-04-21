@@ -111,7 +111,7 @@ saving
 ### 3.1 요청 구조 (API-07 §5)
 
 ```http
-PATCH /api/v1/skins/{id}/metadata HTTP/1.1
+PATCH /api/v1/Skins/{id}/Metadata HTTP/1.1
 Authorization: Bearer {adminJwt}
 If-Match: W/"{etag}"
 Content-Type: application/merge-patch+json

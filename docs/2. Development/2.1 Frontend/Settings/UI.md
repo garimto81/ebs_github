@@ -45,8 +45,8 @@ Team 1 의 Settings 범위(+ Graphic Editor 허브)와 Team 4 Overlay 렌더링 
 
 **요약 (CCR-011 APPLIED 후 갱신)**:
 
-- Team 1 은 **"어떤 값을 저장할지" + "어떻게 Import/Activate 할지"** 를 담당한다. **Flutter Desktop + Dart** (Riverpod + Freezed) 폼 컴포넌트로 Settings CRUD 를 구현하고, Flutter `rive` 패키지로 GFX 프리뷰를 렌더하며, `.gfskin` 허브(`/lobby/graphic-editor`)에서 ZIP Import·메타데이터 편집·Activate·`skin_updated` WS broadcast 를 관장한다. `PUT /configs` 와 `PUT /api/v1/skins/{id}/activate` 가 주 엔드포인트.
-- Team 4 는 **"값/asset 이 방송에서 어떻게 렌더링되는지"** 를 담당한다. Flutter+Rive Overlay(BS-07) 가 `skin_updated` WS 이벤트를 소비하여 리렌더하고, BS-03-02-gfx 의 시각 asset 메타(CCR-025) 를 제공한다. **Team 4 는 Graphic Editor UI 를 더 이상 소유하지 않는다.**
+- Team 1 은 **"어떤 값을 저장할지" + "어떻게 Import/Activate 할지"** 를 담당한다. **Flutter Desktop + Dart** (Riverpod + Freezed) 폼 컴포넌트로 Settings CRUD 를 구현하고, Flutter `rive` 패키지로 GFX 프리뷰를 렌더하며, `.gfskin` 허브(`/Lobby/GraphicEditor`)에서 ZIP Import·메타데이터 편집·Activate·`skin_updated` WS broadcast 를 관장한다. `PUT /Configs` 와 `PUT /api/v1/Skins/{id}/Activate` 가 주 엔드포인트.
+- Team 4 는 **"값/Asset 이 방송에서 어떻게 렌더링되는지"** 를 담당한다. Flutter+Rive Overlay(BS-07) 가 `skin_updated` WS 이벤트를 소비하여 리렌더하고, BS-03-02-gfx 의 시각 asset 메타(CCR-025) 를 제공한다. **Team 4 는 Graphic Editor UI 를 더 이상 소유하지 않는다.**
 - **Rive 내부 편집은 Rive 공식 에디터(외부)** 가 담당한다. Transform/keyframe/color adjust 는 Team 1 / Team 4 모두 out-of-scope. Designer 는 Rive 에서 `.riv` 완성 → `.gfskin` ZIP 패키징 → Team 1 허브 업로드 순서를 따른다.
 
 ### 글로벌 설정 원칙 (CRITICAL)
@@ -56,7 +56,7 @@ Team 1 의 Settings 범위(+ Graphic Editor 허브)와 Team 4 Overlay 렌더링 
 - 한 번 저장된 설정은 **모든 CC 인스턴스 / 모든 Table** 에 동일하게 적용된다.
 - 테이블별 오버라이드 UI 를 만들지 않는다. 운영자가 "Table 3 만 Chipcount Mode 를 BB 로" 같은 설정을 원한다면, 이는 Settings 가 아니라 Table Management(Lobby 화면 4) 영역이며 현재 범위 밖이다.
 - 이 원칙의 근거는 메모리 `feedback_settings_global.md` — "Settings 는 글로벌(모든 CC 동일), 테이블별 X, Table Mgmt 와 별개 설계".
-- URL 경로가 `/settings/:tableId` 형식을 쓰더라도 `:tableId` 는 현재 어떤 테이블 컨텍스트에서 Settings 에 진입했는지를 나타내는 트래킹용이며, 저장 경로에는 반영되지 않는다.
+- URL 경로가 `/Settings/:tableId` 형식을 쓰더라도 `:tableId` 는 현재 어떤 테이블 컨텍스트에서 Settings 에 진입했는지를 나타내는 트래킹용이며, 저장 경로에는 반영되지 않는다.
 
 ### ConfigChanged 이벤트 데이터 흐름
 
@@ -65,7 +65,7 @@ Settings 변경 → BO 저장 → 모든 CC 브로드캐스트 → 다음 핸드
 ```
 Admin UI (Team 1, Flutter Desktop)
   │
-  │  PUT /configs  (변경된 탭 + 필드만)
+  │  PUT /Configs  (변경된 탭 + 필드만)
   ▼
 BO (Team 2, FastAPI)
   │
@@ -96,7 +96,7 @@ WS ws://host/ws/cc  (모든 CC 구독)
 
 ## 페이지 구조
 
-Settings는 Lobby 내 독립 페이지(`/settings/:tableId`)로 렌더링된다.
+Settings는 Lobby 내 독립 페이지(`/Settings/:tableId`)로 렌더링된다.
 
 ```
 +------------------------------------------------------------------+
@@ -343,9 +343,9 @@ Settings는 Lobby 내 독립 페이지(`/settings/:tableId`)로 렌더링된다.
 > Rules 탭은 **게임 규칙 옵션** (Bomb Pot, Straddle, Player Display 등)만 다룬다.
 > **Blind 레벨 구조(레벨별 SB/BB/Ante/Duration), Blind 타이머 편집, BlindDetailType(`Blind`/`Break`/`DinnerBreak`/`HalfBlind`/`HalfBreak`) 편집 UI 는 Settings 가 아니라 Lobby 의 Flight 생성/편집 플로우가 소유한다** (UI-01 §화면 3 Flight 참조).
 > 이 원칙은 "Settings = 글로벌, Flight = Event 단위"라는 책임 분리에서 온다. Blind 구조는 Event/Flight 마다 다르므로 글로벌 Settings 에 들어갈 수 없다.
-> `BlindDetailType` 5 타입 enum(`Blind`/`Break`/`DinnerBreak`/`HalfBlind`/`HalfBreak`) 은 **CCR-017 APPLIED** 로 `../specs/BS-03-settings/BS-03-04-rules.md` 에 이미 추가되었다 (UI-01 §9.3 참조).
+> `BlindDetailType` 5 타입 enum(`Blind`/`Break`/`DinnerBreak`/`HalfBlind`/`HalfBreak`) 은 **CCR-017 APPLIED** 로 `../Specs/BS-03-settings/BS-03-04-rules.md` 에 이미 추가되었다 (UI-01 §9.3 참조).
 >
-> **GFX 탭의 시각 자산 메타데이터 (GEM-01~25)** 는 Settings 직접 편집이 아니라 `/lobby/graphic-editor` 허브에서 처리한다. GEM 필드 전체 목록, Upload Dropzone, rive-js 프리뷰, Activate 흐름 등 상세는 **`UI-04-graphic-editor.md §5`** 참조. Settings GFX 탭은 현재 활성화된 스킨의 메타데이터를 **읽기 전용**으로 노출하고, 편집은 [Graphic Editor 열기] 버튼으로 허브로 이동한다 (CCR-011 + CCR-025 APPLIED).
+> **GFX 탭의 시각 자산 메타데이터 (GEM-01~25)** 는 Settings 직접 편집이 아니라 `/Lobby/GraphicEditor` 허브에서 처리한다. GEM 필드 전체 목록, Upload Dropzone, rive-js 프리뷰, Activate 흐름 등 상세는 **`UI-04-graphic-editor.md §5`** 참조. Settings GFX 탭은 현재 활성화된 스킨의 메타데이터를 **읽기 전용**으로 노출하고, 편집은 [Graphic Editor 열기] 버튼으로 허브로 이동한다 (CCR-011 + CCR-025 APPLIED).
 
 ---
 
@@ -432,7 +432,7 @@ Equity, Outs, Rabbit Hunting, Leaderboard, Score Strip.
 | +------------------+------------------+------------------+       |
 | | Hand History     | Export Logs      | API DB Export    |       |
 | | Folder           | Folder           | Folder           |       |
-| | [./exports/  ] o | [./logs/     ] o | [./db_exp/   ] o |       |
+| | [./Exports/  ] o | [./Logs/     ] o | [./db_exp/   ] o |       |
 | +------------------+------------------+------------------+       |
 |                                                                  |
 +------------------------------------------------------------------+
@@ -481,13 +481,13 @@ Equity, Outs, Rabbit Hunting, Leaderboard, Score Strip.
 
 | 참조 문서 | 경로 |
 |----------|------|
-| BS-03-00 Overview | `../specs/BS-03-settings/BS-03-00-overview.md` |
-| BS-03-01 Outputs | `../specs/BS-03-settings/BS-03-01-outputs.md` |
-| BS-03-02 GFX | `../specs/BS-03-settings/BS-03-02-gfx.md` |
-| BS-03-03 Display | `../specs/BS-03-settings/BS-03-03-display.md` |
-| BS-03-04 Rules | `../specs/BS-03-settings/BS-03-04-rules.md` |
-| BS-03-05 Stats | `../specs/BS-03-settings/BS-03-05-stats.md` |
-| BS-03-06 Preferences | `../specs/BS-03-settings/BS-03-06-preferences.md` |
+| BS-03-00 Overview | `../Specs/BS-03-settings/BS-03-00-overview.md` |
+| BS-03-01 Outputs | `../Specs/BS-03-settings/BS-03-01-outputs.md` |
+| BS-03-02 GFX | `../Specs/BS-03-settings/BS-03-02-gfx.md` |
+| BS-03-03 Display | `../Specs/BS-03-settings/BS-03-03-display.md` |
+| BS-03-04 Rules | `../Specs/BS-03-settings/BS-03-04-rules.md` |
+| BS-03-05 Stats | `../Specs/BS-03-settings/BS-03-05-stats.md` |
+| BS-03-06 Preferences | `../Specs/BS-03-settings/BS-03-06-preferences.md` |
 | Foundation PRD | `docs/1. Product/Foundation.md` |
 
 ---
@@ -498,10 +498,10 @@ Equity, Outs, Rabbit Hunting, Leaderboard, Score Strip.
 
 | CCR | 상태 | 변경 대상 | 관련 섹션 |
 |-----|------|----------|----------|
-| **CCR-017** wsop-parity (BlindDetailType 5타입 enum, dayIndex, isPause, Bit Flag RBAC 등) | ✅ APPLIED | `../specs/BS-03-settings/BS-03-04-rules.md` 외 4개 | Rules 탭 Blind 편집 범위 외 주석, ConfigChanged 흐름 (간접) |
+| **CCR-017** wsop-parity (BlindDetailType 5타입 enum, dayIndex, isPause, Bit Flag RBAC 등) | ✅ APPLIED | `../Specs/BS-03-settings/BS-03-04-rules.md` 외 4개 | Rules 탭 Blind 편집 범위 외 주석, ConfigChanged 흐름 (간접) |
 | **CCR-016** tech-stack-ssot (Lobby Quasar 확정 + BS-00 SSOT 문장 신설) | ✅ APPLIED | `contracts/specs/BS-00-definitions.md` | §1.1 Ownership & Boundary (Team 1 Quasar 기술 근거) |
-| **CCR-011** ge-ownership-move (Graphic Editor Team 4 → Team 1 Lobby 허브 이관) | ✅ APPLIED | `../specs/BS-08-graphic-editor/BS-08-00~04`, `BS-00-definitions.md` | §1.1 GFX 탭 책임 확장 (rive-js 프리뷰 + GE 허브), Team 4 Overlay 렌더링 소비자 재정의 |
-| **CCR-025** bs03-graphic-settings-tab (BS-03-02-gfx 시각 asset 메타 확장) | ✅ APPLIED | `../specs/BS-03-settings/BS-03-02-gfx.md` | §1.1 GFX 탭 Team 4 기여 필드 (BS-03-02 메타 참조) |
+| **CCR-011** ge-ownership-move (Graphic Editor Team 4 → Team 1 Lobby 허브 이관) | ✅ APPLIED | `../Specs/BS-08-graphic-editor/BS-08-00~04`, `BS-00-definitions.md` | §1.1 GFX 탭 책임 확장 (rive-js 프리뷰 + GE 허브), Team 4 Overlay 렌더링 소비자 재정의 |
+| **CCR-025** bs03-graphic-settings-tab (BS-03-02-gfx 시각 asset 메타 확장) | ✅ APPLIED | `../Specs/BS-03-settings/BS-03-02-gfx.md` | §1.1 GFX 탭 Team 4 기여 필드 (BS-03-02 메타 참조) |
 
 CCR 경로: `docs/05-plans/ccr-inbox/promoting/CCR-{011,016,017,025}-*.md`
 원본 drafts: `docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team1-20260410-{wsop-parity,tech-stack-ssot}.md`, `CCR-DRAFT-conductor-20260410-ge-ownership-move.md`, `CCR-DRAFT-team4-20260410-bs03-graphic-settings-tab.md`

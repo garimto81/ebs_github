@@ -43,7 +43,7 @@ previewing
   ↓ rive-js 렌더링 OK (GEI-06)
   ↓ user confirms
 uploading
-  ↓ POST /skins multipart 성공 (GEI-07)
+  ↓ POST /Skins multipart 성공 (GEI-07)
 saved
   ↓ user returns to list
 
@@ -93,7 +93,7 @@ saved
 
 ### 2.6 uploading (GEI-07)
 
-- **요청**: `POST /api/v1/skins` (API-07 §1)
+- **요청**: `POST /api/v1/Skins` (API-07 §1)
   - `Content-Type: multipart/form-data`
   - `Authorization: Bearer {adminJwt}`
   - `Idempotency-Key: {uuid4}` (필수, CCR-003)
@@ -143,5 +143,5 @@ saved
 ## 5. 연관 문서
 
 - `DATA-07-gfskin-schema.md` — JSON Schema 원본
-- `API-07-graphic-editor.md §1` — POST /skins 엔드포인트
+- `API-07-graphic-editor.md §1` — POST /Skins 엔드포인트
 - `BS-08-02-metadata-editing.md` — 업로드 후 메타 편집 흐름

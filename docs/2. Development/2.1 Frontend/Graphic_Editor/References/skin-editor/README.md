@@ -23,9 +23,9 @@ last-updated: 2026-04-15
 
 이 폴더 파일을 읽을 필요는 없다. team4는 다음만 참조:
 
-- `../../../../../contracts/data/DATA-07-gfskin-schema.md` — ZIP 포맷 + JSON Schema
-- `../../../specs/BS-07-overlay/BS-07-03-*.md` — Overlay 로드 FSM
-- `../../../../../contracts/api/API-05-websocket-events.md` — `skin_updated` 이벤트
+- `../../../../../Contracts/Data/DATA-07-gfskin-schema.md` — ZIP 포맷 + JSON Schema
+- `../../../Specs/BS-07-overlay/BS-07-03-*.md` — Overlay 로드 FSM
+- `../../../../../Contracts/api/API-05-websocket-events.md` — `skin_updated` 이벤트
 
 ## 금지
 

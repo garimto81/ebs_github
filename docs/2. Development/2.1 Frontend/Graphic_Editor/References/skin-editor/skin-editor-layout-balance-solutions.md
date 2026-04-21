@@ -204,18 +204,18 @@ Fresh Consulting 원칙: 상단 = High-level, 하단 = Low-level
             style="height: calc(100vh - 120px)">
   <template v-slot:before>
     <!-- 좌측: Element Grid + Colour -->
-  </template>
+  </Template>
   <template v-slot:after>
     <q-splitter v-model="rightRatio" :limits="[40, 70]">
       <template v-slot:before>
         <!-- 중앙: Visual Settings -->
-      </template>
+      </Template>
       <template v-slot:after>
         <!-- 우측: Behaviour Settings -->
-      </template>
-    </q-splitter>
-  </template>
-</q-splitter>
+      </Template>
+    </QSplitter>
+  </Template>
+</QSplitter>
 ```
 
 **핵심**: QSplitter 부모에 명시적 높이(`calc(100vh - header - actionbar)`) 필수. 없으면 splitter가 콘텐츠 높이로 축소됨.
@@ -235,7 +235,7 @@ Fresh Consulting 원칙: 상단 = High-level, 하단 = Low-level
   header-class="text-weight-bold bg-grey-2"
 >
   <!-- 섹션 내용 -->
-</q-expansion-item>
+</QExpansionItem>
 ```
 
 **교차 배경색** (Unity Inspector 패턴):

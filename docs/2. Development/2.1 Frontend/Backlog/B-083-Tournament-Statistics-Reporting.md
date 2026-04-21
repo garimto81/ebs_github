@@ -23,7 +23,7 @@ tier: internal
 ## 수락 기준
 
 - [ ] `Lobby/Reports.md` 신규
-- [ ] Backend `/reports/*` 엔드포인트 명세 · `audit_events` 기반 집계 쿼리
+- [ ] Backend `/Reports/*` 엔드포인트 명세 · `audit_events` 기반 집계 쿼리
 - [ ] Export Folder (Operations.md §1.3 DB Export) 연계
 
 ## 참조

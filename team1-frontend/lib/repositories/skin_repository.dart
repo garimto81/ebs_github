@@ -10,7 +10,7 @@ class SkinRepository {
 
   Future<List<Skin>> listSkins() async {
     return _client.get<List<Skin>>(
-      '/skins',
+      '/Skins',
       fromJson: (json) => (json as List)
           .map((e) => Skin.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -19,7 +19,7 @@ class SkinRepository {
 
   Future<Skin> getSkin(int id) async {
     return _client.get<Skin>(
-      '/skins/$id',
+      '/Skins/$id',
       fromJson: (json) => Skin.fromJson(json as Map<String, dynamic>),
     );
   }
@@ -33,7 +33,7 @@ class SkinRepository {
   /// 기존 단일-step `POST /skins/upload` 는 문서 위반으로 제거됨.
   Future<Skin> createSkin(Map<String, dynamic> metadata) async {
     return _client.post<Skin>(
-      '/skins',
+      '/Skins',
       data: metadata,
       fromJson: (json) => Skin.fromJson(json as Map<String, dynamic>),
     );
@@ -49,7 +49,7 @@ class SkinRepository {
       'file': MultipartFile.fromBytes(bytes, filename: fileName),
     });
     return _client.upload<Skin>(
-      '/skins/$skinId/upload',
+      '/Skins/$skinId/Upload',
       formData: formData,
       onSendProgress: onProgress,
       fromJson: (json) => Skin.fromJson(json as Map<String, dynamic>),
@@ -74,20 +74,20 @@ class SkinRepository {
 
   Future<Skin> activateSkin(int id) async {
     return _client.post<Skin>(
-      '/skins/$id/activate',
+      '/Skins/$id/Activate',
       fromJson: (json) => Skin.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<Skin> deactivateSkin(int id) async {
     return _client.post<Skin>(
-      '/skins/$id/deactivate',
+      '/Skins/$id/Deactivate',
       fromJson: (json) => Skin.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<void> deleteSkin(int id) async {
-    await _client.delete<dynamic>('/skins/$id');
+    await _client.delete<dynamic>('/Skins/$id');
   }
 }
 

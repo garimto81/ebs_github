@@ -1,6 +1,6 @@
 ---
 id: B-087
-title: "Quasar → Flutter 이전 누락/drift 전수 수정 (master)"
+title: "Quasar → Flutter 이전 누락/Drift 전수 수정 (master)"
 status: IN_PROGRESS
 source: docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md
 created: 2026-04-21
@@ -12,7 +12,7 @@ owner: team1
 
 ## 배경
 
-2026-04-21 `/team` 수행 결과 Quasar 아카이브 (`_archive-quasar/src-late/`) vs Flutter `lib/` + 기획 SSOT (`docs/2. Development/2.1 Frontend/Engineering.md`) 간 **45+ drift** 발견. 전수 감사 보고서 작성 완료:
+2026-04-21 `/Team` 수행 결과 Quasar 아카이브 (`_archive-quasar/src-late/`) vs Flutter `lib/` + 기획 SSOT (`docs/2. Development/2.1 Frontend/Engineering.md`) 간 **45+ drift** 발견. 전수 감사 보고서 작성 완료:
 
 **감사 보고서**: `docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md`
 
@@ -34,7 +34,7 @@ owner: team1
 - `lib/features/lobby/providers/player_provider.dart` 재사용 (cross-feature import 허용)
 
 **라우팅**:
-- `/players` 라우트 추가 (`app_router.dart`)
+- `/Players` 라우트 추가 (`app_router.dart`)
 - NavigationRail 에 Players 엔트리 추가 (6개 → 7개, Lobby/Players/Staff/Settings/GFX/Reports)
 
 **문서 동기화**:

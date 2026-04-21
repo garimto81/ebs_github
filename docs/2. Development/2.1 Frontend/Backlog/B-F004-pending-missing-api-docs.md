@@ -14,12 +14,12 @@ team1이 호출하고 있으나 `docs/2. Development/2.2 Backend/APIs/Backend_HT
 
 | 경로 | 사용 UI | 우선도 |
 |------|---------|:------:|
-| `POST /users/:id/force-logout` | Staff List 강제 로그아웃 버튼 | 🟡 |
-| `POST /skins/:id/deactivate` | GFX 스킨 비활성화 | 🟡 |
-| `POST /tables/:id/seats` | Table Detail 플레이어 추가 | 🔴 |
-| `DELETE /tables/:id/seats/:n` | Table Detail 플레이어 제거 | 🔴 |
-| `POST/PUT/DELETE /blind-structures/:id/levels[/:level_id]` | Settings Blind Level 편집 | 🟡 |
-| `GET /tables/:id/status` | Table Detail 실시간 상태 | 🟡 |
+| `POST /Users/:id/force-logout` | Staff List 강제 로그아웃 버튼 | 🟡 |
+| `POST /Skins/:id/deactivate` | GFX 스킨 비활성화 | 🟡 |
+| `POST /Tables/:id/seats` | Table Detail 플레이어 추가 | 🔴 |
+| `DELETE /Tables/:id/seats/:n` | Table Detail 플레이어 제거 | 🔴 |
+| `POST/PUT/DELETE /BlindStructures/:id/levels[/:level_id]` | Settings Blind Level 편집 | 🟡 |
+| `GET /Tables/:id/status` | Table Detail 실시간 상태 | 🟡 |
 
 ## 요청 사항
 

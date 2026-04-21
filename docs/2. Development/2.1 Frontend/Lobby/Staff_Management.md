@@ -98,10 +98,10 @@ Staff 계정 CRUD, Role 관리, Permission Matrix 설정 화면. WSOP LIVE Staff
 
 | 동작 | API | 비고 |
 |------|-----|------|
-| Staff 목록 | `GET /users` | Backend_HTTP §5.2 |
-| Staff 생성 | `POST /users` | role 필드 포함 |
-| Staff 수정 | `PUT /users/:id` | |
-| Staff 삭제 | `DELETE /users/:id` | |
+| Staff 목록 | `GET /Users` | Backend_HTTP §5.2 |
+| Staff 생성 | `POST /Users` | role 필드 포함 |
+| Staff 수정 | `PUT /Users/:id` | |
+| Staff 삭제 | `DELETE /Users/:id` | |
 | Force Logout | 미정의 | 미결: CCR 필요 |
 | Role Permission 조회/수정 | 미정의 | 미결: CCR 필요 |
 | Role Export/Import | 미정의 | 미결: CCR 필요 |
@@ -124,7 +124,7 @@ Staff 계정 CRUD, Role 관리, Permission Matrix 설정 화면. WSOP LIVE Staff
 
 | WSOP LIVE 기능 | EBS 적용 | 비고 |
 |---------------|:-------:|------|
-| Staff 계정 CRUD | Apply | `/users` API |
+| Staff 계정 CRUD | Apply | `/Users` API |
 | 특수 Role 권한 고정 (Chip Reporter, Clock Display 등) | Apply | |
 | 대량 계정 생성 (연번 이메일) | Apply | @ebs.local 도메인 |
 | Series Display On/Off | Remove | EBS에 Player App 없음 |
