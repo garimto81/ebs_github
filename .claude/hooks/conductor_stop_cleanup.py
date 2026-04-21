@@ -66,7 +66,23 @@ def main() -> int:
     else:
         sys.stderr.write(f"[conductor-cleanup] checkout main failed: {out}\n")
 
+    # v4.0: stale session-manifest 정리
+    _try_cleanup_manifests()
+
     return 0
+
+
+def _try_cleanup_manifests() -> None:
+    """세션 종료 시 stale manifest 정리 (v4.0). 실패 시 침묵."""
+    try:
+        skill_script = Path.home() / ".claude" / "skills" / "team" / "scripts" / "team_manifest.py"
+        if skill_script.exists():
+            subprocess.run(
+                [sys.executable, str(skill_script), "cleanup-stale"],
+                cwd=PROJECT, capture_output=True, timeout=5,
+            )
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":
