@@ -18,6 +18,7 @@ related:
 |------|------|------|
 | 2026-04-21 | 신규 작성 | 사용자 지시 — critic mode 로 v3.1 검토 + Pre-Declaration 충돌 방지 설계 (계획 단계, 구현은 승인 후) |
 | 2026-04-21 | revision 1 | **설계 모델 전환**: Wait (대기) 모델 폐기 → **Exclude + Revise** (충돌 파일 제외 후 재설계) 로 교체. 사용자 지시: "충돌 시 해당 파일을 제외하고 작업하는 형태로 계획을 수정하여 재설계". Critic A/B + 자기반박 상세화 (이전 §3 보강) |
+| 2026-04-21 | revision 2 | 최신 기술/트렌드 검증 (WebSearch 5종) 반영. §14 추가: Claude Code Agent Teams 공식 best practice, Cursor locking 실패 교훈, 5-Role 패턴, Kubernetes Lease, Git worktree 2026 표준화, Beads JSONL, Augment Intent workspace. v4.0 revision 1 재검증 결과 "업계 표준과 정렬, Wait fallback 축소 권고". |
 
 ## 1. 현재 상태 (v3.1 까지) 와 잔존 문제
 
@@ -550,3 +551,144 @@ atexit.register(lambda: _cleanup_my_manifest())
 - 본 Plan 승인 없이 scripts/team_*.py 선행 구현 금지
 - v4.0 구현 중에도 v3.1 hook 유지 (safety net)
 - full-enforce 즉시 전환 금지 (dry-run → soft → full 3단계)
+
+---
+
+## 14. 2026 최신 기술/트렌드 검증 (revision 2, 2026-04-21)
+
+WebSearch 5종 (Claude Code Agent Teams / AI agent file lock / Git worktree race / 분산 lease / multi-agent orchestration) 결과로 본 v4.0 revision 1 설계를 재검증했다.
+
+### 14.1 업계 표준 패턴과 정렬 여부
+
+| 업계 표준 (2026) | v4.0 revision 1 상태 | 판정 |
+|------------------|---------------------|:----:|
+| **Pre-declaration manifest** (Augment Intent, Beads JSONL) | ✓ Phase 0 Declaration + `.session-manifests/*.json` | **정렬** |
+| **Lease with TTL + heartbeat** (Kubernetes Lease, distributed systems) | ✓ Heartbeat 5분 TTL, atexit cleanup | **정렬** |
+| **Git worktree isolation (기본 전략)** | △ "권장" 수준, 강제하지 않음 | **강화 필요** |
+| **File ownership 사전 분할** (Claude Code Agent Teams 공식 best practice) | △ decision_owner 존재하나 Phase 0 에서 참조 안 함 | **강화 필요** |
+| **5-Role orchestration** (Producer/Consumer/Coordinator/Critic/Judge) | ✗ 명시적 매핑 없음 | **신규 매핑 권고** |
+| **Exclude+Revise (부분 scope 진행)** | ✓ revision 1 의 핵심 | **업계보다 선진** |
+| **Locking 남용 방지** (Cursor 실패 교훈) | △ Wait fallback 존재 | **축소 권고** |
+
+### 14.2 핵심 교훈 3종
+
+#### 교훈 1 — Cursor 의 locking 실패 (경고)
+
+> Cursor 의 multi-agent 초기 시도에서 locking 이 agent throughput 을 20 → 2-3 으로 떨어뜨렸다. Agent 가 lock 을 너무 오래 잡은 것이 원인.
+
+**v4.0 revision 1 에 미치는 영향**:
+- 현재 Wait fallback (10분 timeout) 은 Cursor 가 실패한 패턴과 유사
+- **권고**: Wait fallback timeout 을 **10분 → 5분** 축소, **Defer 를 기본 권장**으로 강화
+- "Lock 은 비상용, Exclude+Revise 가 주류" 원칙 명문화
+
+#### 교훈 2 — Git worktree 가 2026 표준 (기본 전략으로 승격)
+
+> "Running multiple AI coding agents simultaneously introduces failure modes where agents overwrite each other's files ... Git worktrees solve this by giving each agent a dedicated branch and working directory that shares the underlying .git object store." (Augment Code, 2026)
+>
+> JetBrains IDEs shipped first-class Git worktree support in 2026.1 release (March 2026). VS Code 는 2025.07 지원.
+
+**v4.0 revision 1 에 미치는 영향**:
+- 현재 subdir 세션의 공유 HEAD race 가 모든 문제의 근원
+- **권고**: **Worktree-First 정책 승격** — 새 팀 세션은 **기본적으로 sibling worktree** 에서 시작, subdir 은 Conductor 및 특수 경우만
+- `session_branch_init` 이 subdir 감지 시 **"sibling worktree 로 이주하시겠습니까?" 프롬프트** 추가
+
+#### 교훈 3 — File ownership 사전 분할 (Claude Code 공식 권장)
+
+> "Two teammates editing the same file leads to overwrites, so break the work so each teammate owns a different set of files. The more specific your task decomposition instructions, the cleaner the agent coordination will be." (Claude Code Agent Teams docs, 2026)
+
+**v4.0 revision 1 에 미치는 영향**:
+- EBS 는 이미 `team-policy.json` 의 `decision_owner` + `contract_ownership` 이 있음
+- **권고**: **Phase 0 Declaration 에서 `team-policy.json` 참조** — 선언한 `planned_writes` 가 다른 팀의 decision_owner 경로면 warning. 다른 팀이 "전용" 소유권 주장하는 경로는 manifest `planned_writes` 에 포함 자체를 차단.
+
+### 14.3 5-Role 패턴 매핑 (신규 권고)
+
+2026 업계 표준 "reliable multi-agent system reduces to 5 roles" 에 EBS /team 을 매핑:
+
+| Role | EBS /team 매핑 | 기능 |
+|------|----------------|------|
+| **Producer** | Phase 0 Declaration (LLM 예측) | Ambiguous task → precise planned_writes |
+| **Consumer** | Phase 4 Execute (/auto) | Execute work items, no cross-session coordination |
+| **Coordinator** | Conductor 세션 | Route work, main branch integration, decision_owner 판정 |
+| **Critic** | `aiden-auto:critic` 스킬 (선택) | Suggestions, no gate (warning only) |
+| **Judge** | Phase 0.7 Safety Gate + Phase 5 Verify | Binary go/no-go (cohesion ratio, drift scan) |
+
+**효과**: 각 Phase 의 책임이 명확해짐. 새 Phase 추가 시 어느 Role 에 속하는지 판단 가능.
+
+### 14.4 Lease 모델 정합성 검증
+
+Martin Fowler / Kubernetes 의 Lease 패턴 공식 정의:
+
+> "Lease is a time-bound lock. Automatically released after timeout. Holder sends periodic heartbeat to extend lease."
+
+**v4.0 revision 1 의 manifest = lease 로 재명명 가능**:
+
+| Lease 필드 | 현재 manifest 필드 | 일치도 |
+|-----------|---------------------|:------:|
+| `holder` | `sid` + `team_id` | ✓ |
+| `acquired_at` | `started_at` | ✓ |
+| `renewed_at` | `heartbeat_at` | ✓ |
+| `ttl` | 5분 (하드코딩) | ✓ (명시화 권고) |
+| `resources` | `planned_writes` + `planned_writes_globs` | ✓ |
+| `released_at` | `status=completed` 후 30초 삭제 | ✓ |
+
+**권고**: 스키마에 `lease_ttl_sec: 300` 필드 명시 추가 (현재 암묵).
+
+### 14.5 최종 권고 사항 (revision 2 — 종합)
+
+| # | 변경 대상 | 기존 (r1) | 권고 (r2) | 근거 |
+|:-:|----------|-----------|-----------|------|
+| R1 | Worktree 정책 | 권장 | **기본 (subdir 는 특수 경우)** | Git worktree 2026 표준화 |
+| R2 | File ownership 체크 | 없음 | **Phase 0 Declaration 에서 team-policy.json 참조** | Claude Code 공식 best practice |
+| R3 | Wait fallback timeout | 10분 | **5분 + Defer 를 기본 권장** | Cursor locking 실패 교훈 |
+| R4 | 5-Role 매핑 | 없음 | **§14.3 매트릭스로 명시** | 업계 pattern language |
+| R5 | Manifest = Lease 명명 | 암묵 | **스키마에 `lease_ttl_sec` 명시, 문서에 "Lease" 용어 도입** | Kubernetes/Fowler 표준 정합 |
+| R6 | Deferred 재시도 로직 | "다음 /team 에서 재시도 프롬프트" 수준 | **manifest.deferred 가 24h 내 같은 팀 세션에서 최우선 처리** | Beads "land the plane" 패턴 |
+| R7 | Critic / Judge 분리 | 섞임 | **Critic (no gate) vs Judge (binary) 명확히 분리** | 업계 표준 용어 |
+| R8 | Intent evolution | task_description + revised_task 2 필드 | **Augment Intent 패턴 채택 — spec 이 agents 와 함께 진화** | 2026 Intent workspace 트렌드 |
+
+### 14.6 재검증된 채택 순위
+
+v4.0 revision 2 구현 시 Phase 우선순위 (기존 6 Phase → 7 Phase 로 조정):
+
+```
+Phase 1 — Manifest/Lease 인프라 (R5 반영)
+Phase 2 — Phase 0/0.5/0.6/0.7 스크립트 (R2 team-policy 참조, R3 timeout 축소)
+Phase 3 — Worktree-First 자동화 (R1) — NEW
+Phase 4 — SKILL.md 10-Phase + 5-Role 매핑 (R4, R7)
+Phase 5 — Hook 3종 manifest 연동 (기존)
+Phase 6 — Deferred 자동 우선순위 (R6, R8) — NEW
+Phase 7 — QA + Rollout (dry-run → soft → full)
+```
+
+총 7 /team 트랜잭션, ~6일 공수 (기존 5일 + 1일).
+
+### 14.7 업계 대비 혁신성 자평
+
+| 요소 | 업계 표준 2026 | v4.0 revision 2 | 혁신성 |
+|------|:--------------:|:---------------:|:------:|
+| Pre-declaration | Intent workspace (Augment) | Manifest JSON + team-policy 참조 | **동등** |
+| Lease | Kubernetes | Manifest = Lease 재명명 | **동등** |
+| Worktree 기본 | 표준화 | Worktree-First 정책 | **동등** |
+| File ownership | 수동 분할 권장 | **자동 체크 (team-policy.json)** | **선진** |
+| Cohesion-based Exclude | 없음 (locking/wait 위주) | **4 case 분기 (1.0/0.5-1/0-0.5/0)** | **혁신** |
+| Deferred 자동 재시도 | Beads "land the plane" | **24h 최우선** | **동등** |
+| 5-Role 매핑 | 패턴 언어 | Phase 별 명시 매핑 | **동등** |
+
+**결론**: v4.0 revision 2 는 2026 업계 표준을 대부분 따르되, **Cohesion-based Exclude+Revise** + **자동 file ownership 체크** 는 업계보다 선진. Cursor 실패를 답습하지 않고 개선된 방향.
+
+### 14.8 Sources
+
+- [Orchestrate teams of Claude Code sessions — Claude Code Docs](https://code.claude.com/docs/en/agent-teams)
+- [Claude Code Agent Teams 2026 Guide (Shipyard)](https://shipyard.build/blog/claude-code-multi-agent/)
+- [The Code Agent Orchestra — Addy Osmani](https://addyosmani.com/blog/code-agent-orchestra/)
+- [Intent: A workspace for agent orchestration — Augment Code](https://www.augmentcode.com/blog/intent-a-workspace-for-agent-orchestration)
+- [6 Multi-Agent Orchestration Patterns for Production (2026) — Beam](https://beam.ai/agentic-insights/multi-agent-orchestration-patterns-production)
+- [Multi-Agent Orchestration Patterns: Pattern Language 2026 — DigitalApplied](https://www.digitalapplied.com/blog/multi-agent-orchestration-patterns-producer-consumer)
+- [Multi-Agent AI Coding Workflow: Git Worktrees That Scale (2026)](https://blog.appxlab.io/2026/03/31/multi-agent-ai-coding-workflow-git-worktrees/)
+- [Git Worktree Conflicts with Multiple AI Agents — Termdock](https://www.termdock.com/en/blog/git-worktree-conflicts-ai-agents)
+- [How to Use Git Worktrees for Parallel AI Agent Execution — Augment Code](https://www.augmentcode.com/guides/git-worktrees-parallel-ai-agent-execution)
+- [Leases — Kubernetes docs](https://kubernetes.io/docs/concepts/architecture/leases/)
+- [Lease — Martin Fowler (Patterns of Distributed Systems)](https://martinfowler.com/articles/patterns-of-distributed-systems/lease.html)
+- [AI Coding Agents in 2026: Coherence Through Orchestration — Mike Mason](https://mikemason.ca/writing/ai-coding-agents-jan-2026/)
+- [From Conductor to Orchestrator: Multi-Agent Coding 2026](https://htdocs.dev/posts/from-conductor-to-orchestrator-a-practical-guide-to-multi-agent-coding-in-2026/)
+- [How to Supervise AI Coding Agents — DEV Community](https://dev.to/battyterm/how-to-supervise-ai-coding-agents-without-losing-your-mind-53m4)
