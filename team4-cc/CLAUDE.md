@@ -1,5 +1,14 @@
 # Team 4: Command Center + Overlay — CLAUDE.md (코드 전용)
 
+## 🚀 표준 명령 (v3.0 이후)
+
+모든 작업은 `/team` 스킬로:
+```bash
+/team "<task description>"
+```
+자동 수행: context detect → pre-sync → `/auto` → verify → commit → main ff-merge → push → report.
+세션 시작/종료 불필요. 상세: `~/.claude/skills/team/SKILL.md`, `docs/4. Operations/Multi_Session_Workflow.md` v3.0
+
 ## 🎯 2026-04-21 이관 시 우선 작업 (MUST READ)
 
 **전체 이관 가이드**: `docs/4. Operations/Multi_Session_Handoff.md` — 세션 시작 시 필독.

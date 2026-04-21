@@ -74,6 +74,20 @@ reimplementability_notes: "멀티 세션 이관 체크리스트 + 각 팀 지침
 
 ## 3. 공통 지침 (모든 세션)
 
+### 🚀 표준 명령 (2026-04-21 이후)
+
+**모든 작업은 `/team` 스킬로 수행**:
+
+```bash
+/team "<task description>"     # 8 Phase 자동 실행 (Workflow v3.0)
+```
+
+Phase: Context detect → Pre-sync → Execute (`/auto`) → Verify → Commit → Main ff-merge → Push → Report.
+세션 시작/종료 불필요. 매 호출이 완결된 트랜잭션.
+
+스킬 상세: `~/.claude/skills/team/SKILL.md`
+정책: `docs/4. Operations/Multi_Session_Workflow.md` v3.0
+
 ### 핵심 원칙 (CRITICAL)
 
 1. **기획이 진실 default** — 코드가 안정적 + CI 녹색 + 구현자 확인 3 요건 모두 충족 시에만 "코드가 진실" 판정
@@ -81,6 +95,7 @@ reimplementability_notes: "멀티 세션 이관 체크리스트 + 각 팀 지침
 3. **SG 승격 패턴** — 결정 애매 → `Conductor_Backlog/SG-XXX-*.md` 승격, default 채택 + decision_owner notify
 4. **일괄 UNKNOWN 도배 금지** — audit frontmatter 는 판정 근거 있을 때만
 5. **계약 문서만 audit** — README/Backlog/NOTIFY 에 frontmatter 강요 금지
+6. **`/team` 통한 작업** — 수동 git commit/push 최소화. conflict 발생 시만 수동 개입
 
 ### 워크플로우
 
