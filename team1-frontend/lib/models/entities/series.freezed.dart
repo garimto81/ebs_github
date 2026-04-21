@@ -20,36 +20,36 @@ Series _$SeriesFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Series {
-  @JsonKey(name: 'series_id')
+  @JsonKey(name: 'seriesId')
   int get seriesId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'competition_id')
+  @JsonKey(name: 'competitionId')
   int get competitionId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'series_name')
+  @JsonKey(name: 'seriesName')
   String get seriesName => throw _privateConstructorUsedError;
   int get year => throw _privateConstructorUsedError;
-  @JsonKey(name: 'begin_at')
+  @JsonKey(name: 'beginAt')
   String get beginAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'end_at')
+  @JsonKey(name: 'endAt')
   String get endAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'image_url')
+  @JsonKey(name: 'imageUrl')
   String? get imageUrl => throw _privateConstructorUsedError;
-  @JsonKey(name: 'time_zone')
+  @JsonKey(name: 'timeZone')
   String get timeZone => throw _privateConstructorUsedError;
   String get currency => throw _privateConstructorUsedError;
-  @JsonKey(name: 'country_code')
+  @JsonKey(name: 'countryCode')
   String? get countryCode => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_completed')
+  @JsonKey(name: 'isCompleted')
   bool get isCompleted => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_displayed')
+  @JsonKey(name: 'isDisplayed')
   bool get isDisplayed => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_demo')
+  @JsonKey(name: 'isDemo')
   bool get isDemo => throw _privateConstructorUsedError;
   String get source => throw _privateConstructorUsedError;
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   String? get syncedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this Series to a JSON map.
@@ -67,23 +67,23 @@ abstract class $SeriesCopyWith<$Res> {
       _$SeriesCopyWithImpl<$Res, Series>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'series_id') int seriesId,
-      @JsonKey(name: 'competition_id') int competitionId,
-      @JsonKey(name: 'series_name') String seriesName,
+      {@JsonKey(name: 'seriesId') int seriesId,
+      @JsonKey(name: 'competitionId') int competitionId,
+      @JsonKey(name: 'seriesName') String seriesName,
       int year,
-      @JsonKey(name: 'begin_at') String beginAt,
-      @JsonKey(name: 'end_at') String endAt,
-      @JsonKey(name: 'image_url') String? imageUrl,
-      @JsonKey(name: 'time_zone') String timeZone,
+      @JsonKey(name: 'beginAt') String beginAt,
+      @JsonKey(name: 'endAt') String endAt,
+      @JsonKey(name: 'imageUrl') String? imageUrl,
+      @JsonKey(name: 'timeZone') String timeZone,
       String currency,
-      @JsonKey(name: 'country_code') String? countryCode,
-      @JsonKey(name: 'is_completed') bool isCompleted,
-      @JsonKey(name: 'is_displayed') bool isDisplayed,
-      @JsonKey(name: 'is_demo') bool isDemo,
+      @JsonKey(name: 'countryCode') String? countryCode,
+      @JsonKey(name: 'isCompleted') bool isCompleted,
+      @JsonKey(name: 'isDisplayed') bool isDisplayed,
+      @JsonKey(name: 'isDemo') bool isDemo,
       String source,
-      @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'syncedAt') String? syncedAt,
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt});
 }
 
 /// @nodoc
@@ -200,23 +200,23 @@ abstract class _$$SeriesImplCopyWith<$Res> implements $SeriesCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'series_id') int seriesId,
-      @JsonKey(name: 'competition_id') int competitionId,
-      @JsonKey(name: 'series_name') String seriesName,
+      {@JsonKey(name: 'seriesId') int seriesId,
+      @JsonKey(name: 'competitionId') int competitionId,
+      @JsonKey(name: 'seriesName') String seriesName,
       int year,
-      @JsonKey(name: 'begin_at') String beginAt,
-      @JsonKey(name: 'end_at') String endAt,
-      @JsonKey(name: 'image_url') String? imageUrl,
-      @JsonKey(name: 'time_zone') String timeZone,
+      @JsonKey(name: 'beginAt') String beginAt,
+      @JsonKey(name: 'endAt') String endAt,
+      @JsonKey(name: 'imageUrl') String? imageUrl,
+      @JsonKey(name: 'timeZone') String timeZone,
       String currency,
-      @JsonKey(name: 'country_code') String? countryCode,
-      @JsonKey(name: 'is_completed') bool isCompleted,
-      @JsonKey(name: 'is_displayed') bool isDisplayed,
-      @JsonKey(name: 'is_demo') bool isDemo,
+      @JsonKey(name: 'countryCode') String? countryCode,
+      @JsonKey(name: 'isCompleted') bool isCompleted,
+      @JsonKey(name: 'isDisplayed') bool isDisplayed,
+      @JsonKey(name: 'isDemo') bool isDemo,
       String source,
-      @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'syncedAt') String? syncedAt,
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt});
 }
 
 /// @nodoc
@@ -327,74 +327,74 @@ class __$$SeriesImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SeriesImpl implements _Series {
   const _$SeriesImpl(
-      {@JsonKey(name: 'series_id') required this.seriesId,
-      @JsonKey(name: 'competition_id') required this.competitionId,
-      @JsonKey(name: 'series_name') required this.seriesName,
+      {@JsonKey(name: 'seriesId') required this.seriesId,
+      @JsonKey(name: 'competitionId') required this.competitionId,
+      @JsonKey(name: 'seriesName') required this.seriesName,
       required this.year,
-      @JsonKey(name: 'begin_at') required this.beginAt,
-      @JsonKey(name: 'end_at') required this.endAt,
-      @JsonKey(name: 'image_url') this.imageUrl,
-      @JsonKey(name: 'time_zone') required this.timeZone,
+      @JsonKey(name: 'beginAt') required this.beginAt,
+      @JsonKey(name: 'endAt') required this.endAt,
+      @JsonKey(name: 'imageUrl') this.imageUrl,
+      @JsonKey(name: 'timeZone') required this.timeZone,
       required this.currency,
-      @JsonKey(name: 'country_code') this.countryCode,
-      @JsonKey(name: 'is_completed') this.isCompleted = false,
-      @JsonKey(name: 'is_displayed') this.isDisplayed = true,
-      @JsonKey(name: 'is_demo') this.isDemo = false,
+      @JsonKey(name: 'countryCode') this.countryCode,
+      @JsonKey(name: 'isCompleted') this.isCompleted = false,
+      @JsonKey(name: 'isDisplayed') this.isDisplayed = true,
+      @JsonKey(name: 'isDemo') this.isDemo = false,
       required this.source,
-      @JsonKey(name: 'synced_at') this.syncedAt,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt});
+      @JsonKey(name: 'syncedAt') this.syncedAt,
+      @JsonKey(name: 'createdAt') required this.createdAt,
+      @JsonKey(name: 'updatedAt') required this.updatedAt});
 
   factory _$SeriesImpl.fromJson(Map<String, dynamic> json) =>
       _$$SeriesImplFromJson(json);
 
   @override
-  @JsonKey(name: 'series_id')
+  @JsonKey(name: 'seriesId')
   final int seriesId;
   @override
-  @JsonKey(name: 'competition_id')
+  @JsonKey(name: 'competitionId')
   final int competitionId;
   @override
-  @JsonKey(name: 'series_name')
+  @JsonKey(name: 'seriesName')
   final String seriesName;
   @override
   final int year;
   @override
-  @JsonKey(name: 'begin_at')
+  @JsonKey(name: 'beginAt')
   final String beginAt;
   @override
-  @JsonKey(name: 'end_at')
+  @JsonKey(name: 'endAt')
   final String endAt;
   @override
-  @JsonKey(name: 'image_url')
+  @JsonKey(name: 'imageUrl')
   final String? imageUrl;
   @override
-  @JsonKey(name: 'time_zone')
+  @JsonKey(name: 'timeZone')
   final String timeZone;
   @override
   final String currency;
   @override
-  @JsonKey(name: 'country_code')
+  @JsonKey(name: 'countryCode')
   final String? countryCode;
   @override
-  @JsonKey(name: 'is_completed')
+  @JsonKey(name: 'isCompleted')
   final bool isCompleted;
   @override
-  @JsonKey(name: 'is_displayed')
+  @JsonKey(name: 'isDisplayed')
   final bool isDisplayed;
   @override
-  @JsonKey(name: 'is_demo')
+  @JsonKey(name: 'isDemo')
   final bool isDemo;
   @override
   final String source;
   @override
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   final String? syncedAt;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   final String updatedAt;
 
   @override
@@ -478,74 +478,74 @@ class _$SeriesImpl implements _Series {
 
 abstract class _Series implements Series {
   const factory _Series(
-          {@JsonKey(name: 'series_id') required final int seriesId,
-          @JsonKey(name: 'competition_id') required final int competitionId,
-          @JsonKey(name: 'series_name') required final String seriesName,
+          {@JsonKey(name: 'seriesId') required final int seriesId,
+          @JsonKey(name: 'competitionId') required final int competitionId,
+          @JsonKey(name: 'seriesName') required final String seriesName,
           required final int year,
-          @JsonKey(name: 'begin_at') required final String beginAt,
-          @JsonKey(name: 'end_at') required final String endAt,
-          @JsonKey(name: 'image_url') final String? imageUrl,
-          @JsonKey(name: 'time_zone') required final String timeZone,
+          @JsonKey(name: 'beginAt') required final String beginAt,
+          @JsonKey(name: 'endAt') required final String endAt,
+          @JsonKey(name: 'imageUrl') final String? imageUrl,
+          @JsonKey(name: 'timeZone') required final String timeZone,
           required final String currency,
-          @JsonKey(name: 'country_code') final String? countryCode,
-          @JsonKey(name: 'is_completed') final bool isCompleted,
-          @JsonKey(name: 'is_displayed') final bool isDisplayed,
-          @JsonKey(name: 'is_demo') final bool isDemo,
+          @JsonKey(name: 'countryCode') final String? countryCode,
+          @JsonKey(name: 'isCompleted') final bool isCompleted,
+          @JsonKey(name: 'isDisplayed') final bool isDisplayed,
+          @JsonKey(name: 'isDemo') final bool isDemo,
           required final String source,
-          @JsonKey(name: 'synced_at') final String? syncedAt,
-          @JsonKey(name: 'created_at') required final String createdAt,
-          @JsonKey(name: 'updated_at') required final String updatedAt}) =
+          @JsonKey(name: 'syncedAt') final String? syncedAt,
+          @JsonKey(name: 'createdAt') required final String createdAt,
+          @JsonKey(name: 'updatedAt') required final String updatedAt}) =
       _$SeriesImpl;
 
   factory _Series.fromJson(Map<String, dynamic> json) = _$SeriesImpl.fromJson;
 
   @override
-  @JsonKey(name: 'series_id')
+  @JsonKey(name: 'seriesId')
   int get seriesId;
   @override
-  @JsonKey(name: 'competition_id')
+  @JsonKey(name: 'competitionId')
   int get competitionId;
   @override
-  @JsonKey(name: 'series_name')
+  @JsonKey(name: 'seriesName')
   String get seriesName;
   @override
   int get year;
   @override
-  @JsonKey(name: 'begin_at')
+  @JsonKey(name: 'beginAt')
   String get beginAt;
   @override
-  @JsonKey(name: 'end_at')
+  @JsonKey(name: 'endAt')
   String get endAt;
   @override
-  @JsonKey(name: 'image_url')
+  @JsonKey(name: 'imageUrl')
   String? get imageUrl;
   @override
-  @JsonKey(name: 'time_zone')
+  @JsonKey(name: 'timeZone')
   String get timeZone;
   @override
   String get currency;
   @override
-  @JsonKey(name: 'country_code')
+  @JsonKey(name: 'countryCode')
   String? get countryCode;
   @override
-  @JsonKey(name: 'is_completed')
+  @JsonKey(name: 'isCompleted')
   bool get isCompleted;
   @override
-  @JsonKey(name: 'is_displayed')
+  @JsonKey(name: 'isDisplayed')
   bool get isDisplayed;
   @override
-  @JsonKey(name: 'is_demo')
+  @JsonKey(name: 'isDemo')
   bool get isDemo;
   @override
   String get source;
   @override
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   String? get syncedAt;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt;
 
   /// Create a copy of Series

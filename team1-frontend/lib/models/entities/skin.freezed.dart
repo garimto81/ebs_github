@@ -20,19 +20,19 @@ Skin _$SkinFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Skin {
-  @JsonKey(name: 'skin_id')
+  @JsonKey(name: 'skinId')
   int get skinId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get version => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
   SkinMetadata? get metadata => throw _privateConstructorUsedError;
-  @JsonKey(name: 'file_size')
+  @JsonKey(name: 'fileSize')
   int get fileSize => throw _privateConstructorUsedError;
-  @JsonKey(name: 'uploaded_at')
+  @JsonKey(name: 'uploadedAt')
   String? get uploadedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'activated_at')
+  @JsonKey(name: 'activatedAt')
   String? get activatedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'preview_url')
+  @JsonKey(name: 'previewUrl')
   String? get previewUrl => throw _privateConstructorUsedError;
 
   /// Serializes this Skin to a JSON map.
@@ -50,15 +50,15 @@ abstract class $SkinCopyWith<$Res> {
       _$SkinCopyWithImpl<$Res, Skin>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'skin_id') int skinId,
+      {@JsonKey(name: 'skinId') int skinId,
       String name,
       String version,
       String status,
       SkinMetadata? metadata,
-      @JsonKey(name: 'file_size') int fileSize,
-      @JsonKey(name: 'uploaded_at') String? uploadedAt,
-      @JsonKey(name: 'activated_at') String? activatedAt,
-      @JsonKey(name: 'preview_url') String? previewUrl});
+      @JsonKey(name: 'fileSize') int fileSize,
+      @JsonKey(name: 'uploadedAt') String? uploadedAt,
+      @JsonKey(name: 'activatedAt') String? activatedAt,
+      @JsonKey(name: 'previewUrl') String? previewUrl});
 
   $SkinMetadataCopyWith<$Res>? get metadata;
 }
@@ -151,15 +151,15 @@ abstract class _$$SkinImplCopyWith<$Res> implements $SkinCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'skin_id') int skinId,
+      {@JsonKey(name: 'skinId') int skinId,
       String name,
       String version,
       String status,
       SkinMetadata? metadata,
-      @JsonKey(name: 'file_size') int fileSize,
-      @JsonKey(name: 'uploaded_at') String? uploadedAt,
-      @JsonKey(name: 'activated_at') String? activatedAt,
-      @JsonKey(name: 'preview_url') String? previewUrl});
+      @JsonKey(name: 'fileSize') int fileSize,
+      @JsonKey(name: 'uploadedAt') String? uploadedAt,
+      @JsonKey(name: 'activatedAt') String? activatedAt,
+      @JsonKey(name: 'previewUrl') String? previewUrl});
 
   @override
   $SkinMetadataCopyWith<$Res>? get metadata;
@@ -232,22 +232,22 @@ class __$$SkinImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SkinImpl extends _Skin {
   const _$SkinImpl(
-      {@JsonKey(name: 'skin_id') required this.skinId,
+      {@JsonKey(name: 'skinId') required this.skinId,
       required this.name,
       this.version = '1.0.0',
       this.status = 'inactive',
       this.metadata,
-      @JsonKey(name: 'file_size') this.fileSize = 0,
-      @JsonKey(name: 'uploaded_at') this.uploadedAt,
-      @JsonKey(name: 'activated_at') this.activatedAt,
-      @JsonKey(name: 'preview_url') this.previewUrl})
+      @JsonKey(name: 'fileSize') this.fileSize = 0,
+      @JsonKey(name: 'uploadedAt') this.uploadedAt,
+      @JsonKey(name: 'activatedAt') this.activatedAt,
+      @JsonKey(name: 'previewUrl') this.previewUrl})
       : super._();
 
   factory _$SkinImpl.fromJson(Map<String, dynamic> json) =>
       _$$SkinImplFromJson(json);
 
   @override
-  @JsonKey(name: 'skin_id')
+  @JsonKey(name: 'skinId')
   final int skinId;
   @override
   final String name;
@@ -260,16 +260,16 @@ class _$SkinImpl extends _Skin {
   @override
   final SkinMetadata? metadata;
   @override
-  @JsonKey(name: 'file_size')
+  @JsonKey(name: 'fileSize')
   final int fileSize;
   @override
-  @JsonKey(name: 'uploaded_at')
+  @JsonKey(name: 'uploadedAt')
   final String? uploadedAt;
   @override
-  @JsonKey(name: 'activated_at')
+  @JsonKey(name: 'activatedAt')
   final String? activatedAt;
   @override
-  @JsonKey(name: 'preview_url')
+  @JsonKey(name: 'previewUrl')
   final String? previewUrl;
 
   @override
@@ -321,21 +321,21 @@ class _$SkinImpl extends _Skin {
 
 abstract class _Skin extends Skin {
   const factory _Skin(
-      {@JsonKey(name: 'skin_id') required final int skinId,
+      {@JsonKey(name: 'skinId') required final int skinId,
       required final String name,
       final String version,
       final String status,
       final SkinMetadata? metadata,
-      @JsonKey(name: 'file_size') final int fileSize,
-      @JsonKey(name: 'uploaded_at') final String? uploadedAt,
-      @JsonKey(name: 'activated_at') final String? activatedAt,
-      @JsonKey(name: 'preview_url') final String? previewUrl}) = _$SkinImpl;
+      @JsonKey(name: 'fileSize') final int fileSize,
+      @JsonKey(name: 'uploadedAt') final String? uploadedAt,
+      @JsonKey(name: 'activatedAt') final String? activatedAt,
+      @JsonKey(name: 'previewUrl') final String? previewUrl}) = _$SkinImpl;
   const _Skin._() : super._();
 
   factory _Skin.fromJson(Map<String, dynamic> json) = _$SkinImpl.fromJson;
 
   @override
-  @JsonKey(name: 'skin_id')
+  @JsonKey(name: 'skinId')
   int get skinId;
   @override
   String get name;
@@ -346,16 +346,16 @@ abstract class _Skin extends Skin {
   @override
   SkinMetadata? get metadata;
   @override
-  @JsonKey(name: 'file_size')
+  @JsonKey(name: 'fileSize')
   int get fileSize;
   @override
-  @JsonKey(name: 'uploaded_at')
+  @JsonKey(name: 'uploadedAt')
   String? get uploadedAt;
   @override
-  @JsonKey(name: 'activated_at')
+  @JsonKey(name: 'activatedAt')
   String? get activatedAt;
   @override
-  @JsonKey(name: 'preview_url')
+  @JsonKey(name: 'previewUrl')
   String? get previewUrl;
 
   /// Create a copy of Skin

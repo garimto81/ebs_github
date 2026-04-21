@@ -20,19 +20,19 @@ OutputPreset _$OutputPresetFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$OutputPreset {
-  @JsonKey(name: 'preset_id')
+  @JsonKey(name: 'presetId')
   int get presetId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'output_type')
+  @JsonKey(name: 'outputType')
   String get outputType => throw _privateConstructorUsedError;
   int get width => throw _privateConstructorUsedError;
   int get height => throw _privateConstructorUsedError;
   int get framerate => throw _privateConstructorUsedError;
-  @JsonKey(name: 'security_delay_sec')
+  @JsonKey(name: 'securityDelaySec')
   int get securityDelaySec => throw _privateConstructorUsedError;
-  @JsonKey(name: 'chroma_key')
+  @JsonKey(name: 'chromaKey')
   bool get chromaKey => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_default')
+  @JsonKey(name: 'isDefault')
   bool get isDefault => throw _privateConstructorUsedError;
 
   /// Serializes this OutputPreset to a JSON map.
@@ -52,15 +52,15 @@ abstract class $OutputPresetCopyWith<$Res> {
       _$OutputPresetCopyWithImpl<$Res, OutputPreset>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'preset_id') int presetId,
+      {@JsonKey(name: 'presetId') int presetId,
       String name,
-      @JsonKey(name: 'output_type') String outputType,
+      @JsonKey(name: 'outputType') String outputType,
       int width,
       int height,
       int framerate,
-      @JsonKey(name: 'security_delay_sec') int securityDelaySec,
-      @JsonKey(name: 'chroma_key') bool chromaKey,
-      @JsonKey(name: 'is_default') bool isDefault});
+      @JsonKey(name: 'securityDelaySec') int securityDelaySec,
+      @JsonKey(name: 'chromaKey') bool chromaKey,
+      @JsonKey(name: 'isDefault') bool isDefault});
 }
 
 /// @nodoc
@@ -138,15 +138,15 @@ abstract class _$$OutputPresetImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'preset_id') int presetId,
+      {@JsonKey(name: 'presetId') int presetId,
       String name,
-      @JsonKey(name: 'output_type') String outputType,
+      @JsonKey(name: 'outputType') String outputType,
       int width,
       int height,
       int framerate,
-      @JsonKey(name: 'security_delay_sec') int securityDelaySec,
-      @JsonKey(name: 'chroma_key') bool chromaKey,
-      @JsonKey(name: 'is_default') bool isDefault});
+      @JsonKey(name: 'securityDelaySec') int securityDelaySec,
+      @JsonKey(name: 'chromaKey') bool chromaKey,
+      @JsonKey(name: 'isDefault') bool isDefault});
 }
 
 /// @nodoc
@@ -217,26 +217,26 @@ class __$$OutputPresetImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$OutputPresetImpl implements _OutputPreset {
   const _$OutputPresetImpl(
-      {@JsonKey(name: 'preset_id') required this.presetId,
+      {@JsonKey(name: 'presetId') required this.presetId,
       required this.name,
-      @JsonKey(name: 'output_type') required this.outputType,
+      @JsonKey(name: 'outputType') required this.outputType,
       required this.width,
       required this.height,
       required this.framerate,
-      @JsonKey(name: 'security_delay_sec') required this.securityDelaySec,
-      @JsonKey(name: 'chroma_key') required this.chromaKey,
-      @JsonKey(name: 'is_default') required this.isDefault});
+      @JsonKey(name: 'securityDelaySec') required this.securityDelaySec,
+      @JsonKey(name: 'chromaKey') required this.chromaKey,
+      @JsonKey(name: 'isDefault') required this.isDefault});
 
   factory _$OutputPresetImpl.fromJson(Map<String, dynamic> json) =>
       _$$OutputPresetImplFromJson(json);
 
   @override
-  @JsonKey(name: 'preset_id')
+  @JsonKey(name: 'presetId')
   final int presetId;
   @override
   final String name;
   @override
-  @JsonKey(name: 'output_type')
+  @JsonKey(name: 'outputType')
   final String outputType;
   @override
   final int width;
@@ -245,13 +245,13 @@ class _$OutputPresetImpl implements _OutputPreset {
   @override
   final int framerate;
   @override
-  @JsonKey(name: 'security_delay_sec')
+  @JsonKey(name: 'securityDelaySec')
   final int securityDelaySec;
   @override
-  @JsonKey(name: 'chroma_key')
+  @JsonKey(name: 'chromaKey')
   final bool chromaKey;
   @override
-  @JsonKey(name: 'is_default')
+  @JsonKey(name: 'isDefault')
   final bool isDefault;
 
   @override
@@ -304,27 +304,27 @@ class _$OutputPresetImpl implements _OutputPreset {
 
 abstract class _OutputPreset implements OutputPreset {
   const factory _OutputPreset(
-      {@JsonKey(name: 'preset_id') required final int presetId,
+      {@JsonKey(name: 'presetId') required final int presetId,
       required final String name,
-      @JsonKey(name: 'output_type') required final String outputType,
+      @JsonKey(name: 'outputType') required final String outputType,
       required final int width,
       required final int height,
       required final int framerate,
-      @JsonKey(name: 'security_delay_sec') required final int securityDelaySec,
-      @JsonKey(name: 'chroma_key') required final bool chromaKey,
-      @JsonKey(name: 'is_default')
+      @JsonKey(name: 'securityDelaySec') required final int securityDelaySec,
+      @JsonKey(name: 'chromaKey') required final bool chromaKey,
+      @JsonKey(name: 'isDefault')
       required final bool isDefault}) = _$OutputPresetImpl;
 
   factory _OutputPreset.fromJson(Map<String, dynamic> json) =
       _$OutputPresetImpl.fromJson;
 
   @override
-  @JsonKey(name: 'preset_id')
+  @JsonKey(name: 'presetId')
   int get presetId;
   @override
   String get name;
   @override
-  @JsonKey(name: 'output_type')
+  @JsonKey(name: 'outputType')
   String get outputType;
   @override
   int get width;
@@ -333,13 +333,13 @@ abstract class _OutputPreset implements OutputPreset {
   @override
   int get framerate;
   @override
-  @JsonKey(name: 'security_delay_sec')
+  @JsonKey(name: 'securityDelaySec')
   int get securityDelaySec;
   @override
-  @JsonKey(name: 'chroma_key')
+  @JsonKey(name: 'chromaKey')
   bool get chromaKey;
   @override
-  @JsonKey(name: 'is_default')
+  @JsonKey(name: 'isDefault')
   bool get isDefault;
 
   /// Create a copy of OutputPreset

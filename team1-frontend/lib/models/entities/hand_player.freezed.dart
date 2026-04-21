@@ -21,28 +21,28 @@ HandPlayer _$HandPlayerFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$HandPlayer {
   int get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'hand_id')
+  @JsonKey(name: 'handId')
   int get handId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'seat_no')
+  @JsonKey(name: 'seatNo')
   int get seatNo => throw _privateConstructorUsedError;
-  @JsonKey(name: 'player_id')
+  @JsonKey(name: 'playerId')
   int? get playerId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'player_name')
+  @JsonKey(name: 'playerName')
   String get playerName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'hole_cards')
+  @JsonKey(name: 'holeCards')
   String get holeCards => throw _privateConstructorUsedError;
-  @JsonKey(name: 'start_stack')
+  @JsonKey(name: 'startStack')
   int get startStack => throw _privateConstructorUsedError;
-  @JsonKey(name: 'end_stack')
+  @JsonKey(name: 'endStack')
   int get endStack => throw _privateConstructorUsedError;
-  @JsonKey(name: 'final_action')
+  @JsonKey(name: 'finalAction')
   String? get finalAction => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_winner')
+  @JsonKey(name: 'isWinner')
   bool get isWinner => throw _privateConstructorUsedError;
   int get pnl => throw _privateConstructorUsedError;
-  @JsonKey(name: 'hand_rank')
+  @JsonKey(name: 'handRank')
   String? get handRank => throw _privateConstructorUsedError;
-  @JsonKey(name: 'win_probability')
+  @JsonKey(name: 'winProbability')
   double? get winProbability => throw _privateConstructorUsedError;
   bool get vpip => throw _privateConstructorUsedError;
   bool get pfr => throw _privateConstructorUsedError;
@@ -65,18 +65,18 @@ abstract class $HandPlayerCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'hand_id') int handId,
-      @JsonKey(name: 'seat_no') int seatNo,
-      @JsonKey(name: 'player_id') int? playerId,
-      @JsonKey(name: 'player_name') String playerName,
-      @JsonKey(name: 'hole_cards') String holeCards,
-      @JsonKey(name: 'start_stack') int startStack,
-      @JsonKey(name: 'end_stack') int endStack,
-      @JsonKey(name: 'final_action') String? finalAction,
-      @JsonKey(name: 'is_winner') bool isWinner,
+      @JsonKey(name: 'handId') int handId,
+      @JsonKey(name: 'seatNo') int seatNo,
+      @JsonKey(name: 'playerId') int? playerId,
+      @JsonKey(name: 'playerName') String playerName,
+      @JsonKey(name: 'holeCards') String holeCards,
+      @JsonKey(name: 'startStack') int startStack,
+      @JsonKey(name: 'endStack') int endStack,
+      @JsonKey(name: 'finalAction') String? finalAction,
+      @JsonKey(name: 'isWinner') bool isWinner,
       int pnl,
-      @JsonKey(name: 'hand_rank') String? handRank,
-      @JsonKey(name: 'win_probability') double? winProbability,
+      @JsonKey(name: 'handRank') String? handRank,
+      @JsonKey(name: 'winProbability') double? winProbability,
       bool vpip,
       bool pfr});
 }
@@ -187,18 +187,18 @@ abstract class _$$HandPlayerImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'hand_id') int handId,
-      @JsonKey(name: 'seat_no') int seatNo,
-      @JsonKey(name: 'player_id') int? playerId,
-      @JsonKey(name: 'player_name') String playerName,
-      @JsonKey(name: 'hole_cards') String holeCards,
-      @JsonKey(name: 'start_stack') int startStack,
-      @JsonKey(name: 'end_stack') int endStack,
-      @JsonKey(name: 'final_action') String? finalAction,
-      @JsonKey(name: 'is_winner') bool isWinner,
+      @JsonKey(name: 'handId') int handId,
+      @JsonKey(name: 'seatNo') int seatNo,
+      @JsonKey(name: 'playerId') int? playerId,
+      @JsonKey(name: 'playerName') String playerName,
+      @JsonKey(name: 'holeCards') String holeCards,
+      @JsonKey(name: 'startStack') int startStack,
+      @JsonKey(name: 'endStack') int endStack,
+      @JsonKey(name: 'finalAction') String? finalAction,
+      @JsonKey(name: 'isWinner') bool isWinner,
       int pnl,
-      @JsonKey(name: 'hand_rank') String? handRank,
-      @JsonKey(name: 'win_probability') double? winProbability,
+      @JsonKey(name: 'handRank') String? handRank,
+      @JsonKey(name: 'winProbability') double? winProbability,
       bool vpip,
       bool pfr});
 }
@@ -302,18 +302,18 @@ class __$$HandPlayerImplCopyWithImpl<$Res>
 class _$HandPlayerImpl implements _HandPlayer {
   const _$HandPlayerImpl(
       {required this.id,
-      @JsonKey(name: 'hand_id') required this.handId,
-      @JsonKey(name: 'seat_no') required this.seatNo,
-      @JsonKey(name: 'player_id') this.playerId,
-      @JsonKey(name: 'player_name') required this.playerName,
-      @JsonKey(name: 'hole_cards') required this.holeCards,
-      @JsonKey(name: 'start_stack') required this.startStack,
-      @JsonKey(name: 'end_stack') required this.endStack,
-      @JsonKey(name: 'final_action') this.finalAction,
-      @JsonKey(name: 'is_winner') required this.isWinner,
+      @JsonKey(name: 'handId') required this.handId,
+      @JsonKey(name: 'seatNo') required this.seatNo,
+      @JsonKey(name: 'playerId') this.playerId,
+      @JsonKey(name: 'playerName') required this.playerName,
+      @JsonKey(name: 'holeCards') required this.holeCards,
+      @JsonKey(name: 'startStack') required this.startStack,
+      @JsonKey(name: 'endStack') required this.endStack,
+      @JsonKey(name: 'finalAction') this.finalAction,
+      @JsonKey(name: 'isWinner') required this.isWinner,
       required this.pnl,
-      @JsonKey(name: 'hand_rank') this.handRank,
-      @JsonKey(name: 'win_probability') this.winProbability,
+      @JsonKey(name: 'handRank') this.handRank,
+      @JsonKey(name: 'winProbability') this.winProbability,
       required this.vpip,
       required this.pfr});
 
@@ -323,39 +323,39 @@ class _$HandPlayerImpl implements _HandPlayer {
   @override
   final int id;
   @override
-  @JsonKey(name: 'hand_id')
+  @JsonKey(name: 'handId')
   final int handId;
   @override
-  @JsonKey(name: 'seat_no')
+  @JsonKey(name: 'seatNo')
   final int seatNo;
   @override
-  @JsonKey(name: 'player_id')
+  @JsonKey(name: 'playerId')
   final int? playerId;
   @override
-  @JsonKey(name: 'player_name')
+  @JsonKey(name: 'playerName')
   final String playerName;
   @override
-  @JsonKey(name: 'hole_cards')
+  @JsonKey(name: 'holeCards')
   final String holeCards;
   @override
-  @JsonKey(name: 'start_stack')
+  @JsonKey(name: 'startStack')
   final int startStack;
   @override
-  @JsonKey(name: 'end_stack')
+  @JsonKey(name: 'endStack')
   final int endStack;
   @override
-  @JsonKey(name: 'final_action')
+  @JsonKey(name: 'finalAction')
   final String? finalAction;
   @override
-  @JsonKey(name: 'is_winner')
+  @JsonKey(name: 'isWinner')
   final bool isWinner;
   @override
   final int pnl;
   @override
-  @JsonKey(name: 'hand_rank')
+  @JsonKey(name: 'handRank')
   final String? handRank;
   @override
-  @JsonKey(name: 'win_probability')
+  @JsonKey(name: 'winProbability')
   final double? winProbability;
   @override
   final bool vpip;
@@ -437,18 +437,18 @@ class _$HandPlayerImpl implements _HandPlayer {
 abstract class _HandPlayer implements HandPlayer {
   const factory _HandPlayer(
       {required final int id,
-      @JsonKey(name: 'hand_id') required final int handId,
-      @JsonKey(name: 'seat_no') required final int seatNo,
-      @JsonKey(name: 'player_id') final int? playerId,
-      @JsonKey(name: 'player_name') required final String playerName,
-      @JsonKey(name: 'hole_cards') required final String holeCards,
-      @JsonKey(name: 'start_stack') required final int startStack,
-      @JsonKey(name: 'end_stack') required final int endStack,
-      @JsonKey(name: 'final_action') final String? finalAction,
-      @JsonKey(name: 'is_winner') required final bool isWinner,
+      @JsonKey(name: 'handId') required final int handId,
+      @JsonKey(name: 'seatNo') required final int seatNo,
+      @JsonKey(name: 'playerId') final int? playerId,
+      @JsonKey(name: 'playerName') required final String playerName,
+      @JsonKey(name: 'holeCards') required final String holeCards,
+      @JsonKey(name: 'startStack') required final int startStack,
+      @JsonKey(name: 'endStack') required final int endStack,
+      @JsonKey(name: 'finalAction') final String? finalAction,
+      @JsonKey(name: 'isWinner') required final bool isWinner,
       required final int pnl,
-      @JsonKey(name: 'hand_rank') final String? handRank,
-      @JsonKey(name: 'win_probability') final double? winProbability,
+      @JsonKey(name: 'handRank') final String? handRank,
+      @JsonKey(name: 'winProbability') final double? winProbability,
       required final bool vpip,
       required final bool pfr}) = _$HandPlayerImpl;
 
@@ -458,39 +458,39 @@ abstract class _HandPlayer implements HandPlayer {
   @override
   int get id;
   @override
-  @JsonKey(name: 'hand_id')
+  @JsonKey(name: 'handId')
   int get handId;
   @override
-  @JsonKey(name: 'seat_no')
+  @JsonKey(name: 'seatNo')
   int get seatNo;
   @override
-  @JsonKey(name: 'player_id')
+  @JsonKey(name: 'playerId')
   int? get playerId;
   @override
-  @JsonKey(name: 'player_name')
+  @JsonKey(name: 'playerName')
   String get playerName;
   @override
-  @JsonKey(name: 'hole_cards')
+  @JsonKey(name: 'holeCards')
   String get holeCards;
   @override
-  @JsonKey(name: 'start_stack')
+  @JsonKey(name: 'startStack')
   int get startStack;
   @override
-  @JsonKey(name: 'end_stack')
+  @JsonKey(name: 'endStack')
   int get endStack;
   @override
-  @JsonKey(name: 'final_action')
+  @JsonKey(name: 'finalAction')
   String? get finalAction;
   @override
-  @JsonKey(name: 'is_winner')
+  @JsonKey(name: 'isWinner')
   bool get isWinner;
   @override
   int get pnl;
   @override
-  @JsonKey(name: 'hand_rank')
+  @JsonKey(name: 'handRank')
   String? get handRank;
   @override
-  @JsonKey(name: 'win_probability')
+  @JsonKey(name: 'winProbability')
   double? get winProbability;
   @override
   bool get vpip;

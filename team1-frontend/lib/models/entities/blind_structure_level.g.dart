@@ -10,22 +10,22 @@ _$BlindStructureLevelImpl _$$BlindStructureLevelImplFromJson(
         Map<String, dynamic> json) =>
     _$BlindStructureLevelImpl(
       id: (json['id'] as num).toInt(),
-      blindStructureId: (json['blind_structure_id'] as num).toInt(),
-      levelNo: (json['level_no'] as num).toInt(),
-      smallBlind: (json['small_blind'] as num).toInt(),
-      bigBlind: (json['big_blind'] as num).toInt(),
+      blindStructureId: (json['blindStructureId'] as num).toInt(),
+      levelNo: (json['levelNo'] as num).toInt(),
+      smallBlind: (json['smallBlind'] as num).toInt(),
+      bigBlind: (json['bigBlind'] as num).toInt(),
       ante: (json['ante'] as num).toInt(),
-      durationMinutes: (json['duration_minutes'] as num).toInt(),
+      durationMinutes: (json['durationMinutes'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$BlindStructureLevelImplToJson(
         _$BlindStructureLevelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'blind_structure_id': instance.blindStructureId,
-      'level_no': instance.levelNo,
-      'small_blind': instance.smallBlind,
-      'big_blind': instance.bigBlind,
+      'blindStructureId': instance.blindStructureId,
+      'levelNo': instance.levelNo,
+      'smallBlind': instance.smallBlind,
+      'bigBlind': instance.bigBlind,
       'ante': instance.ante,
-      'duration_minutes': instance.durationMinutes,
+      'durationMinutes': instance.durationMinutes,
     };

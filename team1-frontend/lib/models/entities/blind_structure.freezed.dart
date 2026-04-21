@@ -20,12 +20,12 @@ BlindStructure _$BlindStructureFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$BlindStructure {
-  @JsonKey(name: 'blind_structure_id')
+  @JsonKey(name: 'blindStructureId')
   int get blindStructureId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this BlindStructure to a JSON map.
@@ -45,10 +45,10 @@ abstract class $BlindStructureCopyWith<$Res> {
       _$BlindStructureCopyWithImpl<$Res, BlindStructure>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'blind_structure_id') int blindStructureId,
+      {@JsonKey(name: 'blindStructureId') int blindStructureId,
       String name,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt});
 }
 
 /// @nodoc
@@ -101,10 +101,10 @@ abstract class _$$BlindStructureImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'blind_structure_id') int blindStructureId,
+      {@JsonKey(name: 'blindStructureId') int blindStructureId,
       String name,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt});
 }
 
 /// @nodoc
@@ -150,24 +150,24 @@ class __$$BlindStructureImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$BlindStructureImpl implements _BlindStructure {
   const _$BlindStructureImpl(
-      {@JsonKey(name: 'blind_structure_id') required this.blindStructureId,
+      {@JsonKey(name: 'blindStructureId') required this.blindStructureId,
       required this.name,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt});
+      @JsonKey(name: 'createdAt') required this.createdAt,
+      @JsonKey(name: 'updatedAt') required this.updatedAt});
 
   factory _$BlindStructureImpl.fromJson(Map<String, dynamic> json) =>
       _$$BlindStructureImplFromJson(json);
 
   @override
-  @JsonKey(name: 'blind_structure_id')
+  @JsonKey(name: 'blindStructureId')
   final int blindStructureId;
   @override
   final String name;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   final String updatedAt;
 
   @override
@@ -213,25 +213,25 @@ class _$BlindStructureImpl implements _BlindStructure {
 
 abstract class _BlindStructure implements BlindStructure {
   const factory _BlindStructure(
-      {@JsonKey(name: 'blind_structure_id') required final int blindStructureId,
+      {@JsonKey(name: 'blindStructureId') required final int blindStructureId,
       required final String name,
-      @JsonKey(name: 'created_at') required final String createdAt,
-      @JsonKey(name: 'updated_at')
+      @JsonKey(name: 'createdAt') required final String createdAt,
+      @JsonKey(name: 'updatedAt')
       required final String updatedAt}) = _$BlindStructureImpl;
 
   factory _BlindStructure.fromJson(Map<String, dynamic> json) =
       _$BlindStructureImpl.fromJson;
 
   @override
-  @JsonKey(name: 'blind_structure_id')
+  @JsonKey(name: 'blindStructureId')
   int get blindStructureId;
   @override
   String get name;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt;
 
   /// Create a copy of BlindStructure

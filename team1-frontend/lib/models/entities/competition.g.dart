@@ -8,20 +8,20 @@ part of 'competition.dart';
 
 _$CompetitionImpl _$$CompetitionImplFromJson(Map<String, dynamic> json) =>
     _$CompetitionImpl(
-      competitionId: (json['competition_id'] as num).toInt(),
+      competitionId: (json['competitionId'] as num).toInt(),
       name: json['name'] as String,
-      competitionType: (json['competition_type'] as num).toInt(),
-      competitionTag: (json['competition_tag'] as num).toInt(),
-      createdAt: json['created_at'] as String,
-      updatedAt: json['updated_at'] as String,
+      competitionType: (json['competitionType'] as num).toInt(),
+      competitionTag: (json['competitionTag'] as num).toInt(),
+      createdAt: json['createdAt'] as String,
+      updatedAt: json['updatedAt'] as String,
     );
 
 Map<String, dynamic> _$$CompetitionImplToJson(_$CompetitionImpl instance) =>
     <String, dynamic>{
-      'competition_id': instance.competitionId,
+      'competitionId': instance.competitionId,
       'name': instance.name,
-      'competition_type': instance.competitionType,
-      'competition_tag': instance.competitionTag,
-      'created_at': instance.createdAt,
-      'updated_at': instance.updatedAt,
+      'competitionType': instance.competitionType,
+      'competitionTag': instance.competitionTag,
+      'createdAt': instance.createdAt,
+      'updatedAt': instance.updatedAt,
     };

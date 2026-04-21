@@ -51,15 +51,15 @@ EBS 현재 상태:
 ## 수락 기준
 
 - [x] PR 0: Naming_Conventions.md v2 존재
-- [ ] PR 1: Auth_and_Session §4 / WebSocket_Events line 329 / BS_Overview §네이밍 정정
-- [ ] PR 2: team2 Pydantic alias_generator 전역 도입
-- [ ] PR 3: WS publisher snake 10 → PascalCase
-- [ ] PR 4: REST path kebab → PascalCase (180 endpoint)
-- [ ] PR 5: team1 Freezed @JsonKey 전수 교체
-- [ ] PR 6: team1 ws_dispatch + Repository
-- [ ] PR 7: team4 CC consumer
-- [ ] PR 8: team3 Engine OutputEvent payload
-- [ ] PR 9: CI naming gate
+- [ ] PR 1: Auth_and_Session §4 / WebSocket_Events line 329 / BS_Overview §네이밍 정정 — **NOTIFY-conductor-B088-PR1 발행**
+- [ ] PR 2: team2 Pydantic alias_generator 전역 도입 — **NOTIFY-team2 발행**
+- [ ] PR 3: WS publisher snake 10 → PascalCase — **NOTIFY-team2 발행**
+- [ ] PR 4: REST path kebab → PascalCase (180 endpoint) — **NOTIFY-team2 발행**
+- [x] **PR 5: team1 Freezed @JsonKey 전수 교체 (163개) + mock/fixture 전환 (222개) — DONE 2026-04-21**
+- [~] PR 6: team1 ws_dispatch + Repository — **TODO 주석 추가**. 실 전환은 team2 PR-3/4 완료 후
+- [ ] PR 7: team4 CC consumer — **NOTIFY-team4 발행**
+- [ ] PR 8: team3 Engine OutputEvent payload — **NOTIFY-team3 발행**
+- [ ] PR 9: CI naming gate — **NOTIFY-conductor-B088-PR9 발행**
 
 ## 리스크 & 완화
 

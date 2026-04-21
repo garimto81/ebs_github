@@ -20,16 +20,16 @@ Competition _$CompetitionFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Competition {
-  @JsonKey(name: 'competition_id')
+  @JsonKey(name: 'competitionId')
   int get competitionId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'competition_type')
+  @JsonKey(name: 'competitionType')
   int get competitionType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'competition_tag')
+  @JsonKey(name: 'competitionTag')
   int get competitionTag => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this Competition to a JSON map.
@@ -49,12 +49,12 @@ abstract class $CompetitionCopyWith<$Res> {
       _$CompetitionCopyWithImpl<$Res, Competition>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'competition_id') int competitionId,
+      {@JsonKey(name: 'competitionId') int competitionId,
       String name,
-      @JsonKey(name: 'competition_type') int competitionType,
-      @JsonKey(name: 'competition_tag') int competitionTag,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'competitionType') int competitionType,
+      @JsonKey(name: 'competitionTag') int competitionTag,
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt});
 }
 
 /// @nodoc
@@ -117,12 +117,12 @@ abstract class _$$CompetitionImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'competition_id') int competitionId,
+      {@JsonKey(name: 'competitionId') int competitionId,
       String name,
-      @JsonKey(name: 'competition_type') int competitionType,
-      @JsonKey(name: 'competition_tag') int competitionTag,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'competitionType') int competitionType,
+      @JsonKey(name: 'competitionTag') int competitionTag,
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt});
 }
 
 /// @nodoc
@@ -178,32 +178,32 @@ class __$$CompetitionImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CompetitionImpl implements _Competition {
   const _$CompetitionImpl(
-      {@JsonKey(name: 'competition_id') required this.competitionId,
+      {@JsonKey(name: 'competitionId') required this.competitionId,
       required this.name,
-      @JsonKey(name: 'competition_type') required this.competitionType,
-      @JsonKey(name: 'competition_tag') required this.competitionTag,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt});
+      @JsonKey(name: 'competitionType') required this.competitionType,
+      @JsonKey(name: 'competitionTag') required this.competitionTag,
+      @JsonKey(name: 'createdAt') required this.createdAt,
+      @JsonKey(name: 'updatedAt') required this.updatedAt});
 
   factory _$CompetitionImpl.fromJson(Map<String, dynamic> json) =>
       _$$CompetitionImplFromJson(json);
 
   @override
-  @JsonKey(name: 'competition_id')
+  @JsonKey(name: 'competitionId')
   final int competitionId;
   @override
   final String name;
   @override
-  @JsonKey(name: 'competition_type')
+  @JsonKey(name: 'competitionType')
   final int competitionType;
   @override
-  @JsonKey(name: 'competition_tag')
+  @JsonKey(name: 'competitionTag')
   final int competitionTag;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   final String updatedAt;
 
   @override
@@ -252,33 +252,33 @@ class _$CompetitionImpl implements _Competition {
 
 abstract class _Competition implements Competition {
   const factory _Competition(
-          {@JsonKey(name: 'competition_id') required final int competitionId,
+          {@JsonKey(name: 'competitionId') required final int competitionId,
           required final String name,
-          @JsonKey(name: 'competition_type') required final int competitionType,
-          @JsonKey(name: 'competition_tag') required final int competitionTag,
-          @JsonKey(name: 'created_at') required final String createdAt,
-          @JsonKey(name: 'updated_at') required final String updatedAt}) =
+          @JsonKey(name: 'competitionType') required final int competitionType,
+          @JsonKey(name: 'competitionTag') required final int competitionTag,
+          @JsonKey(name: 'createdAt') required final String createdAt,
+          @JsonKey(name: 'updatedAt') required final String updatedAt}) =
       _$CompetitionImpl;
 
   factory _Competition.fromJson(Map<String, dynamic> json) =
       _$CompetitionImpl.fromJson;
 
   @override
-  @JsonKey(name: 'competition_id')
+  @JsonKey(name: 'competitionId')
   int get competitionId;
   @override
   String get name;
   @override
-  @JsonKey(name: 'competition_type')
+  @JsonKey(name: 'competitionType')
   int get competitionType;
   @override
-  @JsonKey(name: 'competition_tag')
+  @JsonKey(name: 'competitionTag')
   int get competitionTag;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt;
 
   /// Create a copy of Competition

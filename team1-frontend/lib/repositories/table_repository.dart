@@ -3,6 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/remote/bo_api_client.dart';
 import '../models/models.dart';
 
+// TODO(B-088 PR-6): REST path kebab-case → WSOP LIVE PascalCase 일괄 전환.
+// 현재: /tables, /hand-history, /blind-structures, /payout-structures 등 kebab-case.
+// 목표: /Tables, /HandHistory, /BlindStructures, /PayoutStructures (WSOP LIVE 직접 준수).
+// 전환 시점: team2 PR-4 (Backend router rename) 완료 후 일괄 교체.
+// 상세: docs/2. Development/2.5 Shared/Naming_Conventions.md §1 + B-088 PR-4/6
+//
+// 본 session(B-088 PR-5) 에서는 @JsonKey(name: 'camelCase') Freezed 전환만 수행.
+// Backend 가 PR-2 (Pydantic alias_generator) 전까지 snake_case 응답 → 실 BO 연결 시
+// API 파싱 실패 예상됨 (의도적 breakage — cut-over 전제). Mock 환경은 동시 전환 완료.
+
 class TableRepository {
   TableRepository(this._client);
   final BoApiClient _client;

@@ -20,34 +20,34 @@ Player _$PlayerFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Player {
-  @JsonKey(name: 'player_id')
+  @JsonKey(name: 'playerId')
   int get playerId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'wsop_id')
+  @JsonKey(name: 'wsopId')
   String? get wsopId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'first_name')
+  @JsonKey(name: 'firstName')
   String get firstName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'last_name')
+  @JsonKey(name: 'lastName')
   String get lastName => throw _privateConstructorUsedError;
   String? get nationality => throw _privateConstructorUsedError;
-  @JsonKey(name: 'country_code')
+  @JsonKey(name: 'countryCode')
   String? get countryCode => throw _privateConstructorUsedError;
-  @JsonKey(name: 'profile_image')
+  @JsonKey(name: 'profileImage')
   String? get profileImage => throw _privateConstructorUsedError;
-  @JsonKey(name: 'player_status')
+  @JsonKey(name: 'playerStatus')
   String get playerStatus => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_demo')
+  @JsonKey(name: 'isDemo')
   bool get isDemo => throw _privateConstructorUsedError;
   String get source => throw _privateConstructorUsedError;
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   String? get syncedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt => throw _privateConstructorUsedError;
   int? get stack => throw _privateConstructorUsedError;
-  @JsonKey(name: 'table_name')
+  @JsonKey(name: 'tableName')
   String? get tableName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'seat_index')
+  @JsonKey(name: 'seatIndex')
   int? get seatIndex => throw _privateConstructorUsedError;
 
   /// Serializes this Player to a JSON map.
@@ -65,22 +65,22 @@ abstract class $PlayerCopyWith<$Res> {
       _$PlayerCopyWithImpl<$Res, Player>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'player_id') int playerId,
-      @JsonKey(name: 'wsop_id') String? wsopId,
-      @JsonKey(name: 'first_name') String firstName,
-      @JsonKey(name: 'last_name') String lastName,
+      {@JsonKey(name: 'playerId') int playerId,
+      @JsonKey(name: 'wsopId') String? wsopId,
+      @JsonKey(name: 'firstName') String firstName,
+      @JsonKey(name: 'lastName') String lastName,
       String? nationality,
-      @JsonKey(name: 'country_code') String? countryCode,
-      @JsonKey(name: 'profile_image') String? profileImage,
-      @JsonKey(name: 'player_status') String playerStatus,
-      @JsonKey(name: 'is_demo') bool isDemo,
+      @JsonKey(name: 'countryCode') String? countryCode,
+      @JsonKey(name: 'profileImage') String? profileImage,
+      @JsonKey(name: 'playerStatus') String playerStatus,
+      @JsonKey(name: 'isDemo') bool isDemo,
       String source,
-      @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt,
+      @JsonKey(name: 'syncedAt') String? syncedAt,
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt,
       int? stack,
-      @JsonKey(name: 'table_name') String? tableName,
-      @JsonKey(name: 'seat_index') int? seatIndex});
+      @JsonKey(name: 'tableName') String? tableName,
+      @JsonKey(name: 'seatIndex') int? seatIndex});
 }
 
 /// @nodoc
@@ -192,22 +192,22 @@ abstract class _$$PlayerImplCopyWith<$Res> implements $PlayerCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'player_id') int playerId,
-      @JsonKey(name: 'wsop_id') String? wsopId,
-      @JsonKey(name: 'first_name') String firstName,
-      @JsonKey(name: 'last_name') String lastName,
+      {@JsonKey(name: 'playerId') int playerId,
+      @JsonKey(name: 'wsopId') String? wsopId,
+      @JsonKey(name: 'firstName') String firstName,
+      @JsonKey(name: 'lastName') String lastName,
       String? nationality,
-      @JsonKey(name: 'country_code') String? countryCode,
-      @JsonKey(name: 'profile_image') String? profileImage,
-      @JsonKey(name: 'player_status') String playerStatus,
-      @JsonKey(name: 'is_demo') bool isDemo,
+      @JsonKey(name: 'countryCode') String? countryCode,
+      @JsonKey(name: 'profileImage') String? profileImage,
+      @JsonKey(name: 'playerStatus') String playerStatus,
+      @JsonKey(name: 'isDemo') bool isDemo,
       String source,
-      @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt,
+      @JsonKey(name: 'syncedAt') String? syncedAt,
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt,
       int? stack,
-      @JsonKey(name: 'table_name') String? tableName,
-      @JsonKey(name: 'seat_index') int? seatIndex});
+      @JsonKey(name: 'tableName') String? tableName,
+      @JsonKey(name: 'seatIndex') int? seatIndex});
 }
 
 /// @nodoc
@@ -313,70 +313,70 @@ class __$$PlayerImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PlayerImpl implements _Player {
   const _$PlayerImpl(
-      {@JsonKey(name: 'player_id') required this.playerId,
-      @JsonKey(name: 'wsop_id') this.wsopId,
-      @JsonKey(name: 'first_name') required this.firstName,
-      @JsonKey(name: 'last_name') required this.lastName,
+      {@JsonKey(name: 'playerId') required this.playerId,
+      @JsonKey(name: 'wsopId') this.wsopId,
+      @JsonKey(name: 'firstName') required this.firstName,
+      @JsonKey(name: 'lastName') required this.lastName,
       this.nationality,
-      @JsonKey(name: 'country_code') this.countryCode,
-      @JsonKey(name: 'profile_image') this.profileImage,
-      @JsonKey(name: 'player_status') required this.playerStatus,
-      @JsonKey(name: 'is_demo') this.isDemo = false,
+      @JsonKey(name: 'countryCode') this.countryCode,
+      @JsonKey(name: 'profileImage') this.profileImage,
+      @JsonKey(name: 'playerStatus') required this.playerStatus,
+      @JsonKey(name: 'isDemo') this.isDemo = false,
       required this.source,
-      @JsonKey(name: 'synced_at') this.syncedAt,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt,
+      @JsonKey(name: 'syncedAt') this.syncedAt,
+      @JsonKey(name: 'createdAt') required this.createdAt,
+      @JsonKey(name: 'updatedAt') required this.updatedAt,
       this.stack,
-      @JsonKey(name: 'table_name') this.tableName,
-      @JsonKey(name: 'seat_index') this.seatIndex});
+      @JsonKey(name: 'tableName') this.tableName,
+      @JsonKey(name: 'seatIndex') this.seatIndex});
 
   factory _$PlayerImpl.fromJson(Map<String, dynamic> json) =>
       _$$PlayerImplFromJson(json);
 
   @override
-  @JsonKey(name: 'player_id')
+  @JsonKey(name: 'playerId')
   final int playerId;
   @override
-  @JsonKey(name: 'wsop_id')
+  @JsonKey(name: 'wsopId')
   final String? wsopId;
   @override
-  @JsonKey(name: 'first_name')
+  @JsonKey(name: 'firstName')
   final String firstName;
   @override
-  @JsonKey(name: 'last_name')
+  @JsonKey(name: 'lastName')
   final String lastName;
   @override
   final String? nationality;
   @override
-  @JsonKey(name: 'country_code')
+  @JsonKey(name: 'countryCode')
   final String? countryCode;
   @override
-  @JsonKey(name: 'profile_image')
+  @JsonKey(name: 'profileImage')
   final String? profileImage;
   @override
-  @JsonKey(name: 'player_status')
+  @JsonKey(name: 'playerStatus')
   final String playerStatus;
   @override
-  @JsonKey(name: 'is_demo')
+  @JsonKey(name: 'isDemo')
   final bool isDemo;
   @override
   final String source;
   @override
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   final String? syncedAt;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   final String updatedAt;
   @override
   final int? stack;
   @override
-  @JsonKey(name: 'table_name')
+  @JsonKey(name: 'tableName')
   final String? tableName;
   @override
-  @JsonKey(name: 'seat_index')
+  @JsonKey(name: 'seatIndex')
   final int? seatIndex;
 
   @override
@@ -458,69 +458,69 @@ class _$PlayerImpl implements _Player {
 
 abstract class _Player implements Player {
   const factory _Player(
-      {@JsonKey(name: 'player_id') required final int playerId,
-      @JsonKey(name: 'wsop_id') final String? wsopId,
-      @JsonKey(name: 'first_name') required final String firstName,
-      @JsonKey(name: 'last_name') required final String lastName,
+      {@JsonKey(name: 'playerId') required final int playerId,
+      @JsonKey(name: 'wsopId') final String? wsopId,
+      @JsonKey(name: 'firstName') required final String firstName,
+      @JsonKey(name: 'lastName') required final String lastName,
       final String? nationality,
-      @JsonKey(name: 'country_code') final String? countryCode,
-      @JsonKey(name: 'profile_image') final String? profileImage,
-      @JsonKey(name: 'player_status') required final String playerStatus,
-      @JsonKey(name: 'is_demo') final bool isDemo,
+      @JsonKey(name: 'countryCode') final String? countryCode,
+      @JsonKey(name: 'profileImage') final String? profileImage,
+      @JsonKey(name: 'playerStatus') required final String playerStatus,
+      @JsonKey(name: 'isDemo') final bool isDemo,
       required final String source,
-      @JsonKey(name: 'synced_at') final String? syncedAt,
-      @JsonKey(name: 'created_at') required final String createdAt,
-      @JsonKey(name: 'updated_at') required final String updatedAt,
+      @JsonKey(name: 'syncedAt') final String? syncedAt,
+      @JsonKey(name: 'createdAt') required final String createdAt,
+      @JsonKey(name: 'updatedAt') required final String updatedAt,
       final int? stack,
-      @JsonKey(name: 'table_name') final String? tableName,
-      @JsonKey(name: 'seat_index') final int? seatIndex}) = _$PlayerImpl;
+      @JsonKey(name: 'tableName') final String? tableName,
+      @JsonKey(name: 'seatIndex') final int? seatIndex}) = _$PlayerImpl;
 
   factory _Player.fromJson(Map<String, dynamic> json) = _$PlayerImpl.fromJson;
 
   @override
-  @JsonKey(name: 'player_id')
+  @JsonKey(name: 'playerId')
   int get playerId;
   @override
-  @JsonKey(name: 'wsop_id')
+  @JsonKey(name: 'wsopId')
   String? get wsopId;
   @override
-  @JsonKey(name: 'first_name')
+  @JsonKey(name: 'firstName')
   String get firstName;
   @override
-  @JsonKey(name: 'last_name')
+  @JsonKey(name: 'lastName')
   String get lastName;
   @override
   String? get nationality;
   @override
-  @JsonKey(name: 'country_code')
+  @JsonKey(name: 'countryCode')
   String? get countryCode;
   @override
-  @JsonKey(name: 'profile_image')
+  @JsonKey(name: 'profileImage')
   String? get profileImage;
   @override
-  @JsonKey(name: 'player_status')
+  @JsonKey(name: 'playerStatus')
   String get playerStatus;
   @override
-  @JsonKey(name: 'is_demo')
+  @JsonKey(name: 'isDemo')
   bool get isDemo;
   @override
   String get source;
   @override
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   String? get syncedAt;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt;
   @override
   int? get stack;
   @override
-  @JsonKey(name: 'table_name')
+  @JsonKey(name: 'tableName')
   String? get tableName;
   @override
-  @JsonKey(name: 'seat_index')
+  @JsonKey(name: 'seatIndex')
   int? get seatIndex;
 
   /// Create a copy of Player

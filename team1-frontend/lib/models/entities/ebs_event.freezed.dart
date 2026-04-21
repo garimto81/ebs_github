@@ -20,51 +20,51 @@ EbsEvent _$EbsEventFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$EbsEvent {
-  @JsonKey(name: 'event_id')
+  @JsonKey(name: 'eventId')
   int get eventId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'series_id')
+  @JsonKey(name: 'seriesId')
   int get seriesId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'event_no')
+  @JsonKey(name: 'eventNo')
   int get eventNo => throw _privateConstructorUsedError;
-  @JsonKey(name: 'event_name')
+  @JsonKey(name: 'eventName')
   String get eventName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'buy_in')
+  @JsonKey(name: 'buyIn')
   int? get buyIn => throw _privateConstructorUsedError;
-  @JsonKey(name: 'display_buy_in')
+  @JsonKey(name: 'displayBuyIn')
   String? get displayBuyIn => throw _privateConstructorUsedError;
-  @JsonKey(name: 'game_type')
+  @JsonKey(name: 'gameType')
   int get gameType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'bet_structure')
+  @JsonKey(name: 'betStructure')
   int get betStructure => throw _privateConstructorUsedError;
-  @JsonKey(name: 'event_game_type')
+  @JsonKey(name: 'eventGameType')
   int get eventGameType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'game_mode')
+  @JsonKey(name: 'gameMode')
   String get gameMode => throw _privateConstructorUsedError;
-  @JsonKey(name: 'allowed_games')
+  @JsonKey(name: 'allowedGames')
   String? get allowedGames => throw _privateConstructorUsedError;
-  @JsonKey(name: 'rotation_order')
+  @JsonKey(name: 'rotationOrder')
   String? get rotationOrder => throw _privateConstructorUsedError;
-  @JsonKey(name: 'rotation_trigger')
+  @JsonKey(name: 'rotationTrigger')
   String? get rotationTrigger => throw _privateConstructorUsedError;
-  @JsonKey(name: 'blind_structure_id')
+  @JsonKey(name: 'blindStructureId')
   int? get blindStructureId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'starting_chip')
+  @JsonKey(name: 'startingChip')
   int? get startingChip => throw _privateConstructorUsedError;
-  @JsonKey(name: 'table_size')
+  @JsonKey(name: 'tableSize')
   int get tableSize => throw _privateConstructorUsedError;
-  @JsonKey(name: 'total_entries')
+  @JsonKey(name: 'totalEntries')
   int get totalEntries => throw _privateConstructorUsedError;
-  @JsonKey(name: 'players_left')
+  @JsonKey(name: 'playersLeft')
   int get playersLeft => throw _privateConstructorUsedError;
-  @JsonKey(name: 'start_time')
+  @JsonKey(name: 'startTime')
   String? get startTime => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
   String get source => throw _privateConstructorUsedError;
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   String? get syncedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String? get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this EbsEvent to a JSON map.
@@ -83,30 +83,30 @@ abstract class $EbsEventCopyWith<$Res> {
       _$EbsEventCopyWithImpl<$Res, EbsEvent>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'event_id') int eventId,
-      @JsonKey(name: 'series_id') int seriesId,
-      @JsonKey(name: 'event_no') int eventNo,
-      @JsonKey(name: 'event_name') String eventName,
-      @JsonKey(name: 'buy_in') int? buyIn,
-      @JsonKey(name: 'display_buy_in') String? displayBuyIn,
-      @JsonKey(name: 'game_type') int gameType,
-      @JsonKey(name: 'bet_structure') int betStructure,
-      @JsonKey(name: 'event_game_type') int eventGameType,
-      @JsonKey(name: 'game_mode') String gameMode,
-      @JsonKey(name: 'allowed_games') String? allowedGames,
-      @JsonKey(name: 'rotation_order') String? rotationOrder,
-      @JsonKey(name: 'rotation_trigger') String? rotationTrigger,
-      @JsonKey(name: 'blind_structure_id') int? blindStructureId,
-      @JsonKey(name: 'starting_chip') int? startingChip,
-      @JsonKey(name: 'table_size') int tableSize,
-      @JsonKey(name: 'total_entries') int totalEntries,
-      @JsonKey(name: 'players_left') int playersLeft,
-      @JsonKey(name: 'start_time') String? startTime,
+      {@JsonKey(name: 'eventId') int eventId,
+      @JsonKey(name: 'seriesId') int seriesId,
+      @JsonKey(name: 'eventNo') int eventNo,
+      @JsonKey(name: 'eventName') String eventName,
+      @JsonKey(name: 'buyIn') int? buyIn,
+      @JsonKey(name: 'displayBuyIn') String? displayBuyIn,
+      @JsonKey(name: 'gameType') int gameType,
+      @JsonKey(name: 'betStructure') int betStructure,
+      @JsonKey(name: 'eventGameType') int eventGameType,
+      @JsonKey(name: 'gameMode') String gameMode,
+      @JsonKey(name: 'allowedGames') String? allowedGames,
+      @JsonKey(name: 'rotationOrder') String? rotationOrder,
+      @JsonKey(name: 'rotationTrigger') String? rotationTrigger,
+      @JsonKey(name: 'blindStructureId') int? blindStructureId,
+      @JsonKey(name: 'startingChip') int? startingChip,
+      @JsonKey(name: 'tableSize') int tableSize,
+      @JsonKey(name: 'totalEntries') int totalEntries,
+      @JsonKey(name: 'playersLeft') int playersLeft,
+      @JsonKey(name: 'startTime') String? startTime,
       String status,
       String source,
-      @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String? createdAt,
-      @JsonKey(name: 'updated_at') String? updatedAt});
+      @JsonKey(name: 'syncedAt') String? syncedAt,
+      @JsonKey(name: 'createdAt') String? createdAt,
+      @JsonKey(name: 'updatedAt') String? updatedAt});
 }
 
 /// @nodoc
@@ -259,30 +259,30 @@ abstract class _$$EbsEventImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'event_id') int eventId,
-      @JsonKey(name: 'series_id') int seriesId,
-      @JsonKey(name: 'event_no') int eventNo,
-      @JsonKey(name: 'event_name') String eventName,
-      @JsonKey(name: 'buy_in') int? buyIn,
-      @JsonKey(name: 'display_buy_in') String? displayBuyIn,
-      @JsonKey(name: 'game_type') int gameType,
-      @JsonKey(name: 'bet_structure') int betStructure,
-      @JsonKey(name: 'event_game_type') int eventGameType,
-      @JsonKey(name: 'game_mode') String gameMode,
-      @JsonKey(name: 'allowed_games') String? allowedGames,
-      @JsonKey(name: 'rotation_order') String? rotationOrder,
-      @JsonKey(name: 'rotation_trigger') String? rotationTrigger,
-      @JsonKey(name: 'blind_structure_id') int? blindStructureId,
-      @JsonKey(name: 'starting_chip') int? startingChip,
-      @JsonKey(name: 'table_size') int tableSize,
-      @JsonKey(name: 'total_entries') int totalEntries,
-      @JsonKey(name: 'players_left') int playersLeft,
-      @JsonKey(name: 'start_time') String? startTime,
+      {@JsonKey(name: 'eventId') int eventId,
+      @JsonKey(name: 'seriesId') int seriesId,
+      @JsonKey(name: 'eventNo') int eventNo,
+      @JsonKey(name: 'eventName') String eventName,
+      @JsonKey(name: 'buyIn') int? buyIn,
+      @JsonKey(name: 'displayBuyIn') String? displayBuyIn,
+      @JsonKey(name: 'gameType') int gameType,
+      @JsonKey(name: 'betStructure') int betStructure,
+      @JsonKey(name: 'eventGameType') int eventGameType,
+      @JsonKey(name: 'gameMode') String gameMode,
+      @JsonKey(name: 'allowedGames') String? allowedGames,
+      @JsonKey(name: 'rotationOrder') String? rotationOrder,
+      @JsonKey(name: 'rotationTrigger') String? rotationTrigger,
+      @JsonKey(name: 'blindStructureId') int? blindStructureId,
+      @JsonKey(name: 'startingChip') int? startingChip,
+      @JsonKey(name: 'tableSize') int tableSize,
+      @JsonKey(name: 'totalEntries') int totalEntries,
+      @JsonKey(name: 'playersLeft') int playersLeft,
+      @JsonKey(name: 'startTime') String? startTime,
       String status,
       String source,
-      @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String? createdAt,
-      @JsonKey(name: 'updated_at') String? updatedAt});
+      @JsonKey(name: 'syncedAt') String? syncedAt,
+      @JsonKey(name: 'createdAt') String? createdAt,
+      @JsonKey(name: 'updatedAt') String? updatedAt});
 }
 
 /// @nodoc
@@ -428,90 +428,90 @@ class __$$EbsEventImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$EbsEventImpl implements _EbsEvent {
   const _$EbsEventImpl(
-      {@JsonKey(name: 'event_id') required this.eventId,
-      @JsonKey(name: 'series_id') required this.seriesId,
-      @JsonKey(name: 'event_no') this.eventNo = 0,
-      @JsonKey(name: 'event_name') required this.eventName,
-      @JsonKey(name: 'buy_in') this.buyIn,
-      @JsonKey(name: 'display_buy_in') this.displayBuyIn,
-      @JsonKey(name: 'game_type') this.gameType = 0,
-      @JsonKey(name: 'bet_structure') this.betStructure = 0,
-      @JsonKey(name: 'event_game_type') this.eventGameType = 0,
-      @JsonKey(name: 'game_mode') this.gameMode = 'single',
-      @JsonKey(name: 'allowed_games') this.allowedGames,
-      @JsonKey(name: 'rotation_order') this.rotationOrder,
-      @JsonKey(name: 'rotation_trigger') this.rotationTrigger,
-      @JsonKey(name: 'blind_structure_id') this.blindStructureId,
-      @JsonKey(name: 'starting_chip') this.startingChip,
-      @JsonKey(name: 'table_size') this.tableSize = 9,
-      @JsonKey(name: 'total_entries') this.totalEntries = 0,
-      @JsonKey(name: 'players_left') this.playersLeft = 0,
-      @JsonKey(name: 'start_time') this.startTime,
+      {@JsonKey(name: 'eventId') required this.eventId,
+      @JsonKey(name: 'seriesId') required this.seriesId,
+      @JsonKey(name: 'eventNo') this.eventNo = 0,
+      @JsonKey(name: 'eventName') required this.eventName,
+      @JsonKey(name: 'buyIn') this.buyIn,
+      @JsonKey(name: 'displayBuyIn') this.displayBuyIn,
+      @JsonKey(name: 'gameType') this.gameType = 0,
+      @JsonKey(name: 'betStructure') this.betStructure = 0,
+      @JsonKey(name: 'eventGameType') this.eventGameType = 0,
+      @JsonKey(name: 'gameMode') this.gameMode = 'single',
+      @JsonKey(name: 'allowedGames') this.allowedGames,
+      @JsonKey(name: 'rotationOrder') this.rotationOrder,
+      @JsonKey(name: 'rotationTrigger') this.rotationTrigger,
+      @JsonKey(name: 'blindStructureId') this.blindStructureId,
+      @JsonKey(name: 'startingChip') this.startingChip,
+      @JsonKey(name: 'tableSize') this.tableSize = 9,
+      @JsonKey(name: 'totalEntries') this.totalEntries = 0,
+      @JsonKey(name: 'playersLeft') this.playersLeft = 0,
+      @JsonKey(name: 'startTime') this.startTime,
       this.status = 'created',
       this.source = 'api',
-      @JsonKey(name: 'synced_at') this.syncedAt,
-      @JsonKey(name: 'created_at') this.createdAt,
-      @JsonKey(name: 'updated_at') this.updatedAt});
+      @JsonKey(name: 'syncedAt') this.syncedAt,
+      @JsonKey(name: 'createdAt') this.createdAt,
+      @JsonKey(name: 'updatedAt') this.updatedAt});
 
   factory _$EbsEventImpl.fromJson(Map<String, dynamic> json) =>
       _$$EbsEventImplFromJson(json);
 
   @override
-  @JsonKey(name: 'event_id')
+  @JsonKey(name: 'eventId')
   final int eventId;
   @override
-  @JsonKey(name: 'series_id')
+  @JsonKey(name: 'seriesId')
   final int seriesId;
   @override
-  @JsonKey(name: 'event_no')
+  @JsonKey(name: 'eventNo')
   final int eventNo;
   @override
-  @JsonKey(name: 'event_name')
+  @JsonKey(name: 'eventName')
   final String eventName;
   @override
-  @JsonKey(name: 'buy_in')
+  @JsonKey(name: 'buyIn')
   final int? buyIn;
   @override
-  @JsonKey(name: 'display_buy_in')
+  @JsonKey(name: 'displayBuyIn')
   final String? displayBuyIn;
   @override
-  @JsonKey(name: 'game_type')
+  @JsonKey(name: 'gameType')
   final int gameType;
   @override
-  @JsonKey(name: 'bet_structure')
+  @JsonKey(name: 'betStructure')
   final int betStructure;
   @override
-  @JsonKey(name: 'event_game_type')
+  @JsonKey(name: 'eventGameType')
   final int eventGameType;
   @override
-  @JsonKey(name: 'game_mode')
+  @JsonKey(name: 'gameMode')
   final String gameMode;
   @override
-  @JsonKey(name: 'allowed_games')
+  @JsonKey(name: 'allowedGames')
   final String? allowedGames;
   @override
-  @JsonKey(name: 'rotation_order')
+  @JsonKey(name: 'rotationOrder')
   final String? rotationOrder;
   @override
-  @JsonKey(name: 'rotation_trigger')
+  @JsonKey(name: 'rotationTrigger')
   final String? rotationTrigger;
   @override
-  @JsonKey(name: 'blind_structure_id')
+  @JsonKey(name: 'blindStructureId')
   final int? blindStructureId;
   @override
-  @JsonKey(name: 'starting_chip')
+  @JsonKey(name: 'startingChip')
   final int? startingChip;
   @override
-  @JsonKey(name: 'table_size')
+  @JsonKey(name: 'tableSize')
   final int tableSize;
   @override
-  @JsonKey(name: 'total_entries')
+  @JsonKey(name: 'totalEntries')
   final int totalEntries;
   @override
-  @JsonKey(name: 'players_left')
+  @JsonKey(name: 'playersLeft')
   final int playersLeft;
   @override
-  @JsonKey(name: 'start_time')
+  @JsonKey(name: 'startTime')
   final String? startTime;
   @override
   @JsonKey()
@@ -520,13 +520,13 @@ class _$EbsEventImpl implements _EbsEvent {
   @JsonKey()
   final String source;
   @override
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   final String? syncedAt;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String? createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   final String? updatedAt;
 
   @override
@@ -632,103 +632,103 @@ class _$EbsEventImpl implements _EbsEvent {
 
 abstract class _EbsEvent implements EbsEvent {
   const factory _EbsEvent(
-      {@JsonKey(name: 'event_id') required final int eventId,
-      @JsonKey(name: 'series_id') required final int seriesId,
-      @JsonKey(name: 'event_no') final int eventNo,
-      @JsonKey(name: 'event_name') required final String eventName,
-      @JsonKey(name: 'buy_in') final int? buyIn,
-      @JsonKey(name: 'display_buy_in') final String? displayBuyIn,
-      @JsonKey(name: 'game_type') final int gameType,
-      @JsonKey(name: 'bet_structure') final int betStructure,
-      @JsonKey(name: 'event_game_type') final int eventGameType,
-      @JsonKey(name: 'game_mode') final String gameMode,
-      @JsonKey(name: 'allowed_games') final String? allowedGames,
-      @JsonKey(name: 'rotation_order') final String? rotationOrder,
-      @JsonKey(name: 'rotation_trigger') final String? rotationTrigger,
-      @JsonKey(name: 'blind_structure_id') final int? blindStructureId,
-      @JsonKey(name: 'starting_chip') final int? startingChip,
-      @JsonKey(name: 'table_size') final int tableSize,
-      @JsonKey(name: 'total_entries') final int totalEntries,
-      @JsonKey(name: 'players_left') final int playersLeft,
-      @JsonKey(name: 'start_time') final String? startTime,
+      {@JsonKey(name: 'eventId') required final int eventId,
+      @JsonKey(name: 'seriesId') required final int seriesId,
+      @JsonKey(name: 'eventNo') final int eventNo,
+      @JsonKey(name: 'eventName') required final String eventName,
+      @JsonKey(name: 'buyIn') final int? buyIn,
+      @JsonKey(name: 'displayBuyIn') final String? displayBuyIn,
+      @JsonKey(name: 'gameType') final int gameType,
+      @JsonKey(name: 'betStructure') final int betStructure,
+      @JsonKey(name: 'eventGameType') final int eventGameType,
+      @JsonKey(name: 'gameMode') final String gameMode,
+      @JsonKey(name: 'allowedGames') final String? allowedGames,
+      @JsonKey(name: 'rotationOrder') final String? rotationOrder,
+      @JsonKey(name: 'rotationTrigger') final String? rotationTrigger,
+      @JsonKey(name: 'blindStructureId') final int? blindStructureId,
+      @JsonKey(name: 'startingChip') final int? startingChip,
+      @JsonKey(name: 'tableSize') final int tableSize,
+      @JsonKey(name: 'totalEntries') final int totalEntries,
+      @JsonKey(name: 'playersLeft') final int playersLeft,
+      @JsonKey(name: 'startTime') final String? startTime,
       final String status,
       final String source,
-      @JsonKey(name: 'synced_at') final String? syncedAt,
-      @JsonKey(name: 'created_at') final String? createdAt,
-      @JsonKey(name: 'updated_at') final String? updatedAt}) = _$EbsEventImpl;
+      @JsonKey(name: 'syncedAt') final String? syncedAt,
+      @JsonKey(name: 'createdAt') final String? createdAt,
+      @JsonKey(name: 'updatedAt') final String? updatedAt}) = _$EbsEventImpl;
 
   factory _EbsEvent.fromJson(Map<String, dynamic> json) =
       _$EbsEventImpl.fromJson;
 
   @override
-  @JsonKey(name: 'event_id')
+  @JsonKey(name: 'eventId')
   int get eventId;
   @override
-  @JsonKey(name: 'series_id')
+  @JsonKey(name: 'seriesId')
   int get seriesId;
   @override
-  @JsonKey(name: 'event_no')
+  @JsonKey(name: 'eventNo')
   int get eventNo;
   @override
-  @JsonKey(name: 'event_name')
+  @JsonKey(name: 'eventName')
   String get eventName;
   @override
-  @JsonKey(name: 'buy_in')
+  @JsonKey(name: 'buyIn')
   int? get buyIn;
   @override
-  @JsonKey(name: 'display_buy_in')
+  @JsonKey(name: 'displayBuyIn')
   String? get displayBuyIn;
   @override
-  @JsonKey(name: 'game_type')
+  @JsonKey(name: 'gameType')
   int get gameType;
   @override
-  @JsonKey(name: 'bet_structure')
+  @JsonKey(name: 'betStructure')
   int get betStructure;
   @override
-  @JsonKey(name: 'event_game_type')
+  @JsonKey(name: 'eventGameType')
   int get eventGameType;
   @override
-  @JsonKey(name: 'game_mode')
+  @JsonKey(name: 'gameMode')
   String get gameMode;
   @override
-  @JsonKey(name: 'allowed_games')
+  @JsonKey(name: 'allowedGames')
   String? get allowedGames;
   @override
-  @JsonKey(name: 'rotation_order')
+  @JsonKey(name: 'rotationOrder')
   String? get rotationOrder;
   @override
-  @JsonKey(name: 'rotation_trigger')
+  @JsonKey(name: 'rotationTrigger')
   String? get rotationTrigger;
   @override
-  @JsonKey(name: 'blind_structure_id')
+  @JsonKey(name: 'blindStructureId')
   int? get blindStructureId;
   @override
-  @JsonKey(name: 'starting_chip')
+  @JsonKey(name: 'startingChip')
   int? get startingChip;
   @override
-  @JsonKey(name: 'table_size')
+  @JsonKey(name: 'tableSize')
   int get tableSize;
   @override
-  @JsonKey(name: 'total_entries')
+  @JsonKey(name: 'totalEntries')
   int get totalEntries;
   @override
-  @JsonKey(name: 'players_left')
+  @JsonKey(name: 'playersLeft')
   int get playersLeft;
   @override
-  @JsonKey(name: 'start_time')
+  @JsonKey(name: 'startTime')
   String? get startTime;
   @override
   String get status;
   @override
   String get source;
   @override
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   String? get syncedAt;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String? get createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String? get updatedAt;
 
   /// Create a copy of EbsEvent

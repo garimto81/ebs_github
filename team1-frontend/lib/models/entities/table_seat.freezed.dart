@@ -20,31 +20,31 @@ TableSeat _$TableSeatFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$TableSeat {
-  @JsonKey(name: 'seat_id')
+  @JsonKey(name: 'seatId')
   int get seatId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'table_id')
+  @JsonKey(name: 'tableId')
   int get tableId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'seat_no')
+  @JsonKey(name: 'seatNo')
   int get seatNo => throw _privateConstructorUsedError;
-  @JsonKey(name: 'player_id')
+  @JsonKey(name: 'playerId')
   int? get playerId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'wsop_id')
+  @JsonKey(name: 'wsopId')
   String? get wsopId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'player_name')
+  @JsonKey(name: 'playerName')
   String? get playerName => throw _privateConstructorUsedError;
   String? get nationality => throw _privateConstructorUsedError;
-  @JsonKey(name: 'country_code')
+  @JsonKey(name: 'countryCode')
   String? get countryCode => throw _privateConstructorUsedError;
-  @JsonKey(name: 'chip_count')
+  @JsonKey(name: 'chipCount')
   int get chipCount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'profile_image')
+  @JsonKey(name: 'profileImage')
   String? get profileImage => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
-  @JsonKey(name: 'player_move_status')
+  @JsonKey(name: 'playerMoveStatus')
   String? get playerMoveStatus => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this TableSeat to a JSON map.
@@ -63,20 +63,20 @@ abstract class $TableSeatCopyWith<$Res> {
       _$TableSeatCopyWithImpl<$Res, TableSeat>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'seat_id') int seatId,
-      @JsonKey(name: 'table_id') int tableId,
-      @JsonKey(name: 'seat_no') int seatNo,
-      @JsonKey(name: 'player_id') int? playerId,
-      @JsonKey(name: 'wsop_id') String? wsopId,
-      @JsonKey(name: 'player_name') String? playerName,
+      {@JsonKey(name: 'seatId') int seatId,
+      @JsonKey(name: 'tableId') int tableId,
+      @JsonKey(name: 'seatNo') int seatNo,
+      @JsonKey(name: 'playerId') int? playerId,
+      @JsonKey(name: 'wsopId') String? wsopId,
+      @JsonKey(name: 'playerName') String? playerName,
       String? nationality,
-      @JsonKey(name: 'country_code') String? countryCode,
-      @JsonKey(name: 'chip_count') int chipCount,
-      @JsonKey(name: 'profile_image') String? profileImage,
+      @JsonKey(name: 'countryCode') String? countryCode,
+      @JsonKey(name: 'chipCount') int chipCount,
+      @JsonKey(name: 'profileImage') String? profileImage,
       String status,
-      @JsonKey(name: 'player_move_status') String? playerMoveStatus,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'playerMoveStatus') String? playerMoveStatus,
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt});
 }
 
 /// @nodoc
@@ -179,20 +179,20 @@ abstract class _$$TableSeatImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'seat_id') int seatId,
-      @JsonKey(name: 'table_id') int tableId,
-      @JsonKey(name: 'seat_no') int seatNo,
-      @JsonKey(name: 'player_id') int? playerId,
-      @JsonKey(name: 'wsop_id') String? wsopId,
-      @JsonKey(name: 'player_name') String? playerName,
+      {@JsonKey(name: 'seatId') int seatId,
+      @JsonKey(name: 'tableId') int tableId,
+      @JsonKey(name: 'seatNo') int seatNo,
+      @JsonKey(name: 'playerId') int? playerId,
+      @JsonKey(name: 'wsopId') String? wsopId,
+      @JsonKey(name: 'playerName') String? playerName,
       String? nationality,
-      @JsonKey(name: 'country_code') String? countryCode,
-      @JsonKey(name: 'chip_count') int chipCount,
-      @JsonKey(name: 'profile_image') String? profileImage,
+      @JsonKey(name: 'countryCode') String? countryCode,
+      @JsonKey(name: 'chipCount') int chipCount,
+      @JsonKey(name: 'profileImage') String? profileImage,
       String status,
-      @JsonKey(name: 'player_move_status') String? playerMoveStatus,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'playerMoveStatus') String? playerMoveStatus,
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt});
 }
 
 /// @nodoc
@@ -288,63 +288,63 @@ class __$$TableSeatImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$TableSeatImpl implements _TableSeat {
   const _$TableSeatImpl(
-      {@JsonKey(name: 'seat_id') required this.seatId,
-      @JsonKey(name: 'table_id') required this.tableId,
-      @JsonKey(name: 'seat_no') required this.seatNo,
-      @JsonKey(name: 'player_id') this.playerId,
-      @JsonKey(name: 'wsop_id') this.wsopId,
-      @JsonKey(name: 'player_name') this.playerName,
+      {@JsonKey(name: 'seatId') required this.seatId,
+      @JsonKey(name: 'tableId') required this.tableId,
+      @JsonKey(name: 'seatNo') required this.seatNo,
+      @JsonKey(name: 'playerId') this.playerId,
+      @JsonKey(name: 'wsopId') this.wsopId,
+      @JsonKey(name: 'playerName') this.playerName,
       this.nationality,
-      @JsonKey(name: 'country_code') this.countryCode,
-      @JsonKey(name: 'chip_count') required this.chipCount,
-      @JsonKey(name: 'profile_image') this.profileImage,
+      @JsonKey(name: 'countryCode') this.countryCode,
+      @JsonKey(name: 'chipCount') required this.chipCount,
+      @JsonKey(name: 'profileImage') this.profileImage,
       required this.status,
-      @JsonKey(name: 'player_move_status') this.playerMoveStatus,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt});
+      @JsonKey(name: 'playerMoveStatus') this.playerMoveStatus,
+      @JsonKey(name: 'createdAt') required this.createdAt,
+      @JsonKey(name: 'updatedAt') required this.updatedAt});
 
   factory _$TableSeatImpl.fromJson(Map<String, dynamic> json) =>
       _$$TableSeatImplFromJson(json);
 
   @override
-  @JsonKey(name: 'seat_id')
+  @JsonKey(name: 'seatId')
   final int seatId;
   @override
-  @JsonKey(name: 'table_id')
+  @JsonKey(name: 'tableId')
   final int tableId;
   @override
-  @JsonKey(name: 'seat_no')
+  @JsonKey(name: 'seatNo')
   final int seatNo;
   @override
-  @JsonKey(name: 'player_id')
+  @JsonKey(name: 'playerId')
   final int? playerId;
   @override
-  @JsonKey(name: 'wsop_id')
+  @JsonKey(name: 'wsopId')
   final String? wsopId;
   @override
-  @JsonKey(name: 'player_name')
+  @JsonKey(name: 'playerName')
   final String? playerName;
   @override
   final String? nationality;
   @override
-  @JsonKey(name: 'country_code')
+  @JsonKey(name: 'countryCode')
   final String? countryCode;
   @override
-  @JsonKey(name: 'chip_count')
+  @JsonKey(name: 'chipCount')
   final int chipCount;
   @override
-  @JsonKey(name: 'profile_image')
+  @JsonKey(name: 'profileImage')
   final String? profileImage;
   @override
   final String status;
   @override
-  @JsonKey(name: 'player_move_status')
+  @JsonKey(name: 'playerMoveStatus')
   final String? playerMoveStatus;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   final String updatedAt;
 
   @override
@@ -419,64 +419,64 @@ class _$TableSeatImpl implements _TableSeat {
 
 abstract class _TableSeat implements TableSeat {
   const factory _TableSeat(
-          {@JsonKey(name: 'seat_id') required final int seatId,
-          @JsonKey(name: 'table_id') required final int tableId,
-          @JsonKey(name: 'seat_no') required final int seatNo,
-          @JsonKey(name: 'player_id') final int? playerId,
-          @JsonKey(name: 'wsop_id') final String? wsopId,
-          @JsonKey(name: 'player_name') final String? playerName,
+          {@JsonKey(name: 'seatId') required final int seatId,
+          @JsonKey(name: 'tableId') required final int tableId,
+          @JsonKey(name: 'seatNo') required final int seatNo,
+          @JsonKey(name: 'playerId') final int? playerId,
+          @JsonKey(name: 'wsopId') final String? wsopId,
+          @JsonKey(name: 'playerName') final String? playerName,
           final String? nationality,
-          @JsonKey(name: 'country_code') final String? countryCode,
-          @JsonKey(name: 'chip_count') required final int chipCount,
-          @JsonKey(name: 'profile_image') final String? profileImage,
+          @JsonKey(name: 'countryCode') final String? countryCode,
+          @JsonKey(name: 'chipCount') required final int chipCount,
+          @JsonKey(name: 'profileImage') final String? profileImage,
           required final String status,
-          @JsonKey(name: 'player_move_status') final String? playerMoveStatus,
-          @JsonKey(name: 'created_at') required final String createdAt,
-          @JsonKey(name: 'updated_at') required final String updatedAt}) =
+          @JsonKey(name: 'playerMoveStatus') final String? playerMoveStatus,
+          @JsonKey(name: 'createdAt') required final String createdAt,
+          @JsonKey(name: 'updatedAt') required final String updatedAt}) =
       _$TableSeatImpl;
 
   factory _TableSeat.fromJson(Map<String, dynamic> json) =
       _$TableSeatImpl.fromJson;
 
   @override
-  @JsonKey(name: 'seat_id')
+  @JsonKey(name: 'seatId')
   int get seatId;
   @override
-  @JsonKey(name: 'table_id')
+  @JsonKey(name: 'tableId')
   int get tableId;
   @override
-  @JsonKey(name: 'seat_no')
+  @JsonKey(name: 'seatNo')
   int get seatNo;
   @override
-  @JsonKey(name: 'player_id')
+  @JsonKey(name: 'playerId')
   int? get playerId;
   @override
-  @JsonKey(name: 'wsop_id')
+  @JsonKey(name: 'wsopId')
   String? get wsopId;
   @override
-  @JsonKey(name: 'player_name')
+  @JsonKey(name: 'playerName')
   String? get playerName;
   @override
   String? get nationality;
   @override
-  @JsonKey(name: 'country_code')
+  @JsonKey(name: 'countryCode')
   String? get countryCode;
   @override
-  @JsonKey(name: 'chip_count')
+  @JsonKey(name: 'chipCount')
   int get chipCount;
   @override
-  @JsonKey(name: 'profile_image')
+  @JsonKey(name: 'profileImage')
   String? get profileImage;
   @override
   String get status;
   @override
-  @JsonKey(name: 'player_move_status')
+  @JsonKey(name: 'playerMoveStatus')
   String? get playerMoveStatus;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt;
 
   /// Create a copy of TableSeat

@@ -21,22 +21,22 @@ HandAction _$HandActionFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$HandAction {
   int get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'hand_id')
+  @JsonKey(name: 'handId')
   int get handId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'seat_no')
+  @JsonKey(name: 'seatNo')
   int get seatNo => throw _privateConstructorUsedError;
-  @JsonKey(name: 'action_type')
+  @JsonKey(name: 'actionType')
   String get actionType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'action_amount')
+  @JsonKey(name: 'actionAmount')
   int get actionAmount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'pot_after')
+  @JsonKey(name: 'potAfter')
   int? get potAfter => throw _privateConstructorUsedError;
   String get street => throw _privateConstructorUsedError;
-  @JsonKey(name: 'action_order')
+  @JsonKey(name: 'actionOrder')
   int get actionOrder => throw _privateConstructorUsedError;
-  @JsonKey(name: 'board_cards')
+  @JsonKey(name: 'boardCards')
   String? get boardCards => throw _privateConstructorUsedError;
-  @JsonKey(name: 'action_time')
+  @JsonKey(name: 'actionTime')
   String? get actionTime => throw _privateConstructorUsedError;
 
   /// Serializes this HandAction to a JSON map.
@@ -57,15 +57,15 @@ abstract class $HandActionCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'hand_id') int handId,
-      @JsonKey(name: 'seat_no') int seatNo,
-      @JsonKey(name: 'action_type') String actionType,
-      @JsonKey(name: 'action_amount') int actionAmount,
-      @JsonKey(name: 'pot_after') int? potAfter,
+      @JsonKey(name: 'handId') int handId,
+      @JsonKey(name: 'seatNo') int seatNo,
+      @JsonKey(name: 'actionType') String actionType,
+      @JsonKey(name: 'actionAmount') int actionAmount,
+      @JsonKey(name: 'potAfter') int? potAfter,
       String street,
-      @JsonKey(name: 'action_order') int actionOrder,
-      @JsonKey(name: 'board_cards') String? boardCards,
-      @JsonKey(name: 'action_time') String? actionTime});
+      @JsonKey(name: 'actionOrder') int actionOrder,
+      @JsonKey(name: 'boardCards') String? boardCards,
+      @JsonKey(name: 'actionTime') String? actionTime});
 }
 
 /// @nodoc
@@ -149,15 +149,15 @@ abstract class _$$HandActionImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'hand_id') int handId,
-      @JsonKey(name: 'seat_no') int seatNo,
-      @JsonKey(name: 'action_type') String actionType,
-      @JsonKey(name: 'action_amount') int actionAmount,
-      @JsonKey(name: 'pot_after') int? potAfter,
+      @JsonKey(name: 'handId') int handId,
+      @JsonKey(name: 'seatNo') int seatNo,
+      @JsonKey(name: 'actionType') String actionType,
+      @JsonKey(name: 'actionAmount') int actionAmount,
+      @JsonKey(name: 'potAfter') int? potAfter,
       String street,
-      @JsonKey(name: 'action_order') int actionOrder,
-      @JsonKey(name: 'board_cards') String? boardCards,
-      @JsonKey(name: 'action_time') String? actionTime});
+      @JsonKey(name: 'actionOrder') int actionOrder,
+      @JsonKey(name: 'boardCards') String? boardCards,
+      @JsonKey(name: 'actionTime') String? actionTime});
 }
 
 /// @nodoc
@@ -234,15 +234,15 @@ class __$$HandActionImplCopyWithImpl<$Res>
 class _$HandActionImpl implements _HandAction {
   const _$HandActionImpl(
       {required this.id,
-      @JsonKey(name: 'hand_id') required this.handId,
-      @JsonKey(name: 'seat_no') required this.seatNo,
-      @JsonKey(name: 'action_type') required this.actionType,
-      @JsonKey(name: 'action_amount') required this.actionAmount,
-      @JsonKey(name: 'pot_after') this.potAfter,
+      @JsonKey(name: 'handId') required this.handId,
+      @JsonKey(name: 'seatNo') required this.seatNo,
+      @JsonKey(name: 'actionType') required this.actionType,
+      @JsonKey(name: 'actionAmount') required this.actionAmount,
+      @JsonKey(name: 'potAfter') this.potAfter,
       required this.street,
-      @JsonKey(name: 'action_order') required this.actionOrder,
-      @JsonKey(name: 'board_cards') this.boardCards,
-      @JsonKey(name: 'action_time') this.actionTime});
+      @JsonKey(name: 'actionOrder') required this.actionOrder,
+      @JsonKey(name: 'boardCards') this.boardCards,
+      @JsonKey(name: 'actionTime') this.actionTime});
 
   factory _$HandActionImpl.fromJson(Map<String, dynamic> json) =>
       _$$HandActionImplFromJson(json);
@@ -250,30 +250,30 @@ class _$HandActionImpl implements _HandAction {
   @override
   final int id;
   @override
-  @JsonKey(name: 'hand_id')
+  @JsonKey(name: 'handId')
   final int handId;
   @override
-  @JsonKey(name: 'seat_no')
+  @JsonKey(name: 'seatNo')
   final int seatNo;
   @override
-  @JsonKey(name: 'action_type')
+  @JsonKey(name: 'actionType')
   final String actionType;
   @override
-  @JsonKey(name: 'action_amount')
+  @JsonKey(name: 'actionAmount')
   final int actionAmount;
   @override
-  @JsonKey(name: 'pot_after')
+  @JsonKey(name: 'potAfter')
   final int? potAfter;
   @override
   final String street;
   @override
-  @JsonKey(name: 'action_order')
+  @JsonKey(name: 'actionOrder')
   final int actionOrder;
   @override
-  @JsonKey(name: 'board_cards')
+  @JsonKey(name: 'boardCards')
   final String? boardCards;
   @override
-  @JsonKey(name: 'action_time')
+  @JsonKey(name: 'actionTime')
   final String? actionTime;
 
   @override
@@ -328,15 +328,15 @@ class _$HandActionImpl implements _HandAction {
 abstract class _HandAction implements HandAction {
   const factory _HandAction(
           {required final int id,
-          @JsonKey(name: 'hand_id') required final int handId,
-          @JsonKey(name: 'seat_no') required final int seatNo,
-          @JsonKey(name: 'action_type') required final String actionType,
-          @JsonKey(name: 'action_amount') required final int actionAmount,
-          @JsonKey(name: 'pot_after') final int? potAfter,
+          @JsonKey(name: 'handId') required final int handId,
+          @JsonKey(name: 'seatNo') required final int seatNo,
+          @JsonKey(name: 'actionType') required final String actionType,
+          @JsonKey(name: 'actionAmount') required final int actionAmount,
+          @JsonKey(name: 'potAfter') final int? potAfter,
           required final String street,
-          @JsonKey(name: 'action_order') required final int actionOrder,
-          @JsonKey(name: 'board_cards') final String? boardCards,
-          @JsonKey(name: 'action_time') final String? actionTime}) =
+          @JsonKey(name: 'actionOrder') required final int actionOrder,
+          @JsonKey(name: 'boardCards') final String? boardCards,
+          @JsonKey(name: 'actionTime') final String? actionTime}) =
       _$HandActionImpl;
 
   factory _HandAction.fromJson(Map<String, dynamic> json) =
@@ -345,30 +345,30 @@ abstract class _HandAction implements HandAction {
   @override
   int get id;
   @override
-  @JsonKey(name: 'hand_id')
+  @JsonKey(name: 'handId')
   int get handId;
   @override
-  @JsonKey(name: 'seat_no')
+  @JsonKey(name: 'seatNo')
   int get seatNo;
   @override
-  @JsonKey(name: 'action_type')
+  @JsonKey(name: 'actionType')
   String get actionType;
   @override
-  @JsonKey(name: 'action_amount')
+  @JsonKey(name: 'actionAmount')
   int get actionAmount;
   @override
-  @JsonKey(name: 'pot_after')
+  @JsonKey(name: 'potAfter')
   int? get potAfter;
   @override
   String get street;
   @override
-  @JsonKey(name: 'action_order')
+  @JsonKey(name: 'actionOrder')
   int get actionOrder;
   @override
-  @JsonKey(name: 'board_cards')
+  @JsonKey(name: 'boardCards')
   String? get boardCards;
   @override
-  @JsonKey(name: 'action_time')
+  @JsonKey(name: 'actionTime')
   String? get actionTime;
 
   /// Create a copy of HandAction

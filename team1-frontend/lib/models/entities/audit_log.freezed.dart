@@ -21,17 +21,17 @@ AuditLog _$AuditLogFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$AuditLog {
   int get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'user_id')
+  @JsonKey(name: 'userId')
   int get userId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'entity_type')
+  @JsonKey(name: 'entityType')
   String get entityType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'entity_id')
+  @JsonKey(name: 'entityId')
   int? get entityId => throw _privateConstructorUsedError;
   String get action => throw _privateConstructorUsedError;
   String? get detail => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ip_address')
+  @JsonKey(name: 'ipAddress')
   String? get ipAddress => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt => throw _privateConstructorUsedError;
 
   /// Serializes this AuditLog to a JSON map.
@@ -51,13 +51,13 @@ abstract class $AuditLogCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'user_id') int userId,
-      @JsonKey(name: 'entity_type') String entityType,
-      @JsonKey(name: 'entity_id') int? entityId,
+      @JsonKey(name: 'userId') int userId,
+      @JsonKey(name: 'entityType') String entityType,
+      @JsonKey(name: 'entityId') int? entityId,
       String action,
       String? detail,
-      @JsonKey(name: 'ip_address') String? ipAddress,
-      @JsonKey(name: 'created_at') String createdAt});
+      @JsonKey(name: 'ipAddress') String? ipAddress,
+      @JsonKey(name: 'createdAt') String createdAt});
 }
 
 /// @nodoc
@@ -131,13 +131,13 @@ abstract class _$$AuditLogImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'user_id') int userId,
-      @JsonKey(name: 'entity_type') String entityType,
-      @JsonKey(name: 'entity_id') int? entityId,
+      @JsonKey(name: 'userId') int userId,
+      @JsonKey(name: 'entityType') String entityType,
+      @JsonKey(name: 'entityId') int? entityId,
       String action,
       String? detail,
-      @JsonKey(name: 'ip_address') String? ipAddress,
-      @JsonKey(name: 'created_at') String createdAt});
+      @JsonKey(name: 'ipAddress') String? ipAddress,
+      @JsonKey(name: 'createdAt') String createdAt});
 }
 
 /// @nodoc
@@ -204,13 +204,13 @@ class __$$AuditLogImplCopyWithImpl<$Res>
 class _$AuditLogImpl implements _AuditLog {
   const _$AuditLogImpl(
       {required this.id,
-      @JsonKey(name: 'user_id') required this.userId,
-      @JsonKey(name: 'entity_type') required this.entityType,
-      @JsonKey(name: 'entity_id') this.entityId,
+      @JsonKey(name: 'userId') required this.userId,
+      @JsonKey(name: 'entityType') required this.entityType,
+      @JsonKey(name: 'entityId') this.entityId,
       required this.action,
       this.detail,
-      @JsonKey(name: 'ip_address') this.ipAddress,
-      @JsonKey(name: 'created_at') required this.createdAt});
+      @JsonKey(name: 'ipAddress') this.ipAddress,
+      @JsonKey(name: 'createdAt') required this.createdAt});
 
   factory _$AuditLogImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuditLogImplFromJson(json);
@@ -218,23 +218,23 @@ class _$AuditLogImpl implements _AuditLog {
   @override
   final int id;
   @override
-  @JsonKey(name: 'user_id')
+  @JsonKey(name: 'userId')
   final int userId;
   @override
-  @JsonKey(name: 'entity_type')
+  @JsonKey(name: 'entityType')
   final String entityType;
   @override
-  @JsonKey(name: 'entity_id')
+  @JsonKey(name: 'entityId')
   final int? entityId;
   @override
   final String action;
   @override
   final String? detail;
   @override
-  @JsonKey(name: 'ip_address')
+  @JsonKey(name: 'ipAddress')
   final String? ipAddress;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String createdAt;
 
   @override
@@ -285,13 +285,13 @@ class _$AuditLogImpl implements _AuditLog {
 abstract class _AuditLog implements AuditLog {
   const factory _AuditLog(
           {required final int id,
-          @JsonKey(name: 'user_id') required final int userId,
-          @JsonKey(name: 'entity_type') required final String entityType,
-          @JsonKey(name: 'entity_id') final int? entityId,
+          @JsonKey(name: 'userId') required final int userId,
+          @JsonKey(name: 'entityType') required final String entityType,
+          @JsonKey(name: 'entityId') final int? entityId,
           required final String action,
           final String? detail,
-          @JsonKey(name: 'ip_address') final String? ipAddress,
-          @JsonKey(name: 'created_at') required final String createdAt}) =
+          @JsonKey(name: 'ipAddress') final String? ipAddress,
+          @JsonKey(name: 'createdAt') required final String createdAt}) =
       _$AuditLogImpl;
 
   factory _AuditLog.fromJson(Map<String, dynamic> json) =
@@ -300,23 +300,23 @@ abstract class _AuditLog implements AuditLog {
   @override
   int get id;
   @override
-  @JsonKey(name: 'user_id')
+  @JsonKey(name: 'userId')
   int get userId;
   @override
-  @JsonKey(name: 'entity_type')
+  @JsonKey(name: 'entityType')
   String get entityType;
   @override
-  @JsonKey(name: 'entity_id')
+  @JsonKey(name: 'entityId')
   int? get entityId;
   @override
   String get action;
   @override
   String? get detail;
   @override
-  @JsonKey(name: 'ip_address')
+  @JsonKey(name: 'ipAddress')
   String? get ipAddress;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt;
 
   /// Create a copy of AuditLog

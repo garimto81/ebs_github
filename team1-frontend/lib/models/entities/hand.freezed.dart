@@ -20,33 +20,33 @@ Hand _$HandFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Hand {
-  @JsonKey(name: 'hand_id')
+  @JsonKey(name: 'handId')
   int get handId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'table_id')
+  @JsonKey(name: 'tableId')
   int get tableId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'hand_number')
+  @JsonKey(name: 'handNumber')
   int get handNumber => throw _privateConstructorUsedError;
-  @JsonKey(name: 'game_type')
+  @JsonKey(name: 'gameType')
   int get gameType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'bet_structure')
+  @JsonKey(name: 'betStructure')
   int get betStructure => throw _privateConstructorUsedError;
-  @JsonKey(name: 'dealer_seat')
+  @JsonKey(name: 'dealerSeat')
   int get dealerSeat => throw _privateConstructorUsedError;
-  @JsonKey(name: 'board_cards')
+  @JsonKey(name: 'boardCards')
   String get boardCards => throw _privateConstructorUsedError;
-  @JsonKey(name: 'pot_total')
+  @JsonKey(name: 'potTotal')
   int get potTotal => throw _privateConstructorUsedError;
-  @JsonKey(name: 'side_pots')
+  @JsonKey(name: 'sidePots')
   String get sidePots => throw _privateConstructorUsedError;
-  @JsonKey(name: 'current_street')
+  @JsonKey(name: 'currentStreet')
   String? get currentStreet => throw _privateConstructorUsedError;
-  @JsonKey(name: 'started_at')
+  @JsonKey(name: 'startedAt')
   String get startedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ended_at')
+  @JsonKey(name: 'endedAt')
   String? get endedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'duration_sec')
+  @JsonKey(name: 'durationSec')
   int get durationSec => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt => throw _privateConstructorUsedError;
 
   /// Serializes this Hand to a JSON map.
@@ -64,20 +64,20 @@ abstract class $HandCopyWith<$Res> {
       _$HandCopyWithImpl<$Res, Hand>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'hand_id') int handId,
-      @JsonKey(name: 'table_id') int tableId,
-      @JsonKey(name: 'hand_number') int handNumber,
-      @JsonKey(name: 'game_type') int gameType,
-      @JsonKey(name: 'bet_structure') int betStructure,
-      @JsonKey(name: 'dealer_seat') int dealerSeat,
-      @JsonKey(name: 'board_cards') String boardCards,
-      @JsonKey(name: 'pot_total') int potTotal,
-      @JsonKey(name: 'side_pots') String sidePots,
-      @JsonKey(name: 'current_street') String? currentStreet,
-      @JsonKey(name: 'started_at') String startedAt,
-      @JsonKey(name: 'ended_at') String? endedAt,
-      @JsonKey(name: 'duration_sec') int durationSec,
-      @JsonKey(name: 'created_at') String createdAt});
+      {@JsonKey(name: 'handId') int handId,
+      @JsonKey(name: 'tableId') int tableId,
+      @JsonKey(name: 'handNumber') int handNumber,
+      @JsonKey(name: 'gameType') int gameType,
+      @JsonKey(name: 'betStructure') int betStructure,
+      @JsonKey(name: 'dealerSeat') int dealerSeat,
+      @JsonKey(name: 'boardCards') String boardCards,
+      @JsonKey(name: 'potTotal') int potTotal,
+      @JsonKey(name: 'sidePots') String sidePots,
+      @JsonKey(name: 'currentStreet') String? currentStreet,
+      @JsonKey(name: 'startedAt') String startedAt,
+      @JsonKey(name: 'endedAt') String? endedAt,
+      @JsonKey(name: 'durationSec') int durationSec,
+      @JsonKey(name: 'createdAt') String createdAt});
 }
 
 /// @nodoc
@@ -179,20 +179,20 @@ abstract class _$$HandImplCopyWith<$Res> implements $HandCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'hand_id') int handId,
-      @JsonKey(name: 'table_id') int tableId,
-      @JsonKey(name: 'hand_number') int handNumber,
-      @JsonKey(name: 'game_type') int gameType,
-      @JsonKey(name: 'bet_structure') int betStructure,
-      @JsonKey(name: 'dealer_seat') int dealerSeat,
-      @JsonKey(name: 'board_cards') String boardCards,
-      @JsonKey(name: 'pot_total') int potTotal,
-      @JsonKey(name: 'side_pots') String sidePots,
-      @JsonKey(name: 'current_street') String? currentStreet,
-      @JsonKey(name: 'started_at') String startedAt,
-      @JsonKey(name: 'ended_at') String? endedAt,
-      @JsonKey(name: 'duration_sec') int durationSec,
-      @JsonKey(name: 'created_at') String createdAt});
+      {@JsonKey(name: 'handId') int handId,
+      @JsonKey(name: 'tableId') int tableId,
+      @JsonKey(name: 'handNumber') int handNumber,
+      @JsonKey(name: 'gameType') int gameType,
+      @JsonKey(name: 'betStructure') int betStructure,
+      @JsonKey(name: 'dealerSeat') int dealerSeat,
+      @JsonKey(name: 'boardCards') String boardCards,
+      @JsonKey(name: 'potTotal') int potTotal,
+      @JsonKey(name: 'sidePots') String sidePots,
+      @JsonKey(name: 'currentStreet') String? currentStreet,
+      @JsonKey(name: 'startedAt') String startedAt,
+      @JsonKey(name: 'endedAt') String? endedAt,
+      @JsonKey(name: 'durationSec') int durationSec,
+      @JsonKey(name: 'createdAt') String createdAt});
 }
 
 /// @nodoc
@@ -287,65 +287,65 @@ class __$$HandImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$HandImpl implements _Hand {
   const _$HandImpl(
-      {@JsonKey(name: 'hand_id') required this.handId,
-      @JsonKey(name: 'table_id') required this.tableId,
-      @JsonKey(name: 'hand_number') required this.handNumber,
-      @JsonKey(name: 'game_type') required this.gameType,
-      @JsonKey(name: 'bet_structure') required this.betStructure,
-      @JsonKey(name: 'dealer_seat') required this.dealerSeat,
-      @JsonKey(name: 'board_cards') required this.boardCards,
-      @JsonKey(name: 'pot_total') required this.potTotal,
-      @JsonKey(name: 'side_pots') required this.sidePots,
-      @JsonKey(name: 'current_street') this.currentStreet,
-      @JsonKey(name: 'started_at') required this.startedAt,
-      @JsonKey(name: 'ended_at') this.endedAt,
-      @JsonKey(name: 'duration_sec') required this.durationSec,
-      @JsonKey(name: 'created_at') required this.createdAt});
+      {@JsonKey(name: 'handId') required this.handId,
+      @JsonKey(name: 'tableId') required this.tableId,
+      @JsonKey(name: 'handNumber') required this.handNumber,
+      @JsonKey(name: 'gameType') required this.gameType,
+      @JsonKey(name: 'betStructure') required this.betStructure,
+      @JsonKey(name: 'dealerSeat') required this.dealerSeat,
+      @JsonKey(name: 'boardCards') required this.boardCards,
+      @JsonKey(name: 'potTotal') required this.potTotal,
+      @JsonKey(name: 'sidePots') required this.sidePots,
+      @JsonKey(name: 'currentStreet') this.currentStreet,
+      @JsonKey(name: 'startedAt') required this.startedAt,
+      @JsonKey(name: 'endedAt') this.endedAt,
+      @JsonKey(name: 'durationSec') required this.durationSec,
+      @JsonKey(name: 'createdAt') required this.createdAt});
 
   factory _$HandImpl.fromJson(Map<String, dynamic> json) =>
       _$$HandImplFromJson(json);
 
   @override
-  @JsonKey(name: 'hand_id')
+  @JsonKey(name: 'handId')
   final int handId;
   @override
-  @JsonKey(name: 'table_id')
+  @JsonKey(name: 'tableId')
   final int tableId;
   @override
-  @JsonKey(name: 'hand_number')
+  @JsonKey(name: 'handNumber')
   final int handNumber;
   @override
-  @JsonKey(name: 'game_type')
+  @JsonKey(name: 'gameType')
   final int gameType;
   @override
-  @JsonKey(name: 'bet_structure')
+  @JsonKey(name: 'betStructure')
   final int betStructure;
   @override
-  @JsonKey(name: 'dealer_seat')
+  @JsonKey(name: 'dealerSeat')
   final int dealerSeat;
   @override
-  @JsonKey(name: 'board_cards')
+  @JsonKey(name: 'boardCards')
   final String boardCards;
   @override
-  @JsonKey(name: 'pot_total')
+  @JsonKey(name: 'potTotal')
   final int potTotal;
   @override
-  @JsonKey(name: 'side_pots')
+  @JsonKey(name: 'sidePots')
   final String sidePots;
   @override
-  @JsonKey(name: 'current_street')
+  @JsonKey(name: 'currentStreet')
   final String? currentStreet;
   @override
-  @JsonKey(name: 'started_at')
+  @JsonKey(name: 'startedAt')
   final String startedAt;
   @override
-  @JsonKey(name: 'ended_at')
+  @JsonKey(name: 'endedAt')
   final String? endedAt;
   @override
-  @JsonKey(name: 'duration_sec')
+  @JsonKey(name: 'durationSec')
   final int durationSec;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String createdAt;
 
   @override
@@ -422,65 +422,65 @@ class _$HandImpl implements _Hand {
 
 abstract class _Hand implements Hand {
   const factory _Hand(
-          {@JsonKey(name: 'hand_id') required final int handId,
-          @JsonKey(name: 'table_id') required final int tableId,
-          @JsonKey(name: 'hand_number') required final int handNumber,
-          @JsonKey(name: 'game_type') required final int gameType,
-          @JsonKey(name: 'bet_structure') required final int betStructure,
-          @JsonKey(name: 'dealer_seat') required final int dealerSeat,
-          @JsonKey(name: 'board_cards') required final String boardCards,
-          @JsonKey(name: 'pot_total') required final int potTotal,
-          @JsonKey(name: 'side_pots') required final String sidePots,
-          @JsonKey(name: 'current_street') final String? currentStreet,
-          @JsonKey(name: 'started_at') required final String startedAt,
-          @JsonKey(name: 'ended_at') final String? endedAt,
-          @JsonKey(name: 'duration_sec') required final int durationSec,
-          @JsonKey(name: 'created_at') required final String createdAt}) =
+          {@JsonKey(name: 'handId') required final int handId,
+          @JsonKey(name: 'tableId') required final int tableId,
+          @JsonKey(name: 'handNumber') required final int handNumber,
+          @JsonKey(name: 'gameType') required final int gameType,
+          @JsonKey(name: 'betStructure') required final int betStructure,
+          @JsonKey(name: 'dealerSeat') required final int dealerSeat,
+          @JsonKey(name: 'boardCards') required final String boardCards,
+          @JsonKey(name: 'potTotal') required final int potTotal,
+          @JsonKey(name: 'sidePots') required final String sidePots,
+          @JsonKey(name: 'currentStreet') final String? currentStreet,
+          @JsonKey(name: 'startedAt') required final String startedAt,
+          @JsonKey(name: 'endedAt') final String? endedAt,
+          @JsonKey(name: 'durationSec') required final int durationSec,
+          @JsonKey(name: 'createdAt') required final String createdAt}) =
       _$HandImpl;
 
   factory _Hand.fromJson(Map<String, dynamic> json) = _$HandImpl.fromJson;
 
   @override
-  @JsonKey(name: 'hand_id')
+  @JsonKey(name: 'handId')
   int get handId;
   @override
-  @JsonKey(name: 'table_id')
+  @JsonKey(name: 'tableId')
   int get tableId;
   @override
-  @JsonKey(name: 'hand_number')
+  @JsonKey(name: 'handNumber')
   int get handNumber;
   @override
-  @JsonKey(name: 'game_type')
+  @JsonKey(name: 'gameType')
   int get gameType;
   @override
-  @JsonKey(name: 'bet_structure')
+  @JsonKey(name: 'betStructure')
   int get betStructure;
   @override
-  @JsonKey(name: 'dealer_seat')
+  @JsonKey(name: 'dealerSeat')
   int get dealerSeat;
   @override
-  @JsonKey(name: 'board_cards')
+  @JsonKey(name: 'boardCards')
   String get boardCards;
   @override
-  @JsonKey(name: 'pot_total')
+  @JsonKey(name: 'potTotal')
   int get potTotal;
   @override
-  @JsonKey(name: 'side_pots')
+  @JsonKey(name: 'sidePots')
   String get sidePots;
   @override
-  @JsonKey(name: 'current_street')
+  @JsonKey(name: 'currentStreet')
   String? get currentStreet;
   @override
-  @JsonKey(name: 'started_at')
+  @JsonKey(name: 'startedAt')
   String get startedAt;
   @override
-  @JsonKey(name: 'ended_at')
+  @JsonKey(name: 'endedAt')
   String? get endedAt;
   @override
-  @JsonKey(name: 'duration_sec')
+  @JsonKey(name: 'durationSec')
   int get durationSec;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt;
 
   /// Create a copy of Hand

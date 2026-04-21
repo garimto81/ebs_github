@@ -20,21 +20,21 @@ User _$UserFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$User {
-  @JsonKey(name: 'user_id')
+  @JsonKey(name: 'userId')
   int get userId => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
-  @JsonKey(name: 'display_name')
+  @JsonKey(name: 'displayName')
   String get displayName => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_active')
+  @JsonKey(name: 'isActive')
   bool get isActive => throw _privateConstructorUsedError;
-  @JsonKey(name: 'totp_enabled')
+  @JsonKey(name: 'totpEnabled')
   bool get totpEnabled => throw _privateConstructorUsedError;
-  @JsonKey(name: 'last_login_at')
+  @JsonKey(name: 'lastLoginAt')
   String? get lastLoginAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this User to a JSON map.
@@ -52,15 +52,15 @@ abstract class $UserCopyWith<$Res> {
       _$UserCopyWithImpl<$Res, User>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'user_id') int userId,
+      {@JsonKey(name: 'userId') int userId,
       String email,
-      @JsonKey(name: 'display_name') String displayName,
+      @JsonKey(name: 'displayName') String displayName,
       String role,
-      @JsonKey(name: 'is_active') bool isActive,
-      @JsonKey(name: 'totp_enabled') bool totpEnabled,
-      @JsonKey(name: 'last_login_at') String? lastLoginAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'isActive') bool isActive,
+      @JsonKey(name: 'totpEnabled') bool totpEnabled,
+      @JsonKey(name: 'lastLoginAt') String? lastLoginAt,
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt});
 }
 
 /// @nodoc
@@ -137,15 +137,15 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'user_id') int userId,
+      {@JsonKey(name: 'userId') int userId,
       String email,
-      @JsonKey(name: 'display_name') String displayName,
+      @JsonKey(name: 'displayName') String displayName,
       String role,
-      @JsonKey(name: 'is_active') bool isActive,
-      @JsonKey(name: 'totp_enabled') bool totpEnabled,
-      @JsonKey(name: 'last_login_at') String? lastLoginAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'isActive') bool isActive,
+      @JsonKey(name: 'totpEnabled') bool totpEnabled,
+      @JsonKey(name: 'lastLoginAt') String? lastLoginAt,
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt});
 }
 
 /// @nodoc
@@ -215,43 +215,43 @@ class __$$UserImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UserImpl implements _User {
   const _$UserImpl(
-      {@JsonKey(name: 'user_id') required this.userId,
+      {@JsonKey(name: 'userId') required this.userId,
       required this.email,
-      @JsonKey(name: 'display_name') required this.displayName,
+      @JsonKey(name: 'displayName') required this.displayName,
       required this.role,
-      @JsonKey(name: 'is_active') required this.isActive,
-      @JsonKey(name: 'totp_enabled') required this.totpEnabled,
-      @JsonKey(name: 'last_login_at') this.lastLoginAt,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt});
+      @JsonKey(name: 'isActive') required this.isActive,
+      @JsonKey(name: 'totpEnabled') required this.totpEnabled,
+      @JsonKey(name: 'lastLoginAt') this.lastLoginAt,
+      @JsonKey(name: 'createdAt') required this.createdAt,
+      @JsonKey(name: 'updatedAt') required this.updatedAt});
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
 
   @override
-  @JsonKey(name: 'user_id')
+  @JsonKey(name: 'userId')
   final int userId;
   @override
   final String email;
   @override
-  @JsonKey(name: 'display_name')
+  @JsonKey(name: 'displayName')
   final String displayName;
   @override
   final String role;
   @override
-  @JsonKey(name: 'is_active')
+  @JsonKey(name: 'isActive')
   final bool isActive;
   @override
-  @JsonKey(name: 'totp_enabled')
+  @JsonKey(name: 'totpEnabled')
   final bool totpEnabled;
   @override
-  @JsonKey(name: 'last_login_at')
+  @JsonKey(name: 'lastLoginAt')
   final String? lastLoginAt;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   final String updatedAt;
 
   @override
@@ -304,43 +304,43 @@ class _$UserImpl implements _User {
 
 abstract class _User implements User {
   const factory _User(
-          {@JsonKey(name: 'user_id') required final int userId,
+          {@JsonKey(name: 'userId') required final int userId,
           required final String email,
-          @JsonKey(name: 'display_name') required final String displayName,
+          @JsonKey(name: 'displayName') required final String displayName,
           required final String role,
-          @JsonKey(name: 'is_active') required final bool isActive,
-          @JsonKey(name: 'totp_enabled') required final bool totpEnabled,
-          @JsonKey(name: 'last_login_at') final String? lastLoginAt,
-          @JsonKey(name: 'created_at') required final String createdAt,
-          @JsonKey(name: 'updated_at') required final String updatedAt}) =
+          @JsonKey(name: 'isActive') required final bool isActive,
+          @JsonKey(name: 'totpEnabled') required final bool totpEnabled,
+          @JsonKey(name: 'lastLoginAt') final String? lastLoginAt,
+          @JsonKey(name: 'createdAt') required final String createdAt,
+          @JsonKey(name: 'updatedAt') required final String updatedAt}) =
       _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
   @override
-  @JsonKey(name: 'user_id')
+  @JsonKey(name: 'userId')
   int get userId;
   @override
   String get email;
   @override
-  @JsonKey(name: 'display_name')
+  @JsonKey(name: 'displayName')
   String get displayName;
   @override
   String get role;
   @override
-  @JsonKey(name: 'is_active')
+  @JsonKey(name: 'isActive')
   bool get isActive;
   @override
-  @JsonKey(name: 'totp_enabled')
+  @JsonKey(name: 'totpEnabled')
   bool get totpEnabled;
   @override
-  @JsonKey(name: 'last_login_at')
+  @JsonKey(name: 'lastLoginAt')
   String? get lastLoginAt;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt;
 
   /// Create a copy of User

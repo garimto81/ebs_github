@@ -20,14 +20,14 @@ SessionUser _$SessionUserFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$SessionUser {
-  @JsonKey(name: 'user_id')
+  @JsonKey(name: 'userId')
   int get userId => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
-  @JsonKey(name: 'display_name')
+  @JsonKey(name: 'displayName')
   String? get displayName => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
   Map<String, int> get permissions => throw _privateConstructorUsedError;
-  @JsonKey(name: 'table_ids')
+  @JsonKey(name: 'tableIds')
   List<int> get tableIds => throw _privateConstructorUsedError;
 
   /// Serializes this SessionUser to a JSON map.
@@ -47,12 +47,12 @@ abstract class $SessionUserCopyWith<$Res> {
       _$SessionUserCopyWithImpl<$Res, SessionUser>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'user_id') int userId,
+      {@JsonKey(name: 'userId') int userId,
       String email,
-      @JsonKey(name: 'display_name') String? displayName,
+      @JsonKey(name: 'displayName') String? displayName,
       String role,
       Map<String, int> permissions,
-      @JsonKey(name: 'table_ids') List<int> tableIds});
+      @JsonKey(name: 'tableIds') List<int> tableIds});
 }
 
 /// @nodoc
@@ -115,12 +115,12 @@ abstract class _$$SessionUserImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'user_id') int userId,
+      {@JsonKey(name: 'userId') int userId,
       String email,
-      @JsonKey(name: 'display_name') String? displayName,
+      @JsonKey(name: 'displayName') String? displayName,
       String role,
       Map<String, int> permissions,
-      @JsonKey(name: 'table_ids') List<int> tableIds});
+      @JsonKey(name: 'tableIds') List<int> tableIds});
 }
 
 /// @nodoc
@@ -176,12 +176,12 @@ class __$$SessionUserImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SessionUserImpl implements _SessionUser {
   const _$SessionUserImpl(
-      {@JsonKey(name: 'user_id') required this.userId,
+      {@JsonKey(name: 'userId') required this.userId,
       required this.email,
-      @JsonKey(name: 'display_name') this.displayName,
+      @JsonKey(name: 'displayName') this.displayName,
       required this.role,
       final Map<String, int> permissions = const {},
-      @JsonKey(name: 'table_ids') final List<int> tableIds = const []})
+      @JsonKey(name: 'tableIds') final List<int> tableIds = const []})
       : _permissions = permissions,
         _tableIds = tableIds;
 
@@ -189,12 +189,12 @@ class _$SessionUserImpl implements _SessionUser {
       _$$SessionUserImplFromJson(json);
 
   @override
-  @JsonKey(name: 'user_id')
+  @JsonKey(name: 'userId')
   final int userId;
   @override
   final String email;
   @override
-  @JsonKey(name: 'display_name')
+  @JsonKey(name: 'displayName')
   final String? displayName;
   @override
   final String role;
@@ -209,7 +209,7 @@ class _$SessionUserImpl implements _SessionUser {
 
   final List<int> _tableIds;
   @override
-  @JsonKey(name: 'table_ids')
+  @JsonKey(name: 'tableIds')
   List<int> get tableIds {
     if (_tableIds is EqualUnmodifiableListView) return _tableIds;
     // ignore: implicit_dynamic_type
@@ -265,31 +265,30 @@ class _$SessionUserImpl implements _SessionUser {
 
 abstract class _SessionUser implements SessionUser {
   const factory _SessionUser(
-          {@JsonKey(name: 'user_id') required final int userId,
-          required final String email,
-          @JsonKey(name: 'display_name') final String? displayName,
-          required final String role,
-          final Map<String, int> permissions,
-          @JsonKey(name: 'table_ids') final List<int> tableIds}) =
-      _$SessionUserImpl;
+      {@JsonKey(name: 'userId') required final int userId,
+      required final String email,
+      @JsonKey(name: 'displayName') final String? displayName,
+      required final String role,
+      final Map<String, int> permissions,
+      @JsonKey(name: 'tableIds') final List<int> tableIds}) = _$SessionUserImpl;
 
   factory _SessionUser.fromJson(Map<String, dynamic> json) =
       _$SessionUserImpl.fromJson;
 
   @override
-  @JsonKey(name: 'user_id')
+  @JsonKey(name: 'userId')
   int get userId;
   @override
   String get email;
   @override
-  @JsonKey(name: 'display_name')
+  @JsonKey(name: 'displayName')
   String? get displayName;
   @override
   String get role;
   @override
   Map<String, int> get permissions;
   @override
-  @JsonKey(name: 'table_ids')
+  @JsonKey(name: 'tableIds')
   List<int> get tableIds;
 
   /// Create a copy of SessionUser

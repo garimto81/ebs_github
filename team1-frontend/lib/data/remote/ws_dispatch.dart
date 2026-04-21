@@ -5,6 +5,15 @@
 // Follows team4's _dispatchIncomingEvent() pattern from ws_provider.dart.
 //
 // Wire this into the WS client's onEvent callback.
+//
+// TODO(B-088 PR-6): WSOP LIVE 직접 준수 — event type PascalCase 통일.
+// 현재 switch case 는 snake_case (hand_started) + dot.case (series.updated) 혼재.
+// team2 publisher (PR-3) 에서 PascalCase 로 migrate 완료 후 본 파일도 일괄 전환:
+//   'hand_started' → 'HandStarted'
+//   'table_status_changed' → 'TableStatusChanged'
+//   'series.updated' → 'SeriesUpdated'  (도트 계층 제거)
+//   'skin.updated' + 'skin_updated' 중복 → 'SkinUpdated' 단일
+// 상세: docs/2. Development/2.5 Shared/Naming_Conventions.md §3 + B-088 PR-3/6
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

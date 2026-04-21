@@ -20,34 +20,34 @@ EventFlight _$EventFlightFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$EventFlight {
-  @JsonKey(name: 'event_flight_id')
+  @JsonKey(name: 'eventFlightId')
   int get eventFlightId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'event_id')
+  @JsonKey(name: 'eventId')
   int get eventId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'display_name')
+  @JsonKey(name: 'displayName')
   String get displayName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'start_time')
+  @JsonKey(name: 'startTime')
   String? get startTime => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_tbd')
+  @JsonKey(name: 'isTbd')
   bool get isTbd => throw _privateConstructorUsedError;
   int get entries => throw _privateConstructorUsedError;
-  @JsonKey(name: 'players_left')
+  @JsonKey(name: 'playersLeft')
   int get playersLeft => throw _privateConstructorUsedError;
-  @JsonKey(name: 'table_count')
+  @JsonKey(name: 'tableCount')
   int get tableCount => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
-  @JsonKey(name: 'play_level')
+  @JsonKey(name: 'playLevel')
   int get playLevel => throw _privateConstructorUsedError;
-  @JsonKey(name: 'remain_time')
+  @JsonKey(name: 'remainTime')
   int? get remainTime => throw _privateConstructorUsedError;
   String get source => throw _privateConstructorUsedError;
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   String? get syncedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String? get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String? get updatedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'player_count')
+  @JsonKey(name: 'playerCount')
   int? get playerCount => throw _privateConstructorUsedError;
 
   /// Serializes this EventFlight to a JSON map.
@@ -67,22 +67,22 @@ abstract class $EventFlightCopyWith<$Res> {
       _$EventFlightCopyWithImpl<$Res, EventFlight>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'event_flight_id') int eventFlightId,
-      @JsonKey(name: 'event_id') int eventId,
-      @JsonKey(name: 'display_name') String displayName,
-      @JsonKey(name: 'start_time') String? startTime,
-      @JsonKey(name: 'is_tbd') bool isTbd,
+      {@JsonKey(name: 'eventFlightId') int eventFlightId,
+      @JsonKey(name: 'eventId') int eventId,
+      @JsonKey(name: 'displayName') String displayName,
+      @JsonKey(name: 'startTime') String? startTime,
+      @JsonKey(name: 'isTbd') bool isTbd,
       int entries,
-      @JsonKey(name: 'players_left') int playersLeft,
-      @JsonKey(name: 'table_count') int tableCount,
+      @JsonKey(name: 'playersLeft') int playersLeft,
+      @JsonKey(name: 'tableCount') int tableCount,
       String status,
-      @JsonKey(name: 'play_level') int playLevel,
-      @JsonKey(name: 'remain_time') int? remainTime,
+      @JsonKey(name: 'playLevel') int playLevel,
+      @JsonKey(name: 'remainTime') int? remainTime,
       String source,
-      @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String? createdAt,
-      @JsonKey(name: 'updated_at') String? updatedAt,
-      @JsonKey(name: 'player_count') int? playerCount});
+      @JsonKey(name: 'syncedAt') String? syncedAt,
+      @JsonKey(name: 'createdAt') String? createdAt,
+      @JsonKey(name: 'updatedAt') String? updatedAt,
+      @JsonKey(name: 'playerCount') int? playerCount});
 }
 
 /// @nodoc
@@ -195,22 +195,22 @@ abstract class _$$EventFlightImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'event_flight_id') int eventFlightId,
-      @JsonKey(name: 'event_id') int eventId,
-      @JsonKey(name: 'display_name') String displayName,
-      @JsonKey(name: 'start_time') String? startTime,
-      @JsonKey(name: 'is_tbd') bool isTbd,
+      {@JsonKey(name: 'eventFlightId') int eventFlightId,
+      @JsonKey(name: 'eventId') int eventId,
+      @JsonKey(name: 'displayName') String displayName,
+      @JsonKey(name: 'startTime') String? startTime,
+      @JsonKey(name: 'isTbd') bool isTbd,
       int entries,
-      @JsonKey(name: 'players_left') int playersLeft,
-      @JsonKey(name: 'table_count') int tableCount,
+      @JsonKey(name: 'playersLeft') int playersLeft,
+      @JsonKey(name: 'tableCount') int tableCount,
       String status,
-      @JsonKey(name: 'play_level') int playLevel,
-      @JsonKey(name: 'remain_time') int? remainTime,
+      @JsonKey(name: 'playLevel') int playLevel,
+      @JsonKey(name: 'remainTime') int? remainTime,
       String source,
-      @JsonKey(name: 'synced_at') String? syncedAt,
-      @JsonKey(name: 'created_at') String? createdAt,
-      @JsonKey(name: 'updated_at') String? updatedAt,
-      @JsonKey(name: 'player_count') int? playerCount});
+      @JsonKey(name: 'syncedAt') String? syncedAt,
+      @JsonKey(name: 'createdAt') String? createdAt,
+      @JsonKey(name: 'updatedAt') String? updatedAt,
+      @JsonKey(name: 'playerCount') int? playerCount});
 }
 
 /// @nodoc
@@ -316,73 +316,73 @@ class __$$EventFlightImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$EventFlightImpl implements _EventFlight {
   const _$EventFlightImpl(
-      {@JsonKey(name: 'event_flight_id') required this.eventFlightId,
-      @JsonKey(name: 'event_id') required this.eventId,
-      @JsonKey(name: 'display_name') this.displayName = '',
-      @JsonKey(name: 'start_time') this.startTime,
-      @JsonKey(name: 'is_tbd') this.isTbd = false,
+      {@JsonKey(name: 'eventFlightId') required this.eventFlightId,
+      @JsonKey(name: 'eventId') required this.eventId,
+      @JsonKey(name: 'displayName') this.displayName = '',
+      @JsonKey(name: 'startTime') this.startTime,
+      @JsonKey(name: 'isTbd') this.isTbd = false,
       this.entries = 0,
-      @JsonKey(name: 'players_left') this.playersLeft = 0,
-      @JsonKey(name: 'table_count') this.tableCount = 0,
+      @JsonKey(name: 'playersLeft') this.playersLeft = 0,
+      @JsonKey(name: 'tableCount') this.tableCount = 0,
       this.status = 'created',
-      @JsonKey(name: 'play_level') this.playLevel = 1,
-      @JsonKey(name: 'remain_time') this.remainTime,
+      @JsonKey(name: 'playLevel') this.playLevel = 1,
+      @JsonKey(name: 'remainTime') this.remainTime,
       this.source = 'api',
-      @JsonKey(name: 'synced_at') this.syncedAt,
-      @JsonKey(name: 'created_at') this.createdAt,
-      @JsonKey(name: 'updated_at') this.updatedAt,
-      @JsonKey(name: 'player_count') this.playerCount});
+      @JsonKey(name: 'syncedAt') this.syncedAt,
+      @JsonKey(name: 'createdAt') this.createdAt,
+      @JsonKey(name: 'updatedAt') this.updatedAt,
+      @JsonKey(name: 'playerCount') this.playerCount});
 
   factory _$EventFlightImpl.fromJson(Map<String, dynamic> json) =>
       _$$EventFlightImplFromJson(json);
 
   @override
-  @JsonKey(name: 'event_flight_id')
+  @JsonKey(name: 'eventFlightId')
   final int eventFlightId;
   @override
-  @JsonKey(name: 'event_id')
+  @JsonKey(name: 'eventId')
   final int eventId;
   @override
-  @JsonKey(name: 'display_name')
+  @JsonKey(name: 'displayName')
   final String displayName;
   @override
-  @JsonKey(name: 'start_time')
+  @JsonKey(name: 'startTime')
   final String? startTime;
   @override
-  @JsonKey(name: 'is_tbd')
+  @JsonKey(name: 'isTbd')
   final bool isTbd;
   @override
   @JsonKey()
   final int entries;
   @override
-  @JsonKey(name: 'players_left')
+  @JsonKey(name: 'playersLeft')
   final int playersLeft;
   @override
-  @JsonKey(name: 'table_count')
+  @JsonKey(name: 'tableCount')
   final int tableCount;
   @override
   @JsonKey()
   final String status;
   @override
-  @JsonKey(name: 'play_level')
+  @JsonKey(name: 'playLevel')
   final int playLevel;
   @override
-  @JsonKey(name: 'remain_time')
+  @JsonKey(name: 'remainTime')
   final int? remainTime;
   @override
   @JsonKey()
   final String source;
   @override
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   final String? syncedAt;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String? createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   final String? updatedAt;
   @override
-  @JsonKey(name: 'player_count')
+  @JsonKey(name: 'playerCount')
   final int? playerCount;
 
   @override
@@ -463,71 +463,71 @@ class _$EventFlightImpl implements _EventFlight {
 
 abstract class _EventFlight implements EventFlight {
   const factory _EventFlight(
-          {@JsonKey(name: 'event_flight_id') required final int eventFlightId,
-          @JsonKey(name: 'event_id') required final int eventId,
-          @JsonKey(name: 'display_name') final String displayName,
-          @JsonKey(name: 'start_time') final String? startTime,
-          @JsonKey(name: 'is_tbd') final bool isTbd,
+          {@JsonKey(name: 'eventFlightId') required final int eventFlightId,
+          @JsonKey(name: 'eventId') required final int eventId,
+          @JsonKey(name: 'displayName') final String displayName,
+          @JsonKey(name: 'startTime') final String? startTime,
+          @JsonKey(name: 'isTbd') final bool isTbd,
           final int entries,
-          @JsonKey(name: 'players_left') final int playersLeft,
-          @JsonKey(name: 'table_count') final int tableCount,
+          @JsonKey(name: 'playersLeft') final int playersLeft,
+          @JsonKey(name: 'tableCount') final int tableCount,
           final String status,
-          @JsonKey(name: 'play_level') final int playLevel,
-          @JsonKey(name: 'remain_time') final int? remainTime,
+          @JsonKey(name: 'playLevel') final int playLevel,
+          @JsonKey(name: 'remainTime') final int? remainTime,
           final String source,
-          @JsonKey(name: 'synced_at') final String? syncedAt,
-          @JsonKey(name: 'created_at') final String? createdAt,
-          @JsonKey(name: 'updated_at') final String? updatedAt,
-          @JsonKey(name: 'player_count') final int? playerCount}) =
+          @JsonKey(name: 'syncedAt') final String? syncedAt,
+          @JsonKey(name: 'createdAt') final String? createdAt,
+          @JsonKey(name: 'updatedAt') final String? updatedAt,
+          @JsonKey(name: 'playerCount') final int? playerCount}) =
       _$EventFlightImpl;
 
   factory _EventFlight.fromJson(Map<String, dynamic> json) =
       _$EventFlightImpl.fromJson;
 
   @override
-  @JsonKey(name: 'event_flight_id')
+  @JsonKey(name: 'eventFlightId')
   int get eventFlightId;
   @override
-  @JsonKey(name: 'event_id')
+  @JsonKey(name: 'eventId')
   int get eventId;
   @override
-  @JsonKey(name: 'display_name')
+  @JsonKey(name: 'displayName')
   String get displayName;
   @override
-  @JsonKey(name: 'start_time')
+  @JsonKey(name: 'startTime')
   String? get startTime;
   @override
-  @JsonKey(name: 'is_tbd')
+  @JsonKey(name: 'isTbd')
   bool get isTbd;
   @override
   int get entries;
   @override
-  @JsonKey(name: 'players_left')
+  @JsonKey(name: 'playersLeft')
   int get playersLeft;
   @override
-  @JsonKey(name: 'table_count')
+  @JsonKey(name: 'tableCount')
   int get tableCount;
   @override
   String get status;
   @override
-  @JsonKey(name: 'play_level')
+  @JsonKey(name: 'playLevel')
   int get playLevel;
   @override
-  @JsonKey(name: 'remain_time')
+  @JsonKey(name: 'remainTime')
   int? get remainTime;
   @override
   String get source;
   @override
-  @JsonKey(name: 'synced_at')
+  @JsonKey(name: 'syncedAt')
   String? get syncedAt;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String? get createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String? get updatedAt;
   @override
-  @JsonKey(name: 'player_count')
+  @JsonKey(name: 'playerCount')
   int? get playerCount;
 
   /// Create a copy of EventFlight

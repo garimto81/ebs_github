@@ -20,46 +20,46 @@ EbsTable _$EbsTableFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$EbsTable {
-  @JsonKey(name: 'table_id')
+  @JsonKey(name: 'tableId')
   int get tableId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'event_flight_id')
+  @JsonKey(name: 'eventFlightId')
   int get eventFlightId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'table_no')
+  @JsonKey(name: 'tableNo')
   int get tableNo => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
-  @JsonKey(name: 'max_players')
+  @JsonKey(name: 'maxPlayers')
   int get maxPlayers => throw _privateConstructorUsedError;
-  @JsonKey(name: 'game_type')
+  @JsonKey(name: 'gameType')
   int get gameType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'small_blind')
+  @JsonKey(name: 'smallBlind')
   int? get smallBlind => throw _privateConstructorUsedError;
-  @JsonKey(name: 'big_blind')
+  @JsonKey(name: 'bigBlind')
   int? get bigBlind => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ante_type')
+  @JsonKey(name: 'anteType')
   int get anteType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ante_amount')
+  @JsonKey(name: 'anteAmount')
   int get anteAmount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'rfid_reader_id')
+  @JsonKey(name: 'rfidReaderId')
   int? get rfidReaderId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'deck_registered')
+  @JsonKey(name: 'deckRegistered')
   bool get deckRegistered => throw _privateConstructorUsedError;
-  @JsonKey(name: 'output_type')
+  @JsonKey(name: 'outputType')
   String? get outputType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'current_game')
+  @JsonKey(name: 'currentGame')
   int? get currentGame => throw _privateConstructorUsedError;
-  @JsonKey(name: 'delay_seconds')
+  @JsonKey(name: 'delaySeconds')
   int get delaySeconds => throw _privateConstructorUsedError;
   int? get ring => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_breaking_table')
+  @JsonKey(name: 'isBreakingTable')
   bool get isBreakingTable => throw _privateConstructorUsedError;
   String get source => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'seated_count')
+  @JsonKey(name: 'seatedCount')
   int? get seatedCount => throw _privateConstructorUsedError;
 
   /// Serializes this EbsTable to a JSON map.
@@ -78,29 +78,29 @@ abstract class $EbsTableCopyWith<$Res> {
       _$EbsTableCopyWithImpl<$Res, EbsTable>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'table_id') int tableId,
-      @JsonKey(name: 'event_flight_id') int eventFlightId,
-      @JsonKey(name: 'table_no') int tableNo,
+      {@JsonKey(name: 'tableId') int tableId,
+      @JsonKey(name: 'eventFlightId') int eventFlightId,
+      @JsonKey(name: 'tableNo') int tableNo,
       String name,
       String type,
       String status,
-      @JsonKey(name: 'max_players') int maxPlayers,
-      @JsonKey(name: 'game_type') int gameType,
-      @JsonKey(name: 'small_blind') int? smallBlind,
-      @JsonKey(name: 'big_blind') int? bigBlind,
-      @JsonKey(name: 'ante_type') int anteType,
-      @JsonKey(name: 'ante_amount') int anteAmount,
-      @JsonKey(name: 'rfid_reader_id') int? rfidReaderId,
-      @JsonKey(name: 'deck_registered') bool deckRegistered,
-      @JsonKey(name: 'output_type') String? outputType,
-      @JsonKey(name: 'current_game') int? currentGame,
-      @JsonKey(name: 'delay_seconds') int delaySeconds,
+      @JsonKey(name: 'maxPlayers') int maxPlayers,
+      @JsonKey(name: 'gameType') int gameType,
+      @JsonKey(name: 'smallBlind') int? smallBlind,
+      @JsonKey(name: 'bigBlind') int? bigBlind,
+      @JsonKey(name: 'anteType') int anteType,
+      @JsonKey(name: 'anteAmount') int anteAmount,
+      @JsonKey(name: 'rfidReaderId') int? rfidReaderId,
+      @JsonKey(name: 'deckRegistered') bool deckRegistered,
+      @JsonKey(name: 'outputType') String? outputType,
+      @JsonKey(name: 'currentGame') int? currentGame,
+      @JsonKey(name: 'delaySeconds') int delaySeconds,
       int? ring,
-      @JsonKey(name: 'is_breaking_table') bool isBreakingTable,
+      @JsonKey(name: 'isBreakingTable') bool isBreakingTable,
       String source,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt,
-      @JsonKey(name: 'seated_count') int? seatedCount});
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt,
+      @JsonKey(name: 'seatedCount') int? seatedCount});
 }
 
 /// @nodoc
@@ -248,29 +248,29 @@ abstract class _$$EbsTableImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'table_id') int tableId,
-      @JsonKey(name: 'event_flight_id') int eventFlightId,
-      @JsonKey(name: 'table_no') int tableNo,
+      {@JsonKey(name: 'tableId') int tableId,
+      @JsonKey(name: 'eventFlightId') int eventFlightId,
+      @JsonKey(name: 'tableNo') int tableNo,
       String name,
       String type,
       String status,
-      @JsonKey(name: 'max_players') int maxPlayers,
-      @JsonKey(name: 'game_type') int gameType,
-      @JsonKey(name: 'small_blind') int? smallBlind,
-      @JsonKey(name: 'big_blind') int? bigBlind,
-      @JsonKey(name: 'ante_type') int anteType,
-      @JsonKey(name: 'ante_amount') int anteAmount,
-      @JsonKey(name: 'rfid_reader_id') int? rfidReaderId,
-      @JsonKey(name: 'deck_registered') bool deckRegistered,
-      @JsonKey(name: 'output_type') String? outputType,
-      @JsonKey(name: 'current_game') int? currentGame,
-      @JsonKey(name: 'delay_seconds') int delaySeconds,
+      @JsonKey(name: 'maxPlayers') int maxPlayers,
+      @JsonKey(name: 'gameType') int gameType,
+      @JsonKey(name: 'smallBlind') int? smallBlind,
+      @JsonKey(name: 'bigBlind') int? bigBlind,
+      @JsonKey(name: 'anteType') int anteType,
+      @JsonKey(name: 'anteAmount') int anteAmount,
+      @JsonKey(name: 'rfidReaderId') int? rfidReaderId,
+      @JsonKey(name: 'deckRegistered') bool deckRegistered,
+      @JsonKey(name: 'outputType') String? outputType,
+      @JsonKey(name: 'currentGame') int? currentGame,
+      @JsonKey(name: 'delaySeconds') int delaySeconds,
       int? ring,
-      @JsonKey(name: 'is_breaking_table') bool isBreakingTable,
+      @JsonKey(name: 'isBreakingTable') bool isBreakingTable,
       String source,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt,
-      @JsonKey(name: 'seated_count') int? seatedCount});
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'updatedAt') String updatedAt,
+      @JsonKey(name: 'seatedCount') int? seatedCount});
 }
 
 /// @nodoc
@@ -411,41 +411,41 @@ class __$$EbsTableImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$EbsTableImpl implements _EbsTable {
   const _$EbsTableImpl(
-      {@JsonKey(name: 'table_id') required this.tableId,
-      @JsonKey(name: 'event_flight_id') required this.eventFlightId,
-      @JsonKey(name: 'table_no') required this.tableNo,
+      {@JsonKey(name: 'tableId') required this.tableId,
+      @JsonKey(name: 'eventFlightId') required this.eventFlightId,
+      @JsonKey(name: 'tableNo') required this.tableNo,
       required this.name,
       required this.type,
       required this.status,
-      @JsonKey(name: 'max_players') required this.maxPlayers,
-      @JsonKey(name: 'game_type') required this.gameType,
-      @JsonKey(name: 'small_blind') this.smallBlind,
-      @JsonKey(name: 'big_blind') this.bigBlind,
-      @JsonKey(name: 'ante_type') this.anteType = 0,
-      @JsonKey(name: 'ante_amount') this.anteAmount = 0,
-      @JsonKey(name: 'rfid_reader_id') this.rfidReaderId,
-      @JsonKey(name: 'deck_registered') this.deckRegistered = false,
-      @JsonKey(name: 'output_type') this.outputType,
-      @JsonKey(name: 'current_game') this.currentGame,
-      @JsonKey(name: 'delay_seconds') this.delaySeconds = 0,
+      @JsonKey(name: 'maxPlayers') required this.maxPlayers,
+      @JsonKey(name: 'gameType') required this.gameType,
+      @JsonKey(name: 'smallBlind') this.smallBlind,
+      @JsonKey(name: 'bigBlind') this.bigBlind,
+      @JsonKey(name: 'anteType') this.anteType = 0,
+      @JsonKey(name: 'anteAmount') this.anteAmount = 0,
+      @JsonKey(name: 'rfidReaderId') this.rfidReaderId,
+      @JsonKey(name: 'deckRegistered') this.deckRegistered = false,
+      @JsonKey(name: 'outputType') this.outputType,
+      @JsonKey(name: 'currentGame') this.currentGame,
+      @JsonKey(name: 'delaySeconds') this.delaySeconds = 0,
       this.ring,
-      @JsonKey(name: 'is_breaking_table') this.isBreakingTable = false,
+      @JsonKey(name: 'isBreakingTable') this.isBreakingTable = false,
       required this.source,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt,
-      @JsonKey(name: 'seated_count') this.seatedCount});
+      @JsonKey(name: 'createdAt') required this.createdAt,
+      @JsonKey(name: 'updatedAt') required this.updatedAt,
+      @JsonKey(name: 'seatedCount') this.seatedCount});
 
   factory _$EbsTableImpl.fromJson(Map<String, dynamic> json) =>
       _$$EbsTableImplFromJson(json);
 
   @override
-  @JsonKey(name: 'table_id')
+  @JsonKey(name: 'tableId')
   final int tableId;
   @override
-  @JsonKey(name: 'event_flight_id')
+  @JsonKey(name: 'eventFlightId')
   final int eventFlightId;
   @override
-  @JsonKey(name: 'table_no')
+  @JsonKey(name: 'tableNo')
   final int tableNo;
   @override
   final String name;
@@ -454,53 +454,53 @@ class _$EbsTableImpl implements _EbsTable {
   @override
   final String status;
   @override
-  @JsonKey(name: 'max_players')
+  @JsonKey(name: 'maxPlayers')
   final int maxPlayers;
   @override
-  @JsonKey(name: 'game_type')
+  @JsonKey(name: 'gameType')
   final int gameType;
   @override
-  @JsonKey(name: 'small_blind')
+  @JsonKey(name: 'smallBlind')
   final int? smallBlind;
   @override
-  @JsonKey(name: 'big_blind')
+  @JsonKey(name: 'bigBlind')
   final int? bigBlind;
   @override
-  @JsonKey(name: 'ante_type')
+  @JsonKey(name: 'anteType')
   final int anteType;
   @override
-  @JsonKey(name: 'ante_amount')
+  @JsonKey(name: 'anteAmount')
   final int anteAmount;
   @override
-  @JsonKey(name: 'rfid_reader_id')
+  @JsonKey(name: 'rfidReaderId')
   final int? rfidReaderId;
   @override
-  @JsonKey(name: 'deck_registered')
+  @JsonKey(name: 'deckRegistered')
   final bool deckRegistered;
   @override
-  @JsonKey(name: 'output_type')
+  @JsonKey(name: 'outputType')
   final String? outputType;
   @override
-  @JsonKey(name: 'current_game')
+  @JsonKey(name: 'currentGame')
   final int? currentGame;
   @override
-  @JsonKey(name: 'delay_seconds')
+  @JsonKey(name: 'delaySeconds')
   final int delaySeconds;
   @override
   final int? ring;
   @override
-  @JsonKey(name: 'is_breaking_table')
+  @JsonKey(name: 'isBreakingTable')
   final bool isBreakingTable;
   @override
   final String source;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   final String createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   final String updatedAt;
   @override
-  @JsonKey(name: 'seated_count')
+  @JsonKey(name: 'seatedCount')
   final int? seatedCount;
 
   @override
@@ -601,41 +601,41 @@ class _$EbsTableImpl implements _EbsTable {
 
 abstract class _EbsTable implements EbsTable {
   const factory _EbsTable(
-      {@JsonKey(name: 'table_id') required final int tableId,
-      @JsonKey(name: 'event_flight_id') required final int eventFlightId,
-      @JsonKey(name: 'table_no') required final int tableNo,
+      {@JsonKey(name: 'tableId') required final int tableId,
+      @JsonKey(name: 'eventFlightId') required final int eventFlightId,
+      @JsonKey(name: 'tableNo') required final int tableNo,
       required final String name,
       required final String type,
       required final String status,
-      @JsonKey(name: 'max_players') required final int maxPlayers,
-      @JsonKey(name: 'game_type') required final int gameType,
-      @JsonKey(name: 'small_blind') final int? smallBlind,
-      @JsonKey(name: 'big_blind') final int? bigBlind,
-      @JsonKey(name: 'ante_type') final int anteType,
-      @JsonKey(name: 'ante_amount') final int anteAmount,
-      @JsonKey(name: 'rfid_reader_id') final int? rfidReaderId,
-      @JsonKey(name: 'deck_registered') final bool deckRegistered,
-      @JsonKey(name: 'output_type') final String? outputType,
-      @JsonKey(name: 'current_game') final int? currentGame,
-      @JsonKey(name: 'delay_seconds') final int delaySeconds,
+      @JsonKey(name: 'maxPlayers') required final int maxPlayers,
+      @JsonKey(name: 'gameType') required final int gameType,
+      @JsonKey(name: 'smallBlind') final int? smallBlind,
+      @JsonKey(name: 'bigBlind') final int? bigBlind,
+      @JsonKey(name: 'anteType') final int anteType,
+      @JsonKey(name: 'anteAmount') final int anteAmount,
+      @JsonKey(name: 'rfidReaderId') final int? rfidReaderId,
+      @JsonKey(name: 'deckRegistered') final bool deckRegistered,
+      @JsonKey(name: 'outputType') final String? outputType,
+      @JsonKey(name: 'currentGame') final int? currentGame,
+      @JsonKey(name: 'delaySeconds') final int delaySeconds,
       final int? ring,
-      @JsonKey(name: 'is_breaking_table') final bool isBreakingTable,
+      @JsonKey(name: 'isBreakingTable') final bool isBreakingTable,
       required final String source,
-      @JsonKey(name: 'created_at') required final String createdAt,
-      @JsonKey(name: 'updated_at') required final String updatedAt,
-      @JsonKey(name: 'seated_count') final int? seatedCount}) = _$EbsTableImpl;
+      @JsonKey(name: 'createdAt') required final String createdAt,
+      @JsonKey(name: 'updatedAt') required final String updatedAt,
+      @JsonKey(name: 'seatedCount') final int? seatedCount}) = _$EbsTableImpl;
 
   factory _EbsTable.fromJson(Map<String, dynamic> json) =
       _$EbsTableImpl.fromJson;
 
   @override
-  @JsonKey(name: 'table_id')
+  @JsonKey(name: 'tableId')
   int get tableId;
   @override
-  @JsonKey(name: 'event_flight_id')
+  @JsonKey(name: 'eventFlightId')
   int get eventFlightId;
   @override
-  @JsonKey(name: 'table_no')
+  @JsonKey(name: 'tableNo')
   int get tableNo;
   @override
   String get name;
@@ -644,53 +644,53 @@ abstract class _EbsTable implements EbsTable {
   @override
   String get status;
   @override
-  @JsonKey(name: 'max_players')
+  @JsonKey(name: 'maxPlayers')
   int get maxPlayers;
   @override
-  @JsonKey(name: 'game_type')
+  @JsonKey(name: 'gameType')
   int get gameType;
   @override
-  @JsonKey(name: 'small_blind')
+  @JsonKey(name: 'smallBlind')
   int? get smallBlind;
   @override
-  @JsonKey(name: 'big_blind')
+  @JsonKey(name: 'bigBlind')
   int? get bigBlind;
   @override
-  @JsonKey(name: 'ante_type')
+  @JsonKey(name: 'anteType')
   int get anteType;
   @override
-  @JsonKey(name: 'ante_amount')
+  @JsonKey(name: 'anteAmount')
   int get anteAmount;
   @override
-  @JsonKey(name: 'rfid_reader_id')
+  @JsonKey(name: 'rfidReaderId')
   int? get rfidReaderId;
   @override
-  @JsonKey(name: 'deck_registered')
+  @JsonKey(name: 'deckRegistered')
   bool get deckRegistered;
   @override
-  @JsonKey(name: 'output_type')
+  @JsonKey(name: 'outputType')
   String? get outputType;
   @override
-  @JsonKey(name: 'current_game')
+  @JsonKey(name: 'currentGame')
   int? get currentGame;
   @override
-  @JsonKey(name: 'delay_seconds')
+  @JsonKey(name: 'delaySeconds')
   int get delaySeconds;
   @override
   int? get ring;
   @override
-  @JsonKey(name: 'is_breaking_table')
+  @JsonKey(name: 'isBreakingTable')
   bool get isBreakingTable;
   @override
   String get source;
   @override
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'createdAt')
   String get createdAt;
   @override
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updatedAt')
   String get updatedAt;
   @override
-  @JsonKey(name: 'seated_count')
+  @JsonKey(name: 'seatedCount')
   int? get seatedCount;
 
   /// Create a copy of EbsTable

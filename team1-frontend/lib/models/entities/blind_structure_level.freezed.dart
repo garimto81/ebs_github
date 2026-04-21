@@ -21,16 +21,16 @@ BlindStructureLevel _$BlindStructureLevelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$BlindStructureLevel {
   int get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'blind_structure_id')
+  @JsonKey(name: 'blindStructureId')
   int get blindStructureId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'level_no')
+  @JsonKey(name: 'levelNo')
   int get levelNo => throw _privateConstructorUsedError;
-  @JsonKey(name: 'small_blind')
+  @JsonKey(name: 'smallBlind')
   int get smallBlind => throw _privateConstructorUsedError;
-  @JsonKey(name: 'big_blind')
+  @JsonKey(name: 'bigBlind')
   int get bigBlind => throw _privateConstructorUsedError;
   int get ante => throw _privateConstructorUsedError;
-  @JsonKey(name: 'duration_minutes')
+  @JsonKey(name: 'durationMinutes')
   int get durationMinutes => throw _privateConstructorUsedError;
 
   /// Serializes this BlindStructureLevel to a JSON map.
@@ -51,12 +51,12 @@ abstract class $BlindStructureLevelCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'blind_structure_id') int blindStructureId,
-      @JsonKey(name: 'level_no') int levelNo,
-      @JsonKey(name: 'small_blind') int smallBlind,
-      @JsonKey(name: 'big_blind') int bigBlind,
+      @JsonKey(name: 'blindStructureId') int blindStructureId,
+      @JsonKey(name: 'levelNo') int levelNo,
+      @JsonKey(name: 'smallBlind') int smallBlind,
+      @JsonKey(name: 'bigBlind') int bigBlind,
       int ante,
-      @JsonKey(name: 'duration_minutes') int durationMinutes});
+      @JsonKey(name: 'durationMinutes') int durationMinutes});
 }
 
 /// @nodoc
@@ -125,12 +125,12 @@ abstract class _$$BlindStructureLevelImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'blind_structure_id') int blindStructureId,
-      @JsonKey(name: 'level_no') int levelNo,
-      @JsonKey(name: 'small_blind') int smallBlind,
-      @JsonKey(name: 'big_blind') int bigBlind,
+      @JsonKey(name: 'blindStructureId') int blindStructureId,
+      @JsonKey(name: 'levelNo') int levelNo,
+      @JsonKey(name: 'smallBlind') int smallBlind,
+      @JsonKey(name: 'bigBlind') int bigBlind,
       int ante,
-      @JsonKey(name: 'duration_minutes') int durationMinutes});
+      @JsonKey(name: 'durationMinutes') int durationMinutes});
 }
 
 /// @nodoc
@@ -192,12 +192,12 @@ class __$$BlindStructureLevelImplCopyWithImpl<$Res>
 class _$BlindStructureLevelImpl implements _BlindStructureLevel {
   const _$BlindStructureLevelImpl(
       {required this.id,
-      @JsonKey(name: 'blind_structure_id') required this.blindStructureId,
-      @JsonKey(name: 'level_no') required this.levelNo,
-      @JsonKey(name: 'small_blind') required this.smallBlind,
-      @JsonKey(name: 'big_blind') required this.bigBlind,
+      @JsonKey(name: 'blindStructureId') required this.blindStructureId,
+      @JsonKey(name: 'levelNo') required this.levelNo,
+      @JsonKey(name: 'smallBlind') required this.smallBlind,
+      @JsonKey(name: 'bigBlind') required this.bigBlind,
       required this.ante,
-      @JsonKey(name: 'duration_minutes') required this.durationMinutes});
+      @JsonKey(name: 'durationMinutes') required this.durationMinutes});
 
   factory _$BlindStructureLevelImpl.fromJson(Map<String, dynamic> json) =>
       _$$BlindStructureLevelImplFromJson(json);
@@ -205,21 +205,21 @@ class _$BlindStructureLevelImpl implements _BlindStructureLevel {
   @override
   final int id;
   @override
-  @JsonKey(name: 'blind_structure_id')
+  @JsonKey(name: 'blindStructureId')
   final int blindStructureId;
   @override
-  @JsonKey(name: 'level_no')
+  @JsonKey(name: 'levelNo')
   final int levelNo;
   @override
-  @JsonKey(name: 'small_blind')
+  @JsonKey(name: 'smallBlind')
   final int smallBlind;
   @override
-  @JsonKey(name: 'big_blind')
+  @JsonKey(name: 'bigBlind')
   final int bigBlind;
   @override
   final int ante;
   @override
-  @JsonKey(name: 'duration_minutes')
+  @JsonKey(name: 'durationMinutes')
   final int durationMinutes;
 
   @override
@@ -270,12 +270,12 @@ class _$BlindStructureLevelImpl implements _BlindStructureLevel {
 abstract class _BlindStructureLevel implements BlindStructureLevel {
   const factory _BlindStructureLevel(
       {required final int id,
-      @JsonKey(name: 'blind_structure_id') required final int blindStructureId,
-      @JsonKey(name: 'level_no') required final int levelNo,
-      @JsonKey(name: 'small_blind') required final int smallBlind,
-      @JsonKey(name: 'big_blind') required final int bigBlind,
+      @JsonKey(name: 'blindStructureId') required final int blindStructureId,
+      @JsonKey(name: 'levelNo') required final int levelNo,
+      @JsonKey(name: 'smallBlind') required final int smallBlind,
+      @JsonKey(name: 'bigBlind') required final int bigBlind,
       required final int ante,
-      @JsonKey(name: 'duration_minutes')
+      @JsonKey(name: 'durationMinutes')
       required final int durationMinutes}) = _$BlindStructureLevelImpl;
 
   factory _BlindStructureLevel.fromJson(Map<String, dynamic> json) =
@@ -284,21 +284,21 @@ abstract class _BlindStructureLevel implements BlindStructureLevel {
   @override
   int get id;
   @override
-  @JsonKey(name: 'blind_structure_id')
+  @JsonKey(name: 'blindStructureId')
   int get blindStructureId;
   @override
-  @JsonKey(name: 'level_no')
+  @JsonKey(name: 'levelNo')
   int get levelNo;
   @override
-  @JsonKey(name: 'small_blind')
+  @JsonKey(name: 'smallBlind')
   int get smallBlind;
   @override
-  @JsonKey(name: 'big_blind')
+  @JsonKey(name: 'bigBlind')
   int get bigBlind;
   @override
   int get ante;
   @override
-  @JsonKey(name: 'duration_minutes')
+  @JsonKey(name: 'durationMinutes')
   int get durationMinutes;
 
   /// Create a copy of BlindStructureLevel
