@@ -311,25 +311,6 @@ class _SeatCellState extends ConsumerState<SeatCell>
               },
             ),
             ListTile(
-              leading: Icon(
-                seat.isDealer ? Icons.circle : Icons.circle_outlined,
-                color: seat.isDealer ? Colors.amber : null,
-              ),
-              title: Text(seat.isDealer ? 'Dealer (current)' : 'Set Dealer'),
-              subtitle: seat.isDealer
-                  ? const Text('Already dealer')
-                  : const Text('Assign dealer button to this seat'),
-              enabled: !seat.isDealer,
-              onTap: seat.isDealer
-                  ? null
-                  : () {
-                      Navigator.of(ctx).pop();
-                      ref
-                          .read(seatsProvider.notifier)
-                          .setDealer(widget.seatIndex);
-                    },
-            ),
-            ListTile(
               leading: const Icon(Icons.swap_horiz),
               title: const Text('Move Seat'),
               subtitle: const Text('Drag mode (placeholder)'),
