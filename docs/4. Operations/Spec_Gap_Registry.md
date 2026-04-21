@@ -89,7 +89,7 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | SG-013 | nomenclature | 2.1 Frontend/Lobby | "lobby" 앱명 vs 섹션명 용어 충돌 — WSOP LIVE 원어 "Tournaments" 정렬 필요 (원칙 1). → 동 critic §4.1 |
 | SG-014 | ia_overlap | 2.1 Frontend/Lobby+Settings | Graphic Editor 진입점 이중화 (헤더 [Graphic Editor] 버튼 + Settings/Graphics 탭) — 에셋 vs 런타임 설정 구분 명문화. → 동 critic §4.3 |
 | SG-015 | ia_missing | 2.1 Frontend/Lobby | Players 섹션 유지 근거 미문서화 — user 제안 5탭에 빠짐. WSOP LIVE Player Management 정렬. → 동 critic §3 |
-| SG-016 | ia_missing | 2.1 Frontend/Lobby | Reports/Insights 사이드바 항목 미정의 — UI.md §공통 레이아웃 9 권고 채택 시 신설. → 동 critic §7 |
+| SG-016 | ia_missing | 2.1 Frontend/Lobby | **revision 1 (2026-04-21)**: ~~Insights~~ 제거. **Hand History 사이드바 섹션 공식화** — 25개 분산 참조(hands/hand_actions/HandStarted + mockup) 을 독립 섹션 SSOT 로 통합. → 동 critic §7.1-7.2 + `Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` |
 | SG-017 | scope_inconsistency | 2.1 Frontend/Settings | "글로벌 단위" Overview.md §개요 vs MEMORY feedback_settings_global 역전(Series/Event/Table 분리) 모순 — decision_owner 판정 필요. → 동 critic §10 #5 |
 | SG-018 | data_model | 2.2 Backend/Database | 5NF 메타모델 테이블 부재 — `nav_sections`/`nav_items`/`report_templates`/`skin_modes`/`setting_categories`/`integration_providers`/`game_rules`/`roles+permissions`. → 동 critic §5.2, §5.3 |
 | SG-019 | scope_boundary | 1. Product/Foundation §1.2 | Reports/Insights 탭 ↔ 포스트프로덕션 경계 정의 부재 — "실시간 운영 지표만" 명문화 권고. → 동 critic §6.2 |
