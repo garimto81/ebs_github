@@ -79,15 +79,13 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 lib/
 ├── data/remote/          # Dio API client + WS client (Idempotency-Key + seq)
 ├── data/local/           # MockDioAdapter (MSW 대체)
-├── features/             # 기능별 screens + providers + widgets
+├── features/             # 기능별 screens + providers + widgets (6개, 2026-04-21 실측 정렬)
 │   ├── auth/             # 로그인 + 2FA (StateNotifier)
-│   ├── lobby/            # Series→Event→Table 드릴다운
-│   ├── players/
-│   ├── staff/
+│   ├── lobby/            # Series→Event→Flight→Table 드릴다운 (+ Player 관리 서브뷰)
 │   ├── settings/         # 6탭 (family provider by section)
-│   ├── graphic_editor/   # 스킨 허브 + Rive 프리뷰
-│   ├── audit_log/
-│   └── hand_history/
+│   ├── graphic_editor/   # 스킨 허브 + Rive 프리뷰 (Flutter rive ^0.13)
+│   ├── staff/            # Staff 관리 (RBAC 3역할)
+│   └── reports/          # Hand History + Audit Log 뷰어 (읽기 전용, BO DB 소비)
 ├── models/               # Freezed entities + enums
 ├── repositories/         # 11 repository 클래스
 ├── foundation/           # theme, router, configs, i18n, widgets

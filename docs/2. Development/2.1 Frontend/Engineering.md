@@ -2,54 +2,66 @@
 title: Engineering — Frontend (Flutter)
 owner: team1
 tier: internal
-last-updated: 2026-04-20
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "아키텍처 문서는 충실(§1-11). 단 features 선언 8개(auth/lobby/settings/graphic_editor/staff/players/audit_log/hand_history) vs 실측 6개(players/audit_log/hand_history 미구현) 공백 있음 — §0 참조"
+last-updated: 2026-04-21
+reimplementability: PASS
+reimplementability_checked: 2026-04-21
+reimplementability_notes: "features 선언 6 ≡ 실측 6 정렬 완료 (auth/lobby/settings/graphic_editor/staff/reports). players/audit_log/hand_history 는 lobby·reports 하위 통합으로 해소. §0 resolved 로그 참조."
 ---
 
 # Engineering — Frontend (Flutter)
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-04-21 | features 정렬 완료 | 선언 8 → 실측 6 일치. players → lobby 통합, audit_log + hand_history → reports 통합. CLAUDE.md §아키텍처 동기화 |
 | 2026-04-20 | Conductor audit | SG-001 resolution 반영 + features 실측/선언 공백 §0 명시 |
 | 2026-04-16 | Flutter 전환 | Quasar→Flutter 전면 재작성. Riverpod+Freezed+Dio+go_router+rive |
 | 2026-04-15 | (이전) | Quasar/Vue 3 아키텍처 최종본 — §12 아카이브 참조 |
 
 ---
 
-## 0. 선언 vs 실측 features 공백 (2026-04-20 Conductor audit)
+## 0. features 선언 vs 실측 정렬 (2026-04-21 resolved)
 
-team1 CLAUDE.md §"아키텍처" 에서 features 8개 선언:
+### 0.1 최종 상태 (6 feature)
 
-```
-auth / lobby / players / staff / settings / graphic_editor / audit_log / hand_history
-```
-
-실제 `team1-frontend/lib/features/` 디렉토리 6개 (2026-04-20 실측):
+team1 CLAUDE.md §"아키텍처" 와 `team1-frontend/lib/features/` 가 완전 일치:
 
 ```
-auth / graphic_editor / lobby / reports / settings / staff
+auth / lobby / settings / graphic_editor / staff / reports
 ```
 
-| 선언 | 실측 | 상태 |
-|------|:---:|------|
-| auth | ✓ | 일치 |
-| lobby | ✓ | 일치 |
-| settings | ✓ | 일치 (SG-003 스키마 후속) |
-| graphic_editor | ✓ | 일치 (SG-004 DATA-07 후속) |
-| staff | ✓ | 일치 |
-| **players** | ✗ | **미구현 — lobby 하위 통합 또는 독립?** |
-| **audit_log** | ✗ | **미구현 — BO 에서 읽기 전용 뷰?** |
-| **hand_history** | ✗ | **미구현 — reports 로 통합됨?** |
-| — | **reports** (신규) | **CLAUDE.md 미선언** |
+| Feature | 역할 | 관련 기획 |
+|---------|------|-----------|
+| `auth` | 로그인 + 2FA StateNotifier | `Login/` |
+| `lobby` | Series→Event→Flight→Table 드릴다운 + **Player 관리 서브뷰** | `Lobby/` |
+| `settings` | 6탭 (Outputs / GFX / Display / Rules / Statistics / Preferences) | `Settings/` |
+| `graphic_editor` | `.gfskin` 허브 + Rive 프리뷰 (Flutter rive ^0.13) | `Graphic_Editor/` |
+| `staff` | 운영자 관리 (RBAC 3역할) | BS-01 Authentication |
+| `reports` | **Hand History + Audit Log 뷰어** (읽기 전용, BO DB 소비) | API-01 §Hands + §Audit |
 
-**조치**: team1 세션이 아래 결정:
-1. players/audit_log/hand_history 를 **별도 feature 로 추가** 할지, **기존 feature 에 통합 (예: reports)** 할지 결정
-2. reports feature 를 CLAUDE.md §아키텍처 에 추가
-3. 결정 후 Roadmap §2.1 Frontend 의 해당 라인 재판정
+### 0.2 이관 매핑 (과거 선언 → 현재 통합)
 
-관련 SG: 없음 (team1 내부 결정, Type A/B 경계 사례). 공식 spec_gap 으로 승격 시 `SG-00X-team1-features-alignment.md` 생성.
+2026-04-20 audit 에서 발견된 선언/실측 공백 3건이 아래와 같이 해소됨:
+
+| 과거 선언 | 최종 위치 | 사유 |
+|----------|----------|------|
+| `players` | `lobby/` 하위 서브뷰 | Player 관리는 Lobby 드릴다운의 독립 레이어 (`Lobby/UI.md` §5 Player 독립 레이어 참조). 별도 feature 디렉토리 불필요 — Lobby 라우트 내부에서 Series/Event 와 직교 |
+| `audit_log` | `reports/` 통합 | BO 가 감사 로그 SSOT. team1 은 읽기 전용 뷰만 제공 → reports 하위 탭으로 통합 자연 |
+| `hand_history` | `reports/` 통합 | 핸드 기록도 읽기 전용 뷰어 성격. reports 하위 탭으로 통합 — 공통 페이지네이션/필터/export UX |
+
+### 0.3 결정 근거
+
+- **"feature 디렉토리 = 독립 라우트"** 원칙 유지. 읽기 전용 뷰 3개 (players/audit_log/hand_history) 를 각각 feature 로 만들면 의미 중복.
+- `reports` feature 하위에 탭 구조로 hand_history + audit_log 배치가 Material3 `DefaultTabController` 로 즉시 구현 가능.
+- Player 관리는 Lobby 드릴다운 맥락 강함 (Series/Event/Flight 선택 후 Player 배치) → Lobby 하위가 맥락 보존.
+
+### 0.4 영향 받은 문서
+
+- `team1-frontend/CLAUDE.md §"아키텍처"` 선언 목록 6개로 재작성
+- `team1-frontend/INDEX.md` 전면 Flutter v10 재작성 (Quasar 경로 참조 제거)
+- 본 Engineering.md frontmatter `reimplementability: UNKNOWN → PASS`
+- `Roadmap.md §"2.1 Frontend"` 의 "features 미정렬" 라인 — Conductor 세션이 resolved 반영 후속
+
+관련 SG: 없음 (team1 내부 결정, 공식 spec_gap 승격 불필요).
 
 ---
 

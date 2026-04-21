@@ -401,10 +401,10 @@ void main() {
       expect(skin.name, 'Default WSOP Skin');
       expect(skin.version, '1.0.0');
       expect(skin.status, 'active');
-      expect(skin.metadata.title, 'Default WSOP');
-      expect(skin.metadata.description, 'Standard WSOP overlay skin');
-      expect(skin.metadata.author, 'EBS Team');
-      expect(skin.metadata.tags, ['wsop', 'default']);
+      expect(skin.safeMetadata.title, 'Default WSOP');
+      expect(skin.safeMetadata.description, 'Standard WSOP overlay skin');
+      expect(skin.safeMetadata.author, 'EBS Team');
+      expect(skin.safeMetadata.tags, ['wsop', 'default']);
       expect(skin.fileSize, 2048576);
       expect(skin.uploadedAt, isNotEmpty);
       expect(skin.activatedAt, isNotNull);
@@ -432,8 +432,8 @@ void main() {
       expect(skin.status, 'draft');
       expect(skin.activatedAt, isNull);
       expect(skin.previewUrl, isNull);
-      expect(skin.metadata.author, isNull);
-      expect(skin.metadata.tags, isEmpty);
+      expect(skin.safeMetadata.author, isNull);
+      expect(skin.safeMetadata.tags, isEmpty);
     });
   });
 
