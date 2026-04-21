@@ -2,6 +2,8 @@
 //
 // Verifies dispatchWsEvent routes events to the correct provider notifiers
 // using ProviderContainer (team4 pattern).
+//
+// 2026-04-21 B-088 PR-6: event type PascalCase + payload camelCase.
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,20 +34,20 @@ class MockSkinRepository extends Mock implements SkinRepository {}
 
 Map<String, dynamic> _seriesPayload({int id = 1, String name = 'WSOP 2026'}) =>
     {
-      'series_id': id,
-      'competition_id': 1,
-      'series_name': name,
+      'seriesId': id,
+      'competitionId': 1,
+      'seriesName': name,
       'year': 2026,
-      'begin_at': '2026-05-01',
-      'end_at': '2026-07-15',
-      'time_zone': 'America/Los_Angeles',
+      'beginAt': '2026-05-01',
+      'endAt': '2026-07-15',
+      'timeZone': 'America/Los_Angeles',
       'currency': 'USD',
-      'is_completed': false,
-      'is_displayed': true,
-      'is_demo': false,
+      'isCompleted': false,
+      'isDisplayed': true,
+      'isDemo': false,
       'source': 'manual',
-      'created_at': '2026-01-01T00:00:00Z',
-      'updated_at': '2026-01-01T00:00:00Z',
+      'createdAt': '2026-01-01T00:00:00Z',
+      'updatedAt': '2026-01-01T00:00:00Z',
     };
 
 Map<String, dynamic> _skinPayload({
@@ -53,7 +55,7 @@ Map<String, dynamic> _skinPayload({
   String status = 'validated',
 }) =>
     {
-      'skin_id': id,
+      'skinId': id,
       'name': 'Default Skin',
       'version': '1.0.0',
       'status': status,
@@ -62,8 +64,8 @@ Map<String, dynamic> _skinPayload({
         'description': 'Default skin',
         'tags': <String>[],
       },
-      'file_size': 1024,
-      'uploaded_at': '2026-01-01T00:00:00Z',
+      'fileSize': 1024,
+      'uploadedAt': '2026-01-01T00:00:00Z',
     };
 
 void main() {
@@ -87,21 +89,20 @@ void main() {
   tearDown(() => container.dispose());
 
   // -------------------------------------------------------------------------
-  // Series events
+  // Series events — PascalCase (WSOP LIVE 준수)
   // -------------------------------------------------------------------------
 
-  /// Seed the series list with data (notifier starts as loading, not data).
   Future<void> seedSeries(List<Series> items) async {
     when(() => mockSeriesRepo.listSeries()).thenAnswer((_) async => items);
     await container.read(seriesListProvider.notifier).fetch();
   }
 
   group('series events', () {
-    test('series.created appends to series list', () async {
+    test('SeriesCreated appends to series list', () async {
       await seedSeries([Series.fromJson(_seriesPayload(id: 1))]);
 
       dispatchWsEventForTest(container, {
-        'event': 'series.created',
+        'type': 'SeriesCreated',
         'payload': _seriesPayload(id: 2, name: 'WSOP Europe'),
         'seq': 1,
       });
@@ -111,11 +112,11 @@ void main() {
       expect(list.last.seriesName, 'WSOP Europe');
     });
 
-    test('series.updated replaces matching series', () async {
+    test('SeriesUpdated replaces matching series', () async {
       await seedSeries([Series.fromJson(_seriesPayload(id: 1))]);
 
       dispatchWsEventForTest(container, {
-        'event': 'series.updated',
+        'type': 'SeriesUpdated',
         'payload': _seriesPayload(id: 1, name: 'WSOP 2026 Updated'),
         'seq': 2,
       });
@@ -125,15 +126,15 @@ void main() {
       expect(list.first.seriesName, 'WSOP 2026 Updated');
     });
 
-    test('series.deleted removes series by id', () async {
+    test('SeriesDeleted removes series by id', () async {
       await seedSeries([
         Series.fromJson(_seriesPayload(id: 1)),
         Series.fromJson(_seriesPayload(id: 2, name: 'Europe')),
       ]);
 
       dispatchWsEventForTest(container, {
-        'event': 'series.deleted',
-        'payload': {'series_id': 1},
+        'type': 'SeriesDeleted',
+        'payload': {'seriesId': 1},
         'seq': 3,
       });
 
@@ -144,18 +145,17 @@ void main() {
   });
 
   // -------------------------------------------------------------------------
-  // Settings events
+  // Settings events — unified ConfigChanged (legacy config.updated + config_changed removed)
   // -------------------------------------------------------------------------
 
   group('settings events', () {
-    test('config.updated routes to settingsSectionProvider', () {
-      // Pre-populate the outputs section.
+    test('ConfigChanged routes to settingsSectionProvider', () {
       container
           .read(settingsSectionProvider(SettingsSection.outputs).notifier)
           .replaceAll({'volume': 80});
 
       dispatchWsEventForTest(container, {
-        'event': 'config.updated',
+        'type': 'ConfigChanged',
         'payload': {
           'section': 'outputs',
           'key': 'volume',
@@ -167,16 +167,16 @@ void main() {
       final state =
           container.read(settingsSectionProvider(SettingsSection.outputs));
       expect(state.committed['volume'], 95);
-      expect(state.draft['volume'], 95); // not dirty, so draft updated too
+      expect(state.draft['volume'], 95);
     });
 
-    test('config_changed is an alias that also routes correctly', () {
+    test('ConfigChanged for gfx section', () {
       container
           .read(settingsSectionProvider(SettingsSection.gfx).notifier)
           .replaceAll({'brightness': 50});
 
       dispatchWsEventForTest(container, {
-        'event': 'config_changed',
+        'type': 'ConfigChanged',
         'payload': {
           'section': 'gfx',
           'key': 'brightness',
@@ -192,21 +192,20 @@ void main() {
   });
 
   // -------------------------------------------------------------------------
-  // Skin events
+  // Skin events — unified SkinUpdated + SkinActivated (legacy skin.updated + skin_updated removed)
   // -------------------------------------------------------------------------
 
-  /// Seed the skin list with data (notifier starts as loading, not data).
   Future<void> seedSkins(List<Skin> items) async {
     when(() => mockSkinRepo.listSkins()).thenAnswer((_) async => items);
     await container.read(skinListProvider.notifier).fetch();
   }
 
   group('skin events', () {
-    test('skin.updated updates skin in list', () async {
+    test('SkinUpdated updates skin in list', () async {
       await seedSkins([Skin.fromJson(_skinPayload(id: 1))]);
 
       dispatchWsEventForTest(container, {
-        'event': 'skin.updated',
+        'type': 'SkinUpdated',
         'payload': _skinPayload(id: 1, status: 'active'),
         'seq': 20,
       });
@@ -216,11 +215,11 @@ void main() {
       expect(container.read(activeSkinIdProvider), 1);
     });
 
-    test('skin.activated sets active skin id', () async {
+    test('SkinActivated sets active skin id', () async {
       await seedSkins([Skin.fromJson(_skinPayload(id: 5))]);
 
       dispatchWsEventForTest(container, {
-        'event': 'skin.activated',
+        'type': 'SkinActivated',
         'payload': _skinPayload(id: 5, status: 'active'),
         'seq': 21,
       });
@@ -235,31 +234,38 @@ void main() {
 
   group('edge cases', () {
     test('unknown event is silently ignored', () {
-      // Should not throw.
       dispatchWsEventForTest(container, {
-        'event': 'some.future.event',
+        'type': 'SomeFutureEvent',
         'payload': {'data': 1},
         'seq': 99,
       });
     });
 
     test('event with null payload is ignored when payload required', () {
-      // Should not throw.
       dispatchWsEventForTest(container, {
-        'event': 'series.updated',
+        'type': 'SeriesUpdated',
         'seq': 100,
       });
     });
 
-    test('WsDispatchEnvelope.fromJson parses correctly', () {
+    test('WsDispatchEnvelope.fromJson parses type field', () {
       final envelope = WsDispatchEnvelope.fromJson({
-        'event': 'test.event',
+        'type': 'TestEvent',
         'payload': {'key': 'value'},
         'seq': 42,
       });
-      expect(envelope.event, 'test.event');
+      expect(envelope.event, 'TestEvent');
       expect(envelope.payload?['key'], 'value');
       expect(envelope.seq, 42);
+    });
+
+    test('WsDispatchEnvelope.fromJson falls back to event field (legacy)', () {
+      final envelope = WsDispatchEnvelope.fromJson({
+        'event': 'LegacyEvent',
+        'payload': {'a': 1},
+      });
+      expect(envelope.event, 'LegacyEvent');
+      expect(envelope.payload?['a'], 1);
     });
 
     test('WsDispatchEnvelope handles missing fields gracefully', () {

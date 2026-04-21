@@ -6,14 +6,23 @@
 //
 // Wire this into the WS client's onEvent callback.
 //
-// TODO(B-088 PR-6): WSOP LIVE 직접 준수 — event type PascalCase 통일.
-// 현재 switch case 는 snake_case (hand_started) + dot.case (series.updated) 혼재.
-// team2 publisher (PR-3) 에서 PascalCase 로 migrate 완료 후 본 파일도 일괄 전환:
-//   'hand_started' → 'HandStarted'
-//   'table_status_changed' → 'TableStatusChanged'
-//   'series.updated' → 'SeriesUpdated'  (도트 계층 제거)
-//   'skin.updated' + 'skin_updated' 중복 → 'SkinUpdated' 단일
-// 상세: docs/2. Development/2.5 Shared/Naming_Conventions.md §3 + B-088 PR-3/6
+// **WSOP LIVE 규약 준수 (2026-04-21 B-088 PR-6)**:
+// - event type = **PascalCase** (Naming_Conventions.md §3.1)
+// - dot.case 금지 (`series.updated` ❌ → `SeriesUpdated` ✅)
+// - 중복 case 제거 (`config_changed` ↔ `config.updated` → `ConfigChanged` 단일)
+// - payload 필드 = **camelCase** (PR-5 Freezed 전환 반영, eventFlightId/tableId 등)
+//
+// Backend publisher (team2) 매핑 상태:
+// - ✅ PascalCase emit: Ack, Error, AuthFailed, TableNotFound, PermissionDenied,
+//                      InvalidMessage, CardConflict, DuplicateCard, RfidHardwareError,
+//                      SlowConnection, TableAssigned, TokenExpiringSoon, PlayerUpdated,
+//                      BlindStructureChanged (v2)
+// - ⏳ snake → PascalCase (team2 PR-3 진행 중): clock_tick, clock_level_changed,
+//   clock_detail_changed, clock_reload_requested, tournament_status_changed,
+//   prize_pool_changed, stack_adjusted, skin_updated, event_flight_summary
+//
+// 본 파일은 **PascalCase 기준** 으로 case 를 선언. team2 PR-3 완료 전에는 snake emit
+// 이벤트가 default 에 빠져 debugPrint 로 log-and-ignore. team2 완료 시 전부 정상 처리.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,7 +50,7 @@ typedef ProviderReadFn = T Function<T>(ProviderListenable<T> provider);
 // ---------------------------------------------------------------------------
 
 /// Minimal envelope for incoming WebSocket events.
-/// The backend sends `{ "event": "...", "payload": {...}, "seq": N }`.
+/// The backend sends `{ "type": "...", "payload": {...}, "seq": N }`.
 class WsDispatchEnvelope {
   const WsDispatchEnvelope({
     required this.event,
@@ -49,24 +58,28 @@ class WsDispatchEnvelope {
     this.seq,
   });
 
+  /// Event type (PascalCase per WSOP LIVE SignalR convention).
+  ///
+  /// Accepts both `type` (primary per Naming_Conventions.md v2) and `event`
+  /// (legacy envelope field) for backward compatibility during PR-3 migration.
+  final String event;
+  final Map<String, dynamic>? payload;
+  final int? seq;
+
   factory WsDispatchEnvelope.fromJson(Map<String, dynamic> json) {
     return WsDispatchEnvelope(
-      event: json['event'] as String? ?? '',
+      event: (json['type'] ?? json['event']) as String? ?? '',
       payload: json['payload'] as Map<String, dynamic>?,
       seq: json['seq'] as int?,
     );
   }
-
-  final String event;
-  final Map<String, dynamic>? payload;
-  final int? seq;
 }
 
 // ---------------------------------------------------------------------------
-// Main dispatcher
+// Dispatch
 // ---------------------------------------------------------------------------
 
-/// Route an incoming WS event to the appropriate providers.
+/// Route an incoming WS event to the appropriate provider mutation.
 ///
 /// Called from the WS client's onEvent callback. The [read] function is
 /// either `ref.read` (production) or `container.read` (tests).
@@ -79,24 +92,24 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
 
   switch (envelope.event) {
     // ------------------------------------------------------------------
-    // Entity full-replacement updates (lobbyStore.ts §WS remote updates)
+    // Entity full-replacement updates
     // ------------------------------------------------------------------
-    case 'series.updated':
+    case 'SeriesUpdated':
       if (payload == null) return;
       final s = Series.fromJson(payload);
       read(seriesListProvider.notifier).applyRemoteUpdate(s);
 
-    case 'series.created':
+    case 'SeriesCreated':
       if (payload == null) return;
       final s = Series.fromJson(payload);
       read(seriesListProvider.notifier).applyRemoteAdd(s);
 
-    case 'series.deleted':
+    case 'SeriesDeleted':
       if (payload == null) return;
-      final id = payload['series_id'] as int?;
+      final id = payload['seriesId'] as int?;
       if (id != null) read(seriesListProvider.notifier).applyRemoteDelete(id);
 
-    case 'event.updated':
+    case 'EventUpdated':
       if (payload == null) return;
       final e = EbsEvent.fromJson(payload);
       final seriesId = read(currentSeriesIdProvider);
@@ -104,7 +117,7 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
         read(eventListProvider(seriesId).notifier).applyRemoteUpdate(e);
       }
 
-    case 'event.created':
+    case 'EventCreated':
       if (payload == null) return;
       final e = EbsEvent.fromJson(payload);
       final seriesId = read(currentSeriesIdProvider);
@@ -112,7 +125,7 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
         read(eventListProvider(seriesId).notifier).applyRemoteAdd(e);
       }
 
-    case 'flight.updated':
+    case 'FlightUpdated':
       if (payload == null) return;
       final f = EventFlight.fromJson(payload);
       final eventId = read(currentEventIdProvider);
@@ -120,7 +133,7 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
         read(flightListProvider(eventId).notifier).applyRemoteUpdate(f);
       }
 
-    case 'flight.created':
+    case 'FlightCreated':
       if (payload == null) return;
       final f = EventFlight.fromJson(payload);
       final eventId = read(currentEventIdProvider);
@@ -128,7 +141,7 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
         read(flightListProvider(eventId).notifier).applyRemoteAdd(f);
       }
 
-    case 'table.updated':
+    case 'TableUpdated':
       if (payload == null) return;
       final t = EbsTable.fromJson(payload);
       final flightId = read(currentFlightIdProvider);
@@ -136,7 +149,7 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
         read(tableListProvider(flightId).notifier).applyRemoteUpdate(t);
       }
 
-    case 'table.created':
+    case 'TableCreated':
       if (payload == null) return;
       final t = EbsTable.fromJson(payload);
       final flightId = read(currentFlightIdProvider);
@@ -144,22 +157,22 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
         read(tableListProvider(flightId).notifier).applyRemoteAdd(t);
       }
 
-    case 'player.updated':
+    case 'PlayerUpdated':
       if (payload == null) return;
       final p = Player.fromJson(payload);
       read(playerListProvider.notifier).applyRemoteUpdate(p);
 
-    case 'player.created':
+    case 'PlayerCreated':
       if (payload == null) return;
       final p = Player.fromJson(payload);
       read(playerListProvider.notifier).applyRemoteAdd(p);
 
     // ------------------------------------------------------------------
-    // Real-time operational events (lobbyStore.ts §operational)
+    // Real-time operational events
     // ------------------------------------------------------------------
-    case 'table_status_changed':
+    case 'TableStatusChanged':
       if (payload == null) return;
-      final tableId = payload['table_id'] as int?;
+      final tableId = payload['tableId'] as int?;
       final status = payload['status'] as String?;
       final flightId = read(currentFlightIdProvider);
       if (tableId != null && status != null && flightId != null) {
@@ -167,12 +180,12 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
             .updateStatus(tableId, status);
       }
 
-    case 'player_moved':
-    case 'player_seated':
+    case 'PlayerMoved':
+    case 'PlayerSeated':
       if (payload == null) return;
-      final tableId = payload['table_id'] as int?;
-      final playerId = payload['player_id'] as int?;
-      final seatNo = payload['seat_no'] as int?;
+      final tableId = payload['tableId'] as int?;
+      final playerId = payload['playerId'] as int?;
+      final seatNo = payload['seatNo'] as int?;
       final action = payload['action'] as String?;
       final flightId = read(currentFlightIdProvider);
       if (tableId != null && flightId != null) {
@@ -185,19 +198,19 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
             .updateSeat(playerId, seatIndex: seatNo);
       }
 
-    case 'hand_started':
+    case 'HandStarted':
       if (payload == null) return;
-      final tableId = payload['table_id'] as int?;
-      final handNumber = payload['hand_number'] as int?;
+      final tableId = payload['tableId'] as int?;
+      final handNumber = payload['handNumber'] as int?;
       final flightId = read(currentFlightIdProvider);
       if (tableId != null && flightId != null) {
         read(tableListProvider(flightId).notifier)
             .updateCurrentGame(tableId, handNumber);
       }
 
-    case 'hand_ended':
+    case 'HandEnded':
       if (payload == null) return;
-      final tableId = payload['table_id'] as int?;
+      final tableId = payload['tableId'] as int?;
       final flightId = read(currentFlightIdProvider);
       if (tableId != null && flightId != null) {
         read(tableListProvider(flightId).notifier)
@@ -205,28 +218,27 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
       }
 
     // ------------------------------------------------------------------
-    // Rebalance saga events (page-level listeners handle UI; we refresh)
+    // Rebalance saga events
     // ------------------------------------------------------------------
-    case 'rebalance_started':
-    case 'rebalance_progress':
-    case 'rebalance_compensated':
-    case 'rebalance_compensation_failed':
+    case 'RebalanceStarted':
+    case 'RebalanceProgress':
+    case 'RebalanceCompensated':
+    case 'RebalanceCompensationFailed':
       // Page-level handlers will subscribe to these via a dedicated provider.
       debugPrint('[WS] Rebalance saga: ${envelope.event}');
 
-    case 'rebalance_completed':
+    case 'RebalanceCompleted':
       if (payload != null) {
-        final refFlightId = payload['flight_id'] as int?;
+        final refFlightId = payload['flightId'] as int?;
         if (refFlightId != null) {
           read(tableListProvider(refFlightId).notifier).fetch();
         }
       }
 
     // ------------------------------------------------------------------
-    // Settings (settingsStore.ts)
+    // Settings (unified from legacy config.updated + config_changed)
     // ------------------------------------------------------------------
-    case 'config.updated':
-    case 'config_changed':
+    case 'ConfigChanged':
       if (payload == null) return;
       final sectionName = payload['section'] as String?;
       final key = payload['key'] as String?;
@@ -239,11 +251,10 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
       }
 
     // ------------------------------------------------------------------
-    // Skins / Graphic Editor (geStore.ts)
+    // Skins / Graphic Editor (unified from skin.updated + skin_updated)
     // ------------------------------------------------------------------
-    case 'skin.updated':
-    case 'skin.activated':
-    case 'skin_updated':
+    case 'SkinUpdated':
+    case 'SkinActivated':
       if (payload == null) return;
       final skin = Skin.fromJson(payload);
       read(skinListProvider.notifier).applyRemoteUpdate(skin);
@@ -252,7 +263,70 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
       }
 
     // ------------------------------------------------------------------
-    // Unknown — forward-compatible, log + ignore
+    // Tournament clock events (team2 publishers.py + lobby_handler.py)
+    // ------------------------------------------------------------------
+    case 'ClockTick':
+    case 'ClockLevelChanged':
+    case 'ClockDetailChanged':
+    case 'ClockReloadRequested':
+      // Clock state updates are consumed by a dedicated clock provider
+      // (future: lib/features/lobby/providers/clock_provider.dart).
+      // For now log-and-track so that E2E tests can assert receipt.
+      debugPrint('[WS] Clock event: ${envelope.event}');
+
+    // ------------------------------------------------------------------
+    // Tournament meta events
+    // ------------------------------------------------------------------
+    case 'TournamentStatusChanged':
+      // Tournament state changes (running/completed/canceled). Refresh
+      // the active flight to pick up new status + remaining metadata.
+      final eventId = read(currentEventIdProvider);
+      if (eventId != null) {
+        read(flightListProvider(eventId).notifier).fetch();
+      }
+
+    case 'BlindStructureChanged':
+      // Settings-scoped event. Refresh settings section if currently
+      // displayed; the dedicated blind_structure_provider also listens.
+      debugPrint('[WS] BlindStructureChanged — settings refresh deferred');
+
+    case 'PrizePoolChanged':
+      // Lobby display of prize pool is computed from event.totalEntries.
+      // Refresh events to pull latest snapshot.
+      final seriesId = read(currentSeriesIdProvider);
+      if (seriesId != null) {
+        read(eventListProvider(seriesId).notifier).fetch();
+      }
+
+    case 'StackAdjusted':
+      // Per-player stack change. PlayerMoved/PlayerUpdated covers most
+      // UI needs. Dedicated stack provider is future work.
+      debugPrint('[WS] StackAdjusted — player refresh deferred');
+
+    case 'EventFlightSummary':
+      // Aggregate summary snapshot (broadcast periodically by backend).
+      // Refresh events+flights for the currently selected series/event.
+      final seriesId = read(currentSeriesIdProvider);
+      if (seriesId != null) {
+        read(eventListProvider(seriesId).notifier).fetch();
+      }
+
+    // ------------------------------------------------------------------
+    // Reply / error envelopes (command responses)
+    // ------------------------------------------------------------------
+    case 'Ack':
+    case 'Error':
+    case 'AuthFailed':
+    case 'TableNotFound':
+    case 'PermissionDenied':
+    case 'InvalidMessage':
+    case 'TokenExpiringSoon':
+      // Lobby does not send commands (read-only subscriber), but these
+      // may be received during the initial handshake. Log-and-ignore.
+      debugPrint('[WS] Reply envelope: ${envelope.event}');
+
+    // ------------------------------------------------------------------
+    // Unknown — forward-compatible, log + ignore (Naming_Conventions §3 policy)
     // ------------------------------------------------------------------
     default:
       debugPrint('[WS] Unknown event (ignored): ${envelope.event}');
@@ -277,8 +351,27 @@ void dispatchWsEventForTest(
 // ---------------------------------------------------------------------------
 
 bool _requiresPayload(String event) {
-  // Saga events may have empty payloads for progress-only notifications.
-  return !event.startsWith('rebalance_');
+  // Saga + simple state events may have empty payloads.
+  if (event.startsWith('Rebalance')) return false;
+  // Clock + reply envelopes may be minimal.
+  const payloadOptional = <String>{
+    'ClockTick',
+    'ClockLevelChanged',
+    'ClockDetailChanged',
+    'ClockReloadRequested',
+    'TournamentStatusChanged',
+    'BlindStructureChanged',
+    'StackAdjusted',
+    'Ack',
+    'Error',
+    'AuthFailed',
+    'TableNotFound',
+    'PermissionDenied',
+    'InvalidMessage',
+    'TokenExpiringSoon',
+  };
+  if (payloadOptional.contains(event)) return false;
+  return true;
 }
 
 SettingsSection? _parseSettingsSection(String name) {
