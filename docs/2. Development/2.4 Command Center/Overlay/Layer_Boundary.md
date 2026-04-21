@@ -73,6 +73,17 @@ EBS Core는 **Layer 1만 책임**한다. Layer 2/3은 외부 팀(포스트프로
 
 **EBS 역할**: 없음. 외부 시스템이 NDI/HDMI로 EBS Overlay와 믹스한다.
 
+### 1.4 비-Overlay — Lobby 내부 데이터 화면 (참고 명시)
+
+Layer 1/2/3 분류 외부에 **Lobby 내부 화면** 이 존재한다. 시청자에게 송출되지 않으며 운영자/관리자만 본다.
+
+| 화면 | SSOT | Overlay 출력 여부 |
+|------|------|:----------------:|
+| Lobby Tournaments / Tables / Players / Staff / Settings / History / Hand History | `2.1 Frontend/Lobby/**` | **❌ Overlay 비대상** |
+| Lobby `Hand_History.md` (Hand Browser / Detail / Player Stats) | `2.1 Frontend/Lobby/Hand_History.md` | **❌ Overlay 비대상**. CC → BO → DB 에 저장된 핸드 데이터를 Lobby UI 가 직접 조회 |
+
+> Hand History 의 hole card 마스킹 RBAC (Viewer ★ 마스킹) 은 Lobby 내부 표시 정책이며 Overlay 의 `HoleCardsRevealed` 송출 정책 (§API-04 / Scene_Schema.md) 과 별개의 메커니즘이다. 동일 데이터지만 표시 채널/규칙이 다름.
+
 ---
 
 ## 2. 반자동 그래픽 상세

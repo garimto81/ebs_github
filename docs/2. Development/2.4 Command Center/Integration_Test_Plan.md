@@ -16,6 +16,7 @@ last-updated: 2026-04-15
 | 2026-04-08 | TEST-01~05 신규 | 테스트 계획·E2E·픽스처·Mock·QA체크 |
 | 2026-04-09 | TEST-06,07 신규 | 앱 감사·QA 전략 |
 | 2026-04-14 | 통합 | 7개 문서 → 1개 합본, 원본은 외부 백업 |
+| 2026-04-21 | Hand History E2E 추가 | §2 E2E 시나리오 끝에 시나리오 11 (Lobby Hand History 실시간 갱신 + RBAC 마스킹 + API 필터) 추가. SG-016 revised 후속 (Migration Plan Phase 4) |
 
 ## 목차
 
@@ -292,12 +293,13 @@ push / PR
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 방송 하루 순서 기반 10개 E2E 시나리오 |
+| 2026-04-21 | S-11 추가 | Lobby Hand History 시나리오 (실시간 갱신 + RBAC 마스킹 + API 필터). SG-016 revised, Migration Plan Phase 4 |
 
 ---
 
 ### 개요
 
-EBS 방송 하루의 전체 워크플로우를 10개 E2E 시나리오로 정의한다. 각 시나리오는 실제 운영 순서를 따르며, 모든 RFID 동작은 `MockRfidReader`로 수행한다.
+EBS 방송 하루의 전체 워크플로우를 11개 E2E 시나리오로 정의한다. 각 시나리오는 실제 운영 순서를 따르며, 모든 RFID 동작은 `MockRfidReader`로 수행한다.
 
 > 참조: HandFSM — BS-06-01, 트리거 경계 — BS-06-00, Mock HAL — API-03 §6
 
@@ -316,6 +318,7 @@ S-01 로그인
               → S-08 Undo+Miss Deal
                 → S-09 Mix 게임 전환
                   → S-10 핸드 종료+통계
+                    → S-11 Lobby Hand History 조회+필터+RBAC
 ```
 
 ---
@@ -591,6 +594,50 @@ S-01 로그인
 | BS-06-01 Lifecycle | HandFSM 상태 전이 검증 기준 |
 | BS-06-02 Betting | 베팅 유효성 검증 기준 |
 | API-03 RFID HAL | MockRfidReader 이벤트 합성 규칙 |
+
+---
+
+### S-11: Lobby Hand History 조회 + 필터 + RBAC (2026-04-21)
+
+#### 전제조건
+- S-10 까지 완료 (당일 핸드 N개 DB 저장됨)
+- Admin / Operator(table_id=1 할당) / Viewer 3 계정 준비
+
+#### 단계
+
+| # | 동작 | 기대 결과 |
+|:-:|------|----------|
+| 1 | Admin 사이드바 [Hand History] 클릭 | Hand Browser 열림. 당일 모든 Event 의 핸드 N개 표시 |
+| 2 | Admin 필터 `event_id=1, table_id=1, date_from=오늘 00:00` | API: `GET /api/v1/hands?event_id=1&table_id=1&date_from=...` 호출. 응답 200, 매칭 핸드만 표시 |
+| 3 | Admin 핸드 #1 클릭 → Hand Detail | API: `/hands/1`, `/hands/1/actions`, `/hands/1/players` 3 호출. timeline + Seat Grid + 모든 hole card 공개 |
+| 4 | Admin Detail 화면 유지 중 CC 가 새 핸드 시작 | WS `HandStarted` 수신 → Browser 행 prepend, Detail 은 변화 없음 (다른 hand_id) |
+| 5 | Admin Hand #1 Detail 중 CC 가 ActionPerformed 송신 (다른 hand) | Detail 변화 없음 (해당 hand_id 만 stream) |
+| 6 | Operator 로 재로그인, Hand Browser 진입 | table_id=1 핸드만 표시. table_id=2 미표시 |
+| 7 | Operator URL `event_id=1&table_id=2` 직접 호출 | 빈 결과 (403 아님 — 정보 노출 회피) |
+| 8 | Viewer 로 재로그인, Hand Detail 진입 | Seat Grid 의 모든 hole card 가 `★` 마스킹. Action timeline / pot / winner 는 정상 표시 |
+| 9 | Player Hand Stats 진입 | Admin 전체 player, Operator 본인 테이블 player, Viewer 전체 (읽기) |
+| 10 | 어제 날짜 필터 (`date_from=어제, date_to=어제`) | 당일 한정 정책 — 응답은 200 빈 결과 + UI 배너 "당일 한정" |
+
+#### 검증 포인트
+
+| 항목 | 검증 방법 |
+|------|----------|
+| WS 실시간 갱신 | Browser 목록의 첫 행이 새 hand_id 로 변경됨을 확인 (DOM polling 50ms × 5회) |
+| RBAC hole card | Viewer 응답 JSON `hole_card_1=="★"` |
+| 필터 정확성 | API 호출 query string 캡처 후 응답 row 의 event_id/table_id 일치 |
+| 페이지네이션 | `?page=2&page_size=20` 호출 후 첫 페이지와 hand_id 비중복 확인 |
+| Operator 권한 | 미할당 테이블 요청 시 빈 결과 + 403 발생 X |
+
+#### 회귀 방지
+
+S-10 의 통계 계산이 본 화면 Player Hand Stats 와 동일 값임을 확인 (team3 engine 단일 source 검증).
+
+#### 참조
+
+- `docs/2. Development/2.1 Frontend/Lobby/Hand_History.md` (소비자 SSOT)
+- `docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md §5.10.1` (필터 스펙)
+- `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md §3.3.3 Lobby Hand History 소비자`
+- `docs/2. Development/2.4 Command Center/Overlay/Layer_Boundary.md §1.4` (Overlay 비대상 명시)
 
 ---
 
