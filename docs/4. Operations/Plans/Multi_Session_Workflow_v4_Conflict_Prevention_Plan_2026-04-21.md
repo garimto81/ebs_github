@@ -17,6 +17,7 @@ related:
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-21 | 신규 작성 | 사용자 지시 — critic mode 로 v3.1 검토 + Pre-Declaration 충돌 방지 설계 (계획 단계, 구현은 승인 후) |
+| 2026-04-21 | revision 1 | **설계 모델 전환**: Wait (대기) 모델 폐기 → **Exclude + Revise** (충돌 파일 제외 후 재설계) 로 교체. 사용자 지시: "충돌 시 해당 파일을 제외하고 작업하는 형태로 계획을 수정하여 재설계". Critic A/B + 자기반박 상세화 (이전 §3 보강) |
 
 ## 1. 현재 상태 (v3.1 까지) 와 잔존 문제
 
@@ -61,7 +62,7 @@ related:
 3. **Wait-or-switch**: 충돌 시 먼저 세션 종료까지 대기
 4. **세션별 JSON**: 각 세션의 manifest 를 JSON 으로 분리, /team 이 모두 읽음
 
-## 3. Critic — 사용자 제안 교차 평가
+## 3. Critic — 사용자 제안 교차 평가 (revision 1: Wait vs Exclude+Revise 비교)
 
 ### 3.1 Critic A (지지)
 
@@ -95,26 +96,84 @@ related:
 5. **새 hook 이 hook 지옥 만들 수 있음** — 이미 file_lock_preedit, active_edits_preedit 등 존재. 중복 방지 필요.
 6. **완벽하게 처리 = 불가능** — 분산 시스템의 일반 진실. v4.0 은 "대부분의 충돌을 사전 방지 + 소수의 잔존 race 는 v3.1 의 사후 복구" 하이브리드.
 
-### 3.4 판정
+### 3.4 혁신 제안 (revision 1, 2026-04-21) — Exclude + Revise 모델
+
+> 사용자 재지시 (revision 1): "충돌이 발생하는 경우 **먼저 작업한 작업자가 작업을 종료할때까지 대기**" → "충돌 파일을 **제외하고 작업하는 형태로 계획을 수정하여 재설계**" 로 모델 전환.
+
+두 모델의 본질적 차이:
+
+| 차원 | Wait 모델 (초안 v4.0) | Exclude+Revise 모델 (revision 1) |
+|------|:---------------------:|:--------------------------------:|
+| 충돌 발견 시 동작 | Blocking wait + polling 5초 | 충돌 파일 제외 + task 재구성 + 즉시 진행 |
+| Deadlock 위험 | 존재 (사이클 감지 필요) | **0** (대기 자체가 없음) |
+| Timeout 처리 | 10분 후 user confirm | 불필요 |
+| Task 완결성 | 유지 (원 scope 전체 수행) | **깨질 수 있음** (partial scope) |
+| 사용자 대기 시간 | 최대 10분 blocking | **0** (즉시 진행) |
+| 구현 복잡도 | 사이클/timeout 로직 필요 | 단순 (excluded set 계산) |
+| LLM 요구 사항 | 없음 (단순 wait) | **task 재설계 능력** 필요 |
+| 부분 작업 커밋 | 없음 | **Deferred list 관리** 필요 |
+
+### 3.5 Critic — Exclude+Revise 모델
+
+#### Critic A (지지)
+
+| 강점 | 논거 |
+|------|------|
+| **Deadlock 완전 제거** | 대기가 없으므로 사이클 불가능 |
+| **사용자 blocking 0** | 생산성 최대화. user UX 저하 없음 |
+| **세션 독립성 극대화** | 각 세션이 서로 간섭 없이 병렬 진행 |
+| **구현 단순** | 사이클 감지 / timeout / heartbeat-TTL-based-race-recovery 등 불필요 |
+| **사용자 의도 존중** | "대기 싫음" 이 명시적으로 표명됨 (revision 1 지시) |
+| **실제 시나리오 매칭** | 대부분 충돌은 1-2 파일. 전체 scope 충돌은 드물다 — 제외 후 진행이 합리적 |
+
+#### Critic B (반대)
+
+| 약점 | 논거 | 대응 |
+|------|------|------|
+| **Task 완결성 깨질 수 있음** | A+B+C 수정이 한 기능인데 A 가 잠겨 있으면 B+C 만 수정해 기능 broken | **Cohesion 검사**: planned_writes 중 >50% 충돌 시 사용자에게 "scope 축소됨" 경고 + confirm |
+| **100% 충돌 시 아무것도 못 함** | 모든 파일이 잠겨 있으면 task 수행 불가 | Fallback: user notify + 3 선택지 (Defer / Wait / Force) |
+| **Deferred 관리 복잡** | 제외된 파일을 누가 언제 다시 시도? | Manifest `deferred` 필드 + 다음 /team Phase 0.5 에서 "이전 deferred 재시도?" 프롬프트 |
+| **LLM 재설계 품질 의존** | "제외하고 재설계" 를 LLM 이 엉성하게 하면 오히려 혼란 | Phase 0.6 revise 에 **safety check**: task description 이 너무 변경되면 user confirm |
+| **부분 commit 의 review 오버헤드** | PR 1개가 여러 번 쪼개지면 리뷰어 부담 | Commit message 에 "deferred: [files]" 자동 태그 — grep 으로 관리 추적 가능 |
+| **사용자 의도 vs 실제 결과 괴리** | "Hand History 기능 추가" task 인데 핵심 파일 잠겨서 사이드 파일만 수정되면 "거짓 완료" 느낌 | **Cohesion 경고** + deferred list 가 명확히 보고됨 → 사용자가 상황 파악 |
+
+#### 자기반박
+
+1. **"대부분 충돌은 1-2 파일" 은 추정** — 실제 측정 없음. EBS 는 문서 중심이라 docs/ 쪽 편집이 겹치면 5+ 파일 동시 충돌 가능.
+2. **"Cohesion 검사 50% 기준" 은 임의** — 20%? 30%? 최적값은 실측 후 조정 필요.
+3. **Deferred 자동 재시도 로직 미정의** — 다음 /team 이 언제 deferred 를 재시도할지, 사용자 개입 없이 가능한지 불분명.
+4. **Wait 모델의 장점을 완전히 버린 것** — 장시간 실행 PR (예: 1시간짜리 리팩토링) 은 wait 이 더 나을 수 있음. Hybrid 가능성 검토.
+5. **LLM 재설계 품질을 과소평가** — Claude Opus 4.7 은 task 재구성을 잘 할 수 있음. 보수적으로 접근할 필요 있는지 재검토.
+6. **Critic B 의 "부분 commit 오버헤드" 는 현실과 반대** — 이미 v3.0 은 "매 작업이 완결된 트랜잭션" 이므로 부분 commit 이 자연스러움. 오히려 강점.
+
+### 3.6 최종 판정 (revision 1)
 
 | 항목 | 결론 |
 |------|:----:|
-| 사용자 제안 채택 | **✓ 채택** (근본 해결 방향) |
-| 그대로 구현 | **✗ 보완 필요** (wildcard, heartbeat, read/write 구분, 데드락 방지, JSON 정리) |
-| v3.1 유지 여부 | **✓ 유지** (v4.0 의 사후 safety net) |
+| 사용자 제안 (Wait) 폐기 | **✓ 폐기** — Exclude+Revise 로 전환 |
+| Exclude+Revise 채택 | **✓ 채택** — 메인 전략 |
+| Fallback (100% 충돌 시) | **user notify + 3 선택** (Defer / Wait fallback / Force) |
+| Cohesion 경고 기준 | **≥50% 충돌** 시 user confirm (실측 후 조정) |
+| Deferred 관리 | **manifest.deferred** + 다음 /team 에서 재시도 프롬프트 |
+| v3.1 유지 여부 | **✓ 유지** (safety net) |
 
-## 4. 통합 설계 v4.0
+## 4. 통합 설계 v4.0 (revision 1 — Exclude + Revise 모델)
 
 ### 4.1 Core Concept
 
 ```
 Before /team 시작:
-  Phase 0 — Declaration: 이 세션이 쓸 것으로 예상되는 파일 목록 작성
+  Phase 0   — Declaration: 이 세션이 쓸 것으로 예상되는 파일 목록 작성
   Phase 0.5 — Conflict Scan: 다른 모든 세션의 manifest 와 대조
+  Phase 0.6 — Plan Revision: 충돌 파일 제외 + task 재구성 + cohesion check
+  Phase 0.7 — Safety Gate: 100% 충돌 / cohesion <50% 시 user notify
 
-Conflict 없음 → 기존 Phase 1-8 진행
-Conflict 있음 → Wait (timeout 10분) → Timeout 시 user confirm / switch task
+Conflict 없음    → planned_writes 유지 → 기존 Phase 1-8 진행
+Conflict 부분   → excluded set 제외 → 축소된 scope 로 진행 (경고 표시)
+Conflict 전체   → user notify 3 선택 (Defer / Wait fallback / Force)
 ```
+
+**원칙**: 대기(Wait) 없음. 충돌 시 즉시 계획 수정 후 진행. 100% 충돌 시에만 사용자 개입.
 
 ### 4.2 Manifest 스키마
 
@@ -145,42 +204,56 @@ Conflict 있음 → Wait (timeout 10분) → Timeout 시 user confirm / switch t
   "actual_writes": [
     "docs/2. Development/2.1 Frontend/Lobby/Hand_History.md"
   ],
-  "waiting_on": null,
+  "deferred": [
+    "docs/2. Development/2.1 Frontend/Lobby/Overview.md"
+  ],
+  "revised_task": "Hand_History.md 신설 + UI.md 사이드바 반영 (Overview.md 는 team2 충돌로 제외, 후속 /team 에서 재시도)",
+  "excluded_count": 1,
+  "original_count": 3,
+  "cohesion_ratio": 0.67,
   "priority": 0
 }
 ```
 
-**필드 설명**:
+**필드 설명** (revision 1):
 
 | 필드 | 용도 |
 |------|------|
 | `sid` | 고유 세션 ID (`{pid}-{start_ts}`) |
 | `team_id` | 세션 소유 팀 (conductor / team1-4) |
-| `task_description` | /team 의 첫 번째 args (읽기 쉬운 제목) |
+| `task_description` | /team 의 첫 번째 args (읽기 쉬운 제목) — 원본 |
+| `revised_task` | Phase 0.6 에서 재구성된 task (충돌 제외 반영) |
 | `started_at` | /team 호출 시각 |
 | `heartbeat_at` | 마지막 갱신 (phase 변화 or 주기적) |
 | `phase` | 현재 /team Phase (0-8) |
-| `status` | active / waiting / completed / aborted |
-| `planned_writes` | 구체 파일 경로 (precise) |
+| `status` | active / completed / aborted |
+| `planned_writes` | 구체 파일 경로 (revision 반영, 제외 후 남은 것) |
 | `planned_writes_globs` | Wildcard 패턴 (fallback) |
 | `planned_reads` | 읽기만 — 충돌 판정 제외 |
 | `actual_writes` | Phase 5 시점 실제 쓴 파일 |
-| `waiting_on` | 이 세션이 대기 중인 다른 sid (데드락 감지용) |
-| `priority` | 사용자 긴급도 지정 (기본 0, `!quick` 등은 1) |
+| `deferred` | Phase 0.6 에서 제외된 파일 목록 (다음 /team 재시도 대상) |
+| `excluded_count` | Phase 0.6 제외 건수 |
+| `original_count` | Phase 0 최초 선언 건수 |
+| `cohesion_ratio` | `(original - excluded) / original`. <0.5 시 경고 |
+| `priority` | 사용자 긴급도 (기본 0, `!quick` 은 1) |
 
-### 4.3 /team Phase 확장
+> `waiting_on` 및 `status=waiting` 필드는 **revision 1 에서 제거** (대기 모델 폐기로 불필요).
+
+### 4.3 /team Phase 확장 (revision 1)
 
 ```
 Phase 0   NEW — Declaration
-Phase 0.5 NEW — Conflict Scan + Wait
+Phase 0.5 NEW — Conflict Scan
+Phase 0.6 NEW — Plan Revision (Exclude conflicting files + revise task)
+Phase 0.7 NEW — Safety Gate (cohesion check, 100% conflict fallback)
 Phase 1   기존 — Context Detect
 Phase 2   기존 — Pre-Sync
 Phase 3   기존 — Branch Prep
-Phase 4   기존 — Execute
+Phase 4   기존 — Execute (revised plan 기반)
 Phase 5   기존 — Verify (+ manifest.actual_writes 갱신)
-Phase 6   기존 — Auto Commit
+Phase 6   기존 — Auto Commit (deferred 태그 포함)
 Phase 7   기존 — Merge + Push
-Phase 8   기존 — Report + NEW manifest cleanup
+Phase 8   기존 — Report (deferred list 보고) + manifest cleanup
 ```
 
 #### Phase 0 — Declaration (신규)
@@ -206,46 +279,104 @@ Glob: docs/2. Development/2.1 Frontend/Lobby/**
 Reads only: docs/1. Product/Foundation.md
 ```
 
-#### Phase 0.5 — Conflict Scan + Wait (신규)
+#### Phase 0.5 — Conflict Scan (신규, revision 1)
 
 ```python
 # scripts/team_conflict_scan.py
 # 1. glob .claude/.session-manifests/*.json
-# 2. 자기 자신 제외. status != "active" 또는 heartbeat > 1분 전 → stale 무시
+# 2. 자기 자신 제외. status != "active" 또는 heartbeat > 5분 전 → stale 자동 정리 + 무시
 # 3. 내 planned_writes ∩ 타 세션 planned_writes (precise + glob 매칭)
-#    이 존재하면 충돌
-# 4. 충돌 시:
-#    - 내 priority > 타 priority → 진행 (우선순위 override)
-#    - 내 시작 시각 < 타 시작 시각 → 진행 (FIFO)
-#    - 그 외 → wait
-# 5. Wait 로직:
-#    - 타 세션 status = completed 까지 polling (5초 간격, timeout 10분)
-#    - timeout 시 user confirm 요청
-# 6. 사이클 감지:
-#    - 내가 A 를 기다리는데 A.waiting_on == 내 sid → immediate unblock (FIFO tiebreak)
+# 4. 반환: {conflicts: [file, ...], conflicted_sessions: [{sid, task, team_id}, ...]}
+# 5. 대기 로직 없음 (revision 1 에서 제거)
 ```
 
-사용자 출력 예 (충돌 발생 시):
+#### Phase 0.6 — Plan Revision (신규, revision 1)
+
+```python
+# scripts/team_plan_revise.py
+# 1. conflicts = Phase 0.5 결과
+# 2. revised_writes = planned_writes - conflicts
+# 3. deferred = conflicts (manifest 기록)
+# 4. LLM 에게 task 재구성 요청:
+#    input: original_task + removed_files + kept_files
+#    output: revised_task (자연어, 제외 이유 명시)
+# 5. manifest 갱신: revised_task, deferred, excluded_count, cohesion_ratio
+# 6. cohesion_ratio = (original_count - excluded_count) / original_count
 ```
-⚠ Conflict Detected
+
+#### Phase 0.7 — Safety Gate (신규, revision 1)
+
+```python
+# scripts/team_safety_gate.py
+# 분기:
+# a. cohesion_ratio == 1.0 (충돌 없음)
+#    → silent pass (Phase 1 이동)
+# b. 0.5 <= cohesion_ratio < 1.0 (부분 충돌)
+#    → 경고 표시 + 자동 진행 (no user input)
+# c. 0 < cohesion_ratio < 0.5 (과반 충돌)
+#    → user confirm 필수 ("scope 축소 OK?" y/n)
+# d. cohesion_ratio == 0.0 (100% 충돌)
+#    → fallback menu (3 선택):
+#       [d] Defer (모든 파일을 deferred 로 기록하고 /team 종료)
+#       [w] Wait fallback (v4.0 초안의 polling, 최대 10분) — 비상용
+#       [f] Force (충돌 무시하고 진행, 사용자가 race 책임)
+```
+
+사용자 출력 예 (부분 충돌 case b):
+```
+⚠ Conflict Detected — 계획 수정됨 (revision 1)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-다른 활성 세션:
-  ✗ team2 (sid=pid-78901-20260421-162530) — 5분 전 시작
-    task: Backend Hand History API 필터 확장
-    충돌 파일:
-      · docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md
+다른 활성 세션이 쓰고 있는 파일:
+  ✗ team2 (5분 전 시작) — Backend Hand History API 필터 확장
+    · docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md
 
-선택:
-  [w] 대기 (team2 완료 시 자동 재개, 최대 10분)
-  [s] 다른 작업으로 전환 (task 재입력)
-  [f] 강제 진행 (충돌 위험 수용)
+조치: 위 1 파일을 이번 /team 에서 제외합니다.
+  원본 scope: 3 파일
+  수정 scope: 2 파일 (cohesion 67%)
+  Deferred:   1 파일 (다음 /team 에서 재시도 권고)
+
+Revised task:
+  "Hand_History.md 신설 + UI.md 사이드바 반영
+   (Overview.md 는 team2 충돌로 제외)"
+
+진행 중... (Phase 1 →)
 ```
 
-#### Phase 8 확장 — Cleanup (신규)
+사용자 출력 예 (과반 충돌 case c):
+```
+⚠ Major Conflict — scope 40% 만 남음
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+원본 scope: 5 파일 → 수정 scope: 2 파일 (cohesion 40%)
 
-- /team 성공 시: manifest.status = "completed", 30초 후 삭제
+제외된 파일 (Deferred):
+  · docs/.../A.md  (team2 충돌)
+  · docs/.../B.md  (team3 충돌)
+  · docs/.../C.md  (team4 충돌)
+
+계속 진행하시겠습니까? 작업의 완결성이 깨질 수 있습니다.
+  [y] 남은 2 파일만 진행
+  [d] 전체 defer (이번 /team 취소)
+  [n] 취소 후 task 재입력
+```
+
+사용자 출력 예 (100% 충돌 case d):
+```
+✗ Total Conflict — 모든 파일이 다른 세션에서 사용 중
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+원본 scope 5 파일 전체가 충돌. Cohesion 0%.
+
+Fallback 선택:
+  [d] Defer 모두 (다음 /team 에서 재시도) — 권장
+  [w] Wait fallback (10분 polling) — 비상용
+  [f] Force (race 위험 수용)
+```
+
+#### Phase 8 확장 — Cleanup + Deferred 보고 (revision 1)
+
+- /team 성공 시: manifest.status = "completed", 30초 후 삭제. **deferred 목록을 Phase 8 Report 에 명시**
 - /team 실패 시: manifest.status = "aborted", 즉시 삭제
 - Stale cleanup: 다른 /team 이 Phase 0.5 scan 시 heartbeat > 5분 manifest 자동 삭제
+- **Deferred 자동 재시도 프롬프트**: 다음 /team 호출 시 같은 세션의 이전 manifest 에 deferred 가 있으면 "이전 deferred N 파일 재시도?" 질문 (기본 y)
 
 ### 4.4 Heartbeat
 
@@ -359,39 +490,47 @@ atexit.register(lambda: _cleanup_my_manifest())
 | 기존 v3.1 hook 과 충돌 | 이중 차단 | file_lock_preedit 이 manifest 참조하므로 one-source-of-truth |
 | `--quick` 같은 bypass 남용 | 충돌 무시 | bypass 시에도 manifest 는 기록 (감사 추적) |
 
-## 9. 채택 시 기대 효과
+## 9. 채택 시 기대 효과 (revision 1 — Exclude+Revise)
 
-| 시나리오 | v3.1 | v4.0 |
-|----------|:----:|:----:|
-| 같은 파일 동시 수정 | 뒤 세션 "modified-since-read" 에러 | **Phase 0.5 에서 사전 감지, 대기** |
-| Conductor HEAD 튕김 | 힌트만 제공 | manifest 에 subdir 세션 활동 표시 + 경고 |
-| `git add` 에 다른 세션 변경 혼입 | 감지 없음 | Phase 6 commit 시 manifest.planned_writes 밖 파일 경고 |
-| 세션 간 가시성 | commit log 사후 확인 | **실시간 manifest 열람 가능** |
+| 시나리오 | v3.1 | v4.0 초안 (Wait) | v4.0 revision 1 (Exclude) |
+|----------|:----:|:----------------:|:-------------------------:|
+| 같은 파일 동시 수정 | 뒤 세션 "modified-since-read" 에러 | Phase 0.5 대기 (최대 10분) | **Phase 0.6 제외 + 재설계 (즉시 진행)** |
+| Conductor HEAD 튕김 | 힌트만 제공 | manifest 활동 표시 | manifest 활동 표시 + 자동 우회 |
+| `git add` 에 다른 세션 변경 혼입 | 감지 없음 | Phase 6 경고 | Phase 6 경고 + deferred 자동 분리 |
+| 세션 간 가시성 | commit log 사후 확인 | 실시간 manifest | 실시간 manifest + revised scope 보고 |
+| 사용자 blocking 시간 | 없음 (race 후 복구) | 최대 10분 | **0** (blocking 없음) |
+| Deadlock 위험 | 없음 | 있음 (사이클 감지 필요) | **0** |
+| Task 완결성 | 100% (race 후) | 100% (대기 후) | 부분 (deferred 재시도로 최종 100%) |
+| 100% 충돌 시 | 다수 race | 10분 대기 후 confirm | **즉시 user 3 선택 (Defer/Wait/Force)** |
 
-## 10. 승인 체크리스트
+## 10. 승인 체크리스트 (revision 1)
 
 | 항목 | 상태 |
 |------|:----:|
 | 현재 v3.1 잔존 문제 4종 정리 | ✓ |
-| 사용자 제안 Critic A/B + 자기반박 6건 | ✓ |
-| Manifest JSON 스키마 정의 | ✓ |
-| Phase 0 / 0.5 / Cleanup 흐름 | ✓ |
-| 데드락 / Timeout / Stale 대응 | ✓ |
+| 사용자 제안 (Wait) Critic A/B + 자기반박 6건 | ✓ |
+| **Exclude+Revise 모델 Critic A/B + 자기반박 6건** (revision 1) | ✓ |
+| **Wait vs Exclude+Revise 비교 매트릭스** (revision 1) | ✓ |
+| Manifest JSON 스키마 정의 (revision 1: deferred/cohesion 필드 추가) | ✓ |
+| Phase 0 / 0.5 / **0.6 / 0.7** / Cleanup 흐름 (revision 1) | ✓ |
+| ~~데드락 대응~~ → **Deadlock 제거 설계** (revision 1) | ✓ |
+| **Cohesion 검사 + 4 case 분기** (revision 1) | ✓ |
 | Hook 연동 방안 | ✓ |
 | 마이그레이션 6 Phase | ✓ |
 | 리스크 6건 + 완화 | ✓ |
 | **구현 착수 승인** | 대기 (사용자 confirm) |
 
-## 11. 사용자 제안 → v4.0 매핑
+## 11. 사용자 제안 → v4.0 매핑 (revision 1)
 
-| 사용자 요구 | v4.0 반영 |
-|-------------|-----------|
+| 사용자 요구 | v4.0 revision 1 반영 |
+|-------------|---------------------|
 | 수정할 목록 먼저 작성 | **Phase 0 Declaration** (`planned_writes` + `planned_writes_globs`) |
 | /team 시작 시 모든 세션 문서 분석 | **Phase 0.5 Conflict Scan** (glob `.claude/.session-manifests/*.json`) |
-| 충돌 시 먼저 세션 종료까지 대기 | **Wait with 10-min timeout** (폴링 5초) |
+| ~~충돌 시 먼저 세션 종료까지 대기~~ | ~~Wait with 10-min timeout~~ → **Phase 0.6 Exclude + Revise (즉시 제외 + 재설계)** |
+| **충돌 파일 제외하고 작업 재설계** (revision 1) | **Phase 0.6** — `planned_writes - conflicts`, LLM 재구성, `deferred` 기록 |
 | 각 세션별 JSON 파일 | `.claude/.session-manifests/{sid}.json` |
 | /team 이 항상 5개 파일 읽음 | 동적 glob scan (Conductor + team1-4 = 5, 더 가능) |
-| 충돌 사전 방지 | **Phase 0.5 가 기존 Phase 1 이전에 실행** |
+| 충돌 사전 방지 | **Phase 0.5 + 0.6 + 0.7 이 기존 Phase 1 이전에 실행** |
 
 ## 12. 다음 /team 호출 (사용자 승인 후)
 
