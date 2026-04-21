@@ -312,8 +312,9 @@ CREATE TABLE event_flights (
 CREATE INDEX idx_series_competition ON series(competition_id);
 CREATE INDEX idx_events_series ON events(series_id);
 CREATE INDEX idx_events_status ON events(status);
+-- 2026-04-21: day 필터 지원 (Hand History API)
 CREATE INDEX idx_flights_event ON event_flights(event_id);
-CREATE INDEX idx_flights_event_display ON event_flights(event_id, display_name);  -- 2026-04-21 day 필터
+CREATE INDEX idx_flights_event_display ON event_flights(event_id, display_name);
 
 -- ==============================================================================
 -- 9. CORE ENTITIES — DATA-04 §2 테이블/좌석/플레이어
@@ -480,13 +481,14 @@ CREATE TABLE deck_cards (
     UNIQUE(deck_id, suit, rank)
 );
 
+-- 2026-04-21: Hand History 필터 인덱스 (table_id + started_at, ended_at, player_id + hand_id)
 CREATE INDEX idx_hands_table ON hands(table_id);
 CREATE INDEX idx_hands_started ON hands(started_at);
-CREATE INDEX idx_hands_table_started ON hands(table_id, started_at);  -- 2026-04-21 Hand History filter
-CREATE INDEX idx_hands_ended_at ON hands(ended_at);                   -- 2026-04-21 Hand History filter
+CREATE INDEX idx_hands_table_started ON hands(table_id, started_at);
+CREATE INDEX idx_hands_ended_at ON hands(ended_at);
 CREATE INDEX idx_hp_hand ON hand_players(hand_id);
 CREATE INDEX idx_hp_player ON hand_players(player_id);
-CREATE INDEX idx_hp_player_hand ON hand_players(player_id, hand_id);  -- 2026-04-21 player_id 필터
+CREATE INDEX idx_hp_player_hand ON hand_players(player_id, hand_id);
 CREATE INDEX idx_ha_hand ON hand_actions(hand_id);
 
 -- ==============================================================================
