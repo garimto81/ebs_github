@@ -30,7 +30,7 @@ reimplementability_notes: "API-01 REST 카탈로그 + WSOP LIVE 연동 (53KB). T
 
 ## 개요
 
-이 문서는 EBS Back Office(BO) FastAPI 서버의 **REST API 전체 엔드포인트 카탈로그**(Part I)와 **WSOP LIVE Staff Page API와의 연동 계약**(Part II)을 통합 정의한다. Lobby(웹)와 CC(Flutter)는 Part I의 REST API를 통해 BO DB와 데이터를 주고받으며, WSOP LIVE는 대회 계층(Series/Event/Flight)과 플레이어/블라인드 데이터의 원천으로서 Part II의 폴링 프로토콜에 따라 BO DB에 캐싱된다.
+이 문서는 EBS Back Office(BO) FastAPI 서버의 **REST API 전체 엔드포인트 카탈로그**(Part I)와 **WSOP LIVE Staff Page API와의 연동 계약**(Part II)을 통합 정의한다. Lobby(Flutter Desktop)와 CC(Flutter Desktop)는 Part I의 REST API를 통해 BO DB와 데이터를 주고받으며, WSOP LIVE는 대회 계층(Series/Event/Flight)과 플레이어/블라인드 데이터의 원천으로서 Part II의 폴링 프로토콜에 따라 BO DB에 캐싱된다.
 
 > **참조**: 인증 API 상세는 `API-06-auth-session.md`, WebSocket 이벤트는 `API-05-websocket-events.md`, 엔티티 필드 정의는 `DATA-04-db-schema.md`
 
@@ -698,7 +698,7 @@ Operator 경고 모달 + `BO-03 §4 Scenario D` 복구 절차를 트리거한다
 | `event_id` | int | N | Event 단위 필터 | Hand Browser Event Select 와 매핑 |
 | `day` | string | N | Day/Flight 식별자 | Day 탭 필터 (`day_1a` 등). `event_id` 동반 권장 |
 | `table_id` | int | N | 테이블 필터 (multi-select 시 CSV `?table_id=1,2,3`) | 기존 호환 유지 |
-| `player_id` | int | N | 핸드 참여자 필터 (`hand_seats` join) | Players 검색과 동일 ID |
+| `player_id` | int | N | 핸드 참여자 필터 (`hand_players` 서브쿼리) | Players 검색과 동일 ID. 2026-04-21 정정: `hand_seats` → `hand_players` (실제 테이블명) |
 | `date_from` | ISO8601 | N | 시작 시각 (started_at >= ) | 기본: 당일 00:00 (Series timezone) |
 | `date_to` | ISO8601 | N | 종료 시각 (started_at < ) | 기본: 다음날 00:00 |
 | `hand_number` | int | N | 정확 매칭 | 단일 핸드 점프 |
@@ -711,16 +711,21 @@ Operator 경고 모달 + `BO-03 §4 Scenario D` 복구 절차를 트리거한다
 |------|------|
 | Admin | 모든 필터 조합 허용 |
 | Operator | `table_id` 가 본인 할당 테이블이어야 함. 미할당 테이블 요청 시 빈 결과 (403 아님 — 정보 노출 회피) |
-| Viewer | 읽기 전용. `hand_seats` join 시 hole card 필드 마스킹 (`/hands/:id/players` 응답에서 `hole_card_*` = `"★"`) |
+| Viewer | 읽기 전용. `hand_players` join 시 `hole_cards` 필드 마스킹 (`/hands/:id/players` 응답에서 `hole_cards` = `"★★"`) |
 
-**인덱스 권고** (Schema.md decision_owner team2):
+**인덱스 권고** (실제 스키마 반영, 2026-04-21 migration 0008):
 
 ```sql
-CREATE INDEX idx_hands_event_table_started ON hands (event_id, table_id, started_at DESC);
-CREATE INDEX idx_hand_seats_player ON hand_seats (player_id, hand_id);
+-- hands 테이블엔 event_id 컬럼이 없음 (tables → event_flights 경유 JOIN).
+-- 실제 인덱스 (init.sql + migration 0008):
+CREATE INDEX idx_hands_table_started     ON hands(table_id, started_at);
+CREATE INDEX idx_hands_ended_at          ON hands(ended_at);
+CREATE INDEX idx_hp_player_hand          ON hand_players(player_id, hand_id);  -- hand_seats → hand_players
+CREATE INDEX idx_flights_event_display   ON event_flights(event_id, display_name);  -- ?event_id=&day=
 ```
 
-> Migration Plan: `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` Phase 3.
+> Migration: `team2-backend/migrations/versions/0008_hands_filter_indexes.py` + `src/db/init.sql` 동기.
+> 구현: `src/routers/hands.py` + `src/services/hand_service.py` (2026-04-21).
 > 소비자: `docs/2. Development/2.1 Frontend/Lobby/Hand_History.md` §2.1 Hand Browser.
 
 ### 5.11 Configs — 시스템 설정

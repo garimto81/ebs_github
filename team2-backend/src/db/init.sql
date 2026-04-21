@@ -258,7 +258,8 @@ CREATE TABLE series (
     source TEXT NOT NULL DEFAULT 'manual',
     synced_at TEXT,
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
-    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    CONSTRAINT ck_series_source CHECK (source IN ('api', 'manual', 'sandbox', 'wsop'))
 );
 
 CREATE TABLE events (
@@ -285,7 +286,8 @@ CREATE TABLE events (
     source TEXT NOT NULL DEFAULT 'manual',
     synced_at TEXT,
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
-    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    CONSTRAINT ck_events_source CHECK (source IN ('api', 'manual', 'sandbox', 'wsop'))
 );
 
 CREATE TABLE event_flights (
@@ -303,13 +305,15 @@ CREATE TABLE event_flights (
     source TEXT NOT NULL DEFAULT 'manual',
     synced_at TEXT,
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
-    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    CONSTRAINT ck_event_flights_source CHECK (source IN ('api', 'manual', 'sandbox', 'wsop'))
 );
 
 CREATE INDEX idx_series_competition ON series(competition_id);
 CREATE INDEX idx_events_series ON events(series_id);
 CREATE INDEX idx_events_status ON events(status);
 CREATE INDEX idx_flights_event ON event_flights(event_id);
+CREATE INDEX idx_flights_event_display ON event_flights(event_id, display_name);  -- 2026-04-21 day 필터
 
 -- ==============================================================================
 -- 9. CORE ENTITIES — DATA-04 §2 테이블/좌석/플레이어
@@ -342,7 +346,8 @@ CREATE TABLE tables (
     source TEXT NOT NULL DEFAULT 'manual',
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
-    UNIQUE(event_flight_id, name)
+    UNIQUE(event_flight_id, name),
+    CONSTRAINT ck_tables_source CHECK (source IN ('api', 'manual', 'sandbox', 'wsop'))
 );
 
 CREATE TABLE players (
@@ -477,8 +482,11 @@ CREATE TABLE deck_cards (
 
 CREATE INDEX idx_hands_table ON hands(table_id);
 CREATE INDEX idx_hands_started ON hands(started_at);
+CREATE INDEX idx_hands_table_started ON hands(table_id, started_at);  -- 2026-04-21 Hand History filter
+CREATE INDEX idx_hands_ended_at ON hands(ended_at);                   -- 2026-04-21 Hand History filter
 CREATE INDEX idx_hp_hand ON hand_players(hand_id);
 CREATE INDEX idx_hp_player ON hand_players(player_id);
+CREATE INDEX idx_hp_player_hand ON hand_players(player_id, hand_id);  -- 2026-04-21 player_id 필터
 CREATE INDEX idx_ha_hand ON hand_actions(hand_id);
 
 -- ==============================================================================
@@ -552,6 +560,23 @@ CREATE TABLE configs (
 );
 CREATE INDEX idx_configs_lookup ON configs(key, scope, scope_id);
 
+-- settings_kv (SG-003 Settings 6-tab schema, mirrored from migration 0005)
+CREATE TABLE settings_kv (
+    id TEXT PRIMARY KEY,                          -- uuid (application-generated)
+    scope_level TEXT NOT NULL
+        CHECK (scope_level IN ('global','series','event','table','user')),
+    scope_id TEXT,                                -- nullable for global scope
+    tab TEXT NOT NULL
+        CHECK (tab IN ('outputs','gfx','display','rules','stats','preferences')),
+    key TEXT NOT NULL,
+    value TEXT NOT NULL,                          -- JSON string
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_by TEXT,
+    UNIQUE(scope_level, scope_id, tab, key)
+);
+CREATE INDEX ix_settings_kv_scope ON settings_kv(scope_level, scope_id);
+CREATE INDEX ix_settings_kv_tab ON settings_kv(tab);
+
 CREATE TABLE skins (
     skin_id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE,
@@ -596,22 +621,34 @@ CREATE INDEX idx_waiting_flight_status ON waiting_list(event_flight_id, status);
 CREATE INDEX idx_waiting_player ON waiting_list(player_id);
 
 -- ==============================================================================
--- 12. SYNC NOTE (GAP-BO-011 해소)
+-- 12. SEED — Sandbox Tournament Generator (B-068 Phase A)
+-- ==============================================================================
+-- Engineering/Sandbox_Tournament_Generator.md §1.1.1 요구. migration 0007 과 동기.
+
+INSERT INTO competitions (competition_id, name, competition_type, competition_tag)
+VALUES (99, 'Sandbox Competition', 0, 0);
+
+INSERT INTO settings_kv (id, scope_level, scope_id, tab, key, value, updated_by)
+VALUES ('0007-sandbox-enabled-seed-global', 'global', NULL, 'preferences', 'sandbox.enabled', 'false', NULL);
+
+-- ==============================================================================
+-- 13. SYNC NOTE (GAP-BO-011 해소)
 -- ==============================================================================
 -- 본 파일은 권위 DDL = contracts/data/DATA-04-db-schema.md 와 일치해야 한다.
 -- (team2-backend/CLAUDE.md L16).
 --
--- 동기화 현황 (2026-04-13):
---   §1 대회 계층: competitions, series, events, event_flights ✓
+-- 동기화 현황 (2026-04-21):
+--   §1 대회 계층: competitions, series, events, event_flights ✓ + source CHECK 4표 (B-068)
 --   §2 테이블/좌석: tables, table_seats (SeatStatus 6값 CHECK), players ✓
 --   §3 게임 도메인: hands, hand_players, hand_actions, decks, deck_cards ✓
 --   §4 Admin: users, user_sessions, audit_logs, configs, skins, output_presets ✓
---   §4+ blind_structures, blind_structure_levels ✓
+--   §4+ blind_structures, blind_structure_levels, settings_kv ✓
 --   §5.1 idempotency_keys ✓ (2026-04-10 CCR-001)
 --   §5.2 audit_events ✓ (2026-04-10 CCR-001)
 --   §5.3 waiting_list ✓ (2026-04-13 CCR-D)
+--   §12 Sandbox seed: competitions id=99, settings_kv sandbox.enabled=false (2026-04-21 B-068)
 --
--- GAP-BO-011: 전면 동기화 완료. 21개 core + 3개 infra = 24 테이블.
+-- 총 25 테이블 (24 core + settings_kv). fresh DB 는 init_db.py --force 로 일괄 투입.
 -- ==============================================================================
 
 -- ==============================================================================

@@ -22,7 +22,7 @@ reimplementability_notes: "UI-03 Settings UI 스펙 (29KB) 완결"
 
 ## 개요
 
-Settings는 Lobby 웹 내 **6탭 페이지**로, Console의 5탭(Outputs/GFX/Display/Rules/Stats) + Preferences 다이얼로그를 통합한 구조. 오버레이 출력 파이프라인, 그래픽 배치, 수치 표시 형식, 게임 규칙, 통계/리더보드, 테이블 인증/진단/내보내기를 관리한다. Admin 전용이며, Lobby 또는 CC 어디서든 [Settings ⚙] 버튼으로 접근한다.
+Settings는 Lobby (Flutter Desktop 앱) 내 **6탭 페이지**로, Console의 5탭(Outputs/GFX/Display/Rules/Stats) + Preferences 다이얼로그를 통합한 구조. 오버레이 출력 파이프라인, 그래픽 배치, 수치 표시 형식, 게임 규칙, 통계/리더보드, 테이블 인증/진단/내보내기를 관리한다. Admin 전용이며, Lobby 또는 CC 어디서든 [Settings ⚙] 버튼으로 접근한다.
 
 > 참조: BS-03-00-overview, BS-00 §1
 

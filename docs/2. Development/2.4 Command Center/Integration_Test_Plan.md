@@ -114,13 +114,13 @@ EBS 소프트웨어 QA 테스트 전략을 정의한다. 물리 하드웨어(RFI
 | **커버리지** | `pytest --cov=src --cov-report=html` |
 | **대상** | REST API, WebSocket, DB CRUD, 인증, 동기화 |
 
-#### 2.4 Lobby (웹 앱)
+#### 2.4 Lobby (Flutter Desktop 앱)
 
 | 항목 | 값 |
 |------|:--|
-| **Unit/Component** | `vitest` |
-| **E2E** | `playwright` |
-| **Mocking** | `msw` (Mock Service Worker) — BO API Mock |
+| **Unit/Widget** | `flutter_test` + `mocktail` |
+| **Integration** | `integration_test` (flutter_driver 후속) |
+| **Mocking** | `http_mock_adapter` (Dio) — BO REST API Mock / `mockito` 로 provider override |
 | **커버리지** | `vitest --coverage` |
 | **대상** | Lobby UI, 테이블 관리, Settings, Auth |
 
@@ -328,7 +328,7 @@ S-01 로그인
 
 #### 전제조건
 - BO 서버 실행 중
-- Lobby 웹 앱 접근 가능
+- Lobby Flutter Desktop 앱 실행 가능
 - Admin 계정 존재 (`admin@ebs.local` / password)
 
 #### 단계

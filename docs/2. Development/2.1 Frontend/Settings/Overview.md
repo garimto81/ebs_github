@@ -40,8 +40,8 @@ Lobby (웹)
                         └─ [Settings ⚙] ──→ Settings 페이지 (동일)
 ```
 
-- Settings는 Lobby 웹 내에서 렌더링되는 **페이지**
-- CC에서 [Settings ⚙]를 누르면 Lobby 웹의 Settings가 열림
+- Settings는 Lobby (Flutter Desktop 앱) 내에서 렌더링되는 **페이지**
+- CC에서 [Settings ⚙]를 누르면 Lobby 창의 Settings 페이지가 열림 (OS window 전환)
 
 ### 1.2 접근 권한
 
