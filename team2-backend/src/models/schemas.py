@@ -1,24 +1,34 @@
-"""Pydantic request/response schemas for CRUD endpoints."""
+"""Pydantic request/response schemas for CRUD endpoints.
+
+B-088 PR 2 (2026-04-21): 모든 class 가 `EbsBaseModel` 을 상속하여
+외부 JSON camelCase / 내부 Python snake_case 양립.
+
+- `alias_generator=to_camel` 로 외부 직렬화 camelCase
+- `populate_by_name=True` 로 request 는 양 형식 모두 수용
+- `from_attributes=True` 로 ORM/SQLModel 에서 직접 변환
+
+단일 단어 field (`data`, `error`, `meta`, `code`, `message`) 는 to_camel 이 동일 키로 반환.
+"""
 from typing import Any, Optional
 
-from pydantic import BaseModel
+from src.models.base import EbsBaseModel
 
 # ── Common envelope ────────────────────────────────
 
-class ApiResponse(BaseModel):
+class ApiResponse(EbsBaseModel):
     data: Any = None
     error: Any = None
     meta: Optional[dict] = None
 
 
-class ApiError(BaseModel):
+class ApiError(EbsBaseModel):
     code: str
     message: str
 
 
 # ── Series ─────────────────────────────────────────
 
-class SeriesCreate(BaseModel):
+class SeriesCreate(EbsBaseModel):
     competition_id: int
     series_name: str
     year: int
@@ -30,7 +40,7 @@ class SeriesCreate(BaseModel):
     image_url: Optional[str] = None
 
 
-class SeriesUpdate(BaseModel):
+class SeriesUpdate(EbsBaseModel):
     series_name: Optional[str] = None
     year: Optional[int] = None
     begin_at: Optional[str] = None
@@ -43,7 +53,7 @@ class SeriesUpdate(BaseModel):
     is_displayed: Optional[bool] = None
 
 
-class SeriesResponse(BaseModel):
+class SeriesResponse(EbsBaseModel):
     series_id: int
     competition_id: int
     series_name: str
@@ -63,7 +73,7 @@ class SeriesResponse(BaseModel):
 
 # ── Event ──────────────────────────────────────────
 
-class EventCreate(BaseModel):
+class EventCreate(EbsBaseModel):
     series_id: int
     event_no: int
     event_name: str
@@ -76,7 +86,7 @@ class EventCreate(BaseModel):
     start_time: Optional[str] = None
 
 
-class EventResponse(BaseModel):
+class EventResponse(EbsBaseModel):
     event_id: int
     series_id: int
     event_no: int
@@ -95,7 +105,7 @@ class EventResponse(BaseModel):
 
 # ── Flight ─────────────────────────────────────────
 
-class FlightCreate(BaseModel):
+class FlightCreate(EbsBaseModel):
     event_id: int
     display_name: str
     start_time: Optional[str] = None
@@ -103,7 +113,7 @@ class FlightCreate(BaseModel):
     play_level: int = 1
 
 
-class FlightResponse(BaseModel):
+class FlightResponse(EbsBaseModel):
     event_flight_id: int
     event_id: int
     display_name: str
@@ -121,7 +131,7 @@ class FlightResponse(BaseModel):
 
 # ── Table ──────────────────────────────────────────
 
-class TableCreate(BaseModel):
+class TableCreate(EbsBaseModel):
     table_no: int
     name: str
     type: str = "general"
@@ -131,7 +141,7 @@ class TableCreate(BaseModel):
     event_flight_id: Optional[int] = None  # required for flat POST /tables; nested path supplies via URL
 
 
-class TableResponse(BaseModel):
+class TableResponse(EbsBaseModel):
     table_id: int
     event_flight_id: int
     table_no: int
@@ -148,13 +158,13 @@ class TableResponse(BaseModel):
 
 # ── Seat ───────────────────────────────────────────
 
-class SeatUpdate(BaseModel):
+class SeatUpdate(EbsBaseModel):
     player_id: Optional[int] = None
     status: Optional[str] = None
     chip_count: Optional[int] = None
 
 
-class SeatResponse(BaseModel):
+class SeatResponse(EbsBaseModel):
     seat_id: int
     table_id: int
     seat_no: int
@@ -169,7 +179,7 @@ class SeatResponse(BaseModel):
 
 # ── Player ─────────────────────────────────────────
 
-class PlayerCreate(BaseModel):
+class PlayerCreate(EbsBaseModel):
     first_name: str
     last_name: str
     wsop_id: Optional[str] = None
@@ -177,7 +187,7 @@ class PlayerCreate(BaseModel):
     country_code: Optional[str] = None
 
 
-class PlayerUpdate(BaseModel):
+class PlayerUpdate(EbsBaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     wsop_id: Optional[str] = None
@@ -185,7 +195,7 @@ class PlayerUpdate(BaseModel):
     country_code: Optional[str] = None
 
 
-class PlayerResponse(BaseModel):
+class PlayerResponse(EbsBaseModel):
     player_id: int
     wsop_id: Optional[str] = None
     first_name: str
@@ -200,21 +210,21 @@ class PlayerResponse(BaseModel):
 
 # ── User ──────────────────────────────────────────
 
-class UserCreate(BaseModel):
+class UserCreate(EbsBaseModel):
     email: str
     password: str
     display_name: str
     role: str = "viewer"
 
 
-class UserUpdate(BaseModel):
+class UserUpdate(EbsBaseModel):
     email: Optional[str] = None
     display_name: Optional[str] = None
     role: Optional[str] = None
     is_active: Optional[bool] = None
 
 
-class UserResponse(BaseModel):
+class UserResponse(EbsBaseModel):
     user_id: int
     email: str
     display_name: str
@@ -228,7 +238,7 @@ class UserResponse(BaseModel):
 
 # ── Config ────────────────────────────────────────
 
-class ConfigResponse(BaseModel):
+class ConfigResponse(EbsBaseModel):
     id: int
     key: str
     value: str
@@ -239,12 +249,12 @@ class ConfigResponse(BaseModel):
     updated_at: str
 
 
-class ConfigUpdate(BaseModel):
+class ConfigUpdate(EbsBaseModel):
     value: str
     description: Optional[str] = None
 
 
-class ConfigBulkItem(BaseModel):
+class ConfigBulkItem(EbsBaseModel):
     key: str
     value: str
     scope: Optional[str] = None
@@ -254,19 +264,19 @@ class ConfigBulkItem(BaseModel):
 
 # ── Competition ───────────────────────────────────
 
-class CompetitionCreate(BaseModel):
+class CompetitionCreate(EbsBaseModel):
     name: str
     competition_type: int = 0
     competition_tag: int = 0
 
 
-class CompetitionUpdate(BaseModel):
+class CompetitionUpdate(EbsBaseModel):
     name: Optional[str] = None
     competition_type: Optional[int] = None
     competition_tag: Optional[int] = None
 
 
-class CompetitionResponse(BaseModel):
+class CompetitionResponse(EbsBaseModel):
     competition_id: int
     name: str
     competition_type: int
@@ -277,7 +287,7 @@ class CompetitionResponse(BaseModel):
 
 # ── Event / Flight Update ────────────────────────
 
-class EventUpdate(BaseModel):
+class EventUpdate(EbsBaseModel):
     event_name: Optional[str] = None
     buy_in: Optional[int] = None
     game_type: Optional[int] = None
@@ -288,7 +298,7 @@ class EventUpdate(BaseModel):
     status: Optional[str] = None
 
 
-class FlightUpdate(BaseModel):
+class FlightUpdate(EbsBaseModel):
     display_name: Optional[str] = None
     start_time: Optional[str] = None
     is_tbd: Optional[bool] = None
@@ -298,7 +308,7 @@ class FlightUpdate(BaseModel):
 
 # ── Table Update ─────────────────────────────────
 
-class TableUpdate(BaseModel):
+class TableUpdate(EbsBaseModel):
     name: Optional[str] = None
     type: Optional[str] = None
     max_players: Optional[int] = None
@@ -309,19 +319,19 @@ class TableUpdate(BaseModel):
 
 # ── Skin ─────────────────────────────────────────
 
-class SkinCreate(BaseModel):
+class SkinCreate(EbsBaseModel):
     name: str
     description: Optional[str] = None
     theme_data: str = "{}"
 
 
-class SkinUpdate(BaseModel):
+class SkinUpdate(EbsBaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     theme_data: Optional[str] = None
 
 
-class SkinResponse(BaseModel):
+class SkinResponse(EbsBaseModel):
     skin_id: int
     name: str
     description: Optional[str] = None
@@ -333,7 +343,7 @@ class SkinResponse(BaseModel):
 
 # ── Hand ──────────────────────────────────────────
 
-class HandResponse(BaseModel):
+class HandResponse(EbsBaseModel):
     hand_id: int
     table_id: int
     hand_number: int
@@ -350,7 +360,7 @@ class HandResponse(BaseModel):
     created_at: str
 
 
-class HandPlayerResponse(BaseModel):
+class HandPlayerResponse(EbsBaseModel):
     id: int
     hand_id: int
     seat_no: int
@@ -366,7 +376,7 @@ class HandPlayerResponse(BaseModel):
     created_at: str
 
 
-class HandActionResponse(BaseModel):
+class HandActionResponse(EbsBaseModel):
     id: int
     hand_id: int
     seat_no: int
@@ -381,7 +391,7 @@ class HandActionResponse(BaseModel):
 
 # ── BlindStructure ────────────────────────────────
 
-class BlindStructureLevelCreate(BaseModel):
+class BlindStructureLevelCreate(EbsBaseModel):
     level_no: int
     small_blind: int
     big_blind: int
@@ -390,7 +400,7 @@ class BlindStructureLevelCreate(BaseModel):
     detail_type: int = 0
 
 
-class BlindStructureLevelResponse(BaseModel):
+class BlindStructureLevelResponse(EbsBaseModel):
     id: int
     blind_structure_id: int
     level_no: int
@@ -401,17 +411,17 @@ class BlindStructureLevelResponse(BaseModel):
     detail_type: int
 
 
-class BlindStructureCreate(BaseModel):
+class BlindStructureCreate(EbsBaseModel):
     name: str
     levels: list[BlindStructureLevelCreate]
 
 
-class BlindStructureUpdate(BaseModel):
+class BlindStructureUpdate(EbsBaseModel):
     name: Optional[str] = None
     levels: Optional[list[BlindStructureLevelCreate]] = None
 
 
-class BlindStructureResponse(BaseModel):
+class BlindStructureResponse(EbsBaseModel):
     blind_structure_id: int
     name: str
     levels: list[BlindStructureLevelResponse]
@@ -419,20 +429,20 @@ class BlindStructureResponse(BaseModel):
     updated_at: str
 
 
-class BlindStructureApply(BaseModel):
+class BlindStructureApply(EbsBaseModel):
     blind_structure_id: int
 
 
 # ── PayoutStructure ──────────────────────────────────
 
-class PayoutStructureLevelCreate(BaseModel):
+class PayoutStructureLevelCreate(EbsBaseModel):
     position_from: int
     position_to: int
     payout_pct: float
     payout_amount: Optional[int] = None
 
 
-class PayoutStructureLevelResponse(BaseModel):
+class PayoutStructureLevelResponse(EbsBaseModel):
     id: int
     payout_structure_id: int
     position_from: int
@@ -441,17 +451,17 @@ class PayoutStructureLevelResponse(BaseModel):
     payout_amount: Optional[int] = None
 
 
-class PayoutStructureCreate(BaseModel):
+class PayoutStructureCreate(EbsBaseModel):
     name: str
     levels: list[PayoutStructureLevelCreate]
 
 
-class PayoutStructureUpdate(BaseModel):
+class PayoutStructureUpdate(EbsBaseModel):
     name: Optional[str] = None
     levels: Optional[list[PayoutStructureLevelCreate]] = None
 
 
-class PayoutStructureResponse(BaseModel):
+class PayoutStructureResponse(EbsBaseModel):
     payout_structure_id: int
     name: str
     levels: list[PayoutStructureLevelResponse]
@@ -461,21 +471,21 @@ class PayoutStructureResponse(BaseModel):
 
 # ── Clock ────────────────────────────────────────────
 
-class ClockState(BaseModel):
+class ClockState(EbsBaseModel):
     event_flight_id: int
     status: str
     play_level: int
     remain_time: Optional[int] = None
 
 
-class ClockAdjust(BaseModel):
+class ClockAdjust(EbsBaseModel):
     level_diff: int = 0
     time_diff: int = 0
 
 
 # ── Rebalance ───────────────────────────────────────
 
-class RebalanceRequest(BaseModel):
+class RebalanceRequest(EbsBaseModel):
     event_flight_id: int
     strategy: str = "balanced"
     target_players_per_table: int = 9

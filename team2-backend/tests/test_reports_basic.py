@@ -21,7 +21,7 @@ from __future__ import annotations
 
 def _login(client, email="admin@test.com", password="Admin123!") -> str:
     r = client.post("/auth/login", json={"email": email, "password": password})
-    return r.json()["data"]["access_token"]
+    return r.json()["data"]["accessToken"]
 
 
 def _auth(client, role="admin") -> dict:
@@ -100,7 +100,7 @@ def test_player_stats_admin(client, seed_users):
     )
     assert r.status_code == 200
     body = r.json()
-    assert body["data"]["player_id"] == "p-1"
+    assert body["data"]["playerId"] == "p-1"
     assert "metrics" in body["data"]
     m = body["data"]["metrics"]
     for k in ("vpip", "pfr", "af", "threebet_pct", "total_hands"):
@@ -155,7 +155,7 @@ def test_operator_activity_admin(client, seed_users):
     )
     assert r.status_code == 200
     body = r.json()
-    assert body["data"]["user_id"] == "u-1"
+    assert body["data"]["userId"] == "u-1"
 
 
 # 10. invalid scope → 400 ─────────────────────────────────────────

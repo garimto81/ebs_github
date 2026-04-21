@@ -1,7 +1,9 @@
 """Series / Event / Flight routers — API-01 §5.4~5.6."""
 from fastapi import APIRouter, Depends, Query
-from pydantic import BaseModel
+from pydantic import BaseModel  # kept for backward-compat import
 from sqlmodel import Session
+
+from src.models.base import EbsBaseModel
 
 from src.app.database import get_db
 from src.middleware.rbac import get_current_user, require_role
@@ -293,11 +295,11 @@ def api_delete_flight(
 # ── CCR-050 Flight lifecycle transitions ──────────────
 
 
-class FlightCompleteRequest(BaseModel):
+class FlightCompleteRequest(EbsBaseModel):
     final_results: dict | None = None
 
 
-class FlightCancelRequest(BaseModel):
+class FlightCancelRequest(EbsBaseModel):
     reason: str | None = None
     refund_policy: str | None = None
 
@@ -393,13 +395,13 @@ def api_adjust_clock(
 # ── CCR-050 Clock extensions ─────────────────────
 
 
-class ClockDetailRequest(BaseModel):
+class ClockDetailRequest(EbsBaseModel):
     theme: str | None = None
     announcement: str | None = None
     group_name: str | None = None
 
 
-class ClockAdjustStackRequest(BaseModel):
+class ClockAdjustStackRequest(EbsBaseModel):
     average_stack: int
     reason: str | None = None
 

@@ -35,8 +35,8 @@ def test_put_global_scope_ok(settings_client: TestClient) -> None:
     r = settings_client.put(
         "/api/v1/settings",
         json={
-            "scope_level": "global",
-            "scope_id": None,
+            "scopeLevel": "global",
+            "scopeId": None,
             "tab": "outputs",
             "key": "default_sdi_mode",
             "value": "1080i60",
@@ -44,8 +44,8 @@ def test_put_global_scope_ok(settings_client: TestClient) -> None:
     )
     assert r.status_code == 200
     body = r.json()
-    assert body["scope_level"] == "global"
-    assert body["scope_id"] is None
+    assert body["scopeLevel"] == "global"
+    assert body["scopeId"] is None
     assert body["tab"] == "outputs"
     assert body["key"] == "default_sdi_mode"
     assert body["value"] == "1080i60"
@@ -56,8 +56,8 @@ def test_put_event_scope_requires_scope_id(settings_client: TestClient) -> None:
     r = settings_client.put(
         "/api/v1/settings",
         json={
-            "scope_level": "event",
-            "scope_id": None,  # missing → 400
+            "scopeLevel": "event",
+            "scopeId": None,  # missing → 400
             "tab": "rules",
             "key": "ante_enabled",
             "value": True,
@@ -71,8 +71,8 @@ def test_put_global_with_scope_id_rejected(settings_client: TestClient) -> None:
     r = settings_client.put(
         "/api/v1/settings",
         json={
-            "scope_level": "global",
-            "scope_id": "evt-123",  # not allowed for global
+            "scopeLevel": "global",
+            "scopeId": "evt-123",  # not allowed for global
             "tab": "outputs",
             "key": "x",
             "value": 1,
@@ -91,8 +91,8 @@ def test_resolved_override_chain(settings_client: TestClient) -> None:
     settings_client.put(
         "/api/v1/settings",
         json={
-            "scope_level": "global",
-            "scope_id": None,
+            "scopeLevel": "global",
+            "scopeId": None,
             "tab": "rules",
             "key": "ante_enabled",
             "value": False,
@@ -102,8 +102,8 @@ def test_resolved_override_chain(settings_client: TestClient) -> None:
     settings_client.put(
         "/api/v1/settings",
         json={
-            "scope_level": "event",
-            "scope_id": "evt-001",
+            "scopeLevel": "event",
+            "scopeId": "evt-001",
             "tab": "rules",
             "key": "ante_enabled",
             "value": True,
@@ -129,17 +129,17 @@ def test_resolved_override_chain(settings_client: TestClient) -> None:
 def test_resolved_table_overrides_event(settings_client: TestClient) -> None:
     settings_client.put(
         "/api/v1/settings",
-        json={"scope_level": "global", "scope_id": None, "tab": "display",
+        json={"scopeLevel": "global", "scopeId": None, "tab": "display",
               "key": "theme", "value": "light"},
     )
     settings_client.put(
         "/api/v1/settings",
-        json={"scope_level": "event", "scope_id": "evt-1", "tab": "display",
+        json={"scopeLevel": "event", "scopeId": "evt-1", "tab": "display",
               "key": "theme", "value": "dark"},
     )
     settings_client.put(
         "/api/v1/settings",
-        json={"scope_level": "table", "scope_id": "tbl-9", "tab": "display",
+        json={"scopeLevel": "table", "scopeId": "tbl-9", "tab": "display",
               "key": "theme", "value": "high-contrast"},
     )
     r = settings_client.get(
@@ -158,8 +158,8 @@ def test_invalid_tab_rejected(settings_client: TestClient) -> None:
     r = settings_client.put(
         "/api/v1/settings",
         json={
-            "scope_level": "global",
-            "scope_id": None,
+            "scopeLevel": "global",
+            "scopeId": None,
             "tab": "nonexistent",
             "key": "x",
             "value": 1,
@@ -173,8 +173,8 @@ def test_invalid_scope_level_rejected(settings_client: TestClient) -> None:
     r = settings_client.put(
         "/api/v1/settings",
         json={
-            "scope_level": "planet",  # invalid
-            "scope_id": "p-1",
+            "scopeLevel": "planet",  # invalid
+            "scopeId": "p-1",
             "tab": "outputs",
             "key": "x",
             "value": 1,
@@ -190,20 +190,20 @@ def test_delete_then_resolved_falls_back(settings_client: TestClient) -> None:
     # global default
     settings_client.put(
         "/api/v1/settings",
-        json={"scope_level": "global", "scope_id": None, "tab": "rules",
+        json={"scopeLevel": "global", "scopeId": None, "tab": "rules",
               "key": "ante_enabled", "value": False},
     )
     # event override
     settings_client.put(
         "/api/v1/settings",
-        json={"scope_level": "event", "scope_id": "evt-del", "tab": "rules",
+        json={"scopeLevel": "event", "scopeId": "evt-del", "tab": "rules",
               "key": "ante_enabled", "value": True},
     )
     # delete event override
     r = settings_client.request(
         "DELETE",
         "/api/v1/settings",
-        json={"scope_level": "event", "scope_id": "evt-del", "tab": "rules",
+        json={"scopeLevel": "event", "scopeId": "evt-del", "tab": "rules",
               "key": "ante_enabled"},
     )
     assert r.status_code == 204
@@ -222,7 +222,7 @@ def test_delete_nonexistent_returns_404(settings_client: TestClient) -> None:
     r = settings_client.request(
         "DELETE",
         "/api/v1/settings",
-        json={"scope_level": "global", "scope_id": None, "tab": "outputs",
+        json={"scopeLevel": "global", "scopeId": None, "tab": "outputs",
               "key": "missing"},
     )
     assert r.status_code == 404
@@ -234,17 +234,17 @@ def test_delete_nonexistent_returns_404(settings_client: TestClient) -> None:
 def test_list_filter_by_scope_level_and_tab(settings_client: TestClient) -> None:
     settings_client.put(
         "/api/v1/settings",
-        json={"scope_level": "global", "scope_id": None, "tab": "outputs",
+        json={"scopeLevel": "global", "scopeId": None, "tab": "outputs",
               "key": "a", "value": 1},
     )
     settings_client.put(
         "/api/v1/settings",
-        json={"scope_level": "global", "scope_id": None, "tab": "gfx",
+        json={"scopeLevel": "global", "scopeId": None, "tab": "gfx",
               "key": "b", "value": 2},
     )
     settings_client.put(
         "/api/v1/settings",
-        json={"scope_level": "event", "scope_id": "e1", "tab": "outputs",
+        json={"scopeLevel": "event", "scopeId": "e1", "tab": "outputs",
               "key": "a", "value": 99},
     )
 
@@ -254,20 +254,20 @@ def test_list_filter_by_scope_level_and_tab(settings_client: TestClient) -> None
     assert len(rows) == 1
     assert rows[0]["key"] == "a"
     assert rows[0]["value"] == 1
-    assert rows[0]["scope_level"] == "global"
+    assert rows[0]["scopeLevel"] == "global"
 
 
 def test_put_upsert_is_idempotent(settings_client: TestClient) -> None:
     """PUT twice on same (scope, tab, key) → same id, latest value."""
     r1 = settings_client.put(
         "/api/v1/settings",
-        json={"scope_level": "global", "scope_id": None, "tab": "stats",
+        json={"scopeLevel": "global", "scopeId": None, "tab": "stats",
               "key": "show_vpip", "value": False},
     )
     id1 = r1.json()["id"]
     r2 = settings_client.put(
         "/api/v1/settings",
-        json={"scope_level": "global", "scope_id": None, "tab": "stats",
+        json={"scopeLevel": "global", "scopeId": None, "tab": "stats",
               "key": "show_vpip", "value": True},
     )
     assert r2.status_code == 200

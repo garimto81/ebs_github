@@ -98,7 +98,7 @@ def test_wsop_sync_upsert_event_flights_converts_int_status(db_session):
 
     svc = WsopSyncService(CircuitBreaker())
     result = svc.upsert_event_flights([
-        {"event_id": e.event_id, "display_name": "Day 1A", "status": 4},
+        {"eventId": e.event_id, "displayName": "Day 1A", "status": 4},
     ], db_session)
 
     assert result.created == 1
@@ -134,7 +134,7 @@ def test_wsop_sync_rejects_invalid_status_int(db_session):
 
     svc = WsopSyncService(CircuitBreaker())
     result = svc.upsert_event_flights([
-        {"event_id": e.event_id, "display_name": "Bad", "status": 3},
+        {"eventId": e.event_id, "displayName": "Bad", "status": 3},
     ], db_session)
 
     assert result.created == 0

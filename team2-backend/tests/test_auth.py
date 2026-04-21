@@ -16,7 +16,7 @@ def _login(client, email="admin@test.com", password="Admin123!"):
 
 def _get_token(client, email="admin@test.com", password="Admin123!") -> str:
     resp = _login(client, email, password)
-    return resp.json()["data"]["access_token"]
+    return resp.json()["data"]["accessToken"]
 
 
 def _make_expired_token(user_id=1, email="admin@test.com", role="admin", token_type="access"):
@@ -40,11 +40,11 @@ def test_login_success(client, seed_users):
     resp = _login(client)
     assert resp.status_code == 200
     data = resp.json()["data"]
-    assert data["access_token"]
-    assert data["refresh_token"]
-    assert data["token_type"] == "Bearer"
-    assert data["expires_in"] > 0
-    assert data["auth_profile"] == settings.auth_profile
+    assert data["accessToken"]
+    assert data["refreshToken"]
+    assert data["tokenType"] == "Bearer"
+    assert data["expiresIn"] > 0
+    assert data["authProfile"] == settings.auth_profile
     assert data["user"]["email"] == "admin@test.com"
     assert data["user"]["role"] == "admin"
 
@@ -106,13 +106,13 @@ def test_me_no_token(client, seed_users):
 
 def test_refresh_valid(client, seed_users):
     login_resp = _login(client)
-    refresh_token = login_resp.json()["data"]["refresh_token"]
+    refresh_token = login_resp.json()["data"]["refreshToken"]
 
-    resp = client.post("/auth/refresh", json={"refresh_token": refresh_token})
+    resp = client.post("/auth/refresh", json={"refreshToken": refresh_token})
     assert resp.status_code == 200
     body = resp.json()
-    assert body["access_token"]
-    assert body["expires_in"] > 0
+    assert body["accessToken"]
+    assert body["expiresIn"] > 0
 
 
 # ── Gate 1-8: Refresh expired ────────────────────
@@ -120,7 +120,7 @@ def test_refresh_valid(client, seed_users):
 
 def test_refresh_expired(client, seed_users):
     expired = _make_expired_token(token_type="refresh")
-    resp = client.post("/auth/refresh", json={"refresh_token": expired})
+    resp = client.post("/auth/refresh", json={"refreshToken": expired})
     assert resp.status_code == 401
 
 
@@ -184,8 +184,8 @@ def test_auth_profile_dev_ttl(client, seed_users):
     resp = _login(client)
     data = resp.json()["data"]
     # Default test profile is dev → 3600
-    assert data["expires_in"] == 3600
-    assert data["auth_profile"] == "dev"
+    assert data["expiresIn"] == 3600
+    assert data["authProfile"] == "dev"
 
 
 # ── Gate 1-15: Auth profile live TTL ─────────────
@@ -193,14 +193,14 @@ def test_auth_profile_dev_ttl(client, seed_users):
 
 def test_auth_profile_live_ttl(client, seed_users, monkeypatch):
     """Live profile → expires_in = 43200."""
-    monkeypatch.setattr(settings, "auth_profile", "live")
+    monkeypatch.setattr(settings, "authProfile", "live")
     monkeypatch.setattr(settings, "jwt_access_ttl_s", 43200)
 
     resp = _login(client, email="viewer@test.com", password="View123!")
     data = resp.json()["data"]
-    assert data["expires_in"] == 43200
-    assert data["auth_profile"] == "live"
+    assert data["expiresIn"] == 43200
+    assert data["authProfile"] == "live"
 
     # Restore
-    monkeypatch.setattr(settings, "auth_profile", "dev")
+    monkeypatch.setattr(settings, "authProfile", "dev")
     monkeypatch.setattr(settings, "jwt_access_ttl_s", 3600)

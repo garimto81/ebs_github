@@ -30,7 +30,9 @@ from datetime import datetime, timezone
 from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, Query, status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field  # Field kept
+
+from src.models.base import EbsBaseModel
 
 router = APIRouter(prefix="/api/v1/settings", tags=["settings"])
 
@@ -67,7 +69,7 @@ PRECEDENCE: dict[str, int] = {
 # ---------------------------------------------------------------------------
 
 
-class SettingsKvIn(BaseModel):
+class SettingsKvIn(EbsBaseModel):
     """PUT /settings payload — upsert single (scope, tab, key)."""
 
     scope_level: ScopeLevel
@@ -80,7 +82,7 @@ class SettingsKvIn(BaseModel):
     value: Any = Field(..., description="JSON-serializable value (string/number/bool/list/dict)")
 
 
-class SettingsKvOut(BaseModel):
+class SettingsKvOut(EbsBaseModel):
     id: str
     scope_level: ScopeLevel
     scope_id: str | None
@@ -91,7 +93,7 @@ class SettingsKvOut(BaseModel):
     updated_by: str | None
 
 
-class SettingsKvDeleteIn(BaseModel):
+class SettingsKvDeleteIn(EbsBaseModel):
     """DELETE /settings payload (body, not path) — targets exact 4-tuple."""
 
     scope_level: ScopeLevel
@@ -100,7 +102,7 @@ class SettingsKvDeleteIn(BaseModel):
     key: str
 
 
-class SettingsResolvedOut(BaseModel):
+class SettingsResolvedOut(EbsBaseModel):
     """GET /settings/resolved — effective values after override chain.
 
     Returns all keys for the requested tab at the requested target scope,

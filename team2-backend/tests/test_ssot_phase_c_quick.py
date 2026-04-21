@@ -23,29 +23,29 @@ def test_table_status_endpoint(client, seed_users, db_session):
     db_session.commit()
     db_session.refresh(comp)
     sr = client.post("/api/v1/series", json={
-        "competition_id": comp.competition_id, "series_name": "S",
-        "year": 2026, "begin_at": "2026-05-27", "end_at": "2026-07-17",
+        "competitionId": comp.competition_id, "seriesName": "S",
+        "year": 2026, "beginAt": "2026-05-27", "endAt": "2026-07-17",
     }, headers=headers)
     er = client.post("/api/v1/events", json={
-        "series_id": sr.json()["data"]["series_id"],
-        "event_no": 1, "event_name": "E",
+        "seriesId": sr.json()["data"]["seriesId"],
+        "eventNo": 1, "eventName": "E",
     }, headers=headers)
     fr = client.post("/api/v1/flights", json={
-        "event_id": er.json()["data"]["event_id"], "display_name": "F",
+        "eventId": er.json()["data"]["eventId"], "displayName": "F",
     }, headers=headers)
     tr = client.post("/api/v1/tables", json={
-        "event_flight_id": fr.json()["data"]["event_flight_id"],
-        "table_no": 1, "name": "T1",
+        "eventFlightId": fr.json()["data"]["eventFlightId"],
+        "tableNo": 1, "name": "T1",
     }, headers=headers)
-    tid = tr.json()["data"]["table_id"]
+    tid = tr.json()["data"]["tableId"]
 
     resp = client.get(f"/api/v1/tables/{tid}/status", headers=headers)
     assert resp.status_code == 200
     data = resp.json()["data"]
-    assert data["table_id"] == tid
+    assert data["tableId"] == tid
     assert "status" in data
     assert "occupied_seats" in data
-    assert "max_players" in data
+    assert "maxPlayers" in data
 
 
 # ── Skin PUT /skins/:id (SSOT L745) ──
@@ -56,7 +56,7 @@ def test_skin_put_canonical_path(client, seed_users):
     cr = client.post("/api/v1/skins", json={
         "name": "Test Skin", "description": "x",
     }, headers=headers)
-    sid = cr.json()["data"]["skin_id"]
+    sid = cr.json()["data"]["skinId"]
 
     resp = client.put(f"/api/v1/skins/{sid}", json={
         "description": "updated",
@@ -73,8 +73,8 @@ def test_skin_activate_post_canonical(client, seed_users):
     cr = client.post("/api/v1/skins", json={
         "name": "Activate Skin",
     }, headers=headers)
-    sid = cr.json()["data"]["skin_id"]
+    sid = cr.json()["data"]["skinId"]
 
     resp = client.post(f"/api/v1/skins/{sid}/activate", headers=headers)
     assert resp.status_code == 200
-    assert resp.json()["data"]["is_default"] is True
+    assert resp.json()["data"]["isDefault"] is True

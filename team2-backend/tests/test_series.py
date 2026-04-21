@@ -9,7 +9,7 @@ from src.models.competition import Competition
 
 def _login(client, email="admin@test.com", password="Admin123!") -> str:
     resp = client.post("/auth/login", json={"email": email, "password": password})
-    return resp.json()["data"]["access_token"]
+    return resp.json()["data"]["accessToken"]
 
 
 def _auth(client, role="admin"):
@@ -28,11 +28,11 @@ def _seed_competition(db_session) -> int:
 
 def _create_series(client, headers, competition_id):
     return client.post("/api/v1/series", json={
-        "competition_id": competition_id,
-        "series_name": "2026 WSOP",
+        "competitionId": competition_id,
+        "seriesName": "2026 WSOP",
         "year": 2026,
-        "begin_at": "2026-05-27",
-        "end_at": "2026-07-17",
+        "beginAt": "2026-05-27",
+        "endAt": "2026-07-17",
     }, headers=headers)
 
 
@@ -45,9 +45,9 @@ def test_create_series_admin(client, seed_users, db_session):
     resp = _create_series(client, headers, comp_id)
     assert resp.status_code == 201
     data = resp.json()["data"]
-    assert data["series_name"] == "2026 WSOP"
+    assert data["seriesName"] == "2026 WSOP"
     assert data["year"] == 2026
-    assert data["series_id"] is not None
+    assert data["seriesId"] is not None
 
 
 # ── Gate 2-2: POST /series (operator) → 403 ─────────
@@ -81,20 +81,20 @@ def test_create_event(client, seed_users, db_session):
     comp_id = _seed_competition(db_session)
     headers = _auth(client, "admin")
     sr = _create_series(client, headers, comp_id)
-    series_id = sr.json()["data"]["series_id"]
+    series_id = sr.json()["data"]["seriesId"]
 
     resp = client.post(f"/api/v1/series/{series_id}/events", json={
-        "series_id": series_id,
-        "event_no": 1,
-        "event_name": "$10K NL Holdem",
-        "buy_in": 10000,
-        "game_type": 0,
-        "bet_structure": 0,
+        "seriesId": series_id,
+        "eventNo": 1,
+        "eventName": "$10K NL Holdem",
+        "buyIn": 10000,
+        "gameType": 0,
+        "betStructure": 0,
     }, headers=headers)
     assert resp.status_code == 201
     data = resp.json()["data"]
-    assert data["event_name"] == "$10K NL Holdem"
-    assert data["event_id"] is not None
+    assert data["eventName"] == "$10K NL Holdem"
+    assert data["eventId"] is not None
 
 
 # ── Gate 2-5: POST /flights (admin) → 201 ───────────
@@ -104,23 +104,23 @@ def test_create_flight(client, seed_users, db_session):
     comp_id = _seed_competition(db_session)
     headers = _auth(client, "admin")
     sr = _create_series(client, headers, comp_id)
-    series_id = sr.json()["data"]["series_id"]
+    series_id = sr.json()["data"]["seriesId"]
 
     er = client.post(f"/api/v1/series/{series_id}/events", json={
-        "series_id": series_id,
-        "event_no": 1,
-        "event_name": "Event 1",
+        "seriesId": series_id,
+        "eventNo": 1,
+        "eventName": "Event 1",
     }, headers=headers)
-    event_id = er.json()["data"]["event_id"]
+    event_id = er.json()["data"]["eventId"]
 
     resp = client.post(f"/api/v1/events/{event_id}/flights", json={
-        "event_id": event_id,
-        "display_name": "Day 1A",
+        "eventId": event_id,
+        "displayName": "Day 1A",
     }, headers=headers)
     assert resp.status_code == 201
     data = resp.json()["data"]
-    assert data["display_name"] == "Day 1A"
-    assert data["event_flight_id"] is not None
+    assert data["displayName"] == "Day 1A"
+    assert data["eventFlightId"] is not None
 
 
 # ── Gate 2-15: DELETE /series (has children) → 409 ───
@@ -130,13 +130,13 @@ def test_delete_series_has_children(client, seed_users, db_session):
     comp_id = _seed_competition(db_session)
     headers = _auth(client, "admin")
     sr = _create_series(client, headers, comp_id)
-    series_id = sr.json()["data"]["series_id"]
+    series_id = sr.json()["data"]["seriesId"]
 
     # Create a child event
     client.post(f"/api/v1/series/{series_id}/events", json={
-        "series_id": series_id,
-        "event_no": 1,
-        "event_name": "Child Event",
+        "seriesId": series_id,
+        "eventNo": 1,
+        "eventName": "Child Event",
     }, headers=headers)
 
     resp = client.delete(f"/api/v1/series/{series_id}", headers=headers)
@@ -148,7 +148,7 @@ def test_delete_series_no_children(client, seed_users, db_session):
     comp_id = _seed_competition(db_session)
     headers = _auth(client, "admin")
     sr = _create_series(client, headers, comp_id)
-    series_id = sr.json()["data"]["series_id"]
+    series_id = sr.json()["data"]["seriesId"]
 
     resp = client.delete(f"/api/v1/series/{series_id}", headers=headers)
     assert resp.status_code == 200

@@ -47,8 +47,8 @@ def test_operator_with_matching_table_accepted(client, seed_users):
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-1") as ws:
         ws.send_text(json.dumps({
             "type": "HandStarted",
-            "table_id": "tbl-1",
-            "payload": {"hand_number": 1},
+            "tableId": "tbl-1",
+            "payload": {"handNumber": 1},
             "message_id": "m1",
         }))
         ack = json.loads(ws.receive_text())
@@ -66,8 +66,8 @@ def test_admin_bypasses_table_guard(client, seed_users):
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-7") as ws:
         ws.send_text(json.dumps({
             "type": "HandStarted",
-            "table_id": "tbl-7",
-            "payload": {"hand_number": 1},
+            "tableId": "tbl-7",
+            "payload": {"handNumber": 1},
             "message_id": "m1",
         }))
         ack = json.loads(ws.receive_text())
@@ -90,8 +90,8 @@ def test_operator_without_claim_still_allowed_backcompat(client, seed_users):
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-1") as ws:
         ws.send_text(json.dumps({
             "type": "HandStarted",
-            "table_id": "tbl-1",
-            "payload": {"hand_number": 1},
+            "tableId": "tbl-1",
+            "payload": {"handNumber": 1},
             "message_id": "m1",
         }))
         ack = json.loads(ws.receive_text())

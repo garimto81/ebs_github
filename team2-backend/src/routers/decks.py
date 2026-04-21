@@ -30,7 +30,9 @@ from datetime import datetime, timezone
 from typing import Literal
 
 from fastapi import APIRouter, HTTPException, status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field  # Field kept
+
+from src.models.base import EbsBaseModel
 
 router = APIRouter(prefix="/api/v1/decks", tags=["decks"])
 
@@ -48,19 +50,19 @@ VALID_CARD_CODES = frozenset(
 )
 
 
-class DeckCreateIn(BaseModel):
+class DeckCreateIn(EbsBaseModel):
     name: str = Field(..., min_length=1, max_length=50)
     notes: str | None = None
 
 
-class DeckCardOut(BaseModel):
+class DeckCardOut(EbsBaseModel):
     card_code: str
     rfid_uid: str
     registered_at: datetime
     registered_by: str | None
 
 
-class DeckOut(BaseModel):
+class DeckOut(EbsBaseModel):
     id: str
     name: str
     status: DeckStatus
@@ -73,12 +75,12 @@ class DeckWithCardsOut(DeckOut):
     cards: list[DeckCardOut] = []
 
 
-class CardRegisterIn(BaseModel):
+class CardRegisterIn(EbsBaseModel):
     card_code: str = Field(..., pattern=r"^[AKQJT2-9][SHDC]$")
     rfid_uid: str = Field(..., min_length=8, max_length=32, pattern=r"^[0-9A-F]+$")
 
 
-class DeckImportIn(BaseModel):
+class DeckImportIn(EbsBaseModel):
     name: str
     cards: dict[str, str]  # card_code → rfid_uid
 
@@ -92,14 +94,14 @@ class DeckImportIn(BaseModel):
             raise ValueError(f"invalid card codes: {sorted(invalid)}")
 
 
-class CardReplaceIn(BaseModel):
+class CardReplaceIn(EbsBaseModel):
     new_rfid_uid: str = Field(
         ..., min_length=8, max_length=32, pattern=r"^[0-9A-F]+$"
     )
     reason: str = Field(..., min_length=1, max_length=200)
 
 
-class DeckStatusPatchIn(BaseModel):
+class DeckStatusPatchIn(EbsBaseModel):
     status: DeckStatus
 
 

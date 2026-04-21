@@ -48,18 +48,18 @@ async def test_poll_events_creates_with_mapped_game_type(db_session):
 
     payload = [
         {
-            "series_name": s.series_name,
+            "seriesName": s.series_name,
             "year": s.year,
-            "event_no": 1,
-            "event_name": "$10K NL Hold'em",
+            "eventNo": 1,
+            "eventName": "$10K NL Hold'em",
             "wsop_game_type": 0,  # Holdem
             "wsop_game_mode": "single",
         },
         {
-            "series_name": s.series_name,
+            "seriesName": s.series_name,
             "year": s.year,
-            "event_no": 2,
-            "event_name": "$1,500 HORSE",
+            "eventNo": 2,
+            "eventName": "$1,500 HORSE",
             "wsop_game_type": 5,  # HORSE
             "wsop_game_mode": "fixed_rotation",
         },
@@ -94,8 +94,8 @@ def test_poll_events_unknown_game_type_captured_as_error(db_session):
     db_session.refresh(s)
 
     payload = [{
-        "series_name": s.series_name, "year": s.year,
-        "event_no": 99, "event_name": "Unknown",
+        "seriesName": s.series_name, "year": s.year,
+        "eventNo": 99, "eventName": "Unknown",
         "wsop_game_type": 42,  # invalid
     }]
     result = svc.upsert_events(payload, db_session)

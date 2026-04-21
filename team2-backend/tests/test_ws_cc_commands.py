@@ -27,12 +27,12 @@ def test_write_game_info_valid_returns_game_info_ack(client, seed_users):
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-1") as ws:
         ws.send_text(json.dumps({
             "type": "WriteGameInfo",
-            "table_id": "tbl-1",
+            "tableId": "tbl-1",
             "payload": {
-                "game_type": 0,
-                "bet_structure": 0,
-                "small_blind": 100,
-                "big_blind": 200,
+                "gameType": 0,
+                "betStructure": 0,
+                "smallBlind": 100,
+                "bigBlind": 200,
             },
             "message_id": "m1",
         }))
@@ -47,7 +47,7 @@ def test_write_game_info_missing_fields_returns_rejected(client, seed_users):
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-1") as ws:
         ws.send_text(json.dumps({
             "type": "WriteGameInfo",
-            "table_id": "tbl-1",
+            "tableId": "tbl-1",
             "payload": {},  # missing required fields
             "message_id": "m2",
         }))
@@ -64,11 +64,11 @@ def test_write_deal_valid_returns_deal_ack(client, seed_users):
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-1") as ws:
         ws.send_text(json.dumps({
             "type": "WriteDeal",
-            "table_id": "tbl-1",
+            "tableId": "tbl-1",
             "payload": {
-                "hand_number": 101,
-                "dealer_seat": 3,
-                "deck_id": 1,
+                "handNumber": 101,
+                "dealerSeat": 3,
+                "deckId": 1,
             },
             "message_id": "m3",
         }))
@@ -82,8 +82,8 @@ def test_write_deal_missing_hand_number_rejected(client, seed_users):
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-1") as ws:
         ws.send_text(json.dumps({
             "type": "WriteDeal",
-            "table_id": "tbl-1",
-            "payload": {"dealer_seat": 3},
+            "tableId": "tbl-1",
+            "payload": {"dealerSeat": 3},
             "message_id": "m4",
         }))
         ack = json.loads(ws.receive_text())
@@ -98,10 +98,10 @@ def test_write_action_valid_returns_action_ack(client, seed_users):
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-1") as ws:
         ws.send_text(json.dumps({
             "type": "WriteAction",
-            "table_id": "tbl-1",
+            "tableId": "tbl-1",
             "payload": {
-                "hand_number": 101,
-                "seat_no": 3,
+                "handNumber": 101,
+                "seatNo": 3,
                 "action": "bet",
                 "amount": 400,
             },
@@ -116,10 +116,10 @@ def test_write_action_unknown_action_rejected(client, seed_users):
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-1") as ws:
         ws.send_text(json.dumps({
             "type": "WriteAction",
-            "table_id": "tbl-1",
+            "tableId": "tbl-1",
             "payload": {
-                "hand_number": 101,
-                "seat_no": 3,
+                "handNumber": 101,
+                "seatNo": 3,
                 "action": "wiggle",  # not in valid set
             },
             "message_id": "m6",
@@ -137,10 +137,10 @@ def test_game_info_ack_envelope_includes_server_time(client, seed_users):
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-1") as ws:
         ws.send_text(json.dumps({
             "type": "WriteGameInfo",
-            "table_id": "tbl-1",
+            "tableId": "tbl-1",
             "payload": {
-                "game_type": 0, "bet_structure": 0,
-                "small_blind": 100, "big_blind": 200,
+                "gameType": 0, "betStructure": 0,
+                "smallBlind": 100, "bigBlind": 200,
             },
             "message_id": "m7",
         }))

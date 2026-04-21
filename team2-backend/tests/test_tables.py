@@ -9,7 +9,7 @@ from src.models.competition import Competition
 
 def _login(client, email="admin@test.com", password="Admin123!") -> str:
     resp = client.post("/auth/login", json={"email": email, "password": password})
-    return resp.json()["data"]["access_token"]
+    return resp.json()["data"]["accessToken"]
 
 
 def _auth(client, role="admin"):
@@ -26,37 +26,37 @@ def _seed_hierarchy(client, db_session, headers) -> dict:
     db_session.refresh(comp)
 
     sr = client.post("/api/v1/series", json={
-        "competition_id": comp.competition_id,
-        "series_name": "2026 WSOP",
+        "competitionId": comp.competition_id,
+        "seriesName": "2026 WSOP",
         "year": 2026,
-        "begin_at": "2026-05-27",
-        "end_at": "2026-07-17",
+        "beginAt": "2026-05-27",
+        "endAt": "2026-07-17",
     }, headers=headers)
-    series_id = sr.json()["data"]["series_id"]
+    series_id = sr.json()["data"]["seriesId"]
 
     er = client.post(f"/api/v1/series/{series_id}/events", json={
-        "series_id": series_id,
-        "event_no": 1,
-        "event_name": "Main Event",
+        "seriesId": series_id,
+        "eventNo": 1,
+        "eventName": "Main Event",
     }, headers=headers)
-    event_id = er.json()["data"]["event_id"]
+    event_id = er.json()["data"]["eventId"]
 
     fr = client.post(f"/api/v1/events/{event_id}/flights", json={
-        "event_id": event_id,
-        "display_name": "Day 1A",
+        "eventId": event_id,
+        "displayName": "Day 1A",
     }, headers=headers)
-    flight_id = fr.json()["data"]["event_flight_id"]
+    flight_id = fr.json()["data"]["eventFlightId"]
 
-    return {"series_id": series_id, "event_id": event_id, "flight_id": flight_id}
+    return {"seriesId": series_id, "eventId": event_id, "flight_id": flight_id}
 
 
 def _create_player(client, headers, first="John", last="Doe"):
     resp = client.post("/api/v1/players", json={
-        "first_name": first,
-        "last_name": last,
+        "firstName": first,
+        "lastName": last,
         "nationality": "USA",
     }, headers=headers)
-    return resp.json()["data"]["player_id"]
+    return resp.json()["data"]["playerId"]
 
 
 # ── Gate 2-6: POST /tables (admin) → 201, auto 10 seats ─
@@ -67,13 +67,13 @@ def test_create_table_auto_seats(client, seed_users, db_session):
     ids = _seed_hierarchy(client, db_session, headers)
 
     resp = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
-        "table_no": 1,
+        "tableNo": 1,
         "name": "Feature Table 1",
         "type": "feature",
-        "max_players": 9,
+        "maxPlayers": 9,
     }, headers=headers)
     assert resp.status_code == 201
-    table_id = resp.json()["data"]["table_id"]
+    table_id = resp.json()["data"]["tableId"]
     assert table_id is not None
 
     # Verify 10 seats auto-created
@@ -91,10 +91,10 @@ def test_get_seats_all_empty(client, seed_users, db_session):
     ids = _seed_hierarchy(client, db_session, headers)
 
     tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
-        "table_no": 1,
+        "tableNo": 1,
         "name": "Table 1",
     }, headers=headers)
-    table_id = tr.json()["data"]["table_id"]
+    table_id = tr.json()["data"]["tableId"]
 
     resp = client.get(f"/api/v1/tables/{table_id}/seats", headers=headers)
     assert resp.status_code == 200
@@ -102,7 +102,7 @@ def test_get_seats_all_empty(client, seed_users, db_session):
     assert len(seats) == 10
     for seat in seats:
         assert seat["status"] == "empty"
-        assert seat["player_id"] is None
+        assert seat["playerId"] is None
 
 
 # ── Gate 2-8: PUT /seats/3 (assign player) → 200 + status=new ─
@@ -113,19 +113,19 @@ def test_assign_seat(client, seed_users, db_session):
     ids = _seed_hierarchy(client, db_session, headers)
 
     tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
-        "table_no": 1, "name": "T1",
+        "tableNo": 1, "name": "T1",
     }, headers=headers)
-    table_id = tr.json()["data"]["table_id"]
+    table_id = tr.json()["data"]["tableId"]
     player_id = _create_player(client, headers)
 
     resp = client.put(f"/api/v1/tables/{table_id}/seats/3", json={
-        "player_id": player_id,
+        "playerId": player_id,
     }, headers=headers)
     assert resp.status_code == 200
     data = resp.json()["data"]
     assert data["status"] == "new"
-    assert data["player_id"] == player_id
-    assert data["seat_no"] == 3
+    assert data["playerId"] == player_id
+    assert data["seatNo"] == 3
 
 
 # ── Gate 2-9: PUT /seats/3 (already occupied) → 409 ─
@@ -136,17 +136,17 @@ def test_assign_seat_occupied(client, seed_users, db_session):
     ids = _seed_hierarchy(client, db_session, headers)
 
     tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
-        "table_no": 1, "name": "T1",
+        "tableNo": 1, "name": "T1",
     }, headers=headers)
-    table_id = tr.json()["data"]["table_id"]
+    table_id = tr.json()["data"]["tableId"]
     p1 = _create_player(client, headers, "Alice", "A")
     p2 = _create_player(client, headers, "Bob", "B")
 
     # First assign succeeds
-    client.put(f"/api/v1/tables/{table_id}/seats/3", json={"player_id": p1}, headers=headers)
+    client.put(f"/api/v1/tables/{table_id}/seats/3", json={"playerId": p1}, headers=headers)
 
     # Second assign to same seat → 409
-    resp = client.put(f"/api/v1/tables/{table_id}/seats/3", json={"player_id": p2}, headers=headers)
+    resp = client.put(f"/api/v1/tables/{table_id}/seats/3", json={"playerId": p2}, headers=headers)
     assert resp.status_code == 409
     assert "SEAT_OCCUPIED" in str(resp.json())
 
@@ -159,14 +159,14 @@ def test_seat_status_happy_path(client, seed_users, db_session):
     ids = _seed_hierarchy(client, db_session, headers)
 
     tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
-        "table_no": 1, "name": "T1",
+        "tableNo": 1, "name": "T1",
     }, headers=headers)
-    table_id = tr.json()["data"]["table_id"]
+    table_id = tr.json()["data"]["tableId"]
     player_id = _create_player(client, headers)
 
     # empty → new (via assign)
     resp = client.put(f"/api/v1/tables/{table_id}/seats/5", json={
-        "player_id": player_id,
+        "playerId": player_id,
     }, headers=headers)
     assert resp.json()["data"]["status"] == "new"
 
@@ -187,7 +187,7 @@ def test_seat_status_happy_path(client, seed_users, db_session):
         "status": "empty",
     }, headers=headers)
     assert resp.json()["data"]["status"] == "empty"
-    assert resp.json()["data"]["player_id"] is None
+    assert resp.json()["data"]["playerId"] is None
 
 
 # ── Gate 2-11: SeatStatus: empty→reserved→empty ─────
@@ -198,9 +198,9 @@ def test_seat_status_reserved_path(client, seed_users, db_session):
     ids = _seed_hierarchy(client, db_session, headers)
 
     tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
-        "table_no": 1, "name": "T1",
+        "tableNo": 1, "name": "T1",
     }, headers=headers)
-    table_id = tr.json()["data"]["table_id"]
+    table_id = tr.json()["data"]["tableId"]
 
     # empty → reserved
     resp = client.put(f"/api/v1/tables/{table_id}/seats/7", json={
@@ -223,13 +223,13 @@ def test_seat_status_invalid_transition(client, seed_users, db_session):
     ids = _seed_hierarchy(client, db_session, headers)
 
     tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
-        "table_no": 1, "name": "T1",
+        "tableNo": 1, "name": "T1",
     }, headers=headers)
-    table_id = tr.json()["data"]["table_id"]
+    table_id = tr.json()["data"]["tableId"]
     player_id = _create_player(client, headers)
 
     # Assign → new
-    client.put(f"/api/v1/tables/{table_id}/seats/2", json={"player_id": player_id}, headers=headers)
+    client.put(f"/api/v1/tables/{table_id}/seats/2", json={"playerId": player_id}, headers=headers)
     # new → playing
     client.put(f"/api/v1/tables/{table_id}/seats/2", json={"status": "playing"}, headers=headers)
 
@@ -248,9 +248,9 @@ def test_operator_table_access_phase1(client, seed_users, db_session):
     ids = _seed_hierarchy(client, db_session, admin_headers)
 
     tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
-        "table_no": 1, "name": "T1",
+        "tableNo": 1, "name": "T1",
     }, headers=admin_headers)
-    table_id = tr.json()["data"]["table_id"]
+    table_id = tr.json()["data"]["tableId"]
 
     # Operator can view
     op_headers = _auth(client, "operator")

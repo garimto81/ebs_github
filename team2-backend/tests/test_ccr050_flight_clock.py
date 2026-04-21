@@ -22,19 +22,19 @@ def _bootstrap_flight(client, db_session, headers, status_="running"):
     db_session.commit()
     db_session.refresh(comp)
     sr = client.post("/api/v1/series", json={
-        "competition_id": comp.competition_id,
-        "series_name": "S", "year": 2026,
-        "begin_at": "2026-05-27", "end_at": "2026-07-17",
+        "competitionId": comp.competition_id,
+        "seriesName": "S", "year": 2026,
+        "beginAt": "2026-05-27", "endAt": "2026-07-17",
     }, headers=headers)
-    sid = sr.json()["data"]["series_id"]
+    sid = sr.json()["data"]["seriesId"]
     er = client.post("/api/v1/events", json={
-        "series_id": sid, "event_no": 1, "event_name": "E",
+        "seriesId": sid, "eventNo": 1, "eventName": "E",
     }, headers=headers)
-    eid = er.json()["data"]["event_id"]
+    eid = er.json()["data"]["eventId"]
     fr = client.post("/api/v1/flights", json={
-        "event_id": eid, "display_name": "F1",
+        "eventId": eid, "displayName": "F1",
     }, headers=headers)
-    fid = fr.json()["data"]["event_flight_id"]
+    fid = fr.json()["data"]["eventFlightId"]
     # Transition created → running via start_clock
     if status_ == "running":
         client.post(f"/api/v1/flights/{fid}/clock/start", headers=headers)
@@ -48,7 +48,7 @@ def test_complete_running_flight_transitions(client, seed_users, db_session):
     headers = _login(client, "admin")
     fid = _bootstrap_flight(client, db_session, headers, "running")
     resp = client.put(f"/api/v1/flights/{fid}/complete", json={
-        "final_results": {"total_entries": 100, "prize_pool": 50000},
+        "finalResults": {"totalEntries": 100, "prizePool": 50000},
     }, headers=headers)
     assert resp.status_code == 200
     assert resp.json()["data"]["status"] == "completed"

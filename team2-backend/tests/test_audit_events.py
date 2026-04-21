@@ -38,7 +38,7 @@ def test_seq_continuity(db_session: Session):
         evt = event_repository.append(
             table_id=table_id,
             event_type="hand_started",
-            payload={"hand_number": i + 1},
+            payload={"handNumber": i + 1},
             db=db_session,
         )
         seqs.append(evt.seq)
@@ -75,8 +75,8 @@ def test_can_undo_true_with_inverse_payload(db_session: Session):
     evt = event_repository.append(
         table_id="tbl-undo",
         event_type="seat_assigned",
-        payload={"seat": 3, "player_id": "p-1"},
-        inverse_payload={"seat": 3, "player_id": None},
+        payload={"seat": 3, "playerId": "p-1"},
+        inverse_payload={"seat": 3, "playerId": None},
         db=db_session,
     )
     assert event_repository.get_can_undo(evt) is True
@@ -89,7 +89,7 @@ def test_can_undo_false_without_inverse_payload(db_session: Session):
     evt = event_repository.append(
         table_id="tbl-no-undo",
         event_type="hand_started",
-        payload={"hand_number": 1},
+        payload={"handNumber": 1},
         db=db_session,
     )
     assert event_repository.get_can_undo(evt) is False

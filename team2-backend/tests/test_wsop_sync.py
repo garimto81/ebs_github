@@ -11,7 +11,7 @@ from src.models.table import Player
 
 def _login(client, email="admin@test.com", password="Admin123!") -> str:
     resp = client.post("/auth/login", json={"email": email, "password": password})
-    return resp.json()["data"]["access_token"]
+    return resp.json()["data"]["accessToken"]
 
 
 def _auth(client, role="admin"):
@@ -55,7 +55,7 @@ def test_sync_status(client, seed_users, db_session):
     assert resp.status_code == 200
     data = resp.json()["data"]
     assert "sources" in data
-    assert "wsop_live" in data["sources"]
+    assert "wsopLive" in data["sources"]
 
 
 # ── Gate 5-3: WSOP mock polling (CB-wrapped) → UPSERT success ──
@@ -73,7 +73,7 @@ def test_trigger_sync_creates_series(client, seed_users, db_session):
     resp = client.post("/api/v1/sync/trigger/wsop_live", headers=headers)
     assert resp.status_code == 200
     data = resp.json()["data"]
-    assert data["source"] == "wsop_live"
+    assert data["source"] == "wsopLive"
     assert data["created"] == 3  # 3 mock series
 
 

@@ -62,7 +62,7 @@ def test_login_non_live_returns_body_token(client, seed_users):
     assert resp.status_code == 200
     data = resp.json()["data"]
     assert data["refresh_token_delivery"] == "body"
-    assert data["refresh_token"]  # non-empty
+    assert data["refreshToken"]  # non-empty
 
 
 def test_login_live_empty_body_refresh_token(client, seed_users):
@@ -71,4 +71,4 @@ def test_login_live_empty_body_refresh_token(client, seed_users):
         resp = _login(client, "admin@test.com", "Admin123!")
     data = resp.json()["data"]
     assert data["refresh_token_delivery"] == "cookie"
-    assert data["refresh_token"] == ""
+    assert data["refreshToken"] == ""

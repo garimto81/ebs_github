@@ -27,7 +27,7 @@ def tiny_app():
 
     @app.post("/auth/login")
     def login():
-        return {"access_token": "t"}
+        return {"accessToken": "t"}
 
     @app.post("/api/v1/tables")
     def create_table():

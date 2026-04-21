@@ -34,7 +34,7 @@ class LobbyUser(HttpUser):
             name="[setup] /auth/login",
         )
         if resp.status_code == 200:
-            token = resp.json().get("data", {}).get("access_token")
+            token = resp.json().get("data", {}).get("accessToken")
             if token:
                 self.client.headers["Authorization"] = f"Bearer {token}"
 
@@ -47,7 +47,7 @@ class LobbyUser(HttpUser):
             series = r.json().get("data", [])
             if not series:
                 return
-            sid = series[0].get("series_id")
+            sid = series[0].get("seriesId")
             if sid is None:
                 return
         self.client.get(f"/api/v1/series/{sid}/events", name="/series/[id]/events")
@@ -58,7 +58,7 @@ class LobbyUser(HttpUser):
         idem_key = str(uuid.uuid4())
         self.client.post(
             "/api/v1/tables",
-            json={"event_flight_id": 1, "table_no": randint(100, 9999), "name": "smoke", "type": "general"},
+            json={"eventFlightId": 1, "tableNo": randint(100, 9999), "name": "smoke", "type": "general"},
             headers={"Idempotency-Key": idem_key},
             name="/tables (POST)",
         )

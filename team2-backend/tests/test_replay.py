@@ -37,11 +37,11 @@ def test_event_flight_summary_broadcast(client: TestClient, seed_users):
         loop = asyncio.new_event_loop()
         sent = loop.run_until_complete(
             broadcast_event_flight_summary(manager, {
-                "event_flight_id": 123,
-                "display_name": "Day 1A",
+                "eventFlightId": 123,
+                "displayName": "Day 1A",
                 "status": "live",
                 "entries": 1200,
-                "players_left": 890,
+                "playersLeft": 890,
             })
         )
         loop.close()
@@ -50,8 +50,8 @@ def test_event_flight_summary_broadcast(client: TestClient, seed_users):
 
         msg = json.loads(ws.receive_text())
         assert msg["type"] == "event_flight_summary"
-        assert msg["table_id"] == "*"
-        assert msg["payload"]["display_name"] == "Day 1A"
+        assert msg["tableId"] == "*"
+        assert msg["payload"]["displayName"] == "Day 1A"
 
 
 # ── Gate 3-10: clock_tick broadcast ──
@@ -73,7 +73,7 @@ def test_clock_tick_broadcast(client: TestClient, seed_users):
         loop = asyncio.new_event_loop()
         sent = loop.run_until_complete(
             broadcast_clock_tick(manager, {
-                "event_flight_id": 123,
+                "eventFlightId": 123,
                 "status": "running",
                 "level": 8,
                 "time_remaining_sec": 719,
@@ -104,7 +104,7 @@ def test_replay_events_with_pagination(client: TestClient, seed_users, db_sessio
         event_repository.append(
             table_id=table_id,
             event_type="hand_started",
-            payload={"hand_number": i + 1},
+            payload={"handNumber": i + 1},
             db=db_session,
         )
 
@@ -173,14 +173,14 @@ def test_replay_events_include_can_undo(client: TestClient, seed_users, db_sessi
         table_id=table_id,
         event_type="seat_assigned",
         payload={"seat": 3},
-        inverse_payload={"seat": 3, "player_id": None},
+        inverse_payload={"seat": 3, "playerId": None},
         db=db_session,
     )
     # Event without inverse_payload
     event_repository.append(
         table_id=table_id,
         event_type="hand_started",
-        payload={"hand_number": 1},
+        payload={"handNumber": 1},
         db=db_session,
     )
 

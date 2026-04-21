@@ -53,7 +53,7 @@ def test_demo_deck_seeded_active_with_52_cards(deck_client: TestClient) -> None:
     assert body["cards_registered"] == 52
     assert len(body["cards"]) == 52
     # All 52 codes present
-    codes = {c["card_code"] for c in body["cards"]}
+    codes = {c["cardCode"] for c in body["cards"]}
     assert codes == set(VALID_CARD_CODES)
 
 
@@ -74,10 +74,10 @@ def test_register_single_card_transitions_to_partial(deck_client: TestClient) ->
     deck_id = create["id"]
     r = deck_client.post(
         f"/api/v1/decks/{deck_id}/cards",
-        json={"card_code": "AS", "rfid_uid": _uid(1)},
+        json={"cardCode": "AS", "rfidUid": _uid(1)},
     )
     assert r.status_code == 201
-    assert r.json()["card_code"] == "AS"
+    assert r.json()["cardCode"] == "AS"
 
     deck = deck_client.get(f"/api/v1/decks/{deck_id}").json()
     assert deck["status"] == "partial"
@@ -90,7 +90,7 @@ def test_register_all_52_auto_activates(deck_client: TestClient) -> None:
     for i, code in enumerate(sorted(VALID_CARD_CODES)):
         r = deck_client.post(
             f"/api/v1/decks/{deck_id}/cards",
-            json={"card_code": code, "rfid_uid": _uid(1000 + i)},
+            json={"cardCode": code, "rfidUid": _uid(1000 + i)},
         )
         assert r.status_code == 201
     deck = deck_client.get(f"/api/v1/decks/{deck_id}").json()
@@ -103,11 +103,11 @@ def test_duplicate_card_code_rejected(deck_client: TestClient) -> None:
     deck_id = create["id"]
     deck_client.post(
         f"/api/v1/decks/{deck_id}/cards",
-        json={"card_code": "KH", "rfid_uid": _uid(2)},
+        json={"cardCode": "KH", "rfidUid": _uid(2)},
     )
     r = deck_client.post(
         f"/api/v1/decks/{deck_id}/cards",
-        json={"card_code": "KH", "rfid_uid": _uid(3)},
+        json={"cardCode": "KH", "rfidUid": _uid(3)},
     )
     assert r.status_code == 409
     assert r.json()["detail"]["code"] == "CARD_CODE_ALREADY_REGISTERED"
@@ -121,11 +121,11 @@ def test_cross_deck_uid_conflict_returns_409(deck_client: TestClient) -> None:
     d2 = deck_client.post("/api/v1/decks", json={"name": "B"}).json()
     deck_client.post(
         f"/api/v1/decks/{d1['id']}/cards",
-        json={"card_code": "QS", "rfid_uid": "DEADBEEF"},
+        json={"cardCode": "QS", "rfidUid": "DEADBEEF"},
     )
     r = deck_client.post(
         f"/api/v1/decks/{d2['id']}/cards",
-        json={"card_code": "QS", "rfid_uid": "DEADBEEF"},
+        json={"cardCode": "QS", "rfidUid": "DEADBEEF"},
     )
     assert r.status_code == 409
     assert r.json()["detail"]["code"] == "RFID_UID_DUPLICATE"
@@ -160,10 +160,10 @@ def test_bulk_import_uid_conflict_with_demo_rejected(deck_client: TestClient) ->
     # demo deck's 'AS' card occupies a specific UID; try to reuse it.
     demo_as = next(
         c for c in deck_client.get("/api/v1/decks/demo").json()["cards"]
-        if c["card_code"] == "AS"
+        if c["cardCode"] == "AS"
     )
     cards = {code: _uid(7000 + i) for i, code in enumerate(sorted(VALID_CARD_CODES))}
-    cards["AS"] = demo_as["rfid_uid"]  # conflict
+    cards["AS"] = demo_as["rfidUid"]  # conflict
     r = deck_client.post(
         "/api/v1/decks/import",
         json={"name": "Conflict", "cards": cards},
@@ -180,14 +180,14 @@ def test_replace_card_updates_uid(deck_client: TestClient) -> None:
     deck_id = create["id"]
     deck_client.post(
         f"/api/v1/decks/{deck_id}/cards",
-        json={"card_code": "2C", "rfid_uid": _uid(42)},
+        json={"cardCode": "2C", "rfidUid": _uid(42)},
     )
     r = deck_client.patch(
         f"/api/v1/decks/{deck_id}/cards/2C",
         json={"new_rfid_uid": _uid(4242), "reason": "damaged sleeve"},
     )
     assert r.status_code == 200
-    assert r.json()["rfid_uid"] == _uid(4242)
+    assert r.json()["rfidUid"] == _uid(4242)
 
 
 # ── Status transitions ───────────────────────────────────────────────────
@@ -227,7 +227,7 @@ def test_delete_deck_removes_cards_and_uid_index(deck_client: TestClient) -> Non
     deck_id = create["id"]
     deck_client.post(
         f"/api/v1/decks/{deck_id}/cards",
-        json={"card_code": "TD", "rfid_uid": _uid(99)},
+        json={"cardCode": "TD", "rfidUid": _uid(99)},
     )
     r = deck_client.delete(f"/api/v1/decks/{deck_id}")
     assert r.status_code == 204
@@ -236,6 +236,6 @@ def test_delete_deck_removes_cards_and_uid_index(deck_client: TestClient) -> Non
     create2 = deck_client.post("/api/v1/decks", json={"name": "Treuse"}).json()
     r2 = deck_client.post(
         f"/api/v1/decks/{create2['id']}/cards",
-        json={"card_code": "TD", "rfid_uid": _uid(99)},
+        json={"cardCode": "TD", "rfidUid": _uid(99)},
     )
     assert r2.status_code == 201

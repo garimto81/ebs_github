@@ -23,7 +23,7 @@ def test_wsop_live_trigger_admin_only(client, seed_users):
     resp = client.post("/api/v1/sync/wsop-live", headers=headers)
     assert resp.status_code == 200
     body = resp.json()["data"]
-    assert body["source"] == "wsop_live"
+    assert body["source"] == "wsopLive"
 
 
 def test_wsop_live_trigger_operator_denied(client, seed_users):

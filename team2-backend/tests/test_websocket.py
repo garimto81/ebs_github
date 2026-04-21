@@ -44,8 +44,8 @@ def test_ws_cc_connect_valid_jwt(client: TestClient, seed_users):
         # Connection succeeded — send a message and expect ack
         ws.send_text(json.dumps({
             "type": "HandStarted",
-            "table_id": "tbl-1",
-            "payload": {"hand_number": 1},
+            "tableId": "tbl-1",
+            "payload": {"handNumber": 1},
             "message_id": "msg-001",
         }))
         ack = json.loads(ws.receive_text())
@@ -81,8 +81,8 @@ def test_cc_hand_started_creates_audit_event(client: TestClient, seed_users, db_
     with client.websocket_connect(f"/ws/cc?token={token}&table_id=tbl-5") as ws:
         ws.send_text(json.dumps({
             "type": "HandStarted",
-            "table_id": "tbl-5",
-            "payload": {"hand_id": 42, "hand_number": 15, "dealer_seat": 3},
+            "tableId": "tbl-5",
+            "payload": {"handId": 42, "handNumber": 15, "dealerSeat": 3},
             "message_id": "msg-hs-001",
         }))
         ack = json.loads(ws.receive_text())
@@ -126,8 +126,8 @@ def test_cc_event_forwarded_to_lobby(client: TestClient, seed_users):
             # CC sends event
             ws_cc.send_text(json.dumps({
                 "type": "HandStarted",
-                "table_id": "tbl-7",
-                "payload": {"hand_number": 1},
+                "tableId": "tbl-7",
+                "payload": {"handNumber": 1},
                 "message_id": "msg-fwd-001",
             }))
 
@@ -138,7 +138,7 @@ def test_cc_event_forwarded_to_lobby(client: TestClient, seed_users):
             # Lobby receives forwarded event
             fwd = json.loads(ws_lobby.receive_text())
             assert fwd["type"] == "HandStarted"
-            assert fwd["table_id"] == "tbl-7"
+            assert fwd["tableId"] == "tbl-7"
             assert fwd["seq"] == 1
 
         # After CC disconnect, Lobby should receive OperatorDisconnected
@@ -161,8 +161,8 @@ def test_ws_connection_stays_alive(client: TestClient, seed_users):
         for i in range(3):
             ws.send_text(json.dumps({
                 "type": "ActionPerformed",
-                "table_id": "tbl-ping",
-                "payload": {"action_type": "fold", "seat": i},
+                "tableId": "tbl-ping",
+                "payload": {"actionType": "fold", "seat": i},
                 "message_id": f"msg-ping-{i}",
             }))
             ack = json.loads(ws.receive_text())

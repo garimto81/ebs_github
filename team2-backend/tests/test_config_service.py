@@ -76,10 +76,10 @@ def sample_hierarchy(session: Session):
     session.refresh(table)
 
     return {
-        "series_id": series.series_id,
-        "event_id": event.event_id,
+        "seriesId": series.series_id,
+        "eventId": event.event_id,
         "flight_id": flight.event_flight_id,
-        "table_id": table.table_id,
+        "tableId": table.table_id,
     }
 
 
@@ -97,7 +97,7 @@ class TestResolveConfig:
 
     @pytest.mark.asyncio
     async def test_table_overrides_global(self, session, sample_hierarchy):
-        tid = sample_hierarchy["table_id"]
+        tid = sample_hierarchy["tableId"]
         await upsert_config(session, "overlay.skin_id", "1", scope="global")
         await upsert_config(session, "overlay.skin_id", "42", scope="table", scope_id=tid)
         invalidate_all()
@@ -105,8 +105,8 @@ class TestResolveConfig:
 
     @pytest.mark.asyncio
     async def test_event_overrides_series_and_global(self, session, sample_hierarchy):
-        sid = sample_hierarchy["series_id"]
-        eid = sample_hierarchy["event_id"]
+        sid = sample_hierarchy["seriesId"]
+        eid = sample_hierarchy["eventId"]
         await upsert_config(session, "display_mode", "default", scope="global")
         await upsert_config(session, "display_mode", "series_val", scope="series", scope_id=sid)
         await upsert_config(session, "display_mode", "event_val", scope="event", scope_id=eid)
@@ -115,8 +115,8 @@ class TestResolveConfig:
 
     @pytest.mark.asyncio
     async def test_series_fallback_when_event_missing(self, session, sample_hierarchy):
-        sid = sample_hierarchy["series_id"]
-        eid = sample_hierarchy["event_id"]
+        sid = sample_hierarchy["seriesId"]
+        eid = sample_hierarchy["eventId"]
         await upsert_config(session, "currency", "USD", scope="global")
         await upsert_config(session, "currency", "EUR", scope="series", scope_id=sid)
         invalidate_all()
@@ -124,8 +124,8 @@ class TestResolveConfig:
 
     @pytest.mark.asyncio
     async def test_scope_id_backresolve_from_table_id(self, session, sample_hierarchy):
-        tid = sample_hierarchy["table_id"]
-        sid = sample_hierarchy["series_id"]
+        tid = sample_hierarchy["tableId"]
+        sid = sample_hierarchy["seriesId"]
         await upsert_config(session, "currency", "GBP", scope="series", scope_id=sid)
         invalidate_all()
         assert resolve_config(session, "currency", table_id=tid) == "GBP"
@@ -219,7 +219,7 @@ class TestConfigChangedBroadcast:
     @pytest.mark.asyncio
     async def test_table_scope_targets_cc_channel_table_id(self, session, sample_hierarchy):
         ws = AsyncMock()
-        tid = sample_hierarchy["table_id"]
+        tid = sample_hierarchy["tableId"]
         await upsert_config(
             session, "overlay.skin_id", "99",
             scope="table", scope_id=tid, ws_manager=ws,

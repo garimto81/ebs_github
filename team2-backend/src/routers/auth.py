@@ -2,8 +2,10 @@
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from pydantic import BaseModel
+from pydantic import BaseModel  # kept for IDE resolution of internal helpers
 from sqlmodel import Session
+
+from src.models.base import EbsBaseModel
 
 from src.app.config import settings
 from src.app.database import get_db
@@ -66,23 +68,23 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 # ── Request / Response schemas ────────────────────
 
 
-class LoginRequest(BaseModel):
+class LoginRequest(EbsBaseModel):
     email: str
     password: str
 
 
-class RefreshRequest(BaseModel):
+class RefreshRequest(EbsBaseModel):
     refresh_token: str
 
 
-class UserResponse(BaseModel):
+class UserResponse(EbsBaseModel):
     user_id: int
     email: str
     role: str
     table_ids: list[int] = []
 
 
-class LoginData(BaseModel):
+class LoginData(EbsBaseModel):
     access_token: str
     refresh_token: str
     refresh_token_delivery: str
@@ -95,48 +97,48 @@ class LoginData(BaseModel):
     requires_2fa: bool = False
 
 
-class LoginResponse(BaseModel):
+class LoginResponse(EbsBaseModel):
     data: LoginData
     error: Optional[str] = None
 
 
-class RefreshData(BaseModel):
+class RefreshData(EbsBaseModel):
     access_token: str
     expires_in: int
     expires_at: str
     auth_profile: str
 
 
-class TwoFaLoginData(BaseModel):
+class TwoFaLoginData(EbsBaseModel):
     requires_2fa: bool = True
     temp_token: str
 
 
-class TwoFaLoginResponse(BaseModel):
+class TwoFaLoginResponse(EbsBaseModel):
     data: TwoFaLoginData
     error: Optional[str] = None
 
 
-class Verify2faRequest(BaseModel):
+class Verify2faRequest(EbsBaseModel):
     temp_token: str
     totp_code: str
 
 
-class Setup2faResponse(BaseModel):
+class Setup2faResponse(EbsBaseModel):
     secret: str
     provisioning_uri: str
 
 
-class Disable2faRequest(BaseModel):
+class Disable2faRequest(EbsBaseModel):
     user_id: int
 
 
-class SessionInfoResponse(BaseModel):
+class SessionInfoResponse(EbsBaseModel):
     user: UserResponse
     session: dict
 
 
-class MeResponse(BaseModel):
+class MeResponse(EbsBaseModel):
     user_id: int
     email: str
     display_name: str
@@ -336,15 +338,15 @@ def disable_2fa(
 # ── Password Reset schemas ───────────────────────
 
 
-class PasswordResetSendRequest(BaseModel):
+class PasswordResetSendRequest(EbsBaseModel):
     email: str
 
 
-class PasswordResetVerifyRequest(BaseModel):
+class PasswordResetVerifyRequest(EbsBaseModel):
     token: str
 
 
-class PasswordResetRequest(BaseModel):
+class PasswordResetRequest(EbsBaseModel):
     token: str
     new_password: str
 

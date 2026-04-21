@@ -13,7 +13,7 @@ from src.repositories.event_repository import event_repository
 
 def _login(client, email="admin@test.com", password="Admin123!") -> str:
     resp = client.post("/auth/login", json={"email": email, "password": password})
-    return resp.json()["data"]["access_token"]
+    return resp.json()["data"]["accessToken"]
 
 
 def _auth(client, role="admin"):
@@ -74,7 +74,7 @@ def test_list_audit_logs_by_entity_type(client, seed_users, db_session):
     resp = client.get("/api/v1/audit-logs?entity_type=series", headers=headers)
     assert resp.status_code == 200
     data = resp.json()["data"]
-    assert all(item["entity_type"] == "series" for item in data)
+    assert all(item["entityType"] == "series" for item in data)
 
 
 # ── Gate 5-10: GET /audit-events?table_id=tbl-001&since=0 → 200 + seq order ──
@@ -90,7 +90,7 @@ def test_list_audit_events_by_table(client, seed_users, db_session):
     data = resp.json()["data"]
     assert len(data) == 5
     # All from same table
-    assert all(item["table_id"] == "tbl-001" for item in data)
+    assert all(item["tableId"] == "tbl-001" for item in data)
 
 
 def test_list_audit_events_since_filters(client, seed_users, db_session):
@@ -116,7 +116,7 @@ def test_list_audit_events_correlation_filter(client, seed_users, db_session):
     assert resp.status_code == 200
     data = resp.json()["data"]
     assert len(data) == 3
-    assert all(item["correlation_id"] == "corr-100" for item in data)
+    assert all(item["correlationId"] == "corr-100" for item in data)
 
 
 # ── Gate 5-12: GET /audit-logs/download → Content-Type: text/csv ──
@@ -137,7 +137,7 @@ def test_download_audit_logs_csv(client, seed_users, db_session):
     lines = content.strip().split("\n")
     # Header row
     assert "id" in lines[0]
-    assert "user_id" in lines[0]
+    assert "userId" in lines[0]
     assert "action" in lines[0]
     # Data rows
     assert len(lines) >= 6  # header + 5 data rows

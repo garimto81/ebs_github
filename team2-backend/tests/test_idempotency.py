@@ -10,7 +10,7 @@ from src.models.competition import Competition
 
 def _login(client, email="admin@test.com", password="Admin123!") -> str:
     resp = client.post("/auth/login", json={"email": email, "password": password})
-    return resp.json()["data"]["access_token"]
+    return resp.json()["data"]["accessToken"]
 
 
 def _auth(client, role="admin"):
@@ -29,11 +29,11 @@ def _seed_competition(db_session) -> int:
 
 def _series_body(competition_id: int) -> dict:
     return {
-        "competition_id": competition_id,
-        "series_name": "2026 WSOP",
+        "competitionId": competition_id,
+        "seriesName": "2026 WSOP",
         "year": 2026,
-        "begin_at": "2026-05-27",
-        "end_at": "2026-07-17",
+        "beginAt": "2026-05-27",
+        "endAt": "2026-07-17",
     }
 
 
@@ -56,7 +56,7 @@ def test_idempotent_replay(client, seed_users, db_session):
     assert resp2.status_code == 201
     assert resp2.headers.get("idempotent-replayed") == "true"
     # Response body should match
-    assert resp2.json()["data"]["series_name"] == "2026 WSOP"
+    assert resp2.json()["data"]["seriesName"] == "2026 WSOP"
 
 
 # ── Gate 4-2: Key reused with different body → 409 ────
@@ -74,7 +74,7 @@ def test_idempotency_key_reused_different_body(client, seed_users, db_session):
 
     # Different body with same key
     body2 = _series_body(comp_id)
-    body2["series_name"] = "Different Series"
+    body2["seriesName"] = "Different Series"
     resp2 = client.post("/api/v1/series", json=body2, headers=headers)
     assert resp2.status_code == 409
     assert resp2.json()["error"]["code"] == "IDEMPOTENCY_KEY_REUSED"
@@ -96,7 +96,7 @@ def test_no_idempotency_key_passthrough(client, seed_users, db_session):
     resp2 = client.post("/api/v1/series", json=body, headers=headers)
     assert resp2.status_code == 201
     # These should be different series (different IDs)
-    assert resp1.json()["data"]["series_id"] != resp2.json()["data"]["series_id"]
+    assert resp1.json()["data"]["seriesId"] != resp2.json()["data"]["seriesId"]
 
 
 # ── Gate 4-4: Expired key → treated as miss ────────────
