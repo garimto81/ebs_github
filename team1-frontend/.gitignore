@@ -41,3 +41,6 @@ vite.config.ts.*
 
 # Vitest
 /coverage
+
+# Claude commands (Junction to root)
+.claude/commands/
