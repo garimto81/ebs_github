@@ -46,7 +46,7 @@ def test_ws_cc_connect_valid_jwt(client: TestClient, seed_users):
             "type": "HandStarted",
             "tableId": "tbl-1",
             "payload": {"handNumber": 1},
-            "message_id": "msg-001",
+            "messageId": "msg-001",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "Ack"
@@ -83,7 +83,7 @@ def test_cc_hand_started_creates_audit_event(client: TestClient, seed_users, db_
             "type": "HandStarted",
             "tableId": "tbl-5",
             "payload": {"handId": 42, "handNumber": 15, "dealerSeat": 3},
-            "message_id": "msg-hs-001",
+            "messageId": "msg-hs-001",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["payload"]["status"] == "ok"
@@ -128,7 +128,7 @@ def test_cc_event_forwarded_to_lobby(client: TestClient, seed_users):
                 "type": "HandStarted",
                 "tableId": "tbl-7",
                 "payload": {"handNumber": 1},
-                "message_id": "msg-fwd-001",
+                "messageId": "msg-fwd-001",
             }))
 
             # CC gets ack
@@ -163,7 +163,7 @@ def test_ws_connection_stays_alive(client: TestClient, seed_users):
                 "type": "ActionPerformed",
                 "tableId": "tbl-ping",
                 "payload": {"actionType": "fold", "seat": i},
-                "message_id": f"msg-ping-{i}",
+                "messageId": f"msg-ping-{i}",
             }))
             ack = json.loads(ws.receive_text())
             assert ack["type"] == "Ack"
@@ -197,7 +197,7 @@ def test_ws_disconnect_sends_operator_disconnected(client: TestClient, seed_user
         # CC context exited → disconnect
         disconn = json.loads(ws_lobby.receive_text())
         assert disconn["type"] == "OperatorDisconnected"
-        assert disconn["payload"]["operator_id"] == str(seed_users["operator"].user_id)
+        assert disconn["payload"]["operatorId"] == str(seed_users["operator"].user_id)
 
 
 # ── Lobby subscribe test ──
@@ -213,7 +213,7 @@ def test_lobby_subscribe(client: TestClient, seed_users):
         ws.send_text(json.dumps({
             "type": "Subscribe",
             "payload": {"table_ids": ["tbl-1", "tbl-2"]},
-            "message_id": "msg-sub-001",
+            "messageId": "msg-sub-001",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "Ack"

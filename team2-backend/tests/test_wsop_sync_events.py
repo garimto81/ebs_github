@@ -52,16 +52,16 @@ async def test_poll_events_creates_with_mapped_game_type(db_session):
             "year": s.year,
             "eventNo": 1,
             "eventName": "$10K NL Hold'em",
-            "wsop_game_type": 0,  # Holdem
-            "wsop_game_mode": "single",
+            "wsopGameType": 0,  # Holdem
+            "wsopGameMode": "single",
         },
         {
             "seriesName": s.series_name,
             "year": s.year,
             "eventNo": 2,
             "eventName": "$1,500 HORSE",
-            "wsop_game_type": 5,  # HORSE
-            "wsop_game_mode": "fixed_rotation",
+            "wsopGameType": 5,  # HORSE
+            "wsopGameMode": "fixed_rotation",
         },
     ]
 
@@ -96,7 +96,7 @@ def test_poll_events_unknown_game_type_captured_as_error(db_session):
     payload = [{
         "seriesName": s.series_name, "year": s.year,
         "eventNo": 99, "eventName": "Unknown",
-        "wsop_game_type": 42,  # invalid
+        "wsopGameType": 42,  # invalid
     }]
     result = svc.upsert_events(payload, db_session)
     assert result.created == 0

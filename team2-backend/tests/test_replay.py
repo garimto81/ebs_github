@@ -76,7 +76,7 @@ def test_clock_tick_broadcast(client: TestClient, seed_users):
                 "eventFlightId": 123,
                 "status": "running",
                 "level": 8,
-                "time_remaining_sec": 719,
+                "timeRemainingSec": 719,
             })
         )
         loop.close()

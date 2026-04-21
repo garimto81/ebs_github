@@ -34,7 +34,7 @@ def test_write_game_info_valid_returns_game_info_ack(client, seed_users):
                 "smallBlind": 100,
                 "bigBlind": 200,
             },
-            "message_id": "m1",
+            "messageId": "m1",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "GameInfoAck"
@@ -49,7 +49,7 @@ def test_write_game_info_missing_fields_returns_rejected(client, seed_users):
             "type": "WriteGameInfo",
             "tableId": "tbl-1",
             "payload": {},  # missing required fields
-            "message_id": "m2",
+            "messageId": "m2",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "GameInfoRejected"
@@ -70,7 +70,7 @@ def test_write_deal_valid_returns_deal_ack(client, seed_users):
                 "dealerSeat": 3,
                 "deckId": 1,
             },
-            "message_id": "m3",
+            "messageId": "m3",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "DealAck"
@@ -84,7 +84,7 @@ def test_write_deal_missing_hand_number_rejected(client, seed_users):
             "type": "WriteDeal",
             "tableId": "tbl-1",
             "payload": {"dealerSeat": 3},
-            "message_id": "m4",
+            "messageId": "m4",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "DealRejected"
@@ -105,7 +105,7 @@ def test_write_action_valid_returns_action_ack(client, seed_users):
                 "action": "bet",
                 "amount": 400,
             },
-            "message_id": "m5",
+            "messageId": "m5",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "ActionAck"
@@ -122,7 +122,7 @@ def test_write_action_unknown_action_rejected(client, seed_users):
                 "seatNo": 3,
                 "action": "wiggle",  # not in valid set
             },
-            "message_id": "m6",
+            "messageId": "m6",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "ActionRejected"
@@ -142,7 +142,7 @@ def test_game_info_ack_envelope_includes_server_time(client, seed_users):
                 "gameType": 0, "betStructure": 0,
                 "smallBlind": 100, "bigBlind": 200,
             },
-            "message_id": "m7",
+            "messageId": "m7",
         }))
         ack = json.loads(ws.receive_text())
         assert "server_time" in ack

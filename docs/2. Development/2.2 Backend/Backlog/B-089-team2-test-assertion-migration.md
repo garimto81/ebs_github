@@ -38,11 +38,47 @@ B-088 PR 2 infrastructure 도입 (EbsBaseModel, alias_generator=to_camel, popula
 3. WSOP fixture JSON 은 별도 작업 — WSOP LIVE 원본 규약 확인 후 일괄 변환
 4. Migrations runtime 8 errors — bcrypt/conftest 관련, 별건 이슈 가능
 
+## 진행 현황 (2026-04-21 세션)
+
+| 마일스톤 | 결과 |
+|---------|------|
+| PR 2 직후 (baseline) | 187/247 (76%) — 52 failed + 8 errors |
+| wsop_live 경로 복원 | 198/247 — fixture 8개 회복 |
+| access_token 단일 인용 치환 | 213/247 (86%) |
+| message_id / 필드 추가 치환 | 216/247 (87%) — **현 세션 종료 지점** |
+
+### 남은 실패 분류 (23 failed + 8 errors)
+
+**자동 치환 불가 — 각각 개별 분석 필요**:
+- `test_ws_cc_commands.py` (4) — handler 가 camelCase request payload 를 parse 못 함 (Pydantic 모델 미적용)
+- `test_audit.py` (4) — audit router 가 dict 직접 반환 (Pydantic model 미사용)
+- `test_decks_inmemory.py` (5) — decks service response dict snake_case 반환
+- `test_auth_security.py` (2) — cookie 관련 (ebs_refresh/ebs_csrf 는 보존 대상)
+- `test_event_flight_status.py` (2) — sync upsert 내부 dict
+- `test_reports_basic.py` (2) — reports mock data snake_case
+- `test_wsop_sync_events.py` (2) — upsert 내부
+- `test_replay.py` (1) — event_flight_summary payload
+- `test_ssot_phase_c_quick.py` (1) — table_status response
+- `test_flat_endpoints.py` (1) — nested endpoint check
+- `test_websocket.py` (1) — cc→lobby forward
+- `test_auth.py` (1) — settings.auth_profile attr
+
+**Migration runtime errors (8, 별건)**:
+- `test_migrations_runtime.py` 가 init.sql 을 `connection.execute()` 로 실행 — SQLite 는 multi-statement 미지원
+- 이는 B-088 와 무관한 pre-existing 이슈 (connection.executescript() 로 교체 필요)
+- 해결: `tests/test_migrations_runtime.py` 내 `_apply_schema` helper 함수 수정
+
 ## 수락 기준
 
 - [ ] `pytest tests/ -q` 결과 247 passed, 0 failed (baseline 복구)
-- [ ] WSOP LIVE fixture JSON 은 camelCase (실 spec 정렬)
-- [ ] B-088 PR 3/4 진입 전 이 항목 완료
+- [x] wsop_live 경로 복원 (2026-04-21)
+- [x] 자동 치환 1차 2차 (2026-04-21, 216/247 도달)
+- [ ] Handler/router 내부 dict → Pydantic EbsBaseModel 전환 (4 test)
+- [ ] Audit router / Decks service / Reports mock data Pydantic 화
+- [ ] Sync upsert 내부 dict camelCase
+- [ ] Cookie 이름 `ebs_refresh`/`ebs_csrf` 보존 확인
+- [ ] Migration runtime 8 errors 해소 (executescript 교체 — 별건)
+- [ ] B-088 PR 3/4 진입 전 baseline 복구 완료
 
 ## 의존
 

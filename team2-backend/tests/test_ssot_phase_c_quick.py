@@ -10,7 +10,7 @@ def _login(client, role="admin"):
     resp = client.post("/auth/login", json={
         "email": emails[role], "password": passwords[role],
     })
-    return {"Authorization": f"Bearer {resp.json()['data']['access_token']}"}
+    return {"Authorization": f"Bearer {resp.json()['data']['accessToken']}"}
 
 
 # ── Table /status ──

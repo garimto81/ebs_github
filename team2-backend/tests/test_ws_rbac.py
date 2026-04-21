@@ -49,7 +49,7 @@ def test_operator_with_matching_table_accepted(client, seed_users):
             "type": "HandStarted",
             "tableId": "tbl-1",
             "payload": {"handNumber": 1},
-            "message_id": "m1",
+            "messageId": "m1",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "Ack"
@@ -68,7 +68,7 @@ def test_admin_bypasses_table_guard(client, seed_users):
             "type": "HandStarted",
             "tableId": "tbl-7",
             "payload": {"handNumber": 1},
-            "message_id": "m1",
+            "messageId": "m1",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "Ack"
@@ -92,7 +92,7 @@ def test_operator_without_claim_still_allowed_backcompat(client, seed_users):
             "type": "HandStarted",
             "tableId": "tbl-1",
             "payload": {"handNumber": 1},
-            "message_id": "m1",
+            "messageId": "m1",
         }))
         ack = json.loads(ws.receive_text())
         assert ack["type"] == "Ack"

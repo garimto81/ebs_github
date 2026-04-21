@@ -13,7 +13,7 @@ def _login(client, role="admin"):
     resp = client.post("/auth/login", json={
         "email": emails[role], "password": passwords[role],
     })
-    return {"Authorization": f"Bearer {resp.json()['data']['access_token']}"}
+    return {"Authorization": f"Bearer {resp.json()['data']['accessToken']}"}
 
 
 def _bootstrap_flight(client, db_session, headers, status_="running"):
@@ -107,7 +107,7 @@ def test_clock_adjust_stack_validates_non_negative(client, seed_users, db_sessio
     headers = _login(client, "admin")
     fid = _bootstrap_flight(client, db_session, headers, "running")
     resp = client.put(f"/api/v1/flights/{fid}/clock/adjust-stack", json={
-        "average_stack": -100,
+        "averageStack": -100,
     }, headers=headers)
     assert resp.status_code == 400
 
@@ -116,7 +116,7 @@ def test_clock_adjust_stack_valid(client, seed_users, db_session):
     headers = _login(client, "admin")
     fid = _bootstrap_flight(client, db_session, headers, "running")
     resp = client.put(f"/api/v1/flights/{fid}/clock/adjust-stack", json={
-        "average_stack": 45000, "reason": "re-entry closed",
+        "averageStack": 45000, "reason": "re-entry closed",
     }, headers=headers)
     assert resp.status_code == 200
-    assert resp.json()["data"]["average_stack"] == 45000
+    assert resp.json()["data"]["averageStack"] == 45000

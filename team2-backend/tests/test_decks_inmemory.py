@@ -50,7 +50,7 @@ def test_demo_deck_seeded_active_with_52_cards(deck_client: TestClient) -> None:
     body = r.json()
     assert body["id"] == "demo"
     assert body["status"] == "active"
-    assert body["cards_registered"] == 52
+    assert body["cardsRegistered"] == 52
     assert len(body["cards"]) == 52
     # All 52 codes present
     codes = {c["cardCode"] for c in body["cards"]}
@@ -66,7 +66,7 @@ def test_create_deck_starts_registering(deck_client: TestClient) -> None:
     body = r.json()
     assert body["name"] == "Table-01 deck"
     assert body["status"] == "registering"
-    assert body["cards_registered"] == 0
+    assert body["cardsRegistered"] == 0
 
 
 def test_register_single_card_transitions_to_partial(deck_client: TestClient) -> None:
@@ -81,7 +81,7 @@ def test_register_single_card_transitions_to_partial(deck_client: TestClient) ->
 
     deck = deck_client.get(f"/api/v1/decks/{deck_id}").json()
     assert deck["status"] == "partial"
-    assert deck["cards_registered"] == 1
+    assert deck["cardsRegistered"] == 1
 
 
 def test_register_all_52_auto_activates(deck_client: TestClient) -> None:
@@ -95,7 +95,7 @@ def test_register_all_52_auto_activates(deck_client: TestClient) -> None:
         assert r.status_code == 201
     deck = deck_client.get(f"/api/v1/decks/{deck_id}").json()
     assert deck["status"] == "active"
-    assert deck["cards_registered"] == 52
+    assert deck["cardsRegistered"] == 52
 
 
 def test_duplicate_card_code_rejected(deck_client: TestClient) -> None:
@@ -144,7 +144,7 @@ def test_bulk_import_52_activates_immediately(deck_client: TestClient) -> None:
     assert r.status_code == 201
     body = r.json()
     assert body["status"] == "active"
-    assert body["cards_registered"] == 52
+    assert body["cardsRegistered"] == 52
 
 
 def test_bulk_import_less_than_52_rejected(deck_client: TestClient) -> None:
@@ -184,7 +184,7 @@ def test_replace_card_updates_uid(deck_client: TestClient) -> None:
     )
     r = deck_client.patch(
         f"/api/v1/decks/{deck_id}/cards/2C",
-        json={"new_rfid_uid": _uid(4242), "reason": "damaged sleeve"},
+        json={"newRfidUid": _uid(4242), "reason": "damaged sleeve"},
     )
     assert r.status_code == 200
     assert r.json()["rfidUid"] == _uid(4242)

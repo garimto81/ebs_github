@@ -13,7 +13,7 @@ import pytest
 from src.adapters.wsop_game_type import map_to_ebs
 
 
-FIXTURE_DIR = Path(__file__).parent / "fixtures" / "wsopLive"
+FIXTURE_DIR = Path(__file__).parent / "fixtures" / "wsop_live"
 
 
 def load(name: str) -> dict:

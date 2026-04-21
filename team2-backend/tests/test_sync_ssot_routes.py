@@ -8,7 +8,7 @@ def _login(client, role="admin"):
     resp = client.post("/auth/login", json={
         "email": emails[role], "password": passwords[role],
     })
-    return {"Authorization": f"Bearer {resp.json()['data']['access_token']}"}
+    return {"Authorization": f"Bearer {resp.json()['data']['accessToken']}"}
 
 
 def test_wsop_live_status_canonical_route(client, seed_users):
@@ -23,7 +23,7 @@ def test_wsop_live_trigger_admin_only(client, seed_users):
     resp = client.post("/api/v1/sync/wsop-live", headers=headers)
     assert resp.status_code == 200
     body = resp.json()["data"]
-    assert body["source"] == "wsopLive"
+    assert body["source"] == "wsop_live"
 
 
 def test_wsop_live_trigger_operator_denied(client, seed_users):
