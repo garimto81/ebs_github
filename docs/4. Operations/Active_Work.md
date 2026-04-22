@@ -140,6 +140,20 @@ eta: 5m
 released: '2026-04-22T02:16:24Z'
 ```
 
+### Claim #3 — team3: Foundation v11 재설계 대응 — team3 기획 문서 gap 분석 + Backlog 8 항목 등재
+```yaml
+id: 3
+team: team3
+task: Foundation v11 재설계 대응 — team3 기획 문서 gap 분석 + Backlog 8 항목 등재
+started: '2026-04-22T10:31:36Z'
+scope:
+- docs/2. Development/2.3 Game Engine/Backlog.md
+- docs/2. Development/2.3 Game Engine/Backlog/**
+status: released
+eta: 1h
+released: '2026-04-22T10:34:24Z'
+```
+
 <!-- RELEASED_END -->
 
 ## Usage Quick Reference
