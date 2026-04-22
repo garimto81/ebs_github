@@ -2,7 +2,7 @@
 title: Risk Matrix
 owner: conductor
 tier: internal
-last-updated: 2026-04-17
+last-updated: 2026-04-22
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "Risk Matrix 완결 (4KB)"
@@ -11,6 +11,7 @@ reimplementability_notes: "Risk Matrix 완결 (4KB)"
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-04-22 | v2.1 | R6 중앙 서버 SPOF 등재 (Foundation §8.5 N PC + 중앙 서버 아키텍처 반영, B-205) |
 | 2026-04-17 | v2.0 | CCR 폐기 반영. 리스크 분류는 유지, 처리 경로를 free_write + decision_owner 로 변경 |
 | 2026-04-12 | v1.0 | 3등급 리스크 분류 + Fast-Track 도입 |
 
@@ -97,7 +98,7 @@ Draft 분석
 
 ## 프로젝트 리스크 (Foundation Ch.9 기반)
 
-EBS 프로젝트 전체에 적용되는 전략적 리스크 5건.
+EBS 프로젝트 전체에 적용되는 전략적 리스크 6건.
 
 | # | 리스크 | 영향 | 완화 전략 | 상태 |
 |---|--------|------|----------|------|
@@ -106,6 +107,7 @@ EBS 프로젝트 전체에 적용되는 전략적 리스크 5건.
 | R3 | PokerGFX 역설계 IP 리스크 | 중 | 클린룸 설계 원칙 (기능 스펙만 참조, 코드 독립 작성) | 상시 적용 |
 | R4 | RFID 리더+안테나 호환성 | 높음 | Phase 1 POC에서 조기 검증 (ST25R3911B + ESP32) | Phase 1 검증 |
 | R5 | 운영 무인화 시 기존 스태프 저항 | 중 | Phase 5까지 단계적 전환, AI 도입은 보조 도구로 시작 | Phase 5 대응 |
+| R6 | **중앙 서버 SPOF (1 피처 테이블 = 1 PC + 중앙 BO/DB)** | 높음 | Foundation §8.5 복수 테이블 아키텍처 — LAN 장애 · 중앙 서버 다운 · 로컬 fallback 시나리오 `docs/4. Operations/Network_Deployment.md` 에서 정의. crash 복구 = 프로세스 재시작 시 DB snapshot 재로드 (§6.4). 운영 대응: 중앙 서버 redundancy (예: warm-standby) + per-PC 로컬 캐시 — Phase 외 운영 기획 책임 | 기획 완결 (운영 책임 이관) |
 
 ## 참고
 
