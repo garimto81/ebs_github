@@ -106,63 +106,84 @@ WSOP LIVE Staff Page는 아래 BO 기능을 제공한다 (Confluence Staff App A
 
 ## 2. 아키텍처
 
-### 2.1 3-앱 관계
+### 2.1 BO 의 위치 — Foundation 2 렌즈 정렬 (2026-04-22 재작성)
 
-```
- ┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
- │ Lobby (웹)   │     │  Back Office (BO) │     │ Command Center│
- │              │     │                  │     │ (Flutter)     │
- │ • 관리/설정  │REST │ • FastAPI 서버   │ WS  │ • 게임 진행   │
- │ • 1개        │◄───►│ • SQLite → PgSQL │◄───►│ • 테이블당 1개│
- │ • Admin/Op   │     │ • WebSocket Hub  │     │ • Operator    │
- └──────────────┘     │ • 66개 엔드포인트 │     └──────────────┘
-                      └────────┬─────────┘
-                               │ 폴링
-                      ┌────────▼─────────┐
-                      │ WSOP LIVE API    │
-                      │ (외부, 읽기 전용) │
-                      └──────────────────┘
+Foundation §4.4 "두 렌즈" 에 따르면 EBS 는 **6 기능 조각 / 4 설치 단위** 로 구성되며, Back Office 는 **Backend Server** 설치 단위를 소유한다. Lobby/Command Center/Overlay 는 team1+team4 가 공동 소유하는 **EBS Desktop App** (Flutter Desktop 단일 바이너리) 의 기능 조각이다 (§5.0 런타임 모드에 따라 탭 또는 다중창으로 전환).
+
+```mermaid
+flowchart LR
+    subgraph App["EBS Desktop App (Flutter Desktop)"]
+        LO[Lobby 조각]
+        CC[CC 조각]
+        OV[Overlay 조각]
+    end
+    subgraph BE["Backend Server (팀2)"]
+        API[FastAPI REST + WS Hub]
+        DB[(DB — SSOT)]
+    end
+    Eng[Game Engine (팀3)]
+    Ext[WSOP LIVE API (외부)]
+
+    LO -.REST.-> API
+    LO <-.WS ws/lobby.-> API
+    CC <-.WS ws/cc.-> API
+    CC -.REST (stateless).-> Eng
+    API <-.SQL.-> DB
+    API -.폴링.-> Ext
 ```
 
-- Lobby ↔ CC **직접 연동 없음** — 모든 데이터는 BO DB 경유
+**통신 계약** (Foundation §6.3 통신 매트릭스):
+
+| From → To | 프로토콜 | 용도 |
+|-----------|:--------:|------|
+| Lobby → BO | REST | 동기 CRUD (API-01) |
+| Lobby ← BO | WS `ws/lobby` | 모니터 전용 (API-05) |
+| CC ↔ BO | WS `ws/cc` | 양방향 명령·이벤트 (API-05) |
+| CC → Engine | REST | stateless query (BO 경유 없음) |
+| Lobby ↔ CC | — | **직접 연결 금지** — BO DB 통한 간접 공유만 |
+
+- Lobby ↔ CC **직접 연동 없음** — 모든 데이터는 BO DB 경유 (Foundation §6.3 원칙)
 - Mock 모드: RFID HAL만 교체, BO는 Real/Mock 100% 동일 동작
+
+> **용어 주의**: 과거 문서에서 "Lobby (웹)" 표현을 사용했으나, team1 의 Docker Web 배포는 **개발/프리뷰 모드** 이며 Foundation §4.4 의 공식 설치 단위는 Flutter Desktop. 본 문서는 §4.4 정렬 이후 SSOT.
 
 ### 2.2 기술 스택
 
 | 계층 | 기술 | 비고 |
 |------|------|------|
 | **API Server** | FastAPI (Python 3.11+) | 비동기, 자동 OpenAPI 문서 |
-| **WebSocket** | FastAPI WebSocket | 실시간 양방향 통신 |
-| **DB** | SQLite (Phase 1~2) → PostgreSQL (Phase 3+) | SQLAlchemy ORM |
-| **인증** | JWT + Google OAuth (Mock) | 세션 토큰 |
-| **배포** | 단일 서버 (Phase 1~2) → Docker (Phase 3+) | Phase 3+ Load Balancer |
+| **WebSocket** | FastAPI WebSocket | 실시간 양방향 통신 (Foundation §6.4 WS push <100ms 채널) |
+| **DB** | SQLite (dev) / PostgreSQL (prod) | SQLAlchemy ORM. **Foundation §6.4 에 따라 DB = SSOT** |
+| **인증** | JWT + Google OAuth | 세션 토큰 (API-06) |
+| **배포 (단일 PC)** | 단일 프로세스 또는 Docker | 테이블 1개 전용 |
+| **배포 (N PC)** | **중앙 서버 1대 (BO+DB)** — N 개 테이블 PC 가 LAN 접속 | Foundation §8.5, `docs/4. Operations/Network_Deployment.md` |
 
-**Phase별 진화**:
+> 배포 모델 상세: `Engineering/Build_and_Deploy.md` §단일 PC 운영 / §N PC + 중앙 서버
 
-| Phase | DB | 인증 | 배포 | 확장 |
-|:-----:|:--:|:----:|:----:|:----:|
-| 1 | SQLite | JWT (Email + 2FA + Google OAuth Mock) | 단일 프로세스 | — |
-| 2 | SQLite | Google OAuth 실제 전환 | Docker 단일 | — |
-| 3+ | PostgreSQL | 동일 | Docker + Load Balancer | 수평 확장 |
+### 2.3 핵심 원칙 — Foundation 정합 (2026-04-22 재작성)
 
-### 2.3 핵심 원칙
+- **Lobby ↔ CC 직접 연동 없음** — 모든 데이터는 BO DB를 경유 (Foundation §6.3)
+- **1 Lobby : N CC** — Lobby 는 시스템당 1개, CC 는 테이블당 1개 (Foundation §5.1, §5.3)
+- **1 PC = 1 피처 테이블** — 하드웨어 제약(캡처카드·SDI/NDI·RFID USB) 으로 단일 PC 는 단일 테이블만 통제 (Foundation §8.5). 멀티 EBS 개념은 2026-04-22 회의로 폐기
+- **DB = SSOT** — 모든 상태 변경은 BO DB commit 후 WS broadcast (Foundation §6.4). `Sync_Protocol.md §1.0` 정책
+- **Engine = 게임 상태 SSOT** — hands/cards/pots 는 Engine HTTP 응답이 최종. BO WS 는 audit 참고값 (Foundation §6.3 §1.1.1, API-05 §10.1)
+- **crash 복구 패턴** — 프로세스 재시작 시 `GET /api/v1/tables/{id}/state/snapshot` (§5.18) 으로 baseline 재로드 후 WS push 재적용
 
-- Lobby ↔ CC **직접 연동 없음** — 모든 데이터는 BO DB를 경유
-- CC는 테이블당 1개 인스턴스 (1 Lobby : N CC)
-- BO는 단일 서버 (Phase 1~2), 수평 확장은 Phase 3+
-- DB 연결 끊김 시에도 CC는 로컬 버퍼로 계속 동작 (BO-02 §2)
+### 2.4 성능 요구사항 — Foundation §6.4 SLO 정합
 
-### 2.4 성능 요구사항
+| 항목 | 목표 | Foundation §6.4 매핑 | 비고 |
+|------|------|:--------------------:|------|
+| **WebSocket push 지연** | **< 100ms** | ✅ WS push SLO | CC → Lobby 실시간 갱신 |
+| **DB polling snapshot** | < 200ms (95th) + **1-5초** 주기 | ✅ DB polling SLO | baseline 로드. §5.18 구현 |
+| REST API 응답 | < 200ms (95th percentile) | — | 목록 조회 포함 |
+| 동시 CC 연결 | 3~5개 | — | 방송 운영 규모 (2026-04-21 보정) |
+| DB 쓰기 | 초당 50+ INSERT | — | 핸드 액션 burst 대응 |
+| crash 복구 시간 | snapshot 재로드 < 5초 | ✅ 재진입 SLO | §5.18.7 시퀀스 |
+| 가동 시간 | 99.5% (방송 시간 내) | — | 방송 중 다운타임 0 목표 |
 
-| 항목 | 목표 | 비고 |
-|------|------|------|
-| REST API 응답 | < 200ms (95th percentile) | 목록 조회 포함 |
-| WebSocket 지연 | < 100ms | CC → Lobby 실시간 갱신 |
-| 동시 CC 연결 | 3~5개 | 방송 운영 규모 기준 (2026-04-21 보정) |
-| DB 쓰기 | 초당 50+ INSERT | 핸드 액션 burst 대응 |
-| 가동 시간 | 99.5% (방송 시간 내) | 방송 중 다운타임 0 목표 |
-
-> 비활성 조건: BO 서버 미실행 시 Lobby 접근 불가, CC는 로컬 캐시로 제한 동작. DB 손상 시 자동 백업 복원 시도. 네트워크 단절 시 CC 로컬 모드, Lobby 읽기 전용.
+> **N PC + 중앙 서버 추가 고려사항** (Foundation §8.5 신설): 중앙 서버가 SPOF. LAN 장애 / 중앙 서버 다운 / 로컬 fallback 시나리오는 `docs/4. Operations/Network_Deployment.md` 및 `Back_Office/Operations.md §중앙 서버 SPOF DR` (후속 Phase C1) 참조.
+>
+> 비활성 조건: BO 서버 미실행 시 Lobby 접근 불가, CC는 로컬 버퍼로 제한 동작 (API-05 §6.4). DB 손상 시 자동 백업 복원 시도. LAN 단절 시 CC 로컬 모드, Lobby 읽기 전용.
 
 ---
 

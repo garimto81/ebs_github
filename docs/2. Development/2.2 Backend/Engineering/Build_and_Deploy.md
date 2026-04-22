@@ -17,9 +17,16 @@ last-updated: 2026-04-15
 
 ## 개요
 
-이 문서는 EBS의 **빌드 및 배포 전략**을 정의한다. **BO + Lobby는 Docker 컨테이너로 통합 실행**하며, CC와 Overlay는 Flutter 데스크톱 빌드, Engine은 Dart 패키지를 사용한다.
+이 문서는 EBS의 **빌드 및 배포 전략**을 정의한다. **Backend Server(BO)** 는 Docker 컨테이너로 실행되며, **EBS Desktop App** (Lobby+CC+Overlay 기능 조각 통합 Flutter Desktop 바이너리) 은 §5.0 런타임 모드에 따라 탭 모드 단일 프로세스 또는 다중창 독립 프로세스로 실행된다. Engine은 별도 서비스 (Docker 또는 `dart run`).
 
-> 참조: IMPL-01 기술 스택, IMPL-02 프로젝트 구조, Foundation Ch.9 §9.3 로드맵
+Foundation §4.4 **설치 단위 렌즈** 와 §8.5 **N PC + 중앙 서버** 를 공식 배포 모델로 채택한다:
+
+| 배포 모델 | 용도 | 구성 |
+|----------|------|------|
+| **단일 PC** | 단일 테이블 운영 · 개발 · 데모 | BO+DB+Desktop App 동일 PC (Docker 포함) |
+| **N PC + 중앙 서버** | 복수 테이블 방송 (2 테이블 이상) | 중앙 서버 1대(BO+DB) + N 개 테이블 PC, LAN 접속 |
+
+> 참조: IMPL-01 기술 스택, IMPL-02 프로젝트 구조, Foundation §4.4 설치 단위, §8.5 복수 테이블 아키텍처, `docs/4. Operations/Network_Deployment.md` (LAN 배포 SSOT), `docs/4. Operations/Docker_Runtime.md` (컨테이너 운영 SSOT)
 
 ---
 
@@ -198,13 +205,15 @@ volumes:
     driver: local
 ```
 
-### 4.3 Phase별 배포
+### 4.3 배포 모델별 구성 — Foundation §8.5 정렬 (2026-04-22 재작성)
 
-| Phase | 배포 방식 | DB | 비고 |
-|:-----:|---------|:--:|------|
-| 1 | `docker compose up` (BO + Lobby) | SQLite | 기본 실행 방식 |
-| 2 | Docker + Nginx Reverse Proxy | SQLite | HTTPS, 정적 캐시 |
-| 3+ | Docker + PostgreSQL 컨테이너 추가 | PostgreSQL | 수평 확장 대비 |
+| 배포 모델 | 배포 방식 | DB | 비고 |
+|----------|----------|:--:|------|
+| **단일 PC** (dev/demo) | `docker compose up` (BO 컨테이너 1개) | SQLite | 기본 실행. Desktop App 은 같은 PC 또는 원격 |
+| **단일 PC** (prod 단일 테이블) | Docker + Nginx Reverse Proxy (선택) | SQLite 또는 PostgreSQL | HTTPS 강제 (`FORCE_HTTPS=true`) |
+| **N PC + 중앙 서버** (prod 방송) | 중앙 서버 PC 에 `docker compose up` — 테이블 PC 들이 LAN 으로 접속 | PostgreSQL 권장 | 중앙 서버 SPOF. `Network_Deployment.md` 참조 |
+
+> **이전 "Phase 1~3+" 라벨 제거** — 2026-04-20 프로젝트 의도 재정의로 MVP/Phase 개념 무효화. 배포 선택은 **운영 규모** (테이블 수 · 동시 CC · DB 신뢰성 요구) 기반으로 결정한다.
 
 ---
 
@@ -422,7 +431,7 @@ RFID_MODE=real
 
 ## 8. 배포 절차
 
-### 8.1 Phase 1 — Docker 배포
+### 8.1 단일 PC — Docker 배포
 
 ```
 1. Docker 서버 시작 (BO + Lobby 통합)
@@ -440,28 +449,30 @@ RFID_MODE=real
 
 > **디버깅 시**: Docker 없이 개별 실행 가능 — `uvicorn src.main:app --reload` (BO), `npm run dev` (Lobby)
 
-### 8.2 네트워크 구성 (방송 현장)
+### 8.2 네트워크 구성 — N PC + 중앙 서버 (Foundation §8.5)
 
+방송 현장 유선 LAN 구성. 테이블당 1 PC 고정 할당, 중앙 서버 1대가 BO+DB 집중 서빙.
+
+```mermaid
+flowchart TD
+    Server["중앙 서버<br/>192.168.1.10:8000<br/>BO (FastAPI) + DB"]
+    PC1["PC-1 (테이블 1)<br/>192.168.1.101<br/>Desktop App<br/>+ RFID 리더"]
+    PC2["PC-2 (테이블 2)<br/>192.168.1.102<br/>Desktop App<br/>+ RFID 리더"]
+    PCN["PC-N (테이블 N)<br/>Desktop App<br/>+ RFID 리더"]
+    vMix["vMix / OBS<br/>192.168.1.200<br/>NDI 캡처"]
+
+    PC1 -.LAN.-> Server
+    PC2 -.LAN.-> Server
+    PCN -.LAN.-> Server
+    PC1 -.NDI.-> vMix
+    PC2 -.NDI.-> vMix
+    PCN -.NDI.-> vMix
 ```
-┌──────────────────────────────────────────────┐
-│  방송 네트워크 (유선 LAN)                     │
-│                                              │
-│  BO 서버 (192.168.1.10:8000)                 │
-│      │                                       │
-│      ├── Lobby (192.168.1.10:3000)           │
-│      │                                       │
-│      ├── CC #1 (192.168.1.101) ── RFID #1   │
-│      │     └── Overlay #1                    │
-│      │                                       │
-│      ├── CC #2 (192.168.1.102) ── RFID #2   │
-│      │     └── Overlay #2                    │
-│      │                                       │
-│      └── CC #N ...                           │
-│                                              │
-│  vMix / OBS (192.168.1.200)                  │
-│      └── NDI로 Overlay 캡처                  │
-└──────────────────────────────────────────────┘
-```
+
+- **테이블 ↔ PC 1:1 고정** — 방송 중 PC 간 테이블 이동 불가 (Foundation §8.5)
+- **중앙 서버 SPOF** — 서버 다운 시 모든 테이블 영향. DR 시나리오: `Back_Office/Operations.md §중앙 서버 SPOF DR` (Phase C1)
+- **LAN 장애 fallback** — `Network_Deployment.md` 참조
+- **세션 격리** — 각 테이블은 독립 game session ID. PC 장애는 해당 테이블만 영향
 
 ### 8.3 헬스 체크
 
@@ -477,10 +488,10 @@ RFID_MODE=real
 
 ### 9.1 DB 백업
 
-| Phase | 방식 | 주기 | 보존 |
-|:-----:|------|:----:|:----:|
-| 1-2 | SQLite 파일 복사 | 방송 시작 전 + 종료 후 | 30일 |
-| 3+ | PostgreSQL pg_dump | 1시간 간격 | 90일 |
+| DB 종류 | 방식 | 주기 | 보존 |
+|---------|------|:----:|:----:|
+| SQLite (dev / 단일 PC) | SQLite 파일 복사 | 방송 시작 전 + 종료 후 | 30일 |
+| PostgreSQL (prod / N PC) | `pg_dump` | 1시간 간격 | 90일 |
 
 ### 9.2 방송 현장 백업 절차
 
