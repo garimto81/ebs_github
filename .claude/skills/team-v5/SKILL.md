@@ -1,14 +1,17 @@
 ---
 name: team-v5
-description: EBS v5.0 멀티세션 워크플로우 (2026-04-21). worktree + PR + free-tier merge gate. 3 Phase (Work → PR → Sync). v4.0/v4.1 deprecated. project-local skill (self-modification 경계 회피).
+description: EBS v5.1 멀티세션 워크플로우 (2026-04-22). Pre-Work Contract + worktree + PR + free-tier merge gate. 4 Phase (Claim → Work → PR → Sync). v4.0/v4.1 deprecated. project-local skill (self-modification 경계 회피).
 ---
 
-# /team-v5 — EBS Multi-Session Workflow v5.0
+# /team-v5 — EBS Multi-Session Workflow v5.1
 
-## 철학 (v5.0)
+## 철학 (v5.1)
 
+- **Proactive + Reactive 이중 안전망**
+  - **L0 Pre-Work Contract** (proactive, v5.1 신설): Active_Work.md SSOT 로 작업 시작 시점 의도 공유
+  - **L1-L3** (reactive, v5.0): worktree 격리 + PR + Actions concurrency
 - **업계 표준 재사용** — custom orchestration 폐기. git worktree + GitHub PR + concurrency 로 해결
-- **3 Phase** — Work (격리) → PR (동기화) → Sync (자동 merge)
+- **4 Phase** — Claim (사전 조정) → Work (격리) → PR (동기화) → Sync (자동 merge)
 - **Free-tier 호환** — GitHub Team plan 불필요. GitHub Actions concurrency group 으로 merge queue 대체
 - **Self-modification 안전** — 이 스킬은 repo-local (`.claude/skills/team-v5/`). user-global 수정 불필요
 
@@ -21,7 +24,35 @@ description: EBS v5.0 멀티세션 워크플로우 (2026-04-21). worktree + PR +
 | `session_branch_init` subdir 허용 | shared HEAD 오염 지속 발생 | sibling worktree 강제 |
 | Conductor 직접 push 특권 | 4 팀 일관성 깨짐 | Conductor 도 PR |
 
-## 3 Phase Workflow
+## 4 Phase Workflow
+
+### Phase 0: Claim (Pre-Work Contract, v5.1 NEW)
+
+**작업 시작 전 의도 공유**. 이 Phase 가 없으면 L1-L3 는 reactive 하게만 동작 → 오류 누적.
+
+```bash
+# 1. 현재 active claim 전시 (세션 시작 시 hook 이 자동 수행)
+python tools/active_work_claim.py list
+
+# 2. 내가 건드릴 파일이 다른 팀 claim 과 겹치는지 확인
+python tools/active_work_claim.py check --scope "team2-backend/src/routers/*,docs/2*/APIs/*"
+
+# 3a. 겹치지 않으면: claim 추가
+python tools/active_work_claim.py add --commit \
+    --team team2 --task "API-01 path rename" \
+    --scope "team2-backend/src/routers/series.py,docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md" \
+    --eta 2h
+
+# 3b. 겹치면: 해당 claim owner 와 조율 (scope 분할, 순서 조정, merge)
+```
+
+**규칙**:
+- **Conductor 도 claim 필수** (uniform — v4.0 특권 제거)
+- Scope 는 task-level **semantic** (파일 glob). 동적 discovery 시 `update --add-scope` 로 확장
+- TTL 없음 — 작업 완료 (Phase 2 merge) 까지 유지
+- `--force` 로 충돌 무시 가능하지만 commit msg 에 사유 명시 관행
+
+**차별점 (CCR draft 폐기 경험)**: CCR 은 변경 governance (heavy, review cycle). Claim 은 현 작업 visibility (lightweight, no review).
 
 ### Phase 1: Work (격리된 worktree 에서 작업)
 
@@ -83,22 +114,30 @@ PR 생성 시 자동:
 /team-v5 --help                   # 옵션 설명
 ```
 
-## 세부 실행 (args 있을 때)
+## 세부 실행 (args 있을 때, v5.1)
 
 ```markdown
 1. Context detect
    - cwd 가 sibling worktree (`ebs-team{N}-...`) 인지 확인
    - subdir 감지 시 error: "sibling worktree 필요. python tools/setup_team_worktrees.py"
 
-2. /auto "<task>" 위임 (Phase 1)
+2. Phase 0 Claim (v5.1 NEW)
+   - python tools/active_work_claim.py list  (현 claim 전시)
+   - python tools/active_work_claim.py check --scope "<예상 scope>"  (충돌 확인)
+   - 충돌 있음 → 사용자에게 조율 요청 + return
+   - 충돌 없음 → python tools/active_work_claim.py add --commit ...
+
+3. Phase 1 /auto "<task>" 위임
    - 기존 PDCA 워크플로우 그대로 사용
    - work/team{N}/<slug> 브랜치에 commit
+   - 동적 discovery 시 active_work_claim.py update --add-scope 로 scope 갱신
 
-3. PR 생성 (Phase 2)
+4. Phase 2 PR 생성
    - python tools/team_v5_merge.py
    - 출력 PR URL 을 사용자에게 보고
+   - claim 자동 release (team_v5_merge.py 가 호출)
 
-4. 보고 (Sync 는 백그라운드 CI 가 처리)
+5. 보고 (Sync 는 백그라운드 CI 가 처리)
    - PR URL, 추정 merge 시간, 다음 Phase 모니터링 방법
 ```
 
@@ -118,11 +157,14 @@ PR 생성 시 자동:
 ### Repo 파일
 - `.github/workflows/pr-auto-merge.yml` — Phase 3 free-tier merge gate
 - `.github/CODEOWNERS` — 팀별 자동 리뷰어 배정
-- `tools/team_v5_merge.py` — Phase 2 PR 생성 + label 부착
+- `tools/team_v5_merge.py` — Phase 2 PR 생성 + label 부착 + claim release
 - `tools/setup_team_worktrees.py` — Phase 1 worktree 생성 헬퍼
 - `tools/team_pr_merge.py` — v4.1 시기 호환 (팀 세션 auto-merge 구현)
-- `docs/4. Operations/Multi_Session_Workflow.md` — v5.0 공식 정책
-- `docs/4. Operations/V5_Migration_Plan.md` — 2주 전환 로드맵
+- `tools/active_work_claim.py` — **v5.1 Pre-Work Contract CLI**
+- `docs/4. Operations/Active_Work.md` — **v5.1 Pre-Work Contract SSOT**
+- `docs/4. Operations/Multi_Session_Workflow.md` — v5.1 공식 정책
+- `docs/4. Operations/V5_Migration_Plan.md` — 전환 로드맵
+- `.claude/hooks/active_work_reminder.py` — v5.1 SessionStart 전시 훅 (수동 등록 필요)
 
 ### Deprecated (2026-05-05 제거 예정)
 - `~/.claude/skills/team/` — v4.0 글로벌 스킬. `/team-v5` 가 대체

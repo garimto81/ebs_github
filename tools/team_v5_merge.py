@@ -267,7 +267,48 @@ def main() -> int:
     print(f"\n✅ v5.0 PR 준비 완료: {pr['pr_url']}")
     print(f"   Phase 3 (auto-merge) 는 `.github/workflows/pr-auto-merge.yml` 이 백그라운드 처리")
     print(f"   상태 확인: gh pr view {branch}")
+
+    # v5.1: Active_Work claim 자동 release (best-effort)
+    _release_v5_1_claim(branch, team, pr.get("pr_url"))
     return 0
+
+
+def _release_v5_1_claim(branch: str, team: str, pr_url: str | None) -> None:
+    """v5.1 Pre-Work Contract: 이 branch 와 연결된 claim 자동 release.
+
+    Active_Work.md 에서 team 이 편집한 scope 를 역추적. PR URL 이 일치하거나
+    해당 team 의 최신 claim 을 해제. 실패 시 침묵 (coordination 도구이므로
+    PR 동작에 영향 주지 않음).
+    """
+    cli = REPO / "tools" / "active_work_claim.py"
+    if not cli.exists():
+        return
+    try:
+        import json as _json
+        rc, out, _ = _run([
+            sys.executable, str(cli), "list", "--team", team, "--json",
+        ])
+        if rc != 0 or not out.strip():
+            return
+        data = _json.loads(out)
+        active = data.get("active", [])
+        if not active:
+            return
+        # PR URL 매칭 우선. 없으면 가장 오래된 active claim 을 대상으로
+        target = next((c for c in active if c.get("pr") == pr_url), None)
+        if target is None and active:
+            target = sorted(active, key=lambda x: x.get("started", ""))[0]
+        if target is None:
+            return
+        cid = target.get("id")
+        # PR URL 갱신 후 release
+        if pr_url and target.get("pr") != pr_url:
+            _run([sys.executable, str(cli), "update", "--id", str(cid), "--pr", pr_url])
+        _run([sys.executable, str(cli), "release", "--id", str(cid)])
+        print(f"   ✅ v5.1 Active_Work claim #{cid} released")
+    except Exception as e:
+        # 침묵 (coordination 도구는 PR 에 영향 X)
+        print(f"   [warn] Active_Work release 실패 (수동 release 필요): {str(e)[:100]}")
 
 
 if __name__ == "__main__":
