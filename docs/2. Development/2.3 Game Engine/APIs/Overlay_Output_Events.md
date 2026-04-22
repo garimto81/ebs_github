@@ -17,6 +17,7 @@ reimplementability_notes: "API-04 Overlay 출력 21종 이벤트 카탈로그 (2
 | 2026-04-15 | §6.0 OutputEvent 카탈로그 요약 신설 | team4 `Overlay/Layer_Boundary.md §3.2` 와 cross-ref. 18종 이벤트 한눈에 보기 |
 | 2026-04-15 | §6.0 실측 정정 | publisher(`output_event.dart`) 실측 결과 18종 → 21종. 누락됐던 OE-04 BoardUpdated / OE-05 ActionOnChanged / OE-06 WinnerDetermined / OE-07 Rejected / OE-08 UndoApplied / OE-12 CardMismatchDetected / OE-13 SevenDeuceBonusAwarded / OE-14 HandTabled / OE-15 HandRetrieved / OE-16 HandKilled / OE-17 MuckRetrieved / OE-18 FlopRecovered / OE-19 DeckIntegrityWarning / OE-20 DeckChangeStarted / OE-21 GameTransitioned 전수 추가 |
 | 2026-04-08 | 신규 작성 | CC→Overlay 데이터 흐름, 출력 채널, Security Delay, 해상도, 크로마키 |
+| 2026-04-22 | §1 / §1.3 Engine SSOT 주석 신설 (B-332, notify: team4) | Foundation §6.3 §1.1.1 / §6.4 에 따라 "Engine 응답이 게임 상태 SSOT. BO WS = audit 참고값" 을 파이프라인 · GameState 표 상단에 명시. |
 
 ---
 
@@ -41,6 +42,8 @@ reimplementability_notes: "API-04 Overlay 출력 21종 이벤트 카탈로그 (2
 ---
 
 ## 1. 데이터 흐름
+
+> **Engine SSOT 원칙 (B-332, Foundation §6.3 §1.1.1 / §6.4)** — 게임 상태(hands / cards / pots / actionOn / legalActions) 는 Engine `applyFull()` → `ReduceResult` 가 최종 SSOT. 본 문서의 Overlay 파이프라인은 이 SSOT 로부터 파생된 뷰를 그린다. BO WS 로 재발행되는 `ActionAck` 등은 audit 참고값이며 Overlay 렌더링 판정 근거가 아니다. (상세: Foundation §6.4 "Engine SSOT")
 
 ### 1.1 전체 파이프라인
 
@@ -80,6 +83,8 @@ CC와 Overlay는 같은 Flutter 앱 내에서 실행되므로, **in-process Dart
 | Overlay Widget → Rive 애니메이션 | Flutter 위젯 rebuild | < 16ms (1프레임) |
 
 ### 1.3 GameState → Overlay 전달 데이터
+
+> **SSOT 주석 (B-332)** — 아래 필드는 모두 Engine 응답(`ReduceResult.newState`) 에서 유래하며, CC 는 본 GameState 를 즉시 Overlay provider 에 반영한다. 같은 필드가 BO WS payload 로도 도달할 수 있으나 그것은 **audit 참고값**이다. 충돌 시 Engine 응답이 우선.
 
 Overlay가 렌더링에 사용하는 GameState 필드:
 

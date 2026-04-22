@@ -3,10 +3,10 @@ title: OutputEvent Serialization
 owner: team3
 tier: contract
 legacy-id: API-04.1
-last-updated: 2026-04-16
+last-updated: 2026-04-22
 reimplementability: PASS
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "API-04.1 OutputEvent 직렬화 계약 완결"
+reimplementability_checked: 2026-04-22
+reimplementability_notes: "API-04.1 OutputEvent 직렬화 계약 완결. B-332 SSOT 선언 §4.1 추가 (2026-04-22, Foundation §6.4 Engine SSOT 전파)."
 ---
 # OutputEvent JSON 직렬화 계약 (API-04.1)
 
@@ -301,6 +301,13 @@ OutputEvent outputEventFromJson(Map<String, dynamic> json) {
 - **Harness 서비스**: 각 REST 응답(`Session.toJson()`) 에 `outputEvents[]` 배열 포함. 또는 향후 WebSocket stream 으로 점진 푸시.
 - **소비 주체**: team4 OutputEventBuffer (`Overlay_Output_Events.md §3.6`). Security Delay 적용 여부는 소비자 결정.
 - **로깅**: `sessionId + seqNo` 로 중복·순서 검증. Replay/Debug 시 동일 seqNo 재생성 보장 (Engine 결정론성).
+
+### 4.1 SSOT 선언 (B-332, Foundation §6.3 §1.1.1 / §6.4)
+
+- **Engine OutputEvent 가 게임 상태 변경의 최종 정본이다.** Engine.applyFull() → ReduceResult 가 발행한 시퀀스가 SSOT.
+- CC 가 BO WS (`/ws/cc`) 로 수신하는 `ActionAck` · `outputEventBroadcast` 등은 **audit 참고값** — BO 가 Engine 발행본을 재전파하는 것이며, 직접 소비 우선순위가 아니다. BO 실패 시 warn-only.
+- 동일 `correlation_id` 로 BO / Engine 병행 dispatch 한 경우, Engine 응답의 `outputEvents[]` 만 Overlay 렌더 트리거에 사용한다.
+- 정본 근거: Foundation.md §6.3 §1.1.1 (시나리오 A/B) · §6.4 (Engine SSOT).
 
 ---
 
