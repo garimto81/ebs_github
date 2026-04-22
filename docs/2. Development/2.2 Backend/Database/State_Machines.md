@@ -24,6 +24,25 @@ EBS에서 상태를 관리하는 5개 FSM(Finite State Machine)의 전이 다이
 
 > 참조: 상태값 정의 — BS-00 Definitions 3, FSM 이름 규약 — BS-00 5
 
+### crash 복구 패턴 — Foundation §6.4 정합 (2026-04-22 신설)
+
+본 5 FSM 의 상태는 DB (Schema.md) 가 SSOT 다. 프로세스 재시작 시 복구는 다음 순서로 수행된다:
+
+1. `GET /api/v1/tables/{id}/state/snapshot` (API-01 §5.18) 호출 → 현재 FSM 상태 + `seq` 획득
+2. snapshot 의 `table.status`, `current_hand.phase` 등을 소비자 로컬 state 에 **그대로** 적용
+3. 이후 WebSocket 구독으로 전이 이벤트 (delta) 적용
+4. WS gap 감지 시 replay API (`/tables/{id}/events?since_seq=N`, CCR-015)
+
+**FSM 별 SSOT 분류** (WebSocket_Events §1.2.1 정합):
+
+| FSM | SSOT 소스 | crash 복구 소스 |
+|-----|-----------|----------------|
+| TableFSM (§1) | BO DB | `GET /tables/{id}` 또는 snapshot `table.status` |
+| HandFSM (§2) | **Engine** (audit 참고값은 BO) | Engine `GET /api/session/{id}.gameState` 우선 |
+| SeatFSM (§3) | BO DB | snapshot `seats[*].status` |
+| DeckFSM (§4) | BO DB | `GET /decks/{id}` |
+| EventFSM (§5) | BO DB | `GET /events/{id}` |
+
 ---
 
 ## 1. TableFSM

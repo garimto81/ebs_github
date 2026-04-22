@@ -65,11 +65,14 @@ reimplementability_notes: "API-01 REST 카탈로그 + WSOP LIVE 연동 (53KB). T
 http://{bo_host}:{bo_port}/api/v1
 ```
 
-| 환경 | Host | Port |
-|------|------|:----:|
-| 개발 | `localhost` | 8000 |
-| 테스트 | `192.168.x.x` | 8000 |
-| 프로덕션 | TBD | 443 (HTTPS) |
+| 환경 | Host | Port | 배포 모델 |
+|------|------|:----:|-----------|
+| 개발 | `localhost` | 8000 | 단일 PC (Foundation §8.5) |
+| 테스트 LAN | `192.168.x.x` | 8000 | 단일 PC 또는 소규모 N PC |
+| 프로덕션 방송 LAN | **중앙 서버 고정 IP** (예: `192.168.1.10`) | 8000 | **N PC + 중앙 서버** (Foundation §8.5) |
+| 프로덕션 공용 | TBD | 443 (HTTPS) | 미래 확장 |
+
+> **N PC 배포 주의**: 모든 테이블 PC 의 Desktop App 은 중앙 서버 IP 를 `EBS_BO_HOST` 환경변수로 지정한다. 중앙 서버 다운 시 모든 테이블 영향 (SPOF). DR: `Back_Office/Operations.md §2.1.E`.
 
 ### 1.1 경로 표기 규약 (2026-04-20 SG-008 정렬)
 

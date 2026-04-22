@@ -240,6 +240,19 @@ Refresh Token으로 새 Access Token을 발급한다.
 
 ## 4. 세션 관리 API
 
+### 4.0 Foundation §5.0 2 런타임 모드 영향 (2026-04-22 신설)
+
+Foundation §5.0 에 따라 EBS Desktop App 은 **탭/슬라이딩 (단일 프로세스)** 또는 **다중창 (독립 프로세스)** 모드로 실행된다. 본 §4 세션 관리 계약은 두 모드 모두 지원한다:
+
+| 모드 | 세션 동작 | JWT 토큰 |
+|------|----------|----------|
+| 탭/슬라이딩 (단일 프로세스) | Lobby/CC/Overlay 가 **동일 JWT 공유** (프로세스 내 인메모리) | 1 user, 1 token |
+| 다중창 (독립 프로세스) | 각 프로세스가 JWT 를 **별도 소유** 가능. 단, 동일 user session 으로 BO 가 식별 | 1 user, N token (동일 user_id/role) |
+
+**BO 측 취급**: JWT payload 의 `user_id` + `role` 기준으로 동일 user 로 취급. `table_ids` 제약은 동일 (§2). 다중 JWT 발행은 `POST /auth/login` 을 여러 번 호출한 결과 (refresh token rotation 대상 별도 관리).
+
+**WebSocket 연결**: §1.3 (API-05) query param `token` 방식은 두 모드 모두 동일. 다중창 모드에서 Lobby WS 와 CC WS 는 같은 token 또는 다른 token 둘 다 허용.
+
 ### GET /auth/session
 
 현재 세션 정보를 반환한다. Access Token 유효성 검증 겸용.

@@ -46,11 +46,20 @@ DATA-04 는 **EBS 고유 BO 운영 스키마** 이며, 일부 개념은 WSOP LIV
 
 ## 개요
 
-EBS Back Office DB의 물리 스키마를 SQLAlchemy/SQLModel 스타일로 정의한다. Phase 1은 SQLite, Phase 3+는 PostgreSQL을 대상으로 한다.
+EBS Back Office DB의 물리 스키마를 SQLAlchemy/SQLModel 스타일로 정의한다. 개발·단일 PC 배포는 SQLite, N PC + 중앙 서버 배포는 PostgreSQL을 대상으로 한다 (`Engineering/Build_and_Deploy.md §4.3`).
 
 > 본 문서는 3-앱 아키텍처 BO 운영 스키마의 단일 SSOT다. GFX 추출 스키마(L0→L1)는 별도 PRD가 없으며, Engine 내부 모델은 `team3-engine/specs/engine-spec/` 참조.
 
-### Phase 1 SQLite 호환 규칙
+### Foundation §6.4 정합 — DB = SSOT 원칙 (2026-04-22 신설)
+
+Foundation §6.4 "실시간 상태 동기화" 에 따라 본 DB 스키마는 **EBS 상태의 단일 SSOT** 다. 실무 원칙:
+
+- **쓰기 경로**: 모든 상태 변경은 (1) 본 스키마의 트랜잭션으로 commit → (2) `audit_events.seq` 단조 증가 → (3) WS broadcast (API-05). DB commit 실패 시 WS 발행 금지.
+- **읽기 경로**: 소비자 프로세스 시작 시 `GET /api/v1/tables/{id}/state/snapshot` (API-01 §5.18) 으로 baseline 로드 후 WS delta 적용.
+- **Engine SSOT 예외**: 게임 상태 일부(hands/cards/pots) 는 Engine HTTP 응답이 최종 SSOT. 본 DB 의 `hands` / `audit_events` 는 audit 용 복제본 (§10 WebSocket_Events 정정 2026-04-21).
+- **crash 복구**: 프로세스 재시작 시 본 스키마를 snapshot 으로 재로드 (§5.18.7 재진입 시퀀스).
+
+### SQLite 호환 규칙 (dev / 단일 PC)
 
 - JSON 필드 대신 TEXT + 직렬화 (`json.dumps` / `json.loads`)
 - ARRAY 대신 TEXT (쉼표 구분 또는 JSON 직렬화)

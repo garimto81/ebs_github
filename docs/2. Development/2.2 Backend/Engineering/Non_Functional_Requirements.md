@@ -35,15 +35,20 @@ EBS 3-앱 아키텍처(Lobby / CC / BO)의 **비기능 요구사항**(Non-Functi
 
 ## 1. 성능
 
-| 지표 | Phase 1 목표 | Phase 3 목표 | 측정 방법 | 수용 기준 | 롤백 트리거 |
-|------|:----------:|:----------:|----------|----------|------------|
+| 지표 | 초기 목표 | 성숙 목표 | 측정 방법 | 수용 기준 | 롤백 트리거 |
+|------|:--------:|:--------:|----------|----------|------------|
 | RFID 카드 → 오버레이 표시 | < 200ms | < 100ms | E2E trace_id span (CC → BO → Overlay) | p95 연속 10분 만족 | p95 > 300ms 지속 5분 |
 | CC 액션 → 오버레이 반영 | < 150ms | < 80ms | WebSocket 왕복 + 렌더 타임스탬프 | p95 연속 10분 만족 | p95 > 250ms 지속 5분 |
 | Lobby 페이지 로드 (LCP) | < 2s | < 1s | Lighthouse CI + 실 사용자 RUM | p75 2s 미만 | p75 > 3s |
 | API 응답 시간 (p95) | < 500ms | < 200ms | Prometheus histogram, 5min window, bucket [10, 50, 100, 200, 500, 1000, 2000ms] | p95 목표 + p99 < 2×p95 | p95 > 목표 × 1.5 지속 5분 |
 | WebSocket 메시지 처리 | < 50ms | < 20ms | 클라이언트 ingress timestamp 대비 렌더 완료 | p95 연속 10분 만족 | p95 > 목표 × 2 |
+| **DB polling snapshot (§5.18)** | < 200ms p95 | < 100ms p95 | HTTP latency. 호출 주기 1-5초 (Foundation §6.4) | p95 만족 + payload size < 100KB | p95 > 500ms 지속 5분 |
+| **crash 복구 (snapshot 재로드)** | < 5s | < 2s | 프로세스 재시작 → baseline 복원 완료 wall-clock | 실측 < 목표 | DR 실패 |
+| **WebSocket push 지연** | < 100ms | < 50ms | BO DB commit → 소비자 수신 timestamp (Foundation §6.4 SLO) | p95 만족 | p95 > 200ms 지속 5분 |
 
 **측정 도구**: Prometheus + Grafana (서버), Sentry Performance (클라), OpenTelemetry trace_id 분산 추적.
+
+> **Foundation §6.4 매핑** (2026-04-22): WS push <100ms + DB polling 1-5s + crash 복구 < 5s 를 본 표에 통합. 이전 "Phase 1/3" 라벨은 "초기/성숙" 중립 표현으로 교체 (2026-04-20 프로젝트 의도 재정의 반영).
 
 ---
 
