@@ -6,6 +6,16 @@ decomposed: true
 
 # Backlog (디렉토리화됨)
 
+## 🔥 2026-04-22 Foundation 재설계 정렬 (최우선, 계획 수립 완료)
+
+Foundation.md 가 2026-04-22 회의 7결정을 반영하여 전면 재설계됨 (F1 재작성 / Ch.4 2 렌즈 / §5.0 2 런타임 모드 / §6.3 통신 매트릭스 + 병행 dispatch / §6.4 DB SSOT 실시간 동기화 / §7.1 Overlay 배경 flag / §8.5 N PC 중앙 서버).
+
+**team2 영향 분석 · 수정 계획**: `Engineering/Foundation_Realignment_Plan_2026-04-22.md`
+
+Phase A (§6.4 발행 의무) → Phase B (BREAKING 정정) → Phase C (ADDITIVE 보강) → Phase D (Label 정리) → Phase E (판정 블록) 순서로 집행. 각 Phase 실행 시점에 개별 B-XXX 항목 등재 예정.
+
+---
+
 ## 🎯 2026-04-21 이관 우선 작업 (baseline 커밋 `7543452`)
 
 팀 세션 시작 시 `team2-backend/CLAUDE.md §"2026-04-21 이관 시 우선 작업"` 섹션 필독.
