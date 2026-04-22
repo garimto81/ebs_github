@@ -34,7 +34,7 @@
     "deprecated_tools": {
       "tools/team_merge.py": "v4.x direct ff-merge tool. 2026-05-05 제거 예정",
       "tools/team_pr_merge.py": "v4.1 호환 tool. 2026-05-05 제거 예정",
-      "~/.claude/skills/team/scripts/team_merge_loop.py": "v4.0 user-global. /team-v5 가 대체"
+      "~/.claude/skills/team/scripts/team_merge_loop.py": "v4.0 user-global. project-local .claude/skills/team/ (v5.1) 이 대체 (2026-04-22 rename from team-v5)"
     }
   },
   "teams": {

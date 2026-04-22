@@ -13,7 +13,7 @@ reimplementability_notes: "v5.1 — v5.0 에 L0 Pre-Work Contract (Active_Work.m
 ## 🚀 표준 명령
 
 ```bash
-/team-v5 "<task description>"     # 팀/Conductor 세션 모두
+/team "<task description>"     # 팀/Conductor 세션 모두 (project-local v5.1)
 ```
 
 **단일 호출로 실행 (4 Phase, v5.1)**:
@@ -159,7 +159,7 @@ python tools/active_work_claim.py add --commit \
 
 ### Phase 1 — Work
 
-팀 세션이 `/team-v5 "<task>"` 호출:
+팀 세션이 `/team "<task>"` 호출 (project-local v5.1 skill):
 
 1. **Context detect**: cwd 가 sibling worktree 인지 확인. subdir 이면 error
 2. **`/auto "<task>"` 위임**: 기존 PDCA 워크플로우 (drift/test/scope guard 포함)
@@ -237,11 +237,11 @@ PR 생성 완료. CODEOWNERS 가 해당 팀 owner 에게 리뷰 요청 전송.
 
 ## 금지 (v5.0)
 
-- subdir 세션 (`C:/claude/ebs/team{N}-*/`) 에서 `/team-v5` 호출 — **sibling worktree 강제**
+- subdir 세션 (`C:/claude/ebs/team{N}-*/`) 에서 `/team` 호출 — **sibling worktree 강제**
 - Conductor 직접 `git push origin main` — **PR 경로 사용**
 - `--no-pr` flag 로 v4.0 동작 요청 — **v5.0 은 PR-only**
 - `gh pr merge --admin` 으로 CI/concurrency 우회 — **긴급 hotfix 제외**
-- `~/.claude/skills/team/` v4.0 스킬 직접 호출 — **deprecated, `/team-v5` 사용**
+- `~/.claude/skills/team/` v4.0 user-global 스킬 — **deprecated**. project-local `.claude/skills/team/` (v5.1) 이 호출 우선순위에서 덮어쓴다. v4.0 user-global 은 deprecation shim 으로 교체 예정
 
 ## 마이그레이션 로드맵
 
@@ -250,7 +250,7 @@ PR 생성 완료. CODEOWNERS 가 해당 팀 owner 에게 리뷰 요청 전송.
 ## 관련 자산
 
 ### Repo-local (v5.0 active)
-- `.claude/skills/team-v5/SKILL.md` — project-local skill
+- `.claude/skills/team/SKILL.md` — project-local skill (2026-04-22 rename from `team-v5`)
 - `.github/workflows/pr-auto-merge.yml` — Phase 3 free-tier gate
 - `.github/CODEOWNERS` — Phase 2 자동 리뷰어
 - `tools/team_v5_merge.py` — Phase 2 구현

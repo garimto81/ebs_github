@@ -1,9 +1,11 @@
 ---
-name: team-v5
-description: EBS v5.1 멀티세션 워크플로우 (2026-04-22). Pre-Work Contract + worktree + PR + free-tier merge gate. 4 Phase (Claim → Work → PR → Sync). v4.0/v4.1 deprecated. project-local skill (self-modification 경계 회피).
+name: team
+description: EBS v5.1 멀티세션 워크플로우 (2026-04-22). Pre-Work Contract + worktree + PR + free-tier merge gate. 4 Phase (Claim → Work → PR → Sync). v4.0/v4.1 deprecated — 구 user-global `~/.claude/skills/team/` (v4.0) 는 deprecation shim 으로 교체 예정. project-local skill (self-modification 경계 회피).
 ---
 
-# /team-v5 — EBS Multi-Session Workflow v5.1
+# /team — EBS Multi-Session Workflow v5.1
+
+> **버전 표기 규칙** — skill 식별자(`team`) 와 정책 버전(`v5.1`) 은 독립. 호출명은 major 경계(v4→v5) 에서만 바뀌고, minor 업데이트(v5.0→v5.1) 는 문서 내용만 갱신.
 
 ## 철학 (v5.1)
 
@@ -13,7 +15,7 @@ description: EBS v5.1 멀티세션 워크플로우 (2026-04-22). Pre-Work Contra
 - **업계 표준 재사용** — custom orchestration 폐기. git worktree + GitHub PR + concurrency 로 해결
 - **4 Phase** — Claim (사전 조정) → Work (격리) → PR (동기화) → Sync (자동 merge)
 - **Free-tier 호환** — GitHub Team plan 불필요. GitHub Actions concurrency group 으로 merge queue 대체
-- **Self-modification 안전** — 이 스킬은 repo-local (`.claude/skills/team-v5/`). user-global 수정 불필요
+- **Self-modification 안전** — 이 스킬은 repo-local (`.claude/skills/team/`). user-global 은 deprecation shim
 
 ## v4.0/v4.1 폐기 이유
 
@@ -109,9 +111,9 @@ PR 생성 시 자동:
 ## 트리거 형태
 
 ```bash
-/team-v5 "<task description>"     # 3-phase 전체 실행
-/team-v5                          # 현재 상태 보고
-/team-v5 --help                   # 옵션 설명
+/team "<task description>"     # 4-phase 전체 실행 (v5.1)
+/team                          # 현재 상태 보고
+/team --help                   # 옵션 설명
 ```
 
 ## 세부 실행 (args 있을 때, v5.1)

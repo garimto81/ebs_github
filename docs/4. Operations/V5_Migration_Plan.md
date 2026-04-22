@@ -29,7 +29,7 @@ v5.0 의 reactive-only 모델에 대한 사용자 비판:
 
 commit 9da82cf 에 포함:
 
-- [x] `.claude/skills/team-v5/SKILL.md` (project-local skill)
+- [x] `.claude/skills/team-v5/SKILL.md` (project-local skill, 2026-04-22 renamed to `.claude/skills/team/`)
 - [x] `.github/workflows/pr-auto-merge.yml` (free-tier merge gate)
 - [x] `.github/CODEOWNERS` (자동 리뷰어 배정)
 - [x] `tools/team_v5_merge.py` (Phase 2 PR 생성)
@@ -45,7 +45,7 @@ commit 9da82cf 에 포함:
 - [x] `tools/active_work_claim.py` (CLI: add/update/release/list/check)
 - [x] `.claude/hooks/active_work_reminder.py` (SessionStart 전시 — 수동 등록 필요)
 - [x] `tools/team_v5_merge.py` 에 `_release_v5_1_claim()` 통합
-- [x] `.claude/skills/team-v5/SKILL.md` v5.0 → v5.1 (4-Phase)
+- [x] `.claude/skills/team/SKILL.md` v5.0 → v5.1 (4-Phase) — 2026-04-22 이후 `team-v5` → `team` rename
 - [x] `docs/4. Operations/Multi_Session_Workflow.md` v5.0 → v5.1 (L0 layer 추가)
 
 ### D0.6 (사용자 수동 조치) — Hook 등록
@@ -83,7 +83,7 @@ commit 9da82cf 에 포함:
 
 ### D8-10 (Week 2 시작) — v4.0 deprecation 공지
 
-- [ ] `~/.claude/skills/team/SKILL.md` 상단에 "DEPRECATED — use /team-v5" 배너 추가 (user 수동)
+- [ ] `~/.claude/skills/team/SKILL.md` 를 **deprecation shim** 으로 교체 (실행 차단 + project-local 안내, user 승인 필요)
 - [ ] `~/.claude/skills/team/scripts/*.py` 에 deprecation stderr 출력 (user 수동)
 - [ ] MEMORY.md 의 workflow 관련 메모를 v5.0 기준으로 업데이트
 
@@ -170,10 +170,10 @@ v5.0 에 문제 발생 시 복구 절차:
 ### 롤백 Level 1 (부분) — v4.1 복원
 1. `.github/workflows/pr-auto-merge.yml` disable
 2. `tools/team_v5_merge.py` 대신 `tools/team_pr_merge.py` 사용 (유지됨)
-3. `/team-v5` 대신 `/team` (v4.0) 호출
+3. project-local `.claude/skills/team/` 제거 시 user-global `/team` (v4.0) 이 자동 fallback
 
 ### 롤백 Level 2 (전체) — v4.0 복원
-1. 롤백 L1 + `.claude/skills/team-v5/` 삭제
+1. 롤백 L1 + `.claude/skills/team/` (v5.1 project-local) 삭제 → user-global v4.0 자동 활성화
 2. `.claude/hooks/session_branch_init.py` 의 v4.1 subdir 차단 제거 (revert)
 3. Multi_Session_Workflow.md v4.0 내용으로 revert
 
