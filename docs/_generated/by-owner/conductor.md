@@ -7,26 +7,30 @@ tier: generated
 # conductor
 
 - `docs/1. Product/1. Product.md` — 1. Product
-- `docs/1. Product/Architecture.md` — Architecture
-- `docs/1. Product/Communication_Rules.md` — Communication Rules
-- `docs/1. Product/Foundation.md` — Foundation
+- `docs/1. Product/Foundation.md` — EBS 기초 기획서
 - `docs/1. Product/Game_Rules/Betting_System.md` — Betting System
 - `docs/1. Product/Game_Rules/Draw.md` — Draw
 - `docs/1. Product/Game_Rules/Flop_Games.md` — Flop Games
 - `docs/1. Product/Game_Rules/Seven_Card_Games.md` — Seven Card Games
-- `docs/1. Product/PokerGFX_Reference.md` — PokerGFX Reference
+- `docs/1. Product/References/PokerGFX_Reference.md` — PokerGFX Reference
 - `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` — WSOP Production Structure Analysis
-- `docs/1. Product/Team_Structure.md` — Team Structure
+- `docs/1. Product/archive/Foundation_v41.0.0.md` — Foundation
 - `docs/2. Development/2. Development.md` — 2. Development
 - `docs/2. Development/2.5 Shared/Authentication.md` — Authentication
 - `docs/2. Development/2.5 Shared/BS_Overview.md` — BS Overview
+- `docs/2. Development/2.5 Shared/Naming_Conventions.md` — Naming Conventions (EBS Shared SSOT)
+- `docs/2. Development/2.5 Shared/Network_Config.md` — Network Configuration Contract
 - `docs/2. Development/2.5 Shared/Risk_Matrix.md` — Risk Matrix
-- `docs/3. Change Requests/3. Change Requests.md` — 3. Change Requests
+- `docs/3. Change Requests/3. Change Requests.md` — 3. Change Requests (DEPRECATED)
+- `docs/3. Change Requests/done/CR-011-ge-ownership-move.md` — CR-011-ge-ownership-move
+- `docs/3. Change Requests/done/CR-016-tech-stack-ssot.md` — CR-016-tech-stack-ssot
+- `docs/3. Change Requests/done/CR-037-bs08-graphic-editor-new.md` — CR-037-bs08-graphic-editor-new
 - `docs/3. Change Requests/done/CR-conductor-20260410-ge-ownership-move.md` — CR-conductor-20260410-ge-ownership-move
 - `docs/3. Change Requests/done/CR-conductor-20260410-gfskin-format-unify.md` — CR-conductor-20260410-gfskin-format-unify
 - `docs/3. Change Requests/done/CR-conductor-20260411-ge-api-spec.md` — CR-conductor-20260411-ge-api-spec
 - `docs/3. Change Requests/done/CR-conductor-20260411-ge-req-id-rework.md` — CR-conductor-20260411-ge-req-id-rework
 - `docs/3. Change Requests/done/CR-conductor-20260414-skin-updated-ws.md` — CR-conductor-20260414-skin-updated-ws
+- `docs/3. Change Requests/done/CR-conductor-20260421-ge-scope-expansion.md` — CR-conductor-20260421-ge-scope-expansion
 - `docs/3. Change Requests/done/CR-team1-20260410-tech-stack-ssot.md` — CR-team1-20260410-tech-stack-ssot
 - `docs/3. Change Requests/done/CR-team1-20260410-wsop-parity.md` — CR-team1-20260410-wsop-parity
 - `docs/3. Change Requests/done/CR-team1-20260413-google-oauth.md` — CR-team1-20260413-google-oauth
@@ -68,12 +72,10 @@ tier: generated
 - `docs/3. Change Requests/done/CR-team4-20260410-bs07-security-delay.md` — CR-team4-20260410-bs07-security-delay
 - `docs/3. Change Requests/done/CR-team4-20260410-bs08-graphic-editor-new.md` — CR-team4-20260410-bs08-graphic-editor-new
 - `docs/3. Change Requests/in-progress/CR-010-jwt-expiry.md` — CR-010-jwt-expiry
-- `docs/3. Change Requests/in-progress/CR-011-ge-ownership-move.md` — CR-011-ge-ownership-move
 - `docs/3. Change Requests/in-progress/CR-012-gfskin-format-unify.md` — CR-012-gfskin-format-unify
 - `docs/3. Change Requests/in-progress/CR-013-ge-api-spec.md` — CR-013-ge-api-spec
 - `docs/3. Change Requests/in-progress/CR-014-ge-req-id-rework.md` — CR-014-ge-req-id-rework
 - `docs/3. Change Requests/in-progress/CR-015-skin-updated-ws.md` — CR-015-skin-updated-ws
-- `docs/3. Change Requests/in-progress/CR-016-tech-stack-ssot.md` — CR-016-tech-stack-ssot
 - `docs/3. Change Requests/in-progress/CR-017-wsop-parity.md` — CR-017-wsop-parity
 - `docs/3. Change Requests/in-progress/CR-018-data-idempotency-audit.md` — CR-018-data-idempotency-audit
 - `docs/3. Change Requests/in-progress/CR-019-idempotency-key.md` — CR-019-idempotency-key
@@ -94,7 +96,6 @@ tier: generated
 - `docs/3. Change Requests/in-progress/CR-034-bs07-cc-visual-sync.md` — CR-034-bs07-cc-visual-sync
 - `docs/3. Change Requests/in-progress/CR-035-bs07-layer-boundary.md` — CR-035-bs07-layer-boundary
 - `docs/3. Change Requests/in-progress/CR-036-bs07-security-delay.md` — CR-036-bs07-security-delay
-- `docs/3. Change Requests/in-progress/CR-037-bs08-graphic-editor-new.md` — CR-037-bs08-graphic-editor-new
 - `docs/3. Change Requests/in-progress/CR-038-google-oauth.md` — CR-038-google-oauth
 - `docs/3. Change Requests/in-progress/CR-039-event-type-catalog.md` — CR-039-event-type-catalog
 - `docs/3. Change Requests/in-progress/CR-040-refresh-token-policy.md` — CR-040-refresh-token-policy
@@ -112,9 +113,55 @@ tier: generated
 - `docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md` — CR-055-output-event-buffer-ownership
 - `docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md` — CR-056-deadlink-cleanup
 - `docs/4. Operations/4. Operations.md` — 4. Operations
-- `docs/4. Operations/Conductor_Backlog.md` — Conductor Backlog
+- `docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md` — Graphic Editor team5 분리 적합성 결정 (DONE — Option A 채택)
+- `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
+- `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` — 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1)
+- `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` — Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback
+- `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` — Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences
+- `docs/4. Operations/Conductor_Backlog/SG-004-gfskin-zip-format.md` — .gfskin ZIP 포맷 (DATA-07) — manifest + .riv + assets 구조 명세
+- `docs/4. Operations/Conductor_Backlog/SG-005-foundation-ch6-system-connections.md` — Foundation Ch.6 시스템 연결 도식 — Engine↔BO 경계 (EBS_Core 병합)
+- `docs/4. Operations/Conductor_Backlog/SG-006-rfid-52-card-codemap.md` — RFID 52 카드 codemap — pre-registered deck + 초기 등록 절차
+- `docs/4. Operations/Conductor_Backlog/SG-007-team2-reports-api.md` — team2 Reports API 통합 — Dashboard/Table Activity/Player Stats/Hand Distribution/RFID Health/Operator
+- `docs/4. Operations/Conductor_Backlog/SG-008-api-d3-bulk-documentation.md` — Spec Drift: Backend HTTP D3 — 89 code-only endpoints 3분류 (기획이 진실)
+- `docs/4. Operations/Conductor_Backlog/SG-008-b1-audit-events.md` — GET /api/v1/audit-events 공개 범위 + RBAC 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b10-event-undo.md` — POST /api/v1/events/{event_id}/undo 기능 범위 + 제약 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b11-table-launch-cc.md` — POST /api/v1/tables/{table_id}/launch-cc 필요성 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b12-legacy-reports.md` — GET /api/v1/reports/{report_type} deprecate 시점 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b13-settings-code-only-cleanup.md` — Settings Drift: 30 code-only provider fields — scanner 정규화 + 3분류 (doc-add / doc-expand / code-remove)
+- `docs/4. Operations/Conductor_Backlog/SG-008-b14-auth-2fa-policy.md` — Auth 2FA 정책 — Admin/Operator 필수 여부 + provider 선택
+- `docs/4. Operations/Conductor_Backlog/SG-008-b15-ndi-fill-key-routing.md` — NDI Fill/Key 분리 라우팅 — 방송 시설 협의 필요
+- `docs/4. Operations/Conductor_Backlog/SG-008-b2-audit-logs-read.md` — GET /api/v1/audit-logs RBAC 스코프 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b3-audit-logs-download.md` — GET /api/v1/audit-logs/download 포맷 + rate limit 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b4-auth-me.md` — GET /auth/me 반환 필드 + 캐싱 정책 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b5-auth-logout.md` — POST /auth/logout 세션 무효화 범위 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b6-sync-mock-seed.md` — POST /api/v1/sync/mock/seed 운영 환경 노출 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b7-sync-mock-reset.md` — DELETE /api/v1/sync/mock/reset 운영 환경 노출 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b8-sync-status.md` — GET /api/v1/sync/status 공개 범위 판정
+- `docs/4. Operations/Conductor_Backlog/SG-008-b9-sync-trigger.md` — POST /api/v1/sync/trigger/{source} RBAC + 환경 제약 판정
+- `docs/4. Operations/Conductor_Backlog/SG-009-tablefsm-case-serialization.md` — Spec Drift: TableFSM / SeatFSM display label vs serialized value case
+- `docs/4. Operations/Conductor_Backlog/SG-010-spec-drift-scanner-precision.md` — Tooling: spec_drift_check.py 정밀화 (Settings, Schema, WebSocket)
+- `docs/4. Operations/Conductor_Backlog/_template_implementation.md` — 구현: <기능명>
+- `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` — 시나리오: <검증 대상 통합 흐름>
+- `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` — 기획 공백: <구체적 공백명>
+- `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
+- `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
+- `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
+- `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate)
+- `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
+- `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` — Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정
+- `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` — Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거
+- `docs/4. Operations/Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` — Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계
 - `docs/4. Operations/Plans/PLAN-BO-Phase1.md` — PLAN-BO-Phase1
 - `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` — 2026-04-10-ccr-batch-team-impact
+- `docs/4. Operations/Reports/2026-04-17_SSOT_Audit.md` — Team 2 Backend SSOT Compliance Audit
+- `docs/4. Operations/Reports/2026-04-21-critic-ge-multi-session.md` — Critic — GE 멀티 세션 분리 적합성 (Lobby 탭 종속 전제)
+- `docs/4. Operations/Reports/2026-04-21-critic-graphic-editor-team5-separation.md` — Critic — Graphic Editor team5 분리 적합성 검토
+- `docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md` — Quasar → Flutter 이전 누락 / 매칭 실패 감사
 - `docs/4. Operations/Roadmap.md` — Roadmap
+- `docs/4. Operations/SSOT_Alignment_Progress.md` — SSOT Alignment Progress
+- `docs/4. Operations/Spec_Gap_Registry.md` — Spec Gap Registry — Drift 집계 + 해소 추적
+- `docs/4. Operations/Spec_Gap_Triage.md` — Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜
+- `docs/4. Operations/V5_Migration_Plan.md` — V5 Migration Plan — v4.0/v4.1 → v5.0/v5.1 전환 로드맵
 - `docs/README.md` — docs/ README
+- `docs/examples/README.md` — Examples

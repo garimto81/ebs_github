@@ -6,11 +6,12 @@ tier: generated
 
 # team4
 
-- `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` — RFID HAL
-- `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Legacy.md` — RFID HAL Legacy
-- `docs/2. Development/2.4 Command Center/Backlog.md` — Backlog
+- `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` — RFID HAL — Operator Behavior
+- `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md` — RFID HAL Interface Contract
+- `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` — NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Action_Buttons.md` — Action Buttons
-- `docs/2. Development/2.4 Command Center/Command_Center_UI/Game_Settings_Modal.md` — Game Settings Modal
+- `docs/2. Development/2.4 Command Center/Command_Center_UI/Demo_Test_Mode.md` — Demo & Test Mode (DEPRECATED)
+- `docs/2. Development/2.4 Command Center/Command_Center_UI/Game_Settings_Modal.md` — Game Settings — Rules 탭 상세 규격
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Hand_Lifecycle.md` — Hand Lifecycle
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Keyboard_Shortcuts.md` — Keyboard Shortcuts
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Manual_Card_Input.md` — Manual Card Input
@@ -22,9 +23,11 @@ tier: generated
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/UI.md` — UI
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Undo_Recovery.md` — Undo Recovery
 - `docs/2. Development/2.4 Command Center/Integration_Test_Plan.md` — Integration Test Plan
+- `docs/2. Development/2.4 Command Center/Integration_Test_Plan/automation/s11/README.md` — S-11 Lobby Hand History — E2E Automation Scaffold
 - `docs/2. Development/2.4 Command Center/Overlay/Animations.md` — Animations
 - `docs/2. Development/2.4 Command Center/Overlay/Audio.md` — Audio
 - `docs/2. Development/2.4 Command Center/Overlay/Elements.md` — Elements
+- `docs/2. Development/2.4 Command Center/Overlay/Engine_Dependency_Contract.md` — Engine Dependency Contract
 - `docs/2. Development/2.4 Command Center/Overlay/Layer_Boundary.md` — Layer Boundary
 - `docs/2. Development/2.4 Command Center/Overlay/Overview.md` — Overview
 - `docs/2. Development/2.4 Command Center/Overlay/Scene_Schema.md` — Scene Schema
@@ -36,3 +39,6 @@ tier: generated
 - `docs/2. Development/2.4 Command Center/RFID_Cards/Manual_Fallback.md` — Manual Fallback
 - `docs/2. Development/2.4 Command Center/RFID_Cards/Overview.md` — Overview
 - `docs/2. Development/2.4 Command Center/RFID_Cards/Register_Screen.md` — Register Screen
+- `docs/2. Development/2.4 Command Center/Settings.md` — Settings
+- `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md` — 구현: team4 Engine Connection UI — router guard + manual reconnect
+- `docs/4. Operations/Conductor_Backlog/SG-011-rfid-hal-stream-divergence.md` — Spec Drift: RFID_HAL_Interface §2.1 single-stream vs code 6-stream

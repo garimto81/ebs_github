@@ -14,6 +14,7 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Engineering/Non_Functional_Requirements.md` — Non Functional Requirements (team2)
 - `docs/2. Development/2.2 Backend/Engineering/Project_Structure.md` — Project Structure (team2)
 - `docs/2. Development/2.2 Backend/Engineering/Routing.md` — Routing (team2)
+- `docs/2. Development/2.2 Backend/Engineering/Sandbox_Tournament_Generator.md` — Sandbox Tournament Generator (team2)
 - `docs/2. Development/2.2 Backend/Engineering/State_Management.md` — State Management (team2)
 - `docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md` — Tech Stack (team2)
 - `docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md` — Testing Strategy (team2)

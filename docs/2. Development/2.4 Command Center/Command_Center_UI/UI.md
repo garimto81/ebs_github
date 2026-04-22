@@ -82,9 +82,7 @@ CC의 기본 화면. 핸드 진행의 모든 것이 여기에 표시된다.
 
 ### 좌석 배치 — S1~S10 시계방향, 좌우 완벽 대칭
 
-![UI-02 Seat Layout](images/UI-02-seat-layout-symmetric.png)
-
-> HTML 목업: `ui-design/reference/action-tracker/mockups/seat-layout-symmetric.html`
+> 자산 미생성 (TBD — team4 디자인 작업) · HTML 목업: `ui-design/reference/action-tracker/mockups/seat-layout-symmetric.html`
 
 ```
         [S4]  [S5]  [S6]  [S7]

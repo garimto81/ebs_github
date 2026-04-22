@@ -6,10 +6,13 @@ tier: generated
 
 # team3
 
+- `docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md` — Harness REST API
+- `docs/2. Development/2.3 Game Engine/APIs/OutputEventBuffer_Boundary.md` — OutputEventBuffer 구현 경계
+- `docs/2. Development/2.3 Game Engine/APIs/OutputEvent_Serialization.md` — OutputEvent Serialization
 - `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` — Overlay Output Events
-- `docs/2. Development/2.3 Game Engine/Backlog.md` — Backlog
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` — Action Rotation
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md` — Draw Games
+- `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Evaluation_Reference.md` — Hand Evaluation 통합 레퍼런스
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Event_Catalog.md` — Event Catalog
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Flop_Variants.md` — Flop Variants
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Betting.md` — Betting

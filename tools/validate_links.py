@@ -22,6 +22,19 @@ from urllib.parse import unquote
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
+INLINE_CODE_PATTERN = re.compile(r"`[^`]*`")
+
+LINK_EXCLUDE_DIRS = {"archive", "References"}
+
+
+def is_link_excluded(path: Path) -> bool:
+    """링크 검증 제외 대상.
+
+    제외:
+    - archive/ — 역사 기록, 자산 stale 허용
+    - References/ — 외부 PRD/UI 역설계 자료 (PokerGFX 등). 자산 일부는 별도 레포 (ebs_reverse) 또는 외부 mockup 폴더에 위치
+    """
+    return any(part in LINK_EXCLUDE_DIRS for part in path.parts)
 
 
 def scope_paths(scope: str) -> list[Path]:
@@ -57,14 +70,22 @@ def scope_paths(scope: str) -> list[Path]:
 
 
 def extract_links(path: Path) -> list[tuple[int, str, str]]:
-    """파일에서 (라인 번호, 앵커 텍스트, URL) 추출."""
+    """파일에서 (라인 번호, 앵커 텍스트, URL) 추출. fenced code block 내부는 스킵."""
     try:
         text = path.read_text(encoding="utf-8")
     except UnicodeDecodeError:
         return []
     out = []
+    in_fence = False
     for lineno, line in enumerate(text.splitlines(), 1):
-        for match in LINK_PATTERN.finditer(line):
+        stripped = line.lstrip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        scrubbed = INLINE_CODE_PATTERN.sub("", line)
+        for match in LINK_PATTERN.finditer(scrubbed):
             out.append((lineno, match.group(1), match.group(2)))
     return out
 
@@ -98,7 +119,11 @@ def main() -> int:
 
     broken: list[tuple[Path, int, str, str]] = []
     total_links = 0
+    skipped_archive = 0
     for src in targets:
+        if is_link_excluded(src):
+            skipped_archive += 1
+            continue
         links = extract_links(src)
         total_links += len(links)
         for lineno, text, url in links:
@@ -108,7 +133,7 @@ def main() -> int:
             if not target.exists():
                 broken.append((src, lineno, text, url))
 
-    print(f"[결과] 링크 {total_links} 개 중 깨진 것 {len(broken)} 개")
+    print(f"[결과] 링크 {total_links} 개 중 깨진 것 {len(broken)} 개 (archive 스킵 {skipped_archive} 파일)")
     if broken:
         print("\n[깨진 링크]")
         for src, lineno, text, url in broken[:50]:

@@ -8,6 +8,7 @@ tier: generated
 
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` — Action Rotation (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md` — Draw Games (team3)
+- `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Evaluation_Reference.md` — Hand Evaluation 통합 레퍼런스 (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Event_Catalog.md` — Event Catalog (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Flop_Variants.md` — Flop Variants (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Betting.md` — Betting (team3)

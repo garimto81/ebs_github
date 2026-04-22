@@ -6,9 +6,16 @@ tier: generated
 
 # team1
 
-- `docs/2. Development/2.1 Frontend/Backlog.md` — Backlog
-- `docs/2. Development/2.1 Frontend/Console_UI.md` — Console UI
-- `docs/2. Development/2.1 Frontend/Engineering.md` — Engineering
+- `docs/2. Development/2.1 Frontend/Backlog/B-077-ge-scope-expansion-prd.md` — GE scope 확장 PRD 작성 (BS-08-05/06/07 — Trigger / DB Mapping / Extension Points)
+- `docs/2. Development/2.1 Frontend/Backlog/B-079-Prize-Pool-Payout-Management.md` — B-079 Prize Pool & Payout Management
+- `docs/2. Development/2.1 Frontend/Backlog/B-080-Blind-Prize-Structure-Template.md` — B-080 Blind & Prize Structure Template 관리
+- `docs/2. Development/2.1 Frontend/Backlog/B-081-Chip-Management-Reporter.md` — B-081 Chip Management & Chip Reporter
+- `docs/2. Development/2.1 Frontend/Backlog/B-082-Staff-Role-Permission.md` — B-082 Staff Role & Permission 관리
+- `docs/2. Development/2.1 Frontend/Backlog/B-083-Tournament-Statistics-Reporting.md` — B-083 Tournament Statistics & Reporting
+- `docs/2. Development/2.1 Frontend/Backlog/B-087-quasar-migration-drift-master.md` — Quasar → Flutter 이전 누락/Drift 전수 수정 (master)
+- `docs/2. Development/2.1 Frontend/Backlog/B-088-B-team1-docs-rest-path-pascal.md` — team1 기획 문서 REST path kebab → PascalCase 변환 (B-088 subscope)
+- `docs/2. Development/2.1 Frontend/Deployment.md` — Deployment
+- `docs/2. Development/2.1 Frontend/Engineering.md` — Engineering — Frontend (Flutter)
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/Activate_Broadcast.md` — Activate Broadcast
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/Import_Flow.md` — Import Flow
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/Metadata_Editing.md` — Metadata Editing
@@ -27,9 +34,18 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/skin-editor-layout-balance-solutions.md` — skin-editor-layout-balance-solutions
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` — ui-feature-verification-workflow
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md` — UI
+- `docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md` — Chip Management
+- `docs/2. Development/2.1 Frontend/Lobby/Clock_Control.md` — Clock Control
 - `docs/2. Development/2.1 Frontend/Lobby/Event_and_Flight.md` — Event and Flight
+- `docs/2. Development/2.1 Frontend/Lobby/Hand_History.md` — Hand History
+- `docs/2. Development/2.1 Frontend/Lobby/Operations.md` — Operations
 - `docs/2. Development/2.1 Frontend/Lobby/Overview.md` — Overview
+- `docs/2. Development/2.1 Frontend/Lobby/Prize_Pool.md` — Prize Pool & Payout Management
+- `docs/2. Development/2.1 Frontend/Lobby/Registration.md` — Registration
+- `docs/2. Development/2.1 Frontend/Lobby/Reports.md` — Reports & Statistics
 - `docs/2. Development/2.1 Frontend/Lobby/Session_Restore.md` — Session Restore
+- `docs/2. Development/2.1 Frontend/Lobby/Staff_Management.md` — Staff Management
+- `docs/2. Development/2.1 Frontend/Lobby/Structure_Templates.md` — Structure Templates (Blind & Payout)
 - `docs/2. Development/2.1 Frontend/Lobby/Table.md` — Table
 - `docs/2. Development/2.1 Frontend/Lobby/UI.md` — UI
 - `docs/2. Development/2.1 Frontend/Login/Error_Handling.md` — Error Handling

@@ -7,7 +7,8 @@ tier: generated
 # Command_Center_UI
 
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Action_Buttons.md` — Action Buttons (team4)
-- `docs/2. Development/2.4 Command Center/Command_Center_UI/Game_Settings_Modal.md` — Game Settings Modal (team4)
+- `docs/2. Development/2.4 Command Center/Command_Center_UI/Demo_Test_Mode.md` — Demo & Test Mode (DEPRECATED) (team4)
+- `docs/2. Development/2.4 Command Center/Command_Center_UI/Game_Settings_Modal.md` — Game Settings — Rules 탭 상세 규격 (team4)
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Hand_Lifecycle.md` — Hand Lifecycle (team4)
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Keyboard_Shortcuts.md` — Keyboard Shortcuts (team4)
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Manual_Card_Input.md` — Manual Card Input (team4)

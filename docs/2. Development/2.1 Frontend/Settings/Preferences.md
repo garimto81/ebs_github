@@ -2,8 +2,7 @@
 title: Preferences
 owner: team1
 tier: internal
-legacy-id: BS-03-06
-last-updated: 2026-04-20
+last-updated: 2026-04-22
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "신규 작성 (2026-04-20). SG-003 §Tab 6 Preferences 에 따른 개인화 설정"
@@ -11,7 +10,12 @@ sg_reference: SG-003
 scope: user
 ---
 
-# BS-03-06 Preferences — 개인화 설정
+# Preferences — 개인화 설정
+
+| 날짜 | 항목 | 내용 |
+|------|------|------|
+| 2026-04-20 | 신규 작성 | SG-003 §Tab 6 기반 개인화 설정 (단축키·UI 환경) |
+| 2026-04-22 | legacy-id 삭제 | 구 BS-03-06 (테이블 운영) 은 `../Lobby/Operations.md` 정본. 본 문서는 신규 SG-003 자료라 legacy-id 부적절 — 필드 제거 |
 
 ## 개요
 

@@ -26,6 +26,36 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DOCS_ROOT = REPO_ROOT / "docs"
 GENERATED_ROOT = DOCS_ROOT / "_generated"
 
+CHECK_EXCLUDE_DIRS = {"Backlog", "archive", "3. Change Requests"}
+CHECK_EXCLUDE_NAMES = {"Backlog.md", "Active_Work.md", "Conductor_Backlog.md",
+                       "Backlog_Aggregate.md"}
+CHECK_EXCLUDE_PREFIXES = ("NOTIFY-",)
+
+
+def is_check_excluded(path: Path) -> bool:
+    """frontmatter 검증 제외 대상.
+
+    제외:
+    - Backlog/ 항목 디렉토리 (각 팀 + Conductor_Backlog)
+    - NOTIFY-*.md 메시지 파일
+    - archive/ 폴더 (역사 기록)
+    - 3. Change Requests/ 폴더 (v7 거버넌스로 폐기, 역사 보존)
+    - 집계 인덱스 (Active_Work, Backlog, Backlog_Aggregate, Conductor_Backlog)
+    """
+    parts = path.parts
+    if any(part in CHECK_EXCLUDE_DIRS for part in parts):
+        return True
+    if any(part.startswith("_archived-") for part in parts):
+        return True
+    name = path.name
+    if name in CHECK_EXCLUDE_NAMES:
+        return True
+    if any(name.startswith(prefix) for prefix in CHECK_EXCLUDE_PREFIXES):
+        return True
+    if path.parent.name == "Conductor_Backlog":
+        return True
+    return False
+
 try:
     import yaml  # type: ignore
 
@@ -87,10 +117,18 @@ def rel(path: Path) -> str:
 
 
 def check_mode(docs: list[tuple[Path, dict[str, object]]]) -> int:
-    """frontmatter 누락, legacy-id 중복 검증."""
+    """frontmatter 누락, legacy-id 중복 검증.
+
+    Backlog 항목·NOTIFY 메시지·집계 인덱스는 검사 대상 아님
+    (메모리 feedback_audit_scope_discipline 정책: 계약 문서만 audit).
+    """
     missing = []
     legacy_ids: dict[str, list[str]] = defaultdict(list)
+    checked = 0
     for path, fm in docs:
+        if is_check_excluded(path):
+            continue
+        checked += 1
         if not fm:
             missing.append(rel(path))
             continue
@@ -119,7 +157,7 @@ def check_mode(docs: list[tuple[Path, dict[str, object]]]) -> int:
         errors += len(dupes)
 
     if errors == 0:
-        print(f"[OK] 검증 통과 — 총 {len(docs)} 파일")
+        print(f"[OK] 검증 통과 — 검사 {checked} / 총 {len(docs)} 파일 ({len(docs) - checked} 제외)")
     return 0 if errors == 0 else 1
 
 
@@ -236,7 +274,11 @@ def write_by_feature(docs: list[tuple[Path, dict[str, object]]]) -> None:
 
 
 def write_section_landings(docs: list[tuple[Path, dict[str, object]]]) -> None:
-    """docs/2. Development/2.N {팀명}.md landing 자동 생성."""
+    """docs/2. Development/2.N {팀명}.md landing 자동 생성/갱신.
+
+    landing 파일이 이미 있어도 tier: generated 면 재생성 (stale 링크 자동 정리).
+    수동 작성 landing (tier != generated) 은 보존.
+    """
     section_pattern = re.compile(r"(docs/2\. Development/2\.\d [^/]+)/")
     buckets: dict[str, list[Path]] = defaultdict(list)
     for p, _ in docs:
@@ -251,7 +293,9 @@ def write_section_landings(docs: list[tuple[Path, dict[str, object]]]) -> None:
         section_name = section.split("/")[-1]
         landing = section_dir / f"{section_name}.md"
         if landing.exists():
-            continue
+            existing_fm = parse_frontmatter(landing.read_text(encoding="utf-8"))
+            if existing_fm.get("tier") != "generated":
+                continue
         lines = [
             "---",
             f"title: {section_name}",

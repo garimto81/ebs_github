@@ -8,12 +8,14 @@ tier: generated
 
 - `docs/2. Development/2.2 Backend/APIs/Auth_and_Session.md` — Auth and Session
 - `docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md` — Backend HTTP
+- `docs/2. Development/2.2 Backend/APIs/Backend_HTTP_Status.md` — Backend HTTP — 구현 현황 (2026-04-20)
 - `docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md` — Graphic Editor API
 - `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` — WebSocket Events
 - `docs/2. Development/2.2 Backend/Back_Office/Operations.md` — Operations
 - `docs/2. Development/2.2 Backend/Back_Office/Overview.md` — Overview
 - `docs/2. Development/2.2 Backend/Back_Office/Sync_Protocol.md` — Sync Protocol
-- `docs/2. Development/2.2 Backend/Backlog.md` — Backlog
+- `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-registration-sitin-events.md` — NOTIFY team1 Round2 — registration_changed · sitin_called 이벤트 신설
+- `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-user-sessions-multidevice.md` — NOTIFY team1 Round2 — user_sessions 다중 기기 · configs/preferences 이관
 - `docs/2. Development/2.2 Backend/Database/ER_Diagram.md` — ER Diagram
 - `docs/2. Development/2.2 Backend/Database/GFSkin_Schema.md` — GFSkin Schema
 - `docs/2. Development/2.2 Backend/Database/Schema.md` — Schema
@@ -26,7 +28,9 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Engineering/Non_Functional_Requirements.md` — Non Functional Requirements
 - `docs/2. Development/2.2 Backend/Engineering/Project_Structure.md` — Project Structure
 - `docs/2. Development/2.2 Backend/Engineering/Routing.md` — Routing
+- `docs/2. Development/2.2 Backend/Engineering/Sandbox_Tournament_Generator.md` — Sandbox Tournament Generator
 - `docs/2. Development/2.2 Backend/Engineering/State_Management.md` — State Management
 - `docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md` — Tech Stack
 - `docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md` — Testing Strategy
-- `docs/2. Development/2.2 Backend/Spec_Gaps.md` — Spec Gaps
+- `docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md` — 구현: team2 decks.py in-memory → DB session 전환
+- `docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md` — B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션

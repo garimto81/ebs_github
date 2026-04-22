@@ -11,21 +11,76 @@ tier: generated
 | 경로 | 제목 | Owner | Tier | Legacy |
 |------|------|-------|------|--------|
 | `docs/1. Product/1. Product.md` | 1. Product | conductor | internal | - |
-| `docs/1. Product/Architecture.md` | Architecture | conductor | internal | - |
-| `docs/1. Product/Communication_Rules.md` | Communication Rules | conductor | internal | - |
-| `docs/1. Product/Foundation.md` | Foundation | conductor | internal | - |
+| `docs/1. Product/Foundation.md` | EBS 기초 기획서 | conductor | internal | - |
 | `docs/1. Product/Game_Rules/Betting_System.md` | Betting System | conductor | internal | PRD-GAME-04 |
 | `docs/1. Product/Game_Rules/Draw.md` | Draw | conductor | internal | PRD-GAME-02 |
 | `docs/1. Product/Game_Rules/Flop_Games.md` | Flop Games | conductor | internal | PRD-GAME-01 |
 | `docs/1. Product/Game_Rules/Seven_Card_Games.md` | Seven Card Games | conductor | internal | PRD-GAME-03 |
-| `docs/1. Product/PokerGFX_Reference.md` | PokerGFX Reference | conductor | internal | - |
+| `docs/1. Product/References/PokerGFX_Reference.md` | PokerGFX Reference | conductor | internal | - |
 | `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` | WSOP Production Structure Analysis | conductor | internal | - |
-| `docs/1. Product/Team_Structure.md` | Team Structure | conductor | internal | - |
+| `docs/1. Product/archive/Foundation_v41.0.0.md` | Foundation | conductor | internal | - |
 | `docs/2. Development/2. Development.md` | 2. Development | conductor | internal | - |
 | `docs/2. Development/2.1 Frontend/2.1 Frontend.md` | 2.1 Frontend | ci | generated | - |
-| `docs/2. Development/2.1 Frontend/Backlog.md` | Backlog | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Console_UI.md` | Console UI | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Engineering.md` | Engineering | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Backlog.md` | Backlog | - | internal | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-068-team1-frontend-Quasar-프로젝트-실제-초기화.md` | team1-frontend Quasar 프로젝트 실제 초기화 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-075-React-아카이브-Quasar-이식-B-068-하위.md` | React 아카이브 → Quasar 이식 (B-068 하위) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-076-QA-LOBBY-06-기반-Vitest-Playwright-셋업.md` | QA-LOBBY-06 기반 Vitest + Playwright 셋업 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-077-WSOP-LIVE-기준-레포-실재-확인-인프라.md` | WSOP LIVE 기준 레포 실재 확인 (인프라) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-077-ge-scope-expansion-prd.md` | GE scope 확장 PRD 작성 (BS-08-05/06/07 — Trigger / DB Mapping / Extension Points) | team1 | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-078-team1-specs-이미지-docs00-reference-동기화-자동화.md` | team1 specs 이미지 ↔ docs/00-reference 동기화 자동화 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-079-Prize-Pool-Payout-Management.md` | B-079 Prize Pool & Payout Management | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-080-Blind-Prize-Structure-Template.md` | B-080 Blind & Prize Structure Template 관리 | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-081-Chip-Management-Reporter.md` | B-081 Chip Management & Chip Reporter | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-082-Staff-Role-Permission.md` | B-082 Staff Role & Permission 관리 | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-083-Tournament-Statistics-Reporting.md` | B-083 Tournament Statistics & Reporting | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-084-API-doc-alignment-Phase-1.md` | API 경로 문서 준수 전환 (Phase 1) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-085-model-nullability-audit.md` | Flutter 모델 required 필드 BO 응답 매칭 감사 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-086-browser-e2e-drilldown.md` | Browser E2E 러너에 drill-down + 탭 순회 시나리오 추가 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-087-quasar-migration-drift-master.md` | Quasar → Flutter 이전 누락/Drift 전수 수정 (master) | team1 | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-088-B-team1-docs-rest-path-pascal.md` | team1 기획 문서 REST path kebab → PascalCase 변환 (B-088 subscope) | team1 | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-F004-pending-missing-api-docs.md` | 문서 누락 API 경로 보강 대기 (team2/Conductor 책임) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-F005-settings-series-selector.md` | Settings 화면에 Series selector UI 도입 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-F006-skin-upload-ui-2step.md` | Skin 업로드 UI를 2-step 플로우로 업데이트 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-011-검토-요청-Graphic-Editor-소유권-Team-4-Team-1-이관-Lobby-허브.md` | 검토 요청: Graphic Editor 소유권 Team 4 → Team 1 이관 (Lobby 허브) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-012-검토-요청-gfskin-ZIP-포맷-단일화-및-DATA-07-신설.md` | 검토 요청: .gfskin ZIP 포맷 단일화 및 DATA-07 신설 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-013-검토-요청-API-07-Graphic-Editor-엔드포인트-신설.md` | 검토 요청: API-07 Graphic Editor 엔드포인트 신설 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-014-검토-요청-GE-요구사항-ID-prefix-재편-범위-축소-반영.md` | 검토 요청: GE 요구사항 ID prefix 재편 (범위 축소 반영) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-018-검토-요청-DATA-04에-idempotency_keys-audit_events-테이블-신.md` | 검토 요청: DATA-04에 idempotency_keys, audit_events 테이블 신설 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-020-검토-요청-tablesrebalance-응답에-saga-구조-추가.md` | 검토 요청: /Tables/Rebalance 응답에 saga 구조 추가 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-023-검토-요청-API-05-MessagePack-직렬화-프로토콜-채택-WSOP-Fatimaap.md` | 검토 요청: API-05 MessagePack 직렬화 프로토콜 채택 (WSOP Fatima.app 패턴) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-028-검토-요청-BS-05에-AT-화면-체계AT-00AT-07-도입.md` | 검토 요청: BS-05에 AT 화면 체계(AT-00~AT-07) 도입 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-029-검토-요청-BS-05-Lobby-BO-CC-Launch-플로우-상세-명세.md` | 검토 요청: BS-05 Lobby → BO → CC Launch 플로우 상세 명세 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-030-검토-요청-BS-05-Multi-Table-운영자-시나리오-명시.md` | 검토 요청: BS-05 Multi-Table 운영자 시나리오 명시 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-032-검토-요청-BS-05-시각동작-명세-구체화-카드-슬롯-FSM-포지션-색상-애니메이션.md` | 검토 요청: BS-05 시각/동작 명세 구체화 (카드 슬롯 FSM, 포지션 색상, 애니메이션) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-034-검토-요청-BS-07-Overlay-시각-일관성-CC-색상-체계-재사용.md` | 검토 요청: BS-07 Overlay 시각 일관성 (CC 색상 체계 재사용) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-036-검토-요청-BS-07-Security-Delay-홀카드-공개-지연-명세.md` | 검토 요청: BS-07 Security Delay (홀카드 공개 지연) 명세 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-037-검토-요청-BS-08-Graphic-Editor-행동-명세-신규-작성-WSOP-8모드.md` | 검토 요청: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-039-검토-요청-audit_eventsevent_type-카탈로그-35값-공식-정의.md` | 검토 요청: audit_events.event_type 카탈로그 35값 공식 정의 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-040-검토-요청-BS-01-refresh_token-전달-방식을-환경별-조건부로-통일.md` | 검토 요청: BS-01 refresh_token 전달 방식을 환경별 조건부로 통일 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-041-검토-요청-DATA-04에-Seat-Status-enum-정의-waiting_list-테이.md` | 검토 요청: DATA-04에 Seat Status enum 정의 + waiting_list 테이블 신설 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-042-검토-요청-API-05에-EventFlightSummary-이벤트-Clock-FSM-행동-.md` | 검토 요청: API-05에 EventFlightSummary 이벤트 + Clock FSM 행동 명세 신설 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-043-검토-요청-WSOP-LIVE-Sync-대상-엔드포인트-카탈로그-GGPass-통합-전략.md` | 검토 요청: WSOP LIVE Sync 대상 엔드포인트 카탈로그 + GGPass 통합 전략 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-047-검토-요청-Competition-계층-WSOP-LIVE-정렬-SeriesEventEvent.md` | 검토 요청: Competition 계층 WSOP LIVE 정렬 (Series→Event→EventFlight) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-048-검토-요청-인증-체계-WSOP-LIVE-GGPass-패턴-정렬.md` | 검토 요청: 인증 체계 WSOP LIVE GGPass 패턴 정렬 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-049-검토-요청-BlindStructure-관리-엔드포인트-추가-WSOP-LIVE-정렬.md` | 검토 요청: BlindStructure 관리 엔드포인트 추가 (WSOP LIVE 정렬) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-050-검토-요청-Clock-엔드포인트-10종-완성-WSOP-LIVE-Staff-App-정렬.md` | 검토 요청: Clock 엔드포인트 10종 완성 (WSOP LIVE Staff App 정렬) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-051-검토-요청-PayoutStructure-PrizePool-엔드포인트-추가-WSOP-LIVE.md` | 검토 요청: PayoutStructure (PrizePool) 엔드포인트 추가 (WSOP LIVE 정렬) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-052-검토-요청-Rate-Limiting-보안-정책-정의-OWASP-WSOP-LIVE-GGPas.md` | 검토 요청: Rate Limiting & 보안 정책 정의 (OWASP + WSOP LIVE GGPass 준거) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-053-검토-요청-Users-엔드포인트에-WSOP-LIVE-Staff-패턴-SuspendLockD.md` | 검토 요청: Users 엔드포인트에 WSOP LIVE Staff 패턴 (Suspend/Lock/Download) 추가 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-054-검토-요청-WebSocket-이벤트-카탈로그-WSOP-LIVE-SignalR-정렬.md` | 검토 요청: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-001-LEGACY-검토-요청-DATA-04에-idempotency_keys-audit_event.md` | [LEGACY] 검토 요청: DATA-04에 idempotency_keys, audit_events 테이블 신설 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-003-LEGACY-검토-요청-모든-Mutation-API에-Idempotency-Key-헤더-표.md` | [LEGACY] 검토 요청: 모든 Mutation API에 Idempotency-Key 헤더 표준 도입 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-006-LEGACY-검토-요청-BS-01에-JWT-AccessRefresh-만료-정책-명시.md` | [LEGACY] 검토 요청: BS-01에 JWT Access/Refresh 만료 정책 명시 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-010-LEGACY-검토-요청-tablesrebalance-응답에-saga-구조-추가.md` | [LEGACY] 검토 요청: /Tables/Rebalance 응답에 saga 구조 추가 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-015-LEGACY-검토-요청-WebSocket-이벤트에-단조증가-seq-필드-replay-엔드포.md` | [LEGACY] 검토 요청: WebSocket 이벤트에 단조증가 seq 필드 + replay 엔드포인트 추가 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-016-LEGACY-검토-요청-WSOP-LIVE-Parity-EventFlightStatusRes.md` | [LEGACY] 검토 요청: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-017-LEGACY-검토-요청-BS-05에-AT-화면-체계AT-00AT-07-도입.md` | [LEGACY] 검토 요청: BS-05에 AT 화면 체계(AT-00~AT-07) 도입 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-019-LEGACY-검토-요청-BS-05-시각동작-명세-구체화-카드-슬롯-FSM-포지션-색상-애니.md` | [LEGACY] 검토 요청: BS-05 시각/동작 명세 구체화 (카드 슬롯 FSM, 포지션 색상, 애니메이션) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-021-LEGACY-검토-요청-API-05-MessagePack-직렬화-프로토콜-채택-WSOP-F.md` | [LEGACY] 검토 요청: API-05 MessagePack 직렬화 프로토콜 채택 (WSOP Fatima.app 패턴) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-024-LEGACY-검토-요청-BS-07-Overlay-시각-일관성-CC-색상-체계-재사용.md` | [LEGACY] 검토 요청: BS-07 Overlay 시각 일관성 (CC 색상 체계 재사용) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-025-LEGACY-검토-요청-BS-08-Graphic-Editor-행동-명세-신규-작성-WSOP.md` | [LEGACY] 검토 요청: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드) | - | - | - |
+| `docs/2. Development/2.1 Frontend/Deployment.md` | Deployment | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Engineering.md` | Engineering — Frontend (Flutter) | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/Activate_Broadcast.md` | Activate Broadcast | team1 | internal | BS-08-03 |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/Import_Flow.md` | Import Flow | team1 | internal | BS-08-01 |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/Metadata_Editing.md` | Metadata Editing | team1 | internal | BS-08-02 |
@@ -48,9 +103,18 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/skin-editor-layout-balance-solutions.md` | skin-editor-layout-balance-solutions | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` | ui-feature-verification-workflow | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md` | UI | team1 | internal | UI-04 |
+| `docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md` | Chip Management | team1 | feature | - |
+| `docs/2. Development/2.1 Frontend/Lobby/Clock_Control.md` | Clock Control | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Event_and_Flight.md` | Event and Flight | team1 | internal | BS-02-02 |
+| `docs/2. Development/2.1 Frontend/Lobby/Hand_History.md` | Hand History | team1 | feature | BS-02-HH |
+| `docs/2. Development/2.1 Frontend/Lobby/Operations.md` | Operations | team1 | internal | BS-03-06 |
 | `docs/2. Development/2.1 Frontend/Lobby/Overview.md` | Overview | team1 | internal | BS-02-00 |
+| `docs/2. Development/2.1 Frontend/Lobby/Prize_Pool.md` | Prize Pool & Payout Management | team1 | feature | - |
+| `docs/2. Development/2.1 Frontend/Lobby/Registration.md` | Registration | team1 | internal | - |
+| `docs/2. Development/2.1 Frontend/Lobby/Reports.md` | Reports & Statistics | team1 | feature | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Session_Restore.md` | Session Restore | team1 | internal | BS-02-01-session-restore |
+| `docs/2. Development/2.1 Frontend/Lobby/Staff_Management.md` | Staff Management | team1 | feature | - |
+| `docs/2. Development/2.1 Frontend/Lobby/Structure_Templates.md` | Structure Templates (Blind & Payout) | team1 | feature | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Table.md` | Table | team1 | internal | BS-02-03 |
 | `docs/2. Development/2.1 Frontend/Lobby/UI.md` | UI | team1 | internal | UI-01 |
 | `docs/2. Development/2.1 Frontend/Login/Error_Handling.md` | Error Handling | team1 | internal | BS-02-01-error |
@@ -60,19 +124,93 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Settings/Graphics.md` | Graphics | team1 | internal | BS-03-02 |
 | `docs/2. Development/2.1 Frontend/Settings/Outputs.md` | Outputs | team1 | internal | BS-03-01 |
 | `docs/2. Development/2.1 Frontend/Settings/Overview.md` | Overview | team1 | internal | BS-03-00 |
-| `docs/2. Development/2.1 Frontend/Settings/Preferences.md` | Preferences | team1 | internal | BS-03-06 |
+| `docs/2. Development/2.1 Frontend/Settings/Preferences.md` | Preferences | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Settings/Rules.md` | Rules | team1 | internal | BS-03-04 |
 | `docs/2. Development/2.1 Frontend/Settings/Statistics.md` | Statistics | team1 | internal | BS-03-05 |
 | `docs/2. Development/2.1 Frontend/Settings/UI.md` | UI | team1 | internal | UI-03 |
 | `docs/2. Development/2.2 Backend/2.2 Backend.md` | 2.2 Backend | ci | generated | - |
 | `docs/2. Development/2.2 Backend/APIs/Auth_and_Session.md` | Auth and Session | team2 | internal | API-06 |
 | `docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md` | Backend HTTP | team2 | internal | API-01 |
+| `docs/2. Development/2.2 Backend/APIs/Backend_HTTP_Status.md` | Backend HTTP — 구현 현황 (2026-04-20) | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md` | Graphic Editor API | team2 | internal | API-07 |
 | `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` | WebSocket Events | team2 | internal | API-05 |
 | `docs/2. Development/2.2 Backend/Back_Office/Operations.md` | Operations | team2 | internal | BO-03 |
 | `docs/2. Development/2.2 Backend/Back_Office/Overview.md` | Overview | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/Back_Office/Sync_Protocol.md` | Sync Protocol | team2 | internal | BO-02 |
-| `docs/2. Development/2.2 Backend/Backlog.md` | Backlog | team2 | internal | - |
+| `docs/2. Development/2.2 Backend/Backlog.md` | Backlog | - | internal | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-021-CC-WebSocket-연결-추적.md` | CC WebSocket 연결 추적 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-022-CC-설정-잠금-매트릭스.md` | CC 설정 잠금 매트릭스 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-023-핸드-기록-수신-CC-BO-WebSocket.md` | 핸드 기록 수신 — CC → BO WebSocket | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-024-핸드-조회-API.md` | 핸드 조회 API | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-025-통계-계산-엔진.md` | 통계 계산 엔진 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-026-CC-로컬-버퍼-동기화-프로토콜.md` | CC 로컬 버퍼 동기화 프로토콜 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-027-Google-OAuth-20-추가.md` | Google OAuth 2.0 추가 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-028-RFID-리더-등록-관리.md` | RFID 리더 등록 관리 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-029-덱-등록-관리.md` | 덱 등록 관리 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-030-출력-장비-상태-추적.md` | 출력 장비 상태 추적 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-031-Lobby-WebSocket-모니터-채널-완성.md` | Lobby WebSocket 모니터 채널 완성 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-032-테이블-실시간-상태-이벤트.md` | 테이블 실시간 상태 이벤트 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-033-세션-복원.md` | 세션 복원 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-034-오버레이-프리셋-관리.md` | 오버레이 프리셋 관리 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-035-Holdem-핸드-완전-지원.md` | Hold'em 핸드 완전 지원 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-036-플레이어-DB-검색-고도화.md` | 플레이어 DB 검색 고도화 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-037-리포팅-Dashboard-API.md` | 리포팅 — Dashboard API | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-038-리포팅-Table-Activity.md` | 리포팅 — Table Activity | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-039-리포팅-Player-Statistics.md` | 리포팅 — Player Statistics | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-041-WSOP-LIVE-API-폴링-스케줄러.md` | WSOP LIVE API 폴링 스케줄러 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-042-WSOP-LIVE-UPSERT-로직.md` | WSOP LIVE UPSERT 로직 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-043-동기화-상태-조회.md` | 동기화 상태 조회 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-044-PostgreSQL-마이그레이션.md` | PostgreSQL 마이그레이션 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-045-9종-게임-핸드-기록-지원.md` | 9종 게임 핸드 기록 지원 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-046-다중-게임-통계-계산.md` | 다중 게임 통계 계산 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-047-Entra-ID-Microsoft-OAuth-추가.md` | Entra ID (Microsoft OAuth) 추가 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-048-리포팅-Hand-Distribution.md` | 리포팅 — Hand Distribution | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-049-리포팅-RFID-Health-Report.md` | 리포팅 — RFID Health Report | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-050-리포팅-Operator-Activity-Report.md` | 리포팅 — Operator Activity Report | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-051-CSVJSON-내보내기.md` | CSV/JSON 내보내기 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-052-자동-백업-스크립트.md` | 자동 백업 스크립트 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-053-감사-로그-아카이브-정책.md` | 감사 로그 아카이브 정책 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-054-TLS-13-HTTPSWSS-설정.md` | TLS 1.3 HTTPS/WSS 설정 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-056-13종-게임-핸드-기록-완전-지원.md` | 13종 게임 핸드 기록 완전 지원 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-057-스킨-에디터-BO-연동.md` | 스킨 에디터 BO 연동 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-058-Hybrid-인증.md` | Hybrid 인증 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-059-통계-AI-무인화-기반-준비.md` | 통계 AI 무인화 기반 준비 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-060-Multi-region-지원.md` | Multi-region 지원 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-061-고가용성-WebSocket-Redis-PubSub.md` | 고가용성 WebSocket (Redis Pub/Sub) | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-062-로그-대시보드-Admin용.md` | 로그 대시보드 (Admin용) | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-063-API-Rate-Limiting.md` | API Rate Limiting | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-064-데이터-보존-정책-자동화.md` | 데이터 보존 정책 자동화 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-065-성능-모니터링.md` | 성능 모니터링 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-066-SSOT-compliance-recovery.md` | SSOT compliance recovery (Phase C) | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-068-sandbox-tournament-generator.md` | Sandbox Tournament Generator 구현 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-088-team2-camelcase-migration.md` | camelCase 전수 마이그레이션 (team2 PR 2/3/4) | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/B-089-team2-test-assertion-migration.md` | B-088 후속 — test assertion snake→camelCase 완전 교체 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-registration-sitin-events.md` | NOTIFY team1 Round2 — registration_changed · sitin_called 이벤트 신설 | team2 | internal | - |
+| `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-user-sessions-multidevice.md` | NOTIFY team1 Round2 — user_sessions 다중 기기 · configs/preferences 이관 | team2 | internal | - |
+| `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team2-B088-PR2-3-4-naming-migration.md` | B-088 PR-2/3/4 — Backend camelCase 전환 (Pydantic + WS publisher + REST path) | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-011-검토-요청-Graphic-Editor-소유권-Team-4-Team-1-이관-Lobby-허브.md` | 검토 요청: Graphic Editor 소유권 Team 4 → Team 1 이관 (Lobby 허브) | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-012-검토-요청-gfskin-ZIP-포맷-단일화-및-DATA-07-신설.md` | 검토 요청: .gfskin ZIP 포맷 단일화 및 DATA-07 신설 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-013-검토-요청-API-07-Graphic-Editor-엔드포인트-신설.md` | 검토 요청: API-07 Graphic Editor 엔드포인트 신설 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-014-검토-요청-GE-요구사항-ID-prefix-재편-범위-축소-반영.md` | 검토 요청: GE 요구사항 ID prefix 재편 (범위 축소 반영) | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-015-검토-요청-API-05에-skin_updated-WebSocket-이벤트-추가.md` | 검토 요청: API-05에 skin_updated WebSocket 이벤트 추가 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-023-검토-요청-API-05-MessagePack-직렬화-프로토콜-채택-WSOP-Fatimaap.md` | 검토 요청: API-05 MessagePack 직렬화 프로토콜 채택 (WSOP Fatima.app 패턴) | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-024-검토-요청-API-05-WriteGameInfo-프로토콜-22-필드-스키마-완전-명세.md` | 검토 요청: API-05 WriteGameInfo 프로토콜 22+ 필드 스키마 완전 명세 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-026-검토-요청-BS-04-AT-05-RFID-Register-화면-명세-추가.md` | 검토 요청: BS-04 AT-05 RFID Register 화면 명세 추가 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-027-검토-요청-BS-05-07-Statistics-화면-AT-04-신규-작성.md` | 검토 요청: BS-05-07 Statistics 화면 (AT-04) 신규 작성 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-028-검토-요청-BS-05에-AT-화면-체계AT-00AT-07-도입.md` | 검토 요청: BS-05에 AT 화면 체계(AT-00~AT-07) 도입 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-029-검토-요청-BS-05-Lobby-BO-CC-Launch-플로우-상세-명세.md` | 검토 요청: BS-05 Lobby → BO → CC Launch 플로우 상세 명세 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-031-검토-요청-BS-05-서버-프로토콜-매핑-및-내부-모호성-해소.md` | 검토 요청: BS-05 서버 프로토콜 매핑 및 내부 모호성 해소 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-035-검토-요청-BS-07-Overlay-Layer-123-경계-및-자동화-범위-명시.md` | 검토 요청: BS-07 Overlay Layer 1/2/3 경계 및 자동화 범위 명시 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-036-검토-요청-BS-07-Security-Delay-홀카드-공개-지연-명세.md` | 검토 요청: BS-07 Security Delay (홀카드 공개 지연) 명세 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-037-검토-요청-BS-08-Graphic-Editor-행동-명세-신규-작성-WSOP-8모드.md` | 검토 요청: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드) | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-038-검토-요청-Google-OAuth-Phase-1-도입.md` | 검토 요청: Google OAuth Phase 1 도입 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-016-LEGACY-검토-요청-WSOP-LIVE-Parity-EventFlightStatusRes.md` | [LEGACY] 검토 요청: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-017-LEGACY-검토-요청-BS-05에-AT-화면-체계AT-00AT-07-도입.md` | [LEGACY] 검토 요청: BS-05에 AT 화면 체계(AT-00~AT-07) 도입 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-018-LEGACY-검토-요청-BS-05-서버-프로토콜-매핑-및-내부-모호성-해소.md` | [LEGACY] 검토 요청: BS-05 서버 프로토콜 매핑 및 내부 모호성 해소 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-020-LEGACY-검토-요청-API-03-RFID-HAL-에러-복구-및-생명주기-시나리오-보강.md` | [LEGACY] 검토 요청: API-03 RFID HAL 에러 복구 및 생명주기 시나리오 보강 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-021-LEGACY-검토-요청-API-05-MessagePack-직렬화-프로토콜-채택-WSOP-F.md` | [LEGACY] 검토 요청: API-05 MessagePack 직렬화 프로토콜 채택 (WSOP Fatima.app 패턴) | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-022-LEGACY-검토-요청-BS-04-AT-05-RFID-Register-화면-명세-추가.md` | [LEGACY] 검토 요청: BS-04 AT-05 RFID Register 화면 명세 추가 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-025-LEGACY-검토-요청-BS-08-Graphic-Editor-행동-명세-신규-작성-WSOP.md` | [LEGACY] 검토 요청: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드) | - | - | - |
 | `docs/2. Development/2.2 Backend/Database/ER_Diagram.md` | ER Diagram | team2 | internal | DATA-01 |
 | `docs/2. Development/2.2 Backend/Database/GFSkin_Schema.md` | GFSkin Schema | team2 | internal | DATA-07 |
 | `docs/2. Development/2.2 Backend/Database/Schema.md` | Schema | team2 | internal | DATA-04 |
@@ -85,15 +223,39 @@ tier: generated
 | `docs/2. Development/2.2 Backend/Engineering/Non_Functional_Requirements.md` | Non Functional Requirements | team2 | internal | IMPL-10 |
 | `docs/2. Development/2.2 Backend/Engineering/Project_Structure.md` | Project Structure | team2 | internal | IMPL-02 |
 | `docs/2. Development/2.2 Backend/Engineering/Routing.md` | Routing | team2 | internal | IMPL-04 |
+| `docs/2. Development/2.2 Backend/Engineering/Sandbox_Tournament_Generator.md` | Sandbox Tournament Generator | team2 | internal | None |
 | `docs/2. Development/2.2 Backend/Engineering/State_Management.md` | State Management | team2 | internal | IMPL-03 |
 | `docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md` | Tech Stack | team2 | internal | IMPL-01 |
 | `docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md` | Testing Strategy | team2 | internal | IMPL-08 |
-| `docs/2. Development/2.2 Backend/Spec_Gaps.md` | Spec Gaps | team2 | internal | - |
 | `docs/2. Development/2.3 Game Engine/2.3 Game Engine.md` | 2.3 Game Engine | ci | generated | - |
+| `docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md` | Harness REST API | team3 | contract | API-04.2 |
+| `docs/2. Development/2.3 Game Engine/APIs/OutputEventBuffer_Boundary.md` | OutputEventBuffer 구현 경계 | team3 | contract | API-04.3 |
+| `docs/2. Development/2.3 Game Engine/APIs/OutputEvent_Serialization.md` | OutputEvent Serialization | team3 | contract | API-04.1 |
 | `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | Overlay Output Events | team3 | internal | API-04 |
-| `docs/2. Development/2.3 Game Engine/Backlog.md` | Backlog | team3 | internal | - |
+| `docs/2. Development/2.3 Game Engine/Backlog.md` | Backlog | - | internal | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-320-WSOP-LIVE-BS-07-Overlay-감시.md` | WSOP LIVE BS-07 Overlay 완성 감시 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` | OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` | Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-303-Short-All-in-Rule-96-구현-DONE-2026-04-13.md` | Short All-in Rule 96 구현~~ ✅ DONE (2026-04-13) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-304-Missed-Blind-처리-구현-DONE-2026-04-13.md` | Missed Blind 처리 구현~~ ✅ DONE (2026-04-13) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-305-Dead-Button-Rule-구현-DONE-2026-04-13.md` | Dead Button Rule 구현~~ ✅ DONE (2026-04-13) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-306-Showdown-Reveal-Order-완성-DONE-2026-04-13.md` | Showdown Reveal Order 완성~~ ✅ DONE (2026-04-13) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-307-Coalescence-RFID-Burst-처리-구현-DONE-2026-04-13.md` | Coalescence (RFID Burst 처리) 구현~~ ✅ DONE (2026-04-13) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-308-Draw-게임-변종-7종-구현-DONE-2026-04-13.md` | Draw 게임 변종 7종 구현~~ ✅ DONE (2026-04-13) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-309-Stud-게임-변종-3종-구현-DONE-2026-04-13.md` | Stud 게임 변종 3종 구현~~ ✅ DONE (2026-04-13) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-310-ReduceResult-아키텍처-전환-DONE-2026-04-13.md` | ReduceResult 아키텍처 전환~~ ✅ DONE (2026-04-13) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-016-검토-요청-Tech-Stack-SSOT를-BS-00에-명시하고-team2-IMPL-시리즈-.md` | 검토 요청: Tech Stack SSOT를 BS-00에 명시하고 team2 IMPL 시리즈 동기화 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-024-검토-요청-API-05-WriteGameInfo-프로토콜-22-필드-스키마-완전-명세.md` | 검토 요청: API-05 WriteGameInfo 프로토콜 22+ 필드 스키마 완전 명세 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-033-검토-요청-BS-07-Overlay-오디오-레이어-추가-WSOP-1-BGM-2-Effect.md` | 검토 요청: BS-07 Overlay 오디오 레이어 추가 (WSOP 1 BGM + 2 Effect 채널) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-035-검토-요청-BS-07-Overlay-Layer-123-경계-및-자동화-범위-명시.md` | 검토 요청: BS-07 Overlay Layer 1/2/3 경계 및 자동화 범위 명시 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-042-검토-요청-API-05에-EventFlightSummary-이벤트-Clock-FSM-행동-.md` | 검토 요청: API-05에 EventFlightSummary 이벤트 + Clock FSM 행동 명세 신설 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-049-검토-요청-BlindStructure-관리-엔드포인트-추가-WSOP-LIVE-정렬.md` | 검토 요청: BlindStructure 관리 엔드포인트 추가 (WSOP LIVE 정렬) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-054-검토-요청-WebSocket-이벤트-카탈로그-WSOP-LIVE-SignalR-정렬.md` | 검토 요청: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-023-LEGACY-검토-요청-BS-07-Overlay-오디오-레이어-추가-WSOP-1-BGM-2.md` | [LEGACY] 검토 요청: BS-07 Overlay 오디오 레이어 추가 (WSOP 1 BGM + 2 Effect 채널) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` | Action Rotation | team3 | internal | BS-06-10 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md` | Draw Games | team3 | internal | BS-06-2X |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Evaluation_Reference.md` | Hand Evaluation 통합 레퍼런스 | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Event_Catalog.md` | Event Catalog | team3 | internal | BS-06-09 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Flop_Variants.md` | Flop Variants | team3 | internal | BS-06-1X |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Betting.md` | Betting | team3 | internal | BS-06-02 |
@@ -108,11 +270,42 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md` | Stud Games | team3 | internal | BS-06-3X |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | internal | BS-06-00-triggers |
 | `docs/2. Development/2.4 Command Center/2.4 Command Center.md` | 2.4 Command Center | ci | generated | - |
-| `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | RFID HAL | team4 | internal | BS-04-04 |
-| `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Legacy.md` | RFID HAL Legacy | team4 | internal | API-03 |
-| `docs/2. Development/2.4 Command Center/Backlog.md` | Backlog | team4 | internal | - |
+| `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | RFID HAL — Operator Behavior | team4 | internal | BS-04-04 |
+| `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md` | RFID HAL Interface Contract | team4 | contract | API-03 |
+| `docs/2. Development/2.4 Command Center/Backlog.md` | Backlog | - | internal | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-001-AT-02-ActionView-dynamic-labels.md` | AT-02 ActionView — CHECK↔CALL / BET↔RAISE-TO 동적 라벨 구현 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-002-TableRepository-phase-C-tdd.md` | TableRepository Phase C TDD — fetch / subscribe / applyServerEvent | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-003-S11-e2e-automation-scaffold.md` | S-11 E2E 자동화 스캐폴드 — Playwright + flutter_driver | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-005-position-chip-click-dealer-ux.md` | 포지션 뱃지 클릭 → 포지션 재지정 메뉴 UX 구현 (Seat_Management.md §2 준수) | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-006-ws-engine-parallel-dispatch.md` | WS + Engine HTTP 병행 dispatch 통합 구현 (Overview §1.1.1 준수) | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | team4 | internal | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | S-11 Lobby Hand History 자동화 UI wiring 요청 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team2-S11-seeder-and-endpoints.md` | S-11 자동화 실행을 위한 BO seeder + endpoint 준비 요청 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team4-B088-PR7-cc-consumer-migration.md` | B-088 PR-7 — CC consumer camelCase 전환 (ws + REST + Freezed) | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-011-검토-요청-Graphic-Editor-소유권-Team-4-Team-1-이관-Lobby-허브.md` | 검토 요청: Graphic Editor 소유권 Team 4 → Team 1 이관 (Lobby 허브) | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-012-검토-요청-gfskin-ZIP-포맷-단일화-및-DATA-07-신설.md` | 검토 요청: .gfskin ZIP 포맷 단일화 및 DATA-07 신설 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-017-검토-요청-WSOP-LIVE-Parity-EventFlightStatusRestricted.md` | 검토 요청: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-018-검토-요청-DATA-04에-idempotency_keys-audit_events-테이블-신.md` | 검토 요청: DATA-04에 idempotency_keys, audit_events 테이블 신설 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-019-검토-요청-모든-Mutation-API에-Idempotency-Key-헤더-표준-도입.md` | 검토 요청: 모든 Mutation API에 Idempotency-Key 헤더 표준 도입 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-021-검토-요청-WebSocket-이벤트에-단조증가-seq-필드-replay-엔드포인트-추가.md` | 검토 요청: WebSocket 이벤트에 단조증가 seq 필드 + replay 엔드포인트 추가 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-039-검토-요청-audit_eventsevent_type-카탈로그-35값-공식-정의.md` | 검토 요청: audit_events.event_type 카탈로그 35값 공식 정의 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-041-검토-요청-DATA-04에-Seat-Status-enum-정의-waiting_list-테이.md` | 검토 요청: DATA-04에 Seat Status enum 정의 + waiting_list 테이블 신설 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-042-검토-요청-API-05에-EventFlightSummary-이벤트-Clock-FSM-행동-.md` | 검토 요청: API-05에 EventFlightSummary 이벤트 + Clock FSM 행동 명세 신설 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-047-검토-요청-Competition-계층-WSOP-LIVE-정렬-SeriesEventEvent.md` | 검토 요청: Competition 계층 WSOP LIVE 정렬 (Series→Event→EventFlight) | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-048-검토-요청-인증-체계-WSOP-LIVE-GGPass-패턴-정렬.md` | 검토 요청: 인증 체계 WSOP LIVE GGPass 패턴 정렬 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-050-검토-요청-Clock-엔드포인트-10종-완성-WSOP-LIVE-Staff-App-정렬.md` | 검토 요청: Clock 엔드포인트 10종 완성 (WSOP LIVE Staff App 정렬) | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-051-검토-요청-PayoutStructure-PrizePool-엔드포인트-추가-WSOP-LIVE.md` | 검토 요청: PayoutStructure (PrizePool) 엔드포인트 추가 (WSOP LIVE 정렬) | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-052-검토-요청-Rate-Limiting-보안-정책-정의-OWASP-WSOP-LIVE-GGPas.md` | 검토 요청: Rate Limiting & 보안 정책 정의 (OWASP + WSOP LIVE GGPass 준거) | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-054-검토-요청-WebSocket-이벤트-카탈로그-WSOP-LIVE-SignalR-정렬.md` | 검토 요청: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-055-검토-요청-OutputEventBuffer-구현-소유팀-명시-API-04-3.md` | 검토 요청: OutputEventBuffer 구현 소유팀 명시 (API-04 §3) | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-056-검토-요청-외부-파일의-구-contractsspecsBS-0X--경로-dead-link-일.md` | 검토 요청: 외부 파일의 구 contracts/specs/BS-0X-* 경로 dead link 일괄 정리 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-001-LEGACY-검토-요청-DATA-04에-idempotency_keys-audit_event.md` | [LEGACY] 검토 요청: DATA-04에 idempotency_keys, audit_events 테이블 신설 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-003-LEGACY-검토-요청-모든-Mutation-API에-Idempotency-Key-헤더-표.md` | [LEGACY] 검토 요청: 모든 Mutation API에 Idempotency-Key 헤더 표준 도입 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-015-LEGACY-검토-요청-WebSocket-이벤트에-단조증가-seq-필드-replay-엔드포.md` | [LEGACY] 검토 요청: WebSocket 이벤트에 단조증가 seq 필드 + replay 엔드포인트 추가 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-016-LEGACY-검토-요청-WSOP-LIVE-Parity-EventFlightStatusRes.md` | [LEGACY] 검토 요청: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC | - | - | - |
 | `docs/2. Development/2.4 Command Center/Command_Center_UI/Action_Buttons.md` | Action Buttons | team4 | internal | BS-05-02 |
-| `docs/2. Development/2.4 Command Center/Command_Center_UI/Game_Settings_Modal.md` | Game Settings Modal | team4 | internal | BS-05-08 |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Demo_Test_Mode.md` | Demo & Test Mode (DEPRECATED) | team4 | feature | - |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Game_Settings_Modal.md` | Game Settings — Rules 탭 상세 규격 | team4 | internal | BS-05-08 |
 | `docs/2. Development/2.4 Command Center/Command_Center_UI/Hand_Lifecycle.md` | Hand Lifecycle | team4 | internal | BS-05-01 |
 | `docs/2. Development/2.4 Command Center/Command_Center_UI/Keyboard_Shortcuts.md` | Keyboard Shortcuts | team4 | internal | BS-05-06 |
 | `docs/2. Development/2.4 Command Center/Command_Center_UI/Manual_Card_Input.md` | Manual Card Input | team4 | internal | BS-05-04 |
@@ -124,9 +317,11 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Command_Center_UI/UI.md` | UI | team4 | internal | UI-02 |
 | `docs/2. Development/2.4 Command Center/Command_Center_UI/Undo_Recovery.md` | Undo Recovery | team4 | internal | BS-05-05 |
 | `docs/2. Development/2.4 Command Center/Integration_Test_Plan.md` | Integration Test Plan | team4 | internal | - |
+| `docs/2. Development/2.4 Command Center/Integration_Test_Plan/automation/s11/README.md` | S-11 Lobby Hand History — E2E Automation Scaffold | team4 | internal | ITP-AUTO-S11 |
 | `docs/2. Development/2.4 Command Center/Overlay/Animations.md` | Animations | team4 | internal | BS-07-02 |
 | `docs/2. Development/2.4 Command Center/Overlay/Audio.md` | Audio | team4 | internal | BS-07-05 |
 | `docs/2. Development/2.4 Command Center/Overlay/Elements.md` | Elements | team4 | internal | BS-07-01 |
+| `docs/2. Development/2.4 Command Center/Overlay/Engine_Dependency_Contract.md` | Engine Dependency Contract | team4 | contract | - |
 | `docs/2. Development/2.4 Command Center/Overlay/Layer_Boundary.md` | Layer Boundary | team4 | internal | BS-07-06 |
 | `docs/2. Development/2.4 Command Center/Overlay/Overview.md` | Overview | team4 | internal | BS-07-00 |
 | `docs/2. Development/2.4 Command Center/Overlay/Scene_Schema.md` | Scene Schema | team4 | internal | BS-07-04 |
@@ -138,16 +333,23 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/RFID_Cards/Manual_Fallback.md` | Manual Fallback | team4 | internal | BS-04-03 |
 | `docs/2. Development/2.4 Command Center/RFID_Cards/Overview.md` | Overview | team4 | internal | BS-04-00 |
 | `docs/2. Development/2.4 Command Center/RFID_Cards/Register_Screen.md` | Register Screen | team4 | internal | BS-04-05 |
+| `docs/2. Development/2.4 Command Center/Settings.md` | Settings | team4 | internal | BS-03 |
 | `docs/2. Development/2.5 Shared/2.5 Shared.md` | 2.5 Shared | ci | generated | - |
 | `docs/2. Development/2.5 Shared/Authentication.md` | Authentication | conductor | internal | BS-01 |
 | `docs/2. Development/2.5 Shared/BS_Overview.md` | BS Overview | conductor | internal | BS-00 |
+| `docs/2. Development/2.5 Shared/Naming_Conventions.md` | Naming Conventions (EBS Shared SSOT) | conductor | contract | - |
+| `docs/2. Development/2.5 Shared/Network_Config.md` | Network Configuration Contract | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Risk_Matrix.md` | Risk Matrix | conductor | internal | - |
-| `docs/3. Change Requests/3. Change Requests.md` | 3. Change Requests | conductor | internal | - |
+| `docs/3. Change Requests/3. Change Requests.md` | 3. Change Requests (DEPRECATED) | conductor | internal | - |
+| `docs/3. Change Requests/done/CR-011-ge-ownership-move.md` | CR-011-ge-ownership-move | conductor | internal | CCR-011 |
+| `docs/3. Change Requests/done/CR-016-tech-stack-ssot.md` | CR-016-tech-stack-ssot | conductor | internal | CCR-016 |
+| `docs/3. Change Requests/done/CR-037-bs08-graphic-editor-new.md` | CR-037-bs08-graphic-editor-new | conductor | internal | CCR-037 |
 | `docs/3. Change Requests/done/CR-conductor-20260410-ge-ownership-move.md` | CR-conductor-20260410-ge-ownership-move | conductor | internal | CCR-DRAFT-conductor-20260410-ge-ownership-move |
 | `docs/3. Change Requests/done/CR-conductor-20260410-gfskin-format-unify.md` | CR-conductor-20260410-gfskin-format-unify | conductor | internal | CCR-DRAFT-conductor-20260410-gfskin-format-unify |
 | `docs/3. Change Requests/done/CR-conductor-20260411-ge-api-spec.md` | CR-conductor-20260411-ge-api-spec | conductor | internal | CCR-DRAFT-conductor-20260411-ge-api-spec |
 | `docs/3. Change Requests/done/CR-conductor-20260411-ge-req-id-rework.md` | CR-conductor-20260411-ge-req-id-rework | conductor | internal | CCR-DRAFT-conductor-20260411-ge-req-id-rework |
 | `docs/3. Change Requests/done/CR-conductor-20260414-skin-updated-ws.md` | CR-conductor-20260414-skin-updated-ws | conductor | internal | CCR-DRAFT-conductor-20260414-skin-updated-ws |
+| `docs/3. Change Requests/done/CR-conductor-20260421-ge-scope-expansion.md` | CR-conductor-20260421-ge-scope-expansion | conductor | internal | - |
 | `docs/3. Change Requests/done/CR-team1-20260410-tech-stack-ssot.md` | CR-team1-20260410-tech-stack-ssot | conductor | internal | CCR-DRAFT-team1-20260410-tech-stack-ssot |
 | `docs/3. Change Requests/done/CR-team1-20260410-wsop-parity.md` | CR-team1-20260410-wsop-parity | conductor | internal | CCR-DRAFT-team1-20260410-wsop-parity |
 | `docs/3. Change Requests/done/CR-team1-20260413-google-oauth.md` | CR-team1-20260413-google-oauth | conductor | internal | CCR-DRAFT-team1-20260413-google-oauth |
@@ -189,12 +391,10 @@ tier: generated
 | `docs/3. Change Requests/done/CR-team4-20260410-bs07-security-delay.md` | CR-team4-20260410-bs07-security-delay | conductor | internal | CCR-DRAFT-team4-20260410-bs07-security-delay |
 | `docs/3. Change Requests/done/CR-team4-20260410-bs08-graphic-editor-new.md` | CR-team4-20260410-bs08-graphic-editor-new | conductor | internal | CCR-DRAFT-team4-20260410-bs08-graphic-editor-new |
 | `docs/3. Change Requests/in-progress/CR-010-jwt-expiry.md` | CR-010-jwt-expiry | conductor | internal | CCR-010 |
-| `docs/3. Change Requests/in-progress/CR-011-ge-ownership-move.md` | CR-011-ge-ownership-move | conductor | internal | CCR-011 |
 | `docs/3. Change Requests/in-progress/CR-012-gfskin-format-unify.md` | CR-012-gfskin-format-unify | conductor | internal | CCR-012 |
 | `docs/3. Change Requests/in-progress/CR-013-ge-api-spec.md` | CR-013-ge-api-spec | conductor | internal | CCR-013 |
 | `docs/3. Change Requests/in-progress/CR-014-ge-req-id-rework.md` | CR-014-ge-req-id-rework | conductor | internal | CCR-014 |
 | `docs/3. Change Requests/in-progress/CR-015-skin-updated-ws.md` | CR-015-skin-updated-ws | conductor | internal | CCR-015 |
-| `docs/3. Change Requests/in-progress/CR-016-tech-stack-ssot.md` | CR-016-tech-stack-ssot | conductor | internal | CCR-016 |
 | `docs/3. Change Requests/in-progress/CR-017-wsop-parity.md` | CR-017-wsop-parity | conductor | internal | CCR-017 |
 | `docs/3. Change Requests/in-progress/CR-018-data-idempotency-audit.md` | CR-018-data-idempotency-audit | conductor | internal | CCR-018 |
 | `docs/3. Change Requests/in-progress/CR-019-idempotency-key.md` | CR-019-idempotency-key | conductor | internal | CCR-019 |
@@ -215,7 +415,6 @@ tier: generated
 | `docs/3. Change Requests/in-progress/CR-034-bs07-cc-visual-sync.md` | CR-034-bs07-cc-visual-sync | conductor | internal | CCR-034 |
 | `docs/3. Change Requests/in-progress/CR-035-bs07-layer-boundary.md` | CR-035-bs07-layer-boundary | conductor | internal | CCR-035 |
 | `docs/3. Change Requests/in-progress/CR-036-bs07-security-delay.md` | CR-036-bs07-security-delay | conductor | internal | CCR-036 |
-| `docs/3. Change Requests/in-progress/CR-037-bs08-graphic-editor-new.md` | CR-037-bs08-graphic-editor-new | conductor | internal | CCR-037 |
 | `docs/3. Change Requests/in-progress/CR-038-google-oauth.md` | CR-038-google-oauth | conductor | internal | CCR-038 |
 | `docs/3. Change Requests/in-progress/CR-039-event-type-catalog.md` | CR-039-event-type-catalog | conductor | internal | CCR-039 |
 | `docs/3. Change Requests/in-progress/CR-040-refresh-token-policy.md` | CR-040-refresh-token-policy | conductor | internal | CCR-040 |
@@ -233,10 +432,78 @@ tier: generated
 | `docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md` | CR-055-output-event-buffer-ownership | conductor | internal | CCR-055 |
 | `docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md` | CR-056-deadlink-cleanup | conductor | internal | CCR-056 |
 | `docs/3. Change Requests/pending/CR-team1-20260414-bs02-overview-rename.md` | CR-team1-20260414-bs02-overview-rename | team1 | internal | CCR-DRAFT-team1-20260414-bs02-overview-rename |
+| `docs/3. Change Requests/pending/CR-team1-20260417-bo-cors-lan.md` | CR: Team2 BO CORS 기본값을 LAN 허용으로 변경 | - | - | - |
+| `docs/3. Change Requests/pending/CR-team1-20260417-cc-network-config.md` | CR: Team4 CC boApiClientProvider localhost 하드코딩 제거 | - | - | - |
 | `docs/4. Operations/4. Operations.md` | 4. Operations | conductor | internal | - |
-| `docs/4. Operations/Conductor_Backlog.md` | Conductor Backlog | conductor | internal | - |
+| `docs/4. Operations/Active_Work.md` | Active_Work | - | - | - |
+| `docs/4. Operations/Backlog_Aggregate.md` | Backlog_Aggregate | - | - | - |
+| `docs/4. Operations/Conductor_Backlog.md` | Conductor_Backlog | - | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` | Phase 2 통합 테스트 + E2E | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` | Phase 3 통합 테스트 + 부하 테스트 | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-066-재해-복구-절차-문서화.md` | 재해 복구 절차 문서화 | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-067-Phase-4-전격-운영-검증.md` | Phase 4 전격 운영 검증 | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-069-team3-engine-게임-PRD-Confluence-동기화-상태-확인.md` | team3-engine 게임 PRD Confluence 동기화 상태 확인 | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-074-IMPL-01-Lobby-섹션-stale-수정-Team-2-인계.md` | IMPL-01 Lobby 섹션 stale 수정 (Team 2 인계) | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md` | Graphic Editor team5 분리 적합성 결정 (DONE — Option A 채택) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` | Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-001-team-backlog-retag.md` | 구현: 4팀 Backlog 3-Type retag + archive 정리 | each_team | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md` | 구현: team4 Engine Connection UI — router guard + manual reconnect | team4 | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md` | 구현: team2 decks.py in-memory → DB session 전환 | team2 | - | - |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR1-doc-correction.md` | B-088 PR-1 — 기존 divergence 선언 정정 (Conductor 영역) | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR2bis-service-layer.md` | B-088 PR-2-bis — service/router 레이어 Pydantic 응답 타입 적용 (B-089 23 failure 근본 해결) | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR9-naming-ci-gate.md` | B-088 PR-9 — naming CI gate 도구 신설 (재발 방지) | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-team1-sandbox-toggle-ui.md` | team1 Lobby UI 협의 — Sandbox Toggle 배지 + ?include_sandbox | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-team2-B088-PR4-rest-path-migration.md` | B-088 PR-4 — team2 Backend router REST path kebab→PascalCase (URGENT) | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-team4-cc-web-unhealthy.md` | ebs-cc-web-1 컨테이너 2일간 unhealthy 상태 — 진단/재빌드 요청 | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` | 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` | Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` | Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-004-gfskin-zip-format.md` | .gfskin ZIP 포맷 (DATA-07) — manifest + .riv + assets 구조 명세 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-005-foundation-ch6-system-connections.md` | Foundation Ch.6 시스템 연결 도식 — Engine↔BO 경계 (EBS_Core 병합) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-006-rfid-52-card-codemap.md` | RFID 52 카드 codemap — pre-registered deck + 초기 등록 절차 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-007-team2-reports-api.md` | team2 Reports API 통합 — Dashboard/Table Activity/Player Stats/Hand Distribution/RFID Health/Operator | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-api-d3-bulk-documentation.md` | Spec Drift: Backend HTTP D3 — 89 code-only endpoints 3분류 (기획이 진실) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b1-audit-events.md` | GET /api/v1/audit-events 공개 범위 + RBAC 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b10-event-undo.md` | POST /api/v1/events/{event_id}/undo 기능 범위 + 제약 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b11-table-launch-cc.md` | POST /api/v1/tables/{table_id}/launch-cc 필요성 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b12-legacy-reports.md` | GET /api/v1/reports/{report_type} deprecate 시점 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b13-settings-code-only-cleanup.md` | Settings Drift: 30 code-only provider fields — scanner 정규화 + 3분류 (doc-add / doc-expand / code-remove) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b14-auth-2fa-policy.md` | Auth 2FA 정책 — Admin/Operator 필수 여부 + provider 선택 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b15-ndi-fill-key-routing.md` | NDI Fill/Key 분리 라우팅 — 방송 시설 협의 필요 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b2-audit-logs-read.md` | GET /api/v1/audit-logs RBAC 스코프 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b3-audit-logs-download.md` | GET /api/v1/audit-logs/download 포맷 + rate limit 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b4-auth-me.md` | GET /auth/me 반환 필드 + 캐싱 정책 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b5-auth-logout.md` | POST /auth/logout 세션 무효화 범위 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b6-sync-mock-seed.md` | POST /api/v1/sync/mock/seed 운영 환경 노출 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b7-sync-mock-reset.md` | DELETE /api/v1/sync/mock/reset 운영 환경 노출 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b8-sync-status.md` | GET /api/v1/sync/status 공개 범위 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-008-b9-sync-trigger.md` | POST /api/v1/sync/trigger/{source} RBAC + 환경 제약 판정 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-009-tablefsm-case-serialization.md` | Spec Drift: TableFSM / SeatFSM display label vs serialized value case | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-010-spec-drift-scanner-precision.md` | Tooling: spec_drift_check.py 정밀화 (Settings, Schema, WebSocket) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-011-rfid-hal-stream-divergence.md` | Spec Drift: RFID_HAL_Interface §2.1 single-stream vs code 6-stream | team4 | - | - |
+| `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` | 기획 공백: <구체적 공백명> | conductor | - | - |
+| `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` | Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토 | conductor | internal | - |
+| `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
+| `docs/4. Operations/Multi_Session_Handoff.md` | Multi-Session Handoff Guide (2026-04-21) | conductor | internal | - |
+| `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate) | conductor | contract | - |
+| `docs/4. Operations/Network_Deployment.md` | Network Deployment Guide | conductor | internal | - |
 | `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` | 2026-04-08-game-engine.plan | conductor | internal | - |
+| `docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md` | B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션 | team2 | internal | - |
+| `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` | Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정 | conductor | internal | - |
+| `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` | Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거 | conductor | internal | - |
+| `docs/4. Operations/Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` | Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계 | conductor | internal | - |
 | `docs/4. Operations/Plans/PLAN-BO-Phase1.md` | PLAN-BO-Phase1 | conductor | internal | - |
 | `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` | 2026-04-10-ccr-batch-team-impact | conductor | internal | - |
+| `docs/4. Operations/Reports/2026-04-17_SSOT_Audit.md` | Team 2 Backend SSOT Compliance Audit | conductor | internal | - |
+| `docs/4. Operations/Reports/2026-04-21-critic-ge-multi-session.md` | Critic — GE 멀티 세션 분리 적합성 (Lobby 탭 종속 전제) | conductor | internal | - |
+| `docs/4. Operations/Reports/2026-04-21-critic-graphic-editor-team5-separation.md` | Critic — Graphic Editor team5 분리 적합성 검토 | conductor | internal | - |
+| `docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md` | Quasar → Flutter 이전 누락 / 매칭 실패 감사 | conductor | internal | - |
 | `docs/4. Operations/Roadmap.md` | Roadmap | conductor | internal | - |
+| `docs/4. Operations/SSOT_Alignment_Progress.md` | SSOT Alignment Progress | conductor | internal | - |
+| `docs/4. Operations/Spec_Gap_Registry.md` | Spec Gap Registry — Drift 집계 + 해소 추적 | conductor | internal | - |
+| `docs/4. Operations/Spec_Gap_Triage.md` | Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜 | conductor | internal | - |
+| `docs/4. Operations/V5_Migration_Plan.md` | V5 Migration Plan — v4.0/v4.1 → v5.0/v5.1 전환 로드맵 | conductor | internal | - |
 | `docs/README.md` | docs/ README | conductor | internal | - |
+| `docs/examples/README.md` | Examples | conductor | internal | - |

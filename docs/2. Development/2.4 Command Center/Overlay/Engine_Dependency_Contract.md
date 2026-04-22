@@ -12,7 +12,7 @@ related-sg: SG-002
 
 team4 Command Center / Overlay 앱은 team3 Game Engine harness (`http://localhost:8080`) 에 의존한다. 본 문서는 ENGINE_URL · timeout · graceful 대기 · fallback 네 가지 계약을 명시한다.
 
-결정 원본: [`docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md`](../../../../4.%20Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md)
+결정 원본: [`docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md`](../../../4.%20Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md)
 
 ## Edit History
 

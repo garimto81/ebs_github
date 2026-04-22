@@ -41,9 +41,7 @@ last-updated: 2026-04-15
 
 > **근거**: WSOP LIVE와 동일한 계정 체계를 사용. 로그인 성공 시 이전 세션 컨텍스트 복원.
 
-**EBS 목업:**
-
-![EBS Login — 재설계](visual/screenshots/ebs-lobby-00-login.png)
+**EBS 목업**: TBD — 디자인 자산 미생성 (team1 Backlog 등재 대상)
 
 | 요소 | EBS 적용 |
 |------|:-------:|
