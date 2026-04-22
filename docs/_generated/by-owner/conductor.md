@@ -115,6 +115,7 @@ tier: generated
 - `docs/4. Operations/4. Operations.md` — 4. Operations
 - `docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md` — Graphic Editor team5 분리 적합성 결정 (DONE — Option A 채택)
 - `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
+- `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` — 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합)
 - `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` — 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1)
 - `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` — Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback
 - `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` — Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences
@@ -144,6 +145,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` — 시나리오: <검증 대상 통합 흐름>
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` — 기획 공백: <구체적 공백명>
 - `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
+- `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
 - `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
 - `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
 - `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate)
@@ -153,6 +155,7 @@ tier: generated
 - `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` — Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거
 - `docs/4. Operations/Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` — Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계
 - `docs/4. Operations/Plans/PLAN-BO-Phase1.md` — PLAN-BO-Phase1
+- `docs/4. Operations/Plans/Redesign_Plan_2026_04_22.md` — Redesign Plan — 2026-04-22 회의록 기반 전면 재설계
 - `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` — 2026-04-10-ccr-batch-team-impact
 - `docs/4. Operations/Reports/2026-04-17_SSOT_Audit.md` — Team 2 Backend SSOT Compliance Audit
 - `docs/4. Operations/Reports/2026-04-21-critic-ge-multi-session.md` — Critic — GE 멀티 세션 분리 적합성 (Lobby 탭 종속 전제)
