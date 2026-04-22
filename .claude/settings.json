@@ -4,7 +4,8 @@
     "SessionStart": [
       {
         "hooks": [
-          {"type": "command", "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/session_branch_init.py"}
+          {"type": "command", "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/session_branch_init.py"},
+          {"type": "command", "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/active_work_reminder.py"}
         ]
       }
     ],
