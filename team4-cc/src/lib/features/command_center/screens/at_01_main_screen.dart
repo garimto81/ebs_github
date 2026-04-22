@@ -284,23 +284,25 @@ void _dispatchAction(WidgetRef ref, CcAction action,
       final occupied = seats.where((s) => s.isOccupied).toList();
       final engineFuture = () async {
         try {
+          final variant = _gameTypeToVariant(config.gameType.name);
           DebugLog.i('ENGINE_DISPATCH', 'createSession', {
             'correlation_id': correlationId,
-            'gameType': config.gameType.name,
+            'variant': variant,
             'seatCount': occupied.length,
           });
           final sessionId = await engineClient.createSession(
-            gameType: config.gameType.name,
-            betStructure: 'NL',
-            tableSize: occupied.length,
+            variant: variant,
+            seatCount: occupied.length,
+            stacks: occupied.map((s) => s.player?.stack ?? 1000).toList(),
+            blinds: {'sb': config.smallBlind, 'bb': config.bigBlind},
+            dealerSeat: dealerSeat - 1, // 1-based → 0-based
           );
           ref.read(engineSessionProvider.notifier).state = sessionId;
           DebugLog.i('ENGINE_RESPONSE', 'session created',
               {'correlation_id': correlationId, 'sessionId': sessionId});
-          // Initial state fetch → outputEvents dispatch.
+          // Initial state fetch → full-state snapshot dispatch.
           final state = await engineClient.getState(sessionId);
-          EngineOutputDispatcher.dispatchAll(
-              ref, state['outputEvents'] as List<dynamic>?,
+          EngineOutputDispatcher.dispatchState(ref, state,
               correlationId: correlationId);
         } catch (e) {
           DebugLog.e('ENGINE_DISPATCH', 'createSession failed',
@@ -434,8 +436,7 @@ void _dispatchAction(WidgetRef ref, CcAction action,
               .then((resp) {
                 DebugLog.i('ENGINE_RESPONSE', 'undo ok',
                     {'correlation_id': correlationId});
-                EngineOutputDispatcher.dispatchAll(
-                    ref, resp['outputEvents'] as List<dynamic>?,
+                EngineOutputDispatcher.dispatchState(ref, resp,
                     correlationId: correlationId);
               })
               .catchError((e) {
@@ -456,6 +457,23 @@ void _dispatchAction(WidgetRef ref, CcAction action,
       undo.clearOnHandComplete();
       ws?.sendCommand('MissDeal', {'hand_id': handNum});
   }
+}
+
+/// Map CC GameType enum name → Engine variant string (Harness §2.1).
+String _gameTypeToVariant(String gameTypeName) {
+  switch (gameTypeName) {
+    case 'holdem':
+      return 'nlh';
+    case 'omaha':
+      return 'omaha';
+    case 'omahaHilo':
+    case 'omaha_hilo':
+      return 'omaha_hilo';
+    case 'shortDeck':
+    case 'short_deck':
+      return 'short_deck';
+  }
+  return 'nlh'; // default fallback
 }
 
 /// Find next occupied seat clockwise from [fromSeat].
@@ -515,8 +533,7 @@ void _dispatchEngineAction(
       }
       DebugLog.i('ENGINE_RESPONSE', '$actionType ok',
           {'correlation_id': correlationId});
-      EngineOutputDispatcher.dispatchAll(
-          ref, resp['outputEvents'] as List<dynamic>?,
+      EngineOutputDispatcher.dispatchState(ref, resp,
           correlationId: correlationId);
     } on DioException catch (e) {
       final status = e.response?.statusCode;

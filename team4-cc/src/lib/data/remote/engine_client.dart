@@ -64,15 +64,24 @@ class EngineClient {
   // ---------------------------------------------------------------------------
 
   /// Create a new game session. Returns session ID.
+  ///
+  /// Body schema confirmed against running harness (2026-04-22):
+  ///   { variant, seatCount }  → response has sessionId + full state snapshot.
+  /// `stacks`/`blinds`/`dealerSeat` are optional (harness defaults to sb=5, bb=10,
+  /// stacks=1000). Send when CC has explicit values from ConfigProvider.
   Future<String> createSession({
-    required String gameType,
-    required String betStructure,
-    int tableSize = 10,
+    required String variant,
+    required int seatCount,
+    List<int>? stacks,
+    Map<String, int>? blinds,
+    int? dealerSeat,
   }) async {
     final response = await _dio.post('/api/session', data: {
-      'variant': gameType,
-      'betStructure': betStructure,
-      'tableSize': tableSize,
+      'variant': variant,
+      'seatCount': seatCount,
+      if (stacks != null) 'stacks': stacks,
+      if (blinds != null) 'blinds': blinds,
+      if (dealerSeat != null) 'dealerSeat': dealerSeat,
     });
     return response.data['sessionId'] as String;
   }

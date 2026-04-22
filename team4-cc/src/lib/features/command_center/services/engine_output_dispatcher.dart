@@ -1,148 +1,172 @@
-// Engine outputEvents → CC provider state mapping.
+// Engine state response → CC provider state mapping.
 //
-// Overview.md §1.1.1 — CC 는 Engine HTTP 응답의 outputEvents[] 를 primary SSOT
-// 로 사용. 본 dispatcher 가 event type 별로 seats/pot/handFsm provider 를 업데이트.
+// 2026-04-22 재작성: 실제 Engine Harness (team3 bin/harness.dart) 응답은
+// OutputEvent 배열이 아닌 **full state snapshot** (seats[]/community/pot/
+// actionOn/street/legalActions 등). 따라서 event dispatch 방식이 아니라
+// **state-diff 덮어쓰기** 방식으로 provider 업데이트.
 //
-// 최소 구현 (프로토타입) — 핵심 5 이벤트:
-//   HandStarted / ActionPerformed / StreetAdvanced / CardDealt / HandCompleted
-// 나머지 이벤트 (21종 총) 는 B-team4-007 Phase 2 에서 확장.
+// Overview.md §1.1.1 SSOT = Engine 응답 — 본 dispatcher 가 그 응답을 그대로
+// CC provider 에 반영.
+//
+// Engine 응답 schema (확인됨):
+//   sessionId, variant, street (preflop/flop/turn/river/showdown),
+//   seats[{index, label, stack, currentBet, status, holeCards[], isDealer}],
+//   community[], pot{main, total, sides[]}, actionOn, dealerSeat,
+//   legalActions[], handNumber, eventCount, cursor, log[]
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../foundation/logging/debug_log.dart';
 import '../../../models/enums/hand_fsm.dart';
 import '../../../models/enums/seat_status.dart';
+import '../providers/hand_display_provider.dart';
 import '../providers/hand_fsm_provider.dart';
 import '../providers/seat_provider.dart';
 
 class EngineOutputDispatcher {
   EngineOutputDispatcher._();
 
-  /// Dispatch all outputEvents from Engine response.
+  /// Dispatch Engine state snapshot to CC providers.
   ///
-  /// [ref] — WidgetRef from caller (action dispatch site)
-  /// [outputEvents] — JSON array from Engine `POST /api/session/:id/event`
-  ///                  response (`response.data['outputEvents']`)
-  /// [correlationId] — UUID from action dispatch, for trace logging
-  static void dispatchAll(
+  /// [state] — Engine HTTP response body (POST /api/session or /event).
+  /// [correlationId] — UUID for trace logging.
+  static void dispatchState(
     WidgetRef ref,
-    List<dynamic>? outputEvents, {
+    Map<String, dynamic> state, {
     String? correlationId,
   }) {
-    if (outputEvents == null || outputEvents.isEmpty) {
-      DebugLog.d('ENGINE_EVT', 'empty outputEvents',
-          {'correlation_id': correlationId});
-      return;
-    }
-    DebugLog.i('ENGINE_EVT', 'dispatching ${outputEvents.length} events',
-        {'correlation_id': correlationId});
-    for (final raw in outputEvents) {
-      if (raw is! Map) continue;
-      _dispatchOne(ref, Map<String, dynamic>.from(raw), correlationId);
-    }
-  }
+    DebugLog.i('ENGINE_STATE', 'dispatching state snapshot', {
+      'correlation_id': correlationId,
+      'street': state['street'],
+      'actionOn': state['actionOn'],
+      'eventCount': state['eventCount'],
+    });
 
-  static void _dispatchOne(
-      WidgetRef ref, Map<String, dynamic> event, String? correlationId) {
-    final type = event['type'] as String?;
-    final payload = event['payload'] is Map
-        ? Map<String, dynamic>.from(event['payload'] as Map)
-        : const <String, dynamic>{};
-
-    switch (type) {
-      case 'HandStarted':
-      case 'hand_started':
-        _onHandStarted(ref, payload);
-      case 'ActionPerformed':
-      case 'action_performed':
-        _onActionPerformed(ref, payload);
-      case 'StreetAdvanced':
-      case 'street_advanced':
-        _onStreetAdvanced(ref, payload);
-      case 'CardDealt':
-      case 'card_dealt':
-        _onCardDealt(ref, payload);
-      case 'HandCompleted':
-      case 'hand_completed':
-      case 'HandEnded':
-      case 'hand_end':
-        _onHandCompleted(ref, payload);
-      default:
-        DebugLog.d('ENGINE_EVT', 'unhandled type=$type',
-            {'correlation_id': correlationId});
-    }
+    _updateStreet(ref, state['street'] as String?);
+    _updateSeats(ref, state['seats'] as List<dynamic>?);
+    _updateCommunity(ref, state['community'] as List<dynamic>?);
+    _updatePot(ref, state['pot']);
+    _updateActionOn(ref, state['actionOn'] as int?);
+    _updateDealer(ref, state['dealerSeat'] as int?);
   }
 
   // ---------------------------------------------------------------------------
 
-  static void _onHandStarted(WidgetRef ref, Map<String, dynamic> p) {
-    DebugLog.i('ENGINE_EVT', 'HandStarted', p);
-    ref.read(handFsmProvider.notifier).forceState(HandFsm.setupHand);
-  }
-
-  static void _onActionPerformed(WidgetRef ref, Map<String, dynamic> p) {
-    final seat = (p['seat'] ?? p['seatIndex']) as int?;
-    final action = p['action_type'] as String?;
-    DebugLog.i('ENGINE_EVT', 'ActionPerformed',
-        {'seat': seat, 'action': action, ...p});
-    if (seat == null || action == null) return;
-
-    final seatsNotifier = ref.read(seatsProvider.notifier);
-    switch (action) {
-      case 'fold':
-        seatsNotifier.setActivity(seat, PlayerActivity.folded);
-      case 'allin':
-      case 'all_in':
-        seatsNotifier.setActivity(seat, PlayerActivity.allIn);
-      // bet/call/raise/check: seat.activity 유지, pot 은 별도 이벤트
-    }
-    final amount = p['amount'] as int?;
-    if (amount != null && amount > 0) {
-      seatsNotifier.setCurrentBet(seat, amount);
-    }
-  }
-
-  static void _onStreetAdvanced(WidgetRef ref, Map<String, dynamic> p) {
-    final street = (p['street'] ?? p['next']) as String?;
-    DebugLog.i('ENGINE_EVT', 'StreetAdvanced', p);
+  static void _updateStreet(WidgetRef ref, String? street) {
     if (street == null) return;
-    final fsm = ref.read(handFsmProvider.notifier);
-    final target = _streetToFsm(street);
-    if (target != null) {
-      fsm.forceState(target);
-      ref.read(seatsProvider.notifier).clearBets();
-    }
+    final fsm = _streetToFsm(street);
+    if (fsm == null) return;
+    ref.read(handFsmProvider.notifier).forceState(fsm);
   }
 
   static HandFsm? _streetToFsm(String street) {
     switch (street.toLowerCase()) {
+      case 'preflop':
+      case 'pre_flop':
+        return HandFsm.preFlop;
       case 'flop':
         return HandFsm.flop;
       case 'turn':
         return HandFsm.turn;
       case 'river':
         return HandFsm.river;
-      case 'preflop':
-      case 'pre_flop':
-      case 'pre-flop':
-        return HandFsm.preFlop;
       case 'showdown':
         return HandFsm.showdown;
+      case 'complete':
+      case 'handcomplete':
+      case 'hand_complete':
+        return HandFsm.handComplete;
     }
     return null;
   }
 
-  static void _onCardDealt(WidgetRef ref, Map<String, dynamic> p) {
-    DebugLog.i('ENGINE_EVT', 'CardDealt', p);
-    // Hole card (seat) or community (is_board)
-    // Engine 응답 schema 는 Overlay_Output_Events.md 참조 — 최소 구현.
-    // TODO(B-team4-007): full schema 파싱.
+  static void _updateSeats(WidgetRef ref, List<dynamic>? seats) {
+    if (seats == null) return;
+    final notifier = ref.read(seatsProvider.notifier);
+
+    for (final raw in seats) {
+      if (raw is! Map) continue;
+      final seat = Map<String, dynamic>.from(raw);
+      final index = seat['index'] as int?;
+      if (index == null) continue;
+      final seatNo = index + 1; // Engine 0-based → CC 1-based
+
+      // status
+      final status = seat['status'] as String?;
+      final activity = _statusToActivity(status);
+      if (activity != null) {
+        notifier.setActivity(seatNo, activity);
+      }
+
+      // currentBet
+      final currentBet = seat['currentBet'] as int?;
+      if (currentBet != null) {
+        notifier.setCurrentBet(seatNo, currentBet);
+      }
+
+      // stack
+      final stack = seat['stack'] as int?;
+      if (stack != null) {
+        notifier.updateStack(seatNo, stack);
+      }
+
+      // holeCards (Engine: ["7c","Qc"] → CC: [HoleCard(rank:"7",suit:"c"), ...])
+      final holeRaw = seat['holeCards'];
+      if (holeRaw is List) {
+        final cards = <HoleCard>[];
+        for (final c in holeRaw) {
+          if (c is! String || c.length != 2) continue;
+          cards.add(HoleCard(rank: c[0], suit: c[1]));
+        }
+        if (cards.isNotEmpty) {
+          notifier.setHoleCards(seatNo, cards);
+        }
+      }
+    }
   }
 
-  static void _onHandCompleted(WidgetRef ref, Map<String, dynamic> p) {
-    DebugLog.i('ENGINE_EVT', 'HandCompleted', p);
-    ref.read(handFsmProvider.notifier).forceState(HandFsm.handComplete);
-    ref.read(seatsProvider.notifier).clearBets();
-    ref.read(seatsProvider.notifier).clearAllCards();
+  static PlayerActivity? _statusToActivity(String? status) {
+    switch (status) {
+      case 'active':
+        return PlayerActivity.active;
+      case 'folded':
+        return PlayerActivity.folded;
+      case 'allin':
+      case 'all_in':
+        return PlayerActivity.allIn;
+      case 'sitting_out':
+      case 'sittingOut':
+        return PlayerActivity.sittingOut;
+    }
+    return null;
+  }
+
+  static void _updateCommunity(WidgetRef ref, List<dynamic>? community) {
+    if (community == null) return;
+    final cards = community.whereType<String>().toList();
+    ref.read(boardCardsProvider.notifier).state = cards;
+  }
+
+  static void _updatePot(WidgetRef ref, dynamic pot) {
+    if (pot is! Map) return;
+    final total = pot['total'] as int?;
+    if (total != null) {
+      ref.read(potTotalProvider.notifier).state = total;
+    }
+  }
+
+  static void _updateActionOn(WidgetRef ref, int? actionOn) {
+    if (actionOn == null) {
+      ref.read(seatsProvider.notifier).setActionOn(null);
+      return;
+    }
+    final seatNo = actionOn + 1; // 0-based → 1-based
+    ref.read(seatsProvider.notifier).setActionOn(seatNo);
+  }
+
+  static void _updateDealer(WidgetRef ref, int? dealerSeat) {
+    if (dealerSeat == null) return;
+    final seatNo = dealerSeat + 1;
+    ref.read(seatsProvider.notifier).setDealer(seatNo);
   }
 }
