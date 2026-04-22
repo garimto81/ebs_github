@@ -356,6 +356,8 @@ Flutter Desktop 애플리케이션으로 실행되는 중앙 관제 시스템입
 
 상세 스펙 진화 (컨테이너 포맷 α/β/γ, Rive 내장 범위, UI 최소 명세) 는 후속 논의: `docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md`.
 
+![](images/foundation/app-rive-manager.png)
+
 #### 5.4 실시간 조종석: 커맨드 센터
 
 본방송이 시작되면 운영자의 시선이 85% 이상 머무는 가장 중요한 조작 화면입니다. 중앙 관제탑인 로비와 달리, 경기가 벌어지는 물리적 테이블 1개당 1개씩 독립적으로 실행됩니다.
