@@ -107,7 +107,21 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-_(현재 active claim 없음)_
+### Claim #2 — conductor: Foundation.md v2026-04-22 재설계 전파 — 영향도 분석 및 수정 계획 수립
+```yaml
+id: 2
+team: conductor
+task: Foundation.md v2026-04-22 재설계 전파 — 영향도 분석 및 수정 계획 수립
+started: '2026-04-22T10:26:28Z'
+scope:
+- docs/1. Product/**
+- docs/2. Development/2.5 Shared/**
+- docs/4. Operations/**
+- docs/4. Operations/_plans/foundation-redesign-propagation-plan.md
+status: active
+eta: 2h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
