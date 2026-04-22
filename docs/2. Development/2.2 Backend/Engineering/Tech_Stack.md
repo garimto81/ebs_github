@@ -149,7 +149,7 @@ last-updated: 2026-04-15
 | 언어 | Python | 3.12+ |
 | 프레임워크 | FastAPI | 0.115+ |
 | ORM | SQLModel (SQLAlchemy 기반) | 0.0.22+ |
-| DB | SQLite (Phase 1-2) → PostgreSQL (Phase 3+) | — |
+| DB | SQLite (dev / 단일 PC) → PostgreSQL (prod / N PC + 중앙 서버) | Foundation §8.5 배포 모델 정렬. `Database/Schema.md §개요` DB SSOT 참조 |
 | 마이그레이션 | Alembic | 1.13+ |
 | ASGI 서버 | uvicorn | 0.30+ |
 | 컨테이너 | Docker + docker-compose | 24+ |

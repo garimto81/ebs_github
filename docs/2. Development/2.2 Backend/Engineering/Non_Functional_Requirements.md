@@ -54,15 +54,15 @@ EBS 3-앱 아키텍처(Lobby / CC / BO)의 **비기능 요구사항**(Non-Functi
 
 ## 2. 가용성
 
-| 지표 | Phase 1 | Phase 3 | 측정 방법 | 롤백 트리거 |
-|------|---------|---------|----------|------------|
+| 지표 | 초기 | 성숙 | 측정 방법 | 롤백 트리거 |
+|------|------|------|----------|------------|
 | **연속 운영 (live 방송)** | ≥ 4h 무중단 | **≥ 16h 무중단** | uptime 모니터, 방송 시작~종료 연속 health check | unplanned downtime > 60s |
 | 가동률 (월) | ≥ 99.0% | ≥ 99.5% | (total - downtime) / total | 월 가동률 < 목표 |
 | 크래시 복구 (MTTR) | < 30s | < 15s | 프로세스 감시 후 자동 재시작 + 세션 복원 (BS-02) | MTTR > 60s |
-| MTBF | ≥ 4h (Phase 1) | ≥ 24h | crash 간격 평균 | MTBF < 목표의 50% |
+| MTBF | ≥ 4h (초기) | ≥ 24h | crash 간격 평균 | MTBF < 목표의 50% |
 | Graceful shutdown | — | < 10s | SIGTERM 수신 → 진행 요청 완료 → 새 요청 거부 → 종료 | 강제 kill 발생 |
 
-> **Phase 3 ≥16h 근거**: WSOP+ Architecture는 단일 AWS California 리전에서 연속 14-16h 방송을 운영한다. EBS는 Phase 3에서 동등 수준의 가용성을 목표로 한다.
+> **성숙 ≥16h 근거**: WSOP+ Architecture는 단일 AWS California 리전에서 연속 14-16h 방송을 운영한다. EBS는 N PC + 중앙 서버 (Foundation §8.5) 성숙 운영 시 동등 수준의 가용성을 목표로 한다.
 
 **Graceful Shutdown 정의**:
 1. SIGTERM 수신
@@ -402,8 +402,8 @@ Redis 장애 시 Circuit Breaker OPEN → DB 직접 조회 (p95 허용 degradati
 
 ### 8.1 부하 프로파일
 
-| 지표 | Phase 1 | Phase 3 | 단위 |
-|------|---------|---------|------|
+| 지표 | 초기 (단일 PC) | 성숙 (N PC + 중앙 서버) | 단위 |
+|------|---------------|-----------------------|------|
 | 동시 테이블 (CC+Overlay) | 3 | 12 | 테이블 |
 | Lobby 동시 사용자 | 5 | 20 | 세션 |
 | WebSocket 동시 연결 | 10 | 50 | 연결 |
@@ -411,6 +411,8 @@ Redis 장애 시 Circuit Breaker OPEN → DB 직접 조회 (p95 허용 degradati
 | 칩 트랜잭션 (피크) | 10 | 40 | ops/s |
 | `audit_events` append | 50 | 200 | rows/s |
 | WSOP LIVE 폴링 | 1 | 2 | req/s |
+
+> 배포 모델 정의: Foundation §8.5 단일 PC / N PC + 중앙 서버. "초기" 는 단일 PC 운영 규모, "성숙" 은 N PC 방송 규모.
 
 ### 8.2 인덱스 전략
 
