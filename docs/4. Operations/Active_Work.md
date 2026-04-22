@@ -107,21 +107,6 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-### Claim #4 — team3: B-331 harness /engine/health endpoint 구현 — Demo Mode fallback 지원
-```yaml
-id: 4
-team: team3
-task: B-331 harness /engine/health endpoint 구현 — Demo Mode fallback 지원
-started: '2026-04-22T11:39:02Z'
-scope:
-- team3-engine/ebs_game_engine/lib/harness/server.dart
-- team3-engine/ebs_game_engine/test/harness/**
-- docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md
-- docs/2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md
-status: active
-eta: 1h
-```
-
 ### Claim #5 — conductor: 회의 D3 GE 제거 결정 — Conductor 소유 5 지점 반영 (BS_Overview §7.4 GEM-* 폐기, §1 GE 행 축소, Foundation Ch.9 L610, 1. Product.md γ 교정, SG-004 SUPERSEDED)
 ```yaml
 id: 5
@@ -186,6 +171,22 @@ scope:
 status: released
 eta: 1h
 released: '2026-04-22T10:34:24Z'
+```
+
+### Claim #4 — team3: B-331 harness /engine/health endpoint 구현 — Demo Mode fallback 지원
+```yaml
+id: 4
+team: team3
+task: B-331 harness /engine/health endpoint 구현 — Demo Mode fallback 지원
+started: '2026-04-22T11:39:02Z'
+scope:
+- team3-engine/ebs_game_engine/lib/harness/server.dart
+- team3-engine/ebs_game_engine/test/harness/**
+- docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md
+- docs/2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md
+status: released
+eta: 1h
+released: '2026-04-22T11:45:53Z'
 ```
 
 <!-- RELEASED_END -->
