@@ -436,7 +436,6 @@ tier: generated
 | `docs/3. Change Requests/pending/CR-team1-20260417-cc-network-config.md` | CR: Team4 CC boApiClientProvider localhost 하드코딩 제거 | - | - | - |
 | `docs/4. Operations/4. Operations.md` | 4. Operations | conductor | internal | - |
 | `docs/4. Operations/Active_Work.md` | Active_Work | - | - | - |
-| `docs/4. Operations/Backlog_Aggregate.md` | Backlog_Aggregate | - | - | - |
 | `docs/4. Operations/Conductor_Backlog.md` | Conductor_Backlog | - | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` | Phase 2 통합 테스트 + E2E | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` | Phase 3 통합 테스트 + 부하 테스트 | - | - | - |
