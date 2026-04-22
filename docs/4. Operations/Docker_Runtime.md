@@ -19,13 +19,18 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 |----------|--------|----------|--------|---------------|
 | `ebs-bo-1` | `ebs-bo` | 8000 | team2 | `team2-backend/src/**` 또는 `Dockerfile` 변경 |
 | `ebs-engine-1` | `ebs-engine` | 8080 | team3 | `team3-engine/ebs_game_engine/lib/**` 또는 `Dockerfile` 변경 |
+| `ebs-lobby-web-1` | `ebs-lobby-web` | 3000 | **team1** | `team1-frontend/{lib,web,Dockerfile,nginx.conf}/**` 변경 — `flutter build web` 선행 |
 | `ebs-cc-web-1` | `ebs-cc-web` | 3100 | team4 | `team4-cc/src/build/web/**` 갱신 (flutter build web 선행) |
 | `ebs-redis-1` | `redis:7-alpine` | internal | conductor | (재빌드 불필요, `docker compose pull` 만) |
 
 **compose 정의 파일**: `docker-compose.yml` (레포 루트)
 
-**폐기됨 (좀비 주의)**:
-- `ebs-lobby-web` — 2026-04-21 Flutter Desktop 단일 스택 전환 (`2cc13b1`) 으로 배제. team1-frontend 는 Desktop 앱으로만 실행. **브라우저 Lobby 시나리오는 out-of-scope**
+**중요 정정 (2026-04-22)**:
+- 2026-04-22 작성한 초기 버전에서 `ebs-lobby-web` 을 "폐기됨" 으로 분류하고 `2cc13b1` "Desktop 단일 스택" 전환 때문에 out-of-scope 라고 기재했으나, **이는 기획 문서의 잘못된 해석** 이었다.
+- 실제 운영 요구: 동일 네트워크 LAN 브라우저 접근 필수 → Docker Web 배포 유지.
+- Flutter 는 multi-platform 프레임워크이므로 같은 소스에서 Desktop + Web 병행 가능.
+- 2026-04-22 재정의: team1-frontend = Desktop + Web 병행. `ebs-lobby-web` = 정규 서비스.
+- 상세: `docs/2. Development/2.1 Frontend/Deployment.md` (team1 배포 SSOT)
 
 ---
 
@@ -49,11 +54,13 @@ docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" | grep "^ebs-"
 
 | 세션 | 조건 | 명령 |
 |------|------|------|
+| team1 | `team1-frontend/{lib,web,Dockerfile,nginx.conf}/**` 변경 | `cd team1-frontend && flutter build web --release && cd .. && docker compose --profile web build --no-cache lobby-web && docker compose --profile web up -d lobby-web` |
 | team2 | `team2-backend/src/**` 변경 | `docker compose build --no-cache bo && docker compose up -d bo` |
 | team3 | `team3-engine/ebs_game_engine/lib/**` 변경 | `docker compose build --no-cache engine && docker compose up -d engine` |
-| team4 | `team4-cc/src/build/web/**` 갱신 | `docker compose --profile web build --no-cache cc-web && docker compose --profile web up -d cc-web` |
-| team1 | **재빌드 대상 없음** — Desktop 전용 | — |
+| team4 | `team4-cc/src/build/web/**` 갱신 | `cd team4-cc/src && flutter build web --release --dart-define=DEMO_MODE=true && cd ../.. && docker compose --profile web build --no-cache cc-web && docker compose --profile web up -d cc-web` |
 | conductor | docker-compose.yml 구조 변경 시 | 전체 `docker compose up -d --force-recreate` |
+
+**중요**: team1/team4 는 Docker build 전 반드시 **호스트에서 `flutter build web` 선행**. Dockerfile 은 nginx 이미지에 `build/web` 을 COPY 하는 단순 구조 (Flutter SDK 미포함, 빌드 속도 100x 향상).
 
 ### 2.3 healthcheck 검증
 
@@ -107,4 +114,6 @@ commit 메시지에 `docker-cleanup: <image>` 태그 추가.
 - `docker-compose.yml` — 정규 서비스 정의
 - `docs/4. Operations/Network_Deployment.md` — 다중 네트워크 배포 시나리오 (dev/LAN/WAN)
 - `docs/2. Development/2.5 Shared/Network_Config.md` — 팀 간 포트/환경변수/CORS 계약
-- 사건 기록: 2026-04-22 `ebs-lobby-web` 좀비 사건 — Flutter Desktop 전환 후 5일간 옛 Quasar-era 이미지가 `/api/v1/tables?event_flight_id=0` 옛 요청 반복 서빙
+- 사건 기록:
+  - 2026-04-22 **1차**: `ebs-lobby-web` 좀비 오판 — 5일간 옛 이미지 서빙 발견 → stop/rm/rmi 수행. **그러나 "Desktop 단일 스택" 기획 문구를 문자 그대로 해석하여 실제 운영 요구 (Docker Web 배포) 를 out-of-scope 로 단정** 한 2차 오류 발생.
+  - 2026-04-22 **2차**: 사용자 지적으로 기획 ↔ 운영 괴리 (Type C) 인식. Deployment.md 신설 + Dockerfile/nginx.conf/compose `lobby-web` 서비스 복원 + Flutter Web platform 재활성. 본 문서의 "Desktop only" 선언 철회.

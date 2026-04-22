@@ -1,15 +1,16 @@
 # EBS 통합 Docker Compose — LAN 네트워크 배포
 #
-# 서비스 4개: BO (Backend) + Redis + Engine (Game Harness) + CC Web (Flutter Web)
-# CC (Command Center)는 Flutter 데스크톱 앱 — 호스트에서 별도 실행.
+# 서비스: BO (team2) + Redis + Engine (team3) + Lobby Web (team1) + CC Web (team4)
+# 데스크톱 앱 (team1 Lobby / team4 CC) 는 호스트에서 별도 실행 가능 (병행).
 #
 # 사용법:
-#   개발 (localhost):  docker compose up -d
-#   LAN:              EBS_EXTERNAL_HOST=192.168.1.100 docker compose up -d
-#   LAN + CC Web:     EBS_EXTERNAL_HOST=192.168.1.100 docker compose --profile web up -d
-#   CC 개발 최소:     docker compose up -d bo redis engine
-#   로그 추적:        docker compose logs -f bo
-#   전체 중지:        docker compose down
+#   개발 (localhost):       docker compose up -d
+#   LAN:                   EBS_EXTERNAL_HOST=192.168.1.100 docker compose up -d
+#   LAN + 모든 Web:         EBS_EXTERNAL_HOST=192.168.1.100 docker compose --profile web up -d
+#   Lobby Web 만:           docker compose --profile web up -d lobby-web
+#   CC 개발 최소:            docker compose up -d bo redis engine
+#   로그 추적:               docker compose logs -f bo
+#   전체 중지:               docker compose down
 #
 # CC 호스트 실행 (LAN IP 예시):
 #   cd team4-cc/src
@@ -84,6 +85,31 @@ services:
     environment:
       - LOG_LEVEL=debug
     restart: unless-stopped
+
+  # ── Lobby Web (team1, Flutter Web + nginx reverse proxy) ─────────────
+  # LAN 내 브라우저 접속: http://LAN_IP:3000
+  # Dockerfile 내부에서 Flutter SDK 받아 build web 수행 후 nginx 로 서빙.
+  # nginx 가 /api, /ws 를 bo:8000 으로 reverse proxy → 브라우저 CORS 불필요.
+  # 재빌드: docker compose --profile web build --no-cache lobby-web
+  # 기획/배포 SSOT: docs/2. Development/2.1 Frontend/Deployment.md
+  lobby-web:
+    build:
+      context: .
+      dockerfile: team1-frontend/Dockerfile
+    image: ebs-lobby-web
+    ports:
+      - "3000:80"
+    depends_on:
+      - bo
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    profiles:
+      - web  # docker compose --profile web up -d lobby-web
 
   # ── CC Web (team4, Flutter Web 빌드) ────────────────────────────────────
   # Demo Mode 전용. LAN 내 브라우저 접속: http://LAN_IP:3100
