@@ -107,7 +107,21 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-_(현재 active claim 없음)_
+### Claim #4 — team3: B-331 harness /engine/health endpoint 구현 — Demo Mode fallback 지원
+```yaml
+id: 4
+team: team3
+task: B-331 harness /engine/health endpoint 구현 — Demo Mode fallback 지원
+started: '2026-04-22T11:39:02Z'
+scope:
+- team3-engine/ebs_game_engine/lib/harness/server.dart
+- team3-engine/ebs_game_engine/test/harness/**
+- docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md
+- docs/2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md
+status: active
+eta: 1h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
