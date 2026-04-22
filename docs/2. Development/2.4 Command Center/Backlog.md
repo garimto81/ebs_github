@@ -6,6 +6,21 @@ decomposed: true
 
 # Backlog (디렉토리화됨)
 
+## 🔥 2026-04-22 Foundation 재설계 후속 작업 (최우선)
+
+Foundation.md 전면 재설계 (F1/Ch.4/§5.0/§6.3/§6.4/§7.1/§8.5, 2026-04-22) 에 따른 team4 기획 문서 정합 복원.
+
+**영향도 매트릭스**: `./Foundation_Impact_Review.md` 참조 (SSOT).
+
+| 우선순위 | 항목 | 영역 |
+|:------:|------|------|
+| **P0** | [B-team4-007](Backlog/B-team4-007-foundation-critical-multi-table-sequences.md) | CRITICAL — Multi_Table Pattern B 재정의 + Sequences 2 모드 다이어그램 |
+| **P1** | [B-team4-008](Backlog/B-team4-008-foundation-high-overlay-overview-runtime-modes.md) | HIGH — Overlay Overview 2 런타임 모드 분기 + 배경 config flag |
+| **P2** | [B-team4-009](Backlog/B-team4-009-foundation-medium-reference-updates.md) | MEDIUM — 참조·주석 일괄 보강 (M1~M8) |
+| **P3** | [B-team4-010](Backlog/B-team4-010-foundation-low-link-fixes.md) | LOW — 참조 링크 갱신 (L1~L4) |
+
+**예상 총 공수**: ~8h (1 working day).
+
 ## 🎯 2026-04-21 이관 우선 작업 (baseline 커밋 `7543452`)
 
 팀 세션 시작 시 `team4-cc/CLAUDE.md §"2026-04-21 이관 시 우선 작업"` 섹션 필독.
