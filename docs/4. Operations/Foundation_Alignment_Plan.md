@@ -18,6 +18,7 @@ reimplementability_notes: "실행 계획 문서 — 챕터 아님"
 
 | 날짜 | 버전 | 변경 | 유형 |
 |------|:----:|------|:----:|
+| 2026-04-22 | v1.1 | 재검토 라운드 2 — 진행 상태 반영 · 누락 문서 4건 편입 (Game_Rules/Flop_Games, 4. Operations.md, Plans/Redesign_Plan, Multi_Session_Handoff) · C-1 Type C retro (team1 PR#11-14 γ 해소 기록) · 매트릭스 17 → 21 | - |
 | 2026-04-22 | v1.0 | 최초 작성 — Foundation 재설계 정렬 전수 plan | - |
 
 ---
@@ -61,8 +62,12 @@ Foundation 최근 7 커밋(`b577130` → `027d15a`) 이 도입한 개념. 이후
 | `docs/2. Development/2.5 Shared/Authentication.md` | OK | — | Auth 주제, Foundation Delta 무관 |
 | `docs/2. Development/2.5 Shared/Naming_Conventions.md` | OK | — | 영향 없음 |
 | `docs/2. Development/2.5 Shared/Network_Config.md` | OK | — | 영향 없음 |
+| `docs/4. Operations/4. Operations.md` | **P0** | 의도 재정의 | L18 "Phase 별 런칭 로드맵 (2027-01 런칭, 2027-06 Vegas)" ↔ 2026-04-20 프로젝트 의도 재정의 (기획서 완결 프로토타입, MVP/런칭 무효) — **v1.1 신규 편입** |
+| `docs/1. Product/Game_Rules/Flop_Games.md` | **P2** | 7 | "Foundation Ch.6 참조" 링크 (2건). Foundation §6.3 재구성 후 링크 유효성 검증만 — **v1.1 신규 편입** |
+| `docs/4. Operations/Plans/Redesign_Plan_2026_04_22.md` | **P1** | 1~7 | 본 plan 과 동일 사건(2026-04-22) 대응 plan. Wave1 F3 "Spec_Gap 상태 갱신"이 본 plan P0-5 와 중복 — 통합 또는 교차 참조 명시 — **v1.1 신규 편입** |
+| `docs/4. Operations/Multi_Session_Handoff.md` | **P2** | 7 | §Foundation/Roadmap/Spec_Gap_* 편집 기록 / "FAIL 1건 (Ch.7 SG-002)" 문구 — SG-002 해소 반영 — **v1.1 신규 편입** |
 
-**집계**: P0 5건 · P1 5건 · P2 3건 · OK 4건 (총 17)
+**집계 (v1.1)**: P0 6건 · P1 6건 · P2 5건 · OK 4건 (총 21, +4)
 
 ---
 
@@ -97,6 +102,36 @@ flowchart TD
 
 ---
 
+## 3.5 진행 상태 재검토 (v1.1, 2026-04-22 저녁 추가)
+
+v1.0 작성 직후 팀 세션들이 자발적으로 대응하여 **상당 부분 진행**됨. 실제 상태:
+
+| 항목 | v1.0 상태 | v1.1 실측 | 근거 커밋 |
+|------|:---------:|:---------:|----------|
+| C-1 Type C 판정 | 미판정 | **γ (하이브리드) 방향 자발 해소** | team1 PR#11 (`67df477`), PR#13 (`704b255`), PR#14 (`14b01bf`) — Lobby Web 복원 + Desktop 개발자 모드 재분류 |
+| SG-002 (Engine 의존 계약) | PENDING | 개별 파일 `RESOLVED` (2026-04-20) | `Conductor_Backlog/SG-002-*.md` frontmatter |
+| SG-005 (Ch.6 연결 도식) | PENDING | 개별 파일 `RESOLVED` (2026-04-20) | `Conductor_Backlog/SG-005-*.md` frontmatter |
+| team2 Phase A-D | 미시작 | **완료** (계약 발행 + BREAKING 정정 + ADDITIVE + Phase 라벨) | `fe8f2bd` → `ec63664` |
+| team1 §8.5/§7.1 반영 | 미시작 | **완료** | `71b9771` |
+| team3 8 backlog 등재 | 미시작 | **완료** | `36cb3bc` |
+| team4 영향 분석 + 4 backlog | 미시작 | **완료** | `1d01d83` |
+| Foundation_Alignment_Plan 자체 | 미작성 | **v1.0 작성** | `61e27b4` |
+
+**그러나 Conductor 소유 문서 P0 대부분 미이행**:
+
+| P0 항목 | 상태 |
+|---------|:----:|
+| (P0-1) BS_Overview §1 재작성 | **미이행** (Type C 판정 확정 후 진행 가능) |
+| (P0-2) 1. Product.md 5-App → 설치 4 프레임 + CCR 잔재 제거 | **미이행** |
+| (P0-3) Network_Deployment §8.5 반영 | **미이행** |
+| (P0-4) Roadmap Ch.7 FAIL → PASS / SG-002/005 DONE 전환 | **미이행** |
+| (P0-5) Spec_Gap_Registry SG-002/005 DONE | **미이행** — 개별 파일 RESOLVED 이지만 집계 문서 미갱신 (**집계 불일치**) |
+| (P0-new) 4. Operations.md "2027 런칭" 문구 제거 | **미이행** |
+
+**핵심 발견**: 개별 SG 파일은 RESOLVED 인데 Registry + Roadmap 은 PENDING — **Aggregate-vs-Source 동기화 실패**. tools 에 Registry 자동 갱신 레인이 없어 수동 보정 필요.
+
+---
+
 ## 4. 주요 모순 — Type C 판정 필요 (CRITICAL)
 
 ### 모순 C-1: Lobby 배포 형태
@@ -118,6 +153,8 @@ flowchart TD
 > **(γ) 하이브리드** — Foundation §5.0 2 모드에 "배포 타겟" 축 추가 (Web / Desktop), BS_Overview/Network_Deployment 를 양 지원으로 재서술
 
 **권고**: **(γ) 하이브리드** — Foundation §5.0 이 이미 "2 런타임 모드" 를 도입한 만큼 "빌드 타겟 축" (Flutter Web vs Flutter Desktop) 을 직교 개념으로 공식화. 브라우저 다중 클라이언트 LAN 배포 요구(team1 PR #11)와 RFID 시리얼 접근 필수(CC Desktop)를 모두 수용.
+
+**retro (v1.1)**: team1 세션이 PR#11 → #13 → #14 를 통해 **자발적으로 γ 방향 이행** (Lobby Web 정규 복원 + Desktop 개발자 디버깅 모드 재분류). Conductor 판정을 기다리지 않고 실 운영 요구(LAN 다중 클라이언트) 로 결론. **B-200-1 gate 효과적으로 해소**. 남은 작업은 Foundation §5.1/§4.4 문장을 γ 방향으로 재작성 + BS_Overview/Network_Deployment/Docker_Runtime 를 γ 방향으로 맞추는 것만 남음.
 
 ### 모순 C-2: "Change Requests" 폐기 잔재
 
@@ -197,6 +234,9 @@ flowchart TD
 | **B-203** | Roadmap/Spec_Gap_Registry SG-002/SG-005 DONE 전환 | P0 | — |
 | **B-204** | Network_Deployment/Docker_Runtime §8.5 중앙 서버 아키텍처 반영 | P1 | B-200 |
 | **B-205** | Risk_Matrix R-06 중앙 서버 SPOF 등재 | P1 | — |
+| **B-206** | 4. Operations.md "2027 런칭" 문구 제거 (의도 재정의 정렬) | P0 | — (v1.1 신규) |
+| **B-207** | Plans/Redesign_Plan_2026_04_22 와 본 plan 관계 정리 (통합 or cross-ref) | P1 | — (v1.1 신규) |
+| **B-208** | Aggregate-vs-Source 동기화 레인 — Spec_Gap_Registry 자동 갱신 tool | P1 | — (v1.1 신규, root-cause 대응) |
 
 ---
 
