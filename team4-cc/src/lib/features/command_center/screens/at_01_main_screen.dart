@@ -7,12 +7,15 @@
 //
 // Layout: Column [Toolbar(48) | InfoBar(40) | SeatArea(expand) | ActionPanel(120)]
 
+import 'dart:async' show unawaited;
 import 'dart:math' as math;
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../app.dart';
 import '../../../data/remote/ws_provider.dart';
@@ -28,12 +31,14 @@ import '../../debug/debug_log_panel.dart';
 import '../../debug/debug_log_provider.dart';
 import '../providers/action_button_provider.dart';
 import '../providers/config_provider.dart';
+import '../providers/engine_provider.dart';
 import '../providers/hand_display_provider.dart';
 import '../providers/hand_fsm_provider.dart';
 import '../providers/keyboard_provider.dart';
 import '../providers/seat_provider.dart';
 import '../providers/table_state_provider.dart';
 import '../providers/undo_provider.dart';
+import '../services/engine_output_dispatcher.dart';
 import '../services/undo_stack.dart';
 import '../../../rfid/providers/rfid_reader_provider.dart';
 import '../providers/card_input_provider.dart';
@@ -208,11 +213,17 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
 ///
 /// **Demo/offline mode** (WS null): applies local FSM transition directly
 /// via dispatchLocalDemoEvent so the UI still functions.
+const _uuid = Uuid();
+
 void _dispatchAction(WidgetRef ref, CcAction action,
     {int? amount, BuildContext? context}) {
-  DebugLog.d('ACTION', 'dispatch requested', {'action': action.name, 'amount': amount});
+  // §1.1.1 Body Derivation Rule — correlation_id 1 회 생성, 양 경로 주입.
+  final correlationId = _uuid.v4();
+  DebugLog.d('ACTION', 'dispatch requested',
+      {'action': action.name, 'amount': amount, 'correlation_id': correlationId});
   if (!ref.read(actionButtonProvider).isEnabled(action)) {
-    DebugLog.w('ACTION', 'BLOCKED — actionButtonProvider.isEnabled=false', {'action': action.name});
+    DebugLog.w('ACTION', 'BLOCKED — actionButtonProvider.isEnabled=false',
+        {'action': action.name});
     return;
   }
 
@@ -223,6 +234,8 @@ void _dispatchAction(WidgetRef ref, CcAction action,
   final config = ref.read(configProvider);
   final launchConfig = ref.read(launchConfigProvider);
   final handNum = ref.read(handNumberProvider);
+  final engineClient = ref.read(engineClientProvider);
+  final engineSessionId = ref.read(engineSessionProvider);
   final actionSeat = seats.where((s) => s.actionOn).firstOrNull;
   final seatNo = actionSeat?.seatNo ?? 0;
 
@@ -266,12 +279,43 @@ void _dispatchAction(WidgetRef ref, CcAction action,
       }
       final dealerSeat =
           seats.where((s) => s.isDealer).firstOrNull?.seatNo ?? 1;
+
+      // §1.1.1 Engine primary — createSession (auto HandStart + holecards).
+      final occupied = seats.where((s) => s.isOccupied).toList();
+      final engineFuture = () async {
+        try {
+          DebugLog.i('ENGINE_DISPATCH', 'createSession', {
+            'correlation_id': correlationId,
+            'gameType': config.gameType.name,
+            'seatCount': occupied.length,
+          });
+          final sessionId = await engineClient.createSession(
+            gameType: config.gameType.name,
+            betStructure: 'NL',
+            tableSize: occupied.length,
+          );
+          ref.read(engineSessionProvider.notifier).state = sessionId;
+          DebugLog.i('ENGINE_RESPONSE', 'session created',
+              {'correlation_id': correlationId, 'sessionId': sessionId});
+          // Initial state fetch → outputEvents dispatch.
+          final state = await engineClient.getState(sessionId);
+          EngineOutputDispatcher.dispatchAll(
+              ref, state['outputEvents'] as List<dynamic>?,
+              correlationId: correlationId);
+        } catch (e) {
+          DebugLog.e('ENGINE_DISPATCH', 'createSession failed',
+              {'correlation_id': correlationId, 'error': e.toString()});
+          // fallback: local FSM transition
+          handFsm.startHand();
+        }
+      }();
+
+      // §1.1.1 BO secondary — WriteGameInfo (audit + Lobby broadcast).
       if (ws != null) {
-        DebugLog.i('NEW_HAND', 'sending WriteGameInfo to BO', {
-          'table_id': config.tableNumber,
-          'dealer_seat': dealerSeat,
-        });
+        DebugLog.i('BO_DISPATCH', 'WriteGameInfo',
+            {'correlation_id': correlationId, 'table_id': config.tableNumber});
         ws.sendCommand('WriteGameInfo', {
+          'correlation_id': correlationId,
           'table_id': config.tableNumber,
           'dealer_seat': dealerSeat,
           'sb_seat': _nextOccupied(seats, dealerSeat),
@@ -283,29 +327,32 @@ void _dispatchAction(WidgetRef ref, CcAction action,
           'straddle_seats': config.straddleSeats,
           'blind_structure_id': config.blindStructureId,
           'game_type': config.gameType.name,
-          'active_seats': seats
-              .where((s) => s.isOccupied)
-              .map((s) => s.seatNo)
-              .toList(),
+          'active_seats': occupied.map((s) => s.seatNo).toList(),
         });
       } else {
-        // Demo: local transition
-        DebugLog.i('NEW_HAND', 'WS offline — local handFsm.startHand() only');
-        handFsm.startHand();
-        DebugLog.i('NEW_HAND', 'handFsm → setupHand (local)');
+        DebugLog.w('BO_DISPATCH', 'WS offline — BO audit skipped',
+            {'correlation_id': correlationId});
       }
 
-    // -- DEAL (§11 WriteDeal) -------------------------------------------
+      // fire-and-forget Engine future; avoid blocking UI.
+      unawaited(engineFuture);
+
+    // -- DEAL (§11 WriteDeal, §1.1.1 Matrix — Engine skip) --------------
+    // createSession (NEW HAND) 시점에 이미 PRE_FLOP + holecards 배분 완료.
+    // DEAL 은 CC UI 공개 타이밍 마킹 + BO audit only.
     case CcAction.deal:
       if (!handFsm.canDeal) return;
+      DebugLog.i('DEAL', 'UI marking + BO audit only (Engine skipped)',
+          {'correlation_id': correlationId, 'hand_id': handNum});
       if (ws != null) {
         ws.sendDeal(handId: handNum);
-      } else {
-        handFsm.deal();
       }
+      handFsm.deal(); // UI 타이밍 마킹 — PRE_FLOP 전이
 
     // -- FOLD (§10 WriteAction) -----------------------------------------
     case CcAction.fold:
+      _dispatchEngineAction(ref, engineClient, engineSessionId,
+          'fold', seatNo, 0, correlationId);
       if (ws != null) {
         ws.sendAction(
             handId: handNum, seat: seatNo, actionType: 'fold');
@@ -321,6 +368,8 @@ void _dispatchAction(WidgetRef ref, CcAction action,
     case CcAction.checkCall:
       final label = ref.read(actionButtonProvider).checkCallLabel;
       final actionType = label == 'CALL' ? 'call' : 'check';
+      _dispatchEngineAction(ref, engineClient, engineSessionId,
+          actionType, seatNo, amount ?? 0, correlationId);
       if (ws != null) {
         ws.sendAction(
             handId: handNum,
@@ -339,6 +388,8 @@ void _dispatchAction(WidgetRef ref, CcAction action,
     case CcAction.betRaise:
       final label = ref.read(actionButtonProvider).betRaiseLabel;
       final actionType = label == 'RAISE' ? 'raise' : 'bet';
+      _dispatchEngineAction(ref, engineClient, engineSessionId,
+          actionType, seatNo, amount ?? 0, correlationId);
       if (ws != null) {
         ws.sendAction(
             handId: handNum,
@@ -356,6 +407,8 @@ void _dispatchAction(WidgetRef ref, CcAction action,
     // -- ALL-IN (§10 WriteAction) ---------------------------------------
     case CcAction.allIn:
       final stack = actionSeat?.player?.stack ?? 0;
+      _dispatchEngineAction(ref, engineClient, engineSessionId,
+          'allin', seatNo, stack, correlationId);
       if (ws != null) {
         ws.sendAction(
             handId: handNum,
@@ -374,7 +427,24 @@ void _dispatchAction(WidgetRef ref, CcAction action,
     case CcAction.undo:
       final event = undo.undo();
       if (event != null) {
+        // §1.1.1 Matrix — UNDO 병행 dispatch.
+        if (engineSessionId != null) {
+          unawaited(engineClient
+              .undo(engineSessionId)
+              .then((resp) {
+                DebugLog.i('ENGINE_RESPONSE', 'undo ok',
+                    {'correlation_id': correlationId});
+                EngineOutputDispatcher.dispatchAll(
+                    ref, resp['outputEvents'] as List<dynamic>?,
+                    correlationId: correlationId);
+              })
+              .catchError((e) {
+                DebugLog.e('ENGINE_DISPATCH', 'undo failed',
+                    {'correlation_id': correlationId, 'error': e.toString()});
+              }));
+        }
         ws?.sendCommand('UndoAction', {
+          'correlation_id': correlationId,
           'event_type': event.eventType,
           'payload': event.payload,
         });
@@ -395,6 +465,72 @@ int _nextOccupied(List<SeatState> seats, int fromSeat) {
     if (seats[idx].isOccupied) return seats[idx].seatNo;
   }
   return fromSeat;
+}
+
+/// §1.1.1 Engine HTTP 병행 dispatch helper — fire-and-forget + outputEvents 소비.
+///
+/// [seat] 은 1-based (Seat 1~10), Engine 은 0-based `seatIndex` 사용 → 변환.
+/// 실패 시 debug log 만, UI 는 롤백 없음 (Engine 응답의 ActionRejected 는 후속 B-team4-007).
+void _dispatchEngineAction(
+  WidgetRef ref,
+  dynamic engineClient,
+  String? sessionId,
+  String actionType,
+  int seat,
+  int amount,
+  String correlationId,
+) {
+  if (sessionId == null) {
+    DebugLog.w('ENGINE_DISPATCH', 'no session — skipped',
+        {'correlation_id': correlationId, 'action': actionType});
+    return;
+  }
+  final seatIndex = seat - 1; // 1-based → 0-based
+  DebugLog.d('ENGINE_DISPATCH', actionType, {
+    'correlation_id': correlationId,
+    'sessionId': sessionId,
+    'seatIndex': seatIndex,
+    'amount': amount,
+  });
+  final future = () async {
+    try {
+      late Map<String, dynamic> resp;
+      switch (actionType) {
+        case 'fold':
+          resp = await engineClient.sendFold(sessionId, seatIndex);
+        case 'check':
+          resp = await engineClient.sendCheck(sessionId, seatIndex);
+        case 'call':
+          resp = await engineClient.sendCall(sessionId, seatIndex, amount);
+        case 'bet':
+          resp = await engineClient.sendBet(sessionId, seatIndex, amount);
+        case 'raise':
+          resp = await engineClient.sendRaise(sessionId, seatIndex, amount);
+        case 'allin':
+          resp = await engineClient.sendAllin(sessionId, seatIndex, amount);
+        default:
+          DebugLog.e('ENGINE_DISPATCH', 'unknown actionType',
+              {'actionType': actionType});
+          return;
+      }
+      DebugLog.i('ENGINE_RESPONSE', '$actionType ok',
+          {'correlation_id': correlationId});
+      EngineOutputDispatcher.dispatchAll(
+          ref, resp['outputEvents'] as List<dynamic>?,
+          correlationId: correlationId);
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      DebugLog.e('ENGINE_DISPATCH', '$actionType failed', {
+        'correlation_id': correlationId,
+        'status': status,
+        'error': e.message,
+      });
+    } catch (e) {
+      DebugLog.e('ENGINE_DISPATCH', '$actionType exception',
+          {'correlation_id': correlationId, 'error': e.toString()});
+    }
+  }();
+  unawaited(future);
 }
 
 // =============================================================================
