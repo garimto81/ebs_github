@@ -107,7 +107,19 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-_(현재 active claim 없음)_
+### Claim #7 — conductor: Foundation.md 본문에 Rive Manager (구 Graphic Editor) 독립 섹션 신설 — D3 회의 결정 SSOT 반영
+```yaml
+id: 7
+team: conductor
+task: Foundation.md 본문에 Rive Manager (구 Graphic Editor) 독립 섹션 신설 — D3 회의 결정 SSOT 반영
+started: '2026-04-22T11:53:13Z'
+scope:
+- docs/1. Product/Foundation.md
+- docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md
+status: active
+eta: 40min
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
