@@ -2,21 +2,25 @@
 id: SG-004
 title: ".gfskin ZIP 포맷 (DATA-07) — manifest + .riv + assets 구조 명세"
 type: spec_gap
-status: RESOLVED
+status: SUPERSEDED
 owner: conductor
 decision_owners_notified: [team1, team2, team4]
 created: 2026-04-20
 resolved: 2026-04-20
+superseded: 2026-04-22
+superseded_by: B-209 (회의 D3 2026-04-22 — GE 제거, Rive 파일 내장 메타데이터)
 affects_chapter:
   - docs/2. Development/2.2 Backend/Database/  (DATA-07 신규)
-  - docs/2. Development/2.1 Frontend/Graphic_Editor/  (Import/Activate 플로우)
+  - docs/2. Development/2.1 Frontend/Graphic_Editor/  (Import/Activate 플로우 — team1 archive 대상)
   - docs/2. Development/2.4 Command Center/Overlay/  (.riv 소비)
 protocol: Spec_Gap_Triage
-reimplementability: PASS
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "status=RESOLVED, ZIP 포맷 + manifest 확정"
+reimplementability: N/A
+reimplementability_checked: 2026-04-22
+reimplementability_notes: "status=SUPERSEDED. 회의 D3 결정으로 .gfskin 컨테이너 개념 재검토 필요 — manifest.json 메타데이터가 Rive 파일 내장으로 대체되면 skin.json/manifest.json 의 존재 근거 소실. overlay.riv + preview.png + assets/ 만 유지하는 경량 포맷으로 재설계하거나, ZIP 컨테이너 자체를 .riv 단일 파일로 축소할지 B-209 에서 결정."
 ---
 # SG-004 — .gfskin ZIP 포맷 명세 (DATA-07)
+
+> **⚠ SUPERSEDED 2026-04-22** (회의 D3): 별도 Graphic Editor 앱 제거. 메타데이터(`manifest.json` 의 skin_name/version/colors/fonts/animations 필드 전부)를 Rive 파일 자체에 내장하는 방향으로 전환. 본 SG 의 "ZIP 컨테이너 + manifest.json" 설계는 D3 결정 이전 상태를 기록한 것으로, 후속 재설계는 `B-209-ge-d3-meeting-decision.md` 에서 진행한다. 구 버전은 참조 이력으로 보존.
 
 ## 공백 서술
 

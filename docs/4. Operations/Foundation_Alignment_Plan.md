@@ -18,6 +18,7 @@ reimplementability_notes: "실행 계획 문서 — 챕터 아님"
 
 | 날짜 | 버전 | 변경 | 유형 |
 |------|:----:|------|:----:|
+| 2026-04-22 | v1.2 | D3 "GE 제거" 섹션 신설 (§10) — Conductor 소유 5 지점 반영 완료 (1. Product.md γ 교정, Foundation Ch.9 L610, BS_Overview §1 + §7.4 GEM-* SUPERSEDED, SG-004 SUPERSEDED). B-209 신설로 팀 위임 항목 추적. | - |
 | 2026-04-22 | v1.1 | 재검토 라운드 2 — 진행 상태 반영 · 누락 문서 4건 편입 (Game_Rules/Flop_Games, 4. Operations.md, Plans/Redesign_Plan, Multi_Session_Handoff) · C-1 Type C retro (team1 PR#11-14 γ 해소 기록) · 매트릭스 17 → 21 | - |
 | 2026-04-22 | v1.0 | 최초 작성 — Foundation 재설계 정렬 전수 plan | - |
 
@@ -284,12 +285,48 @@ sequenceDiagram
 
 ---
 
+## 10. D3 "GE 제거" 회의 결정 반영 (v1.2 신설, 2026-04-22)
+
+2026-04-22 회의록 D3 결정 ("사내 그래픽 에디터 제거, Rive 파일이 모든 메타데이터 정의") 의 Conductor 단계 반영 — Foundation_Alignment_Plan v1.0/v1.1 에서 누락되었다.
+
+### 10.1 반영 상태
+
+| 지점 | 내용 | 상태 | 커밋 |
+|------|------|:----:|------|
+| `docs/1. Product/1. Product.md` L55-67 | 설치 단위 5 재분류 (EBS Lobby Web 분리) + γ 박스에 D3 노트 추가 | ✅ DONE | (본 batch) |
+| `docs/1. Product/Foundation.md` Ch.9 L610 | "그래픽 편집기" → "Lobby Web 내 Rive 파일 관리 섹션" | ✅ DONE | (본 batch) |
+| `docs/2. Development/2.5 Shared/BS_Overview.md §1` | Graphic Editor (GE) 행 → Rive Manager 축소 | ✅ DONE | (본 batch) |
+| `docs/2. Development/2.5 Shared/BS_Overview.md §7.4` | GEM-* 25 Metadata SUPERSEDED 마킹 + 섹션 경고 | ✅ DONE | (본 batch) |
+| `docs/4. Operations/Conductor_Backlog/SG-004-*.md` | RESOLVED → SUPERSEDED (by B-209) | ✅ DONE | (본 batch) |
+| `docs/4. Operations/Spec_Gap_Registry.md §4.4` | SG-004 SUPERSEDED 행 추가 | ✅ DONE | (본 batch) |
+| `docs/4. Operations/Conductor_Backlog/B-209-*.md` | 신규 backlog — 팀 위임 + 미해결 설계 3 task | ✅ 신설 | (본 batch) |
+
+### 10.2 팀 세션 위임 (Conductor 영역 밖)
+
+| 대상 | 소유 |
+|------|:----:|
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/` 7 문서 archive/축소 | team1 |
+| `team1-frontend/` GEM 관련 UI 제거 | team1 |
+| `docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md` endpoint 축소 | team2 |
+| `docs/2. Development/2.4 Command Center/Overlay/` .gfskin 소비 로직 | team4 |
+
+상세: `B-209-ge-d3-meeting-decision.md`
+
+### 10.3 미해결 설계 (B-209 하위)
+
+- **B-209-1**: `.gfskin` 컨테이너 재설계 (α 유지 vs β .riv 단일 vs γ drift 검증) — default **β**
+- **B-209-2**: "Rive 내장 메타데이터" 경계 명세 (다국어/조건/숫자포맷은 Lobby Settings 에서)
+- **B-209-3**: Lobby Web Rive Manager UI 최소 명세 (Upload/Validate/Preview/Activate + RBAC, Metadata 편집 UI 없음)
+
+---
+
 ## 참조
 
 | 참조 대상 | 경로 |
 |----------|------|
 | Foundation (SSOT) | `docs/1. Product/Foundation.md` |
-| 재설계 근거 회의 | `docs/4. Operations/Critic_Reports/` (2026-04-22) |
+| 재설계 근거 회의 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` |
+| D3 GE 제거 결정 | 위 회의록 §3 D3 + `Conductor_Backlog/B-209-*.md` |
 | CCR 폐기 거버넌스 | `team-policy.json` v7 |
 | Spec Gap 분류 | `docs/4. Operations/Spec_Gap_Triage.md` |
 | Type A/B/C 프로토콜 | `CLAUDE.md` §프로토타입 실패 대응 |

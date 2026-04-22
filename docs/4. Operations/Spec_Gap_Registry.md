@@ -71,6 +71,7 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | SG-001 | tech_stack | Lobby/GE | **DONE** | 2026-04-20 Flutter Desktop 통일 (Foundation §5.1), 2026-04-22 γ 하이브리드 (Web 정규 + Desktop 개발) team1 PR#11-14 |
 | SG-002 | spec_gap | Ch.7/Overlay | **DONE** | 2026-04-20 RESOLVED — Foundation §6.3 ENGINE_URL + §6.4 3-stage fallback + §7.1 배경 투명/단색 이분법. `Conductor_Backlog/SG-002-*.md` |
 | SG-005 | architecture | Ch.6 | **DONE** | 2026-04-20 RESOLVED — Foundation §Ch.6 + §Ch.7 병합, EBS_Core.md 폐기. `Conductor_Backlog/SG-005-*.md` |
+| SG-004 | data_format | DATA-07/.gfskin | **SUPERSEDED** | 2026-04-22 — 회의 D3 GE 제거 결정으로 manifest.json 메타데이터가 Rive 내장으로 대체. B-209 에서 포맷 재설계. |
 | SG-008 | spec_drift | api | PENDING | D3 89 → (a) 77 문서화 + (b) 12 SG 승격 완료 (v4.0, 2026-04-20) + (c) 0 |
 | SG-008-b1 | spec_drift_b | api | PENDING | `GET /audit-events` 공개 범위 + RBAC (default: 옵션 1) |
 | SG-008-b2 | spec_drift_b | api | PENDING | `GET /audit-logs` RBAC (default: 옵션 1 별도 리소스) |
