@@ -103,7 +103,8 @@ services:
       - bo
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/healthz"]
+      # busybox wget (alpine) IPv6 우선 시도로 localhost 실패 → 127.0.0.1 명시
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/healthz"]
       interval: 30s
       timeout: 3s
       retries: 3
