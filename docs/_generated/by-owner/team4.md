@@ -22,6 +22,7 @@ tier: generated
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Statistics.md` — Statistics
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/UI.md` — UI
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Undo_Recovery.md` — Undo Recovery
+- `docs/2. Development/2.4 Command Center/Foundation_Impact_Review.md` — Foundation Impact Review (2026-04-22 재설계)
 - `docs/2. Development/2.4 Command Center/Integration_Test_Plan.md` — Integration Test Plan
 - `docs/2. Development/2.4 Command Center/Integration_Test_Plan/automation/s11/README.md` — S-11 Lobby Hand History — E2E Automation Scaffold
 - `docs/2. Development/2.4 Command Center/Overlay/Animations.md` — Animations

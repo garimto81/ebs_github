@@ -130,6 +130,15 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-025-LEGACY-검토-요청-BS-08-Graphic-Editor-행동-명세-신규-작성-WSOP.md` — [LEGACY] 검토 요청: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드)
 - `docs/2. Development/2.3 Game Engine/Backlog.md` — Backlog
 - `docs/2. Development/2.3 Game Engine/Backlog/B-320-WSOP-LIVE-BS-07-Overlay-감시.md` — WSOP LIVE BS-07 Overlay 완성 감시
+- `docs/2. Development/2.3 Game Engine/Backlog/B-330-Foundation-Engine-별도-프로세스-전파.md` — Foundation §6.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파
+- `docs/2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md` — harness /engine/health endpoint 신설 — Foundation Demo Mode 3-stage 지원
+- `docs/2. Development/2.3 Game Engine/Backlog/B-332-Engine-응답-게임상태-SSOT-명시.md` — Engine 응답이 게임 상태 SSOT 임을 API-04 계약에 명시
+- `docs/2. Development/2.3 Game Engine/Backlog/B-333-Overview-22종-게임-12-7-3-분류표.md` — Overview §1.2.1 game_class 에 Foundation 12/7/3 분류 + 22 variant 매핑표 신설
+- `docs/2. Development/2.3 Game Engine/Backlog/B-334-OutputEventBuffer-런타임-3분법.md` — OutputEventBuffer_Boundary §2-§3 탭 모드 / 다중창 모드 / Engine 3분법으로 재구성
+- `docs/2. Development/2.3 Game Engine/Backlog/B-335-WriteGameInfo-SSOT-재정의.md` — NOTIFY-CCR-024 WriteGameInfo 22 필드 — Engine OutputEvent vs BO WS SSOT 재정의
+- `docs/2. Development/2.3 Game Engine/Backlog/B-336-Harness-배포-시나리오-보강.md` — Harness_REST_API §1 배포 시나리오 — 1 PC vs 중앙 서버 / LAN 배치 보강
+- `docs/2. Development/2.3 Game Engine/Backlog/B-337-Overlay-배경-투명-단색-이분법.md` — Overlay §5 크로마키 — Foundation §7.1 '투명(방송) vs 단색(디자이너 QA)' 이분법 정렬
+- `docs/2. Development/2.3 Game Engine/Backlog/B-338-harness-세션-재시작-복구.md` — harness 세션 재시작 복구 — Foundation §8.4 긴급 복구 계약 대응
 - `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` — B-088 PR-8 — Engine OutputEvent payload 필드 camelCase
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` — OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13)
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` — Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13)
@@ -155,6 +164,10 @@ tier: generated
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-003-S11-e2e-automation-scaffold.md` — S-11 E2E 자동화 스캐폴드 — Playwright + flutter_driver
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-005-position-chip-click-dealer-ux.md` — 포지션 뱃지 클릭 → 포지션 재지정 메뉴 UX 구현 (Seat_Management.md §2 준수)
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-006-ws-engine-parallel-dispatch.md` — WS + Engine HTTP 병행 dispatch 통합 구현 (Overview §1.1.1 준수)
+- `docs/2. Development/2.4 Command Center/Backlog/B-team4-007-foundation-critical-multi-table-sequences.md` — Foundation 재설계 P0 — Multi_Table Pattern B 재정의 + Sequences 2 모드 다이어그램
+- `docs/2. Development/2.4 Command Center/Backlog/B-team4-008-foundation-high-overlay-overview-runtime-modes.md` — Foundation 재설계 P1 — Overlay/Overview 2 런타임 모드 분기 + 배경 config flag
+- `docs/2. Development/2.4 Command Center/Backlog/B-team4-009-foundation-medium-reference-updates.md` — Foundation 재설계 P2 — MEDIUM 일괄 참조·주석 보강
+- `docs/2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` — Foundation 재설계 P3 — LOW 링크·참조 갱신
 - `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` — S-11 Lobby Hand History 자동화 UI wiring 요청
 - `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team2-S11-seeder-and-endpoints.md` — S-11 자동화 실행을 위한 BO seeder + endpoint 준비 요청
 - `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team4-B088-PR7-cc-consumer-migration.md` — B-088 PR-7 — CC consumer camelCase 전환 (ws + REST + Freezed)
@@ -189,6 +202,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/B-067-Phase-4-전격-운영-검증.md` — Phase 4 전격 운영 검증
 - `docs/4. Operations/Conductor_Backlog/B-069-team3-engine-게임-PRD-Confluence-동기화-상태-확인.md` — team3-engine 게임 PRD Confluence 동기화 상태 확인
 - `docs/4. Operations/Conductor_Backlog/B-074-IMPL-01-Lobby-섹션-stale-수정-Team-2-인계.md` — IMPL-01 Lobby 섹션 stale 수정 (Team 2 인계)
+- `docs/4. Operations/Conductor_Backlog/B-200-foundation-alignment-2026-04-22.md` — Foundation 재설계(2026-04-22) 정렬 — Conductor 소유 문서 전수 수정
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR1-doc-correction.md` — B-088 PR-1 — 기존 divergence 선언 정정 (Conductor 영역)
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR2bis-service-layer.md` — B-088 PR-2-bis — service/router 레이어 Pydantic 응답 타입 적용 (B-089 23 failure 근본 해결)
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR9-naming-ci-gate.md` — B-088 PR-9 — naming CI gate 도구 신설 (재발 방지)

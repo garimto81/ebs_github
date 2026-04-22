@@ -148,6 +148,7 @@ tier: generated
 - `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
 - `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
 - `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
+- `docs/4. Operations/Foundation_Alignment_Plan.md` — Foundation 재설계 정렬 계획 (Conductor 소유 문서)
 - `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
 - `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide

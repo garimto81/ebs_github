@@ -219,6 +219,7 @@ tier: generated
 | `docs/2. Development/2.2 Backend/Engineering/Dependency_Injection.md` | Dependency Injection | team2 | internal | IMPL-05 |
 | `docs/2. Development/2.2 Backend/Engineering/Dev_Setup.md` | Dev Setup | team2 | internal | IMPL-00 |
 | `docs/2. Development/2.2 Backend/Engineering/Error_Handling.md` | Error Handling | team2 | internal | IMPL-06 |
+| `docs/2. Development/2.2 Backend/Engineering/Foundation_Realignment_Plan_2026-04-22.md` | Foundation Realignment Plan (2026-04-22) | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/Engineering/Logging.md` | Logging | team2 | internal | IMPL-07 |
 | `docs/2. Development/2.2 Backend/Engineering/Non_Functional_Requirements.md` | Non Functional Requirements | team2 | internal | IMPL-10 |
 | `docs/2. Development/2.2 Backend/Engineering/Project_Structure.md` | Project Structure | team2 | internal | IMPL-02 |
@@ -234,6 +235,15 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | Overlay Output Events | team3 | internal | API-04 |
 | `docs/2. Development/2.3 Game Engine/Backlog.md` | Backlog | - | internal | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-320-WSOP-LIVE-BS-07-Overlay-감시.md` | WSOP LIVE BS-07 Overlay 완성 감시 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-330-Foundation-Engine-별도-프로세스-전파.md` | Foundation §6.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md` | harness /engine/health endpoint 신설 — Foundation Demo Mode 3-stage 지원 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-332-Engine-응답-게임상태-SSOT-명시.md` | Engine 응답이 게임 상태 SSOT 임을 API-04 계약에 명시 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-333-Overview-22종-게임-12-7-3-분류표.md` | Overview §1.2.1 game_class 에 Foundation 12/7/3 분류 + 22 variant 매핑표 신설 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-334-OutputEventBuffer-런타임-3분법.md` | OutputEventBuffer_Boundary §2-§3 탭 모드 / 다중창 모드 / Engine 3분법으로 재구성 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-335-WriteGameInfo-SSOT-재정의.md` | NOTIFY-CCR-024 WriteGameInfo 22 필드 — Engine OutputEvent vs BO WS SSOT 재정의 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-336-Harness-배포-시나리오-보강.md` | Harness_REST_API §1 배포 시나리오 — 1 PC vs 중앙 서버 / LAN 배치 보강 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-337-Overlay-배경-투명-단색-이분법.md` | Overlay §5 크로마키 — Foundation §7.1 '투명(방송) vs 단색(디자이너 QA)' 이분법 정렬 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-338-harness-세션-재시작-복구.md` | harness 세션 재시작 복구 — Foundation §8.4 긴급 복구 계약 대응 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` | OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` | Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13) | - | - | - |
@@ -278,6 +288,10 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-003-S11-e2e-automation-scaffold.md` | S-11 E2E 자동화 스캐폴드 — Playwright + flutter_driver | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-005-position-chip-click-dealer-ux.md` | 포지션 뱃지 클릭 → 포지션 재지정 메뉴 UX 구현 (Seat_Management.md §2 준수) | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-006-ws-engine-parallel-dispatch.md` | WS + Engine HTTP 병행 dispatch 통합 구현 (Overview §1.1.1 준수) | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-007-foundation-critical-multi-table-sequences.md` | Foundation 재설계 P0 — Multi_Table Pattern B 재정의 + Sequences 2 모드 다이어그램 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-008-foundation-high-overlay-overview-runtime-modes.md` | Foundation 재설계 P1 — Overlay/Overview 2 런타임 모드 분기 + 배경 config flag | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-009-foundation-medium-reference-updates.md` | Foundation 재설계 P2 — MEDIUM 일괄 참조·주석 보강 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` | Foundation 재설계 P3 — LOW 링크·참조 갱신 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | S-11 Lobby Hand History 자동화 UI wiring 요청 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team2-S11-seeder-and-endpoints.md` | S-11 자동화 실행을 위한 BO seeder + endpoint 준비 요청 | - | - | - |
@@ -316,6 +330,7 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Command_Center_UI/Statistics.md` | Statistics | team4 | internal | BS-05-07 |
 | `docs/2. Development/2.4 Command Center/Command_Center_UI/UI.md` | UI | team4 | internal | UI-02 |
 | `docs/2. Development/2.4 Command Center/Command_Center_UI/Undo_Recovery.md` | Undo Recovery | team4 | internal | BS-05-05 |
+| `docs/2. Development/2.4 Command Center/Foundation_Impact_Review.md` | Foundation Impact Review (2026-04-22 재설계) | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Integration_Test_Plan.md` | Integration Test Plan | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Integration_Test_Plan/automation/s11/README.md` | S-11 Lobby Hand History — E2E Automation Scaffold | team4 | internal | ITP-AUTO-S11 |
 | `docs/2. Development/2.4 Command Center/Overlay/Animations.md` | Animations | team4 | internal | BS-07-02 |
@@ -447,6 +462,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` | Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` | 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` | 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-200-foundation-alignment-2026-04-22.md` | Foundation 재설계(2026-04-22) 정렬 — Conductor 소유 문서 전수 수정 | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-001-team-backlog-retag.md` | 구현: 4팀 Backlog 3-Type retag + archive 정리 | each_team | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md` | 구현: team4 Engine Connection UI — router guard + manual reconnect | team4 | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md` | 구현: team2 decks.py in-memory → DB session 전환 | team2 | - | - |
@@ -488,6 +504,7 @@ tier: generated
 | `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` | Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
+| `docs/4. Operations/Foundation_Alignment_Plan.md` | Foundation 재설계 정렬 계획 (Conductor 소유 문서) | conductor | internal | - |
 | `docs/4. Operations/Multi_Session_Handoff.md` | Multi-Session Handoff Guide (2026-04-21) | conductor | internal | - |
 | `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate) | conductor | contract | - |
 | `docs/4. Operations/Network_Deployment.md` | Network Deployment Guide | conductor | internal | - |

@@ -24,6 +24,7 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Engineering/Dependency_Injection.md` — Dependency Injection
 - `docs/2. Development/2.2 Backend/Engineering/Dev_Setup.md` — Dev Setup
 - `docs/2. Development/2.2 Backend/Engineering/Error_Handling.md` — Error Handling
+- `docs/2. Development/2.2 Backend/Engineering/Foundation_Realignment_Plan_2026-04-22.md` — Foundation Realignment Plan (2026-04-22)
 - `docs/2. Development/2.2 Backend/Engineering/Logging.md` — Logging
 - `docs/2. Development/2.2 Backend/Engineering/Non_Functional_Requirements.md` — Non Functional Requirements
 - `docs/2. Development/2.2 Backend/Engineering/Project_Structure.md` — Project Structure
