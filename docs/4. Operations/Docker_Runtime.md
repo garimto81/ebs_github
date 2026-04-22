@@ -28,8 +28,8 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 **중요 정정 (2026-04-22)**:
 - 2026-04-22 작성한 초기 버전에서 `ebs-lobby-web` 을 "폐기됨" 으로 분류하고 `2cc13b1` "Desktop 단일 스택" 전환 때문에 out-of-scope 라고 기재했으나, **이는 기획 문서의 잘못된 해석** 이었다.
 - 실제 운영 요구: 동일 네트워크 LAN 브라우저 접근 필수 → Docker Web 배포 유지.
-- Flutter 는 multi-platform 프레임워크이므로 같은 소스에서 Desktop + Web 병행 가능.
-- 2026-04-22 재정의: team1-frontend = Desktop + Web 병행. `ebs-lobby-web` = 정규 서비스.
+- **team1-frontend 정규 배포 = Docker Web 단독**. 사용자는 브라우저로 `http://<lan-ip>:3000/` 접속. `ebs-lobby-web` = 정규 서비스.
+- Flutter Desktop 실행 (`flutter run -d windows`) 은 **개발자 디버깅 모드**이며 배포 형태가 아니다.
 - 상세: `docs/2. Development/2.1 Frontend/Deployment.md` (team1 배포 SSOT)
 
 ---

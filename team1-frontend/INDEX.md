@@ -1,4 +1,4 @@
-# Team 1 Frontend 인덱스 (Flutter Desktop)
+# Team 1 Frontend 인덱스 (Flutter + Docker Web 배포)
 
 > 목적: Flutter 코드 디렉토리 + 연관 기획 문서 경로를 한 화면에서 파악. 탐색 치트시트로 O(1) 점프.
 > 최종 갱신: 2026-04-21 (Flutter 단일 스택 확정 + Quasar 잔재 제거 + v10 docs 경로)

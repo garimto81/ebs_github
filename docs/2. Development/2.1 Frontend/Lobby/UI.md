@@ -23,7 +23,7 @@ reimplementability_notes: "UI-01 Lobby UI 스펙 (68KB) 정본"
 
 ## 개요
 
-Lobby는 EBS의 **Flutter Desktop 앱** 으로 구현된 테이블 관리 화면이다 (2026-04-21 Foundation §5.1 결정, 기존 웹 Quasar → Flutter Desktop 단일 스택). **Series > Event(Day) > Table** 3계층 drill-down으로 Feature Table을 찾아 Command Center로 진입한다. Player는 3계층과 독립된 레이어로, 어디서든 상시 접근 가능하다. Staff Management(Admin)와 Settings(글로벌)도 독립 레이어이다.
+Lobby는 EBS의 **Flutter 앱**으로 구현되어 **Docker Web 으로 배포**되는 테이블 관리 화면이다 (2026-04-21 Foundation §5.1 결정: Quasar/Vue 폐기 → Flutter 프레임워크 통일; 2026-04-22 배포 형태 재정의: Docker Web 단독, 사용자는 브라우저 접속). **Series > Event(Day) > Table** 3계층 drill-down으로 Feature Table을 찾아 Command Center로 진입한다. Player는 3계층과 독립된 레이어로, 어디서든 상시 접근 가능하다. Staff Management(Admin)와 Settings(글로벌)도 독립 레이어이다.
 
 > **UI 컴포넌트 매핑 가이드**: 본 문서에 잔존하는 `q-*` Quasar 컴포넌트 표기는 Flutter widget 으로 해석한다. 변환 규약: `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md §3 Quasar↔Flutter 매핑표` (37 매핑). 세부 재작성은 team1 후속 PR.
 

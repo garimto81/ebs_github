@@ -83,9 +83,9 @@ Lobby와 Command Center는 **별도 앱**이다. WSOP LIVE 는 Staff Page(웹) +
 ### 1:N 관계 — 하나의 Lobby에서 여러 Command Center 관리
 
 **핵심:**
-- Lobby는 **1개** (Flutter Desktop 앱 — 모든 테이블의 관제/설정 허브)
-- Command Center는 **테이블당 1개** (Flutter Desktop 앱 인스턴스, 별도 창)
-- Lobby에서 [Launch]로 새 Command Center 인스턴스를 생성
+- Lobby는 **1개** (Web 브라우저 탭 — 모든 테이블의 관제/설정 허브, LAN 다중 관찰 가능)
+- Command Center는 **테이블당 1개** (Windows Desktop 앱 인스턴스, 별도 창)
+- Lobby에서 [Launch]로 새 Command Center 인스턴스를 생성 (테이블 할당된 Windows 머신에서)
 - 각 Command Center는 독립적으로 동작 (테이블 1개 = Command Center 1개 = Overlay 1개)
 - Lobby는 모든 활성 Command Center의 상태를 실시간 모니터링 (WebSocket)
 
@@ -93,11 +93,11 @@ Lobby와 Command Center는 **별도 앱**이다. WSOP LIVE 는 Staff Page(웹) +
 
 | 전환 | 동작 | Lobby 상태 | Command Center 상태 |
 |------|------|-----------|-------------------|
-| Lobby → Command Center | [Enter Command Center] 클릭 | **Lobby 창 그대로 활성** | CC 창 실행/활성화, 테이블 ID로 설정 로드 |
-| Command Center → Lobby | OS window 전환 (Alt+Tab / 작업표시줄) | 활성화, 이전 상태 유지 | **백그라운드에서 계속 실행** |
-| 동시 사용 | Admin이 Lobby에서 다른 테이블 관리 + Command Center 방송 | 활성 | 활성 |
+| Lobby → Command Center | [Enter Command Center] 클릭 | **브라우저 탭 유지** | CC 앱 실행/활성화, 테이블 ID로 설정 로드 |
+| Command Center → Lobby | 브라우저로 전환 (Alt+Tab) | 활성화, 이전 상태 유지 | **백그라운드에서 계속 실행** |
+| 동시 사용 | Admin이 Lobby 브라우저에서 다른 테이블 관리 + Command Center 방송 | 활성 | 활성 |
 
-> **핵심**: 별도 Flutter Desktop 창이므로 Command Center 실행 후에도 Lobby 창은 계속 사용 가능 (Alt+Tab / 작업표시줄로 전환). Lobby 에서 설정 변경 → Back Office DB → WebSocket → Command Center 실시간 반영.
+> **핵심**: Lobby 는 브라우저 기반이므로 여러 Windows/Mac 에서 동시 접속 가능. CC 는 RFID 하드웨어 접근 필요로 Windows Desktop native. Lobby 에서 설정 변경 → Back Office DB → WebSocket → Command Center 실시간 반영.
 
 ![앱 전환 흐름 — Launch, Open, 동시 사용](visual/screenshots/ebs-flow-cc-launch.png)
 

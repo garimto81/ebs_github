@@ -22,7 +22,7 @@ reimplementability_notes: "UI-03 Settings UI 스펙 (29KB) 완결"
 
 ## 개요
 
-Settings는 Lobby (Flutter Desktop 앱) 내 **6탭 페이지**로, Console의 5탭(Outputs/GFX/Display/Rules/Stats) + Preferences 다이얼로그를 통합한 구조. 오버레이 출력 파이프라인, 그래픽 배치, 수치 표시 형식, 게임 규칙, 통계/리더보드, 테이블 인증/진단/내보내기를 관리한다. Admin 전용이며, Lobby 또는 CC 어디서든 [Settings ⚙] 버튼으로 접근한다.
+Settings는 Lobby (Flutter 앱, Docker Web 배포) 내 **6탭 페이지**로, Console의 5탭(Outputs/GFX/Display/Rules/Stats) + Preferences 다이얼로그를 통합한 구조. 오버레이 출력 파이프라인, 그래픽 배치, 수치 표시 형식, 게임 규칙, 통계/리더보드, 테이블 인증/진단/내보내기를 관리한다. Admin 전용이며, Lobby 또는 CC 어디서든 [Settings ⚙] 버튼으로 접근한다.
 
 > 참조: BS-03-00-overview, BS-00 §1
 
@@ -45,7 +45,7 @@ Team 1 의 Settings 범위(+ Graphic Editor 허브)와 Team 4 Overlay 렌더링 
 
 **요약 (CCR-011 APPLIED 후 갱신)**:
 
-- Team 1 은 **"어떤 값을 저장할지" + "어떻게 Import/Activate 할지"** 를 담당한다. **Flutter Desktop + Dart** (Riverpod + Freezed) 폼 컴포넌트로 Settings CRUD 를 구현하고, Flutter `rive` 패키지로 GFX 프리뷰를 렌더하며, `.gfskin` 허브(`/Lobby/GraphicEditor`)에서 ZIP Import·메타데이터 편집·Activate·`skin_updated` WS broadcast 를 관장한다. `PUT /Configs` 와 `PUT /api/v1/Skins/{id}/Activate` 가 주 엔드포인트.
+- Team 1 은 **"어떤 값을 저장할지" + "어떻게 Import/Activate 할지"** 를 담당한다. **Flutter + Dart** (Riverpod + Freezed, Docker Web 배포) 폼 컴포넌트로 Settings CRUD 를 구현하고, Flutter `rive` 패키지로 GFX 프리뷰를 렌더하며, `.gfskin` 허브(`/Lobby/GraphicEditor`)에서 ZIP Import·메타데이터 편집·Activate·`SkinUpdated` WS broadcast 를 관장한다. `PUT /Configs` 와 `PUT /api/v1/Skins/{id}/Activate` 가 주 엔드포인트.
 - Team 4 는 **"값/Asset 이 방송에서 어떻게 렌더링되는지"** 를 담당한다. Flutter+Rive Overlay(BS-07) 가 `skin_updated` WS 이벤트를 소비하여 리렌더하고, BS-03-02-gfx 의 시각 asset 메타(CCR-025) 를 제공한다. **Team 4 는 Graphic Editor UI 를 더 이상 소유하지 않는다.**
 - **Rive 내부 편집은 Rive 공식 에디터(외부)** 가 담당한다. Transform/keyframe/color adjust 는 Team 1 / Team 4 모두 out-of-scope. Designer 는 Rive 에서 `.riv` 완성 → `.gfskin` ZIP 패키징 → Team 1 허브 업로드 순서를 따른다.
 
@@ -63,7 +63,7 @@ Team 1 의 Settings 범위(+ Graphic Editor 허브)와 Team 4 Overlay 렌더링 
 Settings 변경 → BO 저장 → 모든 CC 브로드캐스트 → 다음 핸드부터 적용.
 
 ```
-Admin UI (Team 1, Flutter Desktop)
+Admin UI (Team 1, Flutter Web via Docker nginx)
   │
   │  PUT /Configs  (변경된 탭 + 필드만)
   ▼
