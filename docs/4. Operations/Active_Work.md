@@ -107,21 +107,7 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-### Claim #2 — conductor: Foundation.md v2026-04-22 재설계 전파 — 영향도 분석 및 수정 계획 수립
-```yaml
-id: 2
-team: conductor
-task: Foundation.md v2026-04-22 재설계 전파 — 영향도 분석 및 수정 계획 수립
-started: '2026-04-22T10:26:28Z'
-scope:
-- docs/1. Product/**
-- docs/2. Development/2.5 Shared/**
-- docs/4. Operations/**
-- docs/4. Operations/_plans/foundation-redesign-propagation-plan.md
-status: active
-eta: 2h
-```
-
+_(현재 active claim 없음)_
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
@@ -138,6 +124,22 @@ scope:
 status: released
 eta: 5m
 released: '2026-04-22T02:16:24Z'
+```
+
+### Claim #2 — conductor: Foundation.md v2026-04-22 재설계 전파 — 영향도 분석 및 수정 계획 수립
+```yaml
+id: 2
+team: conductor
+task: Foundation.md v2026-04-22 재설계 전파 — 영향도 분석 및 수정 계획 수립
+started: '2026-04-22T10:26:28Z'
+scope:
+- docs/1. Product/**
+- docs/2. Development/2.5 Shared/**
+- docs/4. Operations/**
+- docs/4. Operations/_plans/foundation-redesign-propagation-plan.md
+status: released
+eta: 2h
+released: '2026-04-22T10:45:12Z'
 ```
 
 ### Claim #3 — team3: Foundation v11 재설계 대응 — team3 기획 문서 gap 분석 + Backlog 8 항목 등재
