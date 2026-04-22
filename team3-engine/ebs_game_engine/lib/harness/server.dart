@@ -14,6 +14,11 @@ import '../engine.dart' show Engine;
 import 'session.dart';
 import 'scenario_loader.dart';
 
+/// Engine harness version. Kept in sync with `pubspec.yaml`. Exposed via
+/// `GET /engine/health` so CC (team4) Demo Mode fallback can inspect it
+/// (Foundation §6.3, B-331).
+const String engineHarnessVersion = '0.1.0';
+
 /// HTTP harness server — REST API + static file serving.
 class HarnessServer {
   final int port;
@@ -23,6 +28,7 @@ class HarnessServer {
   final String host;
   final Map<String, Session> _sessions = {};
   HttpServer? _server;
+  DateTime? _startedAt;
 
   HarnessServer({
     required this.port,
@@ -31,8 +37,17 @@ class HarnessServer {
     this.scenariosDir = 'scenarios',
   });
 
+  /// Session count accessor (test-only exposure; health endpoint uses
+  /// `_sessions.length` directly).
+  int get sessionsActive => _sessions.length;
+
+  /// Actually bound port (differs from [port] when constructor receives 0,
+  /// in which case the OS assigns an ephemeral port). Null before [start].
+  int? get boundPort => _server?.port;
+
   Future<void> start() async {
     _server = await HttpServer.bind(host, port);
+    _startedAt = DateTime.now();
     print('HarnessServer listening on http://$host:$port');
     await for (final req in _server!) {
       try {
@@ -149,8 +164,30 @@ class HarnessServer {
       return;
     }
 
+    // GET /engine/health (B-331 — team4 Demo Mode fallback probe)
+    if (method == 'GET' && path == '/engine/health') {
+      _handleHealth(req);
+      return;
+    }
+
     // Static file serving
     await _serveStatic(req);
+  }
+
+  /// Health probe — used by team4 CC `engine_connection_provider` for
+  /// 3-stage Demo Mode fallback (Foundation §6.3).
+  void _handleHealth(HttpRequest req) {
+    final now = DateTime.now();
+    final uptime = _startedAt == null
+        ? 0
+        : now.difference(_startedAt!).inSeconds;
+    _sendJson(req.response, 200, {
+      'status': 'ok',
+      'version': engineHarnessVersion,
+      'uptime_seconds': uptime,
+      'sessions_active': _sessions.length,
+      'timestamp': now.toUtc().toIso8601String(),
+    });
   }
 
   // ── API handlers ────────────────────────────────────────────────────────────
