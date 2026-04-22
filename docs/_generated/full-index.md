@@ -446,6 +446,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md` | Graphic Editor team5 분리 적합성 결정 (DONE — Option A 채택) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` | Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` | 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` | 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-001-team-backlog-retag.md` | 구현: 4팀 Backlog 3-Type retag + archive 정리 | each_team | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md` | 구현: team4 Engine Connection UI — router guard + manual reconnect | team4 | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md` | 구현: team2 decks.py in-memory → DB session 전환 | team2 | - | - |
