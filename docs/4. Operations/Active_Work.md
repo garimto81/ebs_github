@@ -107,20 +107,7 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-### Claim #6 — team3: B-332 Engine 응답 = 게임 상태 SSOT 명시 (API-04 3 문서)
-```yaml
-id: 6
-team: team3
-task: B-332 Engine 응답 = 게임 상태 SSOT 명시 (API-04 3 문서)
-started: '2026-04-22T11:50:12Z'
-scope:
-- docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md
-- docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md
-- docs/2. Development/2.3 Game Engine/APIs/OutputEvent_Serialization.md
-status: active
-eta: 30m
-```
-
+_(현재 active claim 없음)_
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
@@ -202,6 +189,21 @@ scope:
 status: released
 eta: 1h
 released: '2026-04-22T11:47:13Z'
+```
+
+### Claim #6 — team3: B-332 Engine 응답 = 게임 상태 SSOT 명시 (API-04 3 문서)
+```yaml
+id: 6
+team: team3
+task: B-332 Engine 응답 = 게임 상태 SSOT 명시 (API-04 3 문서)
+started: '2026-04-22T11:50:12Z'
+scope:
+- docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md
+- docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md
+- docs/2. Development/2.3 Game Engine/APIs/OutputEvent_Serialization.md
+status: released
+eta: 30m
+released: '2026-04-22T11:52:54Z'
 ```
 
 <!-- RELEASED_END -->
