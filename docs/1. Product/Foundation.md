@@ -283,14 +283,14 @@ flowchart TD
     Tabs --> DB
 ```
 
+> 프로세스 분포 전체도 (BO + Engine 포함) 는 §6.3.0 참조.
+
 | 모드 | 용도 | 프로세스 모델 |
 |------|------|-------------|
 | **탭/슬라이딩 (기본)** | 소형 화면, 단일 운영자 환경, 향후 태블릿 폼팩터 대비 | 단일 Flutter 프로세스 내 Lobby/CC/Overlay 라우팅 |
 | **다중창 (PC 옵션)** | Desktop 멀티 모니터, 운영자 역할 분리 환경 | Lobby/CC/Overlay 각각 독립 OS 프로세스 |
 
-**D5 (DB SSOT) 적용 범위**:
-- **다중창 모드** — 완전 적용. 프로세스 간 상태 공유의 유일한 채널이 DB
-- **탭 모드** — in-memory state 가 1차 진실. DB 는 **프로세스 크래시 / 재시작 시 상태 복원용**
+**D5 (DB SSOT) 적용 범위**: 모드별 차이 상세는 §6.4 실시간 동기화 참조.
 
 **구현 세부** (multi-window plugin 선택, 프로세스 spawn 방식) 는 team1 세션 (Wave 2 R02) 이 `docs/2. Development/2.1 Frontend/` 에 별도 명세합니다. 본 장은 개념만 선언합니다.
 
@@ -300,7 +300,7 @@ Flutter Desktop 애플리케이션으로 실행되는 중앙 관제 시스템입
 
 > **기술 스택 결정 (2026-04-21)**: Lobby/Settings/Graphic Editor 는 team4 CC/Overlay 와 동일한 Flutter Desktop 스택으로 통일. 근거: (1) Rive 런타임 일치로 GE 프리뷰 ≡ Overlay 송출 자동 보증, (2) 내부 앱 개발팀 즉시 생산성, (3) `ebs_common` Dart 패키지 재사용. CC 동시 접속 3~5 대 규모에서 웹 URL 배포 이점은 축소되므로 Desktop 설치 모델이 정당화됨. 원칙 1 은 문서/용어 정렬이며 기술 스택은 EBS 자율.
 
-> **Lobby : CC = 1 : N (2026-04-22 명시)**: Lobby 는 시스템당 하나이나, CC 는 **피처 테이블 1개당 1 인스턴스** 가 실행됩니다. 단일 PC 운영 시 Lobby 와 CC 가 동일 PC 에 공존하며, 복수 테이블 운영은 §8.5 를 참조하십시오.
+> **Lobby : CC = 1 : N** — Lobby 는 시스템당 하나, CC 는 테이블당 1 인스턴스. 복수 테이블 운영은 §8.5 참조.
 
 * **구조:** 대회, 이벤트, 테이블로 이어지는 3단계 구조로 이루어져 있습니다.
 * **주요 역할:** 전체 테이블 목록을 카드 형태로 확인하고 관리합니다. 또한 테이블에 종속되지 않는 독립적인 선수 명단 관리 기능을 제공합니다.
@@ -395,29 +395,7 @@ flowchart LR
 - **공통 원칙** — 앱 간 **직접 IPC 없음**. 모든 통신은 BO 경유 (DB commit + WS broadcast)
 - **중앙 서버 배치** — §8.5 복수 테이블 시 BO+DB 는 별도 서버. 단일 PC 운영 시 동일 PC 내 프로세스 공존
 
-6개 조각 사이 실제 통신 경로와 소유권을 한 장으로 정리합니다. 이 도식은 EBS 시스템 아키텍처의 backbone 이며, 과거 `EBS_Core.md` 참조는 본 섹션과 §Ch.7 로 **통합**되었습니다.
-
-```
-  +--------------------+           REST /api/v1
-  |  Lobby (관제 허브)  |◄────── HTTP ─────────────►+--------------------+
-  |  Flutter Desktop    |                           |   Backend (BO)     |
-  |  (team1)            |◄──── WS /ws/lobby ──────►|   FastAPI          |  port 8000
-  |  • Settings 6탭     |      (monitor only)      |   (team2)          |
-  |  • Graphic Editor   |                           |  • REST 96+ ep     |
-  +--------------------+                            |  • WS 3 채널       |
-                                                    |  • DB + WSOP LIVE  |
-  +--------------------+◄──── WS /ws/cc ──────────►+---------┬----------+
-  |  Command Center    |       (양방향: command + event)    │
-  |  Flutter Desktop    |                                     │
-  |  (team4)            |     REST http://engine:8080         │
-  |  테이블당 1 인스턴스 |─── Option A (채택) ──────►+--------▼---------+
-  |  • Operator UI     |                            |  Game Engine      |
-  |  • RFID HAL        |                            |  Pure Dart        |  port 8080
-  |  • Overlay (Rive)  |                            |  (team3)          |
-  +--------------------+                            |  • 22 포커 변종    |
-                                                    |  • Event Sourcing |
-                                                    +-------------------+
-```
+6개 조각 사이 실제 통신 경로와 소유권을 아래 **통신 매트릭스** 로 정리합니다. 시각적 프로세스 경계는 위 §6.3.0 을 참조하십시오.
 
 **통신 매트릭스**:
 
@@ -433,7 +411,7 @@ flowchart LR
 
 **ENGINE_URL 환경변수**: `--dart-define=ENGINE_URL=http://host:port` (기본 `http://localhost:8080`) — team1 `EBS_BO_HOST` 패턴과 통일. 엔진 미기동 시 **Demo Mode fallback** (SG-002 3-stage 상태 머신).
 
-**시퀀스 예시 (병행 dispatch, 2 시나리오)** — CC 는 Orchestrator 로서 BO/Engine **병렬 호출**. 상세: `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md §1.1.1` (2026-04-21 신설). 원 ASCII 도식은 순차/병행 모호로 Mermaid 로 재작성 (2026-04-22 정정, `notify: conductor`).
+**시퀀스 예시 (병행 dispatch, 2 시나리오)** — CC 는 Orchestrator 로서 BO/Engine **병렬 호출**. 상세: `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md §1.1.1`.
 
 **시나리오 A — 운영자 액션 (FOLD/BET/RAISE)**:
 
@@ -629,6 +607,7 @@ EBS 프로젝트가 향하는 최종 목적지는 다음 두 가지로 요약됩
 
 | 날짜 | 변경 | Type | 회의 결정 |
 |------|------|:----:|:---------:|
+| 2026-04-22 | F1.7 중복 제거 — §6.3 ASCII 박스 다이어그램 삭제 / §5.0 D5 bullet → §6.4 위임 / 편집 이력 문장 정리 / §5.1 Lobby:CC 간결화 | REFACTOR | — |
 | 2026-04-22 | Ch.4 전면 재작성 (2 렌즈: 기능/설치) + §4.4 신설 — 개발팀 오독 방지 | PRODUCT | D1~D7 후속 명확화 |
 | 2026-04-22 | §5.0 2 런타임 모드 신설 / §6.3 프로세스 모델 / §6.4 실시간 동기화 / §7.1 배경 config flag / §8.5 복수 테이블 아키텍처 신설 | PRODUCT | D1, D2, D4, D5 |
 | 2026-04-21 | SG-005 §6.3 system connections mermaid 재작성, §6.3 §1.1.1 병행 dispatch 시나리오 | PRODUCT | — |
