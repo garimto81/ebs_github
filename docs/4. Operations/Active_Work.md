@@ -107,18 +107,7 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-### Claim #8 — team2: api D1=7 docs prefix fix — Backend_HTTP.md /api/v1 prefix 누락 보정
-```yaml
-id: 8
-team: team2
-task: api D1=7 docs prefix fix — Backend_HTTP.md /api/v1 prefix 누락 보정
-started: '2026-04-22T11:54:29Z'
-scope:
-- docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md
-status: active
-eta: 30m
-```
-
+_(현재 active claim 없음)_
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
@@ -229,6 +218,19 @@ scope:
 status: released
 eta: 40min
 released: '2026-04-22T11:57:23Z'
+```
+
+### Claim #8 — team2: api D1=7 docs prefix fix — Backend_HTTP.md /api/v1 prefix 누락 보정
+```yaml
+id: 8
+team: team2
+task: api D1=7 docs prefix fix — Backend_HTTP.md /api/v1 prefix 누락 보정
+started: '2026-04-22T11:54:29Z'
+scope:
+- docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md
+status: released
+eta: 30m
+released: '2026-04-22T12:02:19Z'
 ```
 
 <!-- RELEASED_END -->
