@@ -2,16 +2,17 @@
 title: Engineering — Frontend (Flutter)
 owner: team1
 tier: internal
-last-updated: 2026-04-21
-reimplementability: PASS
-reimplementability_checked: 2026-04-21
-reimplementability_notes: "features 선언 6 ≡ 실측 6 정렬 완료 (auth/lobby/settings/graphic_editor/staff/reports). players/audit_log/hand_history 는 lobby·reports 하위 통합으로 해소. §0 resolved 로그 참조."
+last-updated: 2026-04-22
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-04-22
+reimplementability_notes: "Foundation.md 2026-04-22 재설계 반영 (B-T1-FND-01) — §1.5 설치 관점(Ch.4 §4.4) + §2.0 런타임 모드(§5.0) + §2.2 프로세스 경계(§6.3) + §6.0 실시간 동기화(§6.4) 신설. 재검증 후 PASS 재판정."
 ---
 
 # Engineering — Frontend (Flutter)
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-04-22 | Foundation 재설계 반영 (B-T1-FND-01) | §1.5 설치 관점(Ch.4 §4.4), §2.0 런타임 모드(§5.0), §2.2 프로세스 경계(§6.3), §6.0 실시간 동기화(§6.4) 신설 |
 | 2026-04-21 | features 정렬 완료 | 선언 8 → 실측 6 일치. players → lobby 통합, audit_log + hand_history → reports 통합. CLAUDE.md §아키텍처 동기화 |
 | 2026-04-20 | Conductor audit | SG-001 resolution 반영 + features 실측/선언 공백 §0 명시 |
 | 2026-04-16 | Flutter 전환 | Quasar→Flutter 전면 재작성. Riverpod+Freezed+Dio+go_router+rive |
@@ -84,6 +85,23 @@ auth / lobby / settings / graphic_editor / staff / reports
 
 ---
 
+## 1.5 설치 관점 (Foundation Ch.4 §4.4)
+
+Foundation §4.4 는 EBS 시스템을 **기능 6개 ↔ 설치 3 소프트웨어 + 1 하드웨어** 두 렌즈로 구분한다. team1 관점 핵심 사실:
+
+| 구분 | 내용 |
+|------|------|
+| **설치 단위** | `EBS Desktop App` — 로비 + 커맨드 센터 + 오버레이 뷰 3 기능의 **단일 Flutter 바이너리** |
+| **팀 소유** | team1 (Lobby/Settings/Graphic Editor) + team4 (CC/Overlay) **공동 소유** |
+| **빌드 산출물** | 동일 바이너리. 팀별 코드는 `team1-frontend/` / `team4-cc/` 로 분리되지만 배포 시 하나의 앱으로 묶임 |
+| **런타임 모드** | 이 단일 바이너리가 두 가지 런타임 모드 중 하나로 동작 — §2.0 참조 |
+
+**개발 규약**:
+- team1/team4 코드는 feature 디렉토리 경계로만 분리. 공통 의존성은 `ebs_common` (§10)
+- 빌드·릴리즈는 conductor 세션이 통합 수행 (`docs/4. Operations/Docker_Runtime.md` §3)
+
+---
+
 ## 2. 아키텍처 개요
 
 team4 CC 패턴과 동일한 feature-based 디렉토리 구조를 따른다.
@@ -96,6 +114,39 @@ flowchart LR
     A --> E[repositories/]
     A --> F[foundation/]
 ```
+
+### 2.0 런타임 모드 (Foundation §5.0)
+
+단일 Flutter 바이너리가 두 가지 런타임 모드 중 하나로 실행된다. Lobby Settings → Preferences 에서 Admin 이 선택 (`Settings/Preferences.md §11`).
+
+| 모드 | 용도 | 프로세스 모델 |
+|------|------|--------------|
+| **탭/슬라이딩 (기본)** | 소형 화면, 단일 운영자, 향후 태블릿 폼팩터 | 단일 Flutter 프로세스 내 Lobby/CC/Overlay 라우팅 전환 |
+| **다중창 (PC 옵션)** | Desktop 멀티 모니터, 역할 분리 환경 | Lobby/CC/Overlay 각각 **독립 OS 프로세스** |
+
+**구현 선택**:
+
+- **탭 모드 (기본)**: `go_router` + `IndexedStack` 기반 라우팅 전환. 상태 유지 (Riverpod). 추가 의존성 없음
+- **다중창 모드**: **`window_manager` ^0.4** (pub.dev, Flutter 3.x 지원). 각 창은 별도 `runApp` entrypoint 로 spawn. IPC 금지 — 모든 통신은 BO 경유 (§2.2)
+
+**모드 전환 시 app restart 필수** (프로세스 모델이 근본 차이). `preferences.runtime_mode` 변경 → 재시작 안내 다이얼로그 → 사용자 재시작.
+
+**Fallback**: Linux headless / Web(Chrome) 런타임에서는 탭 모드 강제. Preferences UI 에서 다중창 선택지 비활성화 (`window_manager.isSupported` 체크).
+
+### 2.2 프로세스 경계 및 IPC 금지 (Foundation §6.3)
+
+Foundation §6.3 은 **앱 간 직접 IPC 금지** 를 명문화한다. 다중창 모드에서 각 앱은 별개 OS 프로세스이나 shared memory / 파이프 / 소켓으로 직접 통신하지 않는다.
+
+| 경로 | 허용 | 근거 |
+|------|:----:|------|
+| Lobby → BO REST (API-01) | ✅ | 동기 CRUD |
+| Lobby ← BO WebSocket (`/ws/lobby`) | ✅ | 모니터링 전용 |
+| CC ↔ BO WebSocket (`/ws/cc`) | ✅ | 양방향 명령·이벤트 |
+| CC → Engine REST | ✅ | stateless query |
+| **Lobby ↔ CC 직접 IPC** | ❌ | **금지** — BO DB 경유 |
+| **Lobby ↔ Overlay 직접 IPC** | ❌ | **금지** — BO DB 경유 |
+
+**일관성 원리**: 모든 상태 변경은 BO DB 에 commit 되고, BO WS broadcast 가 관련 앱에 전파된다. 자세한 2채널 동기화 모델은 §6.0.
 
 ### 2.1 디렉토리 구조 (2026-04-21 실측 재작성)
 
@@ -268,7 +319,31 @@ flowchart LR
 
 ---
 
-## 6. WebSocket — lobby_ws_client
+## 6. WebSocket 및 실시간 동기화
+
+### 6.0 DB polling + WS push 2채널 모델 (Foundation §6.4, SG-002 해소)
+
+Foundation §6.4 는 **DB 를 단일 진실(SSOT)** 로 두고, 두 가지 채널로 동기화를 수행한다:
+
+| 채널 | 용도 | 지연 |
+|------|------|:----:|
+| DB polling (REST GET) | 복구/재진입 시 baseline snapshot | 1-5초 |
+| WebSocket push (`/ws/lobby`) | 실시간 상태 변경 알림 | < 100ms |
+
+**Lobby 정책**:
+
+- **쓰기** — 상태 변경은 Lobby → BO REST (PUT/POST). BO 가 DB commit 후 WS broadcast
+- **읽기 (초기)** — 앱 시작 시 REST GET 으로 DB snapshot 로드 (Series/Event/Flight/Table/Player/Config)
+- **읽기 (실시간)** — 이후 WS push 로 델타 적용 (series.*, event.*, flight.*, table.*, player.*, config.*)
+- **crash 복구** — 프로세스 재시작 시 DB snapshot 재로드 (이전 상태 복원) + WS reconnect → `/ws/replay?from_seq=N` 으로 누락분 수신
+- **Engine SSOT** — 게임 상태(hands/cards/pots)는 Engine 응답이 최종 SSOT. Lobby 는 BO 를 통해 간접 구독 (직접 Engine 호출 없음)
+
+**적용 모드 차이** (§2.0 런타임 모드 연동):
+
+- **다중창 모드** — 각 프로세스 독립적으로 DB snapshot 로드 + WS 구독
+- **탭 모드** — 단일 프로세스 in-memory state 1차. DB 는 재시작 복구용
+
+> **⚠ DB polling endpoint 실제 스키마는 team2 SSOT**. Foundation §6.4 는 정책 선언, team2 가 Wave 2 에서 `docs/2. Development/2.2 Backend/APIs/` 에 발행. 본 섹션은 Lobby 관점 소비 패턴만 기술.
 
 ### 6.1 연결
 
