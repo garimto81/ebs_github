@@ -1277,6 +1277,126 @@ Waiting List에서 플레이어의 현재 상태를 나타내는 enum. WSOP LIVE
 
 ---
 
+## 5.18 State Snapshot — Foundation §6.4 발행 의무 (2026-04-22 신설)
+
+Foundation §6.4 "실시간 상태 동기화" 는 team2 에게 **"프로세스 시작 시 DB snapshot 로드 → 이후 WS push 로 델타 적용"** 계약의 **polling endpoint 실제 스키마** 발행을 위임한다. 본 §5.18 은 그 정본이다.
+
+### 5.18.1 목적 및 적용 범위
+
+| 구분 | 내용 |
+|------|------|
+| 목적 | 소비자 프로세스(Lobby/CC/Overlay)가 **시작 또는 crash 복구 시 baseline state** 를 단일 호출로 획득 |
+| 호출 타이밍 | (1) 프로세스 최초 기동, (2) WS 연결 끊김 후 replay gap 이 클 때, (3) DB polling fallback (WS 단절 시 1-5초 주기) |
+| 지연 SLO | < 200ms (REST API 95th percentile 표준 준수, §성능 요구사항) |
+| 관계 문서 | Foundation §6.4 (상위 정책), API-05 §1.2.1 (WS push 연동), `Back_Office/Sync_Protocol.md §1` (scope) |
+
+### 5.18.2 Endpoint 카탈로그
+
+| Method | Path | Role | 설명 |
+|--------|------|:----:|------|
+| `GET` | `/api/v1/tables/{table_id}/state/snapshot` | Admin/Operator/Viewer | 특정 테이블의 현 전체 state baseline |
+| `GET` | `/api/v1/lobby/state/snapshot` | Admin/Operator/Viewer | Lobby 모니터용 전체 테이블 요약 baseline |
+
+### 5.18.3 `GET /tables/{table_id}/state/snapshot` 응답
+
+```json
+{
+  "snapshot_at": "2026-04-22T18:54:00Z",
+  "seq": 12847,
+  "table": {
+    "table_id": 5,
+    "name": "Feature Table 1",
+    "status": "LIVE",
+    "game_type": "NLH"
+  },
+  "current_hand": {
+    "hand_id": 42,
+    "hand_number": 15,
+    "dealer_seat": 3,
+    "phase": "FLOP",
+    "pot_total": 12400,
+    "active_seats": [1, 2, 3, 5, 7]
+  },
+  "seats": [
+    {"seat_num": 1, "player_id": 101, "stack": 45000, "status": "IN_HAND"}
+  ],
+  "rfid": {"status": "CONNECTED", "antenna_count": 12, "error_code": null},
+  "output": {"type": "NDI", "status": "STREAMING", "resolution": "1920x1080"},
+  "settings_resolved": {
+    "graphic.preset_id": 3,
+    "display.currency": "USD",
+    "overlay.background_mode": "transparent"
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `snapshot_at` | ISO 8601 | 서버 캡처 시각 (clock skew 감시용) |
+| `seq` | int | **envelope seq 의 단조 증가 기준값** — 소비자는 이후 WS 에서 `seq > N` 이벤트만 적용 |
+| `table` | object | `GET /tables/{id}` 핵심 필드 요약 |
+| `current_hand` | object \| null | 활성 핸드 요약. LIVE 상태이고 핸드 진행 중일 때만 non-null |
+| `seats` | array | 10 좌석 현 상태 (seat_num, player_id, stack, status) |
+| `rfid` | object | `RfidStatusChanged` 와 동일 스키마 (§3) |
+| `output` | object | `OutputStatusChanged` 와 동일 스키마 (§3) |
+| `settings_resolved` | object | `GET /configs/resolved?table_id={id}` 결과 (§5.17.15, override 체인 적용 후) |
+
+### 5.18.4 `GET /lobby/state/snapshot` 응답
+
+```json
+{
+  "snapshot_at": "2026-04-22T18:54:00Z",
+  "seq": 12847,
+  "tables": [
+    {"table_id": 1, "status": "LIVE", "current_hand_id": 42, "player_count": 9, "cc_connected": true},
+    {"table_id": 2, "status": "SETUP", "current_hand_id": null, "player_count": 0, "cc_connected": false}
+  ],
+  "global_settings": {
+    "display.currency": "USD",
+    "overlay.background_mode": "transparent"
+  }
+}
+```
+
+테이블별 상세는 `/tables/{id}/state/snapshot` 으로 분리 조회한다 (한 응답 크기 관리).
+
+### 5.18.5 SSOT 분류 주의사항
+
+| 필드 | SSOT 분류 (§1.2.1 정합) | 주석 |
+|------|:-----------------------:|------|
+| `current_hand.*` | **audit 참고값** | 게임 상태 SSOT 는 Engine. CC 는 Engine `GET /api/session/{id}` 를 우선하고, 본 snapshot 의 핸드 정보는 Lobby 모니터 표시용 |
+| `seats.*`, `rfid.*`, `output.*` | **state** | BO DB 가 SSOT |
+| `settings_resolved.*` | **state** | BO DB 가 SSOT (override 체인 §5.17.15) |
+
+### 5.18.6 CC 전용 — Engine snapshot 병합
+
+CC 는 본 BO snapshot 을 baseline 으로 읽은 후 **Engine HTTP snapshot** (`GET /api/session/{session_id}`, team3 Harness_REST_API) 을 추가 호출하여 게임 상태를 **Engine 값으로 덮어쓴다**. 두 snapshot 사이 불일치는 log 경고만 (fail-open).
+
+### 5.18.7 재진입 시퀀스 (소비자 가이드)
+
+```
+1. WS 연결 시도 → 실패 또는 드롭 감지
+2. REST GET /tables/{id}/state/snapshot → seq=N 획득 + 로컬 state 갱신
+3. WS 재연결 → envelope seq 관찰
+4. seq > N+1 gap 발견 시 → REST GET /tables/{id}/events?since_seq=N (§replay, CCR-015)
+5. replay 적용 후 이후 WS push 로 델타 계속 적용
+```
+
+> **WS replay 범위 한계**: audit_events 가 `max(seq) - since_seq > 500` 인 경우 replay 거부. 소비자는 본 snapshot 재호출로 전체 baseline 재로드 (§6.4.3 replay 실패 처리 4 케이스, API-05).
+
+### 5.18.8 구현 가이드
+
+| 항목 | 값 |
+|------|------|
+| Backend 서비스 | `src/services/snapshot_service.py` (신규, Phase A 실구현 대상) |
+| 캐시 | 필요 시 per-table Redis key `snapshot:table:{id}:v{seq}` (TTL 30s) |
+| 트랜잭션 격리 | `READ COMMITTED` — snapshot_at 시점의 일관된 read (PostgreSQL) / SQLite 는 `BEGIN DEFERRED` |
+| pytest | `tests/test_snapshot_endpoints.py` 신규 작성 |
+
+> ⚠ **현재 상태**: 본 §5.18 은 **명세 발행만**. 실구현 + pytest 는 후속 Backlog `B-team2-101` (Phase A2 구현) 항목에서 진행. 247 tests baseline 영향 없음.
+
+---
+
 ## 6. 엔드포인트 총괄표
 
 | 분류 | GET | POST | PUT | DELETE | 합계 |

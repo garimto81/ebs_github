@@ -29,13 +29,35 @@ Lobby↔BO↔CC 동기화 + WSOP LIVE 외부 데이터 수집의 **정책과 장
 
 ## 1. 동기화 개요
 
-| 채널 | 방향 | 역할 | 인증 |
-|------|------|------|------|
-| **REST API** | Lobby → BO | CRUD 작업 (생성/수정/삭제) | JWT Bearer (내부) |
-| **WebSocket** | CC ↔ BO ↔ Lobby | 실시간 이벤트 (핸드, 상태, 설정 변경) | JWT Bearer (내부) |
-| **폴링** | BO → WSOP LIVE | 외부 데이터 주기적 수집 | **OAuth 2.0 client_credentials (outbound)** — §1.1 참조 |
+### 1.0 정책 계층 — Foundation §6.4 준거 (2026-04-22 신설)
 
-> 상세: API-05 §1 연결 아키텍처, API-01 REST 엔드포인트, BS-01 §방향별 2-스택
+본 문서의 동기화 구현은 **Foundation §6.4 "실시간 상태 동기화"** 를 상위 정책으로 삼는다. Foundation 은 상위 개념 계약만 정의하고, 구체적 endpoint 스키마·WS payload 상세·폴링 주기는 team2 publisher 문서에서 발행한다 (F2.5 정본/참조 규칙).
+
+| 정책 | Foundation §6.4 규정 | team2 정본 위치 |
+|------|----------------------|----------------|
+| DB = SSOT | 모든 상태 변경은 BO DB commit **후** 전파 | `Database/Schema.md §개요` |
+| DB polling (1-5초) | 복구/재진입 baseline | `APIs/Backend_HTTP.md §5.18 State Snapshot` |
+| WS push (<100ms) | 실시간 상태 변경 알림 | `APIs/WebSocket_Events.md §1.2.1` |
+| crash 복구 | 프로세스 재시작 시 DB snapshot 재로드 | `APIs/Backend_HTTP.md §5.18.7 재진입 시퀀스` |
+| Engine SSOT 예외 | 게임 상태(hands/cards/pots)는 Engine 응답이 최종 | `APIs/WebSocket_Events.md §10.1` |
+
+**본 문서 scope 구분**:
+
+- **EBS 내부 동기화** (Lobby↔BO↔CC 실시간 상태) — Foundation §6.4 를 따른다. 아래 §1.1~§4 의 WebSocket/Redis/Circuit Breaker 구현이 이를 실현.
+- **WSOP LIVE 외부 폴링** — Foundation 과 무관한 별도 외부 시스템 연동. §5~§7 에서 정의.
+
+### 1.0.1 동기화 채널 매트릭스
+
+| 채널 | 방향 | 역할 | 인증 | Foundation §6.4 역할 |
+|------|------|------|------|----------------------|
+| **REST API (CRUD)** | Lobby → BO | 생성/수정/삭제 | JWT Bearer (내부) | 쓰기 경로 (DB commit) |
+| **REST API (snapshot)** | Lobby/CC → BO | baseline 로드 | JWT Bearer | **DB polling 1-5초** (§5.18) |
+| **WebSocket** | CC ↔ BO ↔ Lobby | 실시간 이벤트 (핸드, 상태, 설정) | JWT Bearer | **WS push <100ms** (API-05 §1.2.1) |
+| **폴링 (external)** | BO → WSOP LIVE | 외부 데이터 수집 | OAuth 2.0 client_credentials — §1.1 참조 | Foundation 와 무관 (외부) |
+
+> 상세: API-05 §1 연결 아키텍처, API-01 §5.18 State Snapshot, API-01 REST 엔드포인트, BS-01 §방향별 2-스택
+
+---
 
 ### 1.1 BO → WSOP LIVE outbound 인증 (2026-04-15 Task #7)
 
