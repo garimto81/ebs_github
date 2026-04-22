@@ -61,9 +61,9 @@ reimplementability_notes: "멀티 세션 이관 체크리스트 + 각 팀 지침
 
 | State | Count | Ratio |
 |-------|:-----:|:-----:|
-| PASS | 74 | 80% |
+| PASS | 75 | 81% |
 | UNKNOWN | 15 | 16% |
-| FAIL | 1 | 1% (Foundation Ch.7 SG-002 완결 시 PASS) |
+| FAIL | 0 | 0% (SG-002 RESOLVED 2026-04-20, Foundation §6.3 §6.4 §7.1 — B-203 집계 동기화 2026-04-22) |
 | N/A | 3 | 3% |
 
 ### 테스트
