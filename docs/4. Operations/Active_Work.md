@@ -107,19 +107,6 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-### Claim #7 — conductor: Foundation.md 본문에 Rive Manager (구 Graphic Editor) 독립 섹션 신설 — D3 회의 결정 SSOT 반영
-```yaml
-id: 7
-team: conductor
-task: Foundation.md 본문에 Rive Manager (구 Graphic Editor) 독립 섹션 신설 — D3 회의 결정 SSOT 반영
-started: '2026-04-22T11:53:13Z'
-scope:
-- docs/1. Product/Foundation.md
-- docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md
-status: active
-eta: 40min
-```
-
 ### Claim #8 — team2: api D1=7 docs prefix fix — Backend_HTTP.md /api/v1 prefix 누락 보정
 ```yaml
 id: 8
@@ -228,6 +215,20 @@ scope:
 status: released
 eta: 30m
 released: '2026-04-22T11:52:54Z'
+```
+
+### Claim #7 — conductor: Foundation.md 본문에 Rive Manager (구 Graphic Editor) 독립 섹션 신설 — D3 회의 결정 SSOT 반영
+```yaml
+id: 7
+team: conductor
+task: Foundation.md 본문에 Rive Manager (구 Graphic Editor) 독립 섹션 신설 — D3 회의 결정 SSOT 반영
+started: '2026-04-22T11:53:13Z'
+scope:
+- docs/1. Product/Foundation.md
+- docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md
+status: released
+eta: 40min
+released: '2026-04-22T11:57:23Z'
 ```
 
 <!-- RELEASED_END -->
