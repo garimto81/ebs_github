@@ -16,20 +16,20 @@ class MockSeriesRepository extends Mock implements SeriesRepository {}
 
 Series _makeSeries({required int id, String name = 'WSOP 2026'}) =>
     Series.fromJson({
-      'series_id': id,
-      'competition_id': 1,
-      'series_name': name,
+      'seriesId': id,
+      'competitionId': 1,
+      'seriesName': name,
       'year': 2026,
-      'begin_at': '2026-05-01',
-      'end_at': '2026-07-15',
-      'time_zone': 'America/Los_Angeles',
+      'beginAt': '2026-05-01',
+      'endAt': '2026-07-15',
+      'timeZone': 'America/Los_Angeles',
       'currency': 'USD',
-      'is_completed': false,
-      'is_displayed': true,
-      'is_demo': false,
+      'isCompleted': false,
+      'isDisplayed': true,
+      'isDemo': false,
       'source': 'manual',
-      'created_at': '2026-01-01T00:00:00Z',
-      'updated_at': '2026-01-01T00:00:00Z',
+      'createdAt': '2026-01-01T00:00:00Z',
+      'updatedAt': '2026-01-01T00:00:00Z',
     });
 
 void main() {

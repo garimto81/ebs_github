@@ -22,9 +22,9 @@ class TokenResponse {
 
   factory TokenResponse.fromJson(Map<String, dynamic> json) => TokenResponse(
         accessToken: json['access_token'] as String?,
-        refreshToken: json['refresh_token'] as String?,
+        refreshToken: json['refreshToken'] as String?,
         requires2fa: json['requires_2fa'] as bool? ?? false,
-        tempToken: json['temp_token'] as String?,
+        tempToken: json['tempToken'] as String?,
       );
 }
 
@@ -62,7 +62,7 @@ class AuthRepository {
   Future<TokenResponse> verify2fa(String tempToken, String code) async {
     return _client.post<TokenResponse>(
       '/Auth/Verify2FA',
-      data: {'temp_token': tempToken, 'totp_code': code},
+      data: {'tempToken': tempToken, 'totpCode': code},
       fromJson: (json) => TokenResponse.fromJson(json as Map<String, dynamic>),
     );
   }
@@ -70,7 +70,7 @@ class AuthRepository {
   Future<TokenResponse> refreshToken({String? refreshToken}) async {
     return _client.post<TokenResponse>(
       '/Auth/Refresh',
-      data: refreshToken != null ? {'refresh_token': refreshToken} : null,
+      data: refreshToken != null ? {'refreshToken': refreshToken} : null,
       fromJson: (json) => TokenResponse.fromJson(json as Map<String, dynamic>),
     );
   }

@@ -27,8 +27,8 @@ final lobbyWsClientProvider = Provider<LobbyWebSocketClient>((ref) {
   // Replay fetcher — calls REST to fill seq gaps (CCR-021).
   Future<List<WsEventEnvelope>> fetchReplay(int fromSeq, int toSeq) async {
     final result = await apiClient.post<Map<String, dynamic>>(
-      '/ws/replay',
-      data: {'from_seq': fromSeq, 'to_seq': toSeq},
+      '/Ws/Replay',
+      data: {'fromSeq': fromSeq, 'toSeq': toSeq},
       fromJson: (json) => json as Map<String, dynamic>,
     );
     final events = result['events'];

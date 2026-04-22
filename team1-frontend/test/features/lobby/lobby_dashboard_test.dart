@@ -38,78 +38,78 @@ class MockTableRepository extends Mock implements TableRepository {}
 
 Series _makeSeries({required int id, String name = 'WSOP 2026'}) =>
     Series.fromJson({
-      'series_id': id,
-      'competition_id': 1,
-      'series_name': name,
+      'seriesId': id,
+      'competitionId': 1,
+      'seriesName': name,
       'year': 2026,
-      'begin_at': '2026-05-01',
-      'end_at': '2026-07-15',
-      'time_zone': 'America/Los_Angeles',
+      'beginAt': '2026-05-01',
+      'endAt': '2026-07-15',
+      'timeZone': 'America/Los_Angeles',
       'currency': 'USD',
-      'is_completed': false,
-      'is_displayed': true,
-      'is_demo': false,
+      'isCompleted': false,
+      'isDisplayed': true,
+      'isDemo': false,
       'source': 'manual',
-      'created_at': '2026-01-01T00:00:00Z',
-      'updated_at': '2026-01-01T00:00:00Z',
+      'createdAt': '2026-01-01T00:00:00Z',
+      'updatedAt': '2026-01-01T00:00:00Z',
     });
 
 EbsEvent _makeEvent({required int id, required int seriesId}) =>
     EbsEvent.fromJson({
-      'event_id': id,
-      'series_id': seriesId,
-      'event_no': id,
-      'event_name': 'Event $id',
-      'game_type': 0,
-      'bet_structure': 0,
-      'event_game_type': 0,
-      'game_mode': 'single',
-      'table_size': 9,
-      'total_entries': 100,
-      'players_left': 50,
+      'eventId': id,
+      'seriesId': seriesId,
+      'eventNo': id,
+      'eventName': 'Event $id',
+      'gameType': 0,
+      'betStructure': 0,
+      'eventGameType': 0,
+      'gameMode': 'single',
+      'tableSize': 9,
+      'totalEntries': 100,
+      'playersLeft': 50,
       'status': 'running',
       'source': 'manual',
-      'created_at': '2026-01-01T00:00:00Z',
-      'updated_at': '2026-01-01T00:00:00Z',
+      'createdAt': '2026-01-01T00:00:00Z',
+      'updatedAt': '2026-01-01T00:00:00Z',
     });
 
 EventFlight _makeFlight({required int id, required int eventId}) =>
     EventFlight.fromJson({
-      'event_flight_id': id,
-      'event_id': eventId,
-      'display_name': 'Day 1A',
-      'is_tbd': false,
+      'eventFlightId': id,
+      'eventId': eventId,
+      'displayName': 'Day 1A',
+      'isTbd': false,
       'entries': 0,
-      'players_left': 0,
-      'table_count': 3,
+      'playersLeft': 0,
+      'tableCount': 3,
       'status': 'running',
-      'play_level': 1,
-      'flight_id': id,
-      'day_index': 0,
-      'flight_name': 'Day 1A',
+      'playLevel': 1,
+      'flightId': id,
+      'dayIndex': 0,
+      'flightName': 'Day 1A',
       'source': 'manual',
-      'created_at': '2026-01-01T00:00:00Z',
-      'updated_at': '2026-01-01T00:00:00Z',
+      'createdAt': '2026-01-01T00:00:00Z',
+      'updatedAt': '2026-01-01T00:00:00Z',
     });
 
 EbsTable _makeTable({required int id, required int flightId}) =>
     EbsTable.fromJson({
-      'table_id': id,
-      'event_flight_id': flightId,
-      'table_no': id,
+      'tableId': id,
+      'eventFlightId': flightId,
+      'tableNo': id,
       'name': 'Table $id',
       'type': 'standard',
       'status': 'live',
-      'max_players': 9,
-      'game_type': 0,
-      'ante_type': 0,
-      'ante_amount': 0,
-      'deck_registered': false,
-      'delay_seconds': 0,
-      'is_breaking_table': false,
+      'maxPlayers': 9,
+      'gameType': 0,
+      'anteType': 0,
+      'anteAmount': 0,
+      'deckRegistered': false,
+      'delaySeconds': 0,
+      'isBreakingTable': false,
       'source': 'manual',
-      'created_at': '2026-01-01T00:00:00Z',
-      'updated_at': '2026-01-01T00:00:00Z',
+      'createdAt': '2026-01-01T00:00:00Z',
+      'updatedAt': '2026-01-01T00:00:00Z',
     });
 
 void main() {
@@ -173,7 +173,7 @@ void main() {
     test('events load when series is selected', () async {
       final events = [_makeEvent(id: 10, seriesId: 1)];
       when(() => mockEventRepo.listEvents(
-            params: {'series_id': 1},
+            params: {'seriesId': 1},
           )).thenAnswer((_) async => events);
 
       // Simulate series selection
@@ -214,7 +214,7 @@ void main() {
       when(() => mockFlightRepo.listByEvent(10))
           .thenAnswer((_) async => flights);
       when(() => mockTableRepo.listTables(
-            params: {'event_flight_id': 100},
+            params: {'eventFlightId': 100},
           )).thenAnswer((_) async => tables);
 
       // Load flights for event

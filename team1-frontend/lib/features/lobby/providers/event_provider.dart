@@ -21,7 +21,7 @@ class EventListNotifier extends StateNotifier<AsyncValue<List<EbsEvent>>> {
     state = const AsyncValue.loading();
     try {
       final list = await _repo.listEvents(
-        params: {'series_id': seriesId},
+        params: {'seriesId': seriesId},
       );
       state = AsyncValue.data(list);
     } catch (e, st) {

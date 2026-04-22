@@ -105,7 +105,7 @@ CCR-011 `ge-ownership-move` APPLIED 로 Graphic Editor 허브의 소유권이 Te
 | `.gfskin` ZIP 업로드 + 검증 | Rive Artboard 편집 |
 | 로컬 rive-js 프리뷰 렌더링 | Animation keyframe 조정 |
 | `skin.json` 메타데이터 PATCH (GEM-01~25) | Transform/색상 adjust UI |
-| `PUT /Skins/{id}/Activate` + WS `skin_updated` broadcast | 8모드 99컨트롤 편집기 |
+| `PUT /Skins/{id}/Activate` + WS `SkinUpdated` broadcast | 8모드 99컨트롤 편집기 |
 | Admin/Operator/Viewer RBAC gate | Overlay 전환 애니메이션 설계 |
 | 스킨 Delete (비활성만) | Overlay 런타임 재렌더 (Team 4 CC/Overlay 담당) |
 
@@ -325,11 +325,11 @@ PUT /api/v1/Skins/{id}/Activate
     X-Game-State: IDLE (또는 override 후 IDLE 강제)
     Idempotency-Key: {uuid4}
   ↓
-  ├→ 201 { active_skin_id, seq, broadcasted_at }
+  ├→ 201 { activeSkinId, seq, broadcastedAt }
   │     ↓
   │   broadcasting (useGeStore.activationState)
   │     ↓
-  │   WS 수신: { type: "skin_updated", seq, payload }
+  │   WS 수신: { type: "SkinUpdated", seq, payload }
   │     ↓
   │   useGeStore.applyRemoteSkinUpdate(payload)
   │     ↓
@@ -695,7 +695,7 @@ Idempotency-Key: {crypto.randomUUID()}
 
 | 응답 | 클라이언트 동작 |
 |------|-----------------|
-| 201 | `activationState = 'broadcasting'` → WS `skin_updated` 대기 |
+| 201 | `activationState = 'broadcasting'` → WS `SkinUpdated` 대기 |
 | 412 Precondition Failed (GEA-03) | q-dialog "다른 사용자가 먼저 변경했습니다. 새로고침 후 재시도할까요?" → GET `/Skins/{id}` 로 refetch → 재시도 |
 | 409 Conflict (GameState mismatch) | Warning 헤더 파싱 → 경고 다이얼로그 재표시 → `activationState = 'warning'` |
 | 403 Forbidden | "Admin 권한이 필요합니다" 토스트 → `activationState = 'idle'` |
@@ -704,7 +704,7 @@ Idempotency-Key: {crypto.randomUUID()}
 ### 8.5 WS Broadcast 처리 (BS-08-03 §4, CCR-015)
 
 ```
-useWsStore 가 'skin_updated' 이벤트 수신
+useWsStore 가 'SkinUpdated' 이벤트 수신
   ↓
 seq 단조성 검증 (CCR-015):
   if event.seq <= lastSeq: drop (out-of-order)
@@ -722,7 +722,7 @@ WS 수신이 2초 안에 오지 않으면 (GEA-06 목표 미달), `activationSta
 
 ### 8.6 Replay (CCR-015)
 
-WS 재연결 시 `useWsStore` 가 `GET /api/v1/Events/replay?from_seq={lastSeq}&channel=cc_event` 호출 → 놓친 `skin_updated` 이벤트를 순서대로 재생. `useGeStore` 는 동일한 `applyRemoteSkinUpdate` 로 처리한다.
+WS 재연결 시 `useWsStore` 가 `GET /api/v1/Events/replay?from_seq={lastSeq}&channel=cc_event` 호출 → 놓친 `SkinUpdated` 이벤트를 순서대로 재생. `useGeStore` 는 동일한 `applyRemoteSkinUpdate` 로 처리한다.
 
 ---
 
@@ -953,4 +953,4 @@ CCR 원문 경로 (읽기 전용 참조):
 | `../Specs/BS-08-graphic-editor/BS-08-00~04.md` | 행동 명세 SSOT (변경 금지, CCR 경유) |
 | `contracts/api/API-07-graphic-editor.md` | 8 엔드포인트 계약 |
 | `contracts/data/DATA-07-gfskin-schema.md` | `.gfskin` 포맷 + JSON Schema SSOT |
-| `contracts/api/API-05-websocket-events.md` | `skin_updated` 이벤트 정의 |
+| `contracts/api/API-05-websocket-events.md` | `SkinUpdated` 이벤트 정의 |

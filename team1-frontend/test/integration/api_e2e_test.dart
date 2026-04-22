@@ -85,8 +85,8 @@ void main() {
       final tempToken = loginData['temp_token'] as String;
       final totpCode = _generateTotp(_adminTotpSecret);
       final verifyRes = await dio.post('/auth/verify-2fa', data: {
-        'temp_token': tempToken,
-        'totp_code': totpCode,
+        'tempToken': tempToken,
+        'totpCode': totpCode,
       });
       expect(verifyRes.statusCode, 200);
       final verifyData = verifyRes.data['data'] as Map<String, dynamic>;
@@ -154,8 +154,8 @@ void main() {
         expect(data['temp_token'], isA<String>());
         final totpCode = _generateTotp(_adminTotpSecret);
         final verifyRes = await dio.post('/auth/verify-2fa', data: {
-          'temp_token': data['temp_token'],
-          'totp_code': totpCode,
+          'tempToken': data['temp_token'],
+          'totpCode': totpCode,
         });
         expect(verifyRes.statusCode, 200);
         final vd = verifyRes.data['data'] as Map<String, dynamic>;
@@ -180,7 +180,7 @@ void main() {
     test('POST /auth/refresh returns new access_token', () async {
       try {
         final res = await dio.post('/auth/refresh', data: {
-          'refresh_token': refreshToken,
+          'refreshToken': refreshToken,
         });
         expect(res.statusCode, 200);
         final body = res.data as Map<String, dynamic>;
@@ -236,7 +236,7 @@ void main() {
       try {
         await dio.post('/auth/password/reset', data: {
           'token': 'invalid-token',
-          'new_password': 'newpass123',
+          'newPassword': 'newpass123',
         });
       } on DioException catch (e) {
         expect(e.response?.statusCode, anyOf(400, 401, 422));
@@ -268,7 +268,7 @@ void main() {
       final ts = DateTime.now().millisecondsSinceEpoch;
       final res = await dio.post('/api/v1/users', data: {
         'email': 'e2e_user_$ts@ebs.local',
-        'display_name': 'E2E Test User',
+        'displayName': 'E2E Test User',
         'role': 'viewer',
         'password': 'testpass123',
       });
@@ -287,7 +287,7 @@ void main() {
 
     test('PUT /api/v1/users/{id} updates user', () async {
       final res = await dio.put('/api/v1/users/1', data: {
-        'display_name': 'System Admin',
+        'displayName': 'System Admin',
       });
       expect(res.statusCode, 200);
     });
@@ -327,8 +327,8 @@ void main() {
       try {
         final res = await dio.post('/api/v1/competitions', data: {
           'name': 'E2E Competition',
-          'competition_type': 0,
-          'competition_tag': 0,
+          'competitionType': 0,
+          'competitionTag': 0,
         });
         expect(res.statusCode, anyOf(200, 201));
         final data = res.data['data'] as Map<String, dynamic>;
@@ -407,12 +407,12 @@ void main() {
           : 1;
 
       final res = await dio.post('/api/v1/series', data: {
-        'competition_id': compId,
-        'series_name': 'E2E Test Series',
+        'competitionId': compId,
+        'seriesName': 'E2E Test Series',
         'year': 2026,
-        'begin_at': '2026-12-01',
-        'end_at': '2026-12-31',
-        'time_zone': 'UTC',
+        'beginAt': '2026-12-01',
+        'endAt': '2026-12-31',
+        'timeZone': 'UTC',
         'currency': 'USD',
       });
       expect(res.statusCode, anyOf(200, 201));
@@ -428,7 +428,7 @@ void main() {
 
     test('PUT /api/v1/series/{id} updates', () async {
       final res = await dio.put('/api/v1/series/$seriesId', data: {
-        'series_name': 'E2E Updated Series',
+        'seriesName': 'E2E Updated Series',
       });
       expect(res.statusCode, 200);
     });
@@ -486,9 +486,9 @@ void main() {
       try {
         final res = await dio.post('/api/v1/series/$eventSeriesId/events',
             data: {
-          'series_id': eventSeriesId,
-          'event_no': 99,
-          'event_name': 'E2E Test Event',
+          'seriesId': eventSeriesId,
+          'eventNo': 99,
+          'eventName': 'E2E Test Event',
         });
         expect(res.statusCode, anyOf(200, 201));
         eventId = (res.data['data'] as Map<String, dynamic>)['event_id'] as int;
@@ -517,7 +517,7 @@ void main() {
     test('PUT /api/v1/events/{id} updates event', () async {
       try {
         final res = await dio.put('/api/v1/events/$eventId', data: {
-          'event_name': 'E2E Updated Event',
+          'eventName': 'E2E Updated Event',
         });
         expect(res.statusCode, 200);
       } on DioException catch (e) {
@@ -530,9 +530,9 @@ void main() {
         // Create a disposable event
         final createRes = await dio.post('/api/v1/series/$eventSeriesId/events',
             data: {
-          'series_id': eventSeriesId,
-          'event_no': 998,
-          'event_name': 'E2E Delete Event',
+          'seriesId': eventSeriesId,
+          'eventNo': 998,
+          'eventName': 'E2E Delete Event',
         });
         final id =
             (createRes.data['data'] as Map<String, dynamic>)['event_id'];
@@ -574,8 +574,8 @@ void main() {
       try {
         final res = await dio.post('/api/v1/events/$flightEventId/flights',
             data: {
-          'event_id': flightEventId,
-          'display_name': 'E2E Flight',
+          'eventId': flightEventId,
+          'displayName': 'E2E Flight',
         });
         expect(res.statusCode, anyOf(200, 201));
         flightId = (res.data['data']
@@ -617,7 +617,7 @@ void main() {
     test('PUT /api/v1/flights/{id} updates flight', () async {
       try {
         final res = await dio.put('/api/v1/flights/$flightId', data: {
-          'display_name': 'E2E Updated Flight',
+          'displayName': 'E2E Updated Flight',
         });
         expect(res.statusCode, 200);
       } on DioException catch (e) {
@@ -630,8 +630,8 @@ void main() {
         final createRes = await dio.post(
             '/api/v1/events/$flightEventId/flights',
             data: {
-          'event_id': flightEventId,
-          'display_name': 'E2E Delete Flight',
+          'eventId': flightEventId,
+          'displayName': 'E2E Delete Flight',
         });
         final id = (createRes.data['data']
             as Map<String, dynamic>)['event_flight_id'];
@@ -659,7 +659,7 @@ void main() {
     test('PUT /api/v1/flights/{id}/blind-structure assigns BS', () async {
       try {
         final res = await dio.put('/api/v1/flights/$seedFlightId/blind-structure', data: {
-          'blind_structure_id': 1,
+          'blindStructureId': 1,
         });
         expect(res.statusCode, 200);
       } on DioException catch (e) {
@@ -684,7 +684,7 @@ void main() {
     test('PUT /api/v1/flights/{id}/clock updates clock', () async {
       try {
         final res = await dio.put('/api/v1/flights/$seedFlightId/clock', data: {
-          'play_level': 1,
+          'playLevel': 1,
         });
         expect(res.statusCode, 200);
       } on DioException catch (e) {
@@ -769,11 +769,11 @@ void main() {
     test('POST /api/v1/flights/{id}/tables creates table', () async {
       try {
         final res = await dio.post('/api/v1/flights/$seedFlightId/tables', data: {
-          'event_flight_id': seedFlightId,
-          'table_no': 99,
+          'eventFlightId': seedFlightId,
+          'tableNo': 99,
           'name': 'E2E Table',
           'type': 'general',
-          'max_players': 9,
+          'maxPlayers': 9,
         });
         expect(res.statusCode, anyOf(200, 201));
       } on DioException catch (e) {
@@ -795,11 +795,11 @@ void main() {
     test('DELETE /api/v1/tables/{id} removes table', () async {
       try {
         final createRes = await dio.post('/api/v1/flights/$seedFlightId/tables', data: {
-          'event_flight_id': seedFlightId,
-          'table_no': 997,
+          'eventFlightId': seedFlightId,
+          'tableNo': 997,
           'name': 'E2E Delete Table',
           'type': 'general',
-          'max_players': 9,
+          'maxPlayers': 9,
         });
         final id =
             (createRes.data['data'] as Map<String, dynamic>)['table_id'];
@@ -822,7 +822,7 @@ void main() {
     test('POST /api/v1/tables/rebalance triggers rebalance', () async {
       try {
         final res = await dio.post('/api/v1/tables/rebalance', data: {
-          'flight_id': seedFlightId,
+          'flightId': seedFlightId,
         });
         expect(res.statusCode, anyOf(200, 202));
       } on DioException catch (e) {
@@ -851,7 +851,7 @@ void main() {
     test('PUT /api/v1/tables/{id}/seats/{no} accepts update', () async {
       try {
         final res = await dio.put('/api/v1/tables/$seedTableId/seats/0', data: {
-          'chip_count': 90000,
+          'chipCount': 90000,
         });
         expect(res.statusCode, 200);
       } on DioException catch (e) {
@@ -912,9 +912,9 @@ void main() {
 
     test('POST /api/v1/players creates player', () async {
       final res = await dio.post('/api/v1/players', data: {
-        'first_name': 'E2E',
-        'last_name': 'TestPlayer',
-        'player_status': 'active',
+        'firstName': 'E2E',
+        'lastName': 'TestPlayer',
+        'playerStatus': 'active',
       });
       expect(res.statusCode, anyOf(200, 201));
     });
@@ -934,9 +934,9 @@ void main() {
     test('DELETE /api/v1/players/{id} deletes player', () async {
       try {
         final createRes = await dio.post('/api/v1/players', data: {
-          'first_name': 'E2E_Delete',
-          'last_name': 'Me',
-          'player_status': 'active',
+          'firstName': 'E2E_Delete',
+          'lastName': 'Me',
+          'playerStatus': 'active',
         });
         final id = (createRes.data['data']
             as Map<String, dynamic>)['player_id'];
@@ -954,7 +954,7 @@ void main() {
   group('Hands', () {
     test('GET /api/v1/hands?table_id=1 returns hands', () async {
       final res = await dio.get('/api/v1/hands',
-          queryParameters: {'table_id': 1});
+          queryParameters: {'tableId': 1});
       expect(res.statusCode, 200);
       final data = res.data['data'] as List;
       expect(data, isA<List>());
@@ -1193,7 +1193,7 @@ void main() {
   });
 
   // =========================================================================
-  // Reports — /api/v1/reports/{report_type}  (1 endpoint, 2 types)
+  // Reports — /api/v1/reports/{reportType}  (1 endpoint, 2 types)
   // =========================================================================
   group('Reports', () {
     test('GET /api/v1/reports/hands-summary returns report', () async {
