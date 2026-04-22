@@ -357,15 +357,47 @@ Flutter Desktop 애플리케이션으로 실행되는 중앙 관제 시스템입
 
 **ENGINE_URL 환경변수**: `--dart-define=ENGINE_URL=http://host:port` (기본 `http://localhost:8080`) — team1 `EBS_BO_HOST` 패턴과 통일. 엔진 미기동 시 **Demo Mode fallback** (SG-002 3-stage 상태 머신).
 
-**시퀀스 예시 (새 핸드 시작)**:
+**시퀀스 예시 (병행 dispatch, 2 시나리오)** — CC 는 Orchestrator 로서 BO/Engine **병렬 호출**. 상세: `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md §1.1.1` (2026-04-21 신설). 원 ASCII 도식은 순차/병행 모호로 Mermaid 로 재작성 (2026-04-22 정정, `notify: conductor`).
 
+**시나리오 A — 운영자 액션 (FOLD/BET/RAISE)**:
+
+```mermaid
+sequenceDiagram
+    participant Op as 운영자
+    participant CC as CC (Orchestrator)
+    participant BO
+    participant Engine
+    participant Overlay
+    Op->>CC: 액션 버튼 클릭
+    par 병행 dispatch (동일 correlation_id)
+      CC->>BO: WS WriteAction (audit + Lobby broadcast)
+      CC->>Engine: REST POST /api/session/:id/event
+    end
+    Engine-->>CC: gameState + outputEvents (SSOT)
+    BO-->>CC: ActionAck (audit 확인, 참고값)
+    CC->>Overlay: 21 OutputEvent (Rive 애니메이션)
 ```
-RFID감지 → CC → BO(WS) → 저장 + broadcast
-                     ↓
-         CC → Engine(REST hand_start)
-                     ↓ hand_state
-         CC → Overlay(21 OutputEvent)
+
+**시나리오 B — RFID 카드 감지 (자동 입력)**:
+
+```mermaid
+sequenceDiagram
+    participant RFID
+    participant CC as CC (Orchestrator)
+    participant BO
+    participant Engine
+    participant Overlay
+    RFID->>CC: CardDetected (자동 감지)
+    par 병행 dispatch
+      CC->>BO: WS WriteCardDetected (audit)
+      CC->>Engine: REST POST /api/session/:id/event (type=cardDealt)
+    end
+    Engine-->>CC: gameState (카드 공개 outputEvents)
+    CC->>Overlay: HoleCardsRevealed or BoardCard (Rive)
 ```
+
+- **Engine 응답이 게임 상태 SSOT**, BO ack 는 audit 참고값
+- BO 실패 시 warn-only (게임 진행 계속, §1.1.1 실패 매트릭스)
 
 상세: `docs/4. Operations/Conductor_Backlog/SG-005-foundation-ch6-system-connections.md`
 

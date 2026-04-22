@@ -52,10 +52,14 @@ Root cause: `_dispatchAction` 에서 `engineClient` 전혀 호출 안 함. `ws !
   - `HandCompleted` → seats/pot/handFsm 초기화
 - [ ] dispatcher 를 별도 provider 로 분리 (`lib/features/command_center/services/engine_output_dispatcher.dart` 신규)
 
-### P2 — DEAL → Manual Card Input fallback
+### P2 — DEAL → holecards 공개 타이밍 + Manual Card fallback
 
-- [ ] DEAL action 에서 `engineClient.sendDealHole(sessionId)` 호출 (Engine 이 auto 배분)
-- [ ] RFID 미감지 5초 후 `cardInputProvider.requestManualForSlot(seatIndex, slot)` 호출
+> **2026-04-22 정정**: `Harness_REST_API.md §2.1 POST /api/session` 이 **auto HandStart + 홀카드 배분** 수행 (§1.1.1 Action-to-Transport Matrix). DEAL 은 Engine 호출 **skip** — 이미 createSession 시점에 PRE_FLOP + holecards 완료.
+
+- [ ] DEAL action 에서 **Engine 호출 안 함** (createSession 응답에서 이미 holecards 수신)
+- [ ] DEAL 버튼 클릭 → CC UI 가 seats.holeCards 를 시각 공개 (타이밍 마킹)
+- [ ] BO 에만 `WriteDeal` audit 이벤트 전송 (§11)
+- [ ] RFID Real 모드: 5초 미감지 시 `cardInputProvider.requestManualForSlot(seatIndex, slot)` 호출 (Mock 모드는 createSession 응답의 holecards 그대로 표시)
 - [ ] FALLBACK 전이 시 `_maybeOpenFallbackModal` 기존 listener 작동
 
 ### P2 — correlation_id
