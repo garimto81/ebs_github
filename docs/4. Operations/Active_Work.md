@@ -107,19 +107,7 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-### Claim #9 — conductor: Foundation §5.3 Rive Manager 섹션 말미 이미지 삽입
-```yaml
-id: 9
-team: conductor
-task: Foundation §5.3 Rive Manager 섹션 말미 이미지 삽입
-started: '2026-04-22T12:02:25Z'
-scope:
-- docs/1. Product/Foundation.md
-- docs/1. Product/images/foundation/app-rive-manager.png
-status: active
-eta: 10min
-```
-
+_(현재 active claim 없음)_
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
@@ -243,6 +231,20 @@ scope:
 status: released
 eta: 30m
 released: '2026-04-22T12:02:19Z'
+```
+
+### Claim #9 — conductor: Foundation §5.3 Rive Manager 섹션 말미 이미지 삽입
+```yaml
+id: 9
+team: conductor
+task: Foundation §5.3 Rive Manager 섹션 말미 이미지 삽입
+started: '2026-04-22T12:02:25Z'
+scope:
+- docs/1. Product/Foundation.md
+- docs/1. Product/images/foundation/app-rive-manager.png
+status: released
+eta: 10min
+released: '2026-04-22T12:03:04Z'
 ```
 
 <!-- RELEASED_END -->
