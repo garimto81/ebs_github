@@ -2,7 +2,7 @@
 title: Spec Gap Registry — Drift 집계 + 해소 추적
 owner: conductor
 tier: internal
-last-updated: 2026-04-20
+last-updated: 2026-04-22
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "감지 도구 + 분류 체계 + Registry 자체로 외부 인계 가능"
@@ -68,6 +68,9 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 
 | SG ID | 유형 | 계약 | 상태 | 비고 |
 |-------|------|------|:----:|------|
+| SG-001 | tech_stack | Lobby/GE | **DONE** | 2026-04-20 Flutter Desktop 통일 (Foundation §5.1), 2026-04-22 γ 하이브리드 (Web 정규 + Desktop 개발) team1 PR#11-14 |
+| SG-002 | spec_gap | Ch.7/Overlay | **DONE** | 2026-04-20 RESOLVED — Foundation §6.3 ENGINE_URL + §6.4 3-stage fallback + §7.1 배경 투명/단색 이분법. `Conductor_Backlog/SG-002-*.md` |
+| SG-005 | architecture | Ch.6 | **DONE** | 2026-04-20 RESOLVED — Foundation §Ch.6 + §Ch.7 병합, EBS_Core.md 폐기. `Conductor_Backlog/SG-005-*.md` |
 | SG-008 | spec_drift | api | PENDING | D3 89 → (a) 77 문서화 + (b) 12 SG 승격 완료 (v4.0, 2026-04-20) + (c) 0 |
 | SG-008-b1 | spec_drift_b | api | PENDING | `GET /audit-events` 공개 범위 + RBAC (default: 옵션 1) |
 | SG-008-b2 | spec_drift_b | api | PENDING | `GET /audit-logs` RBAC (default: 옵션 1 별도 리소스) |
@@ -139,3 +142,4 @@ python tools/spec_drift_check.py --settings
 | 2026-04-20 | v1.1 — SG-008 재정의 + SG-011 OUT_OF_SCOPE | "기획이 진실" 원칙 복구: SG-008 을 3분류 (a/b/c) 로 재작성. SG-011 은 프로토타입 범위 밖 TBD 로 재마킹. Spec_Gap_Triage §7.2.1 "코드가 진실 판정 요건" 추가. scanner 정밀화 (schema SQLModel detector + websocket detector + WSOP-native 필터) |
 | 2026-04-20 | v1.2 — F2/F3 배치 | WebSocket detector 정밀화 완료 (D2 89→20, D3 2→0). SG-008-b1~b12 12개 개별 파일 승격 완료. §4.1 websocket 행 갱신. §4.4 b1~b12 항목 추가. §7 한계 테이블에 F2 완료 표시 |
 | 2026-04-20 | v1.3 — P6/P7/P8 배치 (Agent G) | (1) Settings detector 정규화 (camelCase/snake_case/dotted/frontmatter) — D4 13→39, D3 17→17 중 6개 자동 매칭 해소. (2) Backend_HTTP §5.17 CRUD 완결성 편입 신설 — SG-008 (a) 77건 일괄 편입. (3) SG-008-b13 v2.0 잔류 8건 triage — (a) 6 / (b) 2. §4.1 api/settings 행 갱신. §4.4 SG-008-b13 항목 추가. §7 Settings 한계 완료 표시 |
+| 2026-04-22 | v1.4 — Foundation 재설계 집계 동기화 (B-203) | SG-001/002/005 를 §4.4 승격 index 에 DONE 으로 추가 — 개별 `Conductor_Backlog/SG-*.md` frontmatter 는 이미 RESOLVED 였으나 Registry 집계 누락. Aggregate-vs-Source 동기화. |
