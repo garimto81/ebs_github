@@ -107,24 +107,7 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-### Claim #5 — conductor: 회의 D3 GE 제거 결정 — Conductor 소유 5 지점 반영 (BS_Overview §7.4 GEM-* 폐기, §1 GE 행 축소, Foundation Ch.9 L610, 1. Product.md γ 교정, SG-004 SUPERSEDED)
-```yaml
-id: 5
-team: conductor
-task: 회의 D3 GE 제거 결정 — Conductor 소유 5 지점 반영 (BS_Overview §7.4 GEM-* 폐기, §1 GE 행 축소,
-  Foundation Ch.9 L610, 1. Product.md γ 교정, SG-004 SUPERSEDED)
-started: '2026-04-22T11:42:23Z'
-scope:
-- docs/1. Product/Foundation.md
-- docs/1. Product/1. Product.md
-- docs/2. Development/2.5 Shared/BS_Overview.md
-- docs/4. Operations/Conductor_Backlog/SG-004-gfskin-zip-format.md
-- docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md
-- docs/4. Operations/Foundation_Alignment_Plan.md
-status: active
-eta: 1h
-```
-
+_(현재 active claim 없음)_
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
@@ -187,6 +170,25 @@ scope:
 status: released
 eta: 1h
 released: '2026-04-22T11:45:53Z'
+```
+
+### Claim #5 — conductor: 회의 D3 GE 제거 결정 — Conductor 소유 5 지점 반영 (BS_Overview §7.4 GEM-* 폐기, §1 GE 행 축소, Foundation Ch.9 L610, 1. Product.md γ 교정, SG-004 SUPERSEDED)
+```yaml
+id: 5
+team: conductor
+task: 회의 D3 GE 제거 결정 — Conductor 소유 5 지점 반영 (BS_Overview §7.4 GEM-* 폐기, §1 GE 행 축소,
+  Foundation Ch.9 L610, 1. Product.md γ 교정, SG-004 SUPERSEDED)
+started: '2026-04-22T11:42:23Z'
+scope:
+- docs/1. Product/Foundation.md
+- docs/1. Product/1. Product.md
+- docs/2. Development/2.5 Shared/BS_Overview.md
+- docs/4. Operations/Conductor_Backlog/SG-004-gfskin-zip-format.md
+- docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md
+- docs/4. Operations/Foundation_Alignment_Plan.md
+status: released
+eta: 1h
+released: '2026-04-22T11:47:13Z'
 ```
 
 <!-- RELEASED_END -->
