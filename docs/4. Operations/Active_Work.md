@@ -95,7 +95,7 @@ status: <active|paused|released>
 title: Active Work — Multi-session coordination SSOT
 owner: conductor
 tier: contract
-last-updated: 2026-04-22
+last-updated: 2026-04-23
 generator: tools/active_work_claim.py (편집은 CLI 만 사용)
 schema_version: 1
 ---
@@ -107,7 +107,20 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-_(현재 active claim 없음)_
+### Claim #10 — team3: B-338 harness 세션 persistence — disk snapshot + restart recovery
+```yaml
+id: 10
+team: team3
+task: B-338 harness 세션 persistence — disk snapshot + restart recovery
+started: '2026-04-23T01:40:39Z'
+scope:
+- team3-engine/ebs_game_engine/lib/harness/**
+- team3-engine/ebs_game_engine/test/harness/**
+- docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md
+status: active
+eta: 2h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
