@@ -121,89 +121,27 @@ status: active
 eta: 2h
 ```
 
+### Claim #11 — team1: design-critic remediation: Engineering.md §0 7-feature 정렬 + CLAUDE.md stale ref + skin-editor 5 UNKNOWN→PASS + Chip_Management delegation
+```yaml
+id: 11
+team: team1
+task: 'design-critic remediation: Engineering.md §0 7-feature 정렬 + CLAUDE.md stale
+  ref + skin-editor 5 UNKNOWN→PASS + Chip_Management delegation'
+started: '2026-04-23T11:50:27Z'
+scope:
+- docs/2. Development/2.1 Frontend/Engineering.md
+- docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/*.md
+- docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md
+- team1-frontend/CLAUDE.md
+status: active
+eta: 1h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
 
 <!-- RELEASED_BEGIN -->
-### Claim #1 — conductor: v5.1 smoke test
-```yaml
-id: 1
-team: conductor
-task: v5.1 smoke test
-started: '2026-04-22T02:16:23Z'
-scope:
-- dummy/test_only.md
-status: released
-eta: 5m
-released: '2026-04-22T02:16:24Z'
-```
-
-### Claim #2 — conductor: Foundation.md v2026-04-22 재설계 전파 — 영향도 분석 및 수정 계획 수립
-```yaml
-id: 2
-team: conductor
-task: Foundation.md v2026-04-22 재설계 전파 — 영향도 분석 및 수정 계획 수립
-started: '2026-04-22T10:26:28Z'
-scope:
-- docs/1. Product/**
-- docs/2. Development/2.5 Shared/**
-- docs/4. Operations/**
-- docs/4. Operations/_plans/foundation-redesign-propagation-plan.md
-status: released
-eta: 2h
-released: '2026-04-22T10:45:12Z'
-```
-
-### Claim #3 — team3: Foundation v11 재설계 대응 — team3 기획 문서 gap 분석 + Backlog 8 항목 등재
-```yaml
-id: 3
-team: team3
-task: Foundation v11 재설계 대응 — team3 기획 문서 gap 분석 + Backlog 8 항목 등재
-started: '2026-04-22T10:31:36Z'
-scope:
-- docs/2. Development/2.3 Game Engine/Backlog.md
-- docs/2. Development/2.3 Game Engine/Backlog/**
-status: released
-eta: 1h
-released: '2026-04-22T10:34:24Z'
-```
-
-### Claim #4 — team3: B-331 harness /engine/health endpoint 구현 — Demo Mode fallback 지원
-```yaml
-id: 4
-team: team3
-task: B-331 harness /engine/health endpoint 구현 — Demo Mode fallback 지원
-started: '2026-04-22T11:39:02Z'
-scope:
-- team3-engine/ebs_game_engine/lib/harness/server.dart
-- team3-engine/ebs_game_engine/test/harness/**
-- docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md
-- docs/2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md
-status: released
-eta: 1h
-released: '2026-04-22T11:45:53Z'
-```
-
-### Claim #5 — conductor: 회의 D3 GE 제거 결정 — Conductor 소유 5 지점 반영 (BS_Overview §7.4 GEM-* 폐기, §1 GE 행 축소, Foundation Ch.9 L610, 1. Product.md γ 교정, SG-004 SUPERSEDED)
-```yaml
-id: 5
-team: conductor
-task: 회의 D3 GE 제거 결정 — Conductor 소유 5 지점 반영 (BS_Overview §7.4 GEM-* 폐기, §1 GE 행 축소,
-  Foundation Ch.9 L610, 1. Product.md γ 교정, SG-004 SUPERSEDED)
-started: '2026-04-22T11:42:23Z'
-scope:
-- docs/1. Product/Foundation.md
-- docs/1. Product/1. Product.md
-- docs/2. Development/2.5 Shared/BS_Overview.md
-- docs/4. Operations/Conductor_Backlog/SG-004-gfskin-zip-format.md
-- docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md
-- docs/4. Operations/Foundation_Alignment_Plan.md
-status: released
-eta: 1h
-released: '2026-04-22T11:47:13Z'
-```
-
 ### Claim #6 — team3: B-332 Engine 응답 = 게임 상태 SSOT 명시 (API-04 3 문서)
 ```yaml
 id: 6
