@@ -121,22 +121,6 @@ status: active
 eta: 2h
 ```
 
-### Claim #11 — team1: design-critic remediation: Engineering.md §0 7-feature 정렬 + CLAUDE.md stale ref + skin-editor 5 UNKNOWN→PASS + Chip_Management delegation
-```yaml
-id: 11
-team: team1
-task: 'design-critic remediation: Engineering.md §0 7-feature 정렬 + CLAUDE.md stale
-  ref + skin-editor 5 UNKNOWN→PASS + Chip_Management delegation'
-started: '2026-04-23T11:50:27Z'
-scope:
-- docs/2. Development/2.1 Frontend/Engineering.md
-- docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/*.md
-- docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md
-- team1-frontend/CLAUDE.md
-status: active
-eta: 1h
-```
-
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
@@ -196,6 +180,23 @@ scope:
 status: released
 eta: 10min
 released: '2026-04-22T12:03:04Z'
+```
+
+### Claim #11 — team1: design-critic remediation: Engineering.md §0 7-feature 정렬 + CLAUDE.md stale ref + skin-editor 5 UNKNOWN→PASS + Chip_Management delegation
+```yaml
+id: 11
+team: team1
+task: 'design-critic remediation: Engineering.md §0 7-feature 정렬 + CLAUDE.md stale
+  ref + skin-editor 5 UNKNOWN→PASS + Chip_Management delegation'
+started: '2026-04-23T11:50:27Z'
+scope:
+- docs/2. Development/2.1 Frontend/Engineering.md
+- docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/*.md
+- docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md
+- team1-frontend/CLAUDE.md
+status: released
+eta: 1h
+released: '2026-04-23T11:50:55Z'
 ```
 
 <!-- RELEASED_END -->
