@@ -12,10 +12,10 @@ tier: generated
 |------|------|-------|------|--------|
 | `docs/1. Product/1. Product.md` | 1. Product | conductor | internal | - |
 | `docs/1. Product/Foundation.md` | EBS 기초 기획서 | conductor | internal | - |
-| `docs/1. Product/Game_Rules/Betting_System.md` | Betting System | conductor | internal | PRD-GAME-04 |
-| `docs/1. Product/Game_Rules/Draw.md` | Draw | conductor | internal | PRD-GAME-02 |
-| `docs/1. Product/Game_Rules/Flop_Games.md` | Flop Games | conductor | internal | PRD-GAME-01 |
-| `docs/1. Product/Game_Rules/Seven_Card_Games.md` | Seven Card Games | conductor | internal | PRD-GAME-03 |
+| `docs/1. Product/Game_Rules/Betting_System.md` | Betting System | conductor | external | PRD-GAME-04 |
+| `docs/1. Product/Game_Rules/Draw.md` | Draw | conductor | external | PRD-GAME-02 |
+| `docs/1. Product/Game_Rules/Flop_Games.md` | Flop Games | conductor | external | PRD-GAME-01 |
+| `docs/1. Product/Game_Rules/Seven_Card_Games.md` | Seven Card Games | conductor | external | PRD-GAME-03 |
 | `docs/1. Product/References/PokerGFX_Reference.md` | PokerGFX Reference | conductor | internal | - |
 | `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` | WSOP Production Structure Analysis | conductor | internal | - |
 | `docs/1. Product/archive/Foundation_v41.0.0.md` | Foundation | conductor | internal | - |
@@ -464,6 +464,8 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` | 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-200-foundation-alignment-2026-04-22.md` | Foundation 재설계(2026-04-22) 정렬 — Conductor 소유 문서 전수 수정 | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md` | 회의 D3 GE 제거 결정 — 전체 전파 (Conductor + team1/team2/team4) | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` | Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` | team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade) | team1 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-001-team-backlog-retag.md` | 구현: 4팀 Backlog 3-Type retag + archive 정리 | each_team | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md` | 구현: team4 Engine Connection UI — router guard + manual reconnect | team4 | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md` | 구현: team2 decks.py in-memory → DB session 전환 | team2 | - | - |
@@ -523,6 +525,7 @@ tier: generated
 | `docs/4. Operations/Multi_Session_Handoff.md` | Multi-Session Handoff Guide (2026-04-21) | conductor | internal | - |
 | `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate) | conductor | contract | - |
 | `docs/4. Operations/Network_Deployment.md` | Network Deployment Guide | conductor | internal | - |
+| `docs/4. Operations/Phase_1_Decision_Queue.md` | Phase 1 Decision Queue (18건 결정 기록) | conductor | internal | - |
 | `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` | 2026-04-08-game-engine.plan | conductor | internal | - |
 | `docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md` | B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션 | team2 | internal | - |
 | `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` | Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정 | conductor | internal | - |

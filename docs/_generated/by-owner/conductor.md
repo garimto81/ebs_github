@@ -117,6 +117,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
 - `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` — 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합)
 - `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` — 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서
+- `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` — Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade)
 - `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` — 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1)
 - `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` — Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback
 - `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` — Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences
@@ -155,6 +156,7 @@ tier: generated
 - `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
 - `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
+- `docs/4. Operations/Phase_1_Decision_Queue.md` — Phase 1 Decision Queue (18건 결정 기록)
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
 - `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` — Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정
 - `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` — Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거
