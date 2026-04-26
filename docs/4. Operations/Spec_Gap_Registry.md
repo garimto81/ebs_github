@@ -2,7 +2,7 @@
 title: Spec Gap Registry — Drift 집계 + 해소 추적
 owner: conductor
 tier: internal
-last-updated: 2026-04-26
+last-updated: 2026-04-27
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "감지 도구 + 분류 체계 + Registry 자체로 외부 인계 가능"
@@ -72,20 +72,22 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | SG-002 | spec_gap | Ch.7/Overlay | **DONE** | 2026-04-20 RESOLVED — Foundation §6.3 ENGINE_URL + §6.4 3-stage fallback + §7.1 배경 투명/단색 이분법. `Conductor_Backlog/SG-002-*.md` |
 | SG-005 | architecture | Ch.6 | **DONE** | 2026-04-20 RESOLVED — Foundation §Ch.6 + §Ch.7 병합, EBS_Core.md 폐기. `Conductor_Backlog/SG-005-*.md` |
 | SG-004 | data_format | DATA-07/.gfskin | **SUPERSEDED** | 2026-04-22 — 회의 D3 GE 제거 결정으로 manifest.json 메타데이터가 Rive 내장으로 대체. B-209 에서 포맷 재설계. |
-| SG-008 | spec_drift | api | PENDING | D3 89 → (a) 77 문서화 + (b) 12 SG 승격 완료 (v4.0, 2026-04-20) + (c) 0 |
-| SG-008-b1 | spec_drift_b | api | PENDING | `GET /audit-events` 공개 범위 + RBAC (default: 옵션 1) |
-| SG-008-b2 | spec_drift_b | api | PENDING | `GET /audit-logs` RBAC (default: 옵션 1 별도 리소스) |
-| SG-008-b3 | spec_drift_b | api | PENDING | `GET /audit-logs/download` 포맷 + rate limit (default: 옵션 1 NDJSON) |
-| SG-008-b4 | spec_drift_b | api | PENDING | `GET /auth/me` 반환 필드 (default: 옵션 1 확장) |
-| SG-008-b5 | spec_drift_b | api | PENDING | `POST /auth/logout` 범위 (default: 옵션 1 current + `?all`) |
-| SG-008-b6 | spec_drift_b | api | PENDING | `POST /sync/mock/seed` env 가드 (default: 옵션 1 dev/staging only) |
-| SG-008-b7 | spec_drift_b | api | PENDING | `DELETE /sync/mock/reset` env 가드 (b6 와 페어) |
-| SG-008-b8 | spec_drift_b | api | PENDING | `GET /sync/status` 공개 범위 (default: 옵션 1 Public + Admin detail) |
-| SG-008-b9 | spec_drift_b | api | PENDING | `POST /sync/trigger/{source}` RBAC (default: 옵션 1 Admin + reject) |
+| SG-008 | spec_drift | api | PENDING | D3 89 → (a) 77 문서화 + (b) 12 SG 승격 완료 (v4.0, 2026-04-20) + (c) 0. b1~b9/b14/b15 는 2026-04-27 일괄 DONE (B 그룹) |
+| SG-008-b1 | spec_drift_b | api | **DONE** | 2026-04-27 — `GET /audit-events` RBAC=Admin only 채택 (registry 권고 옵션 1). 구현은 team2 위임 |
+| SG-008-b2 | spec_drift_b | api | **DONE** | 2026-04-27 — `GET /audit-logs` 별도 리소스 (events=user, logs=system) 채택 (옵션 1). 구현은 team2 위임 |
+| SG-008-b3 | spec_drift_b | api | **DONE** | 2026-04-27 — `GET /audit-logs/download` NDJSON + 100req/min rate limit 채택 (옵션 1). 구현은 team2 위임 |
+| SG-008-b4 | spec_drift_b | api | **DONE** | 2026-04-27 — `GET /auth/me` 확장 필드 (role, permissions, settings_scope) 채택 (옵션 1). 구현은 team2 위임 |
+| SG-008-b5 | spec_drift_b | api | **DONE** | 2026-04-27 — `POST /auth/logout` current + `?all=true` 옵션 채택 (옵션 1). 구현은 team2 위임 |
+| SG-008-b6 | spec_drift_b | api | **DONE** | 2026-04-27 — `POST /sync/mock/seed` env guard dev/staging only 채택 (옵션 1). 구현은 team2 위임 |
+| SG-008-b7 | spec_drift_b | api | **DONE** | 2026-04-27 — `DELETE /sync/mock/reset` env guard dev/staging only 채택 (b6 와 페어). 구현은 team2 위임 |
+| SG-008-b8 | spec_drift_b | api | **DONE** | 2026-04-27 — `GET /sync/status` Public + Admin detail bifurcation 채택 (옵션 1). 구현은 team2 위임 |
+| SG-008-b9 | spec_drift_b | api | **DONE** | 2026-04-27 — `POST /sync/trigger/{source}` Admin only + reject 권한 채택 (옵션 1). 구현은 team2 위임 |
 | SG-008-b10 | spec_drift_b | api | PENDING | `POST /events/{id}/undo` 기능 범위 (default: 옵션 3 Phase 1 미지원 — 삭제) |
 | SG-008-b11 | spec_drift_b | api | PENDING | `POST /tables/{id}/launch-cc` 필요성 (default: 옵션 1 deep-link 전환 — 삭제) |
 | SG-008-b12 | spec_drift_b | api | PENDING | `GET /reports/{type}` deprecate (default: 옵션 1 즉시 삭제 — 사용처 검증 후) |
 | SG-008-b13 | spec_drift_b | settings | PENDING | 2026-04-20 v2.0 (Agent G) — scanner P6 fix 후 D3=30→17. 잔류 8건 triage: (a) 6 / (b) 2 / (c) 0. (b) 2 = SG-008-b14 (twoFactorEnabled), SG-008-b15 (fillKeyRouting) 승격 예고 |
+| SG-008-b14 | spec_drift_b | settings | **DONE** | 2026-04-27 — `Settings.twoFactorEnabled` = User scope (per user) 채택. 구현은 team1/team2 위임 |
+| SG-008-b15 | spec_drift_b | settings | **DONE** | 2026-04-27 — `Settings.fillKeyRouting` = NDI fill/key param (Hardware Out Phase 2) 채택. 구현은 team1/team2 위임 |
 | SG-009 | spec_drift | fsm | IN_PROGRESS | TableFSM case 통일 — 이번 커밋에서 BS_Overview §3.1 직렬화 규약 추가 |
 | SG-010 | tooling | meta | PENDING | spec_drift_check.py 정밀화 (Settings, Schema, WebSocket). **F2 WebSocket detector 정밀화 완료 (2026-04-20)**, **P6 Settings detector 정규화 완료 (2026-04-20)** — camelCase/snake_case/dotted namespace/frontmatter 지원. D4 +39 |
 | SG-011 | spec_drift | rfid | **OUT_OF_SCOPE** | RFID_HAL_Interface §2.1. **프로토타입 범위 밖** — 실제 HAL 은 개발팀 + 제조사 SDK 확정 후 결정 (2026-04-20 재정의) |
@@ -94,11 +96,15 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | SG-014 | ia_overlap | 2.1 Frontend/Lobby+Settings | **SUPERSEDED** | `Conductor_Backlog/SG-014-graphic-editor-dual-entry.md` — 회의 D3 GE 제거 결정으로 자동 해소. Foundation §5.3 Rive Manager 대체 SSOT |
 | SG-015 | ia_missing | 2.1 Frontend/Lobby | PENDING | `Conductor_Backlog/SG-015-players-section-rationale.md` — Players 섹션 유지 근거 명문화 (WSOP LIVE Player Management 정렬) |
 | SG-016 | ia_missing | 2.1 Frontend/Lobby | PENDING | `Conductor_Backlog/SG-016-hand-history-sidebar-section.md` — 25개 분산 참조 → 독립 SSOT 섹션 (`Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` 기반) |
-| SG-017 | scope_inconsistency | 2.1 Frontend/Settings | PENDING | `Conductor_Backlog/SG-017-settings-global-vs-scoped.md` — Overview.md "글로벌" 본문 ↔ SG-003 4-level scope 모순. SG-003 + MEMORY 우선 권고 |
+| SG-017 | scope_inconsistency | 2.1 Frontend/Settings | **DONE** | 2026-04-27 — C.1 5-level scope (Global/Series/Event/Table/User) 채택. Settings/Overview.md 재작성 완료. SG-003 동시 해소 |
+| SG-003 | scope_design | 2.1 Frontend/Settings | **DONE** | 2026-04-27 — C.1 5-level scope 채택 (SG-017 와 합산 결정). Override 우선순위: User > Table > Event > Series > Global. WSOP LIVE 정렬 (원칙 1) |
 | SG-018 | data_model | 2.2 Backend/Database | PENDING | `Conductor_Backlog/SG-018-5nf-metamodel-tables.md` — 8종 메타모델 테이블, default 권고: 핵심 3종(nav_sections/report_templates/game_rules) 우선 |
 | SG-019 | scope_boundary | 1. Product/Foundation §1.2 | PENDING | `Conductor_Backlog/SG-019-reports-postproduction-boundary.md` — "Reports = 실시간 운영 지표 한정" 명문화 권고 |
-| SG-020 | spec_drift | websocket | PENDING | `Conductor_Backlog/SG-020-websocket-ack-reject-events.md` — Ack/Reject 6 이벤트 D2 regression. publisher 6 함수 + Engine 트리거 wiring 필요 (IMPL-006) |
-| SG-021 | spec_gap | Foundation §5.3 / 2.4 Overlay | PENDING | `Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` — SG-004 SUPERSEDED 후속. Rive 내장 메타데이터 정규 스키마 (Custom Property + State Machine + Text Run binding). default 권고: 대안 α (`.riv` 단일 파일) |
+| SG-020 | spec_drift | websocket | **DONE** | 2026-04-26 IMPL-006 완료 — websocket publisher 6 함수 추가, 6/6 pytest PASS. websocket PASS 복귀 |
+| SG-021 | spec_gap | Foundation §5.3 / 2.4 Overlay | **DONE** | 2026-04-27 — C.2 채택: `.riv` 단일 파일 + 표준 메타 스키마 (Custom Property + Text Run binding + State Machine). `Conductor_Backlog/SG-021-*.md` 갱신 |
+| SG-022 | scope_clarification | Foundation §5.0 / BS_Overview §1 | **DONE** | 2026-04-27 — A 채택: 단일 Desktop 바이너리 (Lobby 포함). Foundation §5.0 + BS_Overview §1 정렬 (Agent 1 처리). supersedes 2026-04-22 γ 하이브리드. 후속 보류: Docker compose lobby-web 정리 (Q2), team1 Web 빌드 자산 (Q3) |
+| BLANK-1 | scope_clarification | Foundation §6.4 (latency) | **DONE** | 2026-04-27 — C.3 채택: 100ms = 전체 파이프라인 (RFID → Engine → WS → Render → Output) end-to-end. WebSocket 단일 구간 부연 (Phase 2 측정 대상). Foundation §6.4 분해 (Agent 1 처리) |
+| BLANK-3 | scope_clarification | Multi_Session_Workflow.md (merge) | **DONE** | 2026-04-27 — C.4 채택: worktree fast-forward + pre-push conflict hook. Multi_Session_Workflow.md L4 신규 섹션 |
 
 ## 5. 스캔 명령 레퍼런스
 
@@ -148,3 +154,4 @@ python tools/spec_drift_check.py --settings
 | 2026-04-22 | v1.4 — Foundation 재설계 집계 동기화 (B-203) | SG-001/002/005 를 §4.4 승격 index 에 DONE 으로 추가 — 개별 `Conductor_Backlog/SG-*.md` frontmatter 는 이미 RESOLVED 였으나 Registry 집계 누락. Aggregate-vs-Source 동기화. |
 | 2026-04-26 | v1.5 — SG-012~019 승격 + SG-020 신설 (Phase 1 audit) | (1) SG-012~SG-019 8건 개별 SG 파일 신설 (`_template_spec_gap.md` 기반) — 2026-04-21 critic 리포트 등재 후 5일 동안 미승격. 추적 단절 해소. (2) **SG-020 신설** — WebSocket ack/reject 6 이벤트 D2 regression (baseline 2026-04-21 PASS 0/0/0/44 → fresh 2026-04-26 0/6/0/38). (3) §4.1 fresh scan 결과 갱신: api D2 +6 (42→48), settings D2 +7/D3 +2 (97/17→104/19), websocket D2 +6 (0→6). (4) audit 보고서 `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md` 발행. |
 | 2026-04-26 | v1.6 — Conductor 직접 IMPL 실행 (사용자 지시 "프로토타입 완성") | (1) **IMPL-006 DONE** — websocket publisher 6 함수 추가 (publishers.py 20→26, test_publishers.py 6/6 PASS). websocket PASS 복귀 0/0/0/44. SG-020 DONE. (2) **IMPL-007 DONE** — CC seat_cell.dart hole card 값 렌더링 제거 + face-down `?` 표시. `tools/check_cc_no_holecard.py` CI 가드 신설. Command_Center_UI/Overview.md §5.1 D7 계약 신설. (3) **IMPL-004 DONE (a)** — Settings 17 (a) 키 5개 Settings/*.md 파일 보강. settings D3 19→4 (잔여 4 = b14/b15 + scanner 2 false positive). (4) **IMPL-005 분석** — 48 D2 중 대다수 scanner false positive (router prefix 인식 한계, SG-010 후속). 그룹 A/B/C/D 분해 권고. (5) §4.1 갱신 (websocket PASS 복귀, settings 갱신). (6) pytest 248 passed (baseline 247 + 신규 ack/reject test). |
+| 2026-04-27 | v1.7 — Phase 1 Decision Queue (사용자 18건 결정 SSOT) | (1) **SG-022 신규** — 단일 Desktop 바이너리 (Lobby 포함). 2026-04-22 γ 하이브리드 supersedes. Foundation §5.0 / BS_Overview §1 정렬 (Agent 1). (2) **SG-008-b1~b9, b14, b15 = DONE** (B 그룹 11건 일괄 채택, registry 권고 옵션 1). 구현은 team2 위임. (3) **SG-003 + SG-017 = DONE** (C.1 5-level scope: Global/Series/Event/Table/User). Settings/Overview.md 재작성. (4) **SG-021 = DONE** (C.2 `.riv` 단일파일 + 표준 메타). Conductor_Backlog/SG-021 갱신. (5) **SG-020 = DONE** (IMPL-006 완료 반영). (6) **BLANK-1 신규 = DONE** (C.3 100ms 전체 파이프라인). (7) **BLANK-3 신규 = DONE** (C.4 worktree fast-forward + pre-push hook). (8) Phase_1_Decision_Queue.md 신규 작성. Multi_Session_Workflow.md L4 신설. Game_Rules 4 파일 frontmatter `tier: external` + `last-updated: 2026-04-27`. MEMORY feedback_web_flutter_separation [SUPERSEDED] + project_decision_2026_04_27_phase1.md 신규. |

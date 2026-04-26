@@ -2,11 +2,11 @@
 title: BS Overview
 owner: conductor
 tier: internal
-last-updated: 2026-04-22
+last-updated: 2026-04-27
 legacy-id: BS-00
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
-reimplementability_notes: "§1 Tech Stack SSOT 3중화 해소 (SG-001 채택: Flutter 채택 + 원칙 1 예외 justify). Lobby/GE 행을 Flutter 로 정렬 완료"
+reimplementability_notes: "§1 Tech Stack SSOT 3중화 해소 (SG-001 채택: Flutter 채택 + 원칙 1 예외 justify). Lobby/GE 행을 Flutter 로 정렬 완료. 2026-04-27 SG-022: §1 전면 재작성 — 단일 Desktop 바이너리 (Lobby + CC + Overlay), γ 하이브리드 폐기."
 ---
 
 # BS-00 Definitions — 용어·상태·트리거 총괄 정의서
@@ -23,6 +23,7 @@ reimplementability_notes: "§1 Tech Stack SSOT 3중화 해소 (SG-001 채택: Fl
 | 2026-04-20 | SG-001 Tech Stack 정렬 | §1 Lobby/GE 기술 컬럼을 Flutter 로 갱신. CCR-016 SSOT 선언 유지. 원칙 1 divergence justify (WSOP LIVE Staff Page=Web 와 의도적 차이, EBS 고유 요구). 상세: `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` |
 | 2026-04-22 | Foundation §4.4/§5.0 정렬 | §1 도입부 재작성: Foundation §4.4 2 렌즈(기능 6 ↔ 설치 4 SW+1 HW) + γ 하이브리드 반영 (Lobby Web 정규 / CC·Overlay Desktop). "단일 Flutter 앱 2개 화면 금지" → "Foundation §5.0 2 런타임 모드는 CC/Overlay Desktop 내부 선택지" 맥락 구분. CCR-016 참조를 v7 free_write + decision_owner 로 갱신. Ref: B-201, B-200-1 γ retro |
 | 2026-04-22 | 회의 D3 GE 제거 반영 | §1 Graphic Editor (GE) 행 → Rive Manager 로 축소 (Import + Activate + RBAC). §7.4 GEM-* 25 Metadata 편집 요구사항 SUPERSEDED 마킹. 메타데이터는 Rive 파일 내장. Ref: B-209, `Meeting_Analysis_2026_04_22.md §3 D3` |
+| 2026-04-27 | SG-022 결정 — §1 전면 재작성 (단일 Desktop 바이너리, γ 하이브리드 폐기). Lobby + Settings + Rive Manager + Command Center + Overlay 모두 단일 Flutter Desktop 바이너리로 배포. Web 빌드는 Phase 2 옵션. §1 표 "배포 형태" 컬럼 통일. 용어 구분 주의 callout 갱신. Ref: Spec_Gap_Registry SG-022, Phase_1_Decision_Queue.md (2026-04-27) |
 
 ---
 
@@ -34,36 +35,56 @@ reimplementability_notes: "§1 Tech Stack SSOT 3중화 해소 (SG-001 채택: Fl
 
 ---
 
-## 1. 앱 아키텍처 용어
+## 1. 단일 Desktop 바이너리 (SG-022, 2026-04-27)
 
-EBS는 **Foundation §4.4 의 설치 4 SW + 1 HW** 구조를 따른다. 기능 관점 6 조각 ↔ 설치 관점 4 SW + 1 HW (γ 하이브리드 2026-04-22). 모든 프론트엔드 기능(Lobby/Settings/GE/CC/Overlay)이 **동일한 Flutter + Dart + Rive** 스택을 공유하되, 배포 타겟이 직교적으로 갈라진다:
+EBS 는 **Foundation §4.4 의 설치 4 SW + 1 HW** 구조를 따른다. **모든 프론트엔드 (Lobby / Settings / Graphic Editor / Command Center / Overlay) 가 동일한 Flutter + Dart + Rive 스택을 공유하며, 단일 Desktop 바이너리 (`.exe` / `.app` / `.deb`) 로 배포된다.**
 
-- **Lobby / Settings / Graphic Editor** → **Flutter Web 정규 배포** (Docker nginx, LAN 다중 클라이언트). Desktop 빌드는 개발자 디버깅.
-- **Command Center / Overlay** → **Flutter Desktop 설치** (RFID 시리얼 + SDI/NDI 직결 필수). Foundation §5.0 2 런타임 모드(탭/다중창)는 이 Desktop 설치 내부의 선택지.
+내부 라우팅 / 창 분리는 Foundation §5.0 의 두 런타임 모드 (탭/슬라이딩, 다중창) 옵션으로 노출된다 — 이는 단일 바이너리 내부의 선택지이며, 별도 앱 배포가 아니다.
 
-WSOP LIVE 관제 허브 패턴을 참조하되 **의도적 divergence** (원칙 1 §"적용 예외": rive 프리뷰 성능 요구 + Flutter/Dart 코드 재사용). 기술 스택 자율성 근거: `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md`.
+### 1.1 단일 Desktop 채택 근거
 
-| 용어 | 정의 | 기술 | 배포 형태 | 비고 |
-|------|------|------|-----------|------|
-| **Lobby** | 모든 테이블의 관제·설정 허브 | Flutter/Dart + Riverpod + Freezed + Dio + go_router + rive | **Web (Docker nginx, port 3000)** — 브라우저 접속 | WSOP LIVE Staff Page 역할 대응. GE 허브 포함. Tech Stack SSOT (CCR-016, SG-001 resolved 2026-04-20). 개발자 디버깅: `flutter run -d chrome` / `-d windows` |
-| **Command Center (CC)** | 게임 진행 커맨드 입력 화면. 테이블당 1개 인스턴스 | Flutter/Dart + Riverpod + Dio + rive | **Windows Desktop 앱** (RFID 시리얼 하드웨어 접근) | 구 PokerGFX Action Tracker. Lobby 와 동일 프레임워크 |
-| **Back Office (BO)** | Lobby와 CC 사이 간접 데이터 공유 계층. REST API + WebSocket + DB | FastAPI + SQLite → PostgreSQL | Lobby↔CC 직접 연동 없음 |
-| **Game Engine** | 게임 규칙·상태 관리 순수 패키지. CC에 import됨 | 순수 Dart (Flutter 의존 없음, 단 `bin/harness.dart` 는 `dart:io` HTTP 서버 허용) | Event Sourcing |
-| **Overlay** | 시청자 방송 화면 그래픽 출력 | Flutter + Rive | CC와 동일 기술 스택 |
-| **Rive Manager** (구 Graphic Editor) | Rive 파일 **업로드 + 검증 + 활성화** 허브. Lobby Web 내부 섹션(`/lobby/rive-manager` 또는 Settings 하위). 메타데이터는 Rive 파일에 내장 (D3 2026-04-22) | Flutter Web + Rive (프리뷰) | Admin 전용. Lobby Web 내부 기능 (별도 앱 아님). GEM-* 25 Metadata 편집 요구사항 **SUPERSEDED** (회의 D3 2026-04-22). GEI (Import) + GEA (Activate) + GER (RBAC) 만 유효. |
-| **Settings** | 오버레이·출력·게임 규칙·통계 설정. Lobby의 하위 다이얼로그 | Lobby 앱 내 구현 | ~~Console~~ 독립 앱 아님 |
+- RFID 시리얼 + SDI/NDI 직결 = Desktop 환경 필수
+- Lobby 도 동일 Desktop 환경 운영 (LAN 데스크톱 + 외부 라우팅 모두 Desktop 으로 통일)
+- 4 팀 (team1 Frontend / team2 Backend / team3 Engine / team4 CC) Flutter 공통 의존성 단순화
+- 사용자 결정 SG-022 (2026-04-27): γ 하이브리드 (Web/Desktop 분리) 폐기 명시
+
+### 1.2 용어 구분 주의
+
+- **단일 Desktop 바이너리**: Lobby + CC + Overlay 모두 포함하는 하나의 배포 단위
+- **두 런타임 모드** (Foundation §5.0): 단일 바이너리 내부의 탭/슬라이딩 또는 다중창 옵션 (Lobby 포함)
+- **별도 배포 단위 아님**: Lobby 를 Web 앱으로 분리하던 2026-04-22 γ 하이브리드 정책은 폐기됨
+
+### 1.3 Phase 2 옵션
+
+Web 빌드는 현재 EBS 범위 밖 (Phase 2 옵션). 향후 운영 요구가 발생하면 별도 Spec Gap 으로 재기획.
+
+### 1.4 참조
+
+- Foundation §5.0 (두 런타임 모드)
+- Spec_Gap_Registry SG-022
+- Phase_1_Decision_Queue.md (2026-04-27 결정 기록)
+- 폐기된 정책: 2026-04-22 γ 하이브리드 (MEMORY `feedback_web_flutter_separation` SUPERSEDED)
+
+### 1.5 앱 구성 표
+
+| 용어 | 정의 | 기술 | 비고 |
+|------|------|------|------|
+| **Lobby** | 모든 테이블의 관제·설정 허브 | Flutter/Dart + Riverpod + Freezed + Dio + go_router + rive | 단일 Desktop 바이너리 내부 라우팅. Rive Manager 허브 포함. Tech Stack SSOT (CCR-016, SG-001 resolved 2026-04-20). 개발자 디버깅: `flutter run -d windows` |
+| **Command Center (CC)** | 게임 진행 커맨드 입력 화면. 테이블당 1개 인스턴스 | Flutter/Dart + Riverpod + Dio + rive | 구 PokerGFX Action Tracker. Lobby 와 동일 바이너리 (라우팅 분리). RFID 시리얼 하드웨어 접근. |
+| **Overlay** | 시청자 방송 화면 그래픽 출력 | Flutter + Rive | CC 와 동일 바이너리 / 기술 스택. SDI/NDI 직결. |
+| **Rive Manager** (구 Graphic Editor) | Rive 파일 **업로드 + 검증 + 활성화** 허브. Lobby 내부 섹션 (`/lobby/rive-manager` 또는 Settings 하위). 메타데이터는 Rive 파일에 내장 (D3 2026-04-22) | Flutter + Rive (프리뷰) | Admin 전용. Lobby 내부 기능 (별도 앱 아님). GEM-* 25 Metadata 편집 요구사항 **SUPERSEDED** (회의 D3 2026-04-22). GEI (Import) + GEA (Activate) + GER (RBAC) 만 유효. |
+| **Settings** | 오버레이·출력·게임 규칙·통계 설정. Lobby의 하위 다이얼로그 | Lobby 내 구현 | ~~Console~~ 독립 앱 아님 |
+| **Back Office (BO)** | Lobby와 CC 사이 간접 데이터 공유 계층. REST API + WebSocket + DB | FastAPI + SQLite → PostgreSQL | 별도 서비스 프로세스. Lobby↔CC 직접 연동 없음 |
+| **Game Engine** | 게임 규칙·상태 관리 순수 패키지. CC에 import됨 | 순수 Dart (Flutter 의존 없음, 단 `bin/harness.dart` 는 `dart:io` HTTP 서버 허용) | 별도 서비스 프로세스. Event Sourcing |
 
 **관계**:
-- Lobby : CC = **1 : N** (1개 Lobby에서 N개 테이블의 CC 관리)
+- Lobby : CC = **1 : N** (1개 Lobby에서 N개 테이블의 CC 관리, 단일 바이너리 내 라우팅)
 - Lobby ↔ CC **직접 연동 없음** — Back Office DB를 통한 간접 공유
 - CC 1개 = Table 1개 = Overlay 1개
 
-> **용어 구분 주의 (2026-04-22)**:
-> - **Lobby vs CC 는 별도 배포 단위** — Lobby(Web) / CC(Desktop). 동일 Flutter 프레임워크 공유하나 배포 타겟 직교.
-> - **Foundation §5.0 "하나의 앱, 두 런타임 모드"** — 이는 **CC/Overlay Desktop 설치** 내부의 선택지 (탭/슬라이딩 단일 프로세스 vs 다중창 독립 프로세스). Lobby-CC 관계를 지칭하는 것이 아님.
-> - Lobby 가 "Web 앱", CC + Overlay 가 "Desktop 공동 바이너리 (EBS Desktop App, §4.4)" 라는 점을 혼동하지 말 것.
+> **Tech Stack SSOT**: 본 §1.5 표는 EBS 앱 기술 스택의 **단일 출처(Single Source of Truth)** 다. 팀 내부 스펙(`team*-*/CLAUDE.md`, `docs/2. Development/2.{1..4}/**`)은 본 표를 cross-reference. 변경 시 v7 `free_write_with_decision_owner` 거버넌스 따름 — decision_owner = Conductor, 변경 후 모든 팀에 notify (CCR 폐기 2026-04-17).
 
-> **Tech Stack SSOT**: 본 §1 표는 EBS 앱 기술 스택의 **단일 출처(Single Source of Truth)** 다. 팀 내부 스펙(`team*-*/CLAUDE.md`, `docs/2. Development/2.{1..4}/**`)은 본 표를 cross-reference. 변경 시 v7 `free_write_with_decision_owner` 거버넌스 따름 — decision_owner = Conductor, 변경 후 모든 팀에 notify (CCR 폐기 2026-04-17).
+> **WSOP LIVE 정렬 주의 (원칙 1 §"적용 예외")**: WSOP LIVE Staff Page 는 Web 이지만, EBS 는 RFID 시리얼 + SDI/NDI 직결 + Rive 런타임 일치 + 4 팀 Flutter 공통 의존성을 이유로 **Desktop 단일 바이너리 채택**. 기술 스택은 EBS 자율 (CLAUDE.md 원칙 1). 기획·문서·용어 정렬은 유지. 자율성 근거: `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md`.
 
 ---
 

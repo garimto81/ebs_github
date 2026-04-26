@@ -1,0 +1,169 @@
+---
+title: Phase 1 Decision Queue (18건 결정 기록)
+owner: conductor
+tier: internal
+last-updated: 2026-04-27
+---
+
+# Phase 1 Decision Queue — 사용자 18건 결정 SSOT
+
+## 개요
+
+사용자 (기획자) 가 2026-04-27 에 결정한 **18건 spec 결정** 의 SSOT 기록. Phase 1 차단 해제 조건. 본 문서는 cascade 작업 (메커니컬 + 정책 동기화) 의 최상위 결정 근거로 사용된다.
+
+| 그룹 | 건수 | 요약 |
+|:---:|:---:|------|
+| A | 1 | SG-022 단일 Desktop 바이너리 (Lobby 포함) 채택 |
+| B | 11 | SG-008-b1~b9, b14, b15 registry 권고 일괄 채택 |
+| C | 4 | C.1 Settings 4-level scope, C.2 Rive `.riv` 단일파일 + 표준 메타, C.3 100ms 전체 파이프라인, C.4 worktree fast-forward + pre-push hook |
+| Q (보류) | 2 | Q2 Docker lobby-web 정리, Q3 team1 Web 빌드 자산 |
+
+> **18건 = A(1) + B(11) + C(4) + Q(2)**. Q 는 사용자 후속 결정 대기.
+
+---
+
+## Decision Group A — 단일 Desktop 바이너리
+
+### SG-022 (NEW) — 단일 Desktop 바이너리 (Lobby 포함)
+
+| 항목 | 내용 |
+|------|------|
+| 결정 | EBS 모든 프론트엔드 (Lobby/CC/Overlay) = **하나의 Flutter Desktop 바이너리** |
+| Supersedes | `feedback_web_flutter_separation` (2026-04-22 γ 하이브리드 — Web Lobby + Desktop CC 분리) |
+| 영향 (자동 처리) | Foundation §5.0, BS_Overview §1 (Agent 1 처리) |
+| 영향 (보류) | Docker compose `lobby-web` 정리 (Q2), team1-frontend Web 빌드 자산 (Q3) |
+| Why | 사용자 (기획자) 가 단순성 우선, RFID/SDI/NDI 직결 환경 통일 선호 |
+
+> Lobby Web 배포 제안 금지. team1 빌드는 Desktop 만 유지. 후속 Web 빌드 요구 시 새 Spec Gap 으로 처리.
+
+---
+
+## Decision Group B — SG-008-b 11건 일괄 채택
+
+registry 권고 (default option) 를 일괄 수용. 구현은 team2 위임.
+
+| ID | endpoint / key | 결정 |
+|----|----------------|------|
+| SG-008-b1 | `GET /api/v1/audit-events` | RBAC: Admin only |
+| SG-008-b2 | `GET /api/v1/audit-logs` | 별도 리소스 (events=user, logs=system) |
+| SG-008-b3 | `GET /api/v1/audit-logs/download` | NDJSON + 100req/min rate limit |
+| SG-008-b4 | `GET /api/v1/auth/me` | 확장 필드 (role, permissions, settings_scope) |
+| SG-008-b5 | `POST /api/v1/auth/logout` | current + `?all=true` 옵션 |
+| SG-008-b6 | `POST /api/v1/sync/mock/seed` | env guard: dev/staging only |
+| SG-008-b7 | `DELETE /api/v1/sync/mock/reset` | env guard: dev/staging only |
+| SG-008-b8 | `GET /api/v1/sync/status` | Public + Admin detail bifurcation |
+| SG-008-b9 | `POST /api/v1/sync/trigger/{source}` | Admin only + reject 권한 |
+| SG-008-b14 | Settings.`twoFactorEnabled` | User scope (per user) |
+| SG-008-b15 | Settings.`fillKeyRouting` | NDI fill/key param (Hardware Out Phase 2) |
+
+> Why: 사용자 efficient 결정 패턴 — registry 권고가 충분히 분석된 옵션이면 일괄 채택. SG-008-b10/b11/b12 는 본 그룹에 포함되지 않음 (별도 처리).
+
+---
+
+## Decision Group C — 정책 결정 4건
+
+### C.1 — SG-003 + SG-017 합산 — Settings 5-level scope
+
+- **결정**: Settings 는 **5-level scope** (Global / Series / Event / Table / User) 분리
+- **Override 우선순위**: User > Table > Event > Series > Global
+- **Cascade**: `docs/2. Development/2.1 Frontend/Settings/Overview.md` 재작성
+- **Why**: WSOP LIVE Confluence 패턴과 정렬 (원칙 1). 일부 키 (예: `twoFactorEnabled` per Decision SG-008-b14) 는 User scope 만 적용
+- **Supersedes**: `feedback_settings_global` (2026-04-15 — Settings 글로벌 단일)
+
+### C.2 — SG-021 — Rive 메타데이터 표준 스키마
+
+- **결정**: `.riv` **단일 파일** (no `.gfskin` ZIP, no sidecar `.json`)
+- **메타데이터 위치**: artboard Custom Property + Text Run binding + State Machine
+- **Cascade**: `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` (DONE 결정 추가)
+- **Why**: 회의 D3 (2026-04-22) 의도 직접 반영 + Rive 표준 지원
+
+### C.3 — BLANK-1 — 100ms 전체 파이프라인 정의
+
+- **결정**: 100ms = **RFID → Engine → WebSocket → Render → Output 전체** 의 end-to-end 지연
+- **WebSocket 단일 구간**: 별도 부연 (구간별 budget 은 Phase 2 측정 대상)
+- **Cascade**: Foundation §6.4 분해 (Agent 1 처리)
+- **Why**: 사용자 의도 명확화 — 100ms 가 단일 구간 budget 이 아님을 명문화
+
+### C.4 — BLANK-3 — Multi_Session_Workflow merge strategy
+
+- **결정**: **worktree fast-forward + pre-push hook** 으로 충돌 사전 검출
+- **Cascade**: `docs/4. Operations/Multi_Session_Workflow.md` L4 신규 섹션
+- **Why**: sibling-dir worktree 모델 (v5.0+) 기준 반영 + Conductor 중재 경로 명문화
+
+---
+
+## Cascading Impact 파일 목록
+
+### 자동 처리됨 (이번 cascade)
+
+| 파일 | 처리자 | 변경 요약 |
+|------|--------|----------|
+| `docs/1. Product/Foundation.md` (§5.0, §6.4) | Agent 1 | SG-022 + BLANK-1 |
+| `docs/2. Development/2.5 Shared/BS_Overview.md` (§1) | Agent 1 | SG-022 |
+| `docs/4. Operations/Spec_Gap_Registry.md` | Agent 2 (이 turn) | SG-022 신규, SG-020/021/003/017/008-b DONE |
+| `docs/2. Development/2.1 Frontend/Settings/Overview.md` | Agent 2 (이 turn) | C.1 5-level scope 재작성 |
+| `docs/4. Operations/Multi_Session_Workflow.md` | Agent 2 (이 turn) | L4 merge strategy |
+| `docs/4. Operations/Conductor_Backlog/SG-021-*.md` | Agent 2 (이 turn) | C.2 Rive 스키마 DONE |
+| `docs/1. Product/Game_Rules/*.md` (4 files) | Agent 2 (이 turn) | frontmatter `tier: external` + `last-updated` 갱신 |
+| MEMORY 3종 | Agent 2 (이 turn) | feedback_web_flutter_separation [SUPERSEDED], 신규 project_decision_2026_04_27_phase1.md |
+
+### 사용자 보류 (후속 결정 대기)
+
+| 항목 | 사유 | decision_owner |
+|------|------|----------------|
+| Q2 — Docker compose `lobby-web` 컨테이너/이미지 정리 | 좀비 위험 (Docker_Runtime.md 규칙 위반 가능). 사용자 명시 승인 필요 | 사용자 |
+| Q3 — team1-frontend Web 빌드 자산 (`web/` 폴더, build script) | 코드 변경, team1 세션 위임 | team1 |
+
+→ **Conductor_Backlog 등재 완료 (2026-04-27)**:
+- `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md`
+- `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md`
+
+각 항목에 due-date 권고 (2026-05-04, 1주일) + 미합류 시 사용자 에스컬레이션 조건 명시.
+
+---
+
+## 결정 검증 (Verification Checklist)
+
+| 검증 항목 | Pass 조건 |
+|----------|----------|
+| SG-022 가 registry 에 존재 | Spec_Gap_Registry §4.4 에 신규 row |
+| SG-008-b1~b9, b14, b15 = DONE | Spec_Gap_Registry §4.4 의 status 컬럼 갱신 |
+| Settings/Overview.md = 5-level scope | "글로벌 단일" 표현 폐기 + Override 표 존재 |
+| SG-021 = DONE | Conductor_Backlog/SG-021-*.md frontmatter status: DONE |
+| Multi_Session_Workflow.md L4 존재 | "L4. Merge Strategy" 헤더 등장 |
+| Game_Rules 4 파일 frontmatter | `tier: external`, `last-updated: 2026-04-27` |
+| MEMORY feedback_web_flutter_separation | description 끝에 `[SUPERSEDED 2026-04-27]` |
+| MEMORY 신규 1건 추가 | `project_decision_2026_04_27_phase1.md` 존재 + MEMORY.md 인덱스 행 추가 |
+
+---
+
+## 참조
+
+- `docs/4. Operations/Spec_Gap_Registry.md` (SG-022, SG-008-b, SG-021, SG-003, SG-017)
+- `docs/4. Operations/Spec_Gap_Triage.md` §7 Type B / Type C
+- `docs/2. Development/2.5 Shared/team-policy.json` v7 `free_write_with_decision_owner`
+- MEMORY `feedback_settings_global` [SUPERSEDED]
+- MEMORY `feedback_web_flutter_separation` [SUPERSEDED]
+- MEMORY `project_decision_2026_04_27_phase1` (신규)
+
+## Decision Group D — Cascade 후속 confirm (2026-04-27)
+
+사용자가 18건 결정 적용 후 cascade 후속 4건을 추가 confirm:
+
+| ID | 결정 | 처리 |
+|----|------|------|
+| 1.㉠ | 14 파일 single commit (`feat(spec): SG-022 + Phase 1 18-item cascade`) | Conductor 처리 |
+| 2.㉡ | Q2 (Docker lobby-web) → team1 세션 합류 시 처리 | B-Q2 등재, due 2026-05-04 |
+| 3.㉠ | memory `project_decision_2026_04_27_phase1.md` L41 경로 정정 (Spec_Gaps→Conductor_Backlog) | 정정 완료 |
+| 4.㉠ | Game_Rules 4파일 `tier: internal → external` 채택 | 이미 적용됨 (Confluence 발행 정책 정렬) |
+
+> Phase_1_Decision_Queue.md 본문 (L77, L106) 의 SG-021 경로는 이미 정확. 잘못된 경로는 memory 파일에만 존재했음.
+
+---
+
+## Changelog
+
+| 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
+|------|------|-----------|----------|----------|
+| 2026-04-27 | v1.1 | Group D 추가 (cascade 후속 4건 confirm) + Q2/Q3 Backlog 등재 갱신 | PRODUCT | 사용자 1.㉠/2.㉡/3.㉠/4.㉠ 결정 SSOT 화 |
+| 2026-04-27 | v1.0 | 최초 작성 (사용자 18건 결정 SSOT) | PRODUCT | Phase 1 cascade — 사용자 결정을 SSOT 화 |

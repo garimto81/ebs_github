@@ -2,10 +2,10 @@
 title: Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate)
 owner: conductor
 tier: contract
-last-updated: 2026-04-22
+last-updated: 2026-04-27
 reimplementability: PASS
 reimplementability_checked: 2026-04-22
-reimplementability_notes: "v5.1 — v5.0 에 L0 Pre-Work Contract (Active_Work.md) 추가. proactive coordination + reactive merge gate 이중 안전망"
+reimplementability_notes: "v5.1 — v5.0 에 L0 Pre-Work Contract (Active_Work.md) 추가. proactive coordination + reactive merge gate 이중 안전망. 2026-04-27 L4 Merge Strategy (BLANK-3) 추가"
 ---
 
 # Multi-Session Workflow — v5.1
@@ -216,6 +216,43 @@ PR 생성 완료. CODEOWNERS 가 해당 팀 owner 에게 리뷰 요청 전송.
 - 선착순 (`cancel-in-progress: false`)
 - CI 실패 시 해당 PR 만 탈락, 다음 PR 은 정상 진행
 
+## L4. Merge Strategy (BLANK-3 결정, 2026-04-27)
+
+다중 세션 worktree merge 충돌 해소 규칙. Phase_1_Decision_Queue.md C.4 결정에 따른 명문화.
+
+### Default 전략
+
+- **worktree-based fast-forward merge** (Conductor `/team-merge` 커맨드 사용)
+- 비-worktree (subdir) 모델은 v5.0 에서 deprecated, **사용 금지**
+
+### Conflict 사전 검출
+
+- pre-push hook (`.claude/hooks/pre_push_conflict_check.py` — 신규 권고, 후속 PR 대상)
+- 검사 내용: `git diff origin/main` 의 변경 파일 목록 vs 다른 활성 worktree 브랜치의 변경 파일 목록 cross-overlap
+- overlap 감지 시: push 차단 + 경고 메시지 + 해소 안내
+
+### Resolution 절차
+
+1. 충돌 감지 → Conductor 세션이 중재
+2. `git pull --rebase origin/{branch}` 으로 base 동기화
+3. conflict 해소는 의미적 (decision_owner 판정 — `team-policy.json` `contract_ownership` 참조)
+4. Conductor `/team-merge` 가 최종 fast-forward 판정
+
+### Active Worktree 우선순위
+
+- **sibling-dir worktree** (예: `C:/claude/ebs-team1-flutter`) — **현재 채택 모델**
+- subdir worktree (예: `ebs/team1-frontend/`) — **deprecated v5.0**
+
+### 현재 활성 worktree (참고, 2026-04-27 시점)
+
+- 8개 active. `git worktree list` 로 실시간 확인.
+
+### 참조
+
+- Spec_Gap_Registry BLANK-3
+- `docs/4. Operations/Phase_1_Decision_Queue.md` (2026-04-27 C.4)
+- `team-policy.json` `governance_model: free_write_with_decision_owner`
+
 ## 거버넌스 (v7 유지)
 
 `team-policy.json` v7 `free_write_with_decision_owner` 모델은 **v5.0 에서도 유지**:
@@ -271,6 +308,7 @@ PR 생성 완료. CODEOWNERS 가 해당 팀 owner 에게 리뷰 요청 전송.
 | 2026-04-21 | v4.1 | Hybrid PR (Team=PR / Conductor=direct) patch |
 | 2026-04-21 | v5.0 | 전체 재설계. 업계 표준 재사용. 3-Phase. free-tier 호환. v4.0/v4.1 deprecated |
 | 2026-04-22 | **v5.1** | **L0 Pre-Work Contract 추가** (Active_Work.md). proactive coordination + reactive merge gate 이중 안전망. 4-Phase |
+| 2026-04-27 | **v5.1+L4** | **L4 Merge Strategy 추가** (BLANK-3). worktree fast-forward + pre-push hook 명문화. Phase_1_Decision_Queue C.4 결정 |
 
 ## 근거 Research (2026-04-21)
 

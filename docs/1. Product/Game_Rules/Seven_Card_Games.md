@@ -1,9 +1,9 @@
 ---
 title: Seven Card Games
 owner: conductor
-tier: internal
+tier: external
 legacy-id: PRD-GAME-03
-last-updated: 2026-04-15
+last-updated: 2026-04-27
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "PRD-GAME-03 완결 본문 (34KB) + Confluence 발행 대상, 독립 완결"

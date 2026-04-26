@@ -2,10 +2,12 @@
 id: SG-021
 title: "Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체)"
 type: spec_gap
-status: PENDING
+status: DONE
 owner: conductor  # decision_owner (Foundation §5.3)
 decision_owners_notified: [team1, team4]
 created: 2026-04-26
+last-updated: 2026-04-27
+resolved: 2026-04-27
 affects_chapter:
   - docs/1. Product/Foundation.md §5.3 Rive Manager
   - docs/2. Development/2.4 Command Center/Overlay/  (.riv 소비)
@@ -16,6 +18,7 @@ related:
   - B-209 (회의 D3 GE 제거 결정 전파)
   - SG-014 SUPERSEDED (Graphic Editor 진입점 이중화)
   - docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md D3
+  - docs/4. Operations/Phase_1_Decision_Queue.md (2026-04-27 C.2 결정)
 ---
 
 # SG-021 — Rive 내장 메타데이터 스키마
@@ -90,3 +93,49 @@ python tools/validate_rive_skin.py path/to/skin.riv
 - SG-004 SUPERSEDED — `.gfskin` ZIP 포맷 (이전 설계)
 - SG-014 SUPERSEDED — Graphic Editor 진입점 이중화
 - B-209 — 회의 D3 GE 제거 결정 전파
+
+---
+
+## SG-021 — Rive 내장 메타데이터 스키마 (DONE 2026-04-27)
+
+### 결정
+
+- **컨테이너 포맷**: `.riv` 단일 파일 (no `.gfskin` ZIP, no sidecar `.json`)
+- **위치**: artboard 레벨 Custom Property + Text Run binding + State Machine
+- **선택 근거**: 회의 D3 (2026-04-22) 의도 직접 반영 + Rive 표준 지원 + 단일 파일 단순성
+
+### 필수 Custom Property (artboard root)
+
+| 키 | 타입 | 제약 |
+|----|------|------|
+| `skin_name` | string | non-empty |
+| `skin_version` | string | semver (예: `1.0.0`) |
+
+### 필수 Text Run binding (artboard 내)
+
+- `player.name.{seat_id}` (seat_id ∈ {1..10}) — 선수 이름 텍스트
+- `pot.total` — 팟 총액 텍스트
+
+### 필수 State Machine
+
+- Triggers: `deal`, `fold`, `win`, `lose` — 액션 트리거
+- 카드 트리거: `card.{seat_id}.{rank}.{suit}` (seat_id ∈ {1..10}, rank ∈ {2..A}, suit ∈ {♠♥♦♣}) — 또는 trigger pool + parameter 형태로 단순화 (구현 자유)
+
+### Validation (team1 Rive Manager Validate 단계)
+
+- 위 필수 키 존재 여부 검사
+- `skin_version` semver 형식 검증
+- 누락 시 warning, blocked 시 error
+
+### 영향
+
+- team1 Rive Manager: Validate UI 검증 항목 명세 완료
+- team2 API: `POST /api/v1/skins` validate 로직 구현 가능
+- team4 Overlay: 메타데이터 추출 경로 명세 완료
+- 폐기: `.gfskin` ZIP 컨테이너 (SG-004)
+
+### 참조
+
+- Spec_Gap_Registry SG-021
+- `docs/4. Operations/Phase_1_Decision_Queue.md` (2026-04-27 C.2)
+- 회의 D3 (2026-04-22) 후속

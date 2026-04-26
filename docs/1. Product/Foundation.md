@@ -5,7 +5,7 @@ tier: internal
 confluence-page-id: 3625189547
 confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
 source: confluence (SSOT)
-last-updated: 2026-04-22
+last-updated: 2026-04-27
 reimplementability: UNKNOWN
 reimplementability_checked: 2026-04-22
 reimplementability_notes: "2026-04-22 회의 결정 반영 — Ch.4 2 렌즈 도입(기능 6 / 설치 4 → γ 하이브리드 4 SW + 1 HW 재분류) + §4.4 매핑 테이블 신설 + §5.1 Flutter 스택 통일 γ 보정 (Lobby Web 정규, CC/Overlay Desktop — team1 PR#11-14 retro). Ch.5 §5.0 2 런타임 모드 신설(D2, CC/Overlay 내부 선택지), Ch.6.3 프로세스 모델 명시(D5), Ch.6.4 실시간 동기화 정책 신설(D5: SG-002 해소), Ch.7.1 배경 config flag 명시(D4), Ch.8.5 복수 테이블 아키텍처 신설(D1: N PC + 중앙 서버 BO+DB). F2 BS_Overview 용어 정의 + F3 Spec_Gap SG-002 DONE 전환 후 최종 PASS 재판정."
@@ -293,6 +293,13 @@ flowchart TD
 | **탭/슬라이딩 (기본)** | 소형 화면, 단일 운영자 환경, 향후 태블릿 폼팩터 대비 | 단일 Flutter 프로세스 내 Lobby/CC/Overlay 라우팅 |
 | **다중창 (PC 옵션)** | Desktop 멀티 모니터, 운영자 역할 분리 환경 | Lobby/CC/Overlay 각각 독립 OS 프로세스 |
 
+> **Scope 명확화 (2026-04-27, SG-022 결정)**:
+> 본 §5.0 의 "단일 Flutter Desktop 바이너리" 는 **Lobby + Command Center + Overlay 전체 프론트엔드** 를 포함합니다.
+> Lobby 를 별도 Web 앱으로 분리하지 않습니다 (2026-04-22 γ 하이브리드 정책 폐기).
+> 두 런타임 모드 (탭/슬라이딩, 다중창) 는 이 단일 바이너리 내부의 라우팅·창 분리 옵션입니다.
+>
+> 참조: BS_Overview §1 (단일 Desktop 바이너리 절), Spec_Gap_Registry SG-022, Phase_1_Decision_Queue.md.
+
 **D5 (DB SSOT) 적용 범위**: 모드별 차이 상세는 §6.4 실시간 동기화 참조.
 
 **구현 세부** (multi-window plugin 선택, 프로세스 spawn 방식) 는 team1 세션 (Wave 2 R02) 이 `docs/2. Development/2.1 Frontend/` 에 별도 명세합니다. 본 장은 개념만 선언합니다.
@@ -533,6 +540,9 @@ sequenceDiagram
 | DB polling | 복구/재진입 시 baseline | 1-5초 |
 | WebSocket push (`/ws/lobby`, `/ws/cc`) | 실시간 상태 변경 알림 | < 100ms |
 
+> **전체 파이프라인 SLA 기대치 (Phase 2 측정 대상)**: RFID 감지 → Engine 처리 → WebSocket broadcast → Rive 렌더링 → SDI/NDI 송출 까지 **100ms 이내**.
+> 위 WebSocket SLA (< 100ms) 는 broadcast 단일 구간 측정값이며, 전체 파이프라인 SLA 와 구간별로 분리 측정합니다.
+
 **정책**:
 
 - **쓰기** — 모든 상태 변경은 BO 가 DB 에 commit 후 WS 로 broadcast
@@ -677,6 +687,7 @@ EBS 프로젝트가 향하는 최종 목적지는 다음 두 가지로 요약됩
 
 | 날짜 | 변경 | Type | 회의 결정 |
 |------|------|:----:|:---------:|
+| 2026-04-27 | SG-022 결정 반영 — §5.0 단일 Desktop 바이너리 scope 명확화 callout (Lobby + CC + Overlay 모두 포함, γ 하이브리드 폐기) + §6.4 전체 파이프라인 SLA 부연 (RFID→Render→Output 100ms, WebSocket 단일 구간과 분리 측정). | PRODUCT | SG-022 |
 | 2026-04-22 | Rive Manager 독립 섹션 신설 (§5.3) — D3 회의 결정 SSOT 반영. Ch.5 헤더 "세 가지 → 네 가지" / Part II TOC bullet 추가 / §4.1 로비 설명에 Rive Manager 언급 / §5.2 그래픽 영역 cross-ref / §7.1 스킨 파일 공급 bullet. 기존 §5.3 → §5.4, §5.4 → §5.5 번호 이동. | PRODUCT | B-209 D3 |
 | 2026-04-22 | γ 하이브리드 확정 — §4.4 설치 단위 "3 SW" → "4 SW" (Lobby Web 분리) / §5.1 "Flutter Desktop 통일" → "Flutter 스택 통일, 배포 타겟 축 (Web/Desktop) 직교" / Ch.4 헤더 "4개 설치" → "4 SW + 1 HW" — team1 PR#11-14 자발 이행 retro | PRODUCT | B-200-1 C-1 γ |
 | 2026-04-22 | F1.7 중복 제거 — §6.3 ASCII 박스 다이어그램 삭제 / §5.0 D5 bullet → §6.4 위임 / 편집 이력 문장 정리 / §5.1 Lobby:CC 간결화 | REFACTOR | — |
