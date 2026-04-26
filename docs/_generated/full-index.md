@@ -463,9 +463,14 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` | 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` | 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-200-foundation-alignment-2026-04-22.md` | Foundation 재설계(2026-04-22) 정렬 — Conductor 소유 문서 전수 수정 | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md` | 회의 D3 GE 제거 결정 — 전체 전파 (Conductor + team1/team2/team4) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-001-team-backlog-retag.md` | 구현: 4팀 Backlog 3-Type retag + archive 정리 | each_team | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md` | 구현: team4 Engine Connection UI — router guard + manual reconnect | team4 | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md` | 구현: team2 decks.py in-memory → DB session 전환 | team2 | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-004-team1-settings-19-d3-mapping.md` | 구현: team1 Settings 19 D3 잔류 매핑 (SG-008-b13 v2) | team1 | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-005-team2-api-d2-routers.md` | 구현: team2 API 48 D2 endpoint 라우터 실구현 (SG-008-a 후속) | team2 | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-006-websocket-ack-reject-publishers.md` | 구현: WebSocket Ack/Reject 6 이벤트 publisher (SG-020) | team2 | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-007-cc-no-card-display-contract.md` | 구현: CC 카드 비노출 계약 강화 (회의 D7 후속) | team4 | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR1-doc-correction.md` | B-088 PR-1 — 기존 divergence 선언 정정 (Conductor 영역) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR2bis-service-layer.md` | B-088 PR-2-bis — service/router 레이어 Pydantic 응답 타입 적용 (B-089 23 failure 근본 해결) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR9-naming-ci-gate.md` | B-088 PR-9 — naming CI gate 도구 신설 (재발 방지) | - | - | - |
@@ -498,6 +503,16 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-009-tablefsm-case-serialization.md` | Spec Drift: TableFSM / SeatFSM display label vs serialized value case | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-010-spec-drift-scanner-precision.md` | Tooling: spec_drift_check.py 정밀화 (Settings, Schema, WebSocket) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-011-rfid-hal-stream-divergence.md` | Spec Drift: RFID_HAL_Interface §2.1 single-stream vs code 6-stream | team4 | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-012-lobby-sidebar-ssot.md` | Lobby 좌측 사이드바 SSOT 부재 | team1 | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-013-lobby-tournaments-nomenclature.md` | Lobby 사이드바 "lobby" vs "Tournaments" 용어 충돌 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-014-graphic-editor-dual-entry.md` | Graphic Editor 진입점 이중화 (헤더 vs Settings 탭) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-015-players-section-rationale.md` | Lobby Players 섹션 유지 근거 미문서화 | team1 | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-016-hand-history-sidebar-section.md` | Hand History 사이드바 섹션 공식화 (25개 분산 참조 통합) | team1 | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-017-settings-global-vs-scoped.md` | "Settings \"글로벌 단위\" Overview 모순 (vs Series/Event/Table 분리)" | conductor  # decision_owner (memory 역전 판정) | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-018-5nf-metamodel-tables.md` | 5NF 메타모델 테이블 부재 (nav_sections / nav_items / report_templates / 외 6종) | team2 | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-019-reports-postproduction-boundary.md` | "Reports/Insights 탭 ↔ 포스트프로덕션 경계 정의 부재" | conductor  # decision_owner (Foundation §1.2 scope) | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-020-websocket-ack-reject-events.md` | WebSocket Ack/Reject 6 이벤트 신규 D2 (publisher 미동기화) | team2 | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` | Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` | 기획 공백: <구체적 공백명> | conductor | - | - |
@@ -520,6 +535,9 @@ tier: generated
 | `docs/4. Operations/Reports/2026-04-21-critic-ge-multi-session.md` | Critic — GE 멀티 세션 분리 적합성 (Lobby 탭 종속 전제) | conductor | internal | - |
 | `docs/4. Operations/Reports/2026-04-21-critic-graphic-editor-team5-separation.md` | Critic — Graphic Editor team5 분리 적합성 검토 | conductor | internal | - |
 | `docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md` | Quasar → Flutter 이전 누락 / 매칭 실패 감사 | conductor | internal | - |
+| `docs/4. Operations/Reports/2026-04-26-Prototype_Completion_Report.md` | Prototype Completion Report — Spec ↔ Code 양방향 동기화 (2026-04-26) | conductor | internal | - |
+| `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md` | Spec Gap Audit — Phase 1 분석 (2026-04-26) | conductor | internal | - |
+| `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase4_Delivery.md` | Spec Gap Audit — Phase 4 Delivery (2026-04-26) | conductor | internal | - |
 | `docs/4. Operations/Roadmap.md` | Roadmap | conductor | internal | - |
 | `docs/4. Operations/SSOT_Alignment_Progress.md` | SSOT Alignment Progress | conductor | internal | - |
 | `docs/4. Operations/Spec_Gap_Registry.md` | Spec Gap Registry — Drift 집계 + 해소 추적 | conductor | internal | - |

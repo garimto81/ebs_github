@@ -203,6 +203,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/B-069-team3-engine-게임-PRD-Confluence-동기화-상태-확인.md` — team3-engine 게임 PRD Confluence 동기화 상태 확인
 - `docs/4. Operations/Conductor_Backlog/B-074-IMPL-01-Lobby-섹션-stale-수정-Team-2-인계.md` — IMPL-01 Lobby 섹션 stale 수정 (Team 2 인계)
 - `docs/4. Operations/Conductor_Backlog/B-200-foundation-alignment-2026-04-22.md` — Foundation 재설계(2026-04-22) 정렬 — Conductor 소유 문서 전수 수정
+- `docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md` — 회의 D3 GE 제거 결정 — 전체 전파 (Conductor + team1/team2/team4)
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR1-doc-correction.md` — B-088 PR-1 — 기존 divergence 선언 정정 (Conductor 영역)
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR2bis-service-layer.md` — B-088 PR-2-bis — service/router 레이어 Pydantic 응답 타입 적용 (B-089 23 failure 근본 해결)
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR9-naming-ci-gate.md` — B-088 PR-9 — naming CI gate 도구 신설 (재발 방지)

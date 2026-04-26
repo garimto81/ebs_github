@@ -60,3 +60,7 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Settings/Statistics.md` — Statistics
 - `docs/2. Development/2.1 Frontend/Settings/UI.md` — UI
 - `docs/3. Change Requests/pending/CR-team1-20260414-bs02-overview-rename.md` — CR-team1-20260414-bs02-overview-rename
+- `docs/4. Operations/Conductor_Backlog/IMPL-004-team1-settings-19-d3-mapping.md` — 구현: team1 Settings 19 D3 잔류 매핑 (SG-008-b13 v2)
+- `docs/4. Operations/Conductor_Backlog/SG-012-lobby-sidebar-ssot.md` — Lobby 좌측 사이드바 SSOT 부재
+- `docs/4. Operations/Conductor_Backlog/SG-015-players-section-rationale.md` — Lobby Players 섹션 유지 근거 미문서화
+- `docs/4. Operations/Conductor_Backlog/SG-016-hand-history-sidebar-section.md` — Hand History 사이드바 섹션 공식화 (25개 분산 참조 통합)

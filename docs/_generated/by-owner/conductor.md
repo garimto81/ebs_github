@@ -142,6 +142,9 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SG-008-b9-sync-trigger.md` — POST /api/v1/sync/trigger/{source} RBAC + 환경 제약 판정
 - `docs/4. Operations/Conductor_Backlog/SG-009-tablefsm-case-serialization.md` — Spec Drift: TableFSM / SeatFSM display label vs serialized value case
 - `docs/4. Operations/Conductor_Backlog/SG-010-spec-drift-scanner-precision.md` — Tooling: spec_drift_check.py 정밀화 (Settings, Schema, WebSocket)
+- `docs/4. Operations/Conductor_Backlog/SG-013-lobby-tournaments-nomenclature.md` — Lobby 사이드바 "lobby" vs "Tournaments" 용어 충돌
+- `docs/4. Operations/Conductor_Backlog/SG-014-graphic-editor-dual-entry.md` — Graphic Editor 진입점 이중화 (헤더 vs Settings 탭)
+- `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` — Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체)
 - `docs/4. Operations/Conductor_Backlog/_template_implementation.md` — 구현: <기능명>
 - `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` — 시나리오: <검증 대상 통합 흐름>
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` — 기획 공백: <구체적 공백명>
@@ -163,6 +166,9 @@ tier: generated
 - `docs/4. Operations/Reports/2026-04-21-critic-ge-multi-session.md` — Critic — GE 멀티 세션 분리 적합성 (Lobby 탭 종속 전제)
 - `docs/4. Operations/Reports/2026-04-21-critic-graphic-editor-team5-separation.md` — Critic — Graphic Editor team5 분리 적합성 검토
 - `docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md` — Quasar → Flutter 이전 누락 / 매칭 실패 감사
+- `docs/4. Operations/Reports/2026-04-26-Prototype_Completion_Report.md` — Prototype Completion Report — Spec ↔ Code 양방향 동기화 (2026-04-26)
+- `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md` — Spec Gap Audit — Phase 1 분석 (2026-04-26)
+- `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase4_Delivery.md` — Spec Gap Audit — Phase 4 Delivery (2026-04-26)
 - `docs/4. Operations/Roadmap.md` — Roadmap
 - `docs/4. Operations/SSOT_Alignment_Progress.md` — SSOT Alignment Progress
 - `docs/4. Operations/Spec_Gap_Registry.md` — Spec Gap Registry — Drift 집계 + 해소 추적

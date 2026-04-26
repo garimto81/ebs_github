@@ -34,4 +34,8 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md` — Tech Stack
 - `docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md` — Testing Strategy
 - `docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md` — 구현: team2 decks.py in-memory → DB session 전환
+- `docs/4. Operations/Conductor_Backlog/IMPL-005-team2-api-d2-routers.md` — 구현: team2 API 48 D2 endpoint 라우터 실구현 (SG-008-a 후속)
+- `docs/4. Operations/Conductor_Backlog/IMPL-006-websocket-ack-reject-publishers.md` — 구현: WebSocket Ack/Reject 6 이벤트 publisher (SG-020)
+- `docs/4. Operations/Conductor_Backlog/SG-018-5nf-metamodel-tables.md` — 5NF 메타모델 테이블 부재 (nav_sections / nav_items / report_templates / 외 6종)
+- `docs/4. Operations/Conductor_Backlog/SG-020-websocket-ack-reject-events.md` — WebSocket Ack/Reject 6 이벤트 신규 D2 (publisher 미동기화)
 - `docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md` — B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션
