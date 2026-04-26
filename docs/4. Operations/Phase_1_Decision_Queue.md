@@ -161,9 +161,36 @@ registry 권고 (default option) 를 일괄 수용. 구현은 team2 위임.
 
 ---
 
+## Decision Group E — SG-023 인텐트 전환 (production 출시)
+
+사용자가 2026-04-27 (Phase 2 시작 메시지 후 cascade) 에 **인텐트 자체를 전환**:
+
+| 항목 | 내용 |
+|------|------|
+| 결정 | EBS = **production 출시 프로젝트** (이전 "기획서 완결 + 프로토타입 검증" SUPERSEDED) |
+| Type | C (기획 모순 — 사용자 본인 2026-04-20 vs 2026-04-27 reversal) |
+| Cascade 처리 (Conductor 자율) | memory 3종 (intent SUPERSEDED + 신규 production_intent), CLAUDE.md "🎯 프로젝트 의도" 갱신, Spec_Gap_Registry SG-023, NOTIFY-ALL-SG023-INTENT-PIVOT, Conductor_Backlog/SG-023 |
+| 후속 결정 필요 (사용자 명시 대기) | **B-Q5** 거버넌스 (Conductor team 코드 영역 권한) / **B-Q6** timeline (MVP/런칭 일정) / **B-Q7** 품질 기준 (prototype vs production-grade 측정) / **B-Q8** vendor (RFI/RFQ reactivate) / **B-Q9** Type 분류 (A/B/C/D 의 production 의미) |
+| Why | 사용자 명시 (2026-04-27): "B 가 사용자 진정 의도. memory + Foundation 명시 갱신 PR 먼저, SG-023 분류, cascade 재실행" |
+
+> ⚠️ **본 SG-023 cascade 는 인텐트 명시 변경만 처리**. 거버넌스 / timeline / 품질 / vendor / Type 분류 의 후속 cascade 는 별도 turn 에서 사용자 명시 결정 후 진행. Conductor 자율 진행 금지.
+
+### 영향 비교 표
+
+| 측면 | 2026-04-20 (SUPERSEDED) | 2026-04-27 (SG-023) |
+|------|-------------------------|---------------------|
+| 프로젝트 목적 | 기획서 완결 (개발팀 인계) | production 출시 |
+| 사용자 역할 | 기획자 | 기획자 + production 책임자 |
+| 성공 기준 | 외부 개발팀 재구현 가능성 | 100% 검증된 완제품 + 운영 가능 |
+| MVP / 런칭 / vendor | 범위 밖 | 후속 결정 필요 (B-Q6/Q8) |
+| Conductor 권한 | 기획서 편집장 | + ?(B-Q5 결정 대기) |
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v1.2 | Group E 추가 (SG-023 인텐트 전환 — production 출시) + B-Q5~Q9 후속 결정 필요 명시 | MARKET | 사용자 B 옵션 채택 — 인텐트 자체 reversal |
 | 2026-04-27 | v1.1 | Group D 추가 (cascade 후속 4건 confirm) + Q2/Q3 Backlog 등재 갱신 | PRODUCT | 사용자 1.㉠/2.㉡/3.㉠/4.㉠ 결정 SSOT 화 |
 | 2026-04-27 | v1.0 | 최초 작성 (사용자 18건 결정 SSOT) | PRODUCT | Phase 1 cascade — 사용자 결정을 SSOT 화 |

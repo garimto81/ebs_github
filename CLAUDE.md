@@ -1,14 +1,23 @@
 # EBS Conductor CLAUDE.md — 5팀 구조 (Team 0)
 
-## 🎯 프로젝트 의도 (최상위 전제, 2026-04-20 재정의)
+## 🎯 프로젝트 의도 (최상위 전제, ~~2026-04-20~~ → **2026-04-27 SG-023 재정의**)
 
-**EBS = 개발팀 인계용 기획서 완결 프로젝트**. 실제 제품 출시가 아니다.
+**EBS = production 출시 프로젝트** (SG-023, 2026-04-27 사용자 결정).
 
-- 최종 산출물: `docs/` 기획 문서 + `team1~4/` **프로토타입** (production 아님)
-- 사용자 = 기획자. 외부 개발팀 인계 대상
-- 쌍방향 인과: **프로토타입 완벽 동작 ↔ 기획서 완벽**
-- 성공 기준: "외부 개발팀이 기획서+프로토타입만으로 재구현 가능한가"
-- **MVP / Phase / 런칭 일정 / 업체 선정 = 이 프로젝트 범위 밖**
+이전 인텐트 (~~기획서 완결 + 프로토타입 검증, 2026-04-20~~) 는 SUPERSEDED.
+참조: memory `project_intent_production_2026_04_27` (현재 SSOT), `project_intent_spec_validation` [SUPERSEDED], `user_role_planner` [SUPERSEDED].
+
+- 최종 산출물: production 출시 가능한 EBS 시스템 (`docs/` 기획 + `team1~4/` 구현 + 운영 인프라)
+- 사용자 = **기획자 + production 출시 책임자** (역할 확장)
+- 성공 기준: "100% 검증된 완제품 + 운영 가능 상태"
+- 쌍방향 인과 보존: 프로토타입/구현 완벽 동작 ↔ 기획서 완벽 (계속 유효)
+- **MVP / Phase / 런칭 일정 / 업체 선정 / 거버넌스 / 품질 기준 = 후속 결정 필요** (B-Q5~Q9, 사용자 명시 대기)
+
+> ⚠️ **거버넌스 보호 (Conductor 임의 처리 금지)**:
+> - Conductor 의 team1~4 코드 영역 진입 권한 (현재 "팀 세션 금지" 명시) — 사용자 명시 결정 필요 (B-Q5)
+> - timeline / 품질 기준 / vendor 모델 — 별도 cascade 후속 turn 처리 (B-Q6~Q8)
+> - Type 분류 의미 재해석 — Spec_Gap_Triage 갱신 보류 (B-Q9)
+> - 본 SG-023 cascade 는 **인텐트 명시 변경만** 처리 (memory + CLAUDE.md + Backlog)
 
 ### 프로토타입 실패 대응 프로토콜 (Type A/B/C)
 
