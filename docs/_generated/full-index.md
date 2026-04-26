@@ -466,6 +466,9 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md` | 회의 D3 GE 제거 결정 — 전체 전파 (Conductor + team1/team2/team4) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` | Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` | team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade) | team1 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` | B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md` | B-Q7 — 품질 기준 (prototype-grade vs production-grade 측정) (사용자 명시 대기) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q8-vendor-rfi-rfq-reactivation.md` | B-Q8 — vendor 모델 reactivate (RFI/RFQ 재개 여부) (사용자 명시 대기) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-001-team-backlog-retag.md` | 구현: 4팀 Backlog 3-Type retag + archive 정리 | each_team | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md` | 구현: team4 Engine Connection UI — router guard + manual reconnect | team4 | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md` | 구현: team2 decks.py in-memory → DB session 전환 | team2 | - | - |
@@ -475,6 +478,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/IMPL-007-cc-no-card-display-contract.md` | 구현: CC 카드 비노출 계약 강화 (회의 D7 후속) | team4 | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-PHASE2-START.md` | Phase 1 설계 정렬 완료 — Phase 2 진입 허용 (전체 팀 broadcast) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG023-INTENT-PIVOT.md` | SG-023 인텐트 전환 (production 출시) — 전체 팀 broadcast + 작업 standby 권고 | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION.md` | SG-024 거버넌스 확장 — Conductor 단일 세션 전권 (broadcast) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR1-doc-correction.md` | B-088 PR-1 — 기존 divergence 선언 정정 (Conductor 영역) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR2bis-service-layer.md` | B-088 PR-2-bis — service/router 레이어 Pydantic 응답 타입 적용 (B-089 23 failure 근본 해결) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR9-naming-ci-gate.md` | B-088 PR-9 — naming CI gate 도구 신설 (재발 방지) | - | - | - |
@@ -518,6 +522,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-020-websocket-ack-reject-events.md` | WebSocket Ack/Reject 6 이벤트 신규 D2 (publisher 미동기화) | team2 | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` | Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` | SG-023 — 인텐트 전환 (기획서 완결 → production 출시) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` | SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` | 기획 공백: <구체적 공백명> | conductor | - | - |
