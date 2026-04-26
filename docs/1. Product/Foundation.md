@@ -376,6 +376,40 @@ Flutter Desktop 애플리케이션으로 실행되는 중앙 관제 시스템입
 * **운영자:** 본방송 중 딜러와 의사소통하며 실제 액션을 입력하는 실무자입니다. 자신에게 할당된 1개의 커맨드 센터만 열어볼 수 있으며, 로비의 설정이나 다른 테이블에는 접근할 수 없습니다.
 * **열람자:** 화면을 볼 수만 있고 어떠한 조작도 할 수 없는 읽기 전용 권한입니다.
 
+#### 5.6 폼팩터 적응 (D6, 2026-04-26 신설)
+
+EBS 의 4개 설치 단위(§4.4)는 동일한 코드베이스를 공유하지만, 실행되는 **하드웨어 폼팩터** 는 화면 크기·입력 방식·하드웨어 인터페이스 요건이 서로 다릅니다. 각 폼팩터에서 어떤 화면이 의미를 갖고, 어떤 화면이 비활성화되는지 명문화합니다.
+
+```mermaid
+flowchart TD
+    Code[단일 Flutter 코드베이스] --> Form{폼팩터}
+    Form -->|Desktop| Desk["Desktop<br/>(Windows/macOS)"]
+    Form -->|Tablet| Tab["Tablet<br/>(iPadOS/Android, 향후)"]
+    Form -->|Web| Web["Browser<br/>(LAN 다중 클라이언트)"]
+    Desk --> CC["CC + Overlay<br/>(필수: RFID/SDI/NDI)"]
+    Desk --> LobbyD["Lobby<br/>(개발 디버깅)"]
+    Tab --> LobbyT["Lobby (관전/모니터링)<br/>※ CC 미지원"]
+    Web --> LobbyW["Lobby<br/>(정규 배포)"]
+```
+
+| 폼팩터 | 지원 앱 | 미지원 / 제약 |
+|--------|---------|---------------|
+| **Desktop (Windows / macOS)** | Lobby (개발) / **Command Center** / **Overlay** | — |
+| **Web (Browser, LAN)** | **Lobby (정규)** / Settings / Rive Manager | CC 불가 (RFID 시리얼 / SDI 직결 필요) |
+| **Tablet (향후, 미지원)** | Lobby (관전/모니터링 read-only) | CC 미지원, Rive Manager 미지원 (편집 워크플로우 부재) |
+| **Mobile (향후, 미지원)** | (없음) | 화면 크기 부적합 |
+
+**핵심 원칙**:
+
+1. **하드웨어 의존 앱 = Desktop 고정** — RFID 시리얼 / SDI/NDI 출력 직결이 필요한 CC + Overlay 는 Desktop 만. 웹/태블릿 불가.
+2. **Lobby 는 폼팩터 적응 가능** — 정규 배포는 Web (Docker nginx, LAN 다중 클라이언트). 태블릿은 향후 read-only 모니터링 모드 (CC 진입 불가).
+3. **태블릿 / 모바일 = 비활성 폼팩터** — 본 프로토타입 범위 밖. 외부 개발팀이 향후 확장 시 본 §5.6 의 제약 조건 (RFID/SDI 직결 필수 앱은 Desktop) 을 준수해야 함.
+4. **HAL 추상화 책임** — RFID HAL (`docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md`) 은 폼팩터별 driver 구현을 뒤에 숨김. 단, 실제 driver 는 Desktop 폼팩터에서만 활성화.
+
+> **2 런타임 모드 (§5.0) 와의 관계**: 런타임 모드(단일창/다중창)는 **Desktop 설치물 내부 선택지** 입니다. 폼팩터 적응 (§5.6) 은 **다른 차원**의 결정 — 같은 앱이 어떤 하드웨어에서 동작하는가. 두 차원은 직교합니다.
+
+> **태블릿 향후 확장 시**: Lobby 의 5탭 + 단일창 탭 라우팅 모드(§5.0) 가 태블릿에 자연스럽게 매핑됩니다. CC/Overlay 는 태블릿에서 동작하지 않으므로 태블릿 사용자는 read-only 모니터링만 가능.
+
 ### Ch.6 — 눈에 보이지 않는 두뇌와 뼈대
 
 앞서 살펴본 화면들이 스태프의 입력을 받는 '피부'라면, 지금부터 살펴볼 두 요소는 입력받은 정보를 바탕으로 생각하고 생명력을 불어넣는 시스템의 '두뇌'와 '뼈대'입니다.
@@ -648,6 +682,7 @@ EBS 프로젝트가 향하는 최종 목적지는 다음 두 가지로 요약됩
 | 2026-04-22 | F1.7 중복 제거 — §6.3 ASCII 박스 다이어그램 삭제 / §5.0 D5 bullet → §6.4 위임 / 편집 이력 문장 정리 / §5.1 Lobby:CC 간결화 | REFACTOR | — |
 | 2026-04-22 | Ch.4 전면 재작성 (2 렌즈: 기능/설치) + §4.4 신설 — 개발팀 오독 방지 | PRODUCT | D1~D7 후속 명확화 |
 | 2026-04-22 | §5.0 2 런타임 모드 신설 / §6.3 프로세스 모델 / §6.4 실시간 동기화 / §7.1 배경 config flag / §8.5 복수 테이블 아키텍처 신설 | PRODUCT | D1, D2, D4, D5 |
+| 2026-04-26 | §5.6 폼팩터 적응 신설 — Desktop / Web / Tablet / Mobile 4 폼팩터 매트릭스, 하드웨어 의존 앱(CC/Overlay)=Desktop 고정 원칙, 태블릿 향후 read-only 모니터링 모드 명시. §5.0 (런타임 모드) 와 직교 차원으로 분리. (Phase 1 Audit Report 2026-04-26-Spec_Gap_Audit_Phase1.md B2 Action) | PRODUCT | D6 |
 | 2026-04-21 | SG-005 §6.3 system connections mermaid 재작성, §6.3 §1.1.1 병행 dispatch 시나리오 | PRODUCT | — |
 | 2026-04-20 | SG-001 Lobby/GE 기술 스택 SSOT 통일 | TECH | — |
 | 2026-04-16 | 초판 (이전 이력은 commit log) | - | - |

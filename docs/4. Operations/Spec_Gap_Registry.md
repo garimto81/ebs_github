@@ -2,7 +2,7 @@
 title: Spec Gap Registry — Drift 집계 + 해소 추적
 owner: conductor
 tier: internal
-last-updated: 2026-04-22
+last-updated: 2026-04-26
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "감지 도구 + 분류 체계 + Registry 자체로 외부 인계 가능"
@@ -30,19 +30,19 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 - **Registry 갱신**: `python tools/spec_drift_check.py --all --format=json > logs/drift_report.json`
 - **Pre-push 경고**: `.claude/hooks/pre_push_drift_check.py` (non-blocking)
 
-## 4. 현재 Drift (2026-04-20 scan)
+## 4. 현재 Drift (2026-04-26 fresh scan)
 
 ### 4.1 계약별 요약
 
 | 계약 | D1 | D2 | D3 | D4 | Total | 핵심 조치 |
 |------|:--:|:--:|:--:|:--:|:-----:|-----------|
-| REST API | 8 | 52 | 87 | 26 | 173 | 2026-04-20 P7: SG-008 (a) 77건 Backend_HTTP §5.17 편입 완료. D3 일부 감소 (93→87), D4 +6 (20→26). D2 증가(40→52)는 §5.17 신규 endpoint 명시 후 code 매칭 중 일부 prefix drift 흡수. (b) 12건은 SG-008-b1~b12 진행 중 |
-| OutputEvent | 0 | 0 | 0 | 21 | 21 | **PASS** (2026-04-15 실측 정정 후 정렬) |
-| FSM | 1 | 7 | 0 | 16 | 24 | TableFSM case 통일 SG-009 |
-| DB Schema | 0 | 1 | 2 | 23 | 26 | scanner 정밀화 (SQLModel detector 추가). D3 `cards`/`settings_kv` + D2 `payout_structures` |
-| RFID HAL | 0 | 3 | 0 | 8 | 11 | SG-011 **OUT_OF_SCOPE** (프로토타입 범위 밖 TBD) |
-| Settings | 0 | 97 | 17 | 39 | 153 | 2026-04-20 P6: scanner 정규화 (camelCase/snake_case/dotted namespace/frontmatter) 적용. 이전 (D2=23/D3=30/D4=0) → (D2=97/D3=17/D4=39). D4 +39 (신규 매칭), D3 -13 (noise 해소). 잔류 D3 17 중 8건 SG-008-b13 v2 triage. D2 97 은 SG-003 PARTIAL 범위 — team1 구현 대기 |
-| WebSocket | 0 | 20 | 0 | 24 | 44 | F2 정밀화 (2026-04-20): 이벤트 카탈로그 테이블 + JSON literal + event_types 배열만 수집. payload 필드 false positive 제거 (89→20). 잔여 D2 20 = 실제 발행 미구현 이벤트 (PascalCase 13 error/warning/command + snake_case 7 CCR-050/054) |
+| REST API | 7 | 48 | 0 | 114 | 169 | 2026-04-26 fresh: D2 +6 (baseline 42→48). 분석 결과 (IMPL-005) **scanner false positive dominant** — 대부분의 D2 는 router prefix 매칭 한계 (SG-010 후속). 실제 누락 endpoint 는 소수 (SG-021 metadata, SG-008-b10/b11 삭제 권고 endpoint). team2 라우터 실구현 + scanner 정밀화 대기 |
+| OutputEvent | 0 | 0 | 0 | 21 | 21 | **PASS** 유지 |
+| FSM | 0 | 0 | 0 | 23 | 23 | **PASS** 유지 (SG-009 직렬화 규약 적용 후) |
+| DB Schema | 0 | 1 | 2 | 23 | 26 | 변화 없음. 잔여 D2 `payout_structures` + D3 `cards`/`settings_kv` (SG-010 scanner 잔여 noise) |
+| RFID HAL | 0 | 0 | 0 | 8 | 8 | **OUT_OF_SCOPE** 유지 (SG-011) |
+| Settings | 0 | 110 | 4 | 52 | 166 | 2026-04-26 IMPL-004 완료 후: D3 19→4 (15 키 (a) 매핑 해소). 잔여 4 = `fillKeyRouting` (SG-008-b15) + `twoFactorEnabled` (SG-008-b14) + `resolution`/`theme` (scanner false positive — backtick 인식 실패, SG-010). D2 +6 / D4 +13 = 신규 spec 보강의 부산물 |
+| WebSocket | 0 | 0 | 0 | 44 | 44 | ✅ **PASS 복귀** 2026-04-26 IMPL-006 완료 — publisher 6 함수 추가 + 6/6 pytest PASS. SG-020 DONE |
 
 > 스캐너 자체가 정규식 기반 best-effort 이므로 D2/D3 에는 false positive 가 섞여 있다. D1 은 신뢰도 높음.
 
@@ -89,14 +89,16 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | SG-009 | spec_drift | fsm | IN_PROGRESS | TableFSM case 통일 — 이번 커밋에서 BS_Overview §3.1 직렬화 규약 추가 |
 | SG-010 | tooling | meta | PENDING | spec_drift_check.py 정밀화 (Settings, Schema, WebSocket). **F2 WebSocket detector 정밀화 완료 (2026-04-20)**, **P6 Settings detector 정규화 완료 (2026-04-20)** — camelCase/snake_case/dotted namespace/frontmatter 지원. D4 +39 |
 | SG-011 | spec_drift | rfid | **OUT_OF_SCOPE** | RFID_HAL_Interface §2.1. **프로토타입 범위 밖** — 실제 HAL 은 개발팀 + 제조사 SDK 확정 후 결정 (2026-04-20 재정의) |
-| SG-012 | doc_ssot | 2.1 Frontend/Lobby | 사이드바 SSOT 부재 — UI.md §공통 레이아웃 ASCII 예시만, `nav_sections`/`nav_items` 스펙 테이블 없음. → `Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` §3 |
-| SG-013 | nomenclature | 2.1 Frontend/Lobby | "lobby" 앱명 vs 섹션명 용어 충돌 — WSOP LIVE 원어 "Tournaments" 정렬 필요 (원칙 1). → 동 critic §4.1 |
-| SG-014 | ia_overlap | 2.1 Frontend/Lobby+Settings | Graphic Editor 진입점 이중화 (헤더 [Graphic Editor] 버튼 + Settings/Graphics 탭) — 에셋 vs 런타임 설정 구분 명문화. → 동 critic §4.3 |
-| SG-015 | ia_missing | 2.1 Frontend/Lobby | Players 섹션 유지 근거 미문서화 — user 제안 5탭에 빠짐. WSOP LIVE Player Management 정렬. → 동 critic §3 |
-| SG-016 | ia_missing | 2.1 Frontend/Lobby | **revision 1 (2026-04-21)**: ~~Insights~~ 제거. **Hand History 사이드바 섹션 공식화** — 25개 분산 참조(hands/hand_actions/HandStarted + mockup) 을 독립 섹션 SSOT 로 통합. → 동 critic §7.1-7.2 + `Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` |
-| SG-017 | scope_inconsistency | 2.1 Frontend/Settings | "글로벌 단위" Overview.md §개요 vs MEMORY feedback_settings_global 역전(Series/Event/Table 분리) 모순 — decision_owner 판정 필요. → 동 critic §10 #5 |
-| SG-018 | data_model | 2.2 Backend/Database | 5NF 메타모델 테이블 부재 — `nav_sections`/`nav_items`/`report_templates`/`skin_modes`/`setting_categories`/`integration_providers`/`game_rules`/`roles+permissions`. → 동 critic §5.2, §5.3 |
-| SG-019 | scope_boundary | 1. Product/Foundation §1.2 | Reports/Insights 탭 ↔ 포스트프로덕션 경계 정의 부재 — "실시간 운영 지표만" 명문화 권고. → 동 critic §6.2 |
+| SG-012 | doc_ssot | 2.1 Frontend/Lobby | PENDING | `Conductor_Backlog/SG-012-lobby-sidebar-ssot.md` (2026-04-26 승격) — UI.md `nav_sections` 데이터 스키마 표 추가 필요 |
+| SG-013 | nomenclature | 2.1 Frontend/Lobby | PENDING | `Conductor_Backlog/SG-013-lobby-tournaments-nomenclature.md` — 섹션명="Tournaments" 고정, 앱명="Lobby" 분리 (원칙 1) |
+| SG-014 | ia_overlap | 2.1 Frontend/Lobby+Settings | **SUPERSEDED** | `Conductor_Backlog/SG-014-graphic-editor-dual-entry.md` — 회의 D3 GE 제거 결정으로 자동 해소. Foundation §5.3 Rive Manager 대체 SSOT |
+| SG-015 | ia_missing | 2.1 Frontend/Lobby | PENDING | `Conductor_Backlog/SG-015-players-section-rationale.md` — Players 섹션 유지 근거 명문화 (WSOP LIVE Player Management 정렬) |
+| SG-016 | ia_missing | 2.1 Frontend/Lobby | PENDING | `Conductor_Backlog/SG-016-hand-history-sidebar-section.md` — 25개 분산 참조 → 독립 SSOT 섹션 (`Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` 기반) |
+| SG-017 | scope_inconsistency | 2.1 Frontend/Settings | PENDING | `Conductor_Backlog/SG-017-settings-global-vs-scoped.md` — Overview.md "글로벌" 본문 ↔ SG-003 4-level scope 모순. SG-003 + MEMORY 우선 권고 |
+| SG-018 | data_model | 2.2 Backend/Database | PENDING | `Conductor_Backlog/SG-018-5nf-metamodel-tables.md` — 8종 메타모델 테이블, default 권고: 핵심 3종(nav_sections/report_templates/game_rules) 우선 |
+| SG-019 | scope_boundary | 1. Product/Foundation §1.2 | PENDING | `Conductor_Backlog/SG-019-reports-postproduction-boundary.md` — "Reports = 실시간 운영 지표 한정" 명문화 권고 |
+| SG-020 | spec_drift | websocket | PENDING | `Conductor_Backlog/SG-020-websocket-ack-reject-events.md` — Ack/Reject 6 이벤트 D2 regression. publisher 6 함수 + Engine 트리거 wiring 필요 (IMPL-006) |
+| SG-021 | spec_gap | Foundation §5.3 / 2.4 Overlay | PENDING | `Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` — SG-004 SUPERSEDED 후속. Rive 내장 메타데이터 정규 스키마 (Custom Property + State Machine + Text Run binding). default 권고: 대안 α (`.riv` 단일 파일) |
 
 ## 5. 스캔 명령 레퍼런스
 
@@ -144,3 +146,5 @@ python tools/spec_drift_check.py --settings
 | 2026-04-20 | v1.2 — F2/F3 배치 | WebSocket detector 정밀화 완료 (D2 89→20, D3 2→0). SG-008-b1~b12 12개 개별 파일 승격 완료. §4.1 websocket 행 갱신. §4.4 b1~b12 항목 추가. §7 한계 테이블에 F2 완료 표시 |
 | 2026-04-20 | v1.3 — P6/P7/P8 배치 (Agent G) | (1) Settings detector 정규화 (camelCase/snake_case/dotted/frontmatter) — D4 13→39, D3 17→17 중 6개 자동 매칭 해소. (2) Backend_HTTP §5.17 CRUD 완결성 편입 신설 — SG-008 (a) 77건 일괄 편입. (3) SG-008-b13 v2.0 잔류 8건 triage — (a) 6 / (b) 2. §4.1 api/settings 행 갱신. §4.4 SG-008-b13 항목 추가. §7 Settings 한계 완료 표시 |
 | 2026-04-22 | v1.4 — Foundation 재설계 집계 동기화 (B-203) | SG-001/002/005 를 §4.4 승격 index 에 DONE 으로 추가 — 개별 `Conductor_Backlog/SG-*.md` frontmatter 는 이미 RESOLVED 였으나 Registry 집계 누락. Aggregate-vs-Source 동기화. |
+| 2026-04-26 | v1.5 — SG-012~019 승격 + SG-020 신설 (Phase 1 audit) | (1) SG-012~SG-019 8건 개별 SG 파일 신설 (`_template_spec_gap.md` 기반) — 2026-04-21 critic 리포트 등재 후 5일 동안 미승격. 추적 단절 해소. (2) **SG-020 신설** — WebSocket ack/reject 6 이벤트 D2 regression (baseline 2026-04-21 PASS 0/0/0/44 → fresh 2026-04-26 0/6/0/38). (3) §4.1 fresh scan 결과 갱신: api D2 +6 (42→48), settings D2 +7/D3 +2 (97/17→104/19), websocket D2 +6 (0→6). (4) audit 보고서 `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md` 발행. |
+| 2026-04-26 | v1.6 — Conductor 직접 IMPL 실행 (사용자 지시 "프로토타입 완성") | (1) **IMPL-006 DONE** — websocket publisher 6 함수 추가 (publishers.py 20→26, test_publishers.py 6/6 PASS). websocket PASS 복귀 0/0/0/44. SG-020 DONE. (2) **IMPL-007 DONE** — CC seat_cell.dart hole card 값 렌더링 제거 + face-down `?` 표시. `tools/check_cc_no_holecard.py` CI 가드 신설. Command_Center_UI/Overview.md §5.1 D7 계약 신설. (3) **IMPL-004 DONE (a)** — Settings 17 (a) 키 5개 Settings/*.md 파일 보강. settings D3 19→4 (잔여 4 = b14/b15 + scanner 2 false positive). (4) **IMPL-005 분석** — 48 D2 중 대다수 scanner false positive (router prefix 인식 한계, SG-010 후속). 그룹 A/B/C/D 분해 권고. (5) §4.1 갱신 (websocket PASS 복귀, settings 갱신). (6) pytest 248 passed (baseline 247 + 신규 ack/reject test). |

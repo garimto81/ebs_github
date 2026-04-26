@@ -9,6 +9,7 @@ created: 2026-04-20
 resolved: 2026-04-20
 superseded: 2026-04-22
 superseded_by: B-209 (회의 D3 2026-04-22 — GE 제거, Rive 파일 내장 메타데이터)
+follow_up: SG-021 (2026-04-26 신설 — Rive 내장 메타데이터 정규 스키마)
 affects_chapter:
   - docs/2. Development/2.2 Backend/Database/  (DATA-07 신규)
   - docs/2. Development/2.1 Frontend/Graphic_Editor/  (Import/Activate 플로우 — team1 archive 대상)

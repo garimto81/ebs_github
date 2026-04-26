@@ -157,3 +157,26 @@ Frame Rate는 24/25/30/50/60fps 프리셋 또는 수동 입력(1~120fps 정수).
 | Admin이 아닌 역할 | Outputs 탭 접근 불가 |
 | CC LIVE + 핸드 진행 중 | Resolution, Output Mode: CONFIRM 분류 |
 | BO 서버 미실행 | 읽기 전용 |
+
+---
+
+## 5. SG-008-b13 D3 추가 매핑 (2026-04-26 — IMPL-004)
+
+`team1-frontend/lib/features/settings/screens/outputs_screen.dart` 에 이미 구현된 4개 키를 기획에 편입.
+
+| 코드 키 | UI | 타입 | 기본값 | 옵션 / 범위 | 비고 |
+|---------|-----|------|--------|-------------|------|
+| `resolution` | DropdownButton | Select | `1920x1080` | `1280x720` / `1920x1080` / `2560x1440` / `3840x2160` (`_resolutionOptions`) | 출력 해상도 SSOT |
+| `outputProtocol` | RadioListTile | Select | (미선택) | `NDI` / `RTMP` / `SRT` / `Decklink` | 출력 프로토콜 (§1.2 Live Pipeline 매핑) |
+| `watermark_enabled` | Switch | Bool | `false` | — | 워터마크 표시 여부 |
+| `watermark_text` | TextFormField | String | `''` | — | 워터마크 텍스트 (활성화 시 표시) |
+
+**상호작용**: `watermark_enabled == false` 일 때 `watermark_text` 입력 필드 hidden.
+
+**적용 시점**:
+- `resolution` / `outputProtocol`: CC LIVE 중 변경 시 CONFIRM (재초기화 1초 블랙아웃)
+- `watermark_enabled` / `watermark_text`: 즉시 (overlay 텍스트 합성)
+
+**WSOP LIVE 정렬 (원칙 1)**: `resolution` 옵션 4종 = WSOP LIVE Standard Output Resolutions.
+
+**코드 참조**: `outputs_screen.dart` line 21 (옵션), 70-111 (resolution/protocol), 165-189 (watermark).

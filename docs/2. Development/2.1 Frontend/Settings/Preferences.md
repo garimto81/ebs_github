@@ -169,3 +169,22 @@ VALUES ('user', '{user.id}', 'preferences', 'shortcuts', '{"newHand":"Ctrl+N",..
 - `docs/2. Development/2.5 Shared/BS_Overview.md` §2 RBAC
 - `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md`
 - `docs/2. Development/2.1 Frontend/Settings/Overview.md`
+
+---
+
+## 11. SG-008-b13 D3 추가 매핑 (2026-04-26 — IMPL-004)
+
+`team1-frontend/lib/features/settings/screens/preferences_screen.dart` 에 이미 구현된 2개 키를 기획에 편입.
+
+| 코드 키 | UI | 타입 | 기본값 | 비고 |
+|---------|-----|------|--------|------|
+| `diagnosticsEnabled` | Switch | Bool | `false` | 진단 로그 수집 + 익명 텔레메트리 활성. 운영 전 OFF 권장, 디버그 시 ON |
+| `exportFolder` | TextFormField | String | `''` | 내보내기 (스킨/리포트) 기본 디렉토리. 빈 값 시 OS Documents 폴더 |
+
+**스코프**: 두 키 모두 `user` 레벨 (개인 환경설정). RBAC: 자기 preferences 만 변경 가능.
+
+**적용 시점**: 즉시 (재시작 불필요).
+
+**보안**: `exportFolder` 가 절대 경로 입력 시 path traversal 방지 검증 필요 (TODO 후속).
+
+**코드 참조**: `preferences_screen.dart` line 120-135.

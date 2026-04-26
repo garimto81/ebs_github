@@ -24,8 +24,8 @@ class FakeManager:
 
 @pytest.mark.asyncio
 async def test_all_publishers_exported():
-    """publishers.__all__ 에 20건 모두 등록."""
-    assert len(PUBLISHER_NAMES) == 20
+    """publishers.__all__ 에 26건 모두 등록 (J2 20 + SG-020 6)."""
+    assert len(PUBLISHER_NAMES) == 26
     for name in PUBLISHER_NAMES:
         assert hasattr(publishers, name), f"missing: {name}"
         assert callable(getattr(publishers, name))
@@ -103,3 +103,35 @@ async def test_broadcast_channel_selection():
 
     channels = [c[0] for c in m.calls]
     assert channels == ["lobby", "cc", "cc", "lobby"]
+
+
+@pytest.mark.asyncio
+async def test_ack_reject_publishers_payload():
+    """SG-020 Ack/Reject 6 publisher (WebSocket_Events §9-11) — 모두 cc 채널."""
+    m = FakeManager()
+    await publishers.publish_game_info_ack(m, "t1", hand_id=248, ready_for_deal=True, seq=30)
+    await publishers.publish_game_info_rejected(m, "t1", hand_id=248, reason="invalid_seat", seq=31)
+    await publishers.publish_action_ack(m, "t1", hand_id=248, action_index=5, seq=32)
+    await publishers.publish_action_rejected(m, "t1", hand_id=248, reason="audit_failed", seq=33)
+    await publishers.publish_deal_ack(m, "t1", hand_id=248, phase="PRE_FLOP", seq=34)
+    await publishers.publish_deal_rejected(m, "t1", hand_id=248, reason="duplicate_hand_id", seq=35)
+
+    assert len(m.calls) == 6
+    types = [call[2]["type"] for call in m.calls]
+    assert types == [
+        "GameInfoAck", "GameInfoRejected",
+        "ActionAck", "ActionRejected",
+        "DealAck", "DealRejected",
+    ]
+    # SG-020 모든 ack/reject 은 cc 채널 (CC sender 가 응답 수신)
+    for c in m.calls:
+        assert c[0] == "cc", f"ack/reject must use cc channel, got {c[0]}"
+    # payload schema 검증
+    assert m.calls[0][2]["payload"] == {"hand_id": 248, "ready_for_deal": True}
+    assert m.calls[1][2]["payload"] == {"hand_id": 248, "reason": "invalid_seat"}
+    assert m.calls[2][2]["payload"] == {"hand_id": 248, "action_index": 5}
+    assert m.calls[3][2]["payload"] == {"hand_id": 248, "reason": "audit_failed"}
+    assert m.calls[4][2]["payload"] == {"hand_id": 248, "phase": "PRE_FLOP"}
+    assert m.calls[5][2]["payload"] == {"hand_id": 248, "reason": "duplicate_hand_id"}
+    # seq 전달 확인
+    assert [c[2]["seq"] for c in m.calls] == list(range(30, 36))

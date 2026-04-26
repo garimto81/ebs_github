@@ -161,3 +161,17 @@ Stats 섹션은 Settings의 다섯 번째 탭으로, 에퀴티(승률), 아웃, 
 | `showEquity` | §1.1 Show Hand Equities (ID 12) — 단순 bool 토글 | Select(4-option) vs Switch 간 계약 미확정. Select 가 기획 정본, bool 은 legacy 추정 |
 
 > 참조: `docs/4. Operations/Conductor_Backlog/SG-008-b13-settings-code-only-cleanup.md`
+
+## 2026-04-26 — SG-008-b13 D3 추가 매핑 (IMPL-004)
+
+| 코드 키 | UI | 타입 | 기본값 | 비고 |
+|---------|-----|------|--------|------|
+| `player_photo_enabled` | Switch | Bool | `true` | 통계 화면 + 오버레이 Player Box 에 선수 사진 표시. OFF 시 이름만 (사진 부재 / 프라이버시) |
+
+**스코프**: `event` 레벨 권장 (대회별 사진 정책 차이 가능). 현재 구현은 글로벌.
+
+**적용 시점**: 즉시 (overlay 렌더 다음 프레임 반영).
+
+**오버레이 영향**: Player Box 의 사진 슬롯이 hidden / shrink 처리됨.
+
+**코드 참조**: `team1-frontend/lib/features/settings/screens/stats_screen.dart` line 170-173.

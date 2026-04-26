@@ -46,16 +46,8 @@ String _formatStack(int amount) {
   return buf.toString();
 }
 
-/// Suit character → display symbol + color.
-({String symbol, Color color}) _suitDisplay(String suit) {
-  return switch (suit) {
-    's' => (symbol: '♠', color: Colors.black),
-    'h' => (symbol: '♥', color: Colors.red),
-    'd' => (symbol: '♦', color: Colors.blue),
-    'c' => (symbol: '♣', color: Colors.green),
-    _ => (symbol: suit, color: Colors.white),
-  };
-}
+// Note: `_suitDisplay` helper 제거 (2026-04-26 IMPL-007 D7).
+// hole card 값을 표시하지 않으므로 suit symbol/color 매핑 불필요.
 
 /// Position label for a seat (e.g. "BTN", "SB", "BB").
 String? _positionLabel(SeatState seat) {
@@ -497,8 +489,12 @@ class _SeatCellState extends ConsumerState<SeatCell>
           ),
         ),
 
-        // Row 3: Hole cards (if any)
-        if (seat.holeCards.isNotEmpty) _buildHoleCards(seat.holeCards),
+        // Row 3: D7 (회의 2026-04-22) — CC 운영자(딜러)는 hole cards 비노출.
+        // 데이터(`seat.holeCards`) 는 Overlay 송출용으로 state 에 보존되며,
+        // CC widget 트리에서는 절대 렌더링하지 않는다 (`tools/check_cc_no_holecard.py` CI 가드).
+        // 이 위치에 hole card 위젯을 추가하면 운영자가 카드를 미리 알게 되어
+        // 부정 행위 위험 발생. SG-021 / Foundation §5.4 / IMPL-007 참조.
+        if (seat.holeCards.isNotEmpty) _buildHoleCardBack(seat.holeCards.length),
 
         // Row 4: Position marker or sitting-out badge
         if (seat.activity == PlayerActivity.sittingOut)
@@ -506,6 +502,41 @@ class _SeatCellState extends ConsumerState<SeatCell>
         else if (posLabel != null)
           _buildPositionMarker(posLabel),
       ],
+    );
+  }
+
+  /// D7 — hole card 뒷면(face-down) 만 표시. 카드 값은 노출하지 않는다.
+  /// 카드가 분배되었음만 시각화 (운영자가 분배 상태 인지하되 값은 모름).
+  Widget _buildHoleCardBack(int count) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 1),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < count; i++) ...[
+            if (i > 0) const SizedBox(width: 4),
+            Container(
+              width: 14,
+              height: 18,
+              decoration: BoxDecoration(
+                color: Colors.blueGrey.shade800,
+                border: Border.all(color: Colors.white24, width: 0.5),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: const Center(
+                child: Text(
+                  '?',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white54,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 
@@ -533,48 +564,9 @@ class _SeatCellState extends ConsumerState<SeatCell>
     );
   }
 
-  Widget _buildHoleCards(List<HoleCard> cards) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 1),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < cards.length; i++) ...[
-            if (i > 0) const SizedBox(width: 4),
-            _buildMiniCard(cards[i]),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMiniCard(HoleCard card) {
-    final suit = _suitDisplay(card.suit);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(2),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            card.rank,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              color: Colors.black,
-            ),
-          ),
-          Text(
-            suit.symbol,
-            style: TextStyle(fontSize: 12, color: suit.color),
-          ),
-        ],
-      ),
-    );
-  }
+  // D7 — `_buildHoleCards` / `_buildMiniCard` 제거 (2026-04-26 IMPL-007).
+  // 이전에는 카드 값(랭크 + 슈트) 을 CC widget 에 표시했으나, 운영자가 카드를
+  // 미리 알게 되어 부정 행위 위험. 이제 `_buildHoleCardBack` 만 사용 (face-down).
 
   Widget _buildPositionMarker(String label) {
     final chip = Padding(

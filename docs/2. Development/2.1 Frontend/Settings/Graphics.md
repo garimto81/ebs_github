@@ -270,3 +270,21 @@ Admin은 GFX 탭에서 현재 테이블에 적용된 **활성 스킨**을 조회
 | **Audio Layer 볼륨** | `BS-07-05-audio` | BGM / Effect 각 볼륨 슬라이더 + 매너모드 토글 |
 
 각 항목의 실제 동작·FSM·구현 세부는 해당 BS-07 문서 참조.
+
+---
+
+## 9. SG-008-b13 D3 추가 매핑 (2026-04-26 — IMPL-004)
+
+`team1-frontend/lib/features/settings/screens/gfx_screen.dart` 에 이미 구현된 1개 키를 기획에 편입.
+
+| 코드 키 | UI | 타입 | 기본값 | 옵션 | 비고 |
+|---------|-----|------|--------|------|------|
+| `layoutPreset` | DropdownButtonFormField | Select | `standard-9` | `_layoutPresetOptions` (예: `standard-9` / `vertical-9` / `compact-6` 등) | 좌석 배치 + 오버레이 컴포넌트 위치 프리셋. 9-max / 6-max 등 게임 폼팩터 대응 |
+
+**적용 시점**: CC IDLE 또는 핸드 사이 (CONFIRM 분류). 핸드 진행 중 변경 시 좌석 위치 점프 발생.
+
+**오버레이 영향**: Player Box 좌표, Score Strip 위치, Pot 카운터 위치 모두 layout preset 에 의존.
+
+**연관 키**: §3 Player Stack Layout (ID 18~) 와 일부 중복 가능. `layoutPreset` 이 상위 추상이고 하위 component 위치는 ID 18 의 individual override.
+
+**코드 참조**: `gfx_screen.dart` line 34 (`_layoutPresetOptions`), 79-86 (UI binding).

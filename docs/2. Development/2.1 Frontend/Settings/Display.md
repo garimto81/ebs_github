@@ -132,3 +132,25 @@ Display 섹션은 Settings의 세 번째 탭으로, 오버레이에 표시되는
 |------|------|
 | Admin이 아닌 역할 | Display 탭 접근 불가 |
 | BO 서버 미실행 | 읽기 전용 |
+
+---
+
+## 5. SG-008-b13 D3 추가 매핑 (2026-04-26 — IMPL-004)
+
+`team1-frontend/lib/features/settings/screens/display_screen.dart` 에 이미 구현된 4개 키를 기획에 편입.
+
+| 코드 키 | UI | 타입 | 기본값 | 옵션 / 범위 | 비고 |
+|---------|-----|------|--------|-------------|------|
+| `blindsFormat` | RadioListTile | Select | `sb_bb` | `_blindsFormatOptions` (sb_bb / level 등) | Show Blinds 표기 형식 (SB/BB 분리 vs Level) |
+| `displayMode` | ChoiceChip | Select | `standard` | `_displayModeOptions` (standard / compact / extended) | Display 레이아웃 모드 |
+| `precisionDigits` | NumericField | Int | `0` | 0~3 | 통계 수치 소수점 자릿수 |
+| `theme` | SegmentedButton | Select | `auto` | `auto` / `light` / `dark` | Lobby/Settings UI 테마 (시스템 / 라이트 / 다크) |
+
+**적용 시점**: 즉시 (CC LIVE 중에도 변경 가능 — 단순 표시 토글).
+
+**오버레이 영향**:
+- `blindsFormat` — Score Strip 블라인드 라벨 형식
+- `displayMode` — 좌표계 변경 시 layout reload (1초 블랙아웃)
+- `precisionDigits` — Equity %, Pot 수치 소수점
+
+**코드 참조**: `display_screen.dart` line 20-25 (옵션 정의), 59-148 (UI binding).

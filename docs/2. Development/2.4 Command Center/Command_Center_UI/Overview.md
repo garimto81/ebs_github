@@ -330,6 +330,63 @@ D(Dealer) 하단 중앙. D 왼쪽(시계방향): S1(SB) → S2(BB) → S3 → S4
 | **오류 복구** | UNDO 무제한 (현재 핸드 내), Miss Deal 선언, 수동 카드 입력 폴백 |
 | **일관성** | 모든 게임 타입에서 동일한 레이아웃 및 버튼 패턴 유지 |
 | **피로 최소화** | 수 시간 연속 사용 고려. 반복 동작(NEW HAND → 액션 → HAND_COMPLETE) 패턴 고정 |
+| **카드 비노출 (D7, 2026-04-22)** | 운영자(딜러)는 hole cards 의 **값** 을 절대 보지 못한다. 분배 여부만 face-down (`?`) 표시 |
+
+### 5.1 D7 — 카드 비노출 계약 (2026-04-22 회의 결정)
+
+운영자(딜러)가 CC 화면을 통해 hole cards 의 값(rank/suit)을 미리 알면 부정 행위 위험이 발생한다. 따라서 **CC widget 트리는 hole cards 값을 절대 렌더링하지 않는다**.
+
+#### 5.1.1 비노출 / 노출 매트릭스
+
+| 정보 | CC | Overlay | 근거 |
+|------|:--:|:-------:|------|
+| **hole cards 값 (rank/suit)** | ❌ 비노출 | ✅ 노출 (Rive 송출) | D7 — 운영자 부정 방지 |
+| hole cards **분배 여부** (count) | ✅ face-down `?` 표시 | ✅ 정상 | 운영자가 분배 진행 인지 필요 |
+| community cards (flop/turn/river) | ✅ 노출 | ✅ 노출 | 공개 정보 |
+| pot / stacks / bets | ✅ 노출 | ✅ 노출 | 공개 정보 |
+| 좌석 / position / status | ✅ 노출 | ✅ 노출 | 공개 정보 |
+
+#### 5.1.2 데이터 흐름 (data layer 는 보존)
+
+```
+Engine 응답 (hole cards 포함)
+   │
+   ├──> CC seat_provider.holeCards (state 보관 — Overlay 송출용)
+   │      │
+   │      └──> CC widget 렌더링: face-down `?` 만 표시 (값 불노출)
+   │
+   └──> Overlay seat_provider (별도) → Rive 송출 (시청자 화면)
+```
+
+CC widget 은 `seat.holeCards.length` (count) 만 사용. `seat.holeCards[i].rank` / `.suit` 직접 접근 **금지**.
+
+#### 5.1.3 정적 가드 (CI)
+
+`tools/check_cc_no_holecard.py` 가 CC widget 디렉토리(`team4-cc/src/lib/features/command_center/widgets/`)를 스캔하여 hole card 값 노출 패턴을 검출한다. 위반 시 exit 1.
+
+검출 규칙:
+- `_buildHoleCards(...)` / `_buildMiniCard(...)` 함수 호출
+- `card.rank` / `card.suit` 직접 접근
+- `holeCards[i].rank` / `holeCards[i].suit` 배열 요소 접근
+
+허용:
+- `seat.holeCards.isEmpty` / `.isNotEmpty` / `.length` (count check)
+- `_buildHoleCardBack(count)` (face-down 표시 helper)
+
+#### 5.1.4 디버그 모드 예외 없음
+
+D7 의 의도는 운영자 부정 방지이므로, **디버그/개발 모드에서도 노출 금지**. 조건 분기 없이 위 규칙 적용.
+
+#### 5.1.5 위반 사례 (2026-04-26 IMPL-007 적용 전)
+
+`seat_cell.dart` line 500-501 (적용 전):
+```dart
+// Row 3: Hole cards (if any)
+if (seat.holeCards.isNotEmpty) _buildHoleCards(seat.holeCards),
+```
+→ `_buildHoleCards` / `_buildMiniCard` 가 rank/suit 를 그대로 화면에 렌더링했다. IMPL-007 에서 face-down 표시로 교체.
+
+> 참조: `docs/4. Operations/Conductor_Backlog/IMPL-007-cc-no-card-display-contract.md`
 
 ### 수동 편집 우선 원칙
 
