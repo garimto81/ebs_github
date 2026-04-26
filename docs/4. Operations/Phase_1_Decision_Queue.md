@@ -187,10 +187,35 @@ registry 권고 (default option) 를 일괄 수용. 구현은 team2 위임.
 
 ---
 
+## Decision Group F — SG-024 거버넌스 확장 (Conductor 단일 세션 전권)
+
+사용자 B-Q5 ㉠ 채택 (2026-04-27):
+
+| 항목 | 내용 |
+|------|------|
+| 결정 | Conductor 단일 세션 전권 (Mode A default), 멀티세션 옵션 유지 (Mode B) |
+| Type | C (기획 모순 — 5팀 분리 vs Conductor 전권) |
+| Cascade 처리 (Conductor 자율) | CLAUDE.md (project) "팀 세션 금지" 폐기, team-policy.json v7.1 (Mode A/B + mode_a_limits), Multi_Session_Workflow §v7.1 단일 세션 모드, Spec_Gap_Registry SG-024, NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION, **B-Q9 Spec_Gap_Triage production 의미 callout** |
+| 후속 결정 (Backlog 등재) | B-Q6 timeline (B-Q6-timeline-mvp-launch-schedule.md) / B-Q7 품질 기준 (B-Q7-quality-criteria-production.md) / B-Q8 vendor reactivate (B-Q8-vendor-rfi-rfq-reactivation.md) — 사용자 명시 대기 |
+| Why | 사용자 명시 (2026-04-27): "거버넌스 확장 — Conductor 가 team1~4 코드 영역 직접 진입 허용. CLAUDE.md '팀 세션 금지' 폐기. 후속 cascade 단일 turn 에 자율 진행 가능" |
+
+### Mode A vs Mode B (v7.1)
+
+| 모드 | trigger | workflow |
+|------|---------|----------|
+| **Mode A — 단일 세션 (default in v7.1)** | Conductor 단독 활동 | `/team` 생략 가능. main 직접 commit. decision_owner override |
+| **Mode B — 멀티 세션 (옵션)** | 팀 세션 활성화 자동 회복 | v5.1 L0-L4 워크플로우. decision_owner 회복 |
+
+### Mode A 한계 (Conductor 자율 금지)
+- vendor 외부 메일 / destructive 시스템 변경 / git config / 사용자 인텐트 변경 / memory 사용자 본인 결정 메모
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v1.3 | Group F 추가 (SG-024 거버넌스 확장 — Mode A/B) + B-Q9 Conductor 자율 처리 (Spec_Gap_Triage callout) + B-Q6/Q7/Q8 Backlog 등재 | MARKET | 사용자 B-Q5 ㉠ 채택 — Conductor 전권 |
 | 2026-04-27 | v1.2 | Group E 추가 (SG-023 인텐트 전환 — production 출시) + B-Q5~Q9 후속 결정 필요 명시 | MARKET | 사용자 B 옵션 채택 — 인텐트 자체 reversal |
 | 2026-04-27 | v1.1 | Group D 추가 (cascade 후속 4건 confirm) + Q2/Q3 Backlog 등재 갱신 | PRODUCT | 사용자 1.㉠/2.㉡/3.㉠/4.㉠ 결정 SSOT 화 |
 | 2026-04-27 | v1.0 | 최초 작성 (사용자 18건 결정 SSOT) | PRODUCT | Phase 1 cascade — 사용자 결정을 SSOT 화 |
