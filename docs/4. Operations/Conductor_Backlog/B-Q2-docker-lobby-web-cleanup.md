@@ -2,7 +2,9 @@
 title: Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade)
 owner: conductor
 tier: internal
-status: PENDING
+status: DONE
+resolved: 2026-04-27
+resolved-by: conductor
 type: backlog-deferred-decision
 linked-sg: SG-022
 decision-owner: user
@@ -55,9 +57,33 @@ SG-022 결정 (단일 Desktop 바이너리, Lobby 포함) 의 운영 자산 casc
 - [ ] Docker_Runtime.md 컨테이너 맵 갱신
 - [ ] `git status` 에 untracked Docker 자산 0건
 
+## Resolution Log (2026-04-27, Conductor)
+
+사용자 명시 task 1 (Phase 2 시작 메시지) 으로 즉시 처리 진행.
+
+| 단계 | 결과 | 비고 |
+|------|:----:|------|
+| Docker 컨테이너 stop+rm: `ebs-v2-lobby-web` | ✅ | healthy 6h 운영 중이었으나 graceful shutdown |
+| Docker 컨테이너 stop+rm: `ebs-lobby-web-1` | ✅ | exited 상태 |
+| Docker 이미지 rmi: `ebs-v2-lobby-web:latest` | ✅ | sha256:a52ccda8fe50 |
+| Docker 이미지 rmi: `ebs-lobby-web:latest` | ✅ | sha256:ab8c511f9744 |
+| `docker-compose.yml` `lobby-web` 서비스 블록 제거 (marker 보존) | ✅ | line 89-113 → SG-022 REMOVED 마커 |
+| `Docker_Runtime.md` 컨테이너 맵 갱신 | ✅ | line 22 row + "중요 정정 2026-04-22" SUPERSEDED |
+| team1-frontend `Dockerfile` Web 빌드 단계 | ⏳ | **B-Q3 위임** (team1 결정 대기) |
+| team1-frontend `web/` 폴더 정리 | ⏳ | **B-Q3 위임** + `web/README.md` deprecation 마커 추가 |
+
+## Verification
+
+- `docker ps -a | grep lobby-web` → 0건 ✓
+- `docker images | grep -E "ebs-lobby-web\|ebs-v2-lobby-web"` → 0건 ✓
+- `grep -n "lobby-web:" docker-compose.yml` → 서비스 정의 0건 ✓ (marker 만 존재)
+- 보존된 lobby 관련 이미지 (`claude-lobby`, `ebs-lobby-dev`, `ebs_lobby-lobby`) → 별도 결정 대상 (SG-022 직접 명시 없음, scope 초과 차단 검증 후 보존)
+
 ## 참조
 
 - `docs/4. Operations/Phase_1_Decision_Queue.md` (Decision Group A + Q2 보류)
 - `docs/4. Operations/Spec_Gap_Registry.md` (SG-022)
 - `docs/4. Operations/Docker_Runtime.md` (운영 SSOT)
+- `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` (paired)
+- `team1-frontend/web/README.md` (deprecation 마커, Conductor 추가 2026-04-27)
 - MEMORY `project_ebs_runtime_infrastructure.md`

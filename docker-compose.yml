@@ -86,31 +86,11 @@ services:
       - LOG_LEVEL=debug
     restart: unless-stopped
 
-  # ── Lobby Web (team1, Flutter Web + nginx reverse proxy) ─────────────
-  # LAN 내 브라우저 접속: http://LAN_IP:3000
-  # Dockerfile 내부에서 Flutter SDK 받아 build web 수행 후 nginx 로 서빙.
-  # nginx 가 /api, /ws 를 bo:8000 으로 reverse proxy → 브라우저 CORS 불필요.
-  # 재빌드: docker compose --profile web build --no-cache lobby-web
-  # 기획/배포 SSOT: docs/2. Development/2.1 Frontend/Deployment.md
-  lobby-web:
-    build:
-      context: .
-      dockerfile: team1-frontend/Dockerfile
-    image: ebs-lobby-web
-    ports:
-      - "3000:80"
-    depends_on:
-      - bo
-    restart: unless-stopped
-    healthcheck:
-      # busybox wget (alpine) IPv6 우선 시도로 localhost 실패 → 127.0.0.1 명시
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/healthz"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 10s
-    profiles:
-      - web  # docker compose --profile web up -d lobby-web
+  # ── Lobby Web (REMOVED 2026-04-27, SG-022) ──────────────────────────
+  # 폐기 사유: SG-022 결정 (단일 Desktop 바이너리, Lobby 포함). Lobby + CC + Overlay 가
+  # 단일 Flutter Desktop 바이너리 내부 라우팅으로 통합됨. Web 별도 배포 폐기.
+  # 운영 자산 정리: Conductor 가 ebs-v2-lobby-web + ebs-lobby-web 컨테이너/이미지 destroy 완료.
+  # 참조: docs/4. Operations/Phase_1_Decision_Queue.md, Spec_Gap_Registry SG-022, B-Q2.
 
   # ── CC Web (team4, Flutter Web 빌드) ────────────────────────────────────
   # Demo Mode 전용. LAN 내 브라우저 접속: http://LAN_IP:3100

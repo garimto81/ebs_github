@@ -2,7 +2,7 @@
 title: Docker Runtime 운영 지침
 owner: conductor
 tier: internal
-last-updated: 2026-04-22
+last-updated: 2026-04-27
 ---
 
 # Docker Runtime 운영 지침
@@ -19,18 +19,22 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 |----------|--------|----------|--------|---------------|
 | `ebs-bo-1` | `ebs-bo` | 8000 | team2 | `team2-backend/src/**` 또는 `Dockerfile` 변경 |
 | `ebs-engine-1` | `ebs-engine` | 8080 | team3 | `team3-engine/ebs_game_engine/lib/**` 또는 `Dockerfile` 변경 |
-| `ebs-lobby-web-1` | `ebs-lobby-web` | 3000 | **team1** | `team1-frontend/{lib,web,Dockerfile,nginx.conf}/**` 변경 — `flutter build web` 선행 |
+| ~~`ebs-lobby-web-1`~~ **[REMOVED 2026-04-27, SG-022]** | — | — | — | 단일 Desktop 바이너리로 통합. Conductor 가 컨테이너/이미지 destroy 완료. team1 Dockerfile/web 정리는 B-Q3 위임 |
 | `ebs-cc-web-1` | `ebs-cc-web` | 3100 | team4 | `team4-cc/src/build/web/**` 갱신 (flutter build web 선행) |
 | `ebs-redis-1` | `redis:7-alpine` | internal | conductor | (재빌드 불필요, `docker compose pull` 만) |
 
 **compose 정의 파일**: `docker-compose.yml` (레포 루트)
 
-**중요 정정 (2026-04-22)**:
-- 2026-04-22 작성한 초기 버전에서 `ebs-lobby-web` 을 "폐기됨" 으로 분류하고 `2cc13b1` "Desktop 단일 스택" 전환 때문에 out-of-scope 라고 기재했으나, **이는 기획 문서의 잘못된 해석** 이었다.
-- 실제 운영 요구: 동일 네트워크 LAN 브라우저 접근 필수 → Docker Web 배포 유지.
-- **team1-frontend 정규 배포 = Docker Web 단독**. 사용자는 브라우저로 `http://<lan-ip>:3000/` 접속. `ebs-lobby-web` = 정규 서비스.
-- Flutter Desktop 실행 (`flutter run -d windows`) 은 **개발자 디버깅 모드**이며 배포 형태가 아니다.
-- 상세: `docs/2. Development/2.1 Frontend/Deployment.md` (team1 배포 SSOT)
+**~~중요 정정 (2026-04-22)~~** [SUPERSEDED 2026-04-27, SG-022]:
+- ~~2026-04-22 정정: `ebs-lobby-web` 을 "정규 Web 배포" 로 분류 + γ 하이브리드 (Web Lobby + Desktop CC) 채택~~
+- ~~team1-frontend 정규 배포 = Docker Web 단독~~ → SG-022 로 역전 (단일 Desktop 바이너리)
+- ~~Flutter Desktop = 개발자 디버깅 모드~~ → SG-022 로 역전 (Desktop = 정규 배포)
+
+**현재 정책 (2026-04-27, SG-022 결정)**:
+- EBS = **단일 Flutter Desktop 바이너리**. Lobby + Command Center + Overlay 모두 단일 바이너리 내부 라우팅.
+- Docker `ebs-lobby-web` 컨테이너/이미지 destroy 완료 (2026-04-27 Conductor 처리).
+- team1-frontend Web 빌드 자산 (`web/`, `Dockerfile` Web 단계) 정리는 **B-Q3 (team1 위임)**, due 2026-05-04.
+- 참조: `Phase_1_Decision_Queue.md`, `BS_Overview §1`, `Spec_Gap_Registry SG-022`, MEMORY `feedback_web_flutter_separation` [SUPERSEDED].
 
 ---
 
@@ -54,7 +58,7 @@ docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" | grep "^ebs-"
 
 | 세션 | 조건 | 명령 |
 |------|------|------|
-| team1 | `team1-frontend/{lib,web,Dockerfile,nginx.conf}/**` 변경 | `cd team1-frontend && flutter build web --release && cd .. && docker compose --profile web build --no-cache lobby-web && docker compose --profile web up -d lobby-web` |
+| ~~team1~~ **[REMOVED 2026-04-27, SG-022]** | ~~Web 빌드 명령 폐기~~ | ~~`flutter build web ... && docker compose --profile web build lobby-web`~~ → SG-022 단일 Desktop 으로 통합. team1 Dockerfile/web 정리는 B-Q3 후속 |
 | team2 | `team2-backend/src/**` 변경 | `docker compose build --no-cache bo && docker compose up -d bo` |
 | team3 | `team3-engine/ebs_game_engine/lib/**` 변경 | `docker compose build --no-cache engine && docker compose up -d engine` |
 | team4 | `team4-cc/src/build/web/**` 갱신 | `cd team4-cc/src && flutter build web --release --dart-define=DEMO_MODE=true && cd ../.. && docker compose --profile web build --no-cache cc-web && docker compose --profile web up -d cc-web` |
