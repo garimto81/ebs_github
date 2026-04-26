@@ -118,6 +118,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` — 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합)
 - `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` — 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서
 - `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` — Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade)
+- `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-PHASE2-START.md` — Phase 1 설계 정렬 완료 — Phase 2 진입 허용 (전체 팀 broadcast)
 - `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` — 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1)
 - `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` — Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback
 - `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` — Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences

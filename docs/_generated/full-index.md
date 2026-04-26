@@ -473,6 +473,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/IMPL-005-team2-api-d2-routers.md` | 구현: team2 API 48 D2 endpoint 라우터 실구현 (SG-008-a 후속) | team2 | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-006-websocket-ack-reject-publishers.md` | 구현: WebSocket Ack/Reject 6 이벤트 publisher (SG-020) | team2 | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-007-cc-no-card-display-contract.md` | 구현: CC 카드 비노출 계약 강화 (회의 D7 후속) | team4 | - | - |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-PHASE2-START.md` | Phase 1 설계 정렬 완료 — Phase 2 진입 허용 (전체 팀 broadcast) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR1-doc-correction.md` | B-088 PR-1 — 기존 divergence 선언 정정 (Conductor 영역) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR2bis-service-layer.md` | B-088 PR-2-bis — service/router 레이어 Pydantic 응답 타입 적용 (B-089 23 failure 근본 해결) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR9-naming-ci-gate.md` | B-088 PR-9 — naming CI gate 도구 신설 (재발 방지) | - | - | - |
