@@ -653,10 +653,73 @@ services/ 영역이 핵심 미커버:
 
 ---
 
+## Decision Group R — Session 2 FINAL (89% 도달, 95% 미달 6%p, B-Q20 등재)
+
+사용자 명시 (2026-04-27): "Session 2.7 final — Multi-turn plan 마지막 sub-session, 95% 도달 + Session 2 종료 보고".
+
+### 진행 결과
+
+| 영역 | tests | 결과 |
+|------|:-----:|:----:|
+| Session 2.7 (skin + undo) | 16 | 16/16 PASS in 0.37s |
+| Final regression + cov | — | **415 passed in 140.47s, 89% TOTAL** |
+
+### 🎯 Session 2 최종 결과
+
+| 메트릭 | 시작 | 최종 | 향상 |
+|--------|:----:|:----:|:----:|
+| Tests | 261 | **415** | **+154** |
+| Coverage | 78% | **89%** | **+11%p** |
+| Regression | — | **0건** | ✅ |
+| Production code 수정 | — | **0건** | ✅ Strict |
+
+### 95% 미달 (B-Q20 등재)
+
+- 89% / 95% = **94% 달성**
+- 잔여 6%p (240 stmts) → **B-Q20-coverage-final-6pp.md** NEW
+- 처리 옵션: (1) 단계적 cascade 2-3 sub-sessions, (2) B-Q7 ㉠ 90% 재정의, (3) 우선순위 전환
+
+### Production Bugs 누적
+
+- B-Q18: structure update tx flush (Type A, P1)
+- B-Q19: list_hands SQLAlchemy 2.x Row (Type A, P1)
+- 모두 Strict 룰 준수 — surgical edit 별도 turn
+
+### Session 2 cumulative cascade (10 commits)
+
+`17ecff3 → 51ff499 → a96b4bb → 674f60c → dd86e1c → ab94270 → c3bf3d2 → (본 commit, Session 2.7 final + 89% report)`
+
+### SESSION_2_FINAL_REPORT.md 작성 완료
+
+- `docs/4. Operations/Conductor_Backlog/SESSION_2_FINAL_REPORT.md`
+- 전체 메트릭 + 8 sub-sessions 진척 + 잔여 분석 + 후속 권고
+
+### 5-Session Pipeline 진척
+
+```
+  ✅ Session 1: Foundation & Infrastructure   COMPLETED
+  🟡 Session 2: Core Logic & Backend         89% (목표 95% 미달 6%p)
+  ⏳ Session 3: Frontend Interface & Routing  PENDING (team1)
+  ⏳ Session 4: System Integration & QA       PENDING
+  ⏳ Session 5: Final Production & Audit      PENDING
+```
+
+### 다음 turn 권고
+
+| 옵션 | 의미 |
+|:----:|------|
+| A | B-Q20 cascade — 잔여 6%p 도달 (2-3 sub-sessions) |
+| B | B-Q7 ㉠ 90% 재정의 — Session 2 자연 종료 |
+| C | Session 3 진입 — Frontend (team1) |
+| D | B-Q18 + B-Q19 surgical edit (production bugs) |
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v2.5 | Group R 추가 (Session 2 FINAL — 89% 도달, +154 tests, 95% 미달 6%p, B-Q20 등재) + SESSION_2_FINAL_REPORT.md NEW + B-Q20-coverage-final-6pp.md NEW | TECH | Session 2 multi-turn plan 마지막 sub-session 종료 |
 | 2026-04-27 | v2.4 | Group Q 추가 (Session 2.6 — routers 보강 22 tests, 5 routers 커버) | TECH | 95% 도달 핵심 cascade |
 | 2026-04-27 | v2.3 | Group P 추가 (Session 2.4b — hand/clock/competition 21 tests + B-Q19 production bug 발견) | TECH | services/ 영역 cascade 마무리 |
 | 2026-04-27 | v2.2 | Group O 추가 (Session 2.3b + 2.5 + 2.4a 통합 — 33 new tests, 356 passed regression 0, Autonomous Execution Engine) | TECH | 사용자 자율 실행 명시 — 95% 도달까지 무한 반복 |
