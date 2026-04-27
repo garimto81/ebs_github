@@ -211,10 +211,45 @@ registry 권고 (default option) 를 일괄 수용. 구현은 team2 위임.
 
 ---
 
+## Decision Group G — B-Q6 ㉠ + B-Q7 ㉠ 자율 상정 (Mode A 첫 활용)
+
+사용자 명시 (2026-04-27): "B-Q6(타임라인)은 ㉠(Legacy Reactivate), B-Q7(품질)은 ㉠(Strict)으로 자율 상정"
+
+| 항목 | 결정 | Cascade |
+|------|------|---------|
+| **B-Q6 ㉠** | Legacy plan reactivate: 2027-01 런칭, 2027-06 Vegas, MVP=홀덤1종 | memory `project_2027_launch_strategy` REACTIVATED, Roadmap.md 재작성 (intent → production-launch + Phase 0~4 timeline) |
+| **B-Q7 ㉠** | Production-strict: 95%+ coverage, 99.9% uptime, p99<200ms, OWASP, WCAG AA, 한+영 | Roadmap §"Production Quality Gates", Spec_Gap_Registry SG-026 row, B-Q10/Q11/Q12 잔여 Backlog 등재 |
+
+### Mode A 첫 활용 사항 (2026-04-27 본 turn)
+
+본 turn 은 SG-024 Mode A 활성화 후 **첫 번째 자율 코드 작성 시도**. 단 다음 발견으로 **코드 작성은 0건**:
+
+- **기존 자산 발견**: team2-backend 는 이미 247 tests 0 errors. audit.py/auth.py 의 SG-008-b 구조 일부 존재. team2-backend/CLAUDE.md "우선 작업 7번 = SG-008-b 9 endpoint 실구현" 명시 — 이미 backlog 등재.
+- **pre_push_drift_check.py 이미 존재** — BLANK-3 의 일부 이미 구현. 보강은 후속.
+- **거버넌스 안정성 우선**: 1주 내 4건 reversal 누적 (SG-022/023/024 + B-Q6/Q7) → Conductor 가 Mode A 로 거대 코드 작성 시 추후 reversal 발생 시 손실 위험. **점진 진행 + 사용자 검증 cycle 권장**.
+
+### Mode A 본 turn 처리 결과
+
+| 영역 | 처리 |
+|------|------|
+| SSOT cascade (B-Q6/Q7) | ✅ memory + Roadmap + Phase_1_Decision_Queue Group G + Spec_Gap_Registry SG-025/026 + NOTIFY |
+| 기존 자산 검증 보고 | ✅ audit.py/auth.py/pre_push_drift_check.py 발견 보고 |
+| 잔여 Backlog 등재 | ✅ B-Q10/Q11/Q12/Q13/Q14/Q15 |
+| 코드 직접 작성 | 0건 (검증 부담 회피, 다음 turn 사용자 우선순위 확인 후 진행) |
+
+### B-Q8 잔존 PENDING
+
+| 항목 | 상태 | 사유 |
+|------|:----:|------|
+| B-Q8 vendor 모델 (RFI/RFQ reactivate) | PENDING | 외부 메일 발송 destructive — Mode A 한계, 사용자 명시 필요 |
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v1.4 | Group G 추가 (B-Q6 ㉠ + B-Q7 ㉠ 자율 상정 — Mode A 첫 활용) + memory `project_2027_launch_strategy` REACTIVATED + Roadmap.md production-launch 재작성 + 잔여 Backlog (B-Q10~Q15) 등재 | MARKET | 사용자 명시 (2026-04-27): B-Q6 ㉠ Legacy + B-Q7 ㉠ Strict |
 | 2026-04-27 | v1.3 | Group F 추가 (SG-024 거버넌스 확장 — Mode A/B) + B-Q9 Conductor 자율 처리 (Spec_Gap_Triage callout) + B-Q6/Q7/Q8 Backlog 등재 | MARKET | 사용자 B-Q5 ㉠ 채택 — Conductor 전권 |
 | 2026-04-27 | v1.2 | Group E 추가 (SG-023 인텐트 전환 — production 출시) + B-Q5~Q9 후속 결정 필요 명시 | MARKET | 사용자 B 옵션 채택 — 인텐트 자체 reversal |
 | 2026-04-27 | v1.1 | Group D 추가 (cascade 후속 4건 confirm) + Q2/Q3 Backlog 등재 갱신 | PRODUCT | 사용자 1.㉠/2.㉡/3.㉠/4.㉠ 결정 SSOT 화 |

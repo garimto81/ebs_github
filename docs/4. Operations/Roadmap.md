@@ -2,21 +2,51 @@
 title: Roadmap
 owner: conductor
 tier: internal
-last-updated: 2026-04-22
-intent: spec-completeness (not product-launch)
+last-updated: 2026-04-27
+intent: production-launch (SG-023 + B-Q6 ㉠ 채택)
+previous_intent: "spec-completeness (2026-04-20 ~ 2026-04-26, SUPERSEDED 2026-04-27)"
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
-reimplementability_notes: "자립 가능: 기획서 완결성 로드맵 구조 자체는 독립 해석 가능"
+reimplementability_notes: "자립 가능: 본 로드맵은 production 출시 + 기획서 완결성 이중 추적. SG-023/024 + B-Q6 ㉠ 채택 후 production 일정 + 기획 챕터 완결성 양쪽 모두 본 문서에서 추적."
 ---
 
-# EBS 기획서 완결성 로드맵
+# EBS Production Roadmap (SG-023 + B-Q6 ㉠, 2026-04-27)
 
-> **프로젝트 의도** (2026-04-20 재정의): EBS 는 **개발팀 인계용 기획서 완결** 프로젝트. 실제 제품 출시가 아님. 프로토타입(`team1~4/`)은 **기획서 검증 도구**.
-> **쌍방향 인과**: 프로토타입 완벽 동작 ↔ 기획서 완벽.
->
-> **이 문서는** 각 기획 챕터가 "외부 개발팀이 받아 재구현 가능한 상태" 인가를 추적합니다. 제품 출시 로드맵이 아닙니다.
+> **프로젝트 의도** (~~2026-04-20 spec-completeness~~ → **2026-04-27 SG-023 production-launch**): EBS 는 **production 출시 프로젝트** (사용자 = 기획자 + production 출시 책임자).
+> **timeline 기준** (B-Q6 ㉠ 채택 2026-04-27): MVP=홀덤1종, **2027-01 런칭** / **2027-06 Vegas**. 상세: memory `project_2027_launch_strategy.md` REACTIVATED.
+> **품질 기준** (B-Q7 ㉠ 채택 2026-04-27): Production-strict — 95%+ coverage, 99.9% uptime, p99<200ms, OWASP audit, WCAG AA, 한+영.
+> **쌍방향 인과 보존**: 프로토타입/구현 완벽 동작 ↔ 기획서 완벽. 본 로드맵은 (a) production 출시 일정 + (b) 기획 챕터 완결성 이중 추적.
 >
 > SSOT 정렬 진척표 → `SSOT_Alignment_Progress.md` 로 분리 (2026-04-20).
+
+## Production Timeline (REACTIVATED 2026-04-27, B-Q6 ㉠)
+
+| Phase | 기간 | 핵심 활동 | 상태 |
+|-------|------|-----------|:----:|
+| Phase 0 | ~ 2026-12 | MVP=홀덤1종 구현 + 검증 (현재 진행 중) | IN_PROGRESS |
+| Phase 1 | 2027-01 | **런칭** (한국 시장 베타) | PLANNED |
+| Phase 2 | 2027-02 ~ 2027-05 | 안정화 + 22종 게임 확장 + Backend 보강 | PLANNED |
+| Phase 3 | 2027-06 | **Vegas** (글로벌 런칭) | PLANNED |
+| Phase 4 | 2027-07 ~ | 스킨 에디터 + BO 본격 개발 | PLANNED |
+
+**MVP 정의** (memory `project_2027_launch_strategy` 참조):
+- 홀덤 1종, 8시간 연속 방송 가능
+- Action Tracker = PokerGFX 완전 복제
+- RIVE `.riv` 직접 로드 (스킨 에디터 1단계)
+- RFID 수동 입력 폴백 = 1급 기능
+- 출력: NDI + ATEM 스위처
+
+## Production Quality Gates (B-Q7 ㉠ 채택)
+
+| 측정 영역 | 기준 (Production-strict) |
+|----------|--------------------------|
+| Test coverage | **95%+** (현재 team2: 90% / 247 tests, 95% 도달 plan = B-Q10) |
+| Uptime SLA | 99.9% (Phase 1 런칭 기준) |
+| API 응답 시간 | p99 < 200ms (BLANK-1 100ms 전체 파이프라인 + endpoint 마진) |
+| 에러율 | < 0.1% |
+| 보안 | OWASP Top 10 준수 (B-Q11 audit plan) |
+| 접근성 | WCAG 2.1 AA |
+| i18n | 한글 + 영어 |
 
 ## 성공 기준 (Reimplementability)
 
