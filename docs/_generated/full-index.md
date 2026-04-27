@@ -475,6 +475,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-Q18-structure-update-same-tx-flush-bug.md` | B-Q18 — Structure update same-transaction delete+insert IntegrityError (Type A) | team2 (or conductor Mode A) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q19-list-hands-row-int-bug.md` | B-Q19 — list_hands SQLAlchemy 2.x Row int() TypeError (Type A) | team2 (or conductor Mode A) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` | Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q20-coverage-final-6pp.md` | B-Q20 — 95% coverage 잔여 6%p 도달 (Session 2 final 후속) | conductor (or team2) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` | team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade) | team1 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` | B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md` | B-Q7 — 품질 기준 (prototype-grade vs production-grade 측정) (사용자 명시 대기) | conductor | internal | - |
@@ -500,6 +501,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SESSION_2_1_HANDOFF.md` | SESSION 2.1 HANDOFF — auth_service.py 50% → 80% (B-Q10 cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SESSION_2_2_HANDOFF.md` | SESSION 2.2 HANDOFF — blind/payout structure services 20-26% → 70%+ | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SESSION_2_3a_HANDOFF.md` | SESSION 2.3a HANDOFF — series_service.py 57% → 80%+ | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/SESSION_2_FINAL_REPORT.md` | SESSION 2 FINAL REPORT — Core Logic & Backend Engine (B-Q10 cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SESSION_2_HANDOFF.md` | SESSION 2 HANDOFF — Core Logic & Backend Engine (Phase 1 audit 완료) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` | 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` | Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback | conductor | - | - |

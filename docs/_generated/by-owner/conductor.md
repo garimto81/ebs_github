@@ -133,6 +133,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SESSION_2_1_HANDOFF.md` — SESSION 2.1 HANDOFF — auth_service.py 50% → 80% (B-Q10 cascade)
 - `docs/4. Operations/Conductor_Backlog/SESSION_2_2_HANDOFF.md` — SESSION 2.2 HANDOFF — blind/payout structure services 20-26% → 70%+
 - `docs/4. Operations/Conductor_Backlog/SESSION_2_3a_HANDOFF.md` — SESSION 2.3a HANDOFF — series_service.py 57% → 80%+
+- `docs/4. Operations/Conductor_Backlog/SESSION_2_FINAL_REPORT.md` — SESSION 2 FINAL REPORT — Core Logic & Backend Engine (B-Q10 cascade)
 - `docs/4. Operations/Conductor_Backlog/SESSION_2_HANDOFF.md` — SESSION 2 HANDOFF — Core Logic & Backend Engine (Phase 1 audit 완료)
 - `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` — 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1)
 - `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` — Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback
