@@ -473,6 +473,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-Q16-development-environment-standards.md` | B-Q16 — 개발 환경 표준화 (Session 1 — SG-027 cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q17-engine-healthcheck-fix.md` | B-Q17 — ebs-v2-engine healthcheck unhealthy 수정 (Type A 구현 실수) | conductor (또는 team3) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q18-structure-update-same-tx-flush-bug.md` | B-Q18 — Structure update same-transaction delete+insert IntegrityError (Type A) | team2 (or conductor Mode A) | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q19-list-hands-row-int-bug.md` | B-Q19 — list_hands SQLAlchemy 2.x Row int() TypeError (Type A) | team2 (or conductor Mode A) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` | Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` | team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade) | team1 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` | B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기) | conductor | internal | - |
