@@ -67,6 +67,25 @@ Command Center (실시간 운영) + Overlay (방송 그래픽 출력, Skin Consu
 
 ---
 
+## 배포 형태 (2026-04-27 신규 — SG-022 폐기, Multi-Service Docker 채택)
+
+배포: **독립 Docker 컨테이너 (Lobby:3000 / CC:3001)**. 네트워크를 통해 Backend/Engine 과 연동되는 **멀티 세션 구조**.
+
+Lobby (team1) 와 CC (team4) 는 단일 앱이 아니며, 각각 독립된 Flutter 프로젝트로 존재한다. 다만 완전 독립은 아니며, Docker 기반의 격리된 환경에서 기동되어 동일한 EBS 에코시스템 (`ebs-net`) 내에서 네트워크로 상호 작용한다.
+
+| 용도 | 대상 | 방법 |
+|------|------|------|
+| **정규 배포 (Demo Web)** | 운영자 | `docker compose --profile web up -d cc-web` → 브라우저 `http://<lan-ip>:3001/` |
+| **개발자 디버깅 (네이티브)** | 개발자 | `flutter run -d windows --dart-define=ENGINE_URL=http://<bo>:8080 --dart-define=BO_URL=http://<bo>:8000` |
+
+CC 컨테이너는 BO/Engine/Lobby 와 `ebs-net` 네트워크를 공유하며, 환경 변수 `LOBBY_URL`, `BO_URL`, `ENGINE_URL` 로 상대 서비스 위치를 주입받는다.
+
+**Dockerfile / nginx 자산**: `docker/cc-web/` (multi-stage Flutter build → nginx alpine, port 3001, SPA fallback + healthz).
+
+배포 상세 SSOT: `../docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md`
+
+---
+
 ## 문서 위치 (docs v10)
 
 **팀 문서는 모두 `docs/2. Development/2.4 Command Center/` 에 있다. 이 폴더는 코드 전용.**

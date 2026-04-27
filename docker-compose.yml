@@ -1,18 +1,27 @@
-# EBS 통합 Docker Compose — LAN 네트워크 배포
+# EBS 통합 Docker Compose — Multi-Service LAN 네트워크 배포
 #
-# 서비스: BO (team2) + Redis + Engine (team3) + Lobby Web (team1) + CC Web (team4)
-# 데스크톱 앱 (team1 Lobby / team4 CC) 는 호스트에서 별도 실행 가능 (병행).
+# 2026-04-27 — SG-022 (단일 Desktop 바이너리) 공식 폐기. Multi-Service Docker 채택.
+# Lobby (team1) 와 CC (team4) 는 단일 앱이 아니며 각각 독립 Flutter 프로젝트로 존재.
+# Docker 격리 컨테이너로 기동되어 ebs-net 네트워크에서 BO/Engine 과 협력.
+#
+# 서비스 토폴로지 (모두 ebs-net 공유):
+#   bo (team2)         :8000   ← REST/WebSocket Backend
+#   redis              :6380   ← session/pub-sub
+#   engine (team3)     :8080   ← Game Engine harness
+#   lobby-web (team1)  :3000   ← Flutter Web (운영자 대시보드)        [profile: web]
+#   cc-web (team4)     :3001   ← Flutter Web (Command Center)         [profile: web]
 #
 # 사용법:
 #   개발 (localhost):       docker compose up -d
 #   LAN:                   EBS_EXTERNAL_HOST=192.168.1.100 docker compose up -d
 #   LAN + 모든 Web:         EBS_EXTERNAL_HOST=192.168.1.100 docker compose --profile web up -d
 #   Lobby Web 만:           docker compose --profile web up -d lobby-web
+#   CC Web 만:              docker compose --profile web up -d cc-web
 #   CC 개발 최소:            docker compose up -d bo redis engine
 #   로그 추적:               docker compose logs -f bo
 #   전체 중지:               docker compose down
 #
-# CC 호스트 실행 (LAN IP 예시):
+# CC 네이티브 디버깅 (개발자 전용, 배포 아님):
 #   cd team4-cc/src
 #   flutter run -d windows --dart-define=DEMO_MODE=true \
 #     --dart-define=BO_URL=http://192.168.1.100:8000 \
@@ -32,6 +41,9 @@ services:
   # ── Backend / Back Office (team2) ──────────────────────────────────────────
   bo:
     build: team2-backend/
+    container_name: ebs-bo
+    networks:
+      - ebs-net
     ports:
       - "8000:8000"
     environment:
@@ -51,6 +63,9 @@ services:
       - CORS_ORIGINS=${CORS_ORIGINS:-["*"]}
       # LAN 배포: BO 서버의 외부 IP (launch-cc 응답의 ws_url/rest_url 생성용)
       - EBS_EXTERNAL_HOST=${EBS_EXTERNAL_HOST:-localhost}
+      # Multi-Service Docker (SG-022 폐기 cascade) — 상대 서비스 위치 주입
+      - LOBBY_URL=${LOBBY_URL:-http://lobby-web:3000}
+      - CC_URL=${CC_URL:-http://cc-web:3001}
     volumes:
       - bo-data:/app/data
     depends_on:
@@ -66,6 +81,9 @@ services:
   # ── Redis ──────────────────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
+    container_name: ebs-redis
+    networks:
+      - ebs-net
     command: ["redis-server", "--appendonly", "yes"]
     ports:
       - "6380:6379"
@@ -80,33 +98,92 @@ services:
   # ── Game Engine Harness (team3) ────────────────────────────────────────────
   engine:
     build: team3-engine/ebs_game_engine/
+    container_name: ebs-engine
+    networks:
+      - ebs-net
     ports:
       - "8080:8080"
     environment:
       - LOG_LEVEL=debug
+      # Multi-Service Docker (SG-022 폐기 cascade)
+      - BO_URL=${BO_URL:-http://bo:8000}
     restart: unless-stopped
 
-  # ── Lobby Web (REMOVED 2026-04-27, SG-022) ──────────────────────────
-  # 폐기 사유: SG-022 결정 (단일 Desktop 바이너리, Lobby 포함). Lobby + CC + Overlay 가
-  # 단일 Flutter Desktop 바이너리 내부 라우팅으로 통합됨. Web 별도 배포 폐기.
-  # 운영 자산 정리: Conductor 가 ebs-v2-lobby-web + ebs-lobby-web 컨테이너/이미지 destroy 완료.
-  # 참조: docs/4. Operations/Phase_1_Decision_Queue.md, Spec_Gap_Registry SG-022, B-Q2.
+  # ── Lobby Web (team1, Flutter Web 빌드) ────────────────────────────────────
+  # 2026-04-27 — SG-022 폐기 cascade. 단일 Desktop 통합 폐기, Web Multi-Service 채택.
+  # 운영자가 브라우저로 http://<lan-ip>:3000/ 접속.
+  # 빌드: docker compose --profile web build lobby-web
+  lobby-web:
+    image: ebs/lobby-web:${LOBBY_WEB_TAG:-latest}
+    build:
+      context: ./team1-frontend
+      dockerfile: docker/lobby-web/Dockerfile
+      args:
+        ENV_FILE: production.json
+    container_name: ebs-lobby-web
+    profiles: ["web"]
+    networks:
+      - ebs-net
+    ports:
+      - "3000:3000"
+    environment:
+      - BO_URL=${BO_URL:-http://bo:8000}
+      - ENGINE_URL=${ENGINE_URL:-http://engine:8080}
+      - CC_URL=${CC_URL:-http://cc-web:3001}
+    depends_on:
+      bo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3000/healthz"]
+      interval: 10s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    restart: unless-stopped
+    labels:
+      - "ebs.team=team1"
+      - "ebs.service=lobby-web"
+      - "ebs.phase=5-production"
+      - "ebs.deprecates=SG-022"
 
   # ── CC Web (team4, Flutter Web 빌드) ────────────────────────────────────
-  # Demo Mode 전용. LAN 내 브라우저 접속: http://LAN_IP:3100
-  # 빌드 전 실행 필요: cd team4-cc/src && flutter build web --release --dart-define=DEMO_MODE=true
+  # 2026-04-27 — SG-022 폐기 cascade. team1 lobby-web 패턴 복제 (multi-stage build).
+  # Demo Mode 정규 LAN 배포. 브라우저 접속: http://<lan-ip>:3001/
+  # 빌드: docker compose --profile web build cc-web
   cc-web:
-    image: nginx:alpine
+    image: ebs/cc-web:${CC_WEB_TAG:-latest}
+    build:
+      context: ./team4-cc
+      dockerfile: docker/cc-web/Dockerfile
+      args:
+        ENV_FILE: production.json
+    container_name: ebs-cc-web
+    profiles: ["web"]
+    networks:
+      - ebs-net
     ports:
-      - "3100:80"
-    volumes:
-      - ./team4-cc/src/build/web:/usr/share/nginx/html:ro
+      - "3001:3001"
+    environment:
+      - BO_URL=${BO_URL:-http://bo:8000}
+      - ENGINE_URL=${ENGINE_URL:-http://engine:8080}
+      - LOBBY_URL=${LOBBY_URL:-http://lobby-web:3000}
     depends_on:
-      - bo
-      - engine
+      bo:
+        condition: service_healthy
+      engine:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3001/healthz"]
+      interval: 10s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
     restart: unless-stopped
-    profiles:
-      - web  # docker compose --profile web up -d 로 활성화
+    labels:
+      - "ebs.team=team4"
+      - "ebs.service=cc-web"
+      - "ebs.phase=5-production"
+      - "ebs.deprecates=SG-022"
 
 volumes:
   bo-data:
@@ -114,9 +191,16 @@ volumes:
   redis-data:
     driver: local
 
-# ── 네트워크 ────────────────────────────────────────────────────────────────
-# Docker Compose 기본 네트워크에서 서비스 간 통신:
-#   bo → redis (redis://redis:6379)
-#   engine → 독립 (외부 요청만 수신)
-#   호스트 → bo (localhost:8000), engine (localhost:8080)
-#   CC (호스트) → bo (LAN_IP:8000), engine (LAN_IP:8080)
+# ── 네트워크 (ebs-net) ──────────────────────────────────────────────────────
+# 모든 서비스가 ebs-net 단일 bridge 네트워크에서 협력.
+# 컨테이너 간 통신은 service name 으로 (예: http://bo:8000, http://lobby-web:3000).
+# 호스트 → 외부 노출:
+#   bo        → localhost:8000
+#   engine    → localhost:8080
+#   redis     → localhost:6380
+#   lobby-web → localhost:3000  (profile web)
+#   cc-web    → localhost:3001  (profile web)
+networks:
+  ebs-net:
+    driver: bridge
+    name: ebs-net

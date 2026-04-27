@@ -107,20 +107,6 @@ schema_version: 1
 ## Active Claims
 
 <!-- CLAIMS_BEGIN -->
-### Claim #10 — team3: B-338 harness 세션 persistence — disk snapshot + restart recovery
-```yaml
-id: 10
-team: team3
-task: B-338 harness 세션 persistence — disk snapshot + restart recovery
-started: '2026-04-23T01:40:39Z'
-scope:
-- team3-engine/ebs_game_engine/lib/harness/**
-- team3-engine/ebs_game_engine/test/harness/**
-- docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md
-status: active
-eta: 2h
-```
-
 ### Claim #13 — team1: Phase 5 production readiness (build/docker/observability)
 ```yaml
 id: 13
@@ -134,11 +120,44 @@ status: active
 eta: 2h
 ```
 
+### Claim #14 — conductor: SG-022 deprecate + Multi-Service Docker (Lobby:3000 / CC:3001)
+```yaml
+id: 14
+team: conductor
+task: SG-022 deprecate + Multi-Service Docker (Lobby:3000 / CC:3001)
+started: '2026-04-27T08:16:11Z'
+scope:
+- team4-cc/docker/**
+- team4-cc/CLAUDE.md
+- team1-frontend/CLAUDE.md
+- docker-compose.yml
+- docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md
+- docs/4. Operations/Conductor_Backlog/SG-022-deprecation.md
+status: active
+eta: 3h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
 
 <!-- RELEASED_BEGIN -->
+### Claim #10 — team3: B-338 harness 세션 persistence — disk snapshot + restart recovery
+```yaml
+id: 10
+team: team3
+task: B-338 harness 세션 persistence — disk snapshot + restart recovery
+started: '2026-04-23T01:40:39Z'
+scope:
+- team3-engine/ebs_game_engine/lib/harness/**
+- team3-engine/ebs_game_engine/test/harness/**
+- docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md
+status: released
+eta: 2h
+released: '2026-04-27T08:13:20Z'
+released_reason: stale_gc_auto
+```
+
 ### Claim #12 — conductor: IMPR-5: Handoff auto-diff tool — 5-Session Context Bleed 가시화 (audit 후속, free-tier zero-cost)
 ```yaml
 id: 12
