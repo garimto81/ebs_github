@@ -169,6 +169,18 @@ status: active
 eta: 4h
 ```
 
+### Claim #17 — team3: Triggers & Event Pipeline domain master (Phase 2 of 4) — sibling worktree retry
+```yaml
+id: 17
+team: team3
+task: Triggers & Event Pipeline domain master (Phase 2 of 4) — sibling worktree retry
+started: '2026-04-27T13:51:41Z'
+scope:
+- docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md
+status: active
+eta: 2h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
