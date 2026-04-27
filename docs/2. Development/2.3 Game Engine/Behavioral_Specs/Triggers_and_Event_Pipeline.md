@@ -1175,4 +1175,662 @@ Event B (계층 2): 운영자 FOLD 클릭 @ t=2005ms [아직 전송 중]
 
 ---
 
-<!-- CHUNK-3: §4 Exceptions + §5 Data Models + Appendix A/B/C (그 다음 turn) -->
+## 4. Exceptions & Edge Cases
+
+### 4.1 에러 유형별 Coalescence 영향 (BS-06-04 §에러 및 예외)
+
+| 에러 | 원인 | coalescence 처리 |
+|------|------|----------------|
+| **RFID_MISSING_CARD** | 카드 미감지 | 이벤트 폐기, 타임아웃 후 수동 입력 |
+| **WRONG_CARD** | 예상 ≠ 감지 | 경고만, 게임 진행 |
+| **CC_BUTTON_TIMEOUT** | 전송 실패 | CC 이벤트 폐기, RFID 만 처리 |
+| **DUPLICATE_RFID** | 신호 반사 | 이벤트 폐기 |
+| **STATE_CONFLICT** | 유효성 오류 | **REJECTED**, 다음 유효 액션 대기 |
+| **DUPLICATE_CARD** | 같은 카드 `CardDetected` 2회 수신 | 두 번째 이벤트 무시 + 경고 로그 |
+| **CARD_CONFLICT** | CC + RFID 다른 카드 입력 | RFID 카드 사용 + 운영자 확인 요청 |
+| **DUPLICATE_BOARD_CARD** | flop_buffer 에 같은 카드 재push | buffer 영향 없음, 에러 발행 (BS-06-12) |
+| **DUPLICATE_RELEASE_IGNORED** | hole card 재호출 시도 (이미 dealtSeats) | 무시 + 경고 로그 (BS-06-12) |
+| **OUT_OF_ORDER_BOARD_CARD** | PRE_FLOP betting 미완료 상태에서 보드 카드 감지 | reject + 경고 (BS-06-12) |
+| **IGNORED_PRE_HAND** | HandFSM IDLE / HAND_COMPLETE 에서 RFID 입력 | drop + 로그 (BS-06-12) |
+| **STATE_SYNC_WARNING** | UI lag 중 CC 버튼 클릭 | Engine 상태 기준 유효성 판단 후 경고 |
+
+### 4.2 복구 절차 (BS-06-04 §복구 절차)
+
+#### 4.2.1 RFID 연속 에러 (3회 이상)
+
+- 수동 입력 모드 전환, RFID 버퍼 flush
+- CC UI 에 "MANUAL CARD" 버튼 활성화
+- 수동 입력 후 RFID 신호 도착 → 자동으로 비교 검증
+
+#### 4.2.2 CC 네트워크 에러
+
+- 로컬 버튼 상태 유지, 재전송 3회
+- 실패 시 수동 입력
+
+#### 4.2.3 Coalescence 윈도우 타임아웃
+
+- 100ms 경과 후 처리 시작
+- 후속은 새 윈도우
+
+### 4.3 핸드 간 전이 Coalescence (BS-06-04 §핸드 간 전이)
+
+| 시점 | 동작 | 상세 |
+|------|------|------|
+| HAND_COMPLETE 진입 즉시 | **RFID 버퍼 전체 flush** | 이전 핸드 미처리 이벤트 폐기 |
+| HAND_COMPLETE 진입 즉시 | **CC 이벤트 큐 clear** | 미처리 CC 이벤트 폐기 |
+| HAND_COMPLETE 진입 즉시 | **debounce map 리셋** | 새 핸드에서 같은 UID 재사용 가능 |
+| HAND_COMPLETE → NEW HAND | **새 윈도우 시작** | 첫 이벤트 NEW HAND 가 t₀ |
+
+#### 4.3.1 빠른 연속 핸드
+
+1. **HAND_COMPLETE** flush 완료 전에 NEW HAND 도착 → flush 완료까지 **대기**
+2. flush 완료 후 NEW HAND 처리 → **SETUP_HAND** 진입
+3. 이전 핸드 잔여 RFID 신호 → **폐기**
+
+#### 4.3.2 덱 스캔 오버랩
+
+1. 덱 스캔 모드 중 `deck_scan_in_progress = true`
+2. 좌석/보드 안테나 RFID → **폐기**, 덱 안테나만 처리
+3. 덱 스캔 완료 후 정상 coalescence 재개
+
+### 4.4 에러 복구 Coalescence (BS-06-04 §에러 복구)
+
+#### 4.4.1 RFID 에러 모드 종료 후 재개
+
+| 단계 | 동작 | 상세 |
+|------|------|------|
+| 수동 입력 완료 | `rfid_error_mode = false` | 수동 입력 카드 등록 완료 |
+| RFID 재개 | 버퍼 flush 후 새 윈도우 | 에러 모드 중 도착 이벤트 전체 폐기 |
+| 검증 | 수동 vs RFID 재감지 비교 | 불일치 시 **WRONG_CARD**, 수동 값 유지 |
+
+#### 4.4.2 Miss Deal 후 초기화
+
+1. 모든 게임 상태 초기화 → **IDLE** 복귀
+2. RFID 버퍼 전체 무효화
+3. debounce map 리셋
+4. Miss Deal 중 RFID/CC 이벤트 모두 **폐기**
+
+#### 4.4.3 네트워크 재연결
+
+| 단절 시간 | CC 로컬 큐 | RFID 버퍼 | 복구 동작 |
+|-----------|-----------|----------|----------|
+| < 30초 | **보존** | **보존** | 재연결 후 순차 전송, 유효성 검증 |
+| ≥ 30초 | **폐기** | **폐기** | 전체 상태 동기화, **RESYNC_REQUIRED** |
+
+### 4.5 RFID 카드 감지 에러 (BS-06-04 §RFID 카드 감지)
+
+#### 4.5.1 감지 정확도
+
+- **정상**: UID 매칭 성공 → 즉시 카드 기록
+- **미인식**: 안테나 간섭, 카드 손상 → `RFID_MISSING_CARD` 에러
+- **중복 감지**: 같은 카드 다시 감지, 신호 반사 → 폐기
+- **오카드**: 예상과 다른 카드 감지 → `WRONG_CARD` 에러
+
+#### 4.5.2 에러 복구 모드
+
+- RFID 연속 에러 3회 → 수동 입력 모드 전환
+- 수동 입력 모드 중: CC 버튼 "MANUAL CARD" 활성화
+- 수동 입력 후 RFID 신호 도착 → 자동으로 비교 검증
+
+### 4.6 RFID 카드 감지 타입별 (BS-06-04 §카드 감지 타입)
+
+| 타입 | 안테나 | 시점 | 대기 시간 |
+|------|------|------|---------|
+| **홀카드** | 좌석 개별 seat[i] | **SETUP** 단계, DEAL 후 | 100-200ms |
+| **보드 카드** | 중앙 디스플레이 board antenna | **FLOP**/**TURN**/**RIVER** 공개 후 | 50-150ms |
+| **덱 카드** | 덱 스캐너 deck antenna | NEW HAND 전 등록 | 2-3초 |
+
+### 4.7 CC 버튼 특수 케이스 (BS-06-04 §CC 버튼)
+
+#### 4.7.1 8가지 액션 버튼 전제조건
+
+| 버튼 | 전제조건 | 게임 상태 제약 |
+|------|--------|-----------|
+| NEW HAND | — | **IDLE** 또는 **HAND_COMPLETE** |
+| DEAL | `biggestBet == 0` | **SETUP** 상태 정확히 |
+| FOLD | 액션 턴, `currentActor` | **PRE_FLOP**~**RIVER** |
+| CHECK | `biggestBet == 0 && action turn` | 게임 진행 중 |
+| CALL | `biggestBet > 0 && action turn` | 게임 진행 중 |
+| BET | `biggestBet == 0 && action turn` | 게임 진행 중 |
+| RAISE | `biggestBet > 0 && action turn` | 게임 진행 중 |
+| ALL-IN | action turn | 게임 진행 중 |
+
+> **전송 정확도**: 버튼 클릭 → 네트워크 전송 → 서버 게임 엔진 상태 업데이트 완료까지 ≤100ms.
+
+#### 4.7.2 특수 케이스
+
+- **금액 입력 모달 활성 중**: 새 버튼 클릭 무시
+- **UNDO 진행 중**: 모든 새 입력 대기, UNDO 완료까지
+- **키보드 단축키**: 버튼 클릭과 동일한 우선순위 적용
+
+### 4.8 게임 엔진 자동 전이 제약 (BS-06-04 §게임 엔진 자동)
+
+#### 4.8.1 자동 전이 조건
+
+> 아래 상태명은 BS-06-01 GamePhase 와 매핑. `_PENDING` 은 "베팅 완료 후 보드 카드 대기 중" 상태를 coalescence 관점에서 구분한 것.
+
+| 트리거 | 사전 상태 | 다음 상태 (BS-06-01 공식명) | 실행 시점 |
+|-------|---------|--------------------------|---------|
+| **베팅 완료** | **PRE_FLOP**, 모두 매칭 | 보드 대기 (→ **FLOP**) | 마지막 액션 처리 후 즉시 |
+| **보드 카드 감지** | 보드 대기 | **FLOP** / **TURN** / **RIVER** | RFID 보드 감지 완료 후 |
+| **올인 런아웃** | 모두 올인 | → **SHOWDOWN** | 자동 계산 시작, RFID 무관 |
+| **쇼다운 진행** | **RIVER** 베팅 완료 | **SHOWDOWN** | CC "SHOWDOWN" 버튼 |
+| **팟 분배** | **SHOWDOWN** 완료 | **HAND_COMPLETE** | 자동 실행 |
+
+#### 4.8.2 제약
+
+- 올인 런아웃: RFID 보드 감지 여부와 관계없이 자동 딜, 운영자 개입 불가
+- 쇼다운: CC 버튼 필수, 자동 진행 불가, 운영자 의도 확인
+
+### 4.9 Player Card Call 예외 처리 (BS-06-12 §2.4)
+
+| 상황 | 처리 |
+|------|------|
+| **카드 미도착 후 액션** | `seat_card_pending` 만 발행 후 ACTION_TURN 유지. 운영자가 수동 입력 (`ManualCardInput`) 또는 RFID 재인식 시 즉시 release. CC 는 ACTION 버튼을 30초간 disable (`Coalescence` action-gate 정렬) |
+| **Bomb Pot (PRE_FLOP 스킵)** | PRE_FLOP 자체가 없으므로 release 트리거가 없음 → SETUP_HAND 종료 시점에 모든 active 좌석을 한번에 release (legacy bulk 동작 유지). `bomb_pot_enabled == true` 분기로 명시 |
+| **All-in Runout** | `action_on` 이 -1 로 진입. 잔여 좌석 모두 즉시 release (showdown 카드 공개와 정합) |
+| **카드 재인식 (이미 dealt 좌석)** | `dealtSeats` 가드. 재호출 무시 + `DUPLICATE_RELEASE_IGNORED` 경고 로그 |
+| **Mix Game (변형 hole card 수)** | `variant.holeCardCount` 가 권위. NLH=2, Omaha=4, Pineapple=3 등 (Variants & Evaluation 도메인 마스터 정렬 — Phase 4) |
+| **Run It Multiple** | 추가 board 카드만 영향. hole card release 는 핸드당 좌석 1회 원칙 유지 |
+
+### 4.10 Atomic Flop 예외 처리 (BS-06-12 §3.4)
+
+| 상황 | 처리 |
+|------|------|
+| **2장 인식 후 timeout (default 30초)** | `FlopPartialAlert` 발행 → CC 운영자에게 "1장 미인식" 표시. 운영자가 ① 수동 카드 입력 (`ManualCardInput`) → buffer.push() 로 3장 충족 → `FlopRevealed` 발행, ② RFID 재배치 시도, ③ 미스딜 선언 (`MisdealDetected` → IDLE 복귀) 중 선택 |
+| **3장 인식 후 4번째 카드 인식** | `BoardState != AWAITING_TURN` 이면 reject. `AWAITING_TURN` 진입 (=PRE_FLOP/FLOP betting 완료) 후에만 4번째 수용 |
+| **중복 카드 인식 (같은 suit/rank)** | `DUPLICATE_BOARD_CARD` 에러 발행. buffer 에 추가하지 않음. 단, 동일 `cardUid` 의 burst 는 `CardCoalescer` 에서 이미 dedupe 됨 |
+| **덱에 없는 카드** | `MisdealDetected` 발행 → IDLE 복귀 (Lifecycle 도메인 §4.5 권위) |
+| **PRE_FLOP betting 미완료 상태에서 보드 카드 감지** | reject + `OUT_OF_ORDER_BOARD_CARD` 경고 (보드 안테나에 카드 잘못 놓임) |
+| **Bomb Pot 모드** | PRE_FLOP 스킵으로 `AWAITING_FLOP` 즉시 진입. 본 로직 그대로 적용 |
+| **Stud / Draw variant** | 본 SSOT 미적용. Stud/Draw 는 Variants & Evaluation 도메인 마스터 — Phase 4 의 자체 카드 호출 규칙 사용 (community board 없음) |
+
+### 4.11 비활성 조건 (BS-06-12 §6, BS-06-04 §비활성 조건)
+
+다음 조건에서 본 카드 파이프라인 / coalescence 는 비활성화:
+
+- HandFSM `IDLE` 상태 (StartHand 이전): RFID `CardDetected` 는 큐잉되지 않고 즉시 drop + `IGNORED_PRE_HAND` 로그
+- HandFSM `HAND_COMPLETE` 이후 (다음 IDLE 까지): 동일
+- `hand_in_progress == false` — 테이블 IDLE
+- RFID 에러 모드 활성 — 수동 입력 모드 실행 중
+- 모달 다이얼로그 활성 — RFID 감지 대기, CC 입력 모두 금지
+- 단일 트리거만 발생 — 충돌 없음, 즉시 처리
+- Stud / Draw variant: 본 SSOT 미적용
+- Mock 모드 (RFID 없음): RFID 입력 경로가 `MockRfidReader.injectCard` 로 대체될 뿐, 위 모든 로직 동일하게 적용
+
+### 4.12 영향 받는 요소 (BS-06-04 §영향 받는 요소)
+
+#### 4.12.1 게임 상태 머신
+
+- **상태 전이 조건**: coalescence 규칙이 상태 진입 조건을 변경
+- **액션 유효성**: **INVALID** 액션 큐잉 시 상태 머신 재확인
+
+#### 4.12.2 오버레이 갱신
+
+- **갱신 순서**: coalescence 가 UI 렌더링 순서 결정
+
+#### 4.12.3 RFID 모듈
+
+- **버퍼 관리**: coalescence 윈도우와 RFID 버퍼 동기화
+- **에러 추적**: 중복/폐기 이벤트를 에러 로그에 기록
+
+#### 4.12.4 Command Center 버튼
+
+- **모달 중 버튼 상태**: 금액 입력 모달 활성 중 다른 버튼 비활성화
+- **UNDO 모드**: UNDO 진행 중 모든 새 액션 버튼 비활성
+
+---
+
+## 5. Data Models (Pseudo-code)
+
+### 5.1 ReduceResult 구조 (BS-06-09 §ReduceResult 재인용)
+
+```
+ReduceResult {
+  state: HandState         // 최종 상태
+  outputs: List<OutputEvent>  // UI에 전달할 이벤트 목록
+}
+```
+
+### 5.2 ActionType Enum 코드 (BS-06-09 §ActionType 재인용)
+
+```dart
+enum ActionType {
+  fold,    // 0: 포기
+  check,   // 1: 체크
+  bet,     // 2: 첫 베팅 (amount 필수)
+  call,    // 3: 콜 (자동 계산)
+  raise,   // 4: 레이즈 (amount 필수)
+  allIn,   // 5: 올인 (자동: player.stack)
+}
+```
+
+### 5.3 TurnSyncDealer Pseudocode (BS-06-12 §2.3)
+
+```dart
+// lib/core/cards/turn_sync_dealer.dart
+class TurnSyncDealer {
+  final Set<int> dealtSeats = {};
+
+  Iterable<OutputEvent> onActionOnChanged(GameState s) sync* {
+    final seat = s.actionOn;
+    if (seat == -1) return;                      // SHOWDOWN 등
+    if (dealtSeats.contains(seat)) return;       // 이미 release
+
+    final buffered = s.holeCardBuffer[seat];
+    final required = s.variant.holeCardCount;
+
+    if (buffered.length < required) {
+      yield SeatHoleCardPending(seat: seat, missing: required - buffered.length);
+      return;                                    // PlayerState = ACTION_TURN, but cards 미도착
+    }
+
+    // Atomic release
+    s.players[seat].holeCards = List.from(buffered);
+    dealtSeats.add(seat);
+    yield SeatHoleCardCalled(seat: seat, cards: buffered);
+  }
+}
+```
+
+### 5.4 FlopAggregator Pseudocode (BS-06-12 §3.3)
+
+```dart
+// lib/core/cards/flop_aggregator.dart
+class FlopAggregator {
+  final List<Card> buffer = [];
+  DateTime? pendingSince;
+
+  Iterable<OutputEvent> push(Card c) sync* {
+    if (buffer.contains(c)) {
+      yield ErrorEvent(code: 'DUPLICATE_BOARD_CARD', card: c);
+      return;
+    }
+    buffer.add(c);
+    pendingSince ??= DateTime.now();
+
+    // EXPLICIT GUARD: 3장 충족 시에만 외부 발행
+    if (buffer.length == 3) {
+      yield FlopRevealed(cards: List.from(buffer));
+      pendingSince = null;
+    } else {
+      // 1장 또는 2장: PENDING 유지, 외부 미발행
+      assert(buffer.length == 1 || buffer.length == 2);
+      // (no yield to OutputEventBuffer)
+    }
+  }
+
+  Iterable<OutputEvent> onTimerTick(DateTime now, Duration timeout) sync* {
+    if (pendingSince == null || buffer.length == 3) return;
+    if (now.difference(pendingSince!) >= timeout) {
+      yield FlopPartialAlert(count: buffer.length, missing: 3 - buffer.length);
+      // 상태는 유지 — 운영자 수동 입력 또는 추가 RFID 인식 대기
+    }
+  }
+}
+```
+
+> **Self-check (BS-06-12 §3 Gatekeeper)**: 위 코드의 `if (buffer.length == 3)` 가드가 있어 1, 2장 시 `FlopRevealed` 가 외부에 절대 나가지 않음. atomic guarantee 보장.
+
+### 5.5 Coalescence 버퍼 관리 알고리즘 (BS-06-04 §구현 가이드)
+
+```
+Event Q = []  # coalescence 윈도우 내 모든 이벤트
+
+On EventArrival(event):
+  if Event Q is empty:
+    t_window_start = current_time
+    t_window_end = t_window_start + 100ms
+    Event Q.append(event)
+    Schedule(process_coalesced_events, delay=100ms)
+  else if current_time <= t_window_end:
+    Event Q.append(event)
+  else:
+    ProcessWindow(Event Q)
+    Event Q = [event]
+    Reschedule(process_coalesced_events, delay=100ms)
+
+On process_coalesced_events():
+  SortByPriority(Event Q)  # Rule 2 우선순위 적용
+  for event in Event Q:
+    if ShouldDiscard(event):
+      continue
+    if ShouldQueue(event):
+      Queue(event)
+    else:
+      Process(event)
+```
+
+### 5.6 Debounce 구현 (BS-06-04 §Debounce)
+
+```
+RFID_debounce_map = {}  # {card_uid: last_timestamp}
+
+On RFID_detection(card_uid, timestamp):
+  if card_uid in RFID_debounce_map:
+    if timestamp - RFID_debounce_map[card_uid] < 100ms:
+      return DISCARD
+  RFID_debounce_map[card_uid] = timestamp
+  return ADD_TO_QUEUE
+```
+
+### 5.7 UNDO 버퍼 flush (BS-06-04 §UNDO 버퍼 flush)
+
+```
+On UNDO_requested():
+  undo_in_progress = true
+  for event in Event_Q:
+    event.status = BLOCKED
+  Execute_UNDO()
+  Event_Q.clear()
+  undo_in_progress = false
+```
+
+### 5.8 RFID 에러 모드 전환 (BS-06-04 §RFID 에러 모드 전환)
+
+```
+On RFID_error_count >= 3:
+  rfid_error_mode = true
+  RFID_buffer.flush()
+  Enable_manual_card_input()
+
+On Manual_card_input_complete():
+  rfid_error_mode = false
+  RFID_buffer.flush()
+  RFID_debounce_map.clear()
+  Resume_RFID_detection()
+```
+
+### 5.9 HAND_COMPLETE flush (BS-06-04 §HAND_COMPLETE flush)
+
+```
+On HAND_COMPLETE():
+  Event_Q.clear()
+  RFID_buffer.flush()
+  RFID_debounce_map.clear()
+  processing_in_progress = false
+  Log("HAND_COMPLETE: all buffers flushed")
+```
+
+### 5.10 MAX_QUEUE_SIZE 보호 (BS-06-04 §MAX_QUEUE_SIZE)
+
+```
+MAX_QUEUE_SIZE = 32
+
+On EventArrival(event):
+  if len(Event_Q) >= MAX_QUEUE_SIZE:
+    lowest = find_lowest_priority(Event_Q)
+    Event_Q.remove(lowest)
+    Log("QUEUE_OVERFLOW: discarded", lowest)
+  Event_Q.append(event)
+```
+
+### 5.11 Rabbit Hunt 거부 (BS-06-12 §3.4 / Lifecycle §4.4 cross-ref)
+
+> 세부 정책은 Lifecycle 도메인 §4.4 권위. 본 도메인은 엔진 응답 형식만 명시.
+
+```
+if event_type == "rabbit_hunt_request":
+    emit OutputEvent.Error {
+        code: "rabbit_hunt_not_allowed",
+        message: "Rabbit hunting is not allowed (WSOP Rule 81)"
+    }
+    return state  // 상태 변경 없음
+```
+
+### 5.12 Card Pipeline 컴포넌트 위치 (BS-06-12 §1.1 재인용)
+
+| 컴포넌트 | 소스 코드 위치 | 책임 |
+|---------|--------------|------|
+| **CardIngressBuffer** | `lib/core/cards/ingress_buffer.dart` | RFID antenna 별 raw card event 큐. 중복 burst 흡수 |
+| **CardCoalescer** | `lib/core/cards/coalescer.dart` | 500ms 윈도우 dedupe + 동일 카드 다중 인식 1회로 합성 |
+| **TurnSyncDealer** | `lib/core/cards/turn_sync_dealer.dart` | `action_on` 과 동기화하여 해당 좌석의 홀카드만 release |
+| **FlopAggregator** | `lib/core/cards/flop_aggregator.dart` | 3장 buffer. 정확히 3장 시 1회 atomic flush. 1~2장 시 PENDING 보존 |
+| **HandFSM (reducer)** | `lib/core/state/hand_fsm.dart` | 위 컴포넌트로부터 정제된 트리거만 수신 |
+| **OutputEventBuffer** | `lib/core/output/output_event_buffer.dart` | OutputEvent 21종 발행 |
+
+### 5.13 구현 체크리스트 (BS-06-04 §구현 체크리스트, 24 항목)
+
+- [ ] coalescence 100ms 윈도우 구현
+- [ ] Rule 2 우선순위 정렬, 계층 1~4
+- [ ] RFID 중복 제거, `card_uid` 기반
+- [ ] CC 버튼 모달 중 RFID 대기 로직
+- [ ] UNDO 진행 중 새 입력 차단
+- [ ] 타임아웃 발생 시 버퍼 플러시
+- [ ] 에러 로그: 폐기/큐잉 이벤트 기록
+- [ ] 상태 머신 전이 조건: coalescence 확인
+- [ ] 오버레이 갱신: 우선순위 반영
+- [ ] 테스트: 시나리오 Matrix 커버
+- [ ] 경계 조건: t₀+100ms inclusive 검증
+- [ ] 경계 조건: 빈 윈도우 no-op 검증
+- [ ] `MAX_QUEUE_SIZE = 32` 초과 시 최저 우선순위 폐기
+- [ ] `processing_in_progress` 플래그 동작 검증
+- [ ] RFID 서브 우선순위: Hole card > Board card
+- [ ] **HAND_COMPLETE** 버퍼 flush — RFID + CC + debounce map
+- [ ] 빠른 연속 핸드: flush 완료 전 NEW HAND 대기
+- [ ] 덱 스캔 오버랩: `deck_scan_in_progress` 중 좌석/보드 RFID 폐기
+- [ ] RFID 에러 모드 전환/복귀 시 버퍼 flush
+- [ ] Miss Deal 후 전체 초기화
+- [ ] 네트워크 재연결: 30초 미만 보존, 30초 이상 폐기
+- [ ] 3-source 동시 충돌 우선순위 정렬
+- [ ] UNDO 중 모든 새 입력 차단 + 완료 후 폐기
+- [ ] 다중 운영자: 같은 좌석 중복 입력 **REJECTED**
+
+### 5.14 Card Pipeline Sequence Diagram (BS-06-12 §4)
+
+#### Stage 1 — 핸드 시작 + 홀카드 buffer
+
+```mermaid
+sequenceDiagram
+    participant CC as Command Center
+    participant RFID as RFID HAL
+    participant ENG as Engine (HandFSM)
+    participant OUT as OutputEventBuffer
+
+    CC->>ENG: StartHand
+    ENG->>ENG: SETUP_HAND 진입
+    RFID-->>ENG: CardDetected×N (각 좌석 antenna)
+    ENG->>ENG: HoleCardBuffer.fill (외부 미발행)
+```
+
+#### Stage 2 — PRE_FLOP 진입 + 턴별 release (Player A 차례)
+
+```mermaid
+sequenceDiagram
+    participant ENG as Engine (HandFSM)
+    participant TSD as TurnSyncDealer
+    participant OUT as OutputEventBuffer
+    participant CC as Command Center
+
+    ENG->>ENG: PRE_FLOP 진입<br/>(action_on = A)
+    ENG->>TSD: onActionOnChanged(seat=A)
+    TSD->>TSD: dealtSeats.contains(A)?<br/>→ false
+    TSD-->>OUT: SeatHoleCardCalled(A, cards)
+    OUT-->>CC: overlay update<br/>(A 홀카드 표시)
+```
+
+#### Stage 3 — 턴 회전 + 베팅 완료
+
+```mermaid
+sequenceDiagram
+    participant CC as Command Center
+    participant ENG as Engine
+    participant TSD as TurnSyncDealer
+    participant OUT as OutputEventBuffer
+
+    CC->>ENG: PlayerAction(A: Bet 100)
+    ENG->>ENG: action_on = B
+    ENG->>TSD: onActionOnChanged(seat=B)
+    TSD-->>OUT: SeatHoleCardCalled(B, cards)
+    Note over CC,OUT: ... 모든 좌석 release 완료 ...
+    CC->>ENG: PlayerAction(last: Call)
+    ENG->>ENG: BettingRoundComplete<br/>→ FLOP 진입<br/>(BoardState = AWAITING_FLOP)
+```
+
+#### Stage 4 — Flop 카드 감지 (1장, 2장 = 대기)
+
+```mermaid
+sequenceDiagram
+    participant RFID as RFID HAL
+    participant FA as FlopAggregator
+    participant OUT as OutputEventBuffer
+    participant OVL as Overlay
+
+    RFID-->>FA: CardDetected(c1, board)
+    FA->>FA: buffer = [c1]<br/>BoardState = FLOP_PARTIAL
+    Note right of FA: count=1 → 외부 미발행
+
+    RFID-->>FA: CardDetected(c2, board)
+    FA->>FA: buffer = [c1, c2]<br/>BoardState = FLOP_PARTIAL
+    Note right of FA: count=2 → 외부 미발행
+
+    Note over OVL: Overlay 는 빈 보드 유지<br/>(시청자에 부분 노출 없음)
+```
+
+#### Stage 5 — 3장 충족 시 atomic 발행
+
+```mermaid
+sequenceDiagram
+    participant RFID as RFID HAL
+    participant FA as FlopAggregator
+    participant ENG as Engine
+    participant OUT as OutputEventBuffer
+    participant OVL as Overlay
+
+    RFID-->>FA: CardDetected(c3, board)
+    FA->>FA: buffer = [c1, c2, c3]<br/>length == 3
+    FA->>ENG: state.boardCards = [c1, c2, c3]<br/>BoardState = FLOP_DONE
+    FA-->>OUT: FlopRevealed(c1, c2, c3)
+    OUT-->>OVL: 보드 3장 동시 표시<br/>(atomic)
+    Note over OVL: 시청자는 0장 → 3장으로<br/>전환만 본다
+```
+
+#### Stage 6 — Timeout escalation (예외 흐름)
+
+```mermaid
+sequenceDiagram
+    participant FA as FlopAggregator
+    participant TIMER as Engine Timer
+    participant CC as Command Center
+
+    Note over FA: count = 2,<br/>30초 경과
+    TIMER-->>FA: onTimerTick
+    FA-->>CC: FlopPartialAlert<br/>(count=2, missing=1)
+    CC->>CC: 운영자 경고 배지<br/>(overlay 미영향)
+    alt 운영자 수동 입력
+        CC->>FA: ManualCardInput(c3)
+        FA->>FA: buffer.push(c3) → length=3
+        FA-->>CC: FlopRevealed(c1,c2,c3)
+    else 미스딜 선언
+        CC->>FA: MisdealDetected
+        FA->>FA: buffer reset<br/>BoardState = AWAITING_FLOP
+    end
+```
+
+---
+
+## 부록 A: Legacy-ID Mapping (추적성 보존)
+
+본 문서가 통합한 원본 4 문서의 어느 섹션이 어디로 흡수되었는지 정확한 매핑.
+
+| 원본 문서 (legacy-id) | 원본 섹션 | 본 문서 위치 |
+|---------------------|----------|-------------|
+| **BS-06-00-triggers** Triggers.md | §1 4 소스 정의 (CC/RFID/Engine/BO) | §1.2 |
+| BS-06-00-triggers | §2.1 CC 소스 이벤트 25개 + 친절한 설명 | §3.7.1 |
+| BS-06-00-triggers | §2.2 RFID 소스 이벤트 6개 + 친절한 설명 | §3.7.2 |
+| BS-06-00-triggers | §2.3 Engine 소스 이벤트 12개 + 친절한 설명 | §3.7.3 |
+| BS-06-00-triggers | §2.4 BO 소스 이벤트 14개 + 친절한 설명 | §3.7.4 |
+| BS-06-00-triggers | §2.5 BO Clock 트리거 11개 + Auto Blind-Up 로직 (CCR-050) | §3.7.5 |
+| BS-06-00-triggers | §3.1 카드 인식 RFID vs CC | §3.15.1 |
+| BS-06-00-triggers | §3.2 폴드 인식 CC vs RFID | §3.15.2 |
+| BS-06-00-triggers | §3.3 보드 카드 공개 RFID vs CC | §3.15.3 |
+| BS-06-00-triggers | §4 Mock 모드 이벤트 합성 (4.1~4.3) | §2.7 |
+| BS-06-00-triggers | §5.1 동일 이벤트 중복 수신 | §3.16.1 |
+| BS-06-00-triggers | §5.2 소스 간 충돌 | §3.16.2 |
+| BS-06-00-triggers | §6.1 선후관계 필수 케이스 | §3.17.1 |
+| BS-06-00-triggers | §6.2 순서 무관 케이스 | §3.17.2 |
+| BS-06-00-triggers | §7 트리거-HandFSM 매핑 | §3.8 |
+| BS-06-00-triggers | §7 SeatFSM 매트릭스 | §3.9 |
+| BS-06-00-triggers | §7 TableFSM 매트릭스 | §3.10 |
+| BS-06-00-triggers | §비활성 조건 | §4.11 |
+| **BS-06-09** Event_Catalog.md | §개요 (3계층 분류 + 다이어그램) | §1.3 |
+| BS-06-09 | §Input Events IE-01 ~ IE-13 (13개) | §3.1 |
+| BS-06-09 | §Input Event 유효 상태 매트릭스 | §3.2 |
+| BS-06-09 | §Internal Transitions IT-01 ~ IT-16 (16개) | §3.3 |
+| BS-06-09 | §Output Events OE-01 ~ OE-19 (19개 + OE-19 확장) | §3.4 |
+| BS-06-09 | §Output Accumulation 순서 | §1.6 (Output Accumulation 부분) |
+| BS-06-09 | §ReduceResult 구조 | §1.6 / §5.1 |
+| BS-06-09 | §ActionType Enum | §1.7 / §5.2 |
+| BS-06-09 | §Cascading 규칙 + 연쇄 패턴 | §3.6 |
+| BS-06-09 | OE-05 legalActions payload 상세 (GAP-B) | §3.4 |
+| BS-06-09 | OE-19 display_to_players 플래그 (Rule 101) | §3.4 |
+| **BS-06-04** Coalescence.md | §정의 (트리거 Coalescence 병합) | §1.5 |
+| BS-06-04 | §우선순위 테이블 — Quick Reference | §3.11 |
+| BS-06-04 | §트리거 소스 정의 (CC/RFID/Engine 3 소스) | §1.2 (BS-06-00-triggers 4소스로 확장 흡수) |
+| BS-06-04 | §RFID 카드 감지 타입 (홀/보드/덱) | §4.6 |
+| BS-06-04 | §RFID 감지 정확도 + 에러 복구 모드 | §4.5 |
+| BS-06-04 | §CC 8가지 액션 버튼 전제조건 + 특수 케이스 | §4.7 |
+| BS-06-04 | §게임 엔진 자동 전이 조건 + 제약 | §4.8 |
+| BS-06-04 | §적용 조건 + 비활성 조건 | §2.5 |
+| BS-06-04 | §상태별 Coalescence 활성 매트릭스 | §2.6 |
+| BS-06-04 | §Rule 1 — 시간 창 정의 + 경계 조건 | §3.12 |
+| BS-06-04 | §Rule 2 — 우선순위 계층 + 상태 변경 완료 예외 + 판단 흐름 + RFID 서브 우선순위 | §3.13 |
+| BS-06-04 | §Rule 3 — Coalescence 동작 (A/B/C 사례) | §3.14 |
+| BS-06-04 | §시나리오 — 유저 스토리 33건 (Category 1~7) | §3.19 |
+| BS-06-04 | §Matrix 1 — Trigger A x B x GamePhase | §3.18 |
+| BS-06-04 | §에러 유형별 coalescence 영향 | §4.1 |
+| BS-06-04 | §복구 절차 (RFID 연속/CC 네트워크/타임아웃) | §4.2 |
+| BS-06-04 | §핸드 간 전이 (HAND_COMPLETE flush + 빠른 연속 + 덱 스캔 오버랩) | §4.3 |
+| BS-06-04 | §에러 복구 (RFID 에러 모드 / Miss Deal / 네트워크 재연결) | §4.4 |
+| BS-06-04 | §영향 받는 요소 (4 영역) | §4.12 |
+| BS-06-04 | §구현 가이드 (5 pseudocode) | §5.5 ~ §5.10 |
+| BS-06-04 | §구현 체크리스트 24항목 | §5.13 |
+| **BS-06-12** Card_Pipeline_Overview.md | §0 개요 + 변경 전/후 표 | §1.4 |
+| BS-06-12 | §1.1 Card Pipeline Architecture (다이어그램 + 컴포넌트 표) | §2.1 / §5.12 |
+| BS-06-12 | §1.2.1 PlayerState (좌석별, derived) | §2.2 |
+| BS-06-12 | §1.2.2 BoardState (테이블당 1개) | §2.3 |
+| BS-06-12 | §1.2.3 핵심 카운터 / 필드 | §2.4 |
+| BS-06-12 | §2 Player Card Call (Turn-Based Trigger) — 의사코드 + 매트릭스 | §3.5 (T2/T3) + §5.3 |
+| BS-06-12 | §2.4 Player Card Call 예외 (Bomb Pot, All-in Runout, Mix Game, RIM) | §4.9 |
+| BS-06-12 | §3 Flop Card Detection (Condition-Based Trigger) — 의사코드 + 매트릭스 | §3.5 (T4~T6, T9, T10) + §5.4 |
+| BS-06-12 | §3.4 Atomic Flop 예외 (timeout, 중복, 덱 외 카드, OOO board card, Bomb Pot, Stud/Draw) | §4.10 |
+| BS-06-12 | §4 Sequence Diagram (Stage 1~6) | §5.14 |
+| BS-06-12 | §5 Cross-Reference 영향 + §6 비활성 조건 + §7 영향 받는 요소 | §4.11 (비활성) + 부록 B (cross-ref) |
+| BS-06-12 | Trigger Matrix T1~T11 (PR #5 quickref) | §3.5 |
+
+---
+
+## 부록 B: Domain Boundaries (권위 위임)
+
+본 도메인은 **트리거 + 이벤트 카탈로그 + 충돌 해결 + 카드 파이프라인** 에 한정된다. 다음 영역은 별도 도메인 마스터에 권위를 위임 (cross-reference 만 유지):
+
+| 영역 | 권위 | Cross-ref 위치 |
+|------|------|---------------|
+| 핸드 라이프사이클 (IDLE → SHOWDOWN → HAND_COMPLETE 상태 전이) | **Lifecycle 도메인 마스터** (Phase 1) `Lifecycle_and_State_Machine.md` | §3.3 IT-02/04/05/07/09/10/11 결과 / §3.8 트리거-HandFSM 매핑 / §4.4.2 Miss Deal |
+| 액션 순환 (`determine_first_to_act` / `next_active_player` / `is_betting_round_complete`) | **Lifecycle 도메인 마스터** §5.5~§5.10 | §3.3 IT-03 (BettingRoundComplete) 결과 |
+| Bomb Pot 상태 전이 (활성화 / Button Freeze / Opt-Out / Short Contribution) | **Lifecycle 도메인 마스터** §4.3 | §3.1 IE-09/IE-10 / §3.3 IT-08/IT-09 / §4.9 Bomb Pot 분기 |
+| Run It Multiple vs Rabbit Hunting (Rule 81) | **Lifecycle 도메인 마스터** §4.4 | §5.11 (엔진 응답 형식만 명시) |
+| Mixed Game Rotation & Button Freeze (HORSE/8-Game/Mixed Omaha) | **Lifecycle 도메인 마스터** §3.9 / §5.13 | §3.3 IT-10 (ButtonFreezeMixedGame) / §3.4 OE-18 (GameTransitioned) |
+| Heads-up Button Adjust / Missed Blind Mark | **Lifecycle 도메인 마스터** + **Betting & Pots 도메인** (Phase 3) | §3.3 IT-11 / IT-12 |
+| GameState / Player Data Model (28 + 15 필드) | **Lifecycle 도메인 마스터** §5.1 / §5.2 | §1.6 ReduceResult.state 참조 |
+| 베팅 액션 (Bet/Call/Raise/All-in 금액 계산) | **Betting & Pots 도메인 마스터** (Phase 3 — 미작성) | §3.1 IE-02 / §3.3 IT-15 / IT-16 |
+| 블라인드 / 앤티 포스팅 | **Betting & Pots 도메인 마스터** (Phase 3) | §3.3 IT-01 (BlindsAutoPost) |
+| Side Pot 분배 / Showdown evaluation | **Betting & Pots 도메인 마스터** (Phase 3) | §3.3 IT-06 (ShowdownEvaluation) / §3.4 OE-06 (WinnerDetermined) |
+| Hand Evaluator (HandRank, kicker, low hand) | **Variants & Evaluation 도메인 마스터** (Phase 4 — 미작성) | §3.3 IT-06 결과 / §3.4 OE-06 payload |
+| Miss Deal / Boxed Card / Four-Card Flop / Tabled Hand 보호 | **Variants & Evaluation 도메인 마스터** (Phase 4) — Exceptions.md 흡수 | §3.1 IE-07/IE-11/IE-12 / §3.3 IT-13/IT-14 / §3.4 OE-11~OE-15 |
+| Hold'em / Omaha / Stud / Draw / Mix variant 별 hole card 수, board card 수 | **Variants & Evaluation 도메인 마스터** (Phase 4) — Flop_Variants/Stud_Games/Draw_Games 흡수 | §4.9 Mix Game 분기 (`variant.holeCardCount`) / §4.10 Stud/Draw 미적용 |
+| Deck Change / DeckFSM 상태 전이 | **Variants & Evaluation 도메인 마스터** (Phase 4) — Exceptions.md 흡수 | §3.1 IE-13 (DeckChangeRequest) / §3.4 OE-16/OE-17 |
+
+> 본 도메인 (Phase 2) 은 위 영역의 **트리거 → 이벤트 발행** 만 담당하고, 그 결과의 비즈니스 로직은 권위 도메인이 책임. 충돌 시 권위 도메인 우선.
+
+---
+
+## 부록 C: Output Event 카탈로그 권위 (외부 SSOT)
+
+본 §3.4 Output Event 19개 (OE-01 ~ OE-19) 는 행동 명세 (BS-06-09) 측 정의다. 외부 API 계약 권위는 별도:
+
+| 외부 SSOT | 경로 | 관계 |
+|-----------|------|------|
+| **API-04 OutputEvent 카탈로그 §6.0** | `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | 21종 카탈로그 (OE-05/OE-06 의 emit-trigger 의미는 BS-06-12 §2/§3 권위) |
+
+> Phase 4 Variants & Evaluation 도메인 통합 시 BS-06-09 ↔ API-04 카탈로그 정합성 검증 (B-345 후속) 필요.
