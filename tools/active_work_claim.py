@@ -41,14 +41,26 @@ Exit:
 from __future__ import annotations
 
 import argparse
+import contextlib
 import datetime
 import fnmatch
 import json
+import os
 import re
 import subprocess
 import sys
+import tempfile
+import time
 from pathlib import Path
 from typing import Any
+
+# IMPR-1: cross-platform exclusive file lock
+if sys.platform == "win32":
+    import msvcrt  # type: ignore[import-not-found]
+    _LOCK_KIND = "msvcrt"
+else:
+    import fcntl  # type: ignore[import-not-found]
+    _LOCK_KIND = "fcntl"
 
 try:
     import yaml  # PyYAML 6.x (tools/requirements.txt 에 이미 있음)
@@ -63,6 +75,15 @@ CLAIMS_END = "<!-- CLAIMS_END -->"
 RELEASED_BEGIN = "<!-- RELEASED_BEGIN -->"
 RELEASED_END = "<!-- RELEASED_END -->"
 RELEASED_TTL_HOURS = 24
+STALE_GC_HOURS = 24  # IMPR-2: ETA 만료 후 24h 초과 시 stale 로 판정
+
+# IMPR-1: exclusive lock 설정
+LOCK_TIMEOUT_SEC = 5.0  # 5초 내 lock 미획득 시 'Bus busy, try again' + exit 1
+LOCK_POLL_INTERVAL_SEC = 0.05
+LOCK_PATH = SSOT.with_suffix(SSOT.suffix + ".lock")
+
+ETA_RE = re.compile(r"^\s*(\d+)\s*([hmd])\s*$", re.IGNORECASE)
+DEFAULT_ETA = datetime.timedelta(hours=2)  # claim 에 eta 없을 때 2h 가정
 
 # ---------------------------------------------------------------- I/O
 
@@ -80,6 +101,75 @@ def _parse_iso(s: str) -> datetime.datetime | None:
         return None
 
 
+def _parse_eta(eta: str | None) -> datetime.timedelta | None:
+    """ETA 문자열을 timedelta 로 파싱. '2h' / '30m' / '1d' 형식."""
+    if not eta:
+        return None
+    m = ETA_RE.match(eta)
+    if not m:
+        return None
+    n = int(m.group(1))
+    unit = m.group(2).lower()
+    if unit == "h":
+        return datetime.timedelta(hours=n)
+    if unit == "m":
+        return datetime.timedelta(minutes=n)
+    if unit == "d":
+        return datetime.timedelta(days=n)
+    return None
+
+
+def _is_stale(claim: dict, now: datetime.datetime | None = None) -> tuple[bool, float]:
+    """IMPR-2: ETA 만료 + STALE_GC_HOURS 초과 시 stale.
+
+    반환: (is_stale, hours_overdue) — overdue 는 ETA 만료 후 경과 시간.
+    """
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    started = _parse_iso(claim.get("started", ""))
+    if started is None:
+        return False, 0.0
+    eta_delta = _parse_eta(claim.get("eta")) or DEFAULT_ETA
+    eta_expiry = started + eta_delta
+    deadline = eta_expiry + datetime.timedelta(hours=STALE_GC_HOURS)
+    if now > deadline:
+        overdue = (now - eta_expiry).total_seconds() / 3600.0
+        return True, overdue
+    return False, 0.0
+
+
+def _gc_stale_claims(
+    active: list[dict],
+    released: list[dict],
+    emit_log: bool = True,
+) -> tuple[list[dict], list[dict], int]:
+    """IMPR-2: stale claim 을 active → released 로 강제 이동.
+
+    [GC Event] 로그를 stderr 로 출력 (emit_log=True 시).
+    반환: (new_active, new_released, n_collected).
+    """
+    now = datetime.datetime.now(datetime.timezone.utc)
+    survivors: list[dict] = []
+    collected = 0
+    for c in active:
+        stale, overdue = _is_stale(c, now)
+        if stale:
+            if emit_log:
+                print(
+                    f"[GC Event] claim #{c.get('id','?')} [{c.get('team','?')}] "
+                    f"stale (ETA expired {overdue:.1f}h ago) — auto-released: "
+                    f"{c.get('task','?')}",
+                    file=sys.stderr,
+                )
+            c["status"] = "released"
+            c["released"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+            c["released_reason"] = "stale_gc_auto"
+            released.append(c)
+            collected += 1
+        else:
+            survivors.append(c)
+    return survivors, released, collected
+
+
 def _load_md() -> str:
     if not SSOT.exists():
         print(f"[error] SSOT 없음: {SSOT}", file=sys.stderr)
@@ -87,8 +177,81 @@ def _load_md() -> str:
     return SSOT.read_text(encoding="utf-8")
 
 
+@contextlib.contextmanager
+def _exclusive_lock(timeout: float = LOCK_TIMEOUT_SEC):
+    """IMPR-1: cross-platform exclusive file lock.
+
+    획득 실패 시 'Bus busy, try again' + sys.exit(1).
+    try-finally 로 lock 해제 보장.
+    """
+    LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(str(LOCK_PATH), os.O_RDWR | os.O_CREAT, 0o644)
+    deadline = time.monotonic() + timeout
+    acquired = False
+    try:
+        while True:
+            try:
+                if _LOCK_KIND == "msvcrt":
+                    msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)
+                else:
+                    fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                acquired = True
+                break
+            except (BlockingIOError, OSError):
+                if time.monotonic() >= deadline:
+                    print(
+                        f"[error] Bus busy, try again "
+                        f"(lock {LOCK_PATH.name} not acquired in {timeout}s)",
+                        file=sys.stderr,
+                    )
+                    sys.exit(1)
+                time.sleep(LOCK_POLL_INTERVAL_SEC)
+        yield fd
+    finally:
+        if acquired:
+            try:
+                if _LOCK_KIND == "msvcrt":
+                    msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
+                else:
+                    fcntl.flock(fd, fcntl.LOCK_UN)
+            except OSError:
+                pass  # 해제 실패는 close 로 fallback
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+
+
 def _save_md(content: str) -> None:
-    SSOT.write_text(content, encoding="utf-8", newline="\n")
+    """IMPR-1: atomic write — tempfile + fsync + os.replace.
+
+    수정 중 에러가 발생해도 기존 SSOT 가 절대 손상되지 않는다.
+    caller 가 _exclusive_lock 보유 가정 (mutating 흐름).
+    """
+    SSOT.parent.mkdir(parents=True, exist_ok=True)
+    tmp_fd, tmp_name = tempfile.mkstemp(
+        prefix=".active_work.",
+        suffix=".tmp",
+        dir=str(SSOT.parent),
+        text=False,
+    )
+    tmp_path: str | None = tmp_name
+    try:
+        with os.fdopen(tmp_fd, "wb") as f:
+            f.write(content.encode("utf-8"))
+            f.flush()
+            try:
+                os.fsync(f.fileno())
+            except OSError:
+                pass  # 일부 Windows 환경에서 fsync 실패 가능
+        os.replace(tmp_path, str(SSOT))
+        tmp_path = None  # replace 성공: 임시 파일 사라짐
+    finally:
+        if tmp_path is not None:
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
 
 
 def _extract_block(text: str, begin: str, end: str) -> tuple[int, int, str]:
@@ -221,7 +384,18 @@ def _scope_overlap(scope_a: list[str], scope_b: list[str]) -> list[str]:
 
 
 def cmd_list(args) -> int:
-    _, active, released = load_state()
+    # IMPR-1+2: GC 가 발생하면 mutating, 그 외는 read-only
+    if getattr(args, "no_gc", False):
+        md, active, released = load_state()
+    else:
+        with _exclusive_lock():
+            md, active, released = load_state()
+            new_active, new_released, n = _gc_stale_claims(
+                active, released, emit_log=True
+            )
+            if n > 0:
+                save_state(md, new_active, new_released)
+                active, released = new_active, new_released
     if args.team:
         active = [c for c in active if c.get("team") == args.team]
     if args.json:
@@ -276,46 +450,51 @@ def cmd_check(args) -> int:
 
 
 def cmd_add(args) -> int:
-    md, active, released = load_state()
-
-    # 충돌 사전 체크
+    # IMPR-1: lock 보유 상태에서 read+modify+write
     scope = [s.strip() for s in args.scope.split(",") if s.strip()]
     if not scope:
         print("[error] --scope 필요", file=sys.stderr)
         return 3
 
-    for c in active:
-        overlap = _scope_overlap(scope, c.get("scope", []))
-        if overlap and not args.force:
-            print(f"⚠️ 충돌: claim #{c['id']} [{c['team']}] scope 겹침:", file=sys.stderr)
-            for p in overlap[:5]:
-                print(f"      - {p}", file=sys.stderr)
-            print("\n해결: scope 축소 or 조율 or --force", file=sys.stderr)
-            return 1
+    with _exclusive_lock():
+        md, active, released = load_state()
 
-    # 신규 id
-    all_ids = [c.get("id", 0) for c in active + released]
-    new_id = max(all_ids, default=0) + 1
+        # 충돌 사전 체크
+        for c in active:
+            overlap = _scope_overlap(scope, c.get("scope", []))
+            if overlap and not args.force:
+                print(f"⚠️ 충돌: claim #{c['id']} [{c['team']}] scope 겹침:",
+                      file=sys.stderr)
+                for p in overlap[:5]:
+                    print(f"      - {p}", file=sys.stderr)
+                print("\n해결: scope 축소 or 조율 or --force", file=sys.stderr)
+                return 1
 
-    claim = {
-        "id": new_id,
-        "team": args.team,
-        "task": args.task,
-        "started": _now_iso(),
-        "scope": scope,
-        "status": "active",
-    }
-    if args.blocks:
-        claim["blocks"] = [b.strip() for b in args.blocks.split(",") if b.strip()]
-    if args.depends_on:
-        claim["depends_on"] = [int(x) for x in args.depends_on.split(",") if x.strip()]
-    if args.eta:
-        claim["eta"] = args.eta
-    if args.pr:
-        claim["pr"] = args.pr
+        # 신규 id
+        all_ids = [c.get("id", 0) for c in active + released]
+        new_id = max(all_ids, default=0) + 1
 
-    active.append(claim)
-    save_state(md, active, released)
+        claim = {
+            "id": new_id,
+            "team": args.team,
+            "task": args.task,
+            "started": _now_iso(),
+            "scope": scope,
+            "status": "active",
+        }
+        if args.blocks:
+            claim["blocks"] = [b.strip() for b in args.blocks.split(",") if b.strip()]
+        if args.depends_on:
+            claim["depends_on"] = [int(x) for x in args.depends_on.split(",")
+                                   if x.strip()]
+        if args.eta:
+            claim["eta"] = args.eta
+        if args.pr:
+            claim["pr"] = args.pr
+
+        active.append(claim)
+        save_state(md, active, released)
+
     print(f"✅ claim #{new_id} added ({args.team}: {args.task})")
     print(f"   scope: {scope}")
     if args.commit:
@@ -324,50 +503,91 @@ def cmd_add(args) -> int:
 
 
 def cmd_update(args) -> int:
-    md, active, released = load_state()
-    claim = next((c for c in active if c.get("id") == args.id), None)
-    if not claim:
-        print(f"[error] claim #{args.id} not found (active)", file=sys.stderr)
-        return 3
+    # IMPR-1: lock 보유 상태에서 read+modify+write
+    with _exclusive_lock():
+        md, active, released = load_state()
+        claim = next((c for c in active if c.get("id") == args.id), None)
+        if not claim:
+            print(f"[error] claim #{args.id} not found (active)", file=sys.stderr)
+            return 3
 
-    changed = False
-    if args.add_scope:
-        add = [s.strip() for s in args.add_scope.split(",") if s.strip()]
-        claim["scope"] = sorted(set(claim.get("scope", []) + add))
-        changed = True
-    if args.pr:
-        claim["pr"] = args.pr
-        changed = True
-    if args.status:
-        claim["status"] = args.status
-        changed = True
-    if args.eta:
-        claim["eta"] = args.eta
-        changed = True
+        changed = False
+        if args.add_scope:
+            add = [s.strip() for s in args.add_scope.split(",") if s.strip()]
+            claim["scope"] = sorted(set(claim.get("scope", []) + add))
+            changed = True
+        if args.pr:
+            claim["pr"] = args.pr
+            changed = True
+        if args.status:
+            claim["status"] = args.status
+            changed = True
+        if args.eta:
+            claim["eta"] = args.eta
+            changed = True
 
-    if not changed:
-        print("[warn] 변경사항 없음", file=sys.stderr)
-        return 3
+        if not changed:
+            print("[warn] 변경사항 없음", file=sys.stderr)
+            return 3
 
-    save_state(md, active, released)
+        save_state(md, active, released)
+
     print(f"✅ claim #{args.id} updated")
     if args.commit:
         _auto_commit_push(f"chore(active-work): update claim #{args.id}")
     return 0
 
 
-def cmd_release(args) -> int:
-    md, active, released = load_state()
-    idx = next((i for i, c in enumerate(active) if c.get("id") == args.id), None)
-    if idx is None:
-        print(f"[error] active claim #{args.id} not found", file=sys.stderr)
-        return 3
+def cmd_gc(args) -> int:
+    """IMPR-2: stale claim 가비지 컬렉션 (수동 호출).
 
-    claim = active.pop(idx)
-    claim["status"] = "released"
-    claim["released"] = _now_iso()
-    released.append(claim)
-    save_state(md, active, released)
+    list 호출 시 자동 GC 와 동일 로직. dry-run 모드 지원.
+    IMPR-1: dry-run 외에는 lock 보유.
+    """
+    if args.dry_run:
+        # read-only: lock 불필요
+        _, active, released = load_state()
+        _, _, n = _gc_stale_claims(active, released, emit_log=True)
+        if n == 0:
+            print("(no stale claims detected)")
+        else:
+            print(
+                f"[GC Event] dry-run: {n} stale claim(s) detected (no changes saved)",
+                file=sys.stderr,
+            )
+        return 0
+
+    with _exclusive_lock():
+        md, active, released = load_state()
+        new_active, new_released, n = _gc_stale_claims(
+            active, released, emit_log=True
+        )
+        if n == 0:
+            print("(no stale claims detected)")
+            return 0
+        save_state(md, new_active, new_released)
+
+    print(f"[GC Event] {n} stale claim(s) collected and released")
+    if args.commit:
+        _auto_commit_push(f"chore(active-work): GC {n} stale claim(s)")
+    return 0
+
+
+def cmd_release(args) -> int:
+    # IMPR-1: lock 보유 상태에서 read+modify+write
+    with _exclusive_lock():
+        md, active, released = load_state()
+        idx = next((i for i, c in enumerate(active) if c.get("id") == args.id), None)
+        if idx is None:
+            print(f"[error] active claim #{args.id} not found", file=sys.stderr)
+            return 3
+
+        claim = active.pop(idx)
+        claim["status"] = "released"
+        claim["released"] = _now_iso()
+        released.append(claim)
+        save_state(md, active, released)
+
     print(f"✅ claim #{args.id} released ({claim.get('team')}: {claim.get('task')})")
     if args.commit:
         _auto_commit_push(f"chore(active-work): release claim #{args.id}")
@@ -404,7 +624,17 @@ def main() -> int:
     p_list = sub.add_parser("list", help="현재 claim 목록")
     p_list.add_argument("--team", help="특정 팀 필터")
     p_list.add_argument("--json", action="store_true")
+    p_list.add_argument("--no-gc", action="store_true",
+                        help="IMPR-2: 자동 stale GC 비활성")
     p_list.set_defaults(func=cmd_list)
+
+    # gc (IMPR-2)
+    p_gc = sub.add_parser("gc", help="stale claim 가비지 컬렉션")
+    p_gc.add_argument("--dry-run", action="store_true",
+                      help="감지만 (변경 없음)")
+    p_gc.add_argument("--commit", action="store_true",
+                      help="Active_Work.md 자동 commit")
+    p_gc.set_defaults(func=cmd_gc)
 
     # check
     p_check = sub.add_parser("check", help="scope 충돌 확인")
