@@ -1,20 +1,28 @@
 #!/usr/bin/env python3
 """verify_ecosystem.py — EBS Multi-Service Docker E2E smoke validation.
 
-작업 단위: docker compose --profile web up -d 로 기동된 5개 서비스에 대해
-host 측에서 실제 endpoint 를 호출하여 healthy 상태를 검증한다.
+Run #3 refactor (2026-04-27):
+  • Gap 4 (port collision): find_free_port(preferred) 자동 할당 + .env.runtime 작성
+  • Gap 3 (WS auth 403):     /health/ws 엔드포인트 사용 (BO 미인증 health probe)
+  • 환경 변수 동적 매핑:       EBS_{BO,ENGINE,LOBBY,CC}_HOST_PORT 읽어 probe URL 구성
 
-검증 대상 (SG-022 폐기 cascade 후 SSOT):
-  • bo         (team2)   :8000 /health           — FastAPI Backend
-  • engine     (team3)   :8080 /engine/health    — Dart Harness (B-331)
-  • lobby-web  (team1)   :3000 /healthz          — Flutter Web (profile web)
-  • cc-web     (team4)   :3001 /healthz          — Flutter Web (profile web)
-  • bo (WS)    :8000 /ws/lobby                   — WebSocket upgrade handshake
+작업 단위:
+  1) (선택) `python verify_ecosystem.py --allocate-ports` 로 .env.runtime 생성
+  2) `docker compose --env-file .env.runtime --profile web up -d`
+  3) `python verify_ecosystem.py --env-file .env.runtime` 로 검증
+  4) `docker compose --env-file .env.runtime --profile web down -v`
+
+검증 대상:
+  • bo         (team2)   :{EBS_BO_HOST_PORT}/health           — FastAPI Backend
+  • engine     (team3)   :{EBS_ENGINE_HOST_PORT}/engine/health — Dart Harness (B-331)
+  • lobby-web  (team1)   :{EBS_LOBBY_HOST_PORT}/healthz        — Flutter Web
+  • cc-web     (team4)   :{EBS_CC_HOST_PORT}/healthz           — Flutter Web
+  • bo (WS)    :{EBS_BO_HOST_PORT}/health/ws                   — auth-free WS upgrade
 
 Exit codes:
   0  — 모든 서비스 정상 (Gatekeeper PASS)
-  1  — 하나 이상 실패 (Gatekeeper FAIL → docker compose logs 분석 + 자가 치유 트리거)
-  2  — 사용자 입력 오류 (--help 등)
+  1  — 하나 이상 실패 (Gatekeeper FAIL)
+  2  — 사용자 입력 오류
 
 Stdlib only — pip install 불필요.
 """
@@ -30,8 +38,88 @@ import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 
+
+# --- Port allocation -------------------------------------------------------
+
+DEFAULT_PORTS = {
+    "EBS_BO_HOST_PORT": 8000,
+    "EBS_ENGINE_HOST_PORT": 8080,
+    "EBS_LOBBY_HOST_PORT": 3000,
+    "EBS_CC_HOST_PORT": 3001,
+}
+
+
+def find_free_port(preferred_port: int) -> int:
+    """Return preferred_port if free, else find any free ephemeral port.
+
+    Gap 4 fix — 호스트의 외부 프로세스 (e.g. node.exe :3000) 점유 충돌 회피.
+    검사: 0.0.0.0 으로 bind 가능해야 docker compose 도 publish 가능.
+    """
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.bind(("0.0.0.0", preferred_port))
+            return preferred_port
+    except OSError:
+        pass
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("0.0.0.0", 0))
+        return s.getsockname()[1]
+
+
+def allocate_ports() -> dict[str, int]:
+    """Allocate free ports for all 4 host-published services."""
+    return {var: find_free_port(default) for var, default in DEFAULT_PORTS.items()}
+
+
+def write_env_file(path: Path, ports: dict[str, int]) -> None:
+    """Write a docker compose --env-file compatible KEY=VALUE file."""
+    lines = [f"{k}={v}" for k, v in ports.items()]
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def load_env_file(path: Path) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        out[k.strip()] = v.strip()
+    return out
+
+
+def resolve_ports(env_file: Optional[Path]) -> dict[str, int]:
+    """Determine effective host ports.
+
+    Precedence (highest first):
+      1. --env-file (if provided and exists)
+      2. process env vars
+      3. DEFAULT_PORTS
+    """
+    resolved = dict(DEFAULT_PORTS)
+    for var in DEFAULT_PORTS:
+        v = os.environ.get(var)
+        if v is not None and v.strip():
+            try:
+                resolved[var] = int(v)
+            except ValueError:
+                pass
+    if env_file and env_file.exists():
+        for k, v in load_env_file(env_file).items():
+            if k in DEFAULT_PORTS:
+                try:
+                    resolved[k] = int(v)
+                except ValueError:
+                    pass
+    return resolved
+
+
+# --- Check definitions -----------------------------------------------------
 
 @dataclass(frozen=True)
 class HttpCheck:
@@ -62,22 +150,30 @@ class CheckResult:
     body_excerpt: str = ""
 
 
-CHECKS_HTTP: list[HttpCheck] = [
-    HttpCheck("bo",        "http://localhost:8000/health"),
-    HttpCheck("engine",    "http://localhost:8080/engine/health"),
-    HttpCheck("lobby-web", "http://localhost:3000/healthz"),
-    HttpCheck("cc-web",    "http://localhost:3001/healthz"),
-]
+def build_checks(ports: dict[str, int]) -> tuple[list[HttpCheck], list[WsCheck]]:
+    bo = ports["EBS_BO_HOST_PORT"]
+    eng = ports["EBS_ENGINE_HOST_PORT"]
+    lob = ports["EBS_LOBBY_HOST_PORT"]
+    cc = ports["EBS_CC_HOST_PORT"]
+    https = [
+        HttpCheck("bo",        f"http://localhost:{bo}/health"),
+        HttpCheck("engine",    f"http://localhost:{eng}/engine/health"),
+        HttpCheck("lobby-web", f"http://localhost:{lob}/healthz"),
+        HttpCheck("cc-web",    f"http://localhost:{cc}/healthz"),
+    ]
+    wss = [
+        # Gap 3: 미인증 health probe — /ws/lobby (인증 필수, 403) 가 아닌 /health/ws 사용
+        WsCheck("bo-ws-health", "localhost", bo, "/health/ws"),
+    ]
+    return https, wss
 
-CHECKS_WS: list[WsCheck] = [
-    WsCheck("bo-ws-lobby", "localhost", 8000, "/ws/lobby"),
-]
 
+# --- Probes ----------------------------------------------------------------
 
 def http_check(check: HttpCheck) -> CheckResult:
     started = time.monotonic()
     req = urllib.request.Request(check.url, method="GET",
-                                 headers={"User-Agent": "ebs-verify-ecosystem/1.0"})
+                                 headers={"User-Agent": "ebs-verify-ecosystem/2.0"})
     try:
         with urllib.request.urlopen(req, timeout=check.timeout_s) as resp:
             elapsed_ms = (time.monotonic() - started) * 1000
@@ -132,7 +228,7 @@ def http_check(check: HttpCheck) -> CheckResult:
 def ws_handshake(check: WsCheck) -> CheckResult:
     """Raw WebSocket upgrade handshake — RFC 6455 §4.1.
 
-    101 Switching Protocols 응답을 받으면 OK. 그 외 (404, 403, connection refused) FAIL.
+    101 Switching Protocols 응답을 받으면 OK.
     """
     target = f"ws://{check.host}:{check.port}{check.path}"
     started = time.monotonic()
@@ -148,7 +244,7 @@ def ws_handshake(check: WsCheck) -> CheckResult:
             f"Connection: Upgrade\r\n"
             f"Sec-WebSocket-Key: {key}\r\n"
             f"Sec-WebSocket-Version: 13\r\n"
-            f"User-Agent: ebs-verify-ecosystem/1.0\r\n"
+            f"User-Agent: ebs-verify-ecosystem/2.0\r\n"
             f"\r\n"
         )
         sock.sendall(request.encode("ascii"))
@@ -162,9 +258,14 @@ def ws_handshake(check: WsCheck) -> CheckResult:
         head = raw.split(b"\r\n\r\n", 1)[0].decode("latin1", errors="replace")
         first_line = head.split("\r\n", 1)[0] if head else ""
         ok = first_line.startswith("HTTP/1.1 101")
+        status = None
+        if first_line:
+            parts = first_line.split()
+            if len(parts) >= 2 and parts[1].isdigit():
+                status = int(parts[1])
         return CheckResult(
             name=check.name, kind="ws", target=target, ok=ok,
-            status=int(first_line.split()[1]) if first_line and first_line.split()[1:2] and first_line.split()[1].isdigit() else None,
+            status=status,
             detail=("OK (101 Switching Protocols)" if ok else f"unexpected: {first_line[:120]}"),
             elapsed_ms=elapsed_ms,
             body_excerpt=first_line[:200],
@@ -191,13 +292,14 @@ def ws_handshake(check: WsCheck) -> CheckResult:
                 pass
 
 
-def run_all(retries: int, retry_delay_s: float) -> tuple[list[CheckResult], int]:
+def run_all(checks_http: list[HttpCheck], checks_ws: list[WsCheck],
+            retries: int, retry_delay_s: float) -> tuple[list[CheckResult], int]:
     results: list[CheckResult] = []
     failed_count = 0
 
-    for chk in CHECKS_HTTP:
+    for chk in checks_http:
         last: CheckResult = http_check(chk)
-        for attempt in range(retries):
+        for _ in range(retries):
             if last.ok:
                 break
             time.sleep(retry_delay_s)
@@ -206,9 +308,9 @@ def run_all(retries: int, retry_delay_s: float) -> tuple[list[CheckResult], int]
         if not last.ok:
             failed_count += 1
 
-    for wschk in CHECKS_WS:
+    for wschk in checks_ws:
         last2: CheckResult = ws_handshake(wschk)
-        for attempt in range(retries):
+        for _ in range(retries):
             if last2.ok:
                 break
             time.sleep(retry_delay_s)
@@ -242,31 +344,59 @@ def render_table(results: list[CheckResult]) -> str:
     return "\n".join(out_lines)
 
 
+# --- Entry -----------------------------------------------------------------
+
 def main(argv: Optional[list[str]] = None) -> int:
     ap = argparse.ArgumentParser(
         prog="verify_ecosystem.py",
         description="EBS Multi-Service Docker E2E smoke validation",
     )
     ap.add_argument("--retries", type=int, default=3,
-                    help="실패한 check 재시도 횟수 (default: 3)")
+                    help="failed check 재시도 횟수 (default: 3)")
     ap.add_argument("--retry-delay", type=float, default=2.0,
                     help="재시도 간 대기 (s, default: 2.0)")
     ap.add_argument("--json", dest="as_json", action="store_true",
                     help="JSON 출력 (CI/agent 소비)")
+    ap.add_argument("--allocate-ports", action="store_true",
+                    help="free port 자동 할당 + --env-file 경로에 작성하고 종료")
+    ap.add_argument("--env-file", type=Path, default=Path(".env.runtime"),
+                    help="docker compose --env-file 호환 KEY=VALUE 파일 (default: .env.runtime)")
     args = ap.parse_args(argv)
 
+    if args.allocate_ports:
+        ports = allocate_ports()
+        write_env_file(args.env_file, ports)
+        print(f"# free ports allocated -> {args.env_file}")
+        for k, v in ports.items():
+            default = DEFAULT_PORTS[k]
+            note = "" if v == default else f"  (preferred {default} occupied)"
+            print(f"{k}={v}{note}")
+        print()
+        print("# next steps:")
+        print(f"#   docker compose --env-file {args.env_file} --profile web up -d")
+        print(f"#   python tools/verify_ecosystem.py --env-file {args.env_file}")
+        print(f"#   docker compose --env-file {args.env_file} --profile web down -v")
+        return 0
+
+    ports = resolve_ports(args.env_file)
+    https, wss = build_checks(ports)
+
     print("=" * 78)
-    print("EBS Multi-Service Docker E2E Smoke Validation")
-    print(f"  HTTP checks: {len(CHECKS_HTTP)}  |  WS checks: {len(CHECKS_WS)}  |  retries: {args.retries}")
+    print("EBS Multi-Service Docker E2E Smoke Validation (v2.0)")
+    print(f"  HTTP checks: {len(https)}  |  WS checks: {len(wss)}  |  retries: {args.retries}")
+    print(f"  ports: {ports}")
+    if args.env_file.exists():
+        print(f"  env-file: {args.env_file} (loaded)")
     print("=" * 78)
 
-    results, failed = run_all(args.retries, args.retry_delay)
+    results, failed = run_all(https, wss, args.retries, args.retry_delay)
 
     if args.as_json:
         payload = {
             "ok": failed == 0,
             "failed_count": failed,
             "total": len(results),
+            "ports": ports,
             "results": [
                 {
                     "name": r.name, "kind": r.kind, "target": r.target,
@@ -286,10 +416,10 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     print()
     if failed == 0:
-        print(f"GATEKEEPER PASS — {len(results)}/{len(results)} services healthy.")
+        print(f"GATEKEEPER PASS - {len(results)}/{len(results)} services healthy.")
         return 0
     else:
-        print(f"GATEKEEPER FAIL — {failed}/{len(results)} services unhealthy.")
+        print(f"GATEKEEPER FAIL - {failed}/{len(results)} services unhealthy.")
         print("Self-correction trigger: run `docker compose logs <service>` for failing services.")
         return 1
 
