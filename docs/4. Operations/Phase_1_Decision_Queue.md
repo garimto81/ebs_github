@@ -454,10 +454,39 @@ services/ 영역이 핵심 미커버:
 
 ---
 
+## Decision Group N — Session 2.3a 완료 (series_service 57% → 80%+)
+
+사용자 명시 (2026-04-27): "Session 2.3a — series_service 만 안전 분량 분할".
+
+### 진행 결과
+
+| 영역 | 결과 |
+|------|:----:|
+| 신규 unit tests | `tests/test_series_service_extended.py` 16 tests |
+| 단위 실행 | 16/16 PASS in 0.40s |
+| 전체 regression | (백그라운드 진행, commit 직전 검증) |
+| Production code 수정 | 0건 (Strict 룰 준수) |
+| Coverage 추정 | series_service 57% → 80%+ (45+ stmts 커버) |
+
+### 커버 영역
+
+- `get_or_create_default_competition` (2): creates_new / returns_existing
+- `create_series` (2): FK 404 / valid 성공
+- `list_series` (1) / `get_series` (1, 404) / `update_series` (2) / `delete_series` (3, 성공/409/404)
+- `create_event` (1, 404) / `get_event` (1, 404)
+- `complete_flight` (2: invalid state 409 / 성공 from_running) / `cancel_flight` (1, invalid state 409)
+
+### 다음 Session 2.3b 권고
+
+`services/table_service.py` 65% (60 missed) → 80%. 12-15 unit tests. 172 stmts CRUD + business logic.
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v2.1 | Group N 추가 (Session 2.3a 완료 — series_service 16 tests, 단위 16/16 PASS, Strict 룰 준수) + SESSION_2_3a_HANDOFF.md NEW | TECH | 사용자 Session 2.3a 진입 명시 — 안전 분량 분할 |
 | 2026-04-27 | v2.0 | Group M 추가 (Session 2.2 완료 — structure services 24 tests, 307 passed regression 0, B-Q18 production bug 등재) + SESSION_2_2_HANDOFF.md NEW | TECH | 사용자 Session 2.2 진입 명시 — 가장 낮은 coverage 우선 |
 | 2026-04-27 | v1.9 | Group L 추가 (Session 2.1 완료 — auth_service 22 tests, 283 passed regression 0, Strict 룰 준수) + SESSION_2_1_HANDOFF.md NEW | TECH | 사용자 Session 2.1 진입 명시 — auth_service 가장 큰 gap |
 | 2026-04-27 | v1.8 | Group K 추가 (Session 2 Phase 1 audit — B-Q10 baseline 정정 90% → 78% + multi-turn plan 2.1~2.7) | TECH | 사용자 Session 2 진입 (Option D) — Phase 1 audit 결과 |
