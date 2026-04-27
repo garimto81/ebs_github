@@ -123,7 +123,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/B-Q16-development-environment-standards.md` — B-Q16 — 개발 환경 표준화 (Session 1 — SG-027 cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` — Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` — B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기)
-- `docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md` — B-Q7 — 품질 기준 (prototype-grade vs production-grade 측정) (사용자 명시 대기)
+- `docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md` — B-Q7 — 품질 기준 (Production-strict 90% 재정의 2026-04-27)
 - `docs/4. Operations/Conductor_Backlog/B-Q8-vendor-rfi-rfq-reactivation.md` — B-Q8 — vendor 모델 reactivate (RFI/RFQ 재개 여부) (사용자 명시 대기)
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-PHASE2-START.md` — Phase 1 설계 정렬 완료 — Phase 2 진입 허용 (전체 팀 broadcast)
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG023-INTENT-PIVOT.md` — SG-023 인텐트 전환 (production 출시) — 전체 팀 broadcast + 작업 standby 권고
@@ -135,6 +135,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SESSION_2_3a_HANDOFF.md` — SESSION 2.3a HANDOFF — series_service.py 57% → 80%+
 - `docs/4. Operations/Conductor_Backlog/SESSION_2_FINAL_REPORT.md` — SESSION 2 FINAL REPORT — Core Logic & Backend Engine (B-Q10 cascade)
 - `docs/4. Operations/Conductor_Backlog/SESSION_2_HANDOFF.md` — SESSION 2 HANDOFF — Core Logic & Backend Engine (Phase 1 audit 완료)
+- `docs/4. Operations/Conductor_Backlog/SESSION_3_INIT.md` — SESSION 3 INIT — Frontend Interface & Routing (team1 영역)
 - `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` — 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1)
 - `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` — Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback
 - `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` — Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences

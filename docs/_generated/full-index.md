@@ -478,7 +478,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-Q20-coverage-final-6pp.md` | B-Q20 — 95% coverage 잔여 6%p 도달 (Session 2 final 후속) | conductor (or team2) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` | team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade) | team1 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` | B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기) | conductor | internal | - |
-| `docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md` | B-Q7 — 품질 기준 (prototype-grade vs production-grade 측정) (사용자 명시 대기) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md` | B-Q7 — 품질 기준 (Production-strict 90% 재정의 2026-04-27) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q8-vendor-rfi-rfq-reactivation.md` | B-Q8 — vendor 모델 reactivate (RFI/RFQ 재개 여부) (사용자 명시 대기) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-001-team-backlog-retag.md` | 구현: 4팀 Backlog 3-Type retag + archive 정리 | each_team | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md` | 구현: team4 Engine Connection UI — router guard + manual reconnect | team4 | - | - |
@@ -503,6 +503,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SESSION_2_3a_HANDOFF.md` | SESSION 2.3a HANDOFF — series_service.py 57% → 80%+ | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SESSION_2_FINAL_REPORT.md` | SESSION 2 FINAL REPORT — Core Logic & Backend Engine (B-Q10 cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SESSION_2_HANDOFF.md` | SESSION 2 HANDOFF — Core Logic & Backend Engine (Phase 1 audit 완료) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/SESSION_3_INIT.md` | SESSION 3 INIT — Frontend Interface & Routing (team1 영역) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` | 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` | Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` | Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences | conductor | - | - |
