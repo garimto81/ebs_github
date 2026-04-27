@@ -534,6 +534,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` | SG-023 — 인텐트 전환 (기획서 완결 → production 출시) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` | SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` | SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/V2_PURGE_REPORT.md` | V2 Purge Report — 사용자 명시 "ebs v2 별개 프로젝트" cascade | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` | 기획 공백: <구체적 공백명> | conductor | - | - |
