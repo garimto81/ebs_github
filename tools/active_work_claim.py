@@ -63,6 +63,10 @@ CLAIMS_END = "<!-- CLAIMS_END -->"
 RELEASED_BEGIN = "<!-- RELEASED_BEGIN -->"
 RELEASED_END = "<!-- RELEASED_END -->"
 RELEASED_TTL_HOURS = 24
+STALE_GC_HOURS = 24  # IMPR-2: ETA 만료 후 24h 초과 시 stale 로 판정
+
+ETA_RE = re.compile(r"^\s*(\d+)\s*([hmd])\s*$", re.IGNORECASE)
+DEFAULT_ETA = datetime.timedelta(hours=2)  # claim 에 eta 없을 때 2h 가정
 
 # ---------------------------------------------------------------- I/O
 
@@ -78,6 +82,75 @@ def _parse_iso(s: str) -> datetime.datetime | None:
         )
     except Exception:
         return None
+
+
+def _parse_eta(eta: str | None) -> datetime.timedelta | None:
+    """ETA 문자열을 timedelta 로 파싱. '2h' / '30m' / '1d' 형식."""
+    if not eta:
+        return None
+    m = ETA_RE.match(eta)
+    if not m:
+        return None
+    n = int(m.group(1))
+    unit = m.group(2).lower()
+    if unit == "h":
+        return datetime.timedelta(hours=n)
+    if unit == "m":
+        return datetime.timedelta(minutes=n)
+    if unit == "d":
+        return datetime.timedelta(days=n)
+    return None
+
+
+def _is_stale(claim: dict, now: datetime.datetime | None = None) -> tuple[bool, float]:
+    """IMPR-2: ETA 만료 + STALE_GC_HOURS 초과 시 stale.
+
+    반환: (is_stale, hours_overdue) — overdue 는 ETA 만료 후 경과 시간.
+    """
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    started = _parse_iso(claim.get("started", ""))
+    if started is None:
+        return False, 0.0
+    eta_delta = _parse_eta(claim.get("eta")) or DEFAULT_ETA
+    eta_expiry = started + eta_delta
+    deadline = eta_expiry + datetime.timedelta(hours=STALE_GC_HOURS)
+    if now > deadline:
+        overdue = (now - eta_expiry).total_seconds() / 3600.0
+        return True, overdue
+    return False, 0.0
+
+
+def _gc_stale_claims(
+    active: list[dict],
+    released: list[dict],
+    emit_log: bool = True,
+) -> tuple[list[dict], list[dict], int]:
+    """IMPR-2: stale claim 을 active → released 로 강제 이동.
+
+    [GC Event] 로그를 stderr 로 출력 (emit_log=True 시).
+    반환: (new_active, new_released, n_collected).
+    """
+    now = datetime.datetime.now(datetime.timezone.utc)
+    survivors: list[dict] = []
+    collected = 0
+    for c in active:
+        stale, overdue = _is_stale(c, now)
+        if stale:
+            if emit_log:
+                print(
+                    f"[GC Event] claim #{c.get('id','?')} [{c.get('team','?')}] "
+                    f"stale (ETA expired {overdue:.1f}h ago) — auto-released: "
+                    f"{c.get('task','?')}",
+                    file=sys.stderr,
+                )
+            c["status"] = "released"
+            c["released"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+            c["released_reason"] = "stale_gc_auto"
+            released.append(c)
+            collected += 1
+        else:
+            survivors.append(c)
+    return survivors, released, collected
 
 
 def _load_md() -> str:
@@ -221,7 +294,13 @@ def _scope_overlap(scope_a: list[str], scope_b: list[str]) -> list[str]:
 
 
 def cmd_list(args) -> int:
-    _, active, released = load_state()
+    md, active, released = load_state()
+    # IMPR-2: list 호출 시 백그라운드 stale GC 자동 실행 (--no-gc 로 비활성)
+    if not getattr(args, "no_gc", False):
+        new_active, new_released, n = _gc_stale_claims(active, released, emit_log=True)
+        if n > 0:
+            save_state(md, new_active, new_released)
+            active, released = new_active, new_released
     if args.team:
         active = [c for c in active if c.get("team") == args.team]
     if args.json:
@@ -356,6 +435,31 @@ def cmd_update(args) -> int:
     return 0
 
 
+def cmd_gc(args) -> int:
+    """IMPR-2: stale claim 가비지 컬렉션 (수동 호출).
+
+    list 호출 시 자동 GC 와 동일 로직. dry-run 모드 지원.
+    """
+    md, active, released = load_state()
+    new_active, new_released, n = _gc_stale_claims(
+        active, released, emit_log=True
+    )
+    if n == 0:
+        print("(no stale claims detected)")
+        return 0
+    if args.dry_run:
+        print(
+            f"[GC Event] dry-run: {n} stale claim(s) detected (no changes saved)",
+            file=sys.stderr,
+        )
+        return 0
+    save_state(md, new_active, new_released)
+    print(f"[GC Event] {n} stale claim(s) collected and released")
+    if args.commit:
+        _auto_commit_push(f"chore(active-work): GC {n} stale claim(s)")
+    return 0
+
+
 def cmd_release(args) -> int:
     md, active, released = load_state()
     idx = next((i for i, c in enumerate(active) if c.get("id") == args.id), None)
@@ -404,7 +508,17 @@ def main() -> int:
     p_list = sub.add_parser("list", help="현재 claim 목록")
     p_list.add_argument("--team", help="특정 팀 필터")
     p_list.add_argument("--json", action="store_true")
+    p_list.add_argument("--no-gc", action="store_true",
+                        help="IMPR-2: 자동 stale GC 비활성")
     p_list.set_defaults(func=cmd_list)
+
+    # gc (IMPR-2)
+    p_gc = sub.add_parser("gc", help="stale claim 가비지 컬렉션")
+    p_gc.add_argument("--dry-run", action="store_true",
+                      help="감지만 (변경 없음)")
+    p_gc.add_argument("--commit", action="store_true",
+                      help="Active_Work.md 자동 commit")
+    p_gc.set_defaults(func=cmd_gc)
 
     # check
     p_check = sub.add_parser("check", help="scope 충돌 확인")
