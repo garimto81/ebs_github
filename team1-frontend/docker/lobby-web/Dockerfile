@@ -12,8 +12,11 @@ FROM ghcr.io/cirruslabs/flutter:3.22.0 AS builder
 WORKDIR /app
 
 # 의존성 캐시 레이어 분리 (pubspec 변경 시에만 재실행)
+# Gap 1 fix: shared/ebs_common 은 build context 외부에 있으므로 BuildKit
+# additional_contexts (docker-compose.yml `additional_contexts: shared: ./shared`)
+# 으로 주입한다. `COPY --from=shared` 는 named context 에서 가져온다.
 COPY pubspec.yaml pubspec.lock ./
-COPY ../shared/ebs_common /shared/ebs_common
+COPY --from=shared ebs_common /shared/ebs_common
 RUN flutter pub get
 
 # 소스 복사 + codegen

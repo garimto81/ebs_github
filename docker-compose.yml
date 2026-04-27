@@ -45,7 +45,8 @@ services:
     networks:
       - ebs-net
     ports:
-      - "8000:8000"
+      # Gap 4 fix: 호스트 포트는 env 변수로 가변 (verify_ecosystem.py 가 free port 자동 할당)
+      - "${EBS_BO_HOST_PORT:-8000}:8000"
     environment:
       # DB: SQLite (dev) — prod에서 PostgreSQL 전환 가능
       - DATABASE_URL=sqlite:///data/ebs.db
@@ -102,7 +103,7 @@ services:
     networks:
       - ebs-net
     ports:
-      - "8080:8080"
+      - "${EBS_ENGINE_HOST_PORT:-8080}:8080"
     environment:
       - LOG_LEVEL=debug
       # Multi-Service Docker (SG-022 폐기 cascade)
@@ -118,6 +119,9 @@ services:
     build:
       context: ./team1-frontend
       dockerfile: docker/lobby-web/Dockerfile
+      # Gap 1 fix: shared/ebs_common 은 build context 외부 → BuildKit named context 로 주입
+      additional_contexts:
+        shared: ./shared
       args:
         ENV_FILE: production.json
     container_name: ebs-lobby-web
@@ -125,7 +129,8 @@ services:
     networks:
       - ebs-net
     ports:
-      - "3000:3000"
+      # Gap 4 fix: 호스트 포트 가변 (verify_ecosystem.py find_free_port)
+      - "${EBS_LOBBY_HOST_PORT:-3000}:3000"
     environment:
       - BO_URL=${BO_URL:-http://bo:8000}
       - ENGINE_URL=${ENGINE_URL:-http://engine:8080}
@@ -162,7 +167,7 @@ services:
     networks:
       - ebs-net
     ports:
-      - "3001:3001"
+      - "${EBS_CC_HOST_PORT:-3001}:3001"
     environment:
       - BO_URL=${BO_URL:-http://bo:8000}
       - ENGINE_URL=${ENGINE_URL:-http://engine:8080}

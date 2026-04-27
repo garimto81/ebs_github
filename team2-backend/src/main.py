@@ -95,6 +95,26 @@ async def health(db: Session = Depends(get_db)):
         return JSONResponse(status_code=503, content={"status": "degraded", "db": "disconnected"})
 
 
+@app.websocket("/health/ws")
+async def health_ws(websocket: WebSocket):
+    """Auth-free WebSocket health probe — Gap 3 fix (Run #2 verify_ecosystem.py).
+
+    Smoke validators (e.g. tools/verify_ecosystem.py) need to verify that the
+    ASGI WebSocket upgrade pipeline is healthy without authenticating. The
+    real /ws/cc and /ws/lobby endpoints require token auth and (correctly)
+    reject unauthenticated handshakes with 403, which a smoke test cannot
+    distinguish from a misconfigured server.
+
+    Behavior: accept the upgrade (HTTP/1.1 101 Switching Protocols), send
+    a single 'ok' text frame, then close cleanly. No auth, no DB, no state.
+    """
+    await websocket.accept()
+    try:
+        await websocket.send_text("ok")
+    finally:
+        await websocket.close()
+
+
 @app.websocket("/ws/cc")
 async def ws_cc_endpoint(
     websocket: WebSocket,
