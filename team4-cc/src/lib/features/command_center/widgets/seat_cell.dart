@@ -393,7 +393,7 @@ class _SeatCellState extends ConsumerState<SeatCell>
             ? [
                 BoxShadow(
                   color: SeatColors.actionGlowTo
-                      .withValues(alpha: _glowAnimation.value),
+                      .withOpacity(_glowAnimation.value),
                   blurRadius: 12,
                   spreadRadius: 2,
                 ),
@@ -644,7 +644,7 @@ class _SeatCellState extends ConsumerState<SeatCell>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.8),
+          color: color.withOpacity(0.8),
           borderRadius: BorderRadius.circular(3),
         ),
         child: Text(
@@ -707,7 +707,7 @@ class _DealerReassignDialogState extends State<_DealerReassignDialog> {
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<int>(
-            initialValue: _selected,
+            value: _selected,
             decoration: const InputDecoration(
               labelText: 'Dealer 좌석 선택',
               border: OutlineInputBorder(),

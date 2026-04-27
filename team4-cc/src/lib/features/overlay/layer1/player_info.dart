@@ -55,8 +55,8 @@ class PlayerInfoLayer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: isActive
-            ? SeatColors.active.withValues(alpha: 0.85)
-            : SeatColors.vacant.withValues(alpha: 0.6),
+            ? SeatColors.active.withOpacity(0.85)
+            : SeatColors.vacant.withOpacity(0.6),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Column(

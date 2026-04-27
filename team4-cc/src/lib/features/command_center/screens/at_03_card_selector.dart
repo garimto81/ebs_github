@@ -358,12 +358,12 @@ class _CardCell extends StatelessWidget {
           height: AppConstants.cardCellHeight,
           decoration: BoxDecoration(
             color: isUsed
-                ? CardColors.cardUsed.withValues(alpha: 0.3)
+                ? CardColors.cardUsed.withOpacity(0.3)
                 : CardColors.cardFaceUp,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: isRowHighlighted && !isUsed
-                  ? suitColor.withValues(alpha: 0.8)
+                  ? suitColor.withOpacity(0.8)
                   : Colors.grey.shade700,
               width: isRowHighlighted && !isUsed ? 2 : 1,
             ),
