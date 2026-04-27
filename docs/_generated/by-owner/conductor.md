@@ -130,6 +130,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION.md` — SG-024 거버넌스 확장 — Conductor 단일 세션 전권 (broadcast)
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG025-026-PRODUCTION-LAUNCH.md` — SG-025 + SG-026 — Production timeline + Quality gates (B-Q6 ㉠ + B-Q7 ㉠ broadcast)
 - `docs/4. Operations/Conductor_Backlog/SESSION_1_HANDOFF.md` — SESSION 1 HANDOFF — Foundation & Infrastructure
+- `docs/4. Operations/Conductor_Backlog/SESSION_2_HANDOFF.md` — SESSION 2 HANDOFF — Core Logic & Backend Engine (Phase 1 audit 완료)
 - `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` — 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1)
 - `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` — Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback
 - `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` — Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences
