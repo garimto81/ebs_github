@@ -125,7 +125,9 @@ team2는 자기 소유 계약 파일을 직접 수정 가능:
 
 - 린트: `ruff check src/ --fix`
 - 테스트 (개별): `pytest tests/test_specific.py -v`
-- 테스트 (전체): `pytest tests/ -v` (~50s, 95/95 pass, 90% 커버리지)
+- 테스트 (전체): `pytest tests/ -v` (~115s, **261/261 pass, 78% 커버리지** — 2026-04-27 Session 2 Phase 1 audit 정정)
+- 테스트 + 커버리지: `python -m pytest tests/ --cov=src --cov-report=term-missing` (~115s)
 - 마이그레이션: `python -m alembic upgrade head`
 
-> 2026-04-14 기준: 95/95 pass in 49s. Alembic baseline `0001_baseline`. SQLModel 12 테이블 커버, 나머지 12 테이블은 `init.sql` 권위.
+> **2026-04-27 baseline 정정**: 이전 기록 "95/95 pass, 90% 커버리지" 는 stale (2026-04-14 시점). 실제 측정 = 261/261 pass / 78% 커버리지 (3984 stmts, 882 missed). 95% 도달 = 17%p gap = multi-turn (Session 2.1~2.7) 분할 필수. 자세히: `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md`.
+> 2026-04-14 기준 (history): 95/95 pass in 49s. Alembic baseline `0001_baseline`. SQLModel 12 테이블 커버, 나머지 12 테이블은 `init.sql` 권위.
