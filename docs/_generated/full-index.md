@@ -244,6 +244,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/B-336-Harness-배포-시나리오-보강.md` | Harness_REST_API §1 배포 시나리오 — 1 PC vs 중앙 서버 / LAN 배치 보강 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-337-Overlay-배경-투명-단색-이분법.md` | Overlay §5 크로마키 — Foundation §7.1 '투명(방송) vs 단색(디자이너 QA)' 이분법 정렬 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-338-harness-세션-재시작-복구.md` | harness 세션 재시작 복구 — Foundation §8.4 긴급 복구 계약 대응 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-343-card-pipeline-ssot-rollout.md` | Card Pipeline SSOT (BS-06-12) rollout — Lifecycle/Triggers/OutputEvents 정렬 + 테스트 추가 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` | OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` | Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13) | - | - | - |
@@ -264,6 +265,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-054-검토-요청-WebSocket-이벤트-카탈로그-WSOP-LIVE-SignalR-정렬.md` | 검토 요청: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-023-LEGACY-검토-요청-BS-07-Overlay-오디오-레이어-추가-WSOP-1-BGM-2.md` | [LEGACY] 검토 요청: BS-07 Overlay 오디오 레이어 추가 (WSOP 1 BGM + 2 Effect 채널) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` | Action Rotation | team3 | internal | BS-06-10 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md` | Card Pipeline Overview | team3 | contract | BS-06-12 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md` | Draw Games | team3 | internal | BS-06-2X |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Evaluation_Reference.md` | Hand Evaluation 통합 레퍼런스 | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Event_Catalog.md` | Event Catalog | team3 | internal | BS-06-09 |
@@ -276,6 +278,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Lifecycle.md` | Lifecycle | team3 | internal | BS-06-01 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Showdown.md` | Showdown | team3 | internal | BS-06-07 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Side_Pot.md` | Side Pot | team3 | internal | BS-06-06 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md` | Lifecycle & State Machine — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md` | Overview | team3 | internal | BS-06-00 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md` | Stud Games | team3 | internal | BS-06-3X |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | internal | BS-06-00-triggers |
@@ -540,6 +543,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-019-reports-postproduction-boundary.md` | "Reports/Insights 탭 ↔ 포스트프로덕션 경계 정의 부재" | conductor  # decision_owner (Foundation §1.2 scope) | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-020-websocket-ack-reject-events.md` | WebSocket Ack/Reject 6 이벤트 신규 D2 (publisher 미동기화) | team2 | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` | Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-022-deprecation.md` | SG-022-deprecation | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` | SG-023 — 인텐트 전환 (기획서 완결 → production 출시) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` | SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` | SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델) | conductor | internal | - |
@@ -550,7 +554,10 @@ tier: generated
 | `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` | Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
+| `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` | ECOSYSTEM E2E Handoff — Multi-Service Docker Validation | conductor | operations | - |
 | `docs/4. Operations/Foundation_Alignment_Plan.md` | Foundation 재설계 정렬 계획 (Conductor 소유 문서) | conductor | internal | - |
+| `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` | Global SSOT Sync — SG-022 advocacy eradication | conductor | contract | - |
+| `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
 | `docs/4. Operations/Multi_Session_Handoff.md` | Multi-Session Handoff Guide (2026-04-21) | conductor | internal | - |
 | `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate) | conductor | contract | - |
 | `docs/4. Operations/Network_Deployment.md` | Network Deployment Guide | conductor | internal | - |

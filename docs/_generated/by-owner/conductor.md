@@ -164,6 +164,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SG-013-lobby-tournaments-nomenclature.md` — Lobby 사이드바 "lobby" vs "Tournaments" 용어 충돌
 - `docs/4. Operations/Conductor_Backlog/SG-014-graphic-editor-dual-entry.md` — Graphic Editor 진입점 이중화 (헤더 vs Settings 탭)
 - `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` — Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체)
+- `docs/4. Operations/Conductor_Backlog/SG-022-deprecation.md` — SG-022-deprecation
 - `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` — SG-023 — 인텐트 전환 (기획서 완결 → production 출시)
 - `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` — SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권)
 - `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` — SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델)
@@ -174,7 +175,10 @@ tier: generated
 - `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
 - `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
 - `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
+- `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` — ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
 - `docs/4. Operations/Foundation_Alignment_Plan.md` — Foundation 재설계 정렬 계획 (Conductor 소유 문서)
+- `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` — Global SSOT Sync — SG-022 advocacy eradication
+- `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
 - `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
 - `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide

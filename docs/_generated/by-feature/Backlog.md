@@ -146,6 +146,7 @@ tier: generated
 - `docs/2. Development/2.3 Game Engine/Backlog/B-336-Harness-배포-시나리오-보강.md` — Harness_REST_API §1 배포 시나리오 — 1 PC vs 중앙 서버 / LAN 배치 보강 (-)
 - `docs/2. Development/2.3 Game Engine/Backlog/B-337-Overlay-배경-투명-단색-이분법.md` — Overlay §5 크로마키 — Foundation §7.1 '투명(방송) vs 단색(디자이너 QA)' 이분법 정렬 (-)
 - `docs/2. Development/2.3 Game Engine/Backlog/B-338-harness-세션-재시작-복구.md` — harness 세션 재시작 복구 — Foundation §8.4 긴급 복구 계약 대응 (-)
+- `docs/2. Development/2.3 Game Engine/Backlog/B-343-card-pipeline-ssot-rollout.md` — Card Pipeline SSOT (BS-06-12) rollout — Lifecycle/Triggers/OutputEvents 정렬 + 테스트 추가 (-)
 - `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` — B-088 PR-8 — Engine OutputEvent payload 필드 camelCase (-)
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` — OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13) (-)
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` — Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13) (-)

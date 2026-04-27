@@ -7,6 +7,7 @@ tier: generated
 # Behavioral_Specs
 
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` — Action Rotation (team3)
+- `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md` — Card Pipeline Overview (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md` — Draw Games (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Evaluation_Reference.md` — Hand Evaluation 통합 레퍼런스 (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Event_Catalog.md` — Event Catalog (team3)
@@ -19,6 +20,7 @@ tier: generated
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Lifecycle.md` — Lifecycle (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Showdown.md` — Showdown (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Side_Pot.md` — Side Pot (team3)
+- `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md` — Lifecycle & State Machine — Domain Master (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md` — Overview (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md` — Stud Games (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` — Triggers (team3)
