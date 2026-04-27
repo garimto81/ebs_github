@@ -306,10 +306,52 @@ registry 권고 (default option) 를 일괄 수용. 구현은 team2 위임.
 
 ---
 
+## Decision Group J — V2 audit closed + Session 1 최종 종료 (2026-04-27)
+
+사용자 URGENT DIRECTIVE (2026-04-27): "ebs v2 = 별개 프로젝트, 폐기" cascade.
+
+### 결정 (Q1 + Q2 채택)
+
+| Q | 채택 | 의미 |
+|:--:|:----:|------|
+| **Q1** | **㉠** | 본 repo 내부만 의미 — 외부 ebs_v2 자산은 별개 프로젝트, 본 repo 와 무관 |
+| **Q2** | **㉠** | history references 보존 — 의사결정 추적성 + history 가치 |
+
+### V2 audit 결과 (V2_PURGE_REPORT.md 참조)
+
+| Phase | 결과 |
+|:-----:|------|
+| A — Audit | 본 repo 내부 ebs v2 코드/파일 0건. 키워드 references 6 파일 = 모두 history. 외부 운영 자산 3 컨테이너 + 3 이미지 (1분 전 부활, 별개 프로젝트). |
+| B — Triage | 통합 후보 0, 폐기 대상 (내부) 0, 외부 자산 = 본 repo destroy 권한 없음 |
+| C — Purge | 본 repo destroy 0건. 외부 자산 destroy 보류 (Mode A 한계 + 거버넌스 우선) |
+
+### Session 1 최종 종료
+
+Session 1 명시 작업 + V2 audit 모두 완료. 다음 turn 에서 Session 2 진입.
+
+| Session 1 commits | 의미 |
+|-------------------|------|
+| 38807fb | 5-Session Pipeline 도입 + 좀비 4건 정리 + B-Q16/Q17 등재 + SESSION_1_HANDOFF |
+| 034fc88 | V2 audit + V2_PURGE_REPORT.md |
+| (본 commit) | V2 closed + Session 1 종료 SSOT |
+
+### Session 2 진입 권고
+
+| 우선순위 | 작업 | 영역 | 분량 |
+|:-------:|------|------|:----:|
+| 1 | B-Q17 본 repo engine healthcheck 검토 | team3 (or docker-compose) | 작음 |
+| 2 | b1 audit-events RBAC 갱신 (기존 테스트 신중 검토) | team2 | 작음 |
+| 3 | b3 audit-logs/download NDJSON + rate limit | team2 + middleware | 중간 |
+| 4 | B-Q10 95% coverage 5%p gap 도달 | team2 | 중간 |
+| 5 | b14 2FA migration 0006 (DB schema) | team2 + alembic | 큼 (destructive) |
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v1.7 | Group J 추가 (V2 audit closed Q1.㉠+Q2.㉠ 채택 + Session 1 최종 종료, Session 2 진입 권고) | TECH | 사용자 V2 URGENT DIRECTIVE → audit 결과로 자연 종료 |
 | 2026-04-27 | v1.6 | Group I 추가 (SG-027 5-Session Pipeline 도입 — v7.2 분량 layer) + Session 1 완료 (좀비 4건 정리, B-Q16/Q17 등재, SESSION_1_HANDOFF 작성) | TECH | 사용자 명시 (5-Session 모델) — multi-turn cascade |
 | 2026-04-27 | v1.5 | Group H 추가 (B-Q15 SG-008-b Conductor Mode A 첫 코드 작성 — 5 endpoint 보강, 13 tests, 261 passed regression 0) | TECH | 사용자 B-Q15 명시 — Mode A 권한 활용 |
 | 2026-04-27 | v1.4 | Group G 추가 (B-Q6 ㉠ + B-Q7 ㉠ 자율 상정 — Mode A 첫 활용) + memory `project_2027_launch_strategy` REACTIVATED + Roadmap.md production-launch 재작성 + 잔여 Backlog (B-Q10~Q15) 등재 | MARKET | 사용자 명시 (2026-04-27): B-Q6 ㉠ Legacy + B-Q7 ㉠ Strict |

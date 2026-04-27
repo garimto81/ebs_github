@@ -5,7 +5,9 @@ tier: internal
 type: audit-report
 linked-decision: 사용자 명시 (2026-04-27) "ebs v2 = 별개 프로젝트, 폐기"
 audit-date: 2026-04-27
-status: audit-complete, purge-blocked
+status: CLOSED (Q1.㉠ + Q2.㉠ 채택 2026-04-27)
+closed-by: user
+closed-decision: "Q1.㉠ 본 repo 내부만 의미 (외부 자산은 별개 프로젝트, 본 repo 와 무관) + Q2.㉠ history references 보존"
 last-updated: 2026-04-27
 ---
 
@@ -120,23 +122,14 @@ last-updated: 2026-04-27
 본 turn destroy 0건 → 기존 코드/테스트 영향 0 → pytest regression 검증 불필요.
 team2-backend baseline = 261 passed (B-Q15 cascade 후) 보존.
 
-## 사용자 결정 요청
+## 사용자 결정 (2026-04-27 채택)
 
-### Q1. 사용자 의도 정확화
+| Q | 채택 | 의미 |
+|:--:|:----:|------|
+| **Q1** | **㉠** | 본 repo 내부만 의미 — 외부 ebs_v2 자산은 별개 프로젝트, 본 repo 와 무관 |
+| **Q2** | **㉠** | history references 보존 — 의사결정 추적성 + history 가치 |
 
-| 옵션 | 의미 |
-|:----:|------|
-| **㉠ 본 repo 내부만 의미** | 본 turn 결과 (audit 0건) 로 task 완수. 외부 자산은 본 repo 와 무관 |
-| ㉡ 외부 운영 자산도 destroy | Conductor 권한 외 (외부 별개 프로젝트). 사용자가 외부 프로젝트 owner 와 직접 destroy |
-| ㉢ 외부 자산을 본 repo 로 통합 | 외부 ebs_v2 의 코드/자산을 본 repo 에 cherry-pick (본 repo 내 추가 작업 발생) |
-| ㉣ 외부 자산 무시 | 외부 ebs_v2 는 별개 프로젝트로 인정 (본 repo 와 무관, 본 turn 결과로 충분) |
-
-### Q2. 본 repo 내부 history references 처리
-
-| 옵션 | 의미 |
-|:----:|------|
-| **㉠ 보존 (현재 상태)** | history 가치 + 의사결정 추적성. 권장 |
-| ㉡ ebs v2 reference 제거 (B-Q2/B-Q17/Docker_Runtime/web README 등) | history 손실, 추적성 약화 |
+→ V2 task **CLOSED**. 외부 ebs_v2 운영 자산은 본 repo 외부 별개 프로젝트로 인정. 본 repo 의 v2 keyword references 6 파일 모두 보존 (B-Q2 Resolution Log, B-Q17 진단, SESSION_1_HANDOFF, web README, docker-compose REMOVED marker, Phase_1_Decision_Queue 등 모두 history 보존).
 
 ## V2_PURGE_REPORT 결론
 
