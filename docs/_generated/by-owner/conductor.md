@@ -120,6 +120,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` — B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` — B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md` — B-Q12 — 100ms SLA 측정 framework (BLANK-1 + B-Q7 cascade)
+- `docs/4. Operations/Conductor_Backlog/B-Q16-development-environment-standards.md` — B-Q16 — 개발 환경 표준화 (Session 1 — SG-027 cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` — Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` — B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기)
 - `docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md` — B-Q7 — 품질 기준 (prototype-grade vs production-grade 측정) (사용자 명시 대기)
@@ -128,6 +129,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG023-INTENT-PIVOT.md` — SG-023 인텐트 전환 (production 출시) — 전체 팀 broadcast + 작업 standby 권고
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION.md` — SG-024 거버넌스 확장 — Conductor 단일 세션 전권 (broadcast)
 - `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG025-026-PRODUCTION-LAUNCH.md` — SG-025 + SG-026 — Production timeline + Quality gates (B-Q6 ㉠ + B-Q7 ㉠ broadcast)
+- `docs/4. Operations/Conductor_Backlog/SESSION_1_HANDOFF.md` — SESSION 1 HANDOFF — Foundation & Infrastructure
 - `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` — 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1)
 - `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` — Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback
 - `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` — Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences
@@ -158,6 +160,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` — Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체)
 - `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` — SG-023 — 인텐트 전환 (기획서 완결 → production 출시)
 - `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` — SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권)
+- `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` — SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델)
 - `docs/4. Operations/Conductor_Backlog/_template_implementation.md` — 구현: <기능명>
 - `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` — 시나리오: <검증 대상 통합 흐름>
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` — 기획 공백: <구체적 공백명>

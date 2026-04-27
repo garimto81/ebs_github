@@ -470,6 +470,8 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-Q13-desktop-routing-implementation.md` | B-Q13 — 단일 Desktop 바이너리 라우팅 구현 (SG-022 cascade) | team1 (or conductor Mode A) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q14-settings-ui-implementation.md` | B-Q14 — Settings 5-level scope UI 구현 (C.1 + SG-026 cascade) | team1 (or conductor Mode A) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q15-sg-008-b-endpoint-implementation.md` | B-Q15 — SG-008-b 11건 endpoint 실구현 (team2 우선 작업 7번 cascade) | team2 (or conductor Mode A) | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q16-development-environment-standards.md` | B-Q16 — 개발 환경 표준화 (Session 1 — SG-027 cascade) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q17-engine-healthcheck-fix.md` | B-Q17 — ebs-v2-engine healthcheck unhealthy 수정 (Type A 구현 실수) | conductor (또는 team3) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` | Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` | team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade) | team1 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` | B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기) | conductor | internal | - |
@@ -492,6 +494,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-team1-sandbox-toggle-ui.md` | team1 Lobby UI 협의 — Sandbox Toggle 배지 + ?include_sandbox | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-team2-B088-PR4-rest-path-migration.md` | B-088 PR-4 — team2 Backend router REST path kebab→PascalCase (URGENT) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-team4-cc-web-unhealthy.md` | ebs-cc-web-1 컨테이너 2일간 unhealthy 상태 — 진단/재빌드 요청 | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/SESSION_1_HANDOFF.md` | SESSION 1 HANDOFF — Foundation & Infrastructure | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` | 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` | Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` | Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences | conductor | - | - |
@@ -530,6 +533,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` | Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` | SG-023 — 인텐트 전환 (기획서 완결 → production 출시) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` | SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` | SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` | 기획 공백: <구체적 공백명> | conductor | - | - |
