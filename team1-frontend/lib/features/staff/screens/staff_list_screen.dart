@@ -139,7 +139,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
                 SizedBox(
                   width: 150,
                   child: DropdownButtonFormField<String>(
-                    initialValue: roleFilter,
+                    value: roleFilter,
                     decoration: const InputDecoration(
                       isDense: true,
                       border: OutlineInputBorder(),

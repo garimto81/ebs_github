@@ -143,7 +143,7 @@ class _AddPlayerDialogState extends ConsumerState<AddPlayerDialog> {
 
             // Seat selection
             DropdownButtonFormField<int>(
-              initialValue: _selectedSeat,
+              value: _selectedSeat,
               decoration: const InputDecoration(
                 labelText: 'Select Seat',
                 border: OutlineInputBorder(),

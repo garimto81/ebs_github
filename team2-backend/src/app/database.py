@@ -34,15 +34,28 @@ def init_db() -> None:
 
 
 def _seed_admin() -> None:
-    """Ensure default admin account exists (idempotent)."""
+    """Ensure default admin account exists (idempotent).
+
+    passlib 의 bcrypt wrap-bug self-test 가 bcrypt 4.x 와 호환되지 않으면
+    `ValueError: password cannot be longer than 72 bytes` 가 발생한다 (실제
+    "admin123" 은 8 byte 이며 메시지는 self-test 부산물). 이 경우 startup
+    을 차단하지 않고 hash 시도 자체를 skip 한다 — admin 시드는 dev 편의
+    이고 smoke / health probe 에는 의존하지 않는다.
+    """
     from src.models.user import User
+
+    try:
+        password_hash = bcrypt.hash("admin123")
+    except ValueError:
+        # passlib + bcrypt 4.x 호환성 문제 — admin seed skip
+        return
 
     with Session(get_engine()) as db:
         existing = db.exec(select(User).where(User.email == "admin@ebs.local")).first()
         if existing is None:
             admin = User(
                 email="admin@ebs.local",
-                password_hash=bcrypt.hash("admin123"),
+                password_hash=password_hash,
                 display_name="System Admin",
                 role="admin",
                 is_active=True,

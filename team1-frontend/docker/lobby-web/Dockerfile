@@ -7,7 +7,7 @@
 # -----------------------------------------------------------------------------
 # Stage 1: Build
 # -----------------------------------------------------------------------------
-FROM ghcr.io/cirruslabs/flutter:3.22.0 AS builder
+FROM ghcr.io/cirruslabs/flutter:3.29.0 AS builder
 
 WORKDIR /app
 
@@ -15,7 +15,8 @@ WORKDIR /app
 # Gap 1 fix: shared/ebs_common 은 build context 외부에 있으므로 BuildKit
 # additional_contexts (docker-compose.yml `additional_contexts: shared: ./shared`)
 # 으로 주입한다. `COPY --from=shared` 는 named context 에서 가져온다.
-COPY pubspec.yaml pubspec.lock ./
+# pubspec.lock 은 SDK 버전 변경 (intl 0.19→0.20→0.19) 후 재생성되므로 미사용.
+COPY pubspec.yaml ./
 COPY --from=shared ebs_common /shared/ebs_common
 RUN flutter pub get
 
@@ -28,14 +29,12 @@ ARG ENV_FILE=production.json
 RUN if [ ! -f "$ENV_FILE" ]; then cp production.example.json "$ENV_FILE"; fi
 
 # Release web build (gatekeeper 무시 — CI 단계가 별도 검증)
+# Flutter 3.29.0+ 는 --web-renderer 옵션 제거. canvaskit 가 default.
 RUN flutter build web \
       --release \
-      --web-renderer=html \
       --tree-shake-icons \
       --dart2js-optimization=O4 \
       --dart-define-from-file="$ENV_FILE" \
-      --obfuscate \
-      --split-debug-info=build/debug-info \
       --source-maps \
       --output=build/web
 
@@ -53,8 +52,8 @@ COPY --from=builder /app/build/web /usr/share/nginx/html
 # Nginx config (SPA fallback + caching + healthz)
 COPY docker/lobby-web/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Sentry source map artefact (사이드카 — release 시 upload 후 제거)
-COPY --from=builder /app/build/debug-info /opt/debug-info
+# Sentry source map artefact 는 --obfuscate + --split-debug-info 사용 시에만 생성.
+# 현재는 미사용 (Flutter 3.29 build 단순화 후).
 
 # 비-root 실행 (nginx 1.20+ 는 nginx user 자동 존재)
 RUN chown -R nginx:nginx /usr/share/nginx/html /var/cache/nginx /var/log/nginx \

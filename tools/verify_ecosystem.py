@@ -52,19 +52,38 @@ DEFAULT_PORTS = {
 }
 
 
+def _port_is_listening(port: int) -> bool:
+    """True if anything is currently LISTENing on the host's `port`.
+
+    Windows IPv6 dual-stack 주의: `bind()` 만으로는 IPv6 wildcard (`::`) listener
+    뒤에 가려진 IPv4 충돌을 검출 못 한다. `connect()` 가 성공/거부 응답하면 누군가
+    LISTEN 중. 거부 + ConnectionRefusedError = 자유.
+    """
+    for family, addr in (
+        (socket.AF_INET, ("127.0.0.1", port)),
+        (socket.AF_INET6, ("::1", port)),
+    ):
+        try:
+            with socket.socket(family, socket.SOCK_STREAM) as s:
+                s.settimeout(0.5)
+                s.connect(addr)
+            return True
+        except ConnectionRefusedError:
+            continue
+        except (socket.timeout, TimeoutError):
+            return True  # 응답 지연 = 점유 가능성 (안전 측 가정)
+        except OSError:
+            continue
+    return False
+
+
 def find_free_port(preferred_port: int) -> int:
     """Return preferred_port if free, else find any free ephemeral port.
 
     Gap 4 fix — 호스트의 외부 프로세스 (e.g. node.exe :3000) 점유 충돌 회피.
-    검사: 0.0.0.0 으로 bind 가능해야 docker compose 도 publish 가능.
     """
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.bind(("0.0.0.0", preferred_port))
-            return preferred_port
-    except OSError:
-        pass
+    if not _port_is_listening(preferred_port):
+        return preferred_port
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind(("0.0.0.0", 0))

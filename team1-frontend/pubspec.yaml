@@ -22,7 +22,7 @@ dependencies:
   rive: ^0.13.4
   archive: ^3.6.1
   uuid: ^4.4.0
-  intl: ^0.20.2
+  intl: ^0.19.0  # flutter_localizations (SDK) 가 0.19.0 으로 핀
   sentry_flutter: ^8.3.0
   file_picker: ^8.0.0
   window_manager: ^0.3.9

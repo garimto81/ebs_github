@@ -286,7 +286,7 @@ class _EventFormDialogState extends State<EventFormDialog> {
                       const SizedBox(height: 8),
                       if (_gameMode == 'single')
                         DropdownButtonFormField<int>(
-                          initialValue: _gameType,
+                          value: _gameType,
                           decoration: const InputDecoration(
                             labelText: 'Game Type',
                             border: OutlineInputBorder(),
@@ -303,7 +303,7 @@ class _EventFormDialogState extends State<EventFormDialog> {
                         ),
                       if (_gameMode != 'single') ...[
                         DropdownButtonFormField<String>(
-                          initialValue: _mixPreset,
+                          value: _mixPreset,
                           decoration: const InputDecoration(
                             labelText: 'Mix Preset',
                             border: OutlineInputBorder(),
@@ -319,7 +319,7 @@ class _EventFormDialogState extends State<EventFormDialog> {
                         if (_gameMode == 'fixed_rotation') ...[
                           const SizedBox(height: 12),
                           DropdownButtonFormField<String>(
-                            initialValue: _rotationTrigger,
+                            value: _rotationTrigger,
                             decoration: const InputDecoration(
                               labelText: 'Rotation Trigger',
                               border: OutlineInputBorder(),

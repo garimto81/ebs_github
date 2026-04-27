@@ -12,7 +12,7 @@
 # -----------------------------------------------------------------------------
 # Stage 1: Build
 # -----------------------------------------------------------------------------
-FROM ghcr.io/cirruslabs/flutter:3.22.0 AS builder
+FROM ghcr.io/cirruslabs/flutter:3.29.0 AS builder
 
 WORKDIR /app
 
@@ -31,10 +31,9 @@ RUN if [ ! -f "$ENV_FILE" ]; then \
       echo '{"DEMO_MODE":"true","BO_URL":"http://bo:8000","ENGINE_URL":"http://engine:8080","LOBBY_URL":"http://lobby-web:3000","APP_NAME":"EBS Command Center","APP_BUILD_CHANNEL":"stable"}' > "$ENV_FILE" ; \
     fi
 
-# Release web build
+# Release web build (Flutter 3.29.0+ — canvaskit default, no --web-renderer)
 RUN flutter build web \
       --release \
-      --web-renderer=canvaskit \
       --tree-shake-icons \
       --dart2js-optimization=O4 \
       --dart-define-from-file="$ENV_FILE" \

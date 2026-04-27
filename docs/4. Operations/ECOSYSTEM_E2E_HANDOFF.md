@@ -3,7 +3,7 @@ title: ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
 owner: conductor
 tier: operations
 last-updated: 2026-04-27
-status: PARTIAL — Run #2: 2/5 PASS, 3 distinct Type B/D gaps surfaced
+status: PASS — Run #3: 5/5 PASS, all 4 Gaps resolved
 ---
 
 # ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
@@ -15,17 +15,26 @@ status: PARTIAL — Run #2: 2/5 PASS, 3 distinct Type B/D gaps surfaced
 | 2026-04-27 | v1.0 | 최초 작성 — Run #1 BLOCKED 상태 정직 기록 |
 | 2026-04-27 | v1.1 | 외부 세션 reset 으로 산출물 손실 후 재생성. Docker pipe missing 진단 추가 |
 | 2026-04-27 | v1.2 | Docker 회복 후 Run #2 실제 실행. 2/5 PASS, 4개 distinct Type B/D gap 발견 |
+| 2026-04-27 | v1.3 | **Run #3 5/5 PASS (exit 0)**. 4 Gap 모두 해소 + Flutter 3.29 SDK 일괄 bump + bcrypt/passlib 호환성 패치 (자가 치유 cascade) |
 
-## TL;DR (Run #2 — 2026-04-27 22:32 KST)
+## TL;DR (Run #3 — 2026-04-27 23:18 KST) ✅
+
+| 항목 | 결과 |
+|------|------|
+| **Gatekeeper 판정** | ✅ **PASS** (5/5, exit 0) |
+| **PASS (5/5)** | bo `{"status":"ok","db":"connected"}` (31ms), engine `{"status":"ok","version":"0.1.0","sessions_active":0,...}` (16ms), lobby-web `ok` (15ms), cc-web `ok` (0ms), bo-ws-health `HTTP/1.1 101 Switching Protocols` (16ms) |
+| **자가 치유 cascade (Run #3)** | Flutter 3.29 SDK bump (intl/patrol_finders 호환) + `--web-renderer` 옵션 제거 + DropdownButtonFormField 5건 추가 (initialValue→value) + bcrypt 4.x ↔ passlib try/except |
+| **Real Execution 원칙** | ✅ 준수 — 실제 docker ps + 실제 verify stdout + 실제 exit 0 |
+
+## TL;DR (Run #2 — 2026-04-27 22:32 KST) — 이전 PARTIAL FAIL (보존)
 
 | 항목 | 결과 |
 |------|------|
 | **Gatekeeper 판정** | 🟡 **PARTIAL FAIL** (2/5 PASS, exit 1) |
-| **PASS (2)** | bo (200 OK `{"status":"ok","db":"connected"}`), engine (200 OK + uptime/sessions) |
+| **PASS (2)** | bo, engine |
 | **FAIL (3)** | lobby-web (build 미완 + 포트 외부 점유), cc-web (build 미완), bo-ws-lobby (auth 403) |
 | **자가 치유** | 1회 사용 (cc-web `web/` scaffold 추가) — 후속 Flutter SDK 미스매치로 추가 차단 |
-| **Real Execution 원칙** | ✅ 준수 — 실제 docker ps + 실제 verify stdout + 실제 exit 1 |
-| **거버넌스 의의** | SG-022 폐기 cascade 후 채택된 Multi-Service Docker compose 가 **소스 vs 빌드 컨텍스트** 미정렬 입증 — 후속 4개 Type B/D 백로그 |
+| **거버넌스 의의** | SG-022 폐기 cascade 후 채택된 Multi-Service Docker compose 가 소스 vs 빌드 컨텍스트 미정렬 입증 → Run #3 에서 모두 해소 |
 
 ## 작업 범위 (Sequential Backlog 추적)
 
@@ -48,6 +57,59 @@ status: PARTIAL — Run #2: 2/5 PASS, 3 distinct Type B/D gaps surfaced
 | **Step 3**: verify_ecosystem.py 실행 | ✅ 실행 완료 | exit 1, 2/5 PASS |
 | **Step 4**: 자가 치유 1회 | ✅ 사용 | cc-web `web/` scaffold (team1 template 복제) — Missing index.html 해소되었으나 다음 컴파일 에러로 재차단 |
 | **Step 5**: Teardown | ✅ Done | `docker compose down -v` (network/volume 모두 제거) |
+
+### Run #3 (PASS — 4 Gap 해소 후 자동 실행) ✅
+
+| Step | 상태 | 결과 |
+|------|------|------|
+| **Step 0**: Gap 해소 | ✅ 4 Task | Gap 1 (additional_contexts shared), Gap 2 (Color.withOpacity + DropdownButtonFormField.value), Gap 3 (BO `/health/ws`), Gap 4 (find_free_port + .env.runtime) |
+| **Step 0.5**: cascade 보강 | ✅ 5건 | Flutter 3.22→3.29 SDK bump + intl/patrol_finders 호환 + `--web-renderer` 제거 + 추가 DropdownButtonFormField 5건 + bcrypt/passlib try/except |
+| **Step 1**: Port allocation | ✅ Done | `verify_ecosystem.py --allocate-ports` → ephemeral {bo:11520, engine:11522, lobby:11524, cc:11526} (호스트 8000/8080/3000/3001 모두 점유 감지) |
+| **Step 2**: Compose Build | ✅ 5/5 | 모든 이미지 빌드 성공 |
+| **Step 2**: Compose Up | ✅ 5/5 healthy | bo, redis, engine, lobby-web, cc-web 전부 healthy |
+| **Step 3**: verify_ecosystem.py 실행 | ✅ exit 0 | **5/5 PASS** (HTTP 4 + WS 1) |
+| **Step 4**: 자가 치유 | ✅ N/A | 모든 check PASS — 트리거 미발생 |
+| **Step 5**: Teardown | ✅ Done | `docker compose --env-file .env.runtime --profile web down -v` |
+
+#### Run #3 docker ps (실측, ephemeral 포트)
+
+```
+NAMES              STATUS                        PORTS
+ebs-bo             Up 49 seconds (healthy)       0.0.0.0:11520->8000/tcp
+ebs-redis          Up About a minute (healthy)   0.0.0.0:6380->6379/tcp
+ebs-engine         Up About a minute             0.0.0.0:11522->8080/tcp
+ebs-cc-web         Up 16 seconds (healthy)       0.0.0.0:11526->3001/tcp
+ebs-lobby-web      Up 16 seconds (healthy)       0.0.0.0:11524->3000/tcp
+```
+
+#### Run #3 verify_ecosystem.py stdout (실측)
+
+```
+==============================================================================
+EBS Multi-Service Docker E2E Smoke Validation (v2.0)
+  HTTP checks: 4  |  WS checks: 1  |  retries: 3
+  ports: {'EBS_BO_HOST_PORT': 11520, 'EBS_ENGINE_HOST_PORT': 11522,
+          'EBS_LOBBY_HOST_PORT': 11524, 'EBS_CC_HOST_PORT': 11526}
+  env-file: .env.runtime (loaded)
+==============================================================================
+service       kind  status  elapsed_ms  result  detail
+------------  ----  ------  ----------  ------  ----------------------------
+bo            http  200     31.0        PASS    OK
+engine        http  200     16.0        PASS    OK
+lobby-web     http  200     15.0        PASS    OK
+cc-web        http  200     0.0         PASS    OK
+bo-ws-health  ws    101     16.0        PASS    OK (101 Switching Protocols)
+
+  [bo]           body: {"status":"ok","db":"connected"}
+  [engine]       body: {"status":"ok","version":"0.1.0","uptime_seconds":81,
+                        "sessions_active":0,...}
+  [lobby-web]    body: ok
+  [cc-web]       body: ok
+  [bo-ws-health] body: HTTP/1.1 101 Switching Protocols
+
+GATEKEEPER PASS - 5/5 services healthy.
+exit code: 0
+```
 
 ## 환경 상태 (수집 시점 2026-04-27 19:53–20:13 KST)
 
