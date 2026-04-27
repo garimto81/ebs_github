@@ -267,10 +267,50 @@ registry 권고 (default option) 를 일괄 수용. 구현은 team2 위임.
 
 ---
 
+## Decision Group I — SG-027 5-Session Pipeline 도입 + Session 1 완료
+
+사용자 명시 (2026-04-27): "Hybrid Multi-Session Orchestrator — 5개의 순차적 멀티 세션 + 4개의 전문 에이전트 팀". LLM 컨텍스트 한계 회피 + 분량 분할.
+
+### 거버넌스 layer 추가 (v7.1 → v7.2)
+
+| Layer | 역할 |
+|-------|------|
+| v7.1 Mode A/B (SG-024) | **권한 모델** — Conductor 단일 세션 전권 (A) vs 멀티세션 decision_owner (B) |
+| **v7.2 5-Session (SG-027)** | **분량 모델** — multi-turn 분할 (5 sessions) vs 단일 turn |
+
+### Session 1 진행 결과 (본 turn)
+
+| 작업 | 상태 |
+|------|:----:|
+| Broken URL 정렬 (origin = ebs_github 단일) | ✅ 이미 완료 (5e80337) |
+| 도커 좀비 lobby-web 정리 | ✅ 이미 완료 (5e80337) |
+| **신규 좀비 4건 destroy** (ebs-bo-1/cc-web-1/redis-1/engine-1) | ✅ 본 turn |
+| 5-Session Pipeline SSOT 화 (Multi_Session_Workflow §v7.2 + SG-027) | ✅ 본 turn |
+| B-Q16/Q17 Backlog 등재 (개발 환경 표준화 / engine healthcheck) | ✅ 본 turn |
+| SESSION_1_HANDOFF.md 작성 | ✅ 본 turn |
+
+### Session 1 발견 사항
+
+- **engine unhealthy = Type A**: ebs-v2-engine 13h unhealthy 표시이나 log 정상. healthcheck spec 문제. → B-Q17
+- **compose project mismatch**: 운영 ebs_v2 (외부) vs 본 repo ebs. 별도 turn 검토.
+- **개발 환경 표준화**: 추상적 → B-Q16 (P2, Session 5 권장)
+
+### Session 2~5 권고
+
+| Session | 우선 작업 |
+|:-------:|----------|
+| 2. Core Logic & Backend Engine | B-Q17 engine healthcheck → b1/b3 audit 보강 → b14 2FA migration → B-Q10 95% coverage |
+| 3. Frontend Interface & Routing | B-Q13 단일 Desktop 라우팅 → B-Q14 Settings UI |
+| 4. System Integration & QA Harness | E2E 통합 테스트 + compose mismatch 정리 |
+| 5. Final Production & Audit | B-Q11 OWASP audit + B-Q16 개발 환경 표준화 + PHASE-FINAL-REPORT.md |
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v1.6 | Group I 추가 (SG-027 5-Session Pipeline 도입 — v7.2 분량 layer) + Session 1 완료 (좀비 4건 정리, B-Q16/Q17 등재, SESSION_1_HANDOFF 작성) | TECH | 사용자 명시 (5-Session 모델) — multi-turn cascade |
 | 2026-04-27 | v1.5 | Group H 추가 (B-Q15 SG-008-b Conductor Mode A 첫 코드 작성 — 5 endpoint 보강, 13 tests, 261 passed regression 0) | TECH | 사용자 B-Q15 명시 — Mode A 권한 활용 |
 | 2026-04-27 | v1.4 | Group G 추가 (B-Q6 ㉠ + B-Q7 ㉠ 자율 상정 — Mode A 첫 활용) + memory `project_2027_launch_strategy` REACTIVATED + Roadmap.md production-launch 재작성 + 잔여 Backlog (B-Q10~Q15) 등재 | MARKET | 사용자 명시 (2026-04-27): B-Q6 ㉠ Legacy + B-Q7 ㉠ Strict |
 | 2026-04-27 | v1.3 | Group F 추가 (SG-024 거버넌스 확장 — Mode A/B) + B-Q9 Conductor 자율 처리 (Spec_Gap_Triage callout) + B-Q6/Q7/Q8 Backlog 등재 | MARKET | 사용자 B-Q5 ㉠ 채택 — Conductor 전권 |
