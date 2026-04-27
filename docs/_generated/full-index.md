@@ -464,6 +464,12 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` | 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-200-foundation-alignment-2026-04-22.md` | Foundation 재설계(2026-04-22) 정렬 — Conductor 소유 문서 전수 수정 | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md` | 회의 D3 GE 제거 결정 — 전체 전파 (Conductor + team1/team2/team4) | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` | B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` | B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md` | B-Q12 — 100ms SLA 측정 framework (BLANK-1 + B-Q7 cascade) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q13-desktop-routing-implementation.md` | B-Q13 — 단일 Desktop 바이너리 라우팅 구현 (SG-022 cascade) | team1 (or conductor Mode A) | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q14-settings-ui-implementation.md` | B-Q14 — Settings 5-level scope UI 구현 (C.1 + SG-026 cascade) | team1 (or conductor Mode A) | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q15-sg-008-b-endpoint-implementation.md` | B-Q15 — SG-008-b 11건 endpoint 실구현 (team2 우선 작업 7번 cascade) | team2 (or conductor Mode A) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` | Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` | team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade) | team1 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` | B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기) | conductor | internal | - |
@@ -479,6 +485,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-PHASE2-START.md` | Phase 1 설계 정렬 완료 — Phase 2 진입 허용 (전체 팀 broadcast) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG023-INTENT-PIVOT.md` | SG-023 인텐트 전환 (production 출시) — 전체 팀 broadcast + 작업 standby 권고 | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION.md` | SG-024 거버넌스 확장 — Conductor 단일 세션 전권 (broadcast) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG025-026-PRODUCTION-LAUNCH.md` | SG-025 + SG-026 — Production timeline + Quality gates (B-Q6 ㉠ + B-Q7 ㉠ broadcast) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR1-doc-correction.md` | B-088 PR-1 — 기존 divergence 선언 정정 (Conductor 영역) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR2bis-service-layer.md` | B-088 PR-2-bis — service/router 레이어 Pydantic 응답 타입 적용 (B-089 23 failure 근본 해결) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR9-naming-ci-gate.md` | B-088 PR-9 — naming CI gate 도구 신설 (재발 방지) | - | - | - |
