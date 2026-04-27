@@ -1,0 +1,102 @@
+name: Team1 Frontend — E2E (Phase 4)
+
+on:
+  push:
+    branches: [main, 'work/team1/**']
+    paths:
+      - 'team1-frontend/**'
+      - '.github/workflows/team1-e2e.yml'
+  pull_request:
+    paths:
+      - 'team1-frontend/**'
+
+defaults:
+  run:
+    working-directory: team1-frontend
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1) 정적 검증 + Unit/Widget tests
+  # ---------------------------------------------------------------------------
+  static-and-unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+          channel: stable
+          cache: true
+
+      - name: pub get
+        run: flutter pub get
+
+      - name: build_runner (Freezed/JSON)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: flutter analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: flutter test (unit + widget)
+        run: flutter test --coverage
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: team1-coverage
+          path: team1-frontend/coverage/lcov.info
+
+  # ---------------------------------------------------------------------------
+  # 2) E2E (integration_test on Chrome web target)
+  # ---------------------------------------------------------------------------
+  e2e-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: static-and-unit
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+          channel: stable
+          cache: true
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Install ChromeDriver
+        uses: nanasess/setup-chromedriver@v2
+
+      - name: pub get
+        run: flutter pub get
+
+      - name: build_runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Start ChromeDriver
+        run: chromedriver --port=4444 &
+
+      - name: Run integration_test
+        run: |
+          flutter drive \
+            --driver=test_driver/integration_driver.dart \
+            --target=integration_test/app_test.dart \
+            --web-renderer=html \
+            -d web-server \
+            --browser-name=chrome \
+            --dart-define=USE_MOCK=true
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: team1-e2e-screenshots
+          path: team1-frontend/build/screenshots/

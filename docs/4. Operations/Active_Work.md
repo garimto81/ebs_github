@@ -95,7 +95,7 @@ status: <active|paused|released>
 title: Active Work — Multi-session coordination SSOT
 owner: conductor
 tier: contract
-last-updated: 2026-04-23
+last-updated: 2026-04-27
 generator: tools/active_work_claim.py (편집은 CLI 만 사용)
 schema_version: 1
 ---
@@ -121,82 +121,36 @@ status: active
 eta: 2h
 ```
 
+### Claim #13 — team1: Phase 5 production readiness (build/docker/observability)
+```yaml
+id: 13
+team: team1
+task: Phase 5 production readiness (build/docker/observability)
+started: '2026-04-27T06:56:24Z'
+scope:
+- team1-frontend/**
+- docker/**
+status: active
+eta: 2h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
 
 <!-- RELEASED_BEGIN -->
-### Claim #6 — team3: B-332 Engine 응답 = 게임 상태 SSOT 명시 (API-04 3 문서)
+### Claim #12 — conductor: IMPR-5: Handoff auto-diff tool — 5-Session Context Bleed 가시화 (audit 후속, free-tier zero-cost)
 ```yaml
-id: 6
-team: team3
-task: B-332 Engine 응답 = 게임 상태 SSOT 명시 (API-04 3 문서)
-started: '2026-04-22T11:50:12Z'
-scope:
-- docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md
-- docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md
-- docs/2. Development/2.3 Game Engine/APIs/OutputEvent_Serialization.md
-status: released
-eta: 30m
-released: '2026-04-22T11:52:54Z'
-```
-
-### Claim #7 — conductor: Foundation.md 본문에 Rive Manager (구 Graphic Editor) 독립 섹션 신설 — D3 회의 결정 SSOT 반영
-```yaml
-id: 7
+id: 12
 team: conductor
-task: Foundation.md 본문에 Rive Manager (구 Graphic Editor) 독립 섹션 신설 — D3 회의 결정 SSOT 반영
-started: '2026-04-22T11:53:13Z'
+task: 'IMPR-5: Handoff auto-diff tool — 5-Session Context Bleed 가시화 (audit 후속, free-tier
+  zero-cost)'
+started: '2026-04-27T06:39:52Z'
 scope:
-- docs/1. Product/Foundation.md
-- docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md
-status: released
-eta: 40min
-released: '2026-04-22T11:57:23Z'
-```
-
-### Claim #8 — team2: api D1=7 docs prefix fix — Backend_HTTP.md /api/v1 prefix 누락 보정
-```yaml
-id: 8
-team: team2
-task: api D1=7 docs prefix fix — Backend_HTTP.md /api/v1 prefix 누락 보정
-started: '2026-04-22T11:54:29Z'
-scope:
-- docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md
-status: released
-eta: 30m
-released: '2026-04-22T12:02:19Z'
-```
-
-### Claim #9 — conductor: Foundation §5.3 Rive Manager 섹션 말미 이미지 삽입
-```yaml
-id: 9
-team: conductor
-task: Foundation §5.3 Rive Manager 섹션 말미 이미지 삽입
-started: '2026-04-22T12:02:25Z'
-scope:
-- docs/1. Product/Foundation.md
-- docs/1. Product/images/foundation/app-rive-manager.png
-status: released
-eta: 10min
-released: '2026-04-22T12:03:04Z'
-```
-
-### Claim #11 — team1: design-critic remediation: Engineering.md §0 7-feature 정렬 + CLAUDE.md stale ref + skin-editor 5 UNKNOWN→PASS + Chip_Management delegation
-```yaml
-id: 11
-team: team1
-task: 'design-critic remediation: Engineering.md §0 7-feature 정렬 + CLAUDE.md stale
-  ref + skin-editor 5 UNKNOWN→PASS + Chip_Management delegation'
-started: '2026-04-23T11:50:27Z'
-scope:
-- docs/2. Development/2.1 Frontend/Engineering.md
-- docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/*.md
-- docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md
-- team1-frontend/CLAUDE.md
+- tools/handoff_diff.py
 status: released
 eta: 1h
-released: '2026-04-23T11:50:55Z'
+released: '2026-04-27T06:41:56Z'
 ```
 
 <!-- RELEASED_END -->

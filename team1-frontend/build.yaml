@@ -1,0 +1,16 @@
+# Phase 5 — build_runner global config.
+# Riverpod / Freezed / json_serializable 의 codegen output 을 release 빌드에서
+# 최소화하기 위한 힌트.
+
+global_options:
+  "freezed:freezed":
+    runs_before:
+      - "json_serializable:json_serializable"
+  "json_serializable:json_serializable":
+    options:
+      explicit_to_json: true
+      field_rename: none
+      include_if_null: false      # JSON 페이로드 축소 → bundle 직접 영향은 없으나 wire 효율
+  "riverpod_generator:riverpod_generator":
+    options:
+      provider_family_name: ""
