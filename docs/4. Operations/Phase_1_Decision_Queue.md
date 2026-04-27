@@ -605,10 +605,59 @@ services/ 영역이 핵심 미커버:
 
 ---
 
+## Decision Group Q — Session 2.6 완료 (routers 보강)
+
+사용자 명시 (2026-04-27): "Session 2.6 — routers 보강, 95% 도달 핵심 cascade".
+
+### 진행 결과
+
+| 영역 | tests | 커버 |
+|------|:-----:|------|
+| `routers/users` | 7 | 401 / list / create / 409 dup / get / 404 / soft-delete |
+| `routers/competitions` | 6 | 401 / list / create 201 / get / 404 / delete |
+| `routers/configs` | 3 | 401 / empty section / bulk update |
+| `routers/blind_structures` | 3 | list / create / 404 |
+| `routers/payout_structures` | 3 | list / create / 404 |
+
+**합계**: 22 tests / 22/22 PASS in 20.07s
+
+### 검증
+
+- 단위 실행: 22/22 PASS in 20.07s
+- 전체 regression: (백그라운드 진행, commit 시 결과 반영)
+- Production code 수정: 0건 (Strict 룰 준수)
+
+### 누적 Session 2 진척 (7 sub-sessions)
+
+| Sub | tests | baseline |
+|:---:|:-----:|:--------:|
+| Phase 1 시작 | — | 261 |
+| 2.1 auth | +22 | 283 |
+| 2.2 structure (B-Q18) | +24 | 307 |
+| 2.3a series | +16 | 323 |
+| 2.3b+2.5+2.4a | +33 | 356 |
+| 2.4b (B-Q19) | +21 | 377 |
+| **2.6 routers** | **+22** | **399 (예상)** |
+| **누적** | **+138** | — |
+
+### Coverage 추정
+
+78% baseline + 7 sub-sessions = **약 85-87%**. 95% 까지 잔여 8-10%p = **1-2 sub-sessions 더** (2.7).
+
+### 다음 turn 권고
+
+| 우선순위 | sub-session |
+|:-------:|:-----------:|
+| 1 | 2.7 — skin_service/undo_service + final 95% 검증 (10-15 tests) |
+| 2 | (선택) B-Q18/B-Q19 surgical edit 별도 turn |
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v2.4 | Group Q 추가 (Session 2.6 — routers 보강 22 tests, 5 routers 커버) | TECH | 95% 도달 핵심 cascade |
 | 2026-04-27 | v2.3 | Group P 추가 (Session 2.4b — hand/clock/competition 21 tests + B-Q19 production bug 발견) | TECH | services/ 영역 cascade 마무리 |
 | 2026-04-27 | v2.2 | Group O 추가 (Session 2.3b + 2.5 + 2.4a 통합 — 33 new tests, 356 passed regression 0, Autonomous Execution Engine) | TECH | 사용자 자율 실행 명시 — 95% 도달까지 무한 반복 |
 | 2026-04-27 | v2.1 | Group N 추가 (Session 2.3a 완료 — series_service 16 tests, 단위 16/16 PASS, Strict 룰 준수) + SESSION_2_3a_HANDOFF.md NEW | TECH | 사용자 Session 2.3a 진입 명시 — 안전 분량 분할 |
