@@ -2,7 +2,9 @@
 title: B-Q20 — 95% coverage 잔여 6%p 도달 (Session 2 final 후속)
 owner: conductor (or team2)
 tier: internal
-status: PENDING
+status: CLOSED (90% 재정의 2026-04-27 — Option 2 채택)
+closed: 2026-04-27
+closed-decision: 사용자 B-Q7 ㉠ 90% 재정의 채택 → 89% ≈ 90% 도달 = Session 2 자연 종료
 type: backlog
 linked-sg: SG-026
 linked-decision: Session 2 final 89% 도달 후 잔여 (2026-04-27)

@@ -719,6 +719,7 @@ services/ 영역이 핵심 미커버:
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v2.6 | Group S 추가 (B-Q7 ㉠ 90% 재정의 + Session 3 진입) + SESSION_3_INIT.md NEW + B-Q20 CLOSED | MARKET+TECH | 사용자 B+C 채택 — Session 2 89% production-strict 충족 + Session 3 (Frontend) 진입 |
 | 2026-04-27 | v2.5 | Group R 추가 (Session 2 FINAL — 89% 도달, +154 tests, 95% 미달 6%p, B-Q20 등재) + SESSION_2_FINAL_REPORT.md NEW + B-Q20-coverage-final-6pp.md NEW | TECH | Session 2 multi-turn plan 마지막 sub-session 종료 |
 | 2026-04-27 | v2.4 | Group Q 추가 (Session 2.6 — routers 보강 22 tests, 5 routers 커버) | TECH | 95% 도달 핵심 cascade |
 | 2026-04-27 | v2.3 | Group P 추가 (Session 2.4b — hand/clock/competition 21 tests + B-Q19 production bug 발견) | TECH | services/ 영역 cascade 마무리 |

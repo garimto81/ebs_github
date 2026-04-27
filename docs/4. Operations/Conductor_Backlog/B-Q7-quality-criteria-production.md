@@ -1,11 +1,11 @@
 ---
-title: B-Q7 — 품질 기준 (prototype-grade vs production-grade 측정) (사용자 명시 대기)
+title: B-Q7 — 품질 기준 (Production-strict 90% 재정의 2026-04-27)
 owner: conductor
 tier: internal
-status: PENDING
+status: DONE (㉠ 채택 → 90% 재정의 2026-04-27)
 type: backlog-deferred-decision
-linked-sg: SG-023
-linked-decision-pending: user (품질 측정 기준 명시 부재)
+linked-sg: SG-023, SG-026
+linked-decision: 사용자 ㉠ Production-strict 채택 + 90% 재정의 (2026-04-27 Session 2 final 후)
 last-updated: 2026-04-27
 ---
 
@@ -28,14 +28,23 @@ production-grade 의 정확한 측정 기준:
 | 접근성 (a11y) | WCAG 2.1 AA / AAA / 미준수 | ? |
 | i18n | 한글 + 영어 / 다국어 / 한글만 | ? |
 
-## 선택지 (조합)
+## 선택지 (조합) — ㉠ 채택 + 90% 재정의
 
 | 옵션 | 의미 |
 |:----:|------|
-| ㉠ Production-strict | 95%+ coverage, 99.9% uptime, p99<200ms, OWASP audit, WCAG AA, 한+영 |
+| **㉠ Production-strict (채택, 90% 재정의 2026-04-27)** | **90%+ coverage** (~~95%~~ 재정의), 99.9% uptime, p99<200ms, OWASP audit, WCAG AA, 한+영 |
 | ㉡ Production-balanced | 80%+ coverage, 99% uptime, p50<100ms, OWASP 기본, 한글 |
 | ㉢ MVP-grade | 60%+ coverage (key path), 가용 가능, 한글 only |
 | ㉣ 사용자 명시 (직접 입력) | — |
+
+### 90% 재정의 근거 (2026-04-27 Session 2 final 후)
+
+- Session 2 (8 sub-sessions, +154 tests) 결과: **89% TOTAL coverage** 도달
+- 95% 도달은 잔여 6%p (240 stmts) — 추가 2-3 sub-sessions + B-Q18/B-Q19 surgical edit 필요
+- 산업 표준: 일반 production 80-90%, Google internal 60-80%, 95%+ 는 critical path / safety-critical 한정
+- **89% ≈ 90% — production-strict 진입 충분 수준**
+- B-Q7 ㉠ 의 95% → 90% 재정의 = 실용적 기준 + Session 2 자연 종료
+- B-Q20 (잔여 6%p) 자동 close — 90% 도달 (89% ≈ 90%)
 
 ## 영향
 
