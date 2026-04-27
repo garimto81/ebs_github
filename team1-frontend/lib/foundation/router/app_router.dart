@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,88 +14,133 @@ import '../../features/players/screens/players_screen.dart';
 import '../../features/reports/screens/reports_screen.dart';
 import '../../features/staff/screens/staff_list_screen.dart';
 import '../../features/settings/screens/settings_layout.dart';
+import '../observability/logger.dart';
+import '../observability/logger_provider.dart';
+
+/// auth state 변화를 GoRouter 에 통지하는 ChangeNotifier 어댑터.
+/// `routerProvider` 가 `ref.listen(authProvider)` 로 이 notifier 를 갱신하면,
+/// GoRouter 가 자동으로 redirect 콜백을 재평가한다.
+class _AuthChangeNotifier extends ChangeNotifier {
+  AuthStatus _last;
+  _AuthChangeNotifier(this._last);
+
+  void update(AuthStatus next) {
+    if (_last == next) return;
+    _last = next;
+    notifyListeners();
+  }
+}
 
 final routerProvider = Provider<GoRouter>((ref) {
+  final notifier = _AuthChangeNotifier(ref.read(authProvider).status);
+  ref.listen<AuthState>(authProvider, (_, next) => notifier.update(next.status));
+  ref.onDispose(notifier.dispose);
+
+  final logger = ref.watch(appLoggerProvider);
+
   return GoRouter(
     initialLocation: '/lobby',
+    refreshListenable: notifier,
+    observers: [_NavigationLogger(logger)],
     redirect: (context, state) {
       final auth = ref.read(authProvider);
       final isAuth = auth.status == AuthStatus.authenticated;
-      final isLoginRoute = state.matchedLocation == '/login' ||
-          state.matchedLocation == '/forgot-password';
+      final loc = state.matchedLocation;
+      final isLoginRoute = loc == '/login' || loc == '/forgot-password';
       if (!isAuth && !isLoginRoute) {
-        return '/login?redirect=${state.matchedLocation}';
+        final encoded = Uri.encodeComponent(loc);
+        return '/login?redirect=$encoded';
       }
       if (isAuth && isLoginRoute) return '/lobby';
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
       GoRoute(
         path: '/forgot-password',
-        builder: (context, state) => const ForgotPasswordScreen(),
+        builder: (_, __) => const ForgotPasswordScreen(),
       ),
       ShellRoute(
-        builder: (context, state, child) => _AppShell(child: child),
+        builder: (_, __, child) => _AppShell(child: child),
         routes: [
-          GoRoute(
-            path: '/lobby',
-            builder: (context, state) => const LobbyDashboardScreen(),
-          ),
+          GoRoute(path: '/lobby', builder: (_, __) => const LobbyDashboardScreen()),
           GoRoute(
             path: '/tables/:tableId',
-            builder: (context, state) => TableDetailScreen(
+            builder: (_, state) => TableDetailScreen(
               tableId: int.parse(state.pathParameters['tableId']!),
             ),
           ),
-          GoRoute(
-            path: '/players',
-            builder: (context, state) => const PlayersScreen(),
-          ),
-          GoRoute(
-            path: '/staff',
-            builder: (context, state) => const StaffListScreen(),
-          ),
+          GoRoute(path: '/players', builder: (_, __) => const PlayersScreen()),
+          GoRoute(path: '/staff', builder: (_, __) => const StaffListScreen()),
           GoRoute(
             path: '/settings',
-            redirect: (context, state) => '/settings/blind-structure',
+            redirect: (_, __) => '/settings/outputs',
           ),
           GoRoute(
             path: '/settings/:section',
-            builder: (context, state) => SettingsLayout(
-              section: state.pathParameters['section'] ?? 'blind-structure',
+            builder: (_, state) => SettingsLayout(
+              section: state.pathParameters['section'] ?? 'outputs',
             ),
           ),
-          GoRoute(
-            path: '/graphic-editor',
-            builder: (context, state) => const GeHubScreen(),
-          ),
+          GoRoute(path: '/graphic-editor', builder: (_, __) => const GeHubScreen()),
           GoRoute(
             path: '/graphic-editor/:skinId',
-            builder: (context, state) => GeDetailScreen(
+            builder: (_, state) => GeDetailScreen(
               skinId: state.pathParameters['skinId']!,
             ),
           ),
           GoRoute(
             path: '/reports',
-            redirect: (context, state) => '/reports/hands-summary',
+            redirect: (_, __) => '/reports/hands-summary',
           ),
           GoRoute(
             path: '/reports/:type',
-            builder: (context, state) => ReportsScreen(
+            builder: (_, state) => ReportsScreen(
               reportType: state.pathParameters['type'] ?? 'hands-summary',
             ),
           ),
         ],
       ),
     ],
-    errorBuilder: (context, state) =>
-        const _PlaceholderScreen(title: '404 Not Found'),
+    errorBuilder: (_, state) {
+      logger.warning('Router 404', context: {
+        'location': state.matchedLocation,
+        'uri': state.uri.toString(),
+      });
+      return const _PlaceholderScreen(title: '404 Not Found');
+    },
+    debugLogDiagnostics: kDebugMode,
   );
 });
+
+class _NavigationLogger extends NavigatorObserver {
+  _NavigationLogger(this._logger);
+  final AppLogger _logger;
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _logger.breadcrumb('navigation', 'push', data: {
+      'to': route.settings.name,
+      'from': previousRoute?.settings.name,
+    });
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _logger.breadcrumb('navigation', 'pop', data: {
+      'from': route.settings.name,
+      'to': previousRoute?.settings.name,
+    });
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    _logger.breadcrumb('navigation', 'replace', data: {
+      'from': oldRoute?.settings.name,
+      'to': newRoute?.settings.name,
+    });
+  }
+}
 
 class _AppShell extends StatelessWidget {
   final Widget child;
@@ -106,36 +152,16 @@ class _AppShell extends StatelessWidget {
       body: Row(
         children: [
           NavigationRail(
-            selectedIndex: _selectedIndex(
-              GoRouterState.of(context).matchedLocation,
-            ),
-            onDestinationSelected: (index) => _navigate(context, index),
+            selectedIndex: _selectedIndex(GoRouterState.of(context).matchedLocation),
+            onDestinationSelected: (i) => _navigate(context, i),
             labelType: NavigationRailLabelType.all,
             destinations: const [
-              NavigationRailDestination(
-                icon: Icon(Icons.dashboard),
-                label: Text('Lobby'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.people),
-                label: Text('Players'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.badge),
-                label: Text('Staff'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.settings),
-                label: Text('Settings'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.brush),
-                label: Text('GFX'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.assessment),
-                label: Text('Reports'),
-              ),
+              NavigationRailDestination(icon: Icon(Icons.dashboard), label: Text('Lobby')),
+              NavigationRailDestination(icon: Icon(Icons.people), label: Text('Players')),
+              NavigationRailDestination(icon: Icon(Icons.badge), label: Text('Staff')),
+              NavigationRailDestination(icon: Icon(Icons.settings), label: Text('Settings')),
+              NavigationRailDestination(icon: Icon(Icons.brush), label: Text('GFX')),
+              NavigationRailDestination(icon: Icon(Icons.assessment), label: Text('Reports')),
             ],
           ),
           const VerticalDivider(width: 1),
@@ -145,28 +171,26 @@ class _AppShell extends StatelessWidget {
     );
   }
 
-  int _selectedIndex(String location) {
-    if (location.startsWith('/lobby') || location.startsWith('/tables')) {
-      return 0;
-    }
-    if (location.startsWith('/players')) return 1;
-    if (location.startsWith('/staff')) return 2;
-    if (location.startsWith('/settings')) return 3;
-    if (location.startsWith('/graphic-editor')) return 4;
-    if (location.startsWith('/reports')) return 5;
+  int _selectedIndex(String loc) {
+    if (loc.startsWith('/lobby') || loc.startsWith('/tables')) return 0;
+    if (loc.startsWith('/players')) return 1;
+    if (loc.startsWith('/staff')) return 2;
+    if (loc.startsWith('/settings')) return 3;
+    if (loc.startsWith('/graphic-editor')) return 4;
+    if (loc.startsWith('/reports')) return 5;
     return 0;
   }
 
-  void _navigate(BuildContext context, int index) {
+  void _navigate(BuildContext context, int i) {
     const routes = [
       '/lobby',
       '/players',
       '/staff',
-      '/settings/blind-structure',
+      '/settings/outputs',
       '/graphic-editor',
       '/reports/hands-summary',
     ];
-    context.go(routes[index]);
+    context.go(routes[i]);
   }
 }
 
@@ -178,10 +202,7 @@ class _PlaceholderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
+        child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
       ),
     );
   }

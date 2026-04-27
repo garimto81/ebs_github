@@ -1,0 +1,10 @@
+{
+  "EBS_BO_HOST": "ebs-bo.internal.local",
+  "EBS_BO_PORT": "8000",
+  "USE_MOCK": "false",
+  "SENTRY_DSN": "",
+  "SENTRY_RELEASE": "ebs-lobby@0.1.0+phase5",
+  "SENTRY_ENVIRONMENT": "production",
+  "APP_NAME": "EBS Lobby",
+  "APP_BUILD_CHANNEL": "stable"
+}

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'foundation/bootstrap_provider.dart';
+import 'foundation/error/error_messenger.dart';
 import 'foundation/router/app_router.dart';
 import 'foundation/theme/ebs_lobby_theme.dart';
 import 'resources/l10n/app_localizations.dart';
@@ -11,11 +13,16 @@ class EbsLobbyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Phase 2 + 3 — 부팅 wiring 트리거 (G-3 + G-4 + logger).
+    ref.watch(bootstrapProvider);
+
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'EBS Lobby',
       debugShowCheckedModeBanner: false,
       theme: EbsLobbyTheme.darkTheme,
+      // Phase 3 — 비-위젯 레이어에서 SnackBar/Banner 토출 가능하도록 글로벌 키 부착.
+      scaffoldMessengerKey: ErrorMessenger.scaffoldMessengerKey,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

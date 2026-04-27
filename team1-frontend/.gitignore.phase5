@@ -1,0 +1,9 @@
+# Phase 5 — production secret 보호
+# 본 파일을 .gitignore 본체에 append 한다 (별도 PR 또는 수동 merge).
+production.json
+production.*.json
+!production.example.json
+build/debug-info/
+build/web/
+build/lobby-web-image.tar
+.lighthouseci/

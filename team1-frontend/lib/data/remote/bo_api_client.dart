@@ -1,7 +1,10 @@
-// BO REST API client with Idempotency-Key + Auth interceptors.
+// BO REST API client — Phase 2 갱신.
 //
-// Ported from _archive-quasar/src/boot/axios.ts (CCR-019 idempotency,
-// 401 auto-refresh) and aligned with team4 BoApiClient pattern.
+// 변경점:
+// - _AuthInterceptor (in-file) 제거 → 외부 AuthInterceptor (auth_interceptor.dart)
+// - setTokenRefreshCallback / setAuthFailureHandler 가 onRefresh/onFailure 양쪽 wiring
+// - 인터셉터 부착 시점을 bind() 메서드로 지연 → 토큰 callback wiring 후 추가
+// - _IdempotencyInterceptor 는 그대로 유지
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +12,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ebs_common/ebs_common.dart';
 
 import '../../foundation/configs/app_config.dart';
+import '../../foundation/observability/logger.dart';
 import '../local/mock_dio_adapter.dart';
+import 'auth_interceptor.dart';
 
 // ---------------------------------------------------------------------------
 // Client
@@ -23,95 +28,88 @@ class BoApiClient {
           receiveTimeout: const Duration(seconds: 15),
         )) {
     _dio.interceptors.add(_IdempotencyInterceptor());
-    _dio.interceptors.add(_AuthInterceptor(this));
   }
 
   final Dio _dio;
+  AuthInterceptor? _authInterceptor;
 
   Dio get raw => _dio;
 
-  // -- Token management (shared with _AuthInterceptor) ---------------------
+  // -- Token state --------------------------------------------------------
 
   String? _accessToken;
-  Future<String?> Function()? _onTokenRefresh;
-
   String? get accessToken => _accessToken;
+  void setToken(String? token) => _accessToken = token;
 
-  void setToken(String? token) {
-    _accessToken = token;
+  // -- Auth wiring (bootstrap에서 1회 호출) -------------------------------
+
+  /// AuthNotifier.refreshAccessToken 을 wiring 한다.
+  /// onAuthFailure 는 보통 AuthNotifier.logout() 트리거.
+  void bindAuth({
+    required Future<String?> Function() onRefresh,
+    required void Function() onAuthFailure,
+    AppLogger? logger,
+  }) {
+    if (_authInterceptor != null) {
+      _dio.interceptors.remove(_authInterceptor);
+    }
+    _authInterceptor = AuthInterceptor(
+      dio: _dio,
+      getAccessToken: () => _accessToken,
+      setAccessToken: (t) => _accessToken = t,
+      refreshToken: onRefresh,
+      onAuthFailure: onAuthFailure,
+      logger: logger,
+    );
+    _dio.interceptors.add(_authInterceptor!);
   }
 
-  /// Register a callback invoked on 401 to obtain a fresh token.
-  void setTokenRefreshCallback(Future<String?> Function() cb) {
-    _onTokenRefresh = cb;
-  }
+  // -- Typed helpers ------------------------------------------------------
 
-  // -- Typed helpers -------------------------------------------------------
-
-  Future<T> get<T>(
-    String path, {
-    Map<String, dynamic>? queryParameters,
-    T Function(dynamic json)? fromJson,
-  }) async {
-    final response = await _request(
+  Future<T> get<T>(String path,
+      {Map<String, dynamic>? queryParameters,
+      T Function(dynamic json)? fromJson}) async {
+    final r = await _request(
       () => _dio.get<dynamic>(path, queryParameters: queryParameters),
     );
-    return _parse<T>(response.data, fromJson);
+    return _parse<T>(r.data, fromJson);
   }
 
-  Future<T> post<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    T Function(dynamic json)? fromJson,
-  }) async {
-    final response = await _request(
+  Future<T> post<T>(String path,
+      {dynamic data,
+      Map<String, dynamic>? queryParameters,
+      T Function(dynamic json)? fromJson}) async {
+    final r = await _request(
       () => _dio.post<dynamic>(path,
           data: data, queryParameters: queryParameters),
     );
-    return _parse<T>(response.data, fromJson);
+    return _parse<T>(r.data, fromJson);
   }
 
-  Future<T> put<T>(
-    String path, {
-    dynamic data,
-    T Function(dynamic json)? fromJson,
-  }) async {
-    final response = await _request(
-      () => _dio.put<dynamic>(path, data: data),
-    );
-    return _parse<T>(response.data, fromJson);
+  Future<T> put<T>(String path,
+      {dynamic data, T Function(dynamic json)? fromJson}) async {
+    final r = await _request(() => _dio.put<dynamic>(path, data: data));
+    return _parse<T>(r.data, fromJson);
   }
 
-  Future<T> patch<T>(
-    String path, {
-    dynamic data,
-    T Function(dynamic json)? fromJson,
-  }) async {
-    final response = await _request(
-      () => _dio.patch<dynamic>(path, data: data),
-    );
-    return _parse<T>(response.data, fromJson);
+  Future<T> patch<T>(String path,
+      {dynamic data, T Function(dynamic json)? fromJson}) async {
+    final r = await _request(() => _dio.patch<dynamic>(path, data: data));
+    return _parse<T>(r.data, fromJson);
   }
 
-  Future<T> delete<T>(
-    String path, {
-    T Function(dynamic json)? fromJson,
-  }) async {
-    final response = await _request(
-      () => _dio.delete<dynamic>(path),
-    );
-    return _parse<T>(response.data, fromJson);
+  Future<T> delete<T>(String path, {T Function(dynamic json)? fromJson}) async {
+    final r = await _request(() => _dio.delete<dynamic>(path));
+    return _parse<T>(r.data, fromJson);
   }
 
-  /// Multipart upload (for skin files, etc.).
   Future<T> upload<T>(
     String path, {
     required FormData formData,
     void Function(int count, int total)? onSendProgress,
     T Function(dynamic json)? fromJson,
   }) async {
-    final response = await _request(
+    final r = await _request(
       () => _dio.post<dynamic>(
         path,
         data: formData,
@@ -119,10 +117,10 @@ class BoApiClient {
         options: Options(contentType: 'multipart/form-data'),
       ),
     );
-    return _parse<T>(response.data, fromJson);
+    return _parse<T>(r.data, fromJson);
   }
 
-  // -- Internal ------------------------------------------------------------
+  // -- Internal -----------------------------------------------------------
 
   Future<Response<dynamic>> _request(
     Future<Response<dynamic>> Function() call,
@@ -135,7 +133,6 @@ class BoApiClient {
   }
 
   T _parse<T>(dynamic body, T Function(dynamic json)? fromJson) {
-    // Backend envelope: { data: T, error, meta } — unwrap if present.
     if (body is Map<String, dynamic> && body.containsKey('data')) {
       final inner = body['data'];
       if (fromJson != null) return fromJson(inner);
@@ -165,7 +162,7 @@ class BoApiClient {
 }
 
 // ---------------------------------------------------------------------------
-// Idempotency-Key interceptor (CCR-019)
+// Idempotency-Key interceptor
 // ---------------------------------------------------------------------------
 
 class _IdempotencyInterceptor extends Interceptor {
@@ -180,50 +177,6 @@ class _IdempotencyInterceptor extends Interceptor {
       );
     }
     handler.next(options);
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Auth interceptor (Bearer token + 401 refresh retry)
-// ---------------------------------------------------------------------------
-
-class _AuthInterceptor extends Interceptor {
-  _AuthInterceptor(this._client);
-
-  final BoApiClient _client;
-
-  @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final token = _client._accessToken;
-    if (token != null) {
-      options.headers['Authorization'] = 'Bearer $token';
-    }
-    handler.next(options);
-  }
-
-  @override
-  Future<void> onError(
-    DioException err,
-    ErrorInterceptorHandler handler,
-  ) async {
-    if (err.response?.statusCode == 401 &&
-        _client._onTokenRefresh != null &&
-        err.requestOptions.extra['_retry'] != true) {
-      try {
-        final newToken = await _client._onTokenRefresh!();
-        if (newToken != null) {
-          _client._accessToken = newToken;
-          final opts = err.requestOptions;
-          opts.extra['_retry'] = true;
-          opts.headers['Authorization'] = 'Bearer $newToken';
-          final response = await _client._dio.fetch(opts);
-          return handler.resolve(response);
-        }
-      } catch (_) {
-        // Fall through to original error.
-      }
-    }
-    handler.next(err);
   }
 }
 
