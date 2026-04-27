@@ -211,7 +211,7 @@ BO DB에 없는 플레이어를 즉석 등록:
 
 WSOP LIVE Staff App Table Management (`wsoplive/docs/confluence-mirror/WSOP Live 홈/1. Documents/STAFF APP/04. Tournament Admin/Table Management.md`) 는 dealer 설정 UX 를 명시하지 않는다. WSOP LIVE 는 Staff App (토너먼트 관리 — 등록/좌석/지불) 과 Fatima.app (실시간 핸드 입력) 이 분리되어 있으며, dealer UX 는 Fatima.app 내부 로직.
 
-EBS 는 CC 단일 앱에서 좌석 관리 + 실시간 핸드 입력 + RFID 카드 처리를 통합하므로 dealer 설정 UX 가 CC UI 에 필요. **의도적 divergence** — WSOP LIVE 의 테이블 관리 도메인 구조는 따르되, dealer 설정은 EBS 고유.
+EBS 는 `cc-web` 컨테이너 (Command Center) 에서 좌석 관리 + 실시간 핸드 입력 + RFID 카드 처리를 통합하므로 dealer 설정 UX 가 CC UI 에 필요. **의도적 divergence** — WSOP LIVE 의 테이블 관리 도메인 구조는 따르되, dealer 설정은 EBS 고유 (`cc-web` 라우트 내부에 포함).
 
 ---
 

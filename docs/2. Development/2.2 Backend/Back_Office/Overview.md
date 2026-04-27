@@ -106,16 +106,18 @@ WSOP LIVE Staff Page는 아래 BO 기능을 제공한다 (Confluence Staff App A
 
 ## 2. 아키텍처
 
-### 2.1 BO 의 위치 — Foundation 2 렌즈 정렬 (2026-04-22 재작성)
+### 2.1 BO 의 위치 — Multi-Service Docker 정렬 (2026-04-27 재작성)
 
-Foundation §4.4 "두 렌즈" 에 따르면 EBS 는 **6 기능 조각 / 4 설치 단위** 로 구성되며, Back Office 는 **Backend Server** 설치 단위를 소유한다. Lobby/Command Center/Overlay 는 team1+team4 가 공동 소유하는 **EBS Desktop App** (Flutter Desktop 단일 바이너리) 의 기능 조각이다 (§5.0 런타임 모드에 따라 탭 또는 다중창으로 전환).
+Foundation §4.4 "두 렌즈" 에 따르면 EBS 는 **6 기능 조각 / 4 설치 단위** 로 구성되며, Back Office 는 **Backend Server** 설치 단위 (`bo` 컨테이너) 를 소유한다. Multi-Service Docker SSOT 하에서 Lobby (team1) 는 `lobby-web` 컨테이너 (port 3000), Command Center + Overlay (team4) 는 `cc-web` 컨테이너 (port 3001) 로 **각각 독립 Flutter Web 빌드 산출물** 이며, BO 와 `ebs-net` bridge 네트워크에서 service-name DNS + 환경 변수 (`BO_URL`/`LOBBY_URL`/`CC_URL`) 로 협력한다 (자세히: `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md`).
 
 ```mermaid
 flowchart LR
-    subgraph App["EBS Desktop App (Flutter Desktop)"]
-        LO[Lobby 조각]
-        CC[CC 조각]
-        OV[Overlay 조각]
+    subgraph LobbyApp["lobby-web 컨테이너 (team1, :3000)"]
+        LO[Lobby + Settings + Rive Manager]
+    end
+    subgraph CCApp["cc-web 컨테이너 (team4, :3001)"]
+        CC[Command Center]
+        OV[Overlay]
     end
     subgraph BE["Backend Server (팀2)"]
         API[FastAPI REST + WS Hub]

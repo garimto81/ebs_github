@@ -151,6 +151,24 @@ status: active
 eta: 1h
 ```
 
+### Claim #16 — conductor: Global SSOT sync — eradicate active SG-022 advocacy refs across docs/team*
+```yaml
+id: 16
+team: conductor
+task: Global SSOT sync — eradicate active SG-022 advocacy refs across docs/team*
+started: '2026-04-27T10:11:11Z'
+scope:
+- tools/ssot_auditor.py
+- docs/**
+- team1-frontend/**
+- team2-backend/**
+- team3-engine/**
+- team4-cc/**
+- docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md
+status: active
+eta: 4h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
