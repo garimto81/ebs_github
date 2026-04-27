@@ -46,20 +46,24 @@ Login UI + Lobby + Settings 6탭 (Outputs / GFX / Display / Rules / Stats / Pref
 
 **기술 스택**: Flutter/Dart + Riverpod + Freezed + Dio + go_router + `rive` (GE 프리뷰 전용)
 
-**배포 형태 (2026-04-22 재정의)**:
+**배포 형태 (2026-04-27 재정의 — SG-022 폐기, Multi-Service Docker 채택)**:
 
-실제 사용자 배포는 **Docker Web 단독**. 사용자는 브라우저로 `http://<lan-ip>:3000/` 접속.
+배포: **독립 Docker 컨테이너 (Lobby:3000 / CC:3001)**. 네트워크를 통해 Backend/Engine 과 연동되는 **멀티 세션 구조**.
+
+Lobby (team1) 와 CC (team4) 는 단일 앱이 아니며, 각각 독립된 Flutter 프로젝트로 존재한다. 다만 완전 독립은 아니며, Docker 기반의 격리된 환경에서 기동되어 동일한 EBS 에코시스템 (`ebs-net`) 내에서 네트워크로 상호 작용한다.
 
 | 용도 | 대상 | 방법 |
 |------|------|------|
-| **정규 배포** | 사용자 (운영자, 관찰자) | `docker compose --profile web up -d lobby-web` → 브라우저 |
+| **정규 배포** | 사용자 (운영자, 관찰자) | `docker compose --profile web up -d lobby-web` → 브라우저 `http://<lan-ip>:3000/` |
 | **개발자 디버깅** (배포 아님) | 개발자 | `flutter run -d chrome` (Web 핫리로드) 또는 `flutter run -d windows` (native 확인) |
 
-사용자가 Flutter SDK + CLI 를 실행하는 시나리오는 없다. Windows `.exe` 바이너리 배포 파이프라인도 현재 없다.
+사용자가 Flutter SDK + CLI 를 실행하는 시나리오는 없다.
 
-**"Flutter 단일 스택"의 의미**: 프레임워크 하나(Flutter)로 모든 팀(team1/team4) 통일 — Vue/Quasar 폐기 (`2cc13b1`, 2026-04-21). Web 배포와는 별개 개념. 2026-04-22 "Desktop only" 로 확대 해석된 오류 정정.
+**"Flutter 단일 스택"의 의미**: 프레임워크 하나(Flutter)로 모든 팀(team1/team4) 통일 — Vue/Quasar 폐기 (`2cc13b1`, 2026-04-21). 2026-04-22 "Desktop only" 로 확대 해석된 오류는 2026-04-27 SG-022 공식 폐기로 정정 완료.
 
-배포 상세 SSOT: `../docs/2. Development/2.1 Frontend/Deployment.md`
+**SG-022 폐기 근거**: 단일 Desktop 바이너리 통합은 4팀 병렬 개발 + LAN 멀티 세션 운영 요구와 충돌. team1/team4 가 각자 독립 라이프사이클(Dockerfile/nginx)을 가지면서 공통 네트워크로 협력하는 multi-service 구조가 SSOT.
+
+배포 상세 SSOT: `../docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md`
 
 ---
 
