@@ -426,10 +426,39 @@ services/ 영역이 핵심 미커버:
 
 ---
 
+## Decision Group M — Session 2.2 완료 (structure services 20-26% → 70%+)
+
+사용자 명시 (2026-04-27): "Session 2.2 — blind/payout structure 가장 낮은 coverage 우선 보강".
+
+### 진행 결과
+
+| 영역 | 결과 |
+|------|:----:|
+| 신규 unit tests | `tests/test_structure_services_extended.py` 24 tests |
+| 단위 실행 | 24/24 PASS in 0.38s |
+| 전체 regression | **307 passed, 0 failed in 115.23s** (baseline 283 + 24 = 307) |
+| Production code 수정 | 0건 (Strict 룰 준수) |
+| Coverage 추정 | blind 20% → 65-70% / payout 26% → 70-80% |
+
+### 발견 — Production Bug (B-Q18 등재)
+
+`update_*_structure` 의 same-transaction delete+insert IntegrityError (Type A 구현 실수):
+- SQLAlchemy flush 타이밍 문제
+- 기존 levels 가 있는 structure 에 `update(levels=[새 levels])` 호출 시 `UNIQUE constraint failed`
+- **B-Q18-structure-update-same-tx-flush-bug.md** P1 등재
+- 본 turn Strict 룰 — bug 수정 별도 turn
+
+### 다음 Session 2.3 권고
+
+`services/series_service.py` 57% (67 missed) + `services/table_service.py` 65% (60 missed) → 80%. 24-30 unit tests. 큰 모듈이라 분할 권장 가능.
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v2.0 | Group M 추가 (Session 2.2 완료 — structure services 24 tests, 307 passed regression 0, B-Q18 production bug 등재) + SESSION_2_2_HANDOFF.md NEW | TECH | 사용자 Session 2.2 진입 명시 — 가장 낮은 coverage 우선 |
 | 2026-04-27 | v1.9 | Group L 추가 (Session 2.1 완료 — auth_service 22 tests, 283 passed regression 0, Strict 룰 준수) + SESSION_2_1_HANDOFF.md NEW | TECH | 사용자 Session 2.1 진입 명시 — auth_service 가장 큰 gap |
 | 2026-04-27 | v1.8 | Group K 추가 (Session 2 Phase 1 audit — B-Q10 baseline 정정 90% → 78% + multi-turn plan 2.1~2.7) | TECH | 사용자 Session 2 진입 (Option D) — Phase 1 audit 결과 |
 | 2026-04-27 | v1.7 | Group J 추가 (V2 audit closed Q1.㉠+Q2.㉠ 채택 + Session 1 최종 종료, Session 2 진입 권고) | TECH | 사용자 V2 URGENT DIRECTIVE → audit 결과로 자연 종료 |
