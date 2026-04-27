@@ -208,14 +208,18 @@ last-updated: 2026-04-15
 
 ### 매트릭스 3: 보드 카드 수 기반 상태 전이
 
-| 현재 상태 | board_cards 감지 | 가능한 전이 | 조건 |
-|---------|:--------:|-----------|------|
-| PRE_FLOP (0장) | 0장 감지 | 변화 없음 | 정상 (카드 미감지) |
-| PRE_FLOP (0장) | 1~2장 감지 | error log | 부분 감지 또는 카드 오인식 |
-| PRE_FLOP (0장) | 3장 감지 | → FLOP | 정상 Flop 카드 감지 |
-| FLOP (3장) | +1장 감지 | → TURN | 정상 Turn 카드 감지 |
-| TURN (4장) | +1장 감지 | → RIVER | 정상 River 카드 감지 |
-| RIVER (5장) | no change | 변화 없음 | 정상 (카드 완성) |
+> **SSOT**: 보드 카드 감지 로직은 `Behavioral_Specs/Card_Pipeline_Overview.md` (BS-06-12) §3 권위. 본 매트릭스는 그 결과의 HandFSM 측 시각이다. 충돌 시 BS-06-12 우선.
+
+| 현재 상태 | board_cards 감지 | BoardState | 가능한 전이 | 조건 |
+|---------|:--------:|------------|-----------|------|
+| PRE_FLOP (0장) | 0장 감지 | AWAITING_FLOP | 변화 없음 | 정상 (카드 미감지) |
+| PRE_FLOP (0장) | 1장 감지 | FLOP_PARTIAL | **변화 없음 (PENDING, 외부 미발행)** | 부분 감지 — 추가 카드 대기 (BS-06-12 §3.5) |
+| PRE_FLOP (0장) | 2장 감지 | FLOP_PARTIAL | **변화 없음 (PENDING, 외부 미발행)** | 부분 감지 — 추가 카드 대기 (BS-06-12 §3.5) |
+| PRE_FLOP (0장) | 3장 감지 | FLOP_READY → FLOP_DONE | → FLOP (atomic) | 정상 Flop 카드 감지. `FlopRevealed` 1회 발행 |
+| FLOP_PARTIAL (count<3) | timeout (default 30s) | FLOP_PARTIAL (유지) | 변화 없음 | `FlopPartialAlert` (운영자 배지). 미스딜 또는 수동 입력 대기 |
+| FLOP (3장) | +1장 감지 | TURN_DONE | → TURN | 정상 Turn 카드 감지 (atomic 1장) |
+| TURN (4장) | +1장 감지 | RIVER_DONE | → RIVER | 정상 River 카드 감지 (atomic 1장) |
+| RIVER (5장) | no change | RIVER_DONE | 변화 없음 | 정상 (카드 완성) |
 
 ### 매트릭스 4: 특수 상황별 상태 전이 오버라이드
 

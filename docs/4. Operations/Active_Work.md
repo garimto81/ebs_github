@@ -137,6 +137,20 @@ status: active
 eta: 3h
 ```
 
+### Claim #15 — team3: Card Pipeline SSOT (turn-based deal + 3-card flop detection)
+```yaml
+id: 15
+team: team3
+task: Card Pipeline SSOT (turn-based deal + 3-card flop detection)
+started: '2026-04-27T10:02:22Z'
+scope:
+- docs/2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md
+- docs/2. Development/2.3 Game Engine/Backlog/B-343-card-pipeline-ssot.md
+- docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Lifecycle.md
+status: active
+eta: 1h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
