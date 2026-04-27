@@ -495,6 +495,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-team2-B088-PR4-rest-path-migration.md` | B-088 PR-4 — team2 Backend router REST path kebab→PascalCase (URGENT) | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-team4-cc-web-unhealthy.md` | ebs-cc-web-1 컨테이너 2일간 unhealthy 상태 — 진단/재빌드 요청 | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/SESSION_1_HANDOFF.md` | SESSION 1 HANDOFF — Foundation & Infrastructure | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/SESSION_2_1_HANDOFF.md` | SESSION 2.1 HANDOFF — auth_service.py 50% → 80% (B-Q10 cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SESSION_2_HANDOFF.md` | SESSION 2 HANDOFF — Core Logic & Backend Engine (Phase 1 audit 완료) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` | 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` | Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback | conductor | - | - |
