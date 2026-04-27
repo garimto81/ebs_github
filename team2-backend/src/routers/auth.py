@@ -143,6 +143,40 @@ class MeResponse(EbsBaseModel):
     email: str
     display_name: str
     role: str
+    permissions: list[str] = []  # SG-008-b4: derived from role
+    settings_scope: str = ""  # SG-008-b4: User-level scope identifier (5-level scope cascade)
+
+
+# SG-008-b4 — role → permissions mapping (B 일괄 권고 채택 2026-04-27)
+# B-Q7 ㉠ Production-strict 기준. permissions 는 RBAC 의미적 표현 (admin/operator/viewer 능력).
+_ROLE_PERMISSIONS: dict[str, list[str]] = {
+    "admin": [
+        "read:*",
+        "write:*",
+        "delete:*",
+        "audit:read",
+        "sync:trigger",
+        "users:manage",
+    ],
+    "operator": [
+        "read:*",
+        "write:assigned_table",
+        "audit:read_self",
+    ],
+    "viewer": [
+        "read:*",
+    ],
+}
+
+
+def _derive_permissions(role: str) -> list[str]:
+    """Derive permissions from role. Returns empty list for unknown roles."""
+    return _ROLE_PERMISSIONS.get(role, [])
+
+
+def _user_settings_scope(user_id: int) -> str:
+    """Return User-scope identifier for 5-level Settings scope (SG-003 + B-Q5 cascade)."""
+    return f"user:{user_id}"
 
 
 # ── Endpoints ─────────────────────────────────────
@@ -229,20 +263,33 @@ def refresh(body: RefreshRequest, db: Session = Depends(get_db)):
 
 @router.post("/logout")
 def logout(
+    all: bool = False,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """Logout current device. SG-008-b5: ?all=true logs out all devices.
+
+    Current single-session-per-user model: ?all has same effect as default.
+    Future-proof: when multi-session support lands, ?all will revoke all
+    refresh tokens for the user.
+    """
     svc_logout(user.user_id, db)
-    return {"message": "Logged out successfully"}
+    return {
+        "message": "Logged out successfully",
+        "scope": "all" if all else "current",
+    }
 
 
 @router.get("/me")
 def me(user: User = Depends(get_current_user)):
+    """SG-008-b4: extended fields (permissions, settings_scope)."""
     return MeResponse(
         user_id=user.user_id,
         email=user.email,
         display_name=user.display_name,
         role=user.role,
+        permissions=_derive_permissions(user.role),
+        settings_scope=_user_settings_scope(user.user_id),
     )
 
 
