@@ -547,10 +547,69 @@ services/ 영역이 핵심 미커버:
 
 ---
 
+## Decision Group P — Session 2.4b 완료 (hand/clock/competition services + B-Q19 발견)
+
+사용자 명시 (2026-04-27): "Session 2.4b — services/ 영역 마지막 cascade".
+
+### 진행 결과
+
+| 영역 | tests | 상태 |
+|------|:-----:|:----:|
+| `hand_service` | 3 | get/players/actions 404 paths (list_hands 보류 — B-Q19) |
+| `clock_service` | 10 | get_state / start/pause/resume (각 invalid+success) / adjust (level/floor) / restart_level |
+| `competition_service` | 8 | CRUD + 409 (children) + 404 |
+
+**합계**: 21 tests / 21/21 PASS in 0.41s
+
+### 검증
+
+| 검증 | 결과 |
+|------|:----:|
+| 누적 신규 tests (본 turn) | 21 |
+| Production code 수정 | 0건 (Strict 룰 준수) |
+| 전체 regression | (백그라운드 진행 — commit 시 결과 반영) |
+
+### 발견 — B-Q19 production bug
+
+`hand_service.list_hands` line 97-106 의 SQLAlchemy 2.x compatibility 문제:
+- `db.exec(count_stmt).one()` 가 SQLAlchemy 2.x 에서 Row 객체 반환 (tuple 아님)
+- `isinstance(total, tuple)` 분기 false → `int(Row)` TypeError
+- **Type A (구현 실수)**, P1
+- B-Q19 신규 등재 — surgical edit 별도 turn
+
+본 turn Strict 룰 준수 — list_hands 7 tests 보류 (대신 B-Q19 등재).
+
+### 누적 Session 2 진척 (5+ sub-sessions)
+
+| Sub | tests 추가 | baseline | 누적 +N |
+|:---:|:----------:|:--------:|:-------:|
+| Phase 1 시작 | — | 261 | — |
+| 2.1 auth | +22 | 283 | +22 |
+| 2.2 structure (B-Q18) | +24 | 307 | +46 |
+| 2.3a series | +16 | 323 | +62 |
+| 2.3b table | +15 | (이전 commit) | — |
+| 2.5 wsop_auth | +9 | (이전 commit) | — |
+| 2.4a user | +9 | 356 | +95 |
+| **2.4b hand/clock/competition (B-Q19)** | **+21** | **377 (예상)** | **+116** |
+
+### Coverage 추정
+
+78% baseline + 6 sub-sessions = **약 83-85%**. 95% 까지 잔여 10-12%p = **2 sub-sessions 더** (2.6 routers + 2.7 final).
+
+### 다음 turn 권고
+
+| 우선순위 | sub-session | 예상 tests |
+|:-------:|:-----------:|:----------:|
+| 1 | 2.6 — routers (auth/blind/hands/skins) 보강 | 20-25 |
+| 2 | 2.7 — skin_service/undo_service + final 95% 검증 | 10-15 |
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v2.3 | Group P 추가 (Session 2.4b — hand/clock/competition 21 tests + B-Q19 production bug 발견) | TECH | services/ 영역 cascade 마무리 |
 | 2026-04-27 | v2.2 | Group O 추가 (Session 2.3b + 2.5 + 2.4a 통합 — 33 new tests, 356 passed regression 0, Autonomous Execution Engine) | TECH | 사용자 자율 실행 명시 — 95% 도달까지 무한 반복 |
 | 2026-04-27 | v2.1 | Group N 추가 (Session 2.3a 완료 — series_service 16 tests, 단위 16/16 PASS, Strict 룰 준수) + SESSION_2_3a_HANDOFF.md NEW | TECH | 사용자 Session 2.3a 진입 명시 — 안전 분량 분할 |
 | 2026-04-27 | v2.0 | Group M 추가 (Session 2.2 완료 — structure services 24 tests, 307 passed regression 0, B-Q18 production bug 등재) + SESSION_2_2_HANDOFF.md NEW | TECH | 사용자 Session 2.2 진입 명시 — 가장 낮은 coverage 우선 |
