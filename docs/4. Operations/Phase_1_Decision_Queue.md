@@ -392,10 +392,45 @@ services/ 영역이 핵심 미커버:
 
 ---
 
+## Decision Group L — Session 2.1 완료 (auth_service 50% → 70%+)
+
+사용자 명시 (2026-04-27): "Session 2.1 — auth_service 가장 큰 gap (74 missed), B-Q7 ㉠ Production-strict 직접 cascade".
+
+### 진행 결과
+
+| 영역 | 결과 |
+|------|:----:|
+| 신규 unit tests | `tests/test_auth_service_extended.py` 22 tests |
+| 단위 실행 | 22/22 PASS in 3.83s |
+| 전체 regression | **283 passed, 0 failed in 118.59s** (baseline 261 + 22 = 283) |
+| Production code 수정 | 0건 (Strict 룰 준수) |
+| Missing branches 커버 | authenticate (4) / refresh (3) / 2FA (6) / password reset (5) / oauth (2) / etc |
+
+### Missing line 커버 (auth_service.py)
+
+- `30, 33, 37-42` (authenticate edge: not found / inactive / locked / lock-expired-reset) ✅
+- `98-99, 102, 110-111` (refresh_session: invalid / wrong-type / mismatch) ✅
+- `135-136` (get_user_session: not found) ✅
+- `148-160` (setup_2fa) ✅
+- `165-171` (disable_2fa) ✅
+- `178-180, 183-185` (verify_2fa) ✅
+- `204-207` (create_password_reset) ✅
+- `217-218, 215-236` (reset_password) ✅
+- `261-272, 274-277` (google_oauth_login) ✅
+
+### 다음 Session 2.2 권고
+
+`services/blind_structure_service.py` 20% + `services/payout_structure_service.py` 26% → 70% (18-22 unit tests).
+
+또는 **Session 2.5 우선**: `adapters/wsop_auth.py` 0% → 70% (10 tests, 작은 모듈 큰 영향).
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-04-27 | v1.9 | Group L 추가 (Session 2.1 완료 — auth_service 22 tests, 283 passed regression 0, Strict 룰 준수) + SESSION_2_1_HANDOFF.md NEW | TECH | 사용자 Session 2.1 진입 명시 — auth_service 가장 큰 gap |
 | 2026-04-27 | v1.8 | Group K 추가 (Session 2 Phase 1 audit — B-Q10 baseline 정정 90% → 78% + multi-turn plan 2.1~2.7) | TECH | 사용자 Session 2 진입 (Option D) — Phase 1 audit 결과 |
 | 2026-04-27 | v1.7 | Group J 추가 (V2 audit closed Q1.㉠+Q2.㉠ 채택 + Session 1 최종 종료, Session 2 진입 권고) | TECH | 사용자 V2 URGENT DIRECTIVE → audit 결과로 자연 종료 |
 | 2026-04-27 | v1.6 | Group I 추가 (SG-027 5-Session Pipeline 도입 — v7.2 분량 layer) + Session 1 완료 (좀비 4건 정리, B-Q16/Q17 등재, SESSION_1_HANDOFF 작성) | TECH | 사용자 명시 (5-Session 모델) — multi-turn cascade |
