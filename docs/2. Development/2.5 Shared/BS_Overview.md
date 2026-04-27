@@ -35,24 +35,37 @@ reimplementability_notes: "§1 Tech Stack SSOT 3중화 해소 (SG-001 채택: Fl
 
 ---
 
-## 1. 단일 Desktop 바이너리 (SG-022, 2026-04-27)
+## 1. Multi-Service Docker 아키텍처 (2026-04-27 저녁 SSOT)
 
-EBS 는 **Foundation §4.4 의 설치 4 SW + 1 HW** 구조를 따른다. **모든 프론트엔드 (Lobby / Settings / Graphic Editor / Command Center / Overlay) 가 동일한 Flutter + Dart + Rive 스택을 공유하며, 단일 Desktop 바이너리 (`.exe` / `.app` / `.deb`) 로 배포된다.**
+EBS 는 **Multi-Service Docker 아키텍처** 를 채택한다. **Lobby (team1) 와 Command Center (team4) 는 단일 앱이 아니며, 각각 독립된 Flutter 프로젝트로 존재한다.** 다만 완전 독립은 아니며, Docker 격리 컨테이너로 기동되어 동일한 EBS 에코시스템 (`ebs-net` bridge 네트워크) 내에서 service-name DNS + 환경 변수 (`BO_URL` / `ENGINE_URL` / `LOBBY_URL` / `CC_URL`) 로 상호 작용한다.
 
-내부 라우팅 / 창 분리는 Foundation §5.0 의 두 런타임 모드 (탭/슬라이딩, 다중창) 옵션으로 노출된다 — 이는 단일 바이너리 내부의 선택지이며, 별도 앱 배포가 아니다.
+> **이전 인텐트** (2026-04-27 아침 채택, 같은 날 저녁 폐기): Lobby + CC + Overlay 를 하나의 Flutter Desktop 배포 단위로 통합 — 사용자 결정으로 폐기됨. 자세히: `docs/4. Operations/Conductor_Backlog/SG-022-deprecation.md`, `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md`.
 
-### 1.1 단일 Desktop 채택 근거
+### 1.1 채택 근거
 
-- RFID 시리얼 + SDI/NDI 직결 = Desktop 환경 필수
-- Lobby 도 동일 Desktop 환경 운영 (LAN 데스크톱 + 외부 라우팅 모두 Desktop 으로 통일)
-- 4 팀 (team1 Frontend / team2 Backend / team3 Engine / team4 CC) Flutter 공통 의존성 단순화
-- 사용자 결정 SG-022 (2026-04-27): γ 하이브리드 (Web/Desktop 분리) 폐기 명시
+- **기획-운영 정합**: LAN 멀티 클라이언트 / 핫픽스 / 운영자 분리 워크플로우 충족
+- **4팀 병렬성**: 팀별 Dockerfile 라이프사이클 분리 (team1 `lobby-web`, team4 `cc-web`)
+- **운영자 워크플로우**: Lobby (대시보드, 운영자) ↔ CC (액션 입력, 테이블 담당자) 분리 활용
+- **2026-04-22 사건 재발 차단**: "Desktop only" 확대 해석 → `ebs-lobby-web` 컨테이너 destroy 사건 (Type C) 의 근본 원인 제거
+- **사용자 결정 (2026-04-27 저녁)**: 이전 인텐트 폐기 명시 cascade
 
-### 1.2 용어 구분 주의
+### 1.2 컨테이너 토폴로지
 
-- **단일 Desktop 바이너리**: Lobby + CC + Overlay 모두 포함하는 하나의 배포 단위
-- **두 런타임 모드** (Foundation §5.0): 단일 바이너리 내부의 탭/슬라이딩 또는 다중창 옵션 (Lobby 포함)
-- **별도 배포 단위 아님**: Lobby 를 Web 앱으로 분리하던 2026-04-22 γ 하이브리드 정책은 폐기됨
+| 서비스 | 컨테이너 포트 | 호스트 포트 | 팀 | 역할 |
+|--------|:-------------:|:-----------:|:---:|------|
+| `bo` | 8000 | 8000 | team2 | Backend REST/WebSocket |
+| `redis` | 6379 | 6380 | — | session / pub-sub |
+| `engine` | 8080 | 8080 | team3 | Game Engine harness |
+| `lobby-web` | 3000 | 3000 | team1 | 운영자 대시보드 (브라우저 접속) |
+| `cc-web` | 3001 | 3001 | team4 | Command Center + Overlay (브라우저 접속) |
+
+기동: `docker compose --profile web up -d --build`. SSOT: `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md`.
+
+### 1.3 용어 구분 주의
+
+- **격리 + 협력**: 각 컨테이너는 독립 라이프사이클을 갖되 (코드 의존성 없음), 런타임에 BO WebSocket / REST + service-name DNS 로 협력
+- **단일 사용자, 두 브라우저 탭**: 운영자는 `:3000` (Lobby) 와 `:3001` (CC) 을 동시에 띄울 수 있고, BO 가 두 탭 사이의 동기화 SSOT
+- **개발자 디버깅 (배포 아님)**: `flutter run -d windows/-d chrome` 은 정규 배포가 아닌 핫리로드 도구
 
 ### 1.3 Phase 2 옵션
 

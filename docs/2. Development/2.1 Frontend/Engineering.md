@@ -85,16 +85,16 @@ auth / lobby / settings / graphic_editor / staff / reports
 
 ---
 
-## 1.5 설치 관점 (Foundation Ch.4 §4.4)
+## 1.5 설치 관점 (Foundation Ch.4 §4.4 — 2026-04-27 Multi-Service Docker 정렬)
 
-Foundation §4.4 는 EBS 시스템을 **기능 6개 ↔ 설치 3 소프트웨어 + 1 하드웨어** 두 렌즈로 구분한다. team1 관점 핵심 사실:
+Foundation §4.4 는 EBS 시스템을 **기능 6개 ↔ 설치 3 소프트웨어 + 1 하드웨어** 두 렌즈로 구분한다. team1 관점 핵심 사실 (Multi-Service Docker SSOT 반영):
 
 | 구분 | 내용 |
 |------|------|
-| **설치 단위** | `EBS Desktop App` — 로비 + 커맨드 센터 + 오버레이 뷰 3 기능의 **단일 Flutter 바이너리** |
-| **팀 소유** | team1 (Lobby/Settings/Graphic Editor) + team4 (CC/Overlay) **공동 소유** |
-| **빌드 산출물** | 동일 바이너리. 팀별 코드는 `team1-frontend/` / `team4-cc/` 로 분리되지만 배포 시 하나의 앱으로 묶임 |
-| **런타임 모드** | 이 단일 바이너리가 두 가지 런타임 모드 중 하나로 동작 — §2.0 참조 |
+| **설치 단위** | `lobby-web` Docker 컨테이너 — 로비 + Settings + Rive Manager (Graphic Editor) Flutter Web 빌드 산출물 (port 3000). Command Center / Overlay 는 별도 컨테이너 `cc-web` (team4 소유, port 3001) |
+| **팀 소유** | team1 (Lobby/Settings/Graphic Editor) — `lobby-web` 단독 소유 |
+| **빌드 산출물** | `team1-frontend/docker/lobby-web/Dockerfile` (multi-stage Flutter SDK → nginx alpine). team4 의 `cc-web` 과는 독립 라이프사이클 |
+| **런타임 형태** | Flutter Web (브라우저 SPA) 가 nginx 컨테이너에서 호스팅. 운영자는 `http://<lan-ip>:3000/` 으로 접속 — §2.0 참조 |
 
 **개발 규약**:
 - team1/team4 코드는 feature 디렉토리 경계로만 분리. 공통 의존성은 `ebs_common` (§10)
