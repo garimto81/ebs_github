@@ -11,7 +11,10 @@
 # -----------------------------------------------------------------------------
 # Stage 1: Build
 # -----------------------------------------------------------------------------
-FROM ghcr.io/cirruslabs/flutter:stable AS builder
+# 2026-04-28 — Flutter SDK explicit pin (P1 reproducibility).
+# `:stable` 은 부동 tag → CI/local build 결과 비결정. 본 PR 시점 stable = 3.41.7.
+# 변경 시 Build Reproducibility Note 의 cascade 갭 잠재 (intl pin / web flag drift) 재검토.
+FROM ghcr.io/cirruslabs/flutter:3.41.7 AS builder
 
 WORKDIR /app
 
