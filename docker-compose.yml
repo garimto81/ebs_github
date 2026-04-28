@@ -108,10 +108,11 @@ services:
       # Multi-Service Docker (SG-022 폐기 cascade)
       - BO_URL=${BO_URL:-http://bo:8000}
     healthcheck:
-      # 2026-04-28 — Type A 교정. 이전 unhealthy 표시는 healthcheck 부재 + endpoint
-      # 가정 오류가 원인. team3 harness 바이너리는 /health 미제공 (정적 웹 harness).
-      # `/` 가 200 OK 를 반환하는 표준 엔드포인트.
-      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/"]
+      # 2026-04-28 — P2 정렬. team3 engine binary 에 /health endpoint 추가됨
+      # (lib/harness/server.dart). 이전 cosmetic `/` fix 는 standardize 되지 않아
+      # 다음 healthcheck 도구와 UX 비대칭 — bo `/health`, lobby/cc `/healthz`,
+      # engine 단독 `/` 였음. 본 commit 으로 engine 도 표준 `/health` 사용.
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health"]
       interval: 10s
       timeout: 3s
       start_period: 10s

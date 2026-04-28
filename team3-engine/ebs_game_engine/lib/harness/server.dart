@@ -77,6 +77,18 @@ class HarnessServer {
     final path = req.uri.path;
     final method = req.method;
 
+    // GET /health — liveness probe (Docker HEALTHCHECK + Compose 의존성 게이트)
+    // 2026-04-28 — P2 추가. canonical 응답 = {"status":"ok","service":"ebs-game-engine"}.
+    // 이전: docker-compose engine.healthcheck 가 `/` (200) 로 cosmetic fix → 본 commit
+    // 으로 표준 `/health` 로 정렬. lobby-web/cc-web 의 `/healthz` 와 의도 동일.
+    if (method == 'GET' && path == '/health') {
+      _sendJson(req.response, 200, const {
+        'status': 'ok',
+        'service': 'ebs-game-engine',
+      });
+      return;
+    }
+
     // POST /api/session
     if (method == 'POST' && path == '/api/session') {
       await _createSession(req);
