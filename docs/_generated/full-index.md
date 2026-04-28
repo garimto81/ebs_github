@@ -246,6 +246,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/B-337-Overlay-배경-투명-단색-이분법.md` | Overlay §5 크로마키 — Foundation §7.1 '투명(방송) vs 단색(디자이너 QA)' 이분법 정렬 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-338-harness-세션-재시작-복구.md` | harness 세션 재시작 복구 — Foundation §8.4 긴급 복구 계약 대응 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-343-card-pipeline-ssot-rollout.md` | Card Pipeline SSOT (BS-06-12) rollout — Lifecycle/Triggers/OutputEvents 정렬 + 테스트 추가 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-349-domain-master-rollout.md` | Behavioral_Specs 4 Domain Master Rollout — Deprecation Shim + Audit Mapping + Cross-team 정합 검증 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-350-api04-bs0609-alignment.md` | API-04 §6.0 (21종) ↔ BS-06-09 (19종) OutputEvent 정합 검증 — 누락 3 OE + 번호 shift 분석 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-353-cross-team-bs06-citations.md` | Cross-team BS-06-XX 인용 (101건) → 도메인 마스터 redirect 갱신 — 팀별 자율 처리 위임 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-354-legacy-id-redirect-oe-mapping.md` | legacy-id-redirect.json 에 OE-level 매핑 추가 — API-04 OE-XX ↔ BS-06-09 OE-XX 번호 변환 | - | - | - |
@@ -268,26 +269,27 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-049-검토-요청-BlindStructure-관리-엔드포인트-추가-WSOP-LIVE-정렬.md` | 검토 요청: BlindStructure 관리 엔드포인트 추가 (WSOP LIVE 정렬) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-054-검토-요청-WebSocket-이벤트-카탈로그-WSOP-LIVE-SignalR-정렬.md` | 검토 요청: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-023-LEGACY-검토-요청-BS-07-Overlay-오디오-레이어-추가-WSOP-1-BGM-2.md` | [LEGACY] 검토 요청: BS-07 Overlay 오디오 레이어 추가 (WSOP 1 BGM + 2 Effect 채널) | - | - | - |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` | Action Rotation | team3 | internal | BS-06-10 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` | Action Rotation | team3 | deprecated | BS-06-10 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md` | Betting & Pots — Domain Master | team3 | contract | - |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md` | Card Pipeline Overview | team3 | contract | BS-06-12 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md` | Draw Games | team3 | internal | BS-06-2X |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Evaluation_Reference.md` | Hand Evaluation 통합 레퍼런스 | team3 | contract | - |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Event_Catalog.md` | Event Catalog | team3 | internal | BS-06-09 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Flop_Variants.md` | Flop Variants | team3 | internal | BS-06-1X |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Betting.md` | Betting | team3 | internal | BS-06-02 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Blinds_and_Ante.md` | Blinds and Ante | team3 | internal | BS-06-03 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Coalescence.md` | Coalescence | team3 | internal | BS-06-04 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Evaluation.md` | Evaluation | team3 | internal | BS-06-05 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Exceptions.md` | Exceptions | team3 | internal | BS-06-08 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Lifecycle.md` | Lifecycle | team3 | internal | BS-06-01 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Showdown.md` | Showdown | team3 | internal | BS-06-07 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Side_Pot.md` | Side Pot | team3 | internal | BS-06-06 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md` | Card Pipeline Overview | team3 | deprecated | BS-06-12 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md` | Draw Games | team3 | deprecated | BS-06-2X |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Evaluation_Reference.md` | Hand Evaluation 통합 레퍼런스 | team3 | deprecated | Hand-Eval-Ref-v1.1 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Event_Catalog.md` | Event Catalog | team3 | deprecated | BS-06-09 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Flop_Variants.md` | Flop Variants | team3 | deprecated | BS-06-1X |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Betting.md` | Betting | team3 | deprecated | BS-06-02 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Blinds_and_Ante.md` | Blinds and Ante | team3 | deprecated | BS-06-03 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Coalescence.md` | Coalescence | team3 | deprecated | BS-06-04 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Evaluation.md` | Evaluation | team3 | deprecated | BS-06-05 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Exceptions.md` | Exceptions | team3 | deprecated | BS-06-08 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Lifecycle.md` | Lifecycle | team3 | deprecated | BS-06-01 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Showdown.md` | Showdown | team3 | deprecated | BS-06-07 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Side_Pot.md` | Side Pot | team3 | deprecated | BS-06-06 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md` | Lifecycle & State Machine — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md` | Overview | team3 | internal | BS-06-00 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md` | Stud Games | team3 | internal | BS-06-3X |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | internal | BS-06-00-triggers |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md` | Stud Games | team3 | deprecated | BS-06-3X |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | deprecated | BS-06-00-triggers |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` | Triggers & Event Pipeline — Domain Master | team3 | contract | - |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md` | Variants & Evaluation — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.4 Command Center/2.4 Command Center.md` | 2.4 Command Center | ci | generated | - |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | RFID HAL — Operator Behavior | team4 | internal | BS-04-04 |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md` | RFID HAL Interface Contract | team4 | contract | API-03 |

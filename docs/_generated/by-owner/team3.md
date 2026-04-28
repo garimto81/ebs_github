@@ -30,3 +30,4 @@ tier: generated
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md` — Stud Games
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` — Triggers
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` — Triggers & Event Pipeline — Domain Master
+- `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md` — Variants & Evaluation — Domain Master
