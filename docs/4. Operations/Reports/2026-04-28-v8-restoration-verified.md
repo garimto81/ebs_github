@@ -1,5 +1,6 @@
 ---
 title: v8.0 Workflow Verification — End-to-End Test
+owner: conductor
 status: verified
 verification_date: 2026-04-28
 authority: User test request "v8.0 처리되는지 테스트"

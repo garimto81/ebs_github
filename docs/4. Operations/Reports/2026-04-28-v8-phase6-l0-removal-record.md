@@ -1,5 +1,6 @@
 ---
 title: v8.0 Phase 6 — L0 Pre-Work Contract Removal Record
+owner: conductor
 status: archived
 archived_date: 2026-04-28
 archived_phase: v8.0 Phase 6 (L0 제거)
