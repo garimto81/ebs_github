@@ -26,6 +26,7 @@ Exit:
   2 — push / PR create 실패
   3 — 환경 오류 (gh 미설치, sibling worktree 아님 등)
   4 — v7.5 governance decision needed (rebase 충돌 → conflict_resolver.py 위임 대기)
+  5 — SG-028b legacy mode (EBS_GOV_MODE=v71_decision_owner) — manual triage 필요
 """
 from __future__ import annotations
 
@@ -38,6 +39,14 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 AUTO_MERGE_LABEL = "auto-merge"
+LEGACY_MODE_ENV = "EBS_GOV_MODE"
+LEGACY_MODE_VALUE = "v71_decision_owner"
+
+
+def _is_legacy_mode() -> bool:
+    """SG-028b: EBS_GOV_MODE=v71_decision_owner 활성화 여부 (conflict_resolver 와 동일 규칙)."""
+    import os as _os
+    return _os.environ.get(LEGACY_MODE_ENV, "").strip() == LEGACY_MODE_VALUE
 
 
 def _run(cmd: list[str]) -> tuple[int, str, str]:
@@ -156,6 +165,11 @@ def prepare_branch(branch: str, dry_run: bool) -> dict:
                 log["error"] = "rebase conflict — v7.5 triage request written"
                 log["triage"] = "decision_needed"
                 return log
+            if triage_rc == 5:
+                # SG-028b legacy mode active. rebase in-progress 유지, manual 대기.
+                log["error"] = "rebase conflict — legacy mode (manual triage required)"
+                log["triage"] = "legacy_manual"
+                return log
             # analyze 실패 → fall back to v5.1 abort (호환)
             _run(["git", "rebase", "--abort"])
             log["error"] = f"rebase conflict + triage failed (rc={triage_rc})"
@@ -237,13 +251,122 @@ def _infer_title(branch: str) -> str:
     return f"{branch} (v5.0 auto)"
 
 
+def _self_test() -> int:
+    """SG-028b: claim release 매칭 + legacy mode 감지 단위 테스트."""
+    import os as _os
+    failures: list[str] = []
+
+    # === claim release matching ===
+    sample_active = [
+        {"id": 14, "team": "conductor", "pr": None, "task": "SG-022 deprecate",
+         "started": "2026-04-27T08:16:11Z", "scope": ["team4-cc/docker/**"]},
+        {"id": 16, "team": "conductor", "pr": None, "task": "INFRA alignment",
+         "started": "2026-04-27T23:48:12Z", "scope": ["docker-compose.yml"]},
+        {"id": 18, "team": "conductor", "pr": "https://github.com/x/y/pull/14",
+         "task": "SG-028b: v7.5 escape hatch enforcement",
+         "started": "2026-04-28T01:00:00Z",
+         "scope": ["tools/conflict_resolver.py", "tools/team_v5_merge.py"]},
+    ]
+
+    # 1. PR URL 정확 일치 → #18
+    m = _match_claim_for_release(sample_active, "https://github.com/x/y/pull/14", "anything")
+    if not m or m["id"] != 18:
+        failures.append(f"PR URL match: expected #18, got {m and m.get('id')}")
+    else:
+        print("[ok] match by PR URL → #18")
+
+    # 2. branch slug 매칭 (task 내) → SG-028b 슬러그가 task 에 포함된 #18
+    m = _match_claim_for_release(sample_active, None, "work/conductor/sg028b-stabilization")
+    if not m or m["id"] != 18:
+        failures.append(f"branch slug match: expected #18, got {m and m.get('id')}")
+    else:
+        print(f"[ok] match by branch slug 'sg028b-stabilization' → #{m['id']}")
+
+    # 3. 매칭 실패 시 None (oldest 폴백 금지) — bug 재현 시나리오
+    m = _match_claim_for_release(sample_active, "https://nonexistent/url", "work/conductor/unrelated-foo-1234")
+    if m is not None:
+        failures.append(f"no-match fallback bug: should be None, got #{m.get('id')}")
+    else:
+        print("[ok] no oldest-fallback (silent skip on miss)")
+
+    # 4. branch 명 정확 일치
+    sample_with_branch = [
+        {"id": 100, "team": "team2", "pr": None, "branch": "work/team2/api-bar",
+         "task": "API rename", "started": "2026-01-01T00:00:00Z", "scope": []},
+    ]
+    m = _match_claim_for_release(sample_with_branch, None, "work/team2/api-bar")
+    if not m or m["id"] != 100:
+        failures.append(f"exact branch match: expected #100, got {m and m.get('id')}")
+    else:
+        print("[ok] match by exact branch name → #100")
+
+    # 5. 빈 list → None
+    m = _match_claim_for_release([], "any", "any")
+    if m is not None:
+        failures.append("empty active list should return None")
+    else:
+        print("[ok] empty active list → None")
+
+    # 6. 너무 짧은 slug (3 chars) 은 매칭 안 함 (false positive 방지)
+    short_slug_active = [
+        {"id": 200, "team": "x", "pr": None, "task": "abc related work",
+         "started": "2026-01-01T00:00:00Z", "scope": []},
+    ]
+    m = _match_claim_for_release(short_slug_active, None, "work/x/abc")
+    if m is not None:
+        failures.append(f"short slug should not match, got #{m.get('id')}")
+    else:
+        print("[ok] short slug (<4 chars) → no match (false-positive guard)")
+
+    # === legacy mode detection ===
+    saved_env = _os.environ.get(LEGACY_MODE_ENV)
+    try:
+        _os.environ.pop(LEGACY_MODE_ENV, None)
+        if _is_legacy_mode():
+            failures.append("legacy mode should be False without env")
+        _os.environ[LEGACY_MODE_ENV] = LEGACY_MODE_VALUE
+        if not _is_legacy_mode():
+            failures.append("legacy mode should be True with correct env")
+        _os.environ[LEGACY_MODE_ENV] = "wrong"
+        if _is_legacy_mode():
+            failures.append("legacy mode should be False with wrong value")
+        print("[ok] legacy mode env detection (team_v5_merge side)")
+    finally:
+        if saved_env is None:
+            _os.environ.pop(LEGACY_MODE_ENV, None)
+        else:
+            _os.environ[LEGACY_MODE_ENV] = saved_env
+
+    # === conflict_resolver self-test 연동 ===
+    resolver = REPO / "tools" / "conflict_resolver.py"
+    if resolver.exists():
+        rc, out, err = _run([sys.executable, str(resolver), "self-test"])
+        if rc != 0:
+            failures.append(f"conflict_resolver self-test rc={rc}: {(out + err)[-300:]}")
+        else:
+            print("[ok] conflict_resolver.py self-test PASS (downstream)")
+
+    if failures:
+        print(f"\n[FAIL] {len(failures)} failure(s):", file=sys.stderr)
+        for f in failures:
+            print(f"  - {f}", file=sys.stderr)
+        return 1
+    print("\n[ok] team_v5_merge self-test passed (SG-028b coverage)")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--branch", default="",
                     help="대상 work 브랜치 (기본: 현재 체크아웃된 브랜치)")
     ap.add_argument("--dry-run", action="store_true",
                     help="PR body 미리 보기 + rebase/push/create 안 함")
+    ap.add_argument("--self-test", action="store_true",
+                    help="SG-028b: claim release 매칭 + legacy mode 단위 테스트 실행")
     args = ap.parse_args()
+
+    if args.self_test:
+        return _self_test()
 
     # 환경 체크
     ok, msg = _check_env()
@@ -273,7 +396,8 @@ def main() -> int:
     print(json.dumps(prep, indent=2, ensure_ascii=False))
     if prep.get("error"):
         if "rebase conflict" in prep["error"]:
-            if prep.get("triage") == "decision_needed":
+            triage_state = prep.get("triage")
+            if triage_state == "decision_needed":
                 print("\n=== v7.5 Autonomous Triage 활성화 ===", file=sys.stderr)
                 print("rebase 충돌 감지. LLM judgment 대기 중.", file=sys.stderr)
                 print("\n다음 단계:", file=sys.stderr)
@@ -283,6 +407,17 @@ def main() -> int:
                 print("  4. python tools/team_v5_merge.py  # 재호출", file=sys.stderr)
                 print("\nSpec: docs/4. Operations/Multi_Session_Workflow.md §v7.5", file=sys.stderr)
                 return 4
+            if triage_state == "legacy_manual":
+                # SG-028b: escape hatch active. autonomous flow 차단.
+                print(f"\n=== {LEGACY_MODE_ENV}={LEGACY_MODE_VALUE} 활성화 — Manual Triage ===",
+                      file=sys.stderr)
+                print("rebase 충돌 감지. 자율 apply 거부됨 (legacy mode).", file=sys.stderr)
+                print("\n다음 단계:", file=sys.stderr)
+                print("  1. 충돌 파일 직접 편집 + git add", file=sys.stderr)
+                print("  2. git rebase --continue", file=sys.stderr)
+                print("  3. python tools/team_v5_merge.py  # 재호출 (push 단계 진입)", file=sys.stderr)
+                print(f"\n해제: unset {LEGACY_MODE_ENV}", file=sys.stderr)
+                return 5
             return 1
         return 2
 
@@ -306,12 +441,66 @@ def main() -> int:
     return 0
 
 
+def _normalize_for_match(s: str) -> str:
+    """SG-028b: 매칭용 정규화 (lowercase + alphanumeric only). 하이픈/공백 차이 흡수."""
+    return "".join(c for c in (s or "").lower() if c.isalnum())
+
+
+def _match_claim_for_release(active: list, pr_url: str | None, branch: str) -> dict | None:
+    """SG-028b: claim release 후보 매칭. oldest-fallback 제거 (silent skip on miss).
+
+    매칭 우선순위:
+      1. PR URL 정확 일치 (claim.pr == pr_url)
+      2. branch 명 정확 일치 (claim.branch == branch)
+      3. branch slug 의 segment (>=4 chars) 가 task 또는 scope 에 포함 (정규화 substring)
+
+    정규화: 양쪽을 lowercase + alphanumeric-only 로 변환 후 substring 비교.
+    예: branch "work/conductor/sg028b-stabilization" → slug parts ["sg028b", "stabilization"]
+        task "SG-028b: v7.5 escape hatch enforcement" → "sg028bv75escapehatchenforcement"
+        "sg028b" 가 task normalized 안에 substring → MATCH
+
+    매칭 실패 시 None 반환 (절대 oldest 폴백 안 함). 사용자가 수동 release 결정.
+
+    Args:
+        active: list of claim dicts
+        pr_url: PR URL (Phase 2 종료 시점 알려진 경우)
+        branch: 현재 work 브랜치 명 (e.g. "work/team2/foo")
+    """
+    if not active:
+        return None
+    # 1. PR URL 정확 일치
+    if pr_url:
+        for c in active:
+            if c.get("pr") == pr_url:
+                return c
+    # 2. branch 명 정확 일치
+    for c in active:
+        if c.get("branch") == branch:
+            return c
+    # 3. branch slug segment (>=4 chars) 매칭 (정규화 substring)
+    if not branch:
+        return None
+    slug = branch.rsplit("/", 1)[-1]
+    parts = [p for p in slug.split("-") if len(p) >= 4]
+    if not parts:
+        return None  # 너무 짧은 slug → false positive 방지
+    for c in active:
+        task_norm = _normalize_for_match(c.get("task", ""))
+        scope_blob = " ".join(str(s) for s in (c.get("scope") or []))
+        scope_norm = _normalize_for_match(scope_blob)
+        for part in parts:
+            pn = _normalize_for_match(part)
+            if pn and (pn in task_norm or pn in scope_norm):
+                return c
+    return None  # silent skip — 폴백 안 함
+
+
 def _release_v5_1_claim(branch: str, team: str, pr_url: str | None) -> None:
     """v5.1 Pre-Work Contract: 이 branch 와 연결된 claim 자동 release.
 
-    Active_Work.md 에서 team 이 편집한 scope 를 역추적. PR URL 이 일치하거나
-    해당 team 의 최신 claim 을 해제. 실패 시 침묵 (coordination 도구이므로
-    PR 동작에 영향 주지 않음).
+    SG-028b: oldest-fallback 제거. PR URL / branch 명 / branch slug 매칭만 수행.
+    매칭 실패 시 silent skip (사용자가 수동 release 결정). 실패 시에도 PR 자체에는
+    영향 없음 (coordination 도구).
     """
     cli = REPO / "tools" / "active_work_claim.py"
     if not cli.exists():
@@ -327,11 +516,11 @@ def _release_v5_1_claim(branch: str, team: str, pr_url: str | None) -> None:
         active = data.get("active", [])
         if not active:
             return
-        # PR URL 매칭 우선. 없으면 가장 오래된 active claim 을 대상으로
-        target = next((c for c in active if c.get("pr") == pr_url), None)
-        if target is None and active:
-            target = sorted(active, key=lambda x: x.get("started", ""))[0]
+        target = _match_claim_for_release(active, pr_url, branch)
         if target is None:
+            # SG-028b: oldest 폴백 금지. 사용자에게 안내.
+            print(f"   [info] no active claim matches PR/branch — skipping release")
+            print(f"   (manual release: python tools/active_work_claim.py release --id <ID>)")
             return
         cid = target.get("id")
         # PR URL 갱신 후 release

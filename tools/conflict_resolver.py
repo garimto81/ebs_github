@@ -27,6 +27,7 @@ Exit codes:
   2  apply 실패 (verification fail, rebase --continue 실패 등)
   3  환경 오류 (gh 미설치, repo 경로 이상)
   4  user-escalation 필요 (모든 자율 판정 실패)
+  5  legacy mode active (EBS_GOV_MODE=v71_decision_owner) — manual triage 필요 (SG-028b)
 """
 from __future__ import annotations
 
@@ -46,7 +47,29 @@ POLICY_PATH = REPO / "docs" / "2. Development" / "2.5 Shared" / "team-policy.jso
 REGISTRY_PATH = REPO / "docs" / "4. Operations" / "Conflict_Registry.md"
 REQUEST_FILE = REPO / ".conflict_request.json"
 DECISION_FILE = REPO / ".conflict_decision.json"
+LEGACY_MARKER_FILE = REPO / ".conflict_legacy_marker"
 SCHEMA_VERSION = "v7.5"
+
+LEGACY_MODE_ENV = "EBS_GOV_MODE"
+LEGACY_MODE_VALUE = "v71_decision_owner"
+
+
+def _is_legacy_mode() -> bool:
+    """SG-028b: EBS_GOV_MODE=v71_decision_owner 활성화 여부."""
+    return os.environ.get(LEGACY_MODE_ENV, "").strip() == LEGACY_MODE_VALUE
+
+
+def _legacy_manual_instructions() -> list[str]:
+    return [
+        f"[legacy] {LEGACY_MODE_ENV}={LEGACY_MODE_VALUE} 활성화. 자율 apply 거부.",
+        "Manual triage 절차:",
+        "  1. 충돌 파일 직접 편집 (Conflict marker 제거)",
+        "  2. git add <resolved-files>",
+        "  3. git rebase --continue   (또는 git merge --continue)",
+        "  4. python tools/team_v5_merge.py   # PR push 단계 재진입",
+        "",
+        f"escape hatch 해제: unset {LEGACY_MODE_ENV}",
+    ]
 
 
 def _run(cmd: list[str], check: bool = False) -> tuple[int, str, str]:
@@ -207,7 +230,28 @@ def cmd_analyze(args: argparse.Namespace) -> int:
         print("[info] no conflicts detected", file=sys.stderr)
         return 0
     request = _build_request()
+    legacy = _is_legacy_mode()
+    request["legacy_mode"] = legacy
+    if legacy:
+        request["legacy_mode_env"] = f"{LEGACY_MODE_ENV}={LEGACY_MODE_VALUE}"
     REQUEST_FILE.write_text(json.dumps(request, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    if legacy:
+        # SG-028b: marker 작성 + 자율 분기 차단
+        LEGACY_MARKER_FILE.write_text(
+            json.dumps({
+                "request_id": request["request_id"],
+                "branch": request["branch"],
+                "timestamp": request["timestamp"],
+                "reason": f"{LEGACY_MODE_ENV}={LEGACY_MODE_VALUE}",
+            }, indent=2),
+            encoding="utf-8",
+        )
+        for line in _legacy_manual_instructions():
+            print(line, file=sys.stderr)
+        print(f"\n[legacy] context dump → {REQUEST_FILE.name} (참고용, apply 실행 안 함)", file=sys.stderr)
+        return 5
+
     print(f"[info] {len(request['conflicts'])} conflicted file(s). Request → {REQUEST_FILE}")
     print(f"[info] Next: LLM session reads {REQUEST_FILE.name}, writes {DECISION_FILE.name}, runs:")
     print(f"        python tools/conflict_resolver.py apply")
@@ -328,6 +372,12 @@ def _apply_one(decision: dict[str, Any]) -> tuple[bool, str]:
 
 
 def cmd_apply(args: argparse.Namespace) -> int:
+    # SG-028b: legacy mode 시 자율 apply 거부 (escape hatch enforcement)
+    if _is_legacy_mode():
+        for line in _legacy_manual_instructions():
+            print(line, file=sys.stderr)
+        return 5
+
     decision_path = Path(args.decision_file) if args.decision_file else DECISION_FILE
     if not decision_path.exists():
         print(f"[error] decision file not found: {decision_path}", file=sys.stderr)
@@ -421,6 +471,7 @@ def cmd_apply(args: argparse.Namespace) -> int:
     })
 
     REQUEST_FILE.unlink(missing_ok=True)
+    LEGACY_MARKER_FILE.unlink(missing_ok=True)
     decision_path.unlink(missing_ok=True)
     print(f"[ok] resolved: {summary}")
     return 0
@@ -499,7 +550,7 @@ def cmd_ci_only(args: argparse.Namespace) -> int:
 
 
 def cmd_self_test(args: argparse.Namespace) -> int:
-    """인공 시나리오로 hunk 추출 + SSOT lookup 검증 (no Git mutation)."""
+    """인공 시나리오로 hunk 추출 + SSOT lookup + legacy mode 검증 (no Git mutation)."""
     sample = """before
 <<<<<<< HEAD
 ours line A
@@ -510,6 +561,7 @@ theirs line A
 after
 """
     tmp = REPO / ".self_test_conflict.tmp"
+    saved_env = os.environ.get(LEGACY_MODE_ENV)
     try:
         tmp.write_text(sample, encoding="utf-8")
         hunks = _extract_hunks(".self_test_conflict.tmp")
@@ -527,10 +579,31 @@ after
         assert ssot2["publisher"] == "team1", f"expected team1, got {ssot2}"
         print(f"[ok] team-owns lookup: publisher={ssot2['publisher']}")
 
+        # SG-028b: legacy mode detection
+        os.environ.pop(LEGACY_MODE_ENV, None)
+        assert _is_legacy_mode() is False, "legacy mode should be False without env"
+        os.environ[LEGACY_MODE_ENV] = LEGACY_MODE_VALUE
+        assert _is_legacy_mode() is True, "legacy mode should be True with env"
+        os.environ[LEGACY_MODE_ENV] = "wrong_value"
+        assert _is_legacy_mode() is False, "legacy mode should be False with wrong value"
+        os.environ[LEGACY_MODE_ENV] = f" {LEGACY_MODE_VALUE} "  # whitespace tolerance
+        assert _is_legacy_mode() is True, "legacy mode should tolerate whitespace"
+        print(f"[ok] legacy mode detection: env-based on/off correct")
+
+        # Manual instructions are non-empty + mention env var
+        instr = _legacy_manual_instructions()
+        assert any(LEGACY_MODE_ENV in line for line in instr)
+        assert any("rebase --continue" in line for line in instr)
+        print(f"[ok] legacy manual instructions: {len(instr)} lines, env mentioned")
+
         print("[ok] self-test passed")
         return 0
     finally:
         tmp.unlink(missing_ok=True)
+        if saved_env is None:
+            os.environ.pop(LEGACY_MODE_ENV, None)
+        else:
+            os.environ[LEGACY_MODE_ENV] = saved_env
 
 
 def main() -> int:
