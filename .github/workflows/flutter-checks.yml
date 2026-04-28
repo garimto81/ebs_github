@@ -83,10 +83,12 @@ jobs:
         if: ${{ matrix.project.uses_codegen }}
         run: dart run build_runner build --delete-conflicting-outputs
 
-      # --fatal-warnings: warning 도 fail 처리 (unused_import 등 누적 차단).
-      # info 등급은 통과 (prefer_const_constructors 등은 권고 수준).
-      - name: flutter analyze (--fatal-warnings)
-        run: flutter analyze --fatal-warnings
+      # Flutter 3.41+ 기본값: --fatal-infos + --fatal-warnings 모두 ON.
+      # info 등급 (prefer_const_constructors 등 권고 사항) 누적 단계 첫 도입이므로
+      # --no-fatal-infos 로 info 통과 + --fatal-warnings 명시 (warning 은 fail).
+      # 향후 codebase 의 info 정리 후 strict 모드 (--fatal-infos 추가) 검토.
+      - name: flutter analyze (--no-fatal-infos --fatal-warnings)
+        run: flutter analyze --no-fatal-infos --fatal-warnings
 
       # unit + widget test. integration_test 는 본 gate 제외 (실 device 필요).
       - name: flutter test
