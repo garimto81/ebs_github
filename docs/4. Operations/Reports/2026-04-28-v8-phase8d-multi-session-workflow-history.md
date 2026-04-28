@@ -1,5 +1,6 @@
 ---
 title: Multi_Session_Workflow.md — v7.2 5-Session Pipeline + 변경 이력 (Archived 2026-04-28)
+owner: conductor
 status: archived
 archived_date: 2026-04-28
 archived_phase: v8.0 Phase 8d

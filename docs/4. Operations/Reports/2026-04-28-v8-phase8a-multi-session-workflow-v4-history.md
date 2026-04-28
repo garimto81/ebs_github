@@ -1,5 +1,6 @@
 ---
 title: Multi-Session Workflow — v4.0/v4.1 → v5.0 전환 이유 (Archived 2026-04-28)
+owner: conductor
 status: archived
 archived_date: 2026-04-28
 archived_phase: v8.0 Phase 8a

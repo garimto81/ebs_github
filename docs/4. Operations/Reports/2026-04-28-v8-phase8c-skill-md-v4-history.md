@@ -1,5 +1,6 @@
 ---
 title: SKILL.md (team) — v4.0/v4.1 폐기 이유 (Archived 2026-04-28)
+owner: conductor
 status: archived
 archived_date: 2026-04-28
 archived_phase: v8.0 Phase 8c
