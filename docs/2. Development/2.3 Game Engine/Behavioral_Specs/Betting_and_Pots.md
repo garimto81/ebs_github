@@ -707,4 +707,1000 @@ biggest_bet_amt = 2000 (Straddle 기준)
 
 ---
 
-<!-- CHUNK-3: §4 Exceptions + §5 Data Models + Appendix A/B -->
+## 4. Exceptions & Edge Cases
+
+### 4.1 베팅 액션 거부 (BS-06-02 §액션 정의서)
+
+각 액션의 거부 조건과 처리:
+
+#### 4.1.1 FOLD 거부 / 처리
+
+- 이미 folded 된 플레이어의 FOLD 시도 → REJECTED
+- FOLD 후 처리:
+  - `num_active_players == 1` → **HAND_COMPLETE 즉시 전이**, 남은 1인에게 팟 지급
+  - `num_active_players >= 2` → `is_betting_round_complete(state)` 호출:
+    - true → 다음 스트리트 전이 (남은 플레이어들이 이미 동액 완료)
+    - false → 베팅 라운드 계속
+
+#### 4.1.2 CHECK 특수 — BB Check Option (PRE_FLOP)
+
+- 조건: `GamePhase == PRE_FLOP && biggest_bet_amt == big_blind && action_on == BB_index`
+- 처리: CHECK 허용
+- 이후: 누군가 레이즈하면 BB 에게 다시 액션 턴 부여
+- 보호 메커니즘: `acted_this_round` 에 BB 미포함 (블라인드 포스팅은 액션 아님). `is_betting_round_complete` 의 조건 3 가 BB 가 액션 기회를 갖기 전 라운드 종료 막음.
+
+#### 4.1.3 CALL 특수 — Short Call
+
+- 예: biggest_bet = 100, player.stack = 70, player.current_bet = 0
+- 처리: 70 자동 납부, all-in 으로 상태 전환, 30 칩 side pot 분리
+- 금액 자동 계산: 엔진이 `min(call_amount, player.stack)` 으로 재계산. CC/외부에서 amount 전달하더라도 무시.
+
+#### 4.1.4 RAISE 특수 — Short all-in raise
+
+- 예: min_raise = 200, player.stack = 150
+- 처리: 150 올인 허용, side pot 분리
+- 다음 raise min: 이전 full raise 150 기준 유지 (100 추가 아님)
+
+#### 4.1.5 ALL-IN 4 케이스 (BS-06-02 §6 액션 후 처리)
+
+1. **Soft all-in**: `all_in_amount < biggest_bet_amt` → side pot 즉시 생성, 다음 액션 = next_active_player (올인 제외)
+2. **일반 all-in**: `all_in_amount >= biggest_bet_amt` → 새 biggest_bet_amt 설정, 다른 플레이어 match/call 필요
+3. **마지막 활성 플레이어 all-in**: `num_active_players - allin_count == 1` → 자동 betting_round_complete=true, runout 자동 진행
+4. **모두 all-in**: `num_active_players == allin_count` → 보드 자동 딜, SHOWDOWN 직행, 수동 입력 불가
+
+> ALL-IN 후 라운드 완료 판정: `is_betting_round_complete(state)` 호출. 케이스 3/4 는 true 반환하지만 공통 호출 경로 유지.
+
+### 4.2 Under-raise (WSOP Rule 95) (BS-06-02 §5.1)
+
+**원칙**: CC 가 제출한 raise 금액이 `min_raise_total` 미만인 경우, 해당 금액이 이전 raise 의 50% 이상인지에 따라 자동 분기.
+
+#### 분기 로직
+
+```
+requested_raise_to = action.toAmount
+previous_bet = biggest_bet_amt
+previous_raise_increment = last_raise_increment  // 직전 raise 증가분
+requested_increment = requested_raise_to - previous_bet
+
+if requested_raise_to >= min_raise_total:
+    # 정상 raise → 그대로 수락
+    apply_raise(requested_raise_to)
+
+elif requested_increment >= previous_raise_increment * 0.5:
+    # 50% rule: Full raise 강제 (Rule 95 상단)
+    apply_raise(min_raise_total)  // 자동 보정
+    log_warn("raise amount adjusted to min_raise per Rule 95")
+
+else:
+    # 50% 미만 → Call 로 변환 (Rule 95 하단)
+    apply_call()
+    log_warn("raise amount too small, converted to call per Rule 95")
+```
+
+#### 예시
+
+**상황**: NLH, BB=10. P1 bet 20 → P2 raise to 50 → P3 요청: raise to 65
+- `requested_increment = 15`, `min_raise_total = 80`
+- 65 < 80 → 정상 raise 아님
+- `15 >= 30 * 0.5 = 15` → **Full raise 강제** → 자동 보정 80
+
+**P3 가 55 요청**: `requested_increment = 5`, `5 < 15` → **Call 로 변환** → P3 call 50
+
+#### UI 계층 정책
+
+CC 의 raise 슬라이더는 `[min_raise_total, max_raise_total]` 범위만 허용하여 일반적으로 본 규정 미발동. 다음 경우에 엔진이 Rule 95 자동 적용:
+- 외부 API (harness, 시뮬레이터) 가 임의 금액 제출
+- CC UI advanced mode 에서 수동 입력 허용
+- RFID 칩 카운트 오인식
+
+#### All-in 예외
+
+`amount == stack` 인 경우 본 규정 아닌 **§4.3 All-in Below Min Raise (Rule 96)** 적용.
+
+### 4.3 Incomplete All-in (WSOP Rule 96) (BS-06-02 §6.1)
+
+**원칙**: NL/PL 게임에서 all-in 금액이 `min_raise_total` 미만인 경우, 해당 베팅 라운드에서 **이미 행동한 플레이어에게 action 을 재개하지 않는다**.
+
+#### 분기 조건
+
+```
+allin_size = player.stack  // all-in 금액 (current_bet 제외 잔여 스택)
+previous_bet = biggest_bet_amt
+current_bet = player.current_bet
+raise_to = current_bet + allin_size  // all-in 후 total bet
+raise_increment = raise_to - previous_bet
+min_full_raise_increment = max(big_blind, last_raise_increment)
+
+if raise_increment >= min_full_raise_increment:
+    # Full raise → action reopen
+    betting.actedThisRound = {player.index}
+    betting.lastAggressor = player.index
+    betting.minRaise = raise_increment
+    betting.currentBet = raise_to
+    betting.raiseCount += 1
+else:
+    # Incomplete all-in (Rule 96) — call matching 만
+    betting.currentBet = max(betting.currentBet, raise_to)
+    # 아래 3개는 변경 없음 (action reopen 금지):
+    #   betting.actedThisRound  (기존 유지)
+    #   betting.lastAggressor   (기존 aggressor 지위)
+    #   betting.minRaise        (기존 raise 기준선)
+    betting.actedThisRound.add(player.index)
+```
+
+#### 예시
+
+NLH, BB=10, 3인 핸드. P1 raise 30 → P2 call 30 → P3 all-in 45 (stack=45)
+- `raise_increment = 15`, `min_full_raise_increment = 20`
+- `15 < 20` → **Incomplete all-in (Rule 96)**
+- `betting.currentBet = 45`, `actedThisRound = {P1, P2, P3}` 유지
+- P1, P2 call 45 매칭만 가능, raise 옵션 **없음**
+- 액션 라운드 종료 → Flop 진행
+
+P3 가 50 (all-in): `raise_increment = 20 >= 20` → Full raise → P1, P2 reopen.
+
+#### FL 게임 적용
+
+raise 증가분 고정 (`low_limit` / `high_limit`) 이므로 incomplete all-in 은 `raise_increment < fixed_raise_amount` 조건. Rule 100.b raise cap (§3.14) 와 **독립**.
+
+#### Side Pot 연동
+
+Incomplete all-in 도 side pot 생성 (BS-06-06). Action reopen 금지와 side pot 생성은 **병행 적용**.
+
+### 4.4 Bomb Pot 모드 (BS-06-02 §특수 상황 / BS-06-03 §Bomb Pot)
+
+**조건**: `bomb_pot_active == true` AND `bomb_pot_amount > 0`
+
+**절차**:
+1. NEW HAND 버튼 클릭
+2. 모든 활성 플레이어가 `bomb_pot_amount` 자동 입금 → `pot += bomb_pot_amount × num_active_players`
+3. **PRE_FLOP 베팅 라운드 스킵** → 직접 FLOP 진행
+4. Flop 카드 3장 공개 (RFID 또는 수동, BS-06-12 권위)
+5. 이후 표준 베팅 라운드 (FLOP → TURN → RIVER → SHOWDOWN)
+
+**특징**: 캐시 게임 이벤트성 진행. PRE_FLOP 베팅 없이 즉각 보드 진행으로 스릴 증가.
+
+> Straddle 과 Bomb Pot 동시 활성화 불가 (PRE_FLOP 진행 방식 충돌).
+
+### 4.5 Live Ante (BS-06-02 §Live Ante)
+
+**트리거**: `ante > 0 && GamePhase == PRE_FLOP`
+
+**처리**:
+1. **첫 액션 플레이어 (SB)**: 운영자에게 Option 제공
+   - "With ante" 선택 → first_to_act_bet_min = BB + ante (이미 낸 칩 포함)
+   - "Without ante" 선택 → first_to_act_bet_min = BB (ante 는 팟에만 남음)
+2. **선택 후**: CHECK 가능 조건 = `biggest_bet_amt == player.current_bet`
+3. **후속 플레이어**: 이전 선택과 무관하게 정상 베팅 규칙 적용
+
+### 4.6 Straddle (BS-06-02 §Straddle / BS-06-03 §Straddle)
+
+**트리거**: `straddle_enabled == true && straddle_index >= 0`
+
+**처리**:
+1. 스트래들 플레이어: 3번째 블라인드 자동 납부 (보통 2× BB)
+2. 액션 순서 변경:
+   ```
+   SB → BB → Straddle → UTG → ... → (back to SB if needed)
+   ```
+3. 스트래들 플레이어 check option: PRE_FLOP 에서 누군가 레이즈하기 전까지 CHECK 가능
+4. `biggest_bet_amt` 초기값: straddle 금액
+
+### 4.7 Multiple All-ins (BS-06-02 / BS-06-06)
+
+**상황**: 3명 이상 다른 금액으로 올인
+
+**예**: P1 all-in 100, P2 all-in 300, P3 all-in 500
+
+**처리**:
+```
+Main pot: 100 × 3명 = 300 (P1, P2, P3 eligible)
+Side pot A: (300-100) × 2명 = 400 (P2, P3 eligible)
+Side pot B: (500-300) × 1명 = 200 (P3 eligible)
+```
+
+**SHOWDOWN**:
+1. 팟별 독립 승자 결정
+2. P1 최고 핸드 → 300 팟 수령
+3. P2/P3 중 최고 → 400 팟 수령
+4. P3 최고 (P3 만 eligible) → 200 팟 자동
+
+### 4.8 Time Bank / At-Seat (WSOP Rule 80-83) (BS-06-02 §특수 상황)
+
+액션 타임아웃 및 플레이어 자리 규정. EBS 의 `state.action_timeout_ms` 필드 = 구현 접점.
+
+**Rule 80 — "Time" 호출**:
+- 다른 플레이어가 "time" 요청 시 딜러/CC 가 30~60초 카운트다운
+- EBS 구현: CC UI "Call Time" 버튼 = 수동 트리거. 별도 엔진 이벤트 불필요 (시각적 타이머만)
+
+**Rule 82 — "At Your Seat"**:
+- 플레이어는 의자 닿거나 닿을 거리 이내여야 라이브 핸드 참여
+- EBS 구현: 물리적 자리 감지 = Team 4 CC hardware layer 담당. 엔진 검증 불가.
+
+**Rule 83 — Action Pending 자리 이탈**:
+- 플레이어가 action 대기 중 자리 떠나면 자동 폴드 + 패널티
+- EBS 구현: `action_timeout_ms` 초과 시 `TimeoutFold` 이벤트 자동 발행 (Triggers 도메인 IE-XX 참조). 엔진 자동 fold 보장.
+
+**CC UI 구현 책임**:
+- "Call Time" 버튼 (Rule 80)
+- 카운트다운 타이머 표시
+- 자리 이탈 감지 시 수동 플래그
+- `TimeoutFold` 후 복귀 시 패널티 추적 (감사용)
+
+### 4.9 Heads-up Button Adjust (WSOP Rule 87) (BS-06-03 §Heads-up)
+
+**원칙**: 3명+ → 2명 전환 시, 직전 핸드에서 BB 였던 플레이어가 다음 핸드에도 연속으로 BB 가 되지 않도록 button 조정.
+
+#### 전환 감지
+
+```
+HAND_COMPLETE 시점:
+    num_active_next = count(seats where status != SITTING_OUT and stack > 0)
+    if num_active_next == 2 and state.num_active_prev_hand >= 3:
+        apply_heads_up_button_adjustment()
+```
+
+#### Button 조정 규칙
+
+```
+apply_heads_up_button_adjustment():
+    prev_bb = state.prev_hand_bb_seat  // 직전 핸드 BB 위치
+    remaining = [seats[i] for i in active_seats]
+
+    if prev_bb in remaining:
+        # 이전 BB 살아있음 → 다음 핸드 Dealer(=SB) 로 전환
+        new_dealer_seat = prev_bb
+    else:
+        # 이전 BB 탈락 → 정상 회전
+        new_dealer_seat = (state.dealer_seat + 1) % n
+
+    state.dealer_seat = new_dealer_seat
+```
+
+**의존 State**: `state.prev_hand_bb_seat: int?` 필요. HAND_COMPLETE 시 현재 `bbSeat` 복사.
+
+#### 예시
+
+3인 토너먼트, 직전 P3 BB, 핸드에서 P1 탈락:
+- 직전: dealer=P1, sb=P2, bb=P3 → P1 탈락, P2/P3 생존, `prev_hand_bb_seat = P3`
+- 다음 (조정 전): dealer=P2, sb=P2, bb=P3 → **P3 연속 BB (위반)**
+- 다음 (조정 후, Rule 87): dealer=P3(=SB), bb=P2 → P2 가 BB, P3 SB
+
+### 4.10 Missed Blind 복귀 (WSOP Rule 86) (BS-06-03 §Missed Blind)
+
+**원칙**: 플레이어가 SB 또는 BB 포지션을 놓친 후 (sit out, 자리 이탈 등) 복귀 시 missed blind 포스팅 의무.
+
+#### Missed Blind 감지
+
+```
+HAND_COMPLETE 시점:
+    for seat in state.seats:
+        if seat.status == SITTING_OUT:
+            if seat.index == sb_index:
+                seat.missed_sb = true
+            if seat.index == bb_index:
+                seat.missed_bb = true
+```
+
+**의존 State**: `seat.missed_sb: bool`, `seat.missed_bb: bool`.
+
+#### 의도적 회피 처벌
+
+Rule 86: "의도적으로 blind 회피" 시 두 블라인드 모두 몰수 + 패널티. 단, EBS 엔진은 의도 감지 불가:
+- Lobby seat 이동 시 Staff 수동 감시
+- Staff App "missed blind intentional" 플래그 수동 설정 허용
+- Missed blind 포스팅 없이 복귀 시 엔진은 경고만 (차단 X)
+- 패널티는 운영자 재량으로 ManagerRuling 이벤트 (IE-12 in Triggers 도메인) 로 기록. Staff 가 수동 감지 후 CC 에서 ManagerRuling(penalty_type, seat_index) 전송 → 엔진 감사 로그 + OutputEvent (HandKilled 또는 Rejected) 발행.
+
+#### 리셋 조건
+
+- 해당 blind 포지션에 도달하여 정상 포스팅 완료
+- 수동 포스팅 (다음 핸드 시작 전 `SitIn` + `PostBlinds` 옵션)
+- Tournament 새 level 시작 (선택적, House 규정에 따름)
+
+### 4.11 Dead Button (BS-06-03 §Dead Button)
+
+**상황**: 테이블에 빈 좌석이 있고 Button 이 그곳에 위치한 경우
+
+**규칙**:
+1. **Button 건너뛰기**: Button 빈 좌석이므로 "위치" 로는 존재하지 않음
+2. **SB 미포스팅 가능**: SB 빈 좌석일 수 있으므로 건너뛸 수 있음
+3. **BB 는 항상 존재**: 제자리 또는 다음 활성 플레이어
+4. **액션 순서**: Button → SB(빈) → BB → UTG (순환)
+
+```
+예: 좌석 0(빈)=Button, 좌석 1(P1)=SB, 좌석 2(빈), 좌석 3(P3)=BB
+→ SB = 좌석 1, BB = 좌석 3
+→ 액션 순서: 좌석 3 → 좌석 4 → ... → 좌석 1
+```
+
+### 4.12 Side Pot 비활성 / 미실행 (BS-06-06 §비활성)
+
+#### 사이드팟 생성 미필요
+
+- `num_allin < 2` → 1인만 올인 (나머지 계속 베팅)
+- 모든 올인 플레이어 금액 동일 → 메인팟만, 사이드팟 미필요
+- `num_remaining_players < 2` → 모두 폴드 (1인만)
+
+#### 역순 판정 미실행
+
+- `num_allin == 0` → 모두 계속 베팅, 정상 SHOWDOWN
+- `board_cards.length < game_class 최대` → 보드 미완성, 판정 시점 아님
+
+### 4.13 Showdown 비활성 / 미실행 (BS-06-07 §비활성)
+
+- `num_remaining_players == 1` → 모두 폴드, 우승자 결정 (showdown 미실행)
+- `card_reveal_type == never (3)` → 절대 공개 불가 (히든 게임)
+- `game_state != SHOWDOWN && game_state != ALL_IN_RUNOUT` → 아직 showdown 단계 아님
+- RFID 감지 실패 + WRONG_CARD → 카드 불일치, 공개 대기 (수동 입력 또는 UNDO)
+
+### 4.14 Hand 보호 — Tabled Hand (WSOP Rule 71) (BS-06-07 §핸드 보호)
+
+**원칙**: 플레이어가 명시적으로 테이블 위에 카드 공개한 경우, 딜러/엔진은 해당 핸드를 임의로 kill/muck 처리 불가.
+
+#### Tabled 상태 설정
+
+CC 가 `TableHand { seat_index }` 이벤트 (IE-11 in Triggers 도메인) 전송:
+
+```
+state.seats[seat_index].cards_tabled = true
+emit OutputEvent.HandTabled { seat_index, cards }
+```
+
+#### 보호 규칙
+
+```
+for seat in state.seats:
+    if seat.cards_tabled:
+        # Muck 금지, 카드 정보 보존
+        continue
+    else:
+        apply_muck_logic(seat)
+```
+
+#### Winning Hand 자동 수여
+
+Tabled hand 중 명백한 winning hand 가 있으면 엔진 자동 award. 딜러/CC 수동 개입 없이 판정하여 Rule 71 "dealer cannot kill tabled hand" 보장.
+
+### 4.15 Hand 복구 — Folded Hand (WSOP Rule 110) (BS-06-07 §핸드 보호)
+
+**원칙**: 딜러 오류 또는 잘못된 정보로 인한 fold 는 manager discretion 판정 후 복구 가능.
+
+#### 복구 조건
+
+1. 카드가 완전히 muck 에 섞이기 전 (state 추적)
+2. UNDO 5단계 제한 내 (Lifecycle 도메인 §4.7)
+3. ManagerRuling 이벤트 (IE-12) 명시적 승인
+
+#### 복구 절차
+
+```
+CC → ManagerRuling {
+    decision: "retrieve_fold",
+    target_seat: N,
+    rationale: "dealer error"
+}
+
+Engine:
+    # 1. UNDO 로 마지막 Fold 이벤트 취소
+    session.undo()
+    # 2. 복구 확인
+    assert state.seats[N].status == ACTIVE
+    # 3. 감사 로그 ManagerRuling 기록
+    emit OutputEvent.HandRetrieved {
+        seat: N,
+        manager_rationale: "..."
+    }
+```
+
+#### 복구 실패 조건
+
+| 조건 | 엔진 응답 |
+|------|----------|
+| 카드 이미 muck 섞임 (다음 핸드 시작) | ERROR: "card already mucked" |
+| UNDO 5단계 초과 | ERROR: "undo limit exceeded" |
+| Fold 이벤트가 아닌 경우 | ERROR: "not a fold event" |
+| target_seat 가 fold 상태 아님 | ERROR: "seat not in folded state" |
+
+### 4.16 Hand 복구 — Muck 재판정 (WSOP Rule 109) (BS-06-07 §핸드 보호)
+
+**원칙**: 기본 muck 카드는 dead 처리되나, 다음 조건 모두 충족 시 ManagerRuling 으로 재판정 가능.
+
+#### 복구 조건 (AND)
+
+1. 카드 식별 가능: Muck 시점 RFID 스캔 로그에 카드 정보 명확 (`state.muck_log: List<{seat, cards, timestamp}>` 필드 추가 예정)
+2. Winning Hand: 해당 핸드가 evaluator 기준 명백한 winning hand
+3. Manager 승인: Floor 권한의 CC 사용자가 ManagerRuling 전송
+
+#### 복구 절차
+
+```
+CC → ManagerRuling {
+    decision: "muck_retrieve",
+    target_seat: N,
+    rationale: "tabled winning hand mucked by dealer error"
+}
+
+Engine:
+    # 1. muck_log 에서 N 카드 조회
+    cards = state.muck_log.find(seat=N)
+    assert cards is not None
+
+    # 2. holeCards 복원
+    state.seats[N].holeCards = cards
+    state.seats[N].status = ACTIVE  # 또는 SHOWDOWN
+    state.seats[N].cards_tabled = true  # Rule 71 보호 활성
+
+    # 3. Showdown 재평가
+    run_showdown_evaluation()
+
+    # 4. 감사 로그
+    emit OutputEvent.MuckRetrieved {
+        seat: N,
+        cards,
+        rationale
+    }
+```
+
+#### 복구 불가
+
+- 카드 이미 다음 덱 섞임 (physical)
+- 2개 이상 seat 동시 muck retrieve 요청
+- Hand 이미 HAND_COMPLETE (새 핸드 시작 후)
+
+#### Folded Hand 복구 vs Muck Retrieve 차이
+
+| 구분 | Muck 재판정 (Rule 109) | Folded Hand 복구 (Rule 110) |
+|------|----------------------|---------------------------|
+| 대상 | 이미 muck 던진 카드 | 폴드 직후, muck 이전 |
+| 조건 | Winning hand + 식별 가능 | 딜러 오류 + UNDO 가능 |
+| 절차 | muck_log 에서 복원 | Session.undo() 로 이벤트 취소 |
+| 시점 | Showdown 전후 | Fold 직후 |
+
+> Manager 권한: CC RBAC Floor/Manager 이상만 ManagerRuling 전송 허용 (Team 4 관할). 모든 ManagerRuling 은 EventLog 영구 기록 → 감사/분쟁 해결.
+
+### 4.17 Run It Twice — 복수 보드 전개 (BS-06-07 §Run It Twice)
+
+쇼다운 후 보드가 완성되지 않은 상태에서 2명+ all-in 인 경우, 합의하에 남은 커뮤니티 카드를 복수 회 전개하여 팟 분할.
+
+#### 활성화 전제조건
+
+| 필드 | 조건 | 설명 |
+|------|------|------|
+| `special_rules.can_select_run_it_twice` | true | Run It Twice 선택 가능 |
+| `game_state` | SHOWDOWN | SHOWDOWN 상태에서만 |
+| `num_allin` | 2+ | 2명 이상 all-in |
+| `board_cards.length` | < 5 | 보드 미완성 |
+
+#### 카드 공개 처리
+
+- **1회차**: 보드 완성 후 카드 공개, 승자 판정, 팟 1/N 분배
+- **2회차**: 보드 리셋 후 재전개, 동일 공개 설정 적용
+- **최종 결과**: 각 런별 카드 공개 후 합산
+
+> Rabbit Hunting (WSOP Rule 81) 은 별개 — Lifecycle 도메인 §4.4 권위. 엔진은 `rabbit_hunt_request` 거부 (`rabbit_hunt_not_allowed`).
+
+### 4.18 Side Pot — Bomb Pot Short Contribution
+
+```
+상황: SB=500, BB=1000, 4인 칩: 300, 700, 900, 5000
+
+처리:
+1. P1: 300 All-in (SB 500 필요 부족)
+2. P2: 700 All-in (BB 1000 필요 부족)
+3. P3: 900 All-in
+4. P4: 정상 post
+
+→ Main Pot: 300×4 = 1200
+→ Side Pot 1: (700-300)×3 = 1200
+→ Side Pot 2: (900-700)×2 = 400
+```
+
+### 4.19 에러 복구 — 유효하지 않은 액션 (BS-06-02 §에러 복구)
+
+**처리 플로우**:
+1. 검증 실패 → REJECTED
+2. 에러 메시지 표시 (§3.15 검증 규칙 표 참조)
+3. 동일 플레이어에게 다시 액션 턴 제공
+4. CC UI 비활성 버튼 자동 disable
+
+**예**:
+- "최소 레이즈액은 200 칩입니다" (150 레이즈 시도)
+- 운영자는 200 이상 재입력 또는 FOLD/CALL 선택
+
+### 4.20 정상 복구 — UNDO
+
+**참조**: Lifecycle 도메인 §4.7 / BS-05-command-center
+
+- 5단계 이전 복구 가능
+- UNDO 후 액션 턴 복구, 상태 롤백
+- Blind Posting 실패 시도 UNDO 로 복귀
+
+### 4.21 Sitout 플레이어 처리 (BS-06-03 §오류 처리)
+
+```
+상황: 8인 테이블, 1명 sitout
+
+처리:
+1. Sitout 플레이어는 강제 베팅 제외
+2. 나머지 7명만 Ante 수거 (if std_ante)
+3. Blind 는 위치 기반이므로 Sitout 도 위치 도달 시 지급 필요
+```
+
+### 4.22 칩 부족 (BS-06-03 §오류 처리 Case 1)
+
+```
+상황: SB=500 필요, player.stack=300
+
+처리:
+1. 가능한 만큼 납부: 300
+2. player.status = "allin"
+3. Side Pot 발생
+4. 다음 핸드부터 플레이어 제외 또는 Re-buy
+```
+
+### 4.23 Showdown WRONG_CARD (BS-06-07 §케이스 3)
+
+```
+RFID: 7♠ 감지
+예상: A♠
+Canvas: Venue
+
+→ 경고 표시, 공개 중지
+→ 수동 입력 또는 UNDO 선택
+→ 재스캔 또는 재입력 후 공개 재진행
+```
+
+---
+
+## 5. Data Models (Pseudo-code)
+
+### 5.1 NL 최소 레이즈 계산 (BS-06-02 §금액 계산)
+
+```python
+def calc_min_raise_nl(
+    biggest_bet_amt: int,
+    last_raise_increment: int,
+    big_blind: int,
+    player_current_bet: int
+) -> int:
+    """
+    NL 레이즈 최소액 = 현재 최고 베팅 + max(BB, 이전 레이즈 증액)
+    """
+    min_raise_increment = max(big_blind, last_raise_increment)
+    min_total_bet = biggest_bet_amt + min_raise_increment
+    min_raise_amount = min_total_bet - player_current_bet
+    return max(min_raise_amount, 0)
+
+# 예시
+biggest_bet = 50; last_raise = 50; bb = 10; current_bet = 0
+=> min_raise_increment = max(10, 50) = 50
+=> min_total = 50 + 50 = 100
+=> min_amount = 100 - 0 = 100
+```
+
+### 5.2 PL 최대 베팅 계산 (BS-06-02 §금액 계산)
+
+```python
+def calc_max_raise_pl(
+    pot: int,
+    biggest_bet_amt: int,
+    player_current_bet: int,
+    player_stack: int
+) -> int:
+    """
+    PL 레이즈 최대액:
+    1) 콜 가정 → pot + call_amount
+    2) 그 팟 전체 레이즈 → biggest_bet + call_amount
+    3) 합산 = pot + call_amount + biggest_bet + call_amount
+    """
+    call_amount = biggest_bet_amt - player_current_bet
+    max_total_bet = pot + call_amount + biggest_bet_amt + call_amount
+    max_amount = min(max_total_bet - player_current_bet, player_stack)
+    return max_amount
+
+# 예시
+pot = 100; biggest_bet = 50; current_bet = 0; stack = 500
+=> call_amount = 50, max_total = 100 + 50 + 50 + 50 = 250
+=> max_amount = min(250, 500) = 250
+```
+
+### 5.3 FL 레이즈 제약 (BS-06-02 §금액 계산)
+
+```python
+def is_raise_allowed_fl(
+    num_raises_this_street: int,
+    num_active_players: int,
+    cap: int = 4
+) -> bool:
+    """
+    FL 레이즈 제약:
+    - 일반: num_raises < 4
+    - 헤즈업: 무제한
+    """
+    if num_active_players == 2:
+        return True
+    else:
+        return num_raises_this_street < cap
+
+# 예시
+num_raises = 3; active = 3 => True (4번째 가능)
+num_raises = 4; active = 3 => False (5번째 거부)
+num_raises = 4; active = 2 => True (헤즈업 무제한)
+```
+
+### 5.4 Raise Cap with tournament_heads_up (BS-06-02 §5.2 Rule 100.b)
+
+```python
+can_raise(state, limit):
+    if limit.raise_cap is None:
+        return True  # NL/PL 항상 무제한
+
+    # FL/Spread: raise cap 존재
+    if state.tournament_heads_up:
+        return True  # 토너먼트 2인 → cap 무시 (Rule 100.b)
+
+    # 캐시 게임 또는 핸드 내 2명+ → cap 적용
+    return state.betting.raise_count < limit.raise_cap
+```
+
+> `state.tournament_heads_up` 설정 주체:
+> - **BO**: 토너먼트 생성 시 player 수 추적 → 2명 도달 시 WebSocket 으로 `SET_TOURNAMENT_HEADS_UP { value: true }` (Team 2)
+> - **Lobby**: 최종 2인 상태 UI 표시
+> - **Engine**: 수동 설정 불가, BO 이벤트만
+> - **Cash game**: 항상 false 고정
+
+### 5.5 CALL 강제 재계산 (BS-06-02 §CALL §구현 강제)
+
+```dart
+case Call:
+  // 전달된 Call.amount 무시하고 재계산
+  correct_amount = biggest_bet_amt - player.current_bet
+  actual_amount = min(correct_amount, player.stack)
+  // Call.amount 는 참조하지 않는다
+  player.stack -= actual_amount
+  player.current_bet += actual_amount
+  pot.addToMain(actual_amount)
+```
+
+> `Call.amount` 를 그대로 `player.stack -= Call.amount` 로 사용하면 명세 위반. 반드시 `biggest_bet_amt - player.current_bet` 로 재계산.
+
+### 5.6 통합 포스팅 순서 (BS-06-03 §포스팅 순서 통합 알고리즘)
+
+```
+function postBlindsAndAntes(state, anteType):
+  // Step 1: Ante 포스팅 (type 분기)
+  switch anteType:
+    case 0 (Standard):
+      for each active seat in clockwise order:
+        post(seat, ante_amount, as_dead_money=true)
+    case 1 (Button):
+      post(dealer_seat, ante_amount, as_dead_money=true)
+    case 2 (BB Ante):
+      # BB 가 전원분 대납
+      post(bb_seat, ante_amount * active_count, as_dead_money=true)
+    case 3 (BB 1st):
+      # BB Ante 와 동일하되 BB 가 먼저 행동
+      post(bb_seat, ante_amount * active_count, as_dead_money=true)
+    case 4 (Live Ante):
+      # currentBet 에 포함 (Live)
+      for each active seat: post(seat, ante_amount, as_live_bet=true)
+    case 5 (TB Ante):
+      # SB+BB 합산
+      post(sb_seat, ante_amount * active_count / 2, as_dead_money=true)
+      post(bb_seat, ante_amount * active_count / 2, as_dead_money=true)
+    case 6 (TB 1st):
+      # TB Ante 와 동일하되 SB/BB 먼저 행동
+      ... (동일)
+
+  // Step 2: Blind 포스팅
+  post(sb_seat, sb_amount, as_live_bet=true)
+  post(bb_seat, bb_amount, as_live_bet=true)
+  if num_blinds == 3:
+    post(third_seat, third_amount, as_live_bet=true)
+
+  // Step 3: Short Contribution
+  // stack < required → 전액 투입 + allIn → Dead Money 로 Main Pot
+
+  // Step 4: 상태 초기화
+  acted_this_round = {}  # 블라인드/ante 포스터 미포함
+  street = preflop
+  firstToAct = nextActiveAfter(bb_seat)  # Straddle 시 nextActiveAfter(straddle_seat)
+```
+
+### 5.7 Side Pot 분리 알고리즘 (BS-06-06 §알고리즘)
+
+```
+Input: all_in_amounts {seat: amount}, initial_pot
+
+1. 정렬: all_in_amounts 오름차순
+   sorted_amounts = [50, 100, 150, 200, ...]
+
+2. 팟 생성:
+   previous_tier = 0
+   all_pots = []
+
+   for (amount, num_remaining_players) in sorted_amounts:
+       tier_diff = amount - previous_tier
+       pot_amount = tier_diff × num_remaining_players
+
+       eligible_seats = {seat | seat.all_in ≥ amount}
+       pot = SidePot(pot_amount, eligible_seats)
+       all_pots.append(pot)
+
+       previous_tier = amount
+
+3. Fold 데드 머니 분배:
+   for fold_seat in fold_seats:
+       dead_money = fold_seat 투입액
+       # 각 팟 비례 분배 (eligible 기준)
+       for pot in all_pots:
+           pot.amount += (dead_money × pot.num_eligible / total_eligible)
+
+4. Main / Side 분류:
+   main_pot = all_pots[0]
+   side_pots = all_pots[1:]
+
+Output: PotStructure(main_pot, side_pots)
+```
+
+### 5.8 Side Pot 역순 판정 (BS-06-06 §알고리즘)
+
+```
+Input: PotStructure, hand_evaluations
+
+1. 팟 역순 정렬:
+   pots_in_reverse = reverse(main_pot + side_pots)
+
+2. 각 팟 판정 (역순):
+   for pot in pots_in_reverse:
+       eligible_players = pot.eligible_seats
+       # 해당 팟 eligible 만 평가
+       best_hand = evaluate_best_hand(eligible_players)
+       pot.winner = best_hand.seat
+       pot.winning_hand = best_hand.rank
+
+3. 최종 분배:
+   for pot in main_pot + side_pots:
+       add_to_winner_stack(pot.winner, pot.amount)
+
+Output: hand_results [{pot_id, winner, amount, hand_rank}]
+```
+
+### 5.9 Side Pot Python 구현 — `create_side_pots` (BS-06-02 §금액 계산)
+
+```python
+def create_side_pots(
+    contributions: Dict[int, int],  # {player_index: total_contributed}
+    stack_sizes: Dict[int, int]     # {player_index: remaining_stack}
+) -> List[Dict]:
+    """
+    여러 플레이어가 다른 올인 금액으로 올인할 때 팟 분리
+    """
+    pots = []
+    remaining_contributions = contributions.copy()
+
+    while any(remaining_contributions.values()):
+        min_contrib = min(
+            (v for v in remaining_contributions.values() if v > 0),
+            default=0
+        )
+        if min_contrib == 0:
+            break
+
+        current_pot = min_contrib * len(remaining_contributions)
+        eligible_players = [
+            i for i, contrib in remaining_contributions.items()
+            if contrib > 0
+        ]
+
+        pots.append({
+            'amount': current_pot,
+            'eligible': eligible_players
+        })
+
+        for player_idx in remaining_contributions:
+            if remaining_contributions[player_idx] > 0:
+                remaining_contributions[player_idx] -= min_contrib
+
+    return pots
+
+# 예시: P1=100, P2=300, P3=500
+# Step 1: min=100 → pot1=300 (100×3), eligible=[0,1,2]
+# Step 2: min=200 (P2,P3) → pot2=400 (200×2), eligible=[1,2]
+# Step 3: min=200 (P3) → pot3=200 (200×1), eligible=[2]
+```
+
+### 5.10 카드 공개 순서 알고리즘 (BS-06-07 §알고리즘)
+
+```
+Input: last_aggressor_seat, num_players, card_reveal_type
+
+1. 공개 순서:
+   reveal_order = [last_aggressor_seat]
+   current_seat = (last_aggressor_seat + 1) % num_players
+   while current_seat != last_aggressor_seat:
+       if is_active(current_seat):
+           reveal_order.append(current_seat)
+       current_seat = (current_seat + 1) % num_players
+
+2. card_reveal_type 별 실행:
+   if card_reveal_type == 0 (immediate):
+       for seat in reveal_order: show_hole_cards(seat)
+
+   elif card_reveal_type == 2 (end_of_hand):
+       wait_for_hand_complete()
+       for seat in reveal_order: show_hole_cards(seat)
+
+   elif card_reveal_type == 4 (showdown_cash):
+       # SHOWDOWN 시만, Muck 적용
+       for seat in reveal_order:
+           if not is_mocked(seat):
+               show_hole_cards(seat)
+
+3. fold_hide_type 별 패배자 카드 처리:
+   if fold_hide_type == 0 (immediate):
+       hide_fold_cards()
+   elif fold_hide_type == 1 (delayed):
+       wait_for_action_complete()
+       hide_fold_cards()
+
+Output: revealed_cards {seat: [card1, card2]}
+```
+
+### 5.11 Heads-up 전환 Button 조정 (BS-06-03 §Heads-up Rule 87)
+
+```
+HAND_COMPLETE 시점:
+    num_active_next = count(seats where status != SITTING_OUT and stack > 0)
+    if num_active_next == 2 and state.num_active_prev_hand >= 3:
+        prev_bb = state.prev_hand_bb_seat
+        remaining = active_seats
+
+        if prev_bb in remaining:
+            # 이전 BB 살아있음 → Dealer(SB) 로 전환
+            state.dealer_seat = prev_bb
+        else:
+            # 이전 BB 탈락 → 정상 회전
+            state.dealer_seat = (state.dealer_seat + 1) % n
+```
+
+### 5.12 베팅 흐름 Mermaid Flowchart (BS-06-02 §상태 머신 전이)
+
+```mermaid
+flowchart TD
+    A["action_on = P"] --> B{"P의 액션?"}
+    B -->|FOLD| C["P.status=folded<br/>active_count--"]
+    B -->|CHECK| D["P.checked=true"]
+    B -->|BET| E["biggest_bet=amount<br/>P.current_bet=amount"]
+    B -->|CALL| F["P.current_bet+=amount<br/>amount ≤ stack"]
+    B -->|RAISE| G["biggest_bet=amount<br/>P.current_bet=amount<br/>raise_count++"]
+    B -->|ALL-IN| H["P.status=allin<br/>P.stack=0"]
+
+    C --> I{"active_count==1?"}
+    D --> J{"is_betting_round_complete?"}
+    E --> J
+    F --> J
+    G --> L["reset_action_to_first<br/>after_raiser"]
+    H --> M{"allin_count<br/>==active_count?"}
+
+    I -->|YES| N["HAND_COMPLETE<br/>Pay pot to P"]
+    I -->|NO| K["next_player"]
+    J -->|YES| O["betting_round_complete<br/>Next street"]
+    J -->|NO| K
+    L --> J
+    M -->|YES| Pp["Auto RUNOUT"]
+    M -->|NO| K
+```
+
+### 5.13 통계 / 로깅 필드 (BS-06-02 §영향 받는 요소 / BS-06-03 §통계)
+
+| 필드명 | 타입 | 설명 |
+|-------|------|------|
+| `session_ante_paid` | dict | {player_id: 누적 ante} |
+| `session_blind_paid` | dict | {player_id: 누적 blind} |
+| `hand_ante_collected` | int | 현재 핸드 Ante 수거액 |
+| `hand_blind_collected` | int | 현재 핸드 Blind 수거액 |
+| `pot_initial_value` | int | 강제 베팅 완료 후 팟 초기값 |
+| `forced_bet_timestamp` | timestamp | 강제 베팅 수거 시각 |
+| `VPIP` | % | Voluntarily Put In Pot — BET/CALL/RAISE 누적 |
+| `PFR` | % | Pre-Flop Raise — PRE_FLOP RAISE 횟수 |
+| `AGR` | ratio | (BET + RAISE) / CALL |
+| `All-in frequency` | ratio | 올인 횟수 / 핸드 수 |
+| `pot_structure` | struct | (메인팟 크기, 사이드팟 수) |
+| `player_stats.money_dead` | int | dead money 누적 |
+
+---
+
+## 부록 A: Legacy-ID Mapping (추적성 보존)
+
+| 원본 (legacy-id) | 원본 섹션 | 본 문서 위치 |
+|-----------------|----------|-------------|
+| **BS-06-02** Holdem/Betting.md | §개요 + Rule 56 | §1.3 |
+| BS-06-02 | §정의 (6 액션 + bet_structure) | §1.2.1 / §1.2.2 |
+| BS-06-02 | §트리거 + 전제조건 | §3.1 |
+| BS-06-02 | §유저 스토리 20건 | §3.17 |
+| BS-06-02 | §Matrix 1 (액션 × bet_structure) | §3.3 |
+| BS-06-02 | §Matrix 2 (GamePhase × biggest_bet × status) | §3.4 |
+| BS-06-02 | §Matrix 3 (특수 상황) | §3.5 |
+| BS-06-02 | §스트리트 전환 초기화 | §2.7 |
+| BS-06-02 | §베팅 라운드 종료 공통 프로토콜 | §2.8 |
+| BS-06-02 | §FOLD/CHECK/BET/CALL/RAISE/ALL-IN 액션 정의서 | §4.1 (FOLD/CHECK 특수) + §4.7 (Multiple all-ins) + §5.5 (CALL 강제 재계산) |
+| BS-06-02 | §5.1 Under-raise (Rule 95) | §4.2 |
+| BS-06-02 | §5.2 Raise Cap (Rule 100.b) | §3.14 + §5.4 |
+| BS-06-02 | §6.1 Incomplete All-in (Rule 96) | §4.3 |
+| BS-06-02 | §금액 계산 Pseudocode (NL/PL/FL) | §5.1 / §5.2 / §5.3 |
+| BS-06-02 | §Side Pot 분리 로직 (`create_side_pots`) | §5.9 |
+| BS-06-02 | §상태 머신 전이 (Mermaid) | §5.12 |
+| BS-06-02 | §비활성 조건 | §3.16 |
+| BS-06-02 | §검증 규칙 (REJECT) | §3.15 |
+| BS-06-02 | §특수 상황 (Bomb Pot/Live Ante/Straddle/Multi all-in/Time bank) | §4.4 / §4.5 / §4.6 / §4.7 / §4.8 |
+| BS-06-02 | §에러 복구 (UNDO) | §4.19 / §4.20 |
+| **BS-06-03** Holdem/Blinds_and_Ante.md | §개요 + 정의 (Ante/Blind/Straddle) | §1.2.3 |
+| BS-06-03 | §트리거 + 전제조건 | §3.2 |
+| BS-06-03 | §Ante 7종 (std/button/bb/bb_1st/live/tb/tb_1st) | §3.6 |
+| BS-06-03 | §블라인드 구조 (num_blinds 0~3) | §3.6 |
+| BS-06-03 | §Straddle 추가 블라인드 + Re-Straddle | §3.8 / §4.6 |
+| BS-06-03 | §Heads-up 특수 규칙 + Rule 87 Button Adjust | §3.9 / §4.9 / §5.11 |
+| BS-06-03 | §Missed Blind 복귀 (Rule 86) | §3.13 / §4.10 |
+| BS-06-03 | §Dead Button | §4.11 |
+| BS-06-03 | §Bomb Pot 절차 | §4.4 |
+| BS-06-03 | §유저 스토리 16건 | §3.18 |
+| BS-06-03 | §Matrix 1 (Ante × Blind 28 조합) | §3.6 |
+| BS-06-03 | §Matrix 2 (팟 초기값) | §3.7 |
+| BS-06-03 | §포스팅 순서 통합 알고리즘 | §5.6 |
+| BS-06-03 | §비활성 조건 | §3.16 |
+| BS-06-03 | §오류 처리 (칩 부족/Sitout/Blind 실패/Multi all-in) | §4.21 / §4.22 / §4.20 / §4.7 |
+| BS-06-03 | §통계 및 로깅 | §5.13 |
+| **BS-06-06** Holdem/Side_Pot.md | §정의 (사이드팟/eligible set) | §1.2.4 |
+| BS-06-06 | §트리거 + 전제조건 | §3.1 (베팅 액션 트리거에 통합) |
+| BS-06-06 | §유저 스토리 12건 | §3.19 |
+| BS-06-06 | §Matrix 1~4 (2/3/4 인 + Fold) | §3.10 (4 sub) |
+| BS-06-06 | §데이터 모델 (SidePot, PotStructure) | §2.4 |
+| BS-06-06 | §사이드팟 생성 알고리즘 | §5.7 |
+| BS-06-06 | §역순 판정 알고리즘 | §5.8 |
+| BS-06-06 | §비활성 조건 | §4.12 |
+| BS-06-06 | §예시 시나리오 (3인 cascade, Fold+all-in) | §3.10 행 (시나리오 흡수) |
+| **BS-06-07** Holdem/Showdown.md | §정의 (Last Aggressor/Muck/Venue/Broadcast) | §1.2.5 |
+| BS-06-07 | §트리거 + 전제조건 | §3.1 |
+| BS-06-07 | §유저 스토리 12건 | §3.20 |
+| BS-06-07 | §Matrix 1 (48 카드 공개 조합) | §3.11.1 |
+| BS-06-07 | §Matrix 2 (Canvas 별 가시성) | §3.11.2 |
+| BS-06-07 | §Matrix 3 (Muck 규칙) | §3.11.3 |
+| BS-06-07 | §Matrix 4 (WRONG_CARD) | §3.11.4 |
+| BS-06-07 | §데이터 모델 (ShowdownSettings, CardRevealState) | §2.5 |
+| BS-06-07 | §카드 공개 순서 알고리즘 | §5.10 |
+| BS-06-07 | §특수 케이스 (Venue+Muck/Broadcast+RIT/WRONG_CARD/RIT) | §4.13 / §4.14 / §4.17 / §4.23 |
+| BS-06-07 | §Hand 보호 & 복구 (Rule 71/109/110) | §4.14 / §4.15 / §4.16 |
+| BS-06-07 | §Run It Twice (RIT 매트릭스) | §3.12 / §4.17 / §2.6 |
+| BS-06-07 | §비활성 조건 | §4.13 |
+
+---
+
+## 부록 B: Domain Boundaries (권위 위임)
+
+본 도메인은 **칩 흐름 + 팟 형성 + 승자 결정** 에 한정. 다음 영역은 별도 도메인 마스터 권위:
+
+| 영역 | 권위 | Cross-ref |
+|------|------|-----------|
+| 핸드 라이프사이클 (HandFSM 상태 전이) | **Lifecycle 도메인 마스터** (Phase 1) | §2.1 흐름도 / §3.4 매트릭스 |
+| 액션 순환 (`is_betting_round_complete`) | **Lifecycle 도메인 §5.7** | §2.8 공통 프로토콜 호출 |
+| 액션 순환 (`first_to_act`, `next_active_player`) | **Lifecycle 도메인 §5.5/§5.6** | §3.1 / §3.6 first_to_act 결정 |
+| Bomb Pot Button Freeze (Rule 28.3.2) | **Lifecycle 도메인 §4.3.4** | §4.4 (절차만) |
+| Run It Multiple vs Rabbit Hunting (Rule 81) | **Lifecycle 도메인 §4.4** | §4.17 (RIT 만 명시) |
+| Mixed Game Rotation (Mixed Omaha 등) | **Lifecycle 도메인 §3.9 / §5.13** | (해당 없음 — Hold'em 한정) |
+| GameState / Player Data Model 전체 | **Lifecycle 도메인 §5.1 / §5.2** | §2.2 / §2.3 (베팅 view 만) |
+| UNDO 5단계 메커니즘 | **Lifecycle 도메인 §4.7** | §4.20 (참조만) |
+| Miss Deal 처리 | **Lifecycle 도메인 §4.5** | (Showdown 전 SETUP 단계) |
+| 트리거 ↔ 이벤트 분류 (CC/RFID/Engine/BO) | **Triggers 도메인 마스터** (Phase 2) | §3.1 / §3.2 (트리거 표면) |
+| Input Events 13개 (IE-01~13) | **Triggers 도메인 §3.1** | §4.14 IE-11 / §4.15-§4.16 IE-12 등 |
+| Internal Transitions 16개 (IT-01~16) | **Triggers 도메인 §3.3** | §3.2 (BlindsAutoPost=IT-01) / §4.9 (HeadsUpButtonAdjust=IT-11) / §4.10 (MissedBlindMark=IT-12) / §4.3 (IncompleteAllInNoReopen=IT-15) / §4.2 (UnderRaiseAdjust=IT-16) |
+| Output Events 19개 (OE-01~19) | **Triggers 도메인 §3.4** | §4.14 OE-11 HandTabled / §4.15 OE-12 HandRetrieved / §4.16 OE-14 MuckRetrieved / §4.4 OE-03 PotUpdated / §3.4 OE-19 display_to_players |
+| Coalescence (RFID burst 처리) | **Triggers 도메인 §3.11~§3.14** | (베팅 직접 영향 없음) |
+| Card Pipeline (turn-based deal + atomic flop) | **Triggers 도메인 §3.5 (BS-06-12)** | §4.4 Bomb Pot Flop 카드 감지 |
+| Hand Evaluator (HandRank, kicker, low) | **Variants & Evaluation 도메인 마스터** (Phase 4) | §5.8 역순 판정 결과 / §5.10 카드 공개 후 평가 |
+| Boxed Card / Four-Card Flop / Tabled Hand 보호 | **Variants & Evaluation 도메인** (Exceptions.md 흡수) | §4.14 (보호 정책만 인용) / §4.16 (muck_log 필드만) |
+| Hold'em / Omaha / Stud / Draw 변형별 hole/board card 수 | **Variants & Evaluation 도메인** | (Hold'em 한정) |
+| DeckFSM (Deck Change, RFID 등록) | **Variants & Evaluation 도메인** | (해당 없음) |
+
+> 본 도메인 (Phase 3) 은 위 영역의 **결과 + 트리거 입력** 만 담당. 충돌 시 권위 도메인 우선.
