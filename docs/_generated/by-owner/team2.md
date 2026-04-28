@@ -11,6 +11,7 @@ tier: generated
 - `docs/2. Development/2.2 Backend/APIs/Backend_HTTP_Status.md` — Backend HTTP — 구현 현황 (2026-04-20)
 - `docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md` — Graphic Editor API
 - `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` — WebSocket Events
+- `docs/2. Development/2.2 Backend/Authentication/Concurrency_and_Race_Conditions.md` — Concurrency and Race Conditions (Auth domain)
 - `docs/2. Development/2.2 Backend/Back_Office/Operations.md` — Operations
 - `docs/2. Development/2.2 Backend/Back_Office/Overview.md` — Overview
 - `docs/2. Development/2.2 Backend/Back_Office/Sync_Protocol.md` — Sync Protocol
