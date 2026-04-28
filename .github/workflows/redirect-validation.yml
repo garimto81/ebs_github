@@ -1,0 +1,44 @@
+name: Validate Legacy-ID Redirects
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/_generated/legacy-id-redirect.json'
+      - 'tools/validate_redirects.dart'
+      - '.github/workflows/redirect-validation.yml'
+  pull_request:
+    paths:
+      - 'docs/_generated/legacy-id-redirect.json'
+      - 'tools/validate_redirects.dart'
+      - '.github/workflows/redirect-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: redirect-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate redirects (B-354)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Dart SDK
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Verify Dart version
+        run: dart --version
+
+      - name: dart analyze tools/validate_redirects.dart
+        run: dart analyze tools/validate_redirects.dart
+
+      - name: Run validator on docs/_generated/legacy-id-redirect.json
+        run: dart run tools/validate_redirects.dart
