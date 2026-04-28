@@ -17,6 +17,7 @@ tier: generated
 - `docs/1. Product/archive/Foundation_v41.0.0.md` — Foundation
 - `docs/2. Development/2. Development.md` — 2. Development
 - `docs/2. Development/2.5 Shared/Authentication.md` — Authentication
+- `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` — Distributed Authentication Architecture
 - `docs/2. Development/2.5 Shared/BS_Overview.md` — BS Overview
 - `docs/2. Development/2.5 Shared/Naming_Conventions.md` — Naming Conventions (EBS Shared SSOT)
 - `docs/2. Development/2.5 Shared/Network_Config.md` — Network Configuration Contract
