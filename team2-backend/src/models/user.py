@@ -2,6 +2,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
+from sqlalchemy import UniqueConstraint
 from sqlmodel import Field, SQLModel
 
 
@@ -31,9 +32,15 @@ class User(SQLModel, table=True):
 
 class UserSession(SQLModel, table=True):
     __tablename__ = "user_sessions"
+    # BS-01 §A-25 다중 세션 지원 (M1 Item 3, PR 3, 2026-04-28):
+    # 기존 user_id UNIQUE → (user_id, device_id) composite UNIQUE.
+    __table_args__ = (
+        UniqueConstraint("user_id", "device_id", name="uq_user_sessions_user_device"),
+    )
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="users.user_id", unique=True)
+    user_id: int = Field(foreign_key="users.user_id")
+    device_id: str = Field(default="default")
     last_series_id: Optional[int] = None
     last_event_id: Optional[int] = None
     last_flight_id: Optional[int] = None
