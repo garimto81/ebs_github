@@ -151,7 +151,7 @@ jobs:
 
       - name: Hadolint — ${{ matrix.dockerfile }}
         # action 버전 pin (auto-bump PR 시 dependabot 이 새 PR 생성 → 본 CI gate 검증)
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: ${{ matrix.dockerfile }}
           ignore: DL3008,DL3018,DL3059
