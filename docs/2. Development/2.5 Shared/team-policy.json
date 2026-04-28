@@ -1,44 +1,28 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": "7.5",
-  "previous_version": "7.1",
-  "description": "EBS 5팀 멀티 세션 충돌 방지 + v11 문서 구조. v7.5 (2026-04-28, SG-028): Mode B 의미적 충돌 판정 권한을 decision_owner 에서 autonomous_llm_judgment 로 이전. mode_b_autonomous 가 멀티세션 default. mode_b_multi_session (v7.1 legacy) 는 escape hatch (EBS_GOV_MODE=v71_decision_owner) 로 회복 가능. v7.1 (2026-04-27, SG-024): conductor_single_session_full_authority 모드 추가 — Mode A default. v7: CCR 프로세스 완전 폐기. main_push_allowed_for 를 [conductor] 로 복원 (팀 브랜치 우회 방지). docs/3. Change Requests/ 는 역사 폴더로 존치.",
+  "version": "7.1",
+  "previous_version": "7.0",
+  "description": "EBS 5팀 멀티 세션 충돌 방지 + v11 문서 구조. v7.1 Mode A/B + v8.0 governance freeze. 역사: docs/4. Operations/Reports/ 참조.",
   "governance_model": {
-    "name": "free_write_with_autonomous_triage_or_full_authority",
-    "previous_name_v7_1": "free_write_with_decision_owner_or_conductor_full_authority",
-    "previous_name_v7": "free_write_with_decision_owner",
-    "rationale": "v7.5 (SG-028 cascade, 2026-04-28 사용자 STRATEGIC PIVOT 채택): Mode B 멀티세션의 의미적 판정을 LLM 자율로 이관. Audit trail 은 Conflict_Registry.md + GitHub issue 자동 등록. v7.1 (SG-024): Mode A Conductor full authority. 사용자 인텐트 변경, vendor 메일, destructive 시스템 변경, git config 등은 mode_a_limits 로 보호.",
+    "name": "free_write_with_decision_owner_or_conductor_full_authority",
+    "rationale": "v7.1 (SG-024 cascade, 2026-04-27 사용자 B-Q5 ㉠ 채택): 단일 세션 모드 (Mode A) 에서 Conductor 가 decision_owner override 가능. 멀티세션 모드 (Mode B) 에서는 v7 모델 (decision_owner 권한 회복).",
     "modes": {
       "mode_a_single_session": {
         "trigger": "Conductor 세션 단독 활동 (다른 팀 세션 비활성)",
-        "default_in_v7_1_and_above": true,
+        "default_in_v7_1": true,
         "write_access": "all_paths",
         "decision_authority": "conductor_full_authority",
         "rationale": "사용자 B-Q5 ㉠ (2026-04-27) 채택. 단일 turn cascade 자율 진행 가능."
       },
-      "mode_b_autonomous": {
-        "trigger": "팀 세션 (team1~4) 활성화 시 자동 회복 — v7.5 default",
-        "default_in_v7_5": true,
-        "write_access": "all_sessions_all_docs",
-        "decision_authority": "autonomous_llm_judgment",
-        "judgment_engine": "tools/conflict_resolver.py",
-        "audit_trail": [
-          "docs/4. Operations/Conflict_Registry.md",
-          "github_issue (label: conflict-audit)"
-        ],
-        "rationale": "사용자 STRATEGIC PIVOT (2026-04-28) 채택. Zero-Intervention 으로 멀티세션 자율 완결."
-      },
-      "mode_b_multi_session_legacy": {
-        "trigger": "EBS_GOV_MODE=v71_decision_owner 환경변수 명시",
-        "default_in_v7_5": false,
+      "mode_b_multi_session": {
+        "trigger": "팀 세션 (team1~4) 활성화 시 자동 회복",
         "write_access": "all_sessions_all_docs",
         "decision_authority_source": "teams[*].owns and contract_ownership[*].publisher",
-        "rationale": "v7.1 모델 escape hatch. 자율 판정이 부적절하다고 판단되는 컨텍스트에서 명시적 회복.",
-        "escape_hatch_review_date": "2026-07-28"
+        "rationale": "v7 모델 그대로. 각 팀 세션의 decision_owner 권한 보호."
       }
     },
     "mode_a_limits": {
-      "_comment": "Mode A 라도 Conductor 자율 금지 영역. v7.5 에서도 그대로 유지 — autonomous triage 는 의미적 충돌 판정에만 적용.",
+      "_comment": "Mode A 라도 Conductor 자율 금지 영역",
       "external_messaging": "vendor RFI/RFQ 외부 메일 발송 — 사용자 명시 필요",
       "destructive_system": "DB drop, prod 배포, 거대 dependency 변경 — 사용자 명시 필요",
       "git_config": "remote URL 변경 등 — 사용자 명시 필요",
@@ -48,37 +32,19 @@
     "conflict_resolution": {
       "syntactic": "merge_author_resolves",
       "semantic_mode_a": "conductor_adjudicates",
-      "semantic_mode_b": "autonomous_llm_judgment",
-      "semantic_mode_b_legacy": "decision_owner_adjudicates (v71_decision_owner escape hatch only)",
-      "escalation": "user (사용자) — only when autonomous triage Step 4 fallback 도 실패한 경우"
+      "semantic_mode_b": "decision_owner_adjudicates",
+      "escalation": "user (사용자)"
+    },
+    "freeze": {
+      "_comment": "v8.0 stable governance freeze (user decision 4A, 2026-04-28)",
+      "until": "2026-05-28",
+      "scope": "all_governance_changes",
+      "exceptions": ["data_loss_emergency", "critical_security_fix"],
+      "rationale": "1주 7 governance 버전 churn (v5.0→v5.1→v6.1→v7.1→v7.2→v7.5→v7.6) 차단. Phase 1-8 file cleanup 완주 보장. critic 보고서 P2 권고.",
+      "decision_brief": "docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md",
+      "phase_1_8_cleanup_allowed": true,
+      "_phase_1_8_note": "freeze 는 governance change (mode/policy/limit) 만 동결. file cleanup (deprecated 정리, 도구 압축, 문서 압축) 은 Phase 1-8 으로 진행 가능."
     }
-  },
-  "conflict_triage": {
-    "_comment": "v7.5 Autonomous Triage spec. SG-028 결정 명문화.",
-    "version": "v7.5",
-    "engine": "tools/conflict_resolver.py",
-    "registry": "docs/4. Operations/Conflict_Registry.md",
-    "decision_logic": {
-      "step_1_ssot_lookup": "team-policy.json contract_ownership + teams[].owns 매핑",
-      "step_2_ssot_priority": "한쪽만 SSOT 일치 → 일치하는 쪽 채택",
-      "step_3_winwin_merge": "두 변경이 직교 (다른 hunk) → 통합",
-      "step_4_fallback": {
-        "priority_1_lower_side_effect": "contract path 변경 vs 비-contract 시 비-contract 우선. DB 스키마/마이그레이션은 더 보수적인 쪽 (Abort 경향). API 시그니처는 subscriber 영향 최소화.",
-        "priority_2_new_first_when_tied": "1순위 동등 시 HEAD (theirs in rebase semantics) 채택",
-        "all_failed": "Abort + Spec_Gap_Registry 등록 + user escalation (exit 4)"
-      }
-    },
-    "verification_mandatory": {
-      "python_files": "ast.parse syntax check (실용 minimum)",
-      "dart_files": "dart analyze --fatal-warnings",
-      "on_fail": "auto rollback (rebase --abort) + audit issue + Conflict_Registry 등록"
-    },
-    "audit_trail": {
-      "registry_file": "docs/4. Operations/Conflict_Registry.md",
-      "github_issue_label": "conflict-audit",
-      "issue_required_fields": ["branch", "request_id", "decisions", "outcome", "rationale"]
-    },
-    "ci_fallback": "workflow 환경 (LLM 없음) 에서 충돌 감지 시 ci-only 모드 → issue 등록 + auto-merge 라벨 제거. Local re-run 으로 LLM judgment 가능."
   },
   "branch_strategy": {
     "version": "v5.0",
@@ -98,8 +64,7 @@
     "code_owners": ".github/CODEOWNERS",
     "free_tier_compat": true,
     "deprecated_tools": {
-      "tools/team_merge.py": "v4.x direct ff-merge tool. 2026-05-05 제거 예정",
-      "tools/team_pr_merge.py": "v4.1 호환 tool. 2026-05-05 제거 예정",
+      "tools/team_merge.py": "v4.x direct ff-merge tool. v5.1+L4 (BLANK-3) 에서 active 부활 — 폐기 보류",
       "~/.claude/skills/team/scripts/team_merge_loop.py": "v4.0 user-global. project-local .claude/skills/team/ (v5.1) 이 대체 (2026-04-22 rename from team-v5)"
     }
   },

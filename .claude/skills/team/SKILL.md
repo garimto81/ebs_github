@@ -7,54 +7,23 @@ description: EBS v5.1 멀티세션 워크플로우 (2026-04-22). Pre-Work Contra
 
 > **버전 표기 규칙** — skill 식별자(`team`) 와 정책 버전(`v5.1`) 은 독립. 호출명은 major 경계(v4→v5) 에서만 바뀌고, minor 업데이트(v5.0→v5.1) 는 문서 내용만 갱신.
 
-## 철학 (v5.1)
+## 철학 (v8.0)
 
-- **Proactive + Reactive 이중 안전망**
-  - **L0 Pre-Work Contract** (proactive, v5.1 신설): Active_Work.md SSOT 로 작업 시작 시점 의도 공유
-  - **L1-L3** (reactive, v5.0): worktree 격리 + PR + Actions concurrency
+- **Reactive 안전망 (L1-L3)**: worktree 격리 + PR + Actions concurrency
 - **업계 표준 재사용** — custom orchestration 폐기. git worktree + GitHub PR + concurrency 로 해결
-- **4 Phase** — Claim (사전 조정) → Work (격리) → PR (동기화) → Sync (자동 merge)
+- **3 Phase** — Work (격리) → PR (동기화) → Sync (자동 merge)
 - **Free-tier 호환** — GitHub Team plan 불필요. GitHub Actions concurrency group 으로 merge queue 대체
-- **Self-modification 안전** — 이 스킬은 repo-local (`.claude/skills/team/`). user-global 은 deprecation shim
+- **Self-modification 안전** — 이 스킬은 repo-local (`.claude/skills/team/`)
+- **L0 폐기**: 30일 ROI 0 실증 (v8.0 Phase 6, 2026-04-28). `Reports/2026-04-28-v8-phase6-l0-removal-record.md`
 
 ## v4.0/v4.1 폐기 이유
 
-| v4.0 가정 | 현실 | v5.0 대안 |
-|-----------|------|-----------|
-| "매 작업 자동 main push" | 플랫폼이 main push 차단 | PR + auto-merge workflow |
-| Manifest / conflict-scan / revise / safety-gate | 복잡도만 증가, 실제 race 못 막음 | GitHub Actions `concurrency:` group |
-| `session_branch_init` subdir 허용 | shared HEAD 오염 지속 발생 | sibling worktree 강제 |
-| Conductor 직접 push 특권 | 4 팀 일관성 깨짐 | Conductor 도 PR |
+> 2026-04-28 v8.0 Phase 8c: history 표 archive 이동.
+> 상세: `docs/4. Operations/Reports/2026-04-28-v8-phase8c-skill-md-v4-history.md`
 
-## 4 Phase Workflow
+## 3 Phase Workflow (v8.0)
 
-### Phase 0: Claim (Pre-Work Contract, v5.1 NEW)
-
-**작업 시작 전 의도 공유**. 이 Phase 가 없으면 L1-L3 는 reactive 하게만 동작 → 오류 누적.
-
-```bash
-# 1. 현재 active claim 전시 (세션 시작 시 hook 이 자동 수행)
-python tools/active_work_claim.py list
-
-# 2. 내가 건드릴 파일이 다른 팀 claim 과 겹치는지 확인
-python tools/active_work_claim.py check --scope "team2-backend/src/routers/*,docs/2*/APIs/*"
-
-# 3a. 겹치지 않으면: claim 추가
-python tools/active_work_claim.py add --commit \
-    --team team2 --task "API-01 path rename" \
-    --scope "team2-backend/src/routers/series.py,docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md" \
-    --eta 2h
-
-# 3b. 겹치면: 해당 claim owner 와 조율 (scope 분할, 순서 조정, merge)
-```
-
-**규칙**:
-- **Conductor 도 claim 필수** (uniform — v4.0 특권 제거)
-- Scope 는 task-level **semantic** (파일 glob). 동적 discovery 시 `update --add-scope` 로 확장
-- TTL 없음 — 작업 완료 (Phase 2 merge) 까지 유지
-- `--force` 로 충돌 무시 가능하지만 commit msg 에 사유 명시 관행
-
-**차별점 (CCR draft 폐기 경험)**: CCR 은 변경 governance (heavy, review cycle). Claim 은 현 작업 visibility (lightweight, no review).
+> v8.0 Phase 6 (2026-04-28): Phase 0 Claim 폐기. 30일 충돌 0건 → L0 ROI 0 실증.
 
 ### Phase 1: Work (격리된 worktree 에서 작업)
 
@@ -62,7 +31,10 @@ python tools/active_work_claim.py add --commit \
 
 ```bash
 # 최초 1회 (팀별 worktree 생성)
-python tools/setup_team_worktrees.py --team all
+git worktree add ../ebs-team1-work -b work/team1/work
+git worktree add ../ebs-team2-work -b work/team2/work
+git worktree add ../ebs-team3-work -b work/team3/work
+git worktree add ../ebs-team4-work -b work/team4/work
 
 # 이후 매 세션
 cd C:/claude/ebs-team{N}-work
@@ -121,7 +93,7 @@ PR 생성 시 자동:
 ```markdown
 1. Context detect
    - cwd 가 sibling worktree (`ebs-team{N}-...`) 인지 확인
-   - subdir 감지 시 error: "sibling worktree 필요. python tools/setup_team_worktrees.py"
+   - subdir 감지 시 error: "sibling worktree 필요. `git worktree add ../ebs-team{N}-<slug> -b work/team{N}/<slug>`"
 
 2. Phase 0 Claim (v5.1 NEW)
    - python tools/active_work_claim.py list  (현 claim 전시)
@@ -160,8 +132,8 @@ PR 생성 시 자동:
 - `.github/workflows/pr-auto-merge.yml` — Phase 3 free-tier merge gate
 - `.github/CODEOWNERS` — 팀별 자동 리뷰어 배정
 - `tools/team_v5_merge.py` — Phase 2 PR 생성 + label 부착 + claim release
-- `tools/setup_team_worktrees.py` — Phase 1 worktree 생성 헬퍼
-- `tools/team_pr_merge.py` — v4.1 시기 호환 (팀 세션 auto-merge 구현)
+- ~~`tools/setup_team_worktrees.py`~~ — 2026-04-28 제거 (v8.0 Phase 7). `git worktree add` 직접 사용
+- ~~`tools/team_pr_merge.py`~~ — 2026-04-28 제거 (v8.0 Phase 1)
 - `tools/active_work_claim.py` — **v5.1 Pre-Work Contract CLI**
 - `docs/4. Operations/Active_Work.md` — **v5.1 Pre-Work Contract SSOT**
 - `docs/4. Operations/Multi_Session_Workflow.md` — v5.1 공식 정책

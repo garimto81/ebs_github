@@ -99,7 +99,7 @@ commit 9da82cf 에 포함:
 - [ ] `.claude/hooks/session_branch_init.py` 제거 (claude -w 로 완전 대체 시)
 - [ ] `.claude/hooks/branch_guard.py` 제거 또는 warning-only 축소
 - [ ] `~/.claude/skills/team/` v4.0 스킬 디렉토리 제거 (user 수동)
-- [ ] `tools/team_pr_merge.py` (v4.1 호환) 제거 or alias → `team_v5_merge.py`
+- [x] `tools/team_pr_merge.py` (v4.1 호환) 제거 — 2026-04-28 v8.0 Phase 1 완료
 
 ## Free-tier 제약 및 수용 리스크
 
@@ -169,7 +169,7 @@ v5.0 에 문제 발생 시 복구 절차:
 
 ### 롤백 Level 1 (부분) — v4.1 복원
 1. `.github/workflows/pr-auto-merge.yml` disable
-2. `tools/team_v5_merge.py` 대신 `tools/team_pr_merge.py` 사용 (유지됨)
+2. `tools/team_v5_merge.py` 대신 `tools/team_pr_merge.py` 사용 (2026-04-28 제거됨, 롤백 시 `git restore --source=backup-pre-v8-2026-04-28 tools/team_pr_merge.py` 필요)
 3. project-local `.claude/skills/team/` 제거 시 user-global `/team` (v4.0) 이 자동 fallback
 
 ### 롤백 Level 2 (전체) — v4.0 복원
