@@ -27,7 +27,7 @@ dependencies:
   rive: ^0.13.4
 
   # .gfskin ZIP in-memory 압축 해제 (CCR-012)
-  archive: ^3.6.1
+  archive: ^4.0.9
 
   # JSON Schema 검증 (DATA-07 .gfskin manifest)
   json_schema: ^5.1.1
