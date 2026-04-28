@@ -95,7 +95,7 @@ status: <active|paused|released>
 title: Active Work — Multi-session coordination SSOT
 owner: conductor
 tier: contract
-last-updated: 2026-04-27
+last-updated: 2026-04-28
 generator: tools/active_work_claim.py (편집은 CLI 만 사용)
 schema_version: 1
 ---
@@ -179,6 +179,18 @@ scope:
 - docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md
 status: active
 eta: 2h
+```
+
+### Claim #18 — team3: Betting & Pots domain master (Phase 3 of 4)
+```yaml
+id: 18
+team: team3
+task: Betting & Pots domain master (Phase 3 of 4)
+started: '2026-04-28T00:02:37Z'
+scope:
+- docs/2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md
+status: active
+eta: 3h
 ```
 
 <!-- CLAIMS_END -->
