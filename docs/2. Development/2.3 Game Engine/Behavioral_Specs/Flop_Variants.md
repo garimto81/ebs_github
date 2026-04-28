@@ -46,4 +46,4 @@ git show <commit-hash>:"docs/2. Development/2.3 Game Engine/Behavioral_Specs/Flo
 
 - 도메인 마스터 본문: [`./Variants_and_Evaluation.md`](./Variants_and_Evaluation.md)
 - 도메인 마스터 부록 A (legacy-id 매핑): 같은 파일 §부록 A
-- Legacy-ID redirect mapping (audit 도구용): [`docs/_generated/legacy-id-redirect.json`](../../../../_generated/legacy-id-redirect.json) (Conductor 자동 생성)
+- Legacy-ID redirect mapping (audit 도구용): [`docs/_generated/legacy-id-redirect.json`](../../../_generated/legacy-id-redirect.json) (Conductor 자동 생성)
