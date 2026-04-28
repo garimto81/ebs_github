@@ -1,0 +1,133 @@
+# Dependabot configuration — auto-detect dependency drift before regression.
+#
+# 2026-04-28 (PR #25, P3 hardening) 도입.
+# 이전 PR cascade (#11→#17→#18→#20→#22→#24) 에서 다음을 학습:
+#   - Flutter SDK :stable 부동 tag → CI/local 결과 비결정 (AD-1)
+#   - intl ↔ flutter_localizations pin 양방향 충돌
+#   - --web-renderer / --obfuscate 등 deprecated flag silent failure
+# → 의존성/베이스 이미지 drift 를 사람 눈에 의존하지 않고 자동 감지하기 위함.
+#
+# 각 ecosystem PR 은 docker-build-gate 를 통과해야 머지됨 (3-tier CI gate).
+# Dependabot 이 cascade 갭을 trigger 하면 CI가 즉시 차단 → 다음 dev 의 디버깅 비용 외부화.
+#
+# 요일 stagger 로 CI flood 방지 (월~토, 일요일 휴식).
+
+version: 2
+
+updates:
+  # ─── Flutter/Dart packages — team1 lobby-web ───
+  - package-ecosystem: "pub"
+    directory: "/team1-frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 3
+    versioning-strategy: "increase-if-necessary"
+    labels:
+      - "auto-merge"
+      - "dependencies"
+      - "team1"
+    commit-message:
+      prefix: "chore(deps:team1)"
+      include: "scope"
+
+  # ─── Flutter/Dart packages — team4 cc-web ───
+  - package-ecosystem: "pub"
+    directory: "/team4-cc/src"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "06:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 3
+    versioning-strategy: "increase-if-necessary"
+    labels:
+      - "auto-merge"
+      - "dependencies"
+      - "team4"
+    commit-message:
+      prefix: "chore(deps:team4)"
+      include: "scope"
+
+  # ─── Docker base image — lobby-web Flutter SDK pin ───
+  # Flutter:3.41.7 pin 의 자동 업그레이드 PR.
+  # AD-1 의 4-step upgrade protocol 이 PR 검증 단계에서 동작:
+  #   (1) explicit tag PR (dependabot 작성)
+  #   (2) cascade 갭 재현 → docker-build-gate 가 catch
+  #   (3) pubspec.yaml 점검 (사람 review)
+  #   (4) PR-#18 패턴 머지
+  - package-ecosystem: "docker"
+    directory: "/team1-frontend/docker/lobby-web"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "06:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 2
+    labels:
+      - "dependencies"
+      - "docker"
+      - "team1"
+    commit-message:
+      prefix: "chore(docker:lobby)"
+      include: "scope"
+
+  # ─── Docker base image — cc-web Flutter SDK pin ───
+  - package-ecosystem: "docker"
+    directory: "/team4-cc/docker/cc-web"
+    schedule:
+      interval: "weekly"
+      day: "thursday"
+      time: "06:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 2
+    labels:
+      - "dependencies"
+      - "docker"
+      - "team4"
+    commit-message:
+      prefix: "chore(docker:cc)"
+      include: "scope"
+
+  # ─── Docker base image — engine (Pure Dart harness) ───
+  - package-ecosystem: "docker"
+    directory: "/team3-engine/ebs_game_engine"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "06:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 2
+    labels:
+      - "dependencies"
+      - "docker"
+      - "team3"
+    commit-message:
+      prefix: "chore(docker:engine)"
+      include: "scope"
+
+  # ─── GitHub Actions — workflow runner versions ───
+  # auto-merge 라벨 부착 — actions/checkout@v4 → v5 같은 minor bump 는 CI 통과 시
+  # 자동 머지 (3-tier gate 가 회귀 잡음).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "06:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 3
+    labels:
+      - "auto-merge"
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "chore(deps:ci)"
+      include: "scope"
+
+# ─── 의도적 누락 (out of scope for P3) ───
+# - team2-backend (Python pyproject) — team2 ownership, P3 frontend hardening 범위 밖
+# - shared/ebs_common — path 의존성만 사용, 외부 publish 없음
+# - team1-frontend/_archive-quasar — Quasar 잔재, 의존성 업데이트 불필요

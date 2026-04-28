@@ -117,13 +117,55 @@ jobs:
           echo "✓ Dockerfile lint passed — no context boundary violations."
 
   # ──────────────────────────────────────────────────────────────────────
+  # Hadolint — community Dockerfile best-practice linter.
+  # 2026-04-28 (PR #25, P3 hardening) 도입.
+  #
+  # 본 lint 의 보완 관계:
+  #   - dockerfile-lint (custom, 우리 lint): Type A / context boundary 차단
+  #     → Linux BuildKit blind spot 보강 (PR #21 chaos test 발견)
+  #   - hadolint (community): style + best-practice (DL3025 exec form, DL3045 절대경로 등)
+  #     → 우리가 미처 cover 못 한 Dockerfile 패턴 검사
+  #
+  # 두 lint 는 병렬 실행 (independent jobs, 둘 다 docker-build-gate 의 needs 에 포함).
+  # 보수적 ignore: DL3008/3018 (apt/apk 버전 pin — dev 베이스에 과한 요구),
+  #                DL3059 (consecutive RUN — 가독성 trade-off, info 등급).
+  # ──────────────────────────────────────────────────────────────────────
+  hadolint:
+    name: Hadolint Dockerfile Lint (best-practice)
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    strategy:
+      fail-fast: false  # 한 Dockerfile fail 해도 나머지 결과 모두 출력 — 디버깅 비용 절감
+      matrix:
+        dockerfile:
+          - team1-frontend/docker/lobby-web/Dockerfile
+          - team4-cc/docker/cc-web/Dockerfile
+          - team3-engine/ebs_game_engine/Dockerfile
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Hadolint — ${{ matrix.dockerfile }}
+        # action 버전 pin (auto-bump PR 시 dependabot 이 새 PR 생성 → 본 CI gate 검증)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ matrix.dockerfile }}
+          ignore: DL3008,DL3018,DL3059
+          no-fail: false
+          format: tty
+
+  # ──────────────────────────────────────────────────────────────────────
   # Heavy gate: docker compose build (5-layer cascade 회귀 차단).
-  # dockerfile-lint 통과 후에만 실행 → 1초 fail 가능한 케이스를
+  # dockerfile-lint + hadolint 둘 다 통과 후에만 실행 → 1초 fail 가능한 케이스를
   # 5분 build 까지 가지 않게 함 (CI minutes 절감).
   # ──────────────────────────────────────────────────────────────────────
   docker-build-gate:
     name: Docker Compose Build Verification
-    needs: dockerfile-lint
+    needs: [dockerfile-lint, hadolint]
     runs-on: ubuntu-latest
     timeout-minutes: 45  # Flutter 첫 빌드 ~10 min × 2 service = ~20 min, 여유 포함
 
