@@ -245,6 +245,9 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/B-337-Overlay-배경-투명-단색-이분법.md` | Overlay §5 크로마키 — Foundation §7.1 '투명(방송) vs 단색(디자이너 QA)' 이분법 정렬 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-338-harness-세션-재시작-복구.md` | harness 세션 재시작 복구 — Foundation §8.4 긴급 복구 계약 대응 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-343-card-pipeline-ssot-rollout.md` | Card Pipeline SSOT (BS-06-12) rollout — Lifecycle/Triggers/OutputEvents 정렬 + 테스트 추가 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-350-api04-bs0609-alignment.md` | API-04 §6.0 (21종) ↔ BS-06-09 (19종) OutputEvent 정합 검증 — 누락 3 OE + 번호 shift 분석 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-353-cross-team-bs06-citations.md` | Cross-team BS-06-XX 인용 (101건) → 도메인 마스터 redirect 갱신 — 팀별 자율 처리 위임 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-354-legacy-id-redirect-oe-mapping.md` | legacy-id-redirect.json 에 OE-level 매핑 추가 — API-04 OE-XX ↔ BS-06-09 OE-XX 번호 변환 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` | OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` | Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13) | - | - | - |
@@ -265,6 +268,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-054-검토-요청-WebSocket-이벤트-카탈로그-WSOP-LIVE-SignalR-정렬.md` | 검토 요청: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-023-LEGACY-검토-요청-BS-07-Overlay-오디오-레이어-추가-WSOP-1-BGM-2.md` | [LEGACY] 검토 요청: BS-07 Overlay 오디오 레이어 추가 (WSOP 1 BGM + 2 Effect 채널) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` | Action Rotation | team3 | internal | BS-06-10 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md` | Betting & Pots — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md` | Card Pipeline Overview | team3 | contract | BS-06-12 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md` | Draw Games | team3 | internal | BS-06-2X |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Evaluation_Reference.md` | Hand Evaluation 통합 레퍼런스 | team3 | contract | - |
@@ -282,6 +286,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md` | Overview | team3 | internal | BS-06-00 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md` | Stud Games | team3 | internal | BS-06-3X |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | internal | BS-06-00-triggers |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` | Triggers & Event Pipeline — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.4 Command Center/2.4 Command Center.md` | 2.4 Command Center | ci | generated | - |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | RFID HAL — Operator Behavior | team4 | internal | BS-04-04 |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md` | RFID HAL Interface Contract | team4 | contract | API-03 |
@@ -547,10 +552,13 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` | SG-023 — 인텐트 전환 (기획서 완결 → production 출시) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` | SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` | SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/SG-028-autonomous-conflict-triage.md` | v7.5 Autonomous Conflict Triage — decision_owner → autonomous_llm_judgment 전환 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-028b-stabilization.md` | v7.5 Post-Merge 안정화 — escape hatch enforcement + claim release fallback bugfix | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/V2_PURGE_REPORT.md` | V2 Purge Report — 사용자 명시 "ebs v2 별개 프로젝트" cascade | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` | 기획 공백: <구체적 공백명> | conductor | - | - |
+| `docs/4. Operations/Conflict_Registry.md` | Conflict Registry (v7.5 Autonomous Triage Audit Trail) | conductor | contract | - |
 | `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` | Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
@@ -559,7 +567,7 @@ tier: generated
 | `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` | Global SSOT Sync — SG-022 advocacy eradication | conductor | contract | - |
 | `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
 | `docs/4. Operations/Multi_Session_Handoff.md` | Multi-Session Handoff Guide (2026-04-21) | conductor | internal | - |
-| `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate) | conductor | contract | - |
+| `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (v7.5 — Autonomous Conflict Triage + Pre-Work Contract + Worktree + PR + Free-tier Merge Gate) | conductor | contract | - |
 | `docs/4. Operations/Network_Deployment.md` | Network Deployment Guide | conductor | internal | - |
 | `docs/4. Operations/Phase_1_Decision_Queue.md` | Phase 1 Decision Queue (18건 결정 기록) | conductor | internal | - |
 | `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` | 2026-04-08-game-engine.plan | conductor | internal | - |

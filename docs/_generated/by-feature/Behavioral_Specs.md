@@ -7,6 +7,7 @@ tier: generated
 # Behavioral_Specs
 
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` — Action Rotation (team3)
+- `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md` — Betting & Pots — Domain Master (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md` — Card Pipeline Overview (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md` — Draw Games (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Evaluation_Reference.md` — Hand Evaluation 통합 레퍼런스 (team3)
@@ -24,3 +25,4 @@ tier: generated
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md` — Overview (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md` — Stud Games (team3)
 - `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` — Triggers (team3)
+- `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` — Triggers & Event Pipeline — Domain Master (team3)
