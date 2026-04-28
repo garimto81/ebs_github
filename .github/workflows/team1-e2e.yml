@@ -1,0 +1,162 @@
+name: Team 1 E2E — Docker Build Verification (Shift-Left Gate)
+
+# ----------------------------------------------------------------------
+# 목적 (Shift-Left CI gate):
+#   PR #11 → #17 → #18 cascade 에서 발견된 5-layer 갭 (Dockerfile build
+#   context 위반, Flutter SDK pin drift, intl pin 불일치, --web-renderer
+#   폐기, --obfuscate web 미지원) 을 사람 눈 (또는 한밤 디버깅) 이 아닌
+#   pre-merge CI 단계에서 즉시 검출한다.
+#
+# 트리거:
+#   PR 이 lobby-web / cc-web 빌드에 영향을 주는 파일을 건드릴 때만.
+#   (path filter — Flutter 빌드는 무거우므로 무관 PR 에는 비활성)
+#
+# 동작:
+#   1. checkout
+#   2. docker buildx setup + GitHub Actions cache backend
+#   3. docker compose --profile web build lobby-web (Type A 갭 차단)
+#   4. docker compose --profile web build cc-web    (cc-web Dockerfile 호환 검증)
+#   5. 빌드된 image 의 healthcheck endpoint static probe (선택적)
+#
+# 차단 시나리오:
+#   - team1-frontend/docker/lobby-web/Dockerfile 의 COPY paths 가 build
+#     context 외부 경로 참조 → "not found" build error → CI Exit 1
+#   - team1-frontend/pubspec.yaml 의존성 ↔ Flutter SDK pin 충돌 → pub get
+#     error → CI Exit 1
+#   - flutter build web 의 deprecated flag 사용 → "Could not find an option
+#     named X" → CI Exit 1
+# ----------------------------------------------------------------------
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'team1-frontend/**'
+      - 'team4-cc/**'
+      - 'shared/ebs_common/**'
+      - 'docker-compose.yml'
+      - '.github/workflows/team1-e2e.yml'
+  workflow_dispatch:
+
+# 같은 PR head 에 새 commit 이 push 되면 이전 run 취소 (queue 정리)
+concurrency:
+  group: team1-e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write   # 실패 시 comment 용
+
+jobs:
+  docker-build-gate:
+    name: Docker Compose Build Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 45  # Flutter 첫 빌드 ~10 min × 2 service = ~20 min, 여유 포함
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ───────────────────────────────────────────────────────────────
+      # Buildx + GHA cache (build 시간 단축)
+      # ───────────────────────────────────────────────────────────────
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Expose GHA cache vars to compose
+        # docker compose build 가 cache_from / cache_to 를 사용하지 않으므로
+        # buildx 글로벌 driver-opt 로 GHA cache 활성화
+        run: |
+          echo "ACTIONS_CACHE_URL=$ACTIONS_CACHE_URL" >> "$GITHUB_ENV"
+          echo "ACTIONS_RUNTIME_TOKEN=$ACTIONS_RUNTIME_TOKEN" >> "$GITHUB_ENV"
+
+      # ───────────────────────────────────────────────────────────────
+      # PRIMARY GATE: lobby-web build (P0 #2 회귀 차단)
+      # ───────────────────────────────────────────────────────────────
+      - name: Build lobby-web (Type A gate)
+        env:
+          DOCKER_BUILDKIT: "1"
+          COMPOSE_DOCKER_CLI_BUILD: "1"
+        run: |
+          set -e
+          echo "::group::lobby-web build"
+          docker compose --profile web build lobby-web
+          echo "::endgroup::"
+
+          # 빌드 산출물 sanity check — Dockerfile 이 의도된 image 를 produce 했는지
+          docker image inspect ebs/lobby-web:latest \
+            --format '{{.Id}} {{.Config.ExposedPorts}} {{len .RootFS.Layers}}'
+
+      # ───────────────────────────────────────────────────────────────
+      # SECONDARY GATE: cc-web build (team4 Dockerfile 호환 검증)
+      # ───────────────────────────────────────────────────────────────
+      - name: Build cc-web (team4 cascade gate)
+        env:
+          DOCKER_BUILDKIT: "1"
+          COMPOSE_DOCKER_CLI_BUILD: "1"
+        run: |
+          set -e
+          echo "::group::cc-web build"
+          docker compose --profile web build cc-web
+          echo "::endgroup::"
+
+          docker image inspect ebs/cc-web:latest \
+            --format '{{.Id}} {{.Config.ExposedPorts}} {{len .RootFS.Layers}}'
+
+      # ───────────────────────────────────────────────────────────────
+      # Smoke probe — built nginx 안의 /healthz endpoint static 확인
+      # ───────────────────────────────────────────────────────────────
+      - name: Smoke probe — lobby-web nginx config
+        run: |
+          set -e
+          # 빌드된 image 안의 nginx.conf 가 listen 3000 + /healthz 를 갖는지 확인
+          docker run --rm --entrypoint sh ebs/lobby-web:latest -c "
+            grep -q 'listen *3000' /etc/nginx/conf.d/default.conf
+            grep -q '/healthz' /etc/nginx/conf.d/default.conf
+            ls /usr/share/nginx/html/flutter_bootstrap.js >/dev/null
+          "
+          echo "lobby-web nginx config OK"
+
+      - name: Smoke probe — cc-web nginx config
+        run: |
+          set -e
+          docker run --rm --entrypoint sh ebs/cc-web:latest -c "
+            grep -q 'listen *3001' /etc/nginx/conf.d/default.conf
+            grep -q '/healthz' /etc/nginx/conf.d/default.conf
+            ls /usr/share/nginx/html/flutter_bootstrap.js >/dev/null
+          "
+          echo "cc-web nginx config OK"
+
+      # ───────────────────────────────────────────────────────────────
+      # 실패 시 PR 코멘트 (cascade 갭 cheat-sheet)
+      # ───────────────────────────────────────────────────────────────
+      - name: Comment on failure
+        if: failure() && github.event.pull_request != null
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              '❌ **Team 1 Docker Build Gate failed**',
+              '',
+              '`docker compose --profile web build lobby-web cc-web` 가 PR head 에서 실패했습니다.',
+              '',
+              '### 빈번한 cascade 갭 cheat-sheet (PR #17/#18 history 참조)',
+              '',
+              '| Layer | 증상 (build log) | 가능 원인 / 1차 점검 |',
+              '|:-----:|------------------|---------------------|',
+              '| L1 | `COPY ../shared/ebs_common: not found` | docker-compose.yml `build.context` 가 `.` 이고 Dockerfile COPY paths 에 `team1-frontend/` prefix 가 있는지 |',
+              '| L2 | `Because ebs_lobby depends on intl ^X.Y` | pubspec.yaml `intl` pin 과 Flutter SDK 의 flutter_localizations pin 일치 여부 |',
+              '| L3 | `requires SDK version >=X.Y` | Dockerfile `FROM ghcr.io/cirruslabs/flutter:3.41.7` 와 dev_dependencies 의 dart sdk 요구 일치 |',
+              '| L4 | `Could not find an option named "--web-renderer"` | `--web-renderer=html` flag 폐기. 빌드 명령에서 제거 |',
+              '| L5 | `Could not find an option named "--obfuscate"` | flutter build web 은 `--obfuscate` 미지원. flag 제거 + `mkdir -p build/debug-info` 로 runtime COPY 호환 |',
+              '',
+              '자세한 사후 분석: `P0_REMEDIATION_HANDOFF.md` (PR #17), `P1_FOLLOWUP_HANDOFF.md` (PR #18).',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body,
+            });
