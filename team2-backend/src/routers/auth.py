@@ -9,8 +9,9 @@ from src.models.base import EbsBaseModel
 
 from src.app.config import settings
 from src.app.database import get_db
-from src.middleware.rbac import get_current_user, require_role
+from src.middleware.rbac import get_current_token_payload, get_current_user, require_role
 from src.models.user import User
+from src.security.blacklist import add_to_blacklist
 from src.security.jwt import (
     create_2fa_temp_token,
     decode_token,
@@ -264,15 +265,22 @@ def refresh(body: RefreshRequest, db: Session = Depends(get_db)):
 @router.post("/logout")
 def logout(
     all: bool = False,
+    payload: dict = Depends(get_current_token_payload),
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Logout current device. SG-008-b5: ?all=true logs out all devices.
 
-    Current single-session-per-user model: ?all has same effect as default.
-    Future-proof: when multi-session support lands, ?all will revoke all
-    refresh tokens for the user.
+    BS-01 §강제 무효화 (M1 Item 2): 본 토큰 jti 를 blacklist 에 등록 → 잔여 access TTL
+    동안 다중 인스턴스에서 동일 토큰 거부. refresh 토큰은 user_sessions 삭제로 무효화.
     """
+    # blacklist 본 access token (잔여 TTL = exp - now, 음수면 add() 가 no-op)
+    import time
+    jti = payload.get("jti")
+    if jti:
+        remaining = max(0, int(payload.get("exp", 0)) - int(time.time()))
+        add_to_blacklist(jti, remaining)
+
     svc_logout(user.user_id, db)
     return {
         "message": "Logged out successfully",

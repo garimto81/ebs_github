@@ -1,4 +1,5 @@
 """JWT token creation & decoding — python-jose."""
+import uuid
 from datetime import datetime, timedelta, timezone
 
 from jose import jwt
@@ -71,6 +72,7 @@ def create_access_token(
         "email": email,
         "role": role,
         "type": "access",
+        "jti": uuid.uuid4().hex,  # M1 Item 2 — blacklist 추적용 unique id
         "iat": int(now.timestamp()),
         "exp": int(expire.timestamp()),
     }
@@ -85,6 +87,7 @@ def create_refresh_token(user_id: int) -> str:
     payload = {
         "sub": str(user_id),
         "type": "refresh",
+        "jti": uuid.uuid4().hex,  # M1 Item 2 — blacklist 추적용
         "iat": int(now.timestamp()),
         "exp": int(expire.timestamp()),
     }

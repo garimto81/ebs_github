@@ -1246,9 +1246,48 @@ def detect_auth() -> ContractReport:
             )
         )
 
+    # Rule 3 — Blacklist module 존재 (M1 Item 2 / BS-01 §강제 무효화)
+    # Spec: BS-01 가 "blacklist:jti" 또는 "blacklist 추가" 패턴을 언급하면 모듈 필수
+    # Code: src/security/blacklist.py 파일 존재 + middleware/rbac.py 가 import + use
+    blacklist_in_spec = bool(
+        re.search(r"blacklist[:\s]*jti|blacklist\s*추가|Refresh\s*Token\s*blacklist", spec_text)
+    )
+    blacklist_module_path = REPO / "team2-backend" / "src" / "security" / "blacklist.py"
+    blacklist_module_exists = blacklist_module_path.exists()
+    middleware_path = REPO / "team2-backend" / "src" / "middleware" / "rbac.py"
+    middleware_uses_blacklist = False
+    if middleware_path.exists():
+        mw_text = _read(middleware_path)
+        middleware_uses_blacklist = bool(
+            re.search(r"from\s+src\.security\.blacklist\s+import|is_revoked\s*\(", mw_text)
+        )
+
+    if blacklist_in_spec and not blacklist_module_exists:
+        rep.d2.append(
+            DriftItem(
+                contract="auth",
+                drift_type="D2",
+                identifier="blacklist module",
+                spec_value="present (BS-01 §강제 무효화)",
+                code_value="missing (src/security/blacklist.py)",
+                note="기획은 blacklist 운영 명시 / 코드 모듈 부재 — M1 Item 2 미해소",
+            )
+        )
+    elif blacklist_in_spec and blacklist_module_exists and not middleware_uses_blacklist:
+        rep.d2.append(
+            DriftItem(
+                contract="auth",
+                drift_type="D2",
+                identifier="blacklist middleware integration",
+                spec_value="enforced (모든 access token 검증)",
+                code_value="module exists but middleware/rbac.py 가 사용 안 함",
+                note="모듈은 있으나 통합 안 됨 — get_current_user 가 is_revoked 호출 필요",
+            )
+        )
+
     rep.scanner_note = (
-        "M1 D+0: 1 rule (MAX_FAILED_ATTEMPTS). "
-        "D+1+ 추가 예정: lock mode, blacklist module, composite PK, refresh delivery."
+        "M1 D+1: 2 rules (MAX_FAILED_ATTEMPTS, blacklist module). "
+        "D+1+ 추가 예정: lock mode, composite PK, refresh delivery."
     )
     return rep
 
