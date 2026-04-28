@@ -1285,9 +1285,50 @@ def detect_auth() -> ContractReport:
             )
         )
 
+    # Rule 4 — Composite session PK (M1 Item 3 / BS-01 §A-25 다중 세션)
+    # Spec: '최대 동시 세션 2' 또는 'Lobby + CC' 또는 'device_id' 패턴
+    # Code: src/models/user.py 에 device_id 필드 + init.sql 에 UNIQUE(user_id, device_id)
+    multi_session_in_spec = bool(
+        re.search(
+            r"최대\s*동시\s*세션\s*[\|\s:]*\s*2|Lobby\s*\+\s*CC|device_id",
+            spec_text,
+        )
+    )
+    model_path = REPO / "team2-backend" / "src" / "models" / "user.py"
+    ddl_path = REPO / "team2-backend" / "src" / "db" / "init.sql"
+    has_device_id_in_model = False
+    if model_path.exists():
+        model_text = _read(model_path)
+        has_device_id_in_model = bool(
+            re.search(r"device_id\s*:\s*str", model_text)
+        )
+    has_composite_unique = False
+    if ddl_path.exists():
+        ddl_text = _read(ddl_path)
+        has_composite_unique = bool(
+            re.search(r"UNIQUE\s*\(\s*user_id\s*,\s*device_id\s*\)", ddl_text)
+        )
+
+    if multi_session_in_spec and not (has_device_id_in_model and has_composite_unique):
+        missing = []
+        if not has_device_id_in_model:
+            missing.append("UserSession.device_id field")
+        if not has_composite_unique:
+            missing.append("init.sql UNIQUE(user_id, device_id)")
+        rep.d2.append(
+            DriftItem(
+                contract="auth",
+                drift_type="D2",
+                identifier="user_sessions composite PK",
+                spec_value="UNIQUE(user_id, device_id) for multi-session",
+                code_value=f"missing: {', '.join(missing)}",
+                note="BS-01 §A-25 'Lobby+CC 동시 2개' 정책 미구현 — M1 Item 3 미해소",
+            )
+        )
+
     rep.scanner_note = (
-        "M1 D+1: 2 rules (MAX_FAILED_ATTEMPTS, blacklist module). "
-        "D+1+ 추가 예정: lock mode, composite PK, refresh delivery."
+        "M1 D+1: 3 rules (MAX_FAILED_ATTEMPTS, blacklist module, composite PK). "
+        "D+1+ 추가 예정: lock mode permanent, refresh_token_delivery matrix."
     )
     return rep
 

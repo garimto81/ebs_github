@@ -59,9 +59,12 @@ def authenticate(email: str, password: str, db: Session) -> User | None:
 
 
 def create_session(
-    user: User, db: Session
+    user: User, db: Session, device_id: str = "default"
 ) -> tuple[str, str, int, str]:
     """Create JWT pair + persist session.
+
+    BS-01 §A-25 다중 세션 (M1 Item 3): device_id 별 row 분리. 기본값 "default" 는
+    backward compat. 신규 multi-session 사용 시 caller 가 "lobby"/"cc" 등 명시.
 
     Returns (access_token, refresh_token, expires_in, expires_at_iso).
     """
@@ -70,12 +73,15 @@ def create_session(
     expires_in = get_access_ttl()
     expires_at = (_utcnow() + timedelta(seconds=expires_in)).isoformat() + "Z"
 
-    # Upsert user_sessions
+    # Upsert user_sessions (composite key: user_id + device_id)
     session_row = db.exec(
-        select(UserSession).where(UserSession.user_id == user.user_id)
+        select(UserSession).where(
+            UserSession.user_id == user.user_id,
+            UserSession.device_id == device_id,
+        )
     ).first()
     if session_row is None:
-        session_row = UserSession(user_id=user.user_id)
+        session_row = UserSession(user_id=user.user_id, device_id=device_id)
     session_row.access_token = access_token
     session_row.refresh_token = refresh_token
     session_row.token_expires_at = expires_at

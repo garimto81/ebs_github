@@ -520,8 +520,11 @@ CREATE TABLE users (
 );
 
 CREATE TABLE user_sessions (
+    -- BS-01 §A-25 다중 세션: device_id 별 분리 (max 2 = 1 Lobby + 1 CC)
+    -- M1 Item 3 (PR 3, 2026-04-28): 기존 UNIQUE(user_id) → UNIQUE(user_id, device_id)
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL UNIQUE REFERENCES users(user_id),
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    device_id TEXT NOT NULL DEFAULT 'default',
     last_series_id INTEGER,
     last_event_id INTEGER,
     last_flight_id INTEGER,
@@ -530,7 +533,8 @@ CREATE TABLE user_sessions (
     access_token TEXT,
     refresh_token TEXT,
     token_expires_at TEXT,
-    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    UNIQUE (user_id, device_id)
 );
 
 CREATE TABLE audit_logs (
