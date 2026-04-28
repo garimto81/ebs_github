@@ -170,6 +170,33 @@ def normalize_rel(path: Path) -> str:
     return path.resolve().relative_to(REPO_ROOT).as_posix()
 
 
+# B-349 §4 (2026-04-28): deprecation shim 인식
+# Behavioral_Specs deprecation rollout (PR #19) 후속 — 16 개 BS-06-XX 파일이
+# frontmatter `tier: deprecated` + `redirect-to:` 형태로 교체됨. 본 stub 들은
+# 키워드 매치 시 false positive 가능성이 있으므로 file-level 에서 통째 skip.
+#
+# 판정 기준 (AND):
+#   1. 파일이 `---` 으로 시작 (frontmatter 존재)
+#   2. frontmatter 에 `tier: deprecated` 라인
+#   3. frontmatter 에 `redirect-to:` 라인 (도메인 마스터 cross-ref)
+#
+# strict 모드 (--strict) 에서는 본 우회 비활성화 (allowlist 전체 무시 정책).
+def is_deprecation_shim(text: str) -> bool:
+    """파일 frontmatter 가 deprecation shim 형태인지 판정.
+
+    True 시 ssot_auditor 는 본 파일의 본문 키워드 검사를 통째로 skip 한다 (file-level).
+    legacy-id-redirect.json 의 `audit_hints.deprecation_marker` 정의와 정합.
+    """
+    if not text.startswith("---"):
+        return False
+    # 두 번째 `---` 위치 찾기 (frontmatter 종료)
+    end = text.find("\n---", 3)
+    if end < 0:
+        return False
+    fm = text[3:end]
+    return "tier: deprecated" in fm and "redirect-to:" in fm
+
+
 def check_allowlist(rel_path: str, line_text: str, context_lines: list[str]) -> tuple[bool, str]:
     """이 violation 이 allowlist 에 해당하는지 판정. (allowed, reason)"""
     if rel_path in ALLOWLIST_PATHS:
@@ -198,6 +225,14 @@ def scan_file(path: Path, strict: bool) -> list[Finding]:
     except Exception as exc:
         print(f"[WARN] read fail: {rel} — {exc}", file=sys.stderr)
         return findings
+
+    # B-349 §4 (2026-04-28): Deprecation shim 인식 — file-level skip
+    # frontmatter `tier: deprecated` + `redirect-to:` 가 있으면 본문 키워드 검사 통째 우회.
+    # 16 BS-06-XX deprecation stub (PR #19) 의 false positive 방지.
+    # strict 모드에서는 본 우회 비활성화 (allowlist 정책 일관).
+    if not strict and is_deprecation_shim(text):
+        return findings  # Empty list — 모든 키워드 매치를 통째 PASS
+
     lines = text.splitlines()
     for idx, line in enumerate(lines):
         for kw_name, pattern, ignorecase in KEYWORDS:
