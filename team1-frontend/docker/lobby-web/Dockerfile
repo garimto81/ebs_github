@@ -3,21 +3,26 @@
 # Phase 5 — lobby-web (team1 Flutter Web release).
 # Multi-stage: Flutter SDK build → Nginx alpine serve.
 # 결과 이미지 ≈ 28 MB (nginx:1.27-alpine 기반).
+#
+# 2026-04-28 — Build Context Promotion (Type A 갭 해소).
+# Build context: project root (compose 의 context: . 와 정합).
+# 모든 COPY 경로는 project root 기준 (team1-frontend/ prefix + shared/ebs_common 직접 접근).
 
 # -----------------------------------------------------------------------------
 # Stage 1: Build
 # -----------------------------------------------------------------------------
-FROM ghcr.io/cirruslabs/flutter:3.22.0 AS builder
+FROM ghcr.io/cirruslabs/flutter:stable AS builder
 
 WORKDIR /app
 
 # 의존성 캐시 레이어 분리 (pubspec 변경 시에만 재실행)
-COPY pubspec.yaml pubspec.lock ./
-COPY ../shared/ebs_common /shared/ebs_common
+# pubspec.yaml 의 ebs_common: path:../shared/ebs_common 가 /shared/ebs_common 으로 resolve 되도록 사전 배치.
+COPY team1-frontend/pubspec.yaml team1-frontend/pubspec.lock ./
+COPY shared/ebs_common /shared/ebs_common
 RUN flutter pub get
 
-# 소스 복사 + codegen
-COPY . .
+# 소스 복사 (team1-frontend 만; shared 는 위에서 별도 처리)
+COPY team1-frontend/ ./
 RUN dart run build_runner build --delete-conflicting-outputs
 
 # Production env (build-arg 로 주입)
@@ -25,16 +30,18 @@ ARG ENV_FILE=production.json
 RUN if [ ! -f "$ENV_FILE" ]; then cp production.example.json "$ENV_FILE"; fi
 
 # Release web build (gatekeeper 무시 — CI 단계가 별도 검증)
+# 2026-04-28 — Flutter stable (3.27+) 호환:
+#   --web-renderer        폐기 (build config 로 이전)
+#   --dart2js-optimization=O4   deprecation → 기본값
+#   --obfuscate           web 빌드 미지원 (native only)
+#   --split-debug-info    web 미지원 → Sentry source map 은 별도 sidecar 처리
 RUN flutter build web \
       --release \
-      --web-renderer=html \
       --tree-shake-icons \
-      --dart2js-optimization=O4 \
       --dart-define-from-file="$ENV_FILE" \
-      --obfuscate \
-      --split-debug-info=build/debug-info \
       --source-maps \
-      --output=build/web
+      --output=build/web \
+ && mkdir -p build/debug-info  # runtime stage COPY 호환
 
 # -----------------------------------------------------------------------------
 # Stage 2: Serve
@@ -48,7 +55,7 @@ RUN apk add --no-cache curl tini
 COPY --from=builder /app/build/web /usr/share/nginx/html
 
 # Nginx config (SPA fallback + caching + healthz)
-COPY docker/lobby-web/nginx.conf /etc/nginx/conf.d/default.conf
+COPY team1-frontend/docker/lobby-web/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Sentry source map artefact (사이드카 — release 시 upload 후 제거)
 COPY --from=builder /app/build/debug-info /opt/debug-info

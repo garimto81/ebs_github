@@ -125,8 +125,12 @@ services:
   lobby-web:
     image: ebs/lobby-web:${LOBBY_WEB_TAG:-latest}
     build:
-      context: ./team1-frontend
-      dockerfile: docker/lobby-web/Dockerfile
+      # 2026-04-28 — Type A 갭 (Monorepo build context promotion).
+      # 이전: context=./team1-frontend → COPY ../shared/ebs_common 컨텍스트 위반.
+      # 변경: context=. (project root) → ebs_common (path:../shared/ebs_common 의존)
+      # 정상 접근 가능. Dockerfile COPY paths 도 team1-frontend/ prefix 됨.
+      context: .
+      dockerfile: team1-frontend/docker/lobby-web/Dockerfile
       args:
         ENV_FILE: production.json
     container_name: ebs-lobby-web
