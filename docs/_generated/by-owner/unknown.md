@@ -199,7 +199,6 @@ tier: generated
 - `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-016-LEGACY-검토-요청-WSOP-LIVE-Parity-EventFlightStatusRes.md` — [LEGACY] 검토 요청: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC
 - `docs/3. Change Requests/pending/CR-team1-20260417-bo-cors-lan.md` — CR: Team2 BO CORS 기본값을 LAN 허용으로 변경
 - `docs/3. Change Requests/pending/CR-team1-20260417-cc-network-config.md` — CR: Team4 CC boApiClientProvider localhost 하드코딩 제거
-- `docs/4. Operations/Active_Work.md` — Active_Work
 - `docs/4. Operations/Conductor_Backlog.md` — Conductor_Backlog
 - `docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` — Phase 2 통합 테스트 + E2E
 - `docs/4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` — Phase 3 통합 테스트 + 부하 테스트

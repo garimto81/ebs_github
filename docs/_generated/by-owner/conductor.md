@@ -171,13 +171,13 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` — SG-023 — 인텐트 전환 (기획서 완결 → production 출시)
 - `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` — SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권)
 - `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` — SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델)
-- `docs/4. Operations/Conductor_Backlog/SG-028-autonomous-conflict-triage.md` — v7.5 Autonomous Conflict Triage — decision_owner → autonomous_llm_judgment 전환
-- `docs/4. Operations/Conductor_Backlog/SG-028b-stabilization.md` — v7.5 Post-Merge 안정화 — escape hatch enforcement + claim release fallback bugfix
 - `docs/4. Operations/Conductor_Backlog/V2_PURGE_REPORT.md` — V2 Purge Report — 사용자 명시 "ebs v2 별개 프로젝트" cascade
 - `docs/4. Operations/Conductor_Backlog/_template_implementation.md` — 구현: <기능명>
 - `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` — 시나리오: <검증 대상 통합 흐름>
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` — 기획 공백: <구체적 공백명>
-- `docs/4. Operations/Conflict_Registry.md` — Conflict Registry (v7.5 Autonomous Triage Audit Trail)
+- `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` — v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record
+- `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` — v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기)
+- `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` — Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A)
 - `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
 - `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
 - `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
@@ -186,7 +186,7 @@ tier: generated
 - `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` — Global SSOT Sync — SG-022 advocacy eradication
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
 - `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
-- `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v7.5 — Autonomous Conflict Triage + Pre-Work Contract + Worktree + PR + Free-tier Merge Gate)
+- `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
 - `docs/4. Operations/Phase_1_Decision_Queue.md` — Phase 1 Decision Queue (18건 결정 기록)
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
@@ -195,6 +195,7 @@ tier: generated
 - `docs/4. Operations/Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` — Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계
 - `docs/4. Operations/Plans/PLAN-BO-Phase1.md` — PLAN-BO-Phase1
 - `docs/4. Operations/Plans/Redesign_Plan_2026_04_22.md` — Redesign Plan — 2026-04-22 회의록 기반 전면 재설계
+- `docs/4. Operations/RENOVATE_EVALUATION.md` — Renovate vs Dependabot Evaluation
 - `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` — 2026-04-10-ccr-batch-team-impact
 - `docs/4. Operations/Reports/2026-04-17_SSOT_Audit.md` — Team 2 Backend SSOT Compliance Audit
 - `docs/4. Operations/Reports/2026-04-21-critic-ge-multi-session.md` — Critic — GE 멀티 세션 분리 적합성 (Lobby 탭 종속 전제)
@@ -203,6 +204,12 @@ tier: generated
 - `docs/4. Operations/Reports/2026-04-26-Prototype_Completion_Report.md` — Prototype Completion Report — Spec ↔ Code 양방향 동기화 (2026-04-26)
 - `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md` — Spec Gap Audit — Phase 1 분석 (2026-04-26)
 - `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase4_Delivery.md` — Spec Gap Audit — Phase 4 Delivery (2026-04-26)
+- `docs/4. Operations/Reports/2026-04-28-v8-phase4-hook-deprecation-audit.md` — v8.0 Phase 4 — Deprecated Hooks Audit (branch_guard + session_branch_init)
+- `docs/4. Operations/Reports/2026-04-28-v8-phase6-l0-removal-record.md` — v8.0 Phase 6 — L0 Pre-Work Contract Removal Record
+- `docs/4. Operations/Reports/2026-04-28-v8-phase8a-multi-session-workflow-v4-history.md` — Multi-Session Workflow — v4.0/v4.1 → v5.0 전환 이유 (Archived 2026-04-28)
+- `docs/4. Operations/Reports/2026-04-28-v8-phase8c-skill-md-v4-history.md` — SKILL.md (team) — v4.0/v4.1 폐기 이유 (Archived 2026-04-28)
+- `docs/4. Operations/Reports/2026-04-28-v8-phase8d-multi-session-workflow-history.md` — Multi_Session_Workflow.md — v7.2 5-Session Pipeline + 변경 이력 (Archived 2026-04-28)
+- `docs/4. Operations/Reports/2026-04-28-v8-restoration-verified.md` — v8.0 Workflow Verification — End-to-End Test
 - `docs/4. Operations/Roadmap.md` — Roadmap
 - `docs/4. Operations/SSOT_Alignment_Progress.md` — SSOT Alignment Progress
 - `docs/4. Operations/Spec_Gap_Registry.md` — Spec Gap Registry — Drift 집계 + 해소 추적
