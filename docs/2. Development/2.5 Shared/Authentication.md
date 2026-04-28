@@ -34,6 +34,21 @@ reimplementability_notes: "BS-01 Authentication 정본 (46KB)"
 
 > 참조: BS-00 §1 앱 아키텍처 용어, API-06 Auth & Session, BO-02 User Management, Foundation Ch.5 §5.4
 
+## 위임 문서 (M2~M8 IA)
+
+본 문서는 **정책 SSOT** (수치, 행동 명세) 에 집중. 운영/구현/시각화/배포 detail 은 신설 문서들에 위임 (audit plan `~/.claude/plans/role-and-objective-reactive-canyon.md` 참조):
+
+| 영역 | 문서 | 책임 |
+|------|------|------|
+| 분산 아키텍처 (multi-instance, Redis Cluster, PG primary/replica) | `Authentication/Distributed_Architecture.md` (M2) | 토폴로지 + 데이터 분포 + 분산 락 + Failover |
+| 토큰 lifecycle 시각화 (Mermaid 7개) | `Authentication/Token_Lifecycle_Sequences.md` (M3) | Login / Refresh / Logout / 강제 무효화 / handoff / OAuth 시퀀스 |
+| Race condition 패턴 + 해소 | `../2.2 Backend/Authentication/Concurrency_and_Race_Conditions.md` (M4) | 6 race 시나리오 + 해소 + 모니터링 |
+| 30분 로컬 셋업 | `../2.2 Backend/Authentication/Quickstart_Local_Cluster.md` (M5) | docker compose + seed admin + 양 worker 검증 |
+| 사고 대응 runbook | `Authentication/Troubleshooting_Runbook.md` (M6) | 6 사고 시나리오 + 진단 명령 + Escalation |
+| Production 배포 + 운영 | `../2.2 Backend/Authentication/Production_Deployment.md` (M8) | k8s/Helm + JWT key 회전 + SLO + 롤백 |
+| Drift Gate (정책-코드 정합 자동 검증) | `tools/spec_drift_check.py --auth` (M9) | 5 rules: lockout/lock_mode/blacklist/composite_PK/refresh_delivery |
+| M1 IMPL 추적 | `../2.2 Backend/Engineering/M1_Session_Drift_Audit_2026-04-28.md` | 5 SSOT drift 해소 PR 매핑 |
+
 ---
 
 ## 이 문서의 SSOT 범위 (정책 수치의 정답 위치)
