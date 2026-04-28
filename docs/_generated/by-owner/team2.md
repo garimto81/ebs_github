@@ -26,6 +26,7 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Engineering/Error_Handling.md` — Error Handling
 - `docs/2. Development/2.2 Backend/Engineering/Foundation_Realignment_Plan_2026-04-22.md` — Foundation Realignment Plan (2026-04-22)
 - `docs/2. Development/2.2 Backend/Engineering/Logging.md` — Logging
+- `docs/2. Development/2.2 Backend/Engineering/M1_Session_Drift_Audit_2026-04-28.md` — M1 Session Drift Audit (2026-04-28)
 - `docs/2. Development/2.2 Backend/Engineering/Non_Functional_Requirements.md` — Non Functional Requirements
 - `docs/2. Development/2.2 Backend/Engineering/Project_Structure.md` — Project Structure
 - `docs/2. Development/2.2 Backend/Engineering/Routing.md` — Routing

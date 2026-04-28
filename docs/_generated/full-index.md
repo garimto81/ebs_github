@@ -221,6 +221,7 @@ tier: generated
 | `docs/2. Development/2.2 Backend/Engineering/Error_Handling.md` | Error Handling | team2 | internal | IMPL-06 |
 | `docs/2. Development/2.2 Backend/Engineering/Foundation_Realignment_Plan_2026-04-22.md` | Foundation Realignment Plan (2026-04-22) | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/Engineering/Logging.md` | Logging | team2 | internal | IMPL-07 |
+| `docs/2. Development/2.2 Backend/Engineering/M1_Session_Drift_Audit_2026-04-28.md` | M1 Session Drift Audit (2026-04-28) | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/Engineering/Non_Functional_Requirements.md` | Non Functional Requirements | team2 | internal | IMPL-10 |
 | `docs/2. Development/2.2 Backend/Engineering/Project_Structure.md` | Project Structure | team2 | internal | IMPL-02 |
 | `docs/2. Development/2.2 Backend/Engineering/Routing.md` | Routing | team2 | internal | IMPL-04 |
