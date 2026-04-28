@@ -1,4 +1,6 @@
-// HandFsmNotifier unit tests (BS-05-01, BS-06-01 — 9-state lifecycle).
+// HandFsmNotifier unit tests — 9-state lifecycle.
+// 권위: docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md §2.1 + §3.3.
+// (구 BS-05-01 + BS-06-01 — 2026-04-27 Lifecycle 도메인 마스터로 통합, B-349.)
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

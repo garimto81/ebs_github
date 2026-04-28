@@ -209,6 +209,23 @@ status: active
 eta: 2h
 ```
 
+### Claim #20 — team3: B-351/352/353 — OE 번호 재정렬 + engine enum 검증 + cross-team 코드 redirect (Mode A 권한 행사)
+```yaml
+id: 20
+team: team3
+task: B-351/352/353 — OE 번호 재정렬 + engine enum 검증 + cross-team 코드 redirect (Mode A
+  권한 행사)
+started: '2026-04-28T06:57:07Z'
+scope:
+- team3-engine/ebs_game_engine/lib/core/output/**
+- docs/2. Development/2.3 Game Engine/Behavioral_Specs/**
+- docs/_generated/legacy-id-redirect.json
+- team2-backend/src/db/enums.py
+- team4-cc/src/lib/**
+status: active
+eta: 3h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)

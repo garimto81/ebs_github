@@ -597,15 +597,17 @@ events:
 | IT-15 | **IncompleteAllInNoReopen** | PlayerAction(AllIn) 처리 시 `raise_increment < min_full_raise_increment` | `actedThisRound` 보존, `lastAggressor`/`minRaise` 불변, `currentBet` 만 갱신 (WSOP Rule 96) | BS-06-02 §6.1 |
 | IT-16 | **UnderRaiseAdjust** | PlayerAction(Raise) 처리 시 `requested_raise < min_raise_total` | 50% 이상이면 min_raise_total 로 보정, 50% 미만이면 Call 로 변환 (WSOP Rule 95) | BS-06-02 §5.1 |
 
-### 3.4 Output Events (BS-06-09 §Output Events)
+### 3.4 Output Events (API-04 §6.0 권위, 21종)
 
 `ReduceResult.outputs: List<OutputEvent>` 로 반환된다. UI 가 구독하여 화면 갱신, 애니메이션, 사운드를 트리거한다.
+
+> **2026-04-28 (B-351 OE 번호 재정렬 / B-352 engine code 검증 완료)**: 본 표는 **API-04 §6.0 (`APIs/Overlay_Output_Events.md`) 권위 21종 카탈로그** 로 재정렬됨. 코드 정본: `team3-engine/ebs_game_engine/lib/core/actions/output_event.dart`. 옛 BS-06-09 OE-11~18 ↔ API-04 OE-14~21 매핑은 §3.4.1 권위 정합 표 참조.
 
 | ID | 이름 | payload | 용도 |
 |:--:|------|---------|------|
 | OE-01 | **StateChanged** | `{prevPhase, newPhase, handState}` | 상태 전이 알림 → 오버레이 갱신 |
 | OE-02 | **ActionProcessed** | `{seat, action, amount, newStack}` | 액션 처리 완료 → CC 버튼 갱신, 애니메이션 |
-| OE-03 | **PotUpdated** | `{mainPot, sidePots[]}` | 팟 금액 변경 → 오버레이 팟 표시 |
+| OE-03 | **PotUpdated** | `{mainPot, sidePots[], displayToPlayers}` | 팟 금액 변경 → 오버레이 팟 표시. **`displayToPlayers: bool` 플래그 (WSOP Rule 101)**: NL/FL/Spread 게임에서 플레이어 UI 숨김 여부. (구 BS-06-09 의 별도 OE-19 view 는 본 OE-03 payload 확장으로 통합) |
 | OE-04 | **BoardUpdated** | `{cards[], street}` | 보드 카드 공개 → 오버레이 카드 표시 |
 | OE-05 | **ActionOnChanged** | `{seat, legalActions[], timeBank?}` | 액션 턴 이동 → CC 버튼 활성/비활성 |
 | OE-06 | **WinnerDetermined** | `{winners[], potDistribution[]}` | 우승자 확정 → 팟 분배 애니메이션 |
@@ -613,15 +615,17 @@ events:
 | OE-08 | **UndoApplied** | `{restoredState, undoDepthRemaining}` | UNDO 완료 → UI 전체 갱신 |
 | OE-09 | **HandCompleted** | `{handNumber, winners[], stats}` | 핸드 종료 → 통계 업데이트, 기록 저장 |
 | OE-10 | **EquityUpdated** | `{equities[]}` | 승률 재계산 완료 → 오버레이 승률 표시 |
-| OE-11 | **HandTabled** (Rule 71) | `{seat_index, cards}` | 플레이어 카드 공개 → 오버레이에 표시, 엔진의 임의 muck 보호 활성 |
-| OE-12 | **HandRetrieved** (Rule 110) | `{seat, manager_rationale}` | Folded hand 복구 완료 → CC 에 복구 알림, 감사 로그 |
-| OE-13 | **HandKilled** (Rule 71 예외) | `{seat, manager_rationale}` | Manager 판정에 의한 수동 kill → 감사 로그 |
-| OE-14 | **MuckRetrieved** (Rule 109) | `{seat, cards, rationale}` | Muck 카드 재판정 복구 → showdown 재평가 트리거 |
-| OE-15 | **FlopRecovered** (Rule 89) | `{original_cards, new_flop, reserved_burn}` | Four-card flop 복구 완료 → 오버레이 새 flop 표시 |
-| OE-16 | **DeckIntegrityWarning** (Rule 78) | `{failure_count, suggested_action}` | RFID 3회 연속 실패 → CC 에 덱 교체 제안 |
-| OE-17 | **DeckChangeStarted** (Rule 78) | `{reason, requested_by}` | Deck change 절차 시작 → DeckFSM 전이 알림 |
-| OE-18 | **GameTransitioned** (Mixed Omaha) | `{from_game, to_game, button_frozen}` | Mixed 게임 전환 → CC/Overlay 에 전환 알림, button freeze 표시 |
-| OE-19 | **PotUpdated** 확장 필드 | `{main, sides, total, display_to_players}` | **OE-03 PotUpdated 에 `display_to_players: bool` 플래그 추가 (WSOP Rule 101)**. NL/FL/Spread 게임에서 플레이어 UI 숨김 여부 판단 |
+| **OE-11** | **CardRevealed** | `{seat?, cards[], card_type, visibility}` | 홀/보드 카드 공개 → Rive 카드 reveal. **트리거 권위: BS-06-12 §2 (turn-based hole release / `SeatHoleCardCalled`) + §3 (atomic flop / `FlopRevealed`/`TurnRevealed`/`RiverRevealed` — 본 도메인 §3.5 T2/T6/T7/T8)** |
+| **OE-12** | **CardMismatchDetected** | `{seat?, expected, detected, source}` | RFID 감지 카드 ≠ 예상 → CC 경고 배너. **트리거: 본 도메인 §3.16.2 + Variants 도메인 §3.17 매트릭스 7** |
+| **OE-13** | **SevenDeuceBonusAwarded** | `{winner_seat, bonus_amount, opponent_count}` | SHOWDOWN 7-2 offsuit 우승 → 보너스 배너. **권위: Variants 도메인 §3.9 + Betting 도메인 §5.12** |
+| OE-14 | **HandTabled** (Rule 71) | `{seat_index, cards}` | 플레이어 카드 공개 → 오버레이에 표시, 엔진의 임의 muck 보호 활성. (구 BS-06-09 OE-11) |
+| OE-15 | **HandRetrieved** (Rule 110) | `{seat, manager_rationale}` | Folded hand 복구 완료 → CC 에 복구 알림, 감사 로그. (구 BS-06-09 OE-12) |
+| OE-16 | **HandKilled** (Rule 71 예외) | `{seat, manager_rationale}` | Manager 판정에 의한 수동 kill → 감사 로그. (구 BS-06-09 OE-13) |
+| OE-17 | **MuckRetrieved** (Rule 109) | `{seat, cards, rationale}` | Muck 카드 재판정 복구 → showdown 재평가 트리거. (구 BS-06-09 OE-14) |
+| OE-18 | **FlopRecovered** (Rule 89) | `{original_cards, new_flop, reserved_burn}` | Four-card flop 복구 완료 → 오버레이 새 flop 표시. (구 BS-06-09 OE-15) |
+| OE-19 | **DeckIntegrityWarning** (Rule 78) | `{failure_count, suggested_action}` | RFID 3회 연속 실패 → CC 에 덱 교체 제안. (구 BS-06-09 OE-16) |
+| OE-20 | **DeckChangeStarted** (Rule 78) | `{reason, requested_by}` | Deck change 절차 시작 → DeckFSM 전이 알림. (구 BS-06-09 OE-17) |
+| OE-21 | **GameTransitioned** (Mixed Omaha) | `{from_game, to_game, button_frozen}` | Mixed 게임 전환 → CC/Overlay 에 전환 알림, button freeze 표시. (구 BS-06-09 OE-18) |
 
 > **OE-05 `legalActions` payload 상세** (BS-06-09 GAP-B 보강):
 >
@@ -638,10 +642,11 @@ events:
 >
 > 각 액션의 min/max 는 BetLimit (NL/PL/FL) 규칙에 따라 엔진이 계산. fold 는 항상 포함 (active 상태만). check 는 `biggest_bet_amt == 0` 일 때만.
 
-> **OE-19 `display_to_players` 플래그 (WSOP Rule 101)**:
+> **OE-03 `displayToPlayers` 플래그 (WSOP Rule 101, 구 BS-06-09 OE-19 view 통합)**:
 > - `true` (기본): 팟 금액을 플레이어 UI 에 표시
 > - `false`: 특정 게임 (Spread Limit 등) 에서 팟 크기를 플레이어에게 숨김. Overlay (방송) 에는 항상 표시
 > - 엔진은 GameState 의 `pot_display_rule` 설정값에 따라 자동 결정
+> - 코드: `output_event.dart` `PotUpdated.displayToPlayers` 필드 (default `true`)
 
 ### 3.4.1 OutputEvent 카탈로그 권위 정합 (B-350, 2026-04-28)
 

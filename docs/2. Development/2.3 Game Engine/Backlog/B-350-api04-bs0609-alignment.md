@@ -1,16 +1,36 @@
 ---
 id: B-350
 title: "API-04 §6.0 (21종) ↔ BS-06-09 (19종) OutputEvent 정합 검증 — 누락 3 OE + 번호 shift 분석"
-status: IN_PROGRESS
+status: DONE
 priority: P1
 created: 2026-04-28
+completed: 2026-04-28
 parent: B-349 §3
 related-prs:
   - "PR #9 (Phase 2 Triggers 도메인)"
-  - "PR #19 (Deprecation shim)"
+  - "PR #19 (Deprecation shim, OPEN)"
+  - "PR #23 (B-349 §3-6 — §3.4.1 정합 매트릭스 + 본 Backlog 등재, MERGED)"
+  - "PR (B-351/352/353 — Triggers §3.4 재정렬 + output_event.dart + cross-team 코드, 본 PR)"
 authority:
   - "API-04 §6.0 (Overlay_Output_Events.md) — 외부 권위 (subscriber 코드 의존)"
-  - "BS-06-09 (Triggers 도메인 §3.4) — 행동 명세 view"
+  - "Triggers 도메인 §3.4 (Triggers_and_Event_Pipeline.md) — API-04 정렬 완료"
+---
+
+## 2026-04-28 완료
+
+본 Backlog 의 모든 수락 기준이 본 PR (B-351/352/353) 에서 충족:
+
+- ✅ 정합 분석 (PR #23 §3.4.1)
+- ✅ Triggers 도메인 §3.4 OE 카탈로그 21종 재정렬 (본 PR Chunk B)
+- ✅ B-352 engine code 검증: `team3-engine/ebs_game_engine/lib/core/actions/output_event.dart` 18 클래스 + payload 확장 = 21 OE 정합 (본 PR Chunk A, dart analyze 0 issues)
+- ✅ 옛 BS-06-09 OE-11~18 → API-04 OE-14~21 재번호 (본 PR)
+- ✅ 누락 3 OE (CardRevealed/CardMismatchDetected/SevenDeuceBonusAwarded) 카탈로그 추가 (본 PR)
+- ✅ OE-19 (BS-06-09) → OE-03 displayToPlayers payload 확장 통합 (본 PR)
+
+후속 작업 (별도 PR):
+- B-354 (NEW): legacy-id-redirect.json OE-level 매핑 추가 (PR #19 머지 후)
+- B-353 §docs: cross-team 90+ docs 갱신 (각 팀 자율 PR)
+
 ---
 
 # [B-350] API-04 ↔ BS-06-09 OutputEvent 정합 (P1)
