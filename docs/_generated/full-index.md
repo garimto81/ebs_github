@@ -135,6 +135,7 @@ tier: generated
 | `docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md` | Graphic Editor API | team2 | internal | API-07 |
 | `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` | WebSocket Events | team2 | internal | API-05 |
 | `docs/2. Development/2.2 Backend/Authentication/Concurrency_and_Race_Conditions.md` | Concurrency and Race Conditions (Auth domain) | team2 | internal | - |
+| `docs/2. Development/2.2 Backend/Authentication/Quickstart_Local_Cluster.md` | Quickstart — Local Cluster (Auth domain) | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/Back_Office/Operations.md` | Operations | team2 | internal | BO-03 |
 | `docs/2. Development/2.2 Backend/Back_Office/Overview.md` | Overview | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/Back_Office/Sync_Protocol.md` | Sync Protocol | team2 | internal | BO-02 |
