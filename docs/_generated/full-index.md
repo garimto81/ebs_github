@@ -363,6 +363,7 @@ tier: generated
 | `docs/2. Development/2.5 Shared/2.5 Shared.md` | 2.5 Shared | ci | generated | - |
 | `docs/2. Development/2.5 Shared/Authentication.md` | Authentication | conductor | internal | BS-01 |
 | `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` | Distributed Authentication Architecture | conductor | contract | - |
+| `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` | Token Lifecycle Sequences | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/BS_Overview.md` | BS Overview | conductor | internal | BS-00 |
 | `docs/2. Development/2.5 Shared/Naming_Conventions.md` | Naming Conventions (EBS Shared SSOT) | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Network_Config.md` | Network Configuration Contract | conductor | contract | - |
