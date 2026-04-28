@@ -127,7 +127,55 @@ updates:
       prefix: "chore(deps:ci)"
       include: "scope"
 
-# ─── 의도적 누락 (out of scope for P3) ───
-# - team2-backend (Python pyproject) — team2 ownership, P3 frontend hardening 범위 밖
-# - shared/ebs_common — path 의존성만 사용, 외부 publish 없음
-# - team1-frontend/_archive-quasar — Quasar 잔재, 의존성 업데이트 불필요
+  # ─── Pure Dart packages — team3 game engine harness ───
+  # 2026-04-28 (PR #27, P6) 추가. 기존 P3 에서 docker-base 만 cover 했으나
+  # team3 engine 도 pubspec 의존성 (test, args 등) 가 있어 drift 검출 필요.
+  - package-ecosystem: "pub"
+    directory: "/team3-engine/ebs_game_engine"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "06:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 2
+    versioning-strategy: "increase-if-necessary"
+    labels:
+      - "auto-merge"
+      - "dependencies"
+      - "team3"
+    commit-message:
+      prefix: "chore(deps:team3)"
+      include: "scope"
+
+  # ─── Python packages — team2 backend ───
+  # 2026-04-28 (PR #27, P6) 추가. team2 (FastAPI) 의 pyproject.toml 의존성
+  # (httpx, sqlalchemy, alembic, pydantic 등) 의 보안/기능 패치 PR.
+  # auto-merge 비활성 — Python 의존성은 minor 라도 ABI 변화 가능 (pydantic v1→v2 같은 사례).
+  # team2 decision_owner 가 명시 review 후 머지.
+  - package-ecosystem: "pip"
+    directory: "/team2-backend"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "06:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "team2"
+    commit-message:
+      prefix: "chore(deps:team2)"
+      include: "scope"
+
+# ─── 7 ecosystems 요일 stagger ───
+# Mon  pub(team1-frontend)
+# Tue  pub(team4-cc/src)
+# Wed  docker(lobby-web)
+# Thu  docker(cc-web)
+# Fri  docker(engine)
+# Sat  github-actions
+# Sun  pub(team3-engine) + pip(team2-backend)  ← P6 추가
+#
+# 의도적 누락:
+# - shared/ebs_common — path 의존성만, 외부 publish 없음
+# - team1-frontend/_archive-quasar — Quasar 잔재, 업데이트 불필요

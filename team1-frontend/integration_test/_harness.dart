@@ -5,7 +5,6 @@
 // - 결정론적 환경: useMock=true 강제, 외부 네트워크 0
 // - Provider override 헬퍼 노출
 
-import 'package:dio/dio.dart';
 import 'package:ebs_lobby/app.dart';
 import 'package:ebs_lobby/data/local/mock_dio_adapter.dart';
 import 'package:ebs_lobby/data/local/mock_scenario_adapter.dart';
