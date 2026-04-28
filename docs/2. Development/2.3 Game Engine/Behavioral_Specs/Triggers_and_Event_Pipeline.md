@@ -643,6 +643,65 @@ events:
 > - `false`: 특정 게임 (Spread Limit 등) 에서 팟 크기를 플레이어에게 숨김. Overlay (방송) 에는 항상 표시
 > - 엔진은 GameState 의 `pot_display_rule` 설정값에 따라 자동 결정
 
+### 3.4.1 OutputEvent 카탈로그 권위 정합 (B-350, 2026-04-28)
+
+본 §3.4 BS-06-09 OutputEvent 카탈로그는 **행동 명세 view** 이며, 외부 API 계약 권위는 `APIs/Overlay_Output_Events.md` §6.0 (실측 21종) 이다. 두 카탈로그는 같은 OutputEvent 집합을 다른 시각으로 분류하므로 매핑 정합이 필요하다.
+
+#### API-04 21 OE ↔ BS-06-09 19 OE 매핑
+
+| API-04 (권위) | API-04 이름 | BS-06-09 매핑 | 차이 사유 |
+|:-------------:|-----------|:-------------:|----------|
+| OE-01 ~ OE-10 | StateChanged ~ EquityUpdated | BS-06-09 OE-01~10 (번호 일치) | — |
+| **OE-11** | **CardRevealed** | **누락** → §3.4.1.A 신규 항목 추가 | BS-06-12 권위로 분리 |
+| **OE-12** | **CardMismatchDetected** | **누락** → §3.4.1.B | §3.16.2 / Variants §3.17 시나리오로만 |
+| **OE-13** | **SevenDeuceBonusAwarded** | **누락** → §3.4.1.C | Variants §3.9 / Betting §5.12 알고리즘만 |
+| OE-14 | HandTabled (Rule 71) | BS-06-09 **OE-11** (3 칸 shift) | API-04 권위로 재번호 (B-351 후속) |
+| OE-15 | HandRetrieved (Rule 110) | BS-06-09 OE-12 | (shift) |
+| OE-16 | HandKilled (Rule 71 예외) | BS-06-09 OE-13 | (shift) |
+| OE-17 | MuckRetrieved (Rule 109) | BS-06-09 OE-14 | (shift) |
+| OE-18 | FlopRecovered (Rule 89) | BS-06-09 OE-15 | (shift) |
+| OE-19 | DeckIntegrityWarning (Rule 78) | BS-06-09 OE-16 | (shift) |
+| OE-20 | DeckChangeStarted (Rule 78) | BS-06-09 OE-17 | (shift) |
+| OE-21 | GameTransitioned (Mixed Omaha) | BS-06-09 OE-18 | (shift) |
+| (OE-03 의 payload 확장) | `display_to_players` 플래그 (Rule 101) | BS-06-09 **OE-19** (별도 entry view) | API-04 는 OE-03 payload 로 통합. BS-06-09 의 19 카운트 = 18 OE + 1 payload 확장 |
+
+> **권위 결정**: 외부 subscriber (team1 Frontend / team4 CC) 코드 호환성 위해 API-04 번호가 권위. BS-06-09 의 OE-11~18 번호는 행동 명세 작성 시 임시 부여. **본 PR 은 cross-ref + 누락 3 OE 보강** 만, 전체 번호 재정렬은 후속 B-351 (큰 변경 + cross-team review).
+
+#### §3.4.1.A — OE-11 CardRevealed (행동 명세 view)
+
+| ID | 이름 | payload | 용도 |
+|:--:|------|---------|------|
+| **OE-11** (API-04 권위) | **CardRevealed** | `{seat?, cards[], card_type: "hole" \| "board"}` | 홀카드 / 보드 카드 공개 → Rive 카드 reveal 애니메이션 |
+
+> **권위 위임**: 트리거 로직은 **BS-06-12** (`Card_Pipeline_Overview.md` / 본 도메인 §3.5 T2/T6/T7/T8) 권위. `SeatHoleCardCalled` (T2, hole) 와 `FlopRevealed` / `TurnRevealed` / `RiverRevealed` (T6/T7/T8, board) 가 emit 시점. 즉 **OE-11 CardRevealed 는 API-04 측에서 본 추상 OE 이며, 실제 emission 은 BS-06-12 의 atomic 규칙을 따른다**.
+
+#### §3.4.1.B — OE-12 CardMismatchDetected (행동 명세 view)
+
+| ID | 이름 | payload | 용도 |
+|:--:|------|---------|------|
+| **OE-12** (API-04 권위) | **CardMismatchDetected** | `{seat?, expected_card, detected_card, source: "rfid" \| "manual"}` | RFID 감지 카드 ≠ 예상 카드 (또는 CC + RFID 다른 카드 동시 입력) → CC 경고 배너 |
+
+> **권위 위임**: 트리거 시나리오는 **본 도메인 §3.16.2** (CC + RFID 다른 카드 — `CARD_CONFLICT` 경고) + **Variants & Evaluation 도메인 §3.17 매트릭스 7** (Card Mismatch 처리 — Venue/Broadcast 분기). 본 OE 는 위 시나리오의 외부 발행 형태.
+
+#### §3.4.1.C — OE-13 SevenDeuceBonusAwarded (행동 명세 view)
+
+| ID | 이름 | payload | 용도 |
+|:--:|------|---------|------|
+| **OE-13** (API-04 권위) | **SevenDeuceBonusAwarded** | `{winner_seat, bonus_amount, opponent_count}` | SHOWDOWN 에서 7-2 offsuit 으로 우승 → 보너스 배너 + 팟 분배 후속 |
+
+> **권위 위임**: 활성화 / 판정 / 매트릭스는 **Variants & Evaluation 도메인 §3.9** (7-2 Side Bet 매트릭스) 권위. 알고리즘은 **Betting & Pots 도메인 §5.12** (Showdown.checkSevenDeuceBonus()). 본 OE 는 알고리즘 결과의 외부 발행 형태.
+
+#### §3.4.1.D — Cross-team 영향 + 후속 작업
+
+본 §3.4.1 보강의 cross-team 영향:
+- **team1 (Frontend)**: API-04 OE-11/12/13 구독 코드 추가 필요 (현재 BS-06-09 의 19 OE 만 핸들링 시 누락 가능)
+- **team4 (CC)**: OE-12 CardMismatchDetected 핸들러 (Venue/Broadcast 분기) — 이미 §3.17 매트릭스 7 구현이 있다면 OE 발행만 연결
+- **engine code** (`lib/core/output/output_event_buffer.dart`): API-04 21 enum 정합 검증 필요 (B-352 후속)
+
+전체 번호 재정렬 (BS-06-09 OE-11~18 → API-04 OE-14~21) 은 **B-351 후속 PR** 에서 처리 (4 도메인 마스터 cross-ref + 코드 enum + cross-team review 필요).
+
+---
+
 ### 3.5 BS-06-12 Card Pipeline Trigger Matrix (T1~T11)
 
 본 매트릭스는 BS-06-12 의 turn-based hole release + atomic flop 의 11 트리거를 단일 표로 통합한다. §3.1~§3.4 의 IE/IT/OE 카탈로그와 정합.
