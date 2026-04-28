@@ -12,8 +12,8 @@ from src.security.jwt import (
 )
 from src.security.password import verify_password
 
-_LOCK_DURATION_MIN = 30
-_MAX_FAILED_ATTEMPTS = 5
+_LOCK_DURATION_MIN = 30  # TODO[D+1]: BS-01 §자동 잠금 정책 = "Admin 수동 해제" (permanent). 본 timed lock 은 D+1 IMPL 에서 is_locked boolean + Admin unlock 경로로 refactor.
+_MAX_FAILED_ATTEMPTS = 10  # CCR-048 / BS-01 §자동 잠금 정책 SSOT (was 5). M1 D+0 drift 해소.
 
 
 def _utcnow() -> datetime:

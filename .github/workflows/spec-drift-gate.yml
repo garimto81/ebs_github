@@ -1,0 +1,105 @@
+name: Spec Drift Gate
+
+# M1+M9 — Backend Multi-session audit kickoff.
+# 정책 문서 (BS-01 Authentication.md) 와 코드 (auth_service.py 등) 의
+# 정량 SSOT 수치가 어긋나면 PR 차단.
+#
+# D+0 scope: 1 rule (MAX_FAILED_ATTEMPTS).
+# D+1+ 추가: lock mode permanent, blacklist module, composite PK, refresh delivery matrix.
+
+on:
+  pull_request:
+    paths:
+      - 'team2-backend/src/services/auth_service.py'
+      - 'team2-backend/src/middleware/**'
+      - 'team2-backend/src/security/**'
+      - 'team2-backend/src/db/init.sql'
+      - 'team2-backend/migrations/**'
+      - 'docs/2. Development/2.5 Shared/Authentication.md'
+      - 'docs/2. Development/2.5 Shared/Authentication/**'
+      - 'docs/2. Development/2.2 Backend/APIs/Auth_and_Session.md'
+      - 'docs/2. Development/2.2 Backend/Authentication/**'
+      - 'tools/spec_drift_check.py'
+      - '.github/workflows/spec-drift-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  drift-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run auth drift detector
+        id: drift
+        run: |
+          python tools/spec_drift_check.py --auth --format json > drift.json
+          python tools/spec_drift_check.py --auth --format markdown > drift.md
+          cat drift.md
+
+      - name: Compute totals
+        id: totals
+        run: |
+          python <<'PY'
+          import json, os
+          with open('drift.json', encoding='utf-8') as f:
+              data = json.load(f)
+          total = 0
+          d1 = d2 = d3 = 0
+          for r in data:
+              d1 += len(r.get('d1', []))
+              d2 += len(r.get('d2', []))
+              d3 += len(r.get('d3', []))
+              total += r.get('total', 0)
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+              out.write(f"d1={d1}\n")
+              out.write(f"d2={d2}\n")
+              out.write(f"d3={d3}\n")
+              out.write(f"total={total}\n")
+          PY
+
+      - name: Comment on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('drift.md', 'utf8');
+            const total = '${{ steps.totals.outputs.total }}';
+            const verdict = total === '0'
+              ? '✅ Drift Gate PASS — 0 violations.'
+              : `❌ Drift Gate FAIL — ${total} violation(s).`;
+            const body = [
+              '## Spec Drift Gate',
+              '',
+              verdict,
+              '',
+              '<details><summary>Drift report</summary>',
+              '',
+              report,
+              '',
+              '</details>',
+              '',
+              '_Configured rules: `--auth` (M1 D+0). Add `--api --schema` to extend coverage in subsequent PRs._',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });
+
+      - name: Fail if drift > 0
+        if: steps.totals.outputs.total != '0'
+        run: |
+          echo "::error::Drift Gate failed. ${{ steps.totals.outputs.total }} violation(s) — see PR comment."
+          exit 1
