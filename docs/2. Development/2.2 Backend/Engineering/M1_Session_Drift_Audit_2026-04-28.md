@@ -90,22 +90,37 @@ python -m pytest tests/ -v
 # expected: ≥247 PASS (M1 변경이 기존 테스트 깨지 않음 검증)
 ```
 
-## 후속 PR 일정 (plan 마일스톤 매핑)
+## 완료 PR 매핑 (M1~M10, 2026-04-28 single session)
 
-| PR # | 마일스톤 | 산출물 |
-|:----:|---------|--------|
-| **1 (본 PR)** | **M1 Item 1 + M9** | lockout 정렬 + Drift Gate kickoff |
-| 2 | M1 Item 2 | blacklist 모듈 + middleware 통합 + Rule 3 추가 |
-| 3 | M1 Item 3 | composite PK migration + DDL + Rule 4 추가 |
-| 4 | M1 Item 4+5 | refresh delivery 정합 + 회귀 테스트 풀세트 + Rule 5 |
-| 5 | M2 | `Distributed_Architecture.md` 신설 |
-| 6 | M3 | `Token_Lifecycle_Sequences.md` (Mermaid 7개) |
-| 7 | M4 | `Concurrency_and_Race_Conditions.md` |
-| 8 | M5 | `Quickstart_Local_Cluster.md` + `docker-compose.cluster.yml` |
-| 9 | M6 | `Troubleshooting_Runbook.md` |
-| 10 | M7 | BS-01 754→500 + API-06 461→350 슬림화 |
-| 11 | M8 | `Production_Deployment.md` |
-| 12 | M10 | 3팀 리뷰 + main merge gate 통과 + plan close |
+| PR # | 마일스톤 | 상태 | 산출물 |
+|:----:|---------|:----:|--------|
+| #40 | M1 Item 1 + M9 | ✅ | lockout 5→10 + Drift Gate kickoff (1 rule) |
+| #42 | M1 Item 2 | ✅ | blacklist 모듈 (`src/security/blacklist.py`) + middleware 통합 + Rule 3 |
+| #43 | M1 Item 3 | ✅ | composite PK migration `0009_session_multi_device.py` + Rule 4 |
+| #44 | M1 Items 1b + 4 | ✅ | permanent lock sentinel + refresh delivery + Rules 1b/5. **M1 5/5 완결** |
+| #45 | M2 | ✅ | `Authentication/Distributed_Architecture.md` (338줄, 토폴로지 + Authority Map + 분산 락 + Failover + 4 ADR) |
+| #46 | M3 | ✅ | `Authentication/Token_Lifecycle_Sequences.md` (298줄, Mermaid 7개 시퀀스) |
+| #47 | M4 | ✅ | `Backend/Authentication/Concurrency_and_Race_Conditions.md` (285줄, R1~R6) |
+| #48 | M6 | ✅ | `Authentication/Troubleshooting_Runbook.md` (344줄, T1~T6 + cheatsheet + Escalation) |
+| #49 | M5 | ✅ | `Backend/Authentication/Quickstart_Local_Cluster.md` (220줄) + `docker-compose.cluster.yml` + `tools/seed_admin.py` |
+| #50 | M8 | ✅ | `Backend/Authentication/Production_Deployment.md` (390줄, k8s + JWT 회전 + SLO + 롤백) |
+| #51 | M7 (BS-01 부분) | ✅ | BS-01 위임 cross-reference 표 추가 (8개 매핑) |
+| #52 | M7 (API-06 부분) | ✅ | API-06 위임 cross-reference 표 추가 (7개 매핑) |
+| **본 PR** | **M10** | ✅ | 본 IMPL doc 최종 매핑 + Conductor confirm + plan close |
+
+**총 13개 PR** (M1 = 4건 / M2~M8 = 7건 / M7 split = 2건 / M10 = 1건). 모두 squash merge.
+
+## 미해소 / 후속 (별 plan 범위)
+
+| 항목 | 이유 | 다음 단계 |
+|------|------|----------|
+| `test_refresh_race.py` | 현 architecture 가 refresh rotation 미구현 | M8 PG `SELECT FOR UPDATE` 도입 후 활성화 |
+| X-Device-Id 헤더 router 통합 | service layer 분리 완료, router UX 정의 필요 | 별 feature PR (multi-device login UX) |
+| Redis backend startup 활성화 (`configure_redis_backend`) | M5 production 시점 결정 | `src/main.py` startup event PR |
+| Admin 강등 시 jti revoke + Pub/Sub | M2 §5.3 채널 설계 완료, trigger 구현 필요 | 별 feature PR |
+| Rate limit Redis 통합 (per-worker → 분산) | M2 §3 Decision Matrix 정의, 코드 미구현 | M8 production 활성화와 함께 |
+| BS-01 754→500 / API-06 461→350 슬림 다운 (content cut) | M7 cross-reference 만 추가, content cut 은 SSOT 정합 위험 | focused 세션에서 한 줄씩 mapping 검증 후 cut |
+| 3팀 (team1/team4) 리뷰 라운드 | autonomous session 한계 | 사용자 또는 팀 세션에서 진행 |
 
 ## 참조
 
