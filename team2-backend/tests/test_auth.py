@@ -58,18 +58,40 @@ def test_login_invalid_password(client, seed_users):
     assert resp.json()["detail"] == "AUTH_INVALID_CREDENTIALS"
 
 
-# ── Gate 1-3: Account locked after 5 failures ────
+# ── Gate 1-3: Account locked after 10 failures (CCR-048 / BS-01 §자동 잠금 정책) ────
 
 
 def test_login_account_locked(client, seed_users):
-    for _ in range(5):
+    """BS-01 §자동 잠금 정책: 10회 연속 실패 시 잠금 (CCR-048)."""
+    for _ in range(10):
         resp = _login(client, email="operator@test.com", password="wrong")
         assert resp.status_code == 401
 
-    # 6th attempt → locked
+    # 11th attempt → locked
     resp = _login(client, email="operator@test.com", password="Op123!")
     assert resp.status_code == 403
     assert resp.json()["detail"] == "AUTH_ACCOUNT_LOCKED"
+
+
+def test_login_locked_at_exact_threshold(client, seed_users):
+    """SSOT regression guard: MAX_FAILED_ATTEMPTS = 10.
+
+    9 회 실패까지는 unlocked, 10 회째 실패 시 lock 설정 → 다음 시도가 403.
+    이 경계값 테스트가 깨지면 spec(`BS-01 §자동 잠금 정책`) 또는
+    `auth_service.py:_MAX_FAILED_ATTEMPTS` 상수가 동기화 안 된 것.
+    Drift Gate (`tools/spec_drift_check.py --auth`) 와 짝을 이루는 코드측 가드.
+    """
+    # 9 wrong attempts — still unlocked (correct password should still work)
+    for _ in range(9):
+        resp = _login(client, email="viewer@test.com", password="wrong")
+        assert resp.status_code == 401
+
+    # Correct password at attempt 10 — should succeed (lock counter resets on success)
+    resp = _login(client, email="viewer@test.com", password="View123!")
+    assert resp.status_code == 200, (
+        "9 failures should not trigger lock — viewer should still be able to log in. "
+        "If this fails with 403, MAX_FAILED_ATTEMPTS may have been lowered below 10."
+    )
 
 
 # ── Gate 1-4: GET /auth/me with valid token ──────

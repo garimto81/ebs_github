@@ -1165,6 +1165,94 @@ def detect_websocket() -> ContractReport:
     return rep
 
 
+def detect_auth() -> ContractReport:
+    """인증 정책 drift — BS-01 Authentication.md SSOT ↔ team2-backend src.
+
+    M1 D+0 scope: 1 rule (MAX_FAILED_ATTEMPTS, CCR-048).
+
+    M1 D+1+ scope (계획되어 있으나 미구현):
+      - LOCK_MODE permanent vs timed (auth_service.py _LOCK_DURATION_MIN 폐기)
+      - blacklist 모듈 존재 (src/security/blacklist.py + middleware/rbac.py 통합)
+      - user_sessions 복합 PK (UNIQUE(user_id) → (user_id, device_id))
+      - refresh_token_delivery 환경별 매트릭스 (live=cookie, dev/staging/prod=body)
+
+    각 룰 추가는 대응 코드 fix PR 와 동시 진행. Drift Gate 가 fail 모드일 때
+    rule을 추가하면서 fix 가 누락되면 즉시 PR 차단.
+    """
+    rep = ContractReport(contract="auth")
+    spec_path = (
+        REPO / "docs" / "2. Development" / "2.5 Shared" / "Authentication.md"
+    )
+    code_path = (
+        REPO / "team2-backend" / "src" / "services" / "auth_service.py"
+    )
+    if not spec_path.exists() or not code_path.exists():
+        rep.scanner_note = (
+            f"입력 부족 (spec={spec_path.exists()}, code={code_path.exists()})"
+        )
+        return rep
+
+    spec_text = _read(spec_path)
+    code_text = _read(code_path)
+
+    # Rule 1: MAX_FAILED_ATTEMPTS — BS-01 §자동 잠금 정책 (CCR-048)
+    # Spec: "**비밀번호 실패 N회 연속**" 패턴 (line 648 anchor)
+    # Code: "_MAX_FAILED_ATTEMPTS = N" (auth_service.py:16 anchor)
+    spec_max: int | None = None
+    m = re.search(r"비밀번호\s*실패\s*\*{0,2}(\d+)회\s*연속", spec_text)
+    if m:
+        spec_max = int(m.group(1))
+
+    code_max: int | None = None
+    m = re.search(r"_MAX_FAILED_ATTEMPTS\s*=\s*(\d+)", code_text)
+    if m:
+        code_max = int(m.group(1))
+
+    if spec_max is not None and code_max is not None:
+        if spec_max != code_max:
+            rep.d1.append(
+                DriftItem(
+                    contract="auth",
+                    drift_type="D1",
+                    identifier="MAX_FAILED_ATTEMPTS",
+                    spec_value=str(spec_max),
+                    code_value=str(code_max),
+                    note=(
+                        "BS-01 §자동 잠금 정책 (CCR-048) ↔ "
+                        "auth_service.py:_MAX_FAILED_ATTEMPTS"
+                    ),
+                )
+            )
+    elif spec_max is None:
+        rep.d2.append(
+            DriftItem(
+                contract="auth",
+                drift_type="D2",
+                identifier="MAX_FAILED_ATTEMPTS (spec missing)",
+                spec_value="—",
+                code_value=str(code_max) if code_max else "—",
+                note="BS-01 §자동 잠금 정책에서 'N회 연속' 패턴을 찾지 못함",
+            )
+        )
+    elif code_max is None:
+        rep.d2.append(
+            DriftItem(
+                contract="auth",
+                drift_type="D2",
+                identifier="MAX_FAILED_ATTEMPTS (code missing)",
+                spec_value=str(spec_max),
+                code_value="—",
+                note="auth_service.py 에서 _MAX_FAILED_ATTEMPTS 정수 상수를 찾지 못함",
+            )
+        )
+
+    rep.scanner_note = (
+        "M1 D+0: 1 rule (MAX_FAILED_ATTEMPTS). "
+        "D+1+ 추가 예정: lock mode, blacklist module, composite PK, refresh delivery."
+    )
+    return rep
+
+
 # ------------------------------------------------------------------ Output
 
 
@@ -1231,6 +1319,7 @@ DETECTORS = {
     "rfid": detect_rfid,
     "settings": detect_settings,
     "websocket": detect_websocket,
+    "auth": detect_auth,
 }
 
 
@@ -1243,6 +1332,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--rfid", action="store_true")
     ap.add_argument("--settings", action="store_true")
     ap.add_argument("--websocket", action="store_true")
+    ap.add_argument("--auth", action="store_true")
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--format", choices=("markdown", "json"), default="markdown")
     args = ap.parse_args(argv)
