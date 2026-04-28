@@ -81,3 +81,5 @@ docs/07-archive/01-pokergfx-analysis/07_Decompiled_Archive/GFXUpdater/
 logs/
 Backlog_Aggregate.md
 harness_report.json
+docker-compose.override.yml
+harness_report.json

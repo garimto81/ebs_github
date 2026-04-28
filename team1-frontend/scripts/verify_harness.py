@@ -20,11 +20,14 @@ Exit code:
     2  Partial PASS   (일부 PASS, 일부 FAIL)
 
 Env override:
-    LOBBY_URL   default http://localhost:3001
-    BO_URL      default http://localhost:8000
-    ENGINE_URL  default http://localhost:8080
-    WS_BASE_URL default ws://localhost:8000
-    SKIP_PLAYWRIGHT  set "1" 로 L3 스킵
+    LOBBY_URL                default http://localhost:3001
+    BO_URL                   default http://localhost:8000
+    BO_AUTH_LOGIN_PATH       default /api/v1/auth/login  (canonical bo: /auth/login)
+    ENGINE_URL               default http://localhost:8080
+    ENGINE_HEALTH_PATH       default /health  (canonical engine: /)
+    WS_BASE_URL              default ws://localhost:8000
+    WS_AUTH_REQUIRED         "1" → 403 handshake 도 PASS (auth gate present)
+    SKIP_PLAYWRIGHT          "1" → L3 스킵
 """
 
 from __future__ import annotations
@@ -42,8 +45,11 @@ import websockets
 
 LOBBY_URL = os.environ.get("LOBBY_URL", "http://localhost:3001")
 BO_URL = os.environ.get("BO_URL", "http://localhost:8000")
+BO_AUTH_LOGIN_PATH = os.environ.get("BO_AUTH_LOGIN_PATH", "/api/v1/auth/login")
 ENGINE_URL = os.environ.get("ENGINE_URL", "http://localhost:8080")
+ENGINE_HEALTH_PATH = os.environ.get("ENGINE_HEALTH_PATH", "/health")
 WS_BASE_URL = os.environ.get("WS_BASE_URL", "ws://localhost:8000")
+WS_AUTH_REQUIRED = os.environ.get("WS_AUTH_REQUIRED", "").strip() in {"1", "true", "yes"}
 SKIP_PLAYWRIGHT = os.environ.get("SKIP_PLAYWRIGHT", "").strip() in {"1", "true", "yes"}
 
 
@@ -122,6 +128,13 @@ async def _ws_probe(name: str, url: str) -> Check:
             return c
     except Exception as e:
         c.elapsed_ms = int((time.time() - t0) * 1000)
+        # WS_AUTH_REQUIRED=1 환경: HTTP 401/403 = endpoint 존재 + auth gate 정상
+        # → "auth gate detected" 로 PASS 처리 (canonical bo 의 보안 정책 반영)
+        msg = str(e)
+        if WS_AUTH_REQUIRED and ("HTTP 401" in msg or "HTTP 403" in msg):
+            c.status = "PASS"
+            c.detail = f"auth gate detected ({msg.split(':')[-1].strip()})"
+            return c
         c.status = "FAIL"
         c.detail = f"{type(e).__name__}: {e}"
         return c
@@ -195,8 +208,8 @@ async def main() -> int:
                       contains="ok"))
     report.add(_probe("l1.bo_health", "L1", f"{BO_URL}/health"))
     report.add(_probe("l1.bo_openapi", "L1", f"{BO_URL}/openapi.json",
-                      json_path=["paths", "/api/v1/auth/login"]))
-    report.add(_probe("l1.engine_health", "L1", f"{ENGINE_URL}/health"))
+                      json_path=["paths", BO_AUTH_LOGIN_PATH]))
+    report.add(_probe("l1.engine_health", "L1", f"{ENGINE_URL}{ENGINE_HEALTH_PATH}"))
 
     # ─── L2 WebSocket handshakes ───────────────────────────────────────
     report.add(await _ws_probe("l2.ws_lobby", f"{WS_BASE_URL}/ws/lobby"))
