@@ -1,0 +1,188 @@
+{
+  "_meta": {
+    "title": "Behavioral_Specs Legacy-ID Redirect Mapping",
+    "description": "Phase 1-4 도메인 마스터 통합 (2026-04-27 ~ 04-28) 결과. 기존 BS-06-XX legacy-id → 신규 도메인 마스터 위치 매핑. audit 도구 / cross-ref 검증 / IDE 점프 등에서 사용.",
+    "generated_by": "manual (post Phase 4 deprecation shim rollout)",
+    "generated_at": "2026-04-28",
+    "source_prs": [
+      {"phase": 1, "domain": "Lifecycle & State Machine", "pr": 7,  "merged_at": "2026-04-27"},
+      {"phase": 2, "domain": "Triggers & Event Pipeline", "pr": 9,  "merged_at": "2026-04-27"},
+      {"phase": 3, "domain": "Betting & Pots",            "pr": 12, "merged_at": "2026-04-28"},
+      {"phase": 4, "domain": "Variants & Evaluation",     "pr": 14, "merged_at": "2026-04-28"},
+      {"phase": "shim", "domain": "Deprecation Shim",     "pr": "TBD", "merged_at": "2026-04-28"}
+    ]
+  },
+  "mappings": {
+    "BS-06-01": {
+      "title": "Lifecycle",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Lifecycle.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md",
+      "domain": "Lifecycle & State Machine",
+      "phase": 1,
+      "appendix_a_section": "§부록 A — BS-06-01 행"
+    },
+    "BS-06-02": {
+      "title": "Betting",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Betting.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md",
+      "domain": "Betting & Pots",
+      "phase": 3,
+      "appendix_a_section": "§부록 A — BS-06-02 행"
+    },
+    "BS-06-03": {
+      "title": "Blinds and Ante",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Blinds_and_Ante.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md",
+      "domain": "Betting & Pots",
+      "phase": 3,
+      "appendix_a_section": "§부록 A — BS-06-03 행"
+    },
+    "BS-06-04": {
+      "title": "Coalescence",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Coalescence.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md",
+      "domain": "Triggers & Event Pipeline",
+      "phase": 2,
+      "appendix_a_section": "§부록 A — BS-06-04 행"
+    },
+    "BS-06-05": {
+      "title": "Evaluation",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Evaluation.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md",
+      "domain": "Variants & Evaluation",
+      "phase": 4,
+      "appendix_a_section": "§부록 A — BS-06-05 행"
+    },
+    "BS-06-06": {
+      "title": "Side Pot",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Side_Pot.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md",
+      "domain": "Betting & Pots",
+      "phase": 3,
+      "appendix_a_section": "§부록 A — BS-06-06 행"
+    },
+    "BS-06-07": {
+      "title": "Showdown",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Showdown.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md",
+      "domain": "Betting & Pots",
+      "phase": 3,
+      "appendix_a_section": "§부록 A — BS-06-07 행"
+    },
+    "BS-06-08": {
+      "title": "Exceptions",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Exceptions.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md",
+      "domain": "Variants & Evaluation",
+      "phase": 4,
+      "appendix_a_section": "§부록 A — BS-06-08 행"
+    },
+    "BS-06-09": {
+      "title": "Event Catalog",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Event_Catalog.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md",
+      "domain": "Triggers & Event Pipeline",
+      "phase": 2,
+      "appendix_a_section": "§부록 A — BS-06-09 행",
+      "external_ssot_pending": "API-04 OutputEvent 카탈로그 §6.0 (Overlay_Output_Events.md) 정합 검증 필요 (B-345)"
+    },
+    "BS-06-10": {
+      "title": "Action Rotation",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md",
+      "domain": "Lifecycle & State Machine",
+      "phase": 1,
+      "appendix_a_section": "§부록 A — BS-06-10 행"
+    },
+    "BS-06-12": {
+      "title": "Card Pipeline Overview",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md",
+      "domain": "Triggers & Event Pipeline",
+      "phase": 2,
+      "appendix_a_section": "§부록 A — BS-06-12 행",
+      "cross_cutting": true,
+      "_note": "BS-06-12 는 4 도메인 모두에서 cross-ref 됨 (cross-cutting concern)"
+    },
+    "BS-06-1X": {
+      "title": "Flop Variants",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Flop_Variants.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md",
+      "domain": "Variants & Evaluation",
+      "phase": 4,
+      "appendix_a_section": "§부록 A — BS-06-1X 행",
+      "_note": "원래 BS-06-11/12/13/14 4 파일을 2026-04-14 통합한 결과"
+    },
+    "BS-06-2X": {
+      "title": "Draw Games",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Draw_Games.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md",
+      "domain": "Variants & Evaluation",
+      "phase": 4,
+      "appendix_a_section": "§부록 A — BS-06-2X 행",
+      "_note": "원래 BS-06-21 + BS-06-22 통합"
+    },
+    "BS-06-3X": {
+      "title": "Stud Games",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md",
+      "domain": "Variants & Evaluation",
+      "phase": 4,
+      "appendix_a_section": "§부록 A — BS-06-3X 행",
+      "_note": "원래 BS-06-31 + BS-06-32 통합"
+    },
+    "BS-06-00-triggers": {
+      "title": "Triggers",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md",
+      "domain": "Triggers & Event Pipeline",
+      "phase": 2,
+      "appendix_a_section": "§부록 A — BS-06-00-triggers 행"
+    },
+    "Hand-Eval-Ref-v1.1": {
+      "title": "Hand Evaluation 통합 레퍼런스",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Evaluation_Reference.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md",
+      "domain": "Variants & Evaluation",
+      "phase": 4,
+      "appendix_a_section": "§부록 A — Evaluation_Reference v1.1 행"
+    },
+    "BS-06-00-REF": {
+      "title": "Overview (lifecycle 발췌만 흡수)",
+      "legacy_path": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md",
+      "redirect_to": "docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md",
+      "domain": "Lifecycle & State Machine",
+      "phase": 1,
+      "appendix_a_section": "§부록 A — BS-06-00-REF 행 (§1.1, §1.2.4, §1.4.5, §1.5.2, §1.9, §2.1, §2.2, §7.4, §7.5)",
+      "deprecation_status": "PARTIAL",
+      "_note": "Overview.md 는 lifecycle 외 enum/data model 도 포함하므로 deprecation shim 대상 아님 — 본 mapping 은 lifecycle 발췌 부분만 추적"
+    }
+  },
+  "domain_masters": {
+    "Lifecycle_and_State_Machine.md": {
+      "absorbs": ["BS-06-01", "BS-06-10", "BS-06-00-REF (lifecycle 발췌)"],
+      "lines": 1176,
+      "pr": 7
+    },
+    "Triggers_and_Event_Pipeline.md": {
+      "absorbs": ["BS-06-00-triggers", "BS-06-09", "BS-06-04", "BS-06-12"],
+      "lines": 1836,
+      "pr": 9
+    },
+    "Betting_and_Pots.md": {
+      "absorbs": ["BS-06-02", "BS-06-03", "BS-06-06", "BS-06-07"],
+      "lines": 1706,
+      "pr": 12
+    },
+    "Variants_and_Evaluation.md": {
+      "absorbs": ["BS-06-05", "BS-06-08", "BS-06-1X", "BS-06-2X", "BS-06-3X", "Hand-Eval-Ref-v1.1"],
+      "lines": 1583,
+      "pr": 14
+    }
+  },
+  "audit_hints": {
+    "deprecation_marker": "frontmatter `deprecated: 2026-04-28` + `tier: deprecated` + `redirect-to:`",
+    "false_positive_pattern": "deprecated stub 파일은 본문이 redirect 안내만 포함 — audit 도구에서 'tier: deprecated' frontmatter 인식 시 본문 키워드 검사 skip 권장",
+    "supersedes_resolver": "legacy-id 가 리포지토리에서 인용되면 본 mapping 의 redirect_to 로 클릭/점프 가능"
+  }
+}
