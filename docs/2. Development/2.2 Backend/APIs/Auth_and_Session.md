@@ -31,6 +31,20 @@ reimplementability_notes: "API-06 인증/세션 계약 완결 (17KB)"
 
 > **참조**: 용어 정의는 `BS-00-definitions.md`, RBAC 역할 정의는 `Foundation Ch.5 §5.4`, 로그인 UI 행동 명세는 `BS-01-auth/`
 
+## 위임 문서 (M2~M8 IA)
+
+본 문서는 **HTTP 계약** (request/response, 엔드포인트 시그니처) 에 집중. 흐름 시각화 / 분산 동작 / 트러블슈팅은 신설 문서 위임 (audit plan `~/.claude/plans/role-and-objective-reactive-canyon.md`):
+
+| 영역 | 문서 |
+|------|------|
+| Token lifecycle 시퀀스 (Login/Refresh/Logout/handoff) | `../../2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` (M3) |
+| 분산 환경 동작 (multi-instance) | `../../2.5 Shared/Authentication/Distributed_Architecture.md` (M2) |
+| Race conditions (refresh rotation 등) | `../Authentication/Concurrency_and_Race_Conditions.md` (M4) |
+| 로컬 cluster 환경 셋업 (30분) | `../Authentication/Quickstart_Local_Cluster.md` (M5) |
+| 사고 진단 runbook | `../../2.5 Shared/Authentication/Troubleshooting_Runbook.md` (M6) |
+| Production 배포 + JWT key 회전 | `../Authentication/Production_Deployment.md` (M8) |
+| Drift Gate (auth) | `tools/spec_drift_check.py --auth` (M9) |
+
 ### 멱등성 (CCR-003)
 
 `POST /auth/login`, `POST /auth/refresh`, `DELETE /auth/session`, `POST /auth/verify-2fa` 등 **모든 mutation 엔드포인트**는 `Idempotency-Key` 헤더를 수용한다. 동작 상세는 `API-01-backend-api.md §3 공통 응답 포맷 — 멱등성 동작` 을 준수한다.
