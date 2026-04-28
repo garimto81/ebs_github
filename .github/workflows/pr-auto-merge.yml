@@ -27,7 +27,7 @@
 #   - `actions/github-script` 기본 권한 사용. Personal Access Token 불필요
 # ----------------------------------------------------------------------
 
-name: PR Auto-Merge (v5.0 Free-tier Gate)
+name: PR Auto-Merge (v7.5 Free-tier Gate + Autonomous Triage)
 
 on:
   pull_request:
@@ -114,14 +114,27 @@ jobs:
             }
             core.setFailed('Timed out waiting for checks (20 min)');
 
-      - name: Ensure up-to-date with main
+      - name: Ensure up-to-date with main (v7.5 triage)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           git fetch origin main
           if ! git merge-base --is-ancestor origin/main HEAD; then
             echo "::notice::PR is behind main — auto-rebasing"
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git rebase origin/main || { echo "::error::Rebase conflict"; exit 1; }
+            if ! git rebase origin/main; then
+              echo "::error::Rebase conflict — invoking v7.5 ci-only triage"
+              if [ -f "tools/conflict_resolver.py" ]; then
+                # CI 모드: LLM 없이 audit issue 등록 + auto-merge 라벨 제거.
+                # Local Claude Code session 에서 재실행해야 LLM judgment 가능.
+                python3 tools/conflict_resolver.py ci-only --pr-number "$PR_NUMBER" || true
+              else
+                echo "::warning::conflict_resolver.py not present on this branch (pre-v7.5)"
+              fi
+              exit 1
+            fi
             git push --force-with-lease origin HEAD:${{ github.event.pull_request.head.ref }}
           fi
 
