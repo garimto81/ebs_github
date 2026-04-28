@@ -1,6 +1,12 @@
-// Game type, bet structure, and position enums from BS-06-00-REF §1.1.
+// Game type, bet structure, and position enums.
+//
+// 권위:
+//   - GameType 25 게임: docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md §2.1 25 게임 마스터 테이블
+//   - game Enum: Behavioral_Specs/Lifecycle_and_State_Machine.md §2.5
+//   - Position: Behavioral_Specs/Lifecycle_and_State_Machine.md §1.4 포지션 정의
+// (구 BS-06-00-REF §1.1 — 2026-04-27/04-28 Lifecycle + Variants 도메인 마스터로 통합, B-349.)
 
-/// Game type (BS-06-00-REF §1.1, 10 variants).
+/// Game type. 권위: Variants 도메인 §2.1 (25 게임 마스터). 본 enum 은 10 핵심 variant.
 enum GameType {
   holdem,      // 0
   omaha,       // 1
@@ -14,14 +20,14 @@ enum GameType {
   shortDeck,   // 9
 }
 
-/// Bet structure (BS-06-00-REF §1.1).
+/// Bet structure. 권위: Betting & Pots 도메인 §1.2.2 (NL/PL/FL 정의) + Variants §2.1 컬럼.
 enum BetStructure {
   noLimit,    // NL
   potLimit,   // PL
   fixedLimit, // FL
 }
 
-/// Seat position (10-seat layout, BS-06-00-REF).
+/// Seat position (10-seat layout). 권위: Lifecycle 도메인 §1.4 포지션 정의 (BTN/SB/BB/UTG/HJ/CO).
 enum Position {
   btn,  // 0 — Dealer Button
   sb,   // 1 — Small Blind

@@ -31,7 +31,11 @@ class TableFSM(str, Enum):
 
 
 class HandFSM(str, Enum):
-    """Hand 상태 (game_phase) — BS_Overview §3.2 + BS-06-00-REF §1.9."""
+    """Hand 상태 (game_phase) — BS_Overview §3.2.
+
+    권위: docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md §2.2 game_phase Enum.
+    (구 BS-06-00-REF §1.9 — 2026-04-27 Lifecycle 도메인 마스터로 통합, B-349.)
+    """
 
     IDLE = "idle"
     SETUP_HAND = "setup_hand"
@@ -59,7 +63,11 @@ class SeatFSM(str, Enum):
 
 
 class PlayerStatus(str, Enum):
-    """Hand 내 Player 상태 — BS_Overview §3.4 + BS-06-00-REF §1.5.2."""
+    """Hand 내 Player 상태 — BS_Overview §3.4.
+
+    권위: docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md §2.4 PlayerStatus Enum.
+    (구 BS-06-00-REF §1.5.2 — 2026-04-27 Lifecycle 도메인 마스터로 통합, B-349.)
+    """
 
     ACTIVE = "active"
     FOLDED = "folded"

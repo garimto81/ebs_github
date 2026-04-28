@@ -1,4 +1,7 @@
-// HandFSM StateNotifier — 9-state lifecycle (BS-05-01, BS-06-01).
+// HandFSM StateNotifier — 9-state lifecycle.
+//
+// 권위: docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md §2.1 (FSM 다이어그램) + §3.3 (매트릭스 1 Hold'em 상태 상세).
+// (구 BS-05-01 + BS-06-01 — 2026-04-27 Lifecycle 도메인 마스터로 통합, B-349.)
 //
 // State transitions:
 //   idle ─→ setupHand ─→ preFlop ─→ flop ─→ turn ─→ river ─→ showdown ─→ handComplete ─→ idle
