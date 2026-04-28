@@ -25,7 +25,7 @@ dependencies:
   intl: ^0.20.2
   sentry_flutter: ^8.3.0
   file_picker: ^8.0.0
-  window_manager: ^0.3.9
+  window_manager: ^0.5.1
   collection: ^1.18.0
   logging: ^1.2.0
   ebs_common:
