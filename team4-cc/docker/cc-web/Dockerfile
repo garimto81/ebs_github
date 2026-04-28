@@ -12,7 +12,10 @@
 # -----------------------------------------------------------------------------
 # Stage 1: Build
 # -----------------------------------------------------------------------------
-FROM ghcr.io/cirruslabs/flutter:3.22.0 AS builder
+# 2026-04-28 — Flutter SDK explicit pin (PR #18 cascade — lobby-web 와 동일 pin 적용).
+# 이전 :3.22.0 → 본 PR 시점 :3.41.7 (digest sha256:644e3cea...).
+# 부동 :stable 금지 (build determinism). 변경 시 cascade 갭 (intl/Dart/web flag) 재검토.
+FROM ghcr.io/cirruslabs/flutter:3.41.7 AS builder
 
 WORKDIR /app
 
@@ -32,11 +35,12 @@ RUN if [ ! -f "$ENV_FILE" ]; then \
     fi
 
 # Release web build
+# 2026-04-28 — Flutter stable (3.27+) 호환 cleanup (PR #17 cascade 동일):
+#   --web-renderer=canvaskit  폐기 (build config 로 이전, Flutter 3.27+ 미지원)
+#   --dart2js-optimization=O4 deprecation → 기본값
 RUN flutter build web \
       --release \
-      --web-renderer=canvaskit \
       --tree-shake-icons \
-      --dart2js-optimization=O4 \
       --dart-define-from-file="$ENV_FILE" \
       --source-maps \
       --output=build/web
