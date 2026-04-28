@@ -370,6 +370,391 @@ class RFIDFailureRetry:
 
 ---
 
-<!-- CHUNK-2: §3 Trigger & Action Matrix (Hi-Lo 분배 + Variant 트리거 + 7 예외 매트릭스) -->
+## 3. Trigger & Action Matrix
+
+### 3.1 핸드 평가 트리거 (BS-06-05 §트리거)
+
+| 소스 | 발동 주체 | 처리 시간 | 신뢰도 | 예시 |
+|------|---------|---------|--------|------|
+| **SHOWDOWN 진입** | 게임 엔진 (자동) | 결정론적 | 최고 | 최종 베팅 완료 → 2+ 플레이어 → 핸드 평가 |
+| **Run It Twice 각 런** | 게임 엔진 (자동) | 결정론적 | 최고 | 각 런별 보드 완성 → 승자 재판정 |
+| **All-in Runout** | 게임 엔진 (자동) | 결정론적 | 최고 | 모든 액티브 올인 → 보드 자동 완성 → 핸드 평가 |
+
+**전제조건**:
+1. `game_state` ∈ {SHOWDOWN, ALL_IN_RUNOUT}
+2. `num_remaining_players ≥ 2`
+3. `board_cards` 5장 (Hold'em / Variant 별 상이)
+4. `hole_cards[seat]` 모든 액티브 플레이어
+5. `evaluator_type` 정의됨 (game_id 기반 라우팅)
+
+### 3.2 Tiebreaker 매트릭스 (BS-06-05 매트릭스 2)
+
+| HandRank | Tiebreaker 순서 | 예시 | 결과 |
+|:--------:|-----------|------|------|
+| **Pair** | Pair rank > Kicker 1 > 2 > 3 | K♠K♥A♦Q♣J♠ vs K♥K♦A♠K♣10♠ | 두 번째 승리 (K♣ kicker) |
+| **TwoPair** | High Pair > Low Pair > Kicker | A♠A♥K♦K♣Q♠ vs A♦A♣K♠K♥J♠ | 첫 번째 승리 (Q kicker) |
+| **Trips** | Trips rank > Kicker 1 > 2 | K♠K♥K♦A♣Q♠ vs K♣K♦K♠K♥J♠ | 두 번째 불가 (4 cards 이상) |
+| **Straight** | Highest card in straight | K♠Q♥J♦10♣9♠ vs Q♦J♣10♠9♥8♠ | 첫 번째 (K high) |
+| **Flush** | Highest > 2nd > 3rd > 4th > 5th | A♠K♠Q♠J♠9♠ vs A♥K♥Q♥10♥8♥ | 첫 번째 (Q > 10) |
+| **FullHouse** | Trips rank > Pair rank | K♠K♥K♦Q♣Q♠ vs K♣K♦K♠J♥J♠ | 첫 번째 (Q > J pair) |
+| **FourOfAKind** | Quads rank > Kicker | A♠A♥A♦A♣K♠ vs A♠A♥A♦A♣Q♠ | 첫 번째 (K kicker) |
+| **StraightFlush** | Highest card in straight | K♠Q♠J♠10♠9♠ vs Q♦J♦10♦9♦8♦ | 첫 번째 (K high) |
+
+### 3.3 Hi-Lo Split 분배 매트릭스 (BS-06-1X §3 Omaha Hi-Lo)
+
+| High 승자 | Low 자격 | Low 승자 | 분배 |
+|:--:|:--:|:--:|------|
+| A | 충족 | B | A 50%, B 50% |
+| A | 충족 | A | A 100% (scoop) |
+| A | 미충족 | — | A 100% (scoop) |
+| A 타이 | 충족 | B | High 타이 분할 + Low 50% |
+| A | 충족 | B,C 타이 | A 50%, B 25%, C 25% |
+
+### 3.4 Lo 3 방식 비교 (Evaluation_Reference §2.4)
+
+| | 8-or-Better (R4) | 2-7 Lowball (R5) | A-5 Lowball (R6) |
+|:-|:-----------:|:-----------:|:-----------:|
+| **A** | 1 (low) | 14 (high) | 1 (low) |
+| **Straight** | 무관 | 인정 (불리) | 무시 |
+| **Flush** | 무관 | 인정 (불리) | 무시 |
+| **Pair** | **실격** | 인정 (불리) | tier 0 (항상 열위) |
+| **Qualifier** | ≤8 필수 | 없음 | 없음 |
+| **실격 시** | Hi 전액 | N/A | N/A |
+| **최강** | A-2-3-4-5 | **7-5-4-3-2 off** | A-2-3-4-5 |
+| **kicker 반전** | `9 - v` | `15 - v` | `15 - v` |
+| **strength** | 1 (고정) | `11 - std` | 0 또는 1 |
+
+### 3.5 8-or-Better Lo 자격 예시 (Evaluation_Reference §2.1)
+
+| 핸드 | 원래값 | kicker (반전) | 등급 |
+|------|:------:|:------------:|:----:|
+| A-2-3-4-5 | [1,2,3,4,5] | [8,7,6,5,4] | **최강 (wheel)** |
+| A-2-3-4-6 | [1,2,3,4,6] | [8,7,6,5,3] | 차강 |
+| A-2-3-5-7 | [1,2,3,5,7] | [8,7,6,4,2] | 중간 |
+| 2-3-4-6-8 | [2,3,4,6,8] | [7,6,5,3,1] | 약 |
+| A-A-2-3-4 | 페어 | — | **실격** |
+| 2-3-4-5-9 | 9 > 8 | — | **실격** |
+
+### 3.6 Stud Hi-Lo 8-or-better 자격 예시 (BS-06-3X §2.1)
+
+| 핸드 | 자격 | 이유 |
+|------|:--:|------|
+| A-2-3-4-5 | 충족 | wheel (최고 Low) |
+| A-2-3-4-8 | 충족 | 모두 ≤ 8 |
+| A-2-3-4-9 | 불충족 | 9 > 8 |
+| A-2-3-3-5 | 불충족 | 3 중복 |
+| 2-3-4-5-6 | 충족 | Straight 무시 |
+
+### 3.7 Hold'em 입/출 평가 예시 (BS-06-05 §평가 입/출 예시)
+
+| # | Hole Cards | Community | Best 5 | Category | Kicker |
+|:-:|:----------:|:---------:|:------:|:--------:|:------:|
+| 1 | A♠ K♠ | Q♠ J♠ T♠ 3♦ 7♣ | A♠ K♠ Q♠ J♠ T♠ | Royal Flush | A |
+| 2 | A♠ A♥ | A♦ K♠ K♥ 9♣ 2♦ | A♠ A♥ A♦ K♠ K♥ | Full House | A, K |
+| 3 | K♠ Q♠ | J♣ T♥ 9♦ 3♠ 2♣ | K♠ Q♠ J♣ T♥ 9♦ | Straight | K-high |
+| 4 | A♠ 9♠ | 6♥ 7♣ 8♦ K♠ Q♣ | A♠ K♠ Q♣ 9♠ 8♦ | High Card | A (❌ Standard 에서 A-6-7-8-9 는 Straight 아님) |
+| 5 | 5♠ 5♥ | 5♦ 5♣ A♠ K♥ Q♦ | 5♠ 5♥ 5♦ 5♣ A♠ | Four of a Kind | 5, A |
+
+> 예시 4 는 Short Deck (6+) 에서만 A-6-7-8-9 가 Straight (Wheel) 로 인정됨. Standard Hold'em 에서는 High Card.
+
+### 3.8 Short Deck Wheel 처리 (BS-06-05 §Short Deck)
+
+| 항목 | 값 |
+|------|------|
+| Deck 크기 | 36장 (2~5 제거, 6~A 유지) |
+| Wheel 정의 | **A-6-7-8-9 = low straight** (표준 A-2-3-4-5 아님) |
+| Flush vs Full House | Flush > Full House (카드 장수 감소로 확률 역전) |
+| 구현 위치 | `lib/core/variants/short_deck.dart` |
+
+#### Straight 감지 매트릭스 (Evaluation_Reference §1.3)
+
+| 입력 | shortDeck | 결과 |
+|------|:---------:|------|
+| [14,5,4,3,2] | false | straight, high=5 (wheel) |
+| [14,9,8,7,6] | false | **null** (not straight) |
+| [14,9,8,7,6] | **true** | straight, high=9 (short deck wheel) |
+| [14,13,12,11,10] | any | straight, high=14 (Broadway) |
+
+### 3.9 7-2 Side Bet 매트릭스 (BS-06-05 §7-2 Side Bet)
+
+| 7-2 SideBet Enabled | Winner Hand | Suit | Opponent Count | Side Bet Amt | 결과 |
+|:--------:|:--------:|:--------:|:--------:|:--------:|----------|
+| ❌ | 7-2o | — | 3 | — | Side Bet 미활성화 |
+| ✅ | 7-2o (offsuit) | ✅ | 3 | $10 | $30 (3x10) 수령 |
+| ✅ | 7-2s (suited) | ❌ | 3 | $10 | Side Bet 미수령 |
+| ✅ | 7-3o | ❌ | 3 | $10 | Side Bet 미수령 (7-2 아님) |
+| ✅ | 7-2o | ✅ | 2 (1인 폴드) | $10 | $10 (남은 플레이어만) |
+| ✅ | 7-2o | ✅ | 3 (패자도 7-2o) | $10 | $30 (패자 7-2 무시) |
+
+> **활성화 전제**: `special_rules.seven_deuce_side_bet_enabled == true`. **offsuit 필수**: 7♠2♥, 7♥2♦ 등 수트 다름. **승리 필수**: SHOWDOWN 에서 7-2o 로 팟 이김 (Fold 한 7-2 무효).
+
+### 3.10 Odd Chip 분배 (BS-06-05 매트릭스 3 / Evaluation_Reference §4.4)
+
+| 팟 금액 | Num Players (Split) | Odd Chip | Recipient | 최종 분배 |
+|:--------:|:-------:|:--------:|----------|---------|
+| $101 | 2 (50/50) | $1 | dealer-left 가까운 플레이어 | $50 + $51 |
+| $103 | 3 (33/33) | $1 | dealer +1 | $34 + $34 + $35 |
+| $100 | 2 (50/50) | $0 | — | $50 + $50 |
+
+> **알고리즘**: `distance = (seatIndex - dealerSeat - 1) % seatCount`. 가장 작은 distance 순 1 칩씩 배분.
+> **Hi-Lo split**: Odd chip → Hi 우선 (WSOP Rule 73).
+
+### 3.11 Stud Bring-in 매트릭스 (BS-06-3X §Bring-in)
+
+#### 결정 규칙
+
+| `game_id` | 기준 |
+|:--:|------|
+| 19, 20 | 최저 up card 보유자 |
+| 21 (Razz) | **최고** up card 보유자 (역순) |
+
+#### Bring-in 동작
+
+| 상황 | 동작 |
+|------|------|
+| 단독 최저/최고 door | 해당 플레이어 bring-in |
+| 동점 (game 19, 20) | suit 순서로 가장 낮은 suit |
+| 동점 (game 21) | suit 순서로 가장 높은 suit |
+| bring-in 포스팅 | bring-in 금액만 |
+| bring-in complete | full small bet 선택 |
+| bring-in 후 raise | small bet 이상 가능 |
+| 미포스팅 | 30초 타임아웃 → 자동 강제 차감 또는 fold |
+| 잔액 부족 | all-in 처리 |
+| 모두 콜/체크 | 4TH_STREET |
+
+#### Suit 순서
+
+| 순위 | Suit |
+|:--:|------|
+| 1 (최저) | Clubs ♣ |
+| 2 | Diamonds ♦ |
+| 3 | Hearts ♥ |
+| 4 (최고) | Spades ♠ |
+
+> Suit 순서는 bring-in 결정에만 사용. SHOWDOWN 에서는 사용 안 함.
+
+### 3.12 Stud Street 전이 매트릭스 (BS-06-3X §라이프사이클)
+
+| 현재 | 트리거 | 다음 |
+|------|--------|------|
+| IDLE | SendStartHand() | SETUP_HAND |
+| SETUP_HAND | 3장 RFID 완료 | 3RD_STREET |
+| 3RD~6TH | 베팅 완료 | 다음 Street |
+| 3RD~6TH | 전원 폴드 | HAND_COMPLETE |
+| 7TH | 베팅 완료 + 2인+ | SHOWDOWN |
+| 7TH | 전원 폴드 | HAND_COMPLETE |
+| SHOWDOWN | 우승자 결정 | HAND_COMPLETE |
+| HAND_COMPLETE | cycle 완료 | IDLE |
+
+#### Stud RFID 카드 감지 (6인 기준 총 42 이벤트)
+
+| Street | 카드 | 안테나 | 이벤트 (6인) |
+|--------|------|--------|:--:|
+| SETUP (3RD) | 2 down + 1 up | seat | **18** |
+| 4TH | 1 up | 공개 | 6 |
+| 5TH | 1 up | 공개 | 6 |
+| 6TH | 1 up | 공개 | 6 |
+| 7TH | 1 down | seat | 6 |
+
+#### First to Act (Stud)
+
+| Street | First | 기준 |
+|--------|------|------|
+| 3RD | bring-in | 최저/최고 door (game 별) |
+| 4TH–7TH | 최고 visible hand | 공개 카드 best rank, 동점 시 딜러 왼쪽 |
+
+### 3.13 Draw Games 라이프사이클 매트릭스 (BS-06-2X §라이프사이클)
+
+| 현재 | 트리거 | 다음 |
+|------|--------|------|
+| IDLE | CC "NEW HAND" | SETUP_HAND |
+| SETUP_HAND | RFID 홀카드 완전 감지 | PRE_DRAW_BET |
+| PRE_DRAW_BET | 베팅 완료 | DRAW_ROUND[1] |
+| PRE_DRAW_BET | All Fold | HAND_COMPLETE |
+| DRAW_ROUND[N] | 모든 교환 완료 | POST_DRAW_BET[N] |
+| POST_DRAW_BET[N] | 베팅 완료, N < draw_count | DRAW_ROUND[N+1] |
+| POST_DRAW_BET[N] | 베팅 완료, N == draw_count | SHOWDOWN |
+| POST_DRAW_BET[N] | All Fold | HAND_COMPLETE |
+| SHOWDOWN | 우승자 결정 | HAND_COMPLETE |
+| HAND_COMPLETE | 초기화 | IDLE |
+
+### 3.14 DRAW_ROUND 카드 교환 절차 (BS-06-2X §DRAW_ROUND)
+
+| 단계 | 행위 | 발동 주체 | RFID |
+|:--:|------|---------|------|
+| 1 | CC "DRAW N" 또는 "STAND PAT" 버튼 | 운영자 수동 | 없음 |
+| 2 | 플레이어가 discard 카드를 테이블에 놓음 | 플레이어 | 없음 |
+| 3 | burn zone antenna 에서 discard RFID 감지 | RFID 자동 | discard |
+| 4 | 딜러가 새 카드 배분 | 딜러 | 없음 |
+| 5 | seat antenna 에서 new dealt RFID 감지 | RFID 자동 | new_dealt |
+| 6 | discard 수 == new dealt 수 검증 | 게임 엔진 | 검증 |
+| 7 | `draw_completed[P]` 비트 set | 게임 엔진 | 없음 |
+
+> **STAND PAT**: CC 버튼 클릭 → 즉시 `draw_completed` set, RFID 이벤트 없음.
+
+#### RFID 순서 강제 (Draw)
+
+| 규칙 | 설명 |
+|------|------|
+| discard 우선 | discard 처리 후에만 new dealt 처리 |
+| 리오더링 | new dealt 가 먼저 도착 → 버퍼 보관, discard 처리 후 순차 |
+| WRONG_SEQUENCE | discard 없이 new dealt 만 감지 → 에러 |
+| 타임아웃 | discard 30초 미감지 → 수동 입력 모드 |
+
+#### Coalescence 확장 윈도우
+
+| 상태 | 윈도우 | 근거 |
+|------|:--:|------|
+| Hold'em (모든 상태) | 100ms | 단일 카드 감지 기준 |
+| **DRAW_ROUND** | **200ms** | 물리적 카드 교환 100ms+ 소요 |
+
+### 3.15 Pineapple DISCARD_PHASE 트리거 매트릭스 (BS-06-1X §2)
+
+| Entry | Exit | 다음 상태 |
+|-------|------|----------|
+| PRE_FLOP 베팅 완료 | 모든 active discard 완료 | FLOP |
+| PRE_FLOP 베팅 완료 | 30초 + CC 수동 | FLOP |
+| PRE_FLOP all fold (1명) | — | HAND_COMPLETE (DISCARD_PHASE 스킵) |
+
+#### Bomb Pot 상호작용
+
+| 모드 | DISCARD_PHASE | 이유 |
+|:----:|:------------:|------|
+| OFF | 정상 진입 | 표준 흐름 |
+| ON | **스킵** | PRE_FLOP 스킵 → DISCARD_PHASE 도 스킵 |
+
+### 3.16 Variant 별 RFID 검증
+
+#### Short Deck 덱 검증 (BS-06-1X §1)
+
+| 트리거 | 감지 조건 | 처리 |
+|--------|---------|------|
+| RFID 자동 | 랭크 2~5 카드 UID 감지 | **WRONG_CARD** 에러 |
+| 게임 엔진 | `deck_size`=36 인데 36장 외 입력 | **WRONG_CARD** 에러 |
+
+| 조건 | 결과 |
+|------|------|
+| 36장 정확히 감지 | 정상 — 핸드 시작 |
+| 36장 미만 / 초과 | **Miss Deal** — IDLE 복귀 |
+
+#### Courchevel SETUP_HAND 확장 (BS-06-1X §4)
+
+| 항목 | Hold'em | Courchevel |
+|------|---------|------------|
+| 홀카드 | 2장 | 5장 |
+| 보드 | 0장 | **1장** (`board_1`) |
+| RFID | seat | seat + board **동시** |
+| Exit | 홀카드 완전 감지 | 홀카드 + `board_1` 감지 |
+
+#### Courchevel FLOP 검증
+
+| 조건 | 처리 |
+|------|------|
+| board 2장 감지 | 정상 진행 |
+| board 3장 감지 | **WRONG_CARD** 에러 (`board_1` 중복) |
+| board 1장만 | 타임아웃 → 수동 입력 |
+
+### 3.17 예외 매트릭스 (BS-06-08 §매트릭스 1-7)
+
+#### Matrix 1: All Fold 감지
+
+| game_state | num_active | remaining | 결과 | 액션 |
+|-----------|:----------:|:-------:|------|------|
+| PRE_FLOP | 2 | 1 (fold) | All fold | HAND_COMPLETE, 1인 팟 수령 |
+| FLOP | 3 | 1 (fold) | All fold | HAND_COMPLETE, 1인 팟 수령 |
+| TURN | 4 | 1 (fold) | All fold | HAND_COMPLETE, 1인 팟 수령 |
+| RIVER | 2 | 1 (fold) | All fold | HAND_COMPLETE, 1인 팟 수령 |
+| SHOWDOWN | — | — | 불가능 | — |
+
+#### Matrix 2: All-in Runout 감지
+
+| game_state | num_active | all_in_count | board_cards | 결과 | 액션 |
+|-----------|:----------:|:----------:|:----------:|------|------|
+| PRE_FLOP | 2 | 2 | 0 | Runout 불필요 (카드 딜 중) | 계속 진행 |
+| FLOP | 3 | 3 | 3 | Runout 필요 | TURN+RIVER 자동 → SHOWDOWN |
+| FLOP | 3 | 2 | 3 | Runout 가능 (1인 계속) | side pot 생성 |
+| TURN | 2 | 2 | 4 | Runout 필요 | RIVER 자동 → SHOWDOWN |
+| RIVER | 2 | 2 | 5 | Runout 불필요 (보드 완성) | 직접 SHOWDOWN |
+
+#### Matrix 3: Bomb Pot 예외
+
+| Bomb Pot Enabled | bomb_pot_amount | num_active | All Stack ≥ | 결과 |
+|:--------:|:--------:|:--------:|:--------:|------|
+| ✅ | 2BB | 2+ | ✅ | 전원 수납, PRE_FLOP 스킵, FLOP 직행 |
+| ✅ | 2BB | 2+ | ❌ (A<2BB) | A: short contribution (max stack), 정상 진행 |
+| ✅ | 2BB | 2+ | ❌ (A,B<2BB) | A,B: short contribution, dead money, 정상 진행 |
+| ✅ | 2BB | 1 | — | 1명만 남음, 즉시 HAND_COMPLETE |
+| ❌ | — | — | — | Bomb Pot 미활성화, 표준 진행 |
+
+#### Matrix 4: Run It Twice 예외
+
+| State | all_in | board | run_it_times | run_it_times_remaining | 액션 |
+|------|:------:|:-----:|:----------:|:-----:|------|
+| SHOWDOWN | 2+ | 3-4 | 0 | — | run_it_times 선택 메뉴 제시 |
+| SHOWDOWN | 2+ | 3-4 | 2 | 2 | 1회차 실행, remaining=1 |
+| SHOWDOWN | 2+ | 3-4 | 2 | 1 | 2회차 실행, remaining=0 → HAND_COMPLETE |
+| SHOWDOWN | 2+ | 5 | — | — | 보드 완성됨, Run It Twice 불가 |
+
+#### Matrix 5: Miss Deal 복구
+
+| game_state | 원인 | 감지 주체 | 복구 액션 |
+|-----------|:---:|:-------:|---------|
+| ANY | Card 불일치 | 운영자 또는 RFID | pot 복귀, stacks restore, blinds 반환, state=IDLE |
+| ANY | Card 중복 감지 | RFID | 동일 복구 |
+| ANY | 잘못된 card 딜 | 운영자 | 동일 복구 |
+| ANY | **Boxed Card 2+ 감지 (Rule 88)** | RFID | **동일 복구** (§4.3 상세) |
+
+#### Matrix 6: RFID Failure 재시도
+
+| 시도 | 상태 | RFID 응답 | 액션 |
+|:---:|------|:-------:|------|
+| 1 | Detecting... | fail | 2초 대기 후 재시도 |
+| 2 | Detecting... | fail | 2초 대기 후 재시도 |
+| 3 | Detecting... | fail | 2초 대기 후 재시도 |
+| 4 | Detecting... | fail | 2초 대기 후 재시도 |
+| 5 | Detecting... | fail | 수동 입력 그리드 활성화, 운영자 수동 입력 대기 |
+
+#### Matrix 7: Card Mismatch 처리
+
+| RFID 감지 | 예상 카드 | 경고 | Venue | Broadcast |
+|:--------:|:--------:|:---:|-------|----------|
+| 7♠ | A♠ | ✅ WRONG_CARD | 공개 안 함 | 공개 안 함 (이전 상태 유지) |
+| A♠ | A♠ | ❌ 일치 | 정상 공개 | 정상 공개 |
+| (미감지) | A♠ | ✅ TIMEOUT | 수동 입력 대기 | 수동 입력 대기 |
+
+### 3.18 유저 스토리 — Hand Evaluation (BS-06-05 §유저 스토리, 8건)
+
+| # | As a | When | Then |
+|:-:|------|------|------|
+| 1 | 게임 엔진 | RIVER 베팅 완료, 2+ 플레이어 | standard_high evaluator 평가, 최고 HandRank 승자 결정 |
+| 2 | 게임 엔진 | 동일 HandRank (둘 다 Pair) | Pair 등급 비교 → kicker 순차 → 동일 시 split |
+| 3 | 게임 엔진 | Odd chip (팟 split) | dealer-left 가까운 플레이어에게 할당 |
+| 4 | 게임 엔진 | Run It Twice 1회차 완료, 2회차 진행 | 각 런별 보드 다름, 독립 평가 후 합산 |
+| 5 | 게임 엔진 | SHOWDOWN 3명+, 일부 올인 미발생 | 모든 액티브 동시 평가 후 분배 |
+| 6 | 게임 엔진 | 패배자 카드 Muck | 승자 카드만 기반 분배 |
+| 7 | 게임 엔진 | 7-2 Side Bet 활성, 승자 7-2 offsuit 보유 | 사이드벳 추가 수령 (상대 수 × side_bet_amount) |
+| 8 | 게임 엔진 | 7-2 Side Bet, 승자 7-2 suited | 사이드벳 미수령 (offsuit 만 해당) |
+
+### 3.19 유저 스토리 — Exceptions (BS-06-08 §유저 스토리, 15건)
+
+| # | As a | When | Then | Type |
+|:-:|------|------|------|------|
+| 1 | 엔진 | PRE_FLOP 모두 폴드 | HAND_COMPLETE, 1인 팟, 카드 미공개 | All Fold |
+| 2 | 엔진 | FLOP 모두 올인 + 보드 완성 불가 | SHOWDOWN, TURN+RIVER 자동 딜 | All-in Runout |
+| 3 | 운영자 | NEW HAND (Bomb Pot) | bomb_pot_amount 자동 수납, PRE_FLOP 스킵 | Bomb Pot |
+| 4 | 운영자 | Bomb Pot + stack < amount | Short contribution, max stack 수납, dead money 분배 | Bomb Pot Short |
+| 5 | 엔진 | FLOP 모든 올인 + run_it_times 동의 | run_it_times=2, 1회차 보드 완성, 평가, remaining=1 | RIT |
+| 6 | 운영자 | RIT 1회차 완료 | 1회차 결과 저장, 보드 리셋, 2회차 보드 자동 딜 | RIT Iteration |
+| 7 | 엔진 | RIT 최종 (remaining=0) | 1회차+2회차 합산, 최종 분배 | RIT Complete |
+| 8 | 운영자 | 미스딜 선언 | state=IDLE, pot 복귀, stacks restore, blinds 반환 | Miss Deal |
+| 9 | RFID | 카드 감지 5회 실패 | RFID_FAILURE 경고, 수동 입력 활성화 | RFID Failure |
+| 10 | RFID | 감지 성공 BUT 예상 카드 불일치 | WRONG_CARD 경고, 이전 상태 유지, UNDO/재스캔 | Card Mismatch |
+| 11 | 운영자 | Card Mismatch 후 UNDO | 이전 상태 복귀, 재스캔 대기 | Card Mismatch UNDO |
+| 12 | 운영자 | Card Mismatch 후 수동 입력 | 그리드 활성화, 카드 재입력, 게임 계속 | Card Mismatch Manual |
+| 13 | 시스템 | 네트워크 단절 | state 보존, action_on 일시 중지, 자동 재연결 | Network Disconnect |
+| 14 | 시스템 | 네트워크 재연결 성공 | 이전 state 복구, action_on 플레이어 재요청 | Network Reconnect |
+| 15 | 운영자 | overrideButton 강제 상태 전이 | 임의 상태 전이 (위험, 로그 필수) | Manual Override |
+
+---
 
 <!-- CHUNK-3: §4 Exceptions + §5 Data Models + Appendix A/B -->
