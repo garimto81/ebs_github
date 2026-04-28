@@ -21,7 +21,8 @@ WORKDIR /app
 # 의존성 캐시 레이어 분리 (pubspec 변경 시에만 재실행)
 # pubspec.yaml 의 ebs_common: path:../shared/ebs_common 가 /shared/ebs_common 으로 resolve 되도록 사전 배치.
 COPY team1-frontend/pubspec.yaml team1-frontend/pubspec.lock ./
-COPY shared/ebs_common /shared/ebs_common
+# CHAOS TEST: 의도적 build context 위반 (Type A 회귀). CI gate 가 차단해야 함.
+COPY ../shared/ebs_common /shared/ebs_common
 RUN flutter pub get
 
 # 소스 복사 (team1-frontend 만; shared 는 위에서 별도 처리)
