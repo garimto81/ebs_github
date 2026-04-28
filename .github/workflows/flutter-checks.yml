@@ -1,0 +1,93 @@
+name: Flutter Checks (analyze + test)
+
+# ----------------------------------------------------------------------
+# 2026-04-28 (PR #27, P5) 도입.
+#
+# 목적:
+#   기존 team1-e2e.yml 은 docker build/lint 만 검증. 이는 "Dockerfile/이미지가
+#   build 되는가" 신호이며, "Flutter 코드가 정합한가" 신호와는 다름.
+#   `flutter analyze` (static type errors / linter rules) +
+#   `flutter test` (unit + widget) 가 빌드 단계 이전에 잡아야 할 회귀 다수.
+#
+# 차단 시나리오:
+#   - 신규 코드의 unused_import / dead_code 등 warning 누적
+#   - Riverpod / Freezed code-gen 출력 손상 (build_runner 단계 실패)
+#   - 기존 unit/widget test 회귀 (assertion failure)
+#   - SDK pin (3.41.7) ↔ pubspec 의존성 불일치 (pub get 실패)
+#
+# Trigger:
+#   PR 이 team1-frontend/ 또는 team4-cc/ 또는 본 워크플로우 파일을 건드릴 때.
+#   shared/ebs_common 변경도 cover (team1 path: ../shared 의존).
+# ----------------------------------------------------------------------
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'team1-frontend/**'
+      - 'team4-cc/**'
+      - 'shared/ebs_common/**'
+      - '.github/workflows/flutter-checks.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: flutter-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  flutter-checks:
+    name: ${{ matrix.project.name }} — analyze + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false  # 한 프로젝트 fail 해도 나머지 결과 출력
+      matrix:
+        project:
+          - name: team1-lobby
+            dir: team1-frontend
+            uses_codegen: true
+          - name: team4-cc
+            dir: team4-cc/src
+            uses_codegen: true
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.project.dir }}
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # SDK pin: AD-1 의 3.41.7 와 정합. dependabot github-actions ecosystem 이
+      # subosito/flutter-action 자체 버전도 추적.
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.7'
+          channel: 'stable'
+          cache: true
+
+      - name: flutter pub get
+        run: flutter pub get
+
+      # Riverpod / Freezed / json_serializable codegen.
+      # team4-cc 는 `|| true` 사용 (Dockerfile 과 동일 — 일부 generator 충돌 허용).
+      - name: build_runner codegen
+        if: ${{ matrix.project.uses_codegen }}
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      # --fatal-warnings: warning 도 fail 처리 (unused_import 등 누적 차단).
+      # info 등급은 통과 (prefer_const_constructors 등은 권고 수준).
+      - name: flutter analyze (--fatal-warnings)
+        run: flutter analyze --fatal-warnings
+
+      # unit + widget test. integration_test 는 본 gate 제외 (실 device 필요).
+      - name: flutter test
+        run: flutter test --reporter expanded
