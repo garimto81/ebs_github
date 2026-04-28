@@ -12,8 +12,12 @@ from src.security.jwt import (
 )
 from src.security.password import verify_password
 
-_LOCK_DURATION_MIN = 30  # TODO[D+1]: BS-01 §자동 잠금 정책 = "Admin 수동 해제" (permanent). 본 timed lock 은 D+1 IMPL 에서 is_locked boolean + Admin unlock 경로로 refactor.
-_MAX_FAILED_ATTEMPTS = 10  # CCR-048 / BS-01 §자동 잠금 정책 SSOT (was 5). M1 D+0 drift 해소.
+# BS-01 §자동 잠금 정책 SSOT (CCR-048): 10회 연속 실패 → 영구 잠금 (Admin 수동 해제).
+# M1 Item 1b (PR 4, 2026-04-28): _LOCK_DURATION_MIN (timed) → _PERMANENT_LOCK_SENTINEL.
+# 기존 locked_until 체크 (`_utcnow() < lock_time`) 가 sentinel year 9999 에 대해 항상 True
+# 이므로 매커니즘은 동일, 만료 시점만 사실상 무한대.
+_MAX_FAILED_ATTEMPTS = 10
+_PERMANENT_LOCK_SENTINEL = "9999-12-31T23:59:59+00:00"
 
 
 def _utcnow() -> datetime:
@@ -44,7 +48,8 @@ def authenticate(email: str, password: str, db: Session) -> User | None:
     if not verify_password(password, user.password_hash):
         user.failed_login_count += 1
         if user.failed_login_count >= _MAX_FAILED_ATTEMPTS:
-            user.locked_until = (_utcnow() + timedelta(minutes=_LOCK_DURATION_MIN)).isoformat()
+            # BS-01 §자동 잠금 정책: permanent — Admin 수동 해제 필수
+            user.locked_until = _PERMANENT_LOCK_SENTINEL
         db.add(user)
         db.commit()
         return None

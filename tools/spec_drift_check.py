@@ -1326,9 +1326,69 @@ def detect_auth() -> ContractReport:
             )
         )
 
+    # Rule 1b — Lock mode permanent (M1 Item 1b / BS-01 §자동 잠금 정책)
+    # Spec: "영구 잠금" / "Admin 수동 해제"
+    # Code: timed lock 상수 (_LOCK_DURATION_MIN = N) 부재 + permanent marker 존재
+    permanent_in_spec = bool(
+        re.search(r"영구\s*잠금|Admin\s*수동\s*해제", spec_text)
+    )
+    has_timed_lock_constant = bool(
+        re.search(r"_LOCK_DURATION_MIN\s*=\s*\d+", code_text)
+    )
+    has_permanent_marker = bool(
+        re.search(
+            r"_PERMANENT_LOCK_SENTINEL|9999-12-31|is_locked\s*:\s*bool",
+            code_text,
+        )
+    )
+    if permanent_in_spec and (has_timed_lock_constant or not has_permanent_marker):
+        violations = []
+        if has_timed_lock_constant:
+            violations.append("_LOCK_DURATION_MIN (timed) 잔존")
+        if not has_permanent_marker:
+            violations.append("_PERMANENT_LOCK_SENTINEL 미사용")
+        rep.d2.append(
+            DriftItem(
+                contract="auth",
+                drift_type="D2",
+                identifier="LOCK_MODE permanent",
+                spec_value="permanent (Admin manual unlock)",
+                code_value=", ".join(violations),
+                note="BS-01 §자동 잠금 정책: '영구' — timed lock 폐기 + sentinel/boolean 사용",
+            )
+        )
+
+    # Rule 5 — refresh_token_delivery matrix (M1 Item 4 / BS-01 §Session & Token Lifecycle)
+    # Spec: 'refresh_token_delivery' 또는 'HttpOnly Cookie' 또는 '환경별 차등'
+    # Code: src/routers/auth.py 에 cookie helper (_set_refresh_cookie / REFRESH_COOKIE_NAME) 존재
+    delivery_in_spec = bool(
+        re.search(
+            r"refresh_token_delivery|HttpOnly\s*Cookie|환경별\s*(?:차등|조건부)",
+            spec_text,
+        )
+    )
+    router_path = REPO / "team2-backend" / "src" / "routers" / "auth.py"
+    has_cookie_helper = False
+    if router_path.exists():
+        rt = _read(router_path)
+        has_cookie_helper = bool(
+            re.search(r"_set_refresh_cookie|REFRESH_COOKIE_NAME", rt)
+        )
+    if delivery_in_spec and not has_cookie_helper:
+        rep.d2.append(
+            DriftItem(
+                contract="auth",
+                drift_type="D2",
+                identifier="refresh_token_delivery cookie helper",
+                spec_value="live profile = HttpOnly Cookie (BS-01 SSOT)",
+                code_value="auth.py 에 _set_refresh_cookie / REFRESH_COOKIE_NAME 부재",
+                note="BS-01 §Session & Token Lifecycle 환경별 차등 미구현",
+            )
+        )
+
     rep.scanner_note = (
-        "M1 D+1: 3 rules (MAX_FAILED_ATTEMPTS, blacklist module, composite PK). "
-        "D+1+ 추가 예정: lock mode permanent, refresh_token_delivery matrix."
+        "M1 D+1 완결: 5 rules (MAX_FAILED, lock_permanent, blacklist, composite_PK, refresh_delivery). "
+        "M2~M10 = 문서 IA 신설 + 슬림화 (별 PR)."
     )
     return rep
 

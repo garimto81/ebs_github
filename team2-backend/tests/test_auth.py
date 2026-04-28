@@ -94,6 +94,29 @@ def test_login_locked_at_exact_threshold(client, seed_users):
     )
 
 
+def test_lockout_sets_permanent_sentinel(client, seed_users, db_session):
+    """M1 Item 1b: 10회 실패 시 locked_until = year 9999 sentinel (permanent).
+
+    BS-01 §자동 잠금 정책: '10회 → 영구 잠금. 해제 = Admin 수동'.
+    timed lock (30분 후 자동 해제) 회귀 방지. Drift Rule 1b 와 짝.
+    """
+    from sqlmodel import select
+    from src.models.user import User
+    from src.services.auth_service import _PERMANENT_LOCK_SENTINEL
+
+    for _ in range(10):
+        _login(client, email="operator@test.com", password="wrong")
+
+    user = db_session.exec(
+        select(User).where(User.email == "operator@test.com")
+    ).first()
+    assert user.locked_until == _PERMANENT_LOCK_SENTINEL, (
+        f"10회 실패 후 locked_until 이 sentinel ({_PERMANENT_LOCK_SENTINEL}) 가 아닌 {user.locked_until}. "
+        "auth_service.py 가 timed lock 으로 회귀했을 가능성 (M1 Item 1b 위반)."
+    )
+    assert user.locked_until.startswith("9999-"), "Sentinel 은 year 9999 시작이어야 함"
+
+
 # ── Gate 1-4: GET /auth/me with valid token ──────
 
 
