@@ -48,8 +48,82 @@ permissions:
   pull-requests: write   # 실패 시 comment 용
 
 jobs:
+  # ──────────────────────────────────────────────────────────────────────
+  # Static Dockerfile lint (~5초). docker-build-gate 보다 먼저 실행하여
+  # build context 위반을 fast-fail. 본 lint 의 존재 이유:
+  #
+  #   PR #21 (chaos test) 결과: Linux BuildKit 은 `COPY ../shared/...` 의
+  #   `..` 를 silently normalize 하여 Type A 회귀를 detect 못 함.
+  #   (로컬 Windows BuildKit 은 reject 하지만 GitHub Actions 는 silent pass)
+  #
+  # → BuildKit 과 독립적인 grep-based static check 로 OS-bound blind spot 보강.
+  # → 5분 Flutter 빌드를 spin-up 하기 전에 1초 만에 fail. CI 비용 절감.
+  # ──────────────────────────────────────────────────────────────────────
+  dockerfile-lint:
+    name: Dockerfile Static Lint (Type A guard)
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Forbid context boundary violation (COPY with ..)
+        run: |
+          set -e
+          violations=0
+          for df in \
+            team1-frontend/docker/lobby-web/Dockerfile \
+            team4-cc/docker/cc-web/Dockerfile
+          do
+            if [ ! -f "$df" ]; then
+              echo "::warning::skip $df (file not found)"
+              continue
+            fi
+            # Lint rule: COPY src 가 `../` 를 포함 (단, --from=stage 는 host context
+            # 를 가리키지 않으므로 면제). grep 3-pipe 로 가독성 + 명확성 확보.
+            if matches=$(grep -nE '^\s*COPY\b' "$df" \
+                          | grep -v -- '--from' \
+                          | grep -E '\.\./'); then
+              echo "::error file=$df::Type A regression — COPY with .. (build context boundary violation)"
+              echo "  $df:"
+              echo "$matches" | sed 's/^/    /'
+              violations=$((violations + 1))
+            fi
+          done
+
+          if [ $violations -gt 0 ]; then
+            cat <<'EOF'
+          ::error::Type A regression detected — abort before docker build.
+
+          📖 배경: Linux BuildKit 은 `COPY ../...` 의 `..` 를 silently
+          normalize 하여 의도된 build context 외부 참조를 통과시킵니다.
+          이는 로컬 Windows BuildKit 과 다른 동작입니다 (PR #21 chaos test 검증).
+
+          🛠️ 해결:
+            (1) docker-compose.yml 의 `build.context` 를 monorepo root (`.`) 로 승격
+            (2) Dockerfile 의 모든 COPY 경로를 root-relative 로 변경
+                예) `COPY ../shared/ebs_common ...` → `COPY shared/ebs_common ...`
+                예) `COPY pubspec.yaml ./` → `COPY team1-frontend/pubspec.yaml ./`
+            (3) compose 의 build.dockerfile 도 `team1-frontend/docker/lobby-web/Dockerfile` 등 root-relative
+
+          참고: `P0_REMEDIATION_HANDOFF.md` (PR #17) 의 build context promotion 사례.
+          EOF
+            exit 1
+          fi
+
+          echo "✓ Dockerfile lint passed — no context boundary violations."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # Heavy gate: docker compose build (5-layer cascade 회귀 차단).
+  # dockerfile-lint 통과 후에만 실행 → 1초 fail 가능한 케이스를
+  # 5분 build 까지 가지 않게 함 (CI minutes 절감).
+  # ──────────────────────────────────────────────────────────────────────
   docker-build-gate:
     name: Docker Compose Build Verification
+    needs: dockerfile-lint
     runs-on: ubuntu-latest
     timeout-minutes: 45  # Flutter 첫 빌드 ~10 min × 2 service = ~20 min, 여유 포함
 
@@ -146,7 +220,7 @@ jobs:
               '',
               '| Layer | 증상 (build log) | 가능 원인 / 1차 점검 |',
               '|:-----:|------------------|---------------------|',
-              '| L1 | `COPY ../shared/ebs_common: not found` | docker-compose.yml `build.context` 가 `.` 이고 Dockerfile COPY paths 에 `team1-frontend/` prefix 가 있는지 |',
+              '| L1 | `Type A regression — COPY with ..` (dockerfile-lint job) 또는 `COPY ../shared: not found` (build job) | docker-compose.yml `build.context` 가 `.` 이고 Dockerfile COPY paths 에 `team1-frontend/` prefix 가 있는지. **Linux BuildKit 은 `..` silently pass 하므로 dockerfile-lint job 결과를 우선 신뢰**. |',
               '| L2 | `Because ebs_lobby depends on intl ^X.Y` | pubspec.yaml `intl` pin 과 Flutter SDK 의 flutter_localizations pin 일치 여부 |',
               '| L3 | `requires SDK version >=X.Y` | Dockerfile `FROM ghcr.io/cirruslabs/flutter:3.41.7` 와 dev_dependencies 의 dart sdk 요구 일치 |',
               '| L4 | `Could not find an option named "--web-renderer"` | `--web-renderer=html` flag 폐기. 빌드 명령에서 제거 |',
