@@ -193,6 +193,22 @@ status: active
 eta: 3h
 ```
 
+### Claim #19 — team3: B-349 §3-6 followup — API-04 정합 + ssot_auditor 보강 + Overview cross-ref + cross-team grep
+```yaml
+id: 19
+team: team3
+task: B-349 §3-6 followup — API-04 정합 + ssot_auditor 보강 + Overview cross-ref + cross-team
+  grep
+started: '2026-04-28T06:41:56Z'
+scope:
+- docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md
+- docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md
+- docs/2. Development/2.3 Game Engine/Backlog/**
+- tools/ssot_auditor.py
+status: active
+eta: 2h
+```
+
 <!-- CLAIMS_END -->
 
 ## Recently Released (last 24h)
@@ -212,20 +228,6 @@ status: released
 eta: 2h
 released: '2026-04-27T08:13:20Z'
 released_reason: stale_gc_auto
-```
-
-### Claim #12 — conductor: IMPR-5: Handoff auto-diff tool — 5-Session Context Bleed 가시화 (audit 후속, free-tier zero-cost)
-```yaml
-id: 12
-team: conductor
-task: 'IMPR-5: Handoff auto-diff tool — 5-Session Context Bleed 가시화 (audit 후속, free-tier
-  zero-cost)'
-started: '2026-04-27T06:39:52Z'
-scope:
-- tools/handoff_diff.py
-status: released
-eta: 1h
-released: '2026-04-27T06:41:56Z'
 ```
 
 <!-- RELEASED_END -->
