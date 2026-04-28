@@ -38,7 +38,7 @@ dev_dependencies:
     sdk: flutter
   patrol: ^3.11.0
   patrol_finders: ^2.5.0
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
   build_runner: ^2.4.11
   riverpod_generator: ^2.4.0
   freezed: ^2.5.2
