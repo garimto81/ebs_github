@@ -99,6 +99,18 @@ def api_activate_skin(
     return ApiResponse(data=SkinResponse.model_validate(s, from_attributes=True))
 
 
+@router.post("/skins/{skin_id}/deactivate")
+def api_deactivate_skin(
+    skin_id: int,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """V9.5 P7: 해당 skin 의 default 해제."""
+    from src.services.skin_service import deactivate_skin
+    s = deactivate_skin(skin_id, db)
+    return ApiResponse(data=SkinResponse.model_validate(s, from_attributes=True))
+
+
 @router.put("/skins/{skin_id}/activate")
 def api_activate_skin_legacy(
     skin_id: int,

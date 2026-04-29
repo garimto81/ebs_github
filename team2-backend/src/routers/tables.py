@@ -179,6 +179,40 @@ def api_get_seats(
     )
 
 
+@router.post("/tables/{table_id}/seats", status_code=201)
+def api_assign_seat(
+    table_id: int,
+    body: SeatUpdate,
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """V9.5 P7: assign player to seat (frontend addPlayer).
+
+    body: {seat_no, player_id, chip_count?}
+    """
+    if body.seat_no is None or body.player_id is None:
+        from fastapi import HTTPException, status
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": "MISSING_FIELDS", "message": "seat_no and player_id required"},
+        )
+    seat = assign_seat(table_id, body.seat_no, body.player_id, db, body.chip_count or 0)
+    return ApiResponse(data=SeatResponse.model_validate(seat, from_attributes=True))
+
+
+@router.delete("/tables/{table_id}/seats/{seat_no}", status_code=200)
+def api_vacate_seat(
+    table_id: int,
+    seat_no: int,
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """V9.5 P7: vacate seat (frontend removePlayer)."""
+    from src.services.table_service import vacate_seat
+    seat = vacate_seat(table_id, seat_no, db)
+    return ApiResponse(data=SeatResponse.model_validate(seat, from_attributes=True))
+
+
 @router.put("/tables/{table_id}/seats/{seat_no}")
 def api_update_seat(
     table_id: int,

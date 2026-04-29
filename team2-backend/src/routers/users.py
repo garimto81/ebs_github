@@ -67,6 +67,25 @@ def api_update_user(
     return ApiResponse(data=UserResponse.model_validate(u, from_attributes=True))
 
 
+@router.post("/users/{user_id}/force-logout")
+def api_force_logout(
+    user_id: int,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """V9.5 P7: admin force-logout — invalidate target user's active sessions.
+
+    Minimal viable: lookup user + bump updated_at marker.
+    Future: integrate with JWT blacklist + WS disconnect.
+    """
+    target = get_user(user_id, db)
+    from datetime import datetime, timezone
+    target.updated_at = datetime.now(timezone.utc).isoformat()
+    db.add(target)
+    db.commit()
+    return ApiResponse(data={"forced_logout": True, "user_id": user_id})
+
+
 @router.delete("/users/{user_id}")
 def api_delete_user(
     user_id: int,

@@ -85,3 +85,14 @@ def activate_skin(skin_id: int, db: Session) -> Skin:
 
 def get_active_skin(db: Session) -> Skin | None:
     return db.exec(select(Skin).where(Skin.is_default == True)).first()  # noqa: E712
+
+
+def deactivate_skin(skin_id: int, db: Session) -> Skin:
+    """V9.5 P7: 해당 skin 의 default 해제. 다른 default 가 없으면 시스템 active 0."""
+    s = get_skin(skin_id, db)
+    s.is_default = False
+    s.updated_at = _utcnow()
+    db.add(s)
+    db.commit()
+    db.refresh(s)
+    return s
