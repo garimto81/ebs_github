@@ -396,6 +396,27 @@ WSOP LIVE `Player` 엔티티에는 있으나 EBS 가 **의도적으로 채택하
 
 ## 3. 게임 도메인 테이블
 
+```sql
+-- cards (RFID 카드 마스터 테이블, init.sql §1 권위)
+-- 53장 카드 (52 + Joker) 의 무늬/숫자/값 매핑. uid 는 RFID 매핑 후 채움.
+CREATE TABLE cards (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    uid TEXT UNIQUE,                    -- RFID UID (초기값 NULL, 매핑 후 업데이트)
+    suit TEXT NOT NULL,                 -- spades, hearts, diamonds, clubs, joker
+    rank TEXT NOT NULL,                 -- A, 2, 3, ..., J, Q, K, JOKER
+    display TEXT NOT NULL,              -- "A♠", "K♥", "JOKER"
+    value INTEGER NOT NULL,             -- 0-14 (Joker=0, Ace=1/14, 2-10, J=11, Q=12, K=13)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_suit CHECK (suit IN ('spades', 'hearts', 'diamonds', 'clubs', 'joker')),
+    CONSTRAINT chk_value CHECK (value >= 0 AND value <= 14)
+);
+CREATE UNIQUE INDEX idx_cards_uid ON cards(uid) WHERE uid IS NOT NULL;
+CREATE INDEX idx_cards_suit_rank ON cards(suit, rank);
+CREATE INDEX idx_cards_value ON cards(value);
+```
+
 ```python
 # hands
 class Hand(SQLModel, table=True):
@@ -795,6 +816,27 @@ class OutputPreset(SQLModel, table=True):
     is_default: bool = Field(default=False)
     created_at: str = Field(default_factory=utcnow)
     updated_at: str = Field(default_factory=utcnow)
+```
+
+```sql
+-- settings_kv (SG-003 Settings 6-tab schema, init.sql 권위, migration 0005 mirror)
+-- scope_level (global/series/event/table/user) + tab (outputs/gfx/display/rules/stats/preferences)
+-- + key 의 4계층 resolver. value 는 JSON string.
+CREATE TABLE settings_kv (
+    id TEXT PRIMARY KEY,                          -- uuid (application-generated)
+    scope_level TEXT NOT NULL
+        CHECK (scope_level IN ('global','series','event','table','user')),
+    scope_id TEXT,                                -- nullable for global scope
+    tab TEXT NOT NULL
+        CHECK (tab IN ('outputs','gfx','display','rules','stats','preferences')),
+    key TEXT NOT NULL,
+    value TEXT NOT NULL,                          -- JSON string
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_by TEXT,
+    UNIQUE(scope_level, scope_id, tab, key)
+);
+CREATE INDEX ix_settings_kv_scope ON settings_kv(scope_level, scope_id);
+CREATE INDEX ix_settings_kv_tab ON settings_kv(tab);
 ```
 
 ---
