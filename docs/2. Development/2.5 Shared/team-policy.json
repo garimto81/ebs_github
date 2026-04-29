@@ -55,7 +55,7 @@
     "version": "v9.0",
     "updated": "2026-04-29",
     "main_push_allowed_for": ["conductor"],
-    "_main_push_allowed_for_note": "v9.0: Conductor 만 main 직접 push (단일 세션 hub-and-spoke). 팀 세션은 PR 경로 강제. v5.0 의 모든 팀 PR 경로는 V9.0 에서 Conductor merge 권한 독점으로 변경.",
+    "_main_push_allowed_for_note": "v9.2 D1 (2026-04-29 사용자 결정 ㉡): Conductor 만 main 직접 push (governance/board/cleanup commit). 팀 세션은 PR 경로. V9.2 에서는 충돌 없는 PR worker self-merge 허용 (3-gate auto-merge), 충돌 PR 만 Conductor 처리. v9.0 의 절대 단일 머지권 → v9.2 의 충돌 시만 단일 머지권으로 완화.",
     "team_branch_pattern": "work/{team}/{slug}",
     "worktree_layout": "sibling_dir",
     "worktree_path_pattern": "C:/claude/ebs-{team}-{slug}/",
