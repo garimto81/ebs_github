@@ -623,3 +623,9 @@ BO WebSocket 연결 상실 감지
 | **Operator : CC 인스턴스 = 1:N** | 한 명의 운영자가 여러 CC 동시 관리 가능 |
 
 다중 테이블 운영의 3가지 패턴(A/B/C)과 키보드 포커스 정책 등 상세는 `BS-05-10-multi-table-ops.md` 참조.
+
+---
+
+## 11. 카드 호출 로직 (cross-ref)
+
+CC 가 dispatch 하는 카드 입력 (RFID 홀카드 / 커뮤니티 카드) 의 4-tier 문서 구조와 권위 SSOT 매핑은 `../../2.5 Shared/Card_Flow_Index.md` 참조. 카드 파이프라인의 Trigger/OutputEvent 권위는 `../../2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` (§1.4 카드 파이프라인 / §3.5 트리거 매트릭스 / §4.10 Atomic Flop 예외).

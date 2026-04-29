@@ -1,44 +1,92 @@
 // Lobby-specific semantic colors.
 //
-// Status, table state, seat state, and RBAC role badge colors
-// for the EBS Lobby web application.
+// Adapter that maps EBS Lobby semantic roles (event status / table state /
+// seat state / RBAC / WebSocket) onto the design system tokens.
+//
+// SSOT: `design_tokens.dart` (oklch→sRGB pinned values).
 
-import 'package:flutter/material.dart';
+import 'design_tokens.dart';
 
 class LobbyColors {
   LobbyColors._();
 
   // ── Event / Flight status ──────────────────────────────────────
-  static const statusActive = Color(0xFF43A047); // Green 600
-  static const statusPaused = Color(0xFFFB8C00); // Orange 600
-  static const statusCompleted = Color(0xFF1E88E5); // Blue 600
-  static const statusCancelled = Color(0xFF757575); // Gray 600
-  static const statusScheduled = Color(0xFF7E57C2); // Deep Purple 400
+  // Maps to the `.b-running` / `.b-registering` / `.b-announced` / `.b-completed`
+  // / `.b-created` badges in styles.css.
+  static const statusRunning = DesignTokens.liveBase;
+  static const statusRunningBg = DesignTokens.liveBg;
+  static const statusRunningInk = DesignTokens.liveInk;
 
-  // ── Table status ───────────────────────────────────────────────
-  static const tableRunning = Color(0xFF2E7D32); // Green 800
-  static const tableBreak = Color(0xFFFDD835); // Yellow 600
-  static const tableFinished = Color(0xFF616161); // Gray 700
-  static const tableFeature = Color(0xFFE53935); // Red 600 — feature table highlight
+  static const statusRegistering = DesignTokens.warnBase;
+  static const statusRegisteringBg = DesignTokens.warnBg;
+  static const statusRegisteringInk = DesignTokens.warnInk;
 
-  // ── Seat status ────────────────────────────────────────────────
-  static const seatVacant = Color(0xFF616161); // Gray 700
-  static const seatOccupied = Color(0xFF2E7D32); // Green 800
-  static const seatReserved = Color(0xFF1565C0); // Blue 800
-  static const seatBlocked = Color(0xFF424242); // Gray 800
+  static const statusAnnounced = DesignTokens.infoBase;
+  static const statusAnnouncedBg = DesignTokens.infoBg;
+  static const statusAnnouncedInk = DesignTokens.infoInk;
+
+  static const statusCompleted = DesignTokens.lightInk5;
+  static const statusCompletedBg = DesignTokens.lightBgSunken;
+  static const statusCompletedInk = DesignTokens.lightInk3;
+
+  static const statusCreated = DesignTokens.lightInk5;
+  static const statusCreatedBg = DesignTokens.lightBgSunken;
+  static const statusCreatedInk = DesignTokens.lightInk3;
+
+  // Backwards-compatible aliases for prior consumers (Material-MD names →
+  // semantic-token mapping). Same identifiers, retargeted to design tokens.
+  static const statusActive = DesignTokens.liveBase; // was Green 600
+  static const statusPaused = DesignTokens.warnBase; // was Orange 600
+  static const statusCancelled = DesignTokens.lightInk4; // was Gray 600
+  static const statusScheduled = DesignTokens.infoBase; // was Deep Purple 400
+
+  // ── Table state ────────────────────────────────────────────────
+  static const tableRunning = DesignTokens.liveInk;
+  static const tableBreak = DesignTokens.warnBase;
+  static const tableFinished = DesignTokens.lightInk4;
+  static const tableFeature = DesignTokens.featInk; // gold star highlight
+
+  // ── Seat state — mirrors `.seat.s-a/.s-e/.s-r/.s-w/.s-d` in styles.css ──
+  // s-a (active)
+  static const seatActive = DesignTokens.liveInk;
+  static const seatActiveBg = DesignTokens.liveBg;
+  // s-e (empty / dashed)
+  static const seatEmpty = DesignTokens.lightInk5;
+  static const seatEmptyBg = DesignTokens.lightBgSunken;
+  // s-r (recently eliminated, strike-through)
+  static const seatEliminated = DesignTokens.dangerInk;
+  static const seatEliminatedBg = DesignTokens.dangerBg;
+  // s-w (waiting)
+  static const seatWaiting = DesignTokens.warnInk;
+  static const seatWaitingBg = DesignTokens.warnBg;
+  // s-d (dealer-only)
+  static const seatDealer = DesignTokens.lightInk3;
+  static const seatDealerBg = DesignTokens.lightBgSunken;
+
+  // Backwards-compat aliases for prior `seatVacant / seatOccupied / seatReserved
+  // / seatBlocked` consumers.
+  static const seatVacant = DesignTokens.lightInk4;
+  static const seatOccupied = DesignTokens.liveInk;
+  static const seatReserved = DesignTokens.infoInk;
+  static const seatBlocked = DesignTokens.lightInk2;
 
   // ── RBAC role badges ───────────────────────────────────────────
-  static const roleAdmin = Color(0xFFE53935); // Red 600
-  static const roleOperator = Color(0xFF1E88E5); // Blue 600
-  static const roleViewer = Color(0xFF757575); // Gray 600
+  static const roleAdmin = DesignTokens.dangerBase;
+  static const roleOperator = DesignTokens.infoBase;
+  static const roleViewer = DesignTokens.lightInk4;
 
   // ── Connection status (WebSocket) ──────────────────────────────
-  static const wsConnected = Color(0xFF43A047); // Green
-  static const wsReconnecting = Color(0xFFFB8C00); // Orange
-  static const wsDisconnected = Color(0xFFE53935); // Red
+  static const wsConnected = DesignTokens.liveBase;
+  static const wsReconnecting = DesignTokens.warnBase;
+  static const wsDisconnected = DesignTokens.dangerBase;
 
   // ── Misc ───────────────────────────────────────────────────────
-  static const bookmarkActive = Color(0xFFFDD835); // Yellow 600
-  static const filterChipSelected = Color(0xFF1E88E5);
-  static const divider = Color(0xFF2A2A40);
+  static const bookmarkActive = DesignTokens.featInk;
+  static const filterChipSelected = DesignTokens.infoBase;
+  static const divider = DesignTokens.lightLine;
+
+  // ── CC pill states (TopBar Active CC indicator) ────────────────
+  static const ccPillLive = DesignTokens.liveBase;
+  static const ccPillIdle = DesignTokens.lightInk5;
+  static const ccPillError = DesignTokens.dangerBase;
 }

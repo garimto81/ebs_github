@@ -1,115 +1,191 @@
 // EBS Lobby typography scale.
 //
-// Adapted from team4 EbsTypography for desktop web (larger screens).
-// Sizes are slightly bumped vs CC mobile for comfortable desktop reading.
-// Monospace for numeric values (stacks, pots, stats) for alignment.
+// Aligned with the Anthropic Design API handoff (`EBS Lobby.html` / styles.css):
+// Inter for UI text, JetBrains Mono for numerics / IDs / timecodes / blinds.
+// 13px base mirrors `body { font-size: 13px }` from the design source.
+//
+// Tabular figures (`tnum`) is enabled on monospace styles so chip stacks,
+// timestamps, and blind levels align column-wise. Until `google_fonts` (or a
+// bundled .ttf asset) is wired up via B-090, the families fall back to the
+// platform default sans / mono — but the FontFeature settings still apply
+// to whatever family resolves.
 
 import 'package:flutter/material.dart';
+
+import 'design_tokens.dart';
 
 class EbsTypography {
   EbsTypography._();
 
+  // Tabular figures — keeps numeric columns aligned (KPI strip, blinds, IDs).
+  static const _tabular = [FontFeature.tabularFigures()];
+
   // ── Page titles (Lobby sections) ───────────────────────────────
   static const pageTitle = TextStyle(
-    fontSize: 22,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.5,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.005 * 18, // mirror -0.005em on .scard-name
   );
 
-  // ── Section headers (Settings tab titles, card headers) ────────
+  // ── Section headers ────────────────────────────────────────────
   static const sectionHeader = TextStyle(
-    fontSize: 18,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsTitle,
     fontWeight: FontWeight.w600,
   );
 
   // ── Toolbar / AppBar title ─────────────────────────────────────
   static const toolbarTitle = TextStyle(
-    fontSize: 18,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsTitle,
     fontWeight: FontWeight.w600,
   );
 
   // ── Data table header ──────────────────────────────────────────
+  // 10px uppercase tracked label — mirrors `.dtable th`.
   static const tableHeader = TextStyle(
-    fontSize: 13,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: 10,
     fontWeight: FontWeight.w600,
-    color: Color(0xFFB0B0B0),
+    letterSpacing: 0.08 * 10,
+    color: DesignTokens.lightInk4,
   );
 
   // ── Data table cell ────────────────────────────────────────────
   static const tableCell = TextStyle(
-    fontSize: 14,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsBase,
     fontWeight: FontWeight.w400,
   );
 
   // ── Numeric values in tables (monospace for digit alignment) ───
   static const tableNumeric = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
-    fontFamily: 'monospace',
+    fontFamily: DesignTokens.fontFamilyMono,
+    fontSize: DesignTokens.fsBase,
+    fontWeight: FontWeight.w500,
+    fontFeatures: _tabular,
   );
 
   // ── Body text ──────────────────────────────────────────────────
   static const body = TextStyle(
-    fontSize: 15,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsBase,
     fontWeight: FontWeight.w400,
     height: 1.5,
   );
 
-  // ── Form label ─────────────────────────────────────────────────
+  // ── Form label (uppercase tracked) ─────────────────────────────
   static const formLabel = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsLabel,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.10 * DesignTokens.fsLabel,
+    color: DesignTokens.lightInk4,
   );
 
   // ── Form input ─────────────────────────────────────────────────
   static const formInput = TextStyle(
-    fontSize: 15,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsBase,
     fontWeight: FontWeight.w400,
   );
 
-  // ── Navigation item ────────────────────────────────────────────
+  // ── Navigation rail item ───────────────────────────────────────
   static const navItem = TextStyle(
-    fontSize: 14,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsTab,
     fontWeight: FontWeight.w500,
   );
 
-  // ── Status badge ───────────────────────────────────────────────
+  // ── Status badge (capitalized small caps) ──────────────────────
   static const statusBadge = TextStyle(
-    fontSize: 12,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: 10.5,
     fontWeight: FontWeight.w600,
-    letterSpacing: 0.5,
+    letterSpacing: 0.02 * 10.5,
   );
 
   // ── Caption / hint text ────────────────────────────────────────
   static const caption = TextStyle(
-    fontSize: 12,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsSmall,
     fontWeight: FontWeight.w400,
-    color: Color(0xFF9E9E9E),
+    color: DesignTokens.lightInk3,
   );
 
-  // ── Modal title ────────────────────────────────────────────────
+  // ── Modal / sheet title ────────────────────────────────────────
   static const modalTitle = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.w700,
-  );
-
-  // ── Pot / stack amount (monospace, large) ──────────────────────
-  static const amountLarge = TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.w700,
-    fontFamily: 'monospace',
-  );
-
-  // ── Small monospace (hand #, seat #) ───────────────────────────
-  static const monoSmall = TextStyle(
-    fontSize: 13,
-    fontWeight: FontWeight.w500,
-    fontFamily: 'monospace',
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsTitle,
+    fontWeight: FontWeight.w600,
   );
 
   // ── Tab label ──────────────────────────────────────────────────
   static const tabLabel = TextStyle(
-    fontSize: 14,
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsTab,
     fontWeight: FontWeight.w600,
+  );
+
+  // ── Pot / stack amount (large mono) ────────────────────────────
+  static const amountLarge = TextStyle(
+    fontFamily: DesignTokens.fontFamilyMono,
+    fontSize: DesignTokens.fsKpiValue,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.01 * DesignTokens.fsKpiValue,
+    fontFeatures: _tabular,
+  );
+
+  // ── Small monospace (hand #, seat #, deck count) ───────────────
+  static const monoSmall = TextStyle(
+    fontFamily: DesignTokens.fontFamilyMono,
+    fontSize: DesignTokens.fsBase,
+    fontWeight: FontWeight.w500,
+    fontFeatures: _tabular,
+  );
+
+  // ── KPI label (uppercase tracked, tiny) ────────────────────────
+  static const kpiLabel = TextStyle(
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsKpiLabel,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.10 * DesignTokens.fsKpiLabel,
+    color: DesignTokens.lightInk4,
+  );
+
+  // ── KPI value (large numeric) ──────────────────────────────────
+  static const kpiValue = TextStyle(
+    fontFamily: DesignTokens.fontFamilyMono,
+    fontSize: DesignTokens.fsKpiValue,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.01 * DesignTokens.fsKpiValue,
+    fontFeatures: _tabular,
+  );
+
+  // ── Levels strip countdown clock ───────────────────────────────
+  static const levelClock = TextStyle(
+    fontFamily: DesignTokens.fontFamilyMono,
+    fontSize: DesignTokens.fsLevelClock,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.04 * DesignTokens.fsLevelClock,
+    fontFeatures: _tabular,
+  );
+
+  // ── Year band caption (UPPERCASE tracked) — Series screen ──────
+  static const yearBand = TextStyle(
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsSmall,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.16 * DesignTokens.fsSmall,
+    color: DesignTokens.lightInk4,
+  );
+
+  // ── Brand mark wordmark — uppercase tracked ────────────────────
+  static const brandMark = TextStyle(
+    fontFamily: DesignTokens.fontFamilyUi,
+    fontSize: DesignTokens.fsTab,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.14 * DesignTokens.fsTab,
   );
 }

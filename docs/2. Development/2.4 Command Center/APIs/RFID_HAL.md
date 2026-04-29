@@ -202,3 +202,4 @@ Settings(Lobby 하위 다이얼로그) → System → RFID → Mode 선택
 | `BS-04-02-card-detection.md` | HAL CardDetected 이벤트 발행 |
 | `BS-04-03-manual-fallback.md` | Mock HAL injectCard() 동작 |
 | `BS-03-settings/` | Settings에서 RFID 모드 전환 UI |
+| `../../2.5 Shared/Card_Flow_Index.md` | RFID + 커뮤니티 카드 호출의 4-tier 네비게이션 인덱스 (Tier 1 진입점) |
