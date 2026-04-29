@@ -18,7 +18,7 @@ class TableRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<EbsTable>>(
-      '/Tables',
+      '/tables',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => EbsTable.fromJson(e as Map<String, dynamic>))
@@ -28,14 +28,14 @@ class TableRepository {
 
   Future<EbsTable> getTable(int id) async {
     return _client.get<EbsTable>(
-      '/Tables/$id',
+      '/tables/$id',
       fromJson: (json) => EbsTable.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<EbsTable> createTable(Map<String, dynamic> data) async {
     return _client.post<EbsTable>(
-      '/Tables',
+      '/tables',
       data: data,
       fromJson: (json) => EbsTable.fromJson(json as Map<String, dynamic>),
     );
@@ -43,26 +43,26 @@ class TableRepository {
 
   Future<EbsTable> updateTable(int id, Map<String, dynamic> data) async {
     return _client.put<EbsTable>(
-      '/Tables/$id',
+      '/tables/$id',
       data: data,
       fromJson: (json) => EbsTable.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<void> deleteTable(int id) async {
-    await _client.delete<dynamic>('/Tables/$id');
+    await _client.delete<dynamic>('/tables/$id');
   }
 
   Future<Map<String, dynamic>> launchCc(int id) async {
     return _client.post<Map<String, dynamic>>(
-      '/Tables/$id/LaunchCc',
+      '/tables/$id/launch-cc',
       fromJson: (json) => json as Map<String, dynamic>,
     );
   }
 
   Future<Map<String, dynamic>> getStatus(int id) async {
     return _client.get<Map<String, dynamic>>(
-      '/Tables/$id/Status',
+      '/tables/$id/status',
       fromJson: (json) => json as Map<String, dynamic>,
     );
   }
@@ -71,7 +71,7 @@ class TableRepository {
 
   Future<List<TableSeat>> listSeats(int tableId) async {
     return _client.get<List<TableSeat>>(
-      '/Tables/$tableId/Seats',
+      '/tables/$tableId/seats',
       fromJson: (json) => (json as List)
           .map((e) => TableSeat.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -84,7 +84,7 @@ class TableRepository {
     required int seatNo,
   }) async {
     return _client.post<TableSeat>(
-      '/Tables/$tableId/Seats',
+      '/tables/$tableId/seats',
       data: {'playerId': playerId, 'seatNo': seatNo},
       fromJson: (json) => TableSeat.fromJson(json as Map<String, dynamic>),
     );
@@ -96,14 +96,14 @@ class TableRepository {
     Map<String, dynamic> data,
   ) async {
     return _client.put<TableSeat>(
-      '/Tables/$tableId/Seats/$seatNo',
+      '/tables/$tableId/seats/$seatNo',
       data: data,
       fromJson: (json) => TableSeat.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<void> removePlayer(int tableId, int seatNo) async {
-    await _client.delete<dynamic>('/Tables/$tableId/Seats/$seatNo');
+    await _client.delete<dynamic>('/tables/$tableId/seats/$seatNo');
   }
 
   // -- Rebalance (Backend_HTTP.md §Table.POST /tables/rebalance — Saga) ----
@@ -117,7 +117,7 @@ class TableRepository {
     bool dryRun = false,
   }) async {
     return _client.post<Map<String, dynamic>>(
-      '/Tables/Rebalance',
+      '/tables/rebalance',
       data: {
         'eventFlightId': eventFlightId,
         'strategy': strategy,

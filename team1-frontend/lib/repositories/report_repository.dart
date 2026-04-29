@@ -24,7 +24,7 @@ class ReportRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<Map<String, dynamic>>(
-      '/Reports/${reportType.value}',
+      '/reports/${reportType.value}',
       queryParameters: params,
       fromJson: (json) => json as Map<String, dynamic>,
     );

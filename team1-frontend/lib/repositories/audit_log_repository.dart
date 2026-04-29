@@ -11,7 +11,7 @@ class AuditLogRepository {
     Map<String, dynamic>? filters,
   }) async {
     return _client.get<List<AuditLog>>(
-      '/AuditLogs',
+      '/audit-logs',
       queryParameters: filters,
       fromJson: (json) => (json as List)
           .map((e) => AuditLog.fromJson(e as Map<String, dynamic>))
@@ -24,7 +24,7 @@ class AuditLogRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<Map<String, dynamic>>(
-      '/Reports/$type',
+      '/reports/$type',
       queryParameters: params,
       fromJson: (json) => json as Map<String, dynamic>,
     );

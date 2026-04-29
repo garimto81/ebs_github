@@ -37,7 +37,7 @@ class PayoutStructureRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<PayoutStructure>>(
-      '/Series/$seriesId/PayoutStructures',
+      '/series/$seriesId/payout-structures',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => PayoutStructure.fromJson(e as Map<String, dynamic>))
@@ -47,7 +47,7 @@ class PayoutStructureRepository {
 
   Future<PayoutStructure> getPayoutStructure(int seriesId, int psId) async {
     return _client.get<PayoutStructure>(
-      '/Series/$seriesId/PayoutStructures/$psId',
+      '/series/$seriesId/payout-structures/$psId',
       fromJson: (json) =>
           PayoutStructure.fromJson(json as Map<String, dynamic>),
     );
@@ -58,7 +58,7 @@ class PayoutStructureRepository {
     Map<String, dynamic> data,
   ) async {
     return _client.post<PayoutStructure>(
-      '/Series/$seriesId/PayoutStructures',
+      '/series/$seriesId/payout-structures',
       data: data,
       fromJson: (json) =>
           PayoutStructure.fromJson(json as Map<String, dynamic>),
@@ -71,7 +71,7 @@ class PayoutStructureRepository {
     Map<String, dynamic> data,
   ) async {
     return _client.put<PayoutStructure>(
-      '/Series/$seriesId/PayoutStructures/$psId',
+      '/series/$seriesId/payout-structures/$psId',
       data: data,
       fromJson: (json) =>
           PayoutStructure.fromJson(json as Map<String, dynamic>),
@@ -80,7 +80,7 @@ class PayoutStructureRepository {
 
   Future<void> deletePayoutStructure(int seriesId, int psId) async {
     await _client.delete<dynamic>(
-      '/Series/$seriesId/PayoutStructures/$psId',
+      '/series/$seriesId/payout-structures/$psId',
     );
   }
 }
