@@ -411,6 +411,16 @@ class BlindStructureLevelResponse(EbsBaseModel):
     detail_type: int
 
 
+class BlindStructureLevelUpdate(EbsBaseModel):
+    """V9.5 Phase 3: individual level CRUD (separate from BlindStructureUpdate)."""
+    level_no: Optional[int] = None
+    small_blind: Optional[int] = None
+    big_blind: Optional[int] = None
+    ante: Optional[int] = None
+    duration_minutes: Optional[int] = None
+    detail_type: Optional[int] = None
+
+
 class BlindStructureCreate(EbsBaseModel):
     name: str
     levels: list[BlindStructureLevelCreate]
