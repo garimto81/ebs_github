@@ -614,7 +614,7 @@ tier: generated
 | `docs/4. Operations/SSOT_Alignment_Progress.md` | SSOT Alignment Progress | conductor | internal | - |
 | `docs/4. Operations/Spec_Gap_Registry.md` | Spec Gap Registry — Drift 집계 + 해소 추적 | conductor | internal | - |
 | `docs/4. Operations/Spec_Gap_Triage.md` | Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜 | conductor | internal | - |
-| `docs/4. Operations/Task_Dispatch_Board.md` | Task Dispatch Board (V9.2 Day 0 Complete — V9.2 Cold Start Pending) | conductor | contract | - |
+| `docs/4. Operations/Task_Dispatch_Board.md` | Task Dispatch Board (V9.3 — Intent/Execution Separation + AI Autonomous Merge) | conductor | contract | - |
 | `docs/4. Operations/Task_Dispatch_Board/README.md` | Task Dispatch Board (분해 디렉토리) | conductor | contract | - |
 | `docs/4. Operations/V5_Migration_Plan.md` | V5 Migration Plan — v4.0/v4.1 → v5.0/v5.1 전환 로드맵 | conductor | internal | - |
 | `docs/4. Operations/V9_2_Gate_Design.md` | V9.2 Gate Design (3-gate enforcement scaffolding) | conductor | contract | - |
