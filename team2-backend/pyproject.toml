@@ -10,6 +10,15 @@ dependencies = [
     "pydantic-settings>=2.5.0",
     "python-jose[cryptography]>=3.3.0",
     "passlib[bcrypt]>=1.7.4",
+    # 2026-04-29 (PR #70) — bcrypt explicit pin <4.0 to fix passlib startup conflict.
+    # Background: passlib 1.7.x calls detect_wrap_bug() at backend init, which
+    # internally calls bcrypt.hashpw with a 255-byte test secret. bcrypt 4.x raises
+    # ValueError on >72 bytes (no silent truncate); bcrypt 3.x silently truncates.
+    # → bo container Restarting loop with `ValueError: password cannot be longer
+    #   than 72 bytes` (logs from 2026-04-29 user diagnosis).
+    # Pin until passlib upstream fix lands (last release 1.7.4 was 2020).
+    # Reference: https://github.com/pyca/bcrypt/issues/684
+    "bcrypt>=3.2.0,<4.0.0",
     "redis>=5.0.0",
     "httpx>=0.27.0",
     "websockets>=13.0",
