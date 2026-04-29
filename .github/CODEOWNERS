@@ -1,4 +1,4 @@
-# CODEOWNERS — PR 자동 리뷰어 배정 (v5.0 2026-04-21)
+# CODEOWNERS — PR 자동 리뷰어 배정 (v9.3 2026-04-29)
 # SSOT: docs/2. Development/2.5 Shared/team-policy.json teams[*].owns
 #
 # 규칙:
@@ -22,6 +22,7 @@
 /docs/images/                                   @garimto81
 /.claude/                                       @garimto81
 /.github/                                       @garimto81
+/.githooks/                                     @garimto81
 /tools/                                         @garimto81
 /integration-tests/                             @garimto81
 /CLAUDE.md                                      @garimto81
