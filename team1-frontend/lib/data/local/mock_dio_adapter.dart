@@ -20,7 +20,7 @@ class MockDioAdapter implements HttpClientAdapter {
 
   MockDioAdapter({this.delay = const Duration(milliseconds: 100)});
 
-  // -- Mutable copies so POST/PUT/DELETE can mutate mock state --
+  // -- Mutable copies so POST/put/delete can mutate mock state --
   final List<Map<String, dynamic>> _tables =
       MockData.tables.map((t) => t.toJson()).toList();
   final List<Map<String, dynamic>> _seats =
@@ -84,65 +84,67 @@ class MockDioAdapter implements HttpClientAdapter {
         : options.queryParameters.map((k, v) => MapEntry(k, v.toString()));
 
     // ---- Auth ----
-    if (p == '/Auth/Login' && method == 'POST') return _ok(_mockToken);
-    if (p == '/Auth/Refresh' && method == 'POST') return _ok(_mockToken);
-    if (p == '/Auth/Verify2FA' && method == 'POST') return _ok(_mockToken);
-    if (p == '/Auth/ForgotPassword' && method == 'POST') {
+    if (p == '/auth/login' && method == 'POST') return _ok(_mockToken);
+    if (p == '/auth/refresh' && method == 'POST') return _ok(_mockToken);
+    if (p == '/auth/verify-2fa' && method == 'POST') return _ok(_mockToken);
+    // SSOT (Auth_and_Session.md §8 Password Reset) 정합:
+    // /auth/password/reset/send | /auth/password/reset/verify | /auth/password/reset
+    if (p == '/auth/password/reset/send' && method == 'POST') {
       return _ok({'message': 'Password reset email sent.'});
     }
-    if (p == '/Auth/VerifyResetCode' && method == 'POST') {
+    if (p == '/auth/password/reset/verify' && method == 'POST') {
       return _ok({'resetToken': 'mock-reset-token'});
     }
-    if (p == '/Auth/ResetPassword' && method == 'POST') {
+    if (p == '/auth/password/reset' && method == 'POST') {
       return _ok({'message': 'Password updated.'});
     }
-    if (p == '/Auth/Google' && method == 'GET') {
+    if (p == '/auth/google' && method == 'GET') {
       return _ok({..._mockToken, 'user': MockData.sessionUser.toJson()});
     }
-    if (p == '/Auth/Google/Callback' && method == 'GET') {
+    if (p == '/auth/google/callback' && method == 'GET') {
       return _ok({..._mockToken, 'user': MockData.sessionUser.toJson()});
     }
-    if (p == '/Auth/Session' && method == 'GET') {
+    if (p == '/auth/session' && method == 'GET') {
       return _ok({
         'user': MockData.sessionUser.toJson(),
         'session': MockData.sessionPayload,
       });
     }
-    if (p == '/Auth/Session' && method == 'DELETE') {
+    if (p == '/auth/session' && method == 'DELETE') {
       return _ok({'message': 'Logged out successfully'});
     }
-    if (p == '/Auth/2FA/Setup' && method == 'POST') {
+    if (p == '/auth/2fa/setup' && method == 'POST') {
       return _ok({'secret': 'JBSWY3DPEHPK3PXP', 'qrCodeUrl': ''});
     }
-    if (p == '/Auth/2FA/Confirm' && method == 'POST') {
+    if (p == '/auth/2fa/confirm' && method == 'POST') {
       return _ok({'enabled': true});
     }
-    if (p == '/Auth/2FA/Disable' && method == 'POST') {
+    if (p == '/auth/2fa/disable' && method == 'POST') {
       return _ok({'disabled': true});
     }
 
     // ---- Competitions ----
-    if (p == '/Competitions' && method == 'GET') {
+    if (p == '/competitions' && method == 'GET') {
       return _ok(MockData.competitions.map((c) => c.toJson()).toList());
     }
 
     // ---- Series ----
-    if (p == '/Series' && method == 'GET') {
+    if (p == '/series' && method == 'GET') {
       return _ok(MockData.series.map((s) => s.toJson()).toList());
     }
-    final seriesMatch = _match(r'/Series/(\d+)', p);
+    final seriesMatch = _match(r'/series/(\d+)', p);
     if (seriesMatch != null && method == 'GET') {
       final id = int.parse(seriesMatch);
       final s = MockData.series.where((x) => x.seriesId == id).firstOrNull;
       return s != null ? _ok(s.toJson()) : _notFound();
     }
-    if (p == '/Series' && method == 'POST') {
+    if (p == '/series' && method == 'POST') {
       return _ok(MockData.series.first.toJson());
     }
 
     // ---- Events ----
     // GET /events/:id/flights
-    final eventFlightsMatch = _match(r'/Events/(\d+)/Flights', p);
+    final eventFlightsMatch = _match(r'/events/(\d+)/flights', p);
     if (eventFlightsMatch != null && method == 'GET') {
       final eventId = int.parse(eventFlightsMatch);
       final filtered = MockData.flights.where((f) => f.eventId == eventId);
@@ -152,13 +154,13 @@ class MockDioAdapter implements HttpClientAdapter {
       return _ok(MockData.flights.first.toJson());
     }
     // GET /events/:id
-    final eventMatch = _match(r'/Events/(\d+)', p);
+    final eventMatch = _match(r'/events/(\d+)', p);
     if (eventMatch != null && method == 'GET') {
       final id = int.parse(eventMatch);
       final e = MockData.events.where((x) => x.eventId == id).firstOrNull;
       return e != null ? _ok(e.toJson()) : _notFound();
     }
-    if (p == '/Events' && method == 'GET') {
+    if (p == '/events' && method == 'GET') {
       var filtered = MockData.events;
       final seriesId = queryParams['seriesId'];
       if (seriesId != null) {
@@ -174,28 +176,28 @@ class MockDioAdapter implements HttpClientAdapter {
 
     // ---- Flights ----
     // POST /flights/:id/rebalance
-    final rebalanceMatch = _match(r'/Flights/(\d+)/Rebalance', p);
+    final rebalanceMatch = _match(r'/flights/(\d+)/rebalance', p);
     if (rebalanceMatch != null && method == 'POST') {
       return _ok({'moved': 3});
     }
-    final flightMatch = _match(r'/Flights/(\d+)', p);
+    final flightMatch = _match(r'/flights/(\d+)', p);
     if (flightMatch != null && method == 'GET') {
       final id = int.parse(flightMatch);
       final f = MockData.flights.where((x) => x.eventFlightId == id).firstOrNull;
       return f != null ? _ok(f.toJson()) : _notFound();
     }
-    if (p == '/Flights' && method == 'GET') {
+    if (p == '/flights' && method == 'GET') {
       return _ok(MockData.flights.map((f) => f.toJson()).toList());
     }
 
     // ---- Tables ----
     // POST /tables/:id/launch-cc
-    final launchCcMatch = _match(r'/Tables/(\d+)/LaunchCc', p);
+    final launchCcMatch = _match(r'/tables/(\d+)/launch-cc', p);
     if (launchCcMatch != null && method == 'POST') {
       return _ok({'url': 'about:blank'});
     }
     // GET /tables/:id/seats & POST /tables/:id/seats
-    final seatsMatch = _match(r'/Tables/(\d+)/Seats', p);
+    final seatsMatch = _match(r'/tables/(\d+)/seats', p);
     if (seatsMatch != null) {
       final tid = int.parse(seatsMatch);
       if (method == 'GET') {
@@ -228,7 +230,7 @@ class MockDioAdapter implements HttpClientAdapter {
       }
     }
     // PUT /tables/:id
-    final tableUpdateMatch = _match(r'/Tables/(\d+)', p);
+    final tableUpdateMatch = _match(r'/tables/(\d+)', p);
     if (tableUpdateMatch != null && method == 'PUT') {
       final id = int.parse(tableUpdateMatch);
       final idx = _tables.indexWhere((t) => t['tableId'] == id);
@@ -248,7 +250,7 @@ class MockDioAdapter implements HttpClientAdapter {
       return t != null ? _ok(t) : _notFound();
     }
     // POST /tables
-    if (p == '/Tables' && method == 'POST') {
+    if (p == '/tables' && method == 'POST') {
       final body = _bodyMap(options);
       final newTable = <String, dynamic>{
         'tableId': _tables.length + 1,
@@ -277,7 +279,7 @@ class MockDioAdapter implements HttpClientAdapter {
       _tables.add(newTable);
       return _ok(newTable);
     }
-    if (p == '/Tables' && method == 'GET') {
+    if (p == '/tables' && method == 'GET') {
       final flightId = queryParams['flightId'];
       final filtered = flightId != null
           ? _tables.where((t) => t['eventFlightId'] == int.tryParse(flightId))
@@ -286,7 +288,7 @@ class MockDioAdapter implements HttpClientAdapter {
     }
 
     // ---- Players ----
-    if (p == '/Players/Search' && method == 'GET') {
+    if (p == '/players/search' && method == 'GET') {
       final q = (queryParams['q'] ?? '').toLowerCase();
       if (q.isEmpty) {
         return _ok(MockData.players.map((p) => p.toJson()).toList());
@@ -298,25 +300,25 @@ class MockDioAdapter implements HttpClientAdapter {
       );
       return _ok(filtered.map((p) => p.toJson()).toList());
     }
-    final playerMatch = _match(r'/Players/(\d+)', p);
+    final playerMatch = _match(r'/players/(\d+)', p);
     if (playerMatch != null && method == 'GET') {
       final id = int.parse(playerMatch);
       final pl = MockData.players.where((x) => x.playerId == id).firstOrNull;
       return pl != null ? _ok(pl.toJson()) : _notFound();
     }
-    if (p == '/Players' && method == 'GET') {
+    if (p == '/players' && method == 'GET') {
       return _ok(MockData.players.map((p) => p.toJson()).toList());
     }
 
     // ---- Users ----
     // POST /users/:id/force-logout
-    final forceLogoutMatch = _match(r'/Users/(\d+)/ForceLogout', p);
+    final forceLogoutMatch = _match(r'/users/(\d+)/force-logout', p);
     if (forceLogoutMatch != null && method == 'POST') {
       final id = int.parse(forceLogoutMatch);
       final u = _users.where((x) => x['userId'] == id).firstOrNull;
       return u != null ? _ok({'message': 'User logged out'}) : _notFound();
     }
-    final userMatch = _match(r'/Users/(\d+)', p);
+    final userMatch = _match(r'/users/(\d+)', p);
     if (userMatch != null && method == 'GET') {
       final id = int.parse(userMatch);
       final u = _users.where((x) => x['userId'] == id).firstOrNull;
@@ -341,10 +343,10 @@ class MockDioAdapter implements HttpClientAdapter {
       _users.removeAt(idx);
       return _ok(null);
     }
-    if (p == '/Users' && method == 'GET') {
+    if (p == '/users' && method == 'GET') {
       return _ok(_users);
     }
-    if (p == '/Users' && method == 'POST') {
+    if (p == '/users' && method == 'POST') {
       final body = _bodyMap(options);
       final newUser = <String, dynamic>{
         'userId': _users.length + 1,
@@ -362,15 +364,15 @@ class MockDioAdapter implements HttpClientAdapter {
     }
 
     // ---- Blind Structures ----
-    if (p == '/BlindStructures' && method == 'GET') {
+    if (p == '/blind-structures' && method == 'GET') {
       return _ok(MockData.blindStructures.map((b) => b.toJson()).toList());
     }
 
     // ---- Configs ----
-    if (p == '/Configs' && method == 'GET') {
+    if (p == '/configs' && method == 'GET') {
       return _ok(_configs);
     }
-    final configMatch = _match(r'/Configs/([a-zA-Z_-]+)', p);
+    final configMatch = _match(r'/configs/([a-zA-Z_-]+)', p);
     if (configMatch != null && method == 'GET') {
       return _ok(_configs[configMatch] ?? <String, dynamic>{});
     }
@@ -385,11 +387,11 @@ class MockDioAdapter implements HttpClientAdapter {
 
     // ---- Skins ----
     // POST /skins/upload
-    if (p == '/Skins/Upload' && method == 'POST') {
+    if (p == '/skins/upload' && method == 'POST') {
       return _ok(_skins[1]);
     }
     // PUT /skins/:id/metadata
-    final skinMetaMatch = _match(r'/Skins/(\d+)/Metadata', p);
+    final skinMetaMatch = _match(r'/skins/(\d+)/metadata', p);
     if (skinMetaMatch != null && method == 'PUT') {
       final id = int.parse(skinMetaMatch);
       final idx = _skins.indexWhere((s) => s['skinId'] == id);
@@ -400,7 +402,7 @@ class MockDioAdapter implements HttpClientAdapter {
       return _ok(_skins[idx]);
     }
     // POST /skins/:id/activate
-    final skinActivateMatch = _match(r'/Skins/(\d+)/Activate', p);
+    final skinActivateMatch = _match(r'/skins/(\d+)/activate', p);
     if (skinActivateMatch != null && method == 'POST') {
       final id = int.parse(skinActivateMatch);
       final idx = _skins.indexWhere((s) => s['skinId'] == id);
@@ -415,7 +417,7 @@ class MockDioAdapter implements HttpClientAdapter {
       return _ok(_skins[idx]);
     }
     // POST /skins/:id/deactivate
-    final skinDeactivateMatch = _match(r'/Skins/(\d+)/Deactivate', p);
+    final skinDeactivateMatch = _match(r'/skins/(\d+)/deactivate', p);
     if (skinDeactivateMatch != null && method == 'POST') {
       final id = int.parse(skinDeactivateMatch);
       final idx = _skins.indexWhere((s) => s['skinId'] == id);
@@ -424,39 +426,39 @@ class MockDioAdapter implements HttpClientAdapter {
       return _ok(_skins[idx]);
     }
     // GET /skins/:id
-    final skinMatch = _match(r'/Skins/(\d+)', p);
+    final skinMatch = _match(r'/skins/(\d+)', p);
     if (skinMatch != null && method == 'GET') {
       final id = int.parse(skinMatch);
       final s = _skins.where((x) => x['skinId'] == id).firstOrNull;
       return s != null ? _ok(s) : _notFound();
     }
-    if (p == '/Skins' && method == 'GET') {
+    if (p == '/skins' && method == 'GET') {
       return _ok(_skins);
     }
 
     // ---- Hands ----
     // GET /hands/:id/players
-    final handPlayersMatch = _match(r'/Hands/(\d+)/Players', p);
+    final handPlayersMatch = _match(r'/hands/(\d+)/players', p);
     if (handPlayersMatch != null && method == 'GET') {
       final id = int.parse(handPlayersMatch);
       final filtered = MockData.handPlayers.where((hp) => hp.handId == id);
       return _ok(filtered.map((hp) => hp.toJson()).toList());
     }
     // GET /hands/:id/actions
-    final handActionsMatch = _match(r'/Hands/(\d+)/Actions', p);
+    final handActionsMatch = _match(r'/hands/(\d+)/actions', p);
     if (handActionsMatch != null && method == 'GET') {
       final id = int.parse(handActionsMatch);
       final filtered = MockData.handActions.where((ha) => ha.handId == id);
       return _ok(filtered.map((ha) => ha.toJson()).toList());
     }
     // GET /hands/:id
-    final handMatch = _match(r'/Hands/(\d+)', p);
+    final handMatch = _match(r'/hands/(\d+)', p);
     if (handMatch != null && method == 'GET') {
       final id = int.parse(handMatch);
       final h = MockData.hands.where((x) => x.handId == id).firstOrNull;
       return h != null ? _ok(h.toJson()) : _notFound();
     }
-    if (p == '/Hands' && method == 'GET') {
+    if (p == '/hands' && method == 'GET') {
       final tableId = queryParams['tableId'];
       var filtered = MockData.hands;
       if (tableId != null) {
@@ -467,12 +469,12 @@ class MockDioAdapter implements HttpClientAdapter {
     }
 
     // ---- Audit Logs ----
-    if (p == '/AuditLogs' && method == 'GET') {
+    if (p == '/audit-logs' && method == 'GET') {
       return _ok(MockData.auditLogs.map((a) => a.toJson()).toList());
     }
 
     // ---- WS Replay (CCR-021 gap recovery) ----
-    if (p == '/Ws/Replay' && method == 'POST') {
+    if (p == '/ws/replay' && method == 'POST') {
       return _ok({'events': <dynamic>[]});
     }
 

@@ -61,7 +61,7 @@ class AuthInterceptor extends Interceptor {
     final status = err.response?.statusCode;
     final opts = err.requestOptions;
 
-    final isRefreshCall = opts.path.endsWith('/Auth/Refresh');
+    final isRefreshCall = opts.path.endsWith('/auth/refresh');
     final alreadyRetried = opts.extra['_authRetried'] == true;
 
     if (status != 401 || isRefreshCall || alreadyRetried) {

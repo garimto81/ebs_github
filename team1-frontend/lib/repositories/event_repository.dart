@@ -11,7 +11,7 @@ class EventRepository {
     Map<String, dynamic>? params,
   }) async {
     return _client.get<List<EbsEvent>>(
-      '/Events',
+      '/events',
       queryParameters: params,
       fromJson: (json) => (json as List)
           .map((e) => EbsEvent.fromJson(e as Map<String, dynamic>))
@@ -21,14 +21,14 @@ class EventRepository {
 
   Future<EbsEvent> getEvent(int id) async {
     return _client.get<EbsEvent>(
-      '/Events/$id',
+      '/events/$id',
       fromJson: (json) => EbsEvent.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<EbsEvent> createEvent(Map<String, dynamic> data) async {
     return _client.post<EbsEvent>(
-      '/Events',
+      '/events',
       data: data,
       fromJson: (json) => EbsEvent.fromJson(json as Map<String, dynamic>),
     );
@@ -36,14 +36,14 @@ class EventRepository {
 
   Future<EbsEvent> updateEvent(int id, Map<String, dynamic> data) async {
     return _client.put<EbsEvent>(
-      '/Events/$id',
+      '/events/$id',
       data: data,
       fromJson: (json) => EbsEvent.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<void> deleteEvent(int id) async {
-    await _client.delete<dynamic>('/Events/$id');
+    await _client.delete<dynamic>('/events/$id');
   }
 }
 

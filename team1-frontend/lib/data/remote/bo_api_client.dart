@@ -5,6 +5,8 @@
 // - setTokenRefreshCallback / setAuthFailureHandler 가 onRefresh/onFailure 양쪽 wiring
 // - 인터셉터 부착 시점을 bind() 메서드로 지연 → 토큰 callback wiring 후 추가
 // - _IdempotencyInterceptor 는 그대로 유지
+// - SSOT 정합 (Backend_HTTP.md §1.1): /auth/* 는 root, 나머지는 /api/v1/.
+//   path prefix 로 dio 자동 라우팅 (_apiDio: /api/v1, _authDio: root).
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,19 +23,33 @@ import 'auth_interceptor.dart';
 // ---------------------------------------------------------------------------
 
 class BoApiClient {
-  BoApiClient({required String baseUrl})
-      : _dio = Dio(BaseOptions(
-          baseUrl: baseUrl,
+  BoApiClient({required String apiBaseUrl, required String authBaseUrl})
+      : _apiDio = Dio(BaseOptions(
+          baseUrl: apiBaseUrl,
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 15),
+        )),
+        _authDio = Dio(BaseOptions(
+          baseUrl: authBaseUrl,
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 15),
         )) {
-    _dio.interceptors.add(_IdempotencyInterceptor());
+    _apiDio.interceptors.add(_IdempotencyInterceptor());
+    _authDio.interceptors.add(_IdempotencyInterceptor());
   }
 
-  final Dio _dio;
-  AuthInterceptor? _authInterceptor;
+  final Dio _apiDio;
+  final Dio _authDio;
+  AuthInterceptor? _apiAuthInterceptor;
+  AuthInterceptor? _authAuthInterceptor;
 
-  Dio get raw => _dio;
+  /// SSOT 정합 라우팅: /auth/* → authDio (root), 나머지 → apiDio (/api/v1).
+  Dio _dioFor(String path) =>
+      path.startsWith('/auth/') || path == '/auth' ? _authDio : _apiDio;
+
+  /// 테스트/mock 용. 두 dio 모두 같은 mock adapter 가 필요할 수 있어 두 instance 노출.
+  Dio get raw => _apiDio;
+  Dio get rawAuth => _authDio;
 
   // -- Token state --------------------------------------------------------
 
@@ -45,23 +61,36 @@ class BoApiClient {
 
   /// AuthNotifier.refreshAccessToken 을 wiring 한다.
   /// onAuthFailure 는 보통 AuthNotifier.logout() 트리거.
+  /// 두 dio (api + auth) 에 모두 AuthInterceptor 부착 (Bearer 헤더 + 401 retry).
   void bindAuth({
     required Future<String?> Function() onRefresh,
     required void Function() onAuthFailure,
     AppLogger? logger,
   }) {
-    if (_authInterceptor != null) {
-      _dio.interceptors.remove(_authInterceptor);
+    if (_apiAuthInterceptor != null) {
+      _apiDio.interceptors.remove(_apiAuthInterceptor);
     }
-    _authInterceptor = AuthInterceptor(
-      dio: _dio,
+    if (_authAuthInterceptor != null) {
+      _authDio.interceptors.remove(_authAuthInterceptor);
+    }
+    _apiAuthInterceptor = AuthInterceptor(
+      dio: _apiDio,
       getAccessToken: () => _accessToken,
       setAccessToken: (t) => _accessToken = t,
       refreshToken: onRefresh,
       onAuthFailure: onAuthFailure,
       logger: logger,
     );
-    _dio.interceptors.add(_authInterceptor!);
+    _authAuthInterceptor = AuthInterceptor(
+      dio: _authDio,
+      getAccessToken: () => _accessToken,
+      setAccessToken: (t) => _accessToken = t,
+      refreshToken: onRefresh,
+      onAuthFailure: onAuthFailure,
+      logger: logger,
+    );
+    _apiDio.interceptors.add(_apiAuthInterceptor!);
+    _authDio.interceptors.add(_authAuthInterceptor!);
   }
 
   // -- Typed helpers ------------------------------------------------------
@@ -70,7 +99,7 @@ class BoApiClient {
       {Map<String, dynamic>? queryParameters,
       T Function(dynamic json)? fromJson}) async {
     final r = await _request(
-      () => _dio.get<dynamic>(path, queryParameters: queryParameters),
+      () => _dioFor(path).get<dynamic>(path, queryParameters: queryParameters),
     );
     return _parse<T>(r.data, fromJson);
   }
@@ -80,7 +109,7 @@ class BoApiClient {
       Map<String, dynamic>? queryParameters,
       T Function(dynamic json)? fromJson}) async {
     final r = await _request(
-      () => _dio.post<dynamic>(path,
+      () => _dioFor(path).post<dynamic>(path,
           data: data, queryParameters: queryParameters),
     );
     return _parse<T>(r.data, fromJson);
@@ -88,18 +117,20 @@ class BoApiClient {
 
   Future<T> put<T>(String path,
       {dynamic data, T Function(dynamic json)? fromJson}) async {
-    final r = await _request(() => _dio.put<dynamic>(path, data: data));
+    final r =
+        await _request(() => _dioFor(path).put<dynamic>(path, data: data));
     return _parse<T>(r.data, fromJson);
   }
 
   Future<T> patch<T>(String path,
       {dynamic data, T Function(dynamic json)? fromJson}) async {
-    final r = await _request(() => _dio.patch<dynamic>(path, data: data));
+    final r =
+        await _request(() => _dioFor(path).patch<dynamic>(path, data: data));
     return _parse<T>(r.data, fromJson);
   }
 
   Future<T> delete<T>(String path, {T Function(dynamic json)? fromJson}) async {
-    final r = await _request(() => _dio.delete<dynamic>(path));
+    final r = await _request(() => _dioFor(path).delete<dynamic>(path));
     return _parse<T>(r.data, fromJson);
   }
 
@@ -110,7 +141,7 @@ class BoApiClient {
     T Function(dynamic json)? fromJson,
   }) async {
     final r = await _request(
-      () => _dio.post<dynamic>(
+      () => _dioFor(path).post<dynamic>(
         path,
         data: formData,
         onSendProgress: onSendProgress,
@@ -190,9 +221,14 @@ final appConfigProvider = Provider<AppConfig>((ref) {
 
 final boApiClientProvider = Provider<BoApiClient>((ref) {
   final config = ref.watch(appConfigProvider);
-  final client = BoApiClient(baseUrl: config.apiBaseUrl);
+  final client = BoApiClient(
+    apiBaseUrl: config.apiBaseUrl,
+    authBaseUrl: config.authBaseUrl,
+  );
   if (config.useMock) {
-    client.raw.httpClientAdapter = MockDioAdapter();
+    final adapter = MockDioAdapter();
+    client.raw.httpClientAdapter = adapter;
+    client.rawAuth.httpClientAdapter = adapter;
   }
   return client;
 });

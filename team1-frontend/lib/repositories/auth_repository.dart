@@ -53,7 +53,7 @@ class AuthRepository {
 
   Future<TokenResponse> login(String email, String password) async {
     return _client.post<TokenResponse>(
-      '/Auth/Login',
+      '/auth/login',
       data: {'email': email, 'password': password},
       fromJson: (json) => TokenResponse.fromJson(json as Map<String, dynamic>),
     );
@@ -61,7 +61,7 @@ class AuthRepository {
 
   Future<TokenResponse> verify2fa(String tempToken, String code) async {
     return _client.post<TokenResponse>(
-      '/Auth/Verify2FA',
+      '/auth/verify-2fa',
       data: {'tempToken': tempToken, 'totpCode': code},
       fromJson: (json) => TokenResponse.fromJson(json as Map<String, dynamic>),
     );
@@ -69,7 +69,7 @@ class AuthRepository {
 
   Future<TokenResponse> refreshToken({String? refreshToken}) async {
     return _client.post<TokenResponse>(
-      '/Auth/Refresh',
+      '/auth/refresh',
       data: refreshToken != null ? {'refreshToken': refreshToken} : null,
       fromJson: (json) => TokenResponse.fromJson(json as Map<String, dynamic>),
     );
@@ -77,19 +77,19 @@ class AuthRepository {
 
   Future<SessionResponse> getSession() async {
     return _client.get<SessionResponse>(
-      '/Auth/Session',
+      '/auth/session',
       fromJson: (json) =>
           SessionResponse.fromJson(json as Map<String, dynamic>),
     );
   }
 
   Future<void> logout() async {
-    await _client.delete<dynamic>('/Auth/Session');
+    await _client.delete<dynamic>('/auth/session');
   }
 
   Future<Map<String, dynamic>> forgotPassword(String email) async {
     return _client.post<Map<String, dynamic>>(
-      '/Auth/ForgotPassword',
+      '/auth/password/reset/send',
       data: {'email': email},
       fromJson: (json) => json as Map<String, dynamic>,
     );

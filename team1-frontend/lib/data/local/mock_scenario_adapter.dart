@@ -5,7 +5,7 @@
 // 사용 예 (테스트/위젯테스트):
 //   final scenario = MockScenarioAdapter();
 //   client.raw.httpClientAdapter = scenario;
-//   scenario.queue(MockScenario.unauthorized(path: '/Auth/Session'));
+//   scenario.queue(MockScenario.unauthorized(path: '/auth/session'));
 //   scenario.setGlobalLatency(const Duration(seconds: 1));
 //
 // 매치되지 않은 요청은 내부의 [MockDioAdapter] 로 위임되어 기존 fixture 응답이
@@ -29,7 +29,7 @@ class MockScenario {
   /// HTTP 메서드 (대문자, 예: "POST"). null 이면 모든 메서드 매칭.
   final String? method;
 
-  /// path 매칭 패턴 (정규식). 예: r'/Auth/Login', r'/Tables/\d+'.
+  /// path 매칭 패턴 (정규식). 예: r'/auth/login', r'/tables/\d+'.
   final RegExp pathPattern;
 
   final MockScenarioOutcome outcome;
