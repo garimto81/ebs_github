@@ -9,7 +9,13 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/graphic_editor/screens/ge_detail_screen.dart';
 import '../../features/graphic_editor/screens/ge_hub_screen.dart';
 import '../../features/lobby/screens/lobby_dashboard_screen.dart';
+import '../../features/lobby/screens/lobby_events_screen.dart';
+import '../../features/lobby/screens/lobby_flights_screen.dart';
+import '../../features/lobby/screens/lobby_players_screen.dart';
+import '../../features/lobby/screens/lobby_tables_screen.dart';
+import '../../features/lobby/screens/series_screen.dart';
 import '../../features/lobby/screens/table_detail_screen.dart';
+import '../../features/lobby/widgets/lobby_shell.dart';
 import '../../features/players/screens/players_screen.dart';
 import '../../features/reports/screens/reports_screen.dart';
 import '../../features/staff/screens/staff_list_screen.dart';
@@ -59,6 +65,40 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/forgot-password',
         builder: (_, __) => const ForgotPasswordScreen(),
+      ),
+      // ── B-090 Phase 2: Lobby drilldown (TopBar + SideRail + Breadcrumb) ──
+      ShellRoute(
+        builder: (_, __, child) => LobbyShell(child: child),
+        routes: [
+          GoRoute(
+            path: '/lobby/series',
+            builder: (_, __) => const SeriesScreen(),
+          ),
+          GoRoute(
+            path: '/lobby/events/:seriesId',
+            builder: (_, state) => LobbyEventsScreen(
+              seriesId: int.parse(state.pathParameters['seriesId']!),
+            ),
+          ),
+          GoRoute(
+            path: '/lobby/flights/:eventId',
+            builder: (_, state) => LobbyFlightsScreen(
+              eventId: int.parse(state.pathParameters['eventId']!),
+            ),
+          ),
+          GoRoute(
+            path: '/lobby/flight/:flightId/tables',
+            builder: (_, state) => LobbyTablesScreen(
+              flightId: int.parse(state.pathParameters['flightId']!),
+            ),
+          ),
+          GoRoute(
+            path: '/lobby/flight/:flightId/players',
+            builder: (_, state) => LobbyPlayersScreen(
+              flightId: int.parse(state.pathParameters['flightId']!),
+            ),
+          ),
+        ],
       ),
       ShellRoute(
         builder: (_, __, child) => _AppShell(child: child),
