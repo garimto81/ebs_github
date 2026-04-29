@@ -1940,7 +1940,7 @@ CSV 컬럼: `id, user_id, entity_type, entity_id, action, detail, ip_address, cr
 
 | 항목 | 값 |
 |------|-----|
-| Method / Path | `GET /api/v1/auth/me` |
+| Method / Path | `GET /auth/me` |
 | Auth | 필수 (JWT Bearer) |
 | RBAC | 모든 인증 사용자 (Admin/Operator/Viewer) |
 | Response | `{ user_id, email, role, display_name, is_active, assigned_tables? }` |
@@ -1951,7 +1951,7 @@ JWT decode → user 레코드 조회. 근거: SG-008-b4. WSOP LIVE `Staff App §
 
 | 항목 | 값 |
 |------|-----|
-| Method / Path | `POST /api/v1/auth/logout` |
+| Method / Path | `POST /auth/logout` |
 | Auth | 필수 |
 | RBAC | 모든 인증 사용자 |
 | Body | 없음 (Bearer token 에서 jti 추출) |

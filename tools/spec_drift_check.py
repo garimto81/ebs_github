@@ -124,6 +124,23 @@ def detect_api() -> ContractReport:
     spec_pat_table = re.compile(
         r"\|\s*(GET|POST|PUT|PATCH|DELETE)\s*\|\s*`(/[A-Za-z0-9_\-/\{\}:\.]+)`"
     )
+    # V9.5 P24: deprecated marker 가 같은 line 에 있는 endpoint 는 spec_set 에서 제외.
+    # marker 패턴: "삭제됨", "제거되었다", "폐기", "DEPRECATED", "옵션 X (삭제/제거"
+    deprecated_pat = re.compile(
+        r"(삭제됨|제거되었[다음]|폐기|DEPRECATED|deprecated"
+        r"|옵션\s*\d+\s*\([^)]*(?:삭제|제거)"  # "옵션 1 (삭제, ...)" / "옵션 3 (삭제 Phase..."
+        r")"
+    )
+
+    def _is_deprecated_line(text: str, match_start: int) -> bool:
+        # match 위치를 포함하는 line 추출
+        line_start = text.rfind("\n", 0, match_start) + 1
+        line_end = text.find("\n", match_start)
+        if line_end < 0:
+            line_end = len(text)
+        line = text[line_start:line_end]
+        return bool(deprecated_pat.search(line))
+
     spec_set_all: set[tuple[str, str]] = set()
     for m in spec_pat.finditer(spec_text):
         method = m.group(1).upper()
@@ -131,11 +148,15 @@ def detect_api() -> ContractReport:
         # 잡음: / 로만 끝나는 경로 또는 너무 짧은 경로
         if len(raw_path) < 2:
             continue
+        if _is_deprecated_line(spec_text, m.start()):
+            continue
         spec_set_all.add((method, _normalize_path(raw_path)))
     for m in spec_pat_table.finditer(spec_text):
         method = m.group(1).upper()
         raw_path = m.group(2)
         if len(raw_path) < 2:
+            continue
+        if _is_deprecated_line(spec_text, m.start()):
             continue
         spec_set_all.add((method, _normalize_path(raw_path)))
 
