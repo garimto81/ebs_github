@@ -1,0 +1,865 @@
+{
+  "bo_paths_count": 127,
+  "lobby_calls_count": 53,
+  "matched_count": 11,
+  "drift_lobby_unknown_count": 42,
+  "drift_bo_unused_count": 117,
+  "matched": [
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/auth_repository.dart",
+        "line": 55,
+        "method": "POST",
+        "path": "/Auth/Login"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/auth/login"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/auth_repository.dart",
+        "line": 71,
+        "method": "POST",
+        "path": "/Auth/Refresh"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/auth/refresh"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/auth_repository.dart",
+        "line": 79,
+        "method": "GET",
+        "path": "/Auth/Session"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/auth/session"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/competition_repository.dart",
+        "line": 30,
+        "method": "POST",
+        "path": "/Competitions"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/competitions"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/event_repository.dart",
+        "line": 30,
+        "method": "POST",
+        "path": "/Events"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/events"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/flight_repository.dart",
+        "line": 39,
+        "method": "POST",
+        "path": "/Flights"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/flights"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/series_repository.dart",
+        "line": 30,
+        "method": "POST",
+        "path": "/Series"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/series"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/series_repository.dart",
+        "line": 64,
+        "method": "POST",
+        "path": "/Competitions"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/competitions"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/skin_repository.dart",
+        "line": 35,
+        "method": "POST",
+        "path": "/Skins"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/skins"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/staff_repository.dart",
+        "line": 30,
+        "method": "POST",
+        "path": "/Users"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/users"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/table_repository.dart",
+        "line": 37,
+        "method": "POST",
+        "path": "/Tables"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/tables"
+      }
+    }
+  ],
+  "drift_lobby_unknown": [
+    {
+      "file": "team1-frontend/lib/repositories/auth_repository.dart",
+      "line": 63,
+      "method": "POST",
+      "path": "/Auth/Verify2FA"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/auth_repository.dart",
+      "line": 87,
+      "method": "DELETE",
+      "path": "/Auth/Session"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/competition_repository.dart",
+      "line": 23,
+      "method": "GET",
+      "path": "/Competitions/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/competition_repository.dart",
+      "line": 41,
+      "method": "PUT",
+      "path": "/Competitions/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/competition_repository.dart",
+      "line": 49,
+      "method": "DELETE",
+      "path": "/Competitions/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/event_repository.dart",
+      "line": 23,
+      "method": "GET",
+      "path": "/Events/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/event_repository.dart",
+      "line": 38,
+      "method": "PUT",
+      "path": "/Events/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/event_repository.dart",
+      "line": 46,
+      "method": "DELETE",
+      "path": "/Events/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/flight_repository.dart",
+      "line": 32,
+      "method": "GET",
+      "path": "/Flights/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/flight_repository.dart",
+      "line": 47,
+      "method": "PUT",
+      "path": "/Flights/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/hand_repository.dart",
+      "line": 23,
+      "method": "GET",
+      "path": "/Hands/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
+      "line": 49,
+      "method": "GET",
+      "path": "/Series/$seriesId/PayoutStructures/$psId"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
+      "line": 60,
+      "method": "POST",
+      "path": "/Series/$seriesId/PayoutStructures"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
+      "line": 73,
+      "method": "PUT",
+      "path": "/Series/$seriesId/PayoutStructures/$psId"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
+      "line": 82,
+      "method": "DELETE",
+      "path": "/Series/$seriesId/PayoutStructures/$psId"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/player_repository.dart",
+      "line": 23,
+      "method": "GET",
+      "path": "/Players/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/series_repository.dart",
+      "line": 23,
+      "method": "GET",
+      "path": "/Series/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/series_repository.dart",
+      "line": 38,
+      "method": "PUT",
+      "path": "/Series/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/series_repository.dart",
+      "line": 46,
+      "method": "DELETE",
+      "path": "/Series/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/series_repository.dart",
+      "line": 73,
+      "method": "PUT",
+      "path": "/Competitions/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/series_repository.dart",
+      "line": 81,
+      "method": "DELETE",
+      "path": "/Competitions/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/settings_repository.dart",
+      "line": 55,
+      "method": "GET",
+      "path": "/Series/$seriesId/BlindStructures/$bsId"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/settings_repository.dart",
+      "line": 66,
+      "method": "POST",
+      "path": "/Series/$seriesId/BlindStructures"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/settings_repository.dart",
+      "line": 79,
+      "method": "PUT",
+      "path": "/Series/$seriesId/BlindStructures/$bsId"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/settings_repository.dart",
+      "line": 88,
+      "method": "DELETE",
+      "path": "/Series/$seriesId/BlindStructures/$bsId"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/settings_repository.dart",
+      "line": 113,
+      "method": "POST",
+      "path": "/BlindStructures/$blindStructureId/Levels"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/settings_repository.dart",
+      "line": 126,
+      "method": "PUT",
+      "path": "/BlindStructures/$blindStructureId/Levels/$levelId"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/settings_repository.dart",
+      "line": 138,
+      "method": "DELETE",
+      "path": "/BlindStructures/$blindStructureId/Levels/$levelId"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/skin_repository.dart",
+      "line": 21,
+      "method": "GET",
+      "path": "/Skins/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/skin_repository.dart",
+      "line": 76,
+      "method": "POST",
+      "path": "/Skins/$id/Activate"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/skin_repository.dart",
+      "line": 83,
+      "method": "POST",
+      "path": "/Skins/$id/Deactivate"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/skin_repository.dart",
+      "line": 90,
+      "method": "DELETE",
+      "path": "/Skins/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/staff_repository.dart",
+      "line": 23,
+      "method": "GET",
+      "path": "/Users/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/staff_repository.dart",
+      "line": 38,
+      "method": "PUT",
+      "path": "/Users/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/staff_repository.dart",
+      "line": 46,
+      "method": "DELETE",
+      "path": "/Users/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/staff_repository.dart",
+      "line": 50,
+      "method": "POST",
+      "path": "/Users/$id/ForceLogout"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/table_repository.dart",
+      "line": 30,
+      "method": "GET",
+      "path": "/Tables/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/table_repository.dart",
+      "line": 45,
+      "method": "PUT",
+      "path": "/Tables/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/table_repository.dart",
+      "line": 53,
+      "method": "DELETE",
+      "path": "/Tables/$id"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/table_repository.dart",
+      "line": 86,
+      "method": "POST",
+      "path": "/Tables/$tableId/Seats"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/table_repository.dart",
+      "line": 98,
+      "method": "PUT",
+      "path": "/Tables/$tableId/Seats/$seatNo"
+    },
+    {
+      "file": "team1-frontend/lib/repositories/table_repository.dart",
+      "line": 106,
+      "method": "DELETE",
+      "path": "/Tables/$tableId/Seats/$seatNo"
+    }
+  ],
+  "drift_bo_unused": [
+    {
+      "method": "POST",
+      "path": "/auth/logout"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/verify-2fa"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/2fa/setup"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/2fa/disable"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/password/reset/send"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/password/reset/verify"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/password/reset"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/google"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/google/callback"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/series"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/series/{series_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/series/{series_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/series/{series_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/series/{series_id}/events"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/series/{series_id}/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/events/{event_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/events/{event_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/events/{event_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/events/{event_id}/flights"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/events/{event_id}/flights"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{flight_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{flight_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/flights/{flight_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{flight_id}/complete"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{flight_id}/cancel"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{flight_id}/clock"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{flight_id}/clock"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{flight_id}/clock/start"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{flight_id}/clock/pause"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{flight_id}/clock/resume"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{flight_id}/clock/restart"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{flight_id}/clock/detail"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{flight_id}/clock/reload-page"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{flight_id}/clock/adjust-stack"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tables/rebalance"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{flight_id}/tables"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{flight_id}/tables"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/{table_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/tables/{table_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/tables/{table_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/{table_id}/status"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/{table_id}/seats"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/tables/{table_id}/seats/{seat_no}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/players"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/players"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/players/search"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/players/{player_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/players/{player_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/players/{player_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/{table_id}/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sync/status"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sync/wsop-live/status"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sync/wsop-live"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sync/conflicts"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sync/trigger/{source}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sync/mock/seed"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sync/mock/reset"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit-logs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit-logs/download"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit-events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/users"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/users/{user_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/users/{user_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/users/{user_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/configs/{section}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/configs/{section}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/competitions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/competitions/{competition_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/competitions/{competition_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/competitions/{competition_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/hands"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/hands/{hand_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/hands/{hand_id}/players"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/hands/{hand_id}/actions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/blind-structures"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/blind-structures"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/blind-structures/{bs_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/blind-structures/{bs_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/blind-structures/{bs_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{flight_id}/blind-structure"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{flight_id}/blind-structure"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/skins"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/skins/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/skins/{skin_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/skins/{skin_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/skins/{skin_id}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/skins/{skin_id}/metadata"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/skins/{skin_id}/activate"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/skins/{skin_id}/activate"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/payout-structures"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/payout-structures"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/payout-structures/{ps_id}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/payout-structures/{ps_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/payout-structures/{ps_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/dashboard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/table-activity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/player-stats"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/hand-distribution"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/rfid-health"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/operator-activity"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/decks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/decks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/decks/{deck_id}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/decks/{deck_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/decks/{deck_id}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/decks/{deck_id}/cards"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/decks/import"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/decks/{deck_id}/cards/{card_code}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/settings"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/settings"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/settings"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/settings/resolved"
+    },
+    {
+      "method": "GET",
+      "path": "/health"
+    }
+  ]
+}
