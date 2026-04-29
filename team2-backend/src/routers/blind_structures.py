@@ -10,7 +10,9 @@ from src.models.schemas import (
     ApiResponse,
     BlindStructureApply,
     BlindStructureCreate,
+    BlindStructureLevelCreate,
     BlindStructureLevelResponse,
+    BlindStructureLevelUpdate,
     BlindStructureResponse,
     BlindStructureUpdate,
 )
@@ -18,12 +20,16 @@ from src.models.user import User
 from src.services.blind_structure_service import (
     apply_blind_structure,
     create_blind_structure,
+    create_blind_structure_level,
     delete_blind_structure,
+    delete_blind_structure_level,
     get_blind_structure,
+    get_blind_structure_level,
     get_blind_structure_levels,
     get_flight_blind_structure,
     list_blind_structures,
     update_blind_structure,
+    update_blind_structure_level,
 )
 
 router = APIRouter(prefix="/api/v1", tags=["blind-structures"])
@@ -123,6 +129,79 @@ def api_delete_blind_structure(
     db: Session = Depends(get_db),
 ):
     delete_blind_structure(bs_id, db)
+    return ApiResponse(data={"deleted": True})
+
+
+# ── BlindStructure Level CRUD (V9.5 Phase 3) ──────
+
+
+@router.get("/blind-structures/{bs_id}/levels")
+def api_list_blind_structure_levels(
+    bs_id: int,
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """V9.5 Phase 3: list all levels of a blind structure."""
+    _ = get_blind_structure(bs_id, db)  # validate parent
+    levels = get_blind_structure_levels(bs_id, db)
+    return ApiResponse(
+        data=[BlindStructureLevelResponse.model_validate(lv, from_attributes=True) for lv in levels]
+    )
+
+
+@router.post("/blind-structures/{bs_id}/levels", status_code=201)
+def api_create_blind_structure_level(
+    bs_id: int,
+    body: BlindStructureLevelCreate,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """V9.5 Phase 3: append single level to existing blind structure."""
+    lv = create_blind_structure_level(bs_id, body, db)
+    return ApiResponse(
+        data=BlindStructureLevelResponse.model_validate(lv, from_attributes=True)
+    )
+
+
+@router.put("/blind-structures/{bs_id}/levels/{level_id}")
+def api_update_blind_structure_level(
+    bs_id: int,
+    level_id: int,
+    body: BlindStructureLevelUpdate,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """V9.5 Phase 3: update single level."""
+    # Validate level belongs to bs (sanity check)
+    lv = get_blind_structure_level(level_id, db)
+    if lv.blind_structure_id != bs_id:
+        from fastapi import HTTPException, status
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "RESOURCE_NOT_FOUND", "message": f"Level {level_id} not in BlindStructure {bs_id}"},
+        )
+    updated = update_blind_structure_level(level_id, body, db)
+    return ApiResponse(
+        data=BlindStructureLevelResponse.model_validate(updated, from_attributes=True)
+    )
+
+
+@router.delete("/blind-structures/{bs_id}/levels/{level_id}", status_code=200)
+def api_delete_blind_structure_level(
+    bs_id: int,
+    level_id: int,
+    _user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    """V9.5 Phase 3: delete single level."""
+    lv = get_blind_structure_level(level_id, db)
+    if lv.blind_structure_id != bs_id:
+        from fastapi import HTTPException, status
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "RESOURCE_NOT_FOUND", "message": f"Level {level_id} not in BlindStructure {bs_id}"},
+        )
+    delete_blind_structure_level(level_id, db)
     return ApiResponse(data={"deleted": True})
 
 

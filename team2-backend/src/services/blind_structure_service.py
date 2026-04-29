@@ -46,6 +46,56 @@ def get_blind_structure_levels(bs_id: int, db: Session) -> list[BlindStructureLe
     ).all()
 
 
+def get_blind_structure_level(level_id: int, db: Session) -> BlindStructureLevel:
+    """V9.5 Phase 3: single level lookup."""
+    lv = db.exec(
+        select(BlindStructureLevel).where(BlindStructureLevel.id == level_id)
+    ).first()
+    if lv is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "RESOURCE_NOT_FOUND", "message": f"BlindStructureLevel {level_id} not found"},
+        )
+    return lv
+
+
+def create_blind_structure_level(
+    bs_id: int, data, db: Session
+) -> BlindStructureLevel:
+    """V9.5 Phase 3: append single level to existing structure."""
+    # Validate parent
+    _ = get_blind_structure(bs_id, db)
+    level = BlindStructureLevel(
+        blind_structure_id=bs_id,
+        **data.model_dump(),
+    )
+    db.add(level)
+    db.commit()
+    db.refresh(level)
+    return level
+
+
+def update_blind_structure_level(
+    level_id: int, data, db: Session
+) -> BlindStructureLevel:
+    """V9.5 Phase 3: update single level fields."""
+    lv = get_blind_structure_level(level_id, db)
+    payload = data.model_dump(exclude_unset=True)
+    for key, value in payload.items():
+        setattr(lv, key, value)
+    db.add(lv)
+    db.commit()
+    db.refresh(lv)
+    return lv
+
+
+def delete_blind_structure_level(level_id: int, db: Session) -> None:
+    """V9.5 Phase 3: delete single level."""
+    lv = get_blind_structure_level(level_id, db)
+    db.delete(lv)
+    db.commit()
+
+
 def create_blind_structure(data: BlindStructureCreate, db: Session) -> BlindStructure:
     bs = BlindStructure(name=data.name)
     db.add(bs)
