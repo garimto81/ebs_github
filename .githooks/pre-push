@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# V9.2 pre-push allowlist enforcement.
+#
+# 활성화 (선택, 기본 inactive):
+#   git config core.hooksPath .githooks
+#
+# 차단 규칙:
+#   - main 으로의 직접 push: 모든 사용자 차단 (PR 경로 강제)
+#   - 그 외 work/*, infra/*, feat/* 브랜치: 허용
+#
+# 우회 (긴급용):
+#   git push --no-verify ...   <- 사용 자제
+#
+# Read remote ref / local ref / remote sha / local sha from stdin
+set -euo pipefail
+
+remote="$1"
+url="$2"
+
+protected_branch="main"
+exit_code=0
+
+while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/"$protected_branch")
+      echo "[pre-push] BLOCK: direct push to '$protected_branch' is forbidden by V9.2 policy."
+      echo "           Use a PR from a work/* or infra/* branch instead."
+      exit_code=1
+      ;;
+    refs/heads/work/*|refs/heads/infra/*|refs/heads/feat/*|refs/heads/fix/*|refs/heads/chore/*)
+      :
+      ;;
+    refs/heads/*)
+      echo "[pre-push] WARN: pushing branch '$remote_ref' outside the V9.2 allowlist (work/, infra/, feat/, fix/, chore/)."
+      echo "           Push will proceed; consider renaming for policy clarity."
+      ;;
+  esac
+done
+
+exit "$exit_code"
