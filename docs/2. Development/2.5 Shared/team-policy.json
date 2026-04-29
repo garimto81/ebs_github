@@ -1,21 +1,57 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": "9.0",
-  "previous_version": "7.1",
-  "description": "EBS 5팀 멀티 세션 V9.0 Hub-and-Spoke. 모든 main 머지 권한은 Conductor 독점. 팀 세션은 PR 보고까지만. 역사: docs/4. Operations/Reports/ 참조.",
+  "version": "9.3",
+  "previous_version": "9.0",
+  "description": "EBS 5팀 멀티 세션 V9.3 Intent-Execution Separation. 사용자 = 의도/전체 개념 영역. AI = 실행 (코드/PR/머지) 영역. AI 가 자체 작성한 PR 은 자율 판단 후 머지 가능. 사용자에게 실행 영역 confirm 요구 금지.",
   "governance_model": {
-    "name": "conductor_centralized_review",
-    "version": "v9.0",
-    "previous_name": "free_write_with_decision_owner_or_conductor_full_authority",
-    "previous_version": "v7.1",
-    "rationale": "v9.0 Hub-and-Spoke (2026-04-29 사용자 결정): V8.0 완전 자율 오케스트레이션이 Git 병합 큐의 물리적 한계로 PR 적체 + 교착 유발. 인간 개발팀 방식 = 중앙 통제형 위임 모델 채택. 모든 merge / conflict 해결 권한은 Conductor 독점. v7.1 Mode A/B 분기와 v8.0 governance freeze 는 V9.0 으로 흡수 (SUPERSEDED).",
+    "name": "intent_execution_separation_with_ai_autonomous_merge",
+    "version": "v9.3",
+    "previous_name": "conductor_centralized_review",
+    "previous_version": "v9.0",
+    "rationale": "v9.3 (2026-04-29 사용자 통찰): 비전문 사용자에게 PR merge 같은 실행 영역 confirm 요구 자체가 system 실패. 사용자는 의도/전체 개념만 제공, AI 가 코드/PR/머지까지 자율 판단. v9.0/v9.2 의 Conductor 단일 머지권은 'AI 가 자체 작성한 PR 의 자율 머지' 로 확장. 충돌·의미 모호 시만 사용자 의도 영역 질문.",
+    "intent_execution_boundary": {
+      "_comment": "사용자가 답할 수 있는 영역과 AI 가 자율 처리하는 영역의 명시적 분리",
+      "user_intent_domain": [
+        "전체 개념/방향성 (예: V9.x 채택, MVP 정의, Hub-and-Spoke 모델)",
+        "기획 가치 판단 (예: 작업 보존 vs 폐기, 경쟁 features 우선순위)",
+        "외부 커뮤니케이션 (vendor 메일, Slack 메시지)",
+        "destructive 시스템 변경 (DB drop, prod 배포)",
+        "user 자신의 memory 결정 변경"
+      ],
+      "ai_execution_domain": [
+        "코드 작성 / 수정",
+        "PR 생성 (draft/ready)",
+        "PR 리뷰 (자체 작성 시)",
+        "PR 머지 (조건 만족 시 자율)",
+        "충돌 해결 (의미적으로 명확한 경우)",
+        "worktree / branch 관리",
+        "도구 / workflow 추가",
+        "거버넌스 정책 변경 (사용자 의도 trigger 후)"
+      ],
+      "rationale": "사용자가 비전문가일 때 실행 영역 confirm 요구 = 시스템 실패. 의도 영역 질문만 허용."
+    },
     "merge_authority": {
-      "main_merge": "conductor_only",
-      "worker_merge_authority": "denied",
-      "worker_pr_state": "draft_or_review_ready_only",
-      "auto_merge_workflow": "disabled",
-      "auto_merge_label": "deprecated",
-      "rationale": "팀 세션은 PR 생성 + Task_Dispatch_Board.md 의 REVIEW_READY 상태 변경까지. main 직접 merge 권한 박탈. `gh pr merge`, `git push origin main`, `auto-merge` 라벨 부여 모두 worker 측 금지."
+      "main_merge": "ai_autonomous_when_conditions_met",
+      "ai_autonomous_merge_conditions": {
+        "_comment": "모두 만족 시 AI 가 사용자 confirm 없이 자율 머지",
+        "ai_authored_pr": true,
+        "ci_status": "all_green_or_no_required_checks",
+        "merge_conflict": "none_or_trivially_resolvable",
+        "scope_check": "passed_or_governance-change_label_present",
+        "intent_alignment": "aligned_with_current_user_intent_trigger",
+        "rationale": "AI 가 본인 작성 PR + CI green + 충돌 없음 + 사용자 의도 trigger 와 정합 → 자율 머지"
+      },
+      "user_consultation_required_when": [
+        "다중 PR 간 의미적 충돌 (예: 두 worktree 가 다른 기획 방향 표명)",
+        "의도 모호 (사용자 trigger 가 본 변경을 명시 포함하지 않음)",
+        "destructive 시스템 변경",
+        "외부 visible state (vendor 메일, prod 배포)",
+        "AI 가 자체 권한을 확장하는 governance change (self-bootstrap 방지)",
+        "거버넌스 file 직접 수정 PR (governance-change 라벨 + 사용자 1회 명시 confirm)"
+      ],
+      "worker_merge_authority": "v9.2_self_merge_for_clean_prs_preserved",
+      "worker_pr_state": "draft_or_review_ready",
+      "rationale": "v9.2 의 worker self-merge (충돌 없는 경우) 는 그대로. v9.3 추가: AI Conductor 도 자체 PR 자율 머지. 사용자 confirm 은 의도 영역만."
     },
     "task_dispatch": {
       "ssot": "docs/4. Operations/Task_Dispatch_Board.md",
