@@ -133,6 +133,17 @@ def normalize_path(path: str) -> str:
     return p.rstrip("/")
 
 
+def placeholder_normalize(path: str) -> str:
+    """Placeholder 이름 무시 정규화: `{xxx}` → `{}`.
+
+    lobby `$id` 와 bo `{competition_id}` 같은 naming convention 차이는 SSOT
+    drift 가 아니므로 placeholder 이름을 익명화해서 매칭. PR #73 SSOT 정합 검증
+    이후 false-positive 25건이 진짜 drift 가 아닌 placeholder 이름 차이로
+    오분류된 것을 발견 (2026-04-29).
+    """
+    return re.sub(r"\{[^}]+\}", "{}", path)
+
+
 def attempt_match(call: LobbyCall, bo_endpoints: list[BoEndpoint]) -> Optional[BoEndpoint]:
     """lobby call → bo endpoint 후보 매칭.
 
@@ -141,16 +152,19 @@ def attempt_match(call: LobbyCall, bo_endpoints: list[BoEndpoint]) -> Optional[B
       2. case-insensitive
       3. case-insensitive + /api/v1 prefix 추가 시도
       4. PascalCase → kebab-case 변환 후 재시도
+      5. placeholder 이름 익명화 (lobby `$id` ≈ bo `{competition_id}`)
     """
     target = normalize_path(call.path)
     target_lower = target.lower()
     target_kebab = re.sub(r"(?<!^)(?=[A-Z])", "-", target).lower()
+    target_ph = placeholder_normalize(target_lower)
 
     for ep in bo_endpoints:
         if ep.method != call.method:
             continue
         ep_path = normalize_path(ep.path)
         ep_lower = ep_path.lower()
+        ep_ph = placeholder_normalize(ep_lower)
 
         # 1. exact
         if ep_path == target:
@@ -162,10 +176,14 @@ def attempt_match(call: LobbyCall, bo_endpoints: list[BoEndpoint]) -> Optional[B
         if ep_lower == ("/api/v1" + target_lower):
             return ep
         # 4. PascalCase split: /Auth/Verify2FA → /auth/verify-2-f-a (rough)
-        #    bo 는 /auth/verify-2fa — 이 매칭은 false negative 가능
         if ep_lower == target_kebab.lower():
             return ep
         if ep_lower == ("/api/v1" + target_kebab.lower()):
+            return ep
+        # 5. placeholder naming 차이만 (lobby `$id` vs bo `{competition_id}`)
+        if ep_ph == target_ph:
+            return ep
+        if ep_ph == placeholder_normalize("/api/v1" + target_lower):
             return ep
 
     return None

@@ -1,16 +1,16 @@
 {
   "bo_paths_count": 127,
   "lobby_calls_count": 53,
-  "matched_count": 11,
-  "drift_lobby_unknown_count": 42,
-  "drift_bo_unused_count": 117,
+  "matched_count": 37,
+  "drift_lobby_unknown_count": 16,
+  "drift_bo_unused_count": 93,
   "matched": [
     {
       "lobby": {
         "file": "team1-frontend/lib/repositories/auth_repository.dart",
         "line": 55,
         "method": "POST",
-        "path": "/Auth/Login"
+        "path": "/auth/login"
       },
       "bo": {
         "method": "POST",
@@ -20,9 +20,21 @@
     {
       "lobby": {
         "file": "team1-frontend/lib/repositories/auth_repository.dart",
+        "line": 63,
+        "method": "POST",
+        "path": "/auth/verify-2fa"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/auth/verify-2fa"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/auth_repository.dart",
         "line": 71,
         "method": "POST",
-        "path": "/Auth/Refresh"
+        "path": "/auth/refresh"
       },
       "bo": {
         "method": "POST",
@@ -34,7 +46,7 @@
         "file": "team1-frontend/lib/repositories/auth_repository.dart",
         "line": 79,
         "method": "GET",
-        "path": "/Auth/Session"
+        "path": "/auth/session"
       },
       "bo": {
         "method": "GET",
@@ -44,9 +56,21 @@
     {
       "lobby": {
         "file": "team1-frontend/lib/repositories/competition_repository.dart",
+        "line": 23,
+        "method": "GET",
+        "path": "/competitions/$id"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/competitions/{competition_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/competition_repository.dart",
         "line": 30,
         "method": "POST",
-        "path": "/Competitions"
+        "path": "/competitions"
       },
       "bo": {
         "method": "POST",
@@ -55,10 +79,46 @@
     },
     {
       "lobby": {
+        "file": "team1-frontend/lib/repositories/competition_repository.dart",
+        "line": 41,
+        "method": "PUT",
+        "path": "/competitions/$id"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/competitions/{competition_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/competition_repository.dart",
+        "line": 49,
+        "method": "DELETE",
+        "path": "/competitions/$id"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/competitions/{competition_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/event_repository.dart",
+        "line": 23,
+        "method": "GET",
+        "path": "/events/$id"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/events/{event_id}"
+      }
+    },
+    {
+      "lobby": {
         "file": "team1-frontend/lib/repositories/event_repository.dart",
         "line": 30,
         "method": "POST",
-        "path": "/Events"
+        "path": "/events"
       },
       "bo": {
         "method": "POST",
@@ -67,10 +127,46 @@
     },
     {
       "lobby": {
+        "file": "team1-frontend/lib/repositories/event_repository.dart",
+        "line": 38,
+        "method": "PUT",
+        "path": "/events/$id"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/events/{event_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/event_repository.dart",
+        "line": 46,
+        "method": "DELETE",
+        "path": "/events/$id"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/events/{event_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/flight_repository.dart",
+        "line": 32,
+        "method": "GET",
+        "path": "/flights/$id"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/flights/{flight_id}"
+      }
+    },
+    {
+      "lobby": {
         "file": "team1-frontend/lib/repositories/flight_repository.dart",
         "line": 39,
         "method": "POST",
-        "path": "/Flights"
+        "path": "/flights"
       },
       "bo": {
         "method": "POST",
@@ -79,10 +175,58 @@
     },
     {
       "lobby": {
+        "file": "team1-frontend/lib/repositories/flight_repository.dart",
+        "line": 47,
+        "method": "PUT",
+        "path": "/flights/$id"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/flights/{flight_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/hand_repository.dart",
+        "line": 23,
+        "method": "GET",
+        "path": "/hands/$id"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/hands/{hand_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/player_repository.dart",
+        "line": 23,
+        "method": "GET",
+        "path": "/players/$id"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/players/{player_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/series_repository.dart",
+        "line": 23,
+        "method": "GET",
+        "path": "/series/$id"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/series/{series_id}"
+      }
+    },
+    {
+      "lobby": {
         "file": "team1-frontend/lib/repositories/series_repository.dart",
         "line": 30,
         "method": "POST",
-        "path": "/Series"
+        "path": "/series"
       },
       "bo": {
         "method": "POST",
@@ -92,9 +236,33 @@
     {
       "lobby": {
         "file": "team1-frontend/lib/repositories/series_repository.dart",
+        "line": 38,
+        "method": "PUT",
+        "path": "/series/$id"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/series/{series_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/series_repository.dart",
+        "line": 46,
+        "method": "DELETE",
+        "path": "/series/$id"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/series/{series_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/series_repository.dart",
         "line": 64,
         "method": "POST",
-        "path": "/Competitions"
+        "path": "/competitions"
       },
       "bo": {
         "method": "POST",
@@ -103,10 +271,46 @@
     },
     {
       "lobby": {
+        "file": "team1-frontend/lib/repositories/series_repository.dart",
+        "line": 73,
+        "method": "PUT",
+        "path": "/competitions/$id"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/competitions/{competition_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/series_repository.dart",
+        "line": 81,
+        "method": "DELETE",
+        "path": "/competitions/$id"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/competitions/{competition_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/skin_repository.dart",
+        "line": 21,
+        "method": "GET",
+        "path": "/skins/$id"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/skins/{skin_id}"
+      }
+    },
+    {
+      "lobby": {
         "file": "team1-frontend/lib/repositories/skin_repository.dart",
         "line": 35,
         "method": "POST",
-        "path": "/Skins"
+        "path": "/skins"
       },
       "bo": {
         "method": "POST",
@@ -115,10 +319,46 @@
     },
     {
       "lobby": {
+        "file": "team1-frontend/lib/repositories/skin_repository.dart",
+        "line": 76,
+        "method": "POST",
+        "path": "/skins/$id/activate"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/skins/{skin_id}/activate"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/skin_repository.dart",
+        "line": 90,
+        "method": "DELETE",
+        "path": "/skins/$id"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/skins/{skin_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/staff_repository.dart",
+        "line": 23,
+        "method": "GET",
+        "path": "/users/$id"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/users/{user_id}"
+      }
+    },
+    {
+      "lobby": {
         "file": "team1-frontend/lib/repositories/staff_repository.dart",
         "line": 30,
         "method": "POST",
-        "path": "/Users"
+        "path": "/users"
       },
       "bo": {
         "method": "POST",
@@ -127,269 +367,185 @@
     },
     {
       "lobby": {
+        "file": "team1-frontend/lib/repositories/staff_repository.dart",
+        "line": 38,
+        "method": "PUT",
+        "path": "/users/$id"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/users/{user_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/staff_repository.dart",
+        "line": 46,
+        "method": "DELETE",
+        "path": "/users/$id"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/users/{user_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/table_repository.dart",
+        "line": 30,
+        "method": "GET",
+        "path": "/tables/$id"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/tables/{table_id}"
+      }
+    },
+    {
+      "lobby": {
         "file": "team1-frontend/lib/repositories/table_repository.dart",
         "line": 37,
         "method": "POST",
-        "path": "/Tables"
+        "path": "/tables"
       },
       "bo": {
         "method": "POST",
         "path": "/api/v1/tables"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/table_repository.dart",
+        "line": 45,
+        "method": "PUT",
+        "path": "/tables/$id"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/tables/{table_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/table_repository.dart",
+        "line": 53,
+        "method": "DELETE",
+        "path": "/tables/$id"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/tables/{table_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/table_repository.dart",
+        "line": 98,
+        "method": "PUT",
+        "path": "/tables/$tableId/seats/$seatNo"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/tables/{table_id}/seats/{seat_no}"
       }
     }
   ],
   "drift_lobby_unknown": [
     {
       "file": "team1-frontend/lib/repositories/auth_repository.dart",
-      "line": 63,
-      "method": "POST",
-      "path": "/Auth/Verify2FA"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/auth_repository.dart",
       "line": 87,
       "method": "DELETE",
-      "path": "/Auth/Session"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/competition_repository.dart",
-      "line": 23,
-      "method": "GET",
-      "path": "/Competitions/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/competition_repository.dart",
-      "line": 41,
-      "method": "PUT",
-      "path": "/Competitions/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/competition_repository.dart",
-      "line": 49,
-      "method": "DELETE",
-      "path": "/Competitions/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/event_repository.dart",
-      "line": 23,
-      "method": "GET",
-      "path": "/Events/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/event_repository.dart",
-      "line": 38,
-      "method": "PUT",
-      "path": "/Events/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/event_repository.dart",
-      "line": 46,
-      "method": "DELETE",
-      "path": "/Events/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/flight_repository.dart",
-      "line": 32,
-      "method": "GET",
-      "path": "/Flights/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/flight_repository.dart",
-      "line": 47,
-      "method": "PUT",
-      "path": "/Flights/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/hand_repository.dart",
-      "line": 23,
-      "method": "GET",
-      "path": "/Hands/$id"
+      "path": "/auth/session"
     },
     {
       "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
       "line": 49,
       "method": "GET",
-      "path": "/Series/$seriesId/PayoutStructures/$psId"
+      "path": "/series/$seriesId/payout-structures/$psId"
     },
     {
       "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
       "line": 60,
       "method": "POST",
-      "path": "/Series/$seriesId/PayoutStructures"
+      "path": "/series/$seriesId/payout-structures"
     },
     {
       "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
       "line": 73,
       "method": "PUT",
-      "path": "/Series/$seriesId/PayoutStructures/$psId"
+      "path": "/series/$seriesId/payout-structures/$psId"
     },
     {
       "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
       "line": 82,
       "method": "DELETE",
-      "path": "/Series/$seriesId/PayoutStructures/$psId"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/player_repository.dart",
-      "line": 23,
-      "method": "GET",
-      "path": "/Players/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/series_repository.dart",
-      "line": 23,
-      "method": "GET",
-      "path": "/Series/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/series_repository.dart",
-      "line": 38,
-      "method": "PUT",
-      "path": "/Series/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/series_repository.dart",
-      "line": 46,
-      "method": "DELETE",
-      "path": "/Series/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/series_repository.dart",
-      "line": 73,
-      "method": "PUT",
-      "path": "/Competitions/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/series_repository.dart",
-      "line": 81,
-      "method": "DELETE",
-      "path": "/Competitions/$id"
+      "path": "/series/$seriesId/payout-structures/$psId"
     },
     {
       "file": "team1-frontend/lib/repositories/settings_repository.dart",
       "line": 55,
       "method": "GET",
-      "path": "/Series/$seriesId/BlindStructures/$bsId"
+      "path": "/series/$seriesId/blind-structures/$bsId"
     },
     {
       "file": "team1-frontend/lib/repositories/settings_repository.dart",
       "line": 66,
       "method": "POST",
-      "path": "/Series/$seriesId/BlindStructures"
+      "path": "/series/$seriesId/blind-structures"
     },
     {
       "file": "team1-frontend/lib/repositories/settings_repository.dart",
       "line": 79,
       "method": "PUT",
-      "path": "/Series/$seriesId/BlindStructures/$bsId"
+      "path": "/series/$seriesId/blind-structures/$bsId"
     },
     {
       "file": "team1-frontend/lib/repositories/settings_repository.dart",
       "line": 88,
       "method": "DELETE",
-      "path": "/Series/$seriesId/BlindStructures/$bsId"
+      "path": "/series/$seriesId/blind-structures/$bsId"
     },
     {
       "file": "team1-frontend/lib/repositories/settings_repository.dart",
       "line": 113,
       "method": "POST",
-      "path": "/BlindStructures/$blindStructureId/Levels"
+      "path": "/blind-structures/$blindStructureId/levels"
     },
     {
       "file": "team1-frontend/lib/repositories/settings_repository.dart",
       "line": 126,
       "method": "PUT",
-      "path": "/BlindStructures/$blindStructureId/Levels/$levelId"
+      "path": "/blind-structures/$blindStructureId/levels/$levelId"
     },
     {
       "file": "team1-frontend/lib/repositories/settings_repository.dart",
       "line": 138,
       "method": "DELETE",
-      "path": "/BlindStructures/$blindStructureId/Levels/$levelId"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/skin_repository.dart",
-      "line": 21,
-      "method": "GET",
-      "path": "/Skins/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/skin_repository.dart",
-      "line": 76,
-      "method": "POST",
-      "path": "/Skins/$id/Activate"
+      "path": "/blind-structures/$blindStructureId/levels/$levelId"
     },
     {
       "file": "team1-frontend/lib/repositories/skin_repository.dart",
       "line": 83,
       "method": "POST",
-      "path": "/Skins/$id/Deactivate"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/skin_repository.dart",
-      "line": 90,
-      "method": "DELETE",
-      "path": "/Skins/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/staff_repository.dart",
-      "line": 23,
-      "method": "GET",
-      "path": "/Users/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/staff_repository.dart",
-      "line": 38,
-      "method": "PUT",
-      "path": "/Users/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/staff_repository.dart",
-      "line": 46,
-      "method": "DELETE",
-      "path": "/Users/$id"
+      "path": "/skins/$id/deactivate"
     },
     {
       "file": "team1-frontend/lib/repositories/staff_repository.dart",
       "line": 50,
       "method": "POST",
-      "path": "/Users/$id/ForceLogout"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/table_repository.dart",
-      "line": 30,
-      "method": "GET",
-      "path": "/Tables/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/table_repository.dart",
-      "line": 45,
-      "method": "PUT",
-      "path": "/Tables/$id"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/table_repository.dart",
-      "line": 53,
-      "method": "DELETE",
-      "path": "/Tables/$id"
+      "path": "/users/$id/force-logout"
     },
     {
       "file": "team1-frontend/lib/repositories/table_repository.dart",
       "line": 86,
       "method": "POST",
-      "path": "/Tables/$tableId/Seats"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/table_repository.dart",
-      "line": 98,
-      "method": "PUT",
-      "path": "/Tables/$tableId/Seats/$seatNo"
+      "path": "/tables/$tableId/seats"
     },
     {
       "file": "team1-frontend/lib/repositories/table_repository.dart",
       "line": 106,
       "method": "DELETE",
-      "path": "/Tables/$tableId/Seats/$seatNo"
+      "path": "/tables/$tableId/seats/$seatNo"
     }
   ],
   "drift_bo_unused": [
@@ -400,10 +556,6 @@
     {
       "method": "GET",
       "path": "/auth/me"
-    },
-    {
-      "method": "POST",
-      "path": "/auth/verify-2fa"
     },
     {
       "method": "POST",
@@ -439,18 +591,6 @@
     },
     {
       "method": "GET",
-      "path": "/api/v1/series/{series_id}"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/series/{series_id}"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/series/{series_id}"
-    },
-    {
-      "method": "GET",
       "path": "/api/v1/series/{series_id}/events"
     },
     {
@@ -463,18 +603,6 @@
     },
     {
       "method": "GET",
-      "path": "/api/v1/events/{event_id}"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/events/{event_id}"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/events/{event_id}"
-    },
-    {
-      "method": "GET",
       "path": "/api/v1/flights"
     },
     {
@@ -484,14 +612,6 @@
     {
       "method": "POST",
       "path": "/api/v1/events/{event_id}/flights"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/flights/{flight_id}"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/flights/{flight_id}"
     },
     {
       "method": "DELETE",
@@ -559,27 +679,11 @@
     },
     {
       "method": "GET",
-      "path": "/api/v1/tables/{table_id}"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/tables/{table_id}"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/tables/{table_id}"
-    },
-    {
-      "method": "GET",
       "path": "/api/v1/tables/{table_id}/status"
     },
     {
       "method": "GET",
       "path": "/api/v1/tables/{table_id}/seats"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/tables/{table_id}/seats/{seat_no}"
     },
     {
       "method": "GET",
@@ -592,10 +696,6 @@
     {
       "method": "GET",
       "path": "/api/v1/players/search"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/players/{player_id}"
     },
     {
       "method": "PUT",
@@ -655,18 +755,6 @@
     },
     {
       "method": "GET",
-      "path": "/api/v1/users/{user_id}"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/users/{user_id}"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/users/{user_id}"
-    },
-    {
-      "method": "GET",
       "path": "/api/v1/configs/{section}"
     },
     {
@@ -679,23 +767,7 @@
     },
     {
       "method": "GET",
-      "path": "/api/v1/competitions/{competition_id}"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/competitions/{competition_id}"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/competitions/{competition_id}"
-    },
-    {
-      "method": "GET",
       "path": "/api/v1/hands"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/hands/{hand_id}"
     },
     {
       "method": "GET",
@@ -742,24 +814,12 @@
       "path": "/api/v1/skins/active"
     },
     {
-      "method": "GET",
-      "path": "/api/v1/skins/{skin_id}"
-    },
-    {
       "method": "PUT",
-      "path": "/api/v1/skins/{skin_id}"
-    },
-    {
-      "method": "DELETE",
       "path": "/api/v1/skins/{skin_id}"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/skins/{skin_id}/metadata"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/skins/{skin_id}/activate"
     },
     {
       "method": "PUT",
