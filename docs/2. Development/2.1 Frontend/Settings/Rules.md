@@ -6,7 +6,7 @@ legacy-id: BS-03-04
 last-updated: 2026-04-21
 reimplementability: PASS
 reimplementability_checked: 2026-04-21
-reimplementability_notes: "2026-04-21 교차검증 완료: rules_screen.dart 에 game_variant/blind_structure_id/ante_schedule_id/time_bank_seconds/straddle_* 필드 구현 확인 (grep). BS-06 R95/R96 (under_raise/short_all_in) 참조. SG-003 §Tab 4 스키마 충족."
+reimplementability_notes: "2026-04-21 교차검증 완료: rules_screen.dart 에 game_variant/blind_structure_id/ante_schedule_id/time_bank_seconds/straddle_* 필드 구현 확인 (grep). WSOP Rule 95 (under-raise) / Rule 96 (incomplete all-in) — Betting_and_Pots.md §3+§4 (IT-15 IncompleteAllInNoReopen / IT-16 UnderRaiseAdjust) 참조 (구 BS-06-02 R95/R96). SG-003 §Tab 4 스키마 충족."
 sg_reference: SG-003
 scope: event
 ---
