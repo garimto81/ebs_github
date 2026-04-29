@@ -71,7 +71,46 @@
         "docs/2. Development/2.5 Shared/"
       ],
       "escalation": "user (사용자)",
-      "rationale": "충돌 해결 임의 시도 금지. PR 에 conflict 라벨 + Conductor 알림. Conductor 가 SSOT 기준 직접 rebase + 해결."
+      "ssot_priority": [
+        "docs/1. Product/Foundation.md",
+        "docs/2. Development/2.5 Shared/team-policy.json",
+        "docs/2. Development/2.5 Shared/Risk_Matrix.md",
+        "docs/2. Development/2.{2,3,4}/APIs/**",
+        "docs/2. Development/2.*/Backlog/**"
+      ],
+      "_ssot_priority_note": "v9.3 M4 해소 (2026-04-29): 두 SSOT 가 충돌할 때 위 순서로 우선. Foundation 이 최상위 — 기획 의도. team-policy 가 거버넌스 정책. 하위는 contract / backlog.",
+      "tie_breaker_tool": "tools/conflict_resolver.py",
+      "tie_breaker_logic": "v7.5 4-Step Decision (lookup → win-win → priority → user)",
+      "rationale": "충돌 해결 임의 시도 금지. PR 에 conflict 라벨 + Conductor 알림. Conductor 가 SSOT 우선순위 기반 직접 rebase + 해결. tie 시 conflict_resolver 4-Step + 최종 사용자 escalation."
+    },
+    "single_session_mode_a": {
+      "_comment": "v9.3 M5 해소 (2026-04-29): sibling worktree 0개일 때 Conductor 단독 세션 자동 감지. ceremony cost 면제.",
+      "trigger": "sibling_worktree_count == 0",
+      "detection_tool": "tools/v93_active_check.py",
+      "behavior": {
+        "ceremony": "skipped — Conductor 직접 commit + push 허용 (governance change 외)",
+        "pr_path": "optional — 단순 작업은 main 직접 가능, governance 변경은 PR 경로 강제",
+        "rationale": "1인 사용자가 Conductor 단독 세션일 때 Hub-and-Spoke ceremony 는 가치 0. v7.1 Mode A 정신 회복."
+      },
+      "v92_active_trigger": "sibling_worktree_count >= 1",
+      "v92_active_behavior": "v9.2/v9.3 Hub-and-Spoke + AI 자율 머지 SOP 전체 적용"
+    },
+    "freeze": {
+      "_comment": "v9.3 M3 해소 (2026-04-29): governance churn 차단. 1주 7 버전 churn 패턴 (v5→v9.3) 의 cooldown.",
+      "until": "2026-05-29",
+      "scope": "all_governance_model_changes",
+      "exceptions": [
+        "data_loss_emergency",
+        "critical_security_fix",
+        "user_intent_explicit_unfreeze (사용자 명시 'freeze 해제' 시)"
+      ],
+      "rationale": "30일 cold 동안 V9.3 운영 metric 수집. 미달성 시 V10 자동 trigger. 달성 시 freeze 연장.",
+      "metric_capture_path": "docs/4. Operations/Reports/v93_metrics.yml",
+      "auto_v10_trigger_conditions": [
+        "broken_main_incident_count > 1",
+        "user_intent_question_count_per_week > 5",
+        "ai_autonomous_merge_ratio < 0.7"
+      ]
     },
     "conductor_limits": {
       "_comment": "V9.0 에서도 Conductor 자율 금지 영역 (구 mode_a_limits 흡수)",
