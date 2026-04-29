@@ -1,14 +1,39 @@
 ---
-title: Task Dispatch Board (V9.0 Hub-and-Spoke)
+title: Task Dispatch Board (V9.2 Day 0 Complete — V9.2 Cold Start Pending)
 owner: conductor
 tier: contract
 last-updated: 2026-04-29
-governance: V9.0 conductor_centralized_review
+governance: V9.2 conductor_centralized_review_with_self_merge_for_clean_prs
 ---
 
 # Task Dispatch Board
 
-> **V9.0 Hub-and-Spoke 워크플로우 SSOT.** Conductor 가 백로그를 분해하여 각 팀 세션에 작업을 할당하고, 진행 상태를 단일 보드로 통합 관리한다. 팀 세션은 자기 ROW 만 읽고 결과 PR 을 보고한다.
+> **V9.2 Hub-and-Spoke 워크플로우 SSOT.** Conductor 가 백로그를 분해하여 각 팀 세션에 작업을 할당하고, 진행 상태를 단일 보드로 통합 관리한다. 팀 세션은 자기 ROW 만 읽고 결과 PR 을 보고한다.
+>
+> **V9.2 핵심**: (1) Conductor 사전 scope 분리로 충돌 최소화, (2) 충돌 없는 PR 은 worker 자체 머지 허용 (3-gate 검증 후), (3) 충돌 PR 만 Conductor 처리.
+
+## 🟢 Day 0 Migration Complete (2026-04-29)
+
+| Phase | 결과 |
+|-------|------|
+| **main 동기화** | local main rebased onto `origin/main` (`05b27cfb`) + V9.0 governance 2 commits ahead |
+| **Worktree analyzed** | 23 total (1 main + 22 sibling) |
+| **Absorbed (cleanup)** | 14 worktree removed (이미 main 에 흡수, branch ref 보존) |
+| **Real-work rebased** | 2 worktree (`conductor-lint`, `conductor-p3`) 깔끔히 origin/main 위로 재배치 |
+| **Real-work preserved** | 6 worktree rebase conflict → abort (작업 보존, V9.2 path 처리 대상) |
+| **D1 정책 반영** | `team-policy.json` `main_push_allowed_for: ["conductor"]` 유지 + V9.2 note 갱신 |
+
+**보존된 6 real-work worktree** (Day 1 V9.2 cold start 시 PR 화 대상):
+- `ebs-conductor-curate` (work/conductor/v6-3-journal-log) — 52 commits, journal log
+- `ebs-team1-flutter` (work/team1/n4-cc-url-scheme) — 23 commits, URL scheme
+- `ebs-team1-harness` (work/team1/harness-e2e-validation) — unstaged changes 보유
+- `ebs-team1-spec-gaps` (work/team1/spec-gaps-20260415) — 10 commits, Settings 탭 PASS
+- `ebs-team2-work` (work/team2/work) — 3 commits, Auth prefix + B-088 PR-4
+- `ebs-team3-work` (work/team3/b-342-foundation-ref-precision) — 23 commits
+
+**깔끔히 재배치된 2 worktree** (즉시 PR 가능):
+- `ebs-conductor-lint` (work/conductor/dockerfile-lint)
+- `ebs-conductor-p3` (work/conductor/p3-docs-automation)
 
 ## 📋 운영 규칙
 
@@ -44,21 +69,21 @@ governance: V9.0 conductor_centralized_review
 
 | ID | 상태 | 작업 | Scope | PR | 비고 |
 |----|------|------|-------|----|------|
-| TDB-002 | ASSIGNED | 기존 worktree 4건 PR 정리 (V9.0 backlog drain) | `ebs-team1-{flutter,harness,phase5,spec-gaps}` | — | 각 worktree 별 `gh pr create --draft` 후 보드 row REVIEW_READY. **신규 작업 금지 (Conductor 큐 적체 해소 우선)** |
+| TDB-002 | REASSIGNED | (구 V9.0 drain 4건) → V9.2 path 로 3 real worktree 만 처리 | `ebs-team1-{flutter,harness,spec-gaps}` | — | Day 0 결과: phase5 absorbed (cleanup 완료). 3 real-work 보존. Day 1 cold start 시 V9.2 PR 경로로 처리 |
 | TDB-003 | ASSIGNED | B-088 docs rest-path PascalCase → kebab-case | `docs/2. Development/2.1 Frontend/**` `*.md` 6개 | — | 단일 PR. drift_gate CI green 확인 후 보고 |
 
 ### Team 2 — Backend (BO / API / DB)
 
 | ID | 상태 | 작업 | Scope | PR | 비고 |
 |----|------|------|-------|----|------|
-| TDB-004 | ASSIGNED | 기존 worktree 2건 PR 정리 | `ebs-team2-{m1-drift,work}` | — | M10 audit close + Auth prefix fix 분리 PR |
+| TDB-004 | REASSIGNED | (구 V9.0 drain 2건) → V9.2 path 로 1 real worktree 만 처리 | `ebs-team2-work` | — | Day 0 결과: m1-drift absorbed (cleanup 완료). team2-work 보존 (Auth prefix + B-088 PR-4). Day 1 V9.2 PR 경로 |
 | TDB-005 | ASSIGNED | SG-008-b4 GET /api/v1/auth/me 구현 | `team2-backend/src/routers/auth.py`, `tests/test_auth_me.py`, `docs/2. Development/2.2 Backend/APIs/Auth_and_Session.md §me` | — | 단일 endpoint + pytest. b5 (logout) 는 차후 dispatch |
 
 ### Team 3 — Game Engine
 
 | ID | 상태 | 작업 | Scope | PR | 비고 |
 |----|------|------|-------|----|------|
-| TDB-006 | ASSIGNED | 기존 worktree 4건 PR 정리 | `ebs-team3-{b349,b351,betting,shim}` | — | 각 chunk-별 PR. b349/b351/shim 은 backlog DONE 후보, betting 은 분량 검토 |
+| TDB-006 | REASSIGNED | (구 V9.0 drain 4건) → V9.2 path 로 1 real worktree 만 처리 | `ebs-team3-work` | — | Day 0 결과: b349/b351/betting/shim/triggers/variants 모두 absorbed (6 cleanup 완료). team3-work 보존. Day 1 V9.2 PR 경로 |
 | TDB-007 | ASSIGNED | B-330 (P0) Engine 별도 프로세스 원칙 API-04 전반 전파 | `docs/2. Development/2.3 Game Engine/APIs/{Overlay_Output_Events,OutputEventBuffer_Boundary,OutputEvent_Serialization}.md` | — | doc-only. Foundation §6.3/§6.4 정렬. notify:team4 commit tag |
 
 ### Team 4 — Command Center (cc-web)
@@ -71,9 +96,11 @@ governance: V9.0 conductor_centralized_review
 
 | ID | 상태 | 작업 | Scope | PR | 비고 |
 |----|------|------|-------|----|------|
-| TDB-001 | MERGED | V9.0 Hub-and-Spoke 인프라 개편 | `team-policy.json`, `Multi_Session_Workflow.md`, `pr-auto-merge.yml`, `Task_Dispatch_Board.md`, `SKILL.md` | 직접 commit (74e3a106) | 본 보드 신설 |
-| TDB-009 | IN_PROGRESS | **Hub 큐 drain** — 9 conductor worktree PR 화 + 리뷰 + 머지 | `ebs-conductor-{bcrypt,contract,curate,deps-gov,engine,lan,lint,p3,p5p6}` | — | V9.0 단일 스레드 리뷰 원칙. 순차 처리. 의미적 충돌 시 SSOT 기반 해소. **본 작업 우선 — 다음 dispatch cycle 까지 완료 목표** |
-| TDB-010 | PENDING | V9.0 push 권한 정합 검토 — Conductor 직접 push 허용 vs PR 강제 | `team-policy.json` `branch_strategy.main_push_allowed_for` | — | V9.0 정책 자체 모순: `main_push_allowed_for: ["conductor"]` 였으나 V9.0 SOP 는 PR 리뷰 강제 → 사용자 결정 후 정합 |
+| TDB-001 | MERGED | V9.0 Hub-and-Spoke 인프라 개편 | `team-policy.json`, `Multi_Session_Workflow.md`, `pr-auto-merge.yml`, `Task_Dispatch_Board.md`, `SKILL.md` | 직접 commit (74e3a106 → rebased) | 본 보드 신설 |
+| TDB-009 | REASSIGNED | (구 9 conductor drain) → V9.2 path 로 3 real worktree 만 처리 | `ebs-conductor-{curate,lint,p3}` | — | Day 0 결과: bcrypt/contract/deps-gov/engine/lan/p5p6 absorbed (6 cleanup). lint/p3 깔끔히 rebased → 즉시 PR 가능. curate 는 52 commits 충돌 → 별도 검토 |
+| TDB-010 | MERGED | V9.0 push 권한 정합 검토 → V9.2 D1 결정 적용 | `team-policy.json` `branch_strategy.main_push_allowed_for: ["conductor"]` | 본 commit | V9.2 D1 (㉡): Conductor governance/board 직접 push 허용. 충돌 없는 worker PR 은 self-merge 허용 (V9.2 핵심) |
+| TDB-011 | PENDING | V9.2 인프라 구축 (Day 1 cold start) — 3-gate auto-merge workflow + scope_overlap_check + dispatch_scope hook + governance_self_modification 절 | `tools/{team_v92_safe_merge,dispatch_scope_check,scope_overlap_check}.py`, `.github/workflows/pr-v92-merge-gate.yml`, `.claude/hooks/v92_*.py`, `team-policy.json` (v9.2 governance), `Multi_Session_Workflow.md` (v9.2 SOP) | — | Day 0 완료 후 Day 1 작업. 사용자 추가 mandate 대기 |
+| TDB-012 | PENDING | 6 real-work conflict worktree 처리 plan 수립 | `ebs-conductor-curate`, `ebs-team1-{flutter,harness,spec-gaps}`, `ebs-team2-work`, `ebs-team3-work` | — | rebase conflict 발생. 옵션: (a) cherry-pick 추출 (b) 새 브랜치로 squash 후 재PR (c) 폐기. 사용자 결정 필요 |
 
 ## 🧾 Task 등록 템플릿
 
@@ -121,6 +148,23 @@ governance: V9.0 conductor_centralized_review
 | 일시 | ID | 팀 | 작업 | 머지 PR |
 |------|----|----|------|---------|
 | 2026-04-29 | TDB-001 | conductor | V9.0 Hub-and-Spoke 인프라 개편 | 직접 commit (Mode A) |
+| 2026-04-29 | TDB-010 | conductor | V9.2 D1 결정 적용 — main_push_allowed_for 정합 | 본 commit |
+
+## 🗂 Day 0 Cleanup Audit Trail
+
+> Day 0 마이그레이션 결과 데이터: `.scratch/v92-day0-{analysis,finalize,classification,cleanup,rebase}.json`. 보존된 worktree branch ref 는 git reflog 30일 보호.
+
+### 14 Absorbed Worktrees (cleanup 완료)
+- **conductor (6)**: bcrypt, contract, deps-gov, engine, lan, p5p6
+- **team1 (1)**: phase5
+- **team2 (1)**: m1-drift
+- **team3 (6)**: variants, b349, b351, betting, shim, triggers
+
+각 worktree 의 작업은 origin/main 에 이미 흡수됨 (PR 머지 후 worktree 가 stale 상태로 남아있던 것). branch ref 는 보존 (git reflog 30일).
+
+### 8 Real-Work Worktrees (보존)
+- **rebased (즉시 PR 가능, 2)**: conductor-lint, conductor-p3
+- **conflict aborted (V9.2 path 처리, 6)**: conductor-curate (52 commits), team1-flutter (23), team1-harness (unstaged), team1-spec-gaps (10), team2-work (3), team3-work (23)
 
 ## 관련 문서
 
