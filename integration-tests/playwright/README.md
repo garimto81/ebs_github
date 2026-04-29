@@ -1,6 +1,23 @@
-# Playwright E2E (V9.5 P14 scaffold)
+# Playwright E2E (V9.5 P14 scaffold + P15 spec fix)
 
-> Conductor 소유. browser-level 통합 테스트. **scaffold only — 실제 실행 환경 설정은 별도 cycle.**
+> Conductor 소유. browser-level 통합 테스트.
+>
+> **V9.5 P15 (2026-04-29)**: 실제 실행 시도 중 spec 결함 3건 자율 fix. 본 spec 은 이제 SSOT 정합. **실행 자체는 BO seed admin 적용 (별도 cycle) 후 가능**.
+
+## V9.5 P15 spec fix (실제 실행 중 자율 진단)
+
+| 결함 | SSOT 근거 | Fix |
+|------|----------|-----|
+| `POST /api/v1/auth/login` → 404 | Backend_HTTP.md L87: `/auth/*` 는 root | spec: `/auth/login` |
+| login 422 (missing `email`) | BO LoginRequest schema | spec body: `{email, password}` |
+| AUTH_INVALID_CREDENTIALS | seed/README.md: `admin@ebs.local`/`admin1234!` | spec default credentials |
+| logout 동일 root prefix issue | 동일 | spec: `/auth/logout` |
+
+## 사전 조건
+
+- BO + lobby-web Docker container running
+- BO 에 seed admin 적용 (현재 BO image 에 `tools/seed_admin.py` 미포함 — 별도 cycle 필요)
+- npm install + chromium 설치 완료
 
 ## 위치
 

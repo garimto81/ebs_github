@@ -17,12 +17,15 @@ import { test, expect, type APIRequestContext } from '@playwright/test';
  */
 
 const BO_BASE_URL = process.env.BO_BASE_URL ?? 'http://localhost:8000';
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME ?? 'admin@ebs.test';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'test-password-1234';
+// SSOT: team2-backend/seed/README.md (default seed admin)
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@ebs.local';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin1234!';
 
 async function login(request: APIRequestContext): Promise<string> {
-  const res = await request.post(`${BO_BASE_URL}/api/v1/auth/login`, {
-    data: { username: ADMIN_USERNAME, password: ADMIN_PASSWORD },
+  // SSOT (Backend_HTTP.md L87): /auth/* 는 root, /api/v1 prefix 미적용
+  // SSOT (BO LoginRequest schema): email + password
+  const res = await request.post(`${BO_BASE_URL}/auth/login`, {
+    data: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
   });
   expect(res.status(), 'login should succeed').toBe(200);
   const body = await res.json();
@@ -110,7 +113,8 @@ test.describe('V9.5 BlindStructure + Levels CRUD flow', () => {
     expect(deleteBsRes.status()).toBeLessThan(300);
 
     // ---- Step 8: Logout (V9.5 P2 — POST /auth/logout) --------------------
-    const logoutRes = await request.post(`${BO_BASE_URL}/api/v1/auth/logout`, {
+    // SSOT (Backend_HTTP.md L87): /auth/* root, V9.5 P2 (PR #85) 정합
+    const logoutRes = await request.post(`${BO_BASE_URL}/auth/logout`, {
       headers: authHeaders,
     });
     expect(logoutRes.status(), 'POST /auth/logout returns 2xx').toBeGreaterThanOrEqual(200);
