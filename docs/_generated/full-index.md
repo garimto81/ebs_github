@@ -617,5 +617,6 @@ tier: generated
 | `docs/4. Operations/Task_Dispatch_Board.md` | Task Dispatch Board (V9.2 Day 0 Complete — V9.2 Cold Start Pending) | conductor | contract | - |
 | `docs/4. Operations/V5_Migration_Plan.md` | V5 Migration Plan — v4.0/v4.1 → v5.0/v5.1 전환 로드맵 | conductor | internal | - |
 | `docs/4. Operations/V9_2_Gate_Design.md` | V9.2 Gate Design (3-gate enforcement scaffolding) | conductor | contract | - |
+| `docs/4. Operations/V9_3_Intent_Execution_Boundary.md` | V9.3 Intent-Execution Separation (governance evolution) | conductor | contract | - |
 | `docs/README.md` | docs/ README | conductor | internal | - |
 | `docs/examples/README.md` | Examples | conductor | internal | - |
