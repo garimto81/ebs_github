@@ -191,7 +191,7 @@ tier: generated
 - `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Domain Access
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
 - `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
-- `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate)
+- `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (V9.0 — Hub-and-Spoke Centralized Review)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
 - `docs/4. Operations/Phase_1_Decision_Queue.md` — Phase 1 Decision Queue (18건 결정 기록)
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
@@ -221,6 +221,7 @@ tier: generated
 - `docs/4. Operations/SSOT_Alignment_Progress.md` — SSOT Alignment Progress
 - `docs/4. Operations/Spec_Gap_Registry.md` — Spec Gap Registry — Drift 집계 + 해소 추적
 - `docs/4. Operations/Spec_Gap_Triage.md` — Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜
+- `docs/4. Operations/Task_Dispatch_Board.md` — Task Dispatch Board (V9.2 Day 0 Complete — V9.2 Cold Start Pending)
 - `docs/4. Operations/V5_Migration_Plan.md` — V5 Migration Plan — v4.0/v4.1 → v5.0/v5.1 전환 로드맵
 - `docs/README.md` — docs/ README
 - `docs/examples/README.md` — Examples
