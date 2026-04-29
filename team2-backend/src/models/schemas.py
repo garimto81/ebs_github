@@ -159,6 +159,7 @@ class TableResponse(EbsBaseModel):
 # ── Seat ───────────────────────────────────────────
 
 class SeatUpdate(EbsBaseModel):
+    seat_no: Optional[int] = None  # V9.5 P7: required for POST /tables/{id}/seats (assign)
     player_id: Optional[int] = None
     status: Optional[str] = None
     chip_count: Optional[int] = None
