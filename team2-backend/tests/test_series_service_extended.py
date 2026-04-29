@@ -139,11 +139,23 @@ def test_get_series_not_found_404(db_session: Session):
     assert excinfo.value.status_code == 404
 
 
-def test_update_series_partial_fields(db_session: Session):
-    """update_series patches only provided fields + updates timestamp (line 73-81)."""
+def test_update_series_partial_fields(db_session: Session, monkeypatch):
+    """update_series patches only provided fields + updates timestamp (line 73-81).
+
+    Note: _utcnow() resolution depends on system clock and may collide between
+    rapid create→update calls under full suite (Windows clock granularity).
+    monkeypatch ensures the two _utcnow() calls return deterministically distinct
+    values, isolating the assertion from clock timing.
+    """
+    from src.services import series_service
+
     comp = _make_competition(db_session, name="UpdComp")
     series_id = _make_series(db_session, comp.competition_id, name="OldName")
     old_updated = get_series(series_id, db_session).updated_at
+
+    monkeypatch.setattr(
+        series_service, "_utcnow", lambda: "2099-12-31T23:59:59.999999+00:00"
+    )
 
     updated = update_series(
         series_id, SeriesUpdate(series_name="NewName", is_completed=True), db_session
