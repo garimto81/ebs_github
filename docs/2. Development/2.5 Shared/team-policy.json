@@ -10,25 +10,55 @@
     "previous_version": "v9.0",
     "rationale": "v9.3 (2026-04-29 사용자 통찰): 비전문 사용자에게 PR merge 같은 실행 영역 confirm 요구 자체가 system 실패. 사용자는 의도/전체 개념만 제공, AI 가 코드/PR/머지까지 자율 판단. v9.0/v9.2 의 Conductor 단일 머지권은 'AI 가 자체 작성한 PR 의 자율 머지' 로 확장. 충돌·의미 모호 시만 사용자 의도 영역 질문.",
     "intent_execution_boundary": {
-      "_comment": "사용자가 답할 수 있는 영역과 AI 가 자율 처리하는 영역의 명시적 분리",
+      "_comment": "v9.4 (2026-04-29 사용자 통찰): SSOT 기반 판단 가능 영역은 AI 자율, 불가능 시 SSOT 보강이 정답. 사용자에게 기술 가치 판단 떠넘기기 금지.",
       "user_intent_domain": [
-        "전체 개념/방향성 (예: V9.x 채택, MVP 정의, Hub-and-Spoke 모델)",
-        "기획 가치 판단 (예: 작업 보존 vs 폐기, 경쟁 features 우선순위)",
-        "외부 커뮤니케이션 (vendor 메일, Slack 메시지)",
-        "destructive 시스템 변경 (DB drop, prod 배포)",
-        "user 자신의 memory 결정 변경"
+        "큰 방향성 / 패러다임 결정 (예: V9.x 채택, MVP 정의, Hub-and-Spoke 모델)",
+        "외부 visible action (vendor 메일, Slack 메시지, prod 배포)",
+        "destructive 시스템 변경 (DB drop, 거대 dependency 변경)",
+        "user 자신의 memory 결정 변경",
+        "본 governance_model 자체 변경 (self-bootstrap)"
       ],
-      "ai_execution_domain": [
+      "ai_execution_domain_with_ssot": [
+        "SSOT 검색 + 분석 + 판단 (Foundation > team-policy > Risk_Matrix > APIs > Backlog)",
+        "SSOT 모호 시 → SSOT 보강 PR 생성 후 자율 진행",
         "코드 작성 / 수정",
         "PR 생성 (draft/ready)",
         "PR 리뷰 (자체 작성 시)",
         "PR 머지 (조건 만족 시 자율)",
-        "충돌 해결 (의미적으로 명확한 경우)",
-        "worktree / branch 관리",
-        "도구 / workflow 추가",
-        "거버넌스 정책 변경 (사용자 의도 trigger 후)"
+        "충돌 해결 (SSOT 기반 명확한 경우)",
+        "기술 가치 판단 (작업 보존/폐기, cherry-pick/squash, 충돌 해결 방식)"
       ],
-      "rationale": "사용자가 비전문가일 때 실행 영역 confirm 요구 = 시스템 실패. 의도 영역 질문만 허용."
+      "ssot_first_judgment": {
+        "process": [
+          "1. SSOT 우선순위 검색 (conflict_resolution.ssot_priority 참조)",
+          "2. 답 있음 → 자율 진행 (사용자 confirm 0회)",
+          "3. 답 모호 → SSOT 보강 PR 자율 생성 + 머지 (governance freeze 외)",
+          "4. 답 없음 + 큰 방향성 → 사용자 의도 영역 질문 (원칙적으로 마지막 수단)"
+        ],
+        "anti_pattern": "비전문 사용자에게 기술 가치 판단 떠넘기기 금지. '이 작업 살릴까 폐기할까?' 같은 질문은 SSOT 부족의 증거 — 사용자가 아닌 SSOT 를 수정해야 함."
+      },
+      "user_intent_question_standard": {
+        "forbidden_terms": [
+          "worktree",
+          "commit hash",
+          "cherry-pick",
+          "squash",
+          "branch",
+          "PR number (#NN)",
+          "merge",
+          "rebase",
+          "내부 식별자 (B-XXX, SG-XXX, TDB-XXX)",
+          "Mode A/B",
+          "Type C",
+          "scope_check",
+          "self-bootstrap"
+        ],
+        "required_form": "배경 1줄 + 옵션 2~3개 + 영향 1줄. 평이한 한국어. 비전문 개발자가 답할 수 있는 형태.",
+        "good_example": "지금 로그인이 잘 되나요? Yes/No (옛 버그 fix 가 살릴 가치 있는지 판단)",
+        "bad_example": "team2-work 의 e00d9da0 commit cherry-pick 할까요?",
+        "test": "비전문 개발자가 사용 경험만으로 답할 수 있는가?"
+      },
+      "rationale": "v9.3 의 의도/실행 분리를 v9.4 로 정교화. AI 의 SSOT 기반 판단 영역 명시 + 사용자에게 기술 질문 떠넘기기 차단."
     },
     "merge_authority": {
       "main_merge": "ai_autonomous_when_conditions_met",
