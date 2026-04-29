@@ -1,9 +1,9 @@
 ---
-title: Task Dispatch Board (V9.2 Day 0 Complete — V9.2 Cold Start Pending)
+title: Task Dispatch Board (V9.3 — Intent/Execution Separation + AI Autonomous Merge)
 owner: conductor
 tier: contract
 last-updated: 2026-04-29
-governance: V9.2 conductor_centralized_review_with_self_merge_for_clean_prs
+governance: V9.3 intent_execution_separation_with_ai_autonomous_merge
 ---
 
 # Task Dispatch Board

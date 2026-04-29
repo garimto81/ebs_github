@@ -1,0 +1,75 @@
+# V9.3 Operating Metrics
+# ----------------------------------------------------------------------
+# 측정 기간: 2026-04-29 ~ 2026-05-29 (30일 governance freeze period)
+# 목적: V9.3 Intent-Execution Separation 효과 정량 검증
+# Auto V10 trigger 조건: team-policy.json governance_model.freeze.auto_v10_trigger_conditions
+# ----------------------------------------------------------------------
+
+period:
+  start: "2026-04-29"
+  end: "2026-05-29"
+  status: "active"
+
+baseline:
+  reference_period: "2026-04-21..2026-04-29"  # V8.0/V9.0 시기
+  daily_merge_throughput: 8.5   # PR/day 평균 (참고치, V9.2 도입 전)
+  user_intent_questions: "high"  # 정량 측정 안 됨, V9.3 비교 baseline
+
+targets:
+  daily_merge_throughput:
+    minimum: 5.0
+    rationale: "V8.0 적체 해소가 핵심 동기였으므로 throughput 유지가 V9.3 성공 조건"
+  ai_autonomous_merge_ratio:
+    minimum: 0.7
+    rationale: "전체 PR 중 70% 이상이 사용자 confirm 없이 자율 머지 = V9.3 의도/실행 분리 작동"
+  user_intent_question_count_per_week:
+    maximum: 5
+    rationale: "주당 5회 미만의 의도 영역 질문 = 사용자 부담 최소화"
+  broken_main_incident_count:
+    maximum: 1
+    rationale: "AI 자율 머지로 인한 main 손상 1건 이하 = revert 자율 회복 가능 범위"
+  conflict_escalation_rate:
+    maximum: 0.2
+    rationale: "전체 PR 중 20% 이하만 conflict 라벨 → Conductor 큐 부담 제어"
+
+auto_v10_triggers:
+  - condition: "broken_main_incident_count > 1"
+    action: "V10 재설계 (자율 머지 조건 강화 또는 폐기)"
+  - condition: "user_intent_question_count_per_week > 5"
+    action: "V10 재설계 (의도/실행 boundary 재조정)"
+  - condition: "ai_autonomous_merge_ratio < 0.7"
+    action: "V10 재설계 (자율 머지 조건 완화)"
+
+current_observations:
+  # 자동 수집 (별도 후속 PR 에서 GitHub Actions 자동화):
+  prs_merged_total: 0
+  prs_merged_autonomous: 0
+  prs_merged_with_user_intent_confirm: 0
+  prs_with_conflict_label: 0
+  user_intent_questions_logged: []
+  broken_main_incidents: []
+
+cycle_log:
+  - date: "2026-04-29"
+    cycle: "V9.3 도입"
+    user_intent_triggers:
+      - "PR 둘 다 머지해 (PR #75, #76)"
+      - "PR 77 머지 OK (V9.3 governance)"
+      - "남은 결함 해소 (PR #78)"
+      - "다음 cycle 잔존 작업 모두 처리해 (PR #79+)"
+    prs_created_today: ["#75", "#76", "#77", "#78"]
+    prs_merged_today: ["#75", "#76", "#77", "#78"]
+    autonomous_merges: ["#78"]
+    user_confirm_required: ["#77"]  # self-bootstrap protection
+    notes: "첫 V9.3 자율 머지 (#78) 성공. self-bootstrap 보호 1회 발동 (#77)."
+
+review_schedule:
+  - date: "2026-05-06"  # 1주차
+    metric_review: true
+  - date: "2026-05-13"  # 2주차
+    metric_review: true
+  - date: "2026-05-20"  # 3주차
+    metric_review: true
+  - date: "2026-05-29"  # 4주차 / freeze 종료
+    final_review: true
+    decision_required: ["freeze_extension", "v10_trigger", "stable_v93"]
