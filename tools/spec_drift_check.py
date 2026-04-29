@@ -176,22 +176,18 @@ def detect_api() -> ContractReport:
     only_in_code = code_set - spec_set  # D3
     shared = spec_set & code_set
 
+    # V9.5 P22: §1.1 prefix 생략 정책 — 정규식 false positive 제거.
+    # Backend_HTTP.md §1.1 가 "POST /users 표기 = 실제 POST /api/v1/users" 로
+    # prefix 생략을 공식 정책화. 따라서 (method, stripped) ∈ spec_set 이면
+    # D1 으로 분류하던 항목은 정합 (D4) 으로 처리해야 한다.
+    prefix_policy_matches: set[tuple[str, str]] = set()
     for method, path in sorted(only_in_code):
         # D3: code only, undocumented
         if path.startswith("/api/v1"):
             stripped = path.replace("/api/v1", "", 1)
             if (method, stripped) in spec_set:
-                # 경로 prefix만 빠진 문서 — D1 (값 불일치)
-                rep.d1.append(
-                    DriftItem(
-                        contract="api",
-                        drift_type="D1",
-                        identifier=f"{method} {path}",
-                        spec_value=f"{method} {stripped}",
-                        code_value=f"{method} {path}",
-                        note="문서에 /api/v1 prefix 누락",
-                    )
-                )
+                # §1.1 prefix 생략 정책 — D4 (정합) 처리
+                prefix_policy_matches.add((method, stripped))
                 continue
         rep.d3.append(
             DriftItem(
@@ -207,7 +203,10 @@ def detect_api() -> ContractReport:
         # D2: spec only (미구현 또는 prefix 차이)
         prefixed = ("/api/v1" + path) if not path.startswith("/api/v1") else path
         if (method, prefixed) in code_set:
-            # 이미 D1으로 처리됨 — skip
+            # §1.1 prefix 생략 정책 — D4 정합 (위 prefix_policy_matches 와 대응)
+            continue
+        if (method, path) in prefix_policy_matches:
+            # 위에서 이미 D4 로 인식
             continue
         rep.d2.append(
             DriftItem(
@@ -219,11 +218,12 @@ def detect_api() -> ContractReport:
             )
         )
 
-    rep.d4_count = len(shared)
+    # V9.5 P22: prefix 정책 매치도 D4 정합으로 카운트
+    rep.d4_count = len(shared) + len(prefix_policy_matches)
     rep.scanner_note = (
         f"scanned {len(spec_set)} spec endpoints "
         f"(+ {len(wsop_native_skipped)} WSOP-native refs skipped) / "
-        f"{len(code_set)} code endpoints. 정규식 기반 best-effort."
+        f"{len(code_set)} code endpoints. 정규식 기반 best-effort + §1.1 prefix policy."
     )
     return rep
 
