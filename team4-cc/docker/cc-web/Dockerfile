@@ -15,7 +15,7 @@
 # 2026-04-28 — Flutter SDK explicit pin (PR #18 cascade — lobby-web 와 동일 pin 적용).
 # 이전 :3.22.0 → 본 PR 시점 :3.41.7 (digest sha256:644e3cea...).
 # 부동 :stable 금지 (build determinism). 변경 시 cascade 갭 (intl/Dart/web flag) 재검토.
-FROM ghcr.io/cirruslabs/flutter:3.41.7 AS builder
+FROM ghcr.io/cirruslabs/flutter:3.41.8 AS builder
 
 WORKDIR /app
 
