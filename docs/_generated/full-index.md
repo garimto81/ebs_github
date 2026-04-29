@@ -38,6 +38,8 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Backlog/B-086-browser-e2e-drilldown.md` | Browser E2E 러너에 drill-down + 탭 순회 시나리오 추가 | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-087-quasar-migration-drift-master.md` | Quasar → Flutter 이전 누락/Drift 전수 수정 (master) | team1 | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-088-B-team1-docs-rest-path-pascal.md` | team1 기획 문서 REST path kebab → PascalCase 변환 (B-088 subscope) | team1 | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-089-lobby-design-foundation-tokens.md` | Lobby Design — Foundation visual system 이식 (Phase 1) | team1 | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-090-lobby-design-five-screen-restructure.md` | Lobby Design — 5-screen drilldown 재구조화 (Phase 2) | team1 | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F004-pending-missing-api-docs.md` | 문서 누락 API 경로 보강 대기 (team2/Conductor 책임) | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F005-settings-series-selector.md` | Settings 화면에 Series selector UI 도입 | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F006-skin-upload-ui-2step.md` | Skin 업로드 UI를 2-step 플로우로 업데이트 | - | - | - |
@@ -370,6 +372,7 @@ tier: generated
 | `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` | Token Lifecycle Sequences | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Authentication/Troubleshooting_Runbook.md` | Authentication Troubleshooting Runbook | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/BS_Overview.md` | BS Overview | conductor | internal | BS-00 |
+| `docs/2. Development/2.5 Shared/Card_Flow_Index.md` | Card Flow Index — RFID 입력 → Engine → Overlay | conductor | shared-index | — |
 | `docs/2. Development/2.5 Shared/Naming_Conventions.md` | Naming Conventions (EBS Shared SSOT) | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Network_Config.md` | Network Configuration Contract | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Risk_Matrix.md` | Risk Matrix | conductor | internal | - |
@@ -482,6 +485,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` | 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-200-foundation-alignment-2026-04-22.md` | Foundation 재설계(2026-04-22) 정렬 — Conductor 소유 문서 전수 수정 | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md` | 회의 D3 GE 제거 결정 — 전체 전파 (Conductor + team1/team2/team4) | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` | 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` | B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` | B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md` | B-Q12 — 100ms SLA 측정 framework (BLANK-1 + B-Q7 cascade) | conductor | internal | - |
@@ -604,6 +608,7 @@ tier: generated
 | `docs/4. Operations/Reports/2026-04-28-v8-phase8c-skill-md-v4-history.md` | SKILL.md (team) — v4.0/v4.1 폐기 이유 (Archived 2026-04-28) | conductor | - | - |
 | `docs/4. Operations/Reports/2026-04-28-v8-phase8d-multi-session-workflow-history.md` | Multi_Session_Workflow.md — v7.2 5-Session Pipeline + 변경 이력 (Archived 2026-04-28) | conductor | - | - |
 | `docs/4. Operations/Reports/2026-04-28-v8-restoration-verified.md` | v8.0 Workflow Verification — End-to-End Test | conductor | - | - |
+| `docs/4. Operations/Reports/2026-04-29-card-flow-drift-check.md` | Card Flow Drift Check Report (CF-009) | conductor | - | - |
 | `docs/4. Operations/Roadmap.md` | Roadmap | conductor | internal | - |
 | `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` | SSOT Alignment Report — Lobby Path Drift Eradication | conductor | internal | - |
 | `docs/4. Operations/SSOT_Alignment_Progress.md` | SSOT Alignment Progress | conductor | internal | - |

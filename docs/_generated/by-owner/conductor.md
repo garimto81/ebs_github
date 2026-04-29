@@ -21,6 +21,7 @@ tier: generated
 - `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` — Token Lifecycle Sequences
 - `docs/2. Development/2.5 Shared/Authentication/Troubleshooting_Runbook.md` — Authentication Troubleshooting Runbook
 - `docs/2. Development/2.5 Shared/BS_Overview.md` — BS Overview
+- `docs/2. Development/2.5 Shared/Card_Flow_Index.md` — Card Flow Index — RFID 입력 → Engine → Overlay
 - `docs/2. Development/2.5 Shared/Naming_Conventions.md` — Naming Conventions (EBS Shared SSOT)
 - `docs/2. Development/2.5 Shared/Network_Config.md` — Network Configuration Contract
 - `docs/2. Development/2.5 Shared/Risk_Matrix.md` — Risk Matrix
@@ -121,6 +122,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
 - `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` — 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합)
 - `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` — 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서
+- `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` — 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비
 - `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` — B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` — B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md` — B-Q12 — 100ms SLA 측정 framework (BLANK-1 + B-Q7 cascade)
@@ -213,6 +215,7 @@ tier: generated
 - `docs/4. Operations/Reports/2026-04-28-v8-phase8c-skill-md-v4-history.md` — SKILL.md (team) — v4.0/v4.1 폐기 이유 (Archived 2026-04-28)
 - `docs/4. Operations/Reports/2026-04-28-v8-phase8d-multi-session-workflow-history.md` — Multi_Session_Workflow.md — v7.2 5-Session Pipeline + 변경 이력 (Archived 2026-04-28)
 - `docs/4. Operations/Reports/2026-04-28-v8-restoration-verified.md` — v8.0 Workflow Verification — End-to-End Test
+- `docs/4. Operations/Reports/2026-04-29-card-flow-drift-check.md` — Card Flow Drift Check Report (CF-009)
 - `docs/4. Operations/Roadmap.md` — Roadmap
 - `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` — SSOT Alignment Report — Lobby Path Drift Eradication
 - `docs/4. Operations/SSOT_Alignment_Progress.md` — SSOT Alignment Progress
