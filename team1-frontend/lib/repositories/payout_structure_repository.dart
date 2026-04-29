@@ -32,13 +32,21 @@ class PayoutStructureRepository {
   // Backend_HTTP.md §PayoutStructure: series-nested CRUD.
   // Flight 적용 Payout는 /flights/:id/payout-structure 별도 경로 (team2 소유).
 
+  // V9.5 SSOT 정합: BO 가 flat /payout-structures 채택 (series-scope 폐기).
+  // seriesId 는 query param 또는 body field 로 전달. method signature 는 caller
+  // 영향 최소화 위해 보존.
+
   Future<List<PayoutStructure>> listPayoutStructures(
     int seriesId, {
     Map<String, dynamic>? params,
   }) async {
+    final mergedParams = <String, dynamic>{
+      'series_id': seriesId,
+      ...?params,
+    };
     return _client.get<List<PayoutStructure>>(
-      '/series/$seriesId/payout-structures',
-      queryParameters: params,
+      '/payout-structures',
+      queryParameters: mergedParams,
       fromJson: (json) => (json as List)
           .map((e) => PayoutStructure.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -46,8 +54,9 @@ class PayoutStructureRepository {
   }
 
   Future<PayoutStructure> getPayoutStructure(int seriesId, int psId) async {
+    // seriesId 는 caller compatibility 보존용. BO path 는 flat.
     return _client.get<PayoutStructure>(
-      '/series/$seriesId/payout-structures/$psId',
+      '/payout-structures/$psId',
       fromJson: (json) =>
           PayoutStructure.fromJson(json as Map<String, dynamic>),
     );
@@ -57,9 +66,13 @@ class PayoutStructureRepository {
     int seriesId,
     Map<String, dynamic> data,
   ) async {
+    final body = <String, dynamic>{
+      'series_id': seriesId,
+      ...data,
+    };
     return _client.post<PayoutStructure>(
-      '/series/$seriesId/payout-structures',
-      data: data,
+      '/payout-structures',
+      data: body,
       fromJson: (json) =>
           PayoutStructure.fromJson(json as Map<String, dynamic>),
     );
@@ -71,7 +84,7 @@ class PayoutStructureRepository {
     Map<String, dynamic> data,
   ) async {
     return _client.put<PayoutStructure>(
-      '/series/$seriesId/payout-structures/$psId',
+      '/payout-structures/$psId',
       data: data,
       fromJson: (json) =>
           PayoutStructure.fromJson(json as Map<String, dynamic>),
@@ -79,9 +92,7 @@ class PayoutStructureRepository {
   }
 
   Future<void> deletePayoutStructure(int seriesId, int psId) async {
-    await _client.delete<dynamic>(
-      '/series/$seriesId/payout-structures/$psId',
-    );
+    await _client.delete<dynamic>('/payout-structures/$psId');
   }
 }
 

@@ -38,13 +38,20 @@ class SettingsRepository {
   // 모든 blind-structure 조회/변경은 series 컨텍스트 필수.
   // Flight 적용 구조는 /flights/:id/blind-structure 별도 경로 (BO team2 소유).
 
+  // V9.5 SSOT 정합: BO 가 flat /blind-structures 채택 (series-scope 폐기).
+  // seriesId 는 query param 또는 body field 로 전달.
+
   Future<List<BlindStructure>> listBlindStructures(
     int seriesId, {
     Map<String, dynamic>? params,
   }) async {
+    final mergedParams = <String, dynamic>{
+      'series_id': seriesId,
+      ...?params,
+    };
     return _client.get<List<BlindStructure>>(
-      '/series/$seriesId/blind-structures',
-      queryParameters: params,
+      '/blind-structures',
+      queryParameters: mergedParams,
       fromJson: (json) => (json as List)
           .map((e) => BlindStructure.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -53,7 +60,7 @@ class SettingsRepository {
 
   Future<BlindStructure> getBlindStructure(int seriesId, int bsId) async {
     return _client.get<BlindStructure>(
-      '/series/$seriesId/blind-structures/$bsId',
+      '/blind-structures/$bsId',
       fromJson: (json) =>
           BlindStructure.fromJson(json as Map<String, dynamic>),
     );
@@ -63,9 +70,13 @@ class SettingsRepository {
     int seriesId,
     Map<String, dynamic> data,
   ) async {
+    final body = <String, dynamic>{
+      'series_id': seriesId,
+      ...data,
+    };
     return _client.post<BlindStructure>(
-      '/series/$seriesId/blind-structures',
-      data: data,
+      '/blind-structures',
+      data: body,
       fromJson: (json) =>
           BlindStructure.fromJson(json as Map<String, dynamic>),
     );
@@ -77,7 +88,7 @@ class SettingsRepository {
     Map<String, dynamic> data,
   ) async {
     return _client.put<BlindStructure>(
-      '/series/$seriesId/blind-structures/$bsId',
+      '/blind-structures/$bsId',
       data: data,
       fromJson: (json) =>
           BlindStructure.fromJson(json as Map<String, dynamic>),
@@ -85,9 +96,7 @@ class SettingsRepository {
   }
 
   Future<void> deleteBlindStructure(int seriesId, int bsId) async {
-    await _client.delete<dynamic>(
-      '/series/$seriesId/blind-structures/$bsId',
-    );
+    await _client.delete<dynamic>('/blind-structures/$bsId');
   }
 
   // -- Blind Structure Levels (문서 명세 없음 — B-F004 보강 대기) -------------

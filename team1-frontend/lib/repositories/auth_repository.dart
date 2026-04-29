@@ -84,7 +84,8 @@ class AuthRepository {
   }
 
   Future<void> logout() async {
-    await _client.delete<dynamic>('/auth/session');
+    // V9.5 SSOT 정합: BO 가 POST /auth/logout 제공 (DELETE /auth/session 미제공).
+    await _client.post<dynamic>('/auth/logout');
   }
 
   Future<Map<String, dynamic>> forgotPassword(String email) async {
