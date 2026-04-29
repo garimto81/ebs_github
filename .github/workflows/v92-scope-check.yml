@@ -1,0 +1,44 @@
+# V9.2 Scope Check Gate
+# ----------------------------------------------------------------------
+# 목적: PR 의 changed files 가 단일 scope 카테고리에 속하는지 검증.
+#   - 다중 카테고리 → mixed-scope 라벨 필수
+#   - governance 카테고리 → governance-change 라벨 필수
+# 트리거: PR open/reopen/sync/labeled
+# 출력: tools/scope_check.py 의 PASS / FAIL 결과
+# ----------------------------------------------------------------------
+
+name: V9.2 Scope Check
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  scope-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Run scope_check
+        env:
+          BASE_REF: origin/${{ github.event.pull_request.base.ref }}
+          HEAD_REF: HEAD
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+          python tools/scope_check.py
