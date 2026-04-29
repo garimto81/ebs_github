@@ -48,6 +48,11 @@ def main(argv: list[str]) -> int:
         default=None,
         help="기본은 settings.database_url. 명시 시 override (예: postgresql://...)",
     )
+    ap.add_argument(
+        "--force",
+        action="store_true",
+        help="V9.5 P16: 기존 user 의 password reset (E2E test 환경)",
+    )
     args = ap.parse_args(argv)
 
     db_url = args.database_url or settings.database_url
@@ -61,9 +66,21 @@ def main(argv: list[str]) -> int:
     with Session(engine) as db:
         existing = db.exec(select(User).where(User.email == args.email)).first()
         if existing:
+            if args.force:
+                # V9.5 P16: --force 시 password reset (E2E test 환경)
+                existing.password_hash = hash_password(args.password)
+                existing.role = args.role
+                existing.is_active = True
+                db.add(existing)
+                db.commit()
+                print(
+                    f"✓ Force-updated user_id={existing.user_id} email={existing.email} "
+                    f"role={existing.role} (password reset)."
+                )
+                return 0
             print(
                 f"User already exists: user_id={existing.user_id} email={existing.email} "
-                f"role={existing.role}. No-op."
+                f"role={existing.role}. No-op (use --force to reset password)."
             )
             return 0
 
