@@ -29,8 +29,8 @@ async function login(request: APIRequestContext): Promise<string> {
   });
   expect(res.status(), 'login should succeed').toBe(200);
   const body = await res.json();
-  expect(body.data?.access_token, 'access_token in response').toBeTruthy();
-  return body.data.access_token as string;
+  expect(body.data?.accessToken, 'accessToken in response').toBeTruthy();
+  return body.data.accessToken as string;
 }
 
 test.describe('V9.5 BlindStructure + Levels CRUD flow', () => {
@@ -52,8 +52,9 @@ test.describe('V9.5 BlindStructure + Levels CRUD flow', () => {
     expect(createBsRes.status(), 'BS create returns 2xx').toBeGreaterThanOrEqual(200);
     expect(createBsRes.status()).toBeLessThan(300);
     const bsBody = await createBsRes.json();
-    const bsId: string = bsBody.data?.blind_structure_id ?? bsBody.data?.id;
-    expect(bsId, 'blind_structure_id in response').toBeTruthy();
+    // BO response: camelCase (blindStructureId)
+    const bsId: string = bsBody.data?.blindStructureId ?? bsBody.data?.blind_structure_id ?? bsBody.data?.id;
+    expect(bsId, 'blindStructureId in response').toBeTruthy();
 
     // ---- Step 3: POST level (V9.5 P3 endpoint) ---------------------------
     const postLevelRes = await request.post(
