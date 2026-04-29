@@ -116,6 +116,7 @@ tier: generated
 - `docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md` — CR-055-output-event-buffer-ownership
 - `docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md` — CR-056-deadlink-cleanup
 - `docs/4. Operations/4. Operations.md` — 4. Operations
+- `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` — Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획
 - `docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md` — Graphic Editor team5 분리 적합성 결정 (DONE — Option A 채택)
 - `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
 - `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` — 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합)
@@ -180,10 +181,12 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` — Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A)
 - `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
 - `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
+- `docs/4. Operations/DEPENDABOT_GOVERNANCE.md` — Dependabot Governance — Label / Major Gate / Recreate Guard
 - `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
 - `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` — ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
 - `docs/4. Operations/Foundation_Alignment_Plan.md` — Foundation 재설계 정렬 계획 (Conductor 소유 문서)
 - `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` — Global SSOT Sync — SG-022 advocacy eradication
+- `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Domain Access
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
 - `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
 - `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate)
@@ -211,6 +214,7 @@ tier: generated
 - `docs/4. Operations/Reports/2026-04-28-v8-phase8d-multi-session-workflow-history.md` — Multi_Session_Workflow.md — v7.2 5-Session Pipeline + 변경 이력 (Archived 2026-04-28)
 - `docs/4. Operations/Reports/2026-04-28-v8-restoration-verified.md` — v8.0 Workflow Verification — End-to-End Test
 - `docs/4. Operations/Roadmap.md` — Roadmap
+- `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` — SSOT Alignment Report — Lobby Path Drift Eradication
 - `docs/4. Operations/SSOT_Alignment_Progress.md` — SSOT Alignment Progress
 - `docs/4. Operations/Spec_Gap_Registry.md` — Spec Gap Registry — Drift 집계 + 해소 추적
 - `docs/4. Operations/Spec_Gap_Triage.md` — Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜

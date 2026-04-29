@@ -253,6 +253,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/B-350-api04-bs0609-alignment.md` | API-04 §6.0 (21종) ↔ BS-06-09 (19종) OutputEvent 정합 검증 — 누락 3 OE + 번호 shift 분석 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-353-cross-team-bs06-citations.md` | Cross-team BS-06-XX 인용 (101건) → 도메인 마스터 redirect 갱신 — 팀별 자율 처리 위임 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-354-legacy-id-redirect-oe-mapping.md` | legacy-id-redirect.json 에 OE-level 매핑 추가 — API-04 OE-XX ↔ BS-06-09 OE-XX 번호 변환 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-355-redirect-validator-infrastructure.md` | legacy-id-redirect.json validator (Dart CLI + CI gate) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` | OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` | Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13) | - | - | - |
@@ -467,6 +468,7 @@ tier: generated
 | `docs/3. Change Requests/pending/CR-team1-20260417-bo-cors-lan.md` | CR: Team2 BO CORS 기본값을 LAN 허용으로 변경 | - | - | - |
 | `docs/3. Change Requests/pending/CR-team1-20260417-cc-network-config.md` | CR: Team4 CC boApiClientProvider localhost 하드코딩 제거 | - | - | - |
 | `docs/4. Operations/4. Operations.md` | 4. Operations | conductor | internal | - |
+| `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` | Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획 | conductor | critical | - |
 | `docs/4. Operations/Conductor_Backlog.md` | Conductor_Backlog | - | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` | Phase 2 통합 테스트 + E2E | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` | Phase 3 통합 테스트 + 부하 테스트 | - | - | - |
@@ -569,10 +571,12 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` | Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A) | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` | Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
+| `docs/4. Operations/DEPENDABOT_GOVERNANCE.md` | Dependabot Governance — Label / Major Gate / Recreate Guard | conductor | internal | - |
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
 | `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` | ECOSYSTEM E2E Handoff — Multi-Service Docker Validation | conductor | operations | - |
 | `docs/4. Operations/Foundation_Alignment_Plan.md` | Foundation 재설계 정렬 계획 (Conductor 소유 문서) | conductor | internal | - |
 | `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` | Global SSOT Sync — SG-022 advocacy eradication | conductor | contract | - |
+| `docs/4. Operations/LAN_DEPLOYMENT.md` | LAN Deployment — Internal Network Domain Access | conductor | internal | - |
 | `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
 | `docs/4. Operations/Multi_Session_Handoff.md` | Multi-Session Handoff Guide (2026-04-21) | conductor | internal | - |
 | `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (v5.1 — Pre-Work Contract + Worktree + PR + Free-tier Merge Gate) | conductor | contract | - |
@@ -601,6 +605,7 @@ tier: generated
 | `docs/4. Operations/Reports/2026-04-28-v8-phase8d-multi-session-workflow-history.md` | Multi_Session_Workflow.md — v7.2 5-Session Pipeline + 변경 이력 (Archived 2026-04-28) | conductor | - | - |
 | `docs/4. Operations/Reports/2026-04-28-v8-restoration-verified.md` | v8.0 Workflow Verification — End-to-End Test | conductor | - | - |
 | `docs/4. Operations/Roadmap.md` | Roadmap | conductor | internal | - |
+| `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` | SSOT Alignment Report — Lobby Path Drift Eradication | conductor | internal | - |
 | `docs/4. Operations/SSOT_Alignment_Progress.md` | SSOT Alignment Progress | conductor | internal | - |
 | `docs/4. Operations/Spec_Gap_Registry.md` | Spec Gap Registry — Drift 집계 + 해소 추적 | conductor | internal | - |
 | `docs/4. Operations/Spec_Gap_Triage.md` | Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜 | conductor | internal | - |
