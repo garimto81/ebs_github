@@ -10,7 +10,8 @@ COPY tools/ tools/
 COPY migrations/ migrations/
 COPY alembic.ini alembic.ini
 COPY entrypoint.sh entrypoint.sh
-RUN chmod +x entrypoint.sh
+# V9.5 P17: CRLF → LF (Windows 작성 file 호환)
+RUN sed -i 's/\r$//' entrypoint.sh && chmod +x entrypoint.sh
 
 EXPOSE 8000
 
