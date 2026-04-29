@@ -1,184 +1,121 @@
 ---
 name: team
-description: EBS V9.0 Hub-and-Spoke 멀티세션 워크플로우 (2026-04-29). 팀 세션 = Worker. Conductor = Hub. Worker 는 PR 보고까지만, main 머지 절대 금지. Task_Dispatch_Board.md 가 SSOT. v8.0 자율 머지 폐기.
+description: EBS V9.5 — /team 슬래시 audit-only demoted (2026-04-29). Hub-and-Spoke 폐기. Conductor 단일 session + Agent Teams in-process 가 default. 사용자가 /team 호출할 필요 없음 — AI Conductor 가 사용자 의도 trigger 로 자율 진행.
 ---
 
-# /team — EBS Multi-Session Workflow V9.0
+# /team — V9.5 Audit-Only (DEPRECATED for active use)
 
-> **버전 표기 규칙** — skill 식별자(`team`) 와 정책 버전(`V9.0`) 은 독립.
+> **🚨 V9.5 패러다임 (2026-04-29)**: Hub-and-Spoke 폐기. `/team` 슬래시는 **audit / diagnosis 용도** 로만 사용. 사용자가 작업 의도 trigger 시 AI Conductor 가 단일 session 에서 자율 진행 — `/team` 슬래시 불필요.
 
-## 🎯 V9.0 패러다임 (Hub-and-Spoke)
+## 🎯 V9.5 운영 모델
 
-- **Conductor (Hub)** — 작업 dispatch + 리뷰 + 머지 권한 독점
-- **팀 세션 (Worker, Spoke)** — 할당 작업 구현 + PR 보고까지만
-- **Task_Dispatch_Board.md** — 작업 + 상태 SSOT (`docs/4. Operations/Task_Dispatch_Board.md`)
-- **자율 머지 폐기** — `auto-merge` 라벨 / `pr-auto-merge.yml` 워크플로우 비활성
+**Default = Conductor 단일 session**:
 
-## 🚫 절대 규칙 (Worker)
+```
+사용자 의도 trigger ("X 작업해", "잔존 처리", 결과물 부적합 신호)
+       │
+       ▼
+   AI Conductor (단일 session, 현재 cwd)
+       │
+       ├─ SSOT 검색 (Foundation > team-policy > Risk_Matrix > APIs > Backlog)
+       ├─ 모호 시 SSOT 보강 PR 자율 생성
+       ├─ Multi-team scope → Agent Teams in-process spawn (필요 시)
+       │
+       ▼
+   work/<owner>/<slug> branch + commit + PR
+       │
+       ▼
+   tools/v93_autonomous_merge.py 자율 머지
+       │
+       ▼
+   결과물 main 적용
+```
 
-| 금지 행위 | 이유 |
-|-----------|------|
-| `gh pr merge` 호출 | main 머지 권한은 Conductor 만 |
-| `git push origin main` | 직접 push 금지 (PR 경로 강제) |
-| `auto-merge` 라벨 부여 | V9.0 워크플로우 비활성. 부여해도 머지 미발생 |
-| 충돌 해결 시도 | rebase 충돌 시 PR 에 `conflict` 라벨 + Conductor 알림 |
-| 보드 외 작업 자율 착수 | 발견 사항은 PR comment 또는 Backlog 에만 추가 |
-| Idle 상태 무시 | `REVIEW_READY` 보고 후 다음 작업 받을 때까지 대기 |
+## 🚫 폐기된 흐름 (V9.0~V9.4 Hub-and-Spoke)
 
-## 🔄 V9.0 3-Step Worker SOP
+| 항목 | 사유 |
+|------|------|
+| `cd C:/claude/ebs-team{N}-work && claude` 5 session 운영 | 사용자 입력 5회 = V9.4 위배 |
+| Worker session 의 보드 self-discovery + Idle 대기 | trigger 메커니즘 부재 |
+| `/team "<task>"` 슬래시 사용자 호출 | 사용자 입력 = anti-pattern |
+| 5 transition (ASSIGNED→IN_PROGRESS→...) | ceremony 결과물 기여 미정당화 |
 
-### Step 1: Pickup — 보드에서 자기 task 확인
+## ✅ V9.5 사용 (Audit/Diagnosis only)
+
+`/team` 슬래시는 진단 도구로만:
 
 ```bash
-# 1. 본 보드 열기
-$EDITOR "docs/4. Operations/Task_Dispatch_Board.md"
-
-# 2. 본인 팀 row 의 ASSIGNED 항목만 확인 (다른 팀 row 무시)
-# 3. 등록된 작업이 없으면 Idle 대기. 자율 작업 시작 금지
+/team status     # 현재 운영 모델 확인 (Single Session Mode)
+/team audit      # 최근 cycle 운영 metric (v93_metrics.yml 참조)
+/team diagnose   # critic mode 진단 (architect agent 위임)
 ```
 
-**금지**: Conductor 가 등록하지 않은 작업 자율 착수.
+**작업 trigger 로 사용 금지** — 사용자 의도는 일반 메시지로 충분.
 
-### Step 2: Execute — Sibling worktree 에서 구현 + 테스트
+## 🛠 Multi-Team Work (필요 시)
 
-```bash
-# 1. Sibling worktree 진입
-cd C:/claude/ebs-team{N}-work
+V9.5 도 다중 팀 작업 처리 가능 — **Agent Teams in-process 패턴**:
 
-# 2. 보드 row → IN_PROGRESS 갱신 후 commit
-git add "docs/4. Operations/Task_Dispatch_Board.md"
-git commit -m "chore(board): TDB-NNN IN_PROGRESS"
+```python
+# 사용자 의도: "team1 + team2 동시 작업"
+# AI Conductor 자율 진행:
 
-# 3. /auto "<task description>" 위임 (PDCA 워크플로우)
-# 4. 자체 테스트 (pytest / dart analyze / flutter test) 통과 확인
-# 5. work/team{N}/<slug> 브랜치에 commit
+TeamCreate(team_name="<feature>")
+Agent(subagent_type="executor", name="team1-worker", team_name=..., prompt="...")
+Agent(subagent_type="executor", name="team2-worker", team_name=..., prompt="...")
+# 병렬 실행, 결과 통합
+SendMessage(to="team1-worker", message={type: "shutdown_request"})
+TeamDelete()
 ```
 
-**범위 규칙**: 보드의 scope 컬럼 명시 파일만 편집. 발견된 추가 작업은 PR comment / Backlog 추가.
-
-### Step 3: Report — Draft/Ready PR 생성 + REVIEW_READY 보고
-
-```bash
-# 1. Push + PR 생성 (Draft 또는 Ready, auto-merge 라벨 금지)
-git push -u origin work/team{N}/<slug>
-gh pr create --draft --fill --base main \
-  --title "feat(team{N}): TDB-NNN <task title>" \
-  --body "$(cat <<'EOF'
-## Task ID
-TDB-NNN
-
-## Scope
-- file1.py
-- file2.dart
-
-## 자체 테스트
-- [x] pytest (or dart analyze, flutter test)
-- [x] scope 외 파일 미편집 확인
-
-## V9.0 보고
-REVIEW_READY 상태로 Conductor 리뷰 대기.
-EOF
-)"
-
-# 2. 보드 row → REVIEW_READY + PR URL 기재 + commit + push
-git add "docs/4. Operations/Task_Dispatch_Board.md"
-git commit -m "chore(board): TDB-NNN REVIEW_READY (PR #NN)"
-git push
-
-# 3. Idle 대기. Conductor 가 다음 task 등록할 때까지 시작 금지
-```
-
-**금지**: `gh pr merge`, `--label auto-merge`, `gh pr edit --add-label auto-merge`.
-
-## 🛠 트리거 형태
-
-```bash
-/team "<task description>"     # V9.0 3-Step Worker SOP 실행
-/team                          # 현재 상태 보고 (보드 자기 row 출력)
-/team --help                   # 옵션 설명
-```
-
-## 📋 세부 실행 (args 있을 때, V9.0)
-
-```markdown
-1. Context detect
-   - cwd 가 sibling worktree (`ebs-team{N}-...`) 인지 확인
-   - subdir 감지 시 error: "sibling worktree 필요"
-   - Conductor 세션이면 → "Worker SOP 가 아니라 Hub SOP 입니다. Multi_Session_Workflow.md 참조" error
-
-2. Step 1 Pickup
-   - docs/4. Operations/Task_Dispatch_Board.md 의 본인 팀 row 확인
-   - ASSIGNED 항목과 args 의 task description 매칭 확인
-   - 매칭 안 되면 Conductor 등록 대기 + return
-
-3. Step 2 Execute
-   - 보드 row → IN_PROGRESS commit
-   - /auto "<task>" 위임 (PDCA 워크플로우 그대로)
-   - 자체 테스트 확인
-
-4. Step 3 Report
-   - git push + gh pr create --draft (auto-merge 라벨 부여 금지)
-   - 보드 row → REVIEW_READY + PR URL commit + push
-   - PR URL 사용자에게 보고
-   - Idle 상태 진입 안내
-```
-
-## 🔍 Edge Cases
-
-| 상황 | V9.0 대응 |
-|------|-----------|
-| 보드에 ASSIGNED 가 없음 | Idle 대기 + Conductor 알림. 자율 착수 금지 |
-| Rebase conflict | PR 에 `conflict` 라벨 부여 + Conductor 알림. 직접 해결 금지 |
-| CI 실패 | PR 본문에 결과 기재 + 보드 row 는 REVIEW_READY 유지 (Conductor 판단) |
-| 동시 PR 보고 | Conductor 가 단일 스레드 리뷰. Worker 는 추가 작업 받을 때까지 대기 |
-| 다른 팀 영역 편집 필요 | PR comment 로 사유 명시 + Conductor 결정 대기 |
-| 보드 외 작업 발견 | Backlog (`팀별 Backlog.md`) 추가 후 Conductor 결정 대기 |
-| gh CLI 미설치 | error + 설치 가이드 출력 |
+**핵심**: OS process 5개 ❌ / single Conductor session 내부 in-process Agent ✅
 
 ## 📂 자산 맵
 
-### Active (V9.0)
+### Active (V9.5)
 
 | 자산 | 역할 |
 |------|------|
-| `docs/4. Operations/Task_Dispatch_Board.md` | 작업 + 상태 SSOT |
-| `docs/4. Operations/Multi_Session_Workflow.md` | V9.0 정책 본문 |
-| `.github/CODEOWNERS` | 자동 리뷰어 알림 (Conductor 인지 보조) |
-| `tools/team_v5_merge.py` | PR 생성 단계까지만 사용. **auto-merge 라벨 부여 단계 사용 금지** |
-| `docs/2. Development/2.5 Shared/team-policy.json` | `governance_model: conductor_centralized_review` |
+| `tools/v93_autonomous_merge.py` | AI 자율 머지 (PR 조건 검증 후 squash) |
+| `tools/scope_check.py` | PR 카테고리 분류 + governance-change 라벨 검증 |
+| `tools/team_v92_safe_merge.py` | 머지 전 통합 체크리스트 |
+| `tools/v93_active_check.py` | sibling worktree count 자동 감지 (Mode A trigger) |
+| `.github/workflows/v92-scope-check.yml` | PR 자동 scope 검증 |
+| `.githooks/pre-push` | main 직접 push 차단 + work/infra/feat allowlist |
+| `.github/CODEOWNERS` | 자동 리뷰어 알림 |
 
-### Disabled / Deprecated (V9.0)
+### Demoted (V9.5)
 
-| 자산 | 상태 |
+| 자산 | 새 역할 |
+|------|---------|
+| `docs/4. Operations/Task_Dispatch_Board.md` | **audit log** (실시간 dispatch SSOT 아님). history 보존 |
+| `tools/team_v5_merge.py` | 단순 PR 생성 도구 (auto-merge 라벨 부여 단계 사용 금지 — V9.2 부터) |
+
+### Deprecated (V9.5)
+
+| 자산 | 사유 |
 |------|------|
-| `.github/workflows/pr-auto-merge.yml` | 비활성 (`workflow_dispatch` only) |
-| `auto-merge` 라벨 | deprecated. 부여 금지 |
-| v5.1 L0 Pre-Work Contract (`Active_Work.md`, `active_work_claim.py`) | V9.0 에서 Task_Dispatch_Board.md 가 대체 |
-| v8.0 `concurrency: main-merge-queue` | Conductor 단일 스레드 리뷰가 대체 |
-| `~/.claude/skills/team/` (v4.0 user-global) | deprecation shim |
-| `.claude/hooks/session_branch_init.py` | `claude -w` 네이티브 대체 |
+| Hub-and-Spoke 5-session 모델 | 1인 환경 비현실 |
+| Worker session SOP (보드 self-discovery + Idle) | trigger 부재 |
+| `/team "<task>"` 슬래시 사용자 호출 | 사용자 입력 anti-pattern |
 
-## 🌐 Free-tier 호환성
+## 📐 V9.4 critic 결함 해소 매핑
 
-| 기능 | GitHub Team plan | EBS V9.0 대응 |
-|------|:----------------:|----------------|
-| Merge Queue | ✓ | **Conductor 단일 스레드 리뷰** |
-| Branch protection | ✓ | Conductor 인지·판단 (정책 layer) |
-| auto-merge | ✓ | **사용 안 함** |
-| CODEOWNERS 강제 | ✓ | 자동 알림 + Conductor 리뷰 |
+| critic ID | V9.5 처리 |
+|-----------|-----------|
+| F1 (worker trigger 부재) | ✅ Hub-and-Spoke 폐기 |
+| F2 (헤더 4종 stale) | ✅ V9.5 일제 갱신 |
+| F3 (forbidden_terms 위배) | ✅ SOP 단순화 + 사용자 친화 |
+| F4 (Mode A vs 5-session) | ✅ Single Session 이 default |
+| F5 (SSOT-first 누락) | ✅ V9.5 SOP 에 명시 |
+| F6 (push/pull mismatch) | ✅ 사용자 의도 trigger = push |
+| F7 (ceremony 무용) | ✅ 5→2 transition |
+| F8 (AI 다중 worker 모델 미정의) | ✅ Agent Teams in-process 명시 |
+| F9 (Backlog 자동 분해 부재) | ✅ AI Conductor 가 SSOT 기반 자율 분해 |
 
-## 🚫 금지 (V9.0)
+## 🔗 관련
 
-- subdir 세션 (`C:/claude/ebs/team{N}-*/`) 에서 본 스킬 호출
-- 팀 세션의 `gh pr merge`, `git push origin main`, `auto-merge` 라벨 부여
-- 팀 세션 자율 충돌 해결
-- 보드 외 작업 자율 착수
-- `--no-pr` flag 로 v4.0 동작 요청 (V9.0 은 PR-only)
-- Conductor 동시 다중 PR 머지 (Hub 단일 스레드 원칙)
-
-## 🔗 관련 문서
-
-- `docs/4. Operations/Multi_Session_Workflow.md` — V9.0 SOP (정책 본문)
-- `docs/4. Operations/Task_Dispatch_Board.md` — V9.0 작업 SSOT
-- `docs/2. Development/2.5 Shared/team-policy.json` — `governance_model.merge_authority`
-- `.github/workflows/pr-auto-merge.yml` — V9.0 비활성화 표기
+- `docs/4. Operations/V9_5_Single_Session_Output_Centric.md` — V9.5 본문
+- `docs/4. Operations/V9_4_AI_Centric_Governance.md` — 계승 (의도/실행 분리)
+- `docs/4. Operations/Multi_Session_Workflow.md` — V9.5 갱신 후 Single Session SOP
+- `docs/2. Development/2.5 Shared/team-policy.json` — `governance_model.operating_model.default: single_session_conductor`
