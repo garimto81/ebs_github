@@ -1,0 +1,120 @@
+name: Dependabot — Recreate Guard (CI trigger stabilization)
+
+# ──────────────────────────────────────────────────────────────────────────
+# 2026-04-28 (PR #28, P3 Rec 3) — Dependabot PR 의 CI 미트리거 자동 대응.
+#
+# 배경:
+#   PR #33 첫 push 시 GitGuardian 외 CI 미실행. `@dependabot recreate` 댓글
+#   후 fresh PR 작성으로 정상 CI 트리거. 산발적 패턴 → 운영자 개입 비용.
+#
+# 동작 시퀀스 (10분 간격 scheduled):
+#   1. open 상태 dependabot[bot] PR 목록 조회
+#   2. 각 PR 의 head SHA 에 대한 check_runs 조회
+#   3. PR 생성 5분 경과 + check_runs ≤ 1 (GitGuardian 만, 또는 0 개) 인 경우:
+#      - 최근 30분 내 본 가드의 recreate 댓글 있으면 skip (anti-spam)
+#      - 없으면 `@dependabot recreate` 댓글 작성
+#   4. dependabot 봇이 PR 재생성 → CI 정상 트리거 됨
+#
+# 안전:
+#   schedule trigger — PR 코드 미실행. 봇 댓글 작성만. anti-spam 30분 윈도우.
+#   workflow_dispatch 로 수동 트리거 가능.
+# ──────────────────────────────────────────────────────────────────────────
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # 10분 간격
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: read
+
+jobs:
+  guard:
+    name: Detect + recreate stale-CI dependabot PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Scan + recreate
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const STALE_AFTER_MIN = 5;     // PR 생성 N 분 후 검사
+            const ANTI_SPAM_MIN = 30;      // 최근 N 분 내 recreate 댓글 있으면 skip
+            const NOW = Date.now();
+
+            // 1. open dependabot PR 목록
+            const prs = await github.paginate(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const dependabotPrs = prs.filter(p => p.user?.login === 'dependabot[bot]');
+            core.info(`[recreate-guard] scanning ${dependabotPrs.length} open dependabot PRs`);
+
+            for (const pr of dependabotPrs) {
+              const ageMin = (NOW - new Date(pr.created_at).getTime()) / 60000;
+              if (ageMin < STALE_AFTER_MIN) {
+                core.info(`PR #${pr.number}: too young (${ageMin.toFixed(1)} min) — skip`);
+                continue;
+              }
+
+              // 2. check_runs 조회 (head SHA 기준)
+              const checks = await github.rest.checks.listForRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: pr.head.sha,
+                per_page: 100,
+              });
+              const meaningful = (checks.data.check_runs || []).filter(c =>
+                c.name !== 'GitGuardian Security Checks',
+              );
+              if (meaningful.length > 0) {
+                core.info(`PR #${pr.number}: ${meaningful.length} meaningful checks → healthy`);
+                continue;
+              }
+
+              // 3. anti-spam — 최근 N 분 내 recreate 댓글 있는지
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                per_page: 100,
+              });
+              const recentRecreate = comments.find(c =>
+                c.user?.login === 'github-actions[bot]' &&
+                c.body?.includes('@dependabot recreate') &&
+                (NOW - new Date(c.created_at).getTime()) / 60000 < ANTI_SPAM_MIN,
+              );
+              if (recentRecreate) {
+                core.warning(
+                  `PR #${pr.number}: stale CI (${ageMin.toFixed(1)} min) but recreate ` +
+                  `comment within last ${ANTI_SPAM_MIN} min — skip (anti-spam)`,
+                );
+                continue;
+              }
+
+              // 4. recreate
+              core.notice(
+                `PR #${pr.number}: stale CI (${ageMin.toFixed(1)} min, ` +
+                `${meaningful.length} meaningful checks) → posting @dependabot recreate`,
+              );
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: [
+                  '🔄 **recreate-guard: triggering @dependabot recreate**',
+                  '',
+                  `PR 생성 ${ageMin.toFixed(1)} 분 경과, 의미 있는 CI check 0 개 감지.`,
+                  '`.github/workflows/dependabot-recreate-guard.yml` 가 자동 detect.',
+                  '',
+                  '@dependabot recreate',
+                ].join('\n'),
+              });
+            }
