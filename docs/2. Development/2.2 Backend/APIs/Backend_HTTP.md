@@ -210,6 +210,17 @@ http://{bo_host}:{bo_port}/api/v1
 | POST | `/users` | 사용자 생성 | Admin |
 | PUT | `/users/:id` | 사용자 수정 | Admin |
 | DELETE | `/users/:id` | 사용자 삭제 | Admin |
+| POST | `/users/:id/force-logout` | 대상 사용자 강제 로그아웃 (V9.5 P7) | Admin |
+
+**POST /users/:id/force-logout — Response:**
+
+```json
+{ "data": { "forced_logout": true, "user_id": 42 }, "error": null }
+```
+
+> **현재 동작 (V9.5 P7, minimal viable)**: 대상 user 의 `updated_at` marker 만 갱신. 실제 세션 무효화는 추후 구현.
+>
+> **TODO (Future)**: JWT blacklist (Redis `jti` TTL) 등록 + `get_current_user` 의 매 요청 jti 체크 + WebSocket 강제 disconnect. §16.6 (`POST /auth/logout`) 의 self-logout 메커니즘과 동일 인프라 사용 예정.
 
 **POST /users — Request:**
 
@@ -612,7 +623,25 @@ Operator 경고 모달 + `BO-03 §4 Scenario D` 복구 절차를 트리거한다
 | Method | Path | 설명 | 역할 제한 |
 |:------:|------|------|:---------:|
 | GET | `/tables/:id/seats` | 테이블 좌석 목록 (10석) | 인증 사용자 |
+| POST | `/tables/:id/seats` | 좌석에 플레이어 배치 (V9.5 P7, frontend `addPlayer`) | 인증 사용자 |
 | PUT | `/tables/:id/seats/:seat_no` | 좌석 정보 수정 (플레이어 배치/제거) | Admin, Operator (할당 테이블) |
+| DELETE | `/tables/:id/seats/:seat_no` | 좌석 비우기 (V9.5 P7, frontend `removePlayer`) | 인증 사용자 |
+
+**POST /tables/:id/seats — Request:**
+
+```json
+{
+  "seat_no": 3,
+  "player_id": 42,
+  "chip_count": 50000
+}
+```
+
+> `seat_no` / `player_id` 필수. 둘 중 하나라도 누락 시 `400 MISSING_FIELDS`. `chip_count` 미지정 시 0.
+
+**DELETE /tables/:id/seats/:seat_no**:
+
+해당 좌석을 vacant 상태로 전환. 응답은 `SeatResponse` (status=`empty`, player_id=null).
 
 **PUT /tables/:id/seats/:seat_no — Request (플레이어 배치):**
 
@@ -779,7 +808,10 @@ CREATE INDEX idx_flights_event_display   ON event_flights(event_id, display_name
 | POST | `/skins/:id/upload` | .gfskin 파일 업로드 | Admin |
 | GET | `/skins/:id/download` | .gfskin 파일 다운로드 | Viewer+ |
 | POST | `/skins/:id/activate` | 스킨 활성화 (Overlay 적용) | Admin, Operator |
+| POST | `/skins/:id/deactivate` | 스킨 비활성화 (default 해제, V9.5 P7) | Admin |
 | POST | `/skins/:id/duplicate` | 스킨 복제 | Admin |
+
+> **Activate ↔ Deactivate 대칭 (V9.5 P7)**: `activate` 는 해당 skin 의 `is_default = True` 로 전환하고 다른 active skin 의 default 를 해제. `deactivate` 는 해당 skin 의 `is_default = False` 로 전환하며 다른 default 를 자동 승급하지 않음 (시스템 active 스킨 0 가능).
 
 ### 5.13 BlindStructures — 블라인드 구조 (CCR-049)
 
@@ -793,6 +825,10 @@ CREATE INDEX idx_flights_event_display   ON event_flights(event_id, display_name
 | POST | `/series/:id/blind-structures` | 템플릿 생성 | Admin |
 | PUT | `/series/:id/blind-structures/:bs_id` | 템플릿 수정 (전체 PUT, creator 만) | Admin |
 | DELETE | `/series/:id/blind-structures/:bs_id` | 템플릿 영구 제거 | Admin |
+| GET | `/blind-structures/:bs_id/levels` | 레벨 목록 (V9.5 P3) | 인증 사용자 |
+| POST | `/blind-structures/:bs_id/levels` | 레벨 단건 추가 (V9.5 P3) | Admin |
+| PUT | `/blind-structures/:bs_id/levels/:level_id` | 레벨 단건 부분 수정 (V9.5 P3) | Admin |
+| DELETE | `/blind-structures/:bs_id/levels/:level_id` | 레벨 단건 제거 (V9.5 P3) | Admin |
 | GET | `/flights/:id/blind-structure` | Flight 적용 구조 조회 | 인증 사용자 |
 | PUT | `/flights/:id/blind-structure` | Flight 적용 구조 수정 (`blind_structure_changed` 이벤트) | Admin |
 
@@ -822,6 +858,53 @@ CREATE INDEX idx_flights_event_display   ON event_flights(event_id, display_name
 > `blind_structure_changed` WebSocket 이벤트 발행 (API-05 §4.2.7).
 
 > **레거시 호환**: 기존 `/blind-structures` flat 엔드포인트 5종은 Phase 1 호환. 신규 구현은 Series-scoped 경로.
+
+**Level CRUD (V9.5 P3) — flat path, 단건 단위 변경**:
+
+기존 PUT `/series/:id/blind-structures/:bs_id` 는 전체 levels 배열 교체. V9.5 P3 부터 레벨 단건만 add/update/delete 하는 path 추가. 부모 BS 가 존재해야 하며, level 이 해당 BS 소속이 아니면 `404 RESOURCE_NOT_FOUND`.
+
+**POST /blind-structures/:bs_id/levels — Request:**
+
+```json
+{
+  "level_no": 4,
+  "small_blind": 400,
+  "big_blind": 800,
+  "ante": 100,
+  "duration_minutes": 60,
+  "detail_type": 0
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "data": {
+    "id": 17,
+    "blind_structure_id": 7,
+    "level_no": 4,
+    "small_blind": 400,
+    "big_blind": 800,
+    "ante": 100,
+    "duration_minutes": 60,
+    "detail_type": 0
+  },
+  "error": null
+}
+```
+
+**PUT /blind-structures/:bs_id/levels/:level_id — Request (모든 필드 Optional, 부분 수정):**
+
+```json
+{ "duration_minutes": 90, "ante": 200 }
+```
+
+**404 케이스**:
+- 부모 BS 미존재 → `RESOURCE_NOT_FOUND` (`BlindStructure {bs_id} not found`)
+- level 이 해당 BS 소속 아님 → `RESOURCE_NOT_FOUND` (`Level {level_id} not in BlindStructure {bs_id}`)
+
+> 스키마 정의: `team2-backend/src/models/schemas.py` `BlindStructureLevelCreate` / `BlindStructureLevelUpdate` / `BlindStructureLevelResponse`.
 
 **WSOP BlindType enum 매핑** (EBS `game_type` + `bet_structure` 2필드 매핑):
 
