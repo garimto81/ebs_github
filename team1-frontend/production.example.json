@@ -1,6 +1,6 @@
 {
-  "EBS_BO_HOST": "ebs-bo.internal.local",
-  "EBS_BO_PORT": "8000",
+  "EBS_BO_HOST": "api.ebs.local",
+  "EBS_BO_PORT": "80",
   "USE_MOCK": "false",
   "SENTRY_DSN": "",
   "SENTRY_RELEASE": "ebs-lobby@0.1.0+phase5",
