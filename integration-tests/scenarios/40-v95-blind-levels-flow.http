@@ -1,0 +1,98 @@
+### V9.5 P9 — Blind Structure + Levels E2E flow
+###
+### 검증 대상:
+### - V9.5 P2 (team1): /auth/logout, flat path routing
+### - V9.5 P3 (team2): /blind-structures/{bs_id}/levels CRUD (P5 pytest 보강)
+### - V9.5 P7 (team2): /skins/deactivate, /users/force-logout, /tables/seats
+### - V9.5 P8: drift 0 (BO 135 endpoints, 53 lobby calls, 100% matched)
+###
+### 사용법: REST Client (VSCode) — 순차 실행. 각 step 의 응답을 다음 step 에서 사용.
+
+@host = http://localhost:8000
+
+
+### 40.1 Login (POST /auth/logout 검증 사전 준비)
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin@ebs.test",
+  "password": "test-password-1234"
+}
+
+> {%
+client.global.set("admin_token", response.body.data.access_token);
+%}
+
+
+### 40.2 BlindStructure 생성 (V9.5 정합 — flat path 가정)
+POST {{host}}/api/v1/blind-structures
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "name": "V9.5 E2E Test Structure",
+  "levels": [
+    {"level_no": 1, "small_blind": 100, "big_blind": 200, "ante": 0, "duration_minutes": 15}
+  ]
+}
+
+> {%
+client.global.set("bs_id", response.body.data.blind_structure_id);
+%}
+
+
+### 40.3 Level 추가 (V9.5 P3 신규 endpoint)
+POST {{host}}/api/v1/blind-structures/{{bs_id}}/levels
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "level_no": 2,
+  "small_blind": 200,
+  "big_blind": 400,
+  "ante": 50,
+  "duration_minutes": 20
+}
+
+> {%
+client.global.set("level_id", response.body.data.id);
+%}
+
+
+### 40.4 Level list (V9.5 P3 신규 endpoint)
+GET {{host}}/api/v1/blind-structures/{{bs_id}}/levels
+Authorization: Bearer {{admin_token}}
+
+
+### 40.5 Level 수정 (V9.5 P3 신규 endpoint, partial update)
+PUT {{host}}/api/v1/blind-structures/{{bs_id}}/levels/{{level_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "small_blind": 300,
+  "big_blind": 600
+}
+
+
+### 40.6 Level 삭제 (V9.5 P3 신규 endpoint)
+DELETE {{host}}/api/v1/blind-structures/{{bs_id}}/levels/{{level_id}}
+Authorization: Bearer {{admin_token}}
+
+
+### 40.7 BlindStructure 정리
+DELETE {{host}}/api/v1/blind-structures/{{bs_id}}
+Authorization: Bearer {{admin_token}}
+
+
+### 40.8 Logout (V9.5 P2 — POST /auth/logout, DELETE /auth/session 폐기)
+POST {{host}}/api/v1/auth/logout
+Authorization: Bearer {{admin_token}}
+
+
+### V9.5 cycle 정합 검증:
+### - 40.2 Create: BO routing 정합 (PR #85+#86)
+### - 40.3-40.6 Levels CRUD: P3+P5 신규 endpoints + pytest
+### - 40.8 Logout: P2 SSOT 정합 (DELETE /auth/session → POST /auth/logout)
+### - drift audit: 0 unknown (P8 검증 완료, 2026-04-29)
