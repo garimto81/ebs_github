@@ -17,9 +17,10 @@ import { test, expect, type APIRequestContext } from '@playwright/test';
  */
 
 const BO_BASE_URL = process.env.BO_BASE_URL ?? 'http://localhost:8000';
-// SSOT: team2-backend/seed/README.md (default seed admin)
+// SSOT: team2-backend/src/app/database.py::_seed_admin() — admin@ebs.local / admin123
+// (V9.5 P17: BO entrypoint init_db() 가 startup 시 자동 seed)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@ebs.local';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin1234!';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin123';
 
 async function login(request: APIRequestContext): Promise<string> {
   // SSOT (Backend_HTTP.md L87): /auth/* 는 root, /api/v1 prefix 미적용
