@@ -3,7 +3,7 @@ title: Card Detection
 owner: team4
 tier: internal
 legacy-id: BS-04-02
-last-updated: 2026-04-15
+last-updated: 2026-04-29
 ---
 
 # BS-04-02 Card Detection — 게임 진행 중 카드 감지
@@ -11,6 +11,8 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 홀카드/보드 카드 감지, 카드 제거, 감지 실패 시나리오, 경우의 수 매트릭스 |
+| 2026-04-29 | §3.3 atomic 정렬 (CF-002+003) | Triggers_and_Event_Pipeline.md §1.4/§3.5 T9/§4.10 권위에 정렬. 1~2장 부분 감지 = PENDING (외부 미발행), CC-only FlopPartialAlert. 4번째 카드 = AWAITING_TURN 컨텍스트별 분기 |
+| 2026-04-29 | §1.1 안테나 시각화 (CF-005) | 24 안테나 물리 배치 Mermaid 다이어그램 추가 (좌석 20 + 보드 4) |
 
 ---
 
@@ -52,7 +54,26 @@ last-updated: 2026-04-15
 | 20~22 | Board 좌/중/우 | Flop 카드 3장 |
 | 23 | Board 추가 | Turn / River 카드 |
 
-> **참조**: API-03 §5.1 — 테이블당 최대 24개 안테나
+```mermaid
+flowchart TB
+    HAL["RFID HAL<br/>(24 안테나)"]
+    HAL --> SEAT_GROUP
+    HAL --> BOARD_GROUP
+
+    subgraph SEAT_GROUP["좌석 안테나 (20개)<br/>seatIndex = antennaId % 10"]
+        direction TB
+        SL["안테나 0~9<br/>좌석 좌측 (홀카드 1)"]
+        SR["안테나 10~19<br/>좌석 우측 (홀카드 2)"]
+    end
+
+    subgraph BOARD_GROUP["보드 안테나 (4개)"]
+        direction TB
+        FL["안테나 20~22<br/>Flop 3장 (atomic)"]
+        TR["안테나 23<br/>Turn / River"]
+    end
+```
+
+> **참조**: API-03 §5.1 — 테이블당 최대 24개 안테나. Flop 의 atomic 보장은 §3.3 + Triggers §1.4 / §3.5 T6.
 
 ### 1.2 좌석 안테나 → 플레이어 매핑
 
@@ -110,15 +131,23 @@ last-updated: 2026-04-15
 4. Game Engine이 보드 카드 배치 확인
 5. 필요한 장수만큼 감지 완료 시 해당 Street 베팅 라운드 시작
 
-### 3.3 Flop 3장 동시 감지
+### 3.3 Flop 3장 atomic 감지
 
-Flop은 3장이 동시에 놓이므로, 3개 안테나에서 거의 동시에 `CardDetected`가 발행된다.
+Flop 은 3장이 동시에 **atomic** 으로 발행된다. 부분 감지(1~2장)는 외부에 발행되지 않으며(`BoardState=FLOP_PARTIAL` PENDING), 정확히 3장 충족 시점에만 1회 `FlopRevealed(c1,c2,c3)` 가 발행된다.
 
-| 상황 | 시스템 반응 |
-|------|-----------|
-| 3장 모두 감지 | 정상 — Flop 보드 구성 완료 |
-| 2장만 감지 (1장 미인식) | 경고 표시 + 운영자에게 수동 입력 요청 |
-| 3장 감지 + 1장 추가 (오류) | 4번째 카드 무시 + 경고 로그 |
+> **권위**: `../../2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` §1.4 (카드 파이프라인) · §3.5 T6/T7/T9 (트리거 매트릭스) · §4.10 (Atomic Flop 예외 처리). 본 문서는 그 권위에 정렬한다.
+
+| 상황 | 시스템 반응 | BoardState | OutputEvent |
+|------|------------|-----------|-------------|
+| 3장 모두 감지 | atomic flush — Flop 보드 구성 완료 | `FLOP_PARTIAL → FLOP_READY → FLOP_DONE` | `FlopRevealed(c1,c2,c3)` (T6, atomic) |
+| 1~2장 부분 감지 | **외부 미발행 (PENDING)**. 30s timeout 후 CC-only 경고 표시 | `FLOP_PARTIAL` | (none) → 30s 후 `FlopPartialAlert(count, missing)` (T9, CC only) |
+| 3장 후 4번째 카드 (`AWAITING_TURN` 진입 후) | 정상 — Turn 카드로 수용 | `AWAITING_TURN → TURN_DONE` | `TurnRevealed(c4)` (T7) |
+| 3장 후 4번째 카드 (`AWAITING_TURN` 미진입, FLOP betting 미완료) | reject (Triggers §4.10) | 변화 없음 | (none, 경고 로그) |
+
+**핵심 보장**:
+- 1~2장 부분 감지 시 Overlay 에 보드 카드가 표시되지 **않는다** (atomic flop guarantee).
+- timeout 시 발행되는 `FlopPartialAlert` 는 **CC 운영자 only** 이며 Overlay 출력 채널에는 흐르지 않는다.
+- 운영자 폴백: ① 수동 카드 입력(`Manual_Fallback.md` §5.7, AT-03 Card Selector) → buffer.push() 로 3장 충족 → `FlopRevealed` 발행, ② RFID 재배치 시도, ③ 미스딜 선언(`MisdealDetected` → IDLE 복귀).
 
 ### 3.4 Mock 모드
 
