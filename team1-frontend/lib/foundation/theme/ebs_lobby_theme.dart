@@ -1,188 +1,373 @@
-// EBS Lobby dark theme.
+// EBS Lobby ThemeData (Light + Dark).
 //
-// Adapted from team4 EbsTheme for desktop web (Lobby + Settings).
-// Material 3 dark theme with Lobby-specific surface variants for
-// data tables, settings forms, and navigation panels.
+// Both modes are anchored to `design_tokens.dart` so the operator console
+// stays tonally consistent whether the room lights are on or off. Light is
+// the primary mode in the design source (broadcast control room with daylight
+// fall-through); Dark is the late-night / dim-room variant.
+//
+// Public entry points:
+//   - [EbsLobbyTheme.lightTheme]  — primary (warm-neutral)
+//   - [EbsLobbyTheme.darkTheme]   — dim-room variant
+//
+// App entry (`app.dart`) currently selects `darkTheme`; switching to light or
+// adding a runtime toggle (Tweaks panel) is a B-090 follow-up.
 
 import 'package:flutter/material.dart';
+
+import 'design_tokens.dart';
 
 class EbsLobbyTheme {
   EbsLobbyTheme._();
 
-  // ── Lobby-specific surface variants ────────────────────────────
-  static const surfaceDataTable = Color(0xFF161626); // Slightly darker for table rows
-  static const surfaceDataTableHeader = Color(0xFF1E1E34); // Table header background
-  static const surfaceSettingsForm = Color(0xFF1A1A2E); // Form panels
-  static const surfaceNavPanel = Color(0xFF12121F); // Side navigation
-  static const surfaceCard = Color(0xFF1E1E32); // Elevated cards
-  static const surfaceDialog = Color(0xFF1E1E34); // Dialogs/modals
+  // ── Public theme getters ───────────────────────────────────────
 
-  static ThemeData get darkTheme {
-    const colorScheme = ColorScheme.dark(
-      primary: Color(0xFF1E88E5), // Blue 600 — primary actions
-      secondary: Color(0xFFFDD835), // Yellow 600 — emphasis/dealer
-      error: Color(0xFFE53935), // Red 600 — error
-      surface: Color(0xFF1A1A2E), // Dark navy — card table feel
-      onSurface: Color(0xFFE0E0E0), // Light gray text
+  static ThemeData get lightTheme => _build(
+        brightness: Brightness.light,
+        bg: DesignTokens.lightBg,
+        bgAlt: DesignTokens.lightBgAlt,
+        bgSunken: DesignTokens.lightBgSunken,
+        line: DesignTokens.lightLine,
+        lineSoft: DesignTokens.lightLineSoft,
+        lineStrong: DesignTokens.lightLineStrong,
+        ink: DesignTokens.lightInk,
+        ink2: DesignTokens.lightInk2,
+        ink3: DesignTokens.lightInk3,
+        ink4: DesignTokens.lightInk4,
+        featBg: DesignTokens.featBg,
+      );
+
+  static ThemeData get darkTheme => _build(
+        brightness: Brightness.dark,
+        bg: DesignTokens.darkBg,
+        bgAlt: DesignTokens.darkBgAlt,
+        bgSunken: DesignTokens.darkBgSunken,
+        line: DesignTokens.darkLine,
+        lineSoft: DesignTokens.darkLineSoft,
+        lineStrong: DesignTokens.darkLineStrong,
+        ink: DesignTokens.darkInk,
+        ink2: DesignTokens.darkInk2,
+        ink3: DesignTokens.darkInk3,
+        ink4: DesignTokens.darkInk4,
+        featBg: DesignTokens.featBgDark,
+      );
+
+  // ── Public surface helpers (for consumers building chrome) ─────
+
+  /// Surface used for sticky data-table headers / breadcrumb bar.
+  static const surfaceDataTableHeader = DesignTokens.lightBgAlt;
+
+  /// Surface used for hovered/selected data rows.
+  static const surfaceDataTableHover = DesignTokens.lightBgAlt;
+
+  /// Surface used for elevated cards (Series banner cards, modals).
+  static const surfaceCard = DesignTokens.lightBg;
+
+  /// Side-rail surfaces (always-dark in both themes).
+  static const surfaceNavPanel = DesignTokens.railBg;
+
+  // ── Internal builder ───────────────────────────────────────────
+
+  static ThemeData _build({
+    required Brightness brightness,
+    required Color bg,
+    required Color bgAlt,
+    required Color bgSunken,
+    required Color line,
+    required Color lineSoft,
+    required Color lineStrong,
+    required Color ink,
+    required Color ink2,
+    required Color ink3,
+    required Color ink4,
+    required Color featBg,
+  }) {
+    final colorScheme = ColorScheme(
+      brightness: brightness,
+      // Primary = ink itself — design source uses dark ink as the primary
+      // button fill (`.btn.primary { background: var(--ink) }`).
+      primary: ink,
+      onPrimary: bg,
+      // Secondary = featured-row gold ink.
+      secondary: DesignTokens.featInk,
+      onSecondary: bg,
+      // Error = danger accent.
+      error: DesignTokens.dangerBase,
+      onError: bg,
+      surface: bg,
+      onSurface: ink,
+      surfaceContainerHighest: bgAlt,
+      surfaceContainer: bgSunken,
+      outline: lineStrong,
+      outlineVariant: lineSoft,
+      // Tertiary = live-green for on-air callouts.
+      tertiary: DesignTokens.liveBase,
+      onTertiary: DesignTokens.liveInk,
     );
 
-    return ThemeData.dark(useMaterial3: true).copyWith(
+    return ThemeData(
+      brightness: brightness,
+      useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: const Color(0xFF0D0D1A),
-      cardColor: surfaceCard,
-      dividerColor: const Color(0xFF2A2A40),
+      scaffoldBackgroundColor: bg,
+      cardColor: bg,
+      dividerColor: line,
+      canvasColor: bg,
 
-      // ── AppBar ─────────────────────────────────────────────────
-      appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.surface,
-        foregroundColor: colorScheme.onSurface,
+      // Default font family for all components — Inter (UI), see
+      // `ebs_typography.dart` for monospace overrides on numerics.
+      fontFamily: DesignTokens.fontFamilyUi,
+
+      // ── AppBar ────────────────────────────────────────────────
+      appBarTheme: const AppBarTheme(
+        backgroundColor: DesignTokens.railBg,
+        foregroundColor: DesignTokens.railInk,
         elevation: 0,
-        titleTextStyle: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: Color(0xFFE0E0E0),
+        toolbarHeight: DesignChrome.topBarHeight,
+        titleTextStyle: TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          fontSize: DesignTokens.fsTab,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.14 * DesignTokens.fsTab,
+          color: DesignTokens.railInk,
         ),
       ),
 
-      // ── Navigation rail / drawer ───────────────────────────────
+      // ── Navigation rail (collapsible) ─────────────────────────
       navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: surfaceNavPanel,
-        selectedIconTheme: IconThemeData(color: colorScheme.primary),
-        unselectedIconTheme: const IconThemeData(color: Color(0xFF9E9E9E)),
-        indicatorColor: colorScheme.primary.withValues(alpha: 0.15),
+        backgroundColor: DesignTokens.railBg,
+        selectedIconTheme: const IconThemeData(color: DesignTokens.railInk),
+        unselectedIconTheme: const IconThemeData(color: DesignTokens.railInkDim),
+        selectedLabelTextStyle: const TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          color: DesignTokens.railInk,
+          fontSize: DesignTokens.fsTab,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelTextStyle: const TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          color: DesignTokens.railInkDim,
+          fontSize: DesignTokens.fsTab,
+          fontWeight: FontWeight.w500,
+        ),
+        indicatorColor: DesignTokens.liveBase.withValues(alpha: 0.15),
       ),
 
       navigationDrawerTheme: const NavigationDrawerThemeData(
-        backgroundColor: surfaceNavPanel,
+        backgroundColor: DesignTokens.railBg,
       ),
 
-      // ── Buttons ────────────────────────────────────────────────
+      // ── Buttons ───────────────────────────────────────────────
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: ink,
+          foregroundColor: bg,
+          minimumSize: const Size(64, 28),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(DesignChrome.buttonBorderRadius),
+          ),
+          textStyle: const TextStyle(
+            fontFamily: DesignTokens.fontFamilyUi,
+            fontSize: DesignTokens.fsTab,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: colorScheme.primary,
-          foregroundColor: Colors.white,
-          minimumSize: const Size(88, 44),
+          backgroundColor: ink,
+          foregroundColor: bg,
+          elevation: 0,
+          minimumSize: const Size(64, 28),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(DesignChrome.buttonBorderRadius),
           ),
         ),
       ),
 
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: colorScheme.primary,
-          side: BorderSide(color: colorScheme.primary.withValues(alpha: 0.5)),
-          minimumSize: const Size(88, 44),
+          foregroundColor: ink2,
+          backgroundColor: bg,
+          side: BorderSide(color: lineStrong),
+          minimumSize: const Size(64, 28),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(DesignChrome.buttonBorderRadius),
           ),
         ),
       ),
 
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: colorScheme.primary,
-          minimumSize: const Size(64, 40),
+          foregroundColor: ink2,
+          minimumSize: const Size(48, 24),
         ),
       ),
 
-      // ── Input fields ───────────────────────────────────────────
+      // ── Input fields ──────────────────────────────────────────
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: const Color(0xFF16162A),
+        fillColor: bg,
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Color(0xFF2A2A40)),
+          borderRadius: BorderRadius.circular(DesignChrome.buttonBorderRadius),
+          borderSide: BorderSide(color: lineStrong),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Color(0xFF2A2A40)),
+          borderRadius: BorderRadius.circular(DesignChrome.buttonBorderRadius),
+          borderSide: BorderSide(color: lineStrong),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.primary),
+          borderRadius: BorderRadius.circular(DesignChrome.buttonBorderRadius),
+          borderSide: BorderSide(color: ink, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        labelStyle: TextStyle(color: ink4),
       ),
 
-      // ── Data table ─────────────────────────────────────────────
+      // ── Data table ────────────────────────────────────────────
       dataTableTheme: DataTableThemeData(
-        headingRowColor: WidgetStateProperty.all(surfaceDataTableHeader),
+        headingRowColor: WidgetStateProperty.all(bg),
         dataRowColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.hovered)) {
-            return const Color(0xFF1E1E36);
+          if (states.contains(WidgetState.hovered) ||
+              states.contains(WidgetState.selected)) {
+            return bgAlt;
           }
-          return surfaceDataTable;
+          return bg;
         }),
+        headingRowHeight: 36,
+        dataRowMinHeight: 32,
+        dataRowMaxHeight: 38,
+        horizontalMargin: 16,
+        columnSpacing: 16,
         dividerThickness: 1,
-        headingTextStyle: const TextStyle(
-          fontSize: 13,
+        headingTextStyle: TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          fontSize: 10,
           fontWeight: FontWeight.w600,
-          color: Color(0xFFB0B0B0),
+          letterSpacing: 0.08 * 10,
+          color: ink4,
         ),
-        dataTextStyle: const TextStyle(
-          fontSize: 14,
+        dataTextStyle: TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          fontSize: DesignTokens.fsBase,
           fontWeight: FontWeight.w400,
-          color: Color(0xFFE0E0E0),
+          color: ink2,
         ),
       ),
 
-      // ── Tabs (Settings 6-tab) ──────────────────────────────────
+      // ── Tabs ──────────────────────────────────────────────────
       tabBarTheme: TabBarThemeData(
-        labelColor: colorScheme.primary,
-        unselectedLabelColor: const Color(0xFF9E9E9E),
-        indicatorColor: colorScheme.primary,
+        labelColor: ink,
+        unselectedLabelColor: ink3,
+        indicatorColor: ink,
         indicatorSize: TabBarIndicatorSize.label,
+        labelStyle: const TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          fontSize: DesignTokens.fsTab,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          fontSize: DesignTokens.fsTab,
+          fontWeight: FontWeight.w500,
+        ),
       ),
 
-      // ── Dialog / Modal ─────────────────────────────────────────
+      // ── Dialog / Modal ────────────────────────────────────────
       dialogTheme: DialogThemeData(
-        backgroundColor: surfaceDialog,
+        backgroundColor: bg,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(DesignChrome.sheetBorderRadius),
+          side: BorderSide(color: lineStrong),
+        ),
+        titleTextStyle: TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          fontSize: DesignTokens.fsTitle,
+          fontWeight: FontWeight.w600,
+          color: ink,
         ),
       ),
 
-      // ── Chip (filter chips, tags) ──────────────────────────────
+      // ── Chip (filter chips, badges) ───────────────────────────
       chipTheme: ChipThemeData(
-        backgroundColor: const Color(0xFF2A2A40),
-        selectedColor: colorScheme.primary.withValues(alpha: 0.25),
-        labelStyle: const TextStyle(fontSize: 13),
-        side: BorderSide.none,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+        backgroundColor: bgSunken,
+        selectedColor: featBg,
+        labelStyle: TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          fontSize: 10.5,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.02 * 10.5,
+          color: ink2,
         ),
+        side: BorderSide(color: line),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(3),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       ),
 
-      // ── Tooltip ────────────────────────────────────────────────
+      // ── Tooltip ───────────────────────────────────────────────
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
-          color: const Color(0xFF2A2A40),
-          borderRadius: BorderRadius.circular(4),
+          color: ink,
+          borderRadius: BorderRadius.circular(3),
+        ),
+        textStyle: TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          fontSize: 11,
+          color: bg,
         ),
       ),
 
-      // ── Switch / Checkbox (settings toggles) ───────────────────
+      // ── Switch ────────────────────────────────────────────────
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return colorScheme.primary;
+            return ink;
           }
-          return const Color(0xFF9E9E9E);
+          return ink4;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return colorScheme.primary.withValues(alpha: 0.4);
+            return ink.withValues(alpha: 0.4);
           }
-          return const Color(0xFF2A2A40);
+          return line;
         }),
       ),
 
-      // ── SnackBar (save confirmations) ──────────────────────────
-      snackBarTheme: const SnackBarThemeData(
-        backgroundColor: Color(0xFF2A2A40),
-        contentTextStyle: TextStyle(color: Color(0xFFE0E0E0)),
+      // ── Checkbox ──────────────────────────────────────────────
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return ink;
+          return Colors.transparent;
+        }),
+        checkColor: WidgetStateProperty.all(bg),
+        side: BorderSide(color: lineStrong, width: 1.2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(2),
+        ),
+      ),
+
+      // ── SnackBar ──────────────────────────────────────────────
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: ink,
+        contentTextStyle: TextStyle(
+          fontFamily: DesignTokens.fontFamilyUi,
+          fontSize: DesignTokens.fsBase,
+          color: bg,
+        ),
         behavior: SnackBarBehavior.floating,
+      ),
+
+      // ── Divider ───────────────────────────────────────────────
+      dividerTheme: DividerThemeData(
+        color: line,
+        thickness: 1,
+        space: 1,
       ),
     );
   }

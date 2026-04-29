@@ -60,6 +60,7 @@ docs/07-archive/
 
 # 임시/테스트 결과
 .tmp/
+.scratch/
 test-results/
 
 # ssot-align runtime artifacts (Stage A plan / Stage B cache / Stage C diff / state)
