@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": "9.3",
-  "previous_version": "9.0",
-  "description": "EBS 5팀 멀티 세션 V9.3 Intent-Execution Separation. 사용자 = 의도/전체 개념 영역. AI = 실행 (코드/PR/머지) 영역. AI 가 자체 작성한 PR 은 자율 판단 후 머지 가능. 사용자에게 실행 영역 confirm 요구 금지.",
+  "version": "9.5",
+  "previous_version": "9.3",
+  "description": "EBS V9.5 Single Session AI-Centric. Hub-and-Spoke 폐기 (V9.4 critic 결과 반영). Conductor 단일 session + Agent Teams in-process 모델. 사용자 입력 0 + 결과물 중심주의. 외부 인계 후 governance 폐기 가능.",
   "governance_model": {
-    "name": "intent_execution_separation_with_ai_autonomous_merge",
-    "version": "v9.3",
-    "previous_name": "conductor_centralized_review",
-    "previous_version": "v9.0",
-    "rationale": "v9.3 (2026-04-29 사용자 통찰): 비전문 사용자에게 PR merge 같은 실행 영역 confirm 요구 자체가 system 실패. 사용자는 의도/전체 개념만 제공, AI 가 코드/PR/머지까지 자율 판단. v9.0/v9.2 의 Conductor 단일 머지권은 'AI 가 자체 작성한 PR 의 자율 머지' 로 확장. 충돌·의미 모호 시만 사용자 의도 영역 질문.",
+    "name": "single_session_ai_centric_output_focused",
+    "version": "v9.5",
+    "previous_name": "intent_execution_separation_with_ai_autonomous_merge",
+    "previous_version": "v9.3",
+    "rationale": "v9.5 (2026-04-29 사용자 권고 A 채택): V9.4 critic 9 결함 (F1 worker trigger 부재, F4 Mode A vs 5-session 충돌, F7 ceremony 결과물 기여 미정당화 등) 으로 Hub-and-Spoke 모델 폐기. 1인 사용자 환경에서 Conductor 단일 session 만 정합. Agent Teams in-process 가 multi-team work 의 답.",
     "intent_execution_boundary": {
       "_comment": "v9.4 (2026-04-29 사용자 통찰): SSOT 기반 판단 가능 영역은 AI 자율, 불가능 시 SSOT 보강이 정답. 사용자에게 기술 가치 판단 떠넘기기 금지.",
       "user_intent_domain": [
@@ -59,6 +59,18 @@
         "test": "비전문 개발자가 사용 경험만으로 답할 수 있는가?"
       },
       "rationale": "v9.3 의 의도/실행 분리를 v9.4 로 정교화. AI 의 SSOT 기반 판단 영역 명시 + 사용자에게 기술 질문 떠넘기기 차단."
+    },
+    "operating_model": {
+      "_comment": "v9.5: Hub-and-Spoke 폐기. Conductor 단일 session + Agent Teams in-process.",
+      "default": "single_session_conductor",
+      "multi_team_work": "in_process_agent_teams (TeamCreate + Agent spawn — OS process 분리 X)",
+      "deprecated_models": [
+        "hub_and_spoke (v9.0~v9.4) — worker trigger 부재 + 1인 환경 비현실",
+        "5_os_process (claude CLI 5개) — 사용자 입력 5회 = V9.4 위배"
+      ],
+      "sop_owner": "single_conductor_session",
+      "ceremony_count": "2 transitions (DRAFT → DONE) — V9.0 의 5 transitions 폐기",
+      "rationale": "V9.4 critic F1+F8 해소. 결과물 중심주의 강화."
     },
     "merge_authority": {
       "main_merge": "ai_autonomous_when_conditions_met",
