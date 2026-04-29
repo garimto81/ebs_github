@@ -1,71 +1,84 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": "7.1",
-  "previous_version": "7.0",
-  "description": "EBS 5팀 멀티 세션 충돌 방지 + v11 문서 구조. v7.1 Mode A/B + v8.0 governance freeze. 역사: docs/4. Operations/Reports/ 참조.",
+  "version": "9.0",
+  "previous_version": "7.1",
+  "description": "EBS 5팀 멀티 세션 V9.0 Hub-and-Spoke. 모든 main 머지 권한은 Conductor 독점. 팀 세션은 PR 보고까지만. 역사: docs/4. Operations/Reports/ 참조.",
   "governance_model": {
-    "name": "free_write_with_decision_owner_or_conductor_full_authority",
-    "rationale": "v7.1 (SG-024 cascade, 2026-04-27 사용자 B-Q5 ㉠ 채택): 단일 세션 모드 (Mode A) 에서 Conductor 가 decision_owner override 가능. 멀티세션 모드 (Mode B) 에서는 v7 모델 (decision_owner 권한 회복).",
-    "modes": {
-      "mode_a_single_session": {
-        "trigger": "Conductor 세션 단독 활동 (다른 팀 세션 비활성)",
-        "default_in_v7_1": true,
-        "write_access": "all_paths",
-        "decision_authority": "conductor_full_authority",
-        "rationale": "사용자 B-Q5 ㉠ (2026-04-27) 채택. 단일 turn cascade 자율 진행 가능."
-      },
-      "mode_b_multi_session": {
-        "trigger": "팀 세션 (team1~4) 활성화 시 자동 회복",
-        "write_access": "all_sessions_all_docs",
-        "decision_authority_source": "teams[*].owns and contract_ownership[*].publisher",
-        "rationale": "v7 모델 그대로. 각 팀 세션의 decision_owner 권한 보호."
-      }
+    "name": "conductor_centralized_review",
+    "version": "v9.0",
+    "previous_name": "free_write_with_decision_owner_or_conductor_full_authority",
+    "previous_version": "v7.1",
+    "rationale": "v9.0 Hub-and-Spoke (2026-04-29 사용자 결정): V8.0 완전 자율 오케스트레이션이 Git 병합 큐의 물리적 한계로 PR 적체 + 교착 유발. 인간 개발팀 방식 = 중앙 통제형 위임 모델 채택. 모든 merge / conflict 해결 권한은 Conductor 독점. v7.1 Mode A/B 분기와 v8.0 governance freeze 는 V9.0 으로 흡수 (SUPERSEDED).",
+    "merge_authority": {
+      "main_merge": "conductor_only",
+      "worker_merge_authority": "denied",
+      "worker_pr_state": "draft_or_review_ready_only",
+      "auto_merge_workflow": "disabled",
+      "auto_merge_label": "deprecated",
+      "rationale": "팀 세션은 PR 생성 + Task_Dispatch_Board.md 의 REVIEW_READY 상태 변경까지. main 직접 merge 권한 박탈. `gh pr merge`, `git push origin main`, `auto-merge` 라벨 부여 모두 worker 측 금지."
     },
-    "mode_a_limits": {
-      "_comment": "Mode A 라도 Conductor 자율 금지 영역",
+    "task_dispatch": {
+      "ssot": "docs/4. Operations/Task_Dispatch_Board.md",
+      "dispatch_authority": "conductor_only",
+      "worker_authority": "execute_assigned_only",
+      "rationale": "팀 세션은 본인 팀 row 의 ASSIGNED 항목만 착수. 자율 작업 발견 시 Conductor 결정 대기."
+    },
+    "write_access": {
+      "policy": "free_write_preserved",
+      "rationale": "v7 free_write 원칙 유지. 모든 세션이 모든 docs 자유 편집 가능 (hook 차단 없음). 단, main 머지는 Conductor 만."
+    },
+    "conflict_resolution": {
+      "syntactic": "conductor_resolves",
+      "semantic": "conductor_adjudicates_per_ssot",
+      "ssot_paths": [
+        "docs/1. Product/",
+        "docs/2. Development/2.5 Shared/"
+      ],
+      "escalation": "user (사용자)",
+      "rationale": "충돌 해결 임의 시도 금지. PR 에 conflict 라벨 + Conductor 알림. Conductor 가 SSOT 기준 직접 rebase + 해결."
+    },
+    "conductor_limits": {
+      "_comment": "V9.0 에서도 Conductor 자율 금지 영역 (구 mode_a_limits 흡수)",
       "external_messaging": "vendor RFI/RFQ 외부 메일 발송 — 사용자 명시 필요",
       "destructive_system": "DB drop, prod 배포, 거대 dependency 변경 — 사용자 명시 필요",
       "git_config": "remote URL 변경 등 — 사용자 명시 필요",
       "user_intent_change": "SG-023 같은 큰 결정 — Conductor 자율 시도 금지",
       "user_memory_decisions": "사용자 본인 결정 메모 임의 폐기 금지"
     },
-    "conflict_resolution": {
-      "syntactic": "merge_author_resolves",
-      "semantic_mode_a": "conductor_adjudicates",
-      "semantic_mode_b": "decision_owner_adjudicates",
-      "escalation": "user (사용자)"
-    },
-    "freeze": {
-      "_comment": "v8.0 stable governance freeze (user decision 4A, 2026-04-28)",
-      "until": "2026-05-28",
-      "scope": "all_governance_changes",
-      "exceptions": ["data_loss_emergency", "critical_security_fix"],
-      "rationale": "1주 7 governance 버전 churn (v5.0→v5.1→v6.1→v7.1→v7.2→v7.5→v7.6) 차단. Phase 1-8 file cleanup 완주 보장. critic 보고서 P2 권고.",
-      "decision_brief": "docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md",
-      "phase_1_8_cleanup_allowed": true,
-      "_phase_1_8_note": "freeze 는 governance change (mode/policy/limit) 만 동결. file cleanup (deprecated 정리, 도구 압축, 문서 압축) 은 Phase 1-8 으로 진행 가능."
+    "deprecated_models": {
+      "v7_1_mode_a_b": "v9.0 으로 흡수. Mode A/B 분기 폐기 — 모든 세션이 동일하게 worker (Conductor 만 hub)",
+      "v8_0_concurrency_queue": "GitHub Actions concurrency:main-merge-queue 폐기. Conductor 단일 스레드 리뷰가 대체",
+      "v8_0_governance_freeze": "freeze 종료 (2026-04-29 V9.0 결정으로 supersede). 향후 governance 변경은 V9.0 SOP 준수"
     }
   },
   "branch_strategy": {
-    "version": "v5.0",
-    "updated": "2026-04-21",
-    "main_push_allowed_for": [],
-    "_main_push_allowed_for_note": "v5.0: 직접 main push 전면 금지. 모든 팀 (Conductor 포함) PR 경로. v4.x 에서는 ['conductor'] 였음.",
+    "version": "v9.0",
+    "updated": "2026-04-29",
+    "main_push_allowed_for": ["conductor"],
+    "_main_push_allowed_for_note": "v9.0: Conductor 만 main 직접 push (단일 세션 hub-and-spoke). 팀 세션은 PR 경로 강제. v5.0 의 모든 팀 PR 경로는 V9.0 에서 Conductor merge 권한 독점으로 변경.",
     "team_branch_pattern": "work/{team}/{slug}",
     "worktree_layout": "sibling_dir",
     "worktree_path_pattern": "C:/claude/ebs-{team}-{slug}/",
     "subdir_mode": "forbidden",
-    "_subdir_mode_note": "v5.0: subdir (C:/claude/ebs/team{N}-*/) 모드 금지. shared HEAD 오염 방지.",
+    "_subdir_mode_note": "v5.0+: subdir (C:/claude/ebs/team{N}-*/) 모드 금지. shared HEAD 오염 방지.",
     "registry_branch": "meta/active-edits",
-    "merge_method": "squash_via_pr",
-    "_merge_method_note": "v5.0: gh pr create --fill + auto-merge 라벨 → .github/workflows/pr-auto-merge.yml",
-    "merge_tool": "tools/team_v5_merge.py",
-    "merge_gate": ".github/workflows/pr-auto-merge.yml",
+    "merge_method": "conductor_manual_squash",
+    "_merge_method_note": "v9.0: 팀 세션은 gh pr create --draft (또는 ready PR) 후 Task_Dispatch_Board.md 에 REVIEW_READY 표기까지. Conductor 가 단일 스레드로 순차 리뷰 + gh pr merge --squash --delete-branch.",
+    "worker_pr_options": {
+      "draft": "기본. PR 본문에 자체 테스트 결과 + scope 명시",
+      "ready_for_review": "허용. 단 auto-merge 라벨 부여 금지"
+    },
+    "merge_tool": "manual_gh_cli_or_tools_team_v5_merge.py",
+    "_merge_tool_note": "v9.0: tools/team_v5_merge.py 는 PR 생성 단계 (push + gh pr create) 까지만 사용. auto-merge 라벨 부여 단계 사용 금지. Conductor 가 직접 gh pr merge 호출.",
+    "merge_gate": "conductor_review",
+    "_merge_gate_note": "v9.0: .github/workflows/pr-auto-merge.yml 비활성화 (workflow_dispatch only). Conductor 인지·판단이 gate 역할.",
     "code_owners": ".github/CODEOWNERS",
     "free_tier_compat": true,
+    "task_dispatch_board": "docs/4. Operations/Task_Dispatch_Board.md",
     "deprecated_tools": {
       "tools/team_merge.py": "v4.x direct ff-merge tool. v5.1+L4 (BLANK-3) 에서 active 부활 — 폐기 보류",
-      "~/.claude/skills/team/scripts/team_merge_loop.py": "v4.0 user-global. project-local .claude/skills/team/ (v5.1) 이 대체 (2026-04-22 rename from team-v5)"
+      "~/.claude/skills/team/scripts/team_merge_loop.py": "v4.0 user-global. project-local .claude/skills/team/ (v5.1) 이 대체 (2026-04-22 rename from team-v5)",
+      "auto_merge_label_workflow": "v9.0 비활성. .github/workflows/pr-auto-merge.yml 은 workflow_dispatch only 로 격리. 라벨 자체는 사용 가능하나 머지 자동화 미동작"
     }
   },
   "teams": {
