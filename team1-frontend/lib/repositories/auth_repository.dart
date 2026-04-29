@@ -21,9 +21,10 @@ class TokenResponse {
   });
 
   factory TokenResponse.fromJson(Map<String, dynamic> json) => TokenResponse(
-        accessToken: json['access_token'] as String?,
+        // V9.5 P19: BO 응답은 camelCase (EbsBaseModel alias) — accessToken/refreshToken/requires2Fa
+        accessToken: json['accessToken'] as String?,
         refreshToken: json['refreshToken'] as String?,
-        requires2fa: json['requires_2fa'] as bool? ?? false,
+        requires2fa: json['requires2Fa'] as bool? ?? false,
         tempToken: json['tempToken'] as String?,
       );
 }
