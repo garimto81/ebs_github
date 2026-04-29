@@ -26,6 +26,20 @@ const SCREENSHOT_DIR = path.join('test-results', 'v95-ui-login');
 
 test.describe('V9.5 UI-level login flow', () => {
   test('Lobby 화면 navigation + login form + 인증 후 진입', async ({ page }) => {
+    // ---- P19: Network capture (lobby → BO 호출 추적) ---------------------
+    const networkLog: { url: string; method: string; status?: number }[] = [];
+    page.on('request', (req) => {
+      if (/\/auth\/|\/api\//.test(req.url())) {
+        networkLog.push({ url: req.url(), method: req.method() });
+      }
+    });
+    page.on('response', (res) => {
+      if (/\/auth\/|\/api\//.test(res.url())) {
+        const entry = networkLog.find((e) => e.url === res.url() && e.status === undefined);
+        if (entry) entry.status = res.status();
+      }
+    });
+
     // ---- Step 1: Lobby 진입 + 스크린샷 ----------------------------------
     await page.goto(LOBBY_BASE_URL);
     await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
@@ -160,6 +174,12 @@ test.describe('V9.5 UI-level login flow', () => {
         return false;
       }
     });
+
+    // ---- P19: Network log 출력 (root cause 진단) ------------------------
+    console.log('\n=== Lobby network log ===');
+    for (const entry of networkLog) {
+      console.log(`  ${entry.method} ${entry.url} → ${entry.status ?? '?'}`);
+    }
 
     // soft assertion: URL 변화 또는 token 존재
     const loginSucceeded = afterLoginUrl !== currentUrl || hasToken;
