@@ -1,0 +1,102 @@
+name: Dependabot — Label Guard
+
+# ──────────────────────────────────────────────────────────────────────────
+# 2026-04-28 (PR #28, P3 Rec 1) — Dependabot PR 의 라벨 자동 보정.
+#
+# 배경:
+#   PR #33 (web_socket_channel 2.4.5→3.0.3, 첫 dependabot 산출물) 에서
+#   `.github/dependabot.yml` 의 `labels:` 명시에도 라벨 0개 부착 상태로 생성됨.
+#   원인 추정: PR #26 (dependabot.yml 도입) 머지 후 2분 내 작성되어 봇이
+#   갱신된 config 인지 전 PR 생성. 자가해소 가능성 있으나 회귀 시 가시성
+#   손실 → 본 guard 가 라벨 검증·보정.
+#
+# 동작:
+#   - Dependabot PR 의 title prefix 분석 → 의도된 라벨 추론
+#   - 누락 라벨 자동 부착
+#
+# 보안:
+#   pull_request_target 사용 (base repo context, secrets 접근 가능).
+#   필수 가드: github.actor == 'dependabot[bot]'. 타 작성자 PR 영향 0.
+#   PR HEAD 코드 절대 checkout 안 함 — only API metadata operations.
+# ──────────────────────────────────────────────────────────────────────────
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: dependabot-label-guard-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    name: Verify + repair dependabot labels
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: github.actor == 'dependabot[bot]'
+
+    steps:
+      - name: Determine intended labels from PR title
+        id: infer
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.pull_request.title || '';
+            // Title patterns from .github/dependabot.yml commit-message.prefix:
+            //   chore(deps:team1)   → team1 frontend pub
+            //   chore(deps:team2)   → team2 backend pip       (manual review per dependabot.yml)
+            //   chore(deps:team3)   → team3 engine pub
+            //   chore(deps:team4)   → team4 cc-web pub
+            //   chore(deps:ci)      → github-actions
+            //   chore(docker:lobby) → team1 docker
+            //   chore(docker:cc)    → team4 docker
+            //   chore(docker:engine)→ team3 docker
+            const intended = ['dependencies'];
+
+            // Team 라벨 추론
+            if (/chore\(deps:team1\)|chore\(docker:lobby\)/i.test(title))      intended.push('team1');
+            else if (/chore\(deps:team2\)/i.test(title))                       intended.push('team2');
+            else if (/chore\(deps:team3\)|chore\(docker:engine\)/i.test(title)) intended.push('team3');
+            else if (/chore\(deps:team4\)|chore\(docker:cc\)/i.test(title))    intended.push('team4');
+            else if (/chore\(deps:ci\)/i.test(title))                          intended.push('ci');
+
+            // Docker bumps 추가 라벨
+            if (/chore\(docker:/i.test(title)) intended.push('docker');
+
+            // auto-merge 라벨 — pub/github-actions 는 자동, docker (Flutter SDK) 는 수동.
+            // 본 guard 는 dependabot.yml 의 의도 보존 — docker prefix 면 auto-merge 제외.
+            if (!/chore\(docker:/i.test(title) && !/chore\(deps:team2\)/i.test(title)) {
+              intended.push('auto-merge');
+            }
+
+            core.info(`[label-guard] PR #${context.payload.pull_request.number} title="${title}"`);
+            core.info(`[label-guard] intended labels: ${intended.join(', ')}`);
+            core.setOutput('labels_json', JSON.stringify(intended));
+
+      - name: Add missing labels
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const intended = JSON.parse('${{ steps.infer.outputs.labels_json }}');
+            const pr = context.payload.pull_request;
+            const current = (pr.labels || []).map(l => l.name);
+            const missing = intended.filter(l => !current.includes(l));
+
+            if (missing.length === 0) {
+              core.info('[label-guard] all intended labels already present — no action');
+              return;
+            }
+
+            core.info(`[label-guard] adding missing labels: ${missing.join(', ')}`);
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: missing,
+            });
+            core.notice(`Added labels: ${missing.join(', ')}`);
