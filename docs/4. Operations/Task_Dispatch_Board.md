@@ -44,31 +44,36 @@ governance: V9.0 conductor_centralized_review
 
 | ID | 상태 | 작업 | Scope | PR | 비고 |
 |----|------|------|-------|----|------|
-| _(없음)_ | — | — | — | — | — |
+| TDB-002 | ASSIGNED | 기존 worktree 4건 PR 정리 (V9.0 backlog drain) | `ebs-team1-{flutter,harness,phase5,spec-gaps}` | — | 각 worktree 별 `gh pr create --draft` 후 보드 row REVIEW_READY. **신규 작업 금지 (Conductor 큐 적체 해소 우선)** |
+| TDB-003 | ASSIGNED | B-088 docs rest-path PascalCase → kebab-case | `docs/2. Development/2.1 Frontend/**` `*.md` 6개 | — | 단일 PR. drift_gate CI green 확인 후 보고 |
 
 ### Team 2 — Backend (BO / API / DB)
 
 | ID | 상태 | 작업 | Scope | PR | 비고 |
 |----|------|------|-------|----|------|
-| _(없음)_ | — | — | — | — | — |
+| TDB-004 | ASSIGNED | 기존 worktree 2건 PR 정리 | `ebs-team2-{m1-drift,work}` | — | M10 audit close + Auth prefix fix 분리 PR |
+| TDB-005 | ASSIGNED | SG-008-b4 GET /api/v1/auth/me 구현 | `team2-backend/src/routers/auth.py`, `tests/test_auth_me.py`, `docs/2. Development/2.2 Backend/APIs/Auth_and_Session.md §me` | — | 단일 endpoint + pytest. b5 (logout) 는 차후 dispatch |
 
 ### Team 3 — Game Engine
 
 | ID | 상태 | 작업 | Scope | PR | 비고 |
 |----|------|------|-------|----|------|
-| _(없음)_ | — | — | — | — | — |
+| TDB-006 | ASSIGNED | 기존 worktree 4건 PR 정리 | `ebs-team3-{b349,b351,betting,shim}` | — | 각 chunk-별 PR. b349/b351/shim 은 backlog DONE 후보, betting 은 분량 검토 |
+| TDB-007 | ASSIGNED | B-330 (P0) Engine 별도 프로세스 원칙 API-04 전반 전파 | `docs/2. Development/2.3 Game Engine/APIs/{Overlay_Output_Events,OutputEventBuffer_Boundary,OutputEvent_Serialization}.md` | — | doc-only. Foundation §6.3/§6.4 정렬. notify:team4 commit tag |
 
 ### Team 4 — Command Center (cc-web)
 
 | ID | 상태 | 작업 | Scope | PR | 비고 |
 |----|------|------|-------|----|------|
-| _(없음)_ | — | — | — | — | — |
+| TDB-008 | ASSIGNED | B-team4-007 (P0 CRITICAL) Foundation §8.5/§5.0/§6.3 정합 | `docs/2. Development/2.4 Command Center/Command_Center_UI/Multi_Table_Operations.md`, `Overlay/Sequences.md` | — | doc-only. Type C 모순 해소. team4 worktree 신규 생성 필요 (`ebs-team4-foundation-007`). flutter 코드 영향 없음. team4 **idle** 상태 → 즉시 착수 가능 |
 
 ### Conductor — Cross-team / Infra
 
 | ID | 상태 | 작업 | Scope | PR | 비고 |
 |----|------|------|-------|----|------|
-| TDB-001 | MERGED | V9.0 Hub-and-Spoke 인프라 개편 | `team-policy.json`, `Multi_Session_Workflow.md`, `pr-auto-merge.yml`, `Task_Dispatch_Board.md`, `SKILL.md` | 직접 commit (Mode A) | 본 보드 신설 |
+| TDB-001 | MERGED | V9.0 Hub-and-Spoke 인프라 개편 | `team-policy.json`, `Multi_Session_Workflow.md`, `pr-auto-merge.yml`, `Task_Dispatch_Board.md`, `SKILL.md` | 직접 commit (74e3a106) | 본 보드 신설 |
+| TDB-009 | IN_PROGRESS | **Hub 큐 drain** — 9 conductor worktree PR 화 + 리뷰 + 머지 | `ebs-conductor-{bcrypt,contract,curate,deps-gov,engine,lan,lint,p3,p5p6}` | — | V9.0 단일 스레드 리뷰 원칙. 순차 처리. 의미적 충돌 시 SSOT 기반 해소. **본 작업 우선 — 다음 dispatch cycle 까지 완료 목표** |
+| TDB-010 | PENDING | V9.0 push 권한 정합 검토 — Conductor 직접 push 허용 vs PR 강제 | `team-policy.json` `branch_strategy.main_push_allowed_for` | — | V9.0 정책 자체 모순: `main_push_allowed_for: ["conductor"]` 였으나 V9.0 SOP 는 PR 리뷰 강제 → 사용자 결정 후 정합 |
 
 ## 🧾 Task 등록 템플릿
 
