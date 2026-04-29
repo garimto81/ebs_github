@@ -31,7 +31,7 @@ RUN dart run build_runner build --delete-conflicting-outputs || true
 # DEMO_MODE=true 가 정규 LAN 배포 모드 (RFID 하드웨어 의존 분리)
 ARG ENV_FILE=production.json
 RUN if [ ! -f "$ENV_FILE" ]; then \
-      echo '{"DEMO_MODE":"true","BO_URL":"http://bo:8000","ENGINE_URL":"http://engine:8080","LOBBY_URL":"http://lobby-web:3000","APP_NAME":"EBS Command Center","APP_BUILD_CHANNEL":"stable"}' > "$ENV_FILE" ; \
+      echo '{"DEMO_MODE":"true","BO_URL":"http://api.ebs.local","ENGINE_URL":"http://engine.ebs.local","LOBBY_URL":"http://lobby.ebs.local","APP_NAME":"EBS Command Center","APP_BUILD_CHANNEL":"stable"}' > "$ENV_FILE" ; \
     fi
 
 # Release web build

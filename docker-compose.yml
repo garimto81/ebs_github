@@ -199,6 +199,48 @@ services:
       - "ebs.phase=5-production"
       - "ebs.deprecates=SG-022"
 
+  # ── LAN Reverse Proxy (subdomain routing on :80) ────────────────────────────
+  # 2026-04-29 (PR #69, LAN domain deployment). hostname-based access:
+  #   http://lobby.ebs.local/   → lobby-web:3000
+  #   http://cc.ebs.local/      → cc-web:3001
+  #   http://api.ebs.local/     → bo:8000   (REST + WS /ws/*)
+  #   http://engine.ebs.local/  → engine:8080
+  #   http://ebs.local/         → lobby (default)
+  #
+  # 사용자 LAN 클라이언트는 hosts file 또는 라우터 DNS 에 다음 매핑 등록:
+  #   <HOST_LAN_IP> ebs.local lobby.ebs.local cc.ebs.local api.ebs.local engine.ebs.local
+  #
+  # 자동 등록: tools/setup_lan_access.{ps1,sh}
+  # 가이드: docs/4. Operations/LAN_DEPLOYMENT.md
+  proxy:
+    image: nginx:1.27-alpine
+    container_name: ebs-proxy
+    profiles: ["web"]   # lobby/cc 와 동일 profile (full LAN deployment 시 활성화)
+    networks:
+      - ebs-net
+    ports:
+      - "80:80"
+    volumes:
+      - ./infra/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      lobby-web:
+        condition: service_healthy
+      cc-web:
+        condition: service_healthy
+      bo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 10s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    restart: unless-stopped
+    labels:
+      - "ebs.team=conductor"
+      - "ebs.service=proxy"
+      - "ebs.phase=5-production"
+
 volumes:
   bo-data:
     driver: local
