@@ -750,6 +750,25 @@ class PayoutStructure(SQLModel, table=True):
     updated_at: str = Field(default_factory=utcnow)
 
 
+# V9.5 P23: payout_structure_levels (CCR-051 — payout 구간별 분배율 / 고정 금액)
+# entries JSON 과 별도로 정규화된 레벨 테이블. CCR-051 정합 + UNIQUE(payout_structure_id, position_from).
+class PayoutStructureLevel(SQLModel, table=True):
+    __tablename__ = "payout_structure_levels"
+
+    id: int = Field(primary_key=True)
+    payout_structure_id: int = Field(
+        foreign_key="payout_structures.payout_structure_id"
+    )
+    position_from: int = Field(nullable=False)
+    position_to: int = Field(nullable=False)
+    payout_pct: float = Field(nullable=False)                           # 0.0-100.0 percentage
+    payout_amount: int | None = Field(default=None)                     # fixed amount (alternative to pct)
+
+    __table_args__ = (
+        UniqueConstraint("payout_structure_id", "position_from"),
+    )
+
+
 # blind_structure_levels
 class BlindStructureLevel(SQLModel, table=True):
     __tablename__ = "blind_structure_levels"

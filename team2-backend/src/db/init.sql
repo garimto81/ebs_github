@@ -232,6 +232,28 @@ CREATE TABLE blind_structure_levels (
     UNIQUE(blind_structure_id, level_no)
 );
 
+-- V9.5 P23: payout_structures + payout_structure_levels (CCR-051: Series 템플릿)
+-- SQLModel mirror (src/models/payout_structure.py 권위). WSOP LIVE Page 1603600679 준거.
+DROP TABLE IF EXISTS payout_structure_levels;
+DROP TABLE IF EXISTS payout_structures;
+
+CREATE TABLE payout_structures (
+    payout_structure_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE TABLE payout_structure_levels (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    payout_structure_id INTEGER NOT NULL REFERENCES payout_structures(payout_structure_id),
+    position_from INTEGER NOT NULL,
+    position_to INTEGER NOT NULL,
+    payout_pct REAL NOT NULL,           -- 0.0-100.0 percentage
+    payout_amount INTEGER,              -- fixed amount (alternative to pct)
+    UNIQUE(payout_structure_id, position_from)
+);
+
 CREATE TABLE competitions (
     competition_id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
