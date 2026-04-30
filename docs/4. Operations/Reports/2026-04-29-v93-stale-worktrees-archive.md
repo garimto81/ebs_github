@@ -1,3 +1,10 @@
+---
+title: V9.3 Stale Worktrees Archive
+owner: conductor
+tier: internal
+last-updated: 2026-04-29
+---
+
 # V9.3 Stale Worktrees Archive
 
 > **2026-04-29 V9.3 cycle finalize**: in-flight 6 worktree 중 v6.x supersede / 다수 머지 중복 worktree 2건을 cleanup. branch ref 와 git reflog 가 SSOT 이므로 본 archive 는 메타데이터만.

@@ -1,28 +1,57 @@
 ---
 name: agent-teamworks
-description: Multi-Agent Team Workflow - 4개 전문 팀 자율 협업 시스템
-version: 2.0.0
+description: Multi-Agent Team Workflow - 10개 전문 팀 자율 협업 시스템 (V10.0 — 4 base + 6 iteration)
+version: 3.0.0
 team_pattern: true
 agents:
   - executor
   - executor-high
   - architect
   - planner
+  - iteration-runner
+  - iteration-phase-strategist
+  - iteration-curator-a
+  - iteration-curator-b
 triggers:
   keywords:
     - "/team"
     - "/teamwork"
+    - "/iteration"
     - "team dev"
     - "team quality"
     - "team ops"
     - "team research"
+    - "team strategy"
+    - "team iteration"
+    - "team spec custody"
+    - "team spec quality"
+    - "team spec evolution"
+    - "team prototype validation"
 model_preference: sonnet
 auto_trigger: true
 ---
 
-# Agent Teamworks - Multi-Agent Team Workflow
+# Agent Teamworks - Multi-Agent Team Workflow (V10.0)
 
-> 4개 전문 팀(Dev, Quality, Ops, Research)이 Agent Teams 패턴으로 자율 협업하는 시스템
+> 10개 전문 팀이 Agent Teams 패턴으로 자율 협업하는 시스템.
+> **V10.0 (2026-04-30)**: 기존 4팀 (Dev/Quality/Ops/Research) + Strategy 1팀 + Iteration 영역 5팀 (Iteration / Spec Custody / Spec Quality / Spec Evolution / Prototype Validation).
+
+## V10.0 10팀 매트릭스
+
+| 팀 | 핵심 agent | 트리거 | 비고 |
+|----|-----------|--------|------|
+| **Dev** | executor / architect / code-reviewer | 코드 구현 | 기존 |
+| **Quality** | qa-tester / code-reviewer + iteration-e2e-orchestrator | e2e + drift 검증 | iteration agent 합류 |
+| **Ops** | devops-engineer / security | CI/CD / 인프라 | 기존 |
+| **Research** | researcher / analyst / Explore | 코드/웹 리서치 | 기존 |
+| **Strategy** | planner / architect | 큰 그림 설계 | V10.0 신규 |
+| **Iteration** | iteration-runner / iteration-phase-strategist / iteration-curator-{a,b} | /iteration cycle | V10.0 핵심 |
+| **Spec Custody** | iteration-spec-author / iteration-spec-classifier | spec 작성 / 보강 | V10.0 신규 |
+| **Spec Quality** | iteration-spec-coherence / iteration-spec-validator | spec 모순 / 재구현성 | V10.0 신규 |
+| **Spec Evolution** | iteration-drift-reconciler / iteration-decision-archivist | drift 분류 / 결정 archive | V10.0 신규 |
+| **Prototype Validation** | iteration-prototype-validator / iteration-screenshot-verifier / iteration-e2e-orchestrator | feasibility / UI / e2e | V10.0 신규 |
+
+> 6 iteration 팀 모두 `iteration-` prefix agent 만 사용 (격리 원칙 IL-5).
 
 ## 아키텍처
 
@@ -144,6 +173,28 @@ TeamLead → [CodeAnalyst, WebResearcher, DataScientist, DocSearcher] → Synthe
 | 6-7 | Dev + Quality |
 | 8-9 | Dev + Quality + Research |
 | 10 | 4팀 전체 |
+| **iteration** | Iteration + (조건부 Dev + Quality + Spec Custody + Spec Quality + Spec Evolution + Prototype Validation) — phase-strategist 자율 |
+
+## V10.0 Iteration 워크플로우
+
+`/iteration` 호출 시 Iteration Team 이 phase-strategist + runner + hot-swap curators 로 cycle 시작.
+상세는 `.claude/skills/iteration/SKILL.md` (entry point), `workflows/impl-first-7-step.md`, `workflows/spec-first-5-step.md`, `curators/swap_policy.md` 참조.
+
+| Phase | 활성화되는 팀 |
+|-------|--------------|
+| Impl-first Step 1 (구현) | Dev |
+| Impl-first Step 2 (감지) | Quality |
+| Impl-first Step 3 (결정) | Spec Evolution + Spec Quality |
+| Impl-first Step 4a (spec 수정) | Spec Custody + Spec Quality |
+| Impl-first Step 4b (코드 수정) | Dev |
+| Impl-first Step 5 (e2e) | Quality |
+| Impl-first Step 6 (스크린샷, UI 만) | Prototype Validation |
+| Impl-first Step 7 (체크포인트) | Iteration (curator swap) |
+| Spec-first Step 1 (spec) | Spec Custody |
+| Spec-first Step 2 (재구현성) | Spec Quality |
+| Spec-first Step 3 (feasibility) | Prototype Validation |
+| Spec-first Step 4 (분기) | Iteration (phase-strategist) |
+| Spec-first Step 5 (archive) | Spec Evolution |
 
 ## 코드 위치
 

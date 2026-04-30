@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": "9.5",
-  "previous_version": "9.3",
-  "description": "EBS V9.5 Single Session AI-Centric. Hub-and-Spoke 폐기 (V9.4 critic 결과 반영). Conductor 단일 session + Agent Teams in-process 모델. 사용자 입력 0 + 결과물 중심주의. 외부 인계 후 governance 폐기 가능.",
+  "version": "10.0",
+  "previous_version": "9.5",
+  "description": "EBS V10.0 (2026-04-30) — V9.5 governance 보존 + /iteration skill 격리 도입. iteration- prefix agent 13 + hot-swap curators (#1↔#2 매 phase 자동 교체, swap 직전 1회 검사 + 1회 개선) + dual workflow (Impl-first 7-step / Spec-first 5-step) + 3 KPI 자율 측정 (reimplementability_pass_rate ≥ 0.9, drift_trend 단조 감소, runner_halts == 0). 사용자 결정 점 0, 다른 프로젝트 영향 0.",
   "governance_model": {
     "name": "single_session_ai_centric_output_focused",
     "version": "v9.5",
@@ -360,5 +360,76 @@
   },
   "scope_guard_version": "v5",
   "scope_guard_env_var": "EBS_SCOPE_GUARD_VERSION",
-  "scope_guard_rollback_value": "v4"
+  "scope_guard_rollback_value": "v4",
+  "iteration_skill": {
+    "_comment": "V10.0 (2026-04-30): /iteration skill 격리 정책. iteration- prefix 외부 신규 agent 생성 금지 (격리 원칙 IL-5).",
+    "version": "v10.0",
+    "skill_path": ".claude/skills/iteration/",
+    "agent_prefix": "iteration-",
+    "agent_count": 13,
+    "agents": [
+      "iteration-phase-strategist",
+      "iteration-runner",
+      "iteration-spec-validator",
+      "iteration-curator-a",
+      "iteration-curator-b",
+      "iteration-spec-author",
+      "iteration-spec-classifier",
+      "iteration-spec-coherence",
+      "iteration-prototype-validator",
+      "iteration-drift-reconciler",
+      "iteration-screenshot-verifier",
+      "iteration-e2e-orchestrator",
+      "iteration-decision-archivist"
+    ],
+    "isolation_rule": "iteration- prefix only. 기존 project-wide agent 진화 금지 (reuse only).",
+    "workflows": {
+      "impl_first": ".claude/skills/iteration/workflows/impl-first-7-step.md",
+      "spec_first": ".claude/skills/iteration/workflows/spec-first-5-step.md"
+    },
+    "iron_laws": [
+      "IL-1: Cycle Activation = Skill 호출",
+      "IL-2: 보고 ≠ 멈춤 (자동 CONTINUE)",
+      "IL-3: Exit Criteria = reimplementability ≥ 0.9 AND drift_direction 명확 AND missing == 0",
+      "IL-4: SSOT 우선",
+      "IL-5: 격리 원칙 (iteration- prefix only)",
+      "IL-6: Workflow 명시 (Impl-first / Spec-first)",
+      "IL-7: Hot-swap (phase 종료 시점만)"
+    ],
+    "kpi": {
+      "reimplementability_pass_rate": {
+        "target": 0.9,
+        "measurement": "iteration-spec-validator + tools/reimplementability_audit.py"
+      },
+      "drift_trend": {
+        "target": "monotonic_decrease",
+        "measurement": "tools/spec_drift_check.py"
+      },
+      "runner_halts": {
+        "target": 0,
+        "measurement": "iteration-runner exit log"
+      }
+    },
+    "metrics_path": "docs/4. Operations/v10_metrics.yml"
+  },
+  "curator_swap": {
+    "_comment": "V10.0 Hot-Swap Curator 정책. 매 phase 자동 교체. swap 직전 1회 검사 + 1회 개선 hard-cap.",
+    "version": "v10.0",
+    "policy_path": ".claude/skills/iteration/curators/swap_policy.md",
+    "rotation_log": ".claude/skills/iteration/curators/rotation_log.md",
+    "swap_trigger": "phase_end_always",
+    "swap_conditions": "none",
+    "inspection_per_swap": 1,
+    "improvement_per_swap": 1,
+    "self_modify_allowed": false,
+    "active_count": 1,
+    "standby_count": 1,
+    "infinite_evolution_blocking_mechanism": "1회 개선 hard-cap (per swap) + 다른 curator 가 개선 (self-modify X) + 매 phase 자동 swap + swap 직전만 검사",
+    "violation_handling": {
+      "no_inspection": "rotation_log warning, 이전 prompt 유지",
+      "multiple_improvements": "첫 개선만 채택, 나머지 무시",
+      "swap_refused": "ACTIVE 강제 STANDBY + circuit_breaker 카운트 +1",
+      "rotation_log_missing": "다음 phase 시작 차단"
+    }
+  }
 }
