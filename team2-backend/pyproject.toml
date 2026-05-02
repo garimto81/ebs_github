@@ -18,7 +18,7 @@ dependencies = [
     #   than 72 bytes` (logs from 2026-04-29 user diagnosis).
     # Pin until passlib upstream fix lands (last release 1.7.4 was 2020).
     # Reference: https://github.com/pyca/bcrypt/issues/684
-    "bcrypt>=3.2.0,<4.0.0",
+    "bcrypt>=3.2.0,<6.0.0",
     "redis>=5.0.0",
     "httpx>=0.27.0",
     "websockets>=13.0",
