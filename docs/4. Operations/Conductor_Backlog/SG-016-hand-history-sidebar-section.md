@@ -17,8 +17,10 @@ related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §7.1-7.2
   - docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md
   - SG-012 (sibling)
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=PENDING — Hand History 사이드바 섹션 미공식화"
 ---
-
 # SG-016 — Hand History 사이드바 섹션 공식화
 
 ## 공백 서술

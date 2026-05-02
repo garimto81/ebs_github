@@ -14,8 +14,10 @@ protocol: Spec_Gap_Triage §2 Type B
 related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §3
   - SG-012 (sibling)
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=PENDING — Players 섹션 근거 미문서화"
 ---
-
 # SG-015 — Lobby Players 섹션 유지 근거 미문서화
 
 ## 공백 서술

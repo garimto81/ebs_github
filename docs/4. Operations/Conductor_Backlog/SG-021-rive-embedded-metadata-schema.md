@@ -19,8 +19,10 @@ related:
   - SG-014 SUPERSEDED (Graphic Editor 진입점 이중화)
   - docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md D3
   - docs/4. Operations/Phase_1_Decision_Queue.md (2026-04-27 C.2 결정)
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=DONE — Rive 내장 메타데이터 스키마 B-209 후속 spec 반영"
 ---
-
 # SG-021 — Rive 내장 메타데이터 스키마
 
 ## 공백 서술
