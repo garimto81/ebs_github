@@ -1,8 +1,7 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../foundation/launchers/cc_launcher.dart';
+import '../../../foundation/launchers/cc_iframe_view.dart';
 import '../../../foundation/widgets/error_banner.dart';
 import '../../../foundation/widgets/loading_state.dart';
 import '../../../models/models.dart';
@@ -96,32 +95,59 @@ class _TableDetailScreenState extends ConsumerState<TableDetailScreen> {
   }
 
   Future<void> _handleLaunchCc() async {
-    // SG-008-b11 v1.2 (2026-05-03 — Web variant) — POST /tables/{id}/launch-cc
-    // → response.cc_url 로 navigate (Web) / response.deep_link (Desktop).
+    // SG-008-b11 v1.4 (2026-05-03 — issue 1 cascade):
+    // location.assign 폐기. 대신 lobby 내 fullscreen Dialog + iframe 으로 임베드.
+    // 의도: "해당 로비에 해당 cc 를 선택해서 진행중이라는 상호작용" — lobby UI 가
+    // dialog 뒤에 보존되어 active 상태 시각 표현.
     setState(() => _launching = true);
+    String? ccUrl;
     try {
       final repo = ref.read(tableRepositoryProvider);
       final raw = await repo.launchCc(widget.tableId);
-      // Backend ApiResponse 가 envelope: {data: {...}, error, meta}.
-      // Repo.launchCc 가 raw map 반환하므로 data envelope 처리.
       final data = (raw['data'] as Map<String, dynamic>?) ?? raw;
-      final ccUrl = data['cc_url'] as String?;
-      final deepLink = data['deep_link'] as String?;
-      final target = kIsWeb ? ccUrl : (deepLink ?? ccUrl);
-      if (target == null) {
-        throw StateError('launch-cc response missing cc_url/deep_link');
+      ccUrl = data['cc_url'] as String?;
+      if (ccUrl == null) {
+        throw StateError('launch-cc response missing cc_url');
       }
-      // Cross-platform launch (web: window.open / desktop: deep-link or stub log).
-      launchCcTarget(target, isWeb: kIsWeb);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('CC 실행 실패: $e')),
         );
       }
+      return;
     } finally {
       if (mounted) setState(() => _launching = false);
     }
+
+    if (!mounted) return;
+    // Fullscreen Dialog — lobby 가 underneath 에 보존됨.
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      useSafeArea: false,
+      builder: (ctx) => Dialog.fullscreen(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                const Icon(Icons.bolt, size: 18, color: Colors.greenAccent),
+                const SizedBox(width: 6),
+                Text('Active CC — Table ${widget.tableId}'),
+              ],
+            ),
+            actions: [
+              IconButton(
+                tooltip: '닫기 (Lobby 회귀)',
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.of(ctx).pop(),
+              ),
+            ],
+          ),
+          body: CcIframeView(url: ccUrl!, tableId: widget.tableId),
+        ),
+      ),
+    );
   }
 
   @override
