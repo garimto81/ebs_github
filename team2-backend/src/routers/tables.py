@@ -20,6 +20,7 @@ from src.services.table_service import (
     delete_table,
     get_table,
     get_table_seats,
+    launch_cc,
     list_all_tables,
     list_tables,
     rebalance_tables,
@@ -27,8 +28,13 @@ from src.services.table_service import (
     update_table,
 )
 
-# SG-008-b11 결정 (2026-04-20): launch_cc() 서비스는 삭제하지 않음 — 다른 내부 소비자 가능성.
-# 엔드포인트만 삭제. deep-link 패턴 전환은 team1 (Lobby) + team4 (CC protocol handler) 소관.
+# SG-008-b11 결정 (2026-04-20): deep-link 전환 후 endpoint 삭제.
+# SG-008-b11 v1.2 (2026-05-03): Web 배포 variant — 동일 endpoint 복원.
+#   Phase 1 Korea soft-launch 는 Docker Web (lobby-web :3000 + cc-web :3001) — browser
+#   에서 OS deep-link 작동 불가. Endpoint 가 ① cc_url (browser navigate) ② deep_link
+#   (desktop) ③ ws_url ④ launch_token (5min JWT) ⑤ cc_instance_id 모두 반환하여
+#   client 가 환경에 맞는 launcher 선택. SSOT: docs/2. Development/2.2 Backend/APIs/
+#   Backend_HTTP.md §16, SG-008-b11 v1.2.
 
 router = APIRouter(prefix="/api/v1", tags=["tables"])
 
@@ -140,10 +146,60 @@ def api_delete_table(
     return ApiResponse(data={"deleted": True})
 
 
-# SG-008-b11 결정 (2026-04-20): `POST /tables/{table_id}/launch-cc` 옵션 1 채택 — deep-link 전환 + 엔드포인트 삭제.
-#   WSOP LIVE Staff App §Launch 는 deep-link (`wsop-staff://table/{id}`) 패턴 — EBS 도 동일하게 정렬.
-#   Lobby: `window.location = ebs-cc://table/${id}?token=${short_lived_token}` (team1 Backlog)
-#   CC: Flutter `app_links` 패키지로 OS protocol handler 등록 (team4 Backlog)
+# SG-008-b11 v1.2 (2026-05-03 Conductor Mode A 자율) — Web 배포 variant 복원.
+#   Phase 1 Korea soft-launch (Docker Web) 환경에서 OS deep-link 미작동 → endpoint 복원.
+#   Response 가 cc_url (web) + deep_link (desktop) 둘 다 반환하여 client 가 선택.
+#   기존 launch_cc() service 그대로 재사용. JWT 5min 짧은 수명 보존.
+
+
+@router.post("/tables/{table_id}/launch-cc")
+def api_launch_cc(
+    table_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """SG-008-b11 v1.2 — CC launch (Web + Desktop dual-mode).
+
+    Returns:
+      tableId, status, ccInstanceId, launchToken (5min JWT),
+      ccUrl (Web — http://cc-web:3001/?...),
+      deepLink (Desktop — ebs-cc://table/{id}?...),
+      wsUrl (ws://bo:8000/ws/cc?...)
+
+    RBAC: admin / operator(assigned). viewer → 403.
+    Idempotency-Key 미들웨어 처리 (별도).
+    """
+    # RBAC — admin 자율, operator 는 assigned table 만 (TODO: assigned_tables 매핑 추가 시 enforce)
+    if user.role == "viewer":
+        from fastapi import HTTPException, status as fa_status
+
+        raise HTTPException(
+            status_code=fa_status.HTTP_403_FORBIDDEN,
+            detail={"code": "RBAC_DENIED", "message": "viewer cannot launch CC"},
+        )
+
+    payload = launch_cc(table_id, user, db)
+    # Web variant URL augmentation (SG-008-b11 v1.2).
+    # EBS_EXTERNAL_HOST 가 browser-facing host (LAN IP 또는 localhost). CC web 의 외부 포트 = 3001.
+    # CC_EXTERNAL_URL 직접 override 가능 (proxy/HTTPS 환경).
+    import os
+
+    cc_external = os.environ.get("CC_EXTERNAL_URL")
+    if not cc_external:
+        external_host = os.environ.get("EBS_EXTERNAL_HOST", "localhost")
+        cc_external = f"http://{external_host}:3001"
+    cc_external = cc_external.rstrip("/")
+    payload["cc_url"] = (
+        f"{cc_external}/?table_id={table_id}"
+        f"&token={payload['launch_token']}"
+        f"&cc_instance_id={payload['cc_instance_id']}"
+    )
+    payload["deep_link"] = (
+        f"ebs-cc://table/{table_id}"
+        f"?token={payload['launch_token']}"
+        f"&cc_instance_id={payload['cc_instance_id']}"
+    )
+    return ApiResponse(data=payload)
 
 
 @router.get("/tables/{table_id}/status")

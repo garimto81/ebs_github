@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../foundation/launchers/cc_launcher.dart';
 import '../../../foundation/widgets/error_banner.dart';
 import '../../../foundation/widgets/loading_state.dart';
 import '../../../models/models.dart';
+import '../../../repositories/table_repository.dart';
 import '../widgets/add_player_dialog.dart';
 
 /// Table detail screen with large seat map and player DataTable.
@@ -93,10 +96,29 @@ class _TableDetailScreenState extends ConsumerState<TableDetailScreen> {
   }
 
   Future<void> _handleLaunchCc() async {
+    // SG-008-b11 v1.2 (2026-05-03 — Web variant) — POST /tables/{id}/launch-cc
+    // → response.cc_url 로 navigate (Web) / response.deep_link (Desktop).
     setState(() => _launching = true);
     try {
-      // TODO: wire CC launch API
-      await Future.delayed(const Duration(milliseconds: 300));
+      final repo = ref.read(tableRepositoryProvider);
+      final raw = await repo.launchCc(widget.tableId);
+      // Backend ApiResponse 가 envelope: {data: {...}, error, meta}.
+      // Repo.launchCc 가 raw map 반환하므로 data envelope 처리.
+      final data = (raw['data'] as Map<String, dynamic>?) ?? raw;
+      final ccUrl = data['cc_url'] as String?;
+      final deepLink = data['deep_link'] as String?;
+      final target = kIsWeb ? ccUrl : (deepLink ?? ccUrl);
+      if (target == null) {
+        throw StateError('launch-cc response missing cc_url/deep_link');
+      }
+      // Cross-platform launch (web: window.open / desktop: deep-link or stub log).
+      launchCcTarget(target, isWeb: kIsWeb);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('CC 실행 실패: $e')),
+        );
+      }
     } finally {
       if (mounted) setState(() => _launching = false);
     }
