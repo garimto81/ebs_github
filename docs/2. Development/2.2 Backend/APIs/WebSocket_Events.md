@@ -1220,3 +1220,112 @@ CC 운영자가 DEAL 버튼을 누르면 BO 에 audit 용 이벤트 발행. **En
 | `WriteDeal` | §11 | DEAL 버튼 | `DealAck` | `DealRejected` |
 | `WriteAction` | §10 | FOLD/CHECK/BET/CALL/RAISE/ALL-IN | `ActionAck` | `ActionRejected` |
 ```
+
+## 13. Admin/Operator 이벤트 (IMPL-008~011 cascade, 2026-05-03 신설)
+
+> Wave 1 A3 endpoints (IMPL-008~011) 의 broadcast 이벤트 명세.
+> Conductor → BO → 구독자 (Lobby/CC) 단방향 fan-out.
+
+### 13.1 이벤트 요약
+
+| Event | 발행 트리거 | 채널 | 소비자 |
+|-------|------------|------|--------|
+| `gfskin.deactivated` | `POST /skins/{id}/deactivate` (IMPL-008) | `/ws/cc` | Team 4 CC (UI 갱신) |
+| `force_logout` | `POST /users/{id}/force-logout` (IMPL-009) | `/ws/lobby/{user_id}` + `/ws/cc/{user_id}` | 대상 user 의 모든 connection (close code 4003 동반) |
+| `table.seat.added` | `POST /tables/{id}/seats` (IMPL-010) | `/ws/lobby/{table_id}` | Team 1 Lobby + Team 4 CC |
+| `table.seat.removed` | `DELETE /tables/{id}/seats/{seat_no}` (IMPL-011) | `/ws/lobby/{table_id}` | Team 1 Lobby + Team 4 CC |
+
+### 13.2 `gfskin.deactivated` payload
+
+```json
+{
+  "type": "gfskin.deactivated",
+  "v": 1,
+  "ts": "2026-05-03T10:30:00Z",
+  "seq": 12345,
+  "payload": {
+    "skin_id": "string",
+    "deactivated_at": "2026-05-03T10:30:00Z",
+    "actor_user_id": "string (admin who triggered)"
+  }
+}
+```
+
+CC 수신 시: 사용 중인 gfskin 이 비활성화되면 fallback skin 으로 자동 교체. 활성 hand 영향 0 (다음 hand 부터 적용 — IMPL-008 §business rules 2 정합).
+
+### 13.3 `force_logout` payload + close code
+
+대상 user 의 active WebSocket 모든 connection 에 동일 페이로드 송신 후 즉시 connection close.
+
+```json
+{
+  "type": "force_logout",
+  "v": 1,
+  "ts": "2026-05-03T10:30:00Z",
+  "seq": null,
+  "payload": {
+    "target_user_id": "string",
+    "actor_user_id": "string (admin)",
+    "reason": "string (audit)",
+    "logout_at": "2026-05-03T10:30:00Z"
+  }
+}
+```
+
+**WebSocket close code**: `4003 force_logout` (custom application close code, range 4000-4999 per RFC 6455).
+
+**Frontend 의무**:
+1. `force_logout` 이벤트 수신 → 즉시 메시지 표시 + login 화면 redirect
+2. close code `4003` 수신 → access/refresh token storage clear + login redirect (replay 시도 금지)
+3. 재연결 시도 금지 — `4003` 은 재연결 차단 신호
+
+### 13.4 `table.seat.added` payload
+
+```json
+{
+  "type": "table.seat.added",
+  "v": 1,
+  "ts": "2026-05-03T10:30:00Z",
+  "seq": 12346,
+  "payload": {
+    "table_id": "string",
+    "seat_no": 1,
+    "active": true,
+    "created_at": "2026-05-03T10:30:00Z",
+    "actor_user_id": "string (operator)"
+  }
+}
+```
+
+활성 hand 진행 중 수신 시: 다음 hand 부터 반영 (현재 hand 영향 0 — IMPL-010 §business rules 5 정합).
+
+### 13.5 `table.seat.removed` payload
+
+```json
+{
+  "type": "table.seat.removed",
+  "v": 1,
+  "ts": "2026-05-03T10:30:00Z",
+  "seq": 12347,
+  "payload": {
+    "table_id": "string",
+    "seat_no": 1,
+    "removed_at": "2026-05-03T10:30:00Z",
+    "actor_user_id": "string (operator)"
+  }
+}
+```
+
+empty seat 만 삭제됨 (IMPL-011 §business rules 1) — `player_id` 필드 부재 (이미 stand-up 처리된 후).
+
+### 13.6 ack/reject 정책 (SG-020 정합)
+
+| Event | ack 필요 | reject 가능 |
+|-------|:-------:|:-----------:|
+| `gfskin.deactivated` | ❌ (broadcast) | ❌ (서버 결정 사후 통지) |
+| `force_logout` | ❌ (close 동반) | ❌ |
+| `table.seat.added` | ❌ (broadcast) | ❌ |
+| `table.seat.removed` | ❌ (broadcast) | ❌ |
+
+모두 **server-driven broadcast** — client 의 ack/reject 발화 없음. SG-020 (ack/reject events) 의 server-side 한정 패턴 정합.
+

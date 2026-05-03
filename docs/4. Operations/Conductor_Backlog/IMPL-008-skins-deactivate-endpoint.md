@@ -1,29 +1,33 @@
 ---
 id: IMPL-008
-title: "구현: POST /skins/{id}/deactivate (gfskin 비활성화)"
+title: "구현: POST /skins/{id}/deactivate (gfskin 비활성화) — SUPERSEDED"
 type: implementation
-status: PENDING
+status: DONE
+superseded-by: V9.5 P7 (Backend_HTTP.md §5.12 line 811 이미 spec'd)
 owner: team2
 created: 2026-05-03
 created-by: conductor (Wave 1 A3 자율 cascade)
-spec_ready: false
-spec_ready_reason: "Conductor draft 완료. team2 publisher 검증 + Backend_HTTP.md 보강 후 true 전환"
+resolved: 2026-05-03
+resolved-by: conductor (post-merge SSOT 재확인 — V9.5 P7 already spec)
+spec_ready: true
+spec_ready_reason: "Backend_HTTP.md §5.12 line 811 V9.5 P7 already spec — POST /skins/:id/deactivate (Admin)"
 blocking_spec_gaps: []
 implements_chapters:
-  - "docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md (gfskin section, 보강 필요)"
+  - "docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md §5.12 line 811 (V9.5 P7 already spec)"
+  - "docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md §13.2 (gfskin.deactivated event 추가, 본 PR cascade)"
 related_code:
-  - team2-backend/src/api/routers/skins.py (예상 위치, 신규 endpoint)
+  - team2-backend/src/api/routers/skins.py (V9.5 P7 구현)
   - team1-frontend/lib/features/lobby/skin_management/* (consumer)
-linked-audit: A3 frontend-impl-but-no-backend-spec (V9.5 reimplementability cycle)
+linked-audit: A3 frontend-impl-but-no-backend-spec (V9.5 cycle, audit pre-V9.5 P7)
 last-updated: 2026-05-03
-reimplementability: UNKNOWN
+reimplementability: PASS
 reimplementability_checked: 2026-05-03
-reimplementability_notes: "PENDING — Conductor draft 단계. team2 publisher 검증 후 PASS 전환"
+reimplementability_notes: "V9.5 P7 spec 확인 후 PASS 전환. Backend_HTTP.md §5.12 + WebSocket_Events.md §13 cascade 완비"
 ---
 
-# IMPL-008 — POST /skins/{id}/deactivate
+# IMPL-008 — POST /skins/{id}/deactivate ✅ SUPERSEDED
 
-> 🟡 **PENDING** — Conductor 자율 draft 완료. team2 publisher Fast-Track 검증 대기.
+> ✅ **DONE (SUPERSEDED 2026-05-03)** — V9.5 P7 (`Backend_HTTP.md` §5.12 line 811) 이 본 endpoint 를 이미 spec'd. Conductor draft 시점에 SSOT lookup 부족으로 redundant 작성. 본 PR cascade 에서 `WebSocket_Events.md` §13.2 broadcast event 명세 추가로 SSOT 완비.
 
 ## 배경
 
