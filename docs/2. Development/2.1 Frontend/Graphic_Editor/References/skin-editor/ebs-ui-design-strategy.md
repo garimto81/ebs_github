@@ -2,16 +2,19 @@
 doc_type: "design-strategy"
 doc_id: "PRD-0007-S2"
 version: "1.2.0"
-status: "draft"
+status: "SUPERSEDED"
+superseded-by: "B-209 (회의 D3 GE 제거) + SG-014 SUPERSEDED + SG-021 (.gfskin → .riv 전환 DONE)"
+superseded-date: 2026-04-27
 depends_on:
   - "PRD-0007: prd-skin-editor-layout-references.prd.md (18개 에디터 벤치마크)"
   - "PRD-0007-S1: skin-editor-layout-balance-solutions.md (6개 솔루션)"
   - "EBS-Skin-Editor.prd.md (UI 설계 v1.4.0)"
 owner: team1
 tier: internal
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "PRD-0007-S2 status=draft (14KB) — 설계 전략 초안"
+last-updated: 2026-05-03
+reimplementability: N/A
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "SUPERSEDED 2026-04-27 — Graphic Editor 영역 회의 D3 결정으로 폐기. 신 SSOT: SG-021 + Foundation §5.3 Rive Manager"
 ---
 # EBS UI Design 전략 제안서
 
