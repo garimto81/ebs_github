@@ -69,16 +69,57 @@ SG-008 §"b분류" 에서 승격. CC 앱을 원격으로 launch 하는 endpoint.
 
 ## Resolution
 
-**2026-04-20: 옵션 1 채택** — deep-link 전환, POST /launch-cc 삭제. team1 Lobby + team4 CC handler Backlog 후속
+**2026-04-20: 옵션 1 채택** — deep-link 전환, POST /launch-cc 삭제.
+
+**2026-05-03 v1.2 — Web variant 복원** (Conductor Mode A 자율, E2E 검증 cascade):
+
+Phase 1 Korea soft-launch 가 **Docker Web 배포** (lobby-web :3000 + cc-web :3001) 로 결정됨에 따라
+브라우저에서 OS deep-link (`ebs-cc://`) 미작동 → 옵션 1 단독 적용 시 Lobby → CC 호출 chain
+break. 옵션 1 + 4 hybrid 채택:
+
+| 옵션 | 채택 | 처리 |
+|:---:|:----:|------|
+| 1 (deep-link) | ✅ 보존 | Desktop 배포 시 활성화 (response.deep_link) |
+| 4 (Web URL endpoint) ⭐ NEW | ✅ 추가 | Browser 배포 활성화 (response.cc_url) |
+
+**Endpoint 복원**: `POST /api/v1/tables/{table_id}/launch-cc`
+
+Response shape (V9.5 P26+):
+```json
+{
+  "data": {
+    "table_id": 1,
+    "status": "live",
+    "cc_instance_id": "uuid-v4",
+    "launch_token": "JWT (5min)",
+    "ws_url": "ws://bo:8000/ws/cc?table_id=1",
+    "cc_url": "http://<EBS_EXTERNAL_HOST>:3001/?table_id=1&token=...&cc_instance_id=...",
+    "deep_link": "ebs-cc://table/1?token=...&cc_instance_id=...",
+    "launched_at": "2026-05-03T14:21:10Z"
+  }
+}
+```
+
+**Client launch logic**:
+- Web (browser): `window.location = response.cc_url`
+- Desktop (Flutter): try `deep_link` → fallback `cc_url`
+
+**Env vars (BO)**:
+- `EBS_EXTERNAL_HOST` — browser-facing host (default `localhost`)
+- `CC_EXTERNAL_URL` — direct override (proxy/HTTPS 환경)
+
+**E2E evidence (2026-05-03)**:
+- `tools/e2e_lobby_to_cc_ws.py` 9/9 PASS
+  - login → series → events → flights → tables → launch-cc → WS connect
 
 team2 세션에서 코드·스펙 반영 완료:
 - Backend_HTTP.md §16 "SG-008 b-분류 결정 스펙" 에 최종 스펙 기록
-- 코드 변경: `C:/claude/ebs/team2-backend/src/routers/`
-- 상세: Backend_HTTP.md §16 참조
+- 코드: `team2-backend/src/routers/tables.py:api_launch_cc()` 복원
 
 ## Changelog
 
 | 날짜 | 버전 | 변경 | 비고 |
 |------|------|------|------|
 | 2026-04-20 | v1.0 | SG-008 (b) 승격 신규 작성 | Conductor |
-| 2026-04-20 | v1.1 | RESOLVED — 옵션 1 채택: deep-link 전환, POST /launch-cc 삭제. team1 Lobby + team4 CC handler Backlog 후속 | team2 session |
+| 2026-04-20 | v1.1 | RESOLVED — 옵션 1 채택: deep-link 전환, POST /launch-cc 삭제 | team2 session |
+| 2026-05-03 | v1.2 | Web variant 복원 — endpoint 재도입 + dual response (cc_url + deep_link). E2E 9/9 PASS | Conductor Mode A 자율 |
