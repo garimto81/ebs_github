@@ -169,6 +169,8 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SG-010-spec-drift-scanner-precision.md` — Tooling: spec_drift_check.py 정밀화 (Settings, Schema, WebSocket)
 - `docs/4. Operations/Conductor_Backlog/SG-013-lobby-tournaments-nomenclature.md` — Lobby 사이드바 "lobby" vs "Tournaments" 용어 충돌
 - `docs/4. Operations/Conductor_Backlog/SG-014-graphic-editor-dual-entry.md` — Graphic Editor 진입점 이중화 (헤더 vs Settings 탭)
+- `docs/4. Operations/Conductor_Backlog/SG-017-settings-global-vs-scoped.md` — "Settings \"글로벌 단위\" Overview 모순 (vs Series/Event/Table 분리)"
+- `docs/4. Operations/Conductor_Backlog/SG-019-reports-postproduction-boundary.md` — "Reports/Insights 탭 ↔ 포스트프로덕션 경계 정의 부재"
 - `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` — Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체)
 - `docs/4. Operations/Conductor_Backlog/SG-022-deprecation.md` — SG-022-deprecation
 - `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` — SG-023 — 인텐트 전환 (기획서 완결 → production 출시)

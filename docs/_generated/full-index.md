@@ -561,9 +561,9 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-014-graphic-editor-dual-entry.md` | Graphic Editor 진입점 이중화 (헤더 vs Settings 탭) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-015-players-section-rationale.md` | Lobby Players 섹션 유지 근거 미문서화 | team1 | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-016-hand-history-sidebar-section.md` | Hand History 사이드바 섹션 공식화 (25개 분산 참조 통합) | team1 | - | - |
-| `docs/4. Operations/Conductor_Backlog/SG-017-settings-global-vs-scoped.md` | "Settings \"글로벌 단위\" Overview 모순 (vs Series/Event/Table 분리)" | conductor  # decision_owner (memory 역전 판정) | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-017-settings-global-vs-scoped.md` | "Settings \"글로벌 단위\" Overview 모순 (vs Series/Event/Table 분리)" | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-018-5nf-metamodel-tables.md` | 5NF 메타모델 테이블 부재 (nav_sections / nav_items / report_templates / 외 6종) | team2 | - | - |
-| `docs/4. Operations/Conductor_Backlog/SG-019-reports-postproduction-boundary.md` | "Reports/Insights 탭 ↔ 포스트프로덕션 경계 정의 부재" | conductor  # decision_owner (Foundation §1.2 scope) | - | - |
+| `docs/4. Operations/Conductor_Backlog/SG-019-reports-postproduction-boundary.md` | "Reports/Insights 탭 ↔ 포스트프로덕션 경계 정의 부재" | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-020-websocket-ack-reject-events.md` | WebSocket Ack/Reject 6 이벤트 신규 D2 (publisher 미동기화) | team2 | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` | Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-022-deprecation.md` | SG-022-deprecation | conductor | - | - |
