@@ -2,17 +2,18 @@
 title: SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권)
 owner: conductor
 tier: internal
-status: DONE (선언), PENDING (실효 적용)
+status: DONE
 resolved: 2026-04-27
 resolved-by: conductor (사용자 B-Q5 ㉠ 명시 cascade)
+effective-since: 2026-04-27 (선언) / 2026-05-03 (실효 검증 — Wave 1~2 cascade 자율 cycle 사례)
 type: spec-gap
 spec-gap-type: C
 linked-decision: user 2026-04-27 (B-Q5 ㉠ 채택)
 linked-sg: SG-023
-last-updated: 2026-04-27
-reimplementability: UNKNOWN
+last-updated: 2026-05-03
+reimplementability: PASS
 reimplementability_checked: 2026-05-03
-reimplementability_notes: "status=DONE 선언, PENDING 실효 적용 — Conductor 단일 governance 확장 부분 미적용"
+reimplementability_notes: "Mode A 단일 세션 자율 진행 실효 검증 완료 — 2026-05-03 Wave 1~2 cascade (PR #109/#110/#111) 사례에서 Conductor 가 team-policy.json, Conductor_Backlog/, Backend/APIs/ 등 모든 영역 자율 진입. team-policy.json v7.5 + CLAUDE.md V9.4 정합. 외부 개발팀 인계 가능 수준의 governance SSOT 확정"
 ---
 ## 결정 (사용자 명시 2026-04-27, B-Q5)
 
