@@ -194,10 +194,11 @@ reimplementability_notes: "자립 가능: 본 로드맵은 production 출시 + �
 |:--:|------|:----:|:---:|
 | SG-001 | Lobby/GE 기술 스택 SSOT 3중화 | **DONE** 2026-04-20 | conductor |
 | SG-002 | Engine 의존 계약 (ENGINE_URL + graceful + Overlay 배경 flag) | **DONE** 2026-04-20 | conductor (Foundation §6.3 §6.4 §7.1) |
-| SG-003 | Settings 6탭 스키마 | PENDING | conductor + team1 |
-| SG-004 | .gfskin ZIP DATA-07 포맷 | PENDING | conductor + team1 |
+| SG-003 | Settings 6탭 스키마 | **DONE** 2026-05-03 | conductor + team1 (6 sub-tabs 모두 PASS, R6 critic 갱신) |
+| SG-004 | .gfskin ZIP DATA-07 포맷 | **SUPERSEDED** 2026-04-22 → SG-021 | conductor (B-209 회의 D3 결정 — Rive 내장 메타데이터 전환) |
 | SG-005 | Foundation Ch.6 시스템 연결 도식 (EBS_Core 병합) | **DONE** 2026-04-20 | conductor (Foundation §Ch.6 §Ch.7 병합) |
-| SG-006 | RFID 52 카드 codemap | PENDING | conductor + team4 |
+| SG-006 | RFID 52 카드 codemap | **DONE** 2026-04-20 | conductor + team4 (RESOLVED — 3 deck registration 모드 + DATA-04 schema) |
+| SG-021 | Rive 내장 메타데이터 (SG-004 후속) | **DONE** 2026-04-27 | conductor (Foundation §5.3 + Phase_1_Decision_Queue C.2) |
 
 ## 거버넌스
 

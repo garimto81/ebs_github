@@ -94,11 +94,11 @@ def list_hands(
     if hand_number is not None:
         stmt = stmt.where(Hand.hand_number == hand_number)
 
-    # count total — 같은 WHERE 에 SELECT COUNT
+    # count total — 같은 WHERE 에 SELECT COUNT.
+    # B-Q19 fix: SQLAlchemy 2.x 의 .one() 은 Row 객체 반환 → int(Row) TypeError.
+    # .scalar() 로 명시적 단일 값 추출 (SQLAlchemy 1.x/2.x 양쪽 호환).
     count_stmt = sa_select(func.count()).select_from(stmt.subquery())
-    total = db.exec(count_stmt).one()
-    if isinstance(total, tuple):  # SQLAlchemy 1.x 호환
-        total = total[0]
+    total = db.exec(count_stmt).scalar() or 0
 
     # paginated items — 시간 내림차순 정렬
     stmt = stmt.order_by(Hand.started_at.desc()).offset(skip).limit(limit)

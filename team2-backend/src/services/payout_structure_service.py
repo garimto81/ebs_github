@@ -83,6 +83,10 @@ def update_payout_structure(
         for old in old_levels:
             db.delete(old)
 
+        # B-Q18 fix: flush deletes before inserts to avoid same-tx UNIQUE
+        # constraint collision on (payout_structure_id, position_from).
+        db.flush()
+
         # Insert new levels
         for lv in data.levels:
             level = PayoutStructureLevel(

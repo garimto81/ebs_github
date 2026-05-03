@@ -134,6 +134,10 @@ def update_blind_structure(
         for old in old_levels:
             db.delete(old)
 
+        # B-Q18 fix: flush deletes before inserts to avoid same-tx UNIQUE
+        # constraint collision on (blind_structure_id, level_no).
+        db.flush()
+
         # Insert new levels
         for lv in data.levels:
             level = BlindStructureLevel(

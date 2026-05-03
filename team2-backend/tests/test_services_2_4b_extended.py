@@ -13,6 +13,7 @@ from sqlmodel import Session, select
 
 from src.models.competition import Competition, EventFlight
 from src.models.hand import Hand, HandAction, HandPlayer
+from src.models.table import Table
 from src.models.schemas import (
     CompetitionCreate,
     CompetitionUpdate,
@@ -41,6 +42,77 @@ from src.services.hand_service import (
     get_hand_players,
     list_hands,
 )
+
+
+# ── B-Q19 regression: list_hands returns (list, int) not Row ────────
+
+
+def test_list_hands_returns_int_total_empty(db_session: Session):
+    """B-Q19 regression: SQLAlchemy 2.x .one() returns Row (not tuple) →
+    int(Row) TypeError pre-fix. Post-fix uses .scalar() → plain int.
+    Empty result path (0 hands) should return ([], 0) without raising."""
+    items, total = list_hands(db=db_session)
+    assert isinstance(items, list)
+    assert isinstance(total, int)
+    assert total == 0
+    assert items == []
+
+
+def test_list_hands_returns_int_total_with_data(db_session: Session):
+    """B-Q19 regression with non-empty data path."""
+    flight_id = _setup_flight(db_session, prefix="LHQ19")
+    # Create a Table linked to the flight
+    table = Table(
+        event_flight_id=flight_id,
+        table_no=1,
+        name="T1",
+        max_players=9,
+    )
+    db_session.add(table)
+    db_session.commit()
+    db_session.refresh(table)
+    # Create 3 hands
+    for i in range(3):
+        h = Hand(
+            table_id=table.table_id,
+            hand_number=i + 1,
+            started_at="2026-05-03T00:00:00Z",
+        )
+        db_session.add(h)
+    db_session.commit()
+    items, total = list_hands(db=db_session, table_id=table.table_id)
+    assert isinstance(total, int)
+    assert total == 3
+    assert len(items) == 3
+
+
+def test_list_hands_with_filter_and_pagination(db_session: Session):
+    """B-Q19 regression: count works with WHERE clause + offset/limit."""
+    flight_id = _setup_flight(db_session, prefix="LHQ19P")
+    table = Table(
+        event_flight_id=flight_id,
+        table_no=1,
+        name="T1",
+        max_players=9,
+    )
+    db_session.add(table)
+    db_session.commit()
+    db_session.refresh(table)
+    for i in range(5):
+        db_session.add(
+            Hand(
+                table_id=table.table_id,
+                hand_number=i + 1,
+                started_at="2026-05-03T00:00:00Z",
+            )
+        )
+    db_session.commit()
+    items, total = list_hands(
+        db=db_session, table_id=table.table_id, skip=2, limit=2
+    )
+    assert isinstance(total, int)
+    assert total == 5
+    assert len(items) == 2
 from src.services.series_service import (
     create_event,
     create_flight,

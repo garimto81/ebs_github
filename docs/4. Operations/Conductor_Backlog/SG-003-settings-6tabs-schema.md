@@ -3,18 +3,20 @@ id: SG-003
 title: "Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences"
 type: spec_gap
 sub_type: spec_gap_major
-status: PARTIAL  # 마스터 인덱스 + 탭 개요만 확정, 필드 상세는 후속 task
+status: DONE  # 2026-05-03 Conductor Mode A 갱신 — 6 sub-tab 모두 PASS 확인
+resolved: 2026-05-03
+resolved-by: conductor (Mode A R6 critic resolution)
 owner: conductor
 decision_owners_notified: [team1, team2]
 created: 2026-04-20
 affects_chapter:
-  - docs/2. Development/2.1 Frontend/Settings/**  (신규 작성 필요)
-  - docs/2. Development/2.2 Backend/Database/Schema.md  (Settings 저장 테이블)
+  - docs/2. Development/2.1 Frontend/Settings/**  (6 tab docs 모두 PASS)
+  - docs/2. Development/2.2 Backend/Database/Schema.md  (settings_kv 테이블 추가됨, V9.5 P20)
   - team1-frontend/lib/features/settings/**
 protocol: Spec_Gap_Triage
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "status=PARTIAL — 마스터 인덱스 확정, 필드 상세는 후속 task"
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "2026-05-03 R6 critic: 6 sub-tab docs (Outputs/Graphics/Display/Rules/Statistics/Preferences) 모두 reimplementability=PASS + cross-verified (grep evidence). settings_kv 테이블 V9.5 P20 (#100) 추가 완료. Master + sub-tabs 모두 충족하므로 DONE."
 ---
 # SG-003 — Settings 6탭 스키마 (마스터)
 

@@ -284,3 +284,50 @@ def test_apply_payout_structure_returns_none(db_session: Session):
     """TODO stub — line 130-131: pass (no-op)."""
     result = apply_payout_structure(99999, 99999, db_session)
     assert result is None
+
+
+# ── B-Q18 regression: same-tx delete+insert with overlapping unique key ─
+
+
+def test_update_blind_structure_replaces_levels_overlapping_keys(db_session: Session):
+    """B-Q18 regression: update with NEW levels using SAME level_no as existing
+    triggered IntegrityError pre-fix (UNIQUE on (blind_structure_id, level_no)).
+    Post-fix `db.flush()` between delete and insert resolves it."""
+    bs = _make_bs(db_session, name="OverlapBS")
+    new_levels = [
+        BlindStructureLevelCreate(
+            level_no=1, small_blind=500, big_blind=1000, duration_minutes=30
+        ),
+        BlindStructureLevelCreate(
+            level_no=2, small_blind=750, big_blind=1500, duration_minutes=30
+        ),
+    ]
+    updated = update_blind_structure(
+        bs.blind_structure_id,
+        BlindStructureUpdate(levels=new_levels),
+        db_session,
+    )
+    levels = get_blind_structure_levels(updated.blind_structure_id, db_session)
+    assert len(levels) == 2
+    assert {lv.small_blind for lv in levels} == {500, 750}
+    assert {lv.level_no for lv in levels} == {1, 2}
+
+
+def test_update_payout_structure_replaces_levels_overlapping_keys(db_session: Session):
+    """B-Q18 regression: same as above for PayoutStructure
+    (UNIQUE on (payout_structure_id, position_from))."""
+    ps = _make_ps(db_session, name="OverlapPS")
+    new_levels = [
+        PayoutStructureLevelCreate(position_from=1, position_to=1, payout_pct=60.0),
+        PayoutStructureLevelCreate(position_from=2, position_to=2, payout_pct=30.0),
+        PayoutStructureLevelCreate(position_from=3, position_to=3, payout_pct=10.0),
+    ]
+    updated = update_payout_structure(
+        ps.payout_structure_id,
+        PayoutStructureUpdate(levels=new_levels),
+        db_session,
+    )
+    levels = get_payout_structure_levels(updated.payout_structure_id, db_session)
+    assert len(levels) == 3
+    pcts = {float(lv.payout_pct) for lv in levels}
+    assert pcts == {60.0, 30.0, 10.0}
