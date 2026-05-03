@@ -2,16 +2,19 @@
 doc_type: "design-proposal"
 doc_id: "PRD-0007-S1"
 version: "1.0.0"
-status: "draft"
+status: "SUPERSEDED"
+superseded-by: "B-209 (회의 D3 GE 제거) + SG-014 SUPERSEDED + SG-021 (.gfskin → .riv 전환 DONE)"
+superseded-date: 2026-04-27
 depends_on:
   - "PRD-0007: prd-skin-editor-layout-references.prd.md (레퍼런스 분석)"
   - "EBS-Skin-Editor.prd.md (UI 설계 v1.4.0)"
   - "mockups/ebs-skin-editor.html (현재 CSS 구조)"
 owner: team1
 tier: internal
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "PRD-0007-S1 status=draft (14KB) — 레이아웃 밸런스 제안"
+last-updated: 2026-05-03
+reimplementability: N/A
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "SUPERSEDED 2026-04-27 — Graphic Editor 영역 회의 D3 결정으로 폐기. 신 SSOT: SG-021 + Foundation §5.3 Rive Manager"
 ---
 # Skin Editor 레이아웃 밸런스 솔루션 제안서
 

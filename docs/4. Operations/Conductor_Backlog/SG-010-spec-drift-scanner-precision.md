@@ -3,16 +3,17 @@ id: SG-010
 title: "Tooling: spec_drift_check.py 정밀화 (Settings, Schema, WebSocket)"
 type: tooling
 sub_type: spec_drift_scanner
-status: PENDING
+status: SPECIFIED
 owner: conductor
 created: 2026-04-20
+last-updated: 2026-05-03
 affects_chapter:
   - tools/spec_drift_check.py
   - docs/4. Operations/Spec_Gap_Registry.md
 protocol: Spec_Gap_Triage §7 (Type D — meta)
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "status=PENDING, scanner 정밀화 tooling task"
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "Tooling SSOT 명세 완료. 미흡 영역 (schema D3=25, settings D2=13, websocket stub) + 개선 후보 (HIGH 3건, MEDIUM 2건, LOW 1건) + 수락 기준 5건 명시. 외부 개발팀 / 도구 작성자 인계 가능 SSOT 확정. status=SPECIFIED (구현 대기, 명세는 PASS)"
 ---
 # SG-010 — spec_drift_check.py 정밀화
 

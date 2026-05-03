@@ -2,15 +2,18 @@
 doc_type: "prd"
 doc_id: "PRD-0006"
 version: "1.9.0"
-status: "draft"
+status: "SUPERSEDED"
+superseded-by: "B-209 (회의 D3 GE 제거) + SG-014 SUPERSEDED + SG-021 (.gfskin → .riv 전환 DONE)"
+superseded-date: 2026-04-27
 owner: "BRACELET STUDIO"
 created: "2026-03-12"
+last-updated: 2026-05-03
 depends_on:
   - "PRD-0005: prd-skin-editor.prd.md (PokerGFX 역공학 분석)"
   - "EBS-Skin-Editor.prd.md (EBS UI 설계 v1.2.0)"
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "PRD-0006 status=draft (48KB) — 비교 PRD 초안"
+reimplementability: N/A
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "SUPERSEDED 2026-04-27 — Graphic Editor 영역 회의 D3 결정으로 폐기. 신 SSOT: SG-021 + Foundation §5.3 Rive Manager"
 ---
 # PokerGFX → EBS Skin Editor UI Design 비교
 

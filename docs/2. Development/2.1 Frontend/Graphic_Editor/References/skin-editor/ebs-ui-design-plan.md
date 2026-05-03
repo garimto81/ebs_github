@@ -2,7 +2,9 @@
 doc_type: "implementation-plan"
 doc_id: "PLAN-UI-001"
 version: "1.0.0"
-status: "draft"
+status: "SUPERSEDED"
+superseded-by: "B-209 (회의 D3 GE 제거) + SG-014 SUPERSEDED + SG-021 (.gfskin → .riv 전환 DONE)"
+superseded-date: 2026-04-27
 depends_on:
   - "PRD-0007-S2: ebs-ui-design-strategy.md (전략)"
   - "EBS-Skin-Editor.prd.md (UI 설계 v1.5.0)"
@@ -10,9 +12,10 @@ depends_on:
   - "PRD-0007-S1: skin-editor-layout-balance-solutions.md (솔루션)"
 owner: team1
 tier: internal
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "PLAN-UI-001 status=draft (15KB) — 구현 계획 초안"
+last-updated: 2026-05-03
+reimplementability: N/A
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "SUPERSEDED 2026-04-27 — Graphic Editor 영역 회의 D3 결정으로 폐기 (.gfskin → Rive 내장 .riv 전환). 신 SSOT: SG-021 + Foundation §5.3 Rive Manager"
 ---
 # EBS UI Design 구현 계획
 
