@@ -1,30 +1,34 @@
 ---
 id: IMPL-011
-title: "구현: DELETE /tables/{id}/seats/{seat_no} (테이블 seat 삭제)"
+title: "구현: DELETE /tables/{id}/seats/{seat_no} (좌석 비우기) — SUPERSEDED + 의미 정정"
 type: implementation
-status: PENDING
+status: DONE
+superseded-by: V9.5 P7 (Backend_HTTP.md §5.7 line 628 이미 spec'd, frontend removePlayer)
 owner: team2
 created: 2026-05-03
 created-by: conductor (Wave 1 A3 자율 cascade)
-spec_ready: false
-spec_ready_reason: "Conductor draft 완료. team2 publisher 검증 + Backend_HTTP.md 보강 후 true 전환"
+resolved: 2026-05-03
+resolved-by: conductor (post-merge SSOT 재확인 — V9.5 P7 already spec, draft 의미 오인 발견)
+spec_ready: true
+spec_ready_reason: "Backend_HTTP.md §5.7 line 628 V9.5 P7 already spec — frontend removePlayer (좌석 vacant 전환)"
 blocking_spec_gaps: []
 implements_chapters:
-  - "docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md (tables/seats section, 보강 필요)"
-  - "docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md (table.seat.removed event 추가)"
+  - "docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md §5.7 line 628 + line 642-644 (V9.5 P7 already spec)"
+  - "docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md §13.5 (table.seat.removed event 추가, 본 PR cascade)"
 related_code:
-  - team2-backend/src/api/routers/tables.py (예상 위치, 기존 router 확장)
-  - team1-frontend/lib/features/table_management/* (consumer)
-linked-audit: A3 frontend-impl-but-no-backend-spec (V9.5 reimplementability cycle)
+  - team2-backend/src/api/routers/tables.py (V9.5 P7 구현)
+  - team1-frontend/lib/features/table_management/* (frontend removePlayer consumer)
+linked-audit: A3 frontend-impl-but-no-backend-spec (V9.5 cycle, audit pre-V9.5 P7)
+draft-correction: "초기 draft 는 'seat 자체 삭제' 의미로 작성됐으나 실제 V9.5 P7 spec 은 'removePlayer' (vacant 전환). 의미 오인 — 본 정정으로 V9.5 P7 정합."
 last-updated: 2026-05-03
-reimplementability: UNKNOWN
+reimplementability: PASS
 reimplementability_checked: 2026-05-03
-reimplementability_notes: "PENDING — Conductor draft 단계. team2 publisher 검증 후 PASS 전환"
+reimplementability_notes: "V9.5 P7 spec 확인 후 PASS 전환. Backend_HTTP.md §5.7 + WebSocket_Events.md §13 cascade 완비"
 ---
 
-# IMPL-011 — DELETE /tables/{id}/seats/{seat_no}
+# IMPL-011 — DELETE /tables/{id}/seats/{seat_no} ✅ SUPERSEDED + 의미 정정
 
-> 🟡 **PENDING** — Conductor 자율 draft 완료. team2 publisher Fast-Track 검증 대기.
+> ✅ **DONE (SUPERSEDED 2026-05-03)** — V9.5 P7 (`Backend_HTTP.md` §5.7 line 628) 이 본 endpoint 를 이미 spec'd. **의미 정정**: Conductor 초기 draft 는 "seat 자체 삭제 (10-max 축소)" 가정이었으나, 실제 V9.5 P7 spec 은 **frontend `removePlayer` (좌석을 vacant 상태로 전환, status=`empty`, player_id=null)**. 본 PR cascade 에서 `WebSocket_Events.md` §13.5 broadcast event 명세 추가로 SSOT 완비.
 
 ## 배경
 

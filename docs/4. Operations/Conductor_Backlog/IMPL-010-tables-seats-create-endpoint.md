@@ -1,30 +1,34 @@
 ---
 id: IMPL-010
-title: "구현: POST /tables/{id}/seats (테이블 seat 추가)"
+title: "구현: POST /tables/{id}/seats (좌석 플레이어 배치) — SUPERSEDED + 의미 정정"
 type: implementation
-status: PENDING
+status: DONE
+superseded-by: V9.5 P7 (Backend_HTTP.md §5.7 line 626 이미 spec'd, frontend addPlayer)
 owner: team2
 created: 2026-05-03
 created-by: conductor (Wave 1 A3 자율 cascade)
-spec_ready: false
-spec_ready_reason: "Conductor draft 완료. team2 publisher 검증 + Backend_HTTP.md 보강 후 true 전환"
+resolved: 2026-05-03
+resolved-by: conductor (post-merge SSOT 재확인 — V9.5 P7 already spec, draft 의미 오인 발견)
+spec_ready: true
+spec_ready_reason: "Backend_HTTP.md §5.7 line 626 V9.5 P7 already spec — frontend addPlayer (좌석에 플레이어 배치)"
 blocking_spec_gaps: []
 implements_chapters:
-  - "docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md (tables/seats section, 보강 필요)"
-  - "docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md (table.seat.added event 추가)"
+  - "docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md §5.7 line 626 + line 630-640 (V9.5 P7 already spec)"
+  - "docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md §13.4 (table.seat.added event 추가, 본 PR cascade)"
 related_code:
-  - team2-backend/src/api/routers/tables.py (예상 위치, 기존 router 확장)
-  - team1-frontend/lib/features/table_management/* (consumer)
-linked-audit: A3 frontend-impl-but-no-backend-spec (V9.5 reimplementability cycle)
+  - team2-backend/src/api/routers/tables.py (V9.5 P7 구현)
+  - team1-frontend/lib/features/table_management/* (frontend addPlayer consumer)
+linked-audit: A3 frontend-impl-but-no-backend-spec (V9.5 cycle, audit pre-V9.5 P7)
+draft-correction: "초기 draft 는 'seat 자체 추가 (max_seats 변경)' 의미로 작성됐으나 실제 V9.5 P7 spec 은 'addPlayer' 의미. 의미 오인 — 본 정정으로 V9.5 P7 정합."
 last-updated: 2026-05-03
-reimplementability: UNKNOWN
+reimplementability: PASS
 reimplementability_checked: 2026-05-03
-reimplementability_notes: "PENDING — Conductor draft 단계. team2 publisher 검증 후 PASS 전환"
+reimplementability_notes: "V9.5 P7 spec 확인 후 PASS 전환. Backend_HTTP.md §5.7 + WebSocket_Events.md §13 cascade 완비"
 ---
 
-# IMPL-010 — POST /tables/{id}/seats
+# IMPL-010 — POST /tables/{id}/seats ✅ SUPERSEDED + 의미 정정
 
-> 🟡 **PENDING** — Conductor 자율 draft 완료. team2 publisher Fast-Track 검증 대기.
+> ✅ **DONE (SUPERSEDED 2026-05-03)** — V9.5 P7 (`Backend_HTTP.md` §5.7 line 626) 이 본 endpoint 를 이미 spec'd. **의미 정정**: Conductor 초기 draft 는 "seat 자체 추가 (10-max 동적 확장)" 가정이었으나, 실제 V9.5 P7 spec 은 **frontend `addPlayer` (좌석에 플레이어 배치)** — payload `{ seat_no, player_id, chip_count }`. 본 PR cascade 에서 `WebSocket_Events.md` §13.4 broadcast event 명세 추가로 SSOT 완비.
 
 ## 배경
 
