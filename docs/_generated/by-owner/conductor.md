@@ -191,7 +191,7 @@ tier: generated
 - `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Domain Access
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
 - `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
-- `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (V9.0 — Hub-and-Spoke Centralized Review)
+- `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (V9.5 — Single Session AI-Centric, Hub-and-Spoke Deprecated)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
 - `docs/4. Operations/Phase_1_Decision_Queue.md` — Phase 1 Decision Queue (18건 결정 기록)
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
@@ -216,6 +216,12 @@ tier: generated
 - `docs/4. Operations/Reports/2026-04-28-v8-phase8d-multi-session-workflow-history.md` — Multi_Session_Workflow.md — v7.2 5-Session Pipeline + 변경 이력 (Archived 2026-04-28)
 - `docs/4. Operations/Reports/2026-04-28-v8-restoration-verified.md` — v8.0 Workflow Verification — End-to-End Test
 - `docs/4. Operations/Reports/2026-04-29-card-flow-drift-check.md` — Card Flow Drift Check Report (CF-009)
+- `docs/4. Operations/Reports/2026-04-29-v93-stale-worktrees-archive.md` — V9.3 Stale Worktrees Archive (2026-04-29 cleanup)
+- `docs/4. Operations/Reports/2026-04-29-v94-final-worktree-cleanup.md` — V9.4 Final Worktree Cleanup — SSOT-based Autonomous Judgment
+- `docs/4. Operations/Reports/2026-04-29-v95-cycle-metrics.md` — V9.5 Cycle Metrics — P10 결과물 Quality Report
+- `docs/4. Operations/Reports/2026-04-29-v95-e2e-iteration-phase-plan.md` — V9.5 결과물 E2E Iteration — Phase / Task Plan + P5/P6 진행
+- `docs/4. Operations/Reports/2026-04-29-v95-residual-cycle-wrap-up.md` — V9.5 잔존 후속 cycle wrap-up — Agent Teams 첫 적용 + P11-P14 통합 보고
+- `docs/4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md` — V9.5 SSOT vs Implementation Gap Triage
 - `docs/4. Operations/Roadmap.md` — Roadmap
 - `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` — SSOT Alignment Report — Lobby Path Drift Eradication
 - `docs/4. Operations/SSOT_Alignment_Progress.md` — SSOT Alignment Progress
@@ -226,5 +232,7 @@ tier: generated
 - `docs/4. Operations/V5_Migration_Plan.md` — V5 Migration Plan — v4.0/v4.1 → v5.0/v5.1 전환 로드맵
 - `docs/4. Operations/V9_2_Gate_Design.md` — V9.2 Gate Design (3-gate enforcement scaffolding)
 - `docs/4. Operations/V9_3_Intent_Execution_Boundary.md` — V9.3 Intent-Execution Separation (governance evolution)
+- `docs/4. Operations/V9_4_AI_Centric_Governance.md` — V9.4 AI-Centric Governance — SSOT-first Judgment + 전문 질문 금지
+- `docs/4. Operations/V9_5_Single_Session_Output_Centric.md` — V9.5 Single Session AI-Centric — Hub-and-Spoke Deprecation
 - `docs/README.md` — docs/ README
 - `docs/examples/README.md` — Examples
