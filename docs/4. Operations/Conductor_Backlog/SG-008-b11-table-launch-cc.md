@@ -15,7 +15,7 @@ affects_chapter:
 protocol: Spec_Gap_Triage §7.2
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
-reimplementability_notes: "2026-04-20 RESOLVED — 옵션 1 채택 (team2 세션 구현 완료)"
+reimplementability_notes: "v1.3 (2026-05-03) — same-window + URL query parsing cascade"
 ---
 
 # SG-008-b11 — `POST /api/v1/tables/{table_id}/launch-cc` 필요성
@@ -112,6 +112,35 @@ Response shape (V9.5 P26+):
 - `tools/e2e_lobby_to_cc_ws.py` 9/9 PASS
   - login → series → events → flights → tables → launch-cc → WS connect
 
+**2026-05-03 v1.3 — Same-window navigation + URL query parsing 정합**:
+
+v1.2 적용 후 사용자 의도 재명시: "하나의 창 안에서 처리". 2 cascade 변경:
+
+| 변경 | 위치 | 의도 |
+|------|------|------|
+| 1. Lobby Web `_blank` → `location.assign` | `team1-frontend/lib/foundation/launchers/cc_launcher_web.dart:14` | 동일 탭 navigation, browser back 으로 lobby 회귀 |
+| 2. CC Web `Uri.base.queryParameters` 자동 파싱 | `team4-cc/src/lib/models/launch_config.dart:93` `tryFromQuery()` + `main.dart:31` fallback | URL query 자동 인식 → manual "Connect" 폼 미표시 |
+
+**Browser launch flow (v1.3)**:
+
+```
+[Lobby :3000]                          [BO :8000]                  [CC :3001 same tab]
+   |                                      |                                |
+   |--POST /tables/1/launch-cc----------->|                                |
+   |<--{cc_url, deep_link, token, ...}----|                                |
+   |                                                                      |
+   |--window.location.assign(cc_url)----------------------------(same tab)>|
+   |                                       Uri.base.queryParameters       |
+   |                                       → tryFromQuery() → LaunchConfig|
+   |                                       → auto-connect (manual skip)   |
+```
+
+**검증 확인 사항 (v1.3 추가)**:
+- 새 탭 차단 (popup blocker) 영향 0
+- browser back 버튼 = lobby 회귀
+- `Uri.base.queryParameters` = Flutter Web 표준 (dart:html 의존 0)
+- demo fallback (`?demo=1`) 보존: query 일부만 있을 때 default 채움
+
 team2 세션에서 코드·스펙 반영 완료:
 - Backend_HTTP.md §16 "SG-008 b-분류 결정 스펙" 에 최종 스펙 기록
 - 코드: `team2-backend/src/routers/tables.py:api_launch_cc()` 복원
@@ -123,3 +152,4 @@ team2 세션에서 코드·스펙 반영 완료:
 | 2026-04-20 | v1.0 | SG-008 (b) 승격 신규 작성 | Conductor |
 | 2026-04-20 | v1.1 | RESOLVED — 옵션 1 채택: deep-link 전환, POST /launch-cc 삭제 | team2 session |
 | 2026-05-03 | v1.2 | Web variant 복원 — endpoint 재도입 + dual response (cc_url + deep_link). E2E 9/9 PASS | Conductor Mode A 자율 |
+| 2026-05-03 | v1.3 | Same-window navigation (location.assign) + CC URL query parsing (tryFromQuery) | Conductor Mode A 자율 |

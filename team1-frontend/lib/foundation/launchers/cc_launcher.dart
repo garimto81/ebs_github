@@ -1,6 +1,6 @@
 /// CC launch dispatcher — conditional import for web vs desktop.
 ///
-/// SG-008-b11 v1.2 (2026-05-03 — Web variant):
+/// SG-008-b11 v1.3 (2026-05-03 — Web variant):
 ///   POST /tables/{id}/launch-cc → response.cc_url (browser) or .deep_link (desktop).
 ///   Lobby `_handleLaunchCc` calls this with the resolved target URL.
 ///

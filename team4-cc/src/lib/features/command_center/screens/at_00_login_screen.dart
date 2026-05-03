@@ -47,6 +47,28 @@ class _At00LoginScreenState extends ConsumerState<At00LoginScreen> {
       });
     }
 
+    // SG-008-b11 v1.3 — Web 자동 진입 시 manual login 폼 깜박임 방지.
+    // launchConfig 가 존재하면 ("CC 호출됨") connect 폼 대신 loading placeholder 만
+    // 표시하고 auto-auth 완료 즉시 router 가 /main 으로 redirect.
+    if (launchConfig != null &&
+        authState.status != AuthStatus.error) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(
+                'Table ${launchConfig.tableId} 연결 중...',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: Center(
         child: ConstrainedBox(
