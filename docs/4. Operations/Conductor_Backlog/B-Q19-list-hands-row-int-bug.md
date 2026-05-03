@@ -2,10 +2,11 @@
 title: B-Q19 — list_hands SQLAlchemy 2.x Row int() TypeError (Type A)
 owner: team2 (or conductor Mode A)
 tier: internal
-status: PENDING
+status: DONE
+resolved: 2026-05-03
 type: backlog
-linked-decision: Session 2.4b 발견 (2026-04-27)
-last-updated: 2026-04-27
+linked-decision: Session 2.4b 발견 (2026-04-27), Conductor Mode A 자율 수정 (2026-05-03)
+last-updated: 2026-05-03
 ---
 
 ## 발견

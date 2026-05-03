@@ -1,12 +1,28 @@
 ---
 id: NOTIFY-team4-cc-web-unhealthy
 title: "ebs-cc-web-1 컨테이너 2일간 unhealthy 상태 — 진단/재빌드 요청"
-status: OPEN
+status: RESOLVED
+resolved: 2026-05-03
+resolved-by: conductor (Mode A 자율 진단)
 created: 2026-04-22
 from: team1 (Docker Runtime 프로토콜 적용 중 발견)
 target: team4
 priority: P2 (CC Web 데모 환경 영향)
 ---
+
+## 2026-05-03 RESOLUTION (Conductor Mode A)
+
+11일 만의 자율 점검 결과:
+
+| 항목 | 발견 | 결론 |
+|------|------|------|
+| `ebs-cc-web-1` (NOTIFY 시점 컨테이너) | 현재 컨테이너 목록에 부재 | 이전 compose 정의의 deprecated container_name. 자연스러운 cycle out |
+| `ebs-cc-web` (canonical, image `ebs/cc-web:latest`) | **Up 39h healthy** | ✅ 현재 정상 운영 중 |
+| docker-compose.yml 매핑 | `container_name: ebs-cc-web` (no -1) | naming convention 정합 완료 |
+
+**진짜 발견된 이슈** (NOTIFY 와는 별개): `ebs-redis` container 가 2026-05-01 12:57:17 에 Exited(255), 2일간 down 상태였으나 `ebs-bo` 가 자기 healthcheck (`/health` only) 만 통과하면서 의존성 down 을 silent masking. 본 turn 에서 `redis` 재기동 + Windows dynamic-port-range 회피 (host port 6380→16379) 수행.
+
+후속: B-Q21 (healthcheck dependency-aware) 등재 권고 — bo healthcheck 가 redis ping 포함하도록 강화하여 silent dependency outage 차단.
 
 # NOTIFY → team4: ebs-cc-web-1 unhealthy
 

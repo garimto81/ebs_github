@@ -86,7 +86,10 @@ services:
       - ebs-net
     command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - "6380:6379"
+      # 2026-05-03 — Windows dynamic-port-range (1024-15001) collision on 6380/6381.
+      # Internal `redis:6379` (ebs-net) unaffected. Host debug port shifted above
+      # dynamic range to avoid bind contention with WinNAT/Hyper-V allocations.
+      - "16379:6379"
     volumes:
       - redis-data:/data
     healthcheck:
