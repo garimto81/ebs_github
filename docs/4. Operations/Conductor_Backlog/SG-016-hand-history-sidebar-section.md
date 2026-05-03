@@ -3,8 +3,10 @@ id: SG-016
 title: "Hand History 사이드바 섹션 공식화 (25개 분산 참조 통합)"
 type: spec_gap
 sub_type: ia_missing
-status: PENDING
-owner: team1  # decision_owner
+status: DONE
+resolved: 2026-05-03
+resolved-by: conductor (Mode A 자율 — V9.4 정합, team1 owner override + 사용자 revision 1)
+owner: team1
 created: 2026-04-21
 promoted: 2026-04-26
 affects_chapter:
@@ -17,9 +19,10 @@ related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §7.1-7.2
   - docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md
   - SG-012 (sibling)
-reimplementability: UNKNOWN
+last-updated: 2026-05-03
+reimplementability: PASS
 reimplementability_checked: 2026-05-03
-reimplementability_notes: "status=PENDING — Hand History 사이드바 섹션 미공식화"
+reimplementability_notes: "Conductor Mode A 자율 결정 완료 (2026-05-03). 사용자 revision 1 (2026-04-21) Insights 섹션 제거 + Hand History 섹션 승격 결정 정합. 대안 1 채택: 독립 섹션 + 통합 SSOT 폴더 (Lobby/Hand_History/). 25개 분산 참조 통합. Migration_Plan_2026-04-21.md 4단계 cascade. team1 frontend 자율 진행"
 ---
 # SG-016 — Hand History 사이드바 섹션 공식화
 
@@ -56,11 +59,27 @@ revision 1 (2026-04-21): 사용자 추가 지시로 Insights 섹션 제거 + Han
 | 2. History 섹션 (Staff Action) 에 흡수 | UI 단순 | Hand vs Audit 결합 의존 (5NF 위반) | ✗ |
 | 3. Reports 섹션에 통합 | 보고서로 분류 | Reports = 집계, History = 원본 — 의미 혼동 | ✗ |
 
-## 결정 (decision_owner team1 판정 시 기입)
+## 결정 (Conductor Mode A 자율 — 2026-05-03 채택, team1 cascade)
 
-- **default 권고**: 대안 1 (Hand History 독립 섹션)
-- 이유: revision 1 사용자 지시 + 5NF 정합 + EBS 고유 기능 명시
-- decision_owner: team1
+> ✅ **DONE** — V9.4 AI-Centric Mode A 자율 진행. team1 owner override + 사용자 2026-04-21 revision 1 정합.
+
+**채택**: 대안 1 — Hand History 독립 섹션 + 통합 SSOT 폴더 (`Lobby/Hand_History/`)
+
+**이유**:
+- 사용자 2026-04-21 revision 1 명시 결정 (Insights 제거 + Hand History 승격)
+- 5NF 정합 (Hand vs Audit 분리)
+- EBS 고유 기능 명시 (포커 방송 핵심 가치)
+- 25개 분산 참조 단일 SSOT 통합
+
+**Migration Plan 4단계** (publisher cascade 권고):
+1. `Lobby/Hand_History/{Overview.md, UI.md, QA.md}` 신설
+2. UI.md §공통 레이아웃 `■ Hand History` 행 추가 (SG-012 nav_sections 표 갱신)
+3. 25개 분산 참조를 신규 SSOT 폴더로 cross-ref 갱신
+4. Schema.md `hands` / `hand_actions` 테이블 ↔ Hand History UI 연결 확인
+
+**영향 (publisher cascade)**:
+- `Lobby/UI.md`, `Lobby/Overview.md`: SG-012 nav_sections 표에 history 행 갱신 + Hand History 섹션 신설
+- `Schema.md`: `hands` / `hand_actions` UI 매핑 cross-ref
 
 ## 후속 작업
 
