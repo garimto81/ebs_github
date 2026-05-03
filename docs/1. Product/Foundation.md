@@ -5,10 +5,10 @@ tier: internal
 confluence-page-id: 3625189547
 confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
 source: confluence (SSOT)
-last-updated: 2026-04-27
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-22
-reimplementability_notes: "2026-04-22 회의 결정 반영 — Ch.4 2 렌즈 도입(기능 6 / 설치 4 → γ 하이브리드 4 SW + 1 HW 재분류) + §4.4 매핑 테이블 신설 + §5.1 Flutter 스택 통일 γ 보정 (Lobby Web 정규, CC/Overlay Desktop — team1 PR#11-14 retro). Ch.5 §5.0 2 런타임 모드 신설(D2, CC/Overlay 내부 선택지), Ch.6.3 프로세스 모델 명시(D5), Ch.6.4 실시간 동기화 정책 신설(D5: SG-002 해소), Ch.7.1 배경 config flag 명시(D4), Ch.8.5 복수 테이블 아키텍처 신설(D1: N PC + 중앙 서버 BO+DB). F2 BS_Overview 용어 정의 + F3 Spec_Gap SG-002 DONE 전환 후 최종 PASS 재판정."
+last-updated: 2026-05-03
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "PASS 재판정 완료 (2026-05-03). 의존 조건 모두 충족: (1) F2 BS_Overview = PASS, (2) F3 SG-002 = RESOLVED + PASS. 본문 §4.4 매핑 테이블, §5.0 2 런타임 모드, §5.1 Flutter 스택, §6.3 프로세스 모델, §6.4 실시간 동기화, §7.1 배경 config flag, §8.5 복수 테이블 아키텍처 모두 반영 확인. 외부 개발팀 인계 가능 수준의 SSOT 확정."
 ---
 
 #### Part I — Concept: EBS는 무엇인가? (What it is)
