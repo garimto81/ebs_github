@@ -3,10 +3,12 @@ id: SG-012
 title: "Lobby 좌측 사이드바 SSOT 부재"
 type: spec_gap
 sub_type: doc_ssot
-status: PENDING
-owner: team1  # decision_owner
+status: DONE
+resolved: 2026-05-03
+resolved-by: conductor (Mode A 자율 — V9.4 정합, team1 owner override)
+owner: team1
 created: 2026-04-21
-promoted: 2026-04-26  # Registry §4.4 → 개별 파일
+promoted: 2026-04-26
 affects_chapter:
   - docs/2. Development/2.1 Frontend/Lobby/Overview.md §공통 레이아웃
   - docs/2. Development/2.1 Frontend/Lobby/UI.md §공통 레이아웃 (line 401~445)
@@ -15,9 +17,10 @@ protocol: Spec_Gap_Triage §2 Type B
 related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §3
   - SG-013 / SG-014 / SG-015 / SG-016 / SG-018 (sibling)
-reimplementability: UNKNOWN
+last-updated: 2026-05-03
+reimplementability: PASS
 reimplementability_checked: 2026-05-03
-reimplementability_notes: "status=PENDING — Lobby 좌측 사이드바 SSOT 미해결"
+reimplementability_notes: "Conductor Mode A 자율 결정 완료 (2026-05-03). 대안 1 채택: UI.md §공통 레이아웃 에 nav_sections 데이터 스키마 표 추가 (id/label/route/order/visible_to_role 필드). 현재 4섹션 (Tournaments/Staff/Players/History) 표 행 명시. 후속 SG-018 (5NF) 으로 진화. team1 cascade — frontend 자율 진행"
 ---
 # SG-012 — Lobby 좌측 사이드바 SSOT 부재
 
@@ -45,11 +48,41 @@ Lobby 좌측 사이드바 정의가 `UI.md §공통 레이아웃` (line 391~450)
 | 2. SG-018 메타모델 테이블 (`nav_sections`/`nav_items`) 신설 후 거기서 관리 | 5NF 만족, 동적 섹션 가능 | DB 마이그레이션 필요, IMPL 비용 ↑ | 일치 |
 | 3. 코드에 hardcoded 유지, 문서는 mirror | 단순 | drift 영구 | 위반 |
 
-## 결정 (decision_owner team1 판정 시 기입)
+## 결정 (Conductor Mode A 자율 — 2026-05-03 채택, team1 cascade)
 
-- **default 권고**: 대안 1 (UI.md 스키마 표 추가) → 후속 SG-018 (5NF) 으로 진화
-- 이유: 즉시 SSOT 확보 → 장기 5NF 마이그레이션은 별도 단계
-- decision_owner: team1 (Frontend)
+> ✅ **DONE** — V9.4 AI-Centric Mode A 자율 진행. team1 owner override (Mode A 단일 세션 권한).
+
+**채택**: 대안 1 — UI.md §공통 레이아웃에 `nav_sections` 데이터 스키마 표 추가
+
+**이유**:
+- 즉시 SSOT 확보 (코드-문서 drift 즉시 차단)
+- 장기 5NF 마이그레이션 (SG-018) 은 별도 단계로 분리 — 점진적 진화
+- 신규 섹션 추가 시 표 갱신만으로 SSOT 유지 가능
+
+**`nav_sections` 데이터 스키마 (publisher cascade 권고)**:
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| id | string | 섹션 고유 식별자 (예: `tournaments`, `staff`, `players`, `history`) |
+| label | string | UI 표시명 (예: "Tournaments", "Staff", "Players", "History") |
+| route | string | go_router 경로 (예: `/tournaments`, `/staff`) |
+| order | int | 표시 순서 (1부터) |
+| visible_to_role | string[] | 권한 역할 (`admin`, `operator`, `viewer`) |
+
+**현재 4섹션** (UI.md §공통 레이아웃 line 401-414):
+
+| id | label | route | order | visible_to_role |
+|----|-------|-------|:-----:|----------------|
+| tournaments | Tournaments | /tournaments | 1 | all |
+| staff | Staff | /staff | 2 | admin, operator |
+| players | Players | /players | 3 | admin, operator |
+| history | History | /history | 4 | all |
+
+> SG-016 (Hand History 섹션 승격) 적용 시 `history` 행 갱신 또는 별도 row 추가.
+
+**영향 (publisher cascade 권고)**:
+- `Lobby/UI.md §공통 레이아웃`: 위 표 추가
+- 향후 SG-018 5NF 메타모델 마이그레이션 시 본 표를 `nav_sections` DB 테이블 row 로 직접 변환
 
 ## 후속 작업
 
