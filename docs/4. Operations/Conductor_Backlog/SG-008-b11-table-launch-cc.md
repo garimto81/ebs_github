@@ -145,6 +145,73 @@ team2 세션에서 코드·스펙 반영 완료:
 - Backend_HTTP.md §16 "SG-008 b-분류 결정 스펙" 에 최종 스펙 기록
 - 코드: `team2-backend/src/routers/tables.py:api_launch_cc()` 복원
 
+**2026-05-04 v1.4 — Iframe Embed + Password-Only Connect**:
+
+v1.3 사용자 비판 후 critic-mode 분석 (`docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md`)
+결과 3 critical gap 식별:
+
+| 변경 | 위치 | 사용자 의도 |
+|------|------|------------|
+| 1. Lobby `location.assign` → **fullscreen Dialog + iframe** | `team1-frontend/lib/foundation/launchers/cc_iframe_view{.dart, _web.dart, _stub.dart}` + `table_detail_screen.dart:_handleLaunchCc` | "해당 로비에 해당 cc 를 선택해서 진행중이라는 상호작용" — lobby UI 보존 + CC active 시각 표현 |
+| 2. CC stand-alone 4-field form → **password-only** | `team4-cc/src/lib/features/command_center/screens/at_00_login_screen.dart` 전면 재작성 | "connect 창은 오로지 비번 입력만 있어야 함 (lobby settings 에서 설정 가능)" |
+| 3. CC localStorage 영속 — `ebs_cc_last_config` | `team4-cc/src/lib/foundation/cc_settings_storage{.dart, _web.dart, _stub.dart}` + `auth_provider.dart` save hook | URL launch / 비번 connect 시 last session 자동 저장 → 다음 stand-alone 진입은 비번만 |
+
+**Browser launch flow (v1.4)**:
+
+```
+[Lobby :3000 — 보존됨]                                      [BO :8000]
+   ┌──────────────────────────────┐                              │
+   │ Table Detail [Enter CC]      │──POST /launch-cc────────────>│
+   │                              │<──{cc_url, token, ...}───────┤
+   │ ┌──────────────────────────┐ │                              │
+   │ │ Dialog.fullscreen        │ │     (iframe loads CC)
+   │ │ ┌──────────────────────┐ │ │                              │
+   │ │ │ AppBar: Active CC -  │ │ │   [CC :3001 — iframe inside lobby]
+   │ │ │ Table N        [X]   │ │ │   - Uri.base.queryParameters parse
+   │ │ │                      │ │ │   - auto-auth → /main
+   │ │ │   <iframe src=cc_url>│ │ │   - 비번 폼 미표시 (loading placeholder만)
+   │ │ │     CC content       │ │ │   - localStorage save (next time)
+   │ │ │                      │ │ │
+   │ │ └──────────────────────┘ │ │
+   │ └──────────────────────────┘ │
+   └──────────────────────────────┘   (X 닫기 → lobby 회귀)
+```
+
+**Stand-alone 재진입 (CC :3001 직접 접속)**:
+
+```
+[CC :3001 — URL query 없음]
+  ↓
+  config = LaunchConfig.tryFromArgs([])  → null
+  config = LaunchConfig.tryFromQuery(empty)  → null
+  ↓
+  CcSettingsStorage.loadLastSession() → CcLastSession{email, boBaseUrl, tableId, wsUrl}
+  ↓
+  at_00_login_screen 표시 (last session 카드 + 비번 1 field)
+  ↓
+  사용자 비번 입력 → POST /auth/login → token → CC 사용
+```
+
+**검증 (v1.4)**:
+
+| # | 항목 | 도구 |
+|:-:|------|------|
+| 1 | backend chain 9/9 | `tools/e2e_lobby_to_cc_ws.py` |
+| 2 | lobby 배포 JS 에 iframe HtmlElementView 포함 | `docker exec ebs-lobby-web grep ...` |
+| 3 | cc 배포 JS 에 saveLastSession + 비밀번호 form 포함 | grep |
+| 4 | flutter analyze 0 issue | both |
+| 5 | (수동) browser screenshot — Dialog open + iframe CC | manual |
+
+**v1.4 vs v1.3 매핑**:
+
+| 항목 | v1.3 | v1.4 |
+|------|------|------|
+| Launch UX | location.assign (same-tab nav) | Dialog.fullscreen + iframe |
+| Cross-origin | navigate (lose lobby state) | iframe (preserve lobby) |
+| CC stand-alone form | 4 fields (tableId/token/wsUrl/boBaseUrl) | 1 field (password) + last session 카드 |
+| localStorage 영속 | ❌ | ✅ `ebs_cc_last_config` |
+| 첫 launch 후 재진입 | manual entry 필요 | 비번만 |
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 | 비고 |
@@ -153,3 +220,4 @@ team2 세션에서 코드·스펙 반영 완료:
 | 2026-04-20 | v1.1 | RESOLVED — 옵션 1 채택: deep-link 전환, POST /launch-cc 삭제 | team2 session |
 | 2026-05-03 | v1.2 | Web variant 복원 — endpoint 재도입 + dual response (cc_url + deep_link). E2E 9/9 PASS | Conductor Mode A 자율 |
 | 2026-05-03 | v1.3 | Same-window navigation (location.assign) + CC URL query parsing (tryFromQuery) | Conductor Mode A 자율 |
+| 2026-05-04 | v1.4 | Iframe embed (lobby 보존) + password-only stand-alone form + localStorage 영속 | Conductor Mode A 자율 (사용자 비판 cascade) |

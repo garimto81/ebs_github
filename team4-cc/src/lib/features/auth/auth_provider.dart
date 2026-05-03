@@ -11,6 +11,7 @@ import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../foundation/cc_settings_storage.dart';
 import '../../models/launch_config.dart';
 
 part 'auth_provider.freezed.dart';
@@ -58,12 +59,26 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final assignedTables = tablesRaw is List
           ? tablesRaw.whereType<num>().map((e) => e.toInt()).toList()
           : null;
+      final email = claims['email'] as String?;
 
       state = state.copyWith(
         status: AuthStatus.authenticated,
         role: role,
         assignedTables: assignedTables,
       );
+
+      // SG-008-b11 v1.4 — last session 영속 (token 제외, password 제외).
+      // Stand-alone 재진입 시 비번 1 field 만 표시 가능하도록.
+      try {
+        await CcSettingsStorage.saveLastSession(CcLastSession(
+          email: email,
+          boBaseUrl: config.boBaseUrl,
+          tableId: config.tableId,
+          wsUrl: config.wsUrl,
+        ));
+      } catch (_) {
+        // localStorage 실패 시 silent (desktop stub 도 정상 흐름)
+      }
     } catch (e) {
       state = state.copyWith(
         status: AuthStatus.error,

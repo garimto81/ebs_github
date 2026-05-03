@@ -415,7 +415,7 @@ packages:
     source: hosted
     version: "4.1.2"
   integration_test:
-    dependency: transitive
+    dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -572,7 +572,7 @@ packages:
     source: hosted
     version: "1.9.1"
   patrol:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: patrol
       sha256: "32fd0709f3871fa56eb9cd88410e3ca816bfa757122bae806a0f842188acb820"
@@ -580,7 +580,7 @@ packages:
     source: hosted
     version: "3.20.0"
   patrol_finders:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: patrol_finders
       sha256: "4a658d7d560de523f92deb3fa3326c78747ca0bf7e7f4b8788c012463138b628"
