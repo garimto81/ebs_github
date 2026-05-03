@@ -509,10 +509,10 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/IMPL-005-team2-api-d2-routers.md` | 구현: team2 API 48 D2 endpoint 라우터 실구현 (SG-008-a 후속) | team2 | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-006-websocket-ack-reject-publishers.md` | 구현: WebSocket Ack/Reject 6 이벤트 publisher (SG-020) | team2 | - | - |
 | `docs/4. Operations/Conductor_Backlog/IMPL-007-cc-no-card-display-contract.md` | 구현: CC 카드 비노출 계약 강화 (회의 D7 후속) | team4 | - | - |
-| `docs/4. Operations/Conductor_Backlog/IMPL-008-skins-deactivate-endpoint.md` | 구현: POST /skins/{id}/deactivate (gfskin 비활성화) | team2 | - | - |
-| `docs/4. Operations/Conductor_Backlog/IMPL-009-users-force-logout-endpoint.md` | 구현: POST /users/{id}/force-logout (admin 강제 로그아웃) | team2 | - | - |
-| `docs/4. Operations/Conductor_Backlog/IMPL-010-tables-seats-create-endpoint.md` | 구현: POST /tables/{id}/seats (테이블 seat 추가) | team2 | - | - |
-| `docs/4. Operations/Conductor_Backlog/IMPL-011-tables-seats-delete-endpoint.md` | 구현: DELETE /tables/{id}/seats/{seat_no} (테이블 seat 삭제) | team2 | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-008-skins-deactivate-endpoint.md` | 구현: POST /skins/{id}/deactivate (gfskin 비활성화) — SUPERSEDED | team2 | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-009-users-force-logout-endpoint.md` | 구현: POST /users/{id}/force-logout (admin 강제 로그아웃) — SUPERSEDED | team2 | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-010-tables-seats-create-endpoint.md` | 구현: POST /tables/{id}/seats (좌석 플레이어 배치) — SUPERSEDED + 의미 정정 | team2 | - | - |
+| `docs/4. Operations/Conductor_Backlog/IMPL-011-tables-seats-delete-endpoint.md` | 구현: DELETE /tables/{id}/seats/{seat_no} (좌석 비우기) — SUPERSEDED + 의미 정정 | team2 | - | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-PHASE2-START.md` | Phase 1 설계 정렬 완료 — Phase 2 진입 허용 (전체 팀 broadcast) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG023-INTENT-PIVOT.md` | SG-023 인텐트 전환 (production 출시) — 전체 팀 broadcast + 작업 standby 권고 | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION.md` | SG-024 거버넌스 확장 — Conductor 단일 세션 전권 (broadcast) | conductor | internal | - |
