@@ -17,8 +17,10 @@ related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §4.3
   - docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md D3
   - B-209 (GE 제거 결정 전파)
+reimplementability: N/A
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "SUPERSEDED — D3 회의 GE 제거 결정으로 전체 폐기"
 ---
-
 # SG-014 — Graphic Editor 진입점 이중화
 
 ## 공백 서술

@@ -4,8 +4,10 @@ owner: conductor
 tier: shared-index
 legacy-id: —
 last-updated: 2026-04-29
+reimplementability: N/A
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "tier=shared-index 네비게이션 인덱스. SSOT는 Tier 2 Triggers_and_Event_Pipeline"
 ---
-
 # Card Flow Index
 
 이 문서는 **카드 호출 (RFID + 커뮤니티) 의 4-tier 문서 구조** 를 한눈에 매핑하는 네비게이션 인덱스다. 본 인덱스 자체는 SSOT 가 아니며, 각 tier 의 owned 문서 (특히 **Tier 2 Triggers_and_Event_Pipeline**) 가 권위 출처다.

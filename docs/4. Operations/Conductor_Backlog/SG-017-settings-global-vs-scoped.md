@@ -14,8 +14,10 @@ affects_chapter:
 protocol: Spec_Gap_Triage §2 Type C (memory 역전 ↔ 본문 모순)
 related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §10 #5
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=PENDING — Settings 글로벌 vs scoped 모순"
 ---
-
 # SG-017 — Settings "글로벌 단위" Overview 모순
 
 ## 공백 서술

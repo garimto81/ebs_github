@@ -1,14 +1,14 @@
 {
-  "bo_paths_count": 127,
+  "bo_paths_count": 135,
   "lobby_calls_count": 53,
-  "matched_count": 37,
-  "drift_lobby_unknown_count": 16,
-  "drift_bo_unused_count": 93,
+  "matched_count": 53,
+  "drift_lobby_unknown_count": 0,
+  "drift_bo_unused_count": 85,
   "matched": [
     {
       "lobby": {
         "file": "team1-frontend/lib/repositories/auth_repository.dart",
-        "line": 55,
+        "line": 56,
         "method": "POST",
         "path": "/auth/login"
       },
@@ -20,7 +20,7 @@
     {
       "lobby": {
         "file": "team1-frontend/lib/repositories/auth_repository.dart",
-        "line": 63,
+        "line": 64,
         "method": "POST",
         "path": "/auth/verify-2fa"
       },
@@ -32,7 +32,7 @@
     {
       "lobby": {
         "file": "team1-frontend/lib/repositories/auth_repository.dart",
-        "line": 71,
+        "line": 72,
         "method": "POST",
         "path": "/auth/refresh"
       },
@@ -44,13 +44,25 @@
     {
       "lobby": {
         "file": "team1-frontend/lib/repositories/auth_repository.dart",
-        "line": 79,
+        "line": 80,
         "method": "GET",
         "path": "/auth/session"
       },
       "bo": {
         "method": "GET",
         "path": "/auth/session"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/auth_repository.dart",
+        "line": 89,
+        "method": "POST",
+        "path": "/auth/logout"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/auth/logout"
       }
     },
     {
@@ -199,6 +211,54 @@
     },
     {
       "lobby": {
+        "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
+        "line": 58,
+        "method": "GET",
+        "path": "/payout-structures/$psId"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/payout-structures/{ps_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
+        "line": 73,
+        "method": "POST",
+        "path": "/payout-structures"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/payout-structures"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
+        "line": 86,
+        "method": "PUT",
+        "path": "/payout-structures/$psId"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/payout-structures/{ps_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
+        "line": 95,
+        "method": "DELETE",
+        "path": "/payout-structures/$psId"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/payout-structures/{ps_id}"
+      }
+    },
+    {
+      "lobby": {
         "file": "team1-frontend/lib/repositories/player_repository.dart",
         "line": 23,
         "method": "GET",
@@ -295,6 +355,90 @@
     },
     {
       "lobby": {
+        "file": "team1-frontend/lib/repositories/settings_repository.dart",
+        "line": 62,
+        "method": "GET",
+        "path": "/blind-structures/$bsId"
+      },
+      "bo": {
+        "method": "GET",
+        "path": "/api/v1/blind-structures/{bs_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/settings_repository.dart",
+        "line": 77,
+        "method": "POST",
+        "path": "/blind-structures"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/blind-structures"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/settings_repository.dart",
+        "line": 90,
+        "method": "PUT",
+        "path": "/blind-structures/$bsId"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/blind-structures/{bs_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/settings_repository.dart",
+        "line": 99,
+        "method": "DELETE",
+        "path": "/blind-structures/$bsId"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/blind-structures/{bs_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/settings_repository.dart",
+        "line": 122,
+        "method": "POST",
+        "path": "/blind-structures/$blindStructureId/levels"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/blind-structures/{bs_id}/levels"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/settings_repository.dart",
+        "line": 135,
+        "method": "PUT",
+        "path": "/blind-structures/$blindStructureId/levels/$levelId"
+      },
+      "bo": {
+        "method": "PUT",
+        "path": "/api/v1/blind-structures/{bs_id}/levels/{level_id}"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/settings_repository.dart",
+        "line": 147,
+        "method": "DELETE",
+        "path": "/blind-structures/$blindStructureId/levels/$levelId"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/blind-structures/{bs_id}/levels/{level_id}"
+      }
+    },
+    {
+      "lobby": {
         "file": "team1-frontend/lib/repositories/skin_repository.dart",
         "line": 21,
         "method": "GET",
@@ -327,6 +471,18 @@
       "bo": {
         "method": "POST",
         "path": "/api/v1/skins/{skin_id}/activate"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/skin_repository.dart",
+        "line": 83,
+        "method": "POST",
+        "path": "/skins/$id/deactivate"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/skins/{skin_id}/deactivate"
       }
     },
     {
@@ -391,6 +547,18 @@
     },
     {
       "lobby": {
+        "file": "team1-frontend/lib/repositories/staff_repository.dart",
+        "line": 50,
+        "method": "POST",
+        "path": "/users/$id/force-logout"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/users/{user_id}/force-logout"
+      }
+    },
+    {
+      "lobby": {
         "file": "team1-frontend/lib/repositories/table_repository.dart",
         "line": 30,
         "method": "GET",
@@ -440,6 +608,18 @@
     {
       "lobby": {
         "file": "team1-frontend/lib/repositories/table_repository.dart",
+        "line": 86,
+        "method": "POST",
+        "path": "/tables/$tableId/seats"
+      },
+      "bo": {
+        "method": "POST",
+        "path": "/api/v1/tables/{table_id}/seats"
+      }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/table_repository.dart",
         "line": 98,
         "method": "PUT",
         "path": "/tables/$tableId/seats/$seatNo"
@@ -448,111 +628,22 @@
         "method": "PUT",
         "path": "/api/v1/tables/{table_id}/seats/{seat_no}"
       }
+    },
+    {
+      "lobby": {
+        "file": "team1-frontend/lib/repositories/table_repository.dart",
+        "line": 106,
+        "method": "DELETE",
+        "path": "/tables/$tableId/seats/$seatNo"
+      },
+      "bo": {
+        "method": "DELETE",
+        "path": "/api/v1/tables/{table_id}/seats/{seat_no}"
+      }
     }
   ],
-  "drift_lobby_unknown": [
-    {
-      "file": "team1-frontend/lib/repositories/auth_repository.dart",
-      "line": 87,
-      "method": "DELETE",
-      "path": "/auth/session"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
-      "line": 49,
-      "method": "GET",
-      "path": "/series/$seriesId/payout-structures/$psId"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
-      "line": 60,
-      "method": "POST",
-      "path": "/series/$seriesId/payout-structures"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
-      "line": 73,
-      "method": "PUT",
-      "path": "/series/$seriesId/payout-structures/$psId"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/payout_structure_repository.dart",
-      "line": 82,
-      "method": "DELETE",
-      "path": "/series/$seriesId/payout-structures/$psId"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/settings_repository.dart",
-      "line": 55,
-      "method": "GET",
-      "path": "/series/$seriesId/blind-structures/$bsId"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/settings_repository.dart",
-      "line": 66,
-      "method": "POST",
-      "path": "/series/$seriesId/blind-structures"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/settings_repository.dart",
-      "line": 79,
-      "method": "PUT",
-      "path": "/series/$seriesId/blind-structures/$bsId"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/settings_repository.dart",
-      "line": 88,
-      "method": "DELETE",
-      "path": "/series/$seriesId/blind-structures/$bsId"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/settings_repository.dart",
-      "line": 113,
-      "method": "POST",
-      "path": "/blind-structures/$blindStructureId/levels"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/settings_repository.dart",
-      "line": 126,
-      "method": "PUT",
-      "path": "/blind-structures/$blindStructureId/levels/$levelId"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/settings_repository.dart",
-      "line": 138,
-      "method": "DELETE",
-      "path": "/blind-structures/$blindStructureId/levels/$levelId"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/skin_repository.dart",
-      "line": 83,
-      "method": "POST",
-      "path": "/skins/$id/deactivate"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/staff_repository.dart",
-      "line": 50,
-      "method": "POST",
-      "path": "/users/$id/force-logout"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/table_repository.dart",
-      "line": 86,
-      "method": "POST",
-      "path": "/tables/$tableId/seats"
-    },
-    {
-      "file": "team1-frontend/lib/repositories/table_repository.dart",
-      "line": 106,
-      "method": "DELETE",
-      "path": "/tables/$tableId/seats/$seatNo"
-    }
-  ],
+  "drift_lobby_unknown": [],
   "drift_bo_unused": [
-    {
-      "method": "POST",
-      "path": "/auth/logout"
-    },
     {
       "method": "GET",
       "path": "/auth/me"
@@ -782,20 +873,8 @@
       "path": "/api/v1/blind-structures"
     },
     {
-      "method": "POST",
-      "path": "/api/v1/blind-structures"
-    },
-    {
       "method": "GET",
-      "path": "/api/v1/blind-structures/{bs_id}"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/blind-structures/{bs_id}"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/blind-structures/{bs_id}"
+      "path": "/api/v1/blind-structures/{bs_id}/levels"
     },
     {
       "method": "GET",
@@ -828,22 +907,6 @@
     {
       "method": "GET",
       "path": "/api/v1/payout-structures"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/payout-structures"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/payout-structures/{ps_id}"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/payout-structures/{ps_id}"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/payout-structures/{ps_id}"
     },
     {
       "method": "GET",

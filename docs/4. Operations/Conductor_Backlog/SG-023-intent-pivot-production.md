@@ -9,8 +9,10 @@ type: spec-gap
 spec-gap-type: C
 linked-decision: user 2026-04-27 (B 옵션 채택)
 last-updated: 2026-04-27
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=DONE — 인텐트 전환 (기획서 완결 → 인계 준비) governance 적용"
 ---
-
 ## 결정 (사용자 명시 2026-04-27)
 
 > "B 가 사용자 진정 의도. Conductor 가 자율 진행 전에 memory + Foundation 명시 갱신 PR 먼저 필요. 사실상 Phase 1 의 추가 결정 (SG-023 — 인텐트 변경) 으로 분류되며 cascade 재실행"

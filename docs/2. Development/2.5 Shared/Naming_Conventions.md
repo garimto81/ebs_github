@@ -4,8 +4,10 @@ owner: conductor
 tier: contract
 last-updated: 2026-04-21
 source-of-truth: WSOP LIVE Confluence (1,361 pages mirror at `C:/claude/wsoplive/`)
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "WSOP LIVE 규약 준수 SSOT, 원칙 1 정렬, 대상 매트릭스 명시"
 ---
-
 # Naming Conventions — EBS 전역 네이밍 규약 SSOT
 
 모든 팀(team1/2/3/4)이 참조하는 네이밍 규약 단일 정본. **원칙 1 (WSOP LIVE 정렬)** 에 따라 WSOP LIVE Confluence 의 규약을 **직접 준수**한다. 독립 규약 설계 금지.

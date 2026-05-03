@@ -13,38 +13,16 @@ auto_generated_by: tools/contract_drift_audit.py
 
 | 항목 | 값 |
 |------|----|
-| bo endpoints | 127 |
+| bo endpoints | 135 |
 | lobby HTTP calls | 53 |
-| matched | 37 |
-| **lobby paths unknown (404 risk)** | **16** |
-| bo unused | 93 |
-
-## Drift A — lobby 가 호출하지만 bo 가 모름 (404 위험)
-
-| method | lobby path | 파일:줄 |
-|--------|-----------|--------|
-| `DELETE` | `/auth/session` | `team1-frontend/lib/repositories/auth_repository.dart:87` |
-| `GET` | `/series/$seriesId/payout-structures/$psId` | `team1-frontend/lib/repositories/payout_structure_repository.dart:49` |
-| `POST` | `/series/$seriesId/payout-structures` | `team1-frontend/lib/repositories/payout_structure_repository.dart:60` |
-| `PUT` | `/series/$seriesId/payout-structures/$psId` | `team1-frontend/lib/repositories/payout_structure_repository.dart:73` |
-| `DELETE` | `/series/$seriesId/payout-structures/$psId` | `team1-frontend/lib/repositories/payout_structure_repository.dart:82` |
-| `GET` | `/series/$seriesId/blind-structures/$bsId` | `team1-frontend/lib/repositories/settings_repository.dart:55` |
-| `POST` | `/series/$seriesId/blind-structures` | `team1-frontend/lib/repositories/settings_repository.dart:66` |
-| `PUT` | `/series/$seriesId/blind-structures/$bsId` | `team1-frontend/lib/repositories/settings_repository.dart:79` |
-| `DELETE` | `/series/$seriesId/blind-structures/$bsId` | `team1-frontend/lib/repositories/settings_repository.dart:88` |
-| `POST` | `/blind-structures/$blindStructureId/levels` | `team1-frontend/lib/repositories/settings_repository.dart:113` |
-| `PUT` | `/blind-structures/$blindStructureId/levels/$levelId` | `team1-frontend/lib/repositories/settings_repository.dart:126` |
-| `DELETE` | `/blind-structures/$blindStructureId/levels/$levelId` | `team1-frontend/lib/repositories/settings_repository.dart:138` |
-| `POST` | `/skins/$id/deactivate` | `team1-frontend/lib/repositories/skin_repository.dart:83` |
-| `POST` | `/users/$id/force-logout` | `team1-frontend/lib/repositories/staff_repository.dart:50` |
-| `POST` | `/tables/$tableId/seats` | `team1-frontend/lib/repositories/table_repository.dart:86` |
-| `DELETE` | `/tables/$tableId/seats/$seatNo` | `team1-frontend/lib/repositories/table_repository.dart:106` |
+| matched | 53 |
+| **lobby paths unknown (404 risk)** | **0** |
+| bo unused | 85 |
 
 ## Drift B — bo 가 제공하지만 lobby 가 호출 안 함 (정보)
 
 | method | bo path |
 |--------|--------|
-| `POST` | `/auth/logout` |
 | `GET` | `/auth/me` |
 | `POST` | `/auth/2fa/setup` |
 | `POST` | `/auth/2fa/disable` |
@@ -94,7 +72,8 @@ auto_generated_by: tools/contract_drift_audit.py
 | `GET` | `/api/v1/audit-logs` |
 | `GET` | `/api/v1/audit-logs/download` |
 | `GET` | `/api/v1/audit-events` |
-| ... | (43 more) |
+| `GET` | `/api/v1/users` |
+| ... | (35 more) |
 
 ## Matched (정합 통과 — 매칭 매트릭스)
 
@@ -104,6 +83,7 @@ auto_generated_by: tools/contract_drift_audit.py
 | `POST` | `/auth/verify-2fa` | → | `/auth/verify-2fa` | `team1-frontend/lib/repositories/auth_repository.dart` |
 | `POST` | `/auth/refresh` | → | `/auth/refresh` | `team1-frontend/lib/repositories/auth_repository.dart` |
 | `GET` | `/auth/session` | → | `/auth/session` | `team1-frontend/lib/repositories/auth_repository.dart` |
+| `POST` | `/auth/logout` | → | `/auth/logout` | `team1-frontend/lib/repositories/auth_repository.dart` |
 | `GET` | `/competitions/$id` | → | `/api/v1/competitions/{competition_id}` | `team1-frontend/lib/repositories/competition_repository.dart` |
 | `POST` | `/competitions` | → | `/api/v1/competitions` | `team1-frontend/lib/repositories/competition_repository.dart` |
 | `PUT` | `/competitions/$id` | → | `/api/v1/competitions/{competition_id}` | `team1-frontend/lib/repositories/competition_repository.dart` |
@@ -116,6 +96,10 @@ auto_generated_by: tools/contract_drift_audit.py
 | `POST` | `/flights` | → | `/api/v1/flights` | `team1-frontend/lib/repositories/flight_repository.dart` |
 | `PUT` | `/flights/$id` | → | `/api/v1/flights/{flight_id}` | `team1-frontend/lib/repositories/flight_repository.dart` |
 | `GET` | `/hands/$id` | → | `/api/v1/hands/{hand_id}` | `team1-frontend/lib/repositories/hand_repository.dart` |
+| `GET` | `/payout-structures/$psId` | → | `/api/v1/payout-structures/{ps_id}` | `team1-frontend/lib/repositories/payout_structure_repository.dart` |
+| `POST` | `/payout-structures` | → | `/api/v1/payout-structures` | `team1-frontend/lib/repositories/payout_structure_repository.dart` |
+| `PUT` | `/payout-structures/$psId` | → | `/api/v1/payout-structures/{ps_id}` | `team1-frontend/lib/repositories/payout_structure_repository.dart` |
+| `DELETE` | `/payout-structures/$psId` | → | `/api/v1/payout-structures/{ps_id}` | `team1-frontend/lib/repositories/payout_structure_repository.dart` |
 | `GET` | `/players/$id` | → | `/api/v1/players/{player_id}` | `team1-frontend/lib/repositories/player_repository.dart` |
 | `GET` | `/series/$id` | → | `/api/v1/series/{series_id}` | `team1-frontend/lib/repositories/series_repository.dart` |
 | `POST` | `/series` | → | `/api/v1/series` | `team1-frontend/lib/repositories/series_repository.dart` |
@@ -124,17 +108,26 @@ auto_generated_by: tools/contract_drift_audit.py
 | `POST` | `/competitions` | → | `/api/v1/competitions` | `team1-frontend/lib/repositories/series_repository.dart` |
 | `PUT` | `/competitions/$id` | → | `/api/v1/competitions/{competition_id}` | `team1-frontend/lib/repositories/series_repository.dart` |
 | `DELETE` | `/competitions/$id` | → | `/api/v1/competitions/{competition_id}` | `team1-frontend/lib/repositories/series_repository.dart` |
+| `GET` | `/blind-structures/$bsId` | → | `/api/v1/blind-structures/{bs_id}` | `team1-frontend/lib/repositories/settings_repository.dart` |
+| `POST` | `/blind-structures` | → | `/api/v1/blind-structures` | `team1-frontend/lib/repositories/settings_repository.dart` |
+| `PUT` | `/blind-structures/$bsId` | → | `/api/v1/blind-structures/{bs_id}` | `team1-frontend/lib/repositories/settings_repository.dart` |
+| `DELETE` | `/blind-structures/$bsId` | → | `/api/v1/blind-structures/{bs_id}` | `team1-frontend/lib/repositories/settings_repository.dart` |
+| `POST` | `/blind-structures/$blindStructureId/levels` | → | `/api/v1/blind-structures/{bs_id}/levels` | `team1-frontend/lib/repositories/settings_repository.dart` |
+| `PUT` | `/blind-structures/$blindStructureId/levels/$levelId` | → | `/api/v1/blind-structures/{bs_id}/levels/{level_id}` | `team1-frontend/lib/repositories/settings_repository.dart` |
+| `DELETE` | `/blind-structures/$blindStructureId/levels/$levelId` | → | `/api/v1/blind-structures/{bs_id}/levels/{level_id}` | `team1-frontend/lib/repositories/settings_repository.dart` |
 | `GET` | `/skins/$id` | → | `/api/v1/skins/{skin_id}` | `team1-frontend/lib/repositories/skin_repository.dart` |
 | `POST` | `/skins` | → | `/api/v1/skins` | `team1-frontend/lib/repositories/skin_repository.dart` |
 | `POST` | `/skins/$id/activate` | → | `/api/v1/skins/{skin_id}/activate` | `team1-frontend/lib/repositories/skin_repository.dart` |
+| `POST` | `/skins/$id/deactivate` | → | `/api/v1/skins/{skin_id}/deactivate` | `team1-frontend/lib/repositories/skin_repository.dart` |
 | `DELETE` | `/skins/$id` | → | `/api/v1/skins/{skin_id}` | `team1-frontend/lib/repositories/skin_repository.dart` |
 | `GET` | `/users/$id` | → | `/api/v1/users/{user_id}` | `team1-frontend/lib/repositories/staff_repository.dart` |
 | `POST` | `/users` | → | `/api/v1/users` | `team1-frontend/lib/repositories/staff_repository.dart` |
 | `PUT` | `/users/$id` | → | `/api/v1/users/{user_id}` | `team1-frontend/lib/repositories/staff_repository.dart` |
 | `DELETE` | `/users/$id` | → | `/api/v1/users/{user_id}` | `team1-frontend/lib/repositories/staff_repository.dart` |
+| `POST` | `/users/$id/force-logout` | → | `/api/v1/users/{user_id}/force-logout` | `team1-frontend/lib/repositories/staff_repository.dart` |
 | `GET` | `/tables/$id` | → | `/api/v1/tables/{table_id}` | `team1-frontend/lib/repositories/table_repository.dart` |
 | `POST` | `/tables` | → | `/api/v1/tables` | `team1-frontend/lib/repositories/table_repository.dart` |
 | `PUT` | `/tables/$id` | → | `/api/v1/tables/{table_id}` | `team1-frontend/lib/repositories/table_repository.dart` |
 | `DELETE` | `/tables/$id` | → | `/api/v1/tables/{table_id}` | `team1-frontend/lib/repositories/table_repository.dart` |
-| `PUT` | `/tables/$tableId/seats/$seatNo` | → | `/api/v1/tables/{table_id}/seats/{seat_no}` | `team1-frontend/lib/repositories/table_repository.dart` |
+| ... | (3 more) | | | |
 

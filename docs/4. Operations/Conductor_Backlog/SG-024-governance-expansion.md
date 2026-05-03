@@ -10,8 +10,10 @@ spec-gap-type: C
 linked-decision: user 2026-04-27 (B-Q5 ㉠ 채택)
 linked-sg: SG-023
 last-updated: 2026-04-27
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=DONE 선언, PENDING 실효 적용 — Conductor 단일 governance 확장 부분 미적용"
 ---
-
 ## 결정 (사용자 명시 2026-04-27, B-Q5)
 
 > ㉠ 거버넌스 확장 — Conductor 가 team1~4 코드 영역 직접 진입 허용. CLAUDE.md "팀 세션 금지" 폐기. 후속 cascade 단일 turn 에 자율 진행 가능.

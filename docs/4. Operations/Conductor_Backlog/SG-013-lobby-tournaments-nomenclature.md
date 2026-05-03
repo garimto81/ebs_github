@@ -15,8 +15,10 @@ protocol: Spec_Gap_Triage §2 Type C (원칙 1 위반 가능성)
 related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §4.1
   - SG-012 (sibling — Lobby IA)
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=PENDING — Lobby vs Tournaments 용어 미결"
 ---
-
 # SG-013 — Lobby 사이드바 "lobby" vs "Tournaments" 용어 충돌
 
 ## 공백 서술

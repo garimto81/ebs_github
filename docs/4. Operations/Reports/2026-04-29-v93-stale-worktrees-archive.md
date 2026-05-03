@@ -1,3 +1,14 @@
+---
+title: V9.3 Stale Worktrees Archive (2026-04-29 cleanup)
+owner: conductor
+tier: internal
+type: report
+last-updated: 2026-04-29
+reimplementability: N/A
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "운영 archive 보고서 — branch ref + git reflog 가 SSOT. report 본 자체는 metadata only"
+---
+
 # V9.3 Stale Worktrees Archive
 
 > **2026-04-29 V9.3 cycle finalize**: in-flight 6 worktree 중 v6.x supersede / 다수 머지 중복 worktree 2건을 cleanup. branch ref 와 git reflog 가 SSOT 이므로 본 archive 는 메타데이터만.

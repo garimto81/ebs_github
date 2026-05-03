@@ -16,8 +16,10 @@ related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §5.2-5.3
   - SG-012 (Lobby 사이드바 SSOT — 본 SG 가 진화형)
   - SG-016 (Hand History 섹션 — nav_sections 추가 행)
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=PENDING — 5NF 메타모델 테이블 부재"
 ---
-
 # SG-018 — 5NF 메타모델 테이블 부재
 
 ## 공백 서술

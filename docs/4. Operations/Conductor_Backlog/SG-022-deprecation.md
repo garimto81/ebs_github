@@ -6,8 +6,10 @@ date: 2026-04-27
 owner: conductor
 decision_owner: user
 supersedes: SG-022 single-desktop-binary intent (2026-04-27 morning)
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=DONE — deprecation 결정 spec 반영"
 ---
-
 # SG-022 폐기 cascade — Multi-Service Docker SSOT 채택
 
 ## 결정

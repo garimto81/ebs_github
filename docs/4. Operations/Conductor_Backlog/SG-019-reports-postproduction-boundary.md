@@ -15,8 +15,10 @@ protocol: Spec_Gap_Triage §2 Type B
 related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §6.2
   - memory: project_architecture_v33.md (시간축 경계: EBS = 실시간 라이브)
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=PENDING — Reports/Insights vs 포스트프로덕션 경계 미정"
 ---
-
 # SG-019 — Reports/Insights 탭 ↔ 포스트프로덕션 경계 미정의
 
 ## 공백 서술

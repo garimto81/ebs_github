@@ -7,8 +7,10 @@ related-arch: Distributed_Architecture.md (M2)
 related-seq: Token_Lifecycle_Sequences.md (M3)
 related-concurrency: ../../2.2 Backend/Authentication/Concurrency_and_Race_Conditions.md (M4)
 related-plan: ~/.claude/plans/role-and-objective-reactive-canyon.md (M6)
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "M6 — 6 시나리오 catalog + 진단/해소 절차 완결"
 ---
-
 # Authentication Troubleshooting Runbook (M6)
 
 운영 중 발생하는 인증 도메인 사고에 대한 1차 진단 + 해소 절차. 각 시나리오는

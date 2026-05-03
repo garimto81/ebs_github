@@ -15,8 +15,10 @@ protocol: Spec_Gap_Triage §2 Type B
 related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §3
   - SG-013 / SG-014 / SG-015 / SG-016 / SG-018 (sibling)
+reimplementability: UNKNOWN
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=PENDING — Lobby 좌측 사이드바 SSOT 미해결"
 ---
-
 # SG-012 — Lobby 좌측 사이드바 SSOT 부재
 
 ## 공백 서술

@@ -16,8 +16,10 @@ related:
   - logs/drift_report_2026-04-26.json
   - docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md §1.2
   - J2 (publisher 20 event skeleton) 후속
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=DONE — WebSocket Ack/Reject 6 이벤트 신규 D2 publish 완료"
 ---
-
 # SG-020 — WebSocket Ack/Reject 6 이벤트 신규 D2
 
 ## 공백 서술

@@ -9,8 +9,10 @@ type: spec-gap
 spec-gap-type: B
 linked-decision: user 2026-04-27 (5-Session Pipeline 도입)
 last-updated: 2026-04-27
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "status=DONE — 5-Session Pipeline (multi-turn) 도입 완료"
 ---
-
 ## 결정 (사용자 명시 2026-04-27)
 
 > "5개의 순차적 멀티 세션 + 4개의 전문 에이전트 팀" — Hybrid Multi-Session Orchestrator 모델 도입. LLM 컨텍스트 한계 회피 + 분량 분할.
