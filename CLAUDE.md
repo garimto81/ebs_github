@@ -1,5 +1,14 @@
 # EBS Conductor CLAUDE.md — 5팀 구조 (Team 0)
 
+## ⚡ Conductor Autonomous Workflow (2026-05-03 SOP)
+
+**최우선 운영 SOP**: `docs/4. Operations/Workflow_Conductor_Autonomous.md` (Hourglass — upfront batch + autonomous N phases + final delivery, 중간 사용자 touchpoint 0).
+
+핵심 룰 (전체는 SOP 참조):
+- 사용자 의도 1회 → 자율 N phases → 최종 산출물. **중간 질문 / 진행 확인 / "...해드릴까요?" 금지**
+- Permission denial = redirect signal (우회 path 의무 시도, 포기 금지)
+- 사용자 책임 영역 = ① 인텐트 변경 ② vendor 외부 메일 ③ 사후 메타 거부권 — **이 3개 외 모두 AI 자율**
+
 ## 🎯 프로젝트 의도 (최상위 전제, ~~2026-04-20~~ → ~~2026-04-27 SG-023~~ → **2026-04-29 협업 메커니즘 명시**)
 
 **EBS = 비전문 개발자(사용자) × AI 전문 기술 협업 프로젝트** (2026-04-29 사용자 명시).
