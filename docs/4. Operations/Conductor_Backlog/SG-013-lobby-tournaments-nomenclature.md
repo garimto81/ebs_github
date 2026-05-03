@@ -3,8 +3,10 @@ id: SG-013
 title: "Lobby 사이드바 \"lobby\" vs \"Tournaments\" 용어 충돌"
 type: spec_gap
 sub_type: nomenclature
-status: PENDING
-owner: conductor  # 원칙 1 정렬 결정 권한
+status: DONE
+resolved: 2026-05-03
+resolved-by: conductor (Mode A 자율 — 원칙 1 정렬 권한, V9.4 정합)
+owner: conductor
 created: 2026-04-21
 promoted: 2026-04-26
 affects_chapter:
@@ -15,9 +17,10 @@ protocol: Spec_Gap_Triage §2 Type C (원칙 1 위반 가능성)
 related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §4.1
   - SG-012 (sibling — Lobby IA)
-reimplementability: UNKNOWN
+last-updated: 2026-05-03
+reimplementability: PASS
 reimplementability_checked: 2026-05-03
-reimplementability_notes: "status=PENDING — Lobby vs Tournaments 용어 미결"
+reimplementability_notes: "Conductor 자율 결정 완료 (2026-05-03). 대안 1 채택: 섹션명 = Tournaments (영문, 원칙 1 정렬), 앱명 = Lobby (영문) / 로비 (한글 UI). 의미 레이어 분리 + WSOP LIVE Confluence 일치. 외부 개발팀 인계 가능 SSOT 확정"
 ---
 # SG-013 — Lobby 사이드바 "lobby" vs "Tournaments" 용어 충돌
 
@@ -46,11 +49,22 @@ WSOP LIVE Confluence 원어는 "Tournaments". EBS 는 원칙 1 (WSOP LIVE 정렬
 | 2. 섹션명 = "Lobby" 변경, "Tournaments" 폐기 | 한글 사용자 즉시 이해 | 원칙 1 위반 | ✗ 위반 (justify 필수) |
 | 3. 섹션명 = "Tournaments / 토너먼트" 양국어 | 양립 | 라벨 길이 ↑ | △ 부분 |
 
-## 결정 (decision_owner conductor 판정 시 기입)
+## 결정 (Conductor Mode A 자율 — 2026-05-03 채택)
 
-- **default 권고**: 대안 1 (섹션명 "Tournaments", 앱명 "Lobby" 분리)
-- 이유: 원칙 1 정렬 + WSOP LIVE Confluence 일치
-- 영향: UI.md / Overview.md / Foundation §5.1 cross-ref 보강
+> ✅ **DONE** — V9.4 AI-Centric Mode A 자율 진행. 사용자 도메인 질문 0회 (원칙 1 정렬 권한 = conductor 자체).
+
+**채택**: 대안 1 — 섹션명 "Tournaments" (영문 고정), 앱명 "Lobby" (영문) / "로비" (한글 UI label)
+
+**이유**:
+- 원칙 1 (WSOP LIVE Confluence 정렬) 정합 — Confluence 원어 "Tournaments" 일치
+- 의미 레이어 분리: 앱 전체 명칭 vs 사이드바 섹션명 구분 명확
+- 한글 사용자 학습 곡선 부담 = 앱명 "로비" 한글 표기로 완화
+
+**영향 (publisher cascade 권고)**:
+- `UI.md §공통 레이아웃`: line 401 `■ Tournaments` 이미 정합 (변경 0)
+- `Overview.md`: 한글 "로비" (앱명) ↔ 영문 "Tournaments" (섹션명) 컨벤션 명시
+- `Foundation.md §5.1`: "Lobby (앱명) ≠ Tournaments (섹션명)" cross-ref 보강
+- `BS_Overview §1`: "앱명 = 로비/Lobby, 섹션명 = Tournaments" 컨벤션 등재
 
 ## 후속 작업
 
