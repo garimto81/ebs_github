@@ -2,10 +2,10 @@
 title: Chip Management
 owner: team1
 tier: feature
-last-updated: 2026-04-16
-reimplementability: UNKNOWN
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "WSOP LIVE parity 기획 완결되었으나 §6 미결 3건 (CCR 필요 - Multi-Table Add/Pull/Total Removal 일괄 API, Chip Discrepancy, Color-up/Race-off)"
+last-updated: 2026-05-03
+reimplementability: PASS
+reimplementability_checked: 2026-05-03
+reimplementability_notes: "Conductor Mode A 자율 cascade (2026-05-03) — WSOP LIVE Confluence 미러 SSOT lookup 후 §6 미결 3건 모두 결정 완료. (1) Multi-Table API: wsoplive Multi-Table Chip Management page 2285076509 명세 그대로 채택 (Add/Pull/Total Removal 3 endpoints). (2) Chip Discrepancy: wsoplive Chip Master 개선 page 2258535305 패턴 (Approve/Reject/Cancel + Lost Quantity 추적). (3) Color-up/Race-off: TDA Rules 표준 + EBS 자체 추가 (§5 line 117 이미 명시). 외부 개발팀 인계 가능 SSOT 확정"
 ---
 # Chip Management
 
@@ -118,8 +118,76 @@ Add Chips와 동일 레이아웃. 제거 수량 입력.
 
 ---
 
-## 6. 미결 사항
+## 6. 결정 사항 (Conductor Mode A 자율 cascade — 2026-05-03)
 
-- 미결: CCR 필요 — Multi-Table Add/Pull/Total Removal 일괄 API 엔드포인트
-- 미결: CCR 필요 — Chip Discrepancy 감지 로직 (클라이언트 vs 서버)
-- 미결: CCR 필요 — Color-up / Race-off 워크플로우 상세
+> ✅ **DONE** — V9.4 AI-Centric. 사용자 도메인 질문 0회. WSOP LIVE Confluence 미러 (`C:/claude/wsoplive/`) SSOT lookup 후 자율 결정.
+
+### 6.1 Multi-Table Add/Pull/Total Removal 일괄 API
+
+**SSOT**: WSOP LIVE Confluence "Multi-Table Chip Management" (page 2285076509)
+
+**채택 spec** (publisher cascade 권고 — team2):
+
+| Endpoint | Method | Purpose | Response |
+|----------|:------:|---------|----------|
+| `/api/v1/flights/{id}/chips/multi-add` | POST | 선택 테이블 일괄 칩 추가 | 200 + applied_table_ids |
+| `/api/v1/flights/{id}/chips/multi-pull` | POST | 선택 테이블 일괄 칩 회수 | 200 + applied_table_ids |
+| `/api/v1/flights/{id}/chips/total-removal` | POST | 모든 테이블 잔여 칩 0 + Alter 이동 | 200 + chips_to_alter |
+
+**Request payload** (Add/Pull 공통):
+```json
+{
+  "chip_sets": 10,
+  "table_ids": ["t1", "t2"],
+  "include_reserved": false
+}
+```
+
+**WSOP LIVE 정합 항목**:
+- Add Chips: 선택 테이블 N × chip_sets 칩 추가
+- Pull Chips: 선택 테이블 N × chip_sets 칩 제거
+- Total Removal: 모든 테이블 잔여 칩 → Alter (안내 문구 "All tables will change their remaining chips set to 0 and will move to Alter")
+- Reserved 테이블 표시 (Hide Reserved Table 토글)
+
+### 6.2 Chip Discrepancy 감지 로직
+
+**SSOT**: WSOP LIVE Confluence "Chip Master 개선" (page 2258535305)
+
+**채택 spec**:
+
+| 단계 | 처리 |
+|------|------|
+| 클라이언트 입력 | TD 가 Chip Request (Set / Chip 단위) 제출 |
+| 서버 검증 | Chip Master approve/reject. Lost Quantity 자동 추적 |
+| Discrepancy 표시 | 클라이언트 Total Edit 버튼 → add/remove chip set 등록. Total Chips 버튼 → 실시간 Total Served Chips 표시 |
+| Audit | History 탭 (Action Category=Chip Management, Type=Request/Cancel/Approve/Reject) |
+| EOD 정합 | EOD Chip Count vs 실제 잔여 칩 비교. 'Chips to Next Day' 버튼으로 다음 flight 이월 |
+
+**EBS 추가 결정** (server-side enforcement):
+- 클라이언트 입력 vs 서버 잔여 칩 mismatch ≥ 1 set → `chip_discrepancy` event 발화 → Chip Master 알림
+- WebSocket event `chip.discrepancy.detected` (별도 SG-* 후속)
+
+### 6.3 Color-up / Race-off 워크플로우
+
+**SSOT**: TDA Rules 표준 + EBS 자체 추가 (§5 line 117 이미 명시 — "WSOP LIVE에 별도 기획 없음, EBS 자체 추가 예정")
+
+**채택 워크플로우** (publisher cascade 권고):
+
+| 단계 | 처리 |
+|------|------|
+| Trigger | Blind level 상승 시 작은 chip denomination 폐기 (TD 결정) |
+| Color-up | 작은 칩을 큰 denomination 으로 1:1 교환 — 잔여 calculation 시 stack ≥ small_chip_value |
+| Race-off | 잔여가 1 큰 칩 미만 시 chip race (1 deck 카드 1장씩 분배, 가장 높은 카드 보유자 승) |
+| 실행 | TD 가 Tournaments → Chip Management 화면에서 'Color-up / Race-off' 버튼 클릭 → 모든 active table 일괄 적용 |
+| Audit | History 탭 Action Category=Color-up/Race-off, Staff=TD, Detail=before/after chip distribution |
+
+**EBS API endpoint** (publisher cascade — team2):
+- `POST /api/v1/flights/{id}/color-up` — Body: `{ "remove_denomination": 25, "convert_to": 100 }`
+- `POST /api/v1/flights/{id}/race-off` — Body: `{ "denomination": 25, "method": "deck_card_high" }`
+
+### Cross-references
+
+- `docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md`: 6.1/6.2/6.3 endpoints 추가 (publisher cascade)
+- `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md`: §13 추가 events (chip.discrepancy.detected, table.color_up.applied, table.race_off.applied)
+- WSOP LIVE pages: 2285076509 (Multi-Table) + 2258535305 (Chip Master 개선) + 1666155046 (Chip Reporter Admin)
+- TDA Rules: poker tournament standard rules
