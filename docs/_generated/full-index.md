@@ -572,6 +572,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` | SG-023 — 인텐트 전환 (기획서 완결 → production 출시) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` | SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` | SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/SG-031-confluence-mirror-rebuild.md` | SG-031 — Confluence Mirror 재구축 | conductor | spec_gap | - |
 | `docs/4. Operations/Conductor_Backlog/SG-032-flutter-deps-major-bumps-deferred.md` | Flutter dependency major bumps (rive 0.14, file_picker 11) — migration deferred | team1 | backlog | - |
 | `docs/4. Operations/Conductor_Backlog/V2_PURGE_REPORT.md` | V2 Purge Report — 사용자 명시 "ebs v2 별개 프로젝트" cascade | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
@@ -595,6 +596,7 @@ tier: generated
 | `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (V9.5 — Single Session AI-Centric, Hub-and-Spoke Deprecated) | conductor | contract | - |
 | `docs/4. Operations/Network_Deployment.md` | Network Deployment Guide | conductor | internal | - |
 | `docs/4. Operations/OWASP_Audit_Kickoff_2026-05-03.md` | OWASP Top-10 Audit Kickoff Report — team2-backend | conductor | internal | - |
+| `docs/4. Operations/PR_AUTONOMOUS_PROCESSING.md` | PR Autonomous Processing (V10) | conductor | operations | - |
 | `docs/4. Operations/Phase_1_Decision_Queue.md` | Phase 1 Decision Queue (18건 결정 기록) | conductor | internal | - |
 | `docs/4. Operations/Phase_Plan_2027.md` | EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global | conductor | internal | - |
 | `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` | 2026-04-08-game-engine.plan | conductor | internal | - |
