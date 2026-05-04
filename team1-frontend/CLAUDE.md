@@ -22,6 +22,12 @@
 5. **Chip_Management §6 미결 3건** — Multi-Table 일괄 API / Chip Discrepancy / Color-up/Race-off 설계 결정 (Conductor 협의)
 6. **features 정렬** — 선언 8 (auth/lobby/settings/GE/staff/**players**/**audit_log**/**hand_history**) vs 실측 6 (auth/lobby/settings/GE/staff/**reports**). 결정: (a) reports 를 선언에 편입 (b) 미구현 3개 신규 기능 추가. `Engineering.md §0` 참조
 
+### 신규 우선 작업 (2026-05-04 SG-030 cascade)
+
+7. **B-LOBBY-TOPBAR-001** — TopBar SHOW/FLIGHT/LEVEL/NEXT 컨텍스트 클러스터 (P1, **blocked by** team2 의 `Conductor_Backlog/B-LOBBY-TOPBAR-WS-CONTRACT.md` publisher 계약 완료). team2 unblock 후 진입.
+8. **B-LOBBY-SERIES-001** — Series Month/Year 그룹 토글 (P2, **코어 구현 DONE 2026-05-04 by Conductor Mode A**, 4/4 widget test PASS). 후속: 영속화 (B-LOBBY-SERIES-002 신규 등재 필요 시 `shared_preferences` 패키지 추가 + initState load + onChange save).
+9. **B-LOBBY-ALERTS-001** — Lobby Alerts 화면 (P3 후순위, 사용자 결정). production launch 직전 re-evaluate. Phase 1 = `Lobby/Alerts.md` SSOT 신규 + Phase 2 = `lib/features/alerts/` 구현 + team2 WS 계약 협의.
+
 ### 주요 도구
 
 - `python tools/spec_drift_check.py --settings` — settings drift 실시간 확인

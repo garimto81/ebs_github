@@ -25,7 +25,7 @@ decomposed: true
 
 이 파일은 멀티 세션 충돌 방지를 위해 **항목별 파일**로 분해되었습니다.
 
-- 항목 위치: `./Backlog/` (43개 항목)
+- 항목 위치: `./Backlog/` (24개 활성 항목 + `_archived-2026-04/` 별도, 2026-05-04 기준)
 - 신규 항목 추가: `./Backlog/{ID}-{slug}.md` 작성 (frontmatter 필수)
 - 통합 읽기 뷰: `tools/backlog_aggregate.py` 가 `_generated/` 에 자동 생성
 

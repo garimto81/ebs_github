@@ -26,6 +26,10 @@
 9. **Users Suspend/Lock/Delete 3상태** (NOTIFY-CCR-053) + **audit_events event_type 카탈로그** (NOTIFY-CCR-039)
 10. **SG-004 .gfskin 업로드 검증 endpoint** — `tools/validate_gfskin.py` 재사용하여 POST /api/v1/skins 에 8 단계 검증
 
+### 신규 우선 작업 (2026-05-04 SG-030 cascade)
+
+11. **B-LOBBY-TOPBAR-WS-CONTRACT** (cross-team contract) — Lobby TopBar 운영 컨텍스트 클러스터 (SHOW/FLIGHT/LEVEL/NEXT) WS publisher 계약 정의 + 구현. 자세히: `docs/4. Operations/Conductor_Backlog/B-LOBBY-TOPBAR-WS-CONTRACT.md`. 권고 옵션 = A (통합 snapshot `lobby.context` + 1초 timer tick `lobby.timer`). 산출물: ① `2.2 Backend/APIs/WebSocket_Events.md` 보강 ② BO publisher 구현 ③ engine→BO level transition 수신 wiring ④ 통합 테스트. 추정 2~2.5일. team1 의 `B-LOBBY-TOPBAR-001` 가 본 작업 unblock 대기 중 (P1).
+
 ### 주요 도구
 
 - `python team2-backend/tools/init_db.py --force` — fresh DB

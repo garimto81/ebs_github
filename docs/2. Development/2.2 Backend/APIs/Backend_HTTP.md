@@ -30,7 +30,7 @@ reimplementability_notes: "API-01 REST 카탈로그 + WSOP LIVE 연동 (53KB). T
 
 ## 개요
 
-이 문서는 EBS Back Office(BO) FastAPI 서버의 **REST API 전체 엔드포인트 카탈로그**(Part I)와 **WSOP LIVE Staff Page API와의 연동 계약**(Part II)을 통합 정의한다. Lobby(Flutter Desktop)와 CC(Flutter Desktop)는 Part I의 REST API를 통해 BO DB와 데이터를 주고받으며, WSOP LIVE는 대회 계층(Series/Event/Flight)과 플레이어/블라인드 데이터의 원천으로서 Part II의 폴링 프로토콜에 따라 BO DB에 캐싱된다.
+이 문서는 EBS Back Office(BO) FastAPI 서버의 **REST API 전체 엔드포인트 카탈로그**(Part I)와 **WSOP LIVE Staff Page API와의 연동 계약**(Part II)을 통합 정의한다. Lobby(Flutter Web, lobby-web Docker :3000)와 CC(Flutter Web/Desktop, cc-web :3001 또는 Desktop 설치)는 Part I의 REST API를 통해 BO DB와 데이터를 주고받으며, WSOP LIVE는 대회 계층(Series/Event/Flight)과 플레이어/블라인드 데이터의 원천으로서 Part II의 폴링 프로토콜에 따라 BO DB에 캐싱된다.
 
 > **참조**: 인증 API 상세는 `API-06-auth-session.md`, WebSocket 이벤트는 `API-05-websocket-events.md`, 엔티티 필드 정의는 `DATA-04-db-schema.md`
 

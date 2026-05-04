@@ -147,7 +147,7 @@ flowchart LR
 - Lobby ↔ CC **직접 연동 없음** — 모든 데이터는 BO DB 경유 (Foundation §6.3 원칙)
 - Mock 모드: RFID HAL만 교체, BO는 Real/Mock 100% 동일 동작
 
-> **용어 주의**: 과거 문서에서 "Lobby (웹)" 표현을 사용했으나, team1 의 Docker Web 배포는 **개발/프리뷰 모드** 이며 Foundation §4.4 의 공식 설치 단위는 Flutter Desktop. 본 문서는 §4.4 정렬 이후 SSOT.
+> **용어 주의 (2026-05-04 SG-030 cascade 재정정)**: ~~과거 문서에서 "Lobby (웹)" 표현을 사용했으나, team1 의 Docker Web 배포는 **개발/프리뷰 모드** 이며 Foundation §4.4 의 공식 설치 단위는 Flutter Desktop.~~ → **현재 SSOT**: Lobby = Flutter Web 정규 배포 (lobby-web Docker 컨테이너 :3000, nginx, LAN 다중 클라이언트). CC = Flutter Web (cc-web :3001) 또는 Desktop (RFID 직결 운영). Overlay = Flutter Desktop. 참조: Foundation §5.1, BS_Overview §1.5, `docs/4. Operations/Conductor_Backlog/SG-030-lobby-overview-flutter-vs-web.md`.
 
 ### 2.2 기술 스택
 

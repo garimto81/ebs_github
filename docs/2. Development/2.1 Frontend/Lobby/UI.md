@@ -18,6 +18,7 @@ reimplementability_notes: "UI-01 Lobby UI 스펙 (68KB) 정본"
 | 2026-04-10 | dev-readiness 확장 | §0.1-0.3 Login 확장(2FA/Forgot/Session restore), §화면 4 Rebalance Saga UI(CCR-020), §9.0/9.5/9.6/9.7 WSOP gap 보강(G-01/03/05/07/08) |
 | 2026-04-13 | WSOP LIVE 스크린샷 정렬 | §0 Google OAuth 추가, 공통 레이아웃(빨간 헤더+좌측 사이드바) 신설, §1 필터 3종 추가, §2 DataTable 15컬럼+상태탭+다중필터, §3 Flight→Day탭 통합, §4 카드→행 좌석그리드 전환, §6 RBAC 계정관리 신규, §10 Divergence 로그 |
 | 2026-04-21 | Flutter Desktop 전환 1차 | Foundation §5.1 Lobby Flutter Desktop 단일 스택 결정 반영. 요소 표 열 헤더 "Quasar 컴포넌트" → "Flutter widget" 전환 완료. `**Quasar**:` 요약 블록 9개 `**Flutter**:` 로 재작성. 개별 q-* 셀 일부 남음 — Quasar↔Flutter 매핑표는 `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md §3` 참조. 세부 컴포넌트 교체는 team1 후속 PR (Migration Plan Phase 3-A1 후반). |
+| 2026-05-04 | F4/F5 cascade — design SSOT 정렬 | (a) §헤더 바 다음 §"운영 컨텍스트 클러스터 (TopBar Center)" 신규 — SHOW/FLIGHT/LEVEL/NEXT 4-셀 정의 + WS push 데이터 소스 (㉡, team2 협의) + Flutter 위젯 매핑. (b) §화면 1 §"그룹핑 — 월별 vs 년도별" 신규 — 사용자 토글 (Month/Year) + Hide completed 옵션. 의존: `2.1 Frontend/Backlog/B-LOBBY-{TOPBAR,SERIES}-001.md` + `Conductor_Backlog/B-LOBBY-TOPBAR-WS-CONTRACT.md`. 트리거: 사용자 의사결정 2026-05-04 §F4/F5 (`docs/4. Operations/Lobby_Modification_Plan_2026-05-04.md`). |
 
 ---
 
@@ -435,6 +436,39 @@ i18n key: `$t('login.restoreTitle')`, `$t('login.restoreContinue')`, `$t('login.
 
 **Login 화면에서는 헤더 바 숨김** (인증 전이므로).
 
+### 헤더 바 — 운영 컨텍스트 클러스터 (Center)
+
+> **신규 (2026-05-04, F4 cascade)**: design SSOT (`Lobby/References/EBS_Lobby_Design/shell.jsx:43-50`) 의 SHOW/FLIGHT/LEVEL/NEXT 클러스터 spec. 사용자 의사결정 (2026-05-04 §F4): 데이터 소스 = **㉡ Backend WS 실시간 push** (team2 협의 후 구현. team2 publisher 계약 = `Conductor_Backlog/B-LOBBY-TOPBAR-WS-CONTRACT.md`).
+
+운영자가 어느 Show/Flight/Level 컨텍스트에서 작업 중인지 항상 시야에 두기 위한 TopBar 중앙 클러스터.
+
+```
++----+-----------------------------------------------+-----+
+|brnd| SHOW WPS·EU 2026 | FLIGHT Day2 | LEVEL L17    | usr |
+|    |                  |             | 6,000/12,000 |     |
+|    |                  |             | NEXT 22:48   |     |
++----+-----------------------------------------------+-----+
+```
+
+| 셀 | 라벨 | 값 바인딩 | 갱신 트리거 |
+|----|------|----------|-------------|
+| **SHOW** | (uppercase, dim) | `currentSeries.shortName` (e.g. "WPS · EU 2026") | router state (Series 진입 시) |
+| **FLIGHT** | (uppercase, dim) | `currentFlight.label` (e.g. "Day2") | router state (Flight 진입 시) |
+| **LEVEL** | (uppercase, dim) | `currentLevel.label` + `{sb}/{bb}` | **WS push** (team2 — `level_changed` 이벤트, B-LOBBY-TOPBAR-WS-CONTRACT) |
+| **NEXT** | (uppercase, dim) | `nextLevelTimer` (mm:ss) | **WS push** (team2 — `level_timer` 1초 tick) + 클라이언트 보간 |
+
+| 동작 | 처리 |
+|------|------|
+| Series/Flight 미선택 (Lobby 진입 직후) | 클러스터 자체 hidden |
+| WS 연결 끊김 | 마지막 값 유지 + dim 처리 ("● disconnected" 표시) |
+| Lobby 가 여러 브라우저에 동시 열림 | 각 브라우저 독립 — 동일 WS topic 구독 |
+
+**Flutter**: `Row(children: [_ShowChip(...), _Divider(), _FlightChip(...), _Divider(), _LevelChip(...), _Divider(), _NextChip(...)])` — 각 chip = `Padding + Column(['SHOW' label, value])`. team2 publisher 가 정한 WS 토픽 후 `Riverpod` provider 로 stream subscribe.
+
+**의존성**:
+- team2 publisher: `Conductor_Backlog/B-LOBBY-TOPBAR-WS-CONTRACT.md` (계약 정의 후 team1 구현 진입)
+- team1 implementation: `2.1 Frontend/Backlog/B-LOBBY-TOPBAR-001.md` (P1, blocked by 위 계약)
+
 ### 좌측 사이드바
 
 **Series 진입 후 표시.** Series 목록 화면에서는 사이드바 없음 (전체 화면 카드 그리드).
@@ -518,6 +552,39 @@ Cage, Cashier Page, Wallet Status, Payroll, Payout, Chip Master, Series Chips, T
 | 이벤트 | 다음 화면 |
 |--------|----------|
 | Series Card 클릭 | 화면 2 (Events) |
+
+### 그룹핑 — 월별 (default) vs 년도별 (design SSOT 신규)
+
+> **신규 (2026-05-04, F5 cascade)**: design SSOT (`Lobby/References/EBS_Lobby_Design/screens.jsx:18-50, 60-65`) 의 **년도별 그룹핑** + **Hide completed** 토글 spec. 본 §화면 1 의 기존 "March / April" 월별 그룹핑은 WSOP LIVE Staff App 패턴 정렬 (보존). 디자인 SSOT 의 년도별은 EBS 운영 시 다년도 시리즈 (e.g. WPS 2026 + WPS 2025) 동시 표시 시 가독성 우위 — **사용자가 토글 가능한 그룹 모드** 로 통합.
+
+| 그룹 모드 | 상위 밴드 | 정렬 | 적용 시점 |
+|-----------|-----------|------|-----------|
+| **월별** (default, WSOP LIVE 정렬) | "March 2026", "April 2026" | 시작일 desc | 기존 |
+| **년도별** (design SSOT) | "2026", "2025" | year desc, 그룹 내부 시작일 desc | UI 토글로 사용자가 선택 |
+
+| 추가 토글 (toolbar) | 동작 |
+|---------------------|------|
+| **Hide completed** ☐ | `series.status === "completed"` 카드 필터아웃. design SSOT 와 동일 (screens.jsx:42) |
+| **Group by** [Month / Year] | 월별/년도별 전환. localStorage 영속 |
+
+**Flutter**: `SegmentedButton(segments: [Month, Year], selected: groupMode)` toolbar 우측. 그룹별 `SliverList` + `SliverPersistentHeader` (밴드 표시).
+
+```
++================================================================+
+| ... (헤더 + Search + filters)                                   |
+| [Hide completed ☐]  [Group: Month | Year ✓]                     |
++================================================================+
+| 2026                                              8 series       |
+| +------------------+ +------------------+ ...                    |
+| | WPS EU 2026      | | WPS Vegas 2026   |                       |
+| ...                                                              |
+| 2025                                              7 series       |
+| +------------------+ +------------------+ ...                    |
++================================================================+
+```
+
+**의존성**: 
+- 구현 task: `2.1 Frontend/Backlog/B-LOBBY-SERIES-001.md` (P2, blocking 없음 — 즉시 가능)
 
 ---
 

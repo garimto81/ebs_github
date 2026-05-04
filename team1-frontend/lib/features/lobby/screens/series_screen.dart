@@ -1,11 +1,16 @@
-// EBS Lobby — Series screen (year-grouped card grid).
+// EBS Lobby — Series screen (Month/Year-grouped card grid).
 //
-// Mirrors `SeriesScreen` from the design source. Cards group by year, each
-// card has a banner accent + name + venue + event count + status badge.
+// Mirrors `SeriesScreen` from the design source (`Lobby/References/EBS_Lobby_Design/screens.jsx:18-50`)
+// + UI.md §"그룹핑 — 월별 vs 년도별" (2026-05-04, B-LOBBY-SERIES-001).
+//
+// Toolbar: search · Hide completed checkbox · [Month / Year] segmented toggle.
+// Group bands: "March 2026" (Month) or "2026" (Year), with item count.
+// Persistence: in-memory only (영속화는 후속 task — shared_preferences 패키지 도입 시).
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../foundation/theme/design_tokens.dart';
 import '../../../foundation/theme/ebs_typography.dart';
@@ -18,6 +23,8 @@ import '../providers/nav_provider.dart';
 import '../providers/series_provider.dart';
 import '../widgets/lobby_status_badge.dart';
 
+enum SeriesGroupMode { year, month }
+
 class SeriesScreen extends ConsumerStatefulWidget {
   const SeriesScreen({super.key});
 
@@ -28,6 +35,7 @@ class SeriesScreen extends ConsumerStatefulWidget {
 class _SeriesScreenState extends ConsumerState<SeriesScreen> {
   String _query = '';
   bool _hideCompleted = false;
+  SeriesGroupMode _groupMode = SeriesGroupMode.year;
 
   @override
   void initState() {
@@ -47,8 +55,10 @@ class _SeriesScreenState extends ConsumerState<SeriesScreen> {
         _Toolbar(
           query: _query,
           hideCompleted: _hideCompleted,
+          groupMode: _groupMode,
           onQuery: (q) => setState(() => _query = q),
           onHideCompleted: (v) => setState(() => _hideCompleted = v),
+          onGroupMode: (m) => setState(() => _groupMode = m),
         ),
         Expanded(
           child: asyncSeries.when(
@@ -67,7 +77,7 @@ class _SeriesScreenState extends ConsumerState<SeriesScreen> {
                 );
               }
               return _Grid(
-                grouped: _groupByYear(filtered),
+                grouped: _group(filtered),
                 onOpen: _onOpen,
               );
             },
@@ -87,14 +97,57 @@ class _SeriesScreenState extends ConsumerState<SeriesScreen> {
     }).toList();
   }
 
-  List<MapEntry<int, List<Series>>> _groupByYear(List<Series> list) {
+  /// Group series by year (`{year: items}`) or by year-month (`{YYYY-MM: items}`).
+  /// Within each band items keep the natural order (latest beginAt first if
+  /// the upstream provider sorts that way).
+  List<_GroupBand> _group(List<Series> list) {
+    if (_groupMode == SeriesGroupMode.year) {
+      final map = <int, List<Series>>{};
+      for (final s in list) {
+        map.putIfAbsent(s.year, () => []).add(s);
+      }
+      final entries = map.entries.toList()
+        ..sort((a, b) => b.key.compareTo(a.key));
+      return [
+        for (final e in entries)
+          _GroupBand(
+            sortKey: e.key * 100 + 1,
+            label: '${e.key}',
+            items: e.value,
+          ),
+      ];
+    }
+
+    // Month mode: key = year * 100 + month, label = "March 2026"
     final map = <int, List<Series>>{};
     for (final s in list) {
-      map.putIfAbsent(s.year, () => []).add(s);
+      final key = s.year * 100 + _monthOfBegin(s);
+      map.putIfAbsent(key, () => []).add(s);
     }
     final entries = map.entries.toList()
       ..sort((a, b) => b.key.compareTo(a.key));
-    return entries;
+    return [
+      for (final e in entries)
+        _GroupBand(
+          sortKey: e.key,
+          label: _monthLabel(e.key),
+          items: e.value,
+        ),
+    ];
+  }
+
+  int _monthOfBegin(Series s) {
+    // beginAt is "YYYY-MM-DD..." per Series model. Fallback to 1 (Jan) if
+    // the value is missing or malformed.
+    if (s.beginAt.length < 7) return 1;
+    return int.tryParse(s.beginAt.substring(5, 7)) ?? 1;
+  }
+
+  String _monthLabel(int yearMonth) {
+    final year = yearMonth ~/ 100;
+    final month = yearMonth % 100;
+    final dt = DateTime(year, month);
+    return '${DateFormat.MMMM().format(dt)} $year';
   }
 
   void _onOpen(Series s) {
@@ -103,18 +156,33 @@ class _SeriesScreenState extends ConsumerState<SeriesScreen> {
   }
 }
 
+class _GroupBand {
+  const _GroupBand({
+    required this.sortKey,
+    required this.label,
+    required this.items,
+  });
+  final int sortKey;
+  final String label;
+  final List<Series> items;
+}
+
 class _Toolbar extends StatelessWidget {
   const _Toolbar({
     required this.query,
     required this.hideCompleted,
+    required this.groupMode,
     required this.onQuery,
     required this.onHideCompleted,
+    required this.onGroupMode,
   });
 
   final String query;
   final bool hideCompleted;
+  final SeriesGroupMode groupMode;
   final ValueChanged<String> onQuery;
   final ValueChanged<bool> onHideCompleted;
+  final ValueChanged<SeriesGroupMode> onGroupMode;
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +218,27 @@ class _Toolbar extends StatelessWidget {
             ),
             const Text('Hide completed', style: EbsTypography.body),
           ]),
+          const Spacer(),
+          SegmentedButton<SeriesGroupMode>(
+            style: SegmentedButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              textStyle: EbsTypography.body.copyWith(fontSize: 11.5),
+            ),
+            showSelectedIcon: false,
+            segments: const [
+              ButtonSegment(
+                value: SeriesGroupMode.month,
+                label: Text('Month'),
+              ),
+              ButtonSegment(
+                value: SeriesGroupMode.year,
+                label: Text('Year'),
+              ),
+            ],
+            selected: {groupMode},
+            onSelectionChanged: (s) => onGroupMode(s.first),
+          ),
         ],
       ),
     );
@@ -158,7 +247,7 @@ class _Toolbar extends StatelessWidget {
 
 class _Grid extends StatelessWidget {
   const _Grid({required this.grouped, required this.onOpen});
-  final List<MapEntry<int, List<Series>>> grouped;
+  final List<_GroupBand> grouped;
   final ValueChanged<Series> onOpen;
 
   @override
@@ -168,9 +257,9 @@ class _Grid extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (final entry in grouped) _Section(
-            year: entry.key,
-            items: entry.value,
+          for (final band in grouped) _Section(
+            label: band.label,
+            items: band.items,
             onOpen: onOpen,
           ),
         ],
@@ -180,8 +269,8 @@ class _Grid extends StatelessWidget {
 }
 
 class _Section extends StatelessWidget {
-  const _Section({required this.year, required this.items, required this.onOpen});
-  final int year;
+  const _Section({required this.label, required this.items, required this.onOpen});
+  final String label;
   final List<Series> items;
   final ValueChanged<Series> onOpen;
 
@@ -192,7 +281,7 @@ class _Section extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _YearBand(year: year, count: items.length),
+          _GroupBandHeader(label: label, count: items.length),
           const SizedBox(height: 12),
           LayoutBuilder(builder: (context, c) {
             final cols = (c.maxWidth / 294).floor().clamp(1, 6);
@@ -216,16 +305,16 @@ class _Section extends StatelessWidget {
   }
 }
 
-class _YearBand extends StatelessWidget {
-  const _YearBand({required this.year, required this.count});
-  final int year;
+class _GroupBandHeader extends StatelessWidget {
+  const _GroupBandHeader({required this.label, required this.count});
+  final String label;
   final int count;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text('$year', style: EbsTypography.yearBand),
+        Text(label, style: EbsTypography.yearBand),
         const SizedBox(width: 12),
         Text(
           '$count series',

@@ -27,7 +27,7 @@ reimplementability_notes: "API-06 인증/세션 계약 완결 (17KB)"
 
 ## 개요
 
-이 문서는 EBS Back Office(BO)의 **인증, 토큰, 세션, 역할 기반 접근 제어(RBAC)** API를 정의한다. Lobby(Flutter Desktop)와 CC(Flutter Desktop)는 동일한 인증 API를 사용하며, JWT 토큰으로 세션을 유지한다.
+이 문서는 EBS Back Office(BO)의 **인증, 토큰, 세션, 역할 기반 접근 제어(RBAC)** API를 정의한다. Lobby(Flutter Web, lobby-web Docker :3000)와 CC(Flutter Web/Desktop)는 동일한 인증 API를 사용하며, JWT 토큰으로 세션을 유지한다.
 
 > **참조**: 용어 정의는 `BS-00-definitions.md`, RBAC 역할 정의는 `Foundation Ch.5 §5.4`, 로그인 UI 행동 명세는 `BS-01-auth/`
 
@@ -182,7 +182,7 @@ EBS는 **Access Token + Refresh Token** 이중 토큰 방식을 사용한다.
 
 > **GAP-L-001 보강**: Flutter Desktop 앱 재실행 시 `flutter_secure_storage` 에 남아있는 토큰의 유효성을 반드시 서버에서 확인해야 한다.
 
-#### Lobby (Flutter Desktop) 앱 초기화 흐름
+#### Lobby (Flutter Web) 앱 초기화 흐름
 
 ```
 앱 로드

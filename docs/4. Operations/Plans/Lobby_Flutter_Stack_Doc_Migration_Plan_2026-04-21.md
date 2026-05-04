@@ -97,8 +97,8 @@ Foundation.md §5.1 (commit `6b4c9b6`, 2026-04-21) 에서 Lobby/Settings/Graphic
 | C6 | Audit reports | `docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md` | 8 |
 | C7 | Audit reports | `docs/4. Operations/Reports/2026-04-21-critic-ge-multi-session.md` | 2 |
 | C8 | Audit reports | `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` | 5 |
-| C9 | External reference | `docs/1. Product/References/PokerGFX_Reference.md` | 5 |
-| C10 | HTML/archive | `docs/1. Product/References/images/prd/src/prd-ebs-software-architecture.html` | 2 |
+| C9 | External reference | `docs/2. Development/2.4 Command Center/References/PokerGFX_Reference.md` (2026-05-04 이관 — SG-030 cascade) | 5 |
+| C10 | HTML/archive | `docs/4. Operations/Archive/References_pre_2026-05/images/prd/src/prd-ebs-software-architecture.html` (2026-05-04 archive) | 2 |
 | C11 | GE skin-editor archive | `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/**/*.md` + `mockups/*.html` + `data/*` | ≈ 80 (EBS-Skin-Editor_v3.prd.md 28건 포함) |
 
 **소계 C**: ≈ 20 파일, ≈ 134 건. **전부 수정 불필요**.

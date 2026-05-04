@@ -1,11 +1,12 @@
 ---
 title: WSOP Production Structure Analysis
 owner: conductor
-tier: internal
-last-updated: 2026-04-15
+tier: external
+last-updated: 2026-05-04
+sanitized: 2026-05-04 (회사명 일반화 — SG-030 cascade)
 ---
 
-# GG PRODUCTION 방송 자막 구조 분석
+# WSOP 방송 자막 구조 분석
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|

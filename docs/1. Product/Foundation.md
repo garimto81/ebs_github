@@ -5,10 +5,10 @@ tier: internal
 confluence-page-id: 3625189547
 confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
 source: confluence (SSOT)
-last-updated: 2026-05-03
+last-updated: 2026-05-04
 reimplementability: PASS
-reimplementability_checked: 2026-05-03
-reimplementability_notes: "PASS 재판정 완료 (2026-05-03). 의존 조건 모두 충족: (1) F2 BS_Overview = PASS, (2) F3 SG-002 = RESOLVED + PASS. 본문 §4.4 매핑 테이블, §5.0 2 런타임 모드, §5.1 Flutter 스택, §6.3 프로세스 모델, §6.4 실시간 동기화, §7.1 배경 config flag, §8.5 복수 테이블 아키텍처 모두 반영 확인. 외부 개발팀 인계 가능 수준의 SSOT 확정."
+reimplementability_checked: 2026-05-04
+reimplementability_notes: "PASS 재판정 완료 (2026-05-03 → 2026-05-04 §5.0/§5.1 SG-030 cascade 반영). §5.0 SG-022 박스 SUPERSEDED 라벨링 + multi-service Docker SSOT (lobby-web Web + cc-web/Desktop) 명시. §5.1 Lobby = Flutter Web (lobby-web Docker :3000) 정정 + Web 결정 history 박스 추가. 의존: F2 BS_Overview = PASS, F3 SG-002 = RESOLVED + PASS. 외부 개발팀 인계 가능 수준 유지."
 ---
 
 #### Part I — Concept: EBS는 무엇인가? (What it is)
@@ -293,12 +293,16 @@ flowchart TD
 | **탭/슬라이딩 (기본)** | 소형 화면, 단일 운영자 환경, 향후 태블릿 폼팩터 대비 | 단일 Flutter 프로세스 내 Lobby/CC/Overlay 라우팅 |
 | **다중창 (PC 옵션)** | Desktop 멀티 모니터, 운영자 역할 분리 환경 | Lobby/CC/Overlay 각각 독립 OS 프로세스 |
 
-> **Scope 명확화 (2026-04-27, SG-022 결정)**:
-> 본 §5.0 의 "단일 Flutter Desktop 바이너리" 는 **Lobby + Command Center + Overlay 전체 프론트엔드** 를 포함합니다.
-> Lobby 를 별도 Web 앱으로 분리하지 않습니다 (2026-04-22 γ 하이브리드 정책 폐기).
-> 두 런타임 모드 (탭/슬라이딩, 다중창) 는 이 단일 바이너리 내부의 라우팅·창 분리 옵션입니다.
+> **[SUPERSEDED 2026-04-27 저녁 → 2026-05-04 cascade]** ~~**Scope 명확화 (2026-04-27 오전, SG-022 결정)**: 본 §5.0 의 "단일 Flutter Desktop 바이너리" 는 Lobby + Command Center + Overlay 전체 프론트엔드 를 포함합니다. Lobby 를 별도 Web 앱으로 분리하지 않습니다 (2026-04-22 γ 하이브리드 정책 폐기). 두 런타임 모드 (탭/슬라이딩, 다중창) 는 이 단일 바이너리 내부의 라우팅·창 분리 옵션입니다.~~
 >
-> 참조: BS_Overview §1 (단일 Desktop 바이너리 절), Spec_Gap_Registry SG-022, Phase_1_Decision_Queue.md.
+> **현재 SSOT (2026-04-27 저녁 multi-service Docker → 2026-05-04 SG-030 재확인)**:
+> - **Lobby = Flutter Web** (lobby-web Docker 컨테이너 :3000, nginx 배포, LAN 다중 클라이언트)
+> - **Command Center = Flutter Web** (cc-web Docker 컨테이너 :3001) **또는** Flutter Desktop (RFID 시리얼 직결 + SDI/NDI 송출 환경) — §5.0 두 런타임 모드는 CC + Overlay Desktop 설치물 내부 옵션
+> - **Overlay = Flutter Desktop** (송출 직결, §5.0 모드 적용)
+>
+> 본 §5.0 "단일 Flutter Desktop 바이너리" 의 정확한 적용 범위 = **CC + Overlay 만** (Lobby 제외)
+>
+> 참조: `docs/4. Operations/Conductor_Backlog/SG-030-lobby-overview-flutter-vs-web.md` (2026-05-04 해소), memory `project_multi_session_docker_2026_04_27`, memory `project_decision_2026_04_27_phase1` §A (SG-022 SUPERSEDED 2026-04-27 저녁).
 
 **D5 (DB SSOT) 적용 범위**: 모드별 차이 상세는 §6.4 실시간 동기화 참조.
 
@@ -306,7 +310,9 @@ flowchart TD
 
 #### 5.1 관제탑: 로비
 
-Flutter Desktop 애플리케이션으로 실행되는 중앙 관제 시스템입니다. 방송 준비 단계에서 주로 사용되며, 전체 시스템에 단 하나만 존재하여 모든 테이블의 상황을 내려다봅니다.
+Flutter Web 애플리케이션 (lobby-web Docker 컨테이너 :3000, nginx 배포) 으로 실행되는 중앙 관제 시스템입니다. 브라우저로 LAN 내 다중 클라이언트가 동시 접속 가능하며, 방송 준비 단계에서 주로 사용되어 모든 테이블의 상황을 내려다봅니다.
+
+> **[Web 결정 history]** ~~Flutter Desktop (2026-04-21 SG-001)~~ → ~~γ 하이브리드 보정 Web (2026-04-22)~~ → ~~Desktop 통합 (2026-04-27 오전 SG-022)~~ → **Web (2026-04-27 저녁 multi-service Docker)** → 재확인 (2026-05-04 SG-030 — design SSOT `Lobby/References/EBS_Lobby_Design/` HTML/React + 사용자 의사결정).
 
 > **기술 스택 결정 (2026-04-21 SG-001) + γ 하이브리드 보정 (2026-04-22)**:
 > Lobby/Settings/Graphic Editor/CC/Overlay 는 모두 **Flutter + Dart + Rive** 스택으로 통일. 근거: (1) Rive 런타임 일치로 GE 프리뷰 ≡ Overlay 송출 자동 보증, (2) 내부 앱 개발팀 즉시 생산성, (3) `ebs_common` Dart 패키지 재사용. 원칙 1 은 문서/용어 정렬이며 기술 스택은 EBS 자율.
