@@ -2,7 +2,10 @@
 title: EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global
 owner: conductor
 tier: internal
+confluence-page-id: 3811869217
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811869217
 created: 2026-05-03
+last-updated: 2026-05-04
 created-by: conductor (Mode A 자율, R5 critic resolution)
 linked-decisions:
   - SG-023 (production-launch intent, 2026-04-27)
