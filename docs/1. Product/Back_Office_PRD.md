@@ -3,6 +3,7 @@ title: Back Office — 보이지 않는 뼈대
 owner: conductor
 tier: external
 confluence-page-id: 3811967073
+confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811967073
 last-updated: 2026-05-04
 version: 1.0.0 (prototype)

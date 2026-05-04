@@ -4,6 +4,7 @@ owner: conductor
 tier: external
 legacy-id: PRD-GAME-03
 confluence-page-id: 3811771012
+confluence-parent-id: 3812360338
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811771012/EBS+Game+Rules+Seven+Card+Games
 last-updated: 2026-05-04
 reimplementability: PASS

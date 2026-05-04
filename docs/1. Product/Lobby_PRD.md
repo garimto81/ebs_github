@@ -3,6 +3,7 @@ title: Lobby — 모든 테이블을 내려다보는 관제탑
 owner: conductor
 tier: external
 confluence-page-id: 3811672228
+confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228
 last-updated: 2026-05-04
 version: 1.0.0

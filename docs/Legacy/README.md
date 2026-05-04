@@ -2,7 +2,8 @@
 title: Legacy — 일회성 broadcast 아카이브
 owner: conductor
 tier: internal
-mirror: none
+confluence-page-id: 3812262096
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3812262096
 last-updated: 2026-05-04
 ---
 

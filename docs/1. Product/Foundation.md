@@ -3,6 +3,7 @@ title: EBS 기초 기획서
 owner: conductor
 tier: internal
 confluence-page-id: 3625189547
+confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
 source: "local SSOT (2026-05-04 SG-031 정정 — 이전 confluence SSOT 표기는 거짓이었음)"
 confluence-mirror-status: "recovered (SG-031, 2026-05-04 — md2confluence.py 도구 사용)"

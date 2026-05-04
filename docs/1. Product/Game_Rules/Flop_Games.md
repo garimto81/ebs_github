@@ -4,6 +4,7 @@ owner: conductor
 tier: external
 legacy-id: PRD-GAME-01
 confluence-page-id: 3811443642
+confluence-parent-id: 3812360338
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811443642/EBS+Game+Rules+Flop+Games
 last-updated: 2026-05-04
 reimplementability: PASS

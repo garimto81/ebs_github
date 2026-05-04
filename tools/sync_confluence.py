@@ -84,9 +84,9 @@ def parse_frontmatter(md_path: Path) -> dict[str, str]:
     return out
 
 
-def find_mirror_targets(filter_glob: str | None = None) -> list[tuple[Path, str]]:
-    """Return [(md_path, page_id)] for all docs with valid confluence-page-id."""
-    targets: list[tuple[Path, str]] = []
+def find_mirror_targets(filter_glob: str | None = None) -> list[tuple[Path, str, str | None]]:
+    """Return [(md_path, page_id, parent_id_or_None)] for all docs with valid confluence-page-id."""
+    targets: list[tuple[Path, str, str | None]] = []
     for md in DOCS_ROOT.rglob("*.md"):
         # Skip _generated and archive
         rel = md.relative_to(DOCS_ROOT)
@@ -98,6 +98,7 @@ def find_mirror_targets(filter_glob: str | None = None) -> list[tuple[Path, str]
         fm = parse_frontmatter(md)
         page_id = fm.get("confluence-page-id", "").strip()
         mirror_flag = fm.get("mirror", "").strip().lower()
+        parent_id = fm.get("confluence-parent-id", "").strip()
 
         if mirror_flag == "none":
             continue
@@ -106,16 +107,22 @@ def find_mirror_targets(filter_glob: str | None = None) -> list[tuple[Path, str]
         # Must be all digits
         if not page_id.isdigit():
             continue
-        targets.append((md, page_id))
+        # parent_id: empty or invalid → None (no move)
+        if not parent_id or not parent_id.isdigit():
+            parent_id = None
+        targets.append((md, page_id, parent_id))
     return targets
 
 
-def push_one(md_path: Path, page_id: str, dry_run: bool) -> bool:
+def push_one(md_path: Path, page_id: str, parent_id: str | None, dry_run: bool) -> bool:
     """Invoke md2confluence.py for one file. Returns True on success."""
     cmd = [sys.executable, str(MD2CONF), str(md_path), page_id]
+    if parent_id:
+        cmd.extend(["--parent-id", parent_id])
     if dry_run:
         cmd.append("--dry-run")
-    print(f"\n[PUSH] {md_path.relative_to(REPO_ROOT)} → page {page_id}")
+    move_msg = f" → parent {parent_id}" if parent_id else ""
+    print(f"\n[PUSH] {md_path.relative_to(REPO_ROOT)} → page {page_id}{move_msg}")
     result = subprocess.run(cmd, cwd=str(REPO_ROOT))
     return result.returncode == 0
 
@@ -146,16 +153,17 @@ def main() -> int:
         return 0
 
     print(f"Found {len(targets)} mirror target(s):")
-    for md, pid in targets:
-        print(f"  - {md.relative_to(REPO_ROOT)} → page {pid}")
+    for md, pid, parent in targets:
+        move_msg = f" [parent: {parent}]" if parent else ""
+        print(f"  - {md.relative_to(REPO_ROOT)} → page {pid}{move_msg}")
 
     if args.list:
         return 0
 
     # Push each
     failed: list[Path] = []
-    for md, pid in targets:
-        if not push_one(md, pid, args.dry_run):
+    for md, pid, parent in targets:
+        if not push_one(md, pid, parent, args.dry_run):
             failed.append(md)
 
     print()

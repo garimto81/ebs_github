@@ -4,6 +4,7 @@ owner: conductor
 tier: external
 legacy-id: PRD-GAME-02
 confluence-page-id: 3810853753
+confluence-parent-id: 3812360338
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3810853753/EBS+Game+Rules+Draw+Games
 last-updated: 2026-05-04
 reimplementability: PASS
