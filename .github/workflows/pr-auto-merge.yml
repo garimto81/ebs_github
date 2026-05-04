@@ -1,50 +1,33 @@
 # ======================================================================
-# 🚨 V9.0 비활성 워크플로우 (Hub-and-Spoke Centralized Review)
+# 🚨 V10 비활성 (replaced by pr-sweep.yml)
 # ======================================================================
 #
-# 본 워크플로우는 V9.0 (2026-04-29) 패러다임 전환으로 **비활성화** 되었습니다.
+# 본 워크플로우는 V10 (2026-05-04) 으로 비활성화되었습니다.
 #
-# v9.0 governance_model: `conductor_centralized_review`
-# - 모든 main 머지 권한 = Conductor 독점
-# - 팀 세션 (worker) 은 PR 생성 + Task_Dispatch_Board.md 의 REVIEW_READY 까지만
-# - `auto-merge` 라벨 부여 금지 (본 워크플로우 미동작)
-# - Conductor 가 단일 스레드로 PR 순차 리뷰 + `gh pr merge --squash`
+# V10 governance: PR 처리 = AI 자율 영역 (사용자 입력 0)
+#   - 자동 머지 / close / label-retry 모두 `tools/pr_sweep.py` 가 결정
+#   - 30분 cron (`pr-sweep.yml`) + check_suite 완료 시 재평가
+#   - 사용자 보고 없음. 통계만 artifact 로 보존.
 #
-# 트리거:
-#   - `workflow_dispatch` 만 허용 (수동 발동, 비상시 회복용 격리 유지)
-#   - PR 이벤트 / check_suite / workflow_run 트리거 모두 제거
+# 폐기 사유 (V10):
+#   1. V9.0 "Conductor 수동 머지" 도 적체 발생 (5일치 8건)
+#   2. 사용자 명시: PR 영역은 온전히 AI 몫. 결정 못 하면 일어나서는 안 됨
+#   3. 보고 채널 자체가 governance 위반 — 자율 100% 필요
 #
-# 파일을 보존하는 이유:
-#   1. V9.0 결정 history 명시 (단순 삭제 시 의도 추적 불가)
-#   2. 향후 V10 등에서 복원 필요 시 reference
-#   3. 사용자가 명시적으로 "비활성화 또는 삭제" 중 비활성화 옵션 채택 가능 명시
-#
-# 관련:
-#   - docs/4. Operations/Multi_Session_Workflow.md (V9.0 SOP)
-#   - docs/4. Operations/Task_Dispatch_Board.md (V9.0 작업 SSOT)
-#   - docs/2. Development/2.5 Shared/team-policy.json (governance_model.merge_authority)
-#
-# 이전 동작 (v5.0 ~ v8.0, 2026-04-21 ~ 2026-04-28):
-#   - PR 라벨 `auto-merge` 부착 시 자동 트리거
-#   - concurrency: main-merge-queue 로 직렬화
-#   - CI 통과 + rebase + gh pr merge --squash 수행
-#   - PR 적체 + 교착 발생 → V9.0 으로 전환
+# Migration:
+#   - 본 워크플로우는 빈 stub 으로 보존 (history reference)
+#   - 실제 처리: `pr-sweep.yml` + `tools/pr_sweep.py`
 # ======================================================================
 
-name: "[DISABLED V9.0] PR Auto-Merge (replaced by Conductor centralized review)"
+name: "[DISABLED V10] PR Auto-Merge (replaced by pr-sweep.yml)"
 
 on:
   workflow_dispatch:
     inputs:
       reason:
-        description: "수동 발동 사유 (V9.0 비활성 워크플로우. 사용 자제)"
+        description: "수동 발동 사유 (V10 비활성. pr-sweep.yml 사용 권장)"
         required: true
         type: string
-
-# 직렬화 group 유지 (수동 발동 시에도 race 방지)
-concurrency:
-  group: main-merge-queue
-  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -54,10 +37,8 @@ jobs:
   notify-disabled:
     runs-on: ubuntu-latest
     steps:
-      - name: "Announce V9.0 deactivation"
+      - name: Announce V10 deactivation
         run: |
-          echo "::notice::이 워크플로우는 V9.0 Hub-and-Spoke 정책으로 비활성화되었습니다."
-          echo "::notice::main 머지는 Conductor 만 수동으로 수행합니다."
+          echo "::notice::V10 (2026-05-04) 으로 비활성. pr-sweep.yml 이 자율 처리."
           echo "::notice::사유: ${{ inputs.reason }}"
-          echo "::notice::참조: docs/4. Operations/Multi_Session_Workflow.md (V9.0)"
           exit 0

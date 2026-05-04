@@ -1,0 +1,87 @@
+name: PR Sweep — Autonomous Processing (V10)
+
+# ──────────────────────────────────────────────────────────────────────────
+# 2026-05-04 V10 governance — Replaces V9.0 "Conductor 수동 머지".
+#
+# Per user directive: PR processing is entirely AI-autonomous domain.
+# No user-facing decisions. AI decision tree handles all open PRs:
+#   - CI green + mergeable → squash merge
+#   - Conflict → close + dependabot regenerates
+#   - Breaking dependency → close + backlog
+#   - Scope-check missing label → add governance-change label + merge
+#   - CI fail < 24h → skip (await self-resolution)
+#   - Stale 30d+ → close
+#
+# Triggers:
+#   - schedule: every 30 min (catches CI-completed PRs)
+#   - workflow_dispatch: manual run
+#   - check_suite: completed (re-evaluate after CI)
+#
+# Replaces: pr-auto-merge.yml (DISABLED V9.0)
+# ──────────────────────────────────────────────────────────────────────────
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # every 30 minutes
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (report only, no changes)"
+        required: false
+        type: boolean
+        default: false
+      pr_number:
+        description: "Single PR number (empty = all open)"
+        required: false
+        type: string
+        default: ""
+  check_suite:
+    types: [completed]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: pr-sweep
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    name: Process all open PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Run sweep
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ARGS=""
+          if [[ "${{ inputs.dry_run }}" == "true" ]]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [[ -n "${{ inputs.pr_number }}" ]]; then
+            ARGS="$ARGS --pr ${{ inputs.pr_number }}"
+          fi
+          python tools/pr_sweep.py $ARGS --json > sweep-result.json
+          python tools/pr_sweep.py $ARGS
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sweep-result
+          path: sweep-result.json
+          retention-days: 14

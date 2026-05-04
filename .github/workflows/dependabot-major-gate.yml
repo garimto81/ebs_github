@@ -1,24 +1,22 @@
-name: Dependabot — Semver Major Gate
+name: Dependabot — Semver Major Annotator (V10 advisory only)
 
 # ──────────────────────────────────────────────────────────────────────────
-# 2026-04-28 (PR #28, P3 Rec 2) — Dependabot semver-major 자동 머지 차단.
+# 2026-05-04 V10 — semver-major 차단 정책 폐기. CI gate 가 최종 판단자.
 #
-# 정책:
-#   default: semver-major 는 auto-merge 차단. needs-manual-review 라벨 부착.
-#   exception: 'approved-major' 라벨 부착 시 auto-merge 허용 (사람 명시 결정).
-#   minor/patch: 정책 변경 없음 — 기존 3-tier gate 통과 시 auto-merge.
+# V9 정책 (폐기):
+#   semver-major → auto-merge 라벨 제거 + needs-manual-review 부착 + 사람 review 요구.
+#   문제: 사용자 결정 떠넘김 (governance 위반). PR 적체 원인.
 #
-# 배경:
-#   PR #33 (web_socket_channel 2.x→3.x major bump) 가 CI 통과 후 자동 머지.
-#   API 호환이었으나 transitive dep 폭발 (10 신규 transitive). 향후 동일 패턴
-#   에서 cascade 회귀 가능성 — Python ABI 변화 (pydantic v1→v2) 같은 사례.
-#   사람 review 강제로 위험 mitigate.
+# V10 정책 (현재):
+#   - dependabot semver-major 인지 → 라벨 정보로만 부착 (advisory)
+#   - auto-merge 라벨 제거 안 함 — pr_sweep.py 가 CI 결과로 자율 판정
+#   - CI 통과 시: pr_sweep 자동 머지
+#   - CI 실패 시: pr_sweep 자동 close + 백로그 (보수적 default)
+#   - 사용자 review 단계 없음
 #
-# 동작 시퀀스 (각 dependabot PR 마다):
-#   1. dependabot/fetch-metadata 로 update-type 추출
-#   2. update_type 이 'version-update:semver-major' 면:
-#      - 'approved-major' 라벨 있으면 → 통과 (사람 승인 됨)
-#      - 없으면 → 'auto-merge' 라벨 제거 + 'needs-manual-review' 부착 + 댓글
+# 라벨:
+#   `semver-major` — 정보 라벨 (필터/리포팅용)
+#   `needs-manual-review` — 더 이상 부착 안 함 (deprecated)
 #
 # 보안:
 #   pull_request_target + dependabot[bot] 가드. PR HEAD 코드 미실행.
@@ -33,24 +31,24 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: dependabot-major-gate-${{ github.event.pull_request.number }}
+  group: dependabot-major-annotator-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
-  gate:
-    name: Block semver-major auto-merge
+  annotate:
+    name: Annotate semver-major (advisory)
     runs-on: ubuntu-latest
     timeout-minutes: 2
     if: github.actor == 'dependabot[bot]'
 
     steps:
-      - name: Fetch dependabot metadata (update-type)
+      - name: Fetch dependabot metadata
         id: meta
         uses: dependabot/fetch-metadata@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Apply major-gate policy
+      - name: Apply semver-major label (advisory only)
         if: steps.meta.outputs.update-type == 'version-update:semver-major'
         uses: actions/github-script@v9
         with:
@@ -58,36 +56,12 @@ jobs:
           script: |
             const pr = context.payload.pull_request;
             const labels = (pr.labels || []).map(l => l.name);
-            const approved = labels.includes('approved-major');
 
-            core.info(`[major-gate] PR #${pr.number} is semver-major.`);
-            core.info(`[major-gate] approved-major label: ${approved}`);
-
-            if (approved) {
-              core.notice(`PR #${pr.number} semver-major + approved-major → auto-merge 허용`);
-              return;
-            }
-
-            // Block: auto-merge 라벨 제거 + needs-manual-review 부착
-            const removed = [];
-            if (labels.includes('auto-merge')) {
-              try {
-                await github.rest.issues.removeLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: pr.number,
-                  name: 'auto-merge',
-                });
-                removed.push('auto-merge');
-              } catch (e) {
-                core.warning(`removeLabel auto-merge failed: ${e.message}`);
-              }
-            }
-
+            // V10: advisory label only — do NOT remove auto-merge,
+            // do NOT add needs-manual-review (deprecated).
             const toAdd = [];
-            if (!labels.includes('needs-manual-review')) {
-              toAdd.push('needs-manual-review');
-            }
+            if (!labels.includes('semver-major')) toAdd.push('semver-major');
+
             if (toAdd.length > 0) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
@@ -95,50 +69,25 @@ jobs:
                 issue_number: pr.number,
                 labels: toAdd,
               });
+              core.notice(`PR #${pr.number} annotated as semver-major (advisory).`);
             }
 
-            // 사람 review 필요 사유 댓글 (1회만 — 중복 방지)
-            const comments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.number,
-              per_page: 100,
-            });
-            const alreadyCommented = comments.data.some(c =>
-              c.user.login === 'github-actions[bot]' &&
-              c.body.includes('major-gate: blocked semver-major'),
+            // Cleanup deprecated needs-manual-review label
+            if (labels.includes('needs-manual-review')) {
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  name: 'needs-manual-review',
+                });
+                core.info(`Removed deprecated label 'needs-manual-review' from PR #${pr.number}`);
+              } catch (e) {
+                // ignore — label might not exist
+              }
+            }
+
+            core.notice(
+              `[V10 policy] CI gate is the final arbiter. ` +
+              `pr_sweep.py will merge if CI green, close if CI fail.`
             );
-
-            if (!alreadyCommented) {
-              const body = [
-                '🚦 **major-gate: blocked semver-major auto-merge**',
-                '',
-                '본 PR 은 **semver-major** 의존성 업데이트 이며, 기본 정책 (PR #28) 에 의해',
-                'auto-merge 가 차단되었습니다.',
-                '',
-                '### 자동 액션',
-                `- removed: \`auto-merge\` ${removed.length ? '✓' : '(없었음)'}`,
-                `- added: \`needs-manual-review\` ${toAdd.length ? '✓' : '(이미 부착)'}`,
-                '',
-                '### Override 방법',
-                '사람 review 후 의도된 major bump 라면 **`approved-major`** 라벨 부착 시 auto-merge',
-                '허용. 본 워크플로 가 자동 감지 후 통과시킴.',
-                '',
-                '### 검증 권장',
-                '- API breaking change 여부 (changelog/release notes)',
-                '- 직접 사용 사이트 (`grep -r <package>` for usage) 영향',
-                '- transitive dependency 변화 (lockfile diff)',
-                '- 관련 테스트 통과 여부 (3-tier CI gate)',
-                '',
-                '<details><summary>policy 문서</summary>',
-                '`docs/4. Operations/DEPENDABOT_GOVERNANCE.md` §semver-major 참조.',
-                '</details>',
-              ].join('\n');
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pr.number,
-                body,
-              });
-            }
-            core.notice(`PR #${pr.number} semver-major auto-merge BLOCKED. needs-manual-review 부착됨.`);
