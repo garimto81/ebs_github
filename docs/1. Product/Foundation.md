@@ -4,8 +4,9 @@ owner: conductor
 tier: internal
 confluence-page-id: 3625189547
 confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
-source: confluence (SSOT)
-last-updated: 2026-05-03
+source: "local SSOT (2026-05-04 SG-031 정정 — 이전 confluence SSOT 표기는 거짓이었음)"
+confluence-mirror-status: "recovered (SG-031, 2026-05-04 — md2confluence.py 도구 사용)"
+last-updated: 2026-05-04
 reimplementability: PASS
 reimplementability_checked: 2026-05-03
 reimplementability_notes: "PASS 재판정 완료 (2026-05-03). 의존 조건 모두 충족: (1) F2 BS_Overview = PASS, (2) F3 SG-002 = RESOLVED + PASS. 본문 §4.4 매핑 테이블, §5.0 2 런타임 모드, §5.1 Flutter 스택, §6.3 프로세스 모델, §6.4 실시간 동기화, §7.1 배경 config flag, §8.5 복수 테이블 아키텍처 모두 반영 확인. 외부 개발팀 인계 가능 수준의 SSOT 확정."

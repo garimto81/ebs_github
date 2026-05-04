@@ -3,7 +3,9 @@ title: Seven Card Games
 owner: conductor
 tier: external
 legacy-id: PRD-GAME-03
-last-updated: 2026-04-27
+confluence-page-id: 3811771012
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811771012/EBS+Game+Rules+Seven+Card+Games
+last-updated: 2026-05-04
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "PRD-GAME-03 완결 본문 (34KB) + Confluence 발행 대상, 독립 완결"
