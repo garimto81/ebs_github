@@ -185,17 +185,21 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` — Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A)
 - `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
 - `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
+- `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` — Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성
 - `docs/4. Operations/DEPENDABOT_GOVERNANCE.md` — Dependabot Governance — Label / Major Gate / Recreate Guard
 - `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
 - `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` — ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
 - `docs/4. Operations/Foundation_Alignment_Plan.md` — Foundation 재설계 정렬 계획 (Conductor 소유 문서)
 - `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` — Global SSOT Sync — SG-022 advocacy eradication
 - `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Domain Access
+- `docs/4. Operations/Load_Test_Plan_Phase1.md` — Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
 - `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
 - `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (V9.5 — Single Session AI-Centric, Hub-and-Spoke Deprecated)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
+- `docs/4. Operations/OWASP_Audit_Kickoff_2026-05-03.md` — OWASP Top-10 Audit Kickoff Report — team2-backend
 - `docs/4. Operations/Phase_1_Decision_Queue.md` — Phase 1 Decision Queue (18건 결정 기록)
+- `docs/4. Operations/Phase_Plan_2027.md` — EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
 - `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` — Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정
 - `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` — Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거
@@ -236,5 +240,6 @@ tier: generated
 - `docs/4. Operations/V9_3_Intent_Execution_Boundary.md` — V9.3 Intent-Execution Separation (governance evolution)
 - `docs/4. Operations/V9_4_AI_Centric_Governance.md` — V9.4 AI-Centric Governance — SSOT-first Judgment + 전문 질문 금지
 - `docs/4. Operations/V9_5_Single_Session_Output_Centric.md` — V9.5 Single Session AI-Centric — Hub-and-Spoke Deprecation
+- `docs/4. Operations/Workflow_Conductor_Autonomous.md` — Conductor Autonomous Workflow SOP — Hourglass 패턴
 - `docs/README.md` — docs/ README
 - `docs/examples/README.md` — Examples

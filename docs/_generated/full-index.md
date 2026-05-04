@@ -112,6 +112,7 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Lobby/Operations.md` | Operations | team1 | internal | BS-03-06 |
 | `docs/2. Development/2.1 Frontend/Lobby/Overview.md` | Overview | team1 | internal | BS-02-00 |
 | `docs/2. Development/2.1 Frontend/Lobby/Prize_Pool.md` | Prize Pool & Payout Management | team1 | feature | - |
+| `docs/2. Development/2.1 Frontend/Lobby/References/EBS_Lobby_Design/README.md` | EBS Lobby Reference Design (HTML/JSX prototype, 2026-04-29) | team1 (consumer) | reference | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Registration.md` | Registration | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Reports.md` | Reports & Statistics | team1 | feature | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Session_Restore.md` | Session Restore | team1 | internal | BS-02-01-session-restore |
@@ -498,6 +499,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-Q19-list-hands-row-int-bug.md` | B-Q19 — list_hands SQLAlchemy 2.x Row int() TypeError (Type A) | team2 (or conductor Mode A) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` | Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q20-coverage-final-6pp.md` | B-Q20 — 95% coverage 잔여 6%p 도달 (Session 2 final 후속) | conductor (or team2) | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q21-bo-healthcheck-dependency-aware.md` | bo healthcheck 가 redis 의존성 silent failure 마스킹 — dependency-aware probe 필요 | team2 (or conductor Mode A) | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` | team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade) | team1 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` | B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md` | B-Q7 — 품질 기준 (Production-strict 90% 재정의 2026-04-27) | conductor | internal | - |
@@ -570,6 +572,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` | SG-023 — 인텐트 전환 (기획서 완결 → production 출시) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` | SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` | SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/SG-032-flutter-deps-major-bumps-deferred.md` | Flutter dependency major bumps (rive 0.14, file_picker 11) — migration deferred | team1 | backlog | - |
 | `docs/4. Operations/Conductor_Backlog/V2_PURGE_REPORT.md` | V2 Purge Report — 사용자 명시 "ebs v2 별개 프로젝트" cascade | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |
@@ -579,17 +582,21 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` | Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A) | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` | Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
+| `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` | Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성 | conductor | internal | - |
 | `docs/4. Operations/DEPENDABOT_GOVERNANCE.md` | Dependabot Governance — Label / Major Gate / Recreate Guard | conductor | internal | - |
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
 | `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` | ECOSYSTEM E2E Handoff — Multi-Service Docker Validation | conductor | operations | - |
 | `docs/4. Operations/Foundation_Alignment_Plan.md` | Foundation 재설계 정렬 계획 (Conductor 소유 문서) | conductor | internal | - |
 | `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` | Global SSOT Sync — SG-022 advocacy eradication | conductor | contract | - |
 | `docs/4. Operations/LAN_DEPLOYMENT.md` | LAN Deployment — Internal Network Domain Access | conductor | internal | - |
+| `docs/4. Operations/Load_Test_Plan_Phase1.md` | Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate | conductor | internal | - |
 | `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
 | `docs/4. Operations/Multi_Session_Handoff.md` | Multi-Session Handoff Guide (2026-04-21) | conductor | internal | - |
 | `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (V9.5 — Single Session AI-Centric, Hub-and-Spoke Deprecated) | conductor | contract | - |
 | `docs/4. Operations/Network_Deployment.md` | Network Deployment Guide | conductor | internal | - |
+| `docs/4. Operations/OWASP_Audit_Kickoff_2026-05-03.md` | OWASP Top-10 Audit Kickoff Report — team2-backend | conductor | internal | - |
 | `docs/4. Operations/Phase_1_Decision_Queue.md` | Phase 1 Decision Queue (18건 결정 기록) | conductor | internal | - |
+| `docs/4. Operations/Phase_Plan_2027.md` | EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global | conductor | internal | - |
 | `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` | 2026-04-08-game-engine.plan | conductor | internal | - |
 | `docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md` | B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션 | team2 | internal | - |
 | `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` | Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정 | conductor | internal | - |
@@ -631,5 +638,6 @@ tier: generated
 | `docs/4. Operations/V9_3_Intent_Execution_Boundary.md` | V9.3 Intent-Execution Separation (governance evolution) | conductor | contract | - |
 | `docs/4. Operations/V9_4_AI_Centric_Governance.md` | V9.4 AI-Centric Governance — SSOT-first Judgment + 전문 질문 금지 | conductor | contract | - |
 | `docs/4. Operations/V9_5_Single_Session_Output_Centric.md` | V9.5 Single Session AI-Centric — Hub-and-Spoke Deprecation | conductor | contract | - |
+| `docs/4. Operations/Workflow_Conductor_Autonomous.md` | Conductor Autonomous Workflow SOP — Hourglass 패턴 | conductor | contract | - |
 | `docs/README.md` | docs/ README | conductor | internal | - |
 | `docs/examples/README.md` | Examples | conductor | internal | - |

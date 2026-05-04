@@ -67,3 +67,4 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SG-012-lobby-sidebar-ssot.md` — Lobby 좌측 사이드바 SSOT 부재
 - `docs/4. Operations/Conductor_Backlog/SG-015-players-section-rationale.md` — Lobby Players 섹션 유지 근거 미문서화
 - `docs/4. Operations/Conductor_Backlog/SG-016-hand-history-sidebar-section.md` — Hand History 사이드바 섹션 공식화 (25개 분산 참조 통합)
+- `docs/4. Operations/Conductor_Backlog/SG-032-flutter-deps-major-bumps-deferred.md` — Flutter dependency major bumps (rive 0.14, file_picker 11) — migration deferred

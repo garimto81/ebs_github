@@ -13,6 +13,7 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Lobby/Operations.md` — Operations (team1)
 - `docs/2. Development/2.1 Frontend/Lobby/Overview.md` — Overview (team1)
 - `docs/2. Development/2.1 Frontend/Lobby/Prize_Pool.md` — Prize Pool & Payout Management (team1)
+- `docs/2. Development/2.1 Frontend/Lobby/References/EBS_Lobby_Design/README.md` — EBS Lobby Reference Design (HTML/JSX prototype, 2026-04-29) (team1 (consumer))
 - `docs/2. Development/2.1 Frontend/Lobby/Registration.md` — Registration (team1)
 - `docs/2. Development/2.1 Frontend/Lobby/Reports.md` — Reports & Statistics (team1)
 - `docs/2. Development/2.1 Frontend/Lobby/Session_Restore.md` — Session Restore (team1)
