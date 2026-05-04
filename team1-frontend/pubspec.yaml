@@ -24,7 +24,7 @@ dependencies:
   uuid: ^4.4.0
   intl: ^0.20.2
   sentry_flutter: ^9.19.0
-  file_picker: ^8.0.0
+  file_picker: ^11.0.2
   window_manager: ^0.5.1
   collection: ^1.18.0
   logging: ^1.2.0
