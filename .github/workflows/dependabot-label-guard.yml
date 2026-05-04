@@ -42,7 +42,7 @@ jobs:
     steps:
       - name: Determine intended labels from PR title
         id: infer
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const title = context.payload.pull_request.title || '';
@@ -78,7 +78,7 @@ jobs:
             core.setOutput('labels_json', JSON.stringify(intended));
 
       - name: Add missing labels
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
