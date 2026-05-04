@@ -38,9 +38,53 @@ def get_live_parent(cfg: dict, page_id: str) -> tuple[str | None, str]:
     return (None, title)
 
 
+def fetch_folder_descendants(cfg: dict, folder_id: str) -> dict[str, str]:
+    """Fetch all pages anywhere under folder (recursive). Return {id: title}."""
+    import requests
+    auth = (cfg["email"], cfg["token"])
+
+    def children(pid: str) -> list[dict]:
+        out = []
+        start = 0
+        while True:
+            url = f"{cfg['base_url']}/rest/api/content/{pid}/child/page"
+            try:
+                resp = requests.get(url, auth=auth, params={"limit": 100, "start": start}, timeout=30)
+                if not resp.ok:
+                    break
+                data = resp.json()
+                results = data.get("results", [])
+                out.extend(results)
+                if len(results) < 100:
+                    break
+                start += 100
+            except Exception:
+                break
+        return out
+
+    all_pages: dict[str, str] = {}
+
+    def recurse(pid: str, depth: int = 0):
+        if depth > 10:
+            return
+        for c in children(pid):
+            cid = c["id"]
+            if cid in all_pages:
+                continue
+            all_pages[cid] = c["title"]
+            recurse(cid, depth + 1)
+
+    recurse(folder_id)
+    return all_pages
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--filter", help="Glob filter")
+    ap.add_argument("--reverse", action="store_true",
+                    help="Also report Confluence-only pages (orphans not in local frontmatter)")
+    ap.add_argument("--folder-id", default="3184328827",
+                    help="Folder ID for reverse drift check")
     args = ap.parse_args()
 
     cfg = get_config()
@@ -53,9 +97,11 @@ def main():
         print("No mirror targets found.")
         return 0
 
-    print(f"Checking drift for {len(targets)} mirror target(s)...\n")
+    print(f"[Forward drift] Checking {len(targets)} mirror target(s)...\n")
     drift_count = 0
+    declared_ids: set[str] = set()
     for md, page_id, expected_parent in targets:
+        declared_ids.add(page_id)
         try:
             live_parent, title = get_live_parent(cfg, page_id)
         except Exception as e:
@@ -63,9 +109,6 @@ def main():
             drift_count += 1
             continue
 
-        # Compare expected vs live parent
-        # If frontmatter has no parent-id, expected_parent is None — accept anything
-        # If frontmatter has parent-id, must match exactly
         if expected_parent and live_parent != expected_parent:
             print(f"  [DRIFT] {page_id} ({title[:50]})")
             print(f"          expected parent: {expected_parent}")
@@ -76,8 +119,27 @@ def main():
             print(f"  [OK   ] {page_id} ({title[:50]}){parent_msg}")
 
     print()
-    print(f"Result: {len(targets) - drift_count}/{len(targets)} aligned, drift={drift_count}")
-    return 1 if drift_count else 0
+    print(f"Forward drift: {len(targets) - drift_count}/{len(targets)} aligned, drift={drift_count}")
+
+    # Reverse drift — Confluence-only orphans
+    orphan_count = 0
+    if args.reverse:
+        print(f"\n[Reverse drift] Folder {args.folder_id} descendants vs frontmatter...")
+        live = fetch_folder_descendants(cfg, args.folder_id)
+        # Confluence-side IDs not declared by any local frontmatter
+        # Plus Game Rules parent (3812360338) is a structural parent (auto-allowed)
+        STRUCTURAL_ALLOWED = {"3812360338"}  # Game Rules parent
+        orphans = [(pid, title) for pid, title in live.items()
+                   if pid not in declared_ids and pid not in STRUCTURAL_ALLOWED]
+        for pid, title in orphans:
+            print(f"  [ORPHAN] {pid}  {title[:60]}")
+            orphan_count += 1
+        print()
+        print(f"Reverse drift: {orphan_count} Confluence-only orphans")
+
+    total = drift_count + orphan_count
+    print(f"\nTotal violations: forward={drift_count} + reverse={orphan_count} = {total}")
+    return 1 if total else 0
 
 
 if __name__ == "__main__":
