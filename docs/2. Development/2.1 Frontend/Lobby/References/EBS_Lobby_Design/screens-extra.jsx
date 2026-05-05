@@ -5,7 +5,7 @@ const { Icon, I } = window.EBS_UI;
 /* ============== HAND HISTORY ============== */
 const HANDS = [
   { id: 47, game: "O Hi-Lo", players: 7, winner: "P. Nguyen", pot: 24800, time: "14:32", showdown: true, big: true,
-    blinds: "100/200", limit: "Limit", table: "Day2-#071",
+    blinds: "100/200", limit: "Limit", table: "#071",
     board: [{r:"A",s:"♠",c:"k"},{r:"7",s:"♦",c:"r"},{r:"3",s:"♠",c:"k"},{r:"K",s:"♣",c:"k"},{r:"2",s:"♥",c:"r"}],
     seats: [
       { seat:1, name:"P. Nguyen", hole:"A♥ 2♦ 3♣ 5♠", action:"Bet/Call", result:"Hi+Lo",  pnl:+18400, won:true },
@@ -39,7 +39,7 @@ function HandHistoryScreen() {
   return (
     <>
       <div className="kpi-strip">
-        <div className="kpi"><div className="k-l">Table</div><div className="k-v" style={{fontSize:14, fontFamily:"var(--ui)"}}>Day2-#071 ★</div><div className="k-sub">Featured · LIVE</div></div>
+        <div className="kpi"><div className="k-l">Table</div><div className="k-v" style={{fontSize:14, fontFamily:"var(--ui)"}}>#071 ★</div><div className="k-sub">Featured · LIVE</div></div>
         <div className="kpi"><div className="k-l">Hands Played</div><div className="k-v">142</div><div className="k-sub">since L1</div></div>
         <div className="kpi"><div className="k-l">Showdowns</div><div className="k-v">38</div><div className="k-sub">26.8%</div></div>
         <div className="kpi"><div className="k-l">Biggest Pot</div><div className="k-v">142,400</div><div className="k-sub">hand #18</div></div>
@@ -170,11 +170,11 @@ function HandHistoryScreen() {
 
 /* ============== ALERTS ============== */
 const ALERTS = [
-  { id: 1, sev: "err",  ts: "14:32:08", src: "RFID",   table: "Day2-#072",
+  { id: 1, sev: "err",  ts: "14:32:08", src: "RFID",   table: "#072",
     title: "RFID reader desynchronized",
     body: "Deck integrity drifted to 0/52 mid-hand. Operator C is paused; pairing required before next deal.",
     cta: "Resync RFID", unread: true },
-  { id: 2, sev: "warn", ts: "14:30:41", src: "Seat",   table: "Day2-#069",
+  { id: 2, sev: "warn", ts: "14:30:41", src: "Seat",   table: "#069",
     title: "Seat 9 elimination not confirmed",
     body: "Floor reported elimination 4m ago — chip count still posted to chip-bag. Confirm bust to release seat.",
     cta: "Mark Eliminated", unread: true },
@@ -182,13 +182,13 @@ const ALERTS = [
     title: "Level 18 starts in 22:48",
     body: "Auto-balance will run at L18 break. 4 tables flagged short (≤6 seats).",
     cta: "Preview Balance" },
-  { id: 4, sev: "warn", ts: "14:14:22", src: "CC",     table: "Day2-#075",
+  { id: 4, sev: "warn", ts: "14:14:22", src: "CC",     table: "#075",
     title: "Operator B idle > 8 min",
     body: "Station #23 streaming idle since 14:06. Reassign operator or pause station.",
     cta: "Reassign" },
-  { id: 5, sev: "info", ts: "13:58:11", src: "Stream", table: "Day2-#071",
+  { id: 5, sev: "info", ts: "13:58:11", src: "Stream", table: "#071",
     title: "NDI feed promoted to marquee",
-    body: "Producer pushed Day2-#071 to broadcast A. CC operator notified.", read: true },
+    body: "Producer pushed #071 to broadcast A. CC operator notified.", read: true },
   { id: 6, sev: "info", ts: "13:42:55", src: "System", table: null,
     title: "Auto-seating refilled 12 seats",
     body: "Waitlist reduced 24 → 12. Avg wait 3m.", read: true },
@@ -422,11 +422,11 @@ function TabOutputs() {
       </SubGroup>
 
       <SubGroup title="Live Pipeline" count="4">
-        <FieldRow label="NDI Output" classification="CONFIRM" hint={ndi ? "Stream Name: EBS_Day2_T071  ·  Group: Public" : "Off"}>
+        <FieldRow label="NDI Output" classification="CONFIRM" hint={ndi ? "Stream Name: EBS_T071  ·  Group: Public" : "Off"}>
           <Sw on={ndi} onToggle={()=>setNdi(!ndi)}/>
           {ndi && (
             <div style={{display:"flex", gap:8, marginTop:4}}>
-              <Inp value="EBS_Day2_T071" width={220}/>
+              <Inp value="EBS_T071" width={220}/>
               <Sel value="Public" options={["Public","Private"]}/>
             </div>
           )}
@@ -756,7 +756,7 @@ function TabPreferences() {
       <SubGroup title="Table" count="3">
         <FieldRow label="Table Name" classification="FREE" hint="Update applies immediately to overlay scoreboard">
           <div style={{display:"flex", gap:8}}>
-            <Inp value="Day2 — Featured #071"/>
+            <Inp value="Featured #071"/>
             <button className="btn ghost sm">Update</button>
           </div>
         </FieldRow>

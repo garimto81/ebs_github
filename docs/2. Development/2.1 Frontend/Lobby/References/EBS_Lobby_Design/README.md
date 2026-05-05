@@ -103,6 +103,7 @@ const STATUS_LABEL = {
 
 | 날짜 | 변경 |
 |------|------|
+| 2026-05-05 | **zip 갱신본 sync** — 사용자 제공 `EBS Lobby (1).zip` 의 minor 디자인 정제 반영. 변경: 테이블 ID 시각 표기 `Day2-#071` → `#071` (data.jsx 13 라인 + screens-extra.jsx 9 라인). 구조 변경 없음. 정본 visual asset 동기화: `Lobby/visual/screenshots/` 7장 신 디자인 캡쳐로 교체 (01~05 overwrite + 06 hands / 07 settings 신규). 00 Login 은 BS-02-01 분리로 보류. |
 | 2026-05-05 | 누락 5개 항목 **기획 보강 완료** (P1 TopBar Show Context Cluster + Active CC pill / P2 Year-grouped + Status Badge 5-color Legend / P3 Bookmark 검증). 정본 변경: `UI.md §공통 레이아웃 §헤더 바` + `§화면 1` + `Overview.md §화면 1` + `Lobby_PRD.md v1.1.0 Changelog`. 후속 구현: `B-091`. 매트릭스를 spec ✅ / impl ⏳ 2축으로 갱신. |
 | 2026-05-05 | AlertsScreen 폐기 (사용자 결정) — 매트릭스 행 strikethrough + 누락 항목 6번 strikethrough. 디자인 자산 (screens-extra.jsx) 은 자연 보존 |
 | 2026-05-03 | 사용자 제공 자산 보존 + Lobby 매핑/누락 분석 (R8 신설) |

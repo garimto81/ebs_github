@@ -19,6 +19,7 @@ reimplementability_notes: "UI-01 Lobby UI 스펙 (68KB) 정본"
 | 2026-04-13 | WSOP LIVE 스크린샷 정렬 | §0 Google OAuth 추가, 공통 레이아웃(빨간 헤더+좌측 사이드바) 신설, §1 필터 3종 추가, §2 DataTable 15컬럼+상태탭+다중필터, §3 Flight→Day탭 통합, §4 카드→행 좌석그리드 전환, §6 RBAC 계정관리 신규, §10 Divergence 로그 |
 | 2026-04-21 | Flutter Desktop 전환 1차 | Foundation §5.1 Lobby Flutter Desktop 단일 스택 결정 반영. 요소 표 열 헤더 "Quasar 컴포넌트" → "Flutter widget" 전환 완료. `**Quasar**:` 요약 블록 9개 `**Flutter**:` 로 재작성. 개별 q-* 셀 일부 남음 — Quasar↔Flutter 매핑표는 `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md §3` 참조. 세부 컴포넌트 교체는 team1 후속 PR (Migration Plan Phase 3-A1 후반). |
 | 2026-05-05 | EBS Lobby Design 누락 5개 보강 (P1/P2/P3) | §공통 레이아웃 §헤더 바: Show Context Cluster (SHOW/FLIGHT/LEVEL/NEXT) + Active CC pill 신규 (P1, shell.jsx:43-53 정합). §화면 1 Series 목록: Status Badge 5-color Legend + Year-grouped 그룹핑 정책 명시 (P2, screens.jsx:29 정합). Bookmark 검증 (P3, 이미 line 505/509 존재 — 디자인 자산과 정합 확인). AlertsScreen 폐기 (사용자 결정, EBS scope 외). |
+| 2026-05-05 | mockup HTML 5건 redirect | 5개 화면 섹션 (0 Login / 1 Series / 2 Events / 3 Tables / 4 Players) 의 `> 목업 참조: docs/mockups/ebs-lobby-XX.html` 를 신 디자인 SSOT 표기로 교체 (`References/EBS_Lobby_Design/screens.jsx:N` + `visual/screenshots/ebs-lobby-XX.png`). Legacy mockup HTML 은 보존 (외부 링크 안전). 본문 ASCII 와이어프레임은 그대로 유지 (정본 source of truth = 코드). Hand History/Settings 본문은 `Overview.md §화면 6/§화면 7` 가 SSOT — 본 UI.md 는 mockup redirect 만 적용. |
 
 ---
 
@@ -77,7 +78,8 @@ Lobby 헤더 우측에 활성 CC 드롭다운이 표시된다.
 
 ## 화면 0: Login
 
-> 목업 참조: `docs/mockups/ebs-lobby-00-login.html`
+> 디자인 SSOT: `References/EBS_Lobby_Design/screens.jsx:443` (`LoginScreen`)
+> Legacy mockup (deprecated 2026-05-05, 외부 링크 보존용): `docs/mockups/ebs-lobby-00-login.html`
 
 ```
 +---------------------------------------------+
@@ -530,7 +532,8 @@ Cage, Cashier Page, Wallet Status, Payroll, Payout, Chip Master, Series Chips, T
 
 ## 화면 1: Series 목록
 
-> 목업 참조: `docs/mockups/ebs-lobby-01-series.html`
+> 디자인 SSOT: `References/EBS_Lobby_Design/screens.jsx:18` (`SeriesScreen`) + 시각 캡쳐 `visual/screenshots/ebs-lobby-01-series.png` (2026-05-05 신 디자인 정합)
+> Legacy mockup (deprecated 2026-05-05): `docs/mockups/ebs-lobby-01-series.html`
 
 ```
 +================================================================+
@@ -649,7 +652,8 @@ Cage, Cashier Page, Wallet Status, Payroll, Payout, Chip Master, Series Chips, T
 
 ## 화면 2: Event 목록 (Management)
 
-> 목업 참조: `docs/mockups/ebs-lobby-02-events.html`
+> 디자인 SSOT: `References/EBS_Lobby_Design/screens.jsx:92` (`EventsScreen`) + 시각 캡쳐 `visual/screenshots/ebs-lobby-02-events.png` + Flight accordion `visual/screenshots/ebs-lobby-03-flights.png`
+> Legacy mockup (deprecated 2026-05-05): `docs/mockups/ebs-lobby-02-events.html`
 > WSOP LIVE Staff Page "Management" 화면과 동일 구조 (2026-04-13 스크린샷 기반).
 
 ```
@@ -769,7 +773,8 @@ Event 행을 펼치면 하위 Flight가 인라인 서브행으로 표시된다.
 
 ## 화면 3: Table 관리
 
-> 목업 참조: `docs/mockups/ebs-lobby-03-tables.html`
+> 디자인 SSOT: `References/EBS_Lobby_Design/screens.jsx:233` (`TablesScreen`) + 시각 캡쳐 `visual/screenshots/ebs-lobby-04-tables.png` (KPI 5 + Levels strip + Grid/Floor Map/CC Focus seg + 좌석 그리드 + RFID/Deck/Out/Command Center/Action 컬럼 + Waiting List 사이드바)
+> Legacy mockup (deprecated 2026-05-05): `docs/mockups/ebs-lobby-03-tables.html`
 > **구조 변경 (2026-04-13)**: Flight 독립 화면 폐지 → Day 탭으로 통합. 카드 레이아웃 → WSOP LIVE 행 기반 좌석 그리드. RFID/Output은 Settings로 이동. Router: `/Events/:eventId/tables?day=N`.
 
 ```
@@ -1001,7 +1006,8 @@ i18n key: `$t('rebalance.inProgress')`, `$t('rebalance.detail')`, `$t('rebalance
 
 ## 화면 4: Player (독립 레이어)
 
-> 목업 참조: `docs/mockups/ebs-lobby-04-players.html`
+> 디자인 SSOT: `References/EBS_Lobby_Design/screens.jsx:359` (`PlayersScreen`) + 시각 캡쳐 `visual/screenshots/ebs-lobby-05-players.png` (KPI 5 + All/Active/Away/Elim seg + chips bar 시각화 + VPIP/PFR/AGR/FT 4컬럼)
+> Legacy mockup (deprecated 2026-05-05): `docs/mockups/ebs-lobby-04-players.html`
 > **독립 레이어 (2026-04-13)**: Player는 Table의 하위 단계가 아니다. 사이드바, 메인 화면 등 어디서든 상시 접근 가능한 독립 화면이다. Table 화면에서도 플레이어를 직접 추가할 수 있다.
 
 ```

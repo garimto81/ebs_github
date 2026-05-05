@@ -300,7 +300,7 @@ WSOP LIVE `PlayerMoveStatus {0=None, 1=New, 2=Move}` (Confluence page `165383376
 ### 8.3 스크린샷 참조
 
 - EBS 현재 구현 스크린샷: `visual/screenshots/ebs-flow-table-status.png` (기존)
-- EBS 좌석 배치 화면: `visual/screenshots/ebs-lobby-04-tables.png`
+- EBS 좌석 배치 화면: `visual/screenshots/ebs-lobby-04-tables.png` (2026-05-05 신 디자인 정합 — KPI strip 5 + Levels strip + Grid/Floor Map/CC Focus seg + 좌석 그리드 + RFID/Deck/Out/Command Center/Action 컬럼 + Waiting List 사이드바)
 - WSOP LIVE 원본 UI 는 Confluence page `1653833763` 첨부 (로컬 미러 `C:/Claude/Wsoplive/Docs/ConfluenceMirror/.../Tables API.md` 인접 `_attachments/` 폴더)
 
 **일치 기준**: 뱃지 텍스트·카운트다운·색상·만료 규칙 모두 WSOP LIVE 원본과 동일. divergence 없음 (이전에는 enum 자체 미채택이었으므로 뱃지 표시가 없던 상태).

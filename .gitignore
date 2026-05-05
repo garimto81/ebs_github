@@ -2,6 +2,10 @@
 .omc/
 nul
 
+# 사용자 제공 디자인 자산 작업 영역 (References 폴더로 통합 후 archive)
+claude-design/
+claude-design-archive/
+
 # Active-edits registry 로컬 캐시 (Phase 6 에서 제거 예정)
 .claude/.active-edits-cache/
 .claude/.active-edits-overrides/

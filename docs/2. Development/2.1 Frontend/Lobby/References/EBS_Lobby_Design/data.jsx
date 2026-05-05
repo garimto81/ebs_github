@@ -159,18 +159,18 @@ const FLIGHTS = [
 
 // Seat states: 'a' active, 'e' empty, 'r' recently eliminated, 'd' dealer-only, 'w' waiting
 const TABLES = [
-  { id: "Day2-#071", featured: true, seats: ["a","a","a","a","a","a","a","a","a"], rfid: "rdy", deck: "52/52", out: "NDI", cc: "live", op: "Op.A · #47", marquee: true },
-  { id: "Day2-#069", seats: ["a","a","a","a","e","a","a","a","r"], rfid: "off", deck: null, out: null, cc: "live", op: "Op.B · #23" },
-  { id: "Day2-#070", seats: ["a","a","a","a","a","a","e","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
-  { id: "Day2-#072", featured: true, seats: ["a","a","a","a","a","a","a","e","a"], rfid: "err", deck: "0/52", out: "SDI", cc: "err", op: "Op.C · ⚠RFID" },
-  { id: "Day2-#073", seats: ["a","a","e","a","a","a","a","a","e"], rfid: "off", deck: null, out: null, cc: "idle" },
-  { id: "Day2-#074", seats: ["a","a","a","a","a","a","a","a","e"], rfid: "off", deck: null, out: null, cc: "idle" },
-  { id: "Day2-#075", seats: ["a","a","a","a","a","e","a","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
-  { id: "Day2-#076", seats: ["a","a","a","a","a","a","a","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
-  { id: "Day2-#077", seats: ["e","a","a","a","a","a","a","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
-  { id: "Day2-#078", seats: ["a","a","a","a","a","a","r","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
-  { id: "Day2-#079", seats: ["a","a","a","a","e","a","a","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
-  { id: "Day2-#080", seats: ["a","a","a","a","a","a","a","e","a"], rfid: "off", deck: null, out: null, cc: "idle" },
+  { id: "#071", featured: true, seats: ["a","a","a","a","a","a","a","a","a"], rfid: "rdy", deck: "52/52", out: "NDI", cc: "live", op: "Op.A · #47", marquee: true },
+  { id: "#069", seats: ["a","a","a","a","e","a","a","a","r"], rfid: "off", deck: null, out: null, cc: "live", op: "Op.B · #23" },
+  { id: "#070", seats: ["a","a","a","a","a","a","e","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
+  { id: "#072", featured: true, seats: ["a","a","a","a","a","a","a","e","a"], rfid: "err", deck: "0/52", out: "SDI", cc: "err", op: "Op.C · ⚠RFID" },
+  { id: "#073", seats: ["a","a","e","a","a","a","a","a","e"], rfid: "off", deck: null, out: null, cc: "idle" },
+  { id: "#074", seats: ["a","a","a","a","a","a","a","a","e"], rfid: "off", deck: null, out: null, cc: "idle" },
+  { id: "#075", seats: ["a","a","a","a","a","e","a","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
+  { id: "#076", seats: ["a","a","a","a","a","a","a","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
+  { id: "#077", seats: ["e","a","a","a","a","a","a","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
+  { id: "#078", seats: ["a","a","a","a","a","a","r","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
+  { id: "#079", seats: ["a","a","a","a","e","a","a","a","a"], rfid: "off", deck: null, out: null, cc: "idle" },
+  { id: "#080", seats: ["a","a","a","a","a","a","a","e","a"], rfid: "off", deck: null, out: null, cc: "idle" },
 ];
 
 const WAITLIST = [

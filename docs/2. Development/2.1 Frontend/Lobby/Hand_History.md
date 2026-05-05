@@ -3,7 +3,7 @@ title: Hand History
 owner: team1
 tier: feature
 legacy-id: BS-02-HH
-last-updated: 2026-04-21
+last-updated: 2026-05-05
 reimplementability: PASS
 reimplementability_checked: 2026-04-21
 reimplementability_notes: "Lobby 사이드바 Hand History 섹션 SSOT — 25개 분산 참조 통합 (Migration Plan 2026-04-21 Phase 1 산출물)"
@@ -21,6 +21,7 @@ related:
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-21 | 신규 작성 | SG-016 revised — Lobby 사이드바 공식화 (Migration Plan Phase 1). EBS 고유 기능, WSOP LIVE 비포함, `hands`/`hand_actions`/`hand_seats` 테이블 + WebSocket 3종 + mockup 기반 |
+| 2026-05-05 | 신 디자인 시각 자료 추가 | `visual/screenshots/ebs-lobby-06-hands.png` 인라인 추가 (split view: 좌측 hands 리스트 + 우측 hand detail). 디자인 SSOT: `Lobby/References/EBS_Lobby_Design/screens-extra.jsx:5` (`HandHistoryScreen`). |
 
 ---
 
@@ -28,7 +29,19 @@ related:
 
 Hand History 는 Command Center 에서 기록된 포커 핸드(1판) 의 전체 이력을 Lobby 에서 조회·분석하는 EBS 고유 기능이다. 25개 문서에 분산되어 있던 참조를 본 문서가 SSOT 로 통합한다. EBS Core §1.2 경계 준수 — **라이브 운영 + 당일 기록** 범위. 장기 아카이브/편집은 포스트프로덕션 책임.
 
+**EBS 시각 자료 (신 디자인 정합, 2026-05-05):**
+
+![Hand History — split view (좌측 10 hands list + 우측 #47 detail with Board cards + Players 표 + Action Sequence)](visual/screenshots/ebs-lobby-06-hands.png)
+
+| 영역 | 내용 |
+|------|------|
+| **상단 KPI 5** | Table (현재 ID + Featured) · Hands Played (since L1) · Showdowns (% of total) · Biggest Pot · Avg Pot (last 20 hands) |
+| **필터 / 검색** | Search hand # / player · All Hands / Showdown Only / Big Pots seg · Export Hand / Replay 액션 |
+| **좌측 hands 리스트** | Hand # · Game · Players · Winner · Pot · Time |
+| **우측 hand detail** | Hand 헤더 (#id · Game (Limit) · Table · Pot · Blinds · time) · Board (community cards) · Players 표 (Seat/Player/Hole/Action/Result/P&L) · Action Sequence (Preflop/Flop/Turn/River pot 누적) · Replay ▶ 버튼 |
+
 > 참조: BS-02-00 Overview "EBS 추가 기능" 표 (line 62), Foundation §Ch.6 (3입력→오버레이 파이프라인의 결과물).
+> 디자인 SSOT: `Lobby/References/EBS_Lobby_Design/screens-extra.jsx:5` (`HandHistoryScreen`).
 
 ---
 

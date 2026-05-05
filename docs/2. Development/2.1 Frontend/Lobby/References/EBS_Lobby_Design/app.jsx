@@ -45,7 +45,7 @@ function App() {
     flights: [{ label: "Home", go: "series" }, { label: "WPS · EU 2026", go: "events" }, { label: "Event #5 · Europe Main", go: "flights" }, { label: "Flights" }],
     tables:  [{ label: "Home", go: "series" }, { label: "WPS · EU 2026", go: "events" }, { label: "Event #5", go: "flights" }, { label: "Day2", go: "tables" }, { label: "Tables" }],
     players: [{ label: "Home", go: "series" }, { label: "WPS · EU 2026", go: "events" }, { label: "Event #5", go: "flights" }, { label: "Day2", go: "tables" }, { label: "Players" }],
-    hands:    [{ label: "Home", go: "series" }, { label: "WPS · EU 2026", go: "events" }, { label: "Event #5", go: "flights" }, { label: "Day2", go: "tables" }, { label: "Hand History · Day2-#071" }],
+    hands:    [{ label: "Home", go: "series" }, { label: "WPS · EU 2026", go: "events" }, { label: "Event #5", go: "flights" }, { label: "Day2", go: "tables" }, { label: "Hand History · #071" }],
     alerts:   [{ label: "Home", go: "series" }, { label: "Alerts" }],
     settings: [{ label: "Home", go: "series" }, { label: "Settings" }],
   };
