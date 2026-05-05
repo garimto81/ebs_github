@@ -18,6 +18,7 @@ reimplementability_notes: "UI-01 Lobby UI 스펙 (68KB) 정본"
 | 2026-04-10 | dev-readiness 확장 | §0.1-0.3 Login 확장(2FA/Forgot/Session restore), §화면 4 Rebalance Saga UI(CCR-020), §9.0/9.5/9.6/9.7 WSOP gap 보강(G-01/03/05/07/08) |
 | 2026-04-13 | WSOP LIVE 스크린샷 정렬 | §0 Google OAuth 추가, 공통 레이아웃(빨간 헤더+좌측 사이드바) 신설, §1 필터 3종 추가, §2 DataTable 15컬럼+상태탭+다중필터, §3 Flight→Day탭 통합, §4 카드→행 좌석그리드 전환, §6 RBAC 계정관리 신규, §10 Divergence 로그 |
 | 2026-04-21 | Flutter Desktop 전환 1차 | Foundation §5.1 Lobby Flutter Desktop 단일 스택 결정 반영. 요소 표 열 헤더 "Quasar 컴포넌트" → "Flutter widget" 전환 완료. `**Quasar**:` 요약 블록 9개 `**Flutter**:` 로 재작성. 개별 q-* 셀 일부 남음 — Quasar↔Flutter 매핑표는 `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md §3` 참조. 세부 컴포넌트 교체는 team1 후속 PR (Migration Plan Phase 3-A1 후반). |
+| 2026-05-05 | EBS Lobby Design 누락 5개 보강 (P1/P2/P3) | §공통 레이아웃 §헤더 바: Show Context Cluster (SHOW/FLIGHT/LEVEL/NEXT) + Active CC pill 신규 (P1, shell.jsx:43-53 정합). §화면 1 Series 목록: Status Badge 5-color Legend + Year-grouped 그룹핑 정책 명시 (P2, screens.jsx:29 정합). Bookmark 검증 (P3, 이미 line 505/509 존재 — 디자인 자산과 정합 확인). AlertsScreen 폐기 (사용자 결정, EBS scope 외). |
 
 ---
 
@@ -424,16 +425,81 @@ i18n key: `$t('login.restoreTitle')`, `$t('login.restoreContinue')`, `$t('login.
 | 요소 | 위치 | 바인딩 | 비고 |
 |------|------|--------|------|
 | 역할 라벨 | 좌측 | `[★ {user.role}]` | Admin/Operator/Viewer 표시 |
+| 브랜드 마크 | 좌측 (역할 옆) | `EBS LOBBY` + 'E' 마크 | 클릭 시 Sidebar 토글 (디자인 정합, shell.jsx:39) |
+| **Show Context Cluster** | 중앙 | `SHOW · FLIGHT · LEVEL · NEXT` 4 segment | 운영 컨텍스트 상시 표시 (디자인 보강, P1) |
 | 현재 날짜/시간 | 우측 | `MM/DD/YYYY HH:mm:ss` | 1초 tick, UTC offset 표시 |
 | Timezone | 시간 옆 | `UTC+{offset}` | Series 설정의 timezone 반영 |
 | 사용자명 | 우측 | `{user.name}` | — |
 | 온라인 상태 | 이름 옆 | `●` (녹색 원) | WebSocket 연결 상태 |
-| CC 모니터링 | 우측 | `[CC ▼]` 드롭다운 | 현행 Active CC 패널 유지 |
+| **Active CC pill** | 우측 | `<button class="cc-pill">● Active CC · {n}</button>` | 펄스 애니메이션 + count, 클릭 시 Active CC 패널 (디자인 정합, P1) |
 | Settings 기어 | 최우측 | `⚙` 아이콘 | Settings 페이지 이동 |
 
 **Flutter**: `AppBar(backgroundColor: Colors.red.shade900, foregroundColor: Colors.white, toolbarHeight: 56)`
 
 **Login 화면에서는 헤더 바 숨김** (인증 전이므로).
+
+#### Show Context Cluster (운영 컨텍스트, P1, 2026-05-05 신설)
+
+> **출처**: `EBS_Lobby_Design/shell.jsx:43-51` — operator 가 현재 어느 SHOW/FLIGHT/LEVEL 에 있는지 항상 시각 인지하기 위함. EBS 의 라이브 방송 컨텍스트(여러 테이블 동시 운영)에서 필수.
+
+```
++-----------------------------------------------------------------+
+| SHOW             | FLIGHT  | LEVEL              | NEXT          |
+| WPS · EU 2026    | Day2    | L17 · 6,000/12,000 | 22:48         |
++-----------------------------------------------------------------+
+```
+
+| Segment | 라벨 | 값 바인딩 | 데이터 소스 |
+|---------|------|----------|------------|
+| **SHOW** | `SHOW` | `series.code · series.name_short` (예: "WPS · EU 2026") | `GET /api/v1/series/{active}` |
+| **FLIGHT** | `FLIGHT` | `flight.label` (예: "Day2", "Day1A") | `GET /api/v1/flights/{active}` |
+| **LEVEL** | `LEVEL` | `L{n} · {sb}/{bb}` (예: "L17 · 6,000/12,000") | Game Engine `tournament.current_level` (API-04) |
+| **NEXT** | `NEXT` | `mm:ss` 카운트다운 (다음 레벨까지) | Game Engine `tournament.next_level_at` (1초 tick) |
+
+**상태 변이**:
+- `series.active == null` (진입 직후 등) → 4 segment 모두 `—` 표시
+- `flight.active == null` (이벤트 진입 전) → FLIGHT/LEVEL/NEXT `—`
+- `tournament.paused == true` (브레이크) → NEXT 가 `Break · {mm:ss}` 로 전환
+
+**RBAC**: 모든 role 노출 (Admin / Operator / Viewer 동일).
+
+**Flutter**: `Row(children: [_segment("SHOW", ...), VerticalDivider(), _segment("FLIGHT", ...), ...])` — 각 segment 는 `Column(label, value)` 위젯, 폭은 max 200dp.
+
+#### Active CC pill (P1, 2026-05-05 신설)
+
+> **출처**: `EBS_Lobby_Design/shell.jsx:53` — 기존 `[CC ▼]` 드롭다운을 **pill 형태로 승격**. 펄스 애니메이션으로 active 상태를 시각 강조.
+
+```
++------------------------+
+|  ●  Active CC · 3      |  ← pulse animation (1.5s ease-in-out infinite)
++------------------------+
+       (click)
+       ↓
++------------------------+
+|  Active CC List        |
+| ┌──────────────────┐  |
+| │ Table 1 · Op:JK  │  |
+| │ Table 5 · Op:HM  │  |
+| │ Table 7 · Op:JK  │  |
+| └──────────────────┘  |
++------------------------+
+```
+
+| 요소 | 바인딩 | 비고 |
+|------|--------|------|
+| 펄스 도트 | `cc.activeCount > 0` 조건 | active 0 이면 dot 회색 (애니메이션 OFF) |
+| Active CC 라벨 | 고정 텍스트 | i18n key `lobby.cc_pill.label` |
+| Count | `cc.activeCount` (`SELECT count(*) FROM cc_sessions WHERE status='active'`) | WebSocket `cc:session_changed` 으로 실시간 갱신 |
+| 클릭 동작 | Dropdown 패널 (Active CC List) | Table 별 1행 — Table 번호 + Operator 이름 + 우측 [→ Open] 버튼 |
+
+**RBAC**:
+- Admin: 모든 Active CC 표시 + Open 가능
+- Operator: 본인 할당 테이블만 표시 + Open 가능
+- Viewer: pill 표시 (count 만), 드롭다운 클릭 시 토스트 "Viewer 권한으로 CC 진입 불가"
+
+**WebSocket 이벤트**: `cc:session_changed` 발행 시 `cc.activeCount` 재계산 + 펄스 애니메이션 재시작.
+
+**Flutter**: `OutlinedButton.icon(icon: AnimatedContainer(decoration: BoxDecoration(shape: circle), ...), label: Text("Active CC · $count"), onPressed: () => showMenu(...))`
 
 ### 좌측 사이드바
 
@@ -468,33 +534,48 @@ Cage, Cashier Page, Wallet Status, Payroll, Payout, Chip Master, Series Chips, T
 
 ```
 +================================================================+
-| [★ Admin]                 04/13/2026 07:02:14 UTC+2  Aiden Kim ⚙ |
+| [★ Admin] [E EBS LOBBY]    SHOW · FLIGHT · LEVEL · NEXT  ● Active CC · 3 |
 +================================================================+
 |                                                                |
-| [Search Series...  ] [✓ Only updated] [✓ Bookmarks] [↻ Reset] |
+| [Search Series...  ] [✓ Hide completed] [☆ Bookmarks] [↻ Reset]|
+| Status: [● Running] [● Registering] [● Announced] [○ Completed]|
 |                                                   [+ New Series] |
 +----------------------------------------------------------------+
-| 2026                                                            |
-| March                                                           |
-| +------------------+ +------------------+                       |
-| | WSOP LIVE Series | | 2026 WSOP Europe |                      |
-| | [venue photo]  ☆ | | [venue photo]  ★ |                      |
-| | Mar 24 - Apr 30  | | Mar 31 - Apr 12  |                      |
-| | Events: 95       | | Events: 15       |                      |
-| | ● Active         | | ● Active         |                      |
-| +------------------+ +------------------+                       |
-|                                                                |
-| April                                                           |
+| ── 2026 ───────────────────────────────────────  3 series ──── |
 | +------------------+ +------------------+ +------------------+ |
-| | WSOP Circuit     | | WSOP Circuit     | | WSOP Circuit     | |
-| | Horseshoe Tunica | | Caesars Tahoe    | | Texas Card House | |
+| | WPS · EU 2026 ★  | | WSOP LIVE 2026 ☆ | | WSOPC Tunica   ☆ | |
 | | [venue photo]    | | [venue photo]    | | [venue photo]    | |
-| | Apr 18 - Apr 27  | | Apr 19 - Apr 27  | | Apr 23 - May 04  | |
+| | Mar 31 - Apr 12  | | Mar 24 - Apr 30  | | Apr 18 - Apr 27  | |
+| | 15 events  ● Run | | 95 events  ● Run | | 12 events  ● Reg | |
 | +------------------+ +------------------+ +------------------+ |
+|                                                                |
+| ── 2025 ───────────────────────────────────────  2 series ──── |
+| +------------------+ +------------------+                       |
+| | WPS · EU 2025  ☆ | | WSOPC Indy     ☆ |                      |
+| | [venue photo]    | | [venue photo]    |                       |
+| | Apr 03 - Apr 14  | | May 12 - May 21  |                       |
+| | 14 events  ○ End | | 8 events   ○ End |                       |
+| +------------------+ +------------------+                       |
 +----------------------------------------------------------------+
 ```
 
 > **사이드바 없음**: Series 목록은 전체 화면 카드 그리드. Series 진입 후부터 사이드바 표시.
+
+#### 그룹핑 정책 (2026-05-05 명시)
+
+> **출처**: `EBS_Lobby_Design/screens.jsx:29` — `g[s.year] = g[s.year] || []` (year 기준 1차 그룹). 디자인 자산이 명시적으로 year-grouped 채택.
+
+| 1차 그룹 | 2차 정렬 | 표시 |
+|---------|----------|------|
+| **Year** (`series.start_date.year`) | 내림차순 (2026 → 2025 → 2024) | "── 2026 ──── N series ──" 밴드 헤더 |
+| 카드 (year band 내부) | `start_date` 내림차순 | 최신 시작일이 좌상단 |
+
+**Hide completed 동작** (디자인 정합):
+- 체크 ON: `status == "completed"` 카드 숨김
+- 체크 OFF (default): 모든 status 표시
+- localStorage 영속: `ebs_lobby_filter_hide_completed` 키
+
+> **이전 표기 정정 (2026-05-05)**: Overview.md line 326 의 "월별 그룹핑" 표현은 디자인 자산과 충돌. 본 §화면 1 의 **연도(Year)** 기준이 SSOT. Overview.md 도 동일 정책으로 정합.
 
 ### 구성 요소
 
@@ -512,6 +593,51 @@ Cage, Cashier Page, Wallet Status, Payroll, Payout, Chip Master, Series Chips, T
 | Venue 사진 | Card 배경 이미지 | `series.image_url` |
 | Event 수 | Text (body) | `series.event_count` |
 | Status | Badge | `series.status` |
+| **Year band 헤더** | Section divider | `series.start_date.year` 기준 그룹 (P2, 2026-05-05) |
+| **Status Legend** | Toolbar 우측 | 5-color 범례 (P2, 2026-05-05) |
+
+#### Status Badge 5-color Legend (P2, 2026-05-05 신설)
+
+> **출처**: `EBS_Lobby_Design/screens.jsx:5-14` — `STATUS_LABEL` enum 5개 + `screens.jsx:49-54` legend display + `styles.css §badge`.
+> **DB 정합**: `team2-backend/src/db/enums.py EventFSM` 와 1:1 정합 (이미 8 series seed 검증 완료).
+
+```
++--------------------------------------------------------------+
+| ●  Running        ●  Registering      ●  Announced           |
+| ─────────         ────────────        ──────────             |
+| (green)           (yellow)            (blue)                 |
+|                                                              |
+| ○  Completed      ◌  Created                                 |
+| ─────────         ───────                                    |
+| (gray)            (slate, faded)                             |
++--------------------------------------------------------------+
+```
+
+| Status | Label | 색상 (token) | 의미 | 운영 사용 |
+|--------|-------|-------------|------|----------|
+| `running` | "Running" | `var(--success)` 녹색 | 진행 중 | 카드 클릭 → 즉시 운영 |
+| `registering` | "Registering" | `var(--warning)` 황색 | 등록 중 | 카드 클릭 → 등록 관리 |
+| `announced` | "Announced" | `var(--info)` 청색 | 공지 (등록 전) | 카드 클릭 → 공지 편집 |
+| `completed` | "Completed" | `var(--muted)` 회색 | 종료 | Hide completed 시 숨김 |
+| `created` | "Created" | `var(--slate-faded)` 슬레이트 | 생성 직후 (미공지) | Admin 만 표시 (option) |
+
+**Legend 표시 위치**: Toolbar 우측 ([+ New Series] 버튼 좌측), 5개 도트 + 라벨 가로 배치. Operator/Viewer 도 표시 (학습 보조).
+
+**Flutter**: `Wrap(children: STATUS.map((s) => _legendItem(s.color, s.label)).toList(), spacing: 12)`
+
+#### Bookmark / Star 검증 (P3, 2026-05-05)
+
+> **상태**: ✅ 이미 정의됨 (line 505 `Show bookmarks` 체크박스 + line 509 `☆/★ 북마크` + `POST/DELETE /Series/{id}/Bookmark` API). 본 검증은 `EBS_Lobby_Design/screens.jsx:70`, `data.jsx:8` (starred:true) 와의 정합 확인.
+
+| 디자인 자산 | EBS 명세 | 정합 |
+|------------|----------|:----:|
+| `s.starred` (boolean per series) | `POST/DELETE /Series/{id}/Bookmark` | ✅ |
+| Star icon: `screens.jsx:70` (`<Icon d={I.star} />`) | UI.md line 509 ☆/★ | ✅ |
+| Toolbar Bookmarks 버튼 (`screens.jsx:45`) | UI.md line 505 `Show bookmarks` 체크박스 | ✅ (디자인은 버튼, EBS 는 체크박스 — UX 동등) |
+
+**Bookmark 스코프 (정합 확정)**: **user-scoped** (`bookmarks` 테이블 — `user_id` × `series_id` UNIQUE). 디자인 자산의 `s.starred` 는 currentUser 관점의 derived field. RBAC 모든 role 동일 사용 가능.
+
+**위치 호환**: 카드 banner 우상단 별 아이콘 (`screens.jsx:70` `scard-banner > .star`) — Flutter 에서 `Stack` + `Positioned(top:8, right:8, child: Icon(Icons.star))` 로 매핑.
 
 ### 네비게이션
 

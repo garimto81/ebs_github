@@ -25,6 +25,7 @@ reimplementability_notes: "BS-02-00 Lobby 총괄 (66KB) 정본"
 | 2026-04-09 | 화면 구조 재배정 + Settings 글로벌 명시 | Event+Flight 화면 통합(accordion 펼침), 5화면→3계층+Player 독립+Settings 별도, 화면 번호 재배정(화면3→Table, Player→독립 레이어), Settings는 글로벌(모든 CC 동일 적용, 테이블별 Settings 무의미) |
 | 2026-04-09 | GAP-L-001 보강 | §세션 상태 보존 — 토큰 유효성 검증 가드 조건 추가 (서버 검증 없이 세션 복원 금지) |
 | 2026-04-13 | Player 독립 레이어 전환 | 5계층→3계층+Player 독립 레이어, Player를 Table 종속에서 독립 화면으로 분리, 4화면→3화면+Player 독립+Settings 별도 |
+| 2026-05-05 | Series 그룹핑 정책 정정 (디자인 정합) | "월별 그룹핑" → "**연도(Year) 1차 + 시작일 내림차순 2차**" 로 정정. `EBS_Lobby_Design/screens.jsx:29` (`g[s.year]`) 정합. UI.md §화면 1 §그룹핑 정책 (2026-05-05) 가 SSOT. |
 
 ---
 
@@ -323,14 +324,15 @@ Lobby가 BO DB 데이터를 읽고 갱신하는 전략.
 
 ![EBS Series Lobby — 재설계](visual/screenshots/ebs-lobby-01-series.png)
 
-로그인 후 첫 화면. 진행 중인 모든 시리즈를 **월별 그룹핑된 카드 그리드**로 표시한다.
+로그인 후 첫 화면. 진행 중인 모든 시리즈를 **연도(Year) 그룹핑된 카드 그리드**로 표시한다 (2026-05-05 디자인 정합 정정 — 이전 "월별" 표기는 SUPERSEDED, SSOT 는 `UI.md §화면 1 §그룹핑 정책`).
 
 | 요소 | DB 소스 | EBS 적용 |
 |------|---------|:-------:|
 | 시리즈 카드 (장소 사진 + 이름 + 기간) | `series` | O — 그대로 사용 |
 | Select Role 드롭다운 | `staff_roles` | O — Admin/Operator/Viewer 매핑 |
-| 월별 그룹핑 (March, April, May...) | `series.start_date` | O — 그대로 사용 |
-| 검색 바 + Hide outdated / Show bookmarks | — | O — 그대로 사용 |
+| **연도 그룹핑** (2026, 2025, 2024 …) | `series.start_date.year` | O — 디자인 자산 정합 (`screens.jsx:29`) |
+| 검색 바 + Hide completed / Show bookmarks | — | O — 그대로 사용 (Hide outdated → Hide completed 명칭 정합) |
+| **Status Badge Legend (5-color)** | — | O — Running / Registering / Announced / Completed / Created (UI.md §화면 1 SSOT) |
 
 **불필요한 요소:** 없음 — 이 화면은 전체를 그대로 가져온다.
 

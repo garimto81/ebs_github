@@ -33,15 +33,15 @@ linked-docs:
 
 | 디자인 element | 현재 EBS 구현 (`team1-frontend/lib/features/lobby/`) | 상태 |
 |---------------|-----------------------------------------------------|:----:|
-| **TopBar**: brand + SHOW/FLIGHT/LEVEL/NEXT clock + Active CC pill + user pill | `lib/features/lobby/screens/lobby_shell.dart` (예상 위치) | ⏳ 부분 |
+| **TopBar**: brand + SHOW/FLIGHT/LEVEL/NEXT clock + Active CC pill + user pill | 기획: `UI.md §공통 레이아웃 §헤더 바` ✅ (2026-05-05 보강) / 구현: B-091 PENDING | 📝 spec ✅ / 🔨 impl ⏳ |
 | **Sidebar**: Series / Events / Flights / Tables / Players (5 items + WPS section) | go_router 경로별 화면 | ⏳ 부분 (Players 별도 feature) |
-| **SeriesScreen**: year-grouped cards + status badge + bookmark + filter | `lib/features/lobby/screens/series_screen.dart` | ⏳ 검증 필요 |
+| **SeriesScreen**: year-grouped cards + status badge + bookmark + filter | 기획: `UI.md §화면 1` ✅ (2026-05-05 보강 — year-grouped + 5-color legend + bookmark 검증) / 구현: B-091 PENDING | 📝 spec ✅ / 🔨 impl ⏳ |
 | **EventsScreen**: table view (no/time/name/buy-in/game/mode/entries/status/featured) | events 화면 | ⏳ |
 | **FlightsScreen**: drill-down per event | flight 화면 | ⏳ |
 | **TablesScreen**: tables list + onLaunch (CC) + waitlist | `table_detail_screen.dart` (`_handleLaunchCc` 구현됨, SG-008-b11 v1.3) | ✅ |
 | **PlayersScreen**: 918 players sample, search | `lib/features/players/` | ⏳ |
 | **HandHistoryScreen** | `lib/features/reports/` (Hand History 통합?) | ⏳ |
-| **AlertsScreen** | (현재 미구현 — gap) | ❌ |
+| ~~**AlertsScreen**~~ | **폐기 (2026-05-05 사용자 결정)** — EBS scope 외, screens-extra.jsx 자산은 보존하되 구현 대상 아님 | 🚫 |
 | **SettingsScreen** | `lib/features/settings/` (6탭 — SG-003 DONE) | ✅ |
 
 ## Status badge 패턴
@@ -80,15 +80,17 @@ const STATUS_LABEL = {
 
 ## 주요 디자인 누락분 (현재 Lobby 에서 보강 필요)
 
-| 항목 | 출처 | 우선순위 |
-|------|------|:--------:|
-| 1. **Active CC pill** (TopBar) — `<span className="cc-pill"><span className="pulse"/> Active CC · 3</span>` | shell.jsx:43 | P1 (운영 visibility) |
-| 2. **SHOW/FLIGHT/LEVEL/NEXT clock** (TopBar) | shell.jsx:32-40 | P1 (operator context) |
-| 3. **Year-grouped Series cards** + Hide completed checkbox | screens.jsx:18-50 | P2 (UX) |
-| 4. **Status badge 5-color legend** (Running green, Registering yellow, Announced blue, Completed gray) | screens.jsx:9-14 + styles.css | P2 |
-| 5. **Bookmark/star** 기능 (series.starred) | data.jsx:8 | P3 |
-| 6. **AlertsScreen** (3rd-tier nav) | screens-extra.jsx | P2 (모니터링) |
-| 7. **Tables onLaunch hook** + 5-status legend | screens.jsx (TablesScreen) | ✅ DONE (SG-008-b11 v1.3) |
+> **2026-05-05 cascade 결과**: 기획(spec) 보강 완료. 구현(impl) 은 `B-091` backlog 추적.
+
+| 항목 | 출처 | 우선순위 | 기획 (spec) | 구현 (impl) |
+|------|------|:--------:|:-----------:|:-----------:|
+| 1. **Active CC pill** (TopBar) — `<button class="cc-pill">● Active CC · {n}</button>` | shell.jsx:53 | P1 | ✅ `UI.md §헤더 바 §Active CC pill` | ⏳ B-091 |
+| 2. **SHOW/FLIGHT/LEVEL/NEXT clock** (TopBar) | shell.jsx:43-51 | P1 | ✅ `UI.md §헤더 바 §Show Context Cluster` | ⏳ B-091 |
+| 3. **Year-grouped Series cards** + Hide completed checkbox | screens.jsx:18-50 | P2 | ✅ `UI.md §화면 1 §그룹핑 정책` + `Overview.md` 정합 | ⏳ B-091 |
+| 4. **Status badge 5-color legend** (Running/Registering/Announced/Completed/Created) | screens.jsx:5-14, 49-54 + styles.css | P2 | ✅ `UI.md §화면 1 §Status Badge 5-color Legend` | ⏳ B-091 |
+| 5. **Bookmark/star** 기능 (series.starred) | data.jsx:8, screens.jsx:70 | P3 | ✅ 이미 정의 (line 505/509) + 디자인 정합 검증 | ⏳ B-091 (검증) |
+| ~~6. AlertsScreen~~ | ~~screens-extra.jsx~~ | 🚫 **폐기 (2026-05-05 사용자 결정)** | — | — |
+| 7. **Tables onLaunch hook** + 5-status legend | screens.jsx (TablesScreen) | ✅ DONE | ✅ | ✅ SG-008-b11 v1.3 |
 
 ## 적용 범위 (R8 cascade)
 
@@ -101,4 +103,6 @@ const STATUS_LABEL = {
 
 | 날짜 | 변경 |
 |------|------|
+| 2026-05-05 | 누락 5개 항목 **기획 보강 완료** (P1 TopBar Show Context Cluster + Active CC pill / P2 Year-grouped + Status Badge 5-color Legend / P3 Bookmark 검증). 정본 변경: `UI.md §공통 레이아웃 §헤더 바` + `§화면 1` + `Overview.md §화면 1` + `Lobby_PRD.md v1.1.0 Changelog`. 후속 구현: `B-091`. 매트릭스를 spec ✅ / impl ⏳ 2축으로 갱신. |
+| 2026-05-05 | AlertsScreen 폐기 (사용자 결정) — 매트릭스 행 strikethrough + 누락 항목 6번 strikethrough. 디자인 자산 (screens-extra.jsx) 은 자연 보존 |
 | 2026-05-03 | 사용자 제공 자산 보존 + Lobby 매핑/누락 분석 (R8 신설) |

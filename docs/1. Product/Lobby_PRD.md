@@ -93,7 +93,7 @@ related-docs:
 
 Lobby 는 **Flutter Web 애플리케이션** 으로 빌드되어 nginx Docker 컨테이너 (`lobby-web`, port 3000) 로 배포됩니다. 운영실에서 어떤 컴퓨터든 브라우저로 LAN 의 `http://<서버-IP>:3000/` 에 접속하면 즉시 사용 가능합니다.
 
-여러 운영자가 동시에 접속해 동일 데이터를 볼 수 있습니다. 한 운영자의 변경 사항은 다른 운영자의 화면에 0.1 초 이내로 반영됩니다 (BO 의 WebSocket push 약속).
+여러 운영자가 동시에 접속해 동일 데이터를 볼 수 있습니다. 한 운영자의 변경 사항은 다른 운영자의 화면에 **빠짐없이, 안정적으로** 반영됩니다 (BO 의 WebSocket push 운영 메트릭).
 
 ---
 
@@ -195,7 +195,7 @@ flowchart TD
 
 ### 3.2 Lobby 가 CC 를 모니터링하는 방법
 
-각 CC 는 자신의 테이블 상태를 BO 에게 실시간으로 보고합니다. Lobby 는 BO 의 WebSocket 채널 (`ws/lobby`) 을 구독하여 모든 CC 의 상태를 0.1 초 이내로 받아봅니다.
+각 CC 는 자신의 테이블 상태를 BO 에게 실시간으로 보고합니다. Lobby 는 BO 의 WebSocket 채널 (`ws/lobby`) 을 구독하여 모든 CC 의 상태를 **빠짐없이, 안정적으로** 받아봅니다.
 
 | Lobby 가 보는 CC 정보 | 의미 |
 |---------------------|------|
@@ -559,6 +559,8 @@ Lobby 의 디자인 톤은 **black-and-white refined minimal** 입니다:
 
 ## Changelog
 
-| 날짜 | 버전 | 변경 |
-|------|:---:|------|
-| 2026-05-04 | 1.0.0 | 초기 작성 — Foundation 톤 + 8 챕터 (Part I 정체성 / II 사용 / III 깊이). 정본 = `Lobby/Overview.md` (1179줄 internal) + `Lobby/UI.md` + design SSOT (HTML/React) 외부 친화 재가공. SSOT 위반 회피 = frontmatter `derivative-of` + `if-conflict: derivative-of takes precedence`. |
+| 날짜 | 버전 | 변경 | 변경 유형 | 결정 근거 |
+|------|:---:|------|----------|----------|
+| 2026-05-04 | 1.0.0 | 초기 작성 — Foundation 톤 + 8 챕터 (Part I 정체성 / II 사용 / III 깊이). 정본 = `Lobby/Overview.md` (1179줄 internal) + `Lobby/UI.md` + design SSOT (HTML/React) 외부 친화 재가공. SSOT 위반 회피 = frontmatter `derivative-of` + `if-conflict: derivative-of takes precedence`. | - | - |
+| 2026-05-05 | 1.1.0 | EBS Lobby Design 자산 (`Lobby/References/EBS_Lobby_Design/`) 의 누락 5개 보강 cascade. **AlertsScreen 폐기** (사용자 결정, EBS scope 외). **P1**: TopBar `Show Context Cluster` (SHOW/FLIGHT/LEVEL/NEXT) + `Active CC pill` 신규 명세. **P2**: Series 화면 `Year-grouped 그룹핑 정책` (월별 → 연도별 정정) + `Status Badge 5-color Legend` (Running/Registering/Announced/Completed/Created). **P3**: Bookmark/star 검증 (이미 정의 — 디자인 자산과 정합 ✅). 정본 변경: `Lobby/UI.md §공통 레이아웃 §헤더 바` + `§화면 1` + `Lobby/Overview.md §화면 1`. 후속 구현 backlog: B-091 (team1). | PRODUCT | 사용자 제공 디자인 자산 (EBS Lobby.zip, 2026-04-29) 의 의도 반영. operator visibility 강화 (Active CC pill 펄스 + 운영 컨텍스트 상시 표시). EBS Core §1.2 (3입력→오버레이) 의 라이브 운영 visibility 결손 해소. |
+| 2026-05-05 | 1.2.0 | EBS 미션 재선언 cascade (SG-033). Ch.1 본문 line 96 + §3.2 line 198 "0.1 초 이내" → "**빠짐없이, 안정적으로**" (속도 KPI → 안정성 가치 표현). Foundation §Ch.1.4 새 미션 ("완벽한 번역가") + 핵심 가치 5종 정합. 운영 메트릭(NFR)으로 강등, EBS 핵심 가치는 정확성·안정성·단단한 HW. | PRODUCT | 사용자 critic directive (2026-05-05): "EBS 에서 속도 KPI 전혀 중요하지 않음 — 정확성·장비 안정성·단단한 HW 가 핵심". derivative 문서들의 인용 표현 정합. |

@@ -108,7 +108,7 @@ Card Pipeline Authority
 | `docs/2. Development/2.4 Command Center/Overlay/Engine_Dependency_Contract.md` | Rive 애니메이션 매핑 (카드 reveal 트리거) |
 | `docs/2. Development/2.4 Command Center/Integration_Test_Plan.md` | E2E 테스트 시나리오 |
 
-**SLA 목표**: RFID 감지 → Engine 처리 → WebSocket broadcast → Rive 렌더링 → SDI/NDI 송출 **100ms 이내** (Phase 2 측정 대상).
+**운영 메트릭 (NFR — 핵심 가치 아님)**: RFID 감지 → Engine 처리 → WebSocket broadcast → Rive 렌더링 → SDI/NDI 송출 **100ms 이내** (Phase 2 측정 대상). EBS 핵심 가치는 Foundation §Ch.1.4 — 정확성·장비 안정성·단단한 HW 5 가치이며, 본 수치는 시스템 동작 기준점.
 
 ---
 
@@ -150,7 +150,7 @@ flowchart LR
 | Overlay OutputEvent 카탈로그? | Tier 2 / Overlay_Output_Events.md §6.0 (21 종) |
 | RFID UID → Card Code 매핑? | DB `deck_cards.rfid_uid` UNIQUE (SG-006 RESOLVED) |
 | Mock vs Real HAL 전환? | Tier 1 / RFID_HAL.md (운영자), API-03 Interface (엔지니어) |
-| End-to-end 100ms SLA 측정? | Phase 2 통합 테스트 (Tier 5 / Integration_Test_Plan.md) |
+| End-to-end 100ms NFR 측정? (운영 메트릭, EBS 핵심 가치 아님) | Phase 2 통합 테스트 (Tier 5 / Integration_Test_Plan.md) |
 
 ---
 
