@@ -19,6 +19,7 @@ tier: generated
 - `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` — WSOP Production Structure Analysis
 - `docs/1. Product/archive/Foundation_v41.0.0.md` — Foundation
 - `docs/2. Development/2. Development.md` — 2. Development
+- `docs/2. Development/2.1 Frontend/Backlog/B-092-lobby-visual-screenshots-cascade-2026-05-05.md` — Lobby visual/screenshots — 신 디자인 7장 cascade + 본문 문서 정합 갱신
 - `docs/2. Development/2.5 Shared/Authentication.md` — Authentication
 - `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` — Distributed Authentication Architecture
 - `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` — Token Lifecycle Sequences

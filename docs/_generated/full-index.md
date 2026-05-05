@@ -44,6 +44,7 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Backlog/B-089-lobby-design-foundation-tokens.md` | Lobby Design — Foundation visual system 이식 (Phase 1) | team1 | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-090-lobby-design-five-screen-restructure.md` | Lobby Design — 5-screen drilldown 재구조화 (Phase 2) | team1 | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-091-lobby-design-missing-five-spec-impl.md` | Lobby Design — 누락 5개 항목 구현 (TopBar + Series 화면 + Bookmark 검증) | team1 | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-092-lobby-visual-screenshots-cascade-2026-05-05.md` | Lobby visual/screenshots — 신 디자인 7장 cascade + 본문 문서 정합 갱신 | conductor | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F004-pending-missing-api-docs.md` | 문서 누락 API 경로 보강 대기 (team2/Conductor 책임) | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F005-settings-series-selector.md` | Settings 화면에 Series selector UI 도입 | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F006-skin-upload-ui-2step.md` | Skin 업로드 UI를 2-step 플로우로 업데이트 | - | - | - |
