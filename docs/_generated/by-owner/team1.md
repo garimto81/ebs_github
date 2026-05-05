@@ -16,6 +16,7 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Backlog/B-088-B-team1-docs-rest-path-pascal.md` — team1 기획 문서 REST path kebab → PascalCase 변환 (B-088 subscope)
 - `docs/2. Development/2.1 Frontend/Backlog/B-089-lobby-design-foundation-tokens.md` — Lobby Design — Foundation visual system 이식 (Phase 1)
 - `docs/2. Development/2.1 Frontend/Backlog/B-090-lobby-design-five-screen-restructure.md` — Lobby Design — 5-screen drilldown 재구조화 (Phase 2)
+- `docs/2. Development/2.1 Frontend/Backlog/B-091-lobby-design-missing-five-spec-impl.md` — Lobby Design — 누락 5개 항목 구현 (TopBar + Series 화면 + Bookmark 검증)
 - `docs/2. Development/2.1 Frontend/Deployment.md` — Deployment
 - `docs/2. Development/2.1 Frontend/Engineering.md` — Engineering — Frontend (Flutter)
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/Activate_Broadcast.md` — Activate Broadcast

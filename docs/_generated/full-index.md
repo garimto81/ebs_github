@@ -43,6 +43,7 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Backlog/B-088-B-team1-docs-rest-path-pascal.md` | team1 기획 문서 REST path kebab → PascalCase 변환 (B-088 subscope) | team1 | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-089-lobby-design-foundation-tokens.md` | Lobby Design — Foundation visual system 이식 (Phase 1) | team1 | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-090-lobby-design-five-screen-restructure.md` | Lobby Design — 5-screen drilldown 재구조화 (Phase 2) | team1 | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/B-091-lobby-design-missing-five-spec-impl.md` | Lobby Design — 누락 5개 항목 구현 (TopBar + Series 화면 + Bookmark 검증) | team1 | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F004-pending-missing-api-docs.md` | 문서 누락 API 경로 보강 대기 (team2/Conductor 책임) | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F005-settings-series-selector.md` | Settings 화면에 Series selector UI 도입 | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F006-skin-upload-ui-2step.md` | Skin 업로드 UI를 2-step 플로우로 업데이트 | - | - | - |
@@ -492,7 +493,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` | 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` | B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` | B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
-| `docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md` | B-Q12 — 100ms SLA 측정 framework (BLANK-1 + B-Q7 cascade) | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md` | B-Q12 — 운영 안정성 측정 framework (NFR — RFID/Engine/WS/Render 사슬 안정성) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q13-desktop-routing-implementation.md` | B-Q13 — 단일 Desktop 바이너리 라우팅 구현 (SG-022 cascade) | team1 (or conductor Mode A) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q14-settings-ui-implementation.md` | B-Q14 — Settings 5-level scope UI 구현 (C.1 + SG-026 cascade) | team1 (or conductor Mode A) | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q15-sg-008-b-endpoint-implementation.md` | B-Q15 — SG-008-b 11건 endpoint 실구현 (team2 우선 작업 7번 cascade) | team2 (or conductor Mode A) | internal | - |
@@ -577,6 +578,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` | SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-031-confluence-mirror-rebuild.md` | SG-031 — Confluence Mirror 재구축 | conductor | spec_gap | - |
 | `docs/4. Operations/Conductor_Backlog/SG-032-flutter-deps-major-bumps-deferred.md` | Flutter dependency major bumps (rive 0.14, file_picker 11) — migration deferred | team1 | backlog | - |
+| `docs/4. Operations/Conductor_Backlog/SG-033-ebs-mission-redefinition.md` | EBS 미션 재선언 — 속도 KPI 폐기, 정확성·안정성·단단한 HW 5 가치 채택 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/V2_PURGE_REPORT.md` | V2 Purge Report — 사용자 명시 "ebs v2 별개 프로젝트" cascade | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |

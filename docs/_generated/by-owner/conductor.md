@@ -128,7 +128,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` — 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비
 - `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` — B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` — B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade)
-- `docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md` — B-Q12 — 100ms SLA 측정 framework (BLANK-1 + B-Q7 cascade)
+- `docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md` — B-Q12 — 운영 안정성 측정 framework (NFR — RFID/Engine/WS/Render 사슬 안정성)
 - `docs/4. Operations/Conductor_Backlog/B-Q16-development-environment-standards.md` — B-Q16 — 개발 환경 표준화 (Session 1 — SG-027 cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` — Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` — B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기)
@@ -180,6 +180,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` — SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권)
 - `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` — SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델)
 - `docs/4. Operations/Conductor_Backlog/SG-031-confluence-mirror-rebuild.md` — SG-031 — Confluence Mirror 재구축
+- `docs/4. Operations/Conductor_Backlog/SG-033-ebs-mission-redefinition.md` — EBS 미션 재선언 — 속도 KPI 폐기, 정확성·안정성·단단한 HW 5 가치 채택
 - `docs/4. Operations/Conductor_Backlog/V2_PURGE_REPORT.md` — V2 Purge Report — 사용자 명시 "ebs v2 별개 프로젝트" cascade
 - `docs/4. Operations/Conductor_Backlog/_template_implementation.md` — 구현: <기능명>
 - `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` — 시나리오: <검증 대상 통합 흐름>
