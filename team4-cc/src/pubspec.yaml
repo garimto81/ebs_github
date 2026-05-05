@@ -36,7 +36,7 @@ dependencies:
   uuid: ^4.4.0
 
   # 오디오 (BS-07-05, 1 BGM + 2 Effect + Temp pattern)
-  just_audio: ^0.9.39
+  just_audio: ^0.10.5
 
   # 에러 리포팅 (WSOP 조직 표준 Sentry)
   sentry_flutter: ^8.3.0
