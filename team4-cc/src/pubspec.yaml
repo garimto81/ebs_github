@@ -24,7 +24,7 @@ dependencies:
   web_socket_channel: ^3.0.3
 
   # Rive 애니메이션 (Overlay Layer 1 렌더링)
-  rive: ^0.13.4
+  rive: ^0.14.6
 
   # .gfskin ZIP in-memory 압축 해제 (CCR-012)
   archive: ^4.0.9
