@@ -121,6 +121,8 @@ tier: generated
 - `docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md` — CR-055-output-event-buffer-ownership
 - `docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md` — CR-056-deadlink-cleanup
 - `docs/4. Operations/4. Operations.md` — 4. Operations
+- `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` — CC React 디자인 프로토타입 — Critic 판정 보고서
+- `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` — Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0)
 - `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` — Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획
 - `docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md` — Graphic Editor team5 분리 적합성 결정 (DONE — Option A 채택)
 - `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
@@ -193,6 +195,7 @@ tier: generated
 - `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
 - `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` — Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성
 - `docs/4. Operations/DEPENDABOT_GOVERNANCE.md` — Dependabot Governance — Label / Major Gate / Recreate Guard
+- `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` — 문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결
 - `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
 - `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` — ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
 - `docs/4. Operations/Foundation_Alignment_Plan.md` — Foundation 재설계 정렬 계획 (Conductor 소유 문서)

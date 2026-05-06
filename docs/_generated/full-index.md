@@ -315,6 +315,7 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-008-foundation-high-overlay-overview-runtime-modes.md` | Foundation 재설계 P1 — Overlay/Overview 2 런타임 모드 분기 + 배경 config flag | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-009-foundation-medium-reference-updates.md` | Foundation 재설계 P2 — MEDIUM 일괄 참조·주석 보강 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` | Foundation 재설계 P3 — LOW 링크·참조 갱신 | - | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md` | CC Visual Uplift — React 프로토타입 시각 자산 7종 흡수 (D7 보안 유지) | team4 | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | S-11 Lobby Hand History 자동화 UI wiring 요청 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team2-S11-seeder-and-endpoints.md` | S-11 자동화 실행을 위한 BO seeder + endpoint 준비 요청 | - | - | - |
@@ -477,6 +478,8 @@ tier: generated
 | `docs/3. Change Requests/pending/CR-team1-20260417-bo-cors-lan.md` | CR: Team2 BO CORS 기본값을 LAN 허용으로 변경 | - | - | - |
 | `docs/3. Change Requests/pending/CR-team1-20260417-cc-network-config.md` | CR: Team4 CC boApiClientProvider localhost 하드코딩 제거 | - | - | - |
 | `docs/4. Operations/4. Operations.md` | 4. Operations | conductor | internal | - |
+| `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` | CC React 디자인 프로토타입 — Critic 판정 보고서 | conductor | internal | - |
+| `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` | Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0) | conductor | internal | - |
 | `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` | Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획 | conductor | critical | - |
 | `docs/4. Operations/Conductor_Backlog.md` | Conductor_Backlog | - | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` | Phase 2 통합 테스트 + E2E | - | - | - |
@@ -591,6 +594,7 @@ tier: generated
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` | Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성 | conductor | internal | - |
 | `docs/4. Operations/DEPENDABOT_GOVERNANCE.md` | Dependabot Governance — Label / Major Gate / Recreate Guard | conductor | internal | - |
+| `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` | 문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결 | conductor | internal | - |
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
 | `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` | ECOSYSTEM E2E Handoff — Multi-Service Docker Validation | conductor | operations | - |
 | `docs/4. Operations/Foundation_Alignment_Plan.md` | Foundation 재설계 정렬 계획 (Conductor 소유 문서) | conductor | internal | - |

@@ -8,6 +8,7 @@ tier: generated
 
 - `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` — RFID HAL — Operator Behavior
 - `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md` — RFID HAL Interface Contract
+- `docs/2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md` — CC Visual Uplift — React 프로토타입 시각 자산 7종 흡수 (D7 보안 유지)
 - `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` — NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Action_Buttons.md` — Action Buttons
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Demo_Test_Mode.md` — Demo & Test Mode (DEPRECATED)

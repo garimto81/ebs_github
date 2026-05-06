@@ -184,6 +184,7 @@ tier: generated
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-008-foundation-high-overlay-overview-runtime-modes.md` — Foundation 재설계 P1 — Overlay/Overview 2 런타임 모드 분기 + 배경 config flag (-)
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-009-foundation-medium-reference-updates.md` — Foundation 재설계 P2 — MEDIUM 일괄 참조·주석 보강 (-)
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` — Foundation 재설계 P3 — LOW 링크·참조 갱신 (-)
+- `docs/2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md` — CC Visual Uplift — React 프로토타입 시각 자산 7종 흡수 (D7 보안 유지) (team4)
 - `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` — NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 (team4)
 - `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` — S-11 Lobby Hand History 자동화 UI wiring 요청 (-)
 - `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team2-S11-seeder-and-endpoints.md` — S-11 자동화 실행을 위한 BO seeder + endpoint 준비 요청 (-)
