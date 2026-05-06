@@ -7,8 +7,8 @@ tier: external
 confluence-page-id: 3811672228
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228
-last-updated: 2026-05-05
-version: 2.0.0
+last-updated: 2026-05-06
+version: 2.0.1
 derivative-of: ../2. Development/2.1 Frontend/Lobby/Overview.md
 if-conflict: derivative-of takes precedence
 audience-target: 외부 stakeholder (외부 개발팀, 경영진, PM)
@@ -44,7 +44,7 @@ predecessors:
 
 # === 관련 문서 ===
 related-docs:
-  - Foundation.md (§Ch.4.1, §Ch.5.1, §Ch.5.5, §Ch.5.6)
+  - Foundation.md (§Ch.1.5, §Ch.4.1, §Ch.5.1, §Ch.5.2, §Ch.5.5, §Ch.5.6, §Ch.6.1)
   - ../2. Development/2.1 Frontend/Lobby/Overview.md (정본 기술 명세, 1273줄)
   - ../2. Development/2.1 Frontend/Lobby/UI.md (정본 UI 명세)
 ---
@@ -996,6 +996,7 @@ OKLCH 토큰 + Flutter widget 매핑 가이드.
 | 2026-05-05 | 1.2.0 | EBS 미션 재선언 cascade (SG-033). Ch.1 본문 line 96 + §3.2 line 198 "0.1 초 이내" → "**빠짐없이, 안정적으로**" (속도 KPI → 안정성 가치 표현). Foundation §Ch.1.4 새 미션 ("완벽한 번역가") + 핵심 가치 5종 정합. 운영 메트릭(NFR)으로 강등, EBS 핵심 가치는 정확성·안정성·단단한 HW. | PRODUCT | 사용자 critic directive (2026-05-05): "EBS 에서 속도 KPI 전혀 중요하지 않음 — 정확성·장비 안정성·단단한 HW 가 핵심". derivative 문서들의 인용 표현 정합. |
 | 2026-05-05 | 1.3.0 | Ch.8 화면 갤러리 PNG 인라인 7장 추가 (외부 인계 가독성 ↑). §8.2 Series "월별" 표기 SUPERSEDED → 연도별 정정. §8.3 Events + Flights 분리 캡쳐. §8.6 Hand History split view + §8.7 Settings 6 tabs 신규 섹션 추가 (디자인 톤 8.7→8.8 재번호). 정본 SSOT: `Lobby/References/EBS_Lobby_Design/screens.jsx` + `Lobby/visual/screenshots/`. derivative 문서 갱신: `Lobby/Overview.md` (§화면 6/7 본문 신설), `Lobby/UI.md` (mockup HTML 5건 → 디자인 SSOT redirect), `Lobby/Table.md` (line 303 캡션 보강). | PRODUCT | 사용자 directive (2026-05-05): "모든 로비 관련한 문서 교체 및 내용 수정 계획 수립하여 보고" → 자율 결정 후 Phase A~G 자율 진행. visual/screenshots/ 7장 신 디자인 cascade + 본 PRD 외부 인계 가독성 강화. |
 | 2026-05-05 | 1.4.0 | **사람 친화 강화 (옵션 G — 5 Phase 점진 강화)**. 추가 캡쳐 5장 확보 (00 Login + 04b Floor Map + 04c CC Focus + 04d Launch CC modal + 07b Settings GFX). 챕터별 점진 강화: Ch.1 cc-relationship 인라인 / Ch.3 §3.5 데이터 흐름 신설 (data-sync flow) / Ch.4 Launch modal + table-status + cc-launch flow 3장 인라인 / Ch.5 §5.4 Lock 시각화 (cc-lock flow) + Login PNG / Ch.6 §6.4 Mix 게임 CC 화면 (mix-game flow) / Ch.8 GFX 탭 추가 + §8.9 Tables 3 view 정책 신설. §1.3 다음 약어 사전 박스 추가 (BO/CC/RFID/NDI/SDI/KPI/BB/LIVE/IDLE/ERROR — 18세 일반인 기준). 시각 자료 7장 → **14장** (PNG 9 + flow 5). 외부 stakeholder 외부 인계 가독성 강화. | PRODUCT | 사용자 directive (2026-05-05): Q1-b 8 챕터 보존 + 톤 강화 / Q2-b Critic 선별 14장 / Q3-c 18세 일반인 기준 / Q4-a 추가 캡쳐 5장. 기존 v1.3.0 자산 보존 + additive 강화 (rule 12 Map-Reduce 정합). PRD 폐기 옵션 (A) 거부 → EBS 표준 PRD-Overview 이중 구조 보존. |
+| 2026-05-06 | **2.0.1** | **Foundation v3.1 동기화 (3 입력 Trinity cascade)**. Foundation §Ch.1.5 신설 (게임 룰 = Engine 내장 상수 SSOT 확정) + §Ch.5.2 표현 정정 ("규칙" → "룰 선택, 22 종 중 활성화만 가능 / 정의 수정 불가") 정합. Lobby Settings 의 "규칙" 영역은 룰 선택만 가능하며 룰 자체의 정의 / 수정 / 추가는 Engine 재배포가 필요함을 외부 인계 시 명확히 해야 함. related-docs §Ch.1.5 / §Ch.5.2 / §Ch.6.1 3종 추가. 본문 챕터 보강은 별도 PR 후속. | PRODUCT | Foundation v3.1 cascade — 사용자 critic + 5 답변 (2026-05-06) 후속. |
 | 2026-05-05 | **2.0.0** | **rule 19 Feature Block 완전 적용 (옵션 J 자율 iteration)**. **Provenance Block 신설** (frontmatter 3축 — title/status/owner + provenance triggered_by/user_directive/precedent_incident + predecessors 4개). **본문 상단 Edit History 섹션 신설** (rule 19 P5 충족, 6 row). **P0 Hero 섹션 신설** — 메타 시작 거부 패턴 → 인용구 thesis "12 테이블의 모든 진실을 단 한 화면에 압축한 관제탑." (80자 이하) + Hook 본문 + cc-relationship 시각자료 좌우 (Symmetric Block). **P7-C Reader Anchor 신설** — 입구/출구 좌우 대비 (P2 Pair). **P7-E Narrative Arc 4-act 라벨 신설** — Act 1 Setup (Ch.1-2) / Act 2 Build (Ch.3-7) / Act 3 Drama (Ch.4) / Act 4 Resolution (Ch.8) + Act 전환 hook 4개. **Feature Block 패턴 6개 적용** — Ch.2.1 P5 Sequence (4계층) / Ch.3.1 P1 Standard (1:N) / Ch.4 P5 Stat Block (12시간 timeline) / Ch.5.1 P3 Matrix (3 역할 카드) / Ch.6.4 P2 Pair (Fixed/Choice) / Ch.7.3 P4 Decision (장애 분기) / "더 깊이" P3 Matrix (인계 자료). 모든 Feature Block 에 `<!-- FB §X.Y -->` 주석 + `role="presentation"` + 명시 anchor `<a id=>` 적용 (rule 19 보강 룰 3개 모두 충족). **자가 점검 10/10 ✅** (구조 5 + Reader Experience 5). | PRODUCT | 사용자 directive (2026-05-05): "기획 문서 워크 플로우 feature block 방식도 적용안되었고 문제가 뭐지?" → critic 진단 결과 v1.4.0 이 rule 19 6/6 미적용 + P7 5/5 위반 식별. 본 critic 검증 누락 책임 인정. EBS 프로젝트 표준 = rule 19 Feature Block 강제. v1.4.0 → v2.0.0 in-place 강화 (동일 파일 supersede, additive). |
 
 ---
