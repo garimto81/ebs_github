@@ -2,6 +2,9 @@
 .omc/
 nul
 
+# RAG Layer 2 — auto-generated embedding cache (rebuild via tools/doc_rag.py build)
+.cache/
+
 # 사용자 제공 디자인 자산 작업 영역 (References 폴더로 통합 후 archive)
 claude-design/
 claude-design-archive/
