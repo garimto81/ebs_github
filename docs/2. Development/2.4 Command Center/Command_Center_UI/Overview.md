@@ -17,6 +17,7 @@ last-updated: 2026-04-15
 | 2026-04-22 | §1.1.1 Engine response schema 실측 정렬 (notify: team3) | B-team4-006 E2E 검증 (curl 실측) 결과 Engine 응답이 `{gameState, outputEvents[]}` 2-field envelope 이 아닌 **full state snapshot** (`sessionId, street, seats[], community[], pot, actionOn, ...` flat) 확인. "outputEvents" 표현 6건 수정 → "state snapshot". Harness_REST_API §2.1 response schema 도 동시 정정. |
 | 2026-04-13 | UI-02 redesign | 좌석 S1~S10 변경, 대칭 배치, 수동 편집 우선 원칙, 인라인 편집 전환 |
 | 2026-04-17 | 연동 아키텍처 명확화 | §1.1 데이터 흐름 신설 — CC↔Engine(직접 HTTP) + CC↔BO(WS 이벤트 발행) |
+| 2026-05-06 | **§Widget Inventory 신설** (B-team4-011) | React 시안 critic 판정 후속 — Visual Uplift V1~V7 위젯 인벤토리. KeyboardHintBar (V1, ✅ 구현) / StatusBar (V2) / MiniDiagram (V3) / PositionShiftChip (V4) / SeatCell 7행 (V5) / ACTING glow (V6) / TweaksPanel (V7). SSOT: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md`. |
 
 ---
 
@@ -629,3 +630,60 @@ BO WebSocket 연결 상실 감지
 ## 11. 카드 호출 로직 (cross-ref)
 
 CC 가 dispatch 하는 카드 입력 (RFID 홀카드 / 커뮤니티 카드) 의 4-tier 문서 구조와 권위 SSOT 매핑은 `../../2.5 Shared/Card_Flow_Index.md` 참조. 카드 파이프라인의 Trigger/OutputEvent 권위는 `../../2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` (§1.4 카드 파이프라인 / §3.5 트리거 매트릭스 / §4.10 Atomic Flop 예외).
+
+---
+
+## 12. Widget Inventory — Visual Uplift (B-team4-011, 2026-05-06)
+
+> **트리거**: 2026-05-05 디자이너 React 시안 critic 판정. SSOT: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md`.
+
+### 12.1 13개 위젯 인벤토리 (V1 ~ V13, 2026-05-06 시각 검토 후 확장)
+
+| ID | 위젯 | 위치 | 상세 정책 SSOT | 상태 |
+|:--:|------|------|----------------|:----:|
+| **V1** | KeyboardHintBar | InfoBar 직하 32px | `Keyboard_Shortcuts.md §5` | ✅ 2026-05-06 |
+| **V2** | cc_status_bar (BO/RFID/Engine 통합) + V10 | Toolbar 대체 또는 보강 | `UI.md §Visual Uplift V2` | ⏳ |
+| **V3** | mini_table_diagram + R2 가드 | Toolbar 좌측 또는 InfoBar | `UI.md §Visual Uplift V3` | ⏳ |
+| **V4** | position_shift_chip | SeatCell 행 3 | `Seat_Management.md §8.3` | ⏳ |
+| **V5** | SeatCell 7행 + V11/V12 결합 | SeatCell 전체 | `Seat_Management.md §8.1` | ⏳ |
+| **V6** | ACTING glow ring + V9 명시 박스 | SeatCell + 우측 명시 박스 | `UI.md §Visual Uplift V6` | ⏳ |
+| **V7** | tweaks_panel (debug only) | Settings popup 또는 fab | `UI.md §Visual Uplift V7` | ⏳ |
+| **V8** | FLOP 1·2·3 / TURN / RIVER 슬롯 라벨 | community board | (이 §) | ⏳ NEW |
+| **V9** | ACTING 우측 명시 박스 | V6 일부 | V6 SSOT | ⏳ NEW |
+| **V10** | POT 좌상단 강조 박스 | V2/V3 영역 | V2/V3 SSOT | ⏳ NEW |
+| **V11** | 베팅 칩 부유 시각 | V5 일부 | V5 SSOT | ⏳ NEW |
+| **V12** | 카드 슬롯 + ADD affordance | V5 일부 | V5 SSOT | ⏳ NEW |
+| **V13** | IDLE 시 액션 disabled visual hint | ActionPanel | 현 Flutter 정합 | ✅ 확인 |
+
+### 12.2 가드레일 (HARD ENFORCE)
+
+| # | 가드 | 검증 |
+|:-:|------|------|
+| 1 | hole card 값 노출 금지 (D7) | `tools/check_cc_no_holecard.py` CI |
+| 2 | CDN 의존 도입 금지 | `pubspec.yaml` 리뷰 |
+| 3 | 통신 모델 변경 금지 (Engine HTTP + BO WS 병행 dispatch 보존) | `engine_output_dispatcher.dart` diff = 0 |
+| 4 | HandFSM 9-state 전이 룰 변경 금지 | `hand_fsm_provider.dart` 테스트 |
+
+### 12.3 진행 단계 (Phase A ~ G)
+
+| Phase | 작업 | 상태 |
+|:-----:|------|:----:|
+| A | archive + Backlog 등재 + critic SSOT | ✅ |
+| B | V1 KeyboardHintBar | ✅ |
+| C | V2 cc_status_bar | ⏳ |
+| D | V3 mini_table_diagram + V4 position_shift_chip | ⏳ |
+| E | V5 SeatCell 7행 (executor 위임 권장 — 250줄 변경) | ⏳ |
+| F | V6 glow + V7 tweaks_panel | ⏳ |
+| G | screenshot diff + critic verify | ⏳ |
+
+### 12.4 거절된 시안 항목 (12 결함)
+
+| # | 시안 결함 | EBS CC 정책 |
+|:-:|----------|-------------|
+| 1 | 운영자 화면 카드 값 노출 (D7 위반) | **face-down only** (§Hole_Cards / Foundation §5.4) |
+| 2 | React/Babel/Inter CDN 의존 | Flutter assets 자족 (Docker 컨테이너) |
+| 3 | WebSocket / Engine 통신 부재 | **§1.1.1 Engine + BO 병행 dispatch 유지** |
+| 4 | HandFSM 단순 phase string | **9-state Riverpod FSM 유지** (`hand_fsm_provider.dart`) |
+| 5 ~ 12 | RFID HAL / RBAC / UndoStack / i18n / 테스트 / AT-04~07 / 9 게임 / Babel runtime | 모두 **거절** (현 Flutter CC 패턴 보존) |
+
+상세: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` Act 2 (Incident).

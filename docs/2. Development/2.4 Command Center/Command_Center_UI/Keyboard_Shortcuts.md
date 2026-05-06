@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 단축키 전체 맵, 카드 입력 단축키, 네비게이션, 충돌 방지 규칙 |
+| 2026-05-06 | **§5 KeyboardHintBar 시각 표시 신설** (B-team4-011 V1) | 단축키 활성/비활성 상태를 화면 상단 바에 실시간 시각화. `actionButtonProvider` 매트릭스 동기화. SSOT: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md`. |
 
 ---
 
@@ -242,3 +243,66 @@ v1.0에서는 단축키 매핑이 고정이다. 변경 불가.
 | BS-05-02 액션 버튼 | 각 버튼의 단축키 매핑 |
 | BS-05-04 수동 카드 입력 | 카드 입력 모드 단축키 |
 | BS-05-05 Undo/복구 | Ctrl+Z 단축키 |
+
+---
+
+## 5. KeyboardHintBar — 시각 표시 정책 (B-team4-011 V1, 2026-05-06)
+
+> **트리거**: 2026-05-05 디자이너 React 시안 critic 판정. 단축키가 명세에는 있으나 화면에 표시되지 않아 신규 운영자 학습 시간 길어지는 문제 식별. SSOT: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md`.
+
+### 5.1 위치 및 크기
+
+| 속성 | 값 |
+|------|----|
+| 화면 위치 | InfoBar (40px) 직하, SeatArea 직상 |
+| 높이 | 32px |
+| 배경 | `Theme.colorScheme.surfaceContainerLow` |
+| 테두리 | bottom `outlineVariant` 1px |
+
+### 5.2 표시 항목 (좌 → 우)
+
+| 칩 | 키 | 라벨 | 활성 조건 (actionButtonProvider 매트릭스) |
+|:--:|:--:|------|------------------------------------------|
+| 1 | F | FOLD | `CcAction.fold` enabled |
+| 2 | C | CHECK / CALL (동적) | `CcAction.checkCall` enabled · 라벨은 `checkCallLabel` 동기 |
+| 3 | B | BET / RAISE (동적) | `CcAction.betRaise` enabled · 라벨은 `betRaiseLabel` 동기 |
+| 4 | A | ALL-IN | `CcAction.allIn` enabled |
+| 5 | N | NEW / FINISH (동적) | newHand 또는 deal enabled |
+| 6 | M | MISS DEAL | `CcAction.missDeal` enabled |
+| ─ | (Spacer) | ─ | ─ |
+| 7 | Ctrl+L | DEBUG | 항상 활성 |
+
+### 5.3 시각 동기 규칙
+
+활성 칩과 비활성 칩은 다음 차이로 즉시 판별:
+
+| 상태 | 키 칩 색상 | 라벨 색상 | opacity |
+|------|----------|----------|:-------:|
+| 활성 | accent color (FOLD = error red, BET = warning amber, ...) | onSurface | 1.0 |
+| 비활성 | outline gray | onSurfaceVariant | 0.45 |
+
+활성 키별 accent 색상은 `ActionPanel` 의 버튼 색상과 **동일** — 운영자 시각 언어 일관성.
+
+### 5.4 단축키 입력 / 시각 힌트 분리 원칙
+
+**단축키 자체는 본 문서 §1 ~ §4 매핑 그대로**. KeyboardHintBar 는 입력 핸들러가 아닌 **시각 reminder** 만 — `KeyboardShortcutHandler` 에 영향 없음.
+
+### 5.5 접근성
+
+| 요구 | 구현 |
+|------|------|
+| Tooltip (마우스 hover) | "Press F → FOLD" 또는 "FOLD (disabled)" |
+| 색맹 대응 | accent 색상 + opacity 차이로 이중 신호 |
+| 광민감 발작 (WCAG 2.3.1) | 깜빡임 없음 (정적 표시) |
+
+### 5.6 구현 위치
+
+- 위젯: `team4-cc/src/lib/features/command_center/widgets/keyboard_hint_bar.dart`
+- 통합: `at_01_main_screen.dart` Column 의 InfoBar 와 SeatArea 사이
+
+### 5.7 향후 확장
+
+| 항목 | 근거 |
+|------|------|
+| 카드 입력 모드 (§2) 활성 시 chip 셋 자동 전환 (수트/랭크 키) | 모드 전환 시 운영자 혼동 방지 |
+| Multi-Table 모드 (1:N) 시 active table 강조 | `Multi_Table_Operations.md` 와 cross-ref |
