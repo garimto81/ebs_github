@@ -213,3 +213,25 @@ TeamDelete()
 - 재작성은 general-purpose 에이전트가 수행
 - `--dry-run` 시에만 재작성 스킵 (보고서만 출력)
 - 문서 파일이 존재하지 않으면 에러 출력 후 종료
+
+## 다른 검증 도구와의 분담 (2026-05-06 정합)
+
+본 skill 은 **micro 평가** 전용. macro 평가는 별도 도구.
+
+| 계층 | 도구 | 역할 | 적용 시점 |
+|:---:|------|------|----------|
+| L1 자가 점검 | 룰 19 P7 (10항목) | 형식/구조 (작가 본인) | 항상 |
+| **L2 micro 평가** | **본 skill (doc-critic)** | 단락별 4항목 (이해도/시각/용어/문장) | 18세 일반인 단일 시점 |
+| L2 챕터 평가 | content-critic agent | 챕터별 ★ + 강/약 문장 인용 | chapter-doc Phase 1.3 |
+| L3 macro 평가 | `/chapter-doc` skill (Reader Panel) | 전체 문서 narrative + 작위/정체성 | multi-audience 패널 |
+| L4 사용자 검증 | 사용자 review | MAJOR/REJECT escalation 시만 | 최종 |
+
+**언제 doc-critic 만으로 충분한가**:
+- 단일 단락 / 짧은 문서 / 18세 일반인 시점만 필요한 경우
+
+**언제 /chapter-doc Reader Panel 까지 필요한가**:
+- 전체 문서 정체성 일관성 검증 필요 (작위 침투 위험)
+- multi-audience (외부 개발팀 + PM + 18세) 시점 동시 평가 필요
+- tier=external 외부 인계 PRD
+
+→ 두 도구는 **보완적**. doc-critic = micro / Reader Panel = macro.
