@@ -55,7 +55,7 @@ def test_blacklist_negative_ttl_noop():
 
 def _login_and_get_token(client, email="admin@test.com", password="Admin123!") -> str:
     resp = client.post(
-        "/auth/login",
+        "/api/v1/auth/login",
         json={"email": email, "password": password},
     )
     assert resp.status_code == 200, resp.text
@@ -67,18 +67,18 @@ def test_logout_blacklists_access_jti(client, seed_users):
     token = _login_and_get_token(client)
 
     # 1. Pre-logout: token valid
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 200, "logout 전 토큰은 valid 여야 함"
 
     # 2. Logout
     resp = client.post(
-        "/auth/logout",
+        "/api/v1/auth/logout",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert resp.status_code == 200, resp.text
 
     # 3. Post-logout: 동일 token 거부 (M1 Item 2 핵심 invariant)
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 401, (
         "Logout 후 동일 토큰이 valid 면 BS-01 §강제 무효화 위반. "
         "blacklist add → is_revoked propagation 확인 필요."
@@ -89,11 +89,11 @@ def test_logout_blacklists_access_jti(client, seed_users):
 def test_other_users_token_not_affected_by_blacklist(client, seed_users):
     """A logout 이 B token 영향 없음 — jti 단위 격리."""
     a_token = _login_and_get_token(client)
-    client.post("/auth/logout", headers={"Authorization": f"Bearer {a_token}"})
+    client.post("/api/v1/auth/logout", headers={"Authorization": f"Bearer {a_token}"})
 
     b_token = _login_and_get_token(client, email="operator@test.com", password="Op123!")
 
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {b_token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {b_token}"})
     assert resp.status_code == 200, (
         "user A logout 이 user B token 을 영향 → blacklist 가 user-level 로 잘못 동작"
     )

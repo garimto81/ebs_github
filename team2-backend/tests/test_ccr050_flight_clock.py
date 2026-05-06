@@ -10,7 +10,7 @@ from src.models.competition import Competition
 def _login(client, role="admin"):
     emails = {"admin": "admin@test.com", "operator": "operator@test.com"}
     passwords = {"admin": "Admin123!", "operator": "Op123!"}
-    resp = client.post("/auth/login", json={
+    resp = client.post("/api/v1/auth/login", json={
         "email": emails[role], "password": passwords[role],
     })
     return {"Authorization": f"Bearer {resp.json()['data']['accessToken']}"}

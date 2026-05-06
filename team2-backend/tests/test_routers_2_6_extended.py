@@ -17,7 +17,7 @@ import pytest
 
 def _login_token(client, email="admin@test.com", password="Admin123!") -> str:
     """Return access token for admin (default) — pattern shared with test_auth.py."""
-    resp = client.post("/auth/login", json={"email": email, "password": password})
+    resp = client.post("/api/v1/auth/login", json={"email": email, "password": password})
     return resp.json()["data"]["accessToken"]
 
 

@@ -18,14 +18,14 @@ from src.app.config import settings as app_settings
 
 
 def _login_token(client, email="admin@test.com", password="Admin123!") -> str:
-    resp = client.post("/auth/login", json={"email": email, "password": password})
+    resp = client.post("/api/v1/auth/login", json={"email": email, "password": password})
     return resp.json()["data"]["accessToken"]
 
 
 def test_me_includes_permissions_field(client, seed_users):
     """SG-008-b4: /auth/me returns permissions list."""
     token = _login_token(client)
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 200
     body = resp.json()
     assert "permissions" in body
@@ -35,7 +35,7 @@ def test_me_includes_permissions_field(client, seed_users):
 def test_me_admin_has_full_permissions(client, seed_users):
     """SG-008-b4: admin role has admin-level permissions."""
     token = _login_token(client)
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     perms = resp.json()["permissions"]
     assert "read:*" in perms
     assert "write:*" in perms
@@ -46,7 +46,7 @@ def test_me_admin_has_full_permissions(client, seed_users):
 def test_me_includes_settings_scope_field(client, seed_users):
     """SG-008-b4: /auth/me returns settings_scope identifier (camelCase per EbsBaseModel)."""
     token = _login_token(client)
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     body = resp.json()
     # EbsBaseModel applies snake_case → camelCase serialization
     assert "settingsScope" in body
@@ -62,7 +62,7 @@ def test_logout_default_scope_is_current(client, seed_users):
     """SG-008-b5: default logout has scope=current."""
     token = _login_token(client)
     resp = client.post(
-        "/auth/logout",
+        "/api/v1/auth/logout",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert resp.status_code == 200
@@ -73,7 +73,7 @@ def test_logout_all_scope_marker(client, seed_users):
     """SG-008-b5: ?all=true returns scope=all."""
     token = _login_token(client)
     resp = client.post(
-        "/auth/logout?all=true",
+        "/api/v1/auth/logout?all=true",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert resp.status_code == 200

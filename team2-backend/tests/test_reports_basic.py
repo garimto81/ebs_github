@@ -20,7 +20,7 @@ from __future__ import annotations
 
 
 def _login(client, email="admin@test.com", password="Admin123!") -> str:
-    r = client.post("/auth/login", json={"email": email, "password": password})
+    r = client.post("/api/v1/auth/login", json={"email": email, "password": password})
     return r.json()["data"]["accessToken"]
 
 

@@ -11,7 +11,7 @@ from src.app.config import settings
 
 
 def _login(client, email="admin@test.com", password="Admin123!"):
-    return client.post("/auth/login", json={"email": email, "password": password})
+    return client.post("/api/v1/auth/login", json={"email": email, "password": password})
 
 
 def _get_token(client, email="admin@test.com", password="Admin123!") -> str:
@@ -122,7 +122,7 @@ def test_lockout_sets_permanent_sentinel(client, seed_users, db_session):
 
 def test_me_valid_token(client, seed_users):
     token = _get_token(client)
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 200
     body = resp.json()
     assert body["email"] == "admin@test.com"
@@ -134,7 +134,7 @@ def test_me_valid_token(client, seed_users):
 
 def test_me_expired_token(client, seed_users):
     token = _make_expired_token()
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 401
 
 
@@ -142,7 +142,7 @@ def test_me_expired_token(client, seed_users):
 
 
 def test_me_no_token(client, seed_users):
-    resp = client.get("/auth/me")
+    resp = client.get("/api/v1/auth/me")
     assert resp.status_code == 401
 
 
@@ -153,7 +153,7 @@ def test_refresh_valid(client, seed_users):
     login_resp = _login(client)
     refresh_token = login_resp.json()["data"]["refreshToken"]
 
-    resp = client.post("/auth/refresh", json={"refreshToken": refresh_token})
+    resp = client.post("/api/v1/auth/refresh", json={"refreshToken": refresh_token})
     assert resp.status_code == 200
     body = resp.json()
     assert body["accessToken"]
@@ -165,7 +165,7 @@ def test_refresh_valid(client, seed_users):
 
 def test_refresh_expired(client, seed_users):
     expired = _make_expired_token(token_type="refresh")
-    resp = client.post("/auth/refresh", json={"refreshToken": expired})
+    resp = client.post("/api/v1/auth/refresh", json={"refreshToken": expired})
     assert resp.status_code == 401
 
 
@@ -174,7 +174,7 @@ def test_refresh_expired(client, seed_users):
 
 def test_logout(client, seed_users):
     token = _get_token(client)
-    resp = client.post("/auth/logout", headers={"Authorization": f"Bearer {token}"})
+    resp = client.post("/api/v1/auth/logout", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 200
     assert resp.json()["message"] == "Logged out successfully"
 
@@ -194,7 +194,7 @@ def test_health_no_auth(client):
 def test_rbac_admin_allowed(client, seed_users):
     """Admin can access /auth/me (protected endpoint)."""
     token = _get_token(client, email="admin@test.com", password="Admin123!")
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 200
     assert resp.json()["role"] == "admin"
 
@@ -205,7 +205,7 @@ def test_rbac_admin_allowed(client, seed_users):
 def test_rbac_operator_denied(client, seed_users):
     """Operator can access /auth/me (own info) — not a privileged endpoint."""
     token = _get_token(client, email="operator@test.com", password="Op123!")
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 200
     assert resp.json()["role"] == "operator"
 
@@ -216,7 +216,7 @@ def test_rbac_operator_denied(client, seed_users):
 def test_rbac_viewer_denied(client, seed_users):
     """Viewer can access /auth/me (own info) — not a privileged endpoint."""
     token = _get_token(client, email="viewer@test.com", password="View123!")
-    resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 200
     assert resp.json()["role"] == "viewer"
 

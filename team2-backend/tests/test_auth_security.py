@@ -36,7 +36,7 @@ def test_refresh_ttl_live_48h():
 
 
 def _login(client, email, password):
-    return client.post("/auth/login", json={"email": email, "password": password})
+    return client.post("/api/v1/auth/login", json={"email": email, "password": password})
 
 
 def test_login_live_sets_refresh_cookie_header(client, seed_users):

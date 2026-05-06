@@ -25,7 +25,7 @@ def tiny_app():
     def tables():
         return {"data": []}
 
-    @app.post("/auth/login")
+    @app.post("/api/v1/auth/login")
     def login():
         return {"accessToken": "t"}
 
@@ -76,7 +76,7 @@ class TestRateLimit:
         allowed = 0
         blocked = 0
         for _ in range(15):
-            resp = client.post("/auth/login")
+            resp = client.post("/api/v1/auth/login")
             if resp.status_code == 200:
                 allowed += 1
             elif resp.status_code == 429:

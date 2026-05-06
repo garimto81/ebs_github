@@ -10,7 +10,7 @@ from src.models.competition import Competition
 
 
 def _login(client, email, password):
-    resp = client.post("/auth/login", json={"email": email, "password": password})
+    resp = client.post("/api/v1/auth/login", json={"email": email, "password": password})
     return resp.json()["data"]["accessToken"]
 
 
