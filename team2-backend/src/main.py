@@ -67,7 +67,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth_router)
+app.include_router(auth_router, prefix="/api/v1")  # 2026-05-06: frontend `/api/v1/auth/login` 정합
 app.include_router(series_router)
 app.include_router(tables_router)
 app.include_router(players_router)
@@ -84,6 +84,8 @@ app.include_router(payout_structures_router)
 app.include_router(reports_router)
 app.include_router(decks_router)  # SG-006 in-memory deck router
 app.include_router(settings_kv_router)  # SG-003 Settings 6탭 skeleton (501)
+from src.routers.event_flights import router as event_flights_router  # noqa: E402
+app.include_router(event_flights_router)  # Phase 3.B (2026-05-06) — Lobby TopBar cluster levels
 
 
 @app.get("/health")

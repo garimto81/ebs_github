@@ -173,7 +173,7 @@ class _LobbyShellState extends ConsumerState<LobbyShell> {
                   collapsed: _railCollapsed,
                   selectedId: selected.id,
                   onSelect: (id) => _onRailSelect(context, id),
-                  footerVersion: 'EBS v0.1.0',
+                  footerVersion: 'EBS v0.1.0 · ${const String.fromEnvironment('BUILD_ID', defaultValue: 'dev')}',
                   items: [
                     // ── Navigate ──
                     LobbySideRailItem(
@@ -315,8 +315,10 @@ class _LobbyShellState extends ConsumerState<LobbyShell> {
           );
       flightLabel = f?.displayName as String?;
     }
-    final levels =
-        flightId != null ? ref.watch(flightLevelsProvider(flightId)) : null;
+    final levelsAsync = flightId != null
+        ? ref.watch(flightLevelsProvider(flightId))
+        : const AsyncValue<LobbyLevelsSnapshot?>.data(null);
+    final levels = levelsAsync.valueOrNull;
     final levelText = levels != null
         ? '${levels.now.role.split(' · ').last} · ${levels.now.blinds}'
         : '—';

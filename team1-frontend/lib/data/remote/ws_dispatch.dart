@@ -28,6 +28,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/graphic_editor/providers/ge_provider.dart';
+import '../../features/lobby/providers/cc_session_provider.dart';
 import '../../features/lobby/providers/event_provider.dart';
 import '../../features/lobby/providers/flight_provider.dart';
 import '../../features/lobby/providers/nav_provider.dart';
@@ -324,6 +325,18 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
       // Lobby does not send commands (read-only subscriber), but these
       // may be received during the initial handshake. Log-and-ignore.
       debugPrint('[WS] Reply envelope: ${envelope.event}');
+
+    // ------------------------------------------------------------------
+    // Phase 3.C (2026-05-06) — TopBar Active CC pill live update
+    // ------------------------------------------------------------------
+    case 'cc_session_count':
+      if (payload == null) return;
+      final count = payload['count'];
+      if (count is int) {
+        read(activeCcCountProvider.notifier).state = count;
+      } else if (count is num) {
+        read(activeCcCountProvider.notifier).state = count.toInt();
+      }
 
     // ------------------------------------------------------------------
     // Unknown — forward-compatible, log + ignore (Naming_Conventions §3 policy)

@@ -13,6 +13,8 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/remote/bo_api_client.dart';
+
 /// Active CC session count. Drives the LobbyTopBar `activeCcCount` pill.
 ///
 /// Mutate via `ref.read(activeCcCountProvider.notifier).state = N`. The
@@ -53,7 +55,50 @@ class LobbyLevelsSnapshot {
   final String countdown;
 }
 
-/// Per-flight level snapshot. Returns null until the backend ships the
-/// `GET /flights/:flightId/levels` endpoint (Phase 3 backend follow-up).
+/// Per-flight level snapshot — fetches `GET /api/v1/flights/:flightId/levels`
+/// (team2 endpoint, 2026-05-06 Phase 3.B). Auto-refreshes when watched.
+///
+/// Returns null when:
+///   · 404 (flight 미존재) / 401 (인증 실패) → caller 가 placeholder 표시
+///   · backend `data: null` (flight 의 blind_structure 미할당)
 final flightLevelsProvider =
-    StateProvider.family<LobbyLevelsSnapshot?, int>((ref, flightId) => null);
+    FutureProvider.family<LobbyLevelsSnapshot?, int>((ref, flightId) async {
+  final client = ref.watch(boApiClientProvider);
+  try {
+    final raw = await client.get<Map<String, dynamic>?>(
+      '/flights/$flightId/levels',
+      fromJson: (json) {
+        if (json is Map<String, dynamic>) {
+          final data = json['data'];
+          return data is Map<String, dynamic> ? data : null;
+        }
+        return null;
+      },
+    );
+    if (raw == null) return null;
+
+    LobbyLevelInfo? parseLevel(dynamic m) {
+      if (m is! Map<String, dynamic>) return null;
+      return LobbyLevelInfo(
+        role: m['role'] as String? ?? '',
+        blinds: m['blinds'] as String? ?? '',
+        meta: m['meta'] as String? ?? '',
+      );
+    }
+
+    final now = parseLevel(raw['now']);
+    final next = parseLevel(raw['next']);
+    final after = parseLevel(raw['after']);
+    if (now == null || next == null || after == null) return null;
+
+    return LobbyLevelsSnapshot(
+      now: now,
+      next: next,
+      after: after,
+      countdownLabel: raw['countdownLabel'] as String? ?? '—',
+      countdown: raw['countdown'] as String? ?? '—',
+    );
+  } catch (_) {
+    return null;
+  }
+});

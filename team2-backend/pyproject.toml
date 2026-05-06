@@ -16,9 +16,10 @@ dependencies = [
     # ValueError on >72 bytes (no silent truncate); bcrypt 3.x silently truncates.
     # → bo container Restarting loop with `ValueError: password cannot be longer
     #   than 72 bytes` (logs from 2026-04-29 user diagnosis).
-    # Pin until passlib upstream fix lands (last release 1.7.4 was 2020).
+    # 2026-05-06: bcrypt 5.0 도 동일 ValueError 발생 (passlib 1.7.4 detect_wrap_bug
+    # 의 255-byte test 가 bcrypt 4.0+ 모두에서 reject). <4.0 으로 strict pin.
     # Reference: https://github.com/pyca/bcrypt/issues/684
-    "bcrypt>=3.2.0,<6.0.0",
+    "bcrypt>=3.2.0,<4.0.0",
     "redis>=5.0.0",
     "httpx>=0.27.0",
     "websockets>=13.0",

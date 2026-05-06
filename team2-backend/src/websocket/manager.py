@@ -71,6 +71,11 @@ class ConnectionManager:
             "WS connected: channel=%s user=%s table=%s",
             channel, user_info["user_id"], table_id,
         )
+
+        # Phase 3.C (2026-05-06) — broadcast cc session count on cc connect.
+        if channel == "cc":
+            await self._broadcast_cc_session_count()
+
         return user_info
 
     async def disconnect(self, websocket: WebSocket, channel: str) -> Optional[dict]:
@@ -90,7 +95,25 @@ class ConnectionManager:
                 "WS disconnected: channel=%s user=%s",
                 channel, user_info["user_id"],
             )
+
+        # Phase 3.C — broadcast cc session count on cc disconnect.
+        if channel == "cc":
+            await self._broadcast_cc_session_count()
+
         return user_info
+
+    async def _broadcast_cc_session_count(self) -> None:
+        """Push current cc connection count to all lobby subscribers.
+
+        Lobby clients' `activeCcCountProvider` (frontend) listens for
+        `cc_session_count` events and updates the TopBar `cc-pill`.
+        """
+        count = len(self._connections.get("cc", []))
+        await self.broadcast(
+            "lobby",
+            "*",
+            {"type": "cc_session_count", "data": {"count": count}, "seq": 0},
+        )
 
     async def broadcast(
         self,
