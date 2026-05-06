@@ -32,16 +32,24 @@ RUN dart run build_runner build --delete-conflicting-outputs
 ARG ENV_FILE=production.json
 RUN if [ ! -f "$ENV_FILE" ]; then cp production.example.json "$ENV_FILE"; fi
 
+# 2026-05-07 — BUILD_ID 빌드 식별 인자.
+# compose 의 build args 또는 `docker build --build-arg BUILD_ID=YYYYMMDD-HHMM` 으로 주입.
+# default `dev` = 빌드 식별자 미주입 신호 (login footer / sidebar footer 에서 즉시 확인).
+ARG BUILD_ID=dev
+
 # Release web build (gatekeeper 무시 — CI 단계가 별도 검증)
 # 2026-04-28 — Flutter stable (3.27+) 호환:
 #   --web-renderer        폐기 (build config 로 이전)
 #   --dart2js-optimization=O4   deprecation → 기본값
 #   --obfuscate           web 빌드 미지원 (native only)
 #   --split-debug-info    web 미지원 → Sentry source map 은 별도 sidecar 처리
+# 2026-05-07: SW 비활성 + BUILD_ID 주입.
 RUN flutter build web \
       --release \
       --tree-shake-icons \
       --dart-define-from-file="$ENV_FILE" \
+      --dart-define=BUILD_ID="$BUILD_ID" \
+      --pwa-strategy=none \
       --source-maps \
       --output=build/web \
  && mkdir -p build/debug-info  # runtime stage COPY 호환

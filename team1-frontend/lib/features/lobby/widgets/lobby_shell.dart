@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../foundation/theme/design_tokens.dart';
+import '../../../foundation/widgets/build_id_label.dart';
 import '../../../foundation/widgets/lobby_side_rail.dart';
 import '../../../foundation/widgets/lobby_top_bar.dart';
 import '../../auth/auth_provider.dart';
@@ -173,7 +174,7 @@ class _LobbyShellState extends ConsumerState<LobbyShell> {
                   collapsed: _railCollapsed,
                   selectedId: selected.id,
                   onSelect: (id) => _onRailSelect(context, id),
-                  footerVersion: 'EBS v0.1.0 · ${const String.fromEnvironment('BUILD_ID', defaultValue: 'dev')}',
+                  footerVersion: kBuildLabel,
                   items: [
                     // ── Navigate ──
                     LobbySideRailItem(

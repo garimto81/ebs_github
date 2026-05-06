@@ -137,6 +137,9 @@ services:
       dockerfile: team1-frontend/docker/lobby-web/Dockerfile
       args:
         ENV_FILE: production.json
+        # 2026-05-07: 빌드 식별자 — `tools/build_lobby.sh` 가 BUILD_ID env 로 자동 주입.
+        # 미설정 시 default `dev` (Dockerfile ARG) → login/sidebar footer 에 표시.
+        BUILD_ID: ${BUILD_ID:-dev}
     container_name: ebs-lobby-web
     profiles: ["web"]
     networks:

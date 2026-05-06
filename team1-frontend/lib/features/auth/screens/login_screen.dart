@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../foundation/widgets/build_id_label.dart';
 import '../../../resources/l10n/app_localizations.dart';
 import '../auth_provider.dart';
 
@@ -152,35 +153,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 400),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Header
-                  Text(l.loginTitle,
-                      style: theme.textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Text(l.loginSubtitle,
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(color: theme.colorScheme.outline)),
-                  const SizedBox(height: 24),
+      body: Stack(
+        children: [
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Header
+                      Text(l.loginTitle,
+                          style: theme.textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 4),
+                      Text(l.loginSubtitle,
+                          style: theme.textTheme.bodySmall
+                              ?.copyWith(color: theme.colorScheme.outline)),
+                      const SizedBox(height: 24),
 
-                  // Step content
-                  if (_step == _LoginStep.credentials)
-                    _buildCredentialsForm(l, theme)
-                  else
-                    _buildTotpForm(l, theme),
-                ],
+                      // Step content
+                      if (_step == _LoginStep.credentials)
+                        _buildCredentialsForm(l, theme)
+                      else
+                        _buildTotpForm(l, theme),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
+          // 2026-05-07: 빌드 식별 표시 — SW 캐시 vs 새 빌드 혼동 차단.
+          const Positioned(
+            right: 16,
+            bottom: 12,
+            child: BuildIdLabel(),
+          ),
+        ],
       ),
 
       // Session restore dialog (shown as an overlay when needed).
