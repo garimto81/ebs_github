@@ -42,7 +42,10 @@ import '../services/engine_output_dispatcher.dart';
 import '../services/undo_stack.dart';
 import '../../../rfid/providers/rfid_reader_provider.dart';
 import '../providers/card_input_provider.dart';
+import '../widgets/cc_status_bar.dart';
 import '../widgets/engine_connection_banner.dart';
+import '../widgets/keyboard_hint_bar.dart';
+import '../widgets/mini_table_diagram.dart';
 import '../widgets/seat_cell.dart';
 import '../demo/scenario_runner.dart';
 import '../providers/demo_provider.dart';
@@ -132,6 +135,10 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
               child: Column(
                 children: [
                   const _Toolbar(),
+                  // V2 (B-team4-011) — CcStatusBar 통합 한 줄.
+                  // 현재 _Toolbar 와 공존 — 다음 turn 사용자 검토 후 _Toolbar
+                  // 제거 + _InfoBar 흡수 통합 결정.
+                  const CcStatusBar(),
                   const EngineConnectionBanner(),
                   const _RfidStatusBanner(),
                   if (ref.watch(demoProvider).isActive)
@@ -141,6 +148,7 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
                       ),
                     ),
                   const _InfoBar(),
+                  const KeyboardHintBar(),
                   const Expanded(
                     child: _SeatArea(),
                   ),
@@ -982,6 +990,15 @@ class _SeatArea extends ConsumerWidget {
 
         return Stack(
           children: [
+            // V3 (B-team4-011) — MiniTableDiagram top-left overlay.
+            // R2 가드: D/SB/BB 뱃지는 본 미니맵에만 (좌석 컬럼 PositionShiftChip 와
+            // 시각 분리 — 정보 중복 회피).
+            const Positioned(
+              left: 12,
+              top: 8,
+              child: MiniTableDiagram(size: 110),
+            ),
+
             // Board area (center)
             Positioned(
               left: cx - 175,
@@ -1089,10 +1106,15 @@ class _BoardArea extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(5, (i) {
           final hasCard = i < cards.length && cards[i].isNotEmpty;
+          // V8 (B-team4-011) — Community board street labels.
+          // Empty slots show "FLOP 1/2/3", "TURN", "RIVER" instead of generic icon.
+          // Reference: claude-design-archive/2026-05-06/cc-react-extracted/App.jsx ts-slot-lbl.
+          const streetLabels = ['FLOP 1', 'FLOP 2', 'FLOP 3', 'TURN', 'RIVER'];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: EbsSpacing.xs),
             child: _CardSlot(
               label: hasCard ? cards[i] : '',
+              streetLabel: streetLabels[i],
               revealed: hasCard,
             ),
           );
@@ -1103,9 +1125,14 @@ class _BoardArea extends ConsumerWidget {
 }
 
 class _CardSlot extends StatelessWidget {
-  const _CardSlot({required this.label, required this.revealed});
+  const _CardSlot({
+    required this.label,
+    required this.streetLabel,
+    required this.revealed,
+  });
 
   final String label;
+  final String streetLabel;
   final bool revealed;
 
   @override
@@ -1127,10 +1154,25 @@ class _CardSlot extends StatelessWidget {
               label,
               style: EbsTypography.cardLabel.copyWith(color: Colors.black),
             )
-          : Icon(
-              Icons.style_rounded,
-              color: cs.onSurface.withAlpha(60),
-              size: 20,
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.style_rounded,
+                  color: cs.onSurface.withAlpha(60),
+                  size: 18,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  streetLabel,
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    color: cs.onSurface.withAlpha(140),
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
             ),
     );
   }
