@@ -11,6 +11,7 @@ import '../../../foundation/widgets/error_banner.dart';
 import '../../../foundation/widgets/loading_state.dart';
 import '../../../foundation/widgets/lobby_breadcrumb.dart';
 import '../../../models/models.dart';
+import '../providers/cc_session_provider.dart';
 import '../providers/nav_provider.dart';
 import '../providers/table_provider.dart';
 import '../widgets/levels_strip.dart';
@@ -88,27 +89,29 @@ class _LobbyTablesScreenState extends ConsumerState<LobbyTablesScreen> {
                       _query.isEmpty ||
                       t.name.toLowerCase().contains(_query.toLowerCase()))
                   .toList();
+              final levelsAsync = ref.watch(flightLevelsProvider(widget.flightId));
+              final levels = levelsAsync.valueOrNull;
               return Column(
                 children: [
                   LobbyKpiStrip(cards: _kpis(tables)),
-                  const LevelsStrip(
+                  LevelsStrip(
                     now: LobbyLevel(
-                      role: 'Now · L17',
-                      blinds: '6,000 / 12,000',
-                      meta: 'ante 12,000 · 60min',
+                      role: levels?.now.role ?? '—',
+                      blinds: levels?.now.blinds ?? '—',
+                      meta: levels?.now.meta ?? '—',
                     ),
                     next: LobbyLevel(
-                      role: 'Next · L18',
-                      blinds: '8,000 / 16,000',
-                      meta: 'ante 16,000 · 60min',
+                      role: levels?.next.role ?? '—',
+                      blinds: levels?.next.blinds ?? '—',
+                      meta: levels?.next.meta ?? '—',
                     ),
                     after: LobbyLevel(
-                      role: 'L19',
-                      blinds: '10,000 / 20,000',
-                      meta: 'ante 20,000 · 60min',
+                      role: levels?.after.role ?? '—',
+                      blinds: levels?.after.blinds ?? '—',
+                      meta: levels?.after.meta ?? '—',
                     ),
-                    countdownLabel: 'L18 IN',
-                    countdown: '22:48',
+                    countdownLabel: levels?.countdownLabel ?? '—',
+                    countdown: levels?.countdown ?? '—',
                   ),
                   _Toolbar(
                     query: _query,
