@@ -8,7 +8,6 @@ import '../../features/auth/screens/forgot_password_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/graphic_editor/screens/ge_detail_screen.dart';
 import '../../features/graphic_editor/screens/ge_hub_screen.dart';
-import '../../features/lobby/screens/lobby_dashboard_screen.dart';
 import '../../features/lobby/screens/lobby_events_screen.dart';
 import '../../features/lobby/screens/lobby_flights_screen.dart';
 import '../../features/lobby/screens/lobby_players_screen.dart';
@@ -66,10 +65,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/forgot-password',
         builder: (_, __) => const ForgotPasswordScreen(),
       ),
-      // ── B-090 Phase 2: Lobby drilldown (TopBar + SideRail + Breadcrumb) ──
+      // ── 2026-05-06 Phase 1: Sidebar 통합 — 모든 라우트가 LobbyShell 공통 chrome 사용 ──
       ShellRoute(
         builder: (_, __, child) => LobbyShell(child: child),
         routes: [
+          // /lobby → Series 목록 (정본 명세 정합, iter 1).
+          GoRoute(
+            path: '/lobby',
+            redirect: (_, __) => '/lobby/series',
+          ),
+          // ── Drilldown ──
           GoRoute(
             path: '/lobby/series',
             builder: (_, __) => const SeriesScreen(),
@@ -98,18 +103,13 @@ final routerProvider = Provider<GoRouter>((ref) {
               flightId: int.parse(state.pathParameters['flightId']!),
             ),
           ),
-        ],
-      ),
-      ShellRoute(
-        builder: (_, __, child) => _AppShell(child: child),
-        routes: [
-          GoRoute(path: '/lobby', builder: (_, __) => const LobbyDashboardScreen()),
           GoRoute(
             path: '/tables/:tableId',
             builder: (_, state) => TableDetailScreen(
               tableId: int.parse(state.pathParameters['tableId']!),
             ),
           ),
+          // ── Tools (top-level meta) ──
           GoRoute(path: '/players', builder: (_, __) => const PlayersScreen()),
           GoRoute(path: '/staff', builder: (_, __) => const StaffListScreen()),
           GoRoute(
@@ -179,58 +179,6 @@ class _NavigationLogger extends NavigatorObserver {
       'from': oldRoute?.settings.name,
       'to': newRoute?.settings.name,
     });
-  }
-}
-
-class _AppShell extends StatelessWidget {
-  final Widget child;
-  const _AppShell({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          NavigationRail(
-            selectedIndex: _selectedIndex(GoRouterState.of(context).matchedLocation),
-            onDestinationSelected: (i) => _navigate(context, i),
-            labelType: NavigationRailLabelType.all,
-            destinations: const [
-              NavigationRailDestination(icon: Icon(Icons.dashboard), label: Text('Lobby')),
-              NavigationRailDestination(icon: Icon(Icons.people), label: Text('Players')),
-              NavigationRailDestination(icon: Icon(Icons.badge), label: Text('Staff')),
-              NavigationRailDestination(icon: Icon(Icons.settings), label: Text('Settings')),
-              NavigationRailDestination(icon: Icon(Icons.brush), label: Text('GFX')),
-              NavigationRailDestination(icon: Icon(Icons.assessment), label: Text('Reports')),
-            ],
-          ),
-          const VerticalDivider(width: 1),
-          Expanded(child: child),
-        ],
-      ),
-    );
-  }
-
-  int _selectedIndex(String loc) {
-    if (loc.startsWith('/lobby') || loc.startsWith('/tables')) return 0;
-    if (loc.startsWith('/players')) return 1;
-    if (loc.startsWith('/staff')) return 2;
-    if (loc.startsWith('/settings')) return 3;
-    if (loc.startsWith('/graphic-editor')) return 4;
-    if (loc.startsWith('/reports')) return 5;
-    return 0;
-  }
-
-  void _navigate(BuildContext context, int i) {
-    const routes = [
-      '/lobby',
-      '/players',
-      '/staff',
-      '/settings/outputs',
-      '/graphic-editor',
-      '/reports/hands-summary',
-    ];
-    context.go(routes[i]);
   }
 }
 

@@ -19,22 +19,28 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 |----------|--------|----------|--------|---------------|
 | `ebs-bo-1` | `ebs-bo` | 8000 | team2 | `team2-backend/src/**` 또는 `Dockerfile` 변경 |
 | `ebs-engine-1` | `ebs-engine` | 8080 | team3 | `team3-engine/ebs_game_engine/lib/**` 또는 `Dockerfile` 변경 |
-| ~~`ebs-lobby-web-1`~~ **[REMOVED 2026-04-27, SG-022]** | — | — | — | 단일 Desktop 바이너리로 통합. Conductor 가 컨테이너/이미지 destroy 완료. team1 Dockerfile/web 정리는 B-Q3 위임 |
-| `ebs-cc-web-1` | `ebs-cc-web` | 3100 | team4 | `team4-cc/src/build/web/**` 갱신 (flutter build web 선행) |
+| `ebs-lobby-web` | `ebs/lobby-web:latest` | 3000 | team1 | `team1-frontend/lib/**` 갱신 (flutter build web 선행) |
+| `ebs-cc-web-1` | `ebs-cc-web` | 3001 | team4 | `team4-cc/src/build/web/**` 갱신 (flutter build web 선행) |
 | `ebs-redis-1` | `redis:7-alpine` | internal | conductor | (재빌드 불필요, `docker compose pull` 만) |
 
 **compose 정의 파일**: `docker-compose.yml` (레포 루트)
 
-**~~중요 정정 (2026-04-22)~~** [SUPERSEDED 2026-04-27, SG-022]:
-- ~~2026-04-22 정정: `ebs-lobby-web` 을 "정규 Web 배포" 로 분류 + γ 하이브리드 (Web Lobby + Desktop CC) 채택~~
-- ~~team1-frontend 정규 배포 = Docker Web 단독~~ → SG-022 로 역전 (단일 Desktop 바이너리)
-- ~~Flutter Desktop = 개발자 디버깅 모드~~ → SG-022 로 역전 (Desktop = 정규 배포)
+**현재 정책 (2026-04-27, SG-022 폐기 후 재정의)**:
+- EBS 배포 = **Multi-Service Docker** (Lobby:3000 / CC:3001 / BO:8000 / Engine:8080).
+- team1 Lobby = **Flutter Web** 빌드 → Docker nginx 서빙. 정규 배포는 브라우저 접속.
+- `flutter run -d windows` 또는 `-d chrome` = 개발자 디버깅 (배포 아님).
+- "Flutter 단일 스택" 의 의미 = **프레임워크 (Flutter) 통일**. Vue/Quasar 폐기. 배포 형태 (Web vs Desktop) 와 무관.
+- ~~SG-022 (단일 Desktop 바이너리)~~ = **2026-04-27 폐기**. 4팀 병렬 개발 + LAN 멀티 세션 운영 요구와 충돌.
+- 참조: `team1-frontend/CLAUDE.md` § 배포 형태, `MULTI_SESSION_DOCKER_HANDOFF.md`, `Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md`.
 
-**현재 정책 (2026-04-27, SG-022 결정)**:
-- EBS = **단일 Flutter Desktop 바이너리**. Lobby + Command Center + Overlay 모두 단일 바이너리 내부 라우팅.
-- Docker `ebs-lobby-web` 컨테이너/이미지 destroy 완료 (2026-04-27 Conductor 처리).
-- team1-frontend Web 빌드 자산 (`web/`, `Dockerfile` Web 단계) 정리는 **B-Q3 (team1 위임)**, due 2026-05-04.
-- 참조: `Phase_1_Decision_Queue.md`, `BS_Overview §1`, `Spec_Gap_Registry SG-022`, MEMORY `feedback_web_flutter_separation` [SUPERSEDED].
+### Edit History (§1 정규 컨테이너 맵)
+
+| 날짜 | 변경 | 트리거 |
+|------|------|--------|
+| 2026-04-22 1차 | `ebs-lobby-web` 좀비 오판 → destroy → 재복구 | 사용자 지적 (Type C) |
+| 2026-04-27 | SG-022 (Desktop 단일) 채택 → lobby-web REMOVED 표기 | 사용자 결정 |
+| 2026-04-27 | SG-022 폐기 → Multi-Service Docker 회복 | 사용자 결정 (team1 CLAUDE.md 정정) |
+| **2026-05-06** | **§1 표 stale 표기 정정 (lobby-web 부활) + cc-web 포트 3100→3001 정정** | **Conductor 자율 (3000 포트 drift 사건 후속)** |
 
 ---
 

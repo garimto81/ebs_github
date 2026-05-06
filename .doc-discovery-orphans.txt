@@ -1,0 +1,369 @@
+.claude/skills/SKILL_TEMPLATE.md
+.claude/skills/agent-teamworks/SKILL.md
+.claude/skills/audit/SKILL.md
+.claude/skills/check/SKILL.md
+.claude/skills/checklist.md
+.claude/skills/chunk/SKILL.md
+.claude/skills/claude-switch/SKILL.md
+.claude/skills/code-quality-checker/SKILL.md
+.claude/skills/commit/SKILL.md
+.claude/skills/create/SKILL.md
+.claude/skills/debug/SKILL.md
+.claude/skills/doc-critic/SKILL.md
+.claude/skills/final-check-automation/SKILL.md
+.claude/skills/gemma/SKILL.md
+.claude/skills/google-workspace/SKILL.md
+.claude/skills/issue/SKILL.md
+.claude/skills/mockup-hybrid/SKILL.md
+.claude/skills/parallel/SKILL.md
+.claude/skills/plan-mockup/SKILL.md
+.claude/skills/plan-mockup/references/ascii-components.md
+.claude/skills/playwright-wrapper/SKILL.md
+.claude/skills/pr/SKILL.md
+.claude/skills/prd-sync/SKILL.md
+.claude/skills/pre-work-research/SKILL.md
+.claude/skills/pre-work-research/references/oss-evaluation.md
+.claude/skills/research/SKILL.md
+.claude/skills/session/SKILL.md
+.claude/skills/shorts-generator/SKILL.md
+.claude/skills/skill-creator/SKILL.md
+.claude/skills/ssot-align/SKILL.md
+.claude/skills/ssot-align/commands/ssot-align.md
+.claude/skills/ssot-align/connectors/README.md
+.claude/skills/ssot-align/connectors/confluence.md
+.claude/skills/ssot-align/connectors/custom.md
+.claude/skills/ssot-align/lib/phase-spec.md
+.claude/skills/ssot-align/lib/section-mapper.md
+.claude/skills/ssot-align/lib/verbatim-extractor.md
+.claude/skills/ssot-align/references/config-schema.md
+.claude/skills/ssot-align/references/design-invariants.md
+.claude/skills/ssot-align/references/phase-guide.md
+.claude/skills/ssot-align/references/script-contract.md
+.claude/skills/ssot-align/references/template-block-format.md
+.claude/skills/ssot-align/references/verdict-guide.md
+.claude/skills/ssot-align/templates/default-template.md
+.claude/skills/supabase-integration/SKILL.md
+.claude/skills/supabase-integration/references/migration-templates.md
+.claude/skills/supabase-integration/references/rls-patterns.md
+.claude/skills/tdd/SKILL.md
+.claude/skills/team/SKILL.md
+.claude/skills/todo/SKILL.md
+.claude/skills/ultimate-debate/SKILL.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/FINAL.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/TASK.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_00/CONSENSUS.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_00/claude.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_00/debates/claude.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_00/debates/gemini.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_00/debates/gpt.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_00/gemini.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_00/gpt.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_01/CONSENSUS.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_01/claude.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_01/debates/claude.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_01/debates/gemini.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_01/debates/gpt.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_01/gemini.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162001_f032b4ad/round_01/gpt.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162032_d2ab603a/TASK.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162233_158f4f81/round_00/claude.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162233_158f4f81/round_00/debates/claude.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162233_158f4f81/round_00/debates/gemini.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162233_158f4f81/round_00/debates/gpt.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162233_158f4f81/round_00/gemini.md
+.claude/skills/ultimate-debate/scripts/.claude/debates/debate_20260118_162233_158f4f81/round_00/gpt.md
+.claude/skills/vercel-deployment/SKILL.md
+.claude/skills/vercel-react-best-practices/AGENTS.md
+.claude/skills/vercel-react-best-practices/SKILL.md
+.claude/skills/webapp-testing/SKILL.md
+docs/1. Product/1. Product.md
+docs/1. Product/Back_Office_PRD.md
+docs/1. Product/Command_Center_PRD.md
+docs/1. Product/Lobby_PRD.md
+docs/1. Product/References/WSOP-Production-Structure-Analysis.md
+docs/2. Development/2. Development.md
+docs/2. Development/2.1 Frontend/2.1 Frontend.md
+docs/2. Development/2.1 Frontend/Backlog/B-089-lobby-design-foundation-tokens.md
+docs/2. Development/2.1 Frontend/Backlog/B-090-lobby-design-five-screen-restructure.md
+docs/2. Development/2.1 Frontend/Backlog/B-091-lobby-design-missing-five-spec-impl.md
+docs/2. Development/2.1 Frontend/Backlog/B-092-lobby-visual-screenshots-cascade-2026-05-05.md
+docs/2. Development/2.1 Frontend/Lobby/References/EBS_Lobby_Design/README.md
+docs/2. Development/2.2 Backend/2.2 Backend.md
+docs/2. Development/2.2 Backend/Authentication/Concurrency_and_Race_Conditions.md
+docs/2. Development/2.2 Backend/Authentication/Production_Deployment.md
+docs/2. Development/2.2 Backend/Authentication/Quickstart_Local_Cluster.md
+docs/2. Development/2.2 Backend/Engineering/Foundation_Realignment_Plan_2026-04-22.md
+docs/2. Development/2.2 Backend/Engineering/M1_Session_Drift_Audit_2026-04-28.md
+docs/2. Development/2.3 Game Engine/2.3 Game Engine.md
+docs/2. Development/2.3 Game Engine/Backlog/B-343-card-pipeline-ssot-rollout.md
+docs/2. Development/2.3 Game Engine/Backlog/B-349-domain-master-rollout.md
+docs/2. Development/2.3 Game Engine/Backlog/B-350-api04-bs0609-alignment.md
+docs/2. Development/2.3 Game Engine/Backlog/B-353-cross-team-bs06-citations.md
+docs/2. Development/2.3 Game Engine/Backlog/B-354-legacy-id-redirect-oe-mapping.md
+docs/2. Development/2.3 Game Engine/Backlog/B-355-redirect-validator-infrastructure.md
+docs/2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md
+docs/2. Development/2.4 Command Center/2.4 Command Center.md
+docs/2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md
+docs/2. Development/2.4 Command Center/Foundation_Impact_Review.md
+docs/2. Development/2.5 Shared/2.5 Shared.md
+docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md
+docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md
+docs/2. Development/2.5 Shared/Authentication/Troubleshooting_Runbook.md
+docs/2. Development/2.5 Shared/Card_Flow_Index.md
+docs/3. Change Requests/3. Change Requests.md
+docs/3. Change Requests/done/CR-011-ge-ownership-move.md
+docs/3. Change Requests/done/CR-016-tech-stack-ssot.md
+docs/3. Change Requests/done/CR-037-bs08-graphic-editor-new.md
+docs/3. Change Requests/done/CR-conductor-20260410-ge-ownership-move.md
+docs/3. Change Requests/done/CR-conductor-20260410-gfskin-format-unify.md
+docs/3. Change Requests/done/CR-conductor-20260411-ge-api-spec.md
+docs/3. Change Requests/done/CR-conductor-20260411-ge-req-id-rework.md
+docs/3. Change Requests/done/CR-conductor-20260414-skin-updated-ws.md
+docs/3. Change Requests/done/CR-conductor-20260421-ge-scope-expansion.md
+docs/3. Change Requests/done/CR-team1-20260410-tech-stack-ssot.md
+docs/3. Change Requests/done/CR-team1-20260410-wsop-parity.md
+docs/3. Change Requests/done/CR-team1-20260413-google-oauth.md
+docs/3. Change Requests/done/CR-team1-20260414-deadlink-cleanup.md
+docs/3. Change Requests/done/CR-team2-20260410-data-idempotency-audit.md
+docs/3. Change Requests/done/CR-team2-20260410-idempotency-key.md
+docs/3. Change Requests/done/CR-team2-20260410-jwt-expiry.md
+docs/3. Change Requests/done/CR-team2-20260410-table-rebalance-saga.md
+docs/3. Change Requests/done/CR-team2-20260410-ws-event-seq.md
+docs/3. Change Requests/done/CR-team2-20260413-event-type-catalog.md
+docs/3. Change Requests/done/CR-team2-20260413-refresh-token-policy.md
+docs/3. Change Requests/done/CR-team2-20260413-seat-waiting-enum.md
+docs/3. Change Requests/done/CR-team2-20260413-summary-clock-fsm.md
+docs/3. Change Requests/done/CR-team2-20260414-auth-ggpass-pattern.md
+docs/3. Change Requests/done/CR-team2-20260414-blindstructure-endpoints.md
+docs/3. Change Requests/done/CR-team2-20260414-clock-endpoints-full.md
+docs/3. Change Requests/done/CR-team2-20260414-competition-hierarchy.md
+docs/3. Change Requests/done/CR-team2-20260414-payout-structure-endpoints.md
+docs/3. Change Requests/done/CR-team2-20260414-rate-limit-security.md
+docs/3. Change Requests/done/CR-team2-20260414-users-staff-pattern.md
+docs/3. Change Requests/done/CR-team2-20260414-ws-event-catalog.md
+docs/3. Change Requests/done/CR-team2-20260414-wsop-sync-catalog.md
+docs/3. Change Requests/done/CR-team3-20260410-wsop-conformance.md
+docs/3. Change Requests/done/CR-team3-20260414-output-event-buffer-ownership.md
+docs/3. Change Requests/done/CR-team4-20260410-api03-hal-lifecycle.md
+docs/3. Change Requests/done/CR-team4-20260410-api05-messagepack.md
+docs/3. Change Requests/done/CR-team4-20260410-api05-writegameinfo-schema.md
+docs/3. Change Requests/done/CR-team4-20260410-bs03-graphic-settings-tab.md
+docs/3. Change Requests/done/CR-team4-20260410-bs04-at05-rfid-register.md
+docs/3. Change Requests/done/CR-team4-20260410-bs05-07-statistics-screen.md
+docs/3. Change Requests/done/CR-team4-20260410-bs05-at-screens.md
+docs/3. Change Requests/done/CR-team4-20260410-bs05-launch-flow.md
+docs/3. Change Requests/done/CR-team4-20260410-bs05-multi-table-ops.md
+docs/3. Change Requests/done/CR-team4-20260410-bs05-protocol-gaps.md
+docs/3. Change Requests/done/CR-team4-20260410-bs05-visual-spec.md
+docs/3. Change Requests/done/CR-team4-20260410-bs07-audio-layer.md
+docs/3. Change Requests/done/CR-team4-20260410-bs07-cc-visual-sync.md
+docs/3. Change Requests/done/CR-team4-20260410-bs07-layer-boundary.md
+docs/3. Change Requests/done/CR-team4-20260410-bs07-security-delay.md
+docs/3. Change Requests/done/CR-team4-20260410-bs08-graphic-editor-new.md
+docs/3. Change Requests/in-progress/CR-010-jwt-expiry.md
+docs/3. Change Requests/in-progress/CR-012-gfskin-format-unify.md
+docs/3. Change Requests/in-progress/CR-013-ge-api-spec.md
+docs/3. Change Requests/in-progress/CR-014-ge-req-id-rework.md
+docs/3. Change Requests/in-progress/CR-015-skin-updated-ws.md
+docs/3. Change Requests/in-progress/CR-017-wsop-parity.md
+docs/3. Change Requests/in-progress/CR-018-data-idempotency-audit.md
+docs/3. Change Requests/in-progress/CR-019-idempotency-key.md
+docs/3. Change Requests/in-progress/CR-020-table-rebalance-saga.md
+docs/3. Change Requests/in-progress/CR-021-ws-event-seq.md
+docs/3. Change Requests/in-progress/CR-022-api03-hal-lifecycle.md
+docs/3. Change Requests/in-progress/CR-023-api05-messagepack.md
+docs/3. Change Requests/in-progress/CR-024-api05-writegameinfo-schema.md
+docs/3. Change Requests/in-progress/CR-025-bs03-graphic-settings-tab.md
+docs/3. Change Requests/in-progress/CR-026-bs04-at05-rfid-register.md
+docs/3. Change Requests/in-progress/CR-027-bs05-07-statistics-screen.md
+docs/3. Change Requests/in-progress/CR-028-bs05-at-screens.md
+docs/3. Change Requests/in-progress/CR-029-bs05-launch-flow.md
+docs/3. Change Requests/in-progress/CR-030-bs05-multi-table-ops.md
+docs/3. Change Requests/in-progress/CR-031-bs05-protocol-gaps.md
+docs/3. Change Requests/in-progress/CR-032-bs05-visual-spec.md
+docs/3. Change Requests/in-progress/CR-033-bs07-audio-layer.md
+docs/3. Change Requests/in-progress/CR-034-bs07-cc-visual-sync.md
+docs/3. Change Requests/in-progress/CR-035-bs07-layer-boundary.md
+docs/3. Change Requests/in-progress/CR-036-bs07-security-delay.md
+docs/3. Change Requests/in-progress/CR-038-google-oauth.md
+docs/3. Change Requests/in-progress/CR-039-event-type-catalog.md
+docs/3. Change Requests/in-progress/CR-040-refresh-token-policy.md
+docs/3. Change Requests/in-progress/CR-041-seat-waiting-enum.md
+docs/3. Change Requests/in-progress/CR-042-summary-clock-fsm.md
+docs/3. Change Requests/in-progress/CR-043-wsop-sync-catalog.md
+docs/3. Change Requests/in-progress/CR-047-competition-hierarchy.md
+docs/3. Change Requests/in-progress/CR-048-auth-ggpass-pattern.md
+docs/3. Change Requests/in-progress/CR-049-blindstructure-endpoints.md
+docs/3. Change Requests/in-progress/CR-050-clock-endpoints-full.md
+docs/3. Change Requests/in-progress/CR-051-payout-structure-endpoints.md
+docs/3. Change Requests/in-progress/CR-052-rate-limit-security.md
+docs/3. Change Requests/in-progress/CR-053-users-staff-pattern.md
+docs/3. Change Requests/in-progress/CR-054-ws-event-catalog.md
+docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md
+docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md
+docs/3. Change Requests/pending/CR-team1-20260414-bs02-overview-rename.md
+docs/3. Change Requests/pending/CR-team1-20260417-bo-cors-lan.md
+docs/3. Change Requests/pending/CR-team1-20260417-cc-network-config.md
+docs/4. Operations/4. Operations.md
+docs/4. Operations/Backlog_Aggregate.md
+docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md
+docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md
+docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md
+docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md
+docs/4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md
+docs/4. Operations/Conductor_Backlog/B-066-재해-복구-절차-문서화.md
+docs/4. Operations/Conductor_Backlog/B-067-Phase-4-전격-운영-검증.md
+docs/4. Operations/Conductor_Backlog/B-069-team3-engine-게임-PRD-Confluence-동기화-상태-확인.md
+docs/4. Operations/Conductor_Backlog/B-074-IMPL-01-Lobby-섹션-stale-수정-Team-2-인계.md
+docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md
+docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md
+docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md
+docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md
+docs/4. Operations/Conductor_Backlog/B-200-foundation-alignment-2026-04-22.md
+docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md
+docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md
+docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md
+docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md
+docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md
+docs/4. Operations/Conductor_Backlog/B-Q13-desktop-routing-implementation.md
+docs/4. Operations/Conductor_Backlog/B-Q14-settings-ui-implementation.md
+docs/4. Operations/Conductor_Backlog/B-Q15-sg-008-b-endpoint-implementation.md
+docs/4. Operations/Conductor_Backlog/B-Q16-development-environment-standards.md
+docs/4. Operations/Conductor_Backlog/B-Q17-engine-healthcheck-fix.md
+docs/4. Operations/Conductor_Backlog/B-Q18-structure-update-same-tx-flush-bug.md
+docs/4. Operations/Conductor_Backlog/B-Q19-list-hands-row-int-bug.md
+docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md
+docs/4. Operations/Conductor_Backlog/B-Q20-coverage-final-6pp.md
+docs/4. Operations/Conductor_Backlog/B-Q21-bo-healthcheck-dependency-aware.md
+docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md
+docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md
+docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md
+docs/4. Operations/Conductor_Backlog/B-Q8-vendor-rfi-rfq-reactivation.md
+docs/4. Operations/Conductor_Backlog/IMPL-001-team-backlog-retag.md
+docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md
+docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md
+docs/4. Operations/Conductor_Backlog/IMPL-004-team1-settings-19-d3-mapping.md
+docs/4. Operations/Conductor_Backlog/IMPL-005-team2-api-d2-routers.md
+docs/4. Operations/Conductor_Backlog/IMPL-006-websocket-ack-reject-publishers.md
+docs/4. Operations/Conductor_Backlog/IMPL-007-cc-no-card-display-contract.md
+docs/4. Operations/Conductor_Backlog/IMPL-008-skins-deactivate-endpoint.md
+docs/4. Operations/Conductor_Backlog/IMPL-009-users-force-logout-endpoint.md
+docs/4. Operations/Conductor_Backlog/IMPL-010-tables-seats-create-endpoint.md
+docs/4. Operations/Conductor_Backlog/IMPL-011-tables-seats-delete-endpoint.md
+docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-PHASE2-START.md
+docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG023-INTENT-PIVOT.md
+docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION.md
+docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG025-026-PRODUCTION-LAUNCH.md
+docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR1-doc-correction.md
+docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR2bis-service-layer.md
+docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR9-naming-ci-gate.md
+docs/4. Operations/Conductor_Backlog/NOTIFY-team1-sandbox-toggle-ui.md
+docs/4. Operations/Conductor_Backlog/NOTIFY-team2-B088-PR4-rest-path-migration.md
+docs/4. Operations/Conductor_Backlog/NOTIFY-team4-cc-web-unhealthy.md
+docs/4. Operations/Conductor_Backlog/SESSION_1_HANDOFF.md
+docs/4. Operations/Conductor_Backlog/SESSION_2_1_HANDOFF.md
+docs/4. Operations/Conductor_Backlog/SESSION_2_2_HANDOFF.md
+docs/4. Operations/Conductor_Backlog/SESSION_2_3a_HANDOFF.md
+docs/4. Operations/Conductor_Backlog/SESSION_2_FINAL_REPORT.md
+docs/4. Operations/Conductor_Backlog/SESSION_2_HANDOFF.md
+docs/4. Operations/Conductor_Backlog/SESSION_3_INIT.md
+docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md
+docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md
+docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md
+docs/4. Operations/Conductor_Backlog/SG-004-gfskin-zip-format.md
+docs/4. Operations/Conductor_Backlog/SG-005-foundation-ch6-system-connections.md
+docs/4. Operations/Conductor_Backlog/SG-006-rfid-52-card-codemap.md
+docs/4. Operations/Conductor_Backlog/SG-007-team2-reports-api.md
+docs/4. Operations/Conductor_Backlog/SG-008-api-d3-bulk-documentation.md
+docs/4. Operations/Conductor_Backlog/SG-008-b13-settings-code-only-cleanup.md
+docs/4. Operations/Conductor_Backlog/SG-008-b14-auth-2fa-policy.md
+docs/4. Operations/Conductor_Backlog/SG-008-b15-ndi-fill-key-routing.md
+docs/4. Operations/Conductor_Backlog/SG-009-tablefsm-case-serialization.md
+docs/4. Operations/Conductor_Backlog/SG-010-spec-drift-scanner-precision.md
+docs/4. Operations/Conductor_Backlog/SG-011-rfid-hal-stream-divergence.md
+docs/4. Operations/Conductor_Backlog/SG-012-lobby-sidebar-ssot.md
+docs/4. Operations/Conductor_Backlog/SG-013-lobby-tournaments-nomenclature.md
+docs/4. Operations/Conductor_Backlog/SG-014-graphic-editor-dual-entry.md
+docs/4. Operations/Conductor_Backlog/SG-015-players-section-rationale.md
+docs/4. Operations/Conductor_Backlog/SG-016-hand-history-sidebar-section.md
+docs/4. Operations/Conductor_Backlog/SG-017-settings-global-vs-scoped.md
+docs/4. Operations/Conductor_Backlog/SG-018-5nf-metamodel-tables.md
+docs/4. Operations/Conductor_Backlog/SG-019-reports-postproduction-boundary.md
+docs/4. Operations/Conductor_Backlog/SG-020-websocket-ack-reject-events.md
+docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md
+docs/4. Operations/Conductor_Backlog/SG-022-deprecation.md
+docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md
+docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md
+docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md
+docs/4. Operations/Conductor_Backlog/SG-031-confluence-mirror-rebuild.md
+docs/4. Operations/Conductor_Backlog/SG-032-flutter-deps-major-bumps-deferred.md
+docs/4. Operations/Conductor_Backlog/SG-033-ebs-mission-redefinition.md
+docs/4. Operations/Conductor_Backlog/V2_PURGE_REPORT.md
+docs/4. Operations/Conductor_Backlog/_template_implementation.md
+docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md
+docs/4. Operations/Conductor_Backlog/_template_spec_gap.md
+docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md
+docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md
+docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md
+docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md
+docs/4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md
+docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md
+docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md
+docs/4. Operations/DEPENDABOT_GOVERNANCE.md
+docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md
+docs/4. Operations/Docker_Runtime.md
+docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md
+docs/4. Operations/Foundation_Alignment_Plan.md
+docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md
+docs/4. Operations/LAN_DEPLOYMENT.md
+docs/4. Operations/Load_Test_Plan_Phase1.md
+docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md
+docs/4. Operations/Multi_Session_Handoff.md
+docs/4. Operations/Multi_Session_Workflow.md
+docs/4. Operations/Network_Deployment.md
+docs/4. Operations/OWASP_Audit_Kickoff_2026-05-03.md
+docs/4. Operations/PR_AUTONOMOUS_PROCESSING.md
+docs/4. Operations/Phase_1_Decision_Queue.md
+docs/4. Operations/Phase_Plan_2027.md
+docs/4. Operations/Plans/2026-04-08-game-engine.plan.md
+docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md
+docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md
+docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md
+docs/4. Operations/Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md
+docs/4. Operations/Plans/PLAN-BO-Phase1.md
+docs/4. Operations/Plans/Redesign_Plan_2026_04_22.md
+docs/4. Operations/RENOVATE_EVALUATION.md
+docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md
+docs/4. Operations/Reports/2026-04-17_SSOT_Audit.md
+docs/4. Operations/Reports/2026-04-21-critic-ge-multi-session.md
+docs/4. Operations/Reports/2026-04-21-critic-graphic-editor-team5-separation.md
+docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md
+docs/4. Operations/Reports/2026-04-26-Prototype_Completion_Report.md
+docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md
+docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase4_Delivery.md
+docs/4. Operations/Reports/2026-04-28-v8-phase4-hook-deprecation-audit.md
+docs/4. Operations/Reports/2026-04-28-v8-phase6-l0-removal-record.md
+docs/4. Operations/Reports/2026-04-28-v8-phase8a-multi-session-workflow-v4-history.md
+docs/4. Operations/Reports/2026-04-28-v8-phase8c-skill-md-v4-history.md
+docs/4. Operations/Reports/2026-04-28-v8-phase8d-multi-session-workflow-history.md
+docs/4. Operations/Reports/2026-04-28-v8-restoration-verified.md
+docs/4. Operations/Reports/2026-04-29-card-flow-drift-check.md
+docs/4. Operations/Reports/2026-04-29-v93-stale-worktrees-archive.md
+docs/4. Operations/Reports/2026-04-29-v94-final-worktree-cleanup.md
+docs/4. Operations/Reports/2026-04-29-v95-cycle-metrics.md
+docs/4. Operations/Reports/2026-04-29-v95-e2e-iteration-phase-plan.md
+docs/4. Operations/Reports/2026-04-29-v95-residual-cycle-wrap-up.md
+docs/4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md
+docs/4. Operations/SSOT_ALIGNMENT_REPORT.md
+docs/4. Operations/SSOT_Alignment_Progress.md
+docs/4. Operations/Spec_Gap_Triage.md
+docs/4. Operations/Task_Dispatch_Board.md
+docs/4. Operations/Task_Dispatch_Board/README.md
+docs/4. Operations/V5_Migration_Plan.md
+docs/4. Operations/V9_2_Gate_Design.md
+docs/4. Operations/V9_3_Intent_Execution_Boundary.md
+docs/4. Operations/V9_4_AI_Centric_Governance.md
+docs/4. Operations/V9_5_Single_Session_Output_Centric.md
+docs/4. Operations/Workflow_Conductor_Autonomous.md
+docs/README.md
+docs/examples/README.md
