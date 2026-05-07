@@ -7,4 +7,3 @@ tier: generated
 # stream:S3 (Command Center)
 
 - `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-cc-identity-cascade-2026-05-07.md` — NOTIFY-S1 — CC v4.0 정체성 cascade가 Foundation §Ch.5.4 에 영향
-- `docs/4. Operations/Cascade_Plan_S3_CC_2026-05-07.md` — S3 Command Center Cascade Plan — Command_Center_PRD v4.0 → 정본/feature 전면 정합
