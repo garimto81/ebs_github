@@ -1,18 +1,14 @@
-team_id: S2
-team_name: Lobby Stream
-team_role: Lobby 기획 + Frontend Lobby 코드
-worktree_path: C:/claude/ebs-lobby-stream
-branch: work/s2/2026-05-07-work-2026-05-07
-absorbs_existing:
-- team1-frontend
+team_id: S4
+team_name: RIVE Standards
+team_role: Rive 오버레이 그래픽 표준 (state machine, 이벤트 프로토콜)
+worktree_path: C:/claude/ebs-rive-standards
+branch: work/s4/2026-05-07-work-2026-05-07
+absorbs_existing: []
 scope_owns:
-- docs/2. Development/2.1 Frontend/Lobby/**
-- docs/1. Product/Lobby_PRD.md
-- team1-frontend/**
+- docs/2. Development/2.5 Shared/RIVE_Standards.md
+- docs/2. Development/2.5 Shared/RIVE_Event_Protocol.md
 scope_read:
 - docs/1. Product/Foundation.md
-- team1-frontend/CLAUDE.md
-- docs/1. Product/Lobby_PRD.md
 meta_files_blocked:
 - CLAUDE.md
 - MEMORY.md
