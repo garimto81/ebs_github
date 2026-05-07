@@ -1,0 +1,5 @@
+stream_id: S3
+team_name: Command Center Stream
+activated_at: '2026-05-07T14:29:00.973203'
+worktree_path: C:/claude/ebs-cc-stream
+note: Direct main commit (PR pipeline conflict bypass)
