@@ -192,7 +192,9 @@ related-issues:
 
 # Part II — Overlay Setting 5 단계
 
-> 이 Part 는 **운영자가 무대를 깨우는 5 단계** 입니다. 이미 Lobby (관제탑) 와 CC (조종석) 는 다른 PRD 가 다루므로 — 본 Part 는 **그 위에서 Overlay 가 어떻게 켜지는지** 에 집중합니다. Lobby/CC 의 자세한 내용은 각각 Lobby_PRD.md, Command_Center_PRD.md 를 참조하세요.
+> **이 Part 의 정체성 약속**: 본 Part 는 Lobby / CC 가 무엇을 하는지 설명하지 **않습니다** (그건 Lobby_PRD.md / Command_Center_PRD.md 정본의 영역). 본 Part 는 오직 **"Overlay 가 그 신호를 받아서 무엇을 그리기 시작하는가"** 에 집중합니다.
+>
+> 각 챕터에서 — Lobby/CC 가 보내주는 신호를 ★ 마커로 표시하고, Overlay 가 받아서 하는 일을 ▣ 마커로 표시합니다. ★ 부분은 cross-ref 만, ▣ 부분이 본 문서의 진짜 콘텐츠입니다.
 
 <a id="ch4"></a>
 
@@ -483,8 +485,8 @@ Lobby 의 한 클릭이 trigger 하는 것:
 
 ```
   +-----------------------------+
-  | [국기] DANIEL NEGREANU       |  <- 이름 (Primary)
-  |        Canada                |  <- 국적 (Secondary)
+  | [국기] PLAYER A (가공)       |  <- 이름 (Primary)
+  |        Country               |  <- 국적 (Secondary)
   |                              |
   |  Stack: 1,250,000            |  <- 칩 스택
   |  ━━━━━━━━━━━━━━━━━━━━━━━━━ |  <- 스택 바
@@ -496,7 +498,7 @@ Lobby 의 한 클릭이 trigger 하는 것:
 
 <!-- IMG_TODO: Player Card 디자인 시안 (정상 / 강조 / 폴드 상태 3종) -->
 
-> 예시 이름은 가공이며, 실제 운영에서는 WSOP / EPT 등 라이센스 데이터베이스 연동 (Foundation.md §Ch.6.3 BO 참조).
+> 예시 이름은 일반화된 placeholder (`PLAYER A`, `PLAYER B`) 입니다. 실제 운영에서는 WSOP / EPT 등 라이센스 데이터베이스의 실명이 연동됩니다 (Foundation.md §Ch.6.3 BO 참조).
 
 ### 9.2 좌석 매핑
 
@@ -544,7 +546,7 @@ Lobby 의 한 클릭이 trigger 하는 것:
 
 ```
   +----------------------------+        +----------------------------+
-  | DANIEL NEGREANU             |        | PHIL IVEY                  |
+  | PLAYER A (가공)              |        | PLAYER B (가공)             |
   | Stack: 1,250,000           |        | Stack:   480,000           |
   +----------------------------+        +----------------------------+
             |                                       |
@@ -595,7 +597,7 @@ Lobby 의 한 클릭이 trigger 하는 것:
 1. RFID 가 카드 NFC 를 읽어 무늬 + 숫자 인식 (Foundation.md §Ch.1.3).
 2. Engine 이 OutputEvent 발행 (예: `HOLE_CARD_REVEALED { seat: 3, cards: ["AS", "KS"] }`).
 3. Render 가 P3 의 카드 위치에 SVG 덧씌움.
-4. 단 — 이 그래픽은 **방송 송출 채널 (PGM) 에만** 표시. 테이블 디스플레이에는 안 됨 (Ch.27).
+4. 단 — 이 그래픽은 **방송 송출 채널 (PGM = Program, 시청자가 보는 채널) 에만** 표시. 테이블 디스플레이에는 안 됨 (Ch.27 채널 분리 정본).
 
 ### 11.2 커뮤니티 카드
 
@@ -638,7 +640,7 @@ Lobby 의 한 클릭이 trigger 하는 것:
 
 ```
   +----------------------------------+
-  | DANIEL NEGREANU                   |
+  | PLAYER A (가공)                   |
   | A♠ K♠                             |
   |                                  |
   | Flush Draw                       |  <- 1. 핸드 명칭
@@ -669,7 +671,7 @@ Lobby 의 한 클릭이 trigger 하는 것:
 
 ### 12.3 Equity 의 정의
 
-Equity = "현재 카드들로 게임이 끝까지 진행됐을 때 이길 확률" (몬테카를로 시뮬레이션 기반).
+Equity = "현재 카드들로 게임이 끝까지 진행됐을 때 이길 확률" (몬테카를로 시뮬레이션 — 가능한 모든 게임 진행을 수만 회 가상 실행한 통계 기반).
 
 | 단계 | 시뮬레이션 |
 |------|-----------|
@@ -706,8 +708,8 @@ Equity = "현재 카드들로 게임이 끝까지 진행됐을 때 이길 확률
   |                                                    |
   |          ★★★  ALL-IN  ★★★                         |
   |                                                    |
-  |        DANIEL NEGREANU goes ALL-IN                 |
-  |              for 480,000                           |
+  |        PLAYER A goes ALL-IN                        |
+  |              for {amount}                          |
   |                                                    |
   |          ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰                        |
   |              (펄싱 효과)                            |
@@ -715,12 +717,14 @@ Equity = "현재 카드들로 게임이 끝까지 진행됐을 때 이길 확률
               ASCII MOCK · ALL-IN 박스 (전화면 강조)
 ```
 
-| 단계 | 시간 | 효과 |
+| 단계 | 시간 (1차 가설) | 효과 |
 |------|:---:|------|
-| 등장 | 0.3s | Scale + 페이드 |
-| 유지 | 2.5s | 펄싱 |
-| 퇴장 | 0.4s | 페이드 |
-| 동시 | 3.2s | 화면 전체 미세 셰이크 (~5px) |
+| 등장 | ~0.3s | Scale + 페이드 |
+| 유지 | ~2.5s | 펄싱 |
+| 퇴장 | ~0.4s | 페이드 |
+| 동시 | 전체 ~3.2s | 화면 전체 미세 셰이크 (~5px) |
+
+> 시간값은 1 차 가설 — 외부 디자이너 / 방송 PD 검증 후 확정. ALL-IN 은 시청자의 정서적 정점이라 실제 방송 환경 사용자 테스트 필수.
 
 <a id="ch14"></a>
 
@@ -925,7 +929,7 @@ Time Bank 사용 시: 시계 빨간색 + 펄싱.
 | **BAK (Backup)** | PGM 동일 |
 | **REC (Recording)** | PGM 동일 |
 
-> 분리는 **하드웨어 SDI 라우터** 에서 보장 — 소프트웨어 토글 단독으로는 부족 (Foundation.md §Ch.7 참조).
+> 분리는 **하드웨어 SDI (Serial Digital Interface — 방송용 디지털 영상 전송 표준) 라우터** 에서 보장 — 소프트웨어 토글 단독으로는 부족 (Foundation.md §Ch.7 참조).
 
 <a id="ch20"></a>
 
@@ -1043,7 +1047,7 @@ Time Bank 사용 시: 시계 빨간색 + 펄싱.
               ASCII MOCK · 3 단 Safe Zone
 ```
 
-> 94% / 90% 는 SMPTE / EBU 방송 표준 준용 (외부 표준).
+> 94% / 90% 는 방송 안전 영역 업계 표준 (SMPTE / EBU 계열) 을 준용한 1 차 가설입니다. 정확한 표준 ID (예: SMPTE RP 218, EBU R 95 등) 는 외부 방송 PD 검증 후 frontmatter `standards:` 항목에 명시 예정.
 
 ### 22.2 영역별 정책
 
@@ -1278,8 +1282,8 @@ OutputEvent 가 trigger (예: `PLAYER_FOLD` → `onFold`). 정본은 RIVE_Event_
 | 장애 | 증상 | 복구 |
 |------|------|------|
 | RFID 단절 | 카드 인식 멈춤 | OPS `MANUAL CARD INPUT` 모드 (Command_Center_PRD §Ch.7 Mock vs Real) |
-| Engine 응답 없음 | 액션 그래픽 멈춤 | Render 마지막 상태 유지 + OPS 빨간 알림 + 자동 재연결 시도 |
-| Render 장애 | 화면 freeze | BAK 채널 자동 fallback |
+| Engine 응답 없음 | 액션 그래픽 멈춤 | Render 마지막 상태 유지 + OPS 빨간 알림 + 자동 재연결 시도 (timeout 임계값 1차 가설: heartbeat 3 회 연속 실패) |
+| Render 장애 | 화면 freeze | BAK 채널 자동 fallback (감지 임계값 1차 가설: 프레임 출력 ~1s 부재) |
 | 카메라 피드 끊김 | 배경 검은 화면 | Overlay 솔리드 배경 위에 표시 유지 |
 
 ### 28.2 OPS 알림
