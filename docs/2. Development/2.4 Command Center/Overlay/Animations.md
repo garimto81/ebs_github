@@ -11,12 +11,15 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | Rive 애니메이션 발동 조건, 핸드 단계별 시퀀스, 속도 설정 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — Rive 애니메이션은 5-Act 시퀀스의 각 Act 전환 시 trigger (Act 2 PreFlop = HoleCard 분배 / Act 3a Flop = 3 카드 동시 / Act 4 Showdown = 핸드 공개 / Act 5 Settlement = 팟 분배). SSOT: `Sequences.md §"v4.0 5-Act → Overlay 매핑"`. |
 
 ---
 
 ## 개요
 
 이 문서는 Overlay의 **Rive 애니메이션 발동 조건과 시퀀스**를 정의한다. 각 오버레이 요소가 언제, 어떤 애니메이션으로 등장/퇴장/강조되는지 모든 경우의 수를 기술한다.
+
+> **v4.0 컨텍스트** (2026-05-07): 본 문서의 Rive 애니메이션은 v4.0 5-Act 시퀀스의 Act 전환 trigger 에서 발동 — Act 2 PreFlop (HoleCard 분배), Act 3 Flop/Turn/River (커뮤니티 카드), Act 4 Showdown (핸드 공개), Act 5 Settlement (팟 분배). 자세한 Act 별 trigger 매핑: `Sequences.md §"v4.0 5-Act → Overlay 매핑"`.
 
 > **참조**: AnimationState 16개, transition_type 4종 Enum 값은 `BS-06-00-REF-game-engine-spec.md §1.6`에 정의. 이 문서는 해당 Enum이 **언제, 왜 발동하는가**를 기술한다.
 

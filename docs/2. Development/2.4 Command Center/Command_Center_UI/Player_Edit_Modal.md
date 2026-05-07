@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-10 | 신규 작성 | AT-07 Player Edit 모달 — 좌석별 플레이어 정보 수정 (CCR-028) |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 1×10 그리드 PlayerGrid 의 SeatCell 9 행 (행 4 Country / 행 5 Name 등) 인라인 편집 진입점이 본 모달. 트리거: PlayerGrid 셀 내 행 4·5·7·8 tap → AT-07 모달 open. SSOT: `Overview.md §3.0`, `Seat_Management.md §"v4.0 1×10 그리드 + SeatCell 9 행"`. |
 
 ---
 
@@ -18,7 +19,9 @@ last-updated: 2026-04-15
 
 AT-07은 특정 좌석의 플레이어 정보(이름, 국적, 스택, 이미지 등)를 편집하는 모달이다. 핸드 진행 중에도 일부 필드는 실시간 편집 가능하다.
 
-> **참조**: `BS-05-00 §6 AT 카탈로그`, `BS-05-03-seat-management`.
+> **v4.0 컨텍스트** (2026-05-07): 본 모달은 1×10 가로 그리드 PlayerGrid 의 SeatCell 9 행 stacked 구조 (S1~S10) 에서 인라인 편집 행 (4 Country / 5 Name / 7 Stack / 8 Bet) tap 시 진입한다. 4 영역 위계 (StatusBar / TopStrip / PlayerGrid / ActionPanel) 중 PlayerGrid 영역의 셀 단위 편집 진입점.
+
+> **참조**: `BS-05-00 §6 AT 카탈로그`, `BS-05-03-seat-management`, `Overview.md §3.0` (4 영역 위계).
 
 ---
 

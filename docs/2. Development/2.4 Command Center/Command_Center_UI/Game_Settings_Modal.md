@@ -13,6 +13,7 @@ last-updated: 2026-04-16
 | 2026-04-10 | 신규 작성 | AT-06 Game Settings 모달 — CC 내부 즉시 편집 범위 (CCR-028, Option A) |
 | 2026-04-15 | 용어/접근 설계 명확화 | 3축 정의 + 카테고리 A/B/C + 섹션 조건부 렌더링 |
 | 2026-04-16 | Settings 통합 | 독립 모달(AT-06) → Table Settings Rules 탭으로 통합. 본 문서는 Rules 탭의 **상세 규격 부록**으로 재정의 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 진입 경로 `[⚙]` 버튼은 4 영역 위계 (v4.0) 의 **StatusBar (52px) 우측** 에 위치. 본 모달 자체 layout 은 v1.x 그대로 유지 (모달 내부는 4 영역 위계 미적용). SSOT: `Overview.md §3.0`. |
 
 ---
 
@@ -22,7 +23,9 @@ last-updated: 2026-04-16
 
 **진입 경로**: CC Toolbar `[⚙]` 버튼 → Table Settings → **Rules 탭**
 
-> **참조**: `Settings.md §Rules 탭 상세`, `BS-05-00 §6 AT 카탈로그`
+> **v4.0 컨텍스트** (2026-05-07): `[⚙]` 버튼은 v4.0 4 영역 위계의 **StatusBar (52px) 우측** 에 위치. 본 모달은 4 영역 위계의 외부 modal 로 호출되며, 모달 내부 layout 은 v1.x 그대로 유지 (1×10 그리드와 무관).
+
+> **참조**: `Settings.md §Rules 탭 상세`, `BS-05-00 §6 AT 카탈로그`, `Overview.md §3.0`.
 >
 > **변경 이력**: 2026-04-16 이전에는 독립 모달(AT-06, Toolbar Menu → Game Settings)로 정의됨. Settings.md 4단 스코프 체계와 중복 진입 경로 발생 → Rules 탭으로 통합.
 

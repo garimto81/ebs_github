@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 운영자 UI 관점 핸드 진행, HandFSM 상태별 CC 화면, 유저 스토리 24개 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — §"5-Act 시퀀스 (UI 추상화)" 신설. HandFSM 9-state 를 5 Act (IDLE → PreFlop → Flop/Turn/River → Showdown → Settlement) 로 묶어 UI level 에서 운영자 인지 부담 절감. 6 키 활성 phase 매핑 동시 명시. SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0 §Ch.6. |
 
 ---
 
@@ -25,6 +26,57 @@ last-updated: 2026-04-15
 ## 정의
 
 **핸드 라이프사이클 (운영자 관점)**: CC에서 운영자가 NEW HAND 버튼을 눌러 시작하고, 결과 확인 후 다음 핸드를 시작할 때까지의 전체 UI 흐름. Game Engine 내부 로직이 아닌 **화면에 보이는 것과 운영자의 행동**에 집중한다.
+
+---
+
+## 5-Act 시퀀스 (UI 추상화, 2026-05-07 신설)
+
+> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. HandFSM 9-state 의 의미 묶음. 운영자가 12 시간 본방송 동안 한 핸드 = 한 영화 5 막으로 인지하도록 추상화.
+
+```
+Act 1     Act 2          Act 3                 Act 4        Act 5
+─────     ──────         ───────────────       ────────     ─────────
+IDLE  →   PreFlop   →    Flop / Turn / River → Showdown →   Settlement
+                         (3 streets sequence)
+
+매핑 (HandFSM 9-state):
+ Act 1 = IDLE
+ Act 2 = SETUP_HAND → PRE_FLOP
+ Act 3 = FLOP → TURN → RIVER (3 sub-acts)
+ Act 4 = SHOWDOWN
+ Act 5 = HAND_COMPLETE
+```
+
+### Act 별 카탈로그
+
+| Act | 단계 | 9-state | StatusBar PHASE | TopStrip ACTING 박스 | PlayerGrid | 6 키 활성 |
+|:---:|------|---------|----------------|---------------------|-----------|-----------|
+| **1** | IDLE | IDLE | "IDLE" | "WAITING — Press START HAND" | 정적 (이름+스택) | **N** (START HAND) |
+| **2** | PreFlop | SETUP_HAND → PRE_FLOP | "PRE_FLOP" | "ACTING — S{n} · {Name}" | 블라인드 → 홀카드 → action_on 펄스 | F·C·B·A·M |
+| **3a** | Flop | FLOP | "FLOP" | "ACTING — S{n} · {Name}" | Community 3 슬롯 채움, 폴드 반투명 | F·C·B·A·M |
+| **3b** | Turn | TURN | "TURN" | "ACTING — S{n} · {Name}" | Community 4 슬롯 | F·C·B·A·M |
+| **3c** | River | RIVER | "RIVER" | "ACTING — S{n} · {Name}" | Community 5 슬롯 | F·C·B·A·M |
+| **4** | Showdown | SHOWDOWN | "SHOWDOWN" | "SHOWDOWN — Reveal hands" | 승자 강조, 핸드 공개 | (viewing — disabled) |
+| **5** | Settlement | HAND_COMPLETE | "COMPLETE" | "HAND OVER — Press FINISH HAND" | 팟 분배 애니메이션, 스택 갱신 | **N** (FINISH HAND) |
+
+### 6 키 활성/비활성 정합
+
+| 키 | Act 1 | Act 2~3 | Act 4 | Act 5 |
+|:--:|:-----:|:-------:|:-----:|:-----:|
+| N | START HAND | (disabled) | (disabled) | FINISH HAND |
+| F | (disabled) | FOLD | (disabled) | (disabled) |
+| C | (disabled) | CHECK / CALL | (disabled) | (disabled) |
+| B | (disabled) | BET / RAISE | (disabled) | (disabled) |
+| A | (disabled) | ALL-IN | (disabled) | (disabled) |
+| M | (disabled) | Miss Deal | (disabled) | (disabled) |
+
+> **참조**: 6 키 매핑 SSOT 는 `Action_Buttons.md §"v4.0 6 키 매핑"`. UI 4 영역 위계는 `Overview.md §3.0`.
+
+### 자매 문서 정합
+
+- `Action_Buttons.md` — 6 키 의미 카탈로그 + 자동 전환 룰
+- `Overview.md §3.0` — 4 영역 위계
+- `Overlay/Sequences.md` — 5-Act → Overlay 시퀀스 매핑
 
 ---
 

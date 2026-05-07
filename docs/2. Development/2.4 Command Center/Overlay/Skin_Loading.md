@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 스킨 정의, 로드 프로세스, 전환 규칙, 파일 구조, 폴백 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 스킨 hot-swap (Skin 트리거) 은 5-Act 시퀀스와 별개 시퀀스 (운영자 명령 trigger). 5-Act 진행 중에도 Act 1 IDLE 또는 Act 5 Settlement 시점에 안전한 hot-swap 권장. SSOT: `Sequences.md §"v4.0 5-Act → Overlay 매핑"`. |
 
 ---
 

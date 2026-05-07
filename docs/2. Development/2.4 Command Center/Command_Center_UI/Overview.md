@@ -18,6 +18,7 @@ last-updated: 2026-04-15
 | 2026-04-13 | UI-02 redesign | 좌석 S1~S10 변경, 대칭 배치, 수동 편집 우선 원칙, 인라인 편집 전환 |
 | 2026-04-17 | 연동 아키텍처 명확화 | §1.1 데이터 흐름 신설 — CC↔Engine(직접 HTTP) + CC↔BO(WS 이벤트 발행) |
 | 2026-05-06 | **§Widget Inventory 신설** (B-team4-011) | React 시안 critic 판정 후속 — Visual Uplift V1~V7 위젯 인벤토리. KeyboardHintBar (V1, ✅ 구현) / StatusBar (V2) / MiniDiagram (V3) / PositionShiftChip (V4) / SeatCell 7행 (V5) / ACTING glow (V6) / TweaksPanel (V7). SSOT: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md`. |
+| 2026-05-07 | **v4 정체성 정합** | CC_PRD v4.0 cascade — 1×10 그리드 + 6 키 + 4 영역 위계 + 5-Act 시퀀스 반영. §3.0 v4.0 정체성 신설 (구 §3.1/§3.3/§3.4 v1.x 타원형/8 버튼 기술은 archive 마킹). SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0. |
 
 ---
 
@@ -240,7 +241,122 @@ CC가 비정상 종료 후 재시작되면:
 
 ## 3. CC 화면 구조
 
-### 3.1 레이아웃 3영역
+### 3.0 v4.0 정체성 (2026-05-07 신설, SSOT)
+
+> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. 본 §3.0 가 §3.1~§3.4 v1.x 기술을 *override* 한다. 구 v1.x 타원형 테이블 + 8 버튼 액션 패널 기술은 archive 보존 (다음 메이저 정리에서 제거 예정).
+
+#### 3.0.1 4 영역 위계 (StatusBar / TopStrip / PlayerGrid / ActionPanel)
+
+화면을 위에서 아래로 4 영역. 영역 간 *변화 빈도* 와 *시선 빈도* 가 다르며, 운영자는 본방송 12 시간 동안 이 위계를 *근육 기억* 으로 흡수한다.
+
+```
++-----------------------------------------------+
+|  StatusBar  (52px, 거의 고정)                  |
+|  - BO/RFID/Engine 연결 dot                     |
+|  - Hand # / Phase / Blinds / Lvl               |
++-----------------------------------------------+
+|  TopStrip   (158px, 액션마다)                  |
+|  - 좌: MiniDiagram + POT 박스                  |
+|  - 중: Community Board (FLOP/TURN/RIVER)       |
+|  - 우: ACTING / SHOWDOWN / HAND OVER 박스      |
+|  - 하단 32px: KeyboardHintBar (6 키 칩)        |
++-----------------------------------------------+
+|  PlayerGrid (가변 1fr, 1×10 가로)              |
+|  ★ 핵심 변경: 타원형 테이블 폐기                |
+|  - 선수 10명을 가로 한 줄에 정렬                |
+|  - 각 셀 = 9 행 stacked (Acting/S#/Pos/...)    |
++-----------------------------------------------+
+|  ActionPanel (124px, 운영자 입력)              |
+|  - 6 키 (N · F · C · B · A · M)                |
+|  - Phase-aware (같은 키, phase별 다른 의미)     |
++-----------------------------------------------+
+```
+
+| 영역 | 높이 | 변화 빈도 | 시선 빈도 |
+|------|:----:|:--------:|:--------:|
+| StatusBar | 52px | 수 분 | 5 초마다 곁눈 |
+| TopStrip | 158px | 수 초 | 매 액션 후 |
+| PlayerGrid | 가변 1fr | 수 초 | 핸드 진행 중 지속 |
+| ActionPanel | 124px | 수 초 | 매 액션 발사 직전 |
+
+#### 3.0.2 1×10 가로 그리드 (타원형 테이블 폐기)
+
+이전 EBS PRD (v1.x) 는 화면 중앙에 **타원형 테이블** 을 그리고 10 좌석을 그 둘레에 배치했다. v4.0 은 이 구조를 폐기하고 **1×10 가로 그리드** 로 전환했다.
+
+```
+v1.x (deprecated) — 타원형 테이블          v4.0 (current) — 1×10 가로 그리드
+─────────────────────────────             ─────────────────────────────────────────
+       [S4][S5][S6][S7]                   [S1][S2][S3][S4][S5][S6][S7][S8][S9][S10]
+   [S3]              [S8]                  ↑ 한 줄에 10 셀 가로 정렬
+   [S2]   [Board]    [S9]                  ↑ 각 셀 = 9 행 stacked (정보 밀도 ↑)
+       [S1]      [S10]                    ↑ 공간 관계는 TopStrip MiniDiagram 으로 회복
+            [D]
+```
+
+**전환 근거 (장점)**:
+- 좌석 비교 용이 (가로 정렬로 스택 차이 한눈)
+- 정보 밀도 ↑ (9 행 stacked)
+- 인지 모드 단순화 (*공간 위치* → *순차 번호* S1~S10)
+
+**전환 한계 (honest, PRD §1.2 단점)**:
+- 실 카지노 oval 테이블과 시각 mismatch
+- 공간 인지 왜곡 (실제 정면 마주보는 좌석이 grid 에서는 인접 셀)
+- MiniDiagram 의존도 ↑ (TopStrip 좌측 미니 oval 로 회복)
+- 운영자 재훈련 필요 (수 일 ~ 수 주)
+
+#### 3.0.3 6 키 의미 카탈로그 (N · F · C · B · A · M)
+
+ActionPanel 의 8 분리 버튼 (v1.x) 시대가 끝나고 **6 키 (5 게임 + 1 비상)** 의 시대가 시작된다. 같은 키, phase 에 따라 의미가 자동 전환 (Phase-aware).
+
+| 키 | 명칭 | IDLE | PRE_FLOP / FLOP / TURN / RIVER | SHOWDOWN / HAND_COMPLETE | 분류 |
+|:--:|------|:----:|:------------------------------:|:------------------------:|:----:|
+| **N** | Next / Finish | START HAND | (disabled) | FINISH HAND | lifecycle |
+| **F** | Fold | (disabled) | FOLD | (disabled) | 게임 액션 |
+| **C** | Call / Check | (disabled) | CHECK *or* CALL (auto-switch) | (disabled) | 게임 액션 |
+| **B** | Bet / Raise | (disabled) | BET *or* RAISE (auto-switch) | (disabled) | 게임 액션 |
+| **A** | All-in | (disabled) | ALL-IN | (disabled) | 게임 액션 |
+| **M** | Menu / Manual (Miss Deal) | (disabled) | Miss Deal | (disabled) | 비상 |
+
+**자동 전환 룰 (C/B 키)**:
+- `biggestBet == playerBet` → **CHECK** (콜할 게 없음)
+- `biggestBet > playerBet` → **CALL** (맞춰야 함)
+- `biggestBet == 0` → **BET** (첫 베팅)
+- `biggestBet > 0` → **RAISE** (이미 베팅 있음)
+
+> ★ **6 키의 가치**: *같은 키 = 같은 손가락 위치 = 다른 의미*. 손가락은 알파벳을 외우지 않고 *위치* 를 외운다. UNDO 만 별도 (Ctrl+Z).
+
+#### 3.0.4 5-Act 시퀀스 카탈로그
+
+12 시간 본방송 한 회 동안 한 핸드의 흐름은 **5 Act** 로 추상화된다. HandFSM 9-state 의 의미 묶음.
+
+| Act | 단계 | 9-state 매핑 | CC 화면 변화 | 6 키 활성 |
+|:---:|------|--------------|--------------|-----------|
+| **Act 1** | IDLE | IDLE | StatusBar PHASE = "IDLE", PlayerGrid 정적 | N (START HAND) |
+| **Act 2** | PreFlop | SETUP_HAND → PRE_FLOP | 블라인드 수거 → 홀카드 분배 → action_on 펄스 | F · C · B · A · M |
+| **Act 3** | Flop / Turn / River | FLOP → TURN → RIVER | Community Board 슬롯 채움, 폴드 반투명 | F · C · B · A · M |
+| **Act 4** | Showdown | SHOWDOWN | 승자 강조, 핸드 공개, ACTING 박스 = "SHOWDOWN" | (disabled, viewing) |
+| **Act 5** | Settlement | HAND_COMPLETE | 팟 분배 애니메이션, 스택 갱신, ACTING = "HAND OVER" | N (FINISH HAND) |
+
+> 참조: PRD §Ch.6 (HandFSM), `Hand_Lifecycle.md` (5-Act ↔ 9-state 정합).
+
+#### 3.0.5 v4.0 정체성 → 자매 문서 cascade 매트릭스
+
+| 자매 문서 | v4.0 cascade |
+|----------|--------------|
+| `Action_Buttons.md` | 6 키 (N·F·C·B·A·M) 동적 매핑 |
+| `Hand_Lifecycle.md` | 5-Act 시퀀스 (Act 1~5) |
+| `Multi_Table_Operations.md` | 1×10 그리드 multi-table 적용 |
+| `Seat_Management.md` | 1×10 가로 그리드 좌석 관리 |
+| `Keyboard_Shortcuts.md` | 6 키 단축키 표준 |
+| `Manual_Card_Input.md` | M 키 (Manual) 진입 |
+| `RFID_Cards/*` | Reader Panel 정체성 |
+| `Overlay/Sequences.md` | 5-Act → Overlay 시퀀스 매핑 |
+
+---
+
+### 3.1 [archive — v1.x] 레이아웃 3영역
+
+> ⚠️ **Archive (v1.x)**: 본 §3.1 ~ §3.4 는 v1.x 타원형 테이블 + 8 버튼 기술이며 v4.0 정체성 (§3.0) 으로 *override* 됨. 다음 메이저 정리에서 제거 예정. 인용 금지.
 
 | 영역 | 위치 | 내용 |
 |------|------|------|
@@ -259,7 +375,9 @@ CC가 비정상 종료 후 재시작되면:
 | HandFSM 상태 | IDLE / PRE_FLOP / FLOP 등 | 텍스트 + 색상 |
 | 블라인드 레벨 | SB/BB (예: 100/200) | 텍스트 |
 
-### 3.3 테이블 영역
+### 3.3 [archive — v1.x] 테이블 영역
+
+> ⚠️ **Archive**: v4.0 에서 타원형 테이블 폐기 → §3.0.2 (1×10 가로 그리드) 참조.
 
 | 요소 | 설명 |
 |------|------|
@@ -274,7 +392,9 @@ CC가 비정상 종료 후 재시작되면:
 
 D(Dealer) 하단 중앙. D 왼쪽(시계방향): S1(SB) → S2(BB) → S3 → S4 → S5. D 오른쪽(반시계방향): S10 → S9 → S8 → S7 → S6. 좌우 대칭.
 
-### 3.4 액션 패널 (8버튼)
+### 3.4 [archive — v1.x] 액션 패널 (8버튼)
+
+> ⚠️ **Archive**: v4.0 에서 8 분리 버튼 → 6 키 (N·F·C·B·A·M) 동적 매핑으로 통합. §3.0.3 참조.
 
 하단 고정 영역에 8개 액션 버튼이 배치된다:
 

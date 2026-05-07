@@ -12,6 +12,7 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 씬 스키마 정의, 필드 상세, 버전 관리, 스냅샷 API |
 | 2026-04-21 | Hand History 경계 명시 | Lobby `Hand_History.md` 화면 데이터는 본 Scene Schema 의 일부가 **아님**. Hand History 는 Lobby 내부 운영 도구이며 시청자 송출되지 않는다 (`Layer_Boundary.md` §1.4 참조). Hand 데이터의 시청자 송출은 기존 HoleCards/Board/Action Badge/Winner 그래픽 (§3 Layer 1) 만 담당 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — Scene JSON 의 element 좌표/치수는 5-Act 시퀀스의 각 Act 별 element visibility (Act 별 활성/비활성) 기준으로 설계. SSOT: `Sequences.md §"v4.0 5-Act → Overlay 매핑"`. |
 
 ---
 

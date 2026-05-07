@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | RFID 전체 흐름, Real/Mock 모드, Feature/General Table, 이벤트 요약 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — RFID 카드 인식 결과는 CC 의 **PlayerGrid (1×10 가로) SeatCell 행 6 (Hole cards face-down)** 에 표시. Reader Panel (Register Screen) 의 정체성을 v4.0 4 영역 위계 컨텍스트로 정합. SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0 §Ch.7 (RFID), `Command_Center_UI/Overview.md §3.0`. |
 
 ---
 
@@ -18,7 +19,9 @@ last-updated: 2026-04-15
 
 이 문서는 EBS RFID 서브시스템의 **전체 흐름과 모드 선택 기준**을 정의한다. RFID는 물리적 카드를 디지털 이벤트로 변환하는 계층이며, Mock 모드는 "하드웨어 없이 동일한 이벤트 스트림을 생성하는 일급 경로"다.
 
-> **참조**: 용어·상태 정의는 `BS-00-definitions.md`, 트리거 경계는 `BS-06-00-triggers.md`, HAL 인터페이스 계약은 `API-03-rfid-hal-interface.md`
+> **v4.0 컨텍스트** (2026-05-07): RFID 카드 인식 결과는 CC 의 4 영역 위계 (StatusBar / TopStrip / **PlayerGrid 1×10** / ActionPanel) 중 PlayerGrid 의 **SeatCell 9 행 stacked 구조 행 6 (Hole cards)** 에 face-down 으로 표시 (D7 강제 — 값 비노출). RFID 연결 상태는 StatusBar (52px) 좌측의 ●RFID dot 으로 시각화. Reader Panel (Register Screen) 은 RFID 카드를 deck 에 사전 등록하는 UI 로 v4.0 정체성과 별개의 셋업 화면.
+
+> **참조**: 용어·상태 정의는 `BS-00-definitions.md`, 트리거 경계는 `BS-06-00-triggers.md`, HAL 인터페이스 계약은 `API-03-rfid-hal-interface.md`, v4.0 정체성은 `Command_Center_UI/Overview.md §3.0`.
 
 ---
 

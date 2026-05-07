@@ -12,12 +12,15 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 수동 입력 UI, 키보드 단축키, Mock 기본 경로, Real 폴백 전환, 유저 스토리, 경우의 수 매트릭스 |
 | 2026-04-15 | 구현 계약 보강 | §5.5 RfidReaderStatus enum 매핑, §5.6 경고 배너 규격(색·문구·아이콘), §5.7 혼합 운영 granularity(슬롯별 독립), §6 RFID 재연결 시 동작 신설. 구버전 §6/§7 → §7/§8 재번호 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 수동 카드 입력 진입은 v4.0 6 키 카탈로그의 **M 키 (Menu/Manual)** 또는 PlayerGrid SeatCell 행 6 / TopStrip Community Board 슬롯 직접 tap. RFID 실패 → M 키 폴백이 표준 흐름. SSOT: `Command_Center_UI/Manual_Card_Input.md §"v4.0 M 키 진입 흐름"`, `Command_Center_UI/Action_Buttons.md §"v4.0 6 키 매핑"`. |
 
 ---
 
 ## 개요
 
 **수동 카드 입력은 Mock 모드의 기본 경로이자 Real 모드의 폴백이다.** 운영자가 CC에서 카드를 직접 선택하면, `MockRfidReader.injectCard()`를 통해 `CardDetected` 이벤트가 합성되고, Game Engine은 RFID 자동 감지와 동일하게 처리한다.
+
+> **v4.0 컨텍스트** (2026-05-07): 수동 카드 입력 진입은 v4.0 6 키 카탈로그의 **M 키 (Menu/Manual)** 또는 PlayerGrid SeatCell 행 6 (Hole cards) / TopStrip Community Board 슬롯 직접 tap. RFID 실패 시 M 키 → AT-03 Card Selector 모달 → 카드 선택 → CardDetected 합성 흐름이 표준. 자세한 M 키 흐름: `../Command_Center_UI/Manual_Card_Input.md §"v4.0 M 키 진입 흐름"`.
 
 | 입력 방식 | 사용 조건 | 빈도 |
 |----------|----------|:----:|

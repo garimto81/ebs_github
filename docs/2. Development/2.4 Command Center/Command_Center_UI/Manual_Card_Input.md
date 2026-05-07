@@ -13,6 +13,7 @@ last-updated: 2026-04-15
 | 2026-04-08 | 신규 작성 | 카드 그리드 UI, 홀카드/보드 입력, 취소/되돌리기, RFID 폴백 전환 |
 | 2026-04-13 | UI-02 redesign | 합성 카드 선택으로 변경 (4×13 수트×랭크 → 합성 카드 이미지) |
 | 2026-04-15 | 구현 계약 보강 | §6.4.1 AT-03 자동 오픈 규칙 (트리거·타이틀·중복·닫기), §6.5 타이머/슬롯 경계 규칙 (재시작·DEALT 후 동작·WRONG_CARD 1초 auto-revert·`requestManualForSlot`) |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — **M 키 (Menu/Manual)** 가 Manual Card Input 진입 키로 신설. 6 키 카탈로그의 비상 키. §"v4.0 M 키 진입 흐름" 신설. SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0 §Ch.5. |
 
 ---
 
@@ -21,6 +22,54 @@ last-updated: 2026-04-15
 CC에서 운영자가 카드를 수동으로 지정하는 UI. RFID Real 모드에서 카드 감지 실패 시 폴백으로 사용되며, Mock 모드에서는 유일한 카드 입력 수단이다. 52장(4수트 × 13랭크) 카드 그리드에서 선택하거나, 키보드 단축키(수트+랭크)로 입력한다.
 
 > 참조: RFID 자동 입력과 수동 폴백의 경계 규칙은 BS-06-00-triggers.md §3, Mock 모드 이벤트 합성은 §4
+
+---
+
+## v4.0 M 키 진입 흐름 (2026-05-07 신설)
+
+> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. ActionPanel 의 6 키 (N·F·C·B·A·M) 중 **M 키 = Menu / Manual / Miss Deal** 비상 키. Manual Card Input 진입 흐름.
+
+### M 키 활성 phase
+
+| Phase | M 키 동작 | 비고 |
+|-------|-----------|------|
+| IDLE | (disabled) | 핸드 시작 전 |
+| PRE_FLOP / FLOP / TURN / RIVER | **Miss Deal 또는 Manual Card 진입 메뉴** | 카드 슬롯 클릭으로 직접 진입 가능 (M 키 없이) |
+| SHOWDOWN / HAND_COMPLETE | (disabled) | 카드 입력 종료 |
+
+### M 키 → Manual Card Input 흐름
+
+```
+M 키 누름 (or 카드 슬롯 클릭)
+  │
+  ▼
++------------------------+
+| Menu / Manual          |
+|  - Miss Deal           |
+|  - Manual Card Entry   |
+|    (홀카드 / Board)     |
++------------------------+
+  │
+  ▼
+AT-03 Card Selector 모달 (560×auto)
+  - 합성 카드 그리드 (4 행 × 13 열)
+  - 사용된 카드 비활성 (opacity 0.3)
+  - 선택 → Confirm → CardDetected 합성
+```
+
+### M 키 + RFID Mock/Real 모드 매트릭스
+
+| RFID 모드 | M 키 의도 | 실행 흐름 |
+|-----------|-----------|----------|
+| **Real (정상)** | Miss Deal (재시도) | Engine 에 MissDeal 이벤트, 카드 폐기 |
+| **Real (감지 실패)** | Manual Fallback | AT-03 Card Selector → 운영자 수동 입력 |
+| **Mock** | Manual Entry (유일 수단) | AT-03 Card Selector → CardDetected 합성 |
+
+### 자매 문서 정합
+
+- `Action_Buttons.md §"v4.0 6 키 매핑"` — M 키 정의 SSOT
+- `Keyboard_Shortcuts.md §"v4.0 6 키 단축키 표준"` — M 키 단축키
+- `RFID_Cards/Manual_Fallback.md` — RFID 실패 시 M 키 폴백
 
 ---
 

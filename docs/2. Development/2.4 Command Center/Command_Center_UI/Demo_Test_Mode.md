@@ -23,6 +23,7 @@ last-updated: 2026-04-21
 | 2026-04-16 | 신규 작성 | RFID 미연결 상태에서 게임 엔진·핸드 진행 검증 가능한 데모 모드 설계 |
 | 2026-04-17 | Web 배포 추가 | Flutter Web 빌드로 LAN 내 브라우저 접속 지원. §1.4 신설 |
 | 2026-04-21 | DEPRECATED | Demo Scenario scope 제외. Standalone 기획 과대로 철회 — 프로토타입은 `flutter run -d windows` 로 충분. |
+| 2026-05-07 | v4 cascade | DEPRECATED 유지. 본 문서는 v4.0 정체성 cascade 대상 아님 (이미 scope 제외). v4.0 정체성 (1×10 그리드 + 6 키 + 5-Act) 반영은 활성 정본/feature 문서에만 적용. |
 
 ---
 

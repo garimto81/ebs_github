@@ -13,6 +13,7 @@ last-updated: 2026-04-29
 | 2026-04-08 | 신규 작성 | 홀카드/보드 카드 감지, 카드 제거, 감지 실패 시나리오, 경우의 수 매트릭스 |
 | 2026-04-29 | §3.3 atomic 정렬 (CF-002+003) | Triggers_and_Event_Pipeline.md §1.4/§3.5 T9/§4.10 권위에 정렬. 1~2장 부분 감지 = PENDING (외부 미발행), CC-only FlopPartialAlert. 4번째 카드 = AWAITING_TURN 컨텍스트별 분기 |
 | 2026-04-29 | §1.1 안테나 시각화 (CF-005) | 24 안테나 물리 배치 Mermaid 다이어그램 추가 (좌석 20 + 보드 4) |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 카드 감지 결과는 v4.0 PlayerGrid (1×10 가로) SeatCell 행 6 (Hole cards face-down) 또는 TopStrip Community Board 5 슬롯 (FLOP 1·2·3 / TURN / RIVER) 에 표시. 안테나 → 이벤트 → UI 표시 경로 변화 없음 (UI 위치만 4 영역 위계 매핑). SSOT: `Command_Center_UI/Overview.md §3.0`. |
 
 ---
 
@@ -20,7 +21,9 @@ last-updated: 2026-04-29
 
 이 문서는 **게임 진행 중 카드가 감지/제거되는 모든 경우의 수**를 정의한다. RFID 안테나가 카드를 인식하면 `CardDetected` 이벤트가 발행되고, Game Engine이 해당 카드를 게임 상태에 반영한다.
 
-> **참조**: 트리거 경계는 `BS-06-00-triggers.md §3`, DeckFSM 상태는 `BS-04-01-deck-registration.md`, 수동 입력은 `BS-04-03-manual-fallback.md`
+> **v4.0 컨텍스트** (2026-05-07): 카드 감지 결과는 v4.0 4 영역 위계 중 **PlayerGrid (1×10) SeatCell 행 6 (Hole cards face-down)** 또는 **TopStrip (158px) 중앙 Community Board 5 슬롯** (FLOP 1·2·3 / TURN / RIVER) 에 표시된다. 안테나 → 이벤트 발행 → UI 표시 경로는 v1.x 와 동일.
+
+> **참조**: 트리거 경계는 `BS-06-00-triggers.md §3`, DeckFSM 상태는 `BS-04-01-deck-registration.md`, 수동 입력은 `BS-04-03-manual-fallback.md`, v4.0 정체성은 `Command_Center_UI/Overview.md §3.0`.
 
 ---
 

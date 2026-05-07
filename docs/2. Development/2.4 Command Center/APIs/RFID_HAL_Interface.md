@@ -20,6 +20,7 @@ drift_ignore_reason: "SG-011 OUT_OF_SCOPE — 프로토타입 범위 밖. single
 | 2026-04-08 | 신규 작성 | IRfidReader 인터페이스, 이벤트 타입, Mock HAL 사양, DI 교체, 테스트 케이스 |
 | 2026-04-10 | CCR-022 | §9~§13 — UART 생명주기, 안테나 튜닝 재시도, 펌웨어 감지, 다중 리더, ST25R3916 마이그레이션 |
 | 2026-04-15 | 개명 | `RFID_HAL_Legacy.md` → `RFID_HAL_Interface.md`. "Legacy" 네이밍이 실제 역할(인터페이스 계약서)을 왜곡하여 정정. frontmatter title/tier 갱신 |
+| 2026-05-07 | v4 cascade (derive) | 인터페이스 계약 자체는 변경 없음. derive 정합 — IRfidReader 이벤트가 CC v4.0 4 영역 위계 (StatusBar dot / PlayerGrid SeatCell 행 6 / TopStrip Community Board / Reader Panel AT-05) 에 dispatch 되는 매핑은 `RFID_HAL.md` (운영자 관점) 에 명시. SSOT: `../Command_Center_UI/Overview.md §3.0`. |
 
 ---
 

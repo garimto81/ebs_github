@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 10개 오버레이 요소 트리거/갱신/데이터 소스/가시성 상세 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 10 오버레이 요소의 활성/비활성 phase 는 5-Act 시퀀스 (Act 1 IDLE 정적 → Act 2~3 액션 라운드 = 대부분 요소 활성 → Act 4 Showdown = 핸드 공개 요소 → Act 5 Settlement = 팟 분배 요소) 에 동기. SSOT: `Sequences.md §"v4.0 5-Act → Overlay 매핑"`. |
 
 ---
 

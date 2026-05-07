@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-10 | 신규 작성 | 이중 출력(Backstage/Broadcast) + Delay Buffer + 설정/예외 (CCR-036) |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — Security Delay (홀카드 공개 지연) 는 5-Act 시퀀스의 Act 4 Showdown 진입 시 trigger (Backstage 즉시 공개, Broadcast 30~60초 지연). PRD §Ch.10 (Hole Card Visibility D7+R3 옵션화) 참조. SSOT: `Sequences.md §"v4.0 5-Act → Overlay 매핑"`. |
 
 ---
 

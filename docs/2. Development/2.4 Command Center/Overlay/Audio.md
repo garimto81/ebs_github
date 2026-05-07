@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-10 | 신규 작성 | Multi-channel AudioPlayer 아키텍처 + 이벤트→사운드 매핑 (CCR-033) |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 사운드 trigger 는 5-Act 시퀀스의 Act 전환 (Act 2 PreFlop intro / Act 4 Showdown chime / Act 5 Settlement winning sfx) 또는 Act 3 내 액션 (Bet/Call/Fold sfx) 에 매핑. SSOT: `Sequences.md §"v4.0 5-Act → Overlay 매핑"`. |
 
 ---
 

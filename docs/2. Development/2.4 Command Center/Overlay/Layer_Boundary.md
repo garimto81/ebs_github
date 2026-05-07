@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-10 | 신규 작성 | Layer 1/2/3 경계 + Layer 1 자동화 정도 매트릭스 (CCR-035) |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — Layer 경계는 v4.0 5-Act 시퀀스와 무관 (Layer = Overlay 그래픽 계층 / Act = CC 운영자 인지 추상화). 단, Layer 1 자동화 요소는 5-Act trigger 와 동기. SSOT: `Sequences.md §"v4.0 5-Act → Overlay 매핑"`. |
 
 ---
 

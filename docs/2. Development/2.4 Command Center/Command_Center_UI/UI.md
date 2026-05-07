@@ -15,6 +15,7 @@ last-updated: 2026-04-15
 | 2026-04-14 | 좌석 번호 재정의 | S1~S10 시계방향(D 왼쪽=S1, D 오른쪽=S10), SB/BB 언급 제거(포지션은 로테이션 개념으로 분리), HTML 목업 캡처 삽입 |
 | 2026-04-14 | 화면 4 단순화 | 키패드 0 옆에 000 인접 배치, ALL-IN을 BET 상단에 우측 세로 버튼 스택으로 이동, C 버튼 제거(← 롱프레스로 전체 삭제 대체) |
 | 2026-05-06 | **§Visual Uplift 신설** (B-team4-011) | React 디자인 시안 critic 판정 결과 시각 자산 7종 (V1~V7) 흡수 결정. StatusBar 통합 / MiniDiagram / SeatCell 7행 / ACTING glow 정책 추가. SSOT: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md`. D7 / 통신 / HandFSM 가드 4개 강제. |
+| 2026-05-07 | **v4 정체성 정합** | CC_PRD v4.0 cascade — 1×10 그리드 + 6 키 + 4 영역 위계 + 5-Act 시퀀스 반영. §"v4.0 정체성" 신설. 구 §"CC 레이아웃 3영역"/§"화면 1: 메인 화면"/§"화면 4: 금액 입력" 의 v1.x 타원형/8 버튼 기술은 layout/structure 만 archive 마킹 (색상은 무시 — Lobby B&W refined minimal 톤이 최종). SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0. |
 
 ---
 
@@ -39,7 +40,105 @@ Command Center(CC)는 운영자가 포커 핸드를 실시간 진행하는 Flutt
 
 ---
 
-## CC 레이아웃 3영역
+## v4.0 정체성 (2026-05-07 신설, SSOT)
+
+> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. 본 §이 *layout / structure / interaction* 측면에서 아래 §"CC 레이아웃 3영역" 이하 v1.x 와이어프레임을 *override* 한다. **색상은 무시** — PRD v4.0 스크린샷은 다크 broadcast 톤이지만 EBS 최종은 Lobby B&W refined minimal 톤.
+
+### 4 영역 위계 (StatusBar / TopStrip / PlayerGrid / ActionPanel)
+
+```
++-------------------------------------------------+
+|  StatusBar  (52px)                              |
+|  - ●BO ●RFID ●Engine | Op | Table || Hand #    |
+|  - PHASE | Blinds | Lvl | Players ratio        |
++-------------------------------------------------+
+|  TopStrip   (158px)                             |
+|  - 좌(MiniDiagram + POT) | 중(Community Board)  |
+|  - 우(ACTING / SHOWDOWN / HAND OVER 박스)       |
+|  - 하단 32px: KeyboardHintBar (6 키 칩)         |
++-------------------------------------------------+
+|  PlayerGrid (가변 1fr, 1×10 가로 그리드) ★      |
+|  - 선수 10명을 가로 한 줄에 정렬                 |
+|  - 각 셀 = 9 행 stacked                         |
+|    (Acting / S# / Pos / Flag / Name /          |
+|     HoleCards face-down / Stack / Bet / Last)  |
+|  - 타원형 테이블 폐기                           |
++-------------------------------------------------+
+|  ActionPanel (124px)                            |
+|  [N] [F] [C] [B] [A] [M]  + Numpad slide-up    |
+|  - 6 키 동적 매핑 (phase 별 의미 자동 전환)      |
++-------------------------------------------------+
+```
+
+### 1×10 가로 그리드 (PlayerGrid)
+
+```
+S1   S2   S3   S4   S5   S6   S7   S8   S9   S10
+─────────────────────────────────────────────────
+[셀] [셀] [셀] [셀] [셀] [셀] [셀] [셀] [셀] [셀]
+ ↑ 9 행 stacked 구조 — 한 셀 = 한 사람의 전체 상태
+
+각 셀의 9 행 (위 → 아래):
+ 1. ACTING / WAITING / FOLD / DELETE strip
+ 2. Seat # (S1~S10, 큰 글씨)
+ 3. Position (STRADDLE / SB·BB / D + ‹ › shift 화살표)
+ 4. Country flag
+ 5. Player name
+ 6. Hole cards 2장 (face-down `?` — D7 강제, 값 비노출)
+ 7. Stack ($)
+ 8. Bet ($)
+ 9. Last action (FOLD / CALL / BET / RAISE / ALL-IN)
+```
+
+> **공간 관계 회복**: 1×10 그리드로 잃은 oval 공간 관계는 TopStrip 좌측 MiniDiagram (V3) + Position Shift Arrows (V4) 로 보강.
+
+### 6 키 의미 카탈로그 (N · F · C · B · A · M)
+
+| 키 | 명칭 | IDLE | PRE_FLOP / FLOP / TURN / RIVER | SHOWDOWN / HAND_COMPLETE |
+|:--:|------|:----:|:------------------------------:|:------------------------:|
+| **N** | Next / Finish | START HAND | (disabled) | FINISH HAND |
+| **F** | Fold | (disabled) | FOLD | (disabled) |
+| **C** | Call / Check | (disabled) | CHECK *or* CALL (auto-switch) | (disabled) |
+| **B** | Bet / Raise | (disabled) | BET *or* RAISE (auto-switch) | (disabled) |
+| **A** | All-in | (disabled) | ALL-IN | (disabled) |
+| **M** | Menu / Manual (Miss Deal) | (disabled) | Miss Deal | (disabled) |
+
+**자동 전환 룰 (C/B 키)**:
+- `biggestBet == playerBet` → **CHECK**
+- `biggestBet > playerBet` → **CALL**
+- `biggestBet == 0` → **BET**
+- `biggestBet > 0` → **RAISE**
+
+Numpad (BET/RAISE 입력) 은 **B 키** 누르면 화면 하단에 슬라이드 업. 0 / 000 / `<-` 인접 배치 (천 단위 빠른 입력).
+
+### 5-Act 시퀀스 (HandFSM 9-state 의 의미 묶음)
+
+| Act | 단계 | 9-state | CC 화면 변화 | 6 키 활성 |
+|:---:|------|---------|--------------|-----------|
+| 1 | IDLE | IDLE | StatusBar PHASE = "IDLE", PlayerGrid 정적 | N |
+| 2 | PreFlop | SETUP_HAND → PRE_FLOP | 블라인드 수거 → 홀카드 분배 → action_on 펄스 | F·C·B·A·M |
+| 3 | Flop / Turn / River | FLOP → TURN → RIVER | Community Board 슬롯 채움, 폴드 반투명 | F·C·B·A·M |
+| 4 | Showdown | SHOWDOWN | 승자 강조, 핸드 공개 | (viewing) |
+| 5 | Settlement | HAND_COMPLETE | 팟 분배 애니메이션, 스택 갱신 | N (FINISH HAND) |
+
+> **참조**: PRD §Ch.6 (HandFSM lifecycle), `Hand_Lifecycle.md` (5-Act ↔ 9-state 정합).
+
+### v1.x ↔ v4.0 변경 매트릭스
+
+| 항목 | v1.x (archive) | v4.0 (current) |
+|------|---------------|----------------|
+| 좌석 배치 | 타원형 360° 분포 | **1×10 가로 그리드** |
+| ActionPanel | 8 분리 버튼 (NEW/DEAL/FOLD/CHECK/BET/CALL/RAISE/ALL-IN) | **6 키 동적 매핑** (N·F·C·B·A·M) |
+| 단축키 | 8 키 (N·D·F·C·B·R·A·Ctrl+Z) | **6 키 + Ctrl+Z** (D 키 폐기, R 키 → B 통합) |
+| 영역 수 | 3 영역 (StatusBar / Table / Action) | **4 영역** (StatusBar / TopStrip / PlayerGrid / ActionPanel) |
+| 공간 관계 | oval 시각으로 직접 | **MiniDiagram (V3) + Position Shift (V4) 보강** |
+| Phase 전이 | 9-state 직접 노출 | **5-Act 추상화** (UI level) |
+
+---
+
+## [archive — v1.x] CC 레이아웃 3영역
+
+> ⚠️ **Archive (v1.x)**: 본 §은 v4.0 §"4 영역 위계" (StatusBar 52px / TopStrip 158px / PlayerGrid 가변 / ActionPanel 124px) 으로 *override* 됨. 인용 금지.
 
 모든 화면에서 상단 바는 고정이다. 중앙 영역만 화면별로 변경된다.
 
@@ -77,7 +176,9 @@ Command Center(CC)는 운영자가 포커 핸드를 실시간 진행하는 Flutt
 
 ---
 
-## 화면 1: 메인 화면 (테이블 + 액션)
+## [archive — v1.x] 화면 1: 메인 화면 (테이블 + 액션)
+
+> ⚠️ **Archive (v1.x)**: 본 §은 v4.0 §"4 영역 위계" + §"1×10 가로 그리드" + §"6 키 의미 카탈로그" 로 *override* 됨. 좌석 배치는 oval 360° 분포가 아닌 **1×10 가로 그리드** (PlayerGrid). 액션 패널은 8 분리 버튼이 아닌 **6 키 동적 매핑** (N·F·C·B·A·M).
 
 CC의 기본 화면. 핸드 진행의 모든 것이 여기에 표시된다.
 

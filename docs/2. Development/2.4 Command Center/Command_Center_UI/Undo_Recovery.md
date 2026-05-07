@@ -12,6 +12,7 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-08 | 신규 작성 | Undo 5단계, Event Sourcing 기반, 에러 복구 시나리오, 유저 스토리 10개 |
 | 2026-04-13 | UI-02 redesign | Undo 5단계 제한 제거 → 무제한 (현재 핸드 내), 10개/페이지 페이지네이션 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — Undo 는 **5-Act 시퀀스** (Act 1 IDLE → Act 2 PreFlop → Act 3 Flop/Turn/River → Act 4 Showdown → Act 5 Settlement) 중 Act 2~3 액션에 한해 가능 (Act 4 SHOWDOWN 진입 후 보호). Ctrl+Z 단축키는 6 키 외 별도 (v4.0 6 키 카탈로그에 포함되지 않음). SSOT: `Hand_Lifecycle.md §"5-Act 시퀀스"`. |
 
 ---
 
@@ -19,7 +20,9 @@ last-updated: 2026-04-15
 
 CC는 Event Sourcing 아키텍처를 사용하여 모든 게임 이벤트를 순서대로 기록한다. Undo는 이 이벤트 로그에서 마지막 이벤트를 되돌려 이전 상태를 복원하는 기능이다. 현재 핸드 내에서 무제한 Undo가 가능하다.
 
-> 참조: BS-00 §6 이벤트 명명 규약, BS-06-00-triggers.md §2.1 Undo 이벤트
+> **v4.0 컨텍스트** (2026-05-07): Undo (Ctrl+Z) 는 v4.0 5-Act 시퀀스의 **Act 2~3 (PreFlop / Flop / Turn / River) 액션** 에 한해 가능하다. Act 4 (Showdown) 진입 후 핸드 결과 보호 — Undo 차단. Ctrl+Z 는 v4.0 6 키 (N·F·C·B·A·M) 외 별도 단축키.
+
+> 참조: BS-00 §6 이벤트 명명 규약, BS-06-00-triggers.md §2.1 Undo 이벤트, `Hand_Lifecycle.md §"5-Act 시퀀스"`.
 
 ---
 
