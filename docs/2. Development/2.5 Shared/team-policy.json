@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft-07/schema#",
   "version": "9.5",
   "previous_version": "9.3",
-  "description": "EBS V9.5 Single Session AI-Centric. Hub-and-Spoke 폐기 (V9.4 critic 결과 반영). Conductor 단일 session + Agent Teams in-process 모델. 사용자 입력 0 + 결과물 중심주의. 외부 인계 후 governance 폐기 가능.",
+  "description": "EBS 거버넌스 분리 구조의 운영 SSOT. 진입점 = root CLAUDE.md v1.0.0 (5 섹션 미니멀). 본 파일 = v9.5 Single Session AI-Centric (Hub-and-Spoke 폐기 후 Conductor 단일 session + Agent Teams in-process). 멀티세션 spec = docs/4. Operations/Multi_Session_Design_v10.3.md (도구 ACTIVE 5개 + TBD 5개, §11 Implementation Status). 사용자 입력 0 + 결과물 중심주의. 외부 인계 후 governance 폐기 가능.",
   "governance_model": {
     "name": "single_session_ai_centric_output_focused",
     "version": "v9.5",
@@ -122,6 +122,7 @@
       ],
       "_ssot_priority_note": "v9.3 M4 해소 (2026-04-29): 두 SSOT 가 충돌할 때 위 순서로 우선. Foundation 이 최상위 — 기획 의도. team-policy 가 거버넌스 정책. 하위는 contract / backlog.",
       "tie_breaker_tool": "tools/conflict_resolver.py",
+      "_tie_breaker_tool_status": "TBD — tools/conflict_resolver.py 미구현. 현재는 tie_breaker_logic 4-Step 을 Conductor 가 수동 적용 (SSOT lookup → win-win → priority → user). 활성화 조건 = 도구 구현 PR + Multi_Session_Design_v10.3.md §11 ACTIVE 전환",
       "tie_breaker_logic": "v7.5 4-Step Decision (lookup → win-win → priority → user)",
       "rationale": "충돌 해결 임의 시도 금지. PR 에 conflict 라벨 + Conductor 알림. Conductor 가 SSOT 우선순위 기반 직접 rebase + 해결. tie 시 conflict_resolver 4-Step + 최종 사용자 escalation."
     },
