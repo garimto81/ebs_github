@@ -39,26 +39,58 @@ def load_team():
 
 
 def check_dependency(team):
-    """blocked_by 모두 merged 인지 확인"""
-    for upstream in team.get('blocked_by', []):
+    """git log origin/main 에서 upstream Stream init commit 확인 (인덱스 의존 X)
+
+    GitHub 라벨 검색 인덱스는 catch-up 지연 가능 (30분+).
+    git commit log 는 fetch 직후 즉시 정확.
+    """
+    if not team.get('blocked_by'):
+        return True
+
+    # origin/main 최신 fetch
+    subprocess.run(['git', 'fetch', 'origin', 'main'], capture_output=True, timeout=30)
+
+    for upstream in team['blocked_by']:
+        # main commit log 에서 [SX] 또는 feat(SX) 패턴 검색
         result = subprocess.run([
-            'gh', 'pr', 'list',
-            '--label', f'stream:{upstream}',
-            '--state', 'all',
-            '--limit', '5',
-            '--json', 'state,labels'
-        ], capture_output=True, text=True)
-        if result.returncode != 0:
-            return True  # gh CLI 없으면 통과
-        prs = json.loads(result.stdout)
-        # initialization 또는 작업 PR이 머지된 것 검색
-        merged = [p for p in prs if p.get('state') == 'MERGED']
-        if not merged:
+            'git', 'log', 'origin/main',
+            f'--grep=\\[{upstream}\\]',
+            f'--grep=feat({upstream})',
+            '--oneline', '-5'
+        ], capture_output=True, text=True, timeout=15)
+
+        if not result.stdout.strip():
+            # Fallback: GitHub PR list (인덱스 catch-up 후 작동)
+            fallback = subprocess.run([
+                'gh', 'pr', 'list', '--state', 'merged', '--limit', '30',
+                '--json', 'title,number,labels'
+            ], capture_output=True, text=True, timeout=30)
+            if fallback.returncode == 0:
+                try:
+                    prs = json.loads(fallback.stdout)
+                    for pr in prs:
+                        title_match = f'[{upstream}]' in pr.get('title', '')
+                        label_match = any(
+                            l.get('name') == f'stream:{upstream}'
+                            for l in pr.get('labels', [])
+                        )
+                        if title_match or label_match:
+                            print(f"  ✓ {upstream} merged via PR #{pr['number']} (fallback)")
+                            return True
+                except json.JSONDecodeError:
+                    pass
+
             sys.stderr.write(
-                f"⛔ BLOCKED by {upstream}. No merged PR with stream:{upstream} label.\n"
-                f"   Wait for {upstream} session to run team_session_start.py first.\n"
+                f"⛔ BLOCKED by {upstream}.\n"
+                f"   No commit matching [{upstream}] or feat({upstream}) in origin/main.\n"
+                f"   Wait for {upstream} to run team_session_start.py first.\n"
             )
             return False
+
+        # commit found
+        commit = result.stdout.strip().split('\n')[0]
+        print(f"  ✓ {upstream} merged: {commit[:80]}")
+
     return True
 
 
