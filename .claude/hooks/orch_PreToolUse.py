@@ -144,6 +144,23 @@ def main():
     except Exception:
         sys.exit(0)
 
+    # 결함 #138 fix: 런타임 worktree_path mismatch 감지 (mid-session contamination 차단)
+    # SessionStart 시점엔 OK 였더라도, 세션 도중 다른 stream 의 .team 으로 덮어쓰여지면
+    # 후속 Edit/Write 가 잘못된 scope_owns 로 평가되어 작업이 다른 stream 영역에 누출될 위험.
+    expected_path = (team_data.get('worktree_path') or '').rstrip('/').replace('\\', '/')
+    repo_root = get_repo_root()
+    actual_path = str(repo_root.resolve()).rstrip('/').replace('\\', '/')
+    if expected_path and actual_path.lower() != expected_path.lower():
+        sys.stderr.write(
+            f"⛔ BLOCK: .team contamination detected (mid-session race).\n"
+            f"   .team team_id        = {team_data.get('team_id')}\n"
+            f"   .team worktree_path  = {expected_path}\n"
+            f"   actual worktree path = {actual_path}\n"
+            f"   → 다른 stream 의 .team 이 이 워크트리를 덮어썼습니다.\n"
+            f"   복구: 올바른 .team 재작성 (setup_stream_worktree.py 재실행) 후 재시도.\n"
+        )
+        sys.exit(2)
+
     # 대상 파일 추출
     inputs = tool_input.get('tool_input', {})
     target = inputs.get('file_path') or inputs.get('path')
