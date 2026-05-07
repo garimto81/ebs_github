@@ -12,13 +12,13 @@ tier: generated
 |------|------|-------|------|--------|
 | `docs/1. Product/1. Product.md` | 1. Product | conductor | internal | - |
 | `docs/1. Product/Back_Office_PRD.md` | Back Office — 보이지 않는 뼈대 | conductor | external | - |
-| `docs/1. Product/Command_Center_PRD.md` | Command Center — 운영자가 매 순간 머무는 조종석 | conductor | external | - |
+| `docs/1. Product/Command_Center_PRD.md` | Command Center — 운영자가 머무는 조종석 (v4.0) | conductor | external | - |
 | `docs/1. Product/Foundation.md` | EBS 기초 기획서 | conductor | internal | - |
 | `docs/1. Product/Game_Rules/Betting_System.md` | Betting System | conductor | external | PRD-GAME-04 |
 | `docs/1. Product/Game_Rules/Draw.md` | Draw | conductor | external | PRD-GAME-02 |
 | `docs/1. Product/Game_Rules/Flop_Games.md` | Flop Games | conductor | external | PRD-GAME-01 |
 | `docs/1. Product/Game_Rules/Seven_Card_Games.md` | Seven Card Games | conductor | external | PRD-GAME-03 |
-| `docs/1. Product/Lobby_PRD.md` | Lobby — 모든 테이블을 내려다보는 관제탑 | conductor | external | - |
+| `docs/1. Product/Lobby_PRD.md` | EBS Lobby — 5 화면 시퀀스 + WSOP LIVE 정보 허브 | stream:S2 (Lobby) | external | - |
 | `docs/1. Product/References/PokerGFX_Reference.md` | PokerGFX Reference | conductor | internal | - |
 | `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` | WSOP Production Structure Analysis | conductor | internal | - |
 | `docs/1. Product/archive/Foundation_v41.0.0.md` | Foundation | conductor | internal | - |
@@ -110,6 +110,7 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-skin-editor.prd.md` | prd-skin-editor.prd | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` | ui-feature-verification-workflow | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md` | UI | team1 | internal | UI-04 |
+| `docs/2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S1-lobby-identity-cascade-2026-05-07.md` | NOTIFY-S1 — Lobby 정체성 정정 cascade (Foundation §5.1 영향) | stream:S2 (Lobby) → notify stream:S1 (Foundation) | notify | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md` | Chip Management | team1 | feature | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Clock_Control.md` | Clock Control | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Event_and_Flight.md` | Event and Flight | team1 | internal | BS-02-02 |
@@ -316,6 +317,7 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-009-foundation-medium-reference-updates.md` | Foundation 재설계 P2 — MEDIUM 일괄 참조·주석 보강 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` | Foundation 재설계 P3 — LOW 링크·참조 갱신 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md` | CC Visual Uplift — React 프로토타입 시각 자산 7종 흡수 (D7 보안 유지) | team4 | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-cc-identity-cascade-2026-05-07.md` | NOTIFY-S1 — CC v4.0 정체성 cascade가 Foundation §Ch.5.4 에 영향 | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | S-11 Lobby Hand History 자동화 UI wiring 요청 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team2-S11-seeder-and-endpoints.md` | S-11 자동화 실행을 위한 BO seeder + endpoint 준비 요청 | - | - | - |
