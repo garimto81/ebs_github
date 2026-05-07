@@ -11,12 +11,15 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | DeckFSM 상태 전이, Real/Mock 등록 흐름, 진행률 UI, 실패 시나리오, 유저 스토리, 경우의 수 매트릭스 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 덱 등록 흐름 (DeckFSM) 은 v4.0 정체성 (1×10 그리드 + 6 키 + 5-Act) 과 무관한 사전 셋업 프로세스. 등록 결과 (52장 UID-카드 매핑) 는 게임 진행 시 PlayerGrid SeatCell 행 6 + TopStrip Community Board 5 슬롯에 face-down/up 표시. SSOT 변경 없음. |
 
 ---
 
 ## 개요
 
 덱 등록은 **52장 카드를 RFID UID와 매핑하는 전처리 과정**이다. 등록된 덱만 게임에 투입 가능하며, Mock 모드에서는 "자동 등록" 1클릭으로 가상 매핑을 즉시 생성한다.
+
+> **v4.0 컨텍스트** (2026-05-07): 덱 등록은 CC_PRD v4.0 정체성 (1×10 그리드 + 6 키 + 5-Act) 과 무관한 사전 셋업 프로세스. 등록 결과 (52장 UID ↔ 카드 매핑) 는 게임 진행 시 PlayerGrid SeatCell 행 6 (Hole cards face-down) + TopStrip Community Board 5 슬롯에 매핑되어 표시.
 
 > **참조**: DeckFSM 상태 정의는 `BS-00-definitions.md §3.5`, RFID 이벤트는 `BS-06-00-triggers.md §2.2`, HAL registerDeck()은 `API-03-rfid-hal-interface.md §2.1`
 

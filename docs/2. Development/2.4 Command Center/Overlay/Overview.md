@@ -13,6 +13,7 @@ last-updated: 2026-04-15
 | 2026-04-08 | 신규 작성 | Overlay 앱 정의, 데이터 흐름, Layer 구조, 출력 채널 |
 | 2026-04-14 | 프로세스 모델 정합 | §1 "별도 프로세스" → "동일 Flutter 앱 in-process" 수정 (API-04 §1.2 SSOT 정렬) |
 | 2026-04-14 | 요소 카운트 정합 | §3 보조 요소 3→2 (Lower Third는 Admin 수동 요소로 분류). Layer 1 8 + 보조 2 = 10종으로 BS-07-01 총괄표와 통일 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — Overlay 출력은 CC 의 **5-Act 시퀀스** (Act 1 IDLE → Act 2 PreFlop → Act 3 Flop/Turn/River → Act 4 Showdown → Act 5 Settlement) 에 동기화되어 시청자 화면에 그래픽을 trigger. CC ↔ Overlay 1:1 대응 보존, 5-Act 가 Overlay 시퀀스의 추상화 계층. SSOT: `Sequences.md §"v4.0 5-Act → Overlay 매핑"` (신설 예정), `../Command_Center_UI/Hand_Lifecycle.md §"5-Act 시퀀스"`. |
 
 ---
 
@@ -20,7 +21,9 @@ last-updated: 2026-04-15
 
 Overlay는 **시청자가 보는 방송 화면의 그래픽 출력 앱**이다. RFID로 읽은 카드 정보, 운영자가 입력한 액션, Game Engine이 계산한 승률을 실시간으로 시각화하여 방송 화면 위에 겹쳐 표시한다.
 
-> **참조**: 용어·상태 정의는 `BS-00-definitions.md`, Enum 값 상세는 `BS-06-00-REF-game-engine-spec.md`
+> **v4.0 컨텍스트** (2026-05-07): Overlay 출력은 CC 의 **5-Act 시퀀스** (Act 1~5) 에 동기화. Act 별 Overlay 시퀀스 매핑은 `Sequences.md §"v4.0 5-Act → Overlay 매핑"` 참조. CC ↔ Overlay 1:1 대응은 v4.0 정체성 (1×10 그리드 / 6 키 / 4 영역 위계) 과 무관 — Overlay 는 시청자 화면이지 운영자 화면이 아님.
+
+> **참조**: 용어·상태 정의는 `BS-00-definitions.md`, Enum 값 상세는 `BS-06-00-REF-game-engine-spec.md`, 5-Act 시퀀스는 `../Command_Center_UI/Hand_Lifecycle.md`.
 
 ---
 

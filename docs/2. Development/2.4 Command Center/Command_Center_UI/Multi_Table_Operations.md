@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-10 | 신규 작성 | 다중 테이블 운영 패턴 3가지 + 키보드 포커스 정책 (CCR-030, W7 해소) |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 각 CC 인스턴스가 **1×10 가로 그리드** PlayerGrid 를 사용. multi-table 모드에서 N 개의 1×10 그리드가 화면을 차지하므로 인지 부담이 v1.x 타원형 대비 변화 (가로 정렬 ↑, 공간 매핑 ↓). MiniDiagram (TopStrip 좌측) 이 multi-table 비교 시 핵심 보조 위젯. |
 
 ---
 
@@ -22,6 +23,39 @@ EBS는 **"1 CC = 1 Table = 1 Overlay"** 인스턴스 관계를 유지한다. 그
 - **1:N** = Operator : CC 인스턴스 (운영 관계)
 
 > **참조**: `BS-05-00 §10 운영 패턴`, `BS-02-lobby §운영자 할당`.
+
+---
+
+## v4.0 컨텍스트 (2026-05-07 신설)
+
+> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 — 1×10 가로 그리드 채택. multi-table 운영자가 화면을 분할할 때의 영향.
+
+### 1×10 그리드 multi-table 적용
+
+각 CC 인스턴스 (1 table) 는 화면 폭 720px+ 의 **1×10 가로 PlayerGrid** 를 차지. multi-table 모드 (1 운영자 : N CC) 에서 N 개의 그리드가 화면을 분할 또는 모니터 다중 사용.
+
+```
+┌─ Monitor A ─────────────────────────┐  ┌─ Monitor B ─────────────────────────┐
+│ CC #1 (Table F1)                    │  │ CC #2 (Table F2)                    │
+│ StatusBar (52px)                    │  │ StatusBar (52px)                    │
+│ TopStrip (158px) — MiniDiagram 핵심│  │ TopStrip (158px) — MiniDiagram 핵심│
+│ PlayerGrid 1×10                     │  │ PlayerGrid 1×10                     │
+│ ActionPanel (124px) — 6 키          │  │ ActionPanel (124px) — 6 키          │
+└─────────────────────────────────────┘  └─────────────────────────────────────┘
+```
+
+| 측면 | v1.x (oval) | v4.0 (1×10) |
+|------|-------------|--------------|
+| 화면 분할 효율 | 정사각형 oval로 폭 낭비 | **가로 길쭉, 모니터 가로 분할 친화** |
+| 좌석 비교 | oval 외주 따라 시선 | **가로 정렬로 즉시 비교** |
+| 공간 매핑 | 실 oval 과 1:1 | **MiniDiagram 의존 ↑** (V3) |
+| ACTING 좌석 식별 | oval 위치 + glow | **가로 위치 + glow + ACTING 박스** (V6+V9) |
+
+### 운영자 인지 부담
+
+multi-table 모드에서 6 키는 *현재 포커스된 CC* 만 활성. 키 매핑은 모든 CC 동일 (N·F·C·B·A·M) — 운영자가 CC 간 전환해도 *같은 손가락 위치 = 같은 의미* 유지. 자세한 키보드 포커스 정책은 본 문서 하단 §"키보드 포커스 정책" 참조.
+
+> **참조**: `Overview.md §3.0` (4 영역 위계), `Action_Buttons.md §"v4.0 6 키 매핑"`.
 
 ---
 

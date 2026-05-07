@@ -14,12 +14,15 @@ last-updated: 2026-04-15
 | 2026-04-13 | UI-02 redesign | Hand History Winner/Loser 표시 변경, 10핸드/페이지, Session/Total Hands 추가 |
 | 2026-04-15 | 역할 재정의 | CC 는 통계를 **계산하지 않는다**. engine(team3) 이 계산한 값을 수신·표시·방송송출 트리거만 담당. 계산식 섹션 삭제, 통신 스키마·UI 바인딩으로 재작성 |
 | 2026-04-21 | Hand History 공유 | Lobby `Hand_History.md` §2.3 Player Hand Stats 가 동일 engine 통계를 재사용함을 명시. CC AT-04 와 Lobby Hand History 는 동일 source(team3 engine), 동일 계산식, 다른 표시 컨텍스트 (CC=실시간 운영, Lobby=조회/분석). decision_owner: team3 engine (계산식 SSOT) (Migration Plan Phase 4) |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — AT-04 Statistics 화면은 4 영역 위계 (StatusBar / TopStrip / PlayerGrid / ActionPanel) 외부 modal 로 호출 (StatusBar 우측 메뉴 진입). 1×10 그리드와 무관한 통계 표 layout 유지. SSOT: `Overview.md §3.0`. |
 
 ---
 
 ## 개요
 
 AT-04는 운영자가 현재 테이블의 플레이어 통계와 핸드 히스토리를 실시간 확인하고, **방송용 통계 GFX** 의 송출 여부를 제어하는 화면이다.
+
+> **v4.0 컨텍스트** (2026-05-07): AT-04 화면은 v4.0 4 영역 위계 (StatusBar / TopStrip / PlayerGrid / ActionPanel) 외부 modal 로 호출되며, StatusBar 우측 메뉴에서 진입한다. 본 화면 자체 layout 은 v1.x 그대로 유지 (1×10 그리드와 무관).
 
 **역할 경계 (중요)**: CC 는 통계를 **계산하지 않는다**. 모든 수치(VPIP, PFR, 3Bet, AF, WTSD, Hands count) 는 team3 Game Engine 이 핸드 이벤트로부터 파생·집계한다. CC 는:
 

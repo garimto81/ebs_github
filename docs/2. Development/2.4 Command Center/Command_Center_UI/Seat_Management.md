@@ -14,6 +14,7 @@ last-updated: 2026-04-15
 | 2026-04-13 | UI-02 redesign | 좌석 S1~S10 변경, 인라인 편집(좌석 상세 패널 대체), 국기/Equity 위젯 요소 추가 |
 | 2026-04-21 | §2.3 딜러 배정/재지정 신설 | 기존 §1.1/§5.3 의 dealer 관련 문장이 흩어져 있어 "초기 빈 테이블 → BTN 없음 → NEW HAND canStartHand=false" 미정의. 3-mechanism 명세 (auto-assign on first seat / position-chip click re-assign / hand-complete auto-rotate) + Edge Case 4 건. Type B 기획 공백 해소. critic 반박 5 (렌더링 책임) 반영 — Heads-up 등 포커 규약 연산은 Game Engine 책임, CC UI 는 `dealerSeatProvider` 시각화만 |
 | 2026-05-06 | **§Visual Uplift 신설** (B-team4-011 V4·V5) | PositionShiftChip (D/SB/BB/STR ‹ ›) UX + SeatCell 7행 컬럼 레이아웃 도입. 기존 §1.1 표 (6개 표시 항목) 을 7행 그리드로 시각 재배치. hole card 행은 face-down 만 (D7 유지). SSOT: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md`. |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 좌석 배치를 **타원형 360° 분포에서 1×10 가로 그리드** 로 전환. SeatCell 은 9 행 stacked 구조 (V5 의 7 행 + 1행 ACTING strip + 8행 BET = 9 행). §"v4.0 1×10 그리드 + SeatCell 9 행" 신설. SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0 §Ch.4. |
 
 ---
 
@@ -22,6 +23,72 @@ last-updated: 2026-04-15
 CC 테이블 영역의 10좌석(Seat 1~10)은 타원형 테이블 둘레에 배치된다. 각 좌석에 플레이어 이름, 스택, 카드, 상태가 표시되며, 운영자는 좌석 배치·이동·등록·퇴장을 관리한다.
 
 > 참조: BS-00 §3.3 Seat 상태 (SeatFSM), BS-02-lobby §Table Management
+
+---
+
+## v4.0 1×10 그리드 + SeatCell 9 행 (2026-05-07 신설, SSOT)
+
+> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. 좌석 배치를 oval 360° 분포에서 **1×10 가로 그리드** 로 전환. 본 §이 §1 이하 oval 좌석 배치 기술을 *override* 한다 (v1.x 기술은 archive 보존).
+
+### 1×10 가로 그리드 구조
+
+```
+S1   S2   S3   S4   S5   S6   S7   S8   S9   S10
+─────────────────────────────────────────────────
+[셀] [셀] [셀] [셀] [셀] [셀] [셀] [셀] [셀] [셀]
+
+- 화면 폭을 가로 10 등분 (또는 가변 1fr × 10)
+- 각 셀 = 9 행 stacked (한 사람의 전체 상태)
+- ACTING 좌석은 cell border accent + glow 펄스 (V6)
+- 빈 좌석은 EMPTY + S{n} + "+ ADD PLAYER" 표시 (V12)
+```
+
+### SeatCell 9 행 카탈로그 (V5 7행 + ACTING strip + BET = 9행)
+
+| 행 | 정보 | 클릭 동작 | 비고 |
+|:-:|------|-----------|------|
+| 1 | Acting strip (ACTING / WAITING / FOLD / ✕ DELETE) | (read-only, pre-hand 시 DELETE 가능) | V15 — Pre-hand DELETE strip |
+| 2 | Seat # (S1~S10, 큰 글씨) | tap → 좌석 비우기 (pre-hand 만) | |
+| 3 | Position block (3 sub-rows: STRADDLE / SB·BB / D + ‹ › 화살표) | 화살표로 D/SB/BB/STR 좌·우 이동 | V4 — Position Shift Arrows |
+| 4 | Country flag | tap → FieldEditor (국기 선택) | |
+| 5 | Name | tap → FieldEditor (텍스트) | |
+| 6 | Hole cards 2장 | **face-down only** (D7 강제, 값 비노출) | R3 옵션 ON 시 face-up 가능 |
+| 7 | Stack ($) | tap → FieldEditor (숫자) | mono 폰트 |
+| 8 | Bet ($) | tap → FieldEditor (숫자) | |
+| 9 | Last action (FOLD/CALL/BET 등) | tap → 강제 override | |
+
+> ★ **9 행의 모든 정보가 클릭 한 번으로 편집 가능**. 본방송 운영 중 키보드 ↔ 마우스 왕복이 사라진다.
+
+### 공간 관계 회복 위젯
+
+1×10 그리드로 잃은 *실 oval 공간 관계* 는 다음으로 회복:
+
+| 위젯 | 위치 | 역할 |
+|------|------|------|
+| **MiniDiagram (V3)** | TopStrip 좌측 | 작은 oval + 10 dots + D/SB/BB 뱃지 — *전체 공간 흐름* 한눈 |
+| **Position Shift Arrows (V4)** | SeatCell 행 3 | D/SB/BB/STR 좌·우 즉시 이동 — *물리 좌석 → 포지션* mapping 시각화 |
+| **ACTING glow + 박스 (V6+V9)** | SeatCell + TopStrip 우측 | 가로 10 셀 중 어디에 액션 있는지 즉시 식별 |
+
+### v1.x 좌석 배치 ↔ v4.0 1×10 매트릭스
+
+| 측면 | v1.x (oval 360°) | v4.0 (1×10 가로) |
+|------|------------------|-------------------|
+| 좌석 배치 | D 하단 중앙, S1~S10 시계방향 분포 | **가로 한 줄, S1 좌측 → S10 우측** |
+| 좌우 대칭 | S1↔S10, S2↔S9, ..., S5↔S6 (D 수직 중심) | (해당 없음 — 단순 순차) |
+| 공간 인지 | 실 카지노 oval 과 1:1 | **순차 번호 인지** (인지 모드 단순화) |
+| 정보 밀도 | 4-6 항목 표시 | **9 행 stacked** |
+| ACTING 식별 | oval 위치 + glow | **가로 위치 + glow + ACTING 박스** |
+
+### 자매 문서 정합
+
+- `Overview.md §3.0` — 4 영역 위계
+- `Action_Buttons.md` — 6 키 매핑
+- `Player_Edit_Modal.md` — 1×10 그리드에서 선수 편집 흐름
+- `RFID_Cards/Overview.md` — Reader Panel 정체성
+
+### [archive — v1.x] 좌석 배치 (oval)
+
+> ⚠️ **Archive**: 본 §"개요" 의 "타원형 테이블 둘레에 배치" 기술은 v4.0 §"v4.0 1×10 그리드" 로 *override* 됨. §1 이하 oval 좌석 배치 기술은 v1.x archive 로 보존 (다음 메이저 정리에서 제거 예정).
 
 ---
 

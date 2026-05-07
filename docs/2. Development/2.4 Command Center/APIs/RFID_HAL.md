@@ -15,6 +15,7 @@ reimplementability_notes: "BS-04-04 RFID HAL Operator 동작 명세 완결"
 |------|------|------|
 | 2026-04-08 | 신규 작성 | HAL 초기화, 상태 표시, Real/Mock 전환, 에러 대응 가이드 |
 | 2026-04-15 | 자매 문서 개명 반영 | 인터페이스 계약 문서가 `RFID_HAL_Legacy.md` → `RFID_HAL_Interface.md` (API-03) 로 변경됨. 본 문서의 모든 "API-03" 참조는 해당 파일로 연결 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — RFID HAL 의 IRfidReader 이벤트는 CC 의 v4.0 4 영역 위계 (StatusBar dot ●RFID + PlayerGrid SeatCell 행 6 face-down + TopStrip Community Board) 에 dispatch. Reader Panel (Register Screen AT-05) 인터페이스는 본 HAL 위에서 동작하며, 등록된 deck 매핑은 게임 진행 시 PlayerGrid 9 행 stacked 행 6 (Hole cards face-down) 에 face-down 표시. SSOT: `../Command_Center_UI/Overview.md §3.0`. |
 
 ---
 
@@ -22,7 +23,13 @@ reimplementability_notes: "BS-04-04 RFID HAL Operator 동작 명세 완결"
 
 이 문서는 `RFID_HAL_Interface.md` (API-03) 의 **운영자 관점 행동 명세**다. 운영자가 알아야 할 RFID HAL 동작(초기화, 상태 확인, 에러 대응, 모드 전환)을 기술한다. 인터페이스 계약의 기술 상세(`IRfidReader` 시그니처, 이벤트, 에러 코드)는 API-03 을 참조한다.
 
-> **참조**: 인터페이스 계약 정본은 `RFID_HAL_Interface.md` (API-03), 모드 정의는 `BS-00-definitions.md §9`, 이벤트 합성은 `BS-06-00-triggers.md §4`
+> **v4.0 컨텍스트** (2026-05-07): RFID HAL 의 IRfidReader 이벤트 (CardDetected / CardRemoved / DeckRegistered / RfidReaderStatus) 는 CC 의 v4.0 4 영역 위계에 다음과 같이 dispatch:
+> - **StatusBar (52px) 좌측**: ●RFID dot 색상/펄스 (RfidReaderStatus 매핑)
+> - **PlayerGrid (1×10) SeatCell 행 6**: Hole cards face-down 표시 (CardDetected 시 분배 인지)
+> - **TopStrip (158px) Community Board 5 슬롯**: FLOP 1·2·3 / TURN / RIVER 카드 face-up
+> - **Reader Panel (AT-05)**: 별도 셋업 화면 — DeckRegistered 결과를 deck SSOT 에 저장
+
+> **참조**: 인터페이스 계약 정본은 `RFID_HAL_Interface.md` (API-03), 모드 정의는 `BS-00-definitions.md §9`, 이벤트 합성은 `BS-06-00-triggers.md §4`, v4.0 정체성은 `../Command_Center_UI/Overview.md §3.0`.
 
 ---
 

@@ -12,6 +12,7 @@ last-updated: 2026-04-15
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 8개 액션 버튼 완전 명세, HandFSM×버튼 매트릭스, 베팅 구조별 금액 범위 |
 | 2026-04-13 | UI-02 redesign | Quick Preset/슬라이더 제거, 키패드 전용 입력, 자동 ALL-IN 전환 제거, 금액 검증 변경 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 8 분리 버튼을 **6 키 동적 매핑** (N·F·C·B·A·M) 으로 통합. §"v4.0 6 키 매핑 (SSOT)" 신설. 구 §1~§8 8 버튼 명세는 archive (각 버튼이 6 키의 어느 phase 슬롯에 매핑되는지는 §"v4.0 6 키 매핑" 표에 명시). |
 
 ---
 
@@ -30,6 +31,66 @@ CC 하단에 배치된 8개 액션 버튼은 운영자가 게임을 진행하는
 **동적 전환**: 게임 상태에 따라 버튼 라벨·활성 여부·표시 금액이 자동으로 변경된다. 예: biggest_bet_amt == 0이면 CHECK/BET 표시, > 0이면 CALL/RAISE 표시.
 
 ---
+
+## v4.0 6 키 매핑 (SSOT, 2026-05-07 신설)
+
+> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. ActionPanel 의 8 분리 버튼 (v1.x) 시대가 끝나고 **6 키 (5 게임 + 1 비상)** 의 시대가 시작된다. 같은 키, phase 에 따라 의미가 자동 전환 (Phase-aware).
+
+### 6 키 카탈로그
+
+| 키 | 명칭 | IDLE | PRE_FLOP / FLOP / TURN / RIVER | SHOWDOWN / HAND_COMPLETE | 분류 |
+|:--:|------|:----:|:------------------------------:|:------------------------:|:----:|
+| **N** | Next / Finish | START HAND | (disabled — "HAND IN PROGRESS") | FINISH HAND | lifecycle |
+| **F** | Fold | (disabled) | FOLD | (disabled) | 게임 액션 |
+| **C** | Call / Check | (disabled) | CHECK *or* CALL (auto-switch) | (disabled) | 게임 액션 |
+| **B** | Bet / Raise | (disabled) | BET *or* RAISE (auto-switch) | (disabled) | 게임 액션 |
+| **A** | All-in | (disabled) | ALL-IN | (disabled) | 게임 액션 |
+| **M** | Menu / Manual (Miss Deal) | (disabled) | Miss Deal | (disabled) | 비상 |
+
+### 자동 전환 룰 (C/B 키)
+
+```
+biggestBet == playerBet  →  CHECK   (콜할 게 없음, C 키)
+biggestBet >  playerBet  →  CALL    (맞춰야 함, C 키)
+biggestBet == 0          →  BET     (첫 베팅, B 키)
+biggestBet >  0          →  RAISE   (이미 베팅 있음, B 키)
+```
+
+### 8 버튼 (v1.x) → 6 키 (v4.0) 매핑
+
+| v1.x 8 버튼 | v4.0 6 키 | 매핑 근거 |
+|------------|-----------|----------|
+| NEW HAND | **N** (IDLE) | 핸드 시작 = N |
+| DEAL | (폐기) | createSession 시점에 auto HandStart + holecards (Engine §2.1) — DEAL 별도 호출 skip |
+| FOLD | **F** | 1:1 매핑 |
+| CHECK | **C** (biggestBet == playerBet) | C 키 자동 분기 |
+| CALL | **C** (biggestBet > playerBet) | C 키 자동 분기 |
+| BET | **B** (biggestBet == 0) | B 키 자동 분기 |
+| RAISE | **B** (biggestBet > 0) | B 키 자동 분기 (R 키 폐기) |
+| ALL-IN | **A** | 1:1 매핑 |
+| (신규) | **M** | Miss Deal / Manual 진입 (Menu) |
+| FINISH HAND | **N** (HAND_COMPLETE) | N 키 lifecycle 두 번째 슬롯 |
+| UNDO | **Ctrl+Z** | 별도 (6 키 외) |
+
+### Numpad (BET/RAISE 입력) — B 키 활성 시 슬라이드 업
+
+`B` 키를 누르면 화면 하단에 슬라이드 업. 0 / 000 / `<-` 인접 (천 단위 빠른 입력). 상세: `UI.md §화면 4` (archive — layout 만 참조).
+
+### 6 키의 가치
+
+> ★ *같은 키 = 같은 손가락 위치 = 다른 의미*. 손가락은 알파벳을 외우지 않고 *위치* 를 외운다.
+
+### 자매 문서 정합
+
+- `Keyboard_Shortcuts.md` — 6 키 단축키 표준 (이 §과 동기 필수)
+- `Hand_Lifecycle.md` — 5-Act ↔ 6 키 활성 phase 매핑
+- `Manual_Card_Input.md` — M 키 (Manual) 진입
+
+---
+
+## [archive — v1.x] 트리거 + §1~§8 8 버튼 명세
+
+> ⚠️ **Archive (v1.x)**: 본 §트리거 ~ §8 까지는 v1.x 8 분리 버튼 명세이며, v4.0 §"v4.0 6 키 매핑" 으로 *override* 됨. 활성/비활성 로직 (HandFSM × 버튼 매트릭스, 금액 검증, biggest_bet_amt 분기) 은 v4.0 6 키의 *각 키별 phase 슬롯* 으로 흡수됨. 인용 시 6 키 매핑 표를 우선.
 
 ## 트리거
 

@@ -12,6 +12,8 @@ related-sg: SG-002
 
 team4 Command Center / Overlay 앱은 team3 Game Engine harness (`http://localhost:8080`) 에 의존한다. 본 문서는 ENGINE_URL · timeout · graceful 대기 · fallback 네 가지 계약을 명시한다.
 
+> **v4.0 컨텍스트** (2026-05-07): Engine 응답 (full state snapshot) 은 CC 의 v4.0 PlayerGrid (1×10) SeatCell 9 행 + TopStrip Community Board + ActionPanel 6 키 활성 상태로 dispatch. Engine 장애 시 StubEngine fallback 으로 5-Act 시퀀스 진행 보장 (Act 1 IDLE / Act 2~3 액션 라운드 / Act 4 Showdown / Act 5 Settlement). SSOT: `../Command_Center_UI/Overview.md §3.0`.
+
 결정 원본: [`docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md`](../../../4.%20Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md)
 
 ## Edit History

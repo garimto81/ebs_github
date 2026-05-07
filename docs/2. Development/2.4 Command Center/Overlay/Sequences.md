@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-14 | 신규 작성 | UI-04 승격 이관. 11개 트리거 시퀀스(StartHand/HoleCard/Flop/Turn/River/Action/Equity/Fold/Showdown/HandComplete/Skin) + 파이프라인 + 타이밍 예산 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 11 트리거 시퀀스를 v4.0 5-Act 시퀀스 (Act 1 IDLE → Act 2 PreFlop → Act 3 Flop/Turn/River → Act 4 Showdown → Act 5 Settlement) 에 매핑. §"v4.0 5-Act → Overlay 매핑" 신설. SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0 §Ch.6, `../Command_Center_UI/Hand_Lifecycle.md`. |
 
 ---
 
@@ -29,6 +30,38 @@ last-updated: 2026-04-15
 | AnimationState 발동 조건 | BS-07-02 §3 (본 문서는 링크만) |
 | 스킨 JSON 좌표/치수 | BS-07-04 scene-schema (본 문서 범위 외) |
 | 시각 모드(크로마키 등) | BS-03-01-outputs (본 문서 범위 외) |
+
+---
+
+## v4.0 5-Act → Overlay 매핑 (2026-05-07 신설)
+
+> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. CC 의 5-Act UI 시퀀스 (운영자 인지 추상화) 가 Overlay 의 11 트리거 시퀀스 (시청자 화면 그래픽) 를 어떻게 묶는지 명시.
+
+### Act × Overlay 트리거 매트릭스
+
+| Act | CC 단계 | Overlay 트리거 시퀀스 | 시청자 화면 변화 |
+|:---:|---------|---------------------|------------------|
+| **1** | IDLE | (대기 — 트리거 없음) | 정적 / 이전 핸드 결과 잔상 |
+| **2** | PreFlop | StartHand → HoleCard | New Hand 인트로 → 홀카드 face-down 분배 |
+| **3a** | Flop | Flop | 3 카드 동시 공개 (atomic) |
+| **3b** | Turn | Turn | 4 번째 카드 공개 |
+| **3c** | River | River | 5 번째 카드 공개 |
+| **2~3** | Action 라운드 | Action / Equity / Fold | 액션 알림 + 승률 갱신 + 폴드 시각화 |
+| **4** | Showdown | Showdown | 핸드 공개 + 승자 강조 |
+| **5** | Settlement | HandComplete | 팟 분배 애니메이션 + 스택 갱신 |
+| (별개) | (스킨 변경) | Skin | 스킨 hot-swap (운영자 명령 별개 시퀀스) |
+
+### 동기화 보장
+
+- **CC 트리거 → BO WriteAction → Engine OutputEvent → Overlay 렌더링** (4 hop 파이프라인)
+- 상세 타이밍 예산은 본 문서 §3 이하 참조
+- 5-Act 추상화는 **CC 운영자 인지 부담 절감** 목적이며, Overlay 11 트리거 시퀀스의 의미적 묶음일 뿐 별도 통신 layer 신설 아님
+
+### 자매 문서 정합
+
+- `Overview.md §"v4.0 컨텍스트"` — Overlay 정체성과 5-Act 관계
+- `../Command_Center_UI/Hand_Lifecycle.md §"5-Act 시퀀스"` — Act ↔ HandFSM 9-state 매핑 SSOT
+- `../Command_Center_UI/Action_Buttons.md §"v4.0 6 키 매핑"` — Act 별 6 키 활성
 
 ---
 

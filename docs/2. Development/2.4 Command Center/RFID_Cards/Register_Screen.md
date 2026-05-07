@@ -11,6 +11,7 @@ last-updated: 2026-04-15
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-10 | 신규 작성 | AT-05 RFID Register 화면 UI·FSM·등록 플로우 (CCR-026) |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — AT-05 Register Screen 은 v4.0 4 영역 위계 (StatusBar / TopStrip / PlayerGrid / ActionPanel) 외부 셋업 화면 (Reader Panel). StatusBar `[⚙]` 또는 메뉴에서 진입. 카드 등록 결과는 deck SSOT 에 저장되며 게임 진행 중 인식된 RFID 가 등록된 카드면 PlayerGrid SeatCell 행 6 에 face-down 표시. SSOT: `Command_Center_UI/Overview.md §3.0`. |
 
 ---
 
@@ -18,7 +19,9 @@ last-updated: 2026-04-15
 
 AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑**하는 운영자 화면이다. 덱 교체, 신규 덱 도입, 카드 손상 시 개별 재등록에 사용된다. **Phase 1 은 52장 고정** (4 suits × 13 ranks). Joker 포함 덱은 **Phase 2 범위** 이며 현재 구현되지 않는다 (아래 §1 참조).
 
-> **참조**: `BS-04-01-deck-registration` (정책), `BS-04-04-hal-contract` (IRfidReader 이벤트), `API-03-rfid-hal-interface` (DeckRegistered 이벤트), `BS-05-00-overview §AT 화면 카탈로그` (AT-05 위치).
+> **v4.0 컨텍스트** (2026-05-07): AT-05 화면은 v4.0 4 영역 위계 외부 셋업 화면 (Reader Panel). 진입 경로는 StatusBar `[⚙]` 또는 우측 메뉴. 본 화면 자체 layout 은 v1.x 셋업 화면이며 1×10 그리드 PlayerGrid 와 무관. 등록된 카드는 게임 진행 시 PlayerGrid SeatCell 행 6 (Hole cards) 에 face-down 으로 mapping.
+
+> **참조**: `BS-04-01-deck-registration` (정책), `BS-04-04-hal-contract` (IRfidReader 이벤트), `API-03-rfid-hal-interface` (DeckRegistered 이벤트), `BS-05-00-overview §AT 화면 카탈로그` (AT-05 위치), `Command_Center_UI/Overview.md §3.0` (4 영역 위계).
 
 ---
 

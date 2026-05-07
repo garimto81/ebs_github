@@ -12,6 +12,7 @@ last-updated: 2026-04-16
 |------|------|------|
 | 2026-04-15 | 신규 작성 (G4-B) | WSOP LIVE Series/Event/Table 스코프 정렬을 위해 Settings 전용 문서 분리 |
 | 2026-04-16 | Rules 탭 통합 | 구 AT-06 Game Settings Modal 필드를 Rules 탭으로 흡수. AT-06 독립 모달 → Table Settings Rules 탭 재정의 |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — Settings 진입 (`[⚙]` 버튼) 은 v4.0 4 영역 위계의 **StatusBar (52px) 우측** 에 위치. Settings 모달 자체 layout 은 v1.x 그대로 (1×10 그리드와 무관). SSOT: `Command_Center_UI/Overview.md §3.0`. |
 
 ---
 
