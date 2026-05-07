@@ -6,4 +6,4 @@ tier: generated
 
 # S4 (RIVE Standards)
 
-- `docs/2. Development/2.5 Shared/RIVE_Standards.md` — RIVE Standards — Overlay Graphics 정본
+- `docs/1. Product/RIVE_Standards.md` — RIVE Standards — Overlay Graphics 정본
