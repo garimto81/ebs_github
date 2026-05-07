@@ -1,25 +1,24 @@
-team_id: S1
-team_name: Foundation
-team_role: 기획 기초 + 핵심 비전 문서
-worktree_path: C:/claude/ebs-foundation
-branch: work/s1/2026-05-07-init
-absorbs_existing: []
+team_id: S2
+team_name: Lobby Stream
+team_role: Lobby 기획 + Frontend Lobby 코드
+worktree_path: C:/claude/ebs-lobby-stream
+branch: work/s2/2026-05-07-work-2026-05-07
+absorbs_existing:
+- team1-frontend
 scope_owns:
-- docs/1. Product/Foundation.md
+- docs/2. Development/2.1 Frontend/Lobby/**
+- docs/1. Product/Lobby_PRD.md
+- team1-frontend/**
 scope_read:
-- docs/1. Product/References/**
+- docs/1. Product/Foundation.md
+- team1-frontend/CLAUDE.md
+- docs/1. Product/Lobby_PRD.md
 meta_files_blocked:
 - CLAUDE.md
 - MEMORY.md
 - docs/2. Development/2.5 Shared/team-policy.json
 - docs/4. Operations/team_assignment_v10_3.yaml
-- docs/4. Operations/Multi_Session_Design_v10.3.md
 blocked_by: []
-blocks:
-- S2
-- S3
-- S4
-- S5
-- S6
+blocks: []
 design_version: 10.3.0
 project_root: C:/claude/ebs
