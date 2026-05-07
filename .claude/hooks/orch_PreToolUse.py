@@ -123,11 +123,7 @@ def check_dependency_status(team_data):
 
 
 def cascade_advisory(target_rel, repo_root):
-    """docs/**/*.md 편집 시 영향 문서 list 를 stderr 로 출력 (경고만, 차단 X).
-
-    Layer 1 발화점 — doc_discovery.py --impact-of 호출하여 derivative-of /
-    related-* frontmatter 기반 정적 그래프 의존을 즉시 표시.
-    """
+    """docs edit 시 영향 문서 list 를 stderr 에 advisory 로 출력 (non-blocking)."""
     if not target_rel.startswith("docs/") or not target_rel.endswith(".md"):
         return
     discovery = repo_root / "tools" / "doc_discovery.py"
@@ -155,23 +151,12 @@ def cascade_advisory(target_rel, repo_root):
                     seen.add(p2)
                     paths.append(p2)
         if paths:
-            sys.stderr.write(
-                "
-[doc-cascade] Editing '" + target_rel + "' may affect "
-                + str(len(paths)) + " docs:
-"
-            )
+            sys.stderr.write(chr(10) + "[doc-cascade] Editing '" + target_rel + "' may affect " + str(len(paths)) + " docs:" + chr(10))
             for q in paths[:8]:
-                sys.stderr.write("     - " + q + "
-")
+                sys.stderr.write("     - " + q + chr(10))
             if len(paths) > 8:
-                sys.stderr.write("     ... +" + str(len(paths) - 8) + " more
-")
-            sys.stderr.write(
-                "   (advisory only -- not blocked. Review derivative-of for staleness.)
-
-"
-            )
+                sys.stderr.write("     ... +" + str(len(paths) - 8) + " more" + chr(10))
+            sys.stderr.write("   (advisory only -- not blocked)" + chr(10) + chr(10))
     except (subprocess.TimeoutExpired, OSError):
         pass
 
@@ -208,6 +193,9 @@ def main():
     if not target_rel:
         sys.exit(0)
 
+    # Cascade advisory (non-blocking, before any block check)
+    cascade_advisory(target_rel, get_repo_root())
+
     # 의존성 차단 검사 (가장 우선)
     if check_dependency_status(team_data):
         sys.exit(2)
@@ -220,7 +208,6 @@ def main():
     if check_scope(target_rel, team_data):
         sys.exit(2)
 
-    cascade_advisory(target_rel, get_repo_root())
     sys.exit(0)
 
 
