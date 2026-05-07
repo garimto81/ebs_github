@@ -8,11 +8,11 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
 source: "local SSOT"
 confluence-mirror-status: "to-push (v4.0 Graphic Novel Edition)"
 last-updated: 2026-05-07
-version: 4.2.0
+version: 4.3.0
 format: "Graphic Novel Edition (markdown-native, 5 layout 변주)"
 reimplementability: PASS
 reimplementability_checked: 2026-05-07
-reimplementability_notes: "v4.2 — A.1/A.2 실제 스크린샷 (S2 작업본) 첨부 + Vision Layer (C.3) 거대 프로젝트로 확장 (카메라 → AI 분석 → Engine 3 단계 파이프라인). v4.1 = Ch.4 3 그룹 6 기능 본질화. v4.0 = Graphic Novel 재설계."
+reimplementability_notes: "v4.3 — C.2 RFID 하드웨어 ASCII 다이어그램을 실제 이미지로 교체. v4.2 = A.1/A.2 실제 스크린샷 + Vision Layer 거대 프로젝트 확장. v4.1 = Ch.4 3 그룹 6 기능 본질화. v4.0 = Graphic Novel 재설계."
 ---
 <p align="center">
 
@@ -740,26 +740,9 @@ flowchart LR
 
 ### C.2 / RFID — 1단계 입력 (현재)
 
-```
-+----------------------------------+
-|  Table Cloth                     |
-| +------+ +------+ +------+       |
-| | A1   | | A2   | | A3   | ...   |
-| +------+ +------+ +------+       |
-|     12 안테나 (좌석 + 보드)        |
-+--------------+-------------------+
-               |
-               v
-       +-------+--------+
-       | ST25R3911B IC  |
-       +-------+--------+
-               |
-               v
-            ESP32
-               |
-               v USB
-            [PC]
-```
+![RFID 하드웨어 아키텍처 — 12 안테나 → ST25R3911B IC → ESP32 → PC](images/foundation/rfid-hardware-architecture.png)
+
+> *테이블 천 아래 12 안테나 (좌석 + 보드 중앙) → ST25R3911B IC → ESP32 → USB → PC.*
 
 * 테이블 천 아래 **12 안테나** (좌석 + 보드 중앙)
 * 칩셋: **ST25R3911B + ESP32**, 통신 USB
