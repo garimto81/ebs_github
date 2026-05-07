@@ -1,0 +1,22 @@
+team_id: S6
+team_name: Prototype Stream
+team_role: 프로토타입 빌드 plan + 통합 테스트
+worktree_path: C:/claude/ebs-prototype
+branch: work/s6/2026-05-07-init
+absorbs_existing:
+- integration-tests
+scope_owns:
+- docs/4. Operations/Prototype_Build_Plan.md
+- integration-tests/**
+scope_read:
+- docs/1. Product/**
+- docs/2. Development/**
+meta_files_blocked:
+- CLAUDE.md
+- MEMORY.md
+- docs/2. Development/2.5 Shared/team-policy.json
+- docs/4. Operations/team_assignment_v10_3.yaml
+blocked_by: []
+blocks: []
+design_version: 10.3.0
+project_root: C:/claude/ebs

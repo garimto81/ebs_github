@@ -1,0 +1,15 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/__pycache__": true,
+    "**/.pytest_cache": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true
+  },
+  "claude.contextFiles": [
+    ".team",
+    "START_HERE.md",
+    "CLAUDE.md"
+  ]
+}
