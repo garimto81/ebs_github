@@ -1,0 +1,25 @@
+team_id: S1
+team_name: Foundation
+team_role: 기획 기초 + 핵심 비전 문서
+worktree_path: C:/claude/ebs-foundation
+branch: work/s1/2026-05-07-init
+absorbs_existing: []
+scope_owns:
+- docs/1. Product/Foundation.md
+scope_read:
+- docs/1. Product/References/**
+meta_files_blocked:
+- CLAUDE.md
+- MEMORY.md
+- docs/2. Development/2.5 Shared/team-policy.json
+- docs/4. Operations/team_assignment_v10_3.yaml
+- docs/4. Operations/Multi_Session_Design_v10.3.md
+blocked_by: []
+blocks:
+- S2
+- S3
+- S4
+- S5
+- S6
+design_version: 10.3.0
+project_root: C:/claude/ebs
