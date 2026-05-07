@@ -122,6 +122,60 @@ def check_dependency_status(team_data):
     return False
 
 
+def cascade_advisory(target_rel, repo_root):
+    """docs/**/*.md 편집 시 영향 문서 list 를 stderr 로 출력 (경고만, 차단 X).
+
+    Layer 1 발화점 — doc_discovery.py --impact-of 호출하여 derivative-of /
+    related-* frontmatter 기반 정적 그래프 의존을 즉시 표시.
+    """
+    if not target_rel.startswith("docs/") or not target_rel.endswith(".md"):
+        return
+    discovery = repo_root / "tools" / "doc_discovery.py"
+    if not discovery.exists():
+        return
+    try:
+        result = subprocess.run(
+            [sys.executable, str(discovery), "--impact-of", target_rel],
+            capture_output=True, text=True, timeout=15,
+            encoding="utf-8", errors="ignore",
+            env={**os.environ, "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"},
+        )
+        out = (result.stdout or "").strip()
+        if not out:
+            return
+        import re as _re
+        pat = "docs/[^" + chr(10) + chr(13) + chr(9) + r"<>|*?]+?\.md"
+        paths = []
+        seen = set()
+        for line in out.splitlines():
+            m = _re.search(pat, line)
+            if m:
+                p2 = m.group(0)
+                if p2 != target_rel and p2 not in seen:
+                    seen.add(p2)
+                    paths.append(p2)
+        if paths:
+            sys.stderr.write(
+                "
+[doc-cascade] Editing '" + target_rel + "' may affect "
+                + str(len(paths)) + " docs:
+"
+            )
+            for q in paths[:8]:
+                sys.stderr.write("     - " + q + "
+")
+            if len(paths) > 8:
+                sys.stderr.write("     ... +" + str(len(paths) - 8) + " more
+")
+            sys.stderr.write(
+                "   (advisory only -- not blocked. Review derivative-of for staleness.)
+
+"
+            )
+    except (subprocess.TimeoutExpired, OSError):
+        pass
+
+
 def main():
     # stdin에서 tool input 읽기
     try:
@@ -166,6 +220,7 @@ def main():
     if check_scope(target_rel, team_data):
         sys.exit(2)
 
+    cascade_advisory(target_rel, get_repo_root())
     sys.exit(0)
 
 
