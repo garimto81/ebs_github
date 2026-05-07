@@ -1,0 +1,7 @@
+{
+  "name": "Foundation section change - high cascade",
+  "description": "Foundation §5.0 (2 런타임 모드) 추가",
+  "diff": "diff --git a/docs/1. Product/Foundation.md b/docs/1. Product/Foundation.md\n--- a/docs/1. Product/Foundation.md\n+++ b/docs/1. Product/Foundation.md\n@@ -500,4 +500,15 @@\n+## §5.0 - 2 Runtime Modes\n+\n+The CC Desktop App ships in two parallel runtime modes:\n+- Mode A: tabbed/sliding\n+- Mode B: multi-window\n",
+  "expected_cascades": [],
+  "expected_edge_cases": []
+}

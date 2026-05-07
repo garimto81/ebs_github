@@ -122,6 +122,45 @@ def check_dependency_status(team_data):
     return False
 
 
+def cascade_advisory(target_rel, repo_root):
+    """docs edit 시 영향 문서 list 를 stderr 에 advisory 로 출력 (non-blocking)."""
+    if not target_rel.startswith("docs/") or not target_rel.endswith(".md"):
+        return
+    discovery = repo_root / "tools" / "doc_discovery.py"
+    if not discovery.exists():
+        return
+    try:
+        result = subprocess.run(
+            [sys.executable, str(discovery), "--impact-of", target_rel],
+            capture_output=True, text=True, timeout=15,
+            encoding="utf-8", errors="ignore",
+            env={**os.environ, "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"},
+        )
+        out = (result.stdout or "").strip()
+        if not out:
+            return
+        import re as _re
+        pat = "docs/[^" + chr(10) + chr(13) + chr(9) + r"<>|*?]+?\.md"
+        paths = []
+        seen = set()
+        for line in out.splitlines():
+            m = _re.search(pat, line)
+            if m:
+                p2 = m.group(0)
+                if p2 != target_rel and p2 not in seen:
+                    seen.add(p2)
+                    paths.append(p2)
+        if paths:
+            sys.stderr.write(chr(10) + "[doc-cascade] Editing '" + target_rel + "' may affect " + str(len(paths)) + " docs:" + chr(10))
+            for q in paths[:8]:
+                sys.stderr.write("     - " + q + chr(10))
+            if len(paths) > 8:
+                sys.stderr.write("     ... +" + str(len(paths) - 8) + " more" + chr(10))
+            sys.stderr.write("   (advisory only -- not blocked)" + chr(10) + chr(10))
+    except (subprocess.TimeoutExpired, OSError):
+        pass
+
+
 def main():
     # stdin에서 tool input 읽기
     try:
@@ -170,6 +209,9 @@ def main():
     target_rel = relative_to_root(target)
     if not target_rel:
         sys.exit(0)
+
+    # Cascade advisory (non-blocking, before any block check)
+    cascade_advisory(target_rel, get_repo_root())
 
     # 의존성 차단 검사 (가장 우선)
     if check_dependency_status(team_data):
