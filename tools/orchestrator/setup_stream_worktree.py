@@ -27,7 +27,20 @@ except ImportError:
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_DIR = SCRIPT_DIR.parent
-HOOK_TEMPLATES = SKILL_DIR / "hook_templates"
+
+# HOOK_TEMPLATES priority: global skill → relative to script
+def _find_hook_templates():
+    candidates = [
+        Path.home() / '.claude' / 'skills' / 'orchestrator' / 'hook_templates',
+        SKILL_DIR / "hook_templates",
+        SCRIPT_DIR / "hook_templates",
+    ]
+    for c in candidates:
+        if c.exists() and (c / 'SessionStart.py').exists():
+            return c
+    return None
+
+HOOK_TEMPLATES = _find_hook_templates()
 
 
 def render_team_file(stream_id: str, config: dict, project_root: Path):
@@ -217,26 +230,48 @@ def setup_stream(stream_id: str, config: dict, project_root: Path,
         )
     print(f"  ✓ START_HERE.md ({status})")
 
-    # Step 5. .claude/hooks/
+    # Step 5. .claude/hooks/ (prefix orch_ to avoid conflicts with existing hooks)
     if not dry_run:
         hooks_dir = worktree_path / '.claude' / 'hooks'
         hooks_dir.mkdir(parents=True, exist_ok=True)
-        for hook_name in ['SessionStart.py', 'PreToolUse.py']:
-            src = HOOK_TEMPLATES / hook_name
-            dst = hooks_dir / hook_name
-            if src.exists():
-                shutil.copy2(src, dst)
-        # settings.local.json: hooks 활성화
+
+        if not HOOK_TEMPLATES:
+            print(f"  ⚠ hook_templates not found — hooks not copied")
+        else:
+            for hook_name in ['SessionStart.py', 'PreToolUse.py']:
+                src = HOOK_TEMPLATES / hook_name
+                dst = hooks_dir / f'orch_{hook_name}'
+                if src.exists():
+                    shutil.copy2(src, dst)
+                else:
+                    print(f"  ⚠ hook source missing: {src}")
+
+        # settings.local.json: Claude Code 공식 hooks 스키마
         settings = {
             "hooks": {
-                "SessionStart": [{"command": f"python .claude/hooks/SessionStart.py"}],
-                "PreToolUse": [{"command": f"python .claude/hooks/PreToolUse.py"}]
+                "SessionStart": [
+                    {
+                        "hooks": [
+                            {"type": "command",
+                             "command": "python .claude/hooks/orch_SessionStart.py"}
+                        ]
+                    }
+                ],
+                "PreToolUse": [
+                    {
+                        "matcher": "Edit|Write|MultiEdit",
+                        "hooks": [
+                            {"type": "command",
+                             "command": "python .claude/hooks/orch_PreToolUse.py"}
+                        ]
+                    }
+                ]
             }
         }
         (worktree_path / '.claude' / 'settings.local.json').write_text(
             json.dumps(settings, indent=2), encoding='utf-8'
         )
-    print(f"  ✓ .claude/hooks + settings.local.json")
+    print(f"  ✓ .claude/hooks (orch_*) + settings.local.json (correct schema)")
 
     # Step 6. .vscode/settings.json
     if not dry_run:
