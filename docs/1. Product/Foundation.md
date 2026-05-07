@@ -8,11 +8,11 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
 source: "local SSOT"
 confluence-mirror-status: "to-push (v4.0 Graphic Novel Edition)"
 last-updated: 2026-05-07
-version: 4.0.0
+version: 4.1.0
 format: "Graphic Novel Edition (markdown-native, 5 layout 변주)"
 reimplementability: PASS
 reimplementability_checked: 2026-05-07
-reimplementability_notes: "v4.0 — Graphic Novel 재설계. 35 fact 보존 (부록 인덱스 검증). HTML <table> 패턴 제거 → markdown-native. 5 layout: Splash / Diptych / Diagram-led / Pull-Quote / Hub. 1681 → 1142 라인 (-32%)."
+reimplementability_notes: "v4.1 — Ch.4 정정 (3 그룹 6 기능 본질, 4 SW+1 HW γ 하이브리드 폐기) + A.5 폐기 (2 런타임/3 RBAC 이해 어려움). v4.0 = Graphic Novel 재설계 (HTML table 패턴 → markdown-native, 5 layout)."
 ---
 <p align="center">
 
@@ -43,7 +43,7 @@ reimplementability_notes: "v4.0 — Graphic Novel 재설계. 35 fact 보존 (부
 | I | **1. 숨겨진 정보의 마법** | RFID + CC + Rule 의 Trinity |
 | I | **2. 시청자가 보는 화면** | 8 그래픽 / 3 절대 조건 |
 | I | **3. 무대의 지도** | 라스베가스 → 시청자 4 단계 |
-| II | **4. 6 기능 / 4 SW + 1 HW** | 두 렌즈로 보는 EBS |
+| II | **4. 3 그룹 6 기능** | 조작 / 두뇌 / 출력+입력 |
 | II | **5. 시스템 해부** | Front / Back / Render+HW+Vision |
 | III | **6. 운영과 진화** | 하루의 흐름 → 무인화 비전 |
 
@@ -434,7 +434,7 @@ EBS 가 카드를 읽고 그래픽을 씌우는 것은 **장비 사슬을 따라
 <p align="center">
 
 # Chapter 4
-### *6 기능 / 4 SW + 1 HW*
+### *3 그룹 6 기능*
 
 </p>
 
@@ -444,45 +444,20 @@ EBS 가 카드를 읽고 그래픽을 씌우는 것은 **장비 사슬을 따라
 
 > *EBS 는 더블 클릭하면 실행되는 프로그램 하나가 아니다.*
 > *서로 다른 역할을 맡은 여섯 개 기능이 톱니바퀴처럼 맞물려 돌아가는 시스템이다.*
-> *그러나 설치 관점에서는 4 SW + 1 HW 다.*
+> *이 6 기능이 어떤 그룹으로 묶이는지 — 그것이 EBS 의 본질이다.*
 
 </p>
 
 ---
 
-### Scene 1 / 두 렌즈 — 기능 vs 설치
+### Scene 1 / 6 기능 = 3 그룹
 
-EBS 를 이해하는 데는 **두 렌즈**가 필요하다.
-
-```mermaid
-flowchart TD
-    EBS[EBS 시스템]
-    EBS --> Func[기능 렌즈<br/>6 기능 = 3 그룹]
-    EBS --> Inst[설치 렌즈<br/>4 SW + 1 HW]
-```
-
-**기능 렌즈** 로 보면 6 기능이 보인다. **설치 렌즈** 로 보면 그것이 어떻게 묶여 배포되는지 보인다.
-
----
-
-<p align="center">
-
-> # *기능은 무엇을 하는가, 설치는 어떻게 배포되는가.*
-> # *둘은 다르다.*
-
-</p>
-
-이 분리를 놓치면 *"team1 이 Lobby Web 을 만들고 있으니 Lobby = team1 한 사람이 통제하는 영역인가?"* 같은 거버넌스 오해가 생긴다. team1 은 Lobby 기능 + Settings + Rive Manager 3 개를 담당한다 (Lobby Web 1 설치 단위).
-
----
-
-### Scene 2 / 기능 렌즈 — 6 기능 = 3 그룹
+EBS 의 6 기능은 역할에 따라 **3 그룹**으로 묶인다.
 
 ```mermaid
 flowchart TD
     subgraph G1["조작 (Front-end)"]
         L[Lobby<br/>관제탑]
-        S[Settings<br/>+ Rive Manager]
         CC[Command Center<br/>조종석]
     end
     subgraph G2["두뇌 (Back-end)"]
@@ -497,34 +472,39 @@ flowchart TD
 
 | 그룹 | 기능 | 비유 |
 |---|---|---|
-| **조작** (Front-end) | Lobby + Settings + Rive Manager + CC | 사용자 손에 닿는 것 |
-| **두뇌** (Back-end) | Game Engine + BO | 보이지 않는 사고 + 기억 |
+| **조작** (Front-end) | Lobby + Command Center | 사용자 손에 닿는 것 |
+| **두뇌** (Back-end) | Game Engine + Backend (BO) | 보이지 않는 사고 + 기억 |
 | **출력 + 입력** | Overlay View + RFID Hardware | 현실과의 접점 |
+
+> *Settings, Rive Manager 는 Lobby 의 일부 — 별도 기능 아님. 6 기능 = Lobby / CC / Engine / BO / Overlay / RFID.*
 
 ---
 
-### Scene 3 / 설치 렌즈 — 4 SW + 1 HW
+<p align="center">
 
-![6 기능 → 4 SW + 1 HW](images/foundation/prd-ebs-hardware-architecture.png)
+> # *기능이 본질이다.*
+> # *어떻게 배포되는지는 부차적 문제일 뿐이다.*
 
-기능 6 개가 어떻게 묶여 설치되는가? **γ 하이브리드** (2026-04-22 결정) — Lobby Web 1 개 + Desktop App 1 개 + Engine 1 개 + Backend 1 개 + RFID 하드웨어 1 개.
+</p>
 
-| 설치 단위 | 포함 기능 | 스택 | 배포 |
-|---|---|---|---|
-| **Lobby Web** | Lobby + Settings + Rive Manager | Flutter Web + Rive | Docker nginx |
-| **Desktop App** (CC) | Command Center + Overlay | Flutter Desktop + Rive | Desktop 설치 |
-| **Game Engine** | Engine | Pure Dart | Docker / dart run |
-| **Backend** (BO) | BO Server | FastAPI + DB | 별도 서비스 |
-| **RFID Hardware** | 카드 인식 | ST25R3911B + ESP32 | 물리 장비 |
+3 그룹 6 기능 — 이것이 EBS 시스템의 진짜 골격이다. 각 기능이 무엇을 하는가, 그리고 그것이 어느 그룹에 속하는가만이 본질적이다.
 
-#### 팀 ≠ 설치 단위
+---
 
-| 팀 | 담당 |
-|:---:|---|
-| team1 | Lobby Web |
-| team2 | Backend (BO) |
-| team3 | Game Engine |
-| team4 | CC + Overlay (Desktop App) |
+### Scene 2 / 6 기능과 팀 매핑
+
+각 기능은 한 팀이 담당한다. 4 팀이 6 기능을 분담하는 구조다.
+
+| 기능 | 그룹 | 담당 팀 | 스택 |
+|---|---|:---:|---|
+| **Lobby** (관제탑) | 조작 | team1 | Flutter Web + Rive |
+| **Command Center** (조종석) | 조작 | team4 | Flutter Desktop + Rive |
+| **Game Engine** (두뇌) | 두뇌 | team3 | Pure Dart |
+| **Backend (BO)** (뼈대) | 두뇌 | team2 | FastAPI + DB |
+| **Overlay View** (붓) | 출력 | team4 | Rive + SDI/NDI |
+| **RFID Hardware** (센서) | 입력 | — (외부 HW) | ST25R3911B + ESP32 |
+
+> *팀 = 기능을 만드는 사람. team4 가 Command Center 와 Overlay 두 기능을 담당하는 이유는 두 기능이 한 화면에서 함께 동작하기 때문이다.*
 
 ---
 
@@ -532,11 +512,10 @@ flowchart TD
 
 | Scene | 핵심 |
 |---|---|
-| **1. 두 렌즈** | 기능 6 ↔ 설치 4+1 (분리해서 봐야 정확) |
-| **2. 기능 = 3 그룹** | 조작 / 두뇌 / 출력+입력 |
-| **3. 설치 = 4 SW + 1 HW** | Lobby Web / Desktop App / Engine / BO / RFID HW |
+| **1. 3 그룹 6 기능** | 조작 (Lobby + CC) / 두뇌 (Engine + BO) / 출력+입력 (Overlay + RFID) |
+| **2. 팀 매핑** | team1=Lobby, team2=BO, team3=Engine, team4=CC+Overlay |
 
-> *큰 그림이 잡혔다면 — Chapter 5 가 각 컴포넌트 내부를 해부한다.*
+> *6 기능의 큰 그림이 잡혔다면 — Chapter 5 가 각 기능의 내부를 해부한다.*
 
 ---
 ---
@@ -624,31 +603,6 @@ flowchart LR
 | 역할 | 센서가 못 잡는 **베팅 의사** → 시스템 주입 |
 | 정보 소스 | 컨트롤룸 모니터 + 딜러 콜아웃 + 칩 트레이 |
 | 배포 | Flutter **Desktop** (RFID 시리얼 + SDI/NDI 직결) |
-
----
-
-### A.5 / 두 런타임 모드 + 3 RBAC
-
-```mermaid
-flowchart TD
-    App[EBS Desktop App<br/>단일 Flutter 바이너리]
-    App --> Mode{런타임 모드}
-    Mode -->|기본| Tabs[탭/슬라이딩<br/>단일 프로세스]
-    Mode -->|PC 옵션| Multi[다중창<br/>독립 프로세스]
-    Multi --> DB[공용 DB BO<br/>= SSOT]
-    Tabs --> DB
-```
-
-| 모드 | 용도 |
-|---|---|
-| **탭/슬라이딩** | 단일 운영자, 향후 태블릿 |
-| **다중창** | 멀티 모니터, 운영자 분리 |
-
-| 역할 (RBAC) | 권한 |
-|:---:|---|
-| **Admin** | 전체 |
-| **Operator** | 할당 테이블 CC 만 |
-| **Viewer** | 읽기 전용 |
 
 ---
 
@@ -890,7 +844,7 @@ flowchart LR
 
 | 영역 | 핵심 |
 |---|---|
-| **§A Front-end** | Lobby + Settings + Rive Manager + CC + 2 모드/3 RBAC |
+| **§A Front-end** | Lobby + Settings + Rive Manager + Command Center |
 | **§B Back-end** | Engine (22 룰/21 OutputEvent) + BO (3 임무) + 통신 매트릭스 + DB SSOT |
 | **§C Render & HW** | Overlay (Rive→SDI/NDI) + RFID 12 안테나 + Vision 6 카메라 (2단계) |
 
@@ -1113,13 +1067,13 @@ X 축 (기능 4 단계) + Y 축 (입력 2 단계) 진화가 이 두 목적지로
 | §3.2 | 현장 프로덕션 사슬 | Ch.3 / Scene 2 |
 | §3.3 | 데이터 공급자 (JSON) | Ch.3 / Scene 3 |
 | §3.4 | 1~2시간 시간차 + 정확성 | Ch.3 / Scene 4 |
-| §4.1 | 6 기능 = 3 그룹 | Ch.4 / Scene 2 |
-| §4.2 | 4 SW + 1 HW | Ch.4 / Scene 3 |
+| §4.1 | 6 기능 = 3 그룹 | Ch.4 / Scene 1 |
+| §4.2 | 4 SW + 1 HW (잘못된 설계) | — (폐기, 2026-05-07) |
 | §5.1 | Lobby (관제탑) | Ch.5 §A.1 |
 | §5.2 | Settings (글로벌 제어판) | Ch.5 §A.2 |
 | §5.3 | Rive Manager | Ch.5 §A.3 |
 | §5.4 | Command Center | Ch.5 §A.4 |
-| §5.5 | 2 런타임 모드 + 3 RBAC | Ch.5 §A.5 |
+| §5.5 | 2 런타임 모드 + 3 RBAC (이해 어려움) | — (폐기, 2026-05-07) |
 | §6.1 | Game Engine 22 룰 + 21 OutputEvent | Ch.5 §B.1 |
 | §6.2 | Backend 3 임무 + 프로세스 모델 | Ch.5 §B.2 |
 | §6.3 | 통신 매트릭스 | Ch.5 §B.3 |
