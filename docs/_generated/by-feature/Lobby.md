@@ -6,7 +6,6 @@ tier: generated
 
 # Lobby
 
-- `docs/2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S1-lobby-identity-cascade-2026-05-07.md` — NOTIFY-S1 — Lobby 정체성 정정 cascade (Foundation §5.1 영향) (stream:S2 (Lobby) → notify stream:S1 (Foundation))
 - `docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md` — Chip Management (team1)
 - `docs/2. Development/2.1 Frontend/Lobby/Clock_Control.md` — Clock Control (team1)
 - `docs/2. Development/2.1 Frontend/Lobby/Event_and_Flight.md` — Event and Flight (team1)

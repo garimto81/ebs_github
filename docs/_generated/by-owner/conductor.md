@@ -8,12 +8,13 @@ tier: generated
 
 - `docs/1. Product/1. Product.md` — 1. Product
 - `docs/1. Product/Back_Office_PRD.md` — Back Office — 보이지 않는 뼈대
-- `docs/1. Product/Command_Center_PRD.md` — Command Center — 운영자가 머무는 조종석 (v4.0)
+- `docs/1. Product/Command_Center_PRD.md` — Command Center — 운영자가 매 순간 머무는 조종석
 - `docs/1. Product/Foundation.md` — EBS 기초 기획서
 - `docs/1. Product/Game_Rules/Betting_System.md` — Betting System
 - `docs/1. Product/Game_Rules/Draw.md` — Draw
 - `docs/1. Product/Game_Rules/Flop_Games.md` — Flop Games
 - `docs/1. Product/Game_Rules/Seven_Card_Games.md` — Seven Card Games
+- `docs/1. Product/Lobby_PRD.md` — Lobby — 모든 테이블을 내려다보는 관제탑
 - `docs/1. Product/References/PokerGFX_Reference.md` — PokerGFX Reference
 - `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` — WSOP Production Structure Analysis
 - `docs/1. Product/archive/Foundation_v41.0.0.md` — Foundation
