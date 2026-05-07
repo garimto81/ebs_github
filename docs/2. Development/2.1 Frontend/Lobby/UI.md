@@ -20,10 +20,13 @@ reimplementability_notes: "UI-01 Lobby UI 스펙 (68KB) 정본"
 | 2026-04-21 | Flutter Desktop 전환 1차 | Foundation §5.1 Lobby Flutter Desktop 단일 스택 결정 반영. 요소 표 열 헤더 "Quasar 컴포넌트" → "Flutter widget" 전환 완료. `**Quasar**:` 요약 블록 9개 `**Flutter**:` 로 재작성. 개별 q-* 셀 일부 남음 — Quasar↔Flutter 매핑표는 `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md §3` 참조. 세부 컴포넌트 교체는 team1 후속 PR (Migration Plan Phase 3-A1 후반). |
 | 2026-05-05 | EBS Lobby Design 누락 5개 보강 (P1/P2/P3) | §공통 레이아웃 §헤더 바: Show Context Cluster (SHOW/FLIGHT/LEVEL/NEXT) + Active CC pill 신규 (P1, shell.jsx:43-53 정합). §화면 1 Series 목록: Status Badge 5-color Legend + Year-grouped 그룹핑 정책 명시 (P2, screens.jsx:29 정합). Bookmark 검증 (P3, 이미 line 505/509 존재 — 디자인 자산과 정합 확인). AlertsScreen 폐기 (사용자 결정, EBS scope 외). |
 | 2026-05-05 | mockup HTML 5건 redirect | 5개 화면 섹션 (0 Login / 1 Series / 2 Events / 3 Tables / 4 Players) 의 `> 목업 참조: docs/mockups/ebs-lobby-XX.html` 를 신 디자인 SSOT 표기로 교체 (`References/EBS_Lobby_Design/screens.jsx:N` + `visual/screenshots/ebs-lobby-XX.png`). Legacy mockup HTML 은 보존 (외부 링크 안전). 본문 ASCII 와이어프레임은 그대로 유지 (정본 source of truth = 코드). Hand History/Settings 본문은 `Overview.md §화면 6/§화면 7` 가 SSOT — 본 UI.md 는 mockup redirect 만 적용. |
+| 2026-05-07 | v3 정체성 정합 | Lobby_PRD v3.0.0 cascade — 5분 게이트웨이 + WSOP LIVE 거울 정체성 framing 을 §개요 첫 단락에 추가. UI 본문 (3계층 + 독립 레이어 + 화면별 spec) 은 변경 0 — 정체성 박스만 additive. 외부 인계 PRD `docs/1. Product/Lobby_PRD.md` v3.0.0 narrative SSOT 정합. |
 
 ---
 
 ## 개요
+
+> **정체성 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: Lobby = **5분 게이트웨이 + WSOP LIVE 거울**. 운영자가 머무는 화면이 아니라 거치는 화면이다. 4 진입 시점 (① 처음 진입 / ② 어긋났을 때 / ③ 게임 바뀔 때 / ④ 모든 것이 끝날 때) 에 5 화면 시퀀스 (Series → Events → Flights → Tables → Players) 를 통과한다. 본 UI 정본은 그 시퀀스 각 화면의 widget·필드·상태 spec 을 정의한다. 4 진입 시점 카탈로그는 `Overview.md §4 진입 시점 카탈로그` SSOT.
 
 Lobby는 EBS의 **Flutter 앱**으로 구현되어 **Docker Web 으로 배포**되는 테이블 관리 화면이다 (2026-04-21 Foundation §5.1 결정: Quasar/Vue 폐기 → Flutter 프레임워크 통일; 2026-04-22 배포 형태 재정의: Docker Web 단독, 사용자는 브라우저 접속). **Series > Event(Day) > Table** 3계층 drill-down으로 Feature Table을 찾아 Command Center로 진입한다. Player는 3계층과 독립된 레이어로, 어디서든 상시 접근 가능하다. Staff Management(Admin)와 Settings(글로벌)도 독립 레이어이다.
 

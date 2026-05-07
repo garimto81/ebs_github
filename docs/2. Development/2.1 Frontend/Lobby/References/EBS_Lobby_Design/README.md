@@ -2,18 +2,21 @@
 title: EBS Lobby Reference Design (HTML/JSX prototype, 2026-04-29)
 owner: team1 (consumer)
 tier: reference
-last-updated: 2026-05-03
+last-updated: 2026-05-07
 source: "Downloads/EBS Lobby.zip (사용자 제공, 2026-04-29)"
 linked-docs:
   - ../UI.md
   - ../Overview.md
   - ../../README.md
+  - ../../../../1. Product/Lobby_PRD.md
 ---
 
 # EBS Lobby Reference Design
 
 본 폴더는 **사용자가 제공한 HTML/JSX 프로토타입** (Downloads/EBS Lobby.zip, 2026-04-29) 의
 원본 자산을 보존하여 team1 Lobby 기획·구현의 design SSOT 로 활용한다.
+
+> **정체성 cross-reference (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 본 React/JSX prototype 의 5 화면 시퀀스 (Series → Events → Flights → Tables → Players + Hand History / Settings) 는 `docs/1. Product/Lobby_PRD.md` v3.0.0 의 narrative 정체성 (**5분 게이트웨이 + WSOP LIVE 거울**) + 4 진입 시점 카탈로그 와 1:1 매핑된다. PRD 본문 25 PNG (visual/screenshots/) 는 본 prototype 의 `screens.jsx` + `screens-extra.jsx` 결과물 캡쳐다 — 디자인 SSOT (코드) ↔ 외부 PRD (이미지) 동기화의 시각적 거울 관계.
 
 ## 자산 목록
 

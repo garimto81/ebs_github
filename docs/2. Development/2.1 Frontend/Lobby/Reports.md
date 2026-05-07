@@ -12,10 +12,13 @@ reimplementability_notes: "Reports & Statistics 기획 완결 (SG-007 연관)"
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-16 | 신규 작성 | WSOP LIVE "09. Reports" (Confluence p1728938527) — Unique Player Report (p1931707281) + WSOP Vegas Report (p2432073931) + History 탭 강화 (p1876394154) 기반 |
+| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — WSOP LIVE 정보 허브 framing 추가 (additive only). |
 
 ---
 
 ## 개요
+
+> **WSOP LIVE 정보 허브 역할 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **Reports & Statistics** (특히 4 진입 시점 ④ "모든 것이 끝날 때" 의 핵심 화면). Lobby = WSOP LIVE 거울의 한 면.
 
 Tournament 통계 및 리포트 화면. Players Count, Tournament History, Prize Pool Report, Unique Player Report, Action History 제공. WSOP LIVE Staff App §09 Reports 구조를 채택하되 EBS 운영 규모에 맞게 간소화한다.
 

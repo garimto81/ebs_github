@@ -12,10 +12,13 @@ reimplementability_notes: "Clock control 스펙 완결 (8KB)"
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-15 | 신규 작성 | WSOP LIVE Confluence p2334752899 (Clock Control) 의 기능을 EBS Lobby 에 반영. team1 발신, Round 2 Phase A. |
+| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — WSOP LIVE 정보 허브 framing 추가 (additive only). |
 
 ---
 
 ## 개요
+
+> **WSOP LIVE 정보 허브 역할 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **블라인드 타이머·레벨·브레이크 제어**. Lobby = WSOP LIVE 거울의 한 면.
 
 Tournament Director 가 Flight 의 블라인드 타이머·레벨·브레이크를 수동 제어한다. EBS Lobby 의 Flight 화면 헤더에서 `[Clock Control]` 드롭다운으로 진입.
 
