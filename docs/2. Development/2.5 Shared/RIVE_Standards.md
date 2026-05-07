@@ -1802,4 +1802,4 @@ A. 네. 모든 그래픽은 Title Safe 90% 안에 배치되어 16:9 모바일에
 
 > 본 문서는 reference manual 입니다. 5 데이터 소스 (Rive Asset / EBS DB / Command Center / RFID / Game Engine) 가 11 카테고리 그래픽 요소의 변수를 어떻게 채우는지를 표 + ASCII mockup 으로 명세합니다. 외부 인계 시 contract 문서로 사용 가능합니다.
 >
-> 이미지가 필요한 영역은 모두 ASCII mockup + `<!-- IMG_TODO: ... -->` 마커로 표시. 사용자 / 외부 디자이너가 후처리.
+> v0.5.0 부터 시각 자료 19 이미지 삽입 (Ch.2 catalog reference 2 + 17 챕터별 Rive 이미지). 추가 이미지가 필요해지면 `docs/images/rive/` 에 추가 후 본 문서에 feature block 으로 삽입. 외부 디자이너가 본 이미지를 brand 별로 교체할 때는 동일 파일명 유지 + 본문 link 변경 없이 교체 가능.
