@@ -387,6 +387,7 @@ tier: generated
 | `docs/2. Development/2.5 Shared/Card_Flow_Index.md` | Card Flow Index — RFID 입력 → Engine → Overlay | conductor | shared-index | — |
 | `docs/2. Development/2.5 Shared/Naming_Conventions.md` | Naming Conventions (EBS Shared SSOT) | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Network_Config.md` | Network Configuration Contract | conductor | contract | - |
+| `docs/2. Development/2.5 Shared/RIVE_Standards.md` | RIVE Standards — Overlay Graphics 정본 | S4 (RIVE Standards) | contract | - |
 | `docs/2. Development/2.5 Shared/Risk_Matrix.md` | Risk Matrix | conductor | internal | - |
 | `docs/3. Change Requests/3. Change Requests.md` | 3. Change Requests (DEPRECATED) | conductor | internal | - |
 | `docs/3. Change Requests/done/CR-011-ge-ownership-move.md` | CR-011-ge-ownership-move | conductor | internal | CCR-011 |
