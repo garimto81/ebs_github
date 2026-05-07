@@ -342,6 +342,173 @@ class _SeatCellState extends ConsumerState<SeatCell>
     );
   }
 
+  // ── 2026-05-07 B-team4-013: HTML 시안 패턴 5 다이얼로그 ──
+
+  /// POS 행 onTap — None / D / SB / BB 토글.
+  /// SeatNotifier.setDealer/setSB/setBB 가 단일 source 이므로 다른 좌석의 같은
+  /// position 마커는 자동 해제됨.
+  void _editPos(SeatState seat) {
+    final notifier = ref.read(seatsProvider.notifier);
+    showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('S${seat.seatNo} Position'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final p in const ['None', 'D (BTN)', 'SB', 'BB'])
+              ListTile(
+                dense: true,
+                title: Text(p),
+                onTap: () => Navigator.of(ctx).pop(p),
+              ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    ).then((sel) {
+      if (sel == null) return;
+      final s = widget.seatIndex;
+      if (sel == 'None') {
+        // Position 해제 — 모든 마커 false (다른 좌석이 다음에 setDealer 시 자동 이동)
+        if (seat.isDealer) notifier.setDealer(-1);
+        if (seat.isSB) notifier.setSB(-1);
+        if (seat.isBB) notifier.setBB(-1);
+      } else if (sel == 'D (BTN)') {
+        notifier.setDealer(s);
+      } else if (sel == 'SB') {
+        notifier.setSB(s);
+      } else if (sel == 'BB') {
+        notifier.setBB(s);
+      }
+    });
+  }
+
+  /// CTRY 행 onTap — 2-letter ISO country code 입력.
+  void _editFlag(SeatState seat) {
+    if (seat.player == null) return;
+    final ctrl = TextEditingController(text: seat.player!.countryCode);
+    showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Country Code'),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          maxLength: 2,
+          textCapitalization: TextCapitalization.characters,
+          decoration: const InputDecoration(
+            hintText: 'ISO 3166-1 alpha-2 (e.g., KR, US)',
+          ),
+          onSubmitted: (v) => Navigator.of(ctx).pop(v.toUpperCase()),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () =>
+                Navigator.of(ctx).pop(ctrl.text.trim().toUpperCase()),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    ).then((value) {
+      if (value == null || value.length != 2) return;
+      final notifier = ref.read(seatsProvider.notifier);
+      final p = seat.player!;
+      // updateStack 패턴 — vacateSeat + seatPlayer 우회 위해 inline state replace.
+      // 향후 SeatNotifier.updateCountry 추가 권장 (별도 PR).
+      notifier.vacateSeat(widget.seatIndex);
+      notifier.seatPlayer(
+        widget.seatIndex,
+        p.copyWith(countryCode: value),
+      );
+    });
+  }
+
+  /// BET 행 onTap — currentBet 직접 편집 (dev/manual override).
+  /// Engine 응답이 SSOT 이지만 운영자 수동 보정 path 보존 (Player_Edit_Modal §4 정합).
+  void _editBet(SeatState seat) {
+    if (seat.player == null) return;
+    final ctrl = TextEditingController(text: seat.currentBet.toString());
+    showDialog<int>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('S${seat.seatNo} Bet (manual override)'),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          decoration: const InputDecoration(hintText: 'Current bet amount'),
+          onSubmitted: (v) {
+            final n = int.tryParse(v);
+            if (n != null && n >= 0) Navigator.of(ctx).pop(n);
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              final n = int.tryParse(ctrl.text);
+              if (n != null && n >= 0) Navigator.of(ctx).pop(n);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    ).then((value) {
+      if (value == null) return;
+      ref.read(seatsProvider.notifier).setCurrentBet(widget.seatIndex, value);
+    });
+  }
+
+  /// LAST 행 onTap — activity enum 토글.
+  void _editLastAction(SeatState seat) {
+    showDialog<PlayerActivity>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('S${seat.seatNo} Last Action'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final entry in const [
+              ('Active (—)', PlayerActivity.active),
+              ('FOLD', PlayerActivity.folded),
+              ('ALL-IN', PlayerActivity.allIn),
+              ('SIT OUT', PlayerActivity.sittingOut),
+            ])
+              ListTile(
+                dense: true,
+                title: Text(entry.$1),
+                selected: seat.activity == entry.$2,
+                onTap: () => Navigator.of(ctx).pop(entry.$2),
+              ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    ).then((value) {
+      if (value == null) return;
+      ref.read(seatsProvider.notifier).setActivity(widget.seatIndex, value);
+    });
+  }
+
   void _confirmVacate() {
     showDialog<bool>(
       context: context,
@@ -401,8 +568,6 @@ class _SeatCellState extends ConsumerState<SeatCell>
             : <BoxShadow>[];
 
         return Container(
-          width: EbsSpacing.seatCellWidth,
-          height: EbsSpacing.seatCellHeight,
           decoration: BoxDecoration(
             color: bgColor,
             border: seat.isEmpty
@@ -438,21 +603,32 @@ class _SeatCellState extends ConsumerState<SeatCell>
   // -- empty seat -----------------------------------------------------------
 
   Widget _buildEmptySeat() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'S${widget.seatIndex}',
-            style: EbsTypography.infoBar.copyWith(color: Colors.white54),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            'Empty',
-            style: EbsTypography.shortcutHint.copyWith(color: Colors.white38),
-          ),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          color: Colors.white12,
+          alignment: Alignment.center,
+          child: const Text('EMPTY',
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+              color: Colors.white54, letterSpacing: 1.2)),
+        ),
+        const Spacer(),
+        Center(child: Text('S${widget.seatIndex}',
+          style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w800,
+            color: Colors.white24))),
+        const SizedBox(height: 8),
+        const Center(child: Text('+ ADD PLAYER',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700,
+            color: Colors.white60, letterSpacing: 0.6))),
+        const SizedBox(height: 4),
+        const Center(child: Text('click to seat',
+          style: TextStyle(fontSize: 10, color: Colors.white30))),
+        const Spacer(),
+      ],
     );
   }
 
@@ -469,40 +645,71 @@ class _SeatCellState extends ConsumerState<SeatCell>
     final player = seat.player!;
     final flag = _countryFlag(player.countryCode);
     final posLabel = _positionLabel(seat);
-
+    final handFsm = ref.watch(handFsmProvider);
+    final preHand = handFsm == HandFsm.idle ||
+        handFsm == HandFsm.showdown ||
+        handFsm == HandFsm.handComplete;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Row 1: Flag + Name + Seat #
-        _buildNameRow(flag, player.name, seat.seatNo),
-
-        const Divider(height: 4, thickness: 0.5, color: Colors.white24),
-
-        // Row 2: Stack
-        GestureDetector(
-          onTap: () => _editStack(seat),
-          child: Text(
-            '\$${_formatStack(player.stack)}',
-            style: EbsTypography.stackAmount.copyWith(color: Colors.white),
-            overflow: TextOverflow.ellipsis,
-          ),
+        _ActingStrip(seat: seat, preHand: preHand, onDelete: _confirmVacate),
+        const SizedBox(height: 3),
+        // SEAT 행 — click to vacate (시안 PlayerColumn:50)
+        _RowCell(
+          label: null, value: 'S${seat.seatNo}', big: true,
+          onTap: _confirmVacate,
         ),
-
-        // Row 3: D7 (회의 2026-04-22) — CC 운영자(딜러)는 hole cards 비노출.
-        // 데이터(`seat.holeCards`) 는 Overlay 송출용으로 state 에 보존되며,
-        // CC widget 트리에서는 절대 렌더링하지 않는다 (`tools/check_cc_no_holecard.py` CI 가드).
-        // 이 위치에 hole card 위젯을 추가하면 운영자가 카드를 미리 알게 되어
-        // 부정 행위 위험 발생. SG-021 / Foundation §5.4 / IMPL-007 참조.
-        if (seat.holeCards.isNotEmpty) _buildHoleCardBack(seat.holeCards.length),
-
-        // Row 4: Position marker or sitting-out badge
-        if (seat.activity == PlayerActivity.sittingOut)
-          _buildBadge('Sitting Out', Colors.orange)
-        else if (posLabel != null)
-          _buildPositionMarker(posLabel),
+        // POS 행 — None / D / SB / BB 토글
+        _RowCell(
+          label: 'POS', value: posLabel ?? '-',
+          dim: posLabel == null,
+          highlightColor: posLabel != null ? _positionColor(posLabel) : null,
+          onTap: () => _editPos(seat),
+        ),
+        // CTRY 행 — 2-letter country code 편집
+        _RowCell(
+          label: 'CTRY', value: flag.isNotEmpty ? flag : 'XX',
+          onTap: () => _editFlag(seat),
+        ),
+        // NAME 행 — 이름 편집
+        _RowCell(label: 'NAME', value: player.name, onTap: () => _editName(seat)),
+        // CARDS 행 — D7 가드 (onTap 추가 금지)
+        if (seat.holeCards.isNotEmpty)
+          _buildHoleCardBack(seat.holeCards.length)
+        else
+          const _RowCell(label: 'CARDS', value: '-', dim: true),
+        // STACK 행 — stack 편집
+        _RowCell(label: 'STACK',
+          value: '\$${_formatStack(player.stack)}',
+          mono: true, onTap: () => _editStack(seat)),
+        // BET 행 — currentBet manual override
+        _RowCell(label: 'BET',
+          value: seat.currentBet > 0 ? '\$${_formatStack(seat.currentBet)}' : '-',
+          mono: true, dim: seat.currentBet == 0,
+          highlightColor: seat.currentBet > 0 ? Colors.amberAccent : null,
+          onTap: () => _editBet(seat),
+        ),
+        // LAST 행 — activity enum 토글
+        _RowCell(label: 'LAST', value: _activityToLastAction(seat),
+          dim: seat.activity == PlayerActivity.active && !seat.actionOn,
+          highlightColor: _activityHighlight(seat),
+          onTap: () => _editLastAction(seat),
+        ),
       ],
     );
+  }
+
+  String _activityToLastAction(SeatState seat) {
+    if (seat.activity == PlayerActivity.folded) return 'FOLD';
+    if (seat.activity == PlayerActivity.allIn) return 'ALL-IN';
+    if (seat.activity == PlayerActivity.sittingOut) return 'SIT OUT';
+    return '-';
+  }
+
+  Color? _activityHighlight(SeatState seat) {
+    if (seat.activity == PlayerActivity.folded) return Colors.redAccent.shade100;
+    if (seat.activity == PlayerActivity.allIn) return const Color(0xFFFFD700);
+    return null;
   }
 
   /// D7 — hole card 뒷면(face-down) 만 표시. 카드 값은 노출하지 않는다.
@@ -734,5 +941,76 @@ class _DealerReassignDialogState extends State<_DealerReassignDialog> {
         ),
       ],
     );
+  }
+}
+
+
+class _RowCell extends StatelessWidget {
+  const _RowCell({required this.label, required this.value,
+    this.big = false, this.mono = false, this.dim = false,
+    this.highlightColor, this.onTap});
+  final String? label;
+  final String value;
+  final bool big, mono, dim;
+  final Color? highlightColor;
+  final VoidCallback? onTap;
+  @override
+  Widget build(BuildContext context) {
+    final c = highlightColor ?? (dim ? Colors.white38 : Colors.white);
+    final body = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(3)),
+      child: Row(
+        mainAxisAlignment: big ? MainAxisAlignment.center
+            : (label == null ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween),
+        children: [
+          if (label != null && !big)
+            Text(label!, style: const TextStyle(fontSize: 9,
+              fontWeight: FontWeight.w700, color: Colors.white38)),
+          Flexible(child: Text(value, style: TextStyle(
+            fontSize: big ? 22 : 12,
+            fontWeight: big ? FontWeight.w800 : FontWeight.w600,
+            color: c, fontFamily: mono ? 'monospace' : null),
+            overflow: TextOverflow.ellipsis, maxLines: 1,
+            textAlign: big ? TextAlign.center : TextAlign.right)),
+        ])
+    );
+    final w = Padding(padding: const EdgeInsets.only(bottom: 2), child: body);
+    return onTap == null ? w : GestureDetector(onTap: onTap, child: w);
+  }
+}
+
+class _ActingStrip extends StatelessWidget {
+  const _ActingStrip({required this.seat, required this.preHand, required this.onDelete});
+  final SeatState seat;
+  final bool preHand;
+  final VoidCallback onDelete;
+  @override
+  Widget build(BuildContext context) {
+    if (preHand) {
+      return GestureDetector(onTap: onDelete,
+        child: Container(width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          decoration: BoxDecoration(color: Colors.red.shade900.withValues(alpha: 0.6),
+            borderRadius: BorderRadius.circular(3)),
+          alignment: Alignment.center,
+          child: const Text('DELETE', style: TextStyle(fontSize: 11,
+            fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 1.0))));
+    }
+    String l; Color c;
+    if (seat.activity == PlayerActivity.folded) { l='FOLD'; c=Colors.grey.shade800; }
+    else if (seat.activity == PlayerActivity.allIn) { l='ALL-IN'; c=const Color(0xFF8B6914); }
+    else if (seat.activity == PlayerActivity.sittingOut) { l='SIT OUT'; c=Colors.orange.shade800; }
+    else if (seat.actionOn) { l='ACTING'; c=Colors.green.shade700; }
+    else { l='WAITING'; c=Colors.blueGrey.shade700; }
+    return Container(width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(color: c.withValues(alpha: 0.7),
+        borderRadius: BorderRadius.circular(3)),
+      alignment: Alignment.center,
+      child: Text(l, style: const TextStyle(fontSize: 11,
+        fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 1.0)));
   }
 }

@@ -11,7 +11,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../foundation/theme/action_colors.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
+import '../../../models/enums/hand_fsm.dart';
 import '../providers/action_button_provider.dart';
+import '../providers/hand_fsm_provider.dart';
+import '../providers/seat_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Amount keypad state
@@ -43,7 +46,7 @@ class ActionPanel extends ConsumerWidget {
     final showKeypad = ref.watch(showKeypadProvider);
 
     return Container(
-      height: EbsSpacing.actionPanelHeight,
+      height: 140,
       color: const Color(0xFF1A1A2E),
       padding: const EdgeInsets.symmetric(
         horizontal: EbsSpacing.sm,
@@ -51,13 +54,11 @@ class ActionPanel extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          // Left: action buttons grid
-          Expanded(
-            child: _ActionButtons(
-              buttonState: buttonState,
-              onAction: _handleAction(context, ref),
-            ),
-          ),
+          Expanded(flex: 2, child: _UtilityZone(buttonState: buttonState, onAction: _handleAction(context, ref))),
+          const SizedBox(width: 8),
+          Expanded(flex: 6, child: _MainZone(buttonState: buttonState, onAction: _handleAction(context, ref))),
+          const SizedBox(width: 8),
+          Expanded(flex: 3, child: _LifecycleZone(buttonState: buttonState, onAction: _handleAction(context, ref))),
           // Right: amount keypad (conditionally visible)
           if (showKeypad)
             Padding(
@@ -262,8 +263,9 @@ class _ActionBtn extends StatelessWidget {
     required this.onPressed,
     this.borderColor,
     this.compact = false,
+    this.big = false,
+    this.subText,
   });
-
   final String label;
   final String shortcut;
   final Color color;
@@ -271,6 +273,8 @@ class _ActionBtn extends StatelessWidget {
   final bool enabled;
   final VoidCallback onPressed;
   final bool compact;
+  final bool big;
+  final String? subText;
 
   @override
   Widget build(BuildContext context) {
@@ -504,4 +508,98 @@ class _KeypadButton extends StatelessWidget {
       ),
     );
   }
+}
+
+
+class _UtilityZone extends StatelessWidget {
+  const _UtilityZone({required this.buttonState, required this.onAction});
+  final ActionButtonState buttonState;
+  final void Function(CcAction) onAction;
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Expanded(child: _ActionBtn(label: 'UNDO', shortcut: 'Ctrl+Z',
+        color: ActionColors.undo,
+        enabled: buttonState.isEnabled(CcAction.undo),
+        onPressed: () => onAction(CcAction.undo), compact: true)),
+      const SizedBox(height: 4),
+      Expanded(child: _ActionBtn(label: 'MISS DEAL', shortcut: 'M',
+        color: ActionColors.missDeal,
+        enabled: buttonState.isEnabled(CcAction.missDeal),
+        onPressed: () => onAction(CcAction.missDeal), compact: true)),
+    ]);
+  }
+}
+
+class _MainZone extends ConsumerWidget {
+  const _MainZone({required this.buttonState, required this.onAction});
+  final ActionButtonState buttonState;
+  final void Function(CcAction) onAction;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final seats = ref.watch(seatsProvider);
+    final actionSeat = seats.where((s) => s.actionOn).firstOrNull;
+    final biggestBet = seats.fold<int>(0, (m, s) => s.currentBet > m ? s.currentBet : m);
+    final myBet = actionSeat?.currentBet ?? 0;
+    final callAmount = (biggestBet - myBet).clamp(0, 1 << 30);
+    final stack = actionSeat?.player?.stack ?? 0;
+    final isCall = buttonState.checkCallLabel == 'CALL';
+    final isRaise = buttonState.betRaiseLabel == 'RAISE';
+    return Row(children: [
+      _ActionBtn(label: 'FOLD', shortcut: 'F', color: ActionColors.fold,
+        enabled: buttonState.isEnabled(CcAction.fold),
+        onPressed: () => onAction(CcAction.fold)),
+      _ActionBtn(label: buttonState.checkCallLabel, shortcut: 'C',
+        color: ActionColors.check,
+        enabled: buttonState.isEnabled(CcAction.checkCall),
+        subText: isCall && callAmount > 0 ? '\$' + _apFmt(callAmount) : null,
+        onPressed: () => onAction(CcAction.checkCall)),
+      _ActionBtn(label: buttonState.betRaiseLabel,
+        shortcut: isRaise ? 'R' : 'B',
+        color: isRaise ? ActionColors.raise_ : ActionColors.bet,
+        enabled: buttonState.isEnabled(CcAction.betRaise),
+        onPressed: () => onAction(CcAction.betRaise)),
+      _ActionBtn(label: 'ALL-IN', shortcut: 'A',
+        color: ActionColors.allIn, borderColor: ActionColors.allInBorder,
+        enabled: buttonState.isEnabled(CcAction.allIn),
+        subText: stack > 0 ? '\$' + _apFmt(stack) : null,
+        onPressed: () => onAction(CcAction.allIn)),
+    ]);
+  }
+}
+
+class _LifecycleZone extends ConsumerWidget {
+  const _LifecycleZone({required this.buttonState, required this.onAction});
+  final ActionButtonState buttonState;
+  final void Function(CcAction) onAction;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fsm = ref.watch(handFsmProvider);
+    final isIdle = fsm == HandFsm.idle || fsm == HandFsm.handComplete;
+    final isShowdown = fsm == HandFsm.showdown;
+    final canStart = buttonState.isEnabled(CcAction.newHand);
+    final label = isIdle ? 'START HAND' : (isShowdown ? 'FINISH HAND' : 'IN PROGRESS');
+    final sub = isIdle ? 'Ready to deal' : isShowdown ? 'Tap to reset' : fsm.name.toUpperCase();
+    final color = isIdle ? ActionColors.newHand : ActionColors.deal;
+    return Column(children: [
+      Expanded(flex: 3, child: _ActionBtn(label: label, shortcut: '',
+        subText: sub, color: color, enabled: canStart, big: true,
+        onPressed: () => onAction(CcAction.newHand))),
+      const SizedBox(height: 4),
+      SizedBox(height: 32, child: _ActionBtn(label: 'DEAL', shortcut: 'D',
+        color: ActionColors.deal,
+        enabled: buttonState.isEnabled(CcAction.deal),
+        onPressed: () => onAction(CcAction.deal), compact: true)),
+    ]);
+  }
+}
+
+String _apFmt(int n) {
+  final s = n.toString();
+  final buf = StringBuffer();
+  for (var i = 0; i < s.length; i++) {
+    if (i > 0 && (s.length - i) % 3 == 0) buf.write(',');
+    buf.write(s[i]);
+  }
+  return buf.toString();
 }

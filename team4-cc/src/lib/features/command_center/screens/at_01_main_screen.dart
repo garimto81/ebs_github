@@ -970,11 +970,42 @@ class _InfoDivider extends StatelessWidget {
 
 class _SeatArea extends ConsumerWidget {
   const _SeatArea();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(children: [
+      const SizedBox(height: 140, child: _TopStrip()),
+      const SizedBox(height: 8),
+      Expanded(child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [for (int i = 0; i < 10; i++) ...[
+            Expanded(child: SeatCell(seatIndex: i + 1)),
+            if (i < 9) const SizedBox(width: 4)]]))),
+    ]);
+  }
+}
 
+class _TopStrip extends ConsumerWidget {
+  const _TopStrip();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final seats = ref.watch(seatsProvider);
+    return Padding(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: Row(children: [
+        const MiniTableDiagram(size: 120),
+        const SizedBox(width: 16),
+        const Expanded(child: Center(child: _BoardArea())),
+        const SizedBox(width: 16),
+        SizedBox(width: 120, child: Center(child: _DealerIndicator(seats: seats))),
+      ]));
+  }
+}
 
+class _SeatAreaOval_DEPRECATED extends ConsumerWidget {
+  const _SeatAreaOval_DEPRECATED();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final seats = ref.watch(seatsProvider);
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth;
@@ -1190,89 +1221,87 @@ class _ActionPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final btnState = ref.watch(actionButtonProvider);
-    final cs = Theme.of(context).colorScheme;
+    final seats = ref.watch(seatsProvider);
+    final fsm = ref.watch(handFsmProvider);
+    final actionSeat = seats.where((s) => s.actionOn).firstOrNull;
+    final biggestBet = seats.fold<int>(0, (m, s) => s.currentBet > m ? s.currentBet : m);
+    final myBet = actionSeat?.currentBet ?? 0;
+    final callAmount = (biggestBet - myBet).clamp(0, 1 << 30);
+    final stack = actionSeat?.player?.stack ?? 0;
+    final isCall = btnState.checkCallLabel == 'CALL';
+    final isRaise = btnState.betRaiseLabel == 'RAISE';
+    final isIdle = fsm == HandFsm.idle || fsm == HandFsm.handComplete;
+    final isShowdown = fsm == HandFsm.showdown;
+    final lifecycleLabel = isIdle ? 'START HAND' : (isShowdown ? 'FINISH HAND' : 'IN PROGRESS');
+    final lifecycleSub = isIdle ? 'Ready to deal' : isShowdown ? 'Tap to reset' : fsm.name.toUpperCase();
+
+    String fmt(int n) {
+      final s = n.toString();
+      final buf = StringBuffer();
+      for (var i = 0; i < s.length; i++) {
+        if (i > 0 && (s.length - i) % 3 == 0) buf.write(',');
+        buf.write(s[i]);
+      }
+      return buf.toString();
+    }
 
     return Container(
-      height: EbsSpacing.actionPanelHeight,
-      padding: const EdgeInsets.symmetric(
-        horizontal: EbsSpacing.md,
-        vertical: EbsSpacing.sm,
+      height: 140,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: const BoxDecoration(
+        color: Color(0xFF1A1A2E),
+        border: Border(top: BorderSide(color: Colors.white12)),
       ),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
-        border: Border(
-          top: BorderSide(color: cs.outlineVariant),
-        ),
-      ),
-      child: Row(
-        children: [
-          _ActionButton(
-            label: 'NEW HAND',
-            enabled: btnState.isEnabled(CcAction.newHand),
-            color: const Color(0xFF66BB6A),
-            onPressed: btnState.isEnabled(CcAction.newHand)
-                ? () => onAction(CcAction.newHand)
-                : null,
-          ),
-          _ActionButton(
-            label: 'DEAL',
-            enabled: btnState.isEnabled(CcAction.deal),
-            color: const Color(0xFF42A5F5),
-            onPressed: btnState.isEnabled(CcAction.deal)
-                ? () => onAction(CcAction.deal)
-                : null,
-          ),
-          _ActionButton(
-            label: 'FOLD',
-            enabled: btnState.isEnabled(CcAction.fold),
-            color: cs.error,
-            onPressed: btnState.isEnabled(CcAction.fold)
-                ? () => onAction(CcAction.fold)
-                : null,
-          ),
-          _ActionButton(
-            label: btnState.checkCallLabel,
-            enabled: btnState.isEnabled(CcAction.checkCall),
-            color: const Color(0xFF78909C),
-            onPressed: btnState.isEnabled(CcAction.checkCall)
-                ? () => onAction(CcAction.checkCall)
-                : null,
-          ),
-          _ActionButton(
-            label: btnState.betRaiseLabel,
-            enabled: btnState.isEnabled(CcAction.betRaise),
-            color: const Color(0xFFFFA726),
-            onPressed: btnState.isEnabled(CcAction.betRaise)
-                ? () => onAction(CcAction.betRaise)
-                : null,
-          ),
-          _ActionButton(
-            label: 'ALL-IN',
-            enabled: btnState.isEnabled(CcAction.allIn),
-            color: const Color(0xFFEF5350),
-            onPressed: btnState.isEnabled(CcAction.allIn)
-                ? () => onAction(CcAction.allIn)
-                : null,
-          ),
-          _ActionButton(
-            label: 'UNDO',
+      child: Row(children: [
+        Expanded(flex: 2, child: Column(children: [
+          Expanded(child: _ActionButton(label: 'UNDO',
             enabled: btnState.isEnabled(CcAction.undo),
             color: const Color(0xFF9E9E9E),
-            onPressed: btnState.isEnabled(CcAction.undo)
-                ? () => onAction(CcAction.undo)
-                : null,
-          ),
-          _ActionButton(
-            label: 'MISS DEAL',
+            onPressed: btnState.isEnabled(CcAction.undo) ? () => onAction(CcAction.undo) : null)),
+          const SizedBox(height: 4),
+          Expanded(child: _ActionButton(label: 'MISS DEAL',
             enabled: btnState.isEnabled(CcAction.missDeal),
             color: const Color(0xFF9E9E9E),
-            onPressed: btnState.isEnabled(CcAction.missDeal)
-                ? () => onAction(CcAction.missDeal)
-                : null,
-          ),
-        ],
-      ),
+            onPressed: btnState.isEnabled(CcAction.missDeal) ? () => onAction(CcAction.missDeal) : null)),
+        ])),
+        const SizedBox(width: 8),
+        Expanded(flex: 6, child: Row(children: [
+          _ActionButton(label: 'FOLD',
+            enabled: btnState.isEnabled(CcAction.fold),
+            color: const Color(0xFFE53935),
+            onPressed: btnState.isEnabled(CcAction.fold) ? () => onAction(CcAction.fold) : null),
+          _ActionButton(label: btnState.checkCallLabel,
+            enabled: btnState.isEnabled(CcAction.checkCall),
+            color: const Color(0xFF78909C),
+            subText: isCall && callAmount > 0 ? '\$${fmt(callAmount)}' : null,
+            onPressed: btnState.isEnabled(CcAction.checkCall) ? () => onAction(CcAction.checkCall) : null),
+          _ActionButton(label: btnState.betRaiseLabel,
+            enabled: btnState.isEnabled(CcAction.betRaise),
+            color: const Color(0xFFFFA726),
+            onPressed: btnState.isEnabled(CcAction.betRaise) ? () => onAction(CcAction.betRaise) : null),
+          _ActionButton(label: 'ALL-IN',
+            enabled: btnState.isEnabled(CcAction.allIn),
+            color: const Color(0xFFEF5350),
+            subText: stack > 0 ? '\$${fmt(stack)}' : null,
+            onPressed: btnState.isEnabled(CcAction.allIn) ? () => onAction(CcAction.allIn) : null),
+        ])),
+        const SizedBox(width: 8),
+        Expanded(flex: 3, child: Column(children: [
+          Expanded(flex: 3, child: _ActionButton(label: lifecycleLabel,
+            enabled: btnState.isEnabled(CcAction.newHand),
+            color: const Color(0xFF66BB6A),
+            big: true,
+            subText: lifecycleSub,
+            onPressed: btnState.isEnabled(CcAction.newHand) ? () => onAction(CcAction.newHand) : null)),
+          const SizedBox(height: 4),
+          Expanded(child: _ActionButton(label: 'DEAL',
+            enabled: btnState.isEnabled(CcAction.deal),
+            color: const Color(0xFF42A5F5),
+            onPressed: btnState.isEnabled(CcAction.deal) ? () => onAction(CcAction.deal) : null)),
+        ])),
+      ]),
     );
+  
   }
 }
 
@@ -1282,12 +1311,16 @@ class _ActionButton extends StatelessWidget {
     required this.enabled,
     required this.color,
     this.onPressed,
+    this.big = false,
+    this.subText,
   });
 
   final String label;
   final bool enabled;
   final Color color;
   final VoidCallback? onPressed;
+  final bool big;
+  final String? subText;
 
   @override
   Widget build(BuildContext context) {
@@ -1307,9 +1340,23 @@ class _ActionButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(label, style: EbsTypography.actionButton),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FittedBox(fit: BoxFit.scaleDown,
+                  child: Text(label,
+                    style: EbsTypography.actionButton.copyWith(
+                      fontSize: big ? 18 : null,
+                      fontWeight: big ? FontWeight.w800 : null))),
+                if (subText != null)
+                  Padding(padding: const EdgeInsets.only(top: 2),
+                    child: Text(subText!,
+                      style: TextStyle(fontSize: 10,
+                        fontFamily: subText!.startsWith('\$') ? 'monospace' : null,
+                        color: enabled ? Colors.white70 : Colors.white30,
+                        fontWeight: FontWeight.w600))),
+              ]
             ),
           ),
         ),
