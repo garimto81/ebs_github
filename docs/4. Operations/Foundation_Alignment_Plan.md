@@ -58,7 +58,7 @@ Foundation 최근 7 커밋(`b577130` → `027d15a`) 이 도입한 개념. 이후
 | `docs/4. Operations/Docker_Runtime.md` | **P1** | 1, 2 | §1 "lobby-web 정규" ↔ Foundation §5.1 불일치 — 아래 §4 Type C 판정 필요 |
 | `docs/4. Operations/SSOT_Alignment_Progress.md` | **P2** | — | `contracts/` 경로 언급(v11 구조 전환 정렬 재검증) |
 | `docs/4. Operations/Multi_Session_Workflow.md` | **P2** | — | §5.0 런타임 모드와 직접 연관 없음. 확인만 |
-| `docs/4. Operations/V5_Migration_Plan.md` | **P2** | — | 확인만 |
+| `docs/_archive/governance-2026-05/V5_Migration_Plan.md` | **P2** | — | 확인만 (archived 2026-05-08) |
 | `docs/4. Operations/Spec_Gap_Triage.md` | OK | — | Type A/B/C 프로토콜, Foundation 중립 |
 | `docs/2. Development/2.5 Shared/Authentication.md` | OK | — | Auth 주제, Foundation Delta 무관 |
 | `docs/2. Development/2.5 Shared/Naming_Conventions.md` | OK | — | 영향 없음 |
@@ -219,7 +219,7 @@ v1.0 작성 직후 팀 세션들이 자발적으로 대응하여 **상당 부분
 |------|-------------|
 | `SSOT_Alignment_Progress.md` | §contracts/ 경로 언급이 v11 구조(`docs/2. Development/`) 로 갱신되었는지 |
 | `Multi_Session_Workflow.md` | §5.0 2 런타임과 L1-L3 충돌 방지 레이어 간 충돌 없음 재확인 |
-| `V5_Migration_Plan.md` | Foundation §4.4 공동 바이너리 개념과 worktree 정책 충돌 여부 |
+| `../_archive/governance-2026-05/V5_Migration_Plan.md` | Foundation §4.4 공동 바이너리 개념과 worktree 정책 충돌 여부 (archived 2026-05-08) |
 
 ---
 

@@ -115,7 +115,7 @@ TeamDelete()
 
 ## 🔗 관련
 
-- `docs/4. Operations/V9_5_Single_Session_Output_Centric.md` — V9.5 본문
-- `docs/4. Operations/V9_4_AI_Centric_Governance.md` — 계승 (의도/실행 분리)
+- `docs/_archive/governance-2026-05/V9_5_Single_Session_Output_Centric.md` — V9.5 본문 (archived 2026-05-08, supersede: CLAUDE.md §3 v10.3)
+- `docs/_archive/governance-2026-05/V9_4_AI_Centric_Governance.md` — V9.4 (archived, supersede: CLAUDE.md §2 + §3)
 - `docs/4. Operations/Multi_Session_Workflow.md` — V9.5 갱신 후 Single Session SOP
 - `docs/2. Development/2.5 Shared/team-policy.json` — `governance_model.operating_model.default: single_session_conductor`
