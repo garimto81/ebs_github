@@ -26,15 +26,15 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/RBAC_Guards.md` — RBAC Guards
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/EBS-Skin-Editor_v3.prd.md` — EBS-Skin-Editor_v3.prd
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/README.md` — README
+- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/ebs-ui-design-plan.md` — ebs-ui-design-plan
+- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/ebs-ui-design-strategy.md` — ebs-ui-design-strategy
+- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/prd-skin-editor-layout-references.prd.md` — prd-skin-editor-layout-references.prd
+- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/skin-editor-layout-balance-solutions.md` — skin-editor-layout-balance-solutions
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/board-re-crosscheck.md` — board-re-crosscheck
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/data/layout-css-extraction.md` — layout-css-extraction
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ebs-ui-design-plan.md` — ebs-ui-design-plan
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ebs-ui-design-strategy.md` — ebs-ui-design-strategy
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ebs-ui-layout-anatomy.md` — ebs-ui-layout-anatomy
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-compact-mockup-design-system.prd.md` — prd-compact-mockup-design-system.prd
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-skin-editor-layout-references.prd.md` — prd-skin-editor-layout-references.prd
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-skin-editor.prd.md` — prd-skin-editor.prd
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/skin-editor-layout-balance-solutions.md` — skin-editor-layout-balance-solutions
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` — ui-feature-verification-workflow
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md` — UI
 - `docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md` — Chip Management

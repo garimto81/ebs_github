@@ -192,6 +192,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` — v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기)
 - `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` — Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A)
 - `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
+- `docs/4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` — Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세
 - `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
 - `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` — Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성
 - `docs/4. Operations/DEPENDABOT_GOVERNANCE.md` — Dependabot Governance — Label / Major Gate / Recreate Guard
@@ -203,6 +204,7 @@ tier: generated
 - `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Domain Access
 - `docs/4. Operations/Load_Test_Plan_Phase1.md` — Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
+- `docs/4. Operations/Multi_Session_Design_v10.3.md` — Multi-Session Orchestration Design v10.3
 - `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
 - `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (V9.5 — Single Session AI-Centric, Hub-and-Spoke Deprecated)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
@@ -212,6 +214,7 @@ tier: generated
 - `docs/4. Operations/Phase_Plan_2027.md` — EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
 - `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` — Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정
+- `docs/4. Operations/Plans/Lobby_Renewal_Plan_2026-05-06.md` — Lobby 리뉴얼 계획 — EBS Lobby Design SSOT 1:1 정합
 - `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` — Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거
 - `docs/4. Operations/Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` — Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계
 - `docs/4. Operations/Plans/PLAN-BO-Phase1.md` — PLAN-BO-Phase1
@@ -251,5 +254,10 @@ tier: generated
 - `docs/4. Operations/V9_4_AI_Centric_Governance.md` — V9.4 AI-Centric Governance — SSOT-first Judgment + 전문 질문 금지
 - `docs/4. Operations/V9_5_Single_Session_Output_Centric.md` — V9.5 Single Session AI-Centric — Hub-and-Spoke Deprecation
 - `docs/4. Operations/Workflow_Conductor_Autonomous.md` — Conductor Autonomous Workflow SOP — Hourglass 패턴
+- `docs/4. Operations/handoffs/CI_CHAOS_TEST_HANDOFF.md` — CI Chaos Test Handoff (PR
+- `docs/4. Operations/handoffs/CI_GATE_INTEGRATION_HANDOFF.md` — CI Gate Integration + ebs_v2 Cleanup Handoff
+- `docs/4. Operations/handoffs/INFRA_ALIGNMENT_HANDOFF.md` — INFRA Alignment Handoff (Conductor Claim
+- `docs/4. Operations/handoffs/P0_REMEDIATION_HANDOFF.md` — P0 Remediation Handoff (port 3000 + Dockerfile context)
+- `docs/4. Operations/handoffs/P1_FOLLOWUP_HANDOFF.md` — P1/P3 Follow-up Handoff (Sentry sidecar + Flutter pin + ebs_v2 archive)
 - `docs/README.md` — docs/ README
 - `docs/examples/README.md` — Examples
