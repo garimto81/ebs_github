@@ -1,0 +1,7 @@
+{
+  "name": "binary asset change",
+  "description": "update logo image",
+  "diff": "diff --git a/docs/images/logo.png b/docs/images/logo.png\nBinary files a/docs/images/logo.png and b/docs/images/logo.png differ\n",
+  "expected_cascades": [],
+  "expected_edge_cases": ["E02"]
+}

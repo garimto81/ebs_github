@@ -1,0 +1,7 @@
+{
+  "name": "all paths in ignore list",
+  "description": "regen index",
+  "diff": "diff --git a/docs/_generated/full-index.md b/docs/_generated/full-index.md\n",
+  "expected_cascades": [],
+  "expected_edge_cases": ["E27"]
+}

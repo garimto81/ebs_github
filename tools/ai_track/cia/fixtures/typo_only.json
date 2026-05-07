@@ -1,0 +1,7 @@
+{
+  "name": "typo only - skip expected",
+  "description": "fix typo",
+  "diff": "diff --git a/README.md b/README.md\n--- a/README.md\n+++ b/README.md\n@@ -1 +1 @@\n-Hello world!\n+Hello, world!\n",
+  "expected_cascades": [],
+  "expected_edge_cases": ["E03"]
+}
