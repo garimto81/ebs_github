@@ -94,30 +94,66 @@ def check_dependency(team):
     return True
 
 
-def init_commit_and_push(team):
-    """워크트리 setup 파일들을 commit + push"""
-    files_to_add = [
-        '.team',
-        'CLAUDE.md',
-        'START_HERE.md',
-        '.claude/hooks/orch_SessionStart.py',
-        '.claude/hooks/orch_PreToolUse.py',
-        '.claude/settings.json',  # hooks merged
-        '.vscode/settings.json',
-    ]
-    # 존재하는 것만 add
-    existing = [f for f in files_to_add if Path(f).exists()]
+def check_halt_signal():
+    """main에 .orchestrator/HALT 신호 있는지 확인 (있으면 작업 차단)"""
+    subprocess.run(['git', 'fetch', 'origin', 'main'], capture_output=True, timeout=30)
+    result = subprocess.run([
+        'git', 'cat-file', '-e', 'origin/main:.orchestrator/HALT'
+    ], capture_output=True)
+    if result.returncode == 0:
+        # HALT 파일 내용 read
+        signal = subprocess.run([
+            'git', 'show', 'origin/main:.orchestrator/HALT'
+        ], capture_output=True, text=True).stdout
+        sys.stderr.write(
+            f"⛔ ORCHESTRATOR HALT signal active on main:\n\n"
+            f"{signal}\n"
+            f"   Resolve defect first. Remove .orchestrator/HALT to clear.\n"
+        )
+        return True
+    return False
 
-    subprocess.run(['git', 'add'] + existing, capture_output=True)
+
+def init_commit_and_push(team):
+    """Stream activation marker만 main에 commit (stream-specific 파일은 워크트리 로컬)
+
+    잘못된 패턴 (제거됨):
+      .team, START_HERE.md, CLAUDE.md(override) → main 머지 → 6 stream 모두 conflict
+
+    올바른 패턴:
+      .orchestrator/streams/{team_id}.activated 만 main 머지
+      각 stream 별도 경로 → 동시 머지 conflict 0
+    """
+    from datetime import datetime
+
+    # Stream-specific 파일 제외 (워크트리 로컬 only)
+    # Marker 파일만 작성 + 머지
+    marker_dir = Path('.orchestrator/streams')
+    marker_dir.mkdir(parents=True, exist_ok=True)
+    marker = marker_dir / f"{team['team_id']}.activated"
+    marker_content = yaml.safe_dump({
+        'stream_id': team['team_id'],
+        'team_name': team['team_name'],
+        'activated_at': datetime.now().isoformat(),
+        'worktree_path': team.get('worktree_path', str(Path.cwd())),
+        'branch': team.get('branch', ''),
+        'scope_owns': team.get('scope_owns', []),
+    }, allow_unicode=True, sort_keys=False)
+    marker.write_text(marker_content, encoding='utf-8')
+
+    # 추가로 글로벌 설정 (모든 stream 공통, main에 추가해도 conflict X)
+    # .claude/hooks/orch_*.py 는 모든 stream이 같은 내용 → main에 한 번만 머지되어 있으면 OK
+
+    subprocess.run(['git', 'add', str(marker)], capture_output=True)
     result = subprocess.run(
-        ['git', 'commit', '-m', f'feat({team["team_id"]}): Stream init - identity + hooks + scope'],
+        ['git', 'commit', '-m', f'feat({team["team_id"]}): Stream activated (marker only)'],
         capture_output=True, text=True
     )
-    if result.returncode != 0 and 'nothing to commit' not in result.stdout + result.stderr:
+    if result.returncode != 0 and 'nothing to commit' not in (result.stdout + result.stderr):
         sys.stderr.write(f"⚠ commit warning: {result.stdout}{result.stderr}\n")
 
     subprocess.run(['git', 'push', '-u', 'origin', team['branch']], check=True)
-    print(f"✓ Pushed init commit to origin/{team['branch']}")
+    print(f"✓ Pushed marker to origin/{team['branch']}: {marker}")
 
 
 def create_and_merge_init_pr(team):
@@ -222,6 +258,10 @@ def main():
     team = load_team()
 
     print(f"🚀 {team['team_id']} ({team['team_name']}) Stream initialization\n")
+
+    # 0. HALT signal 확인 (orchestrator 결함 보고 채널)
+    if check_halt_signal():
+        sys.exit(2)
 
     # 1. Dependency check
     if not check_dependency(team):

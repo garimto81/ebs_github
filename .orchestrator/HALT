@@ -1,0 +1,17 @@
+# Orchestrator HALT Signal
+# 이 파일이 존재하면 모든 stream의 SessionStart hook이 작업 차단
+
+defect_id: ORCH-001
+discovered_by: S1 Foundation
+discovered_at: "2026-05-07T13:30:00"
+severity: high
+title: "Stream-specific files conflict on main merge"
+description: |
+  team_session_start.py가 .team / START_HERE.md / CLAUDE.md(override)를
+  main에 init commit으로 머지. 각 stream이 같은 경로에 다른 내용 →
+  첫 머지(S1) 후 후속 stream 모두 conflict.
+resolution_status: in_progress
+resolution_plan: |
+  1. .gitignore에 stream-specific 파일 추가
+  2. team_session_start.py 변경: marker 파일(.orchestrator/streams/SX.activated)만 main 머지
+  3. main에서 잘못 머지된 .team, START_HERE.md 제거
