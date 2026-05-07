@@ -318,6 +318,7 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-009-foundation-medium-reference-updates.md` | Foundation 재설계 P2 — MEDIUM 일괄 참조·주석 보강 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` | Foundation 재설계 P3 — LOW 링크·참조 갱신 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md` | CC Visual Uplift — React 프로토타입 시각 자산 7종 흡수 (D7 보안 유지) | team4 | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/B-team4-013-seatcell-inline-edit-cascade-2026-05-07.md` | SeatCell 7행 onTap 인라인 편집 cascade — HTML 시안 vs Flutter drift | prototype-session | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-cc-identity-cascade-2026-05-07.md` | NOTIFY-S1 — CC v4.0 정체성 cascade가 Foundation §Ch.5.4 에 영향 | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | S-11 Lobby Hand History 자동화 UI wiring 요청 | - | - | - |
@@ -603,6 +604,7 @@ tier: generated
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
 | `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` | ECOSYSTEM E2E Handoff — Multi-Service Docker Validation | conductor | operations | - |
 | `docs/4. Operations/Foundation_Alignment_Plan.md` | Foundation 재설계 정렬 계획 (Conductor 소유 문서) | conductor | internal | - |
+| `docs/4. Operations/Frozen_Build_SOP.md` | Frozen Build SOP — file revert race 우회 | prototype | internal | - |
 | `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` | Global SSOT Sync — SG-022 advocacy eradication | conductor | contract | - |
 | `docs/4. Operations/LAN_DEPLOYMENT.md` | LAN Deployment — Internal Network Domain Access | conductor | internal | - |
 | `docs/4. Operations/Load_Test_Plan_Phase1.md` | Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate | conductor | internal | - |
