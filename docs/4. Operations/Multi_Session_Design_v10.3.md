@@ -204,6 +204,25 @@ S2 Lobby Stream:
 | v10.4 (예정) | 사용자 동적 갱신 시 | future_streams 활성화 |
 | v11.0 (가능) | 패러다임 변경 시 | (미정) |
 
+## §11. Implementation Status
+
+본 spec 의 패턴은 외부 도구 구현 상태에 따라 활성/TBD 로 분리된다. **TBD 패턴은 운영 거버넌스에서 사용 금지** — `team-policy.json` v9.5 Single Session AI-Centric 패턴을 fallback 으로 사용.
+
+| 패턴 | 상태 | 의존 |
+|------|:----:|------|
+| 6 Stream 워크트리 (sibling-dir) | **ACTIVE** | `setup_stream_worktree.py`, `analyze_repo.py` |
+| Stream 세션 자동화 (Issue + Draft PR + auto-merge) | **ACTIVE** | `team_session_start.py`, `team_session_end.py` |
+| Orchestrator 모니터링 (GitHub 폴링) | **ACTIVE** | `orchestrator_monitor.py` |
+| 동적 Stream 추가 | **ACTIVE** | `dynamic_stream_activation.py` |
+| Phase 게이트 검증 | **ACTIVE** | `phase_gate_validator.py` |
+| Mode B 자율 충돌 해결 (4-Step Decision Logic) | **TBD** | `tools/conflict_resolver.py` 미구현. fallback = `team-policy.json` `tie_breaker_logic` 수동 적용 |
+| 세션-당-브랜치 자동 초기화 (L1) | **TBD** | `.claude/hooks/session_branch_init.py` 미구현 |
+| 브랜치 가드 (L1, 다른 팀 접근 차단) | **TBD** | `.claude/hooks/branch_guard.py` 미구현 |
+| Mode A/B 자동 전환 | **TBD** | 메커니즘 미구현. fallback = 새 Claude Code 세션 시작 또는 `EBS_GOV_MODE` env var 수동 설정 |
+| Conflict_Registry.md audit | **TBD** | 파일 정의 미구현 |
+
+활성 도구 5개 (실체) + TBD 5개 (spec only). TBD 항목 활성화 = 도구 구현 PR + 본 표 ACTIVE 전환.
+
 ---
 
 **Last verified**: 2026-05-07. 글로벌 스킬 SKILL.md와 정합성 검증 완료.
