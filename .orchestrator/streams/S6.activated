@@ -1,0 +1,8 @@
+stream_id: S6
+team_name: Prototype Stream
+activated_at: '2026-05-07T14:28:17.538725'
+worktree_path: C:/claude/ebs-prototype
+branch: work/s6/2026-05-07-work-2026-05-07
+scope_owns:
+- docs/4. Operations/Prototype_Build_Plan.md
+- integration-tests/**
