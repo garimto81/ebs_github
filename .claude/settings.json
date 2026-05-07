@@ -5,13 +5,28 @@
       {
         "matcher": "Bash",
         "hooks": [
-          {"type": "command", "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/pre_push_drift_check.py"}
+          {
+            "type": "command",
+            "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/pre_push_drift_check.py"
+          }
         ]
       },
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
-          {"type": "command", "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/file_lock_preedit.py"}
+          {
+            "type": "command",
+            "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/file_lock_preedit.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/orch_PreToolUse.py"
+          }
         ]
       }
     ],
@@ -19,14 +34,30 @@
       {
         "matcher": "Bash",
         "hooks": [
-          {"type": "command", "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/post_build_fail.py"}
+          {
+            "type": "command",
+            "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/post_build_fail.py"
+          }
         ]
       }
     ],
     "Stop": [
       {
         "hooks": [
-          {"type": "command", "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/conductor_stop_cleanup.py"}
+          {
+            "type": "command",
+            "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/conductor_stop_cleanup.py"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/orch_SessionStart.py"
+          }
         ]
       }
     ]
