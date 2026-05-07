@@ -92,3 +92,8 @@ harness_report.json
 docker-compose.override.yml
 harness_report.json
 team1_e2e_report.json
+
+# Orchestrator: stream-specific worktree files (not for main)
+.team
+START_HERE.md
+.vscode/settings.json
