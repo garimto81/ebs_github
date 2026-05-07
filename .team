@@ -1,0 +1,21 @@
+team_id: S5
+team_name: AI Track Restructuring
+team_role: AI 전용 문서 재구조화 (rule 13 v3.1 호환 형식)
+worktree_path: C:/claude/ebs-ai-track
+branch: work/s5/2026-05-07-init
+absorbs_existing: []
+scope_owns:
+- tools/ai_track/**
+- docs/_generated/**
+scope_read:
+- docs/2. Development/**
+- docs/4. Operations/**
+meta_files_blocked:
+- CLAUDE.md
+- MEMORY.md
+- docs/2. Development/2.5 Shared/team-policy.json
+- docs/4. Operations/team_assignment_v10_3.yaml
+blocked_by: []
+blocks: []
+design_version: 10.3.0
+project_root: C:/claude/ebs
