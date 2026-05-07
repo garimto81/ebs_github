@@ -1,0 +1,8 @@
+stream_id: S5
+team_name: AI Track Restructuring
+activated_at: '2026-05-07T14:28:08.907150'
+worktree_path: C:/claude/ebs-ai-track
+branch: work/s5/2026-05-07-work-2026-05-07
+scope_owns:
+- tools/ai_track/**
+- docs/_generated/**
