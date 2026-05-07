@@ -48,6 +48,7 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Backlog/B-F004-pending-missing-api-docs.md` | 문서 누락 API 경로 보강 대기 (team2/Conductor 책임) | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F005-settings-series-selector.md` | Settings 화면에 Series selector UI 도입 | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-F006-skin-upload-ui-2step.md` | Skin 업로드 UI를 2-step 플로우로 업데이트 | - | - | - |
+| `docs/2. Development/2.1 Frontend/Backlog/NOTIFY-C1-frontend-non-lobby-identity-cascade-2026-05-07.md` | Phase C1 cascade — Frontend (Lobby 외) Lobby v3 / CC v4 정체성 LLM 전수 의미 정합 검토 | conductor | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-011-검토-요청-Graphic-Editor-소유권-Team-4-Team-1-이관-Lobby-허브.md` | 검토 요청: Graphic Editor 소유권 Team 4 → Team 1 이관 (Lobby 허브) | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-012-검토-요청-gfskin-ZIP-포맷-단일화-및-DATA-07-신설.md` | 검토 요청: .gfskin ZIP 포맷 단일화 및 DATA-07 신설 | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-013-검토-요청-API-07-Graphic-Editor-엔드포인트-신설.md` | 검토 요청: API-07 Graphic Editor 엔드포인트 신설 | - | - | - |

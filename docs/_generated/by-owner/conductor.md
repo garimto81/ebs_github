@@ -19,6 +19,7 @@ tier: generated
 - `docs/1. Product/archive/Foundation_v41.0.0.md` — Foundation
 - `docs/2. Development/2. Development.md` — 2. Development
 - `docs/2. Development/2.1 Frontend/Backlog/B-092-lobby-visual-screenshots-cascade-2026-05-05.md` — Lobby visual/screenshots — 신 디자인 7장 cascade + 본문 문서 정합 갱신
+- `docs/2. Development/2.1 Frontend/Backlog/NOTIFY-C1-frontend-non-lobby-identity-cascade-2026-05-07.md` — Phase C1 cascade — Frontend (Lobby 외) Lobby v3 / CC v4 정체성 LLM 전수 의미 정합 검토
 - `docs/2. Development/2.5 Shared/Authentication.md` — Authentication
 - `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` — Distributed Authentication Architecture
 - `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` — Token Lifecycle Sequences
