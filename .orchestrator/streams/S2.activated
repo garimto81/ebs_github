@@ -1,0 +1,7 @@
+stream_id: S2
+team_name: Lobby Stream
+activated_at: "2026-05-07T13:35:00"
+worktree_path: C:/claude/ebs-lobby-stream
+init_pr: 127
+init_commit: 94090a55
+note: "Init via legacy pattern (pre-fix). Marker added retroactively."
