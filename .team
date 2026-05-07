@@ -1,0 +1,23 @@
+team_id: S3
+team_name: Command Center Stream
+team_role: CC 기획 + CC 코드
+worktree_path: C:/claude/ebs-cc-stream
+branch: work/s3/2026-05-07-init
+absorbs_existing:
+- team4-cc
+scope_owns:
+- docs/2. Development/2.4 Command Center/**
+- docs/1. Product/Command_Center_PRD.md
+- team4-cc/**
+scope_read:
+- docs/1. Product/Foundation.md
+- team4-cc/CLAUDE.md
+meta_files_blocked:
+- CLAUDE.md
+- MEMORY.md
+- docs/2. Development/2.5 Shared/team-policy.json
+- docs/4. Operations/team_assignment_v10_3.yaml
+blocked_by: []
+blocks: []
+design_version: 10.3.0
+project_root: C:/claude/ebs
