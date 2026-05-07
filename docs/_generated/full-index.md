@@ -377,6 +377,7 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/RFID_Cards/Register_Screen.md` | Register Screen | team4 | internal | BS-04-05 |
 | `docs/2. Development/2.4 Command Center/Settings.md` | Settings | team4 | internal | BS-03 |
 | `docs/2. Development/2.5 Shared/2.5 Shared.md` | 2.5 Shared | ci | generated | - |
+| `docs/2. Development/2.5 Shared/AI_Cascade_System.md` | AI Cascade System | ai-track (S5) | internal | - |
 | `docs/2. Development/2.5 Shared/Authentication.md` | Authentication | conductor | internal | BS-01 |
 | `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` | Distributed Authentication Architecture | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` | Token Lifecycle Sequences | conductor | contract | - |
@@ -484,8 +485,6 @@ tier: generated
 | `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` | CC React 디자인 프로토타입 — Critic 판정 보고서 | conductor | internal | - |
 | `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` | Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0) | conductor | internal | - |
 | `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` | Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획 | conductor | critical | - |
-| `docs/4. Operations/Cascade_Plan_S2_Lobby_2026-05-07.md` | S2 Lobby Cascade Plan — Lobby_PRD v3.0.0 → 정본/feature 전면 정합 | stream:S2 (Lobby) | internal | - |
-| `docs/4. Operations/Cascade_Plan_S3_CC_2026-05-07.md` | S3 Command Center Cascade Plan — Command_Center_PRD v4.0 → 정본/feature 전면 정합 | stream:S3 (Command Center) | internal | - |
 | `docs/4. Operations/Conductor_Backlog.md` | Conductor_Backlog | - | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` | Phase 2 통합 테스트 + E2E | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` | Phase 3 통합 테스트 + 부하 테스트 | - | - | - |
