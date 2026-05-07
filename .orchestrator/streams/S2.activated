@@ -1,0 +1,9 @@
+stream_id: S2
+team_name: Lobby Stream
+activated_at: '2026-05-07T14:26:13.072755'
+worktree_path: C:/claude/ebs-lobby-stream
+branch: work/s2/2026-05-07-work-2026-05-07
+scope_owns:
+- docs/2. Development/2.1 Frontend/Lobby/**
+- docs/1. Product/Lobby_PRD.md
+- team1-frontend/**
