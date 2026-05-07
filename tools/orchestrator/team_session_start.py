@@ -152,8 +152,33 @@ def init_commit_and_push(team):
     if result.returncode != 0 and 'nothing to commit' not in (result.stdout + result.stderr):
         sys.stderr.write(f"⚠ commit warning: {result.stdout}{result.stderr}\n")
 
-    subprocess.run(['git', 'push', '-u', 'origin', team['branch']], check=True)
+    # 결함 #2 fix: 메인 세션이 main에 새 commit 추가했을 수 있음.
+    # work branch base가 옛 main이면 push 시 PR conflict 발생.
+    # → fetch + rebase로 base 최신화.
+    print(f"  · fetch origin main + rebase (conflict 사전 차단)")
+    subprocess.run(['git', 'fetch', 'origin', 'main'], capture_output=True, timeout=30)
+    rebase = subprocess.run(
+        ['git', 'rebase', 'origin/main'],
+        capture_output=True, text=True, timeout=60
+    )
+    if rebase.returncode != 0:
+        # marker가 정확히 disjoint 경로니까 사실 conflict 없을 것이지만
+        # 다른 이전 commit과 충돌 시
+        sys.stderr.write(f"⚠ rebase conflict — manual resolve needed: {rebase.stderr[:300]}\n")
+        subprocess.run(['git', 'rebase', '--abort'], capture_output=True)
+        # 대안: marker를 main에 직접 commit (메인 세션에서)
+        print(f"  ⚠ Falling back: marker can be added directly to main by Orchestrator session")
+        return False
+
+    push_result = subprocess.run(
+        ['git', 'push', '-u', 'origin', team['branch']],
+        capture_output=True, text=True
+    )
+    if push_result.returncode != 0:
+        sys.stderr.write(f"⚠ push failed: {push_result.stderr[:200]}\n")
+        return False
     print(f"✓ Pushed marker to origin/{team['branch']}: {marker}")
+    return True
 
 
 def create_and_merge_init_pr(team):
