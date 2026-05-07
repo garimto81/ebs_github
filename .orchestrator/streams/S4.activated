@@ -1,0 +1,8 @@
+stream_id: S4
+team_name: RIVE Standards
+activated_at: '2026-05-07T14:27:59.472185'
+worktree_path: C:/claude/ebs-rive-standards
+branch: work/s4/2026-05-07-work-2026-05-07
+scope_owns:
+- docs/2. Development/2.5 Shared/RIVE_Standards.md
+- docs/2. Development/2.5 Shared/RIVE_Event_Protocol.md
