@@ -8,11 +8,11 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
 source: "local SSOT"
 confluence-mirror-status: "to-push (v4.0 Graphic Novel Edition)"
 last-updated: 2026-05-07
-version: 4.1.0
+version: 4.2.0
 format: "Graphic Novel Edition (markdown-native, 5 layout 변주)"
 reimplementability: PASS
 reimplementability_checked: 2026-05-07
-reimplementability_notes: "v4.1 — Ch.4 정정 (3 그룹 6 기능 본질, 4 SW+1 HW γ 하이브리드 폐기) + A.5 폐기 (2 런타임/3 RBAC 이해 어려움). v4.0 = Graphic Novel 재설계 (HTML table 패턴 → markdown-native, 5 layout)."
+reimplementability_notes: "v4.2 — A.1/A.2 실제 스크린샷 (S2 작업본) 첨부 + Vision Layer (C.3) 거대 프로젝트로 확장 (카메라 → AI 분석 → Engine 3 단계 파이프라인). v4.1 = Ch.4 3 그룹 6 기능 본질화. v4.0 = Graphic Novel 재설계."
 ---
 <p align="center">
 
@@ -542,9 +542,9 @@ flowchart TD
 
 ### A.1 / Lobby — 관제탑
 
-![Lobby 화면](images/foundation/Gemini_Generated_Image_r26vcur26vcur26v.png)
+![Lobby 실제 화면 — 테이블 그리드](images/foundation/ebs-lobby-tables.png)
 
-> *Series → Event → Table 3 단계, 모든 테이블 카드 모니터링.*
+> *Series → Event → Table 3 단계, 모든 테이블 카드 모니터링. (S2 작업 중인 실제 스크린샷)*
 
 | 항목 | 내용 |
 |---|---|
@@ -558,7 +558,7 @@ flowchart TD
 
 ### A.2 / Settings — 글로벌 제어판 (Lobby 내)
 
-![Settings 6 영역](images/foundation/app-settings-main.png)
+![Settings 실제 화면 — 6 영역](images/foundation/ebs-lobby-settings.png)
 
 | 영역 | 통제 |
 |---|---|
@@ -772,11 +772,48 @@ flowchart LR
 
 ---
 
-### C.3 / Vision Layer — 2단계 입력 (목표)
+### C.3 / Vision Layer — 2단계 입력 (별도 거대 프로젝트)
 
-§C.2 의 RFID 는 **1·2 단계 공통**이다. 2 단계 진입 시 추가되는 것은 **Vision Layer** — CC 오퍼레이터의 8 액션을 카메라 + 컴퓨터 비전이 자동 인식한다.
+§C.2 의 RFID 는 **1·2 단계 공통**이다. 2 단계 진입 시 추가되는 것은 **Vision Layer** — 1 단계의 CC 오퍼레이터 8 액션을 완전 대체하는 **별도의 거대 프로젝트**다.
 
-#### 카메라 6 대 구성
+<p align="center">
+
+> # *Vision Layer 는 단순한 카메라 추가가 아니다.*
+> # *카메라 → AI 분석 → Engine 의 3 단계 파이프라인이며,*
+> # *1 단계 EBS 와 비견되는 규모의 별도 프로젝트다.*
+
+</p>
+
+---
+
+#### 3 단계 파이프라인
+
+```mermaid
+flowchart LR
+    subgraph CAM["1 카메라 입력 (HW)"]
+        P[플레이어 4대]
+        T[탑 뷰 1대]
+        C[커뮤니티 1대]
+    end
+    subgraph AI["2 AI 분석 엔진 (CV)"]
+        Det[객체 감지<br/>액션 분류]
+        Track[제스처 추적<br/>칩 푸시]
+        Fuse[멀티 카메라<br/>융합 + 검증]
+    end
+    subgraph EBS["3 Game Engine"]
+        Eng[Engine 입력]
+    end
+    P --> Det
+    T --> Det
+    C --> Det
+    Det --> Track --> Fuse --> Eng
+```
+
+> *각 단계가 독립 컴포넌트. AI 분석 엔진은 1 단계 Game Engine 과 별도의 큰 시스템.*
+
+---
+
+#### 단계 1 / 카메라 입력 — 6 대 구성
 
 | # | 카메라 | 대수 | 인식 대상 | 프로덕션 카메라 |
 |:---:|---|:---:|---|:---:|
@@ -786,57 +823,84 @@ flowchart LR
 |   | **합계** | **6** | | |
 
 ```
-        +---- 카메라 4대 (플레이어) ----+
-        |                              |
-   [P1] [P2] [P3] [P4]
-     |    |    |    |
-     +----+----+----+----+
-                        v
-              +---------+----------+
-              |    CV 추론 엔진    |
-              | (액션/제스처/칩푸시)|
-              +---------+----------+
-                ^                 ^
-        [탑 뷰 1대]        [커뮤니티 1대]
-                        v
-                  Game Engine
-                        v
-                  방송 그래픽
+   카메라 6 대 = HW 입력 단계
+   ─────────────────────────
+   [P1][P2][P3][P4]   ← 플레이어 4 대 (제스처 + 칩)
+   [탑 뷰 1 대]        ← 테이블 전체 부감
+   [커뮤니티 1 대]     ← 보드 카드 (RFID cross-check)
 ```
 
-#### 1단계 ↔ 2단계 매핑
+---
 
-| 1단계 입력 | 2단계 인식 카메라 |
+#### 단계 2 / AI 분석 엔진 — 본 프로젝트의 진짜 핵심
+
+> *카메라 영상을 입력으로 받아 8 액션을 자동 인식하는 별도 시스템.*  
+> *컴퓨터 비전 (CV) 모델 + 객체 추적 + 멀티 카메라 융합 — 모두 별도 R&D 영역.*
+
+| 서브 컴포넌트 | 역할 |
 |---|---|
-| 핸드 시작 / 종결 | 탑 뷰 (딜러 동작) |
+| **객체 감지** | 손 / 칩 / 카드 실시간 위치 추적 |
+| **액션 분류** | 콜 / 레이즈 / 폴드 / 체크 / 올인 분류 모델 |
+| **제스처 추적** | 칩 푸시 동작 / 베팅 의사 표시 |
+| **딜러 동작 인식** | 핸드 시작·종결 자동 감지 |
+| **멀티 카메라 융합** | 4 플레이어 + 탑 뷰 cross-check |
+| **신뢰도 판정** | 인식 confidence 임계값 + RFID cross-validation |
+
+**프로젝트 규모**: 1 단계 EBS (RFID + CC 오퍼레이터) 가 "기존 PokerGFX 패러다임의 자체 구현" 이라면, 2 단계 Vision Layer 는 **"포커 방송 자동화의 새 패러다임"** 자체다. CV 데이터셋 구축 / 모델 학습 / 정확도 검증 / 엣지 케이스 처리가 별도 마일스톤.
+
+---
+
+#### 단계 3 / Game Engine 입력
+
+AI 분석 결과는 1 단계 CC 오퍼레이터의 8 액션 버튼 입력과 **동일한 형태**로 Game Engine 에 전달된다. Engine 입장에서는 입력 출처만 다르고 처리 로직 동일.
+
+| 1 단계 입력 | 2 단계 인식 카메라 + AI |
+|---|---|
+| 핸드 시작 / 종결 | 탑 뷰 + 딜러 동작 인식 모델 |
 | 카드 배분 | 탑 뷰 + 커뮤니티 (RFID cross-check) |
-| 콜 / 레이즈 / 폴드 / 체크 / 올인 | 플레이어 4 대 (제스처 + 칩 푸시) |
+| 콜 / 레이즈 / 폴드 / 체크 / 올인 | 플레이어 4 대 + 제스처/칩 푸시 모델 |
+
+---
 
 #### 정확도 목표
 
-> **사람의 수정 없이 방송에 문제 없는 상태** — 휴먼 인터벤션 0.
+<p align="center">
+
+> # *사람의 수정 없이 방송에 문제 없는 상태.*
+
+</p>
+
+휴먼 인터벤션 0 — 즉 1 단계 CC 오퍼레이터의 모든 입력을 AI 가 사람과 동등 또는 더 나은 정확도로 대체. 이 목표 달성이 곧 2 단계 프로젝트 완수.
+
+---
+
+#### 1단계 ↔ 2단계 컴포넌트 비교
 
 ```mermaid
 flowchart LR
-    subgraph S1["1단계 입력"]
+    subgraph S1["1단계 (현재)"]
         R1[RFID 12안테나] --> Eng1[Engine]
-        CC[CC 오퍼레이터<br/>8 액션] --> Eng1
+        CC[CC 오퍼레이터<br/>8 액션 버튼] --> Eng1
     end
-    subgraph S2["2단계 입력"]
+    subgraph S2["2단계 (별도 거대 프로젝트)"]
         R2[RFID 12안테나<br/>유지] --> Eng2[Engine]
-        CV[Vision Layer<br/>6 카메라] --> Eng2
+        Cam[6 카메라] --> AIEng[AI 분석 엔진<br/>별도 시스템]
+        AIEng --> Eng2
     end
-    S1 ==>|순차 전환<br/>완전 대체| S2
+    S1 ==>|X축 완전 안정화 후<br/>순차 전환·완전 대체| S2
 ```
 
 | 컴포넌트 | 1단계 | 2단계 |
 |---|:---:|:---:|
 | RFID 12 안테나 | YES | YES (유지) |
 | CC 오퍼레이터 | YES | NO (제거) |
-| Vision Layer 6 카메라 | NO | YES (신규) |
+| 6 카메라 | NO | YES (신규 HW) |
+| **AI 분석 엔진** | **NO** | **YES (별도 거대 시스템)** |
 | Game Engine | YES | YES (유지) |
 
-> *2 단계 진입 시 CC 오퍼레이터 화면은 모니터링 전용. 입력 권한 없음. 1 단계 완전 안정화 후 순차 진행, 병행 운영 X.*
+> *2 단계 진입 시 CC 오퍼레이터 화면은 모니터링 전용. 입력 권한 없음.*  
+> *AI 분석 엔진 = 1 단계 Game Engine 과 동등한 규모의 새 시스템.*  
+> *1 단계 완전 안정화 후 순차 진행, 병행 운영 X.*
 
 ---
 
