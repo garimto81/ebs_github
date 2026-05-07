@@ -14,6 +14,7 @@ tier: generated
 - `docs/1. Product/Game_Rules/Draw.md` — Draw
 - `docs/1. Product/Game_Rules/Flop_Games.md` — Flop Games
 - `docs/1. Product/Game_Rules/Seven_Card_Games.md` — Seven Card Games
+- `docs/1. Product/RIVE_Standards.md` — RIVE Standards — Overlay Graphics 정본
 - `docs/1. Product/References/PokerGFX_Reference.md` — PokerGFX Reference
 - `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` — WSOP Production Structure Analysis
 - `docs/1. Product/archive/Foundation_v41.0.0.md` — Foundation

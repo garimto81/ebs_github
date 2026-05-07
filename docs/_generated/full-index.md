@@ -19,7 +19,7 @@ tier: generated
 | `docs/1. Product/Game_Rules/Flop_Games.md` | Flop Games | conductor | external | PRD-GAME-01 |
 | `docs/1. Product/Game_Rules/Seven_Card_Games.md` | Seven Card Games | conductor | external | PRD-GAME-03 |
 | `docs/1. Product/Lobby_PRD.md` | EBS Lobby — 5 화면 시퀀스 + WSOP LIVE 정보 허브 | stream:S2 (Lobby) | external | - |
-| `docs/1. Product/RIVE_Standards.md` | RIVE Standards — Overlay Graphics 정본 | S4 (RIVE Standards) | contract | - |
+| `docs/1. Product/RIVE_Standards.md` | RIVE Standards — Overlay Graphics 정본 | conductor | external | - |
 | `docs/1. Product/References/PokerGFX_Reference.md` | PokerGFX Reference | conductor | internal | - |
 | `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` | WSOP Production Structure Analysis | conductor | internal | - |
 | `docs/1. Product/archive/Foundation_v41.0.0.md` | Foundation | conductor | internal | - |
