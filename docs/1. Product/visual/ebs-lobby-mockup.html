@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>EBS Lobby — 6-Screen Wireframe Mockup</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f0f0f0;color:#333}
+.screen{background:#fff;margin:24px auto;max-width:1400px;border:1px solid #ccc;border-radius:8px;overflow:hidden}
+.screen-header{background:#8B1A1A;color:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+.screen-header h2{font-size:18px;font-weight:600}
+.screen-header .badge{font-size:11px;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px}
+.screen-body{padding:24px}
+.breadcrumb{font-size:13px;color:#666;margin-bottom:16px}
+.breadcrumb a{color:#8B1A1A;text-decoration:none}
+.ebs-added{border-left:4px solid #22c55e;padding-left:8px;position:relative}
+.ebs-badge{display:inline-block;background:#22c55e;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;margin-left:4px;vertical-align:middle}
+.removed{text-decoration:line-through;color:#999;background:#f5f5f5;padding:2px 6px;border-radius:3px}
+.stat-bar{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.stat-box{background:#f8f8f8;border:1px solid #ddd;border-radius:6px;padding:10px 16px;min-width:120px;text-align:center}
+.stat-box .label{font-size:11px;color:#888;text-transform:uppercase}
+.stat-box .value{font-size:20px;font-weight:700;color:#333}
+table.data{width:100%;border-collapse:collapse;font-size:13px}
+table.data th{background:#f0f0f0;padding:8px 10px;text-align:left;font-weight:600;border-bottom:2px solid #ddd;white-space:nowrap}
+table.data td{padding:7px 10px;border-bottom:1px solid #eee}
+table.data tr:hover{background:#fafafa}
+.feature-row{background:#fef3c7!important}
+.feature-row:hover{background:#fde68a!important}
+.status{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600}
+.status-running{background:#dcfce7;color:#166534}
+.status-registering{background:#ffedd5;color:#9a3412}
+.status-completed{background:#e5e7eb;color:#374151}
+.status-announced{background:#dbeafe;color:#1e40af}
+.btn{display:inline-block;padding:8px 16px;border-radius:4px;font-size:13px;font-weight:600;cursor:pointer;border:none;text-align:center}
+.btn-red{background:#8B1A1A;color:#fff}
+.btn-outline{background:#fff;border:1px solid #ddd;color:#333}
+.btn-green{background:#22c55e;color:#fff}
+/* Screen 0 */
+.login-card{max-width:380px;margin:40px auto;padding:32px;border:1px solid #ddd;border-radius:8px;background:#fff}
+.login-card h3{font-size:22px;font-weight:700;margin-bottom:24px}
+.login-field{width:100%;padding:12px;border:1px solid #ccc;border-radius:4px;margin-bottom:12px;font-size:14px}
+.login-link{font-size:12px;color:#8B1A1A;text-align:right;display:block;margin-bottom:16px}
+.login-btn{width:100%;padding:12px;font-size:15px;margin-bottom:8px}
+.login-sso{width:100%;padding:12px;font-size:13px;background:#fff;border:1px solid #ccc;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+/* Screen 1 */
+.series-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:12px}
+.series-card{border:1px solid #ddd;border-radius:6px;overflow:hidden}
+.series-img{height:100px;background:#667;display:flex;align-items:flex-end;padding:8px;color:#fff;font-size:12px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.series-info{padding:10px}
+.series-info h4{font-size:13px;font-weight:600;margin-bottom:4px}
+.series-info .date{font-size:11px;color:#888}
+.series-role{margin-top:8px;padding:6px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;width:100%;background:#fff}
+.month-label{font-size:15px;font-weight:700;margin:20px 0 8px;color:#8B1A1A}
+.filter-bar{display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.filter-bar input{padding:8px 12px;border:1px solid #ccc;border-radius:4px;font-size:13px;width:200px}
+.filter-bar label{font-size:12px;color:#666;display:flex;align-items:center;gap:4px}
+/* Screen 2 */
+.tabs{display:flex;gap:0;border-bottom:2px solid #ddd;margin-bottom:16px}
+.tab{padding:8px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:#666}
+.tab.active{color:#8B1A1A;border-bottom-color:#8B1A1A;font-weight:600}
+.tab .count{font-size:11px;color:#999;margin-left:4px}
+/* Screen 4 */
+.seat-grid{display:grid;grid-template-columns:140px repeat(9,36px) 50px 60px 60px 60px 80px;gap:2px;align-items:center;font-size:12px}
+.seat-grid .header{font-weight:600;background:#f0f0f0;padding:4px 6px;text-align:center;font-size:11px}
+.seat-grid .table-label{font-size:12px;font-weight:600;padding:4px 6px;white-space:nowrap}
+.seat{width:32px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+.seat-filled{background:#86efac;color:#166534}
+.seat-empty{background:#f3f4f6;color:#9ca3af;border:1px solid #e5e7eb}
+.seat-eliminated{background:#fecaca;color:#991b1b}
+.seated-count{text-align:center;font-weight:600;font-size:13px}
+/* TOC */
+.toc{position:fixed;right:16px;top:50%;transform:translateY(-50%);background:#fff;border:1px solid #ddd;border-radius:8px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);z-index:100;font-size:12px}
+.toc a{display:block;padding:4px 8px;color:#666;text-decoration:none;border-radius:4px}
+.toc a:hover{background:#f0f0f0;color:#8B1A1A}
+.toc .num{font-weight:700;color:#8B1A1A;margin-right:4px}
+.waiting-list{background:#f8f8f8;border:1px solid #ddd;border-radius:6px;padding:12px;min-width:200px}
+.waiting-list h5{font-size:12px;font-weight:600;margin-bottom:8px;color:#666}
+.waiting-list ol{padding-left:20px;font-size:12px;line-height:1.8}
+.table-mgmt-layout{display:flex;gap:16px}
+.table-mgmt-layout .grid-area{flex:1;overflow-x:auto}
+.table-mgmt-layout .sidebar{min-width:200px}
+</style>
+</head>
+<body>
+
+<!-- TOC -->
+<nav class="toc">
+  <a href="#screen-0"><span class="num">0</span>Login</a>
+  <a href="#screen-1"><span class="num">1</span>Series</a>
+  <a href="#screen-2"><span class="num">2</span>Events</a>
+  <a href="#screen-3"><span class="num">3</span>Flights</a>
+  <a href="#screen-4"><span class="num">4</span>Tables</a>
+  <a href="#screen-5"><span class="num">5</span>Players</a>
+</nav>
+
+<!-- ===== SCREEN 0: LOGIN ===== -->
+<section class="screen" id="screen-0">
+  <div class="screen-header">
+    <h2>Screen 0 — Login</h2>
+    <span class="badge">WSOP LIVE 그대로 사용</span>
+  </div>
+  <div class="screen-body" style="background:#f5f5f5;min-height:360px;display:flex;align-items:center;justify-content:center">
+    <div class="login-card">
+      <h3>Login</h3>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:18px">👤</span>
+        <input class="login-field" style="margin:0" placeholder="Email">
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:18px">🔒</span>
+        <input class="login-field" style="margin:0" type="password" placeholder="Password">
+      </div>
+      <a href="#" class="login-link">Forgot your Password?</a>
+      <button class="btn btn-red login-btn">Login</button>
+      <button class="login-sso">🪟 Sign In With Entra ID <span style="font-size:10px;color:#999">(TBD)</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SCREEN 1: SERIES LOBBY ===== -->
+<section class="screen" id="screen-1">
+  <div class="screen-header">
+    <h2>Screen 1 — Series Lobby (대회 로비)</h2>
+    <span class="badge">WSOP LIVE 그대로 사용 · 제거 없음</span>
+  </div>
+  <div class="screen-body">
+    <div class="filter-bar">
+      <input placeholder="🔍 Search Series">
+      <label><input type="checkbox"> Hide outdated series</label>
+      <label><input type="checkbox"> Show bookmarks</label>
+      <button class="btn btn-outline">Reset</button>
+    </div>
+    <div style="font-size:14px;font-weight:700;color:#333;margin-bottom:4px">2026</div>
+    <div class="month-label">April</div>
+    <div class="series-grid">
+      <div class="series-card">
+        <div class="series-img" style="background:#556">WSOP Circuit - Horseshoe Tunica</div>
+        <div class="series-info">
+          <h4>WSOP Circuit - Horseshoe Tunica</h4>
+          <div class="date">Apr 16, 2026 — Apr 27, 2026</div>
+          <select class="series-role"><option>Select Role</option><option>Admin</option><option>Operator</option><option>Viewer</option></select>
+        </div>
+      </div>
+      <div class="series-card">
+        <div class="series-img" style="background:#564">WSOP Circuit - Caesars Republic Lake Tahoe</div>
+        <div class="series-info">
+          <h4>WSOP Circuit - Caesars Republic</h4>
+          <div class="date">Apr 16, 2026 — Apr 27, 2026</div>
+          <select class="series-role"><option>Select Role</option></select>
+        </div>
+      </div>
+      <div class="series-card">
+        <div class="series-img" style="background:#645">WSOP Circuit - Texas Card House</div>
+        <div class="series-info">
+          <h4>WSOP Circuit - Texas Card House</h4>
+          <div class="date">Apr 23, 2026 — May 04, 2026</div>
+          <select class="series-role"><option>Select Role</option></select>
+        </div>
+      </div>
+      <div class="series-card" style="border:2px solid #8B1A1A">
+        <div class="series-img" style="background:#547">2026 WSOP Europe</div>
+        <div class="series-info">
+          <h4>2026 WSOP Europe ✦</h4>
+          <div class="date">Mar 31, 2026 — Apr 12, 2026</div>
+          <select class="series-role"><option>Admin</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="month-label">May</div>
+    <div class="series-grid">
+      <div class="series-card">
+        <div class="series-img" style="background:#465">WSOP Circuit - Harrah's Cherokee</div>
+        <div class="series-info">
+          <h4>WSOP Circuit - Harrah's Cherokee</h4>
+          <div class="date">May 07, 2026 — May 19, 2026</div>
+          <select class="series-role"><option>Select Role</option></select>
+        </div>
+      </div>
+      <div class="series-card">
+        <div class="series-img" style="background:#654">2026 World Series of Poker</div>
+        <div class="series-info">
+          <h4>2026 World Series of Poker</h4>
+          <div class="date">May 26, 2026 — Jul 15, 2026</div>
+          <select class="series-role"><option>Select Role</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SCREEN 2: EVENT LIST ===== -->
+<section class="screen" id="screen-2">
+  <div class="screen-header">
+    <h2>Screen 2 — Event List (이벤트 목록)</h2>
+    <span class="badge">제거: Prize/Guarantee/Level/Late Reg · 추가: Feature Table 뱃지</span>
+  </div>
+  <div class="screen-body">
+    <div class="breadcrumb"><a href="#">Home</a> &gt; <a href="#">2026 WSOP Europe</a> &gt; Tournaments &gt; Management</div>
+    <div class="tabs">
+      <div class="tab">Created<span class="count">(0)</span></div>
+      <div class="tab">Announced<span class="count">(3)</span></div>
+      <div class="tab">Registering<span class="count">(1)</span></div>
+      <div class="tab active">Running<span class="count">(2)</span></div>
+      <div class="tab">Completed<span class="count">(24)</span></div>
+    </div>
+    <div style="margin-bottom:12px">
+      <span class="removed">Ticketed Events</span>
+      <span class="removed" style="margin-left:8px">View By Calendar</span>
+    </div>
+    <table class="data">
+      <thead><tr>
+        <th>Start Time</th><th>No.</th><th>Event Name</th><th>Buy-In</th><th>Game</th>
+        <th>Entries</th><th>Re-Entries</th><th>Unique</th><th>Status</th>
+        <th class="removed">Level</th><th class="removed">Late Reg</th>
+        <th class="removed">Prize Pool</th><th class="removed">Guarantee</th>
+        <th class="ebs-added">★ Feature<span class="ebs-badge">EBS</span></th>
+      </tr></thead>
+      <tbody>
+        <tr class="feature-row">
+          <td>03/31, 12:00</td><td>#1</td><td>€1,100 The Opener Mystery Bounty</td><td>€1,100</td><td>NLH</td>
+          <td>894</td><td>1,298</td><td>—</td><td><span class="status status-running">Running</span></td>
+          <td class="removed">15</td><td class="removed">OFF</td><td class="removed">€963,123</td><td class="removed">€1,500</td>
+          <td class="ebs-added"><strong>★</strong></td>
+        </tr>
+        <tr>
+          <td>04/01, 14:00</td><td>#2</td><td>€600 PLO / PLO8 / Big O</td><td>€600</td><td>PLO</td>
+          <td>97</td><td>84</td><td>—</td><td><span class="status status-registering">Registering</span></td>
+          <td class="removed">—</td><td class="removed">ON</td><td class="removed">€51,286</td><td class="removed">—</td>
+          <td class="ebs-added">—</td>
+        </tr>
+        <tr>
+          <td>04/01, 16:00</td><td>#3</td><td>€550 Deepstack NLH</td><td>€550</td><td>NLH</td>
+          <td>127</td><td>—</td><td>—</td><td><span class="status status-completed">Completed</span></td>
+          <td class="removed">24</td><td class="removed">OFF</td><td class="removed">€42,917</td><td class="removed">—</td>
+          <td class="ebs-added">—</td>
+        </tr>
+        <tr class="feature-row">
+          <td>04/03, 12:00</td><td>#5</td><td>€5,300 Europe Main Event</td><td>€5,300</td><td>NLH</td>
+          <td>1,807</td><td>838</td><td>1,273</td><td><span class="status status-running">Running</span></td>
+          <td class="removed">14</td><td class="removed">OFF</td><td class="removed">€7,168,000</td><td class="removed">€5,000,000</td>
+          <td class="ebs-added"><strong>★</strong></td>
+        </tr>
+        <tr>
+          <td>04/04, 14:00</td><td>#6</td><td>€600 Turbo NLH</td><td>€600</td><td>NLH</td>
+          <td>78</td><td>26</td><td>—</td><td><span class="status status-announced">Announced</span></td>
+          <td class="removed">—</td><td class="removed">—</td><td class="removed">—</td><td class="removed">—</td>
+          <td class="ebs-added">—</td>
+        </tr>
+        <tr>
+          <td>04/05, 12:00</td><td>#7</td><td>€1,500 Omaha Hi-Lo 8/B</td><td>€1,500</td><td>O8</td>
+          <td>—</td><td>—</td><td>—</td><td><span class="status status-announced">Announced</span></td>
+          <td class="removed">—</td><td class="removed">—</td><td class="removed">—</td><td class="removed">—</td>
+          <td class="ebs-added">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== SCREEN 3: FLIGHT LIST ===== -->
+<section class="screen" id="screen-3">
+  <div class="screen-header">
+    <h2>Screen 3 — Flight List (Flight 목록)</h2>
+    <span class="badge">WSOP LIVE 그대로 사용 · 제거 없음</span>
+  </div>
+  <div class="screen-body">
+    <div class="breadcrumb"><a href="#">WSOP Europe 2026</a> &gt; <a href="#">Event #5: €5,300 Main Event</a> &gt; Flights</div>
+    <table class="data">
+      <thead><tr><th>Start Time</th><th>#</th><th>Flight</th><th>Entries</th><th>Players</th><th>Tables</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>03/04/2026, 12:00</td><td>#5</td><td>Day1A</td><td>336 / 803</td><td style="color:#16a34a;font-weight:600">667</td><td>136</td><td><span class="status status-completed">COMPLETED</span></td></tr>
+        <tr><td>04/04/2026, 12:00</td><td>#5</td><td>Day1B</td><td>269 / 653</td><td style="color:#16a34a;font-weight:600">513</td><td>140</td><td><span class="status status-completed">COMPLETED</span></td></tr>
+        <tr><td>05/04/2026, 12:00</td><td>#5</td><td>Day1C</td><td>299 / 713</td><td style="color:#16a34a;font-weight:600">559</td><td>154</td><td><span class="status status-completed">COMPLETED</span></td></tr>
+        <tr style="background:#fefce8;font-weight:600"><td>06/04/2026, 12:00</td><td>#5</td><td>Day2</td><td>918 / 918</td><td style="color:#ea580c;font-weight:700">918</td><td>0</td><td><span class="status status-registering">REGISTERING</span></td></tr>
+        <tr style="color:#999"><td>07/04/2026, 12:00</td><td>#5</td><td>Day3</td><td>0 / 0</td><td>0</td><td>0</td><td><span class="status status-announced">ANNOUNCED</span></td></tr>
+        <tr style="color:#999"><td>08/04/2026, 12:00</td><td>#5</td><td>Day4</td><td>0 / 0</td><td>0</td><td>0</td><td><span class="status status-announced">ANNOUNCED</span></td></tr>
+        <tr style="color:#999"><td>09/04/2026, 12:00</td><td>#5</td><td>Day5</td><td>0 / 0</td><td>0</td><td>0</td><td><span class="status status-announced">ANNOUNCED</span></td></tr>
+        <tr style="color:#999"><td>10/04/2026, 12:00</td><td>#5</td><td>Day6</td><td>0 / 0</td><td>0</td><td>0</td><td><span class="status status-announced">ANNOUNCED</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== SCREEN 4: TABLE MANAGEMENT ===== -->
+<section class="screen" id="screen-4">
+  <div class="screen-header" style="background:#6b1414">
+    <h2>Screen 4 — Table Management (테이블 관리) — EBS Core</h2>
+    <span class="badge">제거: Hold Search/Export · 추가: RFID/Deck/Output/Enter CC</span>
+  </div>
+  <div class="screen-body">
+    <div class="breadcrumb"><a href="#">WSOP Europe</a> &gt; <a href="#">#5 Main Event</a> &gt; <a href="#">Day2</a> &gt; Tables</div>
+    <div class="stat-bar">
+      <div class="stat-box"><div class="label">Players</div><div class="value">918<span style="font-size:12px;color:#888">/919</span></div></div>
+      <div class="stat-box"><div class="label">Tables</div><div class="value">124</div></div>
+      <div class="stat-box"><div class="label">Auto Seating</div><div class="value" style="color:#16a34a;font-size:14px">Enabled</div></div>
+      <div class="stat-box"><div class="label">Seats</div><div class="value">1,116</div></div>
+      <div class="stat-box"><div class="label">Waiting</div><div class="value" style="color:#ea580c">12</div></div>
+      <div style="flex:1"></div>
+      <span class="removed">Hold Search</span>
+      <span class="removed">Export CSV</span>
+    </div>
+
+    <div class="table-mgmt-layout">
+      <div class="grid-area">
+        <div class="seat-grid">
+          <!-- Header -->
+          <div class="header">Table</div>
+          <div class="header">1</div><div class="header">2</div><div class="header">3</div>
+          <div class="header">4</div><div class="header">5</div><div class="header">6</div>
+          <div class="header">7</div><div class="header">8</div><div class="header">9</div>
+          <div class="header">Seated</div>
+          <div class="header ebs-added" style="border-left:3px solid #22c55e">RFID<span class="ebs-badge">EBS</span></div>
+          <div class="header ebs-added" style="border-left:3px solid #22c55e">Deck<span class="ebs-badge">EBS</span></div>
+          <div class="header ebs-added" style="border-left:3px solid #22c55e">Output<span class="ebs-badge">EBS</span></div>
+          <div class="header ebs-added" style="border-left:3px solid #22c55e">Action<span class="ebs-badge">EBS</span></div>
+
+          <!-- Row: Feature Table (gold) -->
+          <div class="table-label" style="background:#fef3c7">★ Day2-#071</div>
+          <div class="seat seat-filled">1</div><div class="seat seat-filled">2</div><div class="seat seat-filled">3</div>
+          <div class="seat seat-filled">4</div><div class="seat seat-filled">5</div><div class="seat seat-filled">6</div>
+          <div class="seat seat-filled">7</div><div class="seat seat-filled">8</div><div class="seat seat-filled">9</div>
+          <div class="seated-count">9</div>
+          <div style="text-align:center">🟢</div>
+          <div style="text-align:center;font-size:11px">✅ 52/52</div>
+          <div style="text-align:center;font-size:11px">NDI 🟢</div>
+          <div style="text-align:center"><button class="btn btn-red" style="padding:4px 10px;font-size:11px">Enter CC</button></div>
+
+          <!-- Row: Normal -->
+          <div class="table-label">Day2-#069</div>
+          <div class="seat seat-filled">1</div><div class="seat seat-filled">2</div><div class="seat seat-filled">3</div>
+          <div class="seat seat-filled">4</div><div class="seat seat-empty"></div><div class="seat seat-filled">6</div>
+          <div class="seat seat-filled">7</div><div class="seat seat-filled">8</div><div class="seat seat-eliminated">9</div>
+          <div class="seated-count">7</div>
+          <div style="text-align:center;color:#999">—</div>
+          <div style="text-align:center;color:#999">—</div>
+          <div style="text-align:center;color:#999">—</div>
+          <div style="text-align:center"><button class="btn btn-outline" style="padding:4px 10px;font-size:11px">Enter CC</button></div>
+
+          <!-- Row: Normal 2 -->
+          <div class="table-label">Day2-#070</div>
+          <div class="seat seat-filled">1</div><div class="seat seat-filled">2</div><div class="seat seat-filled">3</div>
+          <div class="seat seat-filled">4</div><div class="seat seat-filled">5</div><div class="seat seat-filled">6</div>
+          <div class="seat seat-empty"></div><div class="seat seat-filled">8</div><div class="seat seat-filled">9</div>
+          <div class="seated-count">8</div>
+          <div style="text-align:center;color:#999">—</div>
+          <div style="text-align:center;color:#999">—</div>
+          <div style="text-align:center;color:#999">—</div>
+          <div style="text-align:center"><button class="btn btn-outline" style="padding:4px 10px;font-size:11px">Enter CC</button></div>
+
+          <!-- Row: Feature Table 2 -->
+          <div class="table-label" style="background:#fef3c7">★ Day2-#072</div>
+          <div class="seat seat-filled">1</div><div class="seat seat-filled">2</div><div class="seat seat-filled">3</div>
+          <div class="seat seat-filled">4</div><div class="seat seat-filled">5</div><div class="seat seat-filled">6</div>
+          <div class="seat seat-filled">7</div><div class="seat seat-empty"></div><div class="seat seat-filled">9</div>
+          <div class="seated-count">8</div>
+          <div style="text-align:center">🟢</div>
+          <div style="text-align:center;font-size:11px">⚠️ 0/52</div>
+          <div style="text-align:center;font-size:11px">SDI 🟢</div>
+          <div style="text-align:center"><button class="btn btn-red" style="padding:4px 10px;font-size:11px">Enter CC</button></div>
+
+          <!-- Row: Normal 3 -->
+          <div class="table-label">Day2-#073</div>
+          <div class="seat seat-filled">1</div><div class="seat seat-filled">2</div><div class="seat seat-empty"></div>
+          <div class="seat seat-filled">4</div><div class="seat seat-filled">5</div><div class="seat seat-filled">6</div>
+          <div class="seat seat-filled">7</div><div class="seat seat-filled">8</div><div class="seat seat-empty"></div>
+          <div class="seated-count">7</div>
+          <div style="text-align:center;color:#999">—</div>
+          <div style="text-align:center;color:#999">—</div>
+          <div style="text-align:center;color:#999">—</div>
+          <div style="text-align:center"><button class="btn btn-outline" style="padding:4px 10px;font-size:11px">Enter CC</button></div>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <div class="waiting-list">
+          <h5>Waiting List (12)</h5>
+          <ol>
+            <li>Christopher Kearin</li>
+            <li>Bence Fist</li>
+            <li>Yuval Frome</li>
+            <li>Ravi Guerin</li>
+            <li>Paul Ephremsen</li>
+            <li>Benedetta Šudice</li>
+            <li>Ernest Grenier</li>
+            <li>Naomi Dato</li>
+            <li>Mirsha Mitev</li>
+          </ol>
+          <div style="font-size:11px;color:#999;margin-top:8px">+3 more...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SCREEN 5: PLAYER LIST ===== -->
+<section class="screen" id="screen-5">
+  <div class="screen-header">
+    <h2>Screen 5 — Player List (플레이어 정보)</h2>
+    <span class="badge">제거: Peg&Swap/Export · 추가: VPIP/PFR/AGR + Feature 강조</span>
+  </div>
+  <div class="screen-body">
+    <div class="breadcrumb"><a href="#">WSOP Europe</a> &gt; <a href="#">#5 Main Event</a> &gt; <a href="#">Day2</a> &gt; Players</div>
+    <div class="stat-bar">
+      <div class="stat-box"><div class="label">Players</div><div class="value">918<span style="font-size:12px;color:#888">/919</span></div></div>
+      <div class="stat-box"><div class="label">Total Stack</div><div class="value" style="font-size:14px">131,160,000</div></div>
+      <div class="stat-box"><div class="label">Entered</div><div class="value" style="font-size:14px">131,133,500</div></div>
+      <div class="stat-box"><div class="label">Difference</div><div class="value" style="color:#16a34a;font-size:14px">+26,500</div></div>
+      <div class="stat-box"><div class="label">Waiting</div><div class="value" style="color:#ea580c">15</div></div>
+      <div style="flex:1"></div>
+      <span class="removed">Peg & Swap List</span>
+      <span class="removed">Export CSV</span>
+      <span class="removed">Includes Qualifier</span>
+    </div>
+    <table class="data">
+      <thead><tr>
+        <th>Place</th><th>Player</th><th>Chips/Price</th><th>Big Blinds</th><th>State</th><th>Country</th>
+        <th class="ebs-added" style="border-left:3px solid #22c55e">VPIP<span class="ebs-badge">EBS</span></th>
+        <th class="ebs-added">PFR</th>
+        <th class="ebs-added">AGR</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td><td>🇦🇹 Daniel Negreanu (Q) ↓</td><td>631,000</td><td>175.3 BB</td><td>Active</td><td>Austria</td>
+          <td class="ebs-added">28%</td><td class="ebs-added">18%</td><td class="ebs-added">42%</td>
+        </tr>
+        <tr>
+          <td>2</td><td>🇬🇧 Roberto Romanello (Q) ↓</td><td>589,000</td><td>163.6 BB</td><td>Active</td><td>United Kingdom</td>
+          <td class="ebs-added">32%</td><td class="ebs-added">22%</td><td class="ebs-added">38%</td>
+        </tr>
+        <tr class="feature-row">
+          <td>3</td><td>🇺🇸 Phil Hellmuth (Q) ↓ <span class="ebs-badge">Feature</span></td><td>486,000</td><td>135.0 BB</td><td>Active</td><td>United States</td>
+          <td class="ebs-added">22%</td><td class="ebs-added">15%</td><td class="ebs-added">35%</td>
+        </tr>
+        <tr class="feature-row">
+          <td>4</td><td>🇨🇳 Pei Shao (Q) ↓ <span class="ebs-badge">Feature</span></td><td>431,000</td><td>119.7 BB</td><td>Active</td><td>China</td>
+          <td class="ebs-added">35%</td><td class="ebs-added">20%</td><td class="ebs-added">45%</td>
+        </tr>
+        <tr class="feature-row">
+          <td>5</td><td>🇧🇬 Martin Tvetkov (Q) ↓ <span class="ebs-badge">Feature</span></td><td>428,000</td><td>118.9 BB</td><td>Active</td><td>Bulgaria</td>
+          <td class="ebs-added">26%</td><td class="ebs-added">19%</td><td class="ebs-added">41%</td>
+        </tr>
+        <tr>
+          <td>6</td><td>🇺🇦 Histen Birka (Q) ↑</td><td>424,000</td><td>117.8 BB</td><td>Active</td><td>Ukraine</td>
+          <td class="ebs-added">30%</td><td class="ebs-added">21%</td><td class="ebs-added">39%</td>
+        </tr>
+        <tr>
+          <td>7</td><td>🇪🇸 Antonio Gallego</td><td>414,000</td><td>115.0 BB</td><td>Active</td><td>Spain</td>
+          <td class="ebs-added">29%</td><td class="ebs-added">17%</td><td class="ebs-added">36%</td>
+        </tr>
+        <tr>
+          <td>8</td><td>🇦🇹 Maria Saline (Q)</td><td>398,000</td><td>110.6 BB</td><td>Active</td><td>Austria</td>
+          <td class="ebs-added">24%</td><td class="ebs-added">16%</td><td class="ebs-added">33%</td>
+        </tr>
+        <tr>
+          <td>9</td><td>🇺🇸 Simon Jones</td><td>382,000</td><td>106.1 BB</td><td>Active</td><td>United States</td>
+          <td class="ebs-added">31%</td><td class="ebs-added">23%</td><td class="ebs-added">44%</td>
+        </tr>
+        <tr>
+          <td>10</td><td>🇩🇪 Dana Seitert (Q)</td><td>356,000</td><td>98.9 BB</td><td>Active</td><td>Germany</td>
+          <td class="ebs-added">27%</td><td class="ebs-added">18%</td><td class="ebs-added">37%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</body>
+</html>

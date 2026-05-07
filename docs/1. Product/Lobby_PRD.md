@@ -1,18 +1,22 @@
 ---
 title: "EBS Lobby — 5 화면 시퀀스 + WSOP LIVE 정보 허브"
-status: DRAFT v3.0.0-draft.3 (2026-05-07, 스크린샷 풍부 활용 + 작위 제거)
-version: 3.0.0-draft.3
+status: APPROVED
+owner: stream:S2 (Lobby)
 tier: external
-audience: 외부 stakeholder + Lobby 개발자
-narrative-spine: "운영자가 통과하는 5 화면 + 4 진입 시점 + WSOP LIVE 거울"
-supersedes: "draft.2 (PNG 1개 사용 + 작위 12건)"
+confluence-page-id: 3811672228
+confluence-parent-id: 3811344758
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228
 last-updated: 2026-05-07
-correction: |
-  draft.2 → draft.3 변경:
-  1. PNG 1 개 → narrative 흐름에 따라 25 PNG 풍부 활용
-  2. 작위 디테일 12 건 제거: 시간 단위 (5분/30초/1분/3분), 외부 PD 가상 대화,
-     운영실 모니터 구조 단정, 페르소나 (김 운영자), 시점 시간 (09:55/14:32) 모두 삭제
-  3. WSOP LIVE 정보 허브를 "한 가지 더" 가 아닌 본질 가치로 격상
+version: 3.0.0
+derivative-of: ../2. Development/2.1 Frontend/Lobby/Overview.md
+if-conflict: derivative-of takes precedence
+audience-target: 외부 stakeholder + Lobby 개발자 (이중 audience — 그림 소설 + 개발자 무결성)
+narrative-spine: "운영자가 통과하는 5 화면 + 4 진입 시점 + WSOP LIVE 정보 허브"
+supersedes: v2.0.1 (2026-05-06, "관제탑" 정체성 오해 — 정정 = "5 분 게이트웨이 + WSOP LIVE 거울")
+related-docs:
+  - ../2. Development/2.1 Frontend/Lobby/Overview.md (정본 1273줄)
+  - ../2. Development/2.1 Frontend/Lobby/UI.md (UI 정본)
+  - ../2. Development/2.1 Frontend/Lobby/References/EBS_Lobby_Design/ (디자인 SSOT v2)
 ---
 
 # EBS Lobby — 5 화면 시퀀스 + WSOP LIVE 정보 허브
