@@ -4,6 +4,8 @@ owner: S4 (RIVE Standards)
 tier: contract
 last-updated: 2026-05-07
 version: 0.5.0
+confluence-page-id: 3816784235
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3816784235
 audience-target: 외부 개발팀 + 외부 디자이너 + 방송 PD
 purpose: |
   Overlay Graphics 의 정본 SSOT.
