@@ -1,0 +1,209 @@
+---
+title: Multi-Session Orchestration Design v10.3
+status: ACTIVE
+last-updated: 2026-05-07
+owner: conductor
+tier: internal
+provenance:
+  triggered_by: user_directive
+  trigger_summary: "v10.3 멀티 세션 자율 시스템 + 글로벌 스킬화"
+  user_directive: |
+    "orchestrator 가 멀티 세션을 시작할 폴더까지 지정 / 작업 시작하기 전까지
+     orchestrator 가 모든 것을 관할하여 완벽하게 사전 설계 / 실제 작업이 진행
+     될 때는 철저하게 모니터링만"
+  trigger_date: "2026-05-07"
+predecessors:
+  - path: docs/4. Operations/Multi_Session_Workflow.md
+    relation: superseded_partially
+    reason: v10.3 패러다임 (Architect-then-Observer)으로 진화
+  - path: docs/2. Development/2.5 Shared/team-policy.json
+    relation: continued
+    reason: SCOPE 매트릭스 보존, Phase 게이트 추가
+---
+
+## Edit History
+
+| 날짜 | 버전 | 트리거 | 변경 |
+|------|:----:|--------|------|
+| 2026-05-07 | v10.3.0 | 사용자 directive — 멀티 세션 v10.3 | 최초 작성 (글로벌 orchestrator 스킬 v10.3 적용) |
+
+## 🎯 Thesis
+
+> **Architect-then-Observer**: Orchestrator는 Phase 0에서 모든 것을 사전 설계 + 사전 세팅한 뒤, Phase 1+에는 GitHub 모니터링만 한다. 사용자 진입점은 VSCode 폴더 클릭 1회.
+
+## Reader Anchor
+
+이 문서는 EBS 멀티 세션 운영 SSOT입니다. 입구(현재 단일 세션 + 가끔 worktree 분리) → 출구(6 Stream 자율 워크트리 병렬 + Orchestrator 모니터링).
+
+---
+
+## §1. 6 Streams 매트릭스
+
+상세 SSOT: [`team_assignment_v10_3.yaml`](./team_assignment_v10_3.yaml)
+
+```
++------+------------------+----------------------------+--------+----------+
+| ID   | 이름              | 흡수 폴더                  | Phase  | 의존     |
++------+------------------+----------------------------+--------+----------+
+| S1   | Foundation       | (없음, 신설)                | P1     | -        |
+| S2   | Lobby Stream     | team1-frontend/            | P2+P5  | S1       |
+| S3   | CC Stream        | team4-cc/                  | P2+P5  | S1       |
+| S4   | RIVE Standards   | (없음, 신설)                | P2     | S1       |
+| S5   | AI Track         | (tools/ai_track 신설)       | P3     | S1       |
+| S6   | Prototype        | integration-tests/         | P3     | S2,S3,S4 |
++------+------------------+----------------------------+--------+----------+
+
+미래 동적 추가:
+| S7   | Backend          | team2-backend/             | P5     | S1       |
+| S8   | Engine           | team3-engine/              | P5     | S1       |
+| S9   | QA               | (integration-tests/)       | P4     | All      |
+```
+
+## §2. Architect-then-Observer 모델
+
+```
+                Phase 0
+          [Architect Mode]
+                 │
+                 │  Orchestrator: 90분 자율
+                 │  - 설계서 + 도구 + GitHub 인프라
+                 │  - 6 워크트리 폴더 + 모든 파일 사전 세팅
+                 │
+                 v
+          +------------------+
+          | 게이트            |
+          | - 산출물 검증      |
+          | - 사용자 검토 1회  |
+          +--------+---------+
+                   │
+                   v
+                Phase 1+
+          [Observer Mode]
+                 │
+                 │  Orchestrator: 영구 모니터링
+                 │  - gh pr/issue list 30s 폴링
+                 │  - 의존성 위반 감지
+                 │  - 사용자 동적 요청 처리
+                 │
+                 v
+          (영구 자율 cycle)
+```
+
+## §3. 6 워크트리 폴더 사전 지정
+
+```
+C:/claude/ebs-foundation/        ← S1
+C:/claude/ebs-lobby-stream/      ← S2 (team1-frontend 흡수)
+C:/claude/ebs-cc-stream/         ← S3 (team4-cc 흡수)
+C:/claude/ebs-rive-standards/    ← S4
+C:/claude/ebs-ai-track/          ← S5
+C:/claude/ebs-prototype/         ← S6 (integration-tests 흡수)
+```
+
+각 폴더에 사전 세팅된 파일:
+```
+.team                          (Layer 2: Stream identity SSOT)
+CLAUDE.md                      (Layer 3: 워크트리-local 가이드)
+START_HERE.md                  (사용자 첫 화면)
+.claude/
+  ├── settings.local.json      (hook 활성화)
+  └── hooks/
+      ├── SessionStart.py      (Layer 4)
+      └── PreToolUse.py        (Layer 5)
+.vscode/settings.json
+```
+
+## §4. 6중 다층 방어 (Identity + Scope)
+
+| Layer | 메커니즘 | 강제 시점 |
+|:-:|---------|---------|
+| 1 | 워크트리 경로 패턴 | 진입 시 |
+| 2 | `.team` 메타 파일 | 진입 시 |
+| 3 | 워크트리 CLAUDE.md | LLM context |
+| 4 | SessionStart hook | 세션 시작 |
+| 5 | PreToolUse hook | Edit/Write 직전 |
+| 6 | GitHub 인프라 | PR 생성/머지 |
+
+상세: 글로벌 스킬 `~/.claude/skills/orchestrator/references/6-layer-defense.md`
+
+## §5. Phase 게이트 (시간차 SCOPE)
+
+```
+S2 Lobby Stream:
+  P2 (기획):
+    write: docs/2.1/Lobby/, docs/1./Lobby_PRD.md
+    blocked: team1-frontend/src/    ← P5에서 unlock
+  P5 (코드, 사용자 동적 요청 시):
+    write: team1-frontend/, docs/2.1/Lobby/
+```
+
+→ 같은 Stream이 Phase에 따라 SCOPE 자동 확장. 새 워크트리 안 만들고 unlock만.
+
+## §6. 사용자 워크플로우
+
+```
+1. 사용자: VSCode에서 워크트리 폴더 열기
+   → C:/claude/ebs-foundation/  (예: S1부터)
+   
+2. 자동 발생:
+   - SessionStart hook → identity 주입
+   - START_HERE.md 화면에 표시
+   - .team context 자동 로드
+   
+3. 사용자: "작업 시작"
+   → tools/orchestrator/team_session_start.py 자동 실행
+   → GitHub Issue + Draft PR 자동 생성
+   
+4. 작업 진행 (PreToolUse hook이 SCOPE 강제)
+   
+5. 사용자: "작업 완료"
+   → tools/orchestrator/team_session_end.py 자동 실행
+   → PR ready + auto-merge + branch 삭제
+   
+6. 다른 Stream으로 전환 (또는 병렬 진행):
+   - VSCode 새 창에서 다른 워크트리 폴더 열기
+   - 이전 Stream의 PR이 머지되면 의존 Stream 자동 unblock
+```
+
+## §7. 동적 추가 패턴
+
+사용자: "Backend 코드 시작" 또는 "QA 추가"
+
+→ Orchestrator (Observer → Architect 일시 전환):
+1. team_assignment_v10_3.yaml의 future_streams.S7 → streams.S7 활성화
+2. setup_stream_worktree.py --stream=S7 실행
+3. GitHub 인프라 갱신
+4. 사용자 보고: "S7 Backend Stream 폴더 준비. VSCode에서 열기"
+
+## §8. Orchestrator 도구
+
+위치: `tools/orchestrator/`
+
+| 도구 | 호출자 | 역할 |
+|------|-------|------|
+| `team_session_start.py` | Stream 세션 (자동) | issue + draft PR |
+| `team_session_end.py` | Stream 세션 (자동) | PR ready + auto-merge |
+| `setup_stream_worktree.py` | Orchestrator | 워크트리 폴더 + 파일 세팅 |
+| `orchestrator_monitor.py` | Orchestrator | GitHub 폴링 |
+| `analyze_repo.py` | Orchestrator (1회) | 프로젝트 분석 |
+
+## §9. 글로벌 스킬과의 관계
+
+본 EBS 적용은 글로벌 `/orchestrator` 스킬의 첫 번째 사례. 모든 패턴은 보편화되어 다음 프로젝트 적용 가능.
+
+글로벌 스킬: `~/.claude/skills/orchestrator/`
+- 모든 프로젝트에서 자동 로드
+- EBS는 기존 매트릭스(이 yaml) 발견 → 자동 추론 스킵
+- 다른 프로젝트는 폴더 스캔 → 매트릭스 추론 → 사용자 1회 검토
+
+## §10. v10.3 → 향후 진화
+
+| 버전 | 상태 | 트리거 |
+|------|------|--------|
+| v10.3 | ACTIVE | 2026-05-07 |
+| v10.4 (예정) | 사용자 동적 갱신 시 | future_streams 활성화 |
+| v11.0 (가능) | 패러다임 변경 시 | (미정) |
+
+---
+
+**Last verified**: 2026-05-07. 글로벌 스킬 SKILL.md와 정합성 검증 완료.

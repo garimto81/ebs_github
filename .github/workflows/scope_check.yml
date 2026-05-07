@@ -1,0 +1,89 @@
+name: scope_check
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify-scope:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect Stream from branch
+        id: detect
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          STREAM=$(echo "$BRANCH" | grep -oP 'work/\K(s\d+)' | tr '[:lower:]' '[:upper:]')
+          if [ -z "$STREAM" ]; then
+            echo "::warning::Branch $BRANCH does not match work/sN/* pattern. Skipping scope check."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "stream=$STREAM" >> $GITHUB_OUTPUT
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Python
+        if: steps.detect.outputs.skip != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pyyaml
+        if: steps.detect.outputs.skip != 'true'
+        run: pip install pyyaml
+
+      - name: Verify scope
+        if: steps.detect.outputs.skip != 'true'
+        run: |
+          STREAM="${{ steps.detect.outputs.stream }}"
+          FILES=$(git diff --name-only origin/main...HEAD | tr '\n' '|' | sed 's/|$//')
+          python <<'PYEOF'
+          import os
+          import sys
+          import yaml
+          from fnmatch import fnmatch
+
+          stream = os.environ.get('STREAM') or "${{ steps.detect.outputs.stream }}"
+          files_str = os.environ.get('FILES') or """${{ env.FILES }}"""
+          files = [f for f in files_str.split('|') if f]
+
+          with open('docs/4. Operations/team_assignment_v10_3.yaml') as f:
+              config = yaml.safe_load(f)
+
+          stream_config = config['streams'].get(stream)
+          if not stream_config:
+              print(f"::error::Unknown stream: {stream}")
+              sys.exit(1)
+
+          # SCOPE = phase별 합집합 (Phase 시간차 검증은 phase_gate_check가 담당)
+          all_scope = []
+          for phase_data in stream_config.get('phases', {}).values():
+              all_scope.extend(phase_data.get('scope_owns', []))
+
+          violations = []
+          for f in files:
+              ok = False
+              for pat in all_scope:
+                  if '**' in pat:
+                      base = pat.rsplit('/**', 1)[0]
+                      if f == base or f.startswith(base + '/'):
+                          ok = True
+                          break
+                  elif fnmatch(f, pat):
+                      ok = True
+                      break
+              if not ok:
+                  violations.append(f)
+
+          if violations:
+              print(f"::error::Files outside {stream} scope:")
+              for v in violations:
+                  print(f"  - {v}")
+              sys.exit(1)
+          print(f"✓ All {len(files)} files within {stream} scope")
+          PYEOF
+        env:
+          STREAM: ${{ steps.detect.outputs.stream }}
+          FILES: ${{ env.FILES }}

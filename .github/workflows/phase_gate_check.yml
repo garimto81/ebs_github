@@ -1,0 +1,83 @@
+name: phase_gate_check
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify-phase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect Stream + Phase
+        id: detect
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          STREAM=$(echo "$BRANCH" | grep -oP 'work/\K(s\d+)' | tr '[:lower:]' '[:upper:]')
+          PR_LABELS="${{ join(github.event.pull_request.labels.*.name, ',') }}"
+          PHASE=$(echo "$PR_LABELS" | grep -oE 'phase:[Pp][0-9]+' | head -1 | sed 's/phase://I')
+          echo "stream=${STREAM:-NONE}" >> $GITHUB_OUTPUT
+          echo "phase=${PHASE:-AUTO}" >> $GITHUB_OUTPUT
+
+      - name: Setup Python
+        if: steps.detect.outputs.stream != 'NONE'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install pyyaml
+        if: steps.detect.outputs.stream != 'NONE'
+
+      - name: Verify phase scope
+        if: steps.detect.outputs.stream != 'NONE'
+        env:
+          STREAM: ${{ steps.detect.outputs.stream }}
+          PHASE: ${{ steps.detect.outputs.phase }}
+        run: |
+          FILES=$(git diff --name-only origin/main...HEAD | tr '\n' '|')
+          python <<'PYEOF'
+          import os, sys, yaml
+          from fnmatch import fnmatch
+
+          stream = os.environ['STREAM']
+          phase = os.environ.get('PHASE', 'AUTO')
+          files = [f for f in os.environ.get('FILES', '').split('|') if f]
+
+          with open('docs/4. Operations/team_assignment_v10_3.yaml') as f:
+              config = yaml.safe_load(f)
+
+          phases = config['streams'][stream].get('phases', {})
+
+          # Phase=AUTO: 모든 phase의 scope_owns 합집합 허용
+          if phase == 'AUTO':
+              allowed = []
+              for p in phases.values():
+                  allowed.extend(p.get('scope_owns', []))
+              blocked = []
+          else:
+              phase_cfg = phases.get(phase, {})
+              allowed = phase_cfg.get('scope_owns', [])
+              blocked = phase_cfg.get('blocked', [])
+
+          violations = []
+          for f in files:
+              # blocked 검사
+              for pat in blocked:
+                  if '**' in pat:
+                      base = pat.rsplit('/**', 1)[0]
+                      if f == base or f.startswith(base + '/'):
+                          violations.append((f, f'blocked in {phase}'))
+                          break
+                  elif fnmatch(f, pat):
+                      violations.append((f, f'blocked in {phase}'))
+                      break
+
+          if violations:
+              print(f"::error::Phase {phase} violations in {stream}:")
+              for f, reason in violations:
+                  print(f"  - {f}: {reason}")
+              sys.exit(1)
+          print(f"✓ Phase {phase} scope OK ({len(files)} files)")
+          PYEOF

@@ -1,0 +1,58 @@
+name: Stream Work Declaration
+description: Declare start of work in a multi-session Stream
+title: "[SX] <work title>"
+labels: ["status:in-progress"]
+body:
+  - type: dropdown
+    id: stream
+    attributes:
+      label: Stream
+      description: Which Stream is starting this work?
+      options:
+        - S1 Foundation
+        - S2 Lobby Stream
+        - S3 Command Center Stream
+        - S4 RIVE Standards
+        - S5 AI Track Restructuring
+        - S6 Prototype Stream
+        - S7 Backend Stream (future)
+        - S8 Engine Stream (future)
+        - S9 QA Stream (future)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Phase
+      options:
+        - P1 (Foundation)
+        - P2 (Planning docs)
+        - P3 (AI infrastructure / Prototype)
+        - P4 (Integration / QA)
+        - P5 (Code implementation)
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Files in scope
+      description: Paste from .team scope_owns
+      placeholder: |
+        - docs/2. Development/2.1 Frontend/Lobby/**
+        - docs/1. Product/Lobby_PRD.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: deps
+    attributes:
+      label: Blocked by (other Streams)
+      placeholder: e.g. S1 Foundation must merge first
+
+  - type: input
+    id: eta
+    attributes:
+      label: Expected completion (rough)
+      placeholder: "2 days / 1 week / etc."
