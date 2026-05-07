@@ -206,11 +206,21 @@ def setup_stream(stream_id: str, config: dict, project_root: Path,
     # Step 2. .team 파일
     team_data = render_team_file(stream_id, config, project_root)
     if not dry_run:
-        (worktree_path / '.team').write_text(
+        team_file = worktree_path / '.team'
+        team_file.write_text(
             yaml.safe_dump(team_data, allow_unicode=True, sort_keys=False),
             encoding='utf-8'
         )
-    print(f"  ✓ .team")
+        # 결함 #1 fix: 자가 검증 — 작성된 team_id가 stream_id와 일치하는지
+        verify = yaml.safe_load(team_file.read_text(encoding='utf-8'))
+        if verify.get('team_id') != stream_id:
+            sys.stderr.write(
+                f"⛔ FATAL: .team write 후 verification failed.\n"
+                f"   Expected team_id={stream_id}, got {verify.get('team_id')}.\n"
+                f"   파일 system 또는 캐시 issue 의심. 재시도 권장.\n"
+            )
+            return False
+    print(f"  ✓ .team (verified team_id={stream_id})")
 
     # Step 3. CLAUDE.md (override)
     if not dry_run:
