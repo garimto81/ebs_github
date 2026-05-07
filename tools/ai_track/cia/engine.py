@@ -189,7 +189,7 @@ def parse_changed_paths(diff) -> list[str]:
 
 
 _PATH_RE = "docs/[^" + chr(10) + chr(13) + chr(9) + chr(60) + chr(62) + chr(124) + chr(42) + chr(63) + r"]+?\.md"
-_RAG_RE = r"(\d+\.\d+)\s+(" + _PATH_RE + ")"
+_RAG_RE = r"\[?(\d+\.\d+)\]?\s+(" + _PATH_RE + ")"
 
 
 def static_graph_lookup(intent: IntentMeta, changed_paths: list[str]) -> list[Candidate]:

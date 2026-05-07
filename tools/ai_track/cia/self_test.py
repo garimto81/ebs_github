@@ -133,6 +133,14 @@ def test_unit_layer() -> tuple[int, int, list[str]]:
     check(m3 and m3.group(1) == "0.85", "E36-rag-score-parse",
           f"got {m3.groups() if m3 else None}")
 
+    # E36 - bracketed score format [0.617]  <- doc_rag actual output
+    test_rag2 = "  [0.617] docs/1. Product/Lobby_PRD.md"
+    _RAG_PAT2 = r"\[?(\d+\.\d+)\]?\s+(" + _PAT + ")"
+    m4 = _re.search(_RAG_PAT2, test_rag2)
+    check(m4 and m4.group(1) == "0.617", "E36-rag-bracket",
+          f"got {m4.groups() if m4 else None}")
+
+
     # E10 - skip_reason normalization
     check(_normalize_skip("None") == "", "E10-norm-None")
     check(_normalize_skip("none") == "", "E10-norm-none")
