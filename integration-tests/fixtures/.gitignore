@@ -1,0 +1,3 @@
+# 51MB binary fixture — GitHub 50MB 권장 한도 초과 (push 시 경고).
+# `_generate.py` 로 on-demand 생성. 자세히는 README.md.
+huge-51mb.gfskin

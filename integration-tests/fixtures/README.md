@@ -4,14 +4,14 @@
 
 ## 6 .gfskin fixtures
 
-| 파일 | 크기 | 목적 | 예상 응답 |
-|------|------|------|----------|
-| `wsop-2026-test.gfskin` | ~466 B | 정상 ZIP — CCR-013 §1 통과 | 201 Created |
-| `invalid-colors.gfskin` | ~471 B | `colors.badge_check = "not-a-hex-color"` | 422 Unprocessable Entity |
-| `huge-51mb.gfskin` | ~51 MiB | 50MB 초과 | 413 Payload Too Large |
-| `missing-skin-json.gfskin` | ~123 B | ZIP 안에 `skin.json` 없음 | 422 |
-| `missing-skin-riv.gfskin` | ~365 B | ZIP 안에 `skin.riv` 없음 | 422 |
-| `invalid-rive-magic.gfskin` | ~466 B | `skin.riv` 첫 4바이트가 `FAKE` | 422 |
+| 파일 | 크기 | 목적 | 예상 응답 | git 상태 |
+|------|------|------|----------|----------|
+| `wsop-2026-test.gfskin` | ~466 B | 정상 ZIP — CCR-013 §1 통과 | 201 Created | tracked |
+| `invalid-colors.gfskin` | ~471 B | `colors.badge_check = "not-a-hex-color"` | 422 | tracked |
+| `huge-51mb.gfskin` | ~51 MiB | 50MB 초과 | 413 | **gitignored — on-demand 생성 필수** |
+| `missing-skin-json.gfskin` | ~123 B | `skin.json` 없음 | 422 | tracked |
+| `missing-skin-riv.gfskin` | ~365 B | `skin.riv` 없음 | 422 | tracked |
+| `invalid-rive-magic.gfskin` | ~466 B | `skin.riv` 첫 4바이트가 `FAKE` | 422 | tracked |
 
 ## minimal stub 한계
 
@@ -52,9 +52,14 @@ python integration-tests/fixtures/_generate.py
 
 binary fixture (`huge-51mb.gfskin`, ~51 MiB)는 매 실행마다 무작위 바이트로 재생성된다 (`os.urandom`).
 
-## 저장소 부하
+## 저장소 부하 (RESOLVED v0.3.1)
 
-`huge-51mb.gfskin` 51 MiB는 매 fetch 시 다운로드된다. 본 세션 commit (v0.3.0) 에서는 일단 commit. 추후 audit에서 `.gitignore` + on-demand generate 로 전환 검토 (`Prototype_Build_Plan.md §7 Q5` 또는 Q6 follow-up).
+`huge-51mb.gfskin` 은 **gitignored** (2026-05-08 v0.3.1). GitHub 50MB 권장 한도 초과로 push 시 경고가 발생했고, 매 fetch 시 51MB 다운로드는 비용. 통합 테스트 실행 전 `_generate.py` 로 on-demand 생성한다.
+
+```bash
+# CI 또는 로컬 테스트 실행 직전
+python integration-tests/fixtures/_generate.py
+```
 
 ## 사용처
 
