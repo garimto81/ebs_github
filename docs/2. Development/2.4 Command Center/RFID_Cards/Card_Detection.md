@@ -3,7 +3,7 @@ title: Card Detection
 owner: team4
 tier: internal
 legacy-id: BS-04-02
-last-updated: 2026-04-29
+last-updated: 2026-05-08
 ---
 
 # BS-04-02 Card Detection — 게임 진행 중 카드 감지
@@ -12,8 +12,9 @@ last-updated: 2026-04-29
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 홀카드/보드 카드 감지, 카드 제거, 감지 실패 시나리오, 경우의 수 매트릭스 |
 | 2026-04-29 | §3.3 atomic 정렬 (CF-002+003) | Triggers_and_Event_Pipeline.md §1.4/§3.5 T9/§4.10 권위에 정렬. 1~2장 부분 감지 = PENDING (외부 미발행), CC-only FlopPartialAlert. 4번째 카드 = AWAITING_TURN 컨텍스트별 분기 |
-| 2026-04-29 | §1.1 안테나 시각화 (CF-005) | 24 안테나 물리 배치 Mermaid 다이어그램 추가 (좌석 20 + 보드 4) |
+| 2026-04-29 | §1.1 안테나 시각화 (CF-005) | 24 안테나 물리 배치 Mermaid 다이어그램 추가 (좌석 20 + 보드 4) [HISTORY — 본 entry 의 24 표기는 작성 당시 사실. Foundation §C.2 SSOT 정정은 2026-05-08 entry 참조] |
 | 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 카드 감지 결과는 v4.0 PlayerGrid (1×10 가로) SeatCell 행 6 (Hole cards face-down) 또는 TopStrip Community Board 5 슬롯 (FLOP 1·2·3 / TURN / RIVER) 에 표시. 안테나 → 이벤트 → UI 표시 경로 변화 없음 (UI 위치만 4 영역 위계 매핑). SSOT: `Command_Center_UI/Overview.md §3.0`. |
+| **2026-05-08** | **#178 안테나 수 표기 정정 (24 → 12)** | Foundation §C.2 정점 SSOT 채택 (사용자 confirmed). §"정의" + API-03 §5.1 인용의 "24" 표기를 "12" 로 정정. **§1.1 표 + mermaid 다이어그램 + §1.2 매핑 룰 + Mock HAL 검증 룰 재설계는 HW 메커니즘 영향이라 `Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` 분리** (자율 한계). 현재 §1 본문은 24 안테나 가정 잔존 — 후속 PR 에서 12 안테나 분배로 재설계. |
 
 ---
 
@@ -33,7 +34,7 @@ last-updated: 2026-04-29
 |------|------|
 | **홀카드** | 플레이어에게 비공개로 배분되는 카드 (Hold'em: 2장/인) |
 | **보드 카드** | 테이블 중앙에 공개되는 공용 카드 (Flop 3장 + Turn 1장 + River 1장) |
-| **안테나** | RFID 신호를 수신하는 물리 장치. 좌석별 2개 + 보드 4개 |
+| **안테나** | RFID 신호를 수신하는 물리 장치. **Foundation §C.2 정점 SSOT = 12 안테나** (좌석 + 보드 중앙). 본 §1 본문은 24 안테나 가정 잔존 — `Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` 후속 PR 에서 12 분배 재설계 |
 | **confidence** | RFID 인식 신뢰도 (0.0~1.0). Mock은 항상 1.0 |
 
 ---
@@ -76,7 +77,7 @@ flowchart TB
     end
 ```
 
-> **참조**: API-03 §5.1 — 테이블당 최대 24개 안테나. Flop 의 atomic 보장은 §3.3 + Triggers §1.4 / §3.5 T6.
+> **참조**: API-03 §5.1 — 테이블당 최대 12개 안테나 (Foundation §C.2 정점 SSOT). Flop 의 atomic 보장은 §3.3 + Triggers §1.4 / §3.5 T6. § 1.1 본문 + mermaid 는 24 안테나 가정 잔존 — `Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` 후속 재설계.
 
 ### 1.2 좌석 안테나 → 플레이어 매핑
 
