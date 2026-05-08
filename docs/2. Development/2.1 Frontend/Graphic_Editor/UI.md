@@ -15,7 +15,8 @@ reimplementability_notes: "UI-04 Graphic Editor UI 스펙 (46KB) 완결"
 | 2026-04-10 | 신규 작성 | CCR-011 APPLIED 기반 GE 허브 기획서. 3-Zone 레이아웃, rive-js 프리뷰, GEM-01~25 메타데이터 폼, Upload Dropzone, Activate 흐름, BS-08-04 RBAC gate |
 | 2026-04-10 | routes drift fix | §2 라우터 메타의 route name 을 `graphic-editor-hub/detail` → `ge-hub/ge-detail` 로 교정. `src/router/routes.ts` + UI-A1 §2.1 SSOT 와 정합 |
 | 2026-04-15 | Skin Editor 자산 참조 추가 | Lobby 헤더 독립 `[Graphic Editor]` 진입점 반영 (Round 2). References/skin-editor/ 의 세부 레이아웃 자산(ebs-ui-layout-anatomy.md / EBS-Skin-Editor_v3.prd.md / 17 HTML 목업 / 8 컴포넌트 / 디자인 토큰) 을 상단 포인터로 연결. team1 발신. |
-| 2026-04-21 | Flutter Desktop 전환 1차 | Foundation §5.1 결정 반영. 3-Zone 레이아웃 서술 Flutter 로 재작성 (q-page+q-splitter → Scaffold+multi_split_view), Zone 1/2 컴포넌트 선언 Flutter 로 교체, GEM 표 5개의 "Quasar 컴포넌트" 열 헤더 "Flutter widget" 으로 전환. 개별 q-* 셀 다수 잔존 — Quasar↔Flutter 매핑표는 `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md §3` 참조. 세부 컴포넌트 교체는 team1 후속 PR. |
+| 2026-04-21 | Flutter 전환 1차 (Lobby Web — Foundation §A.1) | Foundation Ch.5 §A.1 결정 반영. 3-Zone 레이아웃 서술 Flutter 로 재작성 (q-page+q-splitter → Scaffold+multi_split_view), Zone 1/2 컴포넌트 선언 Flutter 로 교체, GEM 표 5개의 "Quasar 컴포넌트" 열 헤더 "Flutter widget" 으로 전환. 개별 q-* 셀 다수 잔존 — Quasar↔Flutter 매핑표는 `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md §3` 참조. 세부 컴포넌트 교체는 team1 후속 PR. |
+| 2026-05-08 | #191 옛 §5.1 표기 정정 + Flutter Desktop → Flutter (Lobby Web) | Foundation 부록 line 1142-1150 매핑 표 (§5.1 → Ch.5 §A.1). Graphic Editor 는 Lobby 의 sub-route 이므로 Lobby Web 정합 (Foundation §A.1). Conductor Phase C #191 자율 cleanup. |
 
 ---
 
