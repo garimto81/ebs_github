@@ -41,6 +41,7 @@ status: frozen
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-05-08 | 워크트리 부트스트랩 완료 (PR E) | S6 Prototype Stream 워크트리 등록 (`C:/claude/ebs-prototype` ↔ `work/s6/2026-05-08-init`) + 자산 배치 (.team, START_HERE.md, .vscode). S1~S5 사용자 측 완료. 6 Stream 모두 ACTIVE. Multi_Session_Design §11 갱신 (Layer 1~2 ACTIVE). setup_stream_worktree.py 폴더 판정 bug fix (.git 부재 검증 추가). |
 | 2026-05-08 | 단일 turn workflow 폐기 (PR D) | Workflow_Conductor_Autonomous.md (198줄), Phase_1_Decision_Queue.md (738줄), Multi_Session_Handoff.md (279줄) 3 파일 archive 이동. v10.3 = 멀티세션 Architect-then-Observer 단일 모델. Phase 모델 disambiguation 제거 (다른 차원 자체가 사라짐). team1/team2 CLAUDE.md → Stream_Entry_Guide.md redirect. |
 | 2026-05-08 | 워크플로우 완성 (PR C) | Stream_Entry_Guide.md 신규 (docs/2.5 Shared, ~150줄). 6 Stream 진입 가이드 + 공유 contract 충돌 SOP (Phase 0 차단 + ssot_priority fallback) + 동적 Stream 추가 (S7~S9) + 6중 방어 매핑. doc2 진입점 결함 (H2) + 공유 contract SOP 결함 (H3) 해소. root CLAUDE.md Context Loading 표 갱신. |
 | 2026-05-08 | Spec 정합 (PR B) | Multi_Session_Design_v10.3.md §11 재작성 (TBD 5개 → 모두 ACTIVE, 글로벌 v10.3 자산 subsume 명시). 두 SOP 문서에 Phase 모델 disambiguation 추가 (멀티세션 생명주기 Phase ↔ 단일 turn workflow Phase 분리). |
