@@ -26,8 +26,8 @@ audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/found
 | `docs/4. Operations/Multi_Session_Design_v10.3.md` | meta self-check |
 | `docs/4. Operations/team_assignment_v10_3.yaml` | meta |
 | `docs/4. Operations/Spec_Gap_Triage.md` | governance |
-| `docs/4. Operations/Docker_Runtime.md` | 운영 |
-| `docs/4. Operations/Multi_Session_Handoff.md` | 운영 |
+| `docs/4. Operations/Docker_Runtime.md` | 운영 (cross-stream drift 발견 시 NOTIFY 위탁 — Foundation §A.4 정합성은 owner 영역) |
+| ~~`docs/4. Operations/Multi_Session_Handoff.md`~~ | **deprecated** — `docs/_archive/governance-2026-05/Multi_Session_Handoff.md` 로 이전됨 (frozen) |
 | `docs/4. Operations/Conductor_Backlog/**` | conductor backlog |
 | `docs/4. Operations/Reports/**` | conductor reports |
 | `docs/4. Operations/Critic_Reports/**` | conductor critic |

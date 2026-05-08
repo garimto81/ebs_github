@@ -2,10 +2,10 @@
 title: Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜
 owner: conductor
 tier: internal
-last-updated: 2026-04-20
+last-updated: 2026-05-08
 reimplementability: PASS
-reimplementability_checked: 2026-04-20
-reimplementability_notes: "프로토콜 자체는 독립 해석·적용 가능"
+reimplementability_checked: 2026-05-08
+reimplementability_notes: "프로토콜 자체는 독립 해석·적용 가능. 2026-05-08 정합성 감사 #168 Phase A 에서 본문 (SG-023/024 cascade 반영, Type A/B/C/D 분류) self-consistency 확인됨."
 related:
   - CLAUDE.md §"프로토타입 실패 대응 프로토콜"
   - Roadmap.md
