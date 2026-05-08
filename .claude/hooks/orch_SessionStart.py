@@ -59,13 +59,72 @@ def detect_team():
     return team_data
 
 
+def _broker_subscribe_done(upstream, timeout_sec=5):
+    """v11 Phase C: subscribe(stream:S{N}) 로 DONE 확인 (~50ms).
+
+    Returns: True if DONE found, False if not, None if broker dead.
+    """
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1.0)
+    try:
+        s.connect(("127.0.0.1", 7383))
+    except OSError:
+        return None  # broker dead
+    finally:
+        s.close()
+
+    try:
+        import asyncio as _asyncio
+        from mcp import ClientSession  # type: ignore
+        from mcp.client.streamable_http import streamablehttp_client  # type: ignore
+
+        async def _run():
+            async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
+                async with ClientSession(r, w) as sess:
+                    await sess.initialize()
+                    res = await sess.call_tool("subscribe", {
+                        "topic": f"stream:{upstream}",
+                        "from_seq": 0,
+                        "timeout_sec": timeout_sec,
+                    })
+                    if not res.content:
+                        return False
+                    data = json.loads(res.content[0].text)
+                    return any(
+                        e.get("payload", {}).get("status") == "DONE"
+                        for e in data.get("events", [])
+                    )
+
+        try:
+            return _asyncio.run(_asyncio.wait_for(_run(), timeout=timeout_sec + 2))
+        except Exception:
+            return None
+    except Exception:
+        return None
+
+
 def check_dependency_status(team_data):
-    """blocked_by Stream의 PR 머지 상태를 GitHub에서 확인"""
+    """v11 Phase C: subscribe-first, gh fallback.
+
+    Order:
+      1. broker subscribe(stream:S{N}, timeout=5s) — ~50ms when DONE present
+      2. gh pr list — v10.3 fallback (broker dead)
+    """
     blocked_by = team_data.get('blocked_by', [])
     if not blocked_by:
         return ("READY", None)
 
     for upstream in blocked_by:
+        # ── v11 path: broker subscribe ─────────────────────
+        broker_result = _broker_subscribe_done(upstream, timeout_sec=5)
+        if broker_result is True:
+            continue  # DONE found via broker
+        if broker_result is False:
+            return ("BLOCKED", upstream)
+        # broker_result is None → broker dead, fall through to gh
+
+        # ── v10.3 fallback: gh pr list ─────────────────────
         try:
             result = subprocess.run([
                 'gh', 'pr', 'list',
@@ -76,7 +135,6 @@ def check_dependency_status(team_data):
             ], capture_output=True, text=True, timeout=30)
 
             if result.returncode != 0:
-                # gh CLI 없거나 인증 실패 — 기본 READY (warning 출력)
                 sys.stderr.write(f"⚠️ gh CLI unavailable, assuming READY\n")
                 return ("READY", None)
 
