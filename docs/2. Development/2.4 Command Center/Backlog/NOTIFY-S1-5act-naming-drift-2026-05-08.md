@@ -3,9 +3,21 @@ title: NOTIFY-S1 — 5-Act 시퀀스 명칭 drift (Foundation vs 정본)
 owner: stream:S3 (Command Center)
 target: stream:S1 (Foundation)
 tier: notify
-status: OPEN
+status: DECIDED
+decision: Option C — 양쪽 명칭 공존, 매핑 표 신설 (정본 §3.0.4 표 확장)
+follow-up-issue: "#179"
 last-updated: 2026-05-08
 audit-source: docs/4. Operations/orchestration/2026-05-08-consistency-audit/
+---
+
+## 결정 (2026-05-08, 사용자 confirmed)
+
+**Option C — 양쪽 명칭 공존, 매핑 표 신설.**
+
+Foundation `Hand Start → Deal → Bet → Showdown → Hand End` (운영자 인지 layer) 와 정본 `IDLE → PreFlop → Flop/Turn/River → Showdown → Settlement` (HandFSM 9-state 묶음) 두 명칭이 같은 5-Act 시퀀스를 가리키므로, 정본 `Overview.md §3.0.4` + `Hand_Lifecycle.md §"5-Act 시퀀스"` 표에 두 명칭을 모두 보여주는 매핑 column 신설.
+
+후속 정정 작업: Issue #179 추적. S3 가 정본 영역 owner 이므로 S3 가 정정 PR 작성. Foundation 본문 미터치.
+
 ---
 
 # NOTIFY-S1 — 5-Act 시퀀스 명칭 drift (Foundation vs 정본)
