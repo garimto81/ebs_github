@@ -7,6 +7,9 @@ last-updated: 2026-04-15
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "UI-03 Settings UI 스펙 (29KB) 완결"
+confluence-page-id: 3819209450
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209450/EBS+Settings+UI
 ---
 # UI-03 Settings — 6탭 와이어프레임
 
