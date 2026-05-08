@@ -29,15 +29,17 @@ last-updated: 2026-04-15
 
 ---
 
-## 5-Act 시퀀스 (UI 추상화, 2026-05-07 신설)
+## 5-Act 시퀀스 (UI 추상화, 2026-05-07 신설 / 2026-05-08 명칭 통합)
 
 > **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. HandFSM 9-state 의 의미 묶음. 운영자가 12 시간 본방송 동안 한 핸드 = 한 영화 5 막으로 인지하도록 추상화.
+>
+> **2026-05-08 cascade (#179)**: 운영자 인지 layer (Foundation §3 = Hand Start → Deal → Bet → Showdown → Hand End) 와 9-state 묶음 layer 가 **동일 시퀀스의 두 표현**임을 매핑 표에 명시. Foundation 명칭이 정점 SSOT.
 
 ```
-Act 1     Act 2          Act 3                 Act 4        Act 5
-─────     ──────         ───────────────       ────────     ─────────
-IDLE  →   PreFlop   →    Flop / Turn / River → Showdown →   Settlement
-                         (3 streets sequence)
+Act 1          Act 2          Act 3                Act 4        Act 5
+──────────     ──────         ───────────────      ────────     ──────────
+Hand Start  →  Deal      →    Bet                → Showdown  →  Hand End
+(IDLE)         (PreFlop)      (Flop/Turn/River)    (Showdown)   (Settlement)
 
 매핑 (HandFSM 9-state):
  Act 1 = IDLE
@@ -49,15 +51,15 @@ IDLE  →   PreFlop   →    Flop / Turn / River → Showdown →   Settlement
 
 ### Act 별 카탈로그
 
-| Act | 단계 | 9-state | StatusBar PHASE | TopStrip ACTING 박스 | PlayerGrid | 6 키 활성 |
-|:---:|------|---------|----------------|---------------------|-----------|-----------|
-| **1** | IDLE | IDLE | "IDLE" | "WAITING — Press START HAND" | 정적 (이름+스택) | **N** (START HAND) |
-| **2** | PreFlop | SETUP_HAND → PRE_FLOP | "PRE_FLOP" | "ACTING — S{n} · {Name}" | 블라인드 → 홀카드 → action_on 펄스 | F·C·B·A·M |
-| **3a** | Flop | FLOP | "FLOP" | "ACTING — S{n} · {Name}" | Community 3 슬롯 채움, 폴드 반투명 | F·C·B·A·M |
-| **3b** | Turn | TURN | "TURN" | "ACTING — S{n} · {Name}" | Community 4 슬롯 | F·C·B·A·M |
-| **3c** | River | RIVER | "RIVER" | "ACTING — S{n} · {Name}" | Community 5 슬롯 | F·C·B·A·M |
-| **4** | Showdown | SHOWDOWN | "SHOWDOWN" | "SHOWDOWN — Reveal hands" | 승자 강조, 핸드 공개 | (viewing — disabled) |
-| **5** | Settlement | HAND_COMPLETE | "COMPLETE" | "HAND OVER — Press FINISH HAND" | 팟 분배 애니메이션, 스택 갱신 | **N** (FINISH HAND) |
+| Act | 운영자 인지 (Foundation) | 9-state 묶음 | 9-state | StatusBar PHASE | TopStrip ACTING 박스 | PlayerGrid | 6 키 활성 |
+|:---:|--------------------------|--------------|---------|----------------|---------------------|-----------|-----------|
+| **1** | Hand Start | IDLE | IDLE | "IDLE" | "WAITING — Press START HAND" | 정적 (이름+스택) | **N** (START HAND) |
+| **2** | Deal | PreFlop | SETUP_HAND → PRE_FLOP | "PRE_FLOP" | "ACTING — S{n} · {Name}" | 블라인드 → 홀카드 → action_on 펄스 | F·C·B·A·M |
+| **3a** | Bet | Flop | FLOP | "FLOP" | "ACTING — S{n} · {Name}" | Community 3 슬롯 채움, 폴드 반투명 | F·C·B·A·M |
+| **3b** | Bet | Turn | TURN | "TURN" | "ACTING — S{n} · {Name}" | Community 4 슬롯 | F·C·B·A·M |
+| **3c** | Bet | River | RIVER | "RIVER" | "ACTING — S{n} · {Name}" | Community 5 슬롯 | F·C·B·A·M |
+| **4** | Showdown | Showdown | SHOWDOWN | "SHOWDOWN" | "SHOWDOWN — Reveal hands" | 승자 강조, 핸드 공개 | (viewing — disabled) |
+| **5** | Hand End | Settlement | HAND_COMPLETE | "COMPLETE" | "HAND OVER — Press FINISH HAND" | 팟 분배 애니메이션, 스택 갱신 | **N** (FINISH HAND) |
 
 ### 6 키 활성/비활성 정합
 
