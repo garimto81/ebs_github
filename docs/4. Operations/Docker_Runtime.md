@@ -20,18 +20,19 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 | `ebs-bo-1` | `ebs-bo` | 8000 | team2 | `team2-backend/src/**` 또는 `Dockerfile` 변경 |
 | `ebs-engine-1` | `ebs-engine` | 8080 | team3 | `team3-engine/ebs_game_engine/lib/**` 또는 `Dockerfile` 변경 |
 | `ebs-lobby-web` | `ebs/lobby-web:latest` | 3000 | team1 | `team1-frontend/lib/**` 갱신 (flutter build web 선행) |
-| `ebs-cc-web-1` | `ebs-cc-web` | 3001 | team4 | `team4-cc/src/build/web/**` 갱신 (flutter build web 선행) |
+| `ebs-cc-web-1` ⚠ dev/test 보조 | `ebs-cc-web` | 3001 | team4 | `team4-cc/src/build/web/**` 갱신 (flutter build web 선행) — **정규 배포는 Flutter Desktop 단일 바이너리** (Foundation §A.4 SSOT) |
 | `ebs-redis-1` | `redis:7-alpine` | internal | conductor | (재빌드 불필요, `docker compose pull` 만) |
 
 **compose 정의 파일**: `docker-compose.yml` (레포 루트)
 
-**현재 정책 (2026-04-27, SG-022 폐기 후 재정의)**:
-- EBS 배포 = **Multi-Service Docker** (Lobby:3000 / CC:3001 / BO:8000 / Engine:8080).
-- team1 Lobby = **Flutter Web** 빌드 → Docker nginx 서빙. 정규 배포는 브라우저 접속.
-- `flutter run -d windows` 또는 `-d chrome` = 개발자 디버깅 (배포 아님).
-- "Flutter 단일 스택" 의 의미 = **프레임워크 (Flutter) 통일**. Vue/Quasar 폐기. 배포 형태 (Web vs Desktop) 와 무관.
-- ~~SG-022 (단일 Desktop 바이너리)~~ = **2026-04-27 폐기**. 4팀 병렬 개발 + LAN 멀티 세션 운영 요구와 충돌.
-- 참조: `team1-frontend/CLAUDE.md` § 배포 형태, `MULTI_SESSION_DOCKER_HANDOFF.md`, `Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md`.
+**현재 정책 (2026-05-08, Foundation §A.4 SSOT cascade 정합)**:
+- **CC 정규 배포** = **Flutter Desktop 단일 바이너리** (RFID 시리얼 + SDI/NDI 직결, Foundation §A.4 정점 SSOT).
+- **Lobby + BO + Engine** = **Multi-Service Docker** (Lobby:3000 / BO:8000 / Engine:8080). team1 Lobby = Flutter Web 빌드 → Docker nginx 서빙 (Foundation §A.1 정합).
+- **CC dev/test 보조** = `ebs-cc-web:3001` Flutter Web 빌드 (SG-022 폐기 후 회복, 개발자 디버깅·QA·LAN 동시 시연 용도).
+- `flutter run -d windows` 또는 `-d chrome` = 개발자 로컬 디버깅 (배포 아님).
+- "Flutter 단일 스택" 의 의미 = **프레임워크 (Flutter) 통일**. Vue/Quasar 폐기. 정규 배포 형태는 Foundation §A.1 (Lobby Web) / §A.4 (CC Desktop).
+- ~~SG-022 (단일 Desktop 바이너리)~~ = **2026-04-27 폐기**. 4팀 병렬 개발 + LAN 멀티 세션 운영 요구와 충돌. 단 CC 자체는 Foundation §A.4 가 Desktop 정규를 다시 명시.
+- 참조: `team1-frontend/CLAUDE.md` § 배포 형태, `MULTI_SESSION_DOCKER_HANDOFF.md`, `docs/1. Product/Foundation.md` §A.4, `Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md`.
 
 ### Edit History (§1 정규 컨테이너 맵)
 
@@ -40,7 +41,8 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 | 2026-04-22 1차 | `ebs-lobby-web` 좀비 오판 → destroy → 재복구 | 사용자 지적 (Type C) |
 | 2026-04-27 | SG-022 (Desktop 단일) 채택 → lobby-web REMOVED 표기 | 사용자 결정 |
 | 2026-04-27 | SG-022 폐기 → Multi-Service Docker 회복 | 사용자 결정 (team1 CLAUDE.md 정정) |
-| **2026-05-06** | **§1 표 stale 표기 정정 (lobby-web 부활) + cc-web 포트 3100→3001 정정** | **Conductor 자율 (3000 포트 drift 사건 후속)** |
+| 2026-05-06 | §1 표 stale 표기 정정 (lobby-web 부활) + cc-web 포트 3100→3001 정정 | Conductor 자율 (3000 포트 drift 사건 후속) |
+| **2026-05-08** | **§1 cc-web 컨테이너 dev/test 보조 표기 + §"현재 정책" Foundation §A.4 SSOT cascade 정합 (정규 = Flutter Desktop, Web = 보조)** | **Conductor 자율 (Phase C #181 정합성 감사 — Foundation §A.4 정점 SSOT 기준)** |
 
 ---
 
