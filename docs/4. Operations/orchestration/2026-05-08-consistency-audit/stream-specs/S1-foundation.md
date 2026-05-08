@@ -1,10 +1,13 @@
 ---
+owner: conductor
+tier: internal
 stream: S1
 name: Foundation
 worktree: C:/claude/ebs-foundation
 phase: P1 (정합성 감사)
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
 priority: HIGHEST (다른 모든 Stream 의 blocking gate)
+last-updated: 2026-05-08
 ---
 
 # S1 Foundation — 정합성 감사 작업 spec

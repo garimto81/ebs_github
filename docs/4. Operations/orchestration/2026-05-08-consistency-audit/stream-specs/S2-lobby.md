@@ -1,10 +1,13 @@
 ---
+owner: conductor
+tier: internal
 stream: S2
 name: Lobby
 worktree: C:/claude/ebs-lobby-stream
 phase: P2 (정합성 감사)
 blocked_by: S1
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
+last-updated: 2026-05-08
 ---
 
 # S2 Lobby — 정합성 감사 작업 spec

@@ -1,10 +1,13 @@
 ---
+owner: conductor
+tier: internal
 stream: S4
 name: RIVE Standards
 worktree: C:/claude/ebs-rive-standards
 phase: P2 (정합성 감사)
 blocked_by: S1
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
+last-updated: 2026-05-08
 ---
 
 # S4 RIVE Standards — 정합성 감사 작업 spec
