@@ -130,6 +130,7 @@ tier: generated
 - `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` — CC React 디자인 프로토타입 — Critic 판정 보고서
 - `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` — Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0)
 - `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` — Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획
+- `docs/4. Operations/Causality_Dashboard.md` — EBS 문서 인과관계 대시보드
 - `docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md` — Graphic Editor team5 분리 적합성 결정 (DONE — Option A 채택)
 - `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
 - `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` — 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합)

@@ -501,6 +501,7 @@ tier: generated
 | `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` | CC React 디자인 프로토타입 — Critic 판정 보고서 | conductor | internal | - |
 | `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` | Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0) | conductor | internal | - |
 | `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` | Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획 | conductor | critical | - |
+| `docs/4. Operations/Causality_Dashboard.md` | EBS 문서 인과관계 대시보드 | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog.md` | Conductor_Backlog | - | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` | Phase 2 통합 테스트 + E2E | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` | Phase 3 통합 테스트 + 부하 테스트 | - | - | - |
