@@ -1,118 +1,91 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": "9.5",
-  "previous_version": "9.3",
-  "description": "EBS 거버넌스 분리 구조의 운영 SSOT. 진입점 = root CLAUDE.md v1.0.0 (5 섹션 미니멀). 본 파일 = v9.5 Single Session AI-Centric (Hub-and-Spoke 폐기 후 Conductor 단일 session + Agent Teams in-process). 멀티세션 spec = docs/4. Operations/Multi_Session_Design_v10.3.md (도구 ACTIVE 5개 + TBD 5개, §11 Implementation Status). 사용자 입력 0 + 결과물 중심주의. 외부 인계 후 governance 폐기 가능.",
+  "version": "10.3",
+  "description": "EBS 거버넌스 SSOT (v10.3 Architect-then-Observer 멀티세션 단일화). 진입점 = root CLAUDE.md (메인 지침 모델). 거버넌스 모델 = 글로벌 orchestrator 스킬 v10.3 적용 (Phase 0 사전 설계 + Phase 1+ 모니터링). 멀티세션 spec = docs/4. Operations/Multi_Session_Design_v10.3.md + team_assignment_v10_3.yaml. 외부 인계 후 governance 폐기 가능.",
   "governance_model": {
-    "name": "single_session_ai_centric_output_focused",
-    "version": "v9.5",
-    "previous_name": "intent_execution_separation_with_ai_autonomous_merge",
-    "previous_version": "v9.3",
-    "rationale": "v9.5 (2026-04-29 사용자 권고 A 채택): V9.4 critic 9 결함 (F1 worker trigger 부재, F4 Mode A vs 5-session 충돌, F7 ceremony 결과물 기여 미정당화 등) 으로 Hub-and-Spoke 모델 폐기. 1인 사용자 환경에서 Conductor 단일 session 만 정합. Agent Teams in-process 가 multi-team work 의 답.",
+    "name": "architect_then_observer_multi_session",
+    "version": "v10.3",
+    "rationale": "글로벌 orchestrator 스킬 v10.3 패턴 적용. Phase 0 사전 설계로 충돌 차단 + Phase 1+ Observer 모니터링. 사용자 진입점 = VSCode 폴더 클릭 1회 (Stream 진입). 이전 세대 phantom 도구 (conflict_resolver / session_branch_init / branch_guard / Mode 자동전환 / Conflict_Registry) 는 글로벌 v10.3 자산 (SessionStart.py / PreToolUse.py / Architect-then-Observer / GitHub Issue+PR 라벨) 으로 대체.",
     "intent_execution_boundary": {
-      "_comment": "v9.4 (2026-04-29 사용자 통찰): SSOT 기반 판단 가능 영역은 AI 자율, 불가능 시 SSOT 보강이 정답. 사용자에게 기술 가치 판단 떠넘기기 금지.",
+      "_comment": "사용자 의도 영역 vs AI 자율 영역. SSOT 기반 판단 가능 영역은 AI 자율, 불가능 시 SSOT 보강이 정답.",
       "user_intent_domain": [
-        "큰 방향성 / 패러다임 결정 (예: V9.x 채택, MVP 정의, Hub-and-Spoke 모델)",
+        "큰 방향성 / 패러다임 결정",
         "외부 visible action (vendor 메일, Slack 메시지, prod 배포)",
-        "destructive 시스템 변경 (DB drop, 거대 dependency 변경)",
-        "user 자신의 memory 결정 변경",
-        "본 governance_model 자체 변경 (self-bootstrap)"
+        "destructive 시스템 변경 (DB drop, git config, 거대 dependency)",
+        "사용자 본인 결정 memory 변경",
+        "본 governance_model 자체 변경 (self-bootstrap 방지)"
       ],
       "ai_execution_domain_with_ssot": [
-        "SSOT 검색 + 분석 + 판단 (Foundation > team-policy > Risk_Matrix > APIs > Backlog)",
-        "SSOT 모호 시 → SSOT 보강 PR 생성 후 자율 진행",
-        "코드 작성 / 수정",
-        "PR 생성 (draft/ready)",
-        "PR 리뷰 (자체 작성 시)",
-        "PR 머지 (조건 만족 시 자율)",
-        "충돌 해결 (SSOT 기반 명확한 경우)",
-        "기술 가치 판단 (작업 보존/폐기, cherry-pick/squash, 충돌 해결 방식)"
+        "SSOT 검색 + 분석 + 판단 (ssot_priority chain 따라)",
+        "SSOT 모호 시 → SSOT 보강 PR 자율 생성 + 머지",
+        "코드 / 문서 / 인프라 작성",
+        "PR 생성 (draft → ready → auto-merge)",
+        "충돌 해결 (Phase 0 사전 설계 또는 SSOT priority 기반)",
+        "기술 가치 판단 (작업 보존/폐기, 머지 방식)"
       ],
-      "ssot_first_judgment": {
-        "process": [
-          "1. SSOT 우선순위 검색 (conflict_resolution.ssot_priority 참조)",
-          "2. 답 있음 → 자율 진행 (사용자 confirm 0회)",
-          "3. 답 모호 → SSOT 보강 PR 자율 생성 + 머지 (governance freeze 외)",
-          "4. 답 없음 + 큰 방향성 → 사용자 의도 영역 질문 (원칙적으로 마지막 수단)"
-        ],
-        "anti_pattern": "비전문 사용자에게 기술 가치 판단 떠넘기기 금지. '이 작업 살릴까 폐기할까?' 같은 질문은 SSOT 부족의 증거 — 사용자가 아닌 SSOT 를 수정해야 함."
-      },
       "user_intent_question_standard": {
         "forbidden_terms": [
-          "worktree",
-          "commit hash",
-          "cherry-pick",
-          "squash",
-          "branch",
-          "PR number (#NN)",
-          "merge",
-          "rebase",
-          "내부 식별자 (B-XXX, SG-XXX, TDB-XXX)",
-          "Mode A/B",
-          "Type C",
-          "scope_check",
-          "self-bootstrap"
+          "worktree", "commit hash", "cherry-pick", "squash", "branch", "PR number", "merge", "rebase",
+          "내부 식별자 (B-XXX, SG-XXX)", "scope_check", "self-bootstrap"
         ],
-        "required_form": "배경 1줄 + 옵션 2~3개 + 영향 1줄. 평이한 한국어. 비전문 개발자가 답할 수 있는 형태.",
-        "good_example": "지금 로그인이 잘 되나요? Yes/No (옛 버그 fix 가 살릴 가치 있는지 판단)",
-        "bad_example": "team2-work 의 e00d9da0 commit cherry-pick 할까요?",
+        "required_form": "배경 1줄 + 옵션 2~3개 + 영향 1줄. 평이한 한국어. 비전문 개발자 친화.",
         "test": "비전문 개발자가 사용 경험만으로 답할 수 있는가?"
-      },
-      "rationale": "v9.3 의 의도/실행 분리를 v9.4 로 정교화. AI 의 SSOT 기반 판단 영역 명시 + 사용자에게 기술 질문 떠넘기기 차단."
+      }
     },
     "operating_model": {
-      "_comment": "v9.5: Hub-and-Spoke 폐기. Conductor 단일 session + Agent Teams in-process.",
-      "default": "single_session_conductor",
-      "multi_team_work": "in_process_agent_teams (TeamCreate + Agent spawn — OS process 분리 X)",
-      "deprecated_models": [
-        "hub_and_spoke (v9.0~v9.4) — worker trigger 부재 + 1인 환경 비현실",
-        "5_os_process (claude CLI 5개) — 사용자 입력 5회 = V9.4 위배"
-      ],
-      "sop_owner": "single_conductor_session",
-      "ceremony_count": "2 transitions (DRAFT → DONE) — V9.0 의 5 transitions 폐기",
-      "rationale": "V9.4 critic F1+F8 해소. 결과물 중심주의 강화."
+      "name": "architect_then_observer",
+      "phase_0_architect": {
+        "trigger": "사용자 의도 1회 (멀티세션 시작 또는 동적 추가 요청)",
+        "duration": "최대 90분 자율",
+        "outputs": [
+          "Stream 매트릭스 (이미 정립된 EBS 는 자동 추론 스킵)",
+          "워크트리 폴더 사전 세팅 (sibling-dir)",
+          "각 워크트리: .team / CLAUDE.md / START_HERE.md / hook / .vscode/settings.json",
+          "GitHub 인프라 (CODEOWNERS, branch-protection, ISSUE/PR_TEMPLATE, scope_check.yml, dependency_check.yml, phase_gate_check.yml)",
+          "자가 시뮬 (SessionStart hook identity 검증)"
+        ],
+        "user_touchpoint": "Stream 매트릭스 검토 1회 (이미 정립된 EBS 는 스킵 가능)"
+      },
+      "phase_1_plus_observer": {
+        "trigger": "Phase 0 완료 후 영구",
+        "behavior": [
+          "30초 GitHub 폴링 (orchestrator_monitor.py)",
+          "Stream 의존성 unblock 자동",
+          "Stream idle (24h+) escalate",
+          "동적 Stream 추가 시 Architect 일시 전환"
+        ]
+      }
     },
     "merge_authority": {
-      "main_merge": "ai_autonomous_when_conditions_met",
-      "ai_autonomous_merge_conditions": {
-        "_comment": "모두 만족 시 AI 가 사용자 confirm 없이 자율 머지",
-        "ai_authored_pr": true,
-        "ci_status": "all_green_or_no_required_checks",
-        "merge_conflict": "none_or_trivially_resolvable",
-        "scope_check": "passed_or_governance-change_label_present",
-        "intent_alignment": "aligned_with_current_user_intent_trigger",
-        "rationale": "AI 가 본인 작성 PR + CI green + 충돌 없음 + 사용자 의도 trigger 와 정합 → 자율 머지"
+      "stream_session_pr": {
+        "creation": "tools/orchestrator/team_session_start.py (자동 GitHub Issue + Draft PR + 라벨)",
+        "completion": "tools/orchestrator/team_session_end.py (auto-merge enabled, branch 자동 삭제)",
+        "self_merge_conditions": [
+          "AI 작성 PR",
+          "CI all green",
+          "merge conflict 없음",
+          "scope_check 통과 또는 governance-change 라벨",
+          "사용자 의도 trigger 와 정합"
+        ]
+      },
+      "main_direct": {
+        "allowed_for": ["conductor"],
+        "scope": ["CLAUDE.md", "docs/", ".claude/"],
+        "rationale": "Conductor 단독 활동 시 main 직접 수정 가능"
       },
       "user_consultation_required_when": [
-        "다중 PR 간 의미적 충돌 (예: 두 worktree 가 다른 기획 방향 표명)",
-        "의도 모호 (사용자 trigger 가 본 변경을 명시 포함하지 않음)",
+        "다중 PR 의미적 충돌 (Phase 0 사전 설계로 차단되어야 정상)",
         "destructive 시스템 변경",
         "외부 visible state (vendor 메일, prod 배포)",
-        "AI 가 자체 권한을 확장하는 governance change (self-bootstrap 방지)",
-        "거버넌스 file 직접 수정 PR (governance-change 라벨 + 사용자 1회 명시 confirm)"
-      ],
-      "worker_merge_authority": "v9.2_self_merge_for_clean_prs_preserved",
-      "worker_pr_state": "draft_or_review_ready",
-      "rationale": "v9.2 의 worker self-merge (충돌 없는 경우) 는 그대로. v9.3 추가: AI Conductor 도 자체 PR 자율 머지. 사용자 confirm 은 의도 영역만."
-    },
-    "task_dispatch": {
-      "ssot": "docs/4. Operations/Task_Dispatch_Board.md",
-      "dispatch_authority": "conductor_only",
-      "worker_authority": "execute_assigned_only",
-      "rationale": "팀 세션은 본인 팀 row 의 ASSIGNED 항목만 착수. 자율 작업 발견 시 Conductor 결정 대기."
-    },
-    "write_access": {
-      "policy": "free_write_preserved",
-      "rationale": "v7 free_write 원칙 유지. 모든 세션이 모든 docs 자유 편집 가능 (hook 차단 없음). 단, main 머지는 Conductor 만."
+        "self-bootstrap (governance 자체 확장)"
+      ]
     },
     "conflict_resolution": {
-      "syntactic": "conductor_resolves",
-      "semantic": "conductor_adjudicates_per_ssot",
-      "ssot_paths": [
-        "docs/1. Product/",
-        "docs/2. Development/2.5 Shared/"
-      ],
-      "escalation": "user (사용자)",
+      "primary_strategy": "Phase 0 사전 설계로 충돌 차단 (Architect-then-Observer 핵심)",
+      "fallback_when_conflict_occurs": {
+        "syntactic": "Conductor 가 ssot_priority 기반 직접 rebase",
+        "semantic": "ssot_priority chain 따라 판정 + 판정 불가 시 Spec_Gap 등재"
+      },
       "ssot_priority": [
         "docs/1. Product/Foundation.md",
         "docs/2. Development/2.5 Shared/team-policy.json",
@@ -120,84 +93,28 @@
         "docs/2. Development/2.{2,3,4}/APIs/**",
         "docs/2. Development/2.*/Backlog/**"
       ],
-      "_ssot_priority_note": "v9.3 M4 해소 (2026-04-29): 두 SSOT 가 충돌할 때 위 순서로 우선. Foundation 이 최상위 — 기획 의도. team-policy 가 거버넌스 정책. 하위는 contract / backlog.",
-      "tie_breaker_tool": "tools/conflict_resolver.py",
-      "_tie_breaker_tool_status": "TBD — tools/conflict_resolver.py 미구현. 현재는 tie_breaker_logic 4-Step 을 Conductor 가 수동 적용 (SSOT lookup → win-win → priority → user). 활성화 조건 = 도구 구현 PR + Multi_Session_Design_v10.3.md §11 ACTIVE 전환",
-      "tie_breaker_logic": "v7.5 4-Step Decision (lookup → win-win → priority → user)",
-      "rationale": "충돌 해결 임의 시도 금지. PR 에 conflict 라벨 + Conductor 알림. Conductor 가 SSOT 우선순위 기반 직접 rebase + 해결. tie 시 conflict_resolver 4-Step + 최종 사용자 escalation."
-    },
-    "single_session_mode_a": {
-      "_comment": "v9.3 M5 해소 (2026-04-29): sibling worktree 0개일 때 Conductor 단독 세션 자동 감지. ceremony cost 면제.",
-      "trigger": "sibling_worktree_count == 0",
-      "detection_tool": "tools/v93_active_check.py",
-      "behavior": {
-        "ceremony": "skipped — Conductor 직접 commit + push 허용 (governance change 외)",
-        "pr_path": "optional — 단순 작업은 main 직접 가능, governance 변경은 PR 경로 강제",
-        "rationale": "1인 사용자가 Conductor 단독 세션일 때 Hub-and-Spoke ceremony 는 가치 0. v7.1 Mode A 정신 회복."
-      },
-      "v92_active_trigger": "sibling_worktree_count >= 1",
-      "v92_active_behavior": "v9.2/v9.3 Hub-and-Spoke + AI 자율 머지 SOP 전체 적용"
-    },
-    "freeze": {
-      "_comment": "v9.3 M3 해소 (2026-04-29): governance churn 차단. 1주 7 버전 churn 패턴 (v5→v9.3) 의 cooldown.",
-      "until": "2026-05-29",
-      "scope": "all_governance_model_changes",
-      "exceptions": [
-        "data_loss_emergency",
-        "critical_security_fix",
-        "user_intent_explicit_unfreeze (사용자 명시 'freeze 해제' 시)"
-      ],
-      "rationale": "30일 cold 동안 V9.3 운영 metric 수집. 미달성 시 V10 자동 trigger. 달성 시 freeze 연장.",
-      "metric_capture_path": "docs/4. Operations/Reports/v93_metrics.yml",
-      "auto_v10_trigger_conditions": [
-        "broken_main_incident_count > 1",
-        "user_intent_question_count_per_week > 5",
-        "ai_autonomous_merge_ratio < 0.7"
-      ]
+      "global_v10_3_subsumption": "phantom 도구 (conflict_resolver.py / Conflict_Registry.md) 는 글로벌 v10.3 패턴 (Architect-then-Observer Phase 0 + GitHub Issue+PR 라벨 분산 audit) 으로 대체. 별도 도구 신규 구현 불필요."
     },
     "conductor_limits": {
-      "_comment": "V9.0 에서도 Conductor 자율 금지 영역 (구 mode_a_limits 흡수)",
-      "external_messaging": "vendor RFI/RFQ 외부 메일 발송 — 사용자 명시 필요",
-      "destructive_system": "DB drop, prod 배포, 거대 dependency 변경 — 사용자 명시 필요",
-      "git_config": "remote URL 변경 등 — 사용자 명시 필요",
-      "user_intent_change": "SG-023 같은 큰 결정 — Conductor 자율 시도 금지",
-      "user_memory_decisions": "사용자 본인 결정 메모 임의 폐기 금지"
-    },
-    "deprecated_models": {
-      "v7_1_mode_a_b": "v9.0 으로 흡수. Mode A/B 분기 폐기 — 모든 세션이 동일하게 worker (Conductor 만 hub)",
-      "v8_0_concurrency_queue": "GitHub Actions concurrency:main-merge-queue 폐기. Conductor 단일 스레드 리뷰가 대체",
-      "v8_0_governance_freeze": "freeze 종료 (2026-04-29 V9.0 결정으로 supersede). 향후 governance 변경은 V9.0 SOP 준수"
+      "external_messaging": "vendor RFI/RFQ 외부 메일 — 사용자 명시 필요",
+      "destructive_system": "DB drop, prod 배포, 거대 dependency — 사용자 명시 필요",
+      "git_config": "remote URL 등 — 사용자 명시 필요",
+      "user_intent_change": "큰 방향성 결정 — Conductor 자율 시도 금지",
+      "user_memory_decisions": "사용자 본인 결정 memory 임의 폐기 금지"
     }
   },
   "branch_strategy": {
-    "version": "v9.0",
-    "updated": "2026-04-29",
     "main_push_allowed_for": ["conductor"],
-    "_main_push_allowed_for_note": "v9.2 D1 (2026-04-29 사용자 결정 ㉡): Conductor 만 main 직접 push (governance/board/cleanup commit). 팀 세션은 PR 경로. V9.2 에서는 충돌 없는 PR worker self-merge 허용 (3-gate auto-merge), 충돌 PR 만 Conductor 처리. v9.0 의 절대 단일 머지권 → v9.2 의 충돌 시만 단일 머지권으로 완화.",
-    "team_branch_pattern": "work/{team}/{slug}",
+    "_main_push_allowed_for_note": "Conductor 만 main 직접 push (governance/board/cleanup commit). Stream 세션은 PR 경로 (orchestrator team_session_start.py / team_session_end.py auto-merge).",
+    "stream_branch_pattern": "work/{stream}/{slug}",
     "worktree_layout": "sibling_dir",
-    "worktree_path_pattern": "C:/claude/ebs-{team}-{slug}/",
+    "worktree_path_pattern": "C:/claude/ebs-{stream}/",
     "subdir_mode": "forbidden",
-    "_subdir_mode_note": "v5.0+: subdir (C:/claude/ebs/team{N}-*/) 모드 금지. shared HEAD 오염 방지.",
-    "registry_branch": "meta/active-edits",
-    "merge_method": "conductor_manual_squash",
-    "_merge_method_note": "v9.0: 팀 세션은 gh pr create --draft (또는 ready PR) 후 Task_Dispatch_Board.md 에 REVIEW_READY 표기까지. Conductor 가 단일 스레드로 순차 리뷰 + gh pr merge --squash --delete-branch.",
-    "worker_pr_options": {
-      "draft": "기본. PR 본문에 자체 테스트 결과 + scope 명시",
-      "ready_for_review": "허용. 단 auto-merge 라벨 부여 금지"
-    },
-    "merge_tool": "manual_gh_cli_or_tools_team_v5_merge.py",
-    "_merge_tool_note": "v9.0: tools/team_v5_merge.py 는 PR 생성 단계 (push + gh pr create) 까지만 사용. auto-merge 라벨 부여 단계 사용 금지. Conductor 가 직접 gh pr merge 호출.",
-    "merge_gate": "conductor_review",
-    "_merge_gate_note": "v9.0: .github/workflows/pr-auto-merge.yml 비활성화 (workflow_dispatch only). Conductor 인지·판단이 gate 역할.",
+    "_subdir_mode_note": "subdir (C:/claude/ebs/team{N}-*/) 모드 금지. shared HEAD 오염 방지.",
+    "merge_method": "stream_session_auto_merge_or_conductor_squash",
+    "_merge_method_note": "Stream 세션 = orchestrator team_session_end.py (auto-merge, branch 삭제). Conductor 단일 활동 = main 직접 또는 squash merge.",
     "code_owners": ".github/CODEOWNERS",
-    "free_tier_compat": true,
-    "task_dispatch_board": "docs/4. Operations/Task_Dispatch_Board.md",
-    "deprecated_tools": {
-      "tools/team_merge.py": "v4.x direct ff-merge tool. v5.1+L4 (BLANK-3) 에서 active 부활 — 폐기 보류",
-      "~/.claude/skills/team/scripts/team_merge_loop.py": "v4.0 user-global. project-local .claude/skills/team/ (v5.1) 이 대체 (2026-04-22 rename from team-v5)",
-      "auto_merge_label_workflow": "v9.0 비활성. .github/workflows/pr-auto-merge.yml 은 workflow_dispatch only 로 격리. 라벨 자체는 사용 가능하나 머지 자동화 미동작"
-    }
+    "free_tier_compat": true
   },
   "teams": {
     "conductor": {
@@ -209,8 +126,6 @@
         "docs/mockups/",
         "docs/images/",
         "docs/README.md",
-        "contracts/migration/",
-        "contracts/_templates/",
         "integration-tests/",
         "tools/",
         "CLAUDE.md",
@@ -287,7 +202,6 @@
     "docs/1. Product/",
     "docs/2. Development/2.5 Shared/",
     "docs/4. Operations/",
-    "contracts/migration/",
     "integration-tests/",
     "CLAUDE.md",
     "README.md",
