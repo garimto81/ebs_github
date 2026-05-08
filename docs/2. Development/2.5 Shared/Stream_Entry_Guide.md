@@ -11,6 +11,41 @@ EBS 멀티세션은 Stream 단위로 분리된다. 사용자 진입점 = VSCode 
 
 상세 spec: `docs/4. Operations/Multi_Session_Design_v10.3.md` + `team_assignment_v10_3.yaml`.
 
+## Product 영역 매핑 (SSOT 기준)
+
+`docs/1. Product/` = **기준 SSOT**. 모든 Stream 이 Product 의 자기 영역만 수정 + 다른 영역 read.
+
+| Product 파일 / 폴더 | Owner Stream | Read Streams | Phase |
+|--------------------|:-----------:|--------------|:-----:|
+| `Foundation.md` | **S1** | S2~S6 (all) | P1 |
+| `Lobby_PRD.md` | **S2** | S6 | P2 |
+| `Command_Center_PRD.md` | **S3** | S6 | P2 |
+| `Back_Office_PRD.md` | **S1** (interim → S7 활성 시 이관) | S2, S3 | P1 |
+| `RIVE_Standards.md` | **S4** | S2, S3, S6 | P2 |
+| `Game_Rules/**` (4) | **S1** (interim → S8 활성 시 이관) | S2, S3, S6 | P1 |
+| `References/**` (2) | conductor (frozen) | All | — |
+| `images/`, `visual/`, `archive/` | conductor (asset) | All | — |
+| `1. Product.md` (landing) | CI generated | — | meta |
+
+### Product cascade chain
+
+Product 파일 Edit 시 영향 받는 derivative 자동 advisory (`tools/doc_discovery.py --impact-of` + `orch_PreToolUse.py:cascade_advisory()`):
+
+```
+Foundation.md Edit
+   ↓ cascade
+   ├─ Lobby_PRD.md (derivative-of Lobby Overview)
+   ├─ Command_Center_PRD.md (derivative-of CC Overview)
+   ├─ Back_Office_PRD.md (derivative-of BO Overview)
+   ├─ docs/2. Development/2.1 Frontend/Lobby/Overview.md (정본)
+   ├─ docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md (정본)
+   └─ docs/2. Development/2.2 Backend/Back_Office/Overview.md (정본)
+```
+
+외부 인계 PRD ↔ 정본 동기화 룰: `derivative-of: ../<정본>.md` + `if-conflict: derivative-of takes precedence`. 정본 변경 시 PRD 동시 갱신 필수.
+
+---
+
 ## Stream 매트릭스
 
 | ID | 이름 | 워크트리 | 흡수 폴더 | Phase | 의존 |
