@@ -33,6 +33,7 @@ provenance:
 | 2026-05-08 | v0.3.1-skeleton | autonomous iteration | huge-51mb gitignore 전환, §2 Stream 상태 갱신 (S1/S4 ACTIVE, S2/S3 NOT INIT), §5 fixture/ENV 의존 명세, `_doc-integrity.sh` 신설 (CCR-014/016/025/035 자동 검증 5/5 PASS) |
 | 2026-05-08 | v0.4.0 | autonomous iteration A→B | §3.3 Stage 1 본문 신규 — Docker 런타임 smoke 검증 5/5 PASS, Spec↔Impl drift 5건 발견 (D1 username/email, D2 envelope, D3 camelCase, D4 missing fields, D5 seed creds), 26 시나리오 매트릭스 + 실패 triage 표 |
 | 2026-05-08 | v0.4.1 | autonomous iteration C | scenarios 10/40 + README 정정 (D1~D5 RESOLVED), D6 신규 (`/auth/refresh` envelope 불일치 OPEN), smoke 재검증 PASS |
+| 2026-05-08 | v0.4.2 | autonomous iteration E | §3.3.6 신설 — Stage 1 첫 sequential baseline 5/8 PASS. D7 (single-session refresh) + D8 (POST /skins multipart vs JSON 모순) 신규 OPEN |
 
 ## Reader Anchor
 
@@ -141,6 +142,8 @@ docker exec ebs-bo python -c "import httpx; \
 | D4 | missing fields | `expires_in`, `auth_profile`, `expires_at`, `refresh_expires_in` | `tokenType`, `refreshTokenDelivery` | **RESOLVED** (10번 응답 주석 갱신) |
 | D5 | seed credentials | `admin@ebs.test` / `test-password-1234` | `admin@local` / `Admin!Local123` | **RESOLVED** (10/40번 + README 정정) |
 | D6 | endpoint 간 envelope 불일치 (신규) | n/a | `/auth/login` envelope vs `/auth/refresh` flat | **OPEN** — backend 일관성 결정 필요 (Type B/C 후보) |
+| D7 | single-session refresh policy (신규 v0.4.2) | n/a | 동일 user 중복 login 시 이전 refresh token jti 무효화 | **OPEN** — 시나리오 10.3 격리 (10.2 분리) 권장 |
+| D8 | `POST /skins` request shape (신규 v0.4.2) | multipart `.gfskin` ZIP + `name` (CCR-013 §1) | JSON body `{name, description, theme_data}` (no file) | **OPEN** — Type C 기획 모순. 별도 multipart endpoint 필요? Or spec 단순화? |
 
 > **D1~D5 = Type D (drift 누적)** — v0.4.1 시나리오 측 정정 완료. smoke 재검증 통과:
 > ```
@@ -148,7 +151,36 @@ docker exec ebs-bo python -c "import httpx; \
 > 10.3 PASS: refresh flat shape (D6) 정합
 > ```
 >
-> **D6 = OPEN** — `/auth/refresh` 가 envelope 없이 flat 응답하는 것이 의도인지 (예: 단순 토큰 갱신은 가벼운 응답) backend 측 결정 필요. 시나리오는 일단 현재 동작 (flat) 가정으로 작성.
+> **D6 = OPEN** — `/auth/refresh` 가 envelope 없이 flat 응답하는 것이 의도인지 backend 측 결정 필요.
+>
+> **D7 = OPEN** — `10.2 → 10.3` sequential 시 10.3 401 (이전 jti 무효). 시나리오 README 에 "10.3 은 10.1 직후 단독 실행" 명시 또는 backend single-session policy 완화 결정.
+>
+> **D8 = OPEN (가장 큰 영향)** — Backend `POST /skins` = JSON-only (`/app/src/routers/skins.py`). 시나리오 20.x (CCR-013 §1) multipart 가정 → 500 Internal Server Error (FastAPI exception handler 가 binary body 인코딩 실패). 기획 ↔ 구현 양방향 결정 필요:
+> - (a) Backend 에 `POST /skins/upload` 별도 multipart endpoint 추가 (Type B 기획 공백 흡수)
+> - (b) 시나리오 단순화 — JSON body 만, .gfskin 파싱은 별도 endpoint
+> - (c) Spec_Gap 정식 등재 후 conductor 자율 판단
+
+#### 3.3.6 Stage 1 첫 sequential baseline (v0.4.2 신규)
+
+2026-05-08 Stage 1 첫 단독 실행 결과 (정정된 v0.4.1 시나리오 기준).
+
+| 시나리오 | 상태 | HTTP | 비고 |
+|:--------:|:----:|:----:|------|
+| 10.1 dev login | ✅ PASS | 200 | envelope + camelCase 정합 |
+| 10.2 live profile (X-Test-Profile) | ✅ PASS | 200 | header 동작 확인 |
+| 10.3 refresh (직접) | ✅ PASS | 200 | flat shape (D6) |
+| 10.3 refresh (10.2 후) | ❌ FAIL | 401 | **D7** — 10.2 가 jti 무효화 |
+| 10.4 invalid refresh | ✅ PASS | 401 | 정상 거절 |
+| 20.1 정상 .gfskin upload | ❌ FAIL | 500 | **D8** — multipart vs JSON 모순 |
+| 20.4 invalid-colors upload | ❌ FAIL | 500 | **D8** 동일 |
+| 20.x JSON 정정 검증 | ✅ PASS | 201 | `{data.skinId, name, ...}` envelope (정정 후) |
+
+**Pass rate**: 5/8 = 62.5% (10.3 의존 케이스 제외 시 5/7 = 71%)
+
+**§6 검증 게이트 비교**:
+- 진입 게이트 (✓ PASS): docker compose healthy + JWT + fixture
+- 진행 게이트: 시나리오 26건 sequential PASS — 현재 baseline 5/8 → 26건 전체 측정 미실행
+- 통과 게이트 (Stage 2 진입): D6/D7/D8 OPEN 해소 + 26/26 PASS — 미달성
 
 #### 3.3.4 시나리오 26건 매트릭스 + 실패 triage
 
