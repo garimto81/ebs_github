@@ -3,12 +3,17 @@ title: OutputEvent Serialization
 owner: team3
 tier: contract
 legacy-id: API-04.1
-last-updated: 2026-04-22
+last-updated: 2026-05-08
+last-synced: 2026-05-08  # Foundation §B.1 정합 marker (S8 audit 2026-05-08, D2 awareness)
 reimplementability: PASS
 reimplementability_checked: 2026-04-22
 reimplementability_notes: "API-04.1 OutputEvent 직렬화 계약 완결. B-332 SSOT 선언 §4.1 추가 (2026-04-22, Foundation §6.4 Engine SSOT 전파)."
+audit-notes:
+  - "2026-05-08 S8 audit D2: 본 파일과 Overlay_Output_Events.md §6.0 간 OE-12~21 매핑 충돌 발견. publisher (output_event.dart) 실측 정본화 후속 작업 → B-356-oe-catalog-self-inconsistency.md"
 ---
 # OutputEvent JSON 직렬화 계약 (API-04.1)
+
+> ⚠️ **Audit notice (2026-05-08, S8 D2 [HIGH])**: 본 파일의 §섹션 OE 번호 매핑이 `Overlay_Output_Events.md §6.0` (publisher 실측 정본, 2026-04-15) 과 충돌함. 자세한 정합 작업은 [`B-356-oe-catalog-self-inconsistency.md`](../Backlog/B-356-oe-catalog-self-inconsistency.md) 참조. 본 PR(s8-engine 2026-05-08) 은 충돌 인지 marker 만 추가하며, 실제 재정렬은 별도 작업.
 
 ## 개요
 
