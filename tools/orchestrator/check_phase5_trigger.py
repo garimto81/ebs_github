@@ -16,8 +16,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-# 8 audit stream IDs (Plan §0.4)
-AUDIT_STREAMS = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"]
+# Audit stream IDs — 사용자 결정 (2026-05-08): S5 (Index) / S6 (Prototype) 제외
+# 잔여 2 stream 은 별도 phase 또는 영구 제외 (사용자 명시 영역)
+AUDIT_STREAMS = ["S1", "S2", "S3", "S4", "S7", "S8"]
 
 # Phase 4 completion marker — feat/message-bus 의 commit 또는 그 이후
 PHASE_4_MARKER_FILE = "docs/4. Operations/Message_Bus_Runbook.md"
