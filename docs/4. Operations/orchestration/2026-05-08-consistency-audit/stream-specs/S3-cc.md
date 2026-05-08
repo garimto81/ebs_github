@@ -1,10 +1,13 @@
 ---
+owner: conductor
+tier: internal
 stream: S3
 name: Command Center
 worktree: C:/claude/ebs-cc-stream
 phase: P2 (정합성 감사)
 blocked_by: S1
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
+last-updated: 2026-05-08
 ---
 
 # S3 Command Center — 정합성 감사 작업 spec

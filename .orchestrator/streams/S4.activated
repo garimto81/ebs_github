@@ -1,5 +1,7 @@
 stream_id: S4
 team_name: RIVE Standards
-activated_at: '2026-05-07T14:29:00.974703'
+activated_at: '2026-05-08T17:06:52.060170'
 worktree_path: C:/claude/ebs-rive-standards
-note: Direct main commit (PR pipeline conflict bypass)
+branch: work/s4/2026-05-08-init
+scope_owns:
+- docs/1. Product/RIVE_Standards.md

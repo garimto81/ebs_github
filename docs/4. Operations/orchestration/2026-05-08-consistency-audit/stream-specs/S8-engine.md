@@ -1,11 +1,14 @@
 ---
+owner: conductor
+tier: internal
 stream: S8
 name: Game Engine
 worktree: C:/claude/ebs-engine-stream
 phase: P2 (정합성 감사 — 활성화)
 blocked_by: S1
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
-note: "future_streams 에서 정합성 감사용으로 일시 활성화. 코드 작업은 별도 phase."
+note: "2026-05-08 정합성 감사용 활성화. team_assignment v10.3 에서 streams.S8 로 promote 완료."
+last-updated: 2026-05-08
 ---
 
 # S8 Game Engine — 정합성 감사 작업 spec

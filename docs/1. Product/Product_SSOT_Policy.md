@@ -50,17 +50,17 @@ last-synced: <정본 last-updated 와 동일>
 
 | Product 파일 / 폴더 | Owner Stream | Read Streams | Phase |
 |--------------------|:-----------:|--------------|:-----:|
-| `Foundation.md` | **S1** | S2~S6 (all) | P1 |
+| `Foundation.md` | **S1** | S2~S8 (all) | P1 |
 | `Lobby_PRD.md` | **S2** | S6 | P2 |
 | `Command_Center_PRD.md` | **S3** | S6 | P2 |
-| `Back_Office_PRD.md` | **S1** (interim) | S2, S3 | P1 |
+| `Back_Office_PRD.md` | **S1** (interim — 이관 대기) | S2, S3, **S7** | P1 |
 | `RIVE_Standards.md` | **S4** | S2, S3, S6 | P2 |
-| `Game_Rules/**` | **S1** (interim) | S2, S3, S6 | P1 |
+| `Game_Rules/**` | **S1** (interim — 이관 대기) | S2, S3, S6, **S8** | P1 |
 | `References/**` | conductor (frozen) | All | — |
 | `images/`, `visual/`, `archive/` | conductor (asset) | All | — |
 | `1. Product.md` | CI generated (`meta_files_blocked`) | — | meta |
 
-**S1 interim 확장**: Back_Office_PRD + Game_Rules 는 외부 인계 정체성 SSOT 성격이라 S1 통합. S7 (Backend) / S8 (Engine) 활성 시 자동 이관.
+**S1 interim 확장**: Back_Office_PRD + Game_Rules 는 외부 인계 정체성 SSOT 성격이라 S1 통합. S7 (Backend) / S8 (Engine) 은 2026-05-08 정합성 감사 (#168) Phase 0 dispatch 로 활성화 완료. ownership 이관 (Back_Office_PRD → S7 / Game_Rules → S8 frontmatter owner 변경) 은 PR #175 / #180 머지 + 각 owner 자율 검증 후 별도 작업.
 
 ## 4. Cascade Routing 4 Layer
 
