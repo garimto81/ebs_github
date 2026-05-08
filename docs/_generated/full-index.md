@@ -269,6 +269,8 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/B-353-cross-team-bs06-citations.md` | Cross-team BS-06-XX 인용 (101건) → 도메인 마스터 redirect 갱신 — 팀별 자율 처리 위임 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-354-legacy-id-redirect-oe-mapping.md` | legacy-id-redirect.json 에 OE-level 매핑 추가 — API-04 OE-XX ↔ BS-06-09 OE-XX 번호 변환 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-355-redirect-validator-infrastructure.md` | legacy-id-redirect.json validator (Dart CLI + CI gate) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-356-oe-catalog-self-inconsistency.md` | OE 카탈로그 self-inconsistency — OutputEvent_Serialization vs Overlay_Output_Events 정합 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` | NOTIFY-Conductor-2026-05-08-ci-infra-blockers | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-S8-pr180-ci-failure-2026-05-08.md` | NOTIFY-S8 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` | OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13) | - | - | - |
@@ -325,7 +327,9 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` | Foundation 재설계 P3 — LOW 링크·참조 갱신 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md` | CC Visual Uplift — React 프로토타입 시각 자산 7종 흡수 (D7 보안 유지) | team4 | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-013-seatcell-inline-edit-cascade-2026-05-07.md` | SeatCell 7행 onTap 인라인 편집 cascade — HTML 시안 vs Flutter drift | prototype-session | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-5act-naming-drift-2026-05-08.md` | NOTIFY-S1 — 5-Act 시퀀스 명칭 drift (Foundation vs 정본) | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-cc-identity-cascade-2026-05-07.md` | NOTIFY-S1 — CC v4.0 정체성 cascade가 Foundation §Ch.5.4 에 영향 | stream:S3 (Command Center) | notify | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-rfid-antenna-count-mismatch-2026-05-08.md` | NOTIFY-S1 — RFID 안테나 수 모순 (12 vs 24) | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-pr171-ci-failure-2026-05-08.md` | NOTIFY-S3 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | S-11 Lobby Hand History 자동화 UI wiring 요청 | - | - | - |
