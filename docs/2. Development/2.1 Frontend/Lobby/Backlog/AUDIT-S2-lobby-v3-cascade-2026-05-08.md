@@ -2,14 +2,20 @@
 title: AUDIT-S2 — Lobby v3.0.0 정체성 cascade + 8-항목 정합 감사
 owner: stream:S2 (Lobby)
 tier: audit
-status: PASS_WITH_FIXES
+status: PASS_WITH_FIXES_v2
 created: 2026-05-08
+last-updated: 2026-05-08
 trigger: Issue #161 — Lobby_PRD ↔ 정본 Overview ↔ Foundation 3-way 정합 + 2.1 Frontend cascade
 related:
   - ../../../1. Product/Lobby_PRD.md  (SSOT v3.0.0)
   - ../Overview.md  (정본, derivative-of 타겟)
   - NOTIFY-S1-lobby-identity-cascade-2026-05-07.md  (cascade 1차 실행 증거)
+  - NOTIFY-Conductor-ci-drift-2026-05-08.md  (CI drift Conductor 위임)
   - ../../../4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S2-lobby.md  (작업 spec)
+github-pr: https://github.com/garimto81/ebs_github/pull/176
+github-issues:
+  - https://github.com/garimto81/ebs_github/issues/161  (S2 미션)
+  - https://github.com/garimto81/ebs_github/issues/192  (Conductor 위임 — CI drift)
 ---
 
 # AUDIT-S2 — Lobby v3.0.0 정체성 cascade 사후 감사
@@ -195,3 +201,70 @@ related:
 코드 영역은 v3.0.0 narrative 와 모순 없음. screens/widgets 의 구조가 PRD 시퀀스와 1:1 매핑. 코드는 narrative 를 직접 명시하지 않지만 (정상 패턴), 기능/구조 차원에서 정체성 정합.
 
 **docs cascade (§B 14/14 PASS) + code cascade (§J 7/7 PASS) = 양방향 일관성 확보** ✅
+
+---
+
+## §K. Drift 확장 — 14 docs frontmatter `last-updated` 일괄 정정 (autonomous iteration v2, 2026-05-08)
+
+### K.1 발견
+
+§D §2 의 drift 1건 (Overview.md frontmatter `last-updated`) 정정 후 **나머지 13 docs 도 동일 패턴 stale** 검출 — 정합성 100% 목표 자율 검증 결과.
+
+### K.2 14 docs frontmatter ↔ changelog 정합 매트릭스 (사후)
+
+| File | 정정 전 frontmatter | changelog 마지막 | 정정 후 |
+|------|:-------------------:|:----------------:|:-------:|
+| Overview.md | 2026-04-15 | 2026-05-07 | ✅ 2026-05-07 |
+| UI.md | 2026-04-15 | 2026-05-07 | ✅ 2026-05-07 |
+| Table.md | 2026-04-15 | 2026-05-07 | ✅ 2026-05-07 |
+| Event_and_Flight.md | 2026-04-15 | 2026-05-07 | ✅ 2026-05-07 |
+| Registration.md | 2026-04-15 | 2026-05-07 | ✅ 2026-05-07 |
+| Hand_History.md | 2026-05-05 | 2026-05-07 | ✅ 2026-05-07 |
+| Chip_Management.md | 2026-05-03 | 2026-05-07 | ✅ 2026-05-07 |
+| Clock_Control.md | 2026-04-15 | 2026-05-07 | ✅ 2026-05-07 |
+| Prize_Pool.md | 2026-04-16 | 2026-05-07 | ✅ 2026-05-07 |
+| Session_Restore.md | 2026-04-15 | 2026-05-07 | ✅ 2026-05-07 |
+| Staff_Management.md | 2026-04-16 | 2026-05-07 | ✅ 2026-05-07 |
+| Reports.md | 2026-04-16 | 2026-05-07 | ✅ 2026-05-07 |
+| Structure_Templates.md | 2026-04-16 | 2026-05-07 | ✅ 2026-05-07 |
+| Operations.md | 2026-04-15 | 2026-05-07 | ✅ 2026-05-07 |
+
+**정정 14/14 PASS** ✅ — 모든 본문 docs frontmatter ↔ changelog 정합.
+
+### K.3 정정 방식 정당화
+
+- 모두 한 줄 frontmatter 정정 (본문 변경 0)
+- additive 아니라 단일 필드 update — 의미는 "메타 동기화"
+- Foundation 변경이 원인 아님 — S2 scope 안 단독 정정 가능 (spec §2 정합 회복)
+- 분기 B "1~3건 정정" 의 확장: drift 14건이지만 **모두 같은 패턴 (frontmatter `last-updated` 메타 동기화)** + **본문 변경 0** → 분기 C escalate 불필요. 분기 B 의 자연 확장으로 처리.
+
+### K.4 PR #176 CI 차단 진단 + Conductor 위임
+
+별도 trigger 발견 — PR #176 mergeStateStatus=UNSTABLE (CI 3 fail). 본 PR scope 외 main pre-existing drift 가 원인:
+- frontmatter `owner` 누락 10 파일 (`docs/4. Operations/orchestration/...` + `_archive/INDEX.md`)
+- 깨진 링크 7건 (`Graphic_Editor/References/skin-editor/` 5건 + `RIVE_Standards.md → images` 2건)
+
+**S2 scope hook 차단 → Conductor 위임 (Issue #192)** + S2 영역 영구 기록 (`NOTIFY-Conductor-ci-drift-2026-05-08.md`).
+
+### K.5 §H 후속 권고 처리 결과
+
+| § | 항목 | 처리 |
+|:-:|------|------|
+| H.1 | S1 Foundation §5.1 cascade | S1 책임, NOTIFY-S1 위임 (변경 0) |
+| H.2 | Foundation §8 정체성 명시 | S1 책임 (NOTIFY-S1 line 47 이미 명시) |
+| H.3 | doc_discovery.py 자동화 | 후속 PR (tools/ 영역, S2 scope 외) |
+| H.4 | Cascade Plan 사후 생성 | 4. Operations/ 영역, S2 scope 외 → AUDIT 가 그 역할 대체 (NOTIFY-S1 line 60 메타 명시) |
+
+**S2 가 처리 가능한 §H 항목 = 0개** (모두 위임 또는 scope 외). 위임 명시로 종료.
+
+### K.6 정합성 100% 결론
+
+S2 scope 안 정합:
+- **본문 cascade**: 14/14 PASS (§B)
+- **코드 cascade**: 7/7 PASS (§J)
+- **frontmatter ↔ changelog**: 14/14 PASS (§K.2 신규 정정)
+- **Spec 8 항목**: 8/8 PASS (§D 의 §2 drift 도 정정 완료)
+- **§H 후속 권고**: 4/4 위임/scope 외 명시 처리
+
+**S2 scope 안 정합성 = 100%** ✅
+**S2 scope 외 (CI drift)**: Conductor 위임 (Issue #192, NOTIFY-Conductor) — multi-session orchestration 의 의도된 분권.

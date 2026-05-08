@@ -2,7 +2,7 @@
 title: Prize Pool & Payout Management
 owner: team1
 tier: feature
-last-updated: 2026-04-16
+last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "Prize Pool & Payout 기획 완결"
