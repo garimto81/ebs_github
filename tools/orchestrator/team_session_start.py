@@ -38,11 +38,61 @@ def load_team():
     return yaml.safe_load(team_file.read_text(encoding='utf-8'))
 
 
-def check_dependency(team):
-    """git log origin/main 에서 upstream Stream init commit 확인 (인덱스 의존 X)
+def _broker_subscribe_done(upstream, timeout_sec=5):
+    """v11 Phase C: broker subscribe 로 upstream DONE 확인 (latency ~50ms).
 
-    GitHub 라벨 검색 인덱스는 catch-up 지연 가능 (30분+).
-    git commit log 는 fetch 직후 즉시 정확.
+    Returns: PR number if DONE found, None otherwise.
+    Silent fallback if broker dead.
+    """
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1.0)
+    try:
+        s.connect(("127.0.0.1", 7383))
+    except OSError:
+        return None  # broker dead — fallback to v10.3 path
+    finally:
+        s.close()
+
+    try:
+        import asyncio
+        from mcp import ClientSession  # type: ignore
+        from mcp.client.streamable_http import streamablehttp_client  # type: ignore
+
+        async def _run():
+            async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _):
+                async with ClientSession(r, w) as sess:
+                    await sess.initialize()
+                    res = await sess.call_tool("subscribe", {
+                        "topic": f"stream:{upstream}",
+                        "from_seq": 0,
+                        "timeout_sec": timeout_sec,
+                    })
+                    if not res.content:
+                        return None
+                    import json as _json
+                    data = _json.loads(res.content[0].text)
+                    done_events = [e for e in data.get("events", [])
+                                   if e.get("payload", {}).get("status") == "DONE"]
+                    if done_events:
+                        return done_events[-1]["payload"].get("pr", "?")
+                    return None
+
+        try:
+            return asyncio.run(asyncio.wait_for(_run(), timeout=timeout_sec + 2))
+        except Exception:
+            return None
+    except Exception:
+        return None
+
+
+def check_dependency(team):
+    """v11 Phase C: subscribe-first dependency check, git log + gh pr list fallback.
+
+    Resolution order (broker → git log → gh pr list):
+      1. broker subscribe (50ms latency, v11)
+      2. git log origin/main (인덱스 의존 X, v10.3)
+      3. gh pr list (인덱스 catch-up 30분+, fallback)
     """
     if not team.get('blocked_by'):
         return True
@@ -51,6 +101,13 @@ def check_dependency(team):
     subprocess.run(['git', 'fetch', 'origin', 'main'], capture_output=True, timeout=30)
 
     for upstream in team['blocked_by']:
+        # ── v11 path: broker subscribe (즉시) ──────────────────────
+        pr_num = _broker_subscribe_done(upstream, timeout_sec=5)
+        if pr_num:
+            print(f"  ✓ {upstream} DONE via broker (PR #{pr_num}, ~50ms)")
+            continue
+
+        # ── v10.3 path: git commit log ─────────────────────────────
         # main commit log 에서 [SX] 또는 feat(SX) 패턴 검색
         result = subprocess.run([
             'git', 'log', 'origin/main',

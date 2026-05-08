@@ -2,14 +2,17 @@
 """
 Orchestrator monitoring loop (Observer Mode).
 
-30초 간격 GitHub 폴링 + 상황판 출력 + 의존성 위반 감지.
+v11 (default): subscribe-based push (broker, ~50ms latency).
+v10.3 (--legacy): 30초 GitHub 폴링.
 
 Usage:
-  python orchestrator_monitor.py --config=docs/orchestrator/team_assignment.yaml
-  python orchestrator_monitor.py --once   # 단발 실행
+  python orchestrator_monitor.py --config=...                  # v11 push (default)
+  python orchestrator_monitor.py --config=... --legacy         # v10.3 polling
+  python orchestrator_monitor.py --config=... --once           # 단발
 """
 import argparse
 import json
+import socket
 import subprocess
 import sys
 import time
@@ -21,6 +24,19 @@ try:
 except ImportError:
     sys.stderr.write("PyYAML required\n")
     sys.exit(1)
+
+
+def _broker_alive():
+    """Quick TCP probe — broker on 127.0.0.1:7383 (v11)."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1.0)
+    try:
+        s.connect(("127.0.0.1", 7383))
+        return True
+    except OSError:
+        return False
+    finally:
+        s.close()
 
 
 def fetch_state():
@@ -97,7 +113,8 @@ def render_dashboard(config, issues, prs):
     return "\n".join(lines)
 
 
-def loop(config_path, interval=30, once=False):
+def loop_polling(config_path, interval=30, once=False):
+    """v10.3 polling loop — --legacy flag 활성 시 사용."""
     config = yaml.safe_load(Path(config_path).read_text(encoding='utf-8'))
 
     while True:
@@ -117,13 +134,58 @@ def loop(config_path, interval=30, once=False):
             time.sleep(interval)
 
 
+# Backward-compat alias
+loop = loop_polling
+
+
+def loop_subscribe(config_path, once=False):
+    """v11 subscribe-based loop. broker push 즉시 wake.
+
+    fallback: broker dead 시 polling 으로 자동 전환 (graceful degradation).
+    """
+    if not _broker_alive():
+        sys.stderr.write("⚠ broker dead — falling back to v10.3 polling\n")
+        loop_polling(config_path, interval=30, once=once)
+        return
+
+    # observer_loop.py 의 subscribe loop 재사용
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    try:
+        from tools.orchestrator.message_bus.observer_loop import observer_loop
+    except ImportError as e:
+        sys.stderr.write(f"⚠ observer_loop import failed: {e} — fallback polling\n")
+        loop_polling(config_path, interval=30, once=once)
+        return
+
+    import asyncio
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+    config = yaml.safe_load(Path(config_path).read_text(encoding='utf-8'))
+    print(f"v11 Observer (subscribe-based) — config={config_path}")
+    print(f"  streams: {list(config.get('streams', {}).keys())}")
+    print(f"  fallback: --legacy → v10.3 polling")
+
+    try:
+        max_iter = 1 if once else None
+        asyncio.run(observer_loop(topic="*", print_only=False, max_iter=max_iter))
+    except KeyboardInterrupt:
+        print("\nMonitor stopped.")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', required=True)
-    parser.add_argument('--interval', type=int, default=30)
+    parser.add_argument('--interval', type=int, default=30, help='polling interval (legacy mode)')
     parser.add_argument('--once', action='store_true')
+    parser.add_argument('--legacy', action='store_true',
+                        help='v10.3 polling mode (default: v11 subscribe push)')
     args = parser.parse_args()
-    loop(args.config, args.interval, args.once)
+
+    if args.legacy:
+        loop_polling(args.config, args.interval, args.once)
+    else:
+        loop_subscribe(args.config, args.once)
 
 
 if __name__ == "__main__":
