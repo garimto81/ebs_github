@@ -3,7 +3,8 @@ title: Overview
 owner: team3
 tier: internal
 legacy-id: BS-06-00
-last-updated: 2026-04-15
+last-updated: 2026-05-08
+last-synced: 2026-05-08  # Foundation v4.5 §10 정합 (S8 audit 2026-05-08, D1)
 ---
 
 # BS-06-00-REF: EBS 게임 엔진 레퍼런스
@@ -28,6 +29,7 @@ last-updated: 2026-04-15
 | 2026-04-09 | Ch7.6.7 + Ch8.4 보강 → UNDO/Call enforcement | Contract Test FAIL 근거: UNDO 5단계 제한 Harness 적용 명시, undo endpoint 제한 반영 |
 | 2026-04-10 | WSOP 규정 반영 | §2.1 GameState에 `prev_hand_bb_seat`, `boxed_card_count` 필드 추가, §2.2 Player에 `missed_sb`, `missed_bb` 필드 추가. Rules 86, 87, 88 지원. CCR-DRAFT-team3-20260410-wsop-conformance 참조 |
 | 2026-04-10 | WSOP P0/P1 규정 반영 | §2.1 GameState에 `tournament_heads_up`, `bomb_pot_opted_out`, `mixed_game_sequence`, `current_game_index`, `game_transition_pending` 필드 추가, §2.2 Player에 `cards_tabled` 필드 추가, Ch7.5 Pot Size Display Policy 신설. Rules 28.3.2, 71, 96, 100, 101 + Mixed Omaha 지원. CCR-DRAFT-team3-20260410-wsop-conformance P0-3/P1-5/P1-6/P1-8/P2-11 반영 |
+| 2026-05-08 | D1 [CRITICAL] HORSE 5종 정합 | §2.1 `mixed_game_sequence` 예시: HORSE=[O8, Razz, Stud, Stud8, NLH, PLO] 6종 → [Hold'em, O8, Razz, Stud, Stud8] 5종 FL. Foundation §10 위반 정정 (Lifecycle 도메인 마스터와 동일). (S8 consistency audit 2026-05-08) |
 
 ---
 
@@ -678,7 +680,7 @@ Ch1에서 정의한 Enum들이 실제로 어떤 데이터 묶음에 담기는지
 | boxed_card_count | int | 현재 핸드에서 RFID가 감지한 boxed card(face-up 상태 딜링) 누적 수. 2 이상이면 Rule 88에 따라 misdeal 트리거 (BS-06-08 매트릭스 5 참조) | 0+, HAND_COMPLETE/MisDeal 시 0으로 리셋 |
 | tournament_heads_up | bool | 전체 토너먼트에 2명만 남은 상태. FL 게임의 raise cap 무시 판정 기준 (WSOP Rule 100.b, BS-06-02 §5.2 참조). BO가 `SET_TOURNAMENT_HEADS_UP` 이벤트로 설정. Cash game은 항상 false | true/false, 기본 false |
 | bomb_pot_opted_out | Set<int> | 현재 bomb pot 핸드에서 opt-out한 플레이어 seat indexes. Button freeze로 position equity 보존 (WSOP Rule 28.3.2, BS-06-01 §Bomb Pot 참조). HAND_COMPLETE 시 clear | 빈 Set 또는 seat indexes |
-| mixed_game_sequence | List<GameDef> | Mixed 토너먼트의 전체 mix 순서 (예: HORSE=[O8, Razz, Stud, Stud8, NLH, PLO]). null이면 단일 게임 모드. Rule 100.b 및 New Blind Type: Mixed Omaha 참조 | null 또는 1+ 요소 |
+| mixed_game_sequence | List<GameDef> | Mixed 토너먼트의 전체 mix 순서 (예: HORSE=[Hold'em, O8, Razz, Stud, Stud8] 5종 FL — Foundation §10). null이면 단일 게임 모드. Rule 100.b 및 New Blind Type: Mixed Omaha 참조 | null 또는 1+ 요소 |
 | current_game_index | int | `mixed_game_sequence`에서 현재 게임 인덱스. 전환 시 `(index + 1) % len` 진행. 단일 게임 모드에서는 0 고정 | 0+ |
 | game_transition_pending | bool | 다음 핸드에서 게임 전환이 예정된 상태. BO가 레벨 종료 시 설정. 전환 핸드의 HAND_COMPLETE에서 button freeze 트리거 (Mixed Omaha New Blind Type 참조) | true/false, 기본 false |
 

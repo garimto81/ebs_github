@@ -3,10 +3,13 @@ title: Overlay Output Events
 owner: team3
 tier: internal
 legacy-id: API-04
-last-updated: 2026-04-15
+last-updated: 2026-05-08
+last-synced: 2026-05-08  # Foundation §B.1 정합 marker (S8 audit 2026-05-08, D2 awareness)
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "API-04 Overlay 출력 21종 이벤트 카탈로그 (21KB). TBD 5건은 NDI/BS-07 WSOP LIVE 정렬/stats 계산 등 외부 의존"
+audit-notes:
+  - "2026-05-08 S8 audit D2: §6.0 publisher 실측 (2026-04-15) 정본 vs OutputEvent_Serialization.md §섹션 매핑 충돌. 또한 본 파일 내부 변경이력 (line 18) vs 본문 (line 123) OE-05 명명 충돌. 정합 작업 → B-356-oe-catalog-self-inconsistency.md"
 ---
 # API-04 Overlay Output — 오버레이 출력 계약
 
@@ -18,6 +21,7 @@ reimplementability_notes: "API-04 Overlay 출력 21종 이벤트 카탈로그 (2
 | 2026-04-15 | §6.0 실측 정정 | publisher(`output_event.dart`) 실측 결과 18종 → 21종. 누락됐던 OE-04 BoardUpdated / OE-05 ActionOnChanged / OE-06 WinnerDetermined / OE-07 Rejected / OE-08 UndoApplied / OE-12 CardMismatchDetected / OE-13 SevenDeuceBonusAwarded / OE-14 HandTabled / OE-15 HandRetrieved / OE-16 HandKilled / OE-17 MuckRetrieved / OE-18 FlopRecovered / OE-19 DeckIntegrityWarning / OE-20 DeckChangeStarted / OE-21 GameTransitioned 전수 추가 |
 | 2026-04-08 | 신규 작성 | CC→Overlay 데이터 흐름, 출력 채널, Security Delay, 해상도, 크로마키 |
 | 2026-04-22 | §1 / §1.3 Engine SSOT 주석 신설 (B-332, notify: team4) | Foundation §6.3 §1.1.1 / §6.4 에 따라 "Engine 응답이 게임 상태 SSOT. BO WS = audit 참고값" 을 파이프라인 · GameState 표 상단에 명시. |
+| 2026-05-08 | D2 [HIGH] OE 카탈로그 self-inconsistency 인지 marker | OutputEvent_Serialization.md §섹션 OE-12~21 매핑이 본 파일 §6.0 publisher 실측 정본 (2026-04-15) 과 충돌. 또한 본 파일 내부에서도 변경이력 (line 18) vs §1.3 mapping (line 123) OE-05 명명 충돌. 단일 PR 로 완결 불가 → B-356 backlog 신설로 분리. (S8 consistency audit 2026-05-08) |
 
 ---
 
