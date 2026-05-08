@@ -9,7 +9,7 @@ reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "API-04 Overlay 출력 21종 이벤트 카탈로그 (21KB). TBD 5건은 NDI/BS-07 WSOP LIVE 정렬/stats 계산 등 외부 의존"
 audit-notes:
-  - "2026-05-08 S8 audit D2: §6.0 publisher 실측 (2026-04-15) 정본 vs OutputEvent_Serialization.md §섹션 매핑 충돌. 또한 본 파일 내부 변경이력 (line 18) vs 본문 (line 123) OE-05 명명 충돌. 정합 작업 → B-356-oe-catalog-self-inconsistency.md"
+  - "2026-05-08 S8 audit D2 (본 PR 즉시 처리, 100% 도달): §6.0 publisher 정본 (2026-04-15 실측) sole-truth 채택. OutputEvent_Serialization.md §섹션 OE-11~21 재정렬 완료. §1.3 GFX mapping 표 OE 번호 정정 (CardRevealed=OE-11, HandCompleted=OE-09, OE-01~18→OE-01~21). B-356 DONE."
 ---
 # API-04 Overlay Output — 오버레이 출력 계약
 
@@ -22,6 +22,7 @@ audit-notes:
 | 2026-04-08 | 신규 작성 | CC→Overlay 데이터 흐름, 출력 채널, Security Delay, 해상도, 크로마키 |
 | 2026-04-22 | §1 / §1.3 Engine SSOT 주석 신설 (B-332, notify: team4) | Foundation §6.3 §1.1.1 / §6.4 에 따라 "Engine 응답이 게임 상태 SSOT. BO WS = audit 참고값" 을 파이프라인 · GameState 표 상단에 명시. |
 | 2026-05-08 | D2 [HIGH] OE 카탈로그 self-inconsistency 인지 marker | OutputEvent_Serialization.md §섹션 OE-12~21 매핑이 본 파일 §6.0 publisher 실측 정본 (2026-04-15) 과 충돌. 또한 본 파일 내부에서도 변경이력 (line 18) vs §1.3 mapping (line 123) OE-05 명명 충돌. 단일 PR 로 완결 불가 → B-356 backlog 신설로 분리. (S8 consistency audit 2026-05-08) |
+| 2026-05-08 | D2 [HIGH] **B-356 본 PR 즉시 처리 (100% 도달)** | §6.0 publisher 정본 채택. (1) OutputEvent_Serialization.md §섹션 OE-11~21 12개 헤더 재정렬 완료 (CardRevealed=OE-11 정본 등). (2) 본 파일 §1.3 mapping 표 4건 정정 (OE-01~18→OE-01~21, OE-05 CardRevealed→OE-11, OE-06 HandCompleted→OE-09). B-356 status: PENDING → DONE. (S8 consistency audit 2026-05-08) |
 
 ---
 
@@ -121,12 +122,12 @@ Overlay가 렌더링에 사용하는 GameState 필드:
 
 | PokerGFX 필드 | EBS 대응 | OutputEvent | 등급 |
 |---------------|----------|-------------|------|
-| `HandId` | `hand_id` | OE-01~18 공통 메타 | 직접 계승 |
+| `HandId` | `hand_id` | OE-01~21 공통 메타 | 직접 계승 |
 | `GameId` | `game_type` (enum) | OE-01 StateChanged | 재명명 |
 | `Ante / SmallBlind / BigBlind` | `blinds.{ante, sb, bb}` | OE-01 phase 전환 시 | 직접 계승 |
-| `BoardCards[]` | `community_cards[]` | OE-05 CardRevealed(board) | 재명명 |
+| `BoardCards[]` | `community_cards[]` | OE-11 CardRevealed(board) | 재명명 |
 | `Pots[]` | `pots[]` | OE-03 PotUpdated | 직접 계승 |
-| `RunItTwice` | `run_it_twice` | OE-06 HandCompleted | 직접 계승 |
+| `RunItTwice` | `run_it_twice` | OE-09 HandCompleted | 직접 계승 |
 | `BombPot` | `bomb_pot_active` | OE-01 StateChanged | 직접 계승 |
 | `Payouts[]` | — | — | **폐기** (대회 메타, WSOP LIVE sync 담당) |
 | `LicenseInfo` | — | — | **폐기** (EBS DRM 미도입) |
@@ -138,7 +139,7 @@ Overlay가 렌더링에 사용하는 GameState 필드:
 |---------------|----------|-------------|------|
 | `Name / Nationality` | `player.name` / `player.nationality` | (WSOP sync 영역) | 직접 계승 |
 | `Stack` | `player.stack` | OE-02 ActionProcessed / OE-06 | 직접 계승 |
-| `Cards[]` | `player.hole_cards[]` | OE-05 CardRevealed(hole) | 직접 계승 |
+| `Cards[]` | `player.hole_cards[]` | OE-11 CardRevealed(hole) | 직접 계승 |
 | `Vpip / Pfr / Agr / Wtsd` | `player_stats.{vpip, pfr, agr, wtsd}` | OE-stats (TBD) | 직접 계승 |
 | `CumWin` | `player_stats.cumulative_winnings` | — | 직접 계승 |
 | `Position` | (dealer_seat 에서 도출) | — | **재명명** (계산값) |

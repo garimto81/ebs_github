@@ -13,7 +13,7 @@ S8 consistency audit (Issue #167, PR #180) 결과 신규 등재:
 
 | ID | Title | Priority | 발생 사유 |
 |----|-------|:--------:|----------|
-| [B-356](Backlog/B-356-oe-catalog-self-inconsistency.md) | OE 카탈로그 self-inconsistency (OutputEvent_Serialization vs Overlay_Output_Events) | P1 | D2 [HIGH] — publisher `output_event.dart` 실측 정본화 후속 작업 |
+| [B-356 ✅ DONE](Backlog/B-356-oe-catalog-self-inconsistency.md) | OE 카탈로그 self-inconsistency (OutputEvent_Serialization vs Overlay_Output_Events) | P1 | D2 [HIGH] — PR #180 본 PR 즉시 처리 (100% 도달) |
 | [NOTIFY-Conductor](Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md) | CI 인프라 blocker 4건 escalation (#183~#186) | HIGH | PR #180 CI 5 fail 분석 → 외부 책임 분리 |
 
 ## 🆕 2026-04-22 Foundation.md v11 재설계 대응 (신규 등재)

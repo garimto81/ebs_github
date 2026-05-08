@@ -9,11 +9,11 @@ reimplementability: PASS
 reimplementability_checked: 2026-04-22
 reimplementability_notes: "API-04.1 OutputEvent 직렬화 계약 완결. B-332 SSOT 선언 §4.1 추가 (2026-04-22, Foundation §6.4 Engine SSOT 전파)."
 audit-notes:
-  - "2026-05-08 S8 audit D2: 본 파일과 Overlay_Output_Events.md §6.0 간 OE-12~21 매핑 충돌 발견. publisher (output_event.dart) 실측 정본화 후속 작업 → B-356-oe-catalog-self-inconsistency.md"
+  - "2026-05-08 S8 audit D2 (본 PR 즉시 처리, 100% 도달): publisher §6.0 정본 (Overlay_Output_Events.md, 2026-04-15 실측) 채택. §섹션 12개 헤더 재정렬 — OE-11=CardRevealed, OE-12=CardMismatchDetected, OE-13=SevenDeuceBonusAwarded, OE-14=HandTabled, OE-15=HandRetrieved, OE-16=HandKilled, OE-17=MuckRetrieved, OE-18=FlopRecovered, OE-19=DeckIntegrityWarning, OE-20=DeckChangeStarted, OE-21=GameTransitioned. OE-03/OE-19 통합 표기 분리. B-356 DONE."
 ---
 # OutputEvent JSON 직렬화 계약 (API-04.1)
 
-> ⚠️ **Audit notice (2026-05-08, S8 D2 [HIGH])**: 본 파일의 §섹션 OE 번호 매핑이 `Overlay_Output_Events.md §6.0` (publisher 실측 정본, 2026-04-15) 과 충돌함. 자세한 정합 작업은 [`B-356-oe-catalog-self-inconsistency.md`](../Backlog/B-356-oe-catalog-self-inconsistency.md) 참조. 본 PR(s8-engine 2026-05-08) 은 충돌 인지 marker 만 추가하며, 실제 재정렬은 별도 작업.
+> ✅ **Audit resolved (2026-05-08, S8 D2 [HIGH])**: 본 §섹션이 `Overlay_Output_Events.md §6.0` (publisher 실측 정본, 2026-04-15) 과 100% 정합. §섹션 OE-11~21 재정렬 완료, OE-03/OE-19 통합 표기 분리. B-356 [DONE](../Backlog/B-356-oe-catalog-self-inconsistency.md). team4 소비자는 본 §섹션과 Overlay §6.0 이 동일한 OE 번호 ↔ 이벤트 매핑임을 확신할 수 있다.
 
 ## 개요
 
@@ -81,7 +81,7 @@ audit-notes:
 | `actionType` | string | ✓ | `fold` / `check` / `call` / `bet` / `raise` / `allin` |
 | `amount` | int? | | Fold/Check 는 null, 나머지는 확정 금액 |
 
-### OE-03 / OE-19 PotUpdated
+### OE-03 PotUpdated
 
 ```json
 { "mainPot": 450, "sidePots": [120, 80], "displayToPlayers": true }
@@ -155,7 +155,7 @@ audit-notes:
 |------|------|:----:|------|
 | `equities` | map<string,double> | ✓ | seatIndex → 승률 (0.0~1.0) |
 
-### OE CardRevealed
+### OE-11 CardRevealed
 
 ```json
 { "seatIndex": 3, "cardCodes": ["As", "Kh"], "visibility": "broadcast" }
@@ -167,19 +167,19 @@ audit-notes:
 | `cardCodes` | string[] | ✓ | 카드 코드 (예: `As` = Ace of Spades) |
 | `visibility` | string | ✓ | `all` / `broadcast` / `none` |
 
-### OE CardMismatchDetected
+### OE-12 CardMismatchDetected
 
 ```json
 { "expected": "Ah", "detected": "As" }
 ```
 
-### OE SevenDeuceBonusAwarded
+### OE-13 SevenDeuceBonusAwarded
 
 ```json
 { "seatIndex": 3, "bonusAmount": 50 }
 ```
 
-### OE-11 HandTabled
+### OE-14 HandTabled
 
 ```json
 { "seatIndex": 3, "cards": ["As", "Kh"] }
@@ -187,25 +187,25 @@ audit-notes:
 
 > WSOP Rule 71 — 플레이어가 자발적 공개.
 
-### OE-12 HandRetrieved
+### OE-15 HandRetrieved
 
 ```json
 { "seatIndex": 3, "managerRationale": "Rule 110 review" }
 ```
 
-### OE-13 HandKilled
+### OE-16 HandKilled
 
 ```json
 { "seatIndex": 3, "managerRationale": "Premature muck" }
 ```
 
-### OE-14 MuckRetrieved
+### OE-17 MuckRetrieved
 
 ```json
 { "seatIndex": 3, "cards": ["As", "Kh"], "rationale": "Rule 109 re-evaluation" }
 ```
 
-### OE-15 FlopRecovered
+### OE-18 FlopRecovered
 
 ```json
 {
@@ -221,19 +221,19 @@ audit-notes:
 | `newFlop` | string[] | ✓ | 재추출된 3-card flop |
 | `reservedBurn` | string? | | 예약된 번카드 (옵션) |
 
-### OE-16 DeckIntegrityWarning
+### OE-19 DeckIntegrityWarning
 
 ```json
 { "failureCount": 3, "suggestedAction": "deck_change" }
 ```
 
-### OE-17 DeckChangeStarted
+### OE-20 DeckChangeStarted
 
 ```json
 { "reason": "Rule 78 integrity check", "requestedBy": "floor" }
 ```
 
-### OE-18 GameTransitioned
+### OE-21 GameTransitioned
 
 ```json
 { "fromGame": "nlh", "toGame": "plh", "buttonFrozen": false }
