@@ -7,6 +7,9 @@ parent: Roadmap.md (구 SSOT 정렬 진척표, 프로젝트 의도 재정의로 
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "WSOP LIVE 정렬 진척표 구조 명확"
+confluence-page-id: 3818586732
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586732/EBS+SSOT+Alignment+Progress
 ---
 
 # SSOT Alignment Progress — EBS ↔ WSOP LIVE Confluence

@@ -11,6 +11,9 @@ related:
   - docs/2. Development/2.1 Frontend/Lobby/UI.md §공통 레이아웃 (line 391~450)
   - docs/2. Development/2.1 Frontend/Settings/Overview.md §2 5탭 구조
   - docs/4. Operations/Spec_Gap_Registry.md SG-012 ~ SG-019 (승격 예고)
+confluence-page-id: 3818848838
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818848838/EBS+Critic+Lobby+IA+5NF
 ---
 
 # Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토

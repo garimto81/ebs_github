@@ -8,6 +8,9 @@ last-updated: 2026-04-15
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-04-04 RFID HAL Operator 동작 명세 완결"
+confluence-page-id: 3820552861
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552861/EBS+RFID+HAL+Operator+Behavior
 ---
 # BS-04-04 HAL Contract — 운영자 관점 RFID HAL 동작 명세
 

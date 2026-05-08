@@ -7,6 +7,9 @@ type: backlog
 linked-sg: SG-026
 linked-decision: B-Q7 ㉠ (Production-strict)
 last-updated: 2026-04-27
+confluence-page-id: 3819766384
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766384/EBS+B-Q11+OWASP+Top+10+audit+B-Q7+Production-strict+cascade
 ---
 
 ## 개요

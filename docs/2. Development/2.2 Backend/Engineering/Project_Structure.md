@@ -4,6 +4,9 @@ owner: team2
 tier: internal
 legacy-id: IMPL-02
 last-updated: 2026-04-15
+confluence-page-id: 3819176625
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176625/EBS+Project+Structure
 ---
 
 # IMPL-02 Project Structure — 레포 분리 전략 + 패키지 레이아웃

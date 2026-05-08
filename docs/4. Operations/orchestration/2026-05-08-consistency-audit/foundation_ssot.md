@@ -5,6 +5,9 @@ tier: internal
 source: "docs/1. Product/Foundation.md v4.5.0"
 audit_basis: "모든 Stream 이 본 사실표 기준으로 자기 영역 검증"
 last-updated: 2026-05-08
+confluence-page-id: 3818881648
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881648/EBS+Foundation+v4.5+SSOT
 ---
 
 # Foundation v4.5 — SSOT 사실표

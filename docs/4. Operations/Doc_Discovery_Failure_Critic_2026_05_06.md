@@ -26,6 +26,9 @@ predecessors:
   - path: docs/1. Product/Command_Center_PRD.md
     relation: source_content
     reason: "누락된 외부 인계 PRD — 동기화 받지 못함"
+confluence-page-id: 3820552681
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552681/EBS+Command_Center_PRD.md+systematic
 ---
 
 # 문서 발견 실패 사고

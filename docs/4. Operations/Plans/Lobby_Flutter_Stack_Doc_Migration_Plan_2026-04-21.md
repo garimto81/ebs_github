@@ -10,6 +10,9 @@ related:
   - docs/1. Product/Foundation.md §5.1 (Lobby Flutter Desktop 스택 결정, 2026-04-21)
   - docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md (코드 drift 감사, 별개 관점)
   - docs/2. Development/2.1 Frontend/Engineering.md §2.1/§4.3/§5.2 (코드 실측 재작성 완료, 2026-04-21)
+confluence-page-id: 3818816281
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816281/EBS+Plan+Lobby+Flutter+Desktop
 ---
 
 # Plan — Lobby Flutter Desktop 결정 기획 문서 전수 수정

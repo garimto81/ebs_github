@@ -15,6 +15,9 @@ title: PokerGFX Reference
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+confluence-page-id: 3819078185
+confluence-parent-id: 3811344758
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078185/EBS+PokerGFX+Reference
 ---
 
 # EBS Action Tracker — 통합 Reference (v8.5.0)

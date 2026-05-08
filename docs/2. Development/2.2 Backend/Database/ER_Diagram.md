@@ -7,6 +7,9 @@ last-updated: 2026-04-15
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "DATA-01 ER 다이어그램 완결"
+confluence-page-id: 3818619331
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818619331/EBS+ER+Diagram
 ---
 # DATA-01 ER 다이어그램
 

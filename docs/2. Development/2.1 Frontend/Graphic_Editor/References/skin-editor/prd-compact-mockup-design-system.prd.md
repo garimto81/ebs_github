@@ -11,6 +11,9 @@ tier: internal
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "PRD-CMD001 status=approved (20KB) — 디자인 시스템 확정"
+confluence-page-id: 3819274944
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274944/EBS+Compact+Mockup+Design+System
 ---
 # EBS Compact Mockup Design System
 

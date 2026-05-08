@@ -4,6 +4,9 @@ owner: team2
 tier: internal
 legacy-id: IMPL-10
 last-updated: 2026-05-08
+confluence-page-id: 3818455678
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455678/EBS+Non+Functional+Requirements
 ---
 
 # IMPL-10 NFR — 비기능 요구사항 (신뢰성·일관성·복구 포함)

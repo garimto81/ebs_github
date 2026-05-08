@@ -4,6 +4,9 @@ owner: team2
 tier: internal
 legacy-id: IMPL-04
 last-updated: 2026-04-15
+confluence-page-id: 3818586833
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586833/EBS+Routing
 ---
 
 # IMPL-04 Routing — CC go_router + Lobby 라우팅

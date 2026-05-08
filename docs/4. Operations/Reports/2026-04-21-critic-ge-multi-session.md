@@ -8,6 +8,9 @@ relates-to:
   - docs/4. Operations/Reports/2026-04-21-critic-graphic-editor-team5-separation.md
   - docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md
   - docs/3. Change Requests/done/CR-conductor-20260421-ge-scope-expansion.md
+confluence-page-id: 3818881588
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881588/EBS+Critic+GE+Lobby
 ---
 
 # Critic Report — GE 멀티 세션 분리 적합성

@@ -9,6 +9,9 @@ reimplementability_notes: "Migration plan — SSOT 위치 + 25개 참조 통합 
 related:
   - docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md §7 revision 1
   - docs/4. Operations/Spec_Gap_Registry.md SG-016 revised
+confluence-page-id: 3819078386
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078386/EBS+Plan+Lobby+Hand+History+Insights
 ---
 
 # Plan — Lobby 사이드바 Hand History 섹션 공식화

@@ -6,6 +6,9 @@ last-updated: 2026-04-15
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "레이아웃 CSS 추출 데이터 (15KB) 완결"
+confluence-page-id: 3818750473
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750473/EBS+layout-css-extraction
 ---
 # SE & GE 목업 CSS 레이아웃 추출 문서
 

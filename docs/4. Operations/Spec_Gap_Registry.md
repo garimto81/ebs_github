@@ -10,6 +10,9 @@ related:
   - Spec_Gap_Triage.md §7 Type D
   - tools/spec_drift_check.py
   - Conductor_Backlog/
+confluence-page-id: 3818816041
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816041/EBS+Spec+Gap+Registry+Drift
 ---
 
 # Spec Gap Registry — Spec Drift 집계

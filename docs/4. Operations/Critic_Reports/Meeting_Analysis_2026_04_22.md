@@ -9,6 +9,9 @@ related:
   - docs/4. Operations/Spec_Gap_Registry.md
   - docs/4. Operations/Plans/Redesign_Plan_2026_04_22.md
 last-updated: 2026-04-22
+confluence-page-id: 3818750613
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750613/EBS+Critic+2026-04-22+7
 ---
 
 # 회의록 Critic 분석 — 2026-04-22

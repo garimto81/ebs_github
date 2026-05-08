@@ -9,6 +9,9 @@ reimplementability_checked: 2026-04-21
 reimplementability_notes: "2026-04-21 교차검증 완료: gfx_screen.dart 에 active_skin_id/color_theme/animation_speed/element_visibility 필드 구현 확인 (grep). SG-003 §Tab 2 + SG-004 .gfskin Flutter rive ^0.13 확정 반영."
 sg_reference: SG-003, SG-004
 scope: event
+confluence-page-id: 3819766323
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766323/EBS+Graphics
 ---
 
 # BS-03-02 GFX — 그래픽 설정

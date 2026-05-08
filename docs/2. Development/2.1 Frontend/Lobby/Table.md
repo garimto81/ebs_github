@@ -7,6 +7,9 @@ last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-02-03 Table 상태/운영 기획 완결 (16KB)"
+confluence-page-id: 3820552741
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552741/EBS+Table
 ---
 # BS-02-03 Table 상태 — TableFSM + `is_pause` 직교 축
 

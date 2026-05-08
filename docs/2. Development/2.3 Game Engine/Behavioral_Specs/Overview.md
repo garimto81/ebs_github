@@ -5,6 +5,9 @@ tier: internal
 legacy-id: BS-06-00
 last-updated: 2026-05-08
 last-synced: 2026-05-08  # Foundation v4.5 §10 정합 (S8 audit 2026-05-08, D1)
+confluence-page-id: 3820552841
+confluence-parent-id: 3811836049
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552841/EBS+Overview+6049
 ---
 
 # BS-06-00-REF: EBS 게임 엔진 레퍼런스

@@ -7,6 +7,9 @@ worktree: C:/claude/ebs (main)
 phase: P0 (잔여) + P4 (통합 검증)
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
 last-updated: 2026-05-08
+confluence-page-id: 3818521179
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521179/EBS+Conductor+spec
 ---
 
 # Conductor — 잔여 영역 + 통합 검증 spec

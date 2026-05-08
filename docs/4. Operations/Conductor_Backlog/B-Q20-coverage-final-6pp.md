@@ -9,6 +9,9 @@ type: backlog
 linked-sg: SG-026
 linked-decision: Session 2 final 89% 도달 후 잔여 (2026-04-27)
 last-updated: 2026-04-27
+confluence-page-id: 3818914392
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914392/EBS+B-Q20+95+coverage+6+p+Session+2+final
 ---
 
 ## 개요

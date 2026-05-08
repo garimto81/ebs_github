@@ -8,6 +8,9 @@ previous_intent: "spec-completeness (2026-04-20 ~ 2026-04-26, SUPERSEDED 2026-04
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "자립 가능: 본 로드맵은 production 출시 + 기획서 완결성 이중 추적. SG-023/024 + B-Q6 ㉠ 채택 후 production 일정 + 기획 챕터 완결성 양쪽 모두 본 문서에서 추적."
+confluence-page-id: 3818684891
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684891/EBS+Roadmap
 ---
 
 # EBS Production Roadmap (SG-023 + B-Q6 ㉠, 2026-04-27)

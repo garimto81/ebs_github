@@ -8,6 +8,9 @@ phase: P3 (정합성 감사)
 blocked_by: [S1, S2, S3, S4, S7, S8]
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
 last-updated: 2026-05-08
+confluence-page-id: 3820552981
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552981/EBS+S5+AI+Track+Index+spec
 ---
 
 # S5 AI Track / Index — 정합성 감사 작업 spec

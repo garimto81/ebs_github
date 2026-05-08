@@ -6,6 +6,9 @@ status: ACTIVE
 spec_ref: docs/4. Operations/Multi_Session_Design_v11.md
 supersedes: docs/2. Development/2.5 Shared/Stream_Entry_Guide.md
 last-updated: 2026-05-08
+confluence-page-id: 3819078225
+confluence-parent-id: 3812032646
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078225/EBS+Stream+Entry+Guide+v11
 ---
 
 # Stream Entry Guide v11

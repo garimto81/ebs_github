@@ -5,6 +5,9 @@ tier: internal
 last-updated: 2026-04-22
 source: Foundation.md 2026-04-22 재설계 (F1 재작성 + Ch.4 2 렌즈 + §5.0/§6.3/§6.4/§7.1/§8.5 신설)
 status: PLAN (실행 전 검토)
+confluence-page-id: 3819176585
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176585/EBS+Foundation+Realignment+Plan+2026-04-22
 ---
 
 # Foundation Realignment Plan — team2 기획 문서 재정렬 계획

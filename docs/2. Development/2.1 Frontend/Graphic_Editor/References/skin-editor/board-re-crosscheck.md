@@ -6,6 +6,9 @@ last-updated: 2026-04-15
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "Board RE crosscheck 완결 분석 (14 elements + GAP 리스트)"
+confluence-page-id: 3818848738
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818848738/EBS+board-re-crosscheck
 ---
 # Board GE Reverse Engineering Crosscheck
 

@@ -9,6 +9,9 @@ type: backlog
 linked-sg: SG-008-b1~b9, b14, b15
 linked-decision: B (일괄 채택) + B-Q5 ㉠ (Mode A) + B-Q7 ㉠ (Production-strict)
 last-updated: 2026-04-27
+confluence-page-id: 3819274985
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274985/EBS+B-Q15+SG-008-b+11+endpoint+team2+7+cascade
 ---
 
 ## 개요

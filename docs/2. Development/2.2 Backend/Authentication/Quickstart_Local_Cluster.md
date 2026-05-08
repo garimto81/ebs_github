@@ -6,6 +6,9 @@ last-updated: 2026-04-28
 related-arch: ../../2.5 Shared/Authentication/Distributed_Architecture.md (M2)
 related-runbook: ../../2.5 Shared/Authentication/Troubleshooting_Runbook.md (M6)
 related-plan: ~/.claude/plans/role-and-objective-reactive-canyon.md (M5)
+confluence-page-id: 3818455638
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455638/EBS+Quickstart+Local+Cluster+Auth+domain
 ---
 
 # Quickstart — Local Cluster (M5)

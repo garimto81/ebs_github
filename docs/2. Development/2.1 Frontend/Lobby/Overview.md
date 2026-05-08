@@ -7,6 +7,9 @@ last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-02-00 Lobby 총괄 (66KB) 정본"
+confluence-page-id: 3818455598
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455598/EBS+Overview+6750
 ---
 # BS-02 Lobby — 테이블 관리
 

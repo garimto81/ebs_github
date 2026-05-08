@@ -7,6 +7,9 @@ last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "DATA-04 DB 스키마 정본 (51KB)"
+confluence-page-id: 3819242093
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242093/EBS+Schema
 ---
 # DATA-04 DB Schema
 

@@ -5,6 +5,9 @@ tier: internal
 last-updated: 2026-04-29
 related-pr: "#71 (audit), #73 (lobby fix), #74 (audit improvement + this report)"
 status: COMPLETED
+confluence-page-id: 3818750413
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750413/EBS+SSOT+Alignment+Report+Lobby+Path+Drift+Eradication
 ---
 
 # SSOT Alignment Report — Lobby Path Drift Eradication

@@ -4,6 +4,9 @@ owner: team2
 tier: internal
 legacy-id: IMPL-08
 last-updated: 2026-04-15
+confluence-page-id: 3818914352
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914352/EBS+Testing+Strategy
 ---
 
 # IMPL-08 Testing Strategy — 테스트 피라미드

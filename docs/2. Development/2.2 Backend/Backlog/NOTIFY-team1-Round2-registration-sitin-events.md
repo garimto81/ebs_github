@@ -2,6 +2,9 @@
 title: NOTIFY team1 Round2 — registration_changed · sitin_called 이벤트 신설
 owner: team2
 tier: internal
+confluence-page-id: 3818816141
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816141/EBS+NOTIFY+team1+Round2+registration_changed+sitin_called
 ---
 
 # NOTIFY — team1 Round 2 에서 요청된 WebSocket 이벤트 2종

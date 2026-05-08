@@ -7,6 +7,9 @@ last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-08-03 방송 활성화 플로우 기획 완결"
+confluence-page-id: 3818684951
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684951/EBS+Activate+Broadcast
 ---
 # BS-08-03 Activate + Broadcast — 멀티 CC 동기화
 

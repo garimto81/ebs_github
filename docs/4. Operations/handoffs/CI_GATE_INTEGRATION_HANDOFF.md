@@ -5,6 +5,9 @@ tier: internal
 session: work/conductor/ci-docker-build-gate
 last-updated: 2026-04-28
 status: PARTIAL — CI gate + README done. ebs_v2 dir shell removal blocked by Windows handle.
+confluence-page-id: 3818914412
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914412/EBS+CI+Gate+Integration+ebs_v2+Cleanup+Handoff
 ---
 
 # CI Pre-Merge Gate Integration + Documentation Sync

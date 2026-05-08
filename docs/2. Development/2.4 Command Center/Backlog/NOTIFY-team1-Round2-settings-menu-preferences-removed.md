@@ -2,6 +2,9 @@
 title: NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거
 owner: team4
 tier: internal
+confluence-page-id: 3819078286
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078286/EBS+NOTIFY+team1+Round2+CC+Settings+Preferences
 ---
 
 # NOTIFY — CC 앱 Settings ⚙ 메뉴에서 Preferences 탭 제거

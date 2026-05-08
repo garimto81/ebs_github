@@ -6,6 +6,9 @@ status: cleanup-candidates-identified
 last-updated: 2026-04-28
 related:
   - docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md (결정 3A)
+confluence-page-id: 3819766444
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766444/EBS+Worktree+Cleanup+Report+v8.0+Phase+9+Decision+3A
 ---
 
 # Worktree Cleanup Report

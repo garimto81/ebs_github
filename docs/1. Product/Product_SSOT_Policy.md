@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 governance: v10.3 architect_then_observer
 last-updated: 2026-05-08
+confluence-page-id: 3818848697
+confluence-parent-id: 3811344758
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818848697/EBS+Product+SSOT+Policy
 ---
 
 # Product SSOT Policy

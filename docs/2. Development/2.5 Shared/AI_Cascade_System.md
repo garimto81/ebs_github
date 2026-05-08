@@ -5,6 +5,9 @@ tier: internal
 audience-target: 팀 내부 (개발팀, conductor, 4팀 sub-agent)
 last-updated: 2026-05-07
 version: 1.0.0
+confluence-page-id: 3818684931
+confluence-parent-id: 3812032646
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684931/EBS+AI+Cascade+System
 ---
 
 # AI Cascade System (RAG + LLM CIA 기반 의미 cascade 자동화)

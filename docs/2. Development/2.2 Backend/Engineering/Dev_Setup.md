@@ -4,6 +4,9 @@ owner: team2
 tier: internal
 legacy-id: IMPL-00
 last-updated: 2026-04-15
+confluence-page-id: 3818816161
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816161/EBS+Dev+Setup
 ---
 
 # IMPL-00 Dev Setup — 개발 환경 셋업

@@ -7,6 +7,9 @@ legacy-id: BS-01
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-01 Authentication 정본 (46KB)"
+confluence-page-id: 3819176545
+confluence-parent-id: 3812032646
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176545/EBS+Authentication
 ---
 # BS-01 Auth — 인증·세션·RBAC 행동 명세
 

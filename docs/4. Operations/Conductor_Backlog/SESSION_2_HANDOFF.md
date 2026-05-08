@@ -9,6 +9,9 @@ session-status: PHASE_1_COMPLETED, PHASE_2_PENDING (Session 2.1)
 linked-sg: SG-026, SG-027
 linked-decision: 사용자 Session 2 진입 — Option D B-Q10 95% Coverage
 last-updated: 2026-04-27
+confluence-page-id: 3818455718
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455718/EBS+SESSION+2+HANDOFF+Core+Logic+Backend+Engine+Phase+1+audit
 ---
 
 ## Session 2 — Core Logic & Backend Engine

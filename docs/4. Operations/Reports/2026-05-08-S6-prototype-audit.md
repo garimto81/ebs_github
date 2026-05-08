@@ -6,6 +6,9 @@ issue: 165
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
 spec: docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S6-prototype.md
 last-updated: 2026-05-08
+confluence-page-id: 3818881628
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881628/EBS+2026-05-08+S6+Prototype+165
 ---
 
 # 2026-05-08 S6 Prototype 정합성 감사 보고서

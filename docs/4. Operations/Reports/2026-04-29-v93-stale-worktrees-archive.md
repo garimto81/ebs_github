@@ -7,6 +7,9 @@ last-updated: 2026-04-29
 reimplementability: N/A
 reimplementability_checked: 2026-05-03
 reimplementability_notes: "운영 archive 보고서 — branch ref + git reflog 가 SSOT. report 본 자체는 metadata only"
+confluence-page-id: 3818914452
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914452/EBS+V9.3+Stale+Worktrees+Archive+2026-04-29+cleanup
 ---
 
 # V9.3 Stale Worktrees Archive

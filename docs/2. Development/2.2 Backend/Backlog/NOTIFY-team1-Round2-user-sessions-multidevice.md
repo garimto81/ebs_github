@@ -2,6 +2,9 @@
 title: NOTIFY team1 Round2 — user_sessions 다중 기기 · configs/preferences 이관
 owner: team2
 tier: internal
+confluence-page-id: 3819274964
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274964/EBS+NOTIFY+team1+Round2+user_sessions+configs+preferences
 ---
 
 # NOTIFY — team1 Round 2 Backend 영향 2건

@@ -4,6 +4,9 @@ owner: team2
 tier: internal
 legacy-id: IMPL-03
 last-updated: 2026-04-15
+confluence-page-id: 3820552821
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552821/EBS+State+Management
 ---
 
 # IMPL-03 State Management — CC Riverpod + Lobby 웹 상태 관리

@@ -3,6 +3,9 @@ title: Deployment
 owner: team1
 tier: internal
 last-updated: 2026-04-22
+confluence-page-id: 3818684911
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684911/EBS+Deployment
 ---
 
 # Team 1 Frontend — 배포 형태 SSOT

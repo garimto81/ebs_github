@@ -9,6 +9,9 @@ linked-sg: SG-025, SG-026
 linked-decision: B-Q6 ㉠ + B-Q7 ㉠ (사용자 자율 상정 명시)
 status: ACTIVE
 last-updated: 2026-04-27
+confluence-page-id: 3818947277
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947277/EBS+SG-025+SG-026+Production+timeline+Quality+gates+B-Q6+B-Q7+broadcast
 ---
 
 ## 공식 선언

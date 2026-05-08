@@ -11,6 +11,9 @@ related:
   - Roadmap.md
   - Conductor_Backlog/_template_spec_gap.md
   - memory: feedback_prototype_failure_as_spec_signal.md
+confluence-page-id: 3819766243
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766243/EBS+Spec+Gap+Triage
 ---
 
 # Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜

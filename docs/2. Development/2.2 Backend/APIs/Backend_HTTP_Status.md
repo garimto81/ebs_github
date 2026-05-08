@@ -7,6 +7,9 @@ reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "2026-04-20 업데이트 — SG-007 Reports 6-endpoint 실동작 (mock data, [TODO-T2-009] MV 교체 대기), SG-003 Settings in-memory 실동작 (migration 0005 적용 후 DB 교체), SG-008 b1-b9 스펙 확정 + b10-b12 삭제 완료. pytest 242/242 pass."
 parent: Backend_HTTP.md
+confluence-page-id: 3818914332
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914332/EBS+Backend+HTTP+2026-04-20
 ---
 
 # Backend HTTP — 구현 현황 (Conductor Audit 2026-04-20)

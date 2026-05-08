@@ -4,6 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-05-03
 last-updated: 2026-04-15
+confluence-page-id: 3818750493
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750493/EBS+Seat+Management
 ---
 
 # BS-05-03 Command Center — 좌석 관리

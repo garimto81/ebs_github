@@ -7,6 +7,9 @@ last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "UI-01 Lobby UI 스펙 (68KB) 정본"
+confluence-page-id: 3818816081
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816081/EBS+UI+6750
 ---
 # UI-01 Lobby — 화면 설계 (3계층 + 독립 레이어)
 

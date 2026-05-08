@@ -4,6 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-05-00
 last-updated: 2026-05-07
+confluence-page-id: 3819602576
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602576/EBS+Overview+1565
 ---
 
 # BS-05-00 Command Center — 개요

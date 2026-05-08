@@ -4,6 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-05-10
 last-updated: 2026-04-15
+confluence-page-id: 3819602556
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602556/EBS+Multi+Table+Operations
 ---
 
 # BS-05-10 Multi-Table Operator Scenarios

@@ -2,6 +2,9 @@
 title: Backlog
 tier: internal
 decomposed: true
+confluence-page-id: 3819209295
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209295/EBS+Backlog+1565
 ---
 
 # Backlog (디렉토리화됨)

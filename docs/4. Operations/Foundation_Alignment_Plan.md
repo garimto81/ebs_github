@@ -6,6 +6,9 @@ last-updated: 2026-04-22
 parent: Foundation.md (2026-04-22 전면 재설계)
 reimplementability: N/A
 reimplementability_notes: "실행 계획 문서 — 챕터 아님"
+confluence-page-id: 3819274824
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274824/EBS+Foundation+Conductor
 ---
 
 # Foundation 재설계 정렬 계획

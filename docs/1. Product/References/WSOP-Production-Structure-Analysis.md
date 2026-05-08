@@ -5,6 +5,9 @@ tier: internal
 last-updated: 2026-04-15
 referenced-by:
   - "../Foundation.md (§Ch.3 Scene 1 — 4단계 릴레이 / §Ch.3 Scene 2 — 현장 프로덕션 사슬)"
+confluence-page-id: 3819274864
+confluence-parent-id: 3811344758
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274864/EBS+WSOP+Production+Structure+Analysis
 ---
 
 # GG PRODUCTION 방송 자막 구조 분석

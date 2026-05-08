@@ -4,6 +4,9 @@ owner: team2
 tier: internal
 legacy-id: IMPL-07
 last-updated: 2026-04-15
+confluence-page-id: 3819176605
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176605/EBS+Logging
 ---
 
 # IMPL-07 Logging — 로그 레벨, 필드, 저장 전략

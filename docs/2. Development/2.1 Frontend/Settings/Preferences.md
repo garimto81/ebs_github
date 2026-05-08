@@ -8,6 +8,9 @@ reimplementability_checked: 2026-04-20
 reimplementability_notes: "신규 작성 (2026-04-20). SG-003 §Tab 6 Preferences 에 따른 개인화 설정"
 sg_reference: SG-003
 scope: user
+confluence-page-id: 3818619291
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818619291/EBS+Preferences
 ---
 
 # Preferences — 개인화 설정

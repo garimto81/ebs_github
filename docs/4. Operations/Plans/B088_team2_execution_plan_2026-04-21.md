@@ -4,6 +4,9 @@ owner: team2
 tier: internal
 last-updated: 2026-04-21
 scope: team2 (PR 2, 3, 4 of B-088)
+confluence-page-id: 3818816261
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816261/EBS+B-088+team2+camelCase+PascalCase
 ---
 
 # B-088 team2 실행 계획 — WSOP LIVE 규약 전수 준수

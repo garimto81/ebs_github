@@ -3,8 +3,10 @@ title: Sandbox Tournament Generator
 owner: team2
 tier: internal
 legacy-id: null
-confluence-page-id: null
+confluence-page-id: 3818816181
 last-updated: 2026-04-21
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816181/EBS+Sandbox+Tournament+Generator
 ---
 
 # Sandbox Tournament Generator

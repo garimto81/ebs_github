@@ -5,6 +5,9 @@ tier: internal
 last-updated: 2026-04-29
 related-pr: "#69 (LAN domain deployment)"
 status: ACTIVE
+confluence-page-id: 3818750373
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750373/EBS+LAN+Deployment+Internal+Network+Domain+Access
 ---
 
 # EBS LAN 배포 가이드 — 내부 네트워크 도메인 접근

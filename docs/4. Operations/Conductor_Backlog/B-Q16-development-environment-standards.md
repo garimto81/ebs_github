@@ -7,6 +7,9 @@ type: backlog
 linked-sg: SG-027
 linked-decision: Session 1 task — 개발 환경 표준화
 last-updated: 2026-04-27
+confluence-page-id: 3818619371
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818619371/EBS+B-Q16+Session+1+SG-027+cascade
 ---
 
 ## 개요

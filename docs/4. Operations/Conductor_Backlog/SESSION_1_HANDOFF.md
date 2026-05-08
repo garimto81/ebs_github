@@ -8,6 +8,9 @@ session-status: COMPLETED (V2 audit 포함, 2026-04-27 closed)
 linked-sg: SG-027
 linked-decision: 5-Session Pipeline (사용자 명시 2026-04-27)
 last-updated: 2026-04-27
+confluence-page-id: 3819209356
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209356/EBS+SESSION+1+HANDOFF+Foundation+Infrastructure
 ---
 
 ## Session 1 — Foundation & Infrastructure 진행 결과

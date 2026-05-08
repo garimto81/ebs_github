@@ -26,6 +26,9 @@ predecessors:
   - path: docs/2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md
     relation: derived_from
     reason: "본 보고서의 7개 흡수 결정이 Backlog 항목으로 단계화됨"
+confluence-page-id: 3819242032
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242032/EBS+CC+React+Critic
 ---
 
 # CC React 디자인 프로토타입 — Critic 판정 보고서

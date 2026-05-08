@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 basis: "team_assignment_v10_3.yaml scope_owns + path 패턴 매칭"
 last-updated: 2026-05-08
+confluence-page-id: 3818455738
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455738/EBS+683+.md
 ---
 
 # 683 .md 파일 전수 분류 매트릭스

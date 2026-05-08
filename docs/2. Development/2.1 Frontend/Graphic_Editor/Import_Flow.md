@@ -7,6 +7,9 @@ last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-08-01 import 플로우 기획 완결"
+confluence-page-id: 3820552721
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552721/EBS+Import+Flow
 ---
 # BS-08-01 Import Flow — `.gfskin` 업로드 FSM
 

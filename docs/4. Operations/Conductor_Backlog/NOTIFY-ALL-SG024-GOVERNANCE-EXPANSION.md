@@ -9,6 +9,9 @@ linked-sg: SG-024
 linked-decision: user B-Q5 ㉠ 2026-04-27
 status: ACTIVE
 last-updated: 2026-04-27
+confluence-page-id: 3819078346
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078346/EBS+SG-024+Conductor+broadcast
 ---
 
 ## 공식 선언

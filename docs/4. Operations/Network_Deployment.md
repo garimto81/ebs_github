@@ -3,6 +3,9 @@ title: Network Deployment Guide
 owner: conductor
 tier: internal
 last-updated: 2026-04-17
+confluence-page-id: 3818684871
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684871/EBS+Network+Deployment+Guide
 ---
 
 # Network Deployment Guide

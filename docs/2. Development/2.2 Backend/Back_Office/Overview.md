@@ -3,6 +3,9 @@ title: Overview
 owner: team2
 tier: internal
 last-updated: 2026-05-08
+confluence-page-id: 3818947197
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947197/EBS+Overview+0578
 ---
 
 # PRD-EBS_BackOffice — Back Office PRD

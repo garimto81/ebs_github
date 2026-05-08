@@ -4,6 +4,9 @@ owner: team2
 tier: internal
 legacy-id: IMPL-01
 last-updated: 2026-05-08
+confluence-page-id: 3819176645
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176645/EBS+Tech+Stack
 ---
 
 # IMPL-01 Tech Stack — 3-앱 기술 스택 선정 근거

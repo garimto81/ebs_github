@@ -4,6 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-05-08
 last-updated: 2026-04-16
+confluence-page-id: 3820552881
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552881/EBS+Game+Settings+Rules
 ---
 
 # BS-05-08 Game Settings — Table Settings Rules 탭 상세 규격

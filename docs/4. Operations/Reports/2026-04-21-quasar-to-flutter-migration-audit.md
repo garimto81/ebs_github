@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-21
 audit-scope: team1-frontend
+confluence-page-id: 3818619411
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818619411/EBS+Quasar+Flutter
 ---
 
 # Quasar → Flutter 이전 감사 — 누락 · 매칭 실패 · 기획 drift

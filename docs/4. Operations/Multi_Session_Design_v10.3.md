@@ -22,6 +22,9 @@ predecessors:
   - path: docs/2. Development/2.5 Shared/team-policy.json
     relation: continued
     reason: SCOPE 매트릭스 보존, Phase 게이트 추가
+confluence-page-id: 3818684851
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684851/EBS+Multi-Session+Orchestration+Design+v10.3
 ---
 
 ## Edit History

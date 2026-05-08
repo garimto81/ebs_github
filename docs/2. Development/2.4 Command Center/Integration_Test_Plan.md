@@ -3,6 +3,9 @@ title: Integration Test Plan
 owner: team4
 tier: internal
 last-updated: 2026-04-15
+confluence-page-id: 3819078205
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078205/EBS+Integration+Test+Plan
 ---
 
 # TEST-PLAN: team4-cc 통합 테스트 계획

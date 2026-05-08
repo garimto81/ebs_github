@@ -12,6 +12,9 @@ audit-tools:
   - pip-audit 2.10.0 (SCA — dependency CVE)
 last-updated: 2026-05-03
 reimplementability: PASS
+confluence-page-id: 3818717628
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818717628/EBS+OWASP+Top-10+Audit+Kickoff+Report+team2-backend
 ---
 
 # OWASP Top-10 Audit Kickoff — team2-backend

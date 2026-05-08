@@ -6,6 +6,9 @@ last-updated: 2026-04-22
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "Risk Matrix 완결 (4KB)"
+confluence-page-id: 3819242073
+confluence-parent-id: 3812032646
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242073/EBS+Risk+Matrix
 ---
 # 문서 변경 리스크 분류 기준 (Risk Matrix)
 

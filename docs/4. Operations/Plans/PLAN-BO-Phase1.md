@@ -3,6 +3,9 @@ title: PLAN-BO-Phase1
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+confluence-page-id: 3819209396
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209396/EBS+PLAN-BO-Phase1
 ---
 
 # PLAN-BO-Phase1 — Back Office Phase 1 실행 계획

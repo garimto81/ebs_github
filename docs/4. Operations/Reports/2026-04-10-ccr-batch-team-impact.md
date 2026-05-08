@@ -3,6 +3,9 @@ title: 2026-04-10-ccr-batch-team-impact
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+confluence-page-id: 3819766484
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766484/EBS+2026-04-10-ccr-batch-team-impact
 ---
 
 # 2026-04-10 CCR Batch — 팀별 영향 리포트

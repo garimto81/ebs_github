@@ -4,6 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-04-02
 last-updated: 2026-05-08
+confluence-page-id: 3818685051
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818685051/EBS+Card+Detection
 ---
 
 # BS-04-02 Card Detection — 게임 진행 중 카드 감지

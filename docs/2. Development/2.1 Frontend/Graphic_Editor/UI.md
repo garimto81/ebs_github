@@ -7,6 +7,9 @@ last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "UI-04 Graphic Editor UI 스펙 (46KB) 완결"
+confluence-page-id: 3818914312
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914312/EBS+UI
 ---
 # UI-04 Graphic Editor — Lobby 허브 와이어프레임
 

@@ -7,6 +7,9 @@ type: backlog-deferred-decision
 linked-sg: SG-023
 linked-decision-pending: user (timeline 구체 명시 부재)
 last-updated: 2026-04-27
+confluence-page-id: 3820552921
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552921/EBS+B-Q6+timeline+MVP
 ---
 
 ## 개요

@@ -7,6 +7,9 @@ last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "DATA-03 상태 기계 완결 (15KB) — SG-009 직렬화 규약 반영"
+confluence-page-id: 3818684991
+confluence-parent-id: 3811770578
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684991/EBS+State+Machines
 ---
 # DATA-03 State Machines
 

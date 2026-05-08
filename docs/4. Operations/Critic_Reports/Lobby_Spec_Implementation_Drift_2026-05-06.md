@@ -33,6 +33,9 @@ related-docs:
   - ../../2. Development/2.1 Frontend/Lobby/Overview.md
   - ../../1. Product/Lobby_PRD.md
   - ../../../team1-frontend/CLAUDE.md
+confluence-page-id: 3819078366
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078366/EBS+Lobby+-+3000+vs
 ---
 
 # Lobby 기획-구현 정합성 점검

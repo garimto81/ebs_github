@@ -5,6 +5,9 @@ tier: internal
 session: work/conductor/p1-sentry-flutter-pin
 last-updated: 2026-04-28
 status: PASS — 4/4 actions complete
+confluence-page-id: 3818685111
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818685111/EBS+P1+P3+Follow-up+Handoff+Sentry+sidecar+Flutter+pin+ebs_v2+archive
 ---
 
 # P1 + P3 Follow-up Handoff

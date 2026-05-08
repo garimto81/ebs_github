@@ -4,6 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-07-01
 last-updated: 2026-04-15
+confluence-page-id: 3818521159
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521159/EBS+Elements
 ---
 
 # BS-07-01 Elements — 오버레이 요소 상세

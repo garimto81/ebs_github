@@ -2,6 +2,9 @@
 title: B-083 Tournament Statistics & Reporting
 owner: team1
 tier: internal
+confluence-page-id: 3819766263
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766263/EBS+B-083+Tournament+Statistics+Reporting
 ---
 
 # B-083 — Tournament Statistics & Reporting

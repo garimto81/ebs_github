@@ -7,6 +7,9 @@ audit_basis: "docs/1. Product/ (15 files) = SSOT"
 audit_scope: "전 프로젝트 .md 683 files"
 phase: "Phase 0 Architect Setup"
 last-updated: 2026-05-08
+confluence-page-id: 3818947317
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947317/EBS+2026-05-08+Master+Orchestration+Plan
 ---
 
 # 정합성 감사 — Master Plan

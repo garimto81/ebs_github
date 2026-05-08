@@ -4,6 +4,9 @@ owner: team1
 tier: internal
 legacy-id: BS-02-01-session-init
 last-updated: 2026-05-08
+confluence-page-id: 3819176565
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176565/EBS+Session+Init
 ---
 
 # Login — Session Init (로그인 성공 시 세션 생성)

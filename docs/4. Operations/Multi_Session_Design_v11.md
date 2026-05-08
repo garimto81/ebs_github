@@ -17,6 +17,9 @@ predecessors:
   - path: docs/4. Operations/Message_Bus_Runbook.md
     relation: continued
     reason: v11 의 핵심 인프라. PR #195 (commit b22ad74b) 통합 완료
+confluence-page-id: 3818750393
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750393/EBS+Multi-Session+Orchestration+Design+v11+Message+Bus+Push
 ---
 
 ## Edit History

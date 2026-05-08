@@ -10,6 +10,9 @@ linked-decisions:
   - Phase_Plan_2027.md (Phase 1 quality gate)
 last-updated: 2026-05-03
 reimplementability: PASS
+confluence-page-id: 3818717608
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818717608/EBS+Phase+1+Load+Test+Plan+8+Soak+Production-strict+Gate
 ---
 
 # Phase 1 Load Test Plan — 2027-01 Korea Soft-Launch 게이트

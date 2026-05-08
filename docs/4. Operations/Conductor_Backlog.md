@@ -2,6 +2,9 @@
 title: Conductor_Backlog
 tier: internal
 decomposed: true
+confluence-page-id: 3818586692
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586692/EBS+Conductor_Backlog
 ---
 
 # Conductor_Backlog (디렉토리화됨)

@@ -10,6 +10,9 @@ reimplementability_checked: 2026-04-20
 reimplementability_notes: "API-04 Overlay 출력 21종 이벤트 카탈로그 (21KB). TBD 5건은 NDI/BS-07 WSOP LIVE 정렬/stats 계산 등 외부 의존"
 audit-notes:
   - "2026-05-08 S8 audit D2: §6.0 publisher 실측 (2026-04-15) 정본 vs OutputEvent_Serialization.md §섹션 매핑 충돌. 또한 본 파일 내부 변경이력 (line 18) vs 본문 (line 123) OE-05 명명 충돌. 정합 작업 → B-356-oe-catalog-self-inconsistency.md"
+confluence-page-id: 3818586853
+confluence-parent-id: 3811836049
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586853/EBS+Overlay+Output+Events
 ---
 # API-04 Overlay Output — 오버레이 출력 계약
 

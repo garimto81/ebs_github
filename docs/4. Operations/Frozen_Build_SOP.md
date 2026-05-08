@@ -4,6 +4,9 @@ owner: prototype
 tier: internal
 status: ACTIVE
 last-updated: 2026-05-07
+confluence-page-id: 3818586712
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586712/EBS+Frozen+Build+SOP+file+revert+race
 ---
 
 # Frozen Build SOP

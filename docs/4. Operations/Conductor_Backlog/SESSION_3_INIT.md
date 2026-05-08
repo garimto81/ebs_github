@@ -8,6 +8,9 @@ session-status: INITIATED
 linked-sg: SG-022 (단일 Desktop) + SG-024 (Mode A) + SG-027 (5-Session Pipeline)
 linked-decision: 사용자 Session 3 진입 명시 (2026-04-27)
 last-updated: 2026-04-27
+confluence-page-id: 3820552941
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552941/EBS+SESSION+3+INIT+Frontend+Interface+Routing+team1
 ---
 
 ## Session 3 — Frontend Interface & Routing 진입 (2026-04-27)

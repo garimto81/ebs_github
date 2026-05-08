@@ -9,6 +9,9 @@ status: CLOSED (Q1.㉠ + Q2.㉠ 채택 2026-04-27)
 closed-by: user
 closed-decision: "Q1.㉠ 본 repo 내부만 의미 (외부 자산은 별개 프로젝트, 본 repo 와 무관) + Q2.㉠ history references 보존"
 last-updated: 2026-04-27
+confluence-page-id: 3818816241
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816241/EBS+V2+Purge+Report+ebs+v2+cascade
 ---
 
 ## 결정 (사용자 명시 2026-04-27)

@@ -6,6 +6,9 @@ last-updated: 2026-04-15
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "Skin Editor v3 PRD (74KB) 완결본 — team1 BS-08 참조"
+confluence-page-id: 3818717668
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818717668/EBS-Skin-Editor_v3.prd
 ---
 # EBS Skin Editor — UI Design PRD v3
 

@@ -7,6 +7,9 @@ last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-02-02 EventFlightStatus enum 완결 (WSOP LIVE parity)"
+confluence-page-id: 3818881488
+confluence-parent-id: 3811606750
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881488/EBS+Event+and+Flight
 ---
 # BS-02-02 Event/Flight 상태 — `EventFlightStatus` enum
 

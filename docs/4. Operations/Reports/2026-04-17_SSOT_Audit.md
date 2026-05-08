@@ -3,6 +3,9 @@ title: Team 2 Backend SSOT Compliance Audit
 owner: conductor
 tier: internal
 last-updated: 2026-04-17
+confluence-page-id: 3818685131
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818685131/EBS+Team+2+Backend+SSOT+Compliance+Audit
 ---
 
 # Team 2 Backend SSOT 전수 감사 — 2026-04-17

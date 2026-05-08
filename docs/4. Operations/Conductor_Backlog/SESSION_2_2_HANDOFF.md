@@ -8,6 +8,9 @@ session-status: COMPLETED
 linked-sg: SG-026
 linked-decision: B-Q10 Session 2.2 (structure services coverage)
 last-updated: 2026-04-27
+confluence-page-id: 3818685071
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818685071/EBS+SESSION+2.2+HANDOFF+blind+payout+structure+services+20-26+70
 ---
 
 ## 1. 진행 결과

@@ -9,6 +9,9 @@ linked-sg: SG-023
 linked-commit: (이번 turn commit)
 status: ACTIVE
 last-updated: 2026-04-27
+confluence-page-id: 3819078326
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078326/EBS+SG-023+production+broadcast+standby
 ---
 
 ## 공식 선언
