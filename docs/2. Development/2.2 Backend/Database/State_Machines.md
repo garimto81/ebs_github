@@ -3,7 +3,7 @@ title: State Machines
 owner: team2
 tier: internal
 legacy-id: DATA-03
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "DATA-03 상태 기계 완결 (15KB) — SG-009 직렬화 규약 반영"
@@ -24,7 +24,7 @@ EBS에서 상태를 관리하는 5개 FSM(Finite State Machine)의 전이 다이
 
 > 참조: 상태값 정의 — BS-00 Definitions 3, FSM 이름 규약 — BS-00 5
 
-### crash 복구 패턴 — Foundation §6.4 정합 (2026-04-22 신설)
+### crash 복구 패턴 — Foundation Ch.5 §B.4 정합 (2026-04-22 신설, 2026-05-08 cascade 정합)
 
 본 5 FSM 의 상태는 DB (Schema.md) 가 SSOT 다. 프로세스 재시작 시 복구는 다음 순서로 수행된다:
 
