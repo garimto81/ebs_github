@@ -149,3 +149,49 @@ related:
 - 룰 11 (다이어그램): N/A — 본 AUDIT 는 텍스트 감사
 - 룰 12 (대형 문서): AUDIT ~180줄 — 청킹 불필요
 - 룰 13 (PRD-First): 본 AUDIT 가 Lobby_PRD v3.0.0 의 derivative 사후 검증
+
+---
+
+## §J. 코드 영역 cascade 검증 (autonomous iteration, 2026-05-08)
+
+`team1-frontend/lib/features/lobby/**` 가 v3.0.0 정체성과 정합하는지 docs cascade 의 자연스러운 확장으로 검증.
+
+### J.1 코드 narrative 잔존 grep
+**대상**: `team1-frontend/**/*.dart` 전체
+**정규식**: `관제탑|control[ _-]?tower|컨트롤\s*타워` (case-insensitive)
+**결과**: **0 매치** ✅
+
+코드는 narrative 표현을 보유하지 않음 = 정상 패턴 (narrative SSOT 는 docs 영역). drift 아님.
+
+### J.2 5 화면 시퀀스 코드 매핑
+
+| PRD §62 시퀀스 | 코드 파일 | 정합 |
+|----------------|----------|:----:|
+| Login | `team1-frontend/lib/features/auth/` | ✓ |
+| Series | `lib/features/lobby/screens/series_screen.dart` | ✓ |
+| Event | `lib/features/lobby/screens/lobby_events_screen.dart` | ✓ |
+| Flight | `lib/features/lobby/screens/lobby_flights_screen.dart` | ✓ |
+| Tables | `lib/features/lobby/screens/lobby_tables_screen.dart` | ✓ |
+| (Players) | `lib/features/lobby/screens/lobby_players_screen.dart` | ✓ (Player 독립 레이어, Overview line 27) |
+| Launch (CC 진입 직전) | `lib/features/lobby/screens/table_detail_screen.dart` | ✓ |
+
+**6/6 PASS** — PRD ACT II 4 정보 허브 (Series/Event+Flight/Players/Tables) 가 screens/ 에 정확히 매핑됨.
+
+### J.3 v3.0.0 narrative 위젯 정합
+
+| Widget | 역할 | v3 narrative 매핑 |
+|--------|------|------------------|
+| `lobby_kpi_strip.dart` | KPI 표시 | "WSOP LIVE 정보 허브" 의 KPI strip |
+| `levels_strip.dart` | 다음 레벨까지 표시 | "다음 레벨까지 얼마" (PRD v3 정체성 narrative) |
+| `lobby_status_badge.dart` | 상태 배지 | 5 분 게이트웨이의 짧은 머무름 표현 |
+| `lobby_shell.dart` | Lobby chrome | Lobby Renewal Phase 1 (Sidebar 통합, Overview changelog 2026-05-06) |
+
+**정합 PASS** — v3 narrative 의 핵심 요소 (KPI / 레벨 / 상태) 가 widgets/ 에 모두 구현됨.
+
+### J.4 코드 cascade 결론
+
+**status: PASS (drift 0건)**
+
+코드 영역은 v3.0.0 narrative 와 모순 없음. screens/widgets 의 구조가 PRD 시퀀스와 1:1 매핑. 코드는 narrative 를 직접 명시하지 않지만 (정상 패턴), 기능/구조 차원에서 정체성 정합.
+
+**docs cascade (§B 14/14 PASS) + code cascade (§J 7/7 PASS) = 양방향 일관성 확보** ✅
