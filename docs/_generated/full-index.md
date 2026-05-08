@@ -23,6 +23,7 @@ tier: generated
 | `docs/1. Product/RIVE_Standards.md` | RIVE Standards — Overlay Graphics 정본 | conductor | external | - |
 | `docs/1. Product/References/PokerGFX_Reference.md` | PokerGFX Reference | conductor | internal | - |
 | `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` | WSOP Production Structure Analysis | conductor | internal | - |
+| `docs/1. Product/archive/Foundation_pre_FB_2026-05-04.md` | EBS 기초 기획서 | conductor | internal | - |
 | `docs/1. Product/archive/Foundation_v41.0.0.md` | Foundation | conductor | internal | - |
 | `docs/2. Development/2. Development.md` | 2. Development | conductor | internal | - |
 | `docs/2. Development/2.1 Frontend/2.1 Frontend.md` | 2.1 Frontend | ci | generated | - |
@@ -495,6 +496,7 @@ tier: generated
 | `docs/3. Change Requests/pending/CR-team1-20260417-bo-cors-lan.md` | CR: Team2 BO CORS 기본값을 LAN 허용으로 변경 | - | - | - |
 | `docs/3. Change Requests/pending/CR-team1-20260417-cc-network-config.md` | CR: Team4 CC boApiClientProvider localhost 하드코딩 제거 | - | - | - |
 | `docs/4. Operations/4. Operations.md` | 4. Operations | conductor | internal | - |
+| `docs/4. Operations/Backlog_Aggregate.md` | Backlog_Aggregate | - | - | - |
 | `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` | CC React 디자인 프로토타입 — Critic 판정 보고서 | conductor | internal | - |
 | `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` | Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0) | conductor | internal | - |
 | `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` | Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획 | conductor | critical | - |
