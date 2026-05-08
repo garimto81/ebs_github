@@ -123,7 +123,7 @@ Overlay 로드 시에는 `.gfskin`을 in-memory 압축 해제 후 `skin.json` + 
 }
 ```
 
-> **핵심**: 스킨 JSON의 `animations` 섹션은 `BS-07-02-animations.md` §5의 기본값을 **오버라이드**한다.
+> **핵심**: 스킨 JSON의 `animations` 섹션은 `Animations.md` (legacy-id: BS-07-02) §5의 기본값을 **오버라이드**한다.
 
 ---
 
@@ -260,8 +260,8 @@ Admin이 Settings에서 스킨 변경
 
 | 문서 | 관계 |
 |------|------|
-| `BS-07-01-elements.md` | 스킨이 정의하는 요소 위치/스타일 |
-| `BS-07-02-animations.md` | 스킨의 animations 섹션이 기본 속도 오버라이드 |
+| `Elements.md` (legacy-id: BS-07-01) | 스킨이 정의하는 요소 위치/스타일 |
+| `Animations.md` (legacy-id: BS-07-02) | 스킨의 animations 섹션이 기본 속도 오버라이드 |
 | `BS-06-00-REF-game-engine-spec.md §6` | DisplayConfig, skin_transition_type |
 | `BS-03-settings/` | 스킨 선택 UI |
 | Feature Catalog SK-001~016 | Skin Editor 기능 |

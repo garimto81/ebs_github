@@ -198,8 +198,8 @@ Run It Twice/Thrice 시 보드를 여러 번 깐다.
 | 문서 | 관계 |
 |------|------|
 | `BS-06-00-REF-game-engine-spec.md §1.6` | AnimationState/transition_type Enum 정의 |
-| `BS-07-01-elements.md` | 요소별 트리거 조건 |
-| `BS-07-03-skin-loading.md` | 스킨별 애니메이션 파라미터 오버라이드 |
+| `Elements.md` (legacy-id: BS-07-01) | 요소별 트리거 조건 |
+| `Skin_Loading.md` (legacy-id: BS-07-03) | 스킨별 애니메이션 파라미터 오버라이드 |
 | `BS-03-settings/` | 애니메이션 속도 설정 UI |
 
 ---
@@ -226,7 +226,7 @@ Rive State Machine
 - Rive는 `soundTrigger` Input만 변경, 실제 재생은 Flutter 코드 책임
 - Volume/Mute/Channel 정책이 Rive 안에 있으면 일관성이 깨지므로 중앙 관리 필수
 
-상세는 `BS-07-05-audio §5 Rive 애니메이션 내부 사운드` 참조.
+상세는 `Audio.md §5 Rive 애니메이션 내부 사운드` (legacy-id: BS-07-05) 참조.
 
 ---
 

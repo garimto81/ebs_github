@@ -20,7 +20,7 @@ last-updated: 2026-04-15
 
 이 문서는 Overlay가 렌더링하는 **전체 상태의 직렬화 포맷**(Scene JSON Schema)을 정의한다. 씬 스키마는 특정 시점의 Overlay 상태를 완전히 기술하는 JSON 구조로, 스냅샷 저장, 리플레이, 테스트 검증에 사용된다.
 
-> **참조**: 게임 상태 Enum은 `BS-06-00-REF-game-engine-spec.md`. 오버레이 요소는 `BS-07-01-elements.md`. 스킨 구조는 `BS-07-03-skin-loading.md`.
+> **참조**: 게임 상태 Enum은 `BS-06-00-REF-game-engine-spec.md`. 오버레이 요소는 `Elements.md` (legacy-id: BS-07-01). 스킨 구조는 `Skin_Loading.md` (legacy-id: BS-07-03).
 
 ---
 
@@ -350,8 +350,8 @@ last-updated: 2026-04-15
 
 | 문서 | 관계 |
 |------|------|
-| `BS-07-01-elements.md` | 각 element의 동작 정의 |
-| `BS-07-02-animations.md` | animations 섹션의 상태값 |
+| `Elements.md` (legacy-id: BS-07-01) | 각 element의 동작 정의 |
+| `Animations.md` (legacy-id: BS-07-02) | animations 섹션의 상태값 |
 | `BS-06-00-REF-game-engine-spec.md` | Enum 값 (game_phase, suit, rank, PlayerStatus 등) |
 | `BS-00-definitions.md` | 엔티티·상태 용어 |
 | `BS-05-03-seat-management §6` | CC 시각 규격 원본 (CCR-034 동일 색상 체계) |
