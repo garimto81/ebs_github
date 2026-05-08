@@ -226,3 +226,45 @@ monitoring:
   - pr_age
   - last_commit_time
   - dependency_violations
+# v11 신규 — Topic ACL (L7 — 7중 다층 방어)
+# Reference: docs/4. Operations/Multi_Session_Design_v11.md §4
+# 각 Stream 의 publish/subscribe 권한. broker (tools/orchestrator/message_bus/) 가 enforce.
+topics:
+  enforcement: strict  # v11 Phase A — default-allow 제거
+  acl:
+    # stream:S{N} — 해당 source 만 publish 가능 (정체성 = 신호 발화권)
+    S1:
+      publish: ["stream:S1", "cascade:*", "defect:*", "audit:*", "*"]
+      subscribe: ["*"]  # 모든 토픽 구독 가능
+    S2:
+      publish: ["stream:S2", "cascade:*", "defect:*", "audit:*", "*"]
+      subscribe: ["*"]
+    S3:
+      publish: ["stream:S3", "cascade:*", "defect:*", "audit:*", "*"]
+      subscribe: ["*"]
+    S4:
+      publish: ["stream:S4", "cascade:*", "defect:*", "audit:*", "*"]
+      subscribe: ["*"]
+    S5:
+      publish: ["stream:S5", "cascade:*", "defect:*", "audit:*", "*"]
+      subscribe: ["*"]
+    S6:
+      publish: ["stream:S6", "cascade:*", "defect:*", "audit:*", "*"]
+      subscribe: ["*"]
+    S7:
+      publish: ["stream:S7", "cascade:*", "defect:*", "audit:*", "*"]
+      subscribe: ["*"]
+    S8:
+      publish: ["stream:S8", "cascade:*", "defect:*", "audit:*", "*"]
+      subscribe: ["*"]
+    conductor:
+      # conductor 는 모든 stream:S{N} 발화 가능 (orchestration broadcast)
+      publish: ["stream:*", "cascade:*", "defect:*", "audit:*", "*"]
+      subscribe: ["*"]
+  reserved_prefixes:
+    - "bus:"  # broker-internal — 어떤 source 도 publish 금지
+  dev_prefixes:
+    # EBS_BUS_DEV_MODE=1 일 때만 허용
+    - "bench-"
+    - "test-"
+    - "poc-"
