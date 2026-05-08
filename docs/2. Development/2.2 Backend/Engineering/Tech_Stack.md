@@ -3,7 +3,7 @@ title: Tech Stack
 owner: team2
 tier: internal
 legacy-id: IMPL-01
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 ---
 
 # IMPL-01 Tech Stack — 3-앱 기술 스택 선정 근거
@@ -13,6 +13,7 @@ last-updated: 2026-04-15
 | 2026-04-08 | 신규 작성 | Lobby, CC, BO, Engine, Overlay 기술 스택 선정 근거 및 대안 기각 사유 |
 | 2026-04-09 | TBD 해소 | Lobby 프레임워크 Next.js 15, 상태 관리 Zustand, UI shadcn/ui 확정 |
 | 2026-04-09 | Docker 서버 기본화 | BO+Lobby Docker 컨테이너 통합 실행 명시 |
+| 2026-05-08 | Lobby §2 본문 의미 정합 (Flutter Desktop → Flutter Web) | Foundation v4.5 Ch.5 §A.1 (Lobby Flutter Web Docker nginx) + Lobby/Overview.md line 85 + SG-022 Multi-Service Docker SSOT (2026-04-27) cascade. 2026-04-21 "Flutter Desktop 단일 스택 통일" 결정은 SG-022 로 수정됨. §2.1 표 + §2.2/§2.3/§2.4 본문 전체 정합. §2.3 대안 표의 "Flutter Web 기각" → "**채택 (SG-022)**". |
 
 ---
 
@@ -46,15 +47,15 @@ last-updated: 2026-04-15
 
 ---
 
-## 2. Lobby — Flutter Desktop 앱
+## 2. Lobby — Flutter Web 앱 (Docker nginx)
 
-> **2026-04-21 Foundation §5.1 확정** — 기존 Quasar/Vue 및 Next.js 제안 모두 폐기. Lobby/Settings/Graphic Editor 를 CC/Overlay 와 동일한 Flutter Desktop 단일 스택으로 통일.
+> **2026-05-08 Foundation Ch.5 §A.1 + SG-022 Multi-Service Docker SSOT (2026-04-27)** — Lobby = `lobby-web` 컨테이너 (Flutter Web, Docker nginx, LAN 다중 클라이언트). 기존 Quasar/Vue 및 Next.js 제안은 2026-04-21 결정으로 폐기. Lobby 의 Flutter Desktop 단일 스택 통일안 (2026-04-21) 은 2026-04-27 SG-022 (Multi-Service Docker SSOT) 로 수정됨 — Lobby 는 `lobby-web` 컨테이너 (Flutter Web, port 3000), CC + Overlay 는 `cc-web` 컨테이너 (Flutter Desktop, port 3001) 로 각각 독립 빌드 산출물. Foundation §A.1 (line 557) 의 정확한 명시: "Lobby | 배포 | Flutter Web (Docker nginx, LAN 다중 클라이언트)".
 
 ### 2.1 선정 기술
 
 | 항목 | 기술 | 버전 |
 |------|------|------|
-| 프레임워크 | **Flutter Desktop** | 3.x (Windows/macOS/Linux) |
+| 프레임워크 | **Flutter Web** | 3.x (Docker nginx, LAN 다중 클라이언트, `lobby-web` 컨테이너) |
 | 언어 | **Dart** | 3.x |
 | 상태 관리 | **Riverpod** (Notifier / StateNotifier) | 2.x |
 | 데이터 클래스 | **Freezed** | 최신 |
@@ -66,29 +67,30 @@ last-updated: 2026-04-15
 | 파일 선택 | `file_picker` | 최신 |
 | 분할 뷰 | `multi_split_view` (GE 3-Zone 용) | 최신 |
 
-### 2.2 선정 근거 (Foundation §5.1 결정 근거)
+### 2.2 선정 근거 (Foundation Ch.5 §A.1 결정 근거)
 
 | 근거 | 설명 |
 |------|------|
 | Rive 런타임 일치 | GE 프리뷰 ≡ Overlay 송출 렌더 자동 보증. parity CI 게이트 불필요 |
 | `ebs_common` Dart 패키지 재사용 | 엔티티/DTO/WebSocket 클라이언트 코드를 CC 와 공유 |
 | 내부 앱 개발팀 생산성 | Flutter 단일 스택으로 팀 스킬 집중 |
-| Desktop 배포 모델 | CC 동시 접속 3~5 대 규모에서 웹 URL 배포 이점 축소, Desktop 설치 모델 충분 |
-| IPC/로컬 자산 접근 | Lobby 가 `.gfskin` 파일 직접 읽기, 시리얼 리더 상태 모니터링 등 로컬 리소스 접근 수월 |
+| Web 배포 모델 | `lobby-web` 컨테이너 + LAN nginx 서빙 (Foundation §A.1, SG-022 Multi-Service Docker). 5분 게이트웨이 특성상 다중 클라이언트 브라우저 접속이 자연스럽다 |
+| 로컬 자산 접근 분리 | `.gfskin` 파일 직접 읽기 / 시리얼 리더 모니터링 등 로컬 리소스 접근은 CC (`cc-web` 컨테이너, Flutter Desktop) 의 책임. Lobby 는 BO REST/WS 만 사용 |
 
-### 2.3 대안 기각 (2026-04-21 재검토)
+### 2.3 대안 검토 (2026-04-21 → 2026-04-27 SG-022 수정)
 
-| 대안 | 기각 사유 |
-|------|----------|
-| Next.js + Zustand + shadcn/ui (기존 2026-04-09 제안) | Rive 브라우저 런타임과 CC Flutter 런타임이 달라 GE 프리뷰 ≡ Overlay parity CI 가 필요. 내부 앱 개발팀 스킬 분산. 운영 규모상 브라우저 배포 이점 실익 없음 |
-| Quasar (Vue 3) + TypeScript (기존 CCR-016 APPLIED) | Foundation §5.1 재결정으로 폐기. _archive-quasar/ 로 보존 |
-| Flutter Web | 브라우저 배포 편의성은 있으나 Desktop 성능/IPC/보안 저장 장점이 더 큼 |
+| 대안 | 결정 |
+|------|------|
+| Next.js + Zustand + shadcn/ui (기존 2026-04-09 제안) | **기각** — Rive 브라우저 런타임과 CC Flutter 런타임이 달라 GE 프리뷰 ≡ Overlay parity CI 가 필요. 내부 앱 개발팀 스킬 분산. Flutter Web 으로 brower 배포는 가능하면서 Rive parity 자동 보증. |
+| Quasar (Vue 3) + TypeScript (기존 CCR-016 APPLIED) | **기각** — Foundation Ch.5 §A.1 재결정 (2026-04-21) 으로 폐기. _archive-quasar/ 로 보존. |
+| **Flutter Web** | **채택 (2026-04-27 SG-022)** — Multi-Service Docker SSOT 로 Lobby = `lobby-web` 컨테이너 (Flutter Web). 5분 게이트웨이 특성상 LAN 다중 클라이언트 브라우저 접속이 적합. Rive parity 는 Flutter 런타임으로 보장. Flutter Desktop 의 IPC/보안 저장 장점은 CC (`cc-web`) 에 한정. |
+| Flutter Desktop | **부분 채택 (CC 한정)** — 2026-04-21 "단일 스택 통일" 결정은 SG-022 로 수정. CC + Overlay (`cc-web` 컨테이너) 만 Flutter Desktop. Lobby 는 Web 배포로 분리. |
 
 ### 2.4 결정 완료 사항
 
 | 항목 | 결정 | 근거 |
 |------|------|------|
-| Lobby 기술 스택 | **Flutter Desktop (Dart)** | Foundation §5.1 (2026-04-21) |
+| Lobby 기술 스택 | **Flutter Web (Dart, `lobby-web` 컨테이너)** | Foundation Ch.5 §A.1 + SG-022 Multi-Service Docker SSOT (2026-04-27, 2026-04-21 단일 스택 통일안 수정) |
 | 상태 관리 라이브러리 | **Riverpod 2.x** | Notifier/StateNotifier 기반. `ref.watch` 로 dependency 자동 추적. CC 와 동일 패턴 |
 | HTTP 클라이언트 | **Dio** | Interceptor 로 인증/재시도/로깅 중앙 관리. `ebs_common` 에서 공유 |
 | UI 라이브러리 | **Material 3 + Flutter widgets** | ThemeData 로 커스터마이징. Material Banner/Dialog/DataTable 기본 제공. 레이아웃 분할은 `multi_split_view` |
@@ -149,7 +151,7 @@ last-updated: 2026-04-15
 | 언어 | Python | 3.12+ |
 | 프레임워크 | FastAPI | 0.115+ |
 | ORM | SQLModel (SQLAlchemy 기반) | 0.0.22+ |
-| DB | SQLite (dev / 단일 PC) → PostgreSQL (prod / N PC + 중앙 서버) | Foundation §8.5 배포 모델 정렬. `Database/Schema.md §개요` DB SSOT 참조 |
+| DB | SQLite (dev / 단일 PC) → PostgreSQL (prod / N PC + 중앙 서버) | Foundation Ch.6 Scene 4 배포 모델 정렬. `Database/Schema.md §개요` DB SSOT 참조 |
 | 마이그레이션 | Alembic | 1.13+ |
 | ASGI 서버 | uvicorn | 0.30+ |
 | 컨테이너 | Docker + docker-compose | 24+ |

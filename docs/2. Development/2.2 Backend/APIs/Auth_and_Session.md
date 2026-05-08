@@ -3,7 +3,7 @@ title: Auth and Session
 owner: team2
 tier: internal
 legacy-id: API-06
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "API-06 인증/세션 계약 완결 (17KB)"
@@ -254,9 +254,9 @@ Refresh Token으로 새 Access Token을 발급한다.
 
 ## 4. 세션 관리 API
 
-### 4.0 Foundation §5.0 2 런타임 모드 영향 (2026-04-22 신설)
+### 4.0 Foundation Ch.5 §B.2 다중창/단일창 모드 영향 (2026-04-22 신설, 2026-05-08 cascade 정합)
 
-Foundation §5.0 에 따라 EBS Desktop App 은 **탭/슬라이딩 (단일 프로세스)** 또는 **다중창 (독립 프로세스)** 모드로 실행된다. 본 §4 세션 관리 계약은 두 모드 모두 지원한다:
+Foundation Ch.5 §B.2 (Backend BO — 뼈대) 미주에 따라 EBS Desktop App 은 **탭/슬라이딩 (단일 프로세스)** 또는 **다중창 (독립 프로세스)** 모드로 실행된다 ("다중창 모드 시 Lobby/CC/Overlay 독립 OS 프로세스. BO 경유 통신 — 직접 IPC 금지"). 본 §4 세션 관리 계약은 두 모드 모두 지원한다:
 
 | 모드 | 세션 동작 | JWT 토큰 |
 |------|----------|----------|
