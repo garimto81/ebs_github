@@ -15,6 +15,8 @@ Architecture:
 from __future__ import annotations
 
 import asyncio
+import logging
+import logging.handlers
 import sys
 from pathlib import Path
 
@@ -30,6 +32,22 @@ from tools.orchestrator.message_bus.topics import check_publish_acl
 DEFAULT_PORT = 7383
 DEFAULT_HOST = "127.0.0.1"
 
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+LOG_FILE = PROJECT_ROOT / ".claude" / "message_bus" / "broker.log"
+
+# Setup observability logger (Phase 4)
+logger = logging.getLogger("ebs-message-bus")
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    fh = logging.handlers.RotatingFileHandler(
+        LOG_FILE, maxBytes=10 * 1024 * 1024, backupCount=3, encoding="utf-8"
+    )
+    fh.setFormatter(
+        logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+    )
+    logger.addHandler(fh)
+
 
 # Module-level singletons (lazy init on first tool call).
 _store: Store | None = None
@@ -43,16 +61,12 @@ async def _ensure_initialized() -> None:
         _init_lock = asyncio.Lock()
     async with _init_lock:
         if _store is None:
-            db_path = (
-                Path(__file__).resolve().parents[3]
-                / ".claude"
-                / "message_bus"
-                / "events.db"
-            )
+            db_path = PROJECT_ROOT / ".claude" / "message_bus" / "events.db"
             store = Store(db_path=db_path)
             await store.initialize()
             _store = store
             _dispatcher = EventDispatcher()
+            logger.info(f"broker initialized, db={db_path}")
 
 
 mcp = FastMCP(
@@ -83,11 +97,13 @@ async def publish_event(topic: str, payload: dict, source: str = "unknown") -> d
     """
     allowed, reason = check_publish_acl(topic, source)
     if not allowed:
+        logger.warning(f"ACL denied topic={topic} source={source}: {reason}")
         raise ValueError(f"ACL denied: {reason}")
     await _ensure_initialized()
     assert _store is not None and _dispatcher is not None
     seq, ts = await _store.publish(topic, payload, source)
     recipients = await _dispatcher.notify(topic, seq, source, ts, payload)
+    logger.info(f"publish topic={topic} source={source} seq={seq} recipients={recipients}")
     return {"seq": seq, "ts": ts, "topic": topic, "recipients": recipients}
 
 
