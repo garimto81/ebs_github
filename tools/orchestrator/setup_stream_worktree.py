@@ -296,6 +296,21 @@ def setup_stream(stream_id: str, config: dict, project_root: Path,
         )
     print(f"  ✓ .vscode/settings.json")
 
+    # Step 7. .mcp.json (Phase 5 message bus auto-discovery, opt-in per-stream)
+    if not dry_run:
+        mcp_config = {
+            "mcpServers": {
+                "ebs-message-bus": {
+                    "type": "http",
+                    "url": "http://127.0.0.1:7383/mcp"
+                }
+            }
+        }
+        (worktree_path / '.mcp.json').write_text(
+            json.dumps(mcp_config, indent=2) + "\n", encoding='utf-8'
+        )
+    print(f"  ✓ .mcp.json (message bus broker config)")
+
     return True
 
 
