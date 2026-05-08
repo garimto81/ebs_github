@@ -1,10 +1,13 @@
 ---
+owner: conductor
+tier: internal
 stream: S5
 name: AI Track / Index
 worktree: C:/claude/ebs-ai-track
 phase: P3 (정합성 감사)
 blocked_by: [S1, S2, S3, S4, S7, S8]
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
+last-updated: 2026-05-08
 ---
 
 # S5 AI Track / Index — 정합성 감사 작업 spec

@@ -1,7 +1,7 @@
 ---
 title: Multi-Session Orchestration Design v10.3
 status: ACTIVE
-last-updated: 2026-05-07
+last-updated: 2026-05-08
 owner: conductor
 tier: internal
 provenance:
@@ -26,6 +26,7 @@ predecessors:
 | 날짜 | 버전 | 트리거 | 변경 |
 |------|:----:|--------|------|
 | 2026-05-07 | v10.3.0 | 사용자 directive — 멀티 세션 v10.3 | 최초 작성 (글로벌 orchestrator 스킬 v10.3 적용) |
+| 2026-05-08 | v10.3.1 | 정합성 감사 #168 Phase A | S7/S8 활성화 반영 — §1 6 Streams → 8 Streams. S9 (QA) 만 future_streams 잔존. |
 
 ## 🎯 Thesis
 
@@ -39,7 +40,7 @@ predecessors:
 
 ---
 
-## §1. 6 Streams 매트릭스
+## §1. 8 Streams 매트릭스 (S7/S8 활성화 2026-05-08)
 
 상세 SSOT: [`team_assignment_v10_3.yaml`](./team_assignment_v10_3.yaml)
 
@@ -53,13 +54,15 @@ predecessors:
 | S4   | RIVE Standards   | (없음, 신설)                | P2     | S1       |
 | S5   | AI Track         | (tools/ai_track 신설)       | P3     | S1       |
 | S6   | Prototype        | integration-tests/         | P3     | S2,S3,S4 |
+| S7   | Backend Stream   | team2-backend/             | P2+P5  | S1       |
+| S8   | Engine Stream    | team3-engine/              | P2+P5  | S1       |
 +------+------------------+----------------------------+--------+----------+
 
 미래 동적 추가:
-| S7   | Backend          | team2-backend/             | P5     | S1       |
-| S8   | Engine           | team3-engine/              | P5     | S1       |
-| S9   | QA               | (integration-tests/)       | P4     | All      |
+| S9   | QA               | (ebs-qa)                   | P4     | All      |
 ```
+
+**S7/S8 활성화 출처** (2026-05-08): 정합성 감사 #168 Phase 0 dispatch (Issue #166 + #174 + PR #175 / Issue #167 + PR #180). ownership 이관 (Back_Office_PRD → S7, Game_Rules → S8) 은 별도 후속 작업 — 현재 S1 interim 보존.
 
 ## §1.5 Product = SSOT, Cascade Routing
 
