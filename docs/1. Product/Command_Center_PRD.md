@@ -6,7 +6,7 @@ confluence-page-id: 3811901603
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811901603
 last-updated: 2026-05-07
-last-synced: 2026-05-08
+last-synced: 2026-05-07
 version: 4.0.0
 derivative-of: ../2. Development/2.4 Command Center/Command_Center_UI/Overview.md
 if-conflict: derivative-of takes precedence
