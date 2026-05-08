@@ -46,7 +46,6 @@ Conventional Commit. main 직접 수정 허용: `CLAUDE.md`, `docs/`, `.claude/`
 | 코드 구현 | `team{N}-*/CLAUDE.md` |
 | 멀티 세션 진입 (Stream) | `docs/2. Development/2.5 Shared/Stream_Entry_Guide.md` |
 | 멀티 세션 spec | `docs/4. Operations/Multi_Session_Design_v10.3.md`, `team_assignment_v10_3.yaml`, `team-policy.json` |
-| Conductor 운영 SOP | `docs/4. Operations/Workflow_Conductor_Autonomous.md` |
 | Docker 운영 | `docs/4. Operations/Docker_Runtime.md` |
 | 백로그 | `docs/4. Operations/Conductor_Backlog.md` 또는 팀 `Backlog.md` |
 | WSOP LIVE 정렬 | `C:/claude/wsoplive/docs/confluence-mirror/` |

@@ -35,7 +35,7 @@ predecessors:
 
 이 문서는 EBS 멀티 세션 운영 SSOT입니다. 입구(현재 단일 세션 + 가끔 worktree 분리) → 출구(6 Stream 자율 워크트리 병렬 + Orchestrator 모니터링).
 
-> **Phase 모델 disambiguation**: 본 문서의 Phase = **멀티세션 프로젝트 생명주기** (Phase 0 Architect Setup → Phase 1+ Observer Operation). 단일 turn workflow 의 Phase (Intake / Q Batch / Execute / Delivery) 는 `Workflow_Conductor_Autonomous.md` 참조. 두 Phase 는 다른 차원이며 혼용 금지.
+> **Phase 모델**: Phase 0 Architect Setup → Phase 1+ Observer Operation. 멀티세션 프로젝트 생명주기 단일 모델.
 
 ---
 

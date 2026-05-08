@@ -13,7 +13,8 @@ EBS 멀티세션 운영 SSOT 는 다음 3 문서 조합:
 |------|------|
 | `Multi_Session_Design_v10.3.md` | 기술 spec (Architect-then-Observer 모델, Stream 매트릭스, Phase 정의) |
 | `team_assignment_v10_3.yaml` | Stream 할당 (S1~S6 + future S7~S9, work_declaration_protocol, monitoring) |
-| `Workflow_Conductor_Autonomous.md` | Conductor 운영 SOP (Hourglass — upfront batch + autonomous N phases + final delivery) |
+| `docs/2. Development/2.5 Shared/Stream_Entry_Guide.md` | Stream 진입 가이드 + 공유 contract 충돌 SOP |
+| `docs/2. Development/2.5 Shared/team-policy.json` | 운영 거버넌스 SSOT (v10.3 architect_then_observer) |
 
 ## v10.3 운영 모델 요약
 
