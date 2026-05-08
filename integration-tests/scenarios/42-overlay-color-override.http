@@ -1,0 +1,29 @@
+### CCR-025 — Overlay Color Override
+###
+### 검증:
+### - Table 별 overlay_colors PATCH
+### - CC + Overlay 동일 override 수신
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 42.1 GET /tables/{id} — 현재 색상 설정
+GET {{host}}/api/v1/tables/1
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 + envelope { data: { ..., overlayColors: {...} }, error }
+
+### 42.2 PUT /tables/{id} — overlay_colors override
+PUT {{host}}/api/v1/tables/1
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "overlayColors": {
+    "badgeCheck": "#00FF88",
+    "badgeFold": "#888888"
+  }
+}
+
+# 예상: 200 + envelope { data: TableOut, error: null }
+# WS /ws/overlay 수신 검증은 별도 (HTTP 범위 밖)

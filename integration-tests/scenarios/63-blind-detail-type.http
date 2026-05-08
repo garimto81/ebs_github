@@ -1,0 +1,36 @@
+### CCR-017 §3 — BlindDetailType enum + Late Reg
+###
+### 검증:
+### - blind-structures level 추가 시 BlindDetailType enum 검증
+### - Late Reg 계산식 정합
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 63.1 GET /blind-structures — 목록
+GET {{host}}/api/v1/blind-structures
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 + envelope { data: [...], error: null }
+
+### 63.2 GET /blind-structures/{id}/levels — levels (BlindDetailType enum 포함)
+GET {{host}}/api/v1/blind-structures/1/levels
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 + envelope { data: [{ levelNo, smallBlind, ..., detailType: 'normal'|'break'|'breakIn' }], error }
+
+### 63.3 POST /blind-structures/{id}/levels — break level 추가
+POST {{host}}/api/v1/blind-structures/1/levels
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "levelNo": 999,
+  "smallBlind": 0,
+  "bigBlind": 0,
+  "ante": 0,
+  "durationMinutes": 10,
+  "detailType": "break"
+}
+
+# 예상: 201 + envelope (또는 422 if blind structure 없음)

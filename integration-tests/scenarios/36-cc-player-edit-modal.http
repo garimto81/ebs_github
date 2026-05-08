@@ -1,0 +1,25 @@
+### CCR-028 (AT-07) — CC Player Edit Modal
+###
+### 검증:
+### - PATCH /players/{id} 으로 정보 갱신
+### - Sitting Out 즉시/지연 적용
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 36.1 GET /players/{id} — 현재 player 조회
+GET {{host}}/api/v1/players/1
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 + envelope { data: PlayerOut, error: null }
+
+### 36.2 PATCH /players/{id} — 메타 갱신
+PATCH {{host}}/api/v1/players/1
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "displayName": "Updated Player"
+}
+
+# 예상: 200 + envelope { data: PlayerOut, error: null }

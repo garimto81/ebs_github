@@ -1,0 +1,26 @@
+### CCR-028 (AT-06) — CC Game Settings Modal
+###
+### 검증:
+### - PATCH 엔드포인트로 game settings 갱신
+### - settings_kv router 활용
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 35.1 GET /settings — 현재 KV 조회
+GET {{host}}/api/v1/settings
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 + envelope { data: [SettingsKvOut[]], error: null }
+
+### 35.2 PUT /settings — game settings 갱신
+PUT {{host}}/api/v1/settings
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "key": "game.default_blind_structure_id",
+  "value": "1"
+}
+
+# 예상: 200 + envelope { data: SettingsKvOut, error: null }

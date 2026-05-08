@@ -1,0 +1,19 @@
+### CCR-031 (W9, W15) — CC ActionOnResponse
+###
+### 검증:
+### - ActionOnResponse 미수신 시 액션 버튼 비활성 (frontend 측)
+### - Straddle + BB Check 충돌 규칙 (engine harness)
+### - HTTP-side: hand 상태 조회 + actions 리스트
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 33.1 GET /hands/{id} — 현재 hand 상태 (actions 포함)
+GET {{host}}/api/v1/hands/1
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 + envelope { data: { actions: [...], state: ... } } 또는 404 (hand 미존재)
+
+### 33.2 [SKIP — Spec_Gap] WebSocket action_on_response 이벤트 검증
+### Engine harness 통합 필요. ws://localhost:8080 또는 BO WS proxy.
+### 본 HTTP 시나리오 범위 밖.

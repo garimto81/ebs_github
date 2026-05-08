@@ -1,0 +1,27 @@
+### CCR-012 — gfskin ZIP validation
+###
+### v0.4.3 NOTE: backend `POST /skins` = JSON-only (D8). multipart upload endpoint 미구현.
+### 본 시나리오는 [SKIP — Spec_Gap (issue #196 D8)] 마크. backend 결정 후 작성.
+
+### 원 spec (참조용):
+### - 정상 ZIP → 201
+### - skin.json 누락 → 422
+### - skin.riv 누락 → 422
+### - 50MB 초과 → 413
+### - skin.riv magic 위반 → 422
+
+### 현 backend 동작:
+### POST /api/v1/skins (JSON) — fixture 6종은 _generate.py 로 만들지만 backend 가 ZIP 검증
+### 자체 안 하므로 사용 안 함. fixture 는 future multipart endpoint 검증용으로 보존.
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 25.x [SKIP — Spec_Gap D8] multipart upload tests (미구현)
+# POST /api/v1/skins/upload (없음)
+#   - wsop-2026-test.gfskin → 201
+#   - invalid-colors.gfskin → 422
+#   - missing-skin-json.gfskin → 422
+#   - missing-skin-riv.gfskin → 422
+#   - invalid-rive-magic.gfskin → 422
+#   - huge-51mb.gfskin → 413

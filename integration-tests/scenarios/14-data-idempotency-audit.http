@@ -1,0 +1,28 @@
+### CCR-018 — DATA Idempotency + Audit Events (v0.4.3)
+###
+### 검증:
+### - Idempotency-Key 재시도 → 동일 응답 (POST /skins 중복 호출)
+### - audit_events 기록 조회 (admin only)
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 14.1 POST /skins — 동일 Idempotency-Key 재시도
+POST {{host}}/api/v1/skins
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: idem-fixed-001
+Content-Type: application/json
+
+{
+  "name": "audit-test-skin",
+  "description": "idempotency check",
+  "theme_data": "{}"
+}
+
+# 첫 호출: 201, 이후 동일 key 재시도: 200 또는 동일 201 + 동일 body
+
+### 14.2 GET /audit-events — admin 조회
+GET {{host}}/api/v1/audit-events?limit=10
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK + envelope { data: [audit events], error: null }

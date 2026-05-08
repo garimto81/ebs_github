@@ -1,0 +1,21 @@
+### CCR-013 §8 — GE Skin Delete (Active vs Inactive)
+###
+### 검증:
+### - active skin 삭제 시도 → 409 Conflict
+### - inactive skin 삭제 → 204 No Content
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 24.1 active skin 삭제 시도 (skin id=1, default 가정)
+DELETE {{host}}/api/v1/skins/1
+Authorization: Bearer {{admin_token}}
+
+# 예상: 409 (active 삭제 차단) 또는 204 (시드 환경에 따라 변동)
+
+### 24.2 임의 inactive skin 생성 후 삭제
+# 14번에서 생성된 audit-test-skin 또는 별도 신규 skin
+DELETE {{host}}/api/v1/skins/2
+Authorization: Bearer {{admin_token}}
+
+# 예상: 204 (정상 삭제) 또는 404 (없으면)

@@ -1,0 +1,14 @@
+### CCR-023 — Overlay MessagePack format
+###
+### 검증:
+### - WebSocket `format=msgpack` 연결 후 binary 송수신
+###
+### v0.4.3 NOTE: HTTP-side 검증 endpoint 없음. WS handshake 검증은 wscat/websocat 별도 도구.
+### [SKIP — HTTP 시나리오 범위 밖]
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 41.1 [SKIP — WS only] Overlay MessagePack handshake
+### wscat -c 'ws://localhost:8000/ws/overlay?format=msgpack&token={{admin_token}}'
+### → MessagePack 바이너리 frame 수신 (BS-07-overlay 참조)

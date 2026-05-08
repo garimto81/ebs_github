@@ -1,0 +1,18 @@
+### CCR-027 — CC Statistics GFX Push
+###
+### 검증:
+### - 통계 화면 데이터 조회
+### - GFX Push 트리거 (backend → overlay)
+
+@host = http://localhost:8000
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+### 34.1 GET /reports/* — 통계 조회 (backend 측 데이터 출처)
+GET {{host}}/api/v1/reports/rfid-health
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 + envelope { data: { ... } } 또는 404 (구현 상태에 따라)
+
+### 34.2 [SKIP — Spec_Gap] GFX Push 트리거
+### POST /api/v1/overlay/push (가정)
+### backend 미구현 가능성 → YELLOW
