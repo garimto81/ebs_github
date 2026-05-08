@@ -38,6 +38,7 @@ status: frozen
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-05-08 | v10.3 단일화 (운영 SSOT) | team-policy.json v9.5 → v10.3 전면 재작성 (Architect-then-Observer 모델, 365→279줄). v9.x narrative 모두 제거. Phantom 도구 5개 = 글로벌 v10.3 자산 (SessionStart.py / PreToolUse.py / Architect-then-Observer 패턴 / GitHub Issue+PR 라벨) 으로 대체 명시. Multi_Session_Workflow.md V9.5 본문 → v10.3 redirect stub. |
 | 2026-05-08 | root CLAUDE.md v1.0.0 미니멀 재설계 (2차) | 메인 지침 모델 적용. 239 → 55줄 (79% 추가 감축). 5 섹션 (Safety / Language / Git / Build & Run / Context Loading). Phantom 룰 7개 본문 제거 (도구 부재 5: conflict_resolver/session_branch_init/branch_guard/Mode 자동전환/Conflict_Registry + V9.5 폐기 패턴 2: /team-merge, work/team{N}). 시간 narrative 제거. 거버넌스 라벨 외부 spec 분리. |
 | 2026-05-08 | CLAUDE.md SSOT 1차 슬림화 | 7개 폐기 거버넌스 문서 → 본 archive. 427 → 239줄. Mode A/B 중복 정의 통합. v9.x narrative 제거. |
 | 2026-04-29 | (인텐트 명시) | 협업 메커니즘 정의 — 비전문 개발자 사용자 × AI 전문 기술. 결과물 = 기획 문서 + 프로토타입 2가지. (CLAUDE.md §1 보존) |
