@@ -14,6 +14,7 @@ tier: generated
 - `docs/1. Product/Game_Rules/Draw.md` — Draw
 - `docs/1. Product/Game_Rules/Flop_Games.md` — Flop Games
 - `docs/1. Product/Game_Rules/Seven_Card_Games.md` — Seven Card Games
+- `docs/1. Product/Product_SSOT_Policy.md` — Product SSOT Policy
 - `docs/1. Product/RIVE_Standards.md` — RIVE Standards — Overlay Graphics 정본
 - `docs/1. Product/References/PokerGFX_Reference.md` — PokerGFX Reference
 - `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` — WSOP Production Structure Analysis
@@ -30,6 +31,7 @@ tier: generated
 - `docs/2. Development/2.5 Shared/Naming_Conventions.md` — Naming Conventions (EBS Shared SSOT)
 - `docs/2. Development/2.5 Shared/Network_Config.md` — Network Configuration Contract
 - `docs/2. Development/2.5 Shared/Risk_Matrix.md` — Risk Matrix
+- `docs/2. Development/2.5 Shared/Stream_Entry_Guide.md` — Stream Entry Guide (v10.3 멀티세션 진입)
 - `docs/3. Change Requests/3. Change Requests.md` — 3. Change Requests (DEPRECATED)
 - `docs/3. Change Requests/done/CR-011-ge-ownership-move.md` — CR-011-ge-ownership-move
 - `docs/3. Change Requests/done/CR-016-tech-stack-ssot.md` — CR-016-tech-stack-ssot
@@ -181,7 +183,6 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` — Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체)
 - `docs/4. Operations/Conductor_Backlog/SG-022-deprecation.md` — SG-022-deprecation
 - `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` — SG-023 — 인텐트 전환 (기획서 완결 → production 출시)
-- `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` — SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권)
 - `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` — SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델)
 - `docs/4. Operations/Conductor_Backlog/SG-031-confluence-mirror-rebuild.md` — SG-031 — Confluence Mirror 재구축
 - `docs/4. Operations/Conductor_Backlog/SG-033-ebs-mission-redefinition.md` — EBS 미션 재선언 — 속도 KPI 폐기, 정확성·안정성·단단한 HW 5 가치 채택
@@ -196,7 +197,6 @@ tier: generated
 - `docs/4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` — Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세
 - `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
 - `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` — Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성
-- `docs/4. Operations/DEPENDABOT_GOVERNANCE.md` — Dependabot Governance — Label / Major Gate / Recreate Guard
 - `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` — 문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결
 - `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
 - `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` — ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
@@ -206,12 +206,10 @@ tier: generated
 - `docs/4. Operations/Load_Test_Plan_Phase1.md` — Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
 - `docs/4. Operations/Multi_Session_Design_v10.3.md` — Multi-Session Orchestration Design v10.3
-- `docs/4. Operations/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
-- `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (V9.5 — Single Session AI-Centric, Hub-and-Spoke Deprecated)
+- `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v10.3 redirect)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
 - `docs/4. Operations/OWASP_Audit_Kickoff_2026-05-03.md` — OWASP Top-10 Audit Kickoff Report — team2-backend
 - `docs/4. Operations/PR_AUTONOMOUS_PROCESSING.md` — PR Autonomous Processing (V10)
-- `docs/4. Operations/Phase_1_Decision_Queue.md` — Phase 1 Decision Queue (18건 결정 기록)
 - `docs/4. Operations/Phase_Plan_2027.md` — EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
 - `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` — Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정
@@ -249,16 +247,33 @@ tier: generated
 - `docs/4. Operations/Spec_Gap_Triage.md` — Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜
 - `docs/4. Operations/Task_Dispatch_Board.md` — Task Dispatch Board (V9.3 — Intent/Execution Separation + AI Autonomous Merge)
 - `docs/4. Operations/Task_Dispatch_Board/README.md` — Task Dispatch Board (분해 디렉토리)
-- `docs/4. Operations/V5_Migration_Plan.md` — V5 Migration Plan — v4.0/v4.1 → v5.0/v5.1 전환 로드맵
-- `docs/4. Operations/V9_2_Gate_Design.md` — V9.2 Gate Design (3-gate enforcement scaffolding)
-- `docs/4. Operations/V9_3_Intent_Execution_Boundary.md` — V9.3 Intent-Execution Separation (governance evolution)
-- `docs/4. Operations/V9_4_AI_Centric_Governance.md` — V9.4 AI-Centric Governance — SSOT-first Judgment + 전문 질문 금지
-- `docs/4. Operations/V9_5_Single_Session_Output_Centric.md` — V9.5 Single Session AI-Centric — Hub-and-Spoke Deprecation
-- `docs/4. Operations/Workflow_Conductor_Autonomous.md` — Conductor Autonomous Workflow SOP — Hourglass 패턴
 - `docs/4. Operations/handoffs/CI_CHAOS_TEST_HANDOFF.md` — CI Chaos Test Handoff (PR
 - `docs/4. Operations/handoffs/CI_GATE_INTEGRATION_HANDOFF.md` — CI Gate Integration + ebs_v2 Cleanup Handoff
 - `docs/4. Operations/handoffs/INFRA_ALIGNMENT_HANDOFF.md` — INFRA Alignment Handoff (Conductor Claim
 - `docs/4. Operations/handoffs/P0_REMEDIATION_HANDOFF.md` — P0 Remediation Handoff (port 3000 + Dockerfile context)
 - `docs/4. Operations/handoffs/P1_FOLLOWUP_HANDOFF.md` — P1/P3 Follow-up Handoff (Sentry sidecar + Flutter pin + ebs_v2 archive)
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/README.md` — 2026-05-08 정합성 감사 — Master Orchestration Plan
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/classification.md` — 683 .md 파일 전수 분류 매트릭스
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/conductor-spec.md` — conductor-spec
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md` — Foundation v4.5 — SSOT 사실표 (정합성 감사 기준점)
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S1-foundation.md` — S1-foundation
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S2-lobby.md` — S2-lobby
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S3-cc.md` — S3-cc
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S4-rive.md` — S4-rive
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S5-index.md` — S5-index
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S6-prototype.md` — S6-prototype
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S7-backend.md` — S7-backend
+- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S8-engine.md` — S8-engine
 - `docs/README.md` — docs/ README
+- `docs/_archive/governance-2026-05/DEPENDABOT_GOVERNANCE.md` — Dependabot Governance — Label / Major Gate / Recreate Guard
+- `docs/_archive/governance-2026-05/INDEX.md` — EBS Governance Archive Index
+- `docs/_archive/governance-2026-05/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
+- `docs/_archive/governance-2026-05/Phase_1_Decision_Queue.md` — Phase 1 Decision Queue (18건 결정 기록)
+- `docs/_archive/governance-2026-05/SG-024-governance-expansion.md` — SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권)
+- `docs/_archive/governance-2026-05/V5_Migration_Plan.md` — V5 Migration Plan — v4.0/v4.1 → v5.0/v5.1 전환 로드맵
+- `docs/_archive/governance-2026-05/V9_2_Gate_Design.md` — V9.2 Gate Design (3-gate enforcement scaffolding)
+- `docs/_archive/governance-2026-05/V9_3_Intent_Execution_Boundary.md` — V9.3 Intent-Execution Separation (governance evolution)
+- `docs/_archive/governance-2026-05/V9_4_AI_Centric_Governance.md` — V9.4 AI-Centric Governance — SSOT-first Judgment + 전문 질문 금지
+- `docs/_archive/governance-2026-05/V9_5_Single_Session_Output_Centric.md` — V9.5 Single Session AI-Centric — Hub-and-Spoke Deprecation
+- `docs/_archive/governance-2026-05/Workflow_Conductor_Autonomous.md` — Conductor Autonomous Workflow SOP — Hourglass 패턴
 - `docs/examples/README.md` — Examples
