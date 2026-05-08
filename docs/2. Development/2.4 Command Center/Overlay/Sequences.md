@@ -605,7 +605,7 @@ sequenceDiagram
 
 | 문서 | 관계 |
 |------|------|
-| `BS-07-00-overview.md` | Overlay 앱 정의, 생명주기 (본 문서가 시간축으로 구체화) |
+| `Overview.md` (legacy-id: BS-07-00) | Overlay 앱 정의, 생명주기 (본 문서가 시간축으로 구체화) |
 | `BS-07-01-elements.md` | 요소별 트리거 매핑 (본 문서가 시간축 시퀀스로 재구성) |
 | `BS-07-02-animations.md` | AnimationState 정의 (본 문서가 발동 순서로 조립) |
 | `BS-07-03-skin-loading.md` | 스킨 로드 FSM (§2.11에서 호출) |
