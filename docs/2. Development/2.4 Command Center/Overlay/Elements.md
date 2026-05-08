@@ -314,13 +314,13 @@ last-updated: 2026-04-15
 | `BS-06-00-REF-game-engine-spec.md` | DisplayConfig 필드 (card_reveal_type 등) |
 | `BS-06-00-triggers.md` | 트리거 이벤트 카탈로그 |
 | `BS-03-settings/` | 가시성 토글 UI |
-| `BS-05-03-seat-management §6` | CC 시각 규격 원본 (CCR-034 동기화) |
+| `Seat_Management.md §6` (legacy-id: BS-05-03) | CC 시각 규격 원본 (CCR-034 동기화) |
 
 ---
 
 ## Player Element 시각 규격 (CCR-034)
 
-> **참조**: `BS-05-03-seat-management §6` (CC 시각 규격 원본)
+> **참조**: `Seat_Management.md §6` (legacy-id: BS-05-03) (CC 시각 규격 원본)
 
 Overlay의 Player Element(10좌석 각각)는 CC 화면과 **동일한 색상 체계**를 사용한다. 운영자(CC)와 시청자(Overlay)가 같은 시각 언어로 정보를 파악하도록 강제한다.
 

@@ -176,7 +176,7 @@ AT-03 Card Selector 모달 (560×auto)
 
 **입력 예시**: `sA` = Ace of Spades, `hT` = Ten of Hearts
 
-> 참조: 키보드 단축키 전체 맵은 BS-05-06-keyboard-shortcuts.md
+> 참조: 키보드 단축키 전체 맵은 `Keyboard_Shortcuts.md` (legacy-id: BS-05-06)
 
 ---
 

@@ -511,7 +511,7 @@ SHOWDOWN 상태에서는 기본 8버튼 대신 특수 버튼이 표시된다:
 | **TAG HAND** | — | 현재 핸드에 태그 추가 |
 | **ADJUST STACK** | — | 특정 플레이어 칩 수동 조정 |
 
-> 참조: UNDO 상세는 BS-05-05-undo-recovery.md
+> 참조: UNDO 상세는 `Undo_Recovery.md` (legacy-id: BS-05-05)
 
 ---
 

@@ -203,10 +203,10 @@ Settings(Lobby 하위 다이얼로그) → System → RFID → Mode 선택
 
 | 영향 대상 | 이 문서와의 관계 |
 |----------|----------------|
-| `API-03-rfid-hal-interface.md` | HAL 인터페이스 계약 정본 (기술 상세) |
-| `BS-04-00-overview.md` | RFID 전체 흐름에서 HAL의 위치 |
-| `BS-04-01-deck-registration.md` | HAL registerDeck() 동작 |
-| `BS-04-02-card-detection.md` | HAL CardDetected 이벤트 발행 |
-| `BS-04-03-manual-fallback.md` | Mock HAL injectCard() 동작 |
+| `RFID_HAL_Interface.md` (legacy-id: API-03) | HAL 인터페이스 계약 정본 (기술 상세) |
+| `Overview.md` (legacy-id: BS-04-00) | RFID 전체 흐름에서 HAL의 위치 |
+| `Deck_Registration.md` (legacy-id: BS-04-01) | HAL registerDeck() 동작 |
+| `Card_Detection.md` (legacy-id: BS-04-02) | HAL CardDetected 이벤트 발행 |
+| `Manual_Fallback.md` (legacy-id: BS-04-03) | Mock HAL injectCard() 동작 |
 | `BS-03-settings/` | Settings에서 RFID 모드 전환 UI |
 | `../../2.5 Shared/Card_Flow_Index.md` | RFID + 커뮤니티 카드 호출의 4-tier 네비게이션 인덱스 (Tier 1 진입점) |

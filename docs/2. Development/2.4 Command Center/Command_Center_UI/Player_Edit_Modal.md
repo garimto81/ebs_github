@@ -21,7 +21,7 @@ AT-07은 특정 좌석의 플레이어 정보(이름, 국적, 스택, 이미지 
 
 > **v4.0 컨텍스트** (2026-05-07): 본 모달은 1×10 가로 그리드 PlayerGrid 의 SeatCell 9 행 stacked 구조 (S1~S10) 에서 인라인 편집 행 (4 Country / 5 Name / 7 Stack / 8 Bet) tap 시 진입한다. 4 영역 위계 (StatusBar / TopStrip / PlayerGrid / ActionPanel) 중 PlayerGrid 영역의 셀 단위 편집 진입점.
 
-> **참조**: `BS-05-00 §6 AT 카탈로그`, `BS-05-03-seat-management`, `Overview.md §3.0` (4 영역 위계).
+> **참조**: `BS-05-00 §6 AT 카탈로그`, `Seat_Management.md` (legacy-id: BS-05-03), `Overview.md §3.0` (4 영역 위계).
 
 ---
 
@@ -98,6 +98,6 @@ AT-07은 특정 좌석의 플레이어 정보(이름, 국적, 스택, 이미지 
 ## 8. 연관 문서
 
 - `BS-05-00 §6` — AT 카탈로그
-- `BS-05-03-seat-management` — 좌석 FSM
+- `Seat_Management.md` (legacy-id: BS-05-03) — 좌석 FSM
 - `API-05-websocket-events §5` — PlayerUpdated 이벤트
 - `API-01-backend-api` — seats/player 엔드포인트

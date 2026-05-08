@@ -175,6 +175,6 @@ Lobby의 테이블 할당은 `BS-02-lobby §운영자 할당` 참조.
 ## 6. 연관 문서
 
 - `BS-05-00 §10` — 운영 패턴 개요
-- `BS-05-06-keyboard-shortcuts` — 단축키 상세
+- `Keyboard_Shortcuts.md` (legacy-id: BS-05-06) — 단축키 상세
 - `BS-01-auth §Permission Bit Flag` — Permission Bit Flag (CCR-017, BS-01-02-rbac 통합됨)
 - `BS-02-lobby` — 운영자 할당 UI

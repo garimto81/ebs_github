@@ -354,7 +354,7 @@ last-updated: 2026-04-15
 | `Animations.md` (legacy-id: BS-07-02) | animations 섹션의 상태값 |
 | `BS-06-00-REF-game-engine-spec.md` | Enum 값 (game_phase, suit, rank, PlayerStatus 등) |
 | `BS-00-definitions.md` | 엔티티·상태 용어 |
-| `BS-05-03-seat-management §6` | CC 시각 규격 원본 (CCR-034 동일 색상 체계) |
+| `Seat_Management.md §6` (legacy-id: BS-05-03) | CC 시각 규격 원본 (CCR-034 동일 색상 체계) |
 
 ---
 

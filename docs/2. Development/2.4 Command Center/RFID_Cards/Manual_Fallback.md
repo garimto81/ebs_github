@@ -28,7 +28,7 @@ last-updated: 2026-04-15
 | **수동 입력 (Mock 기본)** | Mock 모드 또는 General Table | **개발/테스트 기본** |
 | **수동 입력 (Real 폴백)** | Real 모드에서 RFID 장애 발생 | 비상 시 |
 
-> **참조**: Mock 모드 정의는 `BS-00-definitions.md §9`, 이벤트 합성 규칙은 `BS-06-00-triggers.md §4`, Mock HAL API는 `API-03-rfid-hal-interface.md §6.2`
+> **참조**: Mock 모드 정의는 `BS-00-definitions.md §9`, 이벤트 합성 규칙은 `BS-06-00-triggers.md §4`, Mock HAL API는 `RFID_HAL_Interface.md §6.2` (legacy-id: API-03)
 
 ---
 
@@ -389,9 +389,9 @@ CC AT-01 화면 **상단 툴바 바로 아래** 에 전폭 배너로 표시. 위
 
 | 영향 대상 | 이 문서와의 관계 |
 |----------|----------------|
-| `BS-04-00-overview.md` | 전체 흐름에서 수동 입력의 위치 |
-| `BS-04-02-card-detection.md` | 카드 감지와 수동 입력의 관계 |
-| `BS-04-04-hal-contract.md` | Mock HAL injectCard() API |
+| `Overview.md` (legacy-id: BS-04-00) | 전체 흐름에서 수동 입력의 위치 |
+| `Card_Detection.md` (legacy-id: BS-04-02) | 카드 감지와 수동 입력의 관계 |
+| `RFID_HAL.md` (legacy-id: BS-04-04) | Mock HAL injectCard() API |
 | `BS-05-command-center/` | CC UI에서 카드 선택 UI 배치 |
 | `BS-06-00-triggers.md §3.1` | CC vs RFID 우선순위 |
-| `API-03-rfid-hal-interface.md §6.2` | MockRfidReader.injectCard() 사양 |
+| `RFID_HAL_Interface.md §6.2` (legacy-id: API-03) | MockRfidReader.injectCard() 사양 |

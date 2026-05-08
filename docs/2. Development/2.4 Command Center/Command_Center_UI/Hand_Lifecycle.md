@@ -151,7 +151,7 @@ CC에서 핸드를 시작하려면 다음이 모두 충족되어야 한다:
 **카드 입력**: RFID Real 모드면 자동 감지 대기. Mock 모드면 수동 카드 입력 그리드 표시.
 **운영자 행동**: action_on 플레이어의 액션을 관찰하고 해당 버튼 클릭 (또는 단축키).
 
-> 참조: 버튼 활성 조건 상세는 BS-05-02-action-buttons.md, 베팅 금액 규칙은 BS-06-02-holdem-betting.md
+> 참조: 버튼 활성 조건 상세는 `Action_Buttons.md` (legacy-id: BS-05-02), 베팅 금액 규칙은 BS-06-02-holdem-betting.md
 
 ### 1.4 FLOP — 플롭 베팅
 

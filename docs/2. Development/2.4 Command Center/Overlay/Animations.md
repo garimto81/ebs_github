@@ -232,7 +232,7 @@ Rive State Machine
 
 ## CC-Overlay 일관성 (CCR-032, CCR-034)
 
-Overlay 애니메이션은 CC(`BS-05-03-seat-management §6`)의 시각 규격과 **동일한 색상 체계와 주기**를 유지한다. 운영자(CC)와 시청자(Overlay)가 서로 다른 시각 언어를 보지 않도록 강제한다.
+Overlay 애니메이션은 CC(`Seat_Management.md §6` (legacy-id: BS-05-03))의 시각 규격과 **동일한 색상 체계와 주기**를 유지한다. 운영자(CC)와 시청자(Overlay)가 서로 다른 시각 언어를 보지 않도록 강제한다.
 
 - **action-glow**: CC는 `#FDD835` box-shadow 0.8s alternate. Overlay는 Rive 애니메이션으로 재현하되 같은 색상·주기.
 - **포지션 마커 색상**: Dealer `#E53935`, SB `#FDD835`, BB `#1E88E5`, UTG `#43A047` (CC와 동일)

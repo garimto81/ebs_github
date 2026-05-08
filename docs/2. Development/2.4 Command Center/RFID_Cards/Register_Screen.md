@@ -21,7 +21,7 @@ AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑
 
 > **v4.0 컨텍스트** (2026-05-07): AT-05 화면은 v4.0 4 영역 위계 외부 셋업 화면 (Reader Panel). 진입 경로는 StatusBar `[⚙]` 또는 우측 메뉴. 본 화면 자체 layout 은 v1.x 셋업 화면이며 1×10 그리드 PlayerGrid 와 무관. 등록된 카드는 게임 진행 시 PlayerGrid SeatCell 행 6 (Hole cards) 에 face-down 으로 mapping.
 
-> **참조**: `BS-04-01-deck-registration` (정책), `BS-04-04-hal-contract` (IRfidReader 이벤트), `API-03-rfid-hal-interface` (DeckRegistered 이벤트), `BS-05-00-overview §AT 화면 카탈로그` (AT-05 위치), `Command_Center_UI/Overview.md §3.0` (4 영역 위계).
+> **참조**: `Deck_Registration.md` (legacy-id: BS-04-01) (정책), `BS-04-04-hal-contract` (IRfidReader 이벤트), `RFID_HAL_Interface.md` (legacy-id: API-03) (DeckRegistered 이벤트), `BS-05-00-overview §AT 화면 카탈로그` (AT-05 위치), `Command_Center_UI/Overview.md §3.0` (4 영역 위계).
 
 ---
 
@@ -181,9 +181,9 @@ AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑
 
 ## 13. 연관 문서
 
-- `BS-04-01-deck-registration` — 등록 정책
-- `BS-04-04-hal-contract` — IRfidReader 이벤트
+- `Deck_Registration.md` (legacy-id: BS-04-01) — 등록 정책
+- `RFID_HAL.md` (legacy-id: BS-04-04) — IRfidReader 이벤트
 - `API-01-backend-api` — Decks API
-- `API-03-rfid-hal-interface` — DeckRegistered 이벤트, 연결 FSM (§9)
+- `RFID_HAL_Interface.md` (legacy-id: API-03) — DeckRegistered 이벤트, 연결 FSM (§9)
 - `API-05-websocket-events` — DeckRegistered WebSocket
-- `BS-05-00-overview` — AT-05 화면 위치
+- `Overview.md` (legacy-id: BS-05-00) — AT-05 화면 위치

@@ -21,7 +21,7 @@ last-updated: 2026-04-15
 
 > **v4.0 컨텍스트** (2026-05-07): RFID 카드 인식 결과는 CC 의 4 영역 위계 (StatusBar / TopStrip / **PlayerGrid 1×10** / ActionPanel) 중 PlayerGrid 의 **SeatCell 9 행 stacked 구조 행 6 (Hole cards)** 에 face-down 으로 표시 (D7 강제 — 값 비노출). RFID 연결 상태는 StatusBar (52px) 좌측의 ●RFID dot 으로 시각화. Reader Panel (Register Screen) 은 RFID 카드를 deck 에 사전 등록하는 UI 로 v4.0 정체성과 별개의 셋업 화면.
 
-> **참조**: 용어·상태 정의는 `BS-00-definitions.md`, 트리거 경계는 `BS-06-00-triggers.md`, HAL 인터페이스 계약은 `API-03-rfid-hal-interface.md`, v4.0 정체성은 `Command_Center_UI/Overview.md §3.0`.
+> **참조**: 용어·상태 정의는 `BS-00-definitions.md`, 트리거 경계는 `BS-06-00-triggers.md`, HAL 인터페이스 계약은 `RFID_HAL_Interface.md` (legacy-id: API-03), v4.0 정체성은 `Command_Center_UI/Overview.md §3.0`.
 
 ---
 
@@ -180,9 +180,9 @@ BO Config의 `rfid_mode` 설정으로 전환한다. Riverpod DI가 자동으로 
 
 | 영향 대상 | 이 문서와의 관계 |
 |----------|----------------|
-| `BS-04-01-deck-registration.md` | 덱 등록 프로세스 상세 |
-| `BS-04-02-card-detection.md` | 게임 중 카드 감지 상세 |
-| `BS-04-03-manual-fallback.md` | 수동 입력 — Mock 기본 경로 + Real 폴백 |
-| `BS-04-04-hal-contract.md` | HAL 동작의 운영자 관점 기술 |
+| `Deck_Registration.md` (legacy-id: BS-04-01) | 덱 등록 프로세스 상세 |
+| `Card_Detection.md` (legacy-id: BS-04-02) | 게임 중 카드 감지 상세 |
+| `Manual_Fallback.md` (legacy-id: BS-04-03) | 수동 입력 — Mock 기본 경로 + Real 폴백 |
+| `RFID_HAL.md` (legacy-id: BS-04-04) | HAL 동작의 운영자 관점 기술 |
 | `BS-06-00-triggers.md` | RFID 이벤트의 트리거 경계 정의 |
-| `API-03-rfid-hal-interface.md` | HAL 인터페이스 계약 정본 |
+| `RFID_HAL_Interface.md` (legacy-id: API-03) | HAL 인터페이스 계약 정본 |
