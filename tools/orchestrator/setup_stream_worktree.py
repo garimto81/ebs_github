@@ -189,8 +189,12 @@ def setup_stream(stream_id: str, config: dict, project_root: Path,
 
     # Step 1. git worktree add
     if not dry_run:
-        if worktree_path.exists():
-            print(f"  ⚠ worktree already exists, skipping git worktree add")
+        # 폴더 존재 + .git 부재 = 단순 폴더 (git worktree 미등록). 등록 시도.
+        git_marker = worktree_path / '.git'
+        if worktree_path.exists() and git_marker.exists():
+            print(f"  ⚠ git worktree already registered, skipping git worktree add")
+        elif worktree_path.exists():
+            print(f"  ⚠ folder exists but not a git worktree. Manual setup required (move assets aside, then `git worktree add <path> <branch>`)")
         else:
             try:
                 subprocess.run([

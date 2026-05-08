@@ -212,7 +212,7 @@ S2 Lobby Stream:
 
 | 패턴 | 상태 | 구현 |
 |------|:----:|------|
-| 6 Stream 워크트리 (sibling-dir) | **ACTIVE** | `setup_stream_worktree.py`, `analyze_repo.py` |
+| 6 Stream 워크트리 (sibling-dir) | **ACTIVE** | `setup_stream_worktree.py`, `analyze_repo.py`. S1~S6 모두 부트스트랩 완료 (`C:/claude/ebs-{stream}/`, work/sN/... branch). |
 | Stream 세션 자동화 (Issue + Draft PR + auto-merge) | **ACTIVE** | `team_session_start.py`, `team_session_end.py` |
 | Orchestrator 모니터링 (GitHub 폴링) | **ACTIVE** | `orchestrator_monitor.py` |
 | 동적 Stream 추가 | **ACTIVE** | `dynamic_stream_activation.py` |
