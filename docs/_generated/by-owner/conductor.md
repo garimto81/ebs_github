@@ -34,6 +34,7 @@ tier: generated
 - `docs/2. Development/2.5 Shared/Network_Config.md` — Network Configuration Contract
 - `docs/2. Development/2.5 Shared/Risk_Matrix.md` — Risk Matrix
 - `docs/2. Development/2.5 Shared/Stream_Entry_Guide.md` — Stream Entry Guide (v10.3 멀티세션 진입)
+- `docs/2. Development/2.5 Shared/Stream_Entry_Guide_v11.md` — Stream Entry Guide v11 — 사용자 진입 가이드
 - `docs/3. Change Requests/3. Change Requests.md` — 3. Change Requests (DEPRECATED)
 - `docs/3. Change Requests/done/CR-011-ge-ownership-move.md` — CR-011-ge-ownership-move
 - `docs/3. Change Requests/done/CR-016-tech-stack-ssot.md` — CR-016-tech-stack-ssot
