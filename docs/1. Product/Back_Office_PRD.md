@@ -6,11 +6,12 @@ confluence-page-id: 3811967073
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811967073
 last-updated: 2026-05-06
-last-synced: 2026-04-15
+last-synced: 2026-05-08
 version: 1.0.1 (prototype)
 derivative-of: ../2. Development/2.2 Backend/Back_Office/Overview.md
 if-conflict: derivative-of takes precedence
 audience-target: 외부 stakeholder (외부 개발팀, 경영진, PM)
+rive-role: "BO = RIVE_Standards 의 'EBS DB 작가' — 플레이어 정보 / 토너 메타데이터 / 핸드 통계 공급. Rive 직접 사용 X, 데이터 공급자"
 related-docs:
   - Foundation.md (§Ch.4.2, §Ch.6.1, §Ch.6.2, §Ch.6.3, §Ch.6.4)
   - ../2. Development/2.2 Backend/Back_Office/Overview.md (정본 기술 명세)

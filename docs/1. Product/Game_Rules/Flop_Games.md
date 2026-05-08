@@ -20,7 +20,6 @@ reimplementability_notes: "PRD-GAME-01 완결 본문 (49KB) + Confluence 발행 
 > **Version**: 1.0.0
 > **Date**: 2026-03-30
 > **대상 독자**: Part I: 포커를 모르는 사람 누구나 / Part II: 소프트웨어 개발팀
-> **시스템 사양**: EBS Foundation Ch.4~Ch.7에 정의된 게임 엔진, 오버레이, API 계층 구조를 따릅니다.
 > **시각 가이드**: 카드 레이아웃 보기 (visual/flop-games-visual.html, 브라우저에서 열기)
 > **핵심 특징 비주얼**: 게임별 핵심 차이점 보기 (visual/core-concepts-flop.html, 브라우저에서 열기)
 
