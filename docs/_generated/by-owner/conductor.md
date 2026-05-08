@@ -207,6 +207,7 @@ tier: generated
 - `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Domain Access
 - `docs/4. Operations/Load_Test_Plan_Phase1.md` — Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
+- `docs/4. Operations/Message_Bus_Runbook.md` — Inter-Session Message Bus — Operational Runbook
 - `docs/4. Operations/Multi_Session_Design_v10.3.md` — Multi-Session Orchestration Design v10.3
 - `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v10.3 redirect)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
