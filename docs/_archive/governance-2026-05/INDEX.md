@@ -38,6 +38,7 @@ status: frozen
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-05-08 | 워크플로우 완성 (PR C) | Stream_Entry_Guide.md 신규 (docs/2.5 Shared, ~150줄). 6 Stream 진입 가이드 + 공유 contract 충돌 SOP (Phase 0 차단 + ssot_priority fallback) + 동적 Stream 추가 (S7~S9) + 6중 방어 매핑. doc2 진입점 결함 (H2) + 공유 contract SOP 결함 (H3) 해소. root CLAUDE.md Context Loading 표 갱신. |
 | 2026-05-08 | Spec 정합 (PR B) | Multi_Session_Design_v10.3.md §11 재작성 (TBD 5개 → 모두 ACTIVE, 글로벌 v10.3 자산 subsume 명시). 두 SOP 문서에 Phase 모델 disambiguation 추가 (멀티세션 생명주기 Phase ↔ 단일 turn workflow Phase 분리). |
 | 2026-05-08 | v10.3 단일화 (운영 SSOT, PR A) | team-policy.json v9.5 → v10.3 전면 재작성 (Architect-then-Observer 모델, 365→279줄). v9.x narrative 모두 제거. Phantom 도구 5개 = 글로벌 v10.3 자산 (SessionStart.py / PreToolUse.py / Architect-then-Observer 패턴 / GitHub Issue+PR 라벨) 으로 대체 명시. Multi_Session_Workflow.md V9.5 본문 → v10.3 redirect stub. |
 | 2026-05-08 | root CLAUDE.md v1.0.0 미니멀 재설계 (2차) | 메인 지침 모델 적용. 239 → 55줄 (79% 추가 감축). 5 섹션 (Safety / Language / Git / Build & Run / Context Loading). Phantom 룰 7개 본문 제거 (도구 부재 5: conflict_resolver/session_branch_init/branch_guard/Mode 자동전환/Conflict_Registry + V9.5 폐기 패턴 2: /team-merge, work/team{N}). 시간 narrative 제거. 거버넌스 라벨 외부 spec 분리. |

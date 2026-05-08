@@ -44,7 +44,8 @@ Conventional Commit. main 직접 수정 허용: `CLAUDE.md`, `docs/`, `.claude/`
 | 신규 기획 작성 | `docs/1. Product/Foundation.md`, `docs/README.md` |
 | 외부 인계 PRD | `docs/1. Product/<feature>_PRD.md` + 정본 (`docs/2. Development/2.{N}/.../Overview.md`) |
 | 코드 구현 | `team{N}-*/CLAUDE.md` |
-| 멀티 세션 | `docs/4. Operations/Multi_Session_Design_v10.3.md`, `team_assignment_v10_3.yaml`, `team-policy.json` |
+| 멀티 세션 진입 (Stream) | `docs/2. Development/2.5 Shared/Stream_Entry_Guide.md` |
+| 멀티 세션 spec | `docs/4. Operations/Multi_Session_Design_v10.3.md`, `team_assignment_v10_3.yaml`, `team-policy.json` |
 | Conductor 운영 SOP | `docs/4. Operations/Workflow_Conductor_Autonomous.md` |
 | Docker 운영 | `docs/4. Operations/Docker_Runtime.md` |
 | 백로그 | `docs/4. Operations/Conductor_Backlog.md` 또는 팀 `Backlog.md` |
