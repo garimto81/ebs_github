@@ -51,6 +51,9 @@ X-Test-Profile: live
 ### 10.3 POST /api/v1/auth/refresh — 토큰 갱신
 ### v0.4.1 NOTE: backend 가 'refresh_token' (snake) 와 'refreshToken' (camel) 모두 수용.
 ###            응답은 envelope 없는 flat shape (D6 — endpoint 간 envelope 불일치).
+### v0.4.3 NOTE: D7 — 동일 user 가 10.1 (또는 10.2) 후 다시 login 하면 이전 jti 무효화.
+###            본 10.3 은 10.1 직후 단독 실행 (10.2 와 분리). 또는 매번 새로 login.
+###            scenarios/README "실행 권장 순서" 참조.
 POST {{host}}/api/v1/auth/refresh
 Content-Type: application/json
 

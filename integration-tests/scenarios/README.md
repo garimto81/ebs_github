@@ -163,3 +163,13 @@ REFRESH_TOKEN=eyJhbGc...  # 10-auth 시나리오 refresh 테스트용 (response.
 5. **Edge cases (12, 21, 40, 50)** — 경계 조건 + 에러 처리
 
 각 시나리오는 **독립적으로 실행** 가능하도록 작성되었으며, 일부는 이전 시나리오의 응답을 참조할 수 있다 (`@name` + `{{varName.response.body.field}}` 구문).
+
+### 10.x 시나리오 격리 가이드 (D7 — single-session refresh policy)
+
+`/auth/login` 은 동일 user 가 새로 호출할 때마다 이전 refresh token 의 jti 를 무효화한다 (single-session refresh policy). 따라서:
+
+- **10.1 (dev login) → 10.3 (refresh)**: OK (10.1 직후 10.3 호출).
+- **10.1 → 10.2 (live login) → 10.3**: ❌ 10.3 의 refresh_token 이 10.2 에 의해 invalidate. 401.
+- **권장 패턴**: 10.3/10.4 직전에 10.1 을 다시 호출해서 fresh refresh_token 사용.
+
+REST Client 에서는 각 `### 10.X` 블록을 단독 실행. 자동화 스크립트에서는 10.3 직전에 10.1 재호출.
