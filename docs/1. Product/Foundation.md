@@ -6,7 +6,7 @@ confluence-page-id: 3625189547
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
 source: "local SSOT"
-confluence-mirror-status: "to-push (v4.0 Graphic Novel Edition)"
+confluence-mirror-status: "to-push (v4.5 Phase B cascade)"
 last-updated: 2026-05-08
 version: 4.5.0
 format: "Graphic Novel Edition (markdown-native, 5 layout 변주)"
@@ -595,14 +595,14 @@ flowchart LR
 
 ### A.4 / Command Center — 실시간 조종석
 
-![CC 8 액션 + 10 좌석](images/foundation/app-command-center.png)
+![CC 6 키 + 10 좌석](images/foundation/app-command-center.png)
 
 본방송 중 운영자 시선의 **85% 가 머무는 화면**. 테이블 1 개당 1 인스턴스 독립 실행. **1 단계 입력 모델의 핵심 컴포넌트**. 2 단계 무인화 진입 시 모니터링 전용으로 전환된다.
 
 | 항목 | 내용 |
 |---|---|
 | 시각 | 타원 포커 테이블 + 10 좌석 |
-| 버튼 | 8 액션 (Ch.1 Scene 3 ⓑ 참조) |
+| 버튼 | 6 키 (N · F · C · B · A · M, Ch.1 Scene 3 ⓑ 참조) |
 | 역할 | 센서가 못 잡는 **베팅 의사** → 시스템 주입 |
 | 정보 소스 | 컨트롤룸 모니터 + 딜러 콜아웃 + 칩 트레이 |
 | 배포 | Flutter **Desktop** (RFID 시리얼 + SDI/NDI 직결) |
@@ -780,7 +780,7 @@ flowchart LR
 
 ### C.3 / Vision Layer — 2단계 입력 (별도 거대 프로젝트)
 
-§C.2 의 RFID 는 **1·2 단계 공통**이다. 2 단계 진입 시 추가되는 것은 **Vision Layer** — 1 단계의 CC 오퍼레이터 8 액션을 완전 대체하는 **별도의 거대 프로젝트**다.
+§C.2 의 RFID 는 **1·2 단계 공통**이다. 2 단계 진입 시 추가되는 것은 **Vision Layer** — 1 단계의 CC 오퍼레이터 6 키 입력을 완전 대체하는 **별도의 거대 프로젝트**다.
 
 <p align="center">
 
@@ -840,7 +840,7 @@ flowchart LR
 
 #### 단계 2 / AI 분석 엔진 — 본 프로젝트의 진짜 핵심
 
-> *카메라 영상을 입력으로 받아 8 액션을 자동 인식하는 별도 시스템.*  
+> *카메라 영상을 입력으로 받아 6 키 입력을 자동 인식하는 별도 시스템.*  
 > *컴퓨터 비전 (CV) 모델 + 객체 추적 + 멀티 카메라 융합 — 모두 별도 R&D 영역.*
 
 | 서브 컴포넌트 | 역할 |
@@ -1127,7 +1127,7 @@ X 축 (기능 4 단계) + Y 축 (입력 2 단계) 진화가 이 두 목적지로
 | §1.1 | 정보 비대칭성 (카드 + 액션) | Ch.1 / Scene 1 |
 | §1.2 | 3 핵심 데이터 | Ch.1 / Scene 2 |
 | §1.3 | RFID 1세대→2세대 | Ch.1 / Scene 3 ⓐ |
-| §1.4 | CC 오퍼레이터 + 8 액션 | Ch.1 / Scene 3 ⓑ |
+| §1.4 | CC 오퍼레이터 + 6 키 (N·F·C·B·A·M) | Ch.1 / Scene 3 ⓑ |
 | §1.5 | 22 게임 룰 = Engine 내장 상수 | Ch.1 / Scene 3 ⓒ |
 | §1.6 | Trinity 미션 + 정확성 5 가치 | Ch.1 / Scene 4 + Quote |
 | §2.1 | 8 핵심 그래픽 | Ch.2 / Scene 1 |
@@ -1167,4 +1167,5 @@ X 축 (기능 4 단계) + Y 축 (입력 2 단계) 진화가 이 두 목적지로
 
 | 날짜 | 버전 | 변경 |
 |---|---|---|
-| 2026-05-07 | 4.0.0-draft | Phase 2 완성. Ch.1~6 6 챕터 / 25 Scene. 5 layout 변주. HTML table 패턴 완전 제거. 35 fact 보존. |
+| 2026-05-08 | 4.5.0 | Phase B cascade — §A.1 Lobby 4 진입 시점 / §A.4 CC Hole Card Visibility 4단 방어 / §B.1 Mixed Game (HORSE / 8-Game) 흡수. Issue #156 C-01-a 정정 (Ch.5 §A.4 "8 액션" → "6 키" + cascade 잔재 3곳). |
+| 2026-05-07 | 4.0.0-draft | Phase 2 완성. Ch.1~6 6 챕터 / 20 Scene + 8 §-subsections. 5 layout 변주. HTML table 패턴 완전 제거. 35 fact 보존. |

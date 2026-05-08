@@ -326,7 +326,7 @@ Mix 게임 토너먼트의 라운드 전환 시점이다. WSOP LIVE 시리즈의
    다음 게임: PLO8 (10 핸드 후)
 ```
 
-운영자는 현재 어떤 게임이 진행 중인지, 다음 라운드가 무엇인지 확인한다. CC 는 게임 전환 신호를 자동으로 받아 8 버튼 액션을 새 게임 규칙으로 갱신한다.
+운영자는 현재 어떤 게임이 진행 중인지, 다음 라운드가 무엇인지 확인한다. CC 는 게임 전환 신호를 자동으로 받아 6 키 매핑을 새 게임 규칙으로 갱신한다.
 
 ### 3.4 — 운영자의 선택은 Event 생성 시 한 번
 
@@ -751,7 +751,7 @@ Lobby 의 정의 = 위 두 문제의 해결책.
 | name | string | WSOP LIVE |
 | buyin | string | WSOP LIVE |
 | game | enum (NLH/PLO/MIX/...) | WSOP LIVE |
-| mode | enum (Single/Choice/Fixed 6h) | WSOP LIVE |
+| mode | enum (Single / Choice / Fixed Rotation) | WSOP LIVE — Single=단일 게임 / Choice=Dealer's Choice / Fixed Rotation=HORSE/8-Game cycle (Foundation §B.1) |
 | entries / reentries / unique | number | WSOP LIVE |
 | status | enum (5) | WSOP LIVE |
 | featured | boolean | EBS |

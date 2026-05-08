@@ -3,6 +3,7 @@ title: Product SSOT Policy
 owner: conductor
 tier: internal
 governance: v10.3 architect_then_observer
+last-updated: 2026-05-08
 ---
 
 # Product SSOT Policy
