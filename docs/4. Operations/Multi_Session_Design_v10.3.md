@@ -35,6 +35,8 @@ predecessors:
 
 이 문서는 EBS 멀티 세션 운영 SSOT입니다. 입구(현재 단일 세션 + 가끔 worktree 분리) → 출구(6 Stream 자율 워크트리 병렬 + Orchestrator 모니터링).
 
+> **Phase 모델 disambiguation**: 본 문서의 Phase = **멀티세션 프로젝트 생명주기** (Phase 0 Architect Setup → Phase 1+ Observer Operation). 단일 turn workflow 의 Phase (Intake / Q Batch / Execute / Delivery) 는 `Workflow_Conductor_Autonomous.md` 참조. 두 Phase 는 다른 차원이며 혼용 금지.
+
 ---
 
 ## §1. 6 Streams 매트릭스
@@ -206,22 +208,22 @@ S2 Lobby Stream:
 
 ## §11. Implementation Status
 
-본 spec 의 패턴은 외부 도구 구현 상태에 따라 활성/TBD 로 분리된다. **TBD 패턴은 운영 거버넌스에서 사용 금지** — `team-policy.json` v9.5 Single Session AI-Centric 패턴을 fallback 으로 사용.
+본 spec 의 모든 패턴은 글로벌 orchestrator 스킬 v10.3 자산으로 ACTIVE.
 
-| 패턴 | 상태 | 의존 |
+| 패턴 | 상태 | 구현 |
 |------|:----:|------|
 | 6 Stream 워크트리 (sibling-dir) | **ACTIVE** | `setup_stream_worktree.py`, `analyze_repo.py` |
 | Stream 세션 자동화 (Issue + Draft PR + auto-merge) | **ACTIVE** | `team_session_start.py`, `team_session_end.py` |
 | Orchestrator 모니터링 (GitHub 폴링) | **ACTIVE** | `orchestrator_monitor.py` |
 | 동적 Stream 추가 | **ACTIVE** | `dynamic_stream_activation.py` |
 | Phase 게이트 검증 | **ACTIVE** | `phase_gate_validator.py` |
-| Mode B 자율 충돌 해결 (4-Step Decision Logic) | **TBD** | `tools/conflict_resolver.py` 미구현. fallback = `team-policy.json` `tie_breaker_logic` 수동 적용 |
-| 세션-당-브랜치 자동 초기화 (L1) | **TBD** | `.claude/hooks/session_branch_init.py` 미구현 |
-| 브랜치 가드 (L1, 다른 팀 접근 차단) | **TBD** | `.claude/hooks/branch_guard.py` 미구현 |
-| Mode A/B 자동 전환 | **TBD** | 메커니즘 미구현. fallback = 새 Claude Code 세션 시작 또는 `EBS_GOV_MODE` env var 수동 설정 |
-| Conflict_Registry.md audit | **TBD** | 파일 정의 미구현 |
+| 충돌 해결 | **ACTIVE** (Architect-then-Observer subsumes) | Phase 0 사전 설계로 충돌 차단. fallback = ssot_priority chain (`team-policy.json` `governance_model.conflict_resolution`) |
+| 세션 identity 초기화 | **ACTIVE** | `.claude/hooks/orch_SessionStart.py` (151줄, 글로벌 `hook_templates/SessionStart.py` 적용) |
+| Scope 가드 (다른 Stream 접근 차단) | **ACTIVE** | `.claude/hooks/orch_PreToolUse.py` (232줄, 글로벌 `hook_templates/PreToolUse.py` 적용) |
+| Stream 모드 전환 | **ACTIVE** (자동) | 워크트리 폴더 진입 = identity 자동 (sibling-dir 경로 패턴 + `.team` 메타). 환경변수 / 수동 전환 불필요 |
+| 충돌 audit | **ACTIVE** | GitHub Issue + Draft PR 라벨 기반 분산 audit (별도 registry 파일 불필요) |
 
-활성 도구 5개 (실체) + TBD 5개 (spec only). TBD 항목 활성화 = 도구 구현 PR + 본 표 ACTIVE 전환.
+**모든 패턴 ACTIVE**. 이전 세대 phantom 도구 분류 (`conflict_resolver.py` / `session_branch_init.py` / `branch_guard.py` / Mode A·B 자동전환 / `Conflict_Registry.md`) 는 글로벌 v10.3 자산이 동등 또는 우월한 패턴으로 subsume — 별도 신규 구현 불필요.
 
 ---
 

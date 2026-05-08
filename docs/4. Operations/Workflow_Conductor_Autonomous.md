@@ -15,6 +15,8 @@ reimplementability: PASS
 
 # Conductor Autonomous Workflow SOP — Hourglass
 
+> **Phase 모델 disambiguation**: 본 문서의 Phase = **단일 turn workflow** (Intake / Q Batch / Execute / Delivery — 사용자 의도 1회당 1 cycle). 멀티세션 프로젝트 생명주기 Phase (Architect Setup / Observer Operation) 는 `Multi_Session_Design_v10.3.md` 참조. 두 Phase 는 다른 차원이며 혼용 금지.
+
 ## 1. 핵심 패턴
 
 ```
