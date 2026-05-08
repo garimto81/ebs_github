@@ -623,6 +623,7 @@ tier: generated
 | `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
 | `docs/4. Operations/Message_Bus_Runbook.md` | Inter-Session Message Bus — Operational Runbook | conductor | internal | - |
 | `docs/4. Operations/Multi_Session_Design_v10.3.md` | Multi-Session Orchestration Design v10.3 | conductor | internal | - |
+| `docs/4. Operations/Multi_Session_Design_v11.md` | Multi-Session Orchestration Design v11 — Message Bus Push 기반 | conductor | internal | - |
 | `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (v10.3 redirect) | conductor | contract | - |
 | `docs/4. Operations/Network_Deployment.md` | Network Deployment Guide | conductor | internal | - |
 | `docs/4. Operations/OWASP_Audit_Kickoff_2026-05-03.md` | OWASP Top-10 Audit Kickoff Report — team2-backend | conductor | internal | - |
