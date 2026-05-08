@@ -3,9 +3,19 @@ title: NOTIFY-S1 — RFID 안테나 수 모순 (12 vs 24)
 owner: stream:S3 (Command Center)
 target: stream:S1 (Foundation)
 tier: notify
-status: OPEN
+status: DECIDED
+decision: Foundation §C.2 = 12 안테나 채택 (정본 24 → 12 정정)
+follow-up-issue: "#178"
 last-updated: 2026-05-08
 audit-source: docs/4. Operations/orchestration/2026-05-08-consistency-audit/
+---
+
+## 결정 (2026-05-08, 사용자 confirmed)
+
+**Foundation §C.2 의 12 안테나 (좌석 + 보드 중앙) 가 정답.** 정본 `Card_Detection.md §1` 의 24 안테나 표기를 12 로 정정.
+
+후속 정정 작업: Issue #178 추적. S3 가 정본 영역 owner 이므로 S3 가 정정 PR 작성.
+
 ---
 
 # NOTIFY-S1 — RFID 안테나 수 모순 (12 vs 24)
