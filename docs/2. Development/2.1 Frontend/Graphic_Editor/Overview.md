@@ -20,7 +20,7 @@ reimplementability_notes: "BS-08-00 Graphic Editor 총괄 기획 완결 (11KB)"
 
 Graphic Editor(이하 **GE**)는 EBS Overlay가 사용하는 `.gfskin` 스킨 아티팩트를 **업로드·검증·메타데이터 편집·Activate**하는 허브다. Team 1 Lobby의 `/Lobby/GraphicEditor` 라우트로 구현되며, **Flutter + `rive` ^0.13** (team4 Overlay 와 동일 C++ native runtime, Rive 2026 `rive_native` bridge 기반) 기술 스택을 사용한다. Lobby 전체와 함께 Docker Web 으로 배포되어 브라우저로 접근한다.
 
-> **2026-04-21 Flutter 확정**: 기존 Quasar (Vue 3) + rive-js (`@rive-app/canvas`) 에서 전환. 전환 근거: (1) Overlay (Flutter rive) 와 **동일 런타임** 으로 GE 프리뷰 ≡ 송출 렌더 자동 보증 (parity CI 게이트 불필요), (2) 내부 앱 개발팀 즉시 생산성, (3) `.gfskin` 파싱 코드 재사용. 자세히는 Foundation.md §5.1 결정 주석 참조.
+> **2026-04-21 Flutter 확정**: 기존 Quasar (Vue 3) + rive-js (`@rive-app/canvas`) 에서 전환. 전환 근거: (1) Overlay (Flutter rive) 와 **동일 런타임** 으로 GE 프리뷰 ≡ 송출 렌더 자동 보증 (parity CI 게이트 불필요), (2) 내부 앱 개발팀 즉시 생산성, (3) `.gfskin` 파싱 코드 재사용. 자세히는 Foundation.md Ch.5 §A.1 결정 주석 참조.
 
 > **경계 결정 (CCR-011)**: GE는 Lobby 허브로 소유가 확정되었다. CC(Team 4 Flutter)는 `skin_updated` WebSocket 이벤트 수신 후 Overlay를 리렌더하는 **소비자**로 재정의된다. Transform/Animation/keyframe/color adjust 편집은 out-of-scope — 디자이너는 Rive 공식 에디터에서 `.riv`를 완성한 뒤 `.gfskin` ZIP으로 묶어 업로드한다.
 

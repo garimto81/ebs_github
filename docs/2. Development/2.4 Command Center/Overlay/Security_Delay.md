@@ -19,7 +19,7 @@ last-updated: 2026-04-15
 
 라이브 포커 방송에서 실시간으로 홀카드가 공개되면 시청자 또는 공모자가 휴대폰/신호로 플레이어에게 카드 정보를 전달할 수 있다. 이를 방지하기 위해 방송은 **N초 지연**하여 송출되어야 한다. 이는 WSOP, EPT, WPT 등 메이저 대회의 필수 요구사항이다.
 
-> **참조**: `API-04-overlay-output`, `BS-07-06-layer-boundary §1.1 Action Badge`.
+> **참조**: `API-04-overlay-output`, `Layer_Boundary.md §1.1 Action Badge` (legacy-id: BS-07-06).
 
 ---
 
@@ -146,5 +146,5 @@ Buffer가 실행 중 크래시하면:
 
 - `API-04-overlay-output` — OutputEvent buffer 흐름 (§Security Delay 참조)
 - `BS-03-01-outputs §Security Delay` — 설정 UI
-- `BS-07-06-layer-boundary` — Layer 1 OutputEvent 종류
+- `Layer_Boundary.md` (legacy-id: BS-07-06) — Layer 1 OutputEvent 종류
 - `Overview.md §5` (legacy-id: BS-07-00) — 출력 채널 개요

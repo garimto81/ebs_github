@@ -27,6 +27,7 @@ tier: generated
 | `docs/2. Development/2. Development.md` | 2. Development | conductor | internal | - |
 | `docs/2. Development/2.1 Frontend/2.1 Frontend.md` | 2.1 Frontend | ci | generated | - |
 | `docs/2. Development/2.1 Frontend/Backlog.md` | Backlog | - | internal | - |
+| `docs/2. Development/2.1 Frontend/Backlog/AUDIT-Conductor-194-frontend-sister-cascade-2026-05-08.md` | AUDIT-Conductor-194 — Frontend 자매 영역 cascade (Login + Settings + Graphic_Editor) | conductor | internal | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-068-team1-frontend-Quasar-프로젝트-실제-초기화.md` | team1-frontend Quasar 프로젝트 실제 초기화 | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-075-React-아카이브-Quasar-이식-B-068-하위.md` | React 아카이브 → Quasar 이식 (B-068 하위) | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-076-QA-LOBBY-06-기반-Vitest-Playwright-셋업.md` | QA-LOBBY-06 기반 Vitest + Playwright 셋업 | - | - | - |
@@ -330,6 +331,7 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-5act-naming-drift-2026-05-08.md` | NOTIFY-S1 — 5-Act 시퀀스 명칭 drift (Foundation vs 정본) | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-cc-identity-cascade-2026-05-07.md` | NOTIFY-S1 — CC v4.0 정체성 cascade가 Foundation §Ch.5.4 에 영향 | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-rfid-antenna-count-mismatch-2026-05-08.md` | NOTIFY-S1 — RFID 안테나 수 모순 (12 vs 24) | stream:S3 (Command Center) | notify | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` | NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (HW 영향) | conductor | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-pr171-ci-failure-2026-05-08.md` | NOTIFY-S3 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | S-11 Lobby Hand History 자동화 UI wiring 요청 | - | - | - |
@@ -619,6 +621,7 @@ tier: generated
 | `docs/4. Operations/LAN_DEPLOYMENT.md` | LAN Deployment — Internal Network Domain Access | conductor | internal | - |
 | `docs/4. Operations/Load_Test_Plan_Phase1.md` | Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate | conductor | internal | - |
 | `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
+| `docs/4. Operations/Message_Bus_Runbook.md` | Inter-Session Message Bus — Operational Runbook | conductor | internal | - |
 | `docs/4. Operations/Multi_Session_Design_v10.3.md` | Multi-Session Orchestration Design v10.3 | conductor | internal | - |
 | `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (v10.3 redirect) | conductor | contract | - |
 | `docs/4. Operations/Network_Deployment.md` | Network Deployment Guide | conductor | internal | - |
@@ -655,6 +658,7 @@ tier: generated
 | `docs/4. Operations/Reports/2026-04-29-v95-e2e-iteration-phase-plan.md` | V9.5 결과물 E2E Iteration — Phase / Task Plan + P5/P6 진행 | conductor | contract | - |
 | `docs/4. Operations/Reports/2026-04-29-v95-residual-cycle-wrap-up.md` | V9.5 잔존 후속 cycle wrap-up — Agent Teams 첫 적용 + P11-P14 통합 보고 | conductor | contract | - |
 | `docs/4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md` | V9.5 SSOT vs Implementation Gap Triage | conductor | contract | - |
+| `docs/4. Operations/Reports/2026-05-08-S6-prototype-audit.md` | 2026-05-08 S6 Prototype 정합성 감사 (#165) | conductor | internal | - |
 | `docs/4. Operations/Reports/2026-05-08-consistency-audit-final.md` | 2026-05-08 정합성 감사 — 최종 통합 검증 보고서 | conductor | internal | - |
 | `docs/4. Operations/Roadmap.md` | Roadmap | conductor | internal | - |
 | `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` | SSOT Alignment Report — Lobby Path Drift Eradication | conductor | internal | - |

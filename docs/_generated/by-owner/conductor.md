@@ -20,8 +20,10 @@ tier: generated
 - `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` — WSOP Production Structure Analysis
 - `docs/1. Product/archive/Foundation_v41.0.0.md` — Foundation
 - `docs/2. Development/2. Development.md` — 2. Development
+- `docs/2. Development/2.1 Frontend/Backlog/AUDIT-Conductor-194-frontend-sister-cascade-2026-05-08.md` — AUDIT-Conductor-194 — Frontend 자매 영역 cascade (Login + Settings + Graphic_Editor)
 - `docs/2. Development/2.1 Frontend/Backlog/B-092-lobby-visual-screenshots-cascade-2026-05-05.md` — Lobby visual/screenshots — 신 디자인 7장 cascade + 본문 문서 정합 갱신
 - `docs/2. Development/2.1 Frontend/Backlog/NOTIFY-C1-frontend-non-lobby-identity-cascade-2026-05-07.md` — Phase C1 cascade — Frontend (Lobby 외) Lobby v3 / CC v4 정체성 LLM 전수 의미 정합 검토
+- `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` — NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (HW 영향)
 - `docs/2. Development/2.5 Shared/Authentication.md` — Authentication
 - `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` — Distributed Authentication Architecture
 - `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` — Token Lifecycle Sequences
@@ -205,6 +207,7 @@ tier: generated
 - `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Domain Access
 - `docs/4. Operations/Load_Test_Plan_Phase1.md` — Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
+- `docs/4. Operations/Message_Bus_Runbook.md` — Inter-Session Message Bus — Operational Runbook
 - `docs/4. Operations/Multi_Session_Design_v10.3.md` — Multi-Session Orchestration Design v10.3
 - `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v10.3 redirect)
 - `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
@@ -240,6 +243,7 @@ tier: generated
 - `docs/4. Operations/Reports/2026-04-29-v95-e2e-iteration-phase-plan.md` — V9.5 결과물 E2E Iteration — Phase / Task Plan + P5/P6 진행
 - `docs/4. Operations/Reports/2026-04-29-v95-residual-cycle-wrap-up.md` — V9.5 잔존 후속 cycle wrap-up — Agent Teams 첫 적용 + P11-P14 통합 보고
 - `docs/4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md` — V9.5 SSOT vs Implementation Gap Triage
+- `docs/4. Operations/Reports/2026-05-08-S6-prototype-audit.md` — 2026-05-08 S6 Prototype 정합성 감사 (#165)
 - `docs/4. Operations/Reports/2026-05-08-consistency-audit-final.md` — 2026-05-08 정합성 감사 — 최종 통합 검증 보고서
 - `docs/4. Operations/Roadmap.md` — Roadmap
 - `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` — SSOT Alignment Report — Lobby Path Drift Eradication

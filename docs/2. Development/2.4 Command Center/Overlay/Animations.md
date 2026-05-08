@@ -198,8 +198,8 @@ Run It Twice/Thrice 시 보드를 여러 번 깐다.
 | 문서 | 관계 |
 |------|------|
 | `BS-06-00-REF-game-engine-spec.md §1.6` | AnimationState/transition_type Enum 정의 |
-| `BS-07-01-elements.md` | 요소별 트리거 조건 |
-| `BS-07-03-skin-loading.md` | 스킨별 애니메이션 파라미터 오버라이드 |
+| `Elements.md` (legacy-id: BS-07-01) | 요소별 트리거 조건 |
+| `Skin_Loading.md` (legacy-id: BS-07-03) | 스킨별 애니메이션 파라미터 오버라이드 |
 | `BS-03-settings/` | 애니메이션 속도 설정 UI |
 
 ---
@@ -226,13 +226,13 @@ Rive State Machine
 - Rive는 `soundTrigger` Input만 변경, 실제 재생은 Flutter 코드 책임
 - Volume/Mute/Channel 정책이 Rive 안에 있으면 일관성이 깨지므로 중앙 관리 필수
 
-상세는 `BS-07-05-audio §5 Rive 애니메이션 내부 사운드` 참조.
+상세는 `Audio.md §5 Rive 애니메이션 내부 사운드` (legacy-id: BS-07-05) 참조.
 
 ---
 
 ## CC-Overlay 일관성 (CCR-032, CCR-034)
 
-Overlay 애니메이션은 CC(`BS-05-03-seat-management §6`)의 시각 규격과 **동일한 색상 체계와 주기**를 유지한다. 운영자(CC)와 시청자(Overlay)가 서로 다른 시각 언어를 보지 않도록 강제한다.
+Overlay 애니메이션은 CC(`Seat_Management.md §6` (legacy-id: BS-05-03))의 시각 규격과 **동일한 색상 체계와 주기**를 유지한다. 운영자(CC)와 시청자(Overlay)가 서로 다른 시각 언어를 보지 않도록 강제한다.
 
 - **action-glow**: CC는 `#FDD835` box-shadow 0.8s alternate. Overlay는 Rive 애니메이션으로 재현하되 같은 색상·주기.
 - **포지션 마커 색상**: Dealer `#E53935`, SB `#FDD835`, BB `#1E88E5`, UTG `#43A047` (CC와 동일)

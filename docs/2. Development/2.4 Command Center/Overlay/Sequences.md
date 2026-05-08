@@ -19,7 +19,7 @@ last-updated: 2026-04-15
 
 이 문서는 **운영자·RFID 입력이 Overlay 화면에 픽셀로 나타나기까지의 시간축 시퀀스**를 정의한다. 트리거 정의(BS-06-00-triggers), 요소 매핑(BS-07-01), 애니메이션 상태(BS-07-02)는 이미 다른 문서의 SSOT이므로, 본 문서는 그들을 **시간축 상에서 조립**한다.
 
-> **참조**: 트리거 이벤트 정의 `BS-06-00-triggers.md`, 요소별 트리거 매핑 `BS-07-01-elements.md`, AnimationState/transition_type `BS-07-02-animations.md`, 프로세스 모델 `API-04 §1.2`, Security Delay 아키텍처 `BS-07-07-security-delay.md`, 스킨 로드 FSM `BS-07-03-skin-loading.md`.
+> **참조**: 트리거 이벤트 정의 `BS-06-00-triggers.md`, 요소별 트리거 매핑 `Elements.md` (legacy-id: BS-07-01), AnimationState/transition_type `Animations.md` (legacy-id: BS-07-02), 프로세스 모델 `API-04 §1.2`, Security Delay 아키텍처 `Security_Delay.md` (legacy-id: BS-07-07), 스킨 로드 FSM `Skin_Loading.md` (legacy-id: BS-07-03).
 
 ### 문서 범위
 
@@ -606,13 +606,13 @@ sequenceDiagram
 | 문서 | 관계 |
 |------|------|
 | `Overview.md` (legacy-id: BS-07-00) | Overlay 앱 정의, 생명주기 (본 문서가 시간축으로 구체화) |
-| `BS-07-01-elements.md` | 요소별 트리거 매핑 (본 문서가 시간축 시퀀스로 재구성) |
-| `BS-07-02-animations.md` | AnimationState 정의 (본 문서가 발동 순서로 조립) |
-| `BS-07-03-skin-loading.md` | 스킨 로드 FSM (§2.11에서 호출) |
-| `BS-07-04-scene-schema.md` | 스킨 JSON 좌표/치수 (본 문서 범위 외) |
-| `BS-07-05-audio.md` | 오디오 트리거 (시퀀스 병렬 트랙) |
-| `BS-07-06-layer-boundary.md` | Layer 1/2/3 경계 (본 문서는 Layer 1만 다룸) |
-| `BS-07-07-security-delay.md` | Security Delay 아키텍처 (본 문서 §1~§2 전반의 전제) |
+| `Elements.md` (legacy-id: BS-07-01) | 요소별 트리거 매핑 (본 문서가 시간축 시퀀스로 재구성) |
+| `Animations.md` (legacy-id: BS-07-02) | AnimationState 정의 (본 문서가 발동 순서로 조립) |
+| `Skin_Loading.md` (legacy-id: BS-07-03) | 스킨 로드 FSM (§2.11에서 호출) |
+| `Scene_Schema.md` (legacy-id: BS-07-04) | 스킨 JSON 좌표/치수 (본 문서 범위 외) |
+| `Audio.md` (legacy-id: BS-07-05) | 오디오 트리거 (시퀀스 병렬 트랙) |
+| `Layer_Boundary.md` (legacy-id: BS-07-06) | Layer 1/2/3 경계 (본 문서는 Layer 1만 다룸) |
+| `Security_Delay.md` (legacy-id: BS-07-07) | Security Delay 아키텍처 (본 문서 §1~§2 전반의 전제) |
 | `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | 프로세스 모델 + 데이터 계약 SSOT (team3 publisher) |
 | `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` | skin_updated 이벤트 (§2.11) |
 | `BS-06-00-triggers.md` | 트리거 이벤트 정의 SSOT |

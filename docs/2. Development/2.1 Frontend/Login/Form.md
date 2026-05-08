@@ -13,7 +13,8 @@ last-updated: 2026-04-15
 | 2026-04-14 | 분리 신설 | `BS-02-00-overview.md` 의 §화면 0: 로그인 분리. CCR-DRAFT-team1-20260414-bs02-overview-rename.md 가 API-06 redirect 위임. |
 | 2026-04-15 | v10 분할 | 구 `BS-02-01-auth-session.md` 를 Login/Form, Login/Session_Init, Login/Error_Handling, Lobby/Session_Restore 4파일로 분할. 본 파일은 **로그인 입력 폼 + 인증 방식**만 담당. |
 | 2026-04-15 | SSOT 선언 | Quasar 구현자 대상으로 "이 문서의 담당 범위 vs 외부 SSOT" 블록 추가 (team1 발신, 기획 문서 충분성 보강 작업의 일부). |
-| 2026-04-21 | Flutter Desktop 전환 | Foundation §5.1 결정 반영. "Quasar/Vue 구현" → "Flutter 구현" 대상 전환. SSOT 범위 불변 |
+| 2026-04-21 | Flutter 전환 (Lobby Web) | Foundation §5.1 결정 반영. "Quasar/Vue 구현" → "Flutter 구현" 대상 전환. Login = Lobby 의 §화면 0 이므로 배포 형태 = Lobby Web (Foundation §A.1, Docker `ebs-lobby-web:3000`). SSOT 범위 불변 |
+| 2026-05-08 | #194 자매 영역 audit drift 정정 | "Flutter Desktop 전환" 표기 → "Flutter 전환 (Lobby Web)" 정합 (Lobby 영역). Conductor Phase C #194 자율 (Login = Lobby/Login Web, CC = Desktop 은 별도 §A.4 영역) |
 | 2026-04-15 | Error_Handling 역참조 주석 | §화면 0 아래에 "에러 발생 시 `Error_Handling.md §에러 매핑 테이블` 참조" 한 줄 추가. 개발자가 구현 중 즉시 찾을 수 있도록. team1 발신, Round 2 Phase G. |
 
 ---

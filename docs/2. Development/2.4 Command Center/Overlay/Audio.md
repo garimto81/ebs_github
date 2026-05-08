@@ -19,7 +19,7 @@ last-updated: 2026-04-15
 
 Overlay는 시각 요소 외에 **방송 사운드**가 필요하다 — 카드 딜 효과음, 액션 사운드, 승자 등장 팡파르, Action Clock tick, Intermission BGM 등. WSOP LIVE Fatima.app의 **Audio Player Provider** 패턴(1 BGM + 2 Effect + 동적 Temp)을 재사용한다.
 
-> **참조**: `wsoplive/.../Mobile-Dev/Refactoring/Audio Player Provider (2023).md`, `BS-07-02-animations`.
+> **참조**: `wsoplive/.../Mobile-Dev/Refactoring/Audio Player Provider (2023).md`, `Animations.md` (legacy-id: BS-07-02).
 
 ---
 
@@ -102,7 +102,7 @@ Rive Artboard는 State Machine에서 사운드 트리거를 내포할 수 있다
 
 **이유**: Volume/Mute/채널 정책을 Rive 안에서 구현하면 일관성이 깨진다. 중앙 관리로 단일 출처 유지.
 
-상세는 `BS-07-02-animations §Rive 사운드 경계` 참조.
+상세는 `Animations.md §Rive 사운드 경계` (legacy-id: BS-07-02) 참조.
 
 ---
 
@@ -133,8 +133,8 @@ skin.gfskin (ZIP)
 
 ## 7. 연관 문서
 
-- `BS-07-02-animations §Rive 사운드 경계` — Rive 내부 트리거 라우팅
-- `BS-07-03-skin-loading` — `.gfskin` 로드 시 audio 에셋 파싱
+- `Animations.md §Rive 사운드 경계` (legacy-id: BS-07-02) — Rive 내부 트리거 라우팅
+- `Skin_Loading.md` (legacy-id: BS-07-03) — `.gfskin` 로드 시 audio 에셋 파싱
 - `BS-03-02-gfx §8` — 볼륨/매너모드 설정 UI
 - `DATA-07-gfskin-schema` — `.gfskin` 포맷 정의
 

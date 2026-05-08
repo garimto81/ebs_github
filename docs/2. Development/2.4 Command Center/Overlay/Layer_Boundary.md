@@ -181,5 +181,5 @@ Layer 1이 아닌 경우 EBS는 **API 제공**만 하고 렌더링은 외부에 
 
 - `Overview.md §3` (legacy-id: BS-07-00) — Layer 1 그래픽 8종 원본 정의
 - `Foundation (Confluence SSOT) Ch.4` — EBS Core 경계 원칙
-- `BS-05-07-statistics` — Layer 2 통계 Push 트리거 (AT-04)
+- `Statistics.md` (legacy-id: BS-05-07) — Layer 2 통계 Push 트리거 (AT-04)
 - `API-01-backend-api §통계` — Layer 2 데이터 엔드포인트
