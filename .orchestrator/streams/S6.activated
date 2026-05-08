@@ -1,5 +1,8 @@
 stream_id: S6
 team_name: Prototype Stream
-activated_at: '2026-05-07T14:29:00.980206'
+activated_at: '2026-05-08T17:10:07.575844'
 worktree_path: C:/claude/ebs-prototype
-note: Direct main commit (PR pipeline conflict bypass)
+branch: work/s6/2026-05-08-init
+scope_owns:
+- docs/4. Operations/Prototype_Build_Plan.md
+- integration-tests/**
