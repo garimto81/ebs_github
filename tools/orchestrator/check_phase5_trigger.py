@@ -129,7 +129,7 @@ def main() -> int:
     }
 
     track_a_ok = (
-        len(result["track_a"]["merged"]) == 8
+        len(result["track_a"]["merged"]) == len(AUDIT_STREAMS)
         and not result["track_a"]["missing"]
     )
     track_b_ok = result["track_b"]["phase4_complete"]
@@ -152,16 +152,16 @@ def main() -> int:
     print("Phase 5 통합 trigger 사전 점검")
     print("=" * 70)
     print()
-    print(f"[Track A] 8 audit PR 머지 상태:")
-    print(f"  merged ({len(result['track_a']['merged'])}/8):")
+    print(f"[Track A] {len(AUDIT_STREAMS)} audit PR 머지 상태:")
+    print(f"  merged ({len(result['track_a']['merged'])}/{len(AUDIT_STREAMS)}):")
     for sid, num in result["track_a"]["merged"]:
         print(f"    ✓ {sid}  PR #{num}")
     if result["track_a"]["open"]:
-        print(f"  open ({len(result['track_a']['open'])}/8):")
+        print(f"  open ({len(result['track_a']['open'])}/{len(AUDIT_STREAMS)}):")
         for sid, num, state in result["track_a"]["open"]:
             print(f"    🔄 {sid}  PR #{num}  [{state}]")
     if result["track_a"]["missing"]:
-        print(f"  missing ({len(result['track_a']['missing'])}/8):")
+        print(f"  missing ({len(result['track_a']['missing'])}/{len(AUDIT_STREAMS)}):")
         for sid in result["track_a"]["missing"]:
             print(f"    ⏳ {sid}  (PR 미생성)")
     print()
