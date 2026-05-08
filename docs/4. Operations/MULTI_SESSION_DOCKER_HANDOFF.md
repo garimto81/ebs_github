@@ -5,6 +5,9 @@ tier: contract
 last-updated: 2026-04-27
 status: active
 supersedes: SG-022 single-binary-desktop intent
+confluence-page-id: 3818455454
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455454/EBS+Multi-Session+Docker+Handoff+SG-022+deprecation+cascade
 ---
 
 # Multi-Session Docker Handoff

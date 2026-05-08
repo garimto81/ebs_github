@@ -4,6 +4,9 @@ owner: team4
 tier: contract
 last-updated: 2026-04-20
 related-sg: SG-002
+confluence-page-id: 3819372998
+confluence-parent-id: 3811901565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819372998/EBS+Engine+Dependency+Contract
 ---
 
 # Engine Dependency Contract

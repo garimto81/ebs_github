@@ -10,6 +10,9 @@ related-plan: ~/.claude/plans/role-and-objective-reactive-canyon.md (M6)
 reimplementability: PASS
 reimplementability_checked: 2026-05-03
 reimplementability_notes: "M6 — 6 시나리오 catalog + 진단/해소 절차 완결"
+confluence-page-id: 3818914250
+confluence-parent-id: 3812032646
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914250/EBS+Authentication+Troubleshooting+Runbook
 ---
 # Authentication Troubleshooting Runbook (M6)
 

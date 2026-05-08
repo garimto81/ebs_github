@@ -5,6 +5,9 @@ tier: contract
 last-updated: 2026-04-29
 governance: v9.5
 related: ["v93_metrics.yml", "2026-04-29-v95-e2e-iteration-phase-plan.md"]
+confluence-page-id: 3818815931
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818815931/EBS+V9.5+Cycle+Metrics+P10+Quality+Report
 ---
 
 # V9.5 Cycle Metrics — P10 결과물 Quality

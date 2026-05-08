@@ -5,6 +5,9 @@ tier: contract
 last-updated: 2026-04-29
 governance: v9.5
 related: ["2026-04-29-v95-cycle-metrics.md"]
+confluence-page-id: 3818586643
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586643/EBS+V9.5+cycle+wrap-up+Agent+Teams+P11-P14
 ---
 
 # V9.5 잔존 후속 cycle wrap-up

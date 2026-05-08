@@ -10,6 +10,9 @@ reimplementability_checked: 2026-04-22
 reimplementability_notes: "API-04.1 OutputEvent 직렬화 계약 완결. B-332 SSOT 선언 §4.1 추가 (2026-04-22, Foundation §6.4 Engine SSOT 전파)."
 audit-notes:
   - "2026-05-08 S8 audit D2: 본 파일과 Overlay_Output_Events.md §6.0 간 OE-12~21 매핑 충돌 발견. publisher (output_event.dart) 실측 정본화 후속 작업 → B-356-oe-catalog-self-inconsistency.md"
+confluence-page-id: 3818914230
+confluence-parent-id: 3811836049
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914230/EBS+OutputEvent+Serialization
 ---
 # OutputEvent JSON 직렬화 계약 (API-04.1)
 

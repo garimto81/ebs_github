@@ -8,6 +8,9 @@ last-synced: 2026-05-08  # foundation_ssot.md §11 정합 (S8 audit 2026-05-08, 
 reimplementability: PASS
 reimplementability_checked: 2026-04-22
 reimplementability_notes: "§2.1 response schema 실측 정렬 (notify: team3). 이전 {id, events, currentState, outputEvents} 4필드 분리 기술 → 실제 flat state snapshot (sessionId + 모든 state 필드 최상위)."
+confluence-page-id: 3818815911
+confluence-parent-id: 3811836049
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818815911/EBS+Harness+REST+API
 ---
 # Harness REST API 명세 (API-04.2)
 

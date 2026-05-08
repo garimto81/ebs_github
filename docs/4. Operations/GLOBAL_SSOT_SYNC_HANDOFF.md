@@ -5,6 +5,9 @@ tier: contract
 last-updated: 2026-04-27
 status: active
 supersedes: SG-022 single-binary advocacy across all docs/team* trees
+confluence-page-id: 3819602444
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602444/EBS+Global+SSOT+Sync+SG-022+advocacy+eradication
 ---
 
 # Global SSOT Sync Handoff

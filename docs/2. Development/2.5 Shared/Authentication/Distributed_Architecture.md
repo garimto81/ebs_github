@@ -9,6 +9,9 @@ related-plan: ~/.claude/plans/role-and-objective-reactive-canyon.md (M2)
 reimplementability: PASS
 reimplementability_checked: 2026-05-03
 reimplementability_notes: "M2 운영 토폴로지 SSOT, multi-instance + Redis + PostgreSQL 명세 완결"
+confluence-page-id: 3819373018
+confluence-parent-id: 3812032646
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819373018/EBS+Distributed+Authentication+Architecture
 ---
 # Distributed Authentication Architecture (M2)
 

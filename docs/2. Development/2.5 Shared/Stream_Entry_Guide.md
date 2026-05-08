@@ -3,6 +3,9 @@ title: Stream Entry Guide (v10.3 멀티세션 진입)
 owner: conductor
 tier: contract
 governance: v10.3 architect_then_observer
+confluence-page-id: 3818586623
+confluence-parent-id: 3812032646
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586623/EBS+Stream+Entry+Guide+v10.3
 ---
 
 # Stream Entry Guide — v10.3

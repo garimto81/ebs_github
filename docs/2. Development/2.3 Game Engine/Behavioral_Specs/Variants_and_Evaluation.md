@@ -14,6 +14,9 @@ related:
   - "Behavioral_Specs/Lifecycle_and_State_Machine.md"      # Phase 1 (HandFSM)
   - "Behavioral_Specs/Triggers_and_Event_Pipeline.md"      # Phase 2 (IE/IT/OE)
   - "Behavioral_Specs/Betting_and_Pots.md"                 # Phase 3 (Side Pot/Showdown)
+confluence-page-id: 3819241936
+confluence-parent-id: 3811836049
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819241936/EBS+Variants+Evaluation+Domain+Master
 ---
 
 # Variants & Evaluation — Domain Master

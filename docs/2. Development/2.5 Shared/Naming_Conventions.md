@@ -7,6 +7,9 @@ source-of-truth: WSOP LIVE Confluence (1,361 pages mirror at `C:/claude/wsoplive
 reimplementability: PASS
 reimplementability_checked: 2026-05-03
 reimplementability_notes: "WSOP LIVE 규약 준수 SSOT, 원칙 1 정렬, 대상 매트릭스 명시"
+confluence-page-id: 3818881385
+confluence-parent-id: 3812032646
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881385/EBS+Naming+Conventions+EBS+Shared+SSOT
 ---
 # Naming Conventions — EBS 전역 네이밍 규약 SSOT
 

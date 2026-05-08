@@ -12,6 +12,9 @@ related:
   - "Behavioral_Specs/Lifecycle_and_State_Machine.md"      # Phase 1 도메인 (HandFSM 전이)
   - "Behavioral_Specs/Triggers_and_Event_Pipeline.md"      # Phase 2 도메인 (IE/IT/OE 카탈로그)
   - "../2.5 Shared/BS_Overview.md"                           # GameState 권위
+confluence-page-id: 3819274749
+confluence-parent-id: 3811836049
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274749/EBS+Betting+Pots+Domain+Master
 ---
 
 # Betting & Pots — Domain Master

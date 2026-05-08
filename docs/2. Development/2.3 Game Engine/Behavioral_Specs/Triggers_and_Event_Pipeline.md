@@ -13,6 +13,9 @@ related:
   - "../2.5 Shared/BS_Overview.md"                       # GameState / 트리거 소스 SSOT
   - "../2.4 Command Center/APIs/RFID_HAL.md"            # RFID 입력 SSOT
   - "APIs/Overlay_Output_Events.md"                      # OutputEvent 카탈로그 §6.0
+confluence-page-id: 3819274789
+confluence-parent-id: 3811836049
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274789/EBS+Triggers+Event+Pipeline+Domain+Master
 ---
 
 # Triggers & Event Pipeline — Domain Master

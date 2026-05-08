@@ -5,6 +5,9 @@ tier: contract
 last-updated: 2026-04-29
 governance: v9.3
 related: ["../Task_Dispatch_Board.md", "../../2. Development/2.5 Shared/team-policy.json"]
+confluence-page-id: 3819602464
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602464/EBS+Task+Dispatch+Board
 ---
 
 # Task Dispatch Board — 팀별 file 분해 (M2 해소 scaffold)

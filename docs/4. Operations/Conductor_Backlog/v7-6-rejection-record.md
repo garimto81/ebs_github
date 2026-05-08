@@ -9,6 +9,9 @@ related:
   - docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md (결정 2A)
   - docs/2. Development/2.5 Shared/team-policy.json `governance_model.freeze` (4A)
   - 이전 conversation turn: v7.6 critic 보고서 (5-Phase EBS critic skill)
+confluence-page-id: 3819241956
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819241956/EBS+v7.6+Autonomous+CI+CD+Pipeline+Agent+Official+Rejection+Record
 ---
 
 # v7.6 Autonomous CI/CD Pipeline Agent — REJECTED

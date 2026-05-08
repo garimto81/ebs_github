@@ -5,6 +5,9 @@ tier: contract
 last-updated: 2026-04-29
 governance: v9.5
 related: ["Spec_Gap_Triage.md", "../../docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md"]
+confluence-page-id: 3819176427
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176427/EBS+V9.5+SSOT+vs+Implementation+Gap+Triage
 ---
 
 # V9.5 SSOT vs Implementation Gap Triage

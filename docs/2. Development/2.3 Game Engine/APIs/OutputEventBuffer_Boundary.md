@@ -7,6 +7,9 @@ last-updated: 2026-04-16
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "API-04.3 버퍼 경계 계약 완결"
+confluence-page-id: 3818521062
+confluence-parent-id: 3811836049
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521062/EBS+OutputEventBuffer
 ---
 # OutputEventBuffer 구현 경계 (API-04.3)
 

@@ -6,6 +6,9 @@ last-updated: 2026-04-17
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "네트워크 구성 계약 (tier=contract, 3KB)"
+confluence-page-id: 3819209219
+confluence-parent-id: 3812032646
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209219/EBS+Network+Configuration+Contract
 ---
 # Network Configuration Contract
 

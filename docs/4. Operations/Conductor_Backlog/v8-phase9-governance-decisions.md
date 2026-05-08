@@ -11,6 +11,9 @@ related:
   - docs/4. Operations/Active_Work.md (Claim #17 v7.5)
   - 이전 turn v7.6 critic 보고서 (REJECT verdict)
   - work branch: work/conductor/v8-phase1-team-pr-merge (잠정 보류)
+confluence-page-id: 3818619180
+confluence-parent-id: 3811573898
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818619180/EBS+v8.0+Phase+9+Governance+Decisions+Brief
 ---
 
 # v8.0 Phase 9 — Governance Decisions Brief
