@@ -41,6 +41,7 @@ status: frozen
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-05-08 | Cascade 정합 완성 (PR G) | Lobby_PRD related-docs 에 Foundation.md 추가 (cascade 시뮬 누락 정정). 3 PRD 모두 frontmatter 에 `last-synced: 2026-04-15` 추가 (정본 ref, 역방향 drift 정직 표기). `.github/workflows/product_cascade.yml` 신규 — Product 변경 PR 시 cascade impact advisory 출력 + 정본 변경 시 derivative PRD 동시 갱신 권고. |
 | 2026-05-08 | Product SSOT 동기화 (PR F) | Product 폴더 = 기준 SSOT 명시. team_assignment_v10_3.yaml 갱신 (S1 scope_owns 확장 BO_PRD + Game_Rules / S4 path 정정 docs/2.5 Shared → docs/1. Product / S2,S3,S6 scope_read 에 RIVE_Standards / References/** 모든 Stream read / 1. Product.md meta_files_blocked). Stream_Entry_Guide.md Product 매핑 표 + cascade chain 추가. Multi_Session_Design §1.5 신설 (cascade 4 Layer). Product_SSOT_Policy.md 신규 (docs/1. Product/, derivative-of 룰 + Stream 책임 매트릭스 + 검증 명령). drift 5건 (D1~D5) 모두 해소. |
 | 2026-05-08 | 워크트리 부트스트랩 완료 (PR E) | S6 Prototype Stream 워크트리 등록 (`C:/claude/ebs-prototype` ↔ `work/s6/2026-05-08-init`) + 자산 배치 (.team, START_HERE.md, .vscode). S1~S5 사용자 측 완료. 6 Stream 모두 ACTIVE. Multi_Session_Design §11 갱신 (Layer 1~2 ACTIVE). setup_stream_worktree.py 폴더 판정 bug fix (.git 부재 검증 추가). |
 | 2026-05-08 | 단일 turn workflow 폐기 (PR D) | Workflow_Conductor_Autonomous.md (198줄), Phase_1_Decision_Queue.md (738줄), Multi_Session_Handoff.md (279줄) 3 파일 archive 이동. v10.3 = 멀티세션 Architect-then-Observer 단일 모델. Phase 모델 disambiguation 제거 (다른 차원 자체가 사라짐). team1/team2 CLAUDE.md → Stream_Entry_Guide.md redirect. |

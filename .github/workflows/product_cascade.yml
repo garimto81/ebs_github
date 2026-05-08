@@ -1,0 +1,61 @@
+name: Product Cascade Advisory
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/1. Product/**'
+
+jobs:
+  cascade-advisory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Detect Product changes
+        id: detect
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD > all_changes.txt
+          grep "^docs/1\. Product/" all_changes.txt > product_changes.txt || true
+          COUNT=$(wc -l < product_changes.txt)
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+          if [ "$COUNT" -gt "0" ]; then
+            echo "Product files changed:"
+            cat product_changes.txt
+          fi
+
+      - name: Cascade impact analysis
+        if: steps.detect.outputs.count != '0'
+        run: |
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            echo "::group::Cascade impact: $f"
+            echo "::warning file=$f::Product SSOT 변경. Impact analysis 출력 (derivative PRD + 정본 동시 변경 권고)"
+            python tools/doc_discovery.py --impact-of "$f" 2>&1 | head -30 || echo "(impact analysis failed — skipping)"
+            echo "::endgroup::"
+          done < product_changes.txt
+
+      - name: Derivative PRD sync check
+        if: steps.detect.outputs.count != '0'
+        run: |
+          # Foundation.md 변경 시 3 PRD 의 last-synced 가 Overview last-updated 와 일치하는지 advisory
+          if grep -q "^docs/1\. Product/Foundation\.md$" product_changes.txt; then
+            echo "::warning::Foundation.md 변경 감지. 3 PRD (Lobby/CC/BO) 의 derivative cascade 검토 필요. last-synced 메타 갱신 또는 본문 정합 검증."
+          fi
+          # 정본 (Overview.md) 변경 시 derivative PRD 동시 변경 advisory
+          for ovr in "docs/2. Development/2.1 Frontend/Lobby/Overview.md" "docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md" "docs/2. Development/2.2 Backend/Back_Office/Overview.md"; do
+            if grep -qF "$ovr" all_changes.txt; then
+              prd_name=$(echo "$ovr" | sed -E 's/.*(Lobby|Command Center|Back_Office).*/\1/')
+              echo "::warning file=$ovr::정본 변경 감지. 해당 외부 인계 PRD ($prd_name) 의 last-synced + 본문 동시 갱신 권고."
+            fi
+          done
