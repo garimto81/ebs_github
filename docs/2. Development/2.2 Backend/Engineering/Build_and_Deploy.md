@@ -3,7 +3,7 @@ title: Build and Deploy
 owner: team2
 tier: internal
 legacy-id: IMPL-09
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 ---
 
 # IMPL-09 Build & Deployment — 빌드 타겟, Docker, 환경 변수
@@ -17,16 +17,16 @@ last-updated: 2026-04-15
 
 ## 개요
 
-이 문서는 EBS의 **빌드 및 배포 전략**을 정의한다. **Backend Server(BO)** 는 Docker 컨테이너로 실행되며, **EBS Desktop App** (Lobby+CC+Overlay 기능 조각 통합 Flutter Desktop 바이너리) 은 §5.0 런타임 모드에 따라 탭 모드 단일 프로세스 또는 다중창 독립 프로세스로 실행된다. Engine은 별도 서비스 (Docker 또는 `dart run`).
+이 문서는 EBS의 **빌드 및 배포 전략**을 정의한다. **Backend Server(BO)** 는 Docker 컨테이너로 실행되며, **EBS Desktop App** (Lobby+CC+Overlay 기능 조각 통합 Flutter Desktop 바이너리) 은 Foundation Ch.5 §B.2 미주의 다중창/단일창 모드에 따라 탭 모드 단일 프로세스 또는 다중창 독립 프로세스로 실행된다. Engine은 별도 서비스 (Docker 또는 `dart run`).
 
-Foundation §4.4 **설치 단위 렌즈** 와 §8.5 **N PC + 중앙 서버** 를 공식 배포 모델로 채택한다:
+Foundation Ch.4 (3 그룹 6 기능) + Ch.5 (시스템 해부 — §A/§B/§C) + Ch.6 Scene 4 (복수 테이블 운영, 옛 §8.5) 를 공식 배포 모델로 채택한다:
 
 | 배포 모델 | 용도 | 구성 |
 |----------|------|------|
 | **단일 PC** | 단일 테이블 운영 · 개발 · 데모 | BO+DB+Desktop App 동일 PC (Docker 포함) |
 | **N PC + 중앙 서버** | 복수 테이블 방송 (2 테이블 이상) | 중앙 서버 1대(BO+DB) + N 개 테이블 PC, LAN 접속 |
 
-> 참조: IMPL-01 기술 스택, IMPL-02 프로젝트 구조, Foundation §4.4 설치 단위, §8.5 복수 테이블 아키텍처, `docs/4. Operations/Network_Deployment.md` (LAN 배포 SSOT), `docs/4. Operations/Docker_Runtime.md` (컨테이너 운영 SSOT)
+> 참조: IMPL-01 기술 스택, IMPL-02 프로젝트 구조, Foundation Ch.4 (3 그룹 6 기능) + Ch.5 (§A/§B/§C 시스템 해부), Foundation Ch.6 Scene 4 (복수 테이블 운영), `docs/4. Operations/Network_Deployment.md` (LAN 배포 SSOT), `docs/4. Operations/Docker_Runtime.md` (컨테이너 운영 SSOT)
 
 ---
 
@@ -205,7 +205,7 @@ volumes:
     driver: local
 ```
 
-### 4.3 배포 모델별 구성 — Foundation §8.5 정렬 (2026-04-22 재작성)
+### 4.3 배포 모델별 구성 — Foundation Ch.6 Scene 4 정렬 (2026-04-22 재작성, 2026-05-08 cascade 정합)
 
 | 배포 모델 | 배포 방식 | DB | 비고 |
 |----------|----------|:--:|------|
@@ -449,7 +449,7 @@ RFID_MODE=real
 
 > **디버깅 시**: Docker 없이 개별 실행 가능 — `uvicorn src.main:app --reload` (BO), `npm run dev` (Lobby)
 
-### 8.2 네트워크 구성 — N PC + 중앙 서버 (Foundation §8.5)
+### 8.2 네트워크 구성 — N PC + 중앙 서버 (Foundation Ch.6 Scene 4)
 
 방송 현장 유선 LAN 구성. 테이블당 1 PC 고정 할당, 중앙 서버 1대가 BO+DB 집중 서빙.
 
@@ -469,7 +469,7 @@ flowchart TD
     PCN -.NDI.-> vMix
 ```
 
-- **테이블 ↔ PC 1:1 고정** — 방송 중 PC 간 테이블 이동 불가 (Foundation §8.5)
+- **테이블 ↔ PC 1:1 고정** — 방송 중 PC 간 테이블 이동 불가 (Foundation Ch.6 Scene 4)
 - **중앙 서버 SPOF** — 서버 다운 시 모든 테이블 영향. DR 시나리오: `Back_Office/Operations.md §중앙 서버 SPOF DR` (Phase C1)
 - **LAN 장애 fallback** — `Network_Deployment.md` 참조
 - **세션 격리** — 각 테이블은 독립 game session ID. PC 장애는 해당 테이블만 영향

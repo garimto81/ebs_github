@@ -3,7 +3,7 @@ title: Tech Stack
 owner: team2
 tier: internal
 legacy-id: IMPL-01
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 ---
 
 # IMPL-01 Tech Stack — 3-앱 기술 스택 선정 근거
@@ -48,7 +48,7 @@ last-updated: 2026-04-15
 
 ## 2. Lobby — Flutter Desktop 앱
 
-> **2026-04-21 Foundation §5.1 확정** — 기존 Quasar/Vue 및 Next.js 제안 모두 폐기. Lobby/Settings/Graphic Editor 를 CC/Overlay 와 동일한 Flutter Desktop 단일 스택으로 통일.
+> **2026-04-21 Foundation Ch.5 §A.1 확정** — 기존 Quasar/Vue 및 Next.js 제안 모두 폐기. Lobby/Settings/Graphic Editor 를 CC/Overlay 와 동일한 Flutter Desktop 단일 스택으로 통일.
 
 ### 2.1 선정 기술
 
@@ -66,7 +66,7 @@ last-updated: 2026-04-15
 | 파일 선택 | `file_picker` | 최신 |
 | 분할 뷰 | `multi_split_view` (GE 3-Zone 용) | 최신 |
 
-### 2.2 선정 근거 (Foundation §5.1 결정 근거)
+### 2.2 선정 근거 (Foundation Ch.5 §A.1 결정 근거)
 
 | 근거 | 설명 |
 |------|------|
@@ -81,14 +81,14 @@ last-updated: 2026-04-15
 | 대안 | 기각 사유 |
 |------|----------|
 | Next.js + Zustand + shadcn/ui (기존 2026-04-09 제안) | Rive 브라우저 런타임과 CC Flutter 런타임이 달라 GE 프리뷰 ≡ Overlay parity CI 가 필요. 내부 앱 개발팀 스킬 분산. 운영 규모상 브라우저 배포 이점 실익 없음 |
-| Quasar (Vue 3) + TypeScript (기존 CCR-016 APPLIED) | Foundation §5.1 재결정으로 폐기. _archive-quasar/ 로 보존 |
+| Quasar (Vue 3) + TypeScript (기존 CCR-016 APPLIED) | Foundation Ch.5 §A.1 재결정으로 폐기. _archive-quasar/ 로 보존 |
 | Flutter Web | 브라우저 배포 편의성은 있으나 Desktop 성능/IPC/보안 저장 장점이 더 큼 |
 
 ### 2.4 결정 완료 사항
 
 | 항목 | 결정 | 근거 |
 |------|------|------|
-| Lobby 기술 스택 | **Flutter Desktop (Dart)** | Foundation §5.1 (2026-04-21) |
+| Lobby 기술 스택 | **Flutter Desktop (Dart)** | Foundation Ch.5 §A.1 (2026-04-21) |
 | 상태 관리 라이브러리 | **Riverpod 2.x** | Notifier/StateNotifier 기반. `ref.watch` 로 dependency 자동 추적. CC 와 동일 패턴 |
 | HTTP 클라이언트 | **Dio** | Interceptor 로 인증/재시도/로깅 중앙 관리. `ebs_common` 에서 공유 |
 | UI 라이브러리 | **Material 3 + Flutter widgets** | ThemeData 로 커스터마이징. Material Banner/Dialog/DataTable 기본 제공. 레이아웃 분할은 `multi_split_view` |
@@ -149,7 +149,7 @@ last-updated: 2026-04-15
 | 언어 | Python | 3.12+ |
 | 프레임워크 | FastAPI | 0.115+ |
 | ORM | SQLModel (SQLAlchemy 기반) | 0.0.22+ |
-| DB | SQLite (dev / 단일 PC) → PostgreSQL (prod / N PC + 중앙 서버) | Foundation §8.5 배포 모델 정렬. `Database/Schema.md §개요` DB SSOT 참조 |
+| DB | SQLite (dev / 단일 PC) → PostgreSQL (prod / N PC + 중앙 서버) | Foundation Ch.6 Scene 4 배포 모델 정렬. `Database/Schema.md §개요` DB SSOT 참조 |
 | 마이그레이션 | Alembic | 1.13+ |
 | ASGI 서버 | uvicorn | 0.30+ |
 | 컨테이너 | Docker + docker-compose | 24+ |
