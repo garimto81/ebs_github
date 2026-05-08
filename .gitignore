@@ -97,3 +97,8 @@ team1_e2e_report.json
 .team
 START_HERE.md
 .vscode/settings.json
+
+# Message Bus (Track B, feat/message-bus branch only)
+.claude/message_bus/
+.claude/locks/broker.*
+*.mcp.json

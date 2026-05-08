@@ -137,14 +137,85 @@ def emit_identity_context(team_data, status, blocker=None):
     print(f"\n📋 First action: type '작업 시작' to auto-create issue + draft PR")
 
 
+def ensure_message_bus(team_data=None):
+    """Phase 5: probe message bus broker, auto-start if dead.
+
+    Probes 127.0.0.1:7383. Dead → spawns DETACHED start_message_bus.py.
+    Waits up to 5s for health. Silent no-op if start_message_bus.py absent
+    (e.g., feat/message-bus not yet merged).
+    """
+    import socket
+    import time
+
+    def _probe(host, port, timeout=1.0):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        try:
+            s.connect((host, port))
+            return True
+        except OSError:
+            return False
+        finally:
+            s.close()
+
+    # Resolve project root (main repo, even from a worktree)
+    cwd = Path.cwd()
+    project_root = cwd
+    if team_data and team_data.get('project_root'):
+        project_root = Path(team_data['project_root'])
+
+    start_script = project_root / 'tools' / 'orchestrator' / 'start_message_bus.py'
+    if not start_script.exists():
+        # Phase 5 not yet merged — silent skip
+        return
+
+    # 1. Probe
+    if _probe('127.0.0.1', 7383):
+        sys.stderr.write("✅ message bus broker alive (127.0.0.1:7383)\n")
+        return
+
+    # 2. Auto-start detached
+    sys.stderr.write("🔄 message bus broker dead, auto-starting...\n")
+    try:
+        flags = 0
+        if sys.platform == 'win32':
+            flags = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
+        subprocess.Popen(
+            [sys.executable, str(start_script), '--detach'],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            close_fds=True,
+            creationflags=flags,
+        )
+    except Exception as e:
+        sys.stderr.write(f"⚠ broker auto-start failed: {e}\n")
+        return
+
+    # 3. Wait health (5s max)
+    deadline = time.time() + 5
+    while time.time() < deadline:
+        if _probe('127.0.0.1', 7383):
+            sys.stderr.write("✅ message bus broker started\n")
+            return
+        time.sleep(0.2)
+
+    sys.stderr.write("⚠ broker not responding after 5s; falling back to GH-only mode\n")
+
+
 def main():
     team_data = detect_team()
     if not team_data:
-        return  # main session
+        # main session — still probe/start broker (Phase 5)
+        ensure_message_bus(None)
+        return
 
     status, blocker = check_dependency_status(team_data)
     update_start_here(team_data, status, blocker)
     emit_identity_context(team_data, status, blocker)
+
+    # Phase 5: broker auto-start (idempotent — single broker per host)
+    ensure_message_bus(team_data)
 
 
 if __name__ == "__main__":
