@@ -2,7 +2,7 @@
 title: Overview
 owner: team2
 tier: internal
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 ---
 
 # PRD-EBS_BackOffice — Back Office PRD
@@ -17,6 +17,7 @@ last-updated: 2026-04-15
 | 2026-04-14 | BO-01 흡수 | BO-01-overview.md 폐기. §2 아키텍처에 §2.3 핵심 원칙, §2.4 성능 요구사항 추가. §2.2 기술 스택에 Phase 진화표 흡수. PRD가 BO 아키텍처 SSOT |
 | 2026-04-15 | G4-A Settings 스코프 복구 | §1.2 #8 Sysop Config 를 "✅ 글로벌" → "✅ Series/Event/Table 단위 (WSOP LIVE 정렬)" 로 수정. §3.6 시스템 설정 표의 EBS 열 "글로벌" 도 "Series/Event/Table 단위" 로 복구. 2026-04-09 글로벌 단일 세트 결정이 CLAUDE.md 원칙1 (WSOP LIVE 정렬) 과 충돌해 역전. 후속: Schema.md §configs 에 `scope`/`scope_id` 컬럼 추가 (G4-C, Task #10), BS-03 Settings 진입 경로 재구성 (G4-B, team4 decision), ConfigChanged payload 확장 (Task #13) |
 | 2026-05-07 | v3/v4 정체성 cascade Phase B | Lobby_PRD v3.0.0 (5분 게이트웨이 + WSOP LIVE 거울 + 4 진입 시점 + 5 화면 시퀀스) + Command_Center_PRD v4.0 (1×10 그리드 + 6 키 N·F·C·B·A·M + 4 영역 위계) 정체성 정합. §1.3 EBS 추가기능 #5 CC 인스턴스 추적 의미 framing 보강 ("1:N 관제" → 1 Lobby 게이트웨이 : N CC 운영자 화면 관계). LLM 전수 의미 판정. | DOC |
+| 2026-05-08 | S7 정합성 감사 — Foundation v4.5 cascade | Foundation 옛 섹션 표기 정정: §6.3→Ch.5 §B.3 (통신 매트릭스), §6.4→Ch.5 §B.4 (DB SSOT + WS push), §5.1→§A.1 (Lobby), §5.3→§A.4 (CC), §8.5→Ch.6 Scene 4 (복수 테이블 운영), §4.4 fabricated reference 제거. §2.1 Lobby 배포 형태를 Foundation Ch.5 §A.1 정합 (Flutter Web). | DOC |
 
 ---
 
@@ -109,7 +110,7 @@ WSOP LIVE Staff Page는 아래 BO 기능을 제공한다 (Confluence Staff App A
 
 ### 2.1 BO 의 위치 — Multi-Service Docker 정렬 (2026-04-27 재작성)
 
-Foundation §4.4 "두 렌즈" 에 따르면 EBS 는 **6 기능 조각 / 4 설치 단위** 로 구성되며, Back Office 는 **Backend Server** 설치 단위 (`bo` 컨테이너) 를 소유한다. Multi-Service Docker SSOT 하에서 Lobby (team1) 는 `lobby-web` 컨테이너 (port 3000), Command Center + Overlay (team4) 는 `cc-web` 컨테이너 (port 3001) 로 **각각 독립 Flutter Web 빌드 산출물** 이며, BO 와 `ebs-net` bridge 네트워크에서 service-name DNS + 환경 변수 (`BO_URL`/`LOBBY_URL`/`CC_URL`) 로 협력한다 (자세히: `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md`).
+Foundation Ch.4 (3 그룹 6 기능) + Ch.5 (시스템 해부 — §A Front-end / §B Back-end / §C Render) 에 따르면 EBS 는 **6 기능 조각** 으로 구성되며, Back Office 는 **Ch.5 §B.2 Backend (BO)** 기능 (`bo` 컨테이너) 을 소유한다. Multi-Service Docker SSOT 하에서 Lobby (team1) 는 `lobby-web` 컨테이너 (port 3000), Command Center + Overlay (team4) 는 `cc-web` 컨테이너 (port 3001) 로 **각각 독립 Flutter Web 빌드 산출물** 이며, BO 와 `ebs-net` bridge 네트워크에서 service-name DNS + 환경 변수 (`BO_URL`/`LOBBY_URL`/`CC_URL`) 로 협력한다 (자세히: `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md`).
 
 ```mermaid
 flowchart LR
@@ -135,7 +136,7 @@ flowchart LR
     API -.폴링.-> Ext
 ```
 
-**통신 계약** (Foundation §6.3 통신 매트릭스):
+**통신 계약** (Foundation Ch.5 §B.3 통신 매트릭스):
 
 | From → To | 프로토콜 | 용도 |
 |-----------|:--------:|------|
@@ -145,36 +146,36 @@ flowchart LR
 | CC → Engine | REST | stateless query (BO 경유 없음) |
 | Lobby ↔ CC | — | **직접 연결 금지** — BO DB 통한 간접 공유만 |
 
-- Lobby ↔ CC **직접 연동 없음** — 모든 데이터는 BO DB 경유 (Foundation §6.3 원칙)
+- Lobby ↔ CC **직접 연동 없음** — 모든 데이터는 BO DB 경유 (Foundation Ch.5 §B.3 원칙)
 - Mock 모드: RFID HAL만 교체, BO는 Real/Mock 100% 동일 동작
 
-> **용어 주의**: 과거 문서에서 "Lobby (웹)" 표현을 사용했으나, team1 의 Docker Web 배포는 **개발/프리뷰 모드** 이며 Foundation §4.4 의 공식 설치 단위는 Flutter Desktop. 본 문서는 §4.4 정렬 이후 SSOT.
+> **용어 주의**: Foundation Ch.5 §A.1 의 Lobby 공식 배포 형태는 **Flutter Web (Docker nginx, LAN 다중 클라이언트)** 이며, CC 는 Foundation §A.4 에 따라 Flutter Desktop (RFID 시리얼 + SDI/NDI 직결). 본 문서는 Ch.5 §A.1/§A.4 정렬 이후 SSOT.
 
 ### 2.2 기술 스택
 
 | 계층 | 기술 | 비고 |
 |------|------|------|
 | **API Server** | FastAPI (Python 3.11+) | 비동기, 자동 OpenAPI 문서 |
-| **WebSocket** | FastAPI WebSocket | 실시간 양방향 통신 (Foundation §6.4 WS push <100ms 채널) |
-| **DB** | SQLite (dev) / PostgreSQL (prod) | SQLAlchemy ORM. **Foundation §6.4 에 따라 DB = SSOT** |
+| **WebSocket** | FastAPI WebSocket | 실시간 양방향 통신 (Foundation Ch.5 §B.4 WS push <100ms 채널) |
+| **DB** | SQLite (dev) / PostgreSQL (prod) | SQLAlchemy ORM. **Foundation Ch.5 §B.4 에 따라 DB = SSOT** |
 | **인증** | JWT + Google OAuth | 세션 토큰 (API-06) |
 | **배포 (단일 PC)** | 단일 프로세스 또는 Docker | 테이블 1개 전용 |
-| **배포 (N PC)** | **중앙 서버 1대 (BO+DB)** — N 개 테이블 PC 가 LAN 접속 | Foundation §8.5, `docs/4. Operations/Network_Deployment.md` |
+| **배포 (N PC)** | **중앙 서버 1대 (BO+DB)** — N 개 테이블 PC 가 LAN 접속 | Foundation Ch.6 Scene 4 (복수 테이블 운영), `docs/4. Operations/Network_Deployment.md` |
 
 > 배포 모델 상세: `Engineering/Build_and_Deploy.md` §단일 PC 운영 / §N PC + 중앙 서버
 
 ### 2.3 핵심 원칙 — Foundation 정합 (2026-04-22 재작성)
 
-- **Lobby ↔ CC 직접 연동 없음** — 모든 데이터는 BO DB를 경유 (Foundation §6.3)
-- **1 Lobby : N CC** — Lobby 는 시스템당 1개, CC 는 테이블당 1개 (Foundation §5.1, §5.3)
-- **1 PC = 1 피처 테이블** — 하드웨어 제약(캡처카드·SDI/NDI·RFID USB) 으로 단일 PC 는 단일 테이블만 통제 (Foundation §8.5). 멀티 EBS 개념은 2026-04-22 회의로 폐기
-- **DB = SSOT** — 모든 상태 변경은 BO DB commit 후 WS broadcast (Foundation §6.4). `Sync_Protocol.md §1.0` 정책
-- **Engine = 게임 상태 SSOT** — hands/cards/pots 는 Engine HTTP 응답이 최종. BO WS 는 audit 참고값 (Foundation §6.3 §1.1.1, API-05 §10.1)
+- **Lobby ↔ CC 직접 연동 없음** — 모든 데이터는 BO DB를 경유 (Foundation Ch.5 §B.3)
+- **1 Lobby : N CC** — Lobby 는 시스템당 1개, CC 는 테이블당 1개 (Foundation Ch.5 §A.1 Lobby, §A.4 CC)
+- **1 PC = 1 피처 테이블** — 하드웨어 제약(캡처카드·SDI/NDI·RFID USB) 으로 단일 PC 는 단일 테이블만 통제 (Foundation Ch.6 Scene 4). 멀티 EBS 개념은 2026-04-22 회의로 폐기
+- **DB = SSOT** — 모든 상태 변경은 BO DB commit 후 WS broadcast (Foundation Ch.5 §B.4). `Sync_Protocol.md §1.0` 정책
+- **Engine = 게임 상태 SSOT** — hands/cards/pots 는 Engine HTTP 응답이 최종. BO WS 는 audit 참고값 (Foundation Ch.5 §B.3, API-05 §10.1)
 - **crash 복구 패턴** — 프로세스 재시작 시 `GET /api/v1/tables/{id}/state/snapshot` (§5.18) 으로 baseline 재로드 후 WS push 재적용
 
-### 2.4 성능 요구사항 — Foundation §6.4 SLO 정합
+### 2.4 성능 요구사항 — Foundation Ch.5 §B.4 SLO 정합
 
-| 항목 | 목표 | Foundation §6.4 매핑 | 비고 |
+| 항목 | 목표 | Foundation Ch.5 §B.4 매핑 | 비고 |
 |------|------|:--------------------:|------|
 | **WebSocket push 지연** | **< 100ms** | ✅ WS push SLO | CC → Lobby 실시간 갱신 |
 | **DB polling snapshot** | < 200ms (95th) + **1-5초** 주기 | ✅ DB polling SLO | baseline 로드. §5.18 구현 |
@@ -184,7 +185,7 @@ flowchart LR
 | crash 복구 시간 | snapshot 재로드 < 5초 | ✅ 재진입 SLO | §5.18.7 시퀀스 |
 | 가동 시간 | 99.5% (방송 시간 내) | — | 방송 중 다운타임 0 목표 |
 
-> **N PC + 중앙 서버 추가 고려사항** (Foundation §8.5 신설): 중앙 서버가 SPOF. LAN 장애 / 중앙 서버 다운 / 로컬 fallback 시나리오는 `docs/4. Operations/Network_Deployment.md` 및 `Back_Office/Operations.md §중앙 서버 SPOF DR` (후속 Phase C1) 참조.
+> **N PC + 중앙 서버 추가 고려사항** (Foundation Ch.6 Scene 4 — 복수 테이블 운영): 중앙 서버가 SPOF. LAN 장애 / 중앙 서버 다운 / 로컬 fallback 시나리오는 `docs/4. Operations/Network_Deployment.md` 및 `Back_Office/Operations.md §중앙 서버 SPOF DR` (후속 Phase C1) 참조.
 >
 > 비활성 조건: BO 서버 미실행 시 Lobby 접근 불가, CC는 로컬 버퍼로 제한 동작 (API-05 §6.4). DB 손상 시 자동 백업 복원 시도. LAN 단절 시 CC 로컬 모드, Lobby 읽기 전용.
 
