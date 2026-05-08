@@ -310,7 +310,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md` | Lifecycle & State Machine — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md` | Overview | team3 | internal | BS-06-00 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Stud_Games.md` | Stud Games | team3 | deprecated | BS-06-3X |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | deprecated | BS-06-00-triggers |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | deprecated | `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` | Triggers & Event Pipeline — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md` | Variants & Evaluation — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.4 Command Center/2.4 Command Center.md` | 2.4 Command Center | ci | generated | - |
@@ -331,7 +331,7 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-5act-naming-drift-2026-05-08.md` | NOTIFY-S1 — 5-Act 시퀀스 명칭 drift (Foundation vs 정본) | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-cc-identity-cascade-2026-05-07.md` | NOTIFY-S1 — CC v4.0 정체성 cascade가 Foundation §Ch.5.4 에 영향 | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-rfid-antenna-count-mismatch-2026-05-08.md` | NOTIFY-S1 — RFID 안테나 수 모순 (12 vs 24) | stream:S3 (Command Center) | notify | - |
-| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` | NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (HW 영향) | conductor | notify | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` | NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (Mock-only 자율 해소) | conductor | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-pr171-ci-failure-2026-05-08.md` | NOTIFY-S3 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | S-11 Lobby Hand History 자동화 UI wiring 요청 | - | - | - |

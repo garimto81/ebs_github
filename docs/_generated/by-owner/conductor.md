@@ -23,7 +23,7 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Backlog/AUDIT-Conductor-194-frontend-sister-cascade-2026-05-08.md` — AUDIT-Conductor-194 — Frontend 자매 영역 cascade (Login + Settings + Graphic_Editor)
 - `docs/2. Development/2.1 Frontend/Backlog/B-092-lobby-visual-screenshots-cascade-2026-05-05.md` — Lobby visual/screenshots — 신 디자인 7장 cascade + 본문 문서 정합 갱신
 - `docs/2. Development/2.1 Frontend/Backlog/NOTIFY-C1-frontend-non-lobby-identity-cascade-2026-05-07.md` — Phase C1 cascade — Frontend (Lobby 외) Lobby v3 / CC v4 정체성 LLM 전수 의미 정합 검토
-- `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` — NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (HW 영향)
+- `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` — NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (Mock-only 자율 해소)
 - `docs/2. Development/2.5 Shared/Authentication.md` — Authentication
 - `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` — Distributed Authentication Architecture
 - `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` — Token Lifecycle Sequences
