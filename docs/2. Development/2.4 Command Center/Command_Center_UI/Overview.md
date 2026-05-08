@@ -3,7 +3,7 @@ title: Overview
 owner: team4
 tier: internal
 legacy-id: BS-05-00
-last-updated: 2026-04-15
+last-updated: 2026-05-07
 ---
 
 # BS-05-00 Command Center — 개요
