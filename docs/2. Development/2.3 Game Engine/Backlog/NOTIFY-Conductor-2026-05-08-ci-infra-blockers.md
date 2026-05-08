@@ -6,6 +6,11 @@ filed: 2026-05-08
 detected-by: S8
 related-issue: "#167 (S8 consistency audit)"
 related-pr: "#180 (s8-engine consistency audit 2026-05-08)"
+filed-issues:
+  - "#183 — B1 workflow allowlist 에 S8/S7 미등록 (stream:conductor)"
+  - "#184 — B2 frontmatter owner 누락 10 파일 (stream:conductor)"
+  - "#185 — B3 2.1 Frontend.md skin-editor 5 broken links (stream:S2)"
+  - "#186 — B4 RIVE_Standards.md 2 broken image paths (stream:S1)"
 ---
 
 # NOTIFY-Conductor: CI 인프라 blocker 4건 (Wave 2 영향)
@@ -18,7 +23,7 @@ Wave 2 (S2/S3/S4/S7) PR 들도 동일 blocker 에 부딪힐 가능성 매우 높
 
 ## CI 실패 4건 (5 jobs)
 
-### B1 [HIGH] verify-scope / verify-phase — workflow config 에 S8 미등록
+### B1 [HIGH] verify-scope / verify-phase — workflow config 에 S8 미등록 → **Issue #183**
 
 **실패 메시지**:
 ```
@@ -32,7 +37,7 @@ verify-phase: KeyError: 'S8'
 
 **책임**: Conductor (workflow + team_assignment 갱신 권한)
 
-### B2 [HIGH] Validate frontmatter — orchestration / _archive 파일 10개 owner 누락
+### B2 [HIGH] Validate frontmatter — orchestration / _archive 파일 10개 owner 누락 → **Issue #184**
 
 **실패 메시지**: `python tools/spec_aggregate.py --check` 가 다음 10개 파일에서 owner 누락 검출:
 
@@ -55,7 +60,7 @@ verify-phase: KeyError: 'S8'
 
 **책임**: Conductor (orchestration 디렉토리 소유)
 
-### B3 [MEDIUM] Validate relative links (team1) — 2.1 Frontend/2.1 Frontend.md 5 broken links
+### B3 [MEDIUM] Validate relative links (team1) — 2.1 Frontend/2.1 Frontend.md 5 broken links → **Issue #185**
 
 **실패 메시지**:
 ```
@@ -68,7 +73,7 @@ docs/2. Development/2.1 Frontend/2.1 Frontend.md:94 → skin-editor-layout-balan
 
 **책임**: S2 Lobby (2.1 Frontend 영역)
 
-### B4 [MEDIUM] Validate relative links (conductor) — RIVE_Standards.md 2 broken image links
+### B4 [MEDIUM] Validate relative links (conductor) — RIVE_Standards.md 2 broken image links → **Issue #186**
 
 **실패 메시지**:
 ```
