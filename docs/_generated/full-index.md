@@ -27,6 +27,7 @@ tier: generated
 | `docs/2. Development/2. Development.md` | 2. Development | conductor | internal | - |
 | `docs/2. Development/2.1 Frontend/2.1 Frontend.md` | 2.1 Frontend | ci | generated | - |
 | `docs/2. Development/2.1 Frontend/Backlog.md` | Backlog | - | internal | - |
+| `docs/2. Development/2.1 Frontend/Backlog/AUDIT-Conductor-194-frontend-sister-cascade-2026-05-08.md` | AUDIT-Conductor-194 — Frontend 자매 영역 cascade (Login + Settings + Graphic_Editor) | conductor | internal | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-068-team1-frontend-Quasar-프로젝트-실제-초기화.md` | team1-frontend Quasar 프로젝트 실제 초기화 | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-075-React-아카이브-Quasar-이식-B-068-하위.md` | React 아카이브 → Quasar 이식 (B-068 하위) | - | - | - |
 | `docs/2. Development/2.1 Frontend/Backlog/B-076-QA-LOBBY-06-기반-Vitest-Playwright-셋업.md` | QA-LOBBY-06 기반 Vitest + Playwright 셋업 | - | - | - |
@@ -330,6 +331,7 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-5act-naming-drift-2026-05-08.md` | NOTIFY-S1 — 5-Act 시퀀스 명칭 drift (Foundation vs 정본) | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-cc-identity-cascade-2026-05-07.md` | NOTIFY-S1 — CC v4.0 정체성 cascade가 Foundation §Ch.5.4 에 영향 | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-rfid-antenna-count-mismatch-2026-05-08.md` | NOTIFY-S1 — RFID 안테나 수 모순 (12 vs 24) | stream:S3 (Command Center) | notify | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` | NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (HW 영향) | conductor | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-pr171-ci-failure-2026-05-08.md` | NOTIFY-S3 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | S-11 Lobby Hand History 자동화 UI wiring 요청 | - | - | - |
