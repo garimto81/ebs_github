@@ -44,6 +44,50 @@ def find_pr(team):
     return prs[0] if prs else None
 
 
+def _publish_done_signal(team, pr_num):
+    """v11 Phase B: PR ready 후 broker 에 stream:S{N} DONE 신호 발행.
+
+    의존하는 stream 의 subscribe(topic="stream:S{N}") 가 즉시 wake.
+    broker dead → silent skip (v10.3 호환).
+    """
+    import socket as _socket
+    s = _socket.socket(_socket.AF_INET, _socket.SOCK_STREAM)
+    s.settimeout(1.0)
+    try:
+        s.connect(("127.0.0.1", 7383))
+    except OSError:
+        return  # broker dead, silent skip
+    finally:
+        s.close()
+
+    try:
+        import asyncio as _asyncio
+        from mcp import ClientSession  # type: ignore
+        from mcp.client.streamable_http import streamablehttp_client  # type: ignore
+
+        async def _run():
+            async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
+                async with ClientSession(r, w) as sess:
+                    await sess.initialize()
+                    await sess.call_tool("publish_event", {
+                        "topic": f"stream:{team['team_id']}",
+                        "payload": {
+                            "status": "DONE",
+                            "pr": pr_num,
+                            "branch": team.get("branch", ""),
+                        },
+                        "source": team["team_id"],
+                    })
+
+        try:
+            _asyncio.run(_asyncio.wait_for(_run(), timeout=3.0))
+            print(f"✓ broker: published stream:{team['team_id']} DONE (PR #{pr_num})")
+        except Exception as e:
+            print(f"⚠ broker publish failed: {e} (non-fatal)")
+    except Exception as e:
+        print(f"⚠ broker import failed: {e} (non-fatal)")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--message', default='Stream work complete')
@@ -81,6 +125,9 @@ def main():
         '--auto', '--squash', '--delete-branch'
     ])
     print(f"✓ Auto-merge enabled for PR #{pr_num}")
+
+    # 4.5 v11: publish_event(stream:S{N}, status=DONE) — broker 가 살아있을 때만
+    _publish_done_signal(team, pr_num)
 
     # 5. Worktree cleanup (optional)
     if not args.no_cleanup:

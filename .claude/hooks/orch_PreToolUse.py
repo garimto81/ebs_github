@@ -122,8 +122,87 @@ def check_dependency_status(team_data):
     return False
 
 
-def cascade_advisory(target_rel, repo_root):
-    """docs edit 시 영향 문서 list 를 stderr 에 advisory 로 출력 (non-blocking)."""
+def _broker_alive():
+    """Quick TCP probe (1s) — broker on 127.0.0.1:7383."""
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1.0)
+    try:
+        s.connect(("127.0.0.1", 7383))
+        return True
+    except OSError:
+        return False
+    finally:
+        s.close()
+
+
+def _broker_publish(topic, payload, source):
+    """v11 fan-out: synchronous publish_event via mcp client. Silent skip if broker dead.
+
+    Best-effort, non-blocking semantically — failure does not affect Edit/Write flow.
+    """
+    try:
+        import asyncio as _asyncio
+        from mcp import ClientSession  # type: ignore
+        from mcp.client.streamable_http import streamablehttp_client  # type: ignore
+
+        async def _run():
+            async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
+                async with ClientSession(r, w) as s:
+                    await s.initialize()
+                    await s.call_tool("publish_event", {
+                        "topic": topic, "payload": payload, "source": source,
+                    })
+
+        # Use isolated loop (hook subprocess context — no existing loop)
+        try:
+            _asyncio.run(_asyncio.wait_for(_run(), timeout=2.0))
+        except (TimeoutError, _asyncio.TimeoutError, ConnectionError, OSError):
+            pass
+    except Exception:
+        pass  # silent skip
+
+
+def _broker_acquire_lock(resource, holder, ttl_sec=60):
+    """v11 L5: cascade lock. Returns (acquired_bool, current_holder_str_or_none)."""
+    try:
+        import asyncio as _asyncio
+        import json as _json
+        from mcp import ClientSession  # type: ignore
+        from mcp.client.streamable_http import streamablehttp_client  # type: ignore
+
+        async def _run():
+            async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
+                async with ClientSession(r, w) as s:
+                    await s.initialize()
+                    res = await s.call_tool("acquire_lock", {
+                        "resource": resource, "holder": holder, "ttl_sec": ttl_sec,
+                    })
+                    return _json.loads(res.content[0].text) if res.content else None
+
+        try:
+            data = _asyncio.run(_asyncio.wait_for(_run(), timeout=2.0))
+            if data:
+                return data.get("acquired", False), data.get("holder")
+        except Exception:
+            pass
+    except Exception:
+        pass
+    return True, None  # broker dead → optimistic allow (silent skip)
+
+
+def _is_cascade_resource(target_rel):
+    """v11: is this a Product SSOT cascade resource?"""
+    return target_rel.startswith("docs/1. Product/") and target_rel.endswith(".md")
+
+
+def cascade_advisory(target_rel, repo_root, team_id=None):
+    """v11: docs edit 시 영향 문서 list 를 stderr advisory + broker fan-out + cascade lock.
+
+    - stderr 출력 (사람용, v10.3 유지)
+    - publish_event(cascade:{file}, impacted=[...]) (v11 신규, broker dead silent skip)
+    - acquire_lock(cascade:{file}) (v11 L5, Product SSOT 만)
+    """
     if not target_rel.startswith("docs/") or not target_rel.endswith(".md"):
         return
     discovery = repo_root / "tools" / "doc_discovery.py"
@@ -151,12 +230,36 @@ def cascade_advisory(target_rel, repo_root):
                     seen.add(p2)
                     paths.append(p2)
         if paths:
+            # (a) stderr 출력 (v10.3 유지)
             sys.stderr.write(chr(10) + "[doc-cascade] Editing '" + target_rel + "' may affect " + str(len(paths)) + " docs:" + chr(10))
             for q in paths[:8]:
                 sys.stderr.write("     - " + q + chr(10))
             if len(paths) > 8:
                 sys.stderr.write("     ... +" + str(len(paths) - 8) + " more" + chr(10))
             sys.stderr.write("   (advisory only -- not blocked)" + chr(10) + chr(10))
+
+            # (b) v11 broker fan-out (silent skip if broker dead)
+            if team_id and _broker_alive():
+                _broker_publish(
+                    topic="cascade:" + target_rel,
+                    payload={"impacted": paths, "editor": team_id},
+                    source=team_id,
+                )
+
+        # (c) v11 L5 cascade lock — Product SSOT 만
+        if team_id and _is_cascade_resource(target_rel) and _broker_alive():
+            ok, current_holder = _broker_acquire_lock(
+                resource="cascade:" + target_rel,
+                holder=team_id,
+                ttl_sec=60,
+            )
+            if not ok:
+                sys.stderr.write(
+                    chr(10) + "⛔ BLOCK: cascade lock held by '" + str(current_holder) + "'" + chr(10) +
+                    "   resource: cascade:" + target_rel + chr(10) +
+                    "   wait for release or retry in 60s (TTL)" + chr(10)
+                )
+                sys.exit(2)
     except (subprocess.TimeoutExpired, OSError):
         pass
 
@@ -210,8 +313,8 @@ def main():
     if not target_rel:
         sys.exit(0)
 
-    # Cascade advisory (non-blocking, before any block check)
-    cascade_advisory(target_rel, get_repo_root())
+    # Cascade advisory + v11 broker fan-out + cascade lock (Product SSOT)
+    cascade_advisory(target_rel, get_repo_root(), team_data.get('team_id'))
 
     # 의존성 차단 검사 (가장 우선)
     if check_dependency_status(team_data):
