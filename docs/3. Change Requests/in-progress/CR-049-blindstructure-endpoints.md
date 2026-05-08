@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-14 |
 | **처리일** | 2026-04-14 |
 | **영향팀** | team1, team3 |
-| **변경 대상** | `contracts/api/API-01-backend-api.md`<br/>`contracts/data/DATA-02-entities.md` |
+| **변경 대상** | `Backend_HTTP.md` (legacy-id: API-01)<br/>`contracts/data/DATA-02-entities.md` |
 | **변경 유형** | add |
 | **리스크 등급** | MEDIUM |
 
@@ -25,7 +25,7 @@ WSOP LIVE Staff App(Page 1603666061)은 BlindStructure 템플릿 기반 CRUD + F
 
 ## 적용된 파일
 
-- `contracts/api/API-01-backend-api.md`
+- `Backend_HTTP.md` (legacy-id: API-01)
 - `contracts/data/DATA-02-entities.md`
 
 ## 원본 Draft

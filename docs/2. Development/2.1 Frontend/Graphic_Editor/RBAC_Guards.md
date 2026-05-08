@@ -162,6 +162,6 @@ CC 서비스 계정 토큰 발급은 `BS-01-auth.md` 참조.
 ## 8. 연관 문서
 
 - `BS-01-auth.md §RBAC` — 역할 정의
-- `API-06-auth-session.md` — JWT 페이로드 구조
-- `API-07-graphic-editor.md §RBAC` — 엔드포인트별 최소 역할
+- `Auth_and_Session.md` (legacy-id: API-06) — JWT 페이로드 구조
+- `Graphic_Editor_API.md §RBAC` (legacy-id: API-07) — 엔드포인트별 최소 역할
 - `BS-08-01~03` — Admin 동작 플로우

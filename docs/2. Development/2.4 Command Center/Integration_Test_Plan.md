@@ -224,7 +224,7 @@ push / PR
 |------|------|
 | **CC 테스트** | `MockWebSocketChannel` — BO 이벤트 에뮬레이션 |
 | **Lobby 테스트** | MSW WebSocket handler — BO 이벤트 에뮬레이션 |
-| **이벤트 타입** | BS-06-00-triggers.md §2.4 BO 소스 이벤트 전체 |
+| **이벤트 타입** | `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) §2.4 BO 소스 이벤트 전체 |
 
 ---
 

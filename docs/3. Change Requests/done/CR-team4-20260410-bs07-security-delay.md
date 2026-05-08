@@ -11,14 +11,14 @@ legacy-id: CCR-DRAFT-team4-20260410-bs07-security-delay
 - **제안팀**: team4
 - **제안일**: 2026-04-10
 - **영향팀**: [team1, team2]
-- **변경 대상 파일**: contracts/specs/BS-07-overlay/BS-07-07-security-delay.md, contracts/api/API-04-overlay-output.md
+- **변경 대상 파일**: contracts/specs/BS-07-overlay/BS-07-07-security-delay.md, contracts/api/`Overlay_Output_Events.md` (legacy-id: API-04)
 - **변경 유형**: add
 - **변경 근거**: 라이브 포커 방송에서 **Security Delay**(방송 지연)는 치트 방지를 위한 필수 기능이다. 시청자(또는 공모자)가 실시간 방송을 보면서 플레이어와 통신하여 카드 정보를 전달할 수 없도록, 홀카드/액션을 **N초 지연 후** 방송에 표시한다. WSOP 원본(`EBS UI Design.md` §Delay)과 PokerGFX는 30~60초 지연을 기본으로 운영한다. 현재 API-04 Overlay Output에 출력 파이프라인이 정의되어 있지만 Security Delay 메커니즘이 없어 EBS가 프로덕션 방송에 사용될 수 없다. 본 CCR은 이 공백을 메운다.
 
 ## 변경 요약
 
 1. `BS-07-07-security-delay.md` 신규: Security Delay 원리, 버퍼 아키텍처, 지연 설정, 예외 처리
-2. `API-04-overlay-output.md §Security Delay` 섹션 추가: OutputEvent가 delay buffer를 거치는 흐름
+2. `Overlay_Output_Events.md §Security Delay` (legacy-id: API-04) 섹션 추가: OutputEvent가 delay buffer를 거치는 흐름
 
 ## 변경 내용
 
@@ -27,7 +27,7 @@ legacy-id: CCR-DRAFT-team4-20260410-bs07-security-delay
 ```markdown
 # BS-07-07 Security Delay (홀카드 공개 지연)
 
-> **참조**: API-04-overlay-output, BS-07-06-layer-boundary §반자동 §Action Badge
+> **참조**: `Overlay_Output_Events.md` (legacy-id: API-04), BS-07-06-layer-boundary §반자동 §Action Badge
 
 ## 배경
 
@@ -169,8 +169,8 @@ Backstage에 즉시 반영되지만, Broadcast는 `delay_seconds` 후 반영.
 
 ## 참조
 
-- API-04-overlay-output §Security Delay (이하 §2 추가)
-- BS-03-01-outputs §Output 설정 (delay_seconds 필드)
+- `Overlay_Output_Events.md` (legacy-id: API-04) §Security Delay (이하 §2 추가)
+- `Settings/Outputs.md` (legacy-id: BS-03-01) §Output 설정 (delay_seconds 필드)
 - BS-07-06-layer-boundary §Action Badge 반자동 (Security Delay의 운영 개입점)
 ```
 

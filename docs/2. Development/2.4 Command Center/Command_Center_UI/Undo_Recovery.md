@@ -22,7 +22,7 @@ CC는 Event Sourcing 아키텍처를 사용하여 모든 게임 이벤트를 순
 
 > **v4.0 컨텍스트** (2026-05-07): Undo (Ctrl+Z) 는 v4.0 5-Act 시퀀스의 **Act 2~3 (PreFlop / Flop / Turn / River) 액션** 에 한해 가능하다. Act 4 (Showdown) 진입 후 핸드 결과 보호 — Undo 차단. Ctrl+Z 는 v4.0 6 키 (N·F·C·B·A·M) 외 별도 단축키.
 
-> 참조: BS-00 §6 이벤트 명명 규약, BS-06-00-triggers.md §2.1 Undo 이벤트, `Hand_Lifecycle.md §"5-Act 시퀀스"`.
+> 참조: BS-00 §6 이벤트 명명 규약, `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) §2.1 Undo 이벤트, `Hand_Lifecycle.md §"5-Act 시퀀스"`.
 
 ---
 
@@ -230,5 +230,5 @@ CC는 Event Sourcing 아키텍처를 사용하여 모든 게임 이벤트를 순
 | BS-05-01 핸드 라이프사이클 | Undo 시 HandFSM 상태 복원 |
 | BS-05-02 액션 버튼 | Undo 후 버튼 활성 상태 재계산 |
 | BS-05-04 수동 카드 입력 | 카드 입력 Undo 시 그리드 복원 |
-| BS-06-01-holdem-lifecycle | Engine 상태 복원 규칙 |
+| `Holdem/Lifecycle.md` (legacy-id: BS-06-01) | Engine 상태 복원 규칙 |
 | BS-07-overlay | Undo 시 Overlay 화면 동기 복원 |

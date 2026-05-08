@@ -11,9 +11,9 @@ legacy-id: CCR-DRAFT-team1-20260414-deadlink-cleanup
 - **제안팀**: team1
 - **제안일**: 2026-04-14
 - **영향팀**: [team4]
-- **변경 대상 파일**: contracts/api/API-07-graphic-editor.md
+- **변경 대상 파일**: contracts/api/`Graphic_Editor_API.md` (legacy-id: API-07)
 - **변경 유형**: modify
-- **변경 근거**: team-policy v4 이관(BS-02/03/08 → team1-frontend/specs/)에도 불구하고 contracts/api/API-07-graphic-editor.md 가 구 경로 `contracts/specs/BS-08-graphic-editor/` 를 하드코딩 중. dead link. 원안 draft 는 docs/backlog, integration-tests, team4-cc 도 포함했으나 CCR 시스템은 contracts/ 범위 전용이므로 contracts 타겟 1건으로 축소. 그 외 경로는 각 팀/Conductor 별도 세션에서 직접 편집.
+- **변경 근거**: team-policy v4 이관(BS-02/03/08 → team1-frontend/specs/)에도 불구하고 contracts/api/`Graphic_Editor_API.md` (legacy-id: API-07) 가 구 경로 `contracts/specs/BS-08-graphic-editor/` 를 하드코딩 중. dead link. 원안 draft 는 docs/backlog, integration-tests, team4-cc 도 포함했으나 CCR 시스템은 contracts/ 범위 전용이므로 contracts 타겟 1건으로 축소. 그 외 경로는 각 팀/Conductor 별도 세션에서 직접 편집.
 - **리스크 등급**: LOW
 
 ## 변경 요약
@@ -33,7 +33,7 @@ legacy-id: CCR-DRAFT-team1-20260414-deadlink-cleanup
 -| Settings | consumes | ../../contracts/specs/BS-03-settings/ |
 +| Settings | consumes | ../team1-frontend/specs/BS-03-settings/ |
 
- # contracts/api/API-07-graphic-editor.md
+ # contracts/api/`Graphic_Editor_API.md` (legacy-id: API-07)
 -행동 명세: contracts/specs/BS-08-graphic-editor/BS-08-00-overview.md
 +행동 명세: ../team1-frontend/specs/BS-08-graphic-editor/BS-08-00-overview.md
 

@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260410-jwt-expiry
 - **제안팀**: team2
 - **제안일**: 2026-04-10
 - **영향팀**: [team1]
-- **변경 대상 파일**: contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/API-06-auth-session.md
+- **변경 대상 파일**: contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/`Auth_and_Session.md` (legacy-id: API-06)
 - **변경 유형**: modify
 - **변경 근거**: WSOP Staff App `Auth.md` 는 JWT `expires_in: 43200초(12h)` 를 운영 기준으로 사용한다. EBS의 현재 BS-01에는 "Access 15분, Refresh 7일"이 명시되어 있는데(Phase 1 초안), 14-16시간 연속 방송 시나리오에서 Access 15분은 과도한 refresh 오버헤드(방송 중 분당 4회 refresh × 운영자 N명)와 WebSocket 재연결 리스크를 유발한다. 동시에 너무 길면 토큰 탈취 시 노출 창이 커진다. 운영 환경에 맞춰 Phase별 정책을 명시적으로 정한다.
 

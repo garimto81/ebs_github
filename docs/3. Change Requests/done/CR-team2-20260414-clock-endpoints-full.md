@@ -11,20 +11,20 @@ legacy-id: CCR-DRAFT-team2-20260414-clock-endpoints-full
 - **제안팀**: team2
 - **제안일**: 2026-04-14
 - **영향팀**: [team1, team4]
-- **변경 대상 파일**: contracts/api/API-01-backend-api.md, contracts/specs/BS-06-game-engine/BS-06-00-triggers.md, contracts/api/API-05-websocket-events.md
+- **변경 대상 파일**: contracts/api/`Backend_HTTP.md` (legacy-id: API-01), contracts/specs/BS-06-game-engine/`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))), contracts/api/`WebSocket_Events.md` (legacy-id: API-05)
 - **변경 유형**: add
 - **변경 근거**: 현행 API-01 §5.6.1은 Clock 엔드포인트 5종(GET/Start/Pause/Resume/PUT)만 정의. WSOP LIVE Staff App(`/전광판 API`, Page 1651343762; `Clock System Architecture and Operations`, Page 3728441546)은 10종을 제공하며 EBS 정식 전체 개발은 WSOP LIVE 패턴에 정렬해야 함. 누락 5종(Restart/Detail/ReloadPage/AdjustStack + Flight Complete/Cancel)은 토너먼트 운영 필수 기능.
 
 ## 변경 요약
 
-1. `contracts/api/API-01-backend-api.md §5.6.1 Clock` 에 엔드포인트 5종 추가 (총 10종)
-2. `contracts/api/API-01-backend-api.md §5.6 Flights` 에 Complete/Cancel 2종 추가
-3. `contracts/specs/BS-06-game-engine/BS-06-00-triggers.md §2.5 BO Clock 트리거` 에 ClockDetailChanged/ClockReloadRequested/StackAdjusted/EventFlightCompleted/EventFlightCanceled 이벤트 추가
-4. `contracts/api/API-05-websocket-events.md §4.2` 에 상응 WebSocket 이벤트 명세 추가
+1. `contracts/api/`Backend_HTTP.md` (legacy-id: API-01) §5.6.1 Clock` 에 엔드포인트 5종 추가 (총 10종)
+2. `contracts/api/`Backend_HTTP.md` (legacy-id: API-01) §5.6 Flights` 에 Complete/Cancel 2종 추가
+3. `contracts/specs/BS-06-game-engine/`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) §2.5 BO Clock 트리거` 에 ClockDetailChanged/ClockReloadRequested/StackAdjusted/EventFlightCompleted/EventFlightCanceled 이벤트 추가
+4. `contracts/api/`WebSocket_Events.md` (legacy-id: API-05) §4.2` 에 상응 WebSocket 이벤트 명세 추가
 
 ## Diff 초안
 
-### contracts/api/API-01-backend-api.md §5.6.1 (Clock)
+### contracts/api/`Backend_HTTP.md` (legacy-id: API-01) §5.6.1 (Clock)
 
 ```diff
  #### 5.6.1 Clock — Tournament Timer
@@ -78,7 +78,7 @@ legacy-id: CCR-DRAFT-team2-20260414-clock-endpoints-full
 +> `reason` 감사 로그 기록용. `stack_adjusted` 이벤트 발행.
 ```
 
-### contracts/api/API-01-backend-api.md §5.6 (Flights — Complete/Cancel 추가)
+### contracts/api/`Backend_HTTP.md` (legacy-id: API-01) §5.6 (Flights — Complete/Cancel 추가)
 
 ```diff
  | DELETE | `/flights/:id` | Flight 영구 제거 | Admin |
@@ -100,7 +100,7 @@ legacy-id: CCR-DRAFT-team2-20260414-clock-endpoints-full
 +> Status 전이: {Created, Announce, Registering, Running} → Canceled. Completed 상태에서는 호출 불가(409). 활성 CC 세션 종료 브로드캐스트 동반.
 ```
 
-### contracts/specs/BS-06-game-engine/BS-06-00-triggers.md §2.5
+### contracts/specs/BS-06-game-engine/`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) §2.5
 
 ```diff
  | `ClockStarted` | Admin/Operator (Lobby) | `lobby_monitor` + `cc_event` | 토너먼트 타이머 시작 → ClockFSM: STOPPED → RUNNING |
@@ -115,7 +115,7 @@ legacy-id: CCR-DRAFT-team2-20260414-clock-endpoints-full
 +| `tournament_status_changed` | Admin | `lobby_monitor` + `cc_event` | EventFlightStatus 전이(Created/Announce/Registering/Running/Completed/Canceled) 시 발행 |
 ```
 
-### contracts/api/API-05-websocket-events.md §4.2
+### contracts/api/`WebSocket_Events.md` (legacy-id: API-05) §4.2
 
 ```diff
  ### 4.2 Lobby 전용 이벤트

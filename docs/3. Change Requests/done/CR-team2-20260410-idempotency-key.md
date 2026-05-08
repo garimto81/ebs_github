@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260410-idempotency-key
 - **제안팀**: team2
 - **제안일**: 2026-04-10
 - **영향팀**: [team1, team4]
-- **변경 대상 파일**: contracts/api/API-01-backend-api.md, contracts/api/API-05-websocket-events.md, contracts/api/API-06-auth-session.md
+- **변경 대상 파일**: contracts/api/`Backend_HTTP.md` (legacy-id: API-01), contracts/api/`WebSocket_Events.md` (legacy-id: API-05), contracts/api/`Auth_and_Session.md` (legacy-id: API-06)
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE Confluence 검토 결과(`Chip Master.md`의 2-phase confirmation, `Waiting API.md`의 seat draw 재시도 케이스) — 네트워크 재시도·운영자 더블 클릭·클라이언트 크래시 후 재전송 시 동일 요청이 중복 적용되어 좌석/칩/토큰 상태가 불일치하는 사고를 방지하려면 멱등성 계약이 필수. 현재 API-01~06 계약에는 관련 헤더/응답이 없음.
 

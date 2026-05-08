@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-10 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team1 |
-| **변경 대상** | `contracts/specs/BS-01-auth/BS-01-auth.md`<br/>`contracts/api/API-06-auth-session.md` |
+| **변경 대상** | `contracts/specs/BS-01-auth/BS-01-auth.md`<br/>`Auth_and_Session.md` (legacy-id: API-06) |
 | **변경 유형** | modify |
 
 ## 변경 근거

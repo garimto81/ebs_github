@@ -197,7 +197,7 @@ Skin Editor 는 Settings 가 아닌 **Lobby 헤더 `[Graphic Editor]` 독립 진
 
 ## 6. Active Skin 관리 (CCR-025)
 
-> **참조**: `BS-08-03-activate-broadcast`, `BS-07-03-skin-loading`, `API-07-graphic-editor`.
+> **참조**: `BS-08-03-activate-broadcast`, `BS-07-03-skin-loading`, `Graphic_Editor_API.md` (legacy-id: API-07).
 
 Admin은 GFX 탭에서 현재 테이블에 적용된 **활성 스킨**을 조회하고 전환할 수 있다.
 

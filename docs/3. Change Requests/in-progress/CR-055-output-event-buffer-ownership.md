@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-14 |
 | **처리일** | 2026-04-14 |
 | **영향팀** | team4 |
-| **변경 대상** | `contracts/api/API-04-overlay-output.md` |
+| **변경 대상** | `Overlay_Output_Events.md` (legacy-id: API-04) |
 | **변경 유형** | modify |
 | **리스크 등급** | MEDIUM |
 
@@ -25,7 +25,7 @@ GAP-GE-009 — API-04 §3이 OutputEventBuffer 의사코드(Security Delay 0~120
 
 ## 적용된 파일
 
-- `contracts/api/API-04-overlay-output.md`
+- `Overlay_Output_Events.md` (legacy-id: API-04)
 
 ## 원본 Draft
 

@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260414-rate-limit-security
 - **제안팀**: team2
 - **제안일**: 2026-04-14
 - **영향팀**: [team1, team4]
-- **변경 대상 파일**: contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/API-01-backend-api.md
+- **변경 대상 파일**: contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/`Backend_HTTP.md` (legacy-id: API-01)
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE 엔드포인트별 Rate Limit 정책 문서 미발견(조사 결과). WSOP는 IP whitelist + 비밀번호 10회 실패 잠금만 명시. 정식 전체 개발에서 OWASP API Security Top 10 + WSOP LIVE 알려진 정책 조합으로 EBS rate limit 정책 명시화 필요. 현재 contracts에 rate limit 정의 전무 → 보안 공백.
 

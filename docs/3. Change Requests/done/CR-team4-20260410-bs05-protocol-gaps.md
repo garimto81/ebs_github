@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team4-20260410-bs05-protocol-gaps
 - **제안팀**: team4
 - **제안일**: 2026-04-10
 - **영향팀**: [team2]
-- **변경 대상 파일**: contracts/specs/BS-05-command-center/BS-05-00-overview.md, contracts/specs/BS-05-command-center/BS-05-01-hand-lifecycle.md, contracts/specs/BS-05-command-center/BS-05-02-action-buttons.md, contracts/specs/BS-05-command-center/BS-05-03-seat-management.md, contracts/specs/BS-05-command-center/BS-05-04-manual-card-input.md, contracts/api/API-05-websocket-events.md
+- **변경 대상 파일**: contracts/specs/BS-05-command-center/BS-05-00-overview.md, contracts/specs/BS-05-command-center/BS-05-01-hand-lifecycle.md, contracts/specs/BS-05-command-center/BS-05-02-action-buttons.md, contracts/specs/BS-05-command-center/BS-05-03-seat-management.md, contracts/specs/BS-05-command-center/BS-05-04-manual-card-input.md, contracts/api/`WebSocket_Events.md` (legacy-id: API-05)
 - **변경 유형**: modify
 - **변경 근거**: WSOP 원본(`EBS UI Design Action Tracker.md` §6)에 명시된 서버 프로토콜 이름(SendPlayerFold, SendPlayerBet, SendPlayerAllIn, UndoLastAction, WriteGameInfo, ActionOnResponse)이 BS-05에 누락되어 있고, 이전 critic 분석에서 식별된 내부 모호성 6건(W2, W6, W8, W9, W10, W12)이 구현 리스크로 남아 있음. 특히 BO 연결 상실 시 복구 규칙 부재는 라이브 방송 사고의 직접 원인이 될 수 있음.
 
@@ -36,7 +36,7 @@ BS-05-02와 API-05 사이에 Cross-reference를 강화하여 WSOP 조직 내 공
 
 ### 1. BS-05-02-action-buttons.md §서버 프로토콜 매핑 (신규 섹션)
 
-> **참조**: API-05-websocket-events.md §이벤트 카탈로그의 Cross-reference로 연결. BS-05는 운영자 관점(버튼 → 프로토콜), API-05는 전송 관점(프로토콜 스키마)으로 역할 분리.
+> **참조**: `WebSocket_Events.md` (legacy-id: API-05) §이벤트 카탈로그의 Cross-reference로 연결. BS-05는 운영자 관점(버튼 → 프로토콜), API-05는 전송 관점(프로토콜 스키마)으로 역할 분리.
 
 #### 버튼 → 서버 프로토콜 매핑
 
@@ -200,7 +200,7 @@ HandFSM (BS-06-01에 정의, Table == LIVE일 때만 활성)
 
 +## 6. 서버 프로토콜 매핑
 +
-+> 참조: API-05-websocket-events.md §이벤트 카탈로그
++> 참조: `WebSocket_Events.md` (legacy-id: API-05) §이벤트 카탈로그
 +
 +| 버튼 | CC → Server | 필드 |
 +|------|-----------|------|

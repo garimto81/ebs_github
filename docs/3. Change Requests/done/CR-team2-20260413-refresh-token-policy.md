@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260413-refresh-token-policy
 - **제안팀**: team2
 - **제안일**: 2026-04-13
 - **영향팀**: [team1]
-- **변경 대상 파일**: contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/API-06-auth-session.md
+- **변경 대상 파일**: contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/`Auth_and_Session.md` (legacy-id: API-06)
 - **변경 유형**: modify
 - **변경 근거**: BS-01에서 "Refresh Token은 HttpOnly Cookie"로 정의하고 있으나, API-06 `POST /auth/login` 응답에 `refresh_token` 필드가 JSON body에 포함되어 있어 모순. WSOP LIVE Staff App API를 확인한 결과 WSOP는 HttpOnly Cookie 방식을 사용. EBS는 개발 편의와 보안의 절충을 위해 환경별 조건부 방식을 채택.
 

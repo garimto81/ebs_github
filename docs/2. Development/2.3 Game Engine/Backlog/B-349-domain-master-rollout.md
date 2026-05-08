@@ -28,7 +28,7 @@ related-spec:
 | Phase | 도메인 마스터 | 입력 | 출력 | 압축률 | PR |
 |:-----:|------------|:----:|:----:|:------:|:--:|
 | 1 | Lifecycle_and_State_Machine.md | BS-06-01/10 + Overview lifecycle 발췌 | 1,176 | -4% (메타 +) | #7 ✅ |
-| 2 | Triggers_and_Event_Pipeline.md | BS-06-00-triggers/04/09/12 | 1,836 | 19% | #9 ✅ |
+| 2 | Triggers_and_Event_Pipeline.md | `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))/04/09/12 | 1,836 | 19% | #9 ✅ |
 | 3 | Betting_and_Pots.md | BS-06-02/03/06/07 | 1,706 | 38% | #12 ✅ |
 | 4 | Variants_and_Evaluation.md | BS-06-05/08/1X/2X/3X + Eval_Ref | 1,583 | 37% | #14 (auto-merge) |
 | **합계** | 4 마스터 | ~8,622 줄 | **6,301 줄** | **27% 평균** | 4 PR |

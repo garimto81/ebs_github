@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-14 |
 | **처리일** | 2026-04-14 |
 | **영향팀** | team1, team4 |
-| **변경 대상** | `contracts/data/DATA-02-entities.md`<br/>`contracts/data/DATA-04-db-schema.md`<br/>`contracts/api/API-01-backend-api.md` |
+| **변경 대상** | `contracts/data/DATA-02-entities.md`<br/>`contracts/data/DATA-04-db-schema.md`<br/>`Backend_HTTP.md` (legacy-id: API-01) |
 | **변경 유형** | add |
 | **리스크 등급** | HIGH |
 
@@ -27,7 +27,7 @@ WSOP LIVE Staff App 계층(Series→Event→EventFlight, Page 1599537917)에서 
 
 - `contracts/data/DATA-02-entities.md`
 - `contracts/data/DATA-04-db-schema.md`
-- `contracts/api/API-01-backend-api.md`
+- `Backend_HTTP.md` (legacy-id: API-01)
 
 ## 원본 Draft
 

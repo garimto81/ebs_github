@@ -262,6 +262,6 @@ Admin이 Settings에서 스킨 변경
 |------|------|
 | `Elements.md` (legacy-id: BS-07-01) | 스킨이 정의하는 요소 위치/스타일 |
 | `Animations.md` (legacy-id: BS-07-02) | 스킨의 animations 섹션이 기본 속도 오버라이드 |
-| `BS-06-00-REF-game-engine-spec.md §6` | DisplayConfig, skin_transition_type |
+| `Behavioral_Specs/Overview.md §6` (legacy-id: BS-06-00) | DisplayConfig, skin_transition_type |
 | `BS-03-settings/` | 스킨 선택 UI |
 | Feature Catalog SK-001~016 | Skin Editor 기능 |

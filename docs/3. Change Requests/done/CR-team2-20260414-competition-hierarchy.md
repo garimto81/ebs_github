@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260414-competition-hierarchy
 - **제안팀**: team2
 - **제안일**: 2026-04-14
 - **영향팀**: [team1, team4]
-- **변경 대상 파일**: contracts/data/DATA-02-entities.md, contracts/data/DATA-04-db-schema.md, contracts/api/API-01-backend-api.md
+- **변경 대상 파일**: contracts/data/DATA-02-entities.md, contracts/data/DATA-04-db-schema.md, contracts/api/`Backend_HTTP.md` (legacy-id: API-01)
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE Staff App 계층(Series→Event→EventFlight, Page 1599537917)에서 Competition은 Series 상위 실체가 아니라 Series 분류 태그(`CompetitionType` enum, Page 1960411325). EBS 현행 `competitions` 테이블 + §5.3 Competitions CRUD 5종은 불필요한 중간 계층. WSOP LIVE 패턴에 정렬 필요. 단, 기존 competitions 테이블은 Phase 1 호환용으로 deprecated 표기 유지, 신규 API 접근은 차단.
 
@@ -74,7 +74,7 @@ legacy-id: CCR-DRAFT-team2-20260414-competition-hierarchy
 +CREATE INDEX idx_event_flights_status ON event_flights(status);
 ```
 
-### contracts/api/API-01-backend-api.md §5.3 Competitions (deprecated 표기)
+### contracts/api/`Backend_HTTP.md` (legacy-id: API-01) §5.3 Competitions (deprecated 표기)
 
 ```diff
  ### 5.3 Competitions — 대회 브랜드
@@ -84,7 +84,7 @@ legacy-id: CCR-DRAFT-team2-20260414-competition-hierarchy
  | Method | Path | 설명 | 역할 제한 |
 ```
 
-### contracts/api/API-01-backend-api.md §5.4 Series (POST/PUT 확장)
+### contracts/api/`Backend_HTTP.md` (legacy-id: API-01) §5.4 Series (POST/PUT 확장)
 
 ```diff
  **POST /series — Request:**

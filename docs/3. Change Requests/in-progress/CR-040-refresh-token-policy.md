@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-13 |
 | **처리일** | 2026-04-13 |
 | **영향팀** | team1 |
-| **변경 대상** | `contracts/specs/BS-01-auth/BS-01-auth.md`<br/>`contracts/api/API-06-auth-session.md` |
+| **변경 대상** | `contracts/specs/BS-01-auth/BS-01-auth.md`<br/>`Auth_and_Session.md` (legacy-id: API-06) |
 | **변경 유형** | modify |
 | **리스크 등급** | HIGH |
 
@@ -26,7 +26,7 @@ BS-01에서 "Refresh Token은 HttpOnly Cookie"로 정의하고 있으나, API-06
 ## 적용된 파일
 
 - `contracts/specs/BS-01-auth/BS-01-auth.md`
-- `contracts/api/API-06-auth-session.md`
+- `Auth_and_Session.md` (legacy-id: API-06)
 
 ## 원본 Draft
 

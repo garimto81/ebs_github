@@ -92,7 +92,7 @@ Layer 1/2/3 분류 외부에 **Lobby 내부 화면** 이 존재한다. 시청자
 ### 2.1 Action Badge
 
 - **완전 자동 요소**: 액션 종류 결정 (Fold / Check / Bet / Call / Raise / All-In) — `ActionPerformed` 이벤트 기반
-- **반자동 요소**: 표시 지속 시간, 강조 여부 — 운영자가 `BS-03-04-rules` 설정 또는 실시간 키보드 입력으로 조정 가능
+- **반자동 요소**: 표시 지속 시간, 강조 여부 — 운영자가 `Settings/Rules.md` (legacy-id: BS-03-04) 설정 또는 실시간 키보드 입력으로 조정 가능
 - **이유**: 특정 액션(특히 All-In)은 운영자가 시청자에게 강조할 시점을 직접 결정할 수 있어야 한다
 
 ### 2.2 Player Position
@@ -182,4 +182,4 @@ Layer 1이 아닌 경우 EBS는 **API 제공**만 하고 렌더링은 외부에 
 - `Overview.md §3` (legacy-id: BS-07-00) — Layer 1 그래픽 8종 원본 정의
 - `Foundation (Confluence SSOT) Ch.4` — EBS Core 경계 원칙
 - `Statistics.md` (legacy-id: BS-05-07) — Layer 2 통계 Push 트리거 (AT-04)
-- `API-01-backend-api §통계` — Layer 2 데이터 엔드포인트
+- `Backend_HTTP.md §통계` (legacy-id: API-01) — Layer 2 데이터 엔드포인트

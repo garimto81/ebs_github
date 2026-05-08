@@ -33,11 +33,11 @@ reimplementability_notes: "API-05 WebSocket 이벤트 계약 (52KB). 미정 1건
 
 이 문서는 EBS 3-앱 아키텍처(CC ↔ BO ↔ Lobby)의 **WebSocket 실시간 이벤트 프로토콜**을 정의한다. CC와 Lobby는 각각 독립된 WebSocket 연결로 BO에 접속하며, BO가 이벤트를 라우팅한다.
 
-> **참조**: 이벤트 소스 분류는 `BS-06-00-triggers.md`, 모니터링 항목은 `BS-02-lobby.md §활성 CC 모니터링`, 용어 정의는 `BS-00-definitions.md`
+> **참조**: 이벤트 소스 분류는 `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))), 모니터링 항목은 `BS-02-lobby.md §활성 CC 모니터링`, 용어 정의는 `BS-00-definitions.md`
 
 > **경계 주의**: 본 문서는 **프로세스 간 네트워크 프로토콜**만 정의한다.
 > CC 앱 내부에서 Game Engine → Overlay 로의 데이터 흐름(Security Delay, NDI/HDMI/크로마키 출력, Rive 애니메이션, 해상도 스케일링)은
-> `API-04-overlay-output.md` 참조. 특히 §3 `OutputStatusChanged` 이벤트가 가리키는 실제 출력 채널 정의는 API-04 §2.
+> `Overlay_Output_Events.md` (legacy-id: API-04) 참조. 특히 §3 `OutputStatusChanged` 이벤트가 가리키는 실제 출력 채널 정의는 API-04 §2.
 
 ---
 
@@ -241,7 +241,7 @@ CC가 게임 진행 중 BO에 발행하는 이벤트. BO는 DB에 저장 후 Lob
 | `CardDetected` | hand_id, seat, suit, rank, is_board, position | 카드 인식 | **audit 참고값** | 카드 인식 상태는 Engine gameState SSOT |
 | `GameChanged` | table_id, previous_game, new_game | 종목 변경 | **state 변경** | Mix 게임 모드 전환은 BO DB 가 SSOT |
 | `RfidStatusChanged` | table_id, status, antenna_count, error_code | RFID 상태 변경 | **state 변경** | 하드웨어 상태는 BO DB 가 SSOT |
-| `OutputStatusChanged` | table_id, output_type, status, resolution | 출력 상태 변경 | **state 변경** | 출력 장비 상태는 BO DB 가 SSOT (채널 정의: `API-04-overlay-output.md` §2) |
+| `OutputStatusChanged` | table_id, output_type, status, resolution | 출력 상태 변경 | **state 변경** | 출력 장비 상태는 BO DB 가 SSOT (채널 정의: `Overlay_Output_Events.md` (legacy-id: API-04) §2) |
 
 > **audit 참고값**: 게임 상태 SSOT 는 Engine HTTP 응답. BO WS 이벤트는 Lobby 모니터용 브로드캐스트 + audit_events 영속화가 주 목적. 소비자는 Engine 응답을 우선하고 BO ack 와 불일치 시 경고 로그만 (§10.1.§1133 참조).
 >
@@ -708,7 +708,7 @@ BO 브로드캐스트는 `cc_event` 채널 전체로 송출한다 (fan-out). 필
 
 ### 5.2 핸드 중간 설정 변경 지연
 
-> **참조**: `BS-06-00-triggers.md §5.2` — CC 액션과 BO ConfigChanged 동시 발생 시 CC 우선
+> **참조**: `Triggers.md §5.2` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) — CC 액션과 BO ConfigChanged 동시 발생 시 CC 우선
 
 | 설정 유형 | 적용 시점 | 이유 |
 |----------|----------|------|

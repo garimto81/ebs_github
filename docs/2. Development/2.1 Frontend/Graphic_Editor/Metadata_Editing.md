@@ -173,6 +173,6 @@ Content-Type: application/merge-patch+json
 ## 7. 연관 문서
 
 - `DATA-07-gfskin-schema.md §3` — 편집 매트릭스 원본
-- `API-07-graphic-editor.md §4~5` — GET metadata + PATCH
+- `Graphic_Editor_API.md §4~5` (legacy-id: API-07) — GET metadata + PATCH
 - `BS-08-04-rbac-guards.md` — Admin gate
 - `BS-00 §7.4 GEM-*` — 요구사항 ID 리스트

@@ -25,7 +25,7 @@ last-updated: 2026-04-15
 
 - `../../../../../Contracts/Data/DATA-07-gfskin-schema.md` — ZIP 포맷 + JSON Schema
 - `../../../Specs/BS-07-overlay/BS-07-03-*.md` — Overlay 로드 FSM
-- `../../../../../Contracts/api/API-05-websocket-events.md` — `skin_updated` 이벤트
+- `WebSocket_Events.md` (legacy-id: API-05) — `skin_updated` 이벤트
 
 ## 금지
 

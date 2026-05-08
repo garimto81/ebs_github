@@ -14,7 +14,7 @@ legacy-id: CCR-DRAFT-team1-20260410-wsop-parity
 - **변경 대상 파일**:
   - `contracts/specs/BS-02-lobby/BS-02-02-event-flight.md`
   - `contracts/specs/BS-02-lobby/BS-02-03-table.md`
-  - `contracts/specs/BS-03-settings/BS-03-04-rules.md`
+  - `Settings/Rules.md` (legacy-id: BS-03-04)
   - `contracts/specs/BS-01-auth/BS-01-02-rbac.md`
   - `contracts/data/DATA-02-entities.md`
 - **변경 유형**: modify
@@ -79,7 +79,7 @@ WSOP LIVE 프로덕션에서 실제 운영 중인 5 개의 규칙을 EBS contrac
 +Late Registration 타이머는 `isPause == true` 일 때 경과 시간 증가를 멈춘다.
 ```
 
-### 3. `contracts/specs/BS-03-settings/BS-03-04-rules.md`
+### 3. `Settings/Rules.md` (legacy-id: BS-03-04)
 
 ```diff
  ## Blind 구조

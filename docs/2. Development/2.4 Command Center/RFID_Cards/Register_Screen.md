@@ -183,7 +183,7 @@ AT-05 RFID Register는 **RFID 카드 UID를 카드 얼굴(Rank + Suit)과 매핑
 
 - `Deck_Registration.md` (legacy-id: BS-04-01) — 등록 정책
 - `RFID_HAL.md` (legacy-id: BS-04-04) — IRfidReader 이벤트
-- `API-01-backend-api` — Decks API
+- `Backend_HTTP.md` (legacy-id: API-01) — Decks API
 - `RFID_HAL_Interface.md` (legacy-id: API-03) — DeckRegistered 이벤트, 연결 FSM (§9)
-- `API-05-websocket-events` — DeckRegistered WebSocket
+- `WebSocket_Events.md` (legacy-id: API-05) — DeckRegistered WebSocket
 - `Overview.md` (legacy-id: BS-05-00) — AT-05 화면 위치

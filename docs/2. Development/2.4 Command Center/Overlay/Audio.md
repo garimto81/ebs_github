@@ -72,10 +72,10 @@ AudioPlayerProvider (Riverpod)
 
 | 설정 | 기본값 | 범위 | 설정 위치 |
 |------|:------:|:----:|-----------|
-| Master volume | 80% | 0~100 | `BS-03-02-gfx §8` |
-| BGM volume | 60% | 0~100 | `BS-03-02-gfx §8` |
-| Effect #1 volume | 100% | 0~100 | `BS-03-02-gfx §8` |
-| Effect #2 volume | 90% | 0~100 | `BS-03-02-gfx §8` |
+| Master volume | 80% | 0~100 | `Settings/Graphics.md §8` (legacy-id: BS-03-02) |
+| BGM volume | 60% | 0~100 | `Settings/Graphics.md §8` (legacy-id: BS-03-02) |
+| Effect #1 volume | 100% | 0~100 | `Settings/Graphics.md §8` (legacy-id: BS-03-02) |
+| Effect #2 volume | 90% | 0~100 | `Settings/Graphics.md §8` (legacy-id: BS-03-02) |
 
 ---
 
@@ -83,7 +83,7 @@ AudioPlayerProvider (Riverpod)
 
 매너모드는 **전체 오디오를 즉시 음소거**한다 (BGM 포함). 핸드 진행은 계속되며 오디오만 정지.
 
-- 토글 위치: `BS-03-02-gfx §8 Audio Layer` + 단축키 `M`
+- 토글 위치: `Settings/Graphics.md §8 Audio Layer` (legacy-id: BS-03-02) + 단축키 `M`
 - 활성 시: 모든 재생 중 사운드 fade-out 0.1s 후 dispose
 - 해제 시: 새 이벤트부터 재생 재개 (이전 사운드는 복원 안 함)
 - **BGM은 재개 시 처음부터** 재생하지 않고 `pause`/`resume` 경로
@@ -135,7 +135,7 @@ skin.gfskin (ZIP)
 
 - `Animations.md §Rive 사운드 경계` (legacy-id: BS-07-02) — Rive 내부 트리거 라우팅
 - `Skin_Loading.md` (legacy-id: BS-07-03) — `.gfskin` 로드 시 audio 에셋 파싱
-- `BS-03-02-gfx §8` — 볼륨/매너모드 설정 UI
+- `Settings/Graphics.md §8` (legacy-id: BS-03-02) — 볼륨/매너모드 설정 UI
 - `DATA-07-gfskin-schema` — `.gfskin` 포맷 정의
 
 ---

@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-10 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team2, team3 |
-| **변경 대상** | `contracts/api/API-05-websocket-events.md`<br/>`contracts/specs/BS-05-command-center/BS-05-02-action-buttons.md` |
+| **변경 대상** | `WebSocket_Events.md` (legacy-id: API-05)<br/>`contracts/specs/BS-05-command-center/BS-05-02-action-buttons.md` |
 | **변경 유형** | modify |
 
 ## 변경 근거
@@ -24,7 +24,7 @@ CCR-018(BS-05 서버 프로토콜 매핑)에서 `WriteGameInfo` 프로토콜을 
 
 ## 적용된 파일
 
-- `contracts/api/API-05-websocket-events.md`
+- `WebSocket_Events.md` (legacy-id: API-05)
 - `contracts/specs/BS-05-command-center/BS-05-02-action-buttons.md`
 
 ## 원본 Draft

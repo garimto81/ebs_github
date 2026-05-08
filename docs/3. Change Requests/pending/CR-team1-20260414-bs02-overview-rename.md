@@ -11,9 +11,9 @@ legacy-id: CCR-DRAFT-team1-20260414-bs02-overview-rename
 - **제안팀**: team1
 - **제안일**: 2026-04-14
 - **영향팀**: [team2, conductor]
-- **변경 대상 파일**: contracts/api/API-01-backend-api.md, contracts/api/API-05-websocket-events.md, contracts/api/API-06-auth-session.md, team2-backend/specs/back-office/BO-02-sync-protocol.md, team2-backend/specs/back-office/BO-03-operations.md
+- **변경 대상 파일**: contracts/api/`Backend_HTTP.md` (legacy-id: API-01), contracts/api/`WebSocket_Events.md` (legacy-id: API-05), contracts/api/`Auth_and_Session.md` (legacy-id: API-06), team2-backend/specs/back-office/BO-02-sync-protocol.md, team2-backend/specs/back-office/BO-03-operations.md
 - **변경 유형**: modify (path rewrite only)
-- **변경 근거**: `team1-frontend/specs/BS-02-lobby/BS-02-lobby.md` 를 `BS-02-00-overview.md` 로 rename 완료. 사유 — (a) BS-03-00-overview·BS-08-00-overview 와 명명 관례 정렬, (b) `ui-design/UI-01-lobby.md` 와 동일 "lobby" 이름으로 인지적 충돌 발생. 사용자 승인 후 team1 세션에서 rename 실행 완료, 외부 참조만 잔존하므로 본 CCR 로 위임.
+- **변경 근거**: `team1-frontend/specs/BS-02-lobby/BS-02-lobby.md` 를 `BS-02-00-overview.md` 로 rename 완료. 사유 — (a) `Settings/Overview.md` (legacy-id: BS-03-00)·BS-08-00-overview 와 명명 관례 정렬, (b) `ui-design/UI-01-lobby.md` 와 동일 "lobby" 이름으로 인지적 충돌 발생. 사용자 승인 후 team1 세션에서 rename 실행 완료, 외부 참조만 잔존하므로 본 CCR 로 위임.
 - **리스크 등급**: LOW (path rewrite only, anchor slug 미변경)
 
 ## 변경 요약
@@ -24,10 +24,10 @@ team1 세션에서 이미 rename 완료. 외부 참조 7건 / 5파일을 path re
 
 | 파일 | 라인 | 구 | 신 |
 |------|:----:|---|---|
-| `contracts/api/API-01-backend-api.md` | 45 | `BS-02-lobby.md` | `BS-02-00-overview.md` |
-| `contracts/api/API-05-websocket-events.md` | 19 | `BS-02-lobby.md §활성 CC 모니터링` | `BS-02-00-overview.md §활성 CC 모니터링` |
-| `contracts/api/API-06-auth-session.md` | 260 | `BS-02-lobby.md §세션 저장 데이터` | `BS-02-01-auth-session.md §세션 저장 데이터` (2026-04-14 추가 분리: 로그인·세션 콘텐츠를 BS-02-01 로 이관) |
-| `contracts/api/API-06-auth-session.md` | 393 | `BS-02-lobby.md §화면 0: 로그인` | `BS-02-01-auth-session.md §화면 0: 로그인` (2026-04-14 추가 분리) |
+| `Backend_HTTP.md` (legacy-id: API-01) | 45 | `BS-02-lobby.md` | `BS-02-00-overview.md` |
+| `WebSocket_Events.md` (legacy-id: API-05) | 19 | `BS-02-lobby.md §활성 CC 모니터링` | `BS-02-00-overview.md §활성 CC 모니터링` |
+| `Auth_and_Session.md` (legacy-id: API-06) | 260 | `BS-02-lobby.md §세션 저장 데이터` | `BS-02-01-auth-session.md §세션 저장 데이터` (2026-04-14 추가 분리: 로그인·세션 콘텐츠를 BS-02-01 로 이관) |
+| `Auth_and_Session.md` (legacy-id: API-06) | 393 | `BS-02-lobby.md §화면 0: 로그인` | `BS-02-01-auth-session.md §화면 0: 로그인` (2026-04-14 추가 분리) |
 | `team2-backend/specs/back-office/BO-02-sync-protocol.md` | 62 | `BS-02-lobby.md §장애 시 기능 축소 매트릭스` | `BS-02-00-overview.md §장애 시 기능 축소 매트릭스` |
 | `team2-backend/specs/back-office/BO-02-sync-protocol.md` | 273 | `BS-02-lobby.md` | `BS-02-00-overview.md` |
 | `team2-backend/specs/back-office/BO-03-operations.md` | 332 | `BS-02-lobby.md` | `BS-02-00-overview.md` |

@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260414-payout-structure-endpoints
 - **제안팀**: team2
 - **제안일**: 2026-04-14
 - **영향팀**: [team1, team4]
-- **변경 대상 파일**: contracts/api/API-01-backend-api.md, contracts/data/DATA-02-entities.md
+- **변경 대상 파일**: contracts/api/`Backend_HTTP.md` (legacy-id: API-01), contracts/data/DATA-02-entities.md
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE Staff App(Page 1603600679)은 PayoutStructure(상금 구조) 템플릿 + Flight별 적용 엔드포인트 7종을 제공. EBS API-01에 상금 관리 API 부재. `prize_pool_changed` WebSocket 이벤트(S0-05 CCR)의 소스 API 확립 필요.
 

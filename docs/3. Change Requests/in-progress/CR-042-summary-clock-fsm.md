@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-13 |
 | **처리일** | 2026-04-13 |
 | **영향팀** | team1, team3, team4 |
-| **변경 대상** | `contracts/api/API-05-websocket-events.md`<br/>`contracts/specs/` |
+| **변경 대상** | `WebSocket_Events.md` (legacy-id: API-05)<br/>`contracts/specs/` |
 | **변경 유형** | add |
 | **리스크 등급** | HIGH |
 
@@ -25,7 +25,7 @@ WSOP LIVE Confluence `Staff App Live` page에서 `EventFlightSummary`(25+ 필드
 
 ## 적용된 파일
 
-- `contracts/api/API-05-websocket-events.md`
+- `WebSocket_Events.md` (legacy-id: API-05)
 - `contracts/specs/BS-07-clock.md`
 
 ## 원본 Draft

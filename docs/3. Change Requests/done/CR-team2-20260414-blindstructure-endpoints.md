@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260414-blindstructure-endpoints
 - **제안팀**: team2
 - **제안일**: 2026-04-14
 - **영향팀**: [team1, team3]
-- **변경 대상 파일**: contracts/api/API-01-backend-api.md, contracts/data/DATA-02-entities.md
+- **변경 대상 파일**: contracts/api/`Backend_HTTP.md` (legacy-id: API-01), contracts/data/DATA-02-entities.md
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE Staff App(Page 1603666061)은 BlindStructure 템플릿 기반 CRUD + Flight별 적용 엔드포인트 8종을 제공. EBS API-01에 BlindStructure 편집 API 부재. 정식 전체 개발에서 WSOP LIVE 패턴 준거.
 

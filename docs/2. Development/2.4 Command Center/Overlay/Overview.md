@@ -23,7 +23,7 @@ Overlay는 **시청자가 보는 방송 화면의 그래픽 출력 앱**이다. 
 
 > **v4.0 컨텍스트** (2026-05-07): Overlay 출력은 CC 의 **5-Act 시퀀스** (Act 1~5) 에 동기화. Act 별 Overlay 시퀀스 매핑은 `Sequences.md §"v4.0 5-Act → Overlay 매핑"` 참조. CC ↔ Overlay 1:1 대응은 v4.0 정체성 (1×10 그리드 / 6 키 / 4 영역 위계) 과 무관 — Overlay 는 시청자 화면이지 운영자 화면이 아님.
 
-> **참조**: 용어·상태 정의는 `BS-00-definitions.md`, Enum 값 상세는 `BS-06-00-REF-game-engine-spec.md`, 5-Act 시퀀스는 `../Command_Center_UI/Hand_Lifecycle.md`.
+> **참조**: 용어·상태 정의는 `BS-00-definitions.md`, Enum 값 상세는 `Behavioral_Specs/Overview.md` (legacy-id: BS-06-00), 5-Act 시퀀스는 `../Command_Center_UI/Hand_Lifecycle.md`.
 
 ---
 
@@ -155,6 +155,6 @@ Overlay가 렌더링한 그래픽을 외부로 내보내는 3가지 채널:
 | `Animations.md` (legacy-id: BS-07-02) | Rive 애니메이션 상세 |
 | `Skin_Loading.md` (legacy-id: BS-07-03) | 스킨 로드/전환 프로세스 |
 | `Scene_Schema.md` (legacy-id: BS-07-04) | 씬 JSON 스키마 |
-| `BS-06-00-triggers.md` | 트리거 이벤트 정의 |
-| `BS-06-00-REF-game-engine-spec.md` | Enum 값, DisplayConfig |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) | 트리거 이벤트 정의 |
+| `Behavioral_Specs/Overview.md` (legacy-id: BS-06-00) | Enum 값, DisplayConfig |
 | `BS-03-settings/` | 출력·오버레이 설정 UI |

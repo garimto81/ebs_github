@@ -99,5 +99,5 @@ AT-07은 특정 좌석의 플레이어 정보(이름, 국적, 스택, 이미지 
 
 - `BS-05-00 §6` — AT 카탈로그
 - `Seat_Management.md` (legacy-id: BS-05-03) — 좌석 FSM
-- `API-05-websocket-events §5` — PlayerUpdated 이벤트
-- `API-01-backend-api` — seats/player 엔드포인트
+- `WebSocket_Events.md §5` (legacy-id: API-05) — PlayerUpdated 이벤트
+- `Backend_HTTP.md` (legacy-id: API-01) — seats/player 엔드포인트

@@ -253,5 +253,5 @@ backend/
 | 시스템 설정 | `team2-backend/specs/back-office/BO-07-system-config.md` |
 | 감사 로그 | `team2-backend/specs/back-office/BO-08-audit-log.md` |
 | 데이터 동기화 | `team2-backend/specs/back-office/BO-09-data-sync.md` |
-| Settings 행동 명세 | `contracts/specs/BS-03-settings/BS-03-00-overview.md` |
+| Settings 행동 명세 | `Settings/Overview.md` (legacy-id: BS-03-00) |
 | 백로그 | `docs/backlog.md` |

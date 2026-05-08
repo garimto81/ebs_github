@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-14 |
 | **처리일** | 2026-04-14 |
 | **영향팀** | team1, team4 |
-| **변경 대상** | `contracts/api/API-01-backend-api.md`<br/>`contracts/specs/BS-06-game-engine/BS-06-00-triggers.md`<br/>`contracts/api/API-05-websocket-events.md` |
+| **변경 대상** | `Backend_HTTP.md` (legacy-id: API-01)<br/>`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))<br/>`WebSocket_Events.md` (legacy-id: API-05) |
 | **변경 유형** | add |
 | **리스크 등급** | MEDIUM |
 
@@ -25,9 +25,9 @@ last-updated: 2026-04-15
 
 ## 적용된 파일
 
-- `contracts/api/API-01-backend-api.md`
-- `contracts/specs/BS-06-game-engine/BS-06-00-triggers.md`
-- `contracts/api/API-05-websocket-events.md`
+- `Backend_HTTP.md` (legacy-id: API-01)
+- `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))
+- `WebSocket_Events.md` (legacy-id: API-05)
 
 ## 원본 Draft
 

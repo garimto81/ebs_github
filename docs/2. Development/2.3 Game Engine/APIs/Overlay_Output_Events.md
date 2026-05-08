@@ -31,7 +31,7 @@ audit-notes:
 
 > **WSOP LIVE 정렬 상태**: WSOP LIVE Confluence 의 BS-07 Overlay 문서 = **TBD (미완성)**. 본 문서는 선행 설계이며 BS-07 완성 시 OutputEvent 용어·스키마 재검증 예정. 추적 항목: `../Backlog/B-320-WSOP-LIVE-BS-07-감시.md`.
 
-> **참조**: Game Engine 상태는 `BS-06-00-REF-game-engine-spec.md`, 엔티티 정의는 `BS-00-definitions.md §2.2`, 출력 프리셋은 `DATA-04-db-schema.md §OutputPreset`
+> **참조**: Game Engine 상태는 `Behavioral_Specs/Overview.md` (legacy-id: BS-06-00), 엔티티 정의는 `BS-00-definitions.md §2.2`, 출력 프리셋은 `DATA-04-db-schema.md §OutputPreset`
 
 ### 핵심 원칙
 
@@ -41,7 +41,7 @@ audit-notes:
 | **반응형 렌더링** | GameState 변경 → Overlay 위젯 자동 rebuild (Flutter 반응형) |
 | **Security Delay** | 방송 지연 버퍼로 카드 정보 선노출 방지 |
 | **다중 출력** | 동일 Overlay 데이터를 NDI/HDMI/크로마키로 동시 출력 가능 |
-| **경계** | 이 계약은 **in-process 전용**. 3-앱 간 WebSocket 이벤트는 `API-05-websocket-events.md` 가 소유 |
+| **경계** | 이 계약은 **in-process 전용**. 3-앱 간 WebSocket 이벤트는 `WebSocket_Events.md` (legacy-id: API-05) 가 소유 |
 
 ---
 
@@ -72,7 +72,7 @@ Game Engine ──── GameState 업데이트
 
 > **경계 주의**: 본 문서는 CC Flutter 앱 **프로세스 내부** 데이터 흐름만 정의한다.
 > BO/Lobby 와의 네트워크 이벤트(`HandStarted`, `ActionPerformed`, `OutputStatusChanged` 등)는
-> `API-05-websocket-events.md` 참조. Game Engine 이 OutputEvent 를 발행한 뒤 CC 가 WS 로 BO 에
+> `WebSocket_Events.md` (legacy-id: API-05) 참조. Game Engine 이 OutputEvent 를 발행한 뒤 CC 가 WS 로 BO 에
 > 재발행하는 경로는 API-05 §3.
 
 ### 1.2 데이터 전달 방식
@@ -114,7 +114,7 @@ Overlay가 렌더링에 사용하는 GameState 필드:
 **정렬 원칙**
 
 - 채택 등급: **직접 계승** (이름·의미 유지) / **재명명** (의미 유지·네이밍 변경 또는 계산값 유도) / **폐기** (EBS 범위 밖).
-- 출처 필드는 참조용. 구현 시 EBS 엔티티(`BS-06-00-REF-game-engine-spec.md`) 를 1차 근거로 한다.
+- 출처 필드는 참조용. 구현 시 EBS 엔티티(`Behavioral_Specs/Overview.md` (legacy-id: BS-06-00)) 를 1차 근거로 한다.
 - `OutputEvent` 카탈로그는 §6.0 과 교차 참조.
 
 **GameInfoResponse → OutputEvent / GameState 대응 (핵심 발췌)**

@@ -195,7 +195,7 @@ Overlay가 재연결 또는 network gap 후 복구:
 
 ## 7. 연관 문서
 
-- `API-07-graphic-editor.md §6` — PUT activate
-- `API-05-websocket-events.md` — SkinUpdated 이벤트 (CCR-015)
+- `Graphic_Editor_API.md §6` (legacy-id: API-07) — PUT activate
+- `WebSocket_Events.md` (legacy-id: API-05) — SkinUpdated 이벤트 (CCR-015)
 - `BS-07-03-skin-loading.md §3 §5` — 로드/전환 FSM (재사용)
 - `BS-08-04-rbac-guards.md` — Activate 권한 gate

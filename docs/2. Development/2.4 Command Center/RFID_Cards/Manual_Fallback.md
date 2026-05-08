@@ -28,7 +28,7 @@ last-updated: 2026-04-15
 | **수동 입력 (Mock 기본)** | Mock 모드 또는 General Table | **개발/테스트 기본** |
 | **수동 입력 (Real 폴백)** | Real 모드에서 RFID 장애 발생 | 비상 시 |
 
-> **참조**: Mock 모드 정의는 `BS-00-definitions.md §9`, 이벤트 합성 규칙은 `BS-06-00-triggers.md §4`, Mock HAL API는 `RFID_HAL_Interface.md §6.2` (legacy-id: API-03)
+> **참조**: Mock 모드 정의는 `BS-00-definitions.md §9`, 이벤트 합성 규칙은 `Triggers.md §4` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))), Mock HAL API는 `RFID_HAL_Interface.md §6.2` (legacy-id: API-03)
 
 ---
 
@@ -360,7 +360,7 @@ CC AT-01 화면 **상단 툴바 바로 아래** 에 전폭 배너로 표시. 위
 | **수동 입력** | 범위 초과 (suit/rank 범위 밖) | UI에서 발생 불가. API 레벨에서 assertion 에러 |
 | **혼합 (RFID+수동)** | RFID 성공 + 수동 미입력 | RFID 결과 사용 (정상 경로) |
 | **혼합 (RFID+수동)** | RFID 실패 + 수동 입력 | 수동 입력 결과 사용 (폴백) |
-| **혼합 (RFID+수동)** | 같은 카드 RFID+수동 동시 | RFID 우선, 수동 무시 (BS-06-00-triggers §3.1) |
+| **혼합 (RFID+수동)** | 같은 카드 RFID+수동 동시 | RFID 우선, 수동 무시 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §3.1) |
 | **혼합 (RFID+수동)** | 다른 카드 RFID+수동 동시 | RFID 우선, CARD_CONFLICT 경고, 운영자 확인 |
 
 ### 8.2 모드별 전환 매트릭스
@@ -393,5 +393,5 @@ CC AT-01 화면 **상단 툴바 바로 아래** 에 전폭 배너로 표시. 위
 | `Card_Detection.md` (legacy-id: BS-04-02) | 카드 감지와 수동 입력의 관계 |
 | `RFID_HAL.md` (legacy-id: BS-04-04) | Mock HAL injectCard() API |
 | `BS-05-command-center/` | CC UI에서 카드 선택 UI 배치 |
-| `BS-06-00-triggers.md §3.1` | CC vs RFID 우선순위 |
+| `Triggers.md §3.1` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | CC vs RFID 우선순위 |
 | `RFID_HAL_Interface.md §6.2` (legacy-id: API-03) | MockRfidReader.injectCard() 사양 |

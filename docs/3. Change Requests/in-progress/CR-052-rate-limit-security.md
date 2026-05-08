@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-14 |
 | **처리일** | 2026-04-14 |
 | **영향팀** | team1, team4 |
-| **변경 대상** | `contracts/specs/BS-01-auth/BS-01-auth.md`<br/>`contracts/api/API-01-backend-api.md` |
+| **변경 대상** | `contracts/specs/BS-01-auth/BS-01-auth.md`<br/>`Backend_HTTP.md` (legacy-id: API-01) |
 | **변경 유형** | add |
 | **리스크 등급** | MEDIUM |
 
@@ -26,7 +26,7 @@ WSOP LIVE 엔드포인트별 Rate Limit 정책 문서 미발견(조사 결과). 
 ## 적용된 파일
 
 - `contracts/specs/BS-01-auth/BS-01-auth.md`
-- `contracts/api/API-01-backend-api.md`
+- `Backend_HTTP.md` (legacy-id: API-01)
 
 ## 원본 Draft
 

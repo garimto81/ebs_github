@@ -3,7 +3,7 @@ title: Triggers & Event Pipeline — Domain Master
 owner: team3
 tier: contract
 legacy-ids:
-  - BS-06-00-triggers   # Triggers.md (CC/RFID/Engine/BO 트리거 경계 정의)
+  - `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))   # Triggers.md (CC/RFID/Engine/BO 트리거 경계 정의)
   - BS-06-09            # Event_Catalog.md (Input/Internal/Output 이벤트 카탈로그)
   - BS-06-04            # Holdem/Coalescence.md (RFID burst 병합 알고리즘)
   - BS-06-12            # Card_Pipeline_Overview.md (Turn-based deal + Atomic flop)
@@ -17,7 +17,7 @@ related:
 
 # Triggers & Event Pipeline — Domain Master
 
-> **존재 이유**: 게임 엔진의 모든 이벤트 파이프라인 (외부 입력 트리거 + 내부 자동 전이 + 외부 출력) 과 그 충돌 해결 (coalescence) 을 단일 SSOT 로 통합한다. 본 문서는 BS-06-00-triggers (트리거 경계) + BS-06-09 (이벤트 카탈로그) + BS-06-04 (RFID coalescence) + BS-06-12 (카드 파이프라인) 4개 문서를 zero information loss 로 병합한다. 상태 전이 자체는 Lifecycle 도메인 마스터가 권위 — 본 문서는 그 전이를 일으키는 **트리거 + 이벤트 + 충돌 해결** 만 담는다.
+> **존재 이유**: 게임 엔진의 모든 이벤트 파이프라인 (외부 입력 트리거 + 내부 자동 전이 + 외부 출력) 과 그 충돌 해결 (coalescence) 을 단일 SSOT 로 통합한다. 본 문서는 `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) (트리거 경계) + BS-06-09 (이벤트 카탈로그) + BS-06-04 (RFID coalescence) + BS-06-12 (카드 파이프라인) 4개 문서를 zero information loss 로 병합한다. 상태 전이 자체는 Lifecycle 도메인 마스터가 권위 — 본 문서는 그 전이를 일으키는 **트리거 + 이벤트 + 충돌 해결** 만 담는다.
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
@@ -33,7 +33,7 @@ related:
 | 2026-04-14 | BS-06-08 CCR-050 | §2.5 Clock 5종 추가 (ClockRestarted, clock_detail_changed, clock_reload_requested, stack_adjusted, tournament_status_changed) — WSOP LIVE SignalR Hub 정렬 |
 | 2026-04-27 | BS-06-12 신규 (PR #4) | Turn-based hole release + 3-card atomic flop SSOT |
 | 2026-04-27 | BS-06-12 압축 (PR #5) | verbose → quickref Trigger Matrix (T1~T11) |
-| 2026-04-27 | 도메인 통합 (본 문서) | BS-06-00-triggers + BS-06-09 + BS-06-04 + BS-06-12 (verbose) 를 lossless 병합. legacy-ids 보존. Lifecycle 도메인 마스터 cross-ref. **Chunk-by-chunk commit 으로 작성** (sibling worktree retry after 2026-04-27 subdir conflict) |
+| 2026-04-27 | 도메인 통합 (본 문서) | `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) + BS-06-09 + BS-06-04 + BS-06-12 (verbose) 를 lossless 병합. legacy-ids 보존. Lifecycle 도메인 마스터 cross-ref. **Chunk-by-chunk commit 으로 작성** (sibling worktree retry after 2026-04-27 subdir conflict) |
 | 2026-05-07 | v3/v4 정체성 cascade Phase B2 | Lobby_PRD v3.0.0 + CC_PRD v4.0 정체성 정합 (LLM 전수 의미 판정 — Engine). §4.7 "8가지 액션 버튼" → "8 논리 액션 (Engine 인지) × 6 키 (CC v4.0 입력 표면)" framing 정정. CC v4.0 6 키 (N·F·C·B·A·M) 매핑 표 신설. CC v4.0 §1.2 "8 분리 버튼 시대 종료" 와 정합. | DOC |
 
 ---
@@ -44,14 +44,14 @@ related:
 
 본 도메인은 4 가지 직교 관심사를 통합한다:
 
-1. **트리거 소스 분류** (BS-06-00-triggers): "어떤 이벤트가 누구에 의해 발동되는가" — 4 입력 소스 (CC / RFID / Engine / BO) 의 경계 정의
+1. **트리거 소스 분류** (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))): "어떤 이벤트가 누구에 의해 발동되는가" — 4 입력 소스 (CC / RFID / Engine / BO) 의 경계 정의
 2. **이벤트 카탈로그** (BS-06-09): 트리거가 야기하는 Input / Internal / Output 3계층 이벤트의 payload 스키마
 3. **충돌 해결** (BS-06-04 Coalescence): 동시 트리거 발생 시 우선순위 + 시간 윈도우 + 폐기/큐잉 규칙
 4. **카드 파이프라인** (BS-06-12): RFID/CC → buffer → engine → OutputEvent 의 turn-based 분배 + atomic flop 감지
 
 상태 전이 자체는 Lifecycle 도메인 마스터의 권위. 본 도메인은 **트리거 + 이벤트 + 충돌 해결** 만 담는다.
 
-### 1.2 4 트리거 소스 (통합 정의 — BS-06-00-triggers §1 + BS-06-04 §우선순위 통합)
+### 1.2 4 트리거 소스 (통합 정의 — `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §1 + BS-06-04 §우선순위 통합)
 
 | 소스 | 발동 주체 | 처리 시간 | 신뢰도 | 채널 |
 |------|---------|---------|--------|------|
@@ -322,7 +322,7 @@ ReduceResult {
 
 > 이 매트릭스에 없는 조합은 해당 상태에 존재하지 않으므로 이벤트 수신 시 **STATE_CONFLICT** 에러를 발생시킨다.
 
-### 2.7 Mock 모드 이벤트 합성 (BS-06-00-triggers §4)
+### 2.7 Mock 모드 이벤트 합성 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §4)
 
 #### 2.7.1 기본 원칙
 
@@ -746,7 +746,7 @@ events:
 
 > `?` 는 조건부 발동. 연쇄 깊이가 3 이상인 경우는 없다.
 
-### 3.7 Trigger 소스별 이벤트 분류 (BS-06-00-triggers §2)
+### 3.7 Trigger 소스별 이벤트 분류 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §2)
 
 #### 3.7.1 CC 소스 이벤트 (운영자 수동, 25개)
 
@@ -846,7 +846,7 @@ Back Office 에서 데이터 변경 시 WebSocket 을 통해 Lobby/CC 에 통지
 | `BreakTable` | Lobby 에서 테이블 깨기 | CC | 테이블 해체 → 플레이어 재배치 (Breaking Order 우선순위) |
 | `BalanceTable` | 테이블 간 인원 차이 ≥ 3 | CC | 인원 균등화 (WSOP Rule 67). Auto/수동 |
 
-#### 3.7.5 BO Clock 트리거 — Tournament Clock 관리 (BS-06-00-triggers §2.5, CCR-050)
+#### 3.7.5 BO Clock 트리거 — Tournament Clock 관리 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §2.5, CCR-050)
 
 > **소유**: Backend (Team 2). Game Engine (Team 3) 은 Clock 과 무관 — 시간 대신 `BlindStructureChanged` 명령을 수신.
 > **ClockFSM 상태 정의**: BS-00-definitions §3.7.
@@ -886,7 +886,7 @@ Back Office 에서 데이터 변경 시 WebSocket 을 통해 Lobby/CC 에 통지
 
 레벨 전환 시 BO 는 동시에: ① `clock_level_changed` 발행 → ② `BlindStructureChanged` 발행 (순서 보장).
 
-### 3.8 트리거 ↔ HandFSM 매핑 (BS-06-00-triggers §7)
+### 3.8 트리거 ↔ HandFSM 매핑 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §7)
 
 | HandFSM 상태 | 허용 CC 트리거 | 허용 RFID 트리거 | 허용 Engine 트리거 |
 |-------------|--------------|----------------|-------------------|
@@ -900,7 +900,7 @@ Back Office 에서 데이터 변경 시 WebSocket 을 통해 Lobby/CC 에 통지
 | **RUN_IT_MULTIPLE** | — | `CardDetected` (추가 보드) | `HandCompleted` |
 | **HAND_COMPLETE** | `ManualNextHand` | — | (overrideButton 시 자동 IDLE) |
 
-### 3.9 SeatFSM 유효 상태 매트릭스 (BS-06-00-triggers §7)
+### 3.9 SeatFSM 유효 상태 매트릭스 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §7)
 
 > WSOP LIVE Seat Status 코드 기반 (Table Dealer Page, Table Management).
 
@@ -919,7 +919,7 @@ Back Office 에서 데이터 변경 시 WebSocket 을 통해 Lobby/CC 에 통지
 > **WAITING(W)**: 웨이팅 큐에서 Auto Seating 으로 배정된 상태. 플레이어 도착 시 PLAYING. 황색 표시.
 > **HOLD(H)**: Seat Draw in Advance 에서 선점된 좌석. Hold 해제 시 EMPTY. 회색 표시.
 
-### 3.10 TableFSM 유효 상태 매트릭스 (BS-06-00-triggers §7)
+### 3.10 TableFSM 유효 상태 매트릭스 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §7)
 
 | 이벤트 \ Table 상태 | SETUP | LIVE | PAUSED | CLOSED | EMPTY | RESERVED_TABLE |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -1057,7 +1057,7 @@ Event B (계층 2): 운영자 FOLD 클릭 @ t=2005ms [아직 전송 중]
 - 이미 폴드한 플레이어 입력 추가
 - NEW_HAND 직후 이전 핸드 RFID 신호
 
-### 3.15 경계 케이스 — CC vs RFID 동시 발생 (BS-06-00-triggers §3)
+### 3.15 경계 케이스 — CC vs RFID 동시 발생 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §3)
 
 #### 3.15.1 카드 인식: RFID 자동 vs CC 수동
 
@@ -1089,7 +1089,7 @@ Event B (계층 2): 운영자 FOLD 클릭 @ t=2005ms [아직 전송 중]
 
 > **BS-06-12 권위**: 1·2장 감지 시 외부 미발행 (PENDING). 정확히 3장 충족 시점에만 `FlopRevealed` atomic 발행. 본 표의 "경고 표시" = `FlopPartialAlert` (T9).
 
-### 3.16 충돌 해결 규칙 (BS-06-00-triggers §5)
+### 3.16 충돌 해결 규칙 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §5)
 
 #### 3.16.1 동일 이벤트 중복 수신
 
@@ -1108,7 +1108,7 @@ Event B (계층 2): 운영자 FOLD 클릭 @ t=2005ms [아직 전송 중]
 | CC 액션 + BO ConfigChanged 동시 | CC | 게임 진행 액션 우선, Config 는 핸드 종료 후 적용 (핸드 중간 설정 변경은 지연) |
 | Engine 자동 전이 + CC Undo 동시 | CC | Undo 가 Engine 자동 전이를 되돌림 |
 
-### 3.17 이벤트 순서 보장 (BS-06-00-triggers §6)
+### 3.17 이벤트 순서 보장 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) §6)
 
 #### 3.17.1 선후관계 필수 케이스 (위반 시 에러)
 
@@ -1804,24 +1804,24 @@ sequenceDiagram
 
 | 원본 문서 (legacy-id) | 원본 섹션 | 본 문서 위치 |
 |---------------------|----------|-------------|
-| **BS-06-00-triggers** Triggers.md | §1 4 소스 정의 (CC/RFID/Engine/BO) | §1.2 |
-| BS-06-00-triggers | §2.1 CC 소스 이벤트 25개 + 친절한 설명 | §3.7.1 |
-| BS-06-00-triggers | §2.2 RFID 소스 이벤트 6개 + 친절한 설명 | §3.7.2 |
-| BS-06-00-triggers | §2.3 Engine 소스 이벤트 12개 + 친절한 설명 | §3.7.3 |
-| BS-06-00-triggers | §2.4 BO 소스 이벤트 14개 + 친절한 설명 | §3.7.4 |
-| BS-06-00-triggers | §2.5 BO Clock 트리거 11개 + Auto Blind-Up 로직 (CCR-050) | §3.7.5 |
-| BS-06-00-triggers | §3.1 카드 인식 RFID vs CC | §3.15.1 |
-| BS-06-00-triggers | §3.2 폴드 인식 CC vs RFID | §3.15.2 |
-| BS-06-00-triggers | §3.3 보드 카드 공개 RFID vs CC | §3.15.3 |
-| BS-06-00-triggers | §4 Mock 모드 이벤트 합성 (4.1~4.3) | §2.7 |
-| BS-06-00-triggers | §5.1 동일 이벤트 중복 수신 | §3.16.1 |
-| BS-06-00-triggers | §5.2 소스 간 충돌 | §3.16.2 |
-| BS-06-00-triggers | §6.1 선후관계 필수 케이스 | §3.17.1 |
-| BS-06-00-triggers | §6.2 순서 무관 케이스 | §3.17.2 |
-| BS-06-00-triggers | §7 트리거-HandFSM 매핑 | §3.8 |
-| BS-06-00-triggers | §7 SeatFSM 매트릭스 | §3.9 |
-| BS-06-00-triggers | §7 TableFSM 매트릭스 | §3.10 |
-| BS-06-00-triggers | §비활성 조건 | §4.11 |
+| **`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))** Triggers.md | §1 4 소스 정의 (CC/RFID/Engine/BO) | §1.2 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §2.1 CC 소스 이벤트 25개 + 친절한 설명 | §3.7.1 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §2.2 RFID 소스 이벤트 6개 + 친절한 설명 | §3.7.2 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §2.3 Engine 소스 이벤트 12개 + 친절한 설명 | §3.7.3 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §2.4 BO 소스 이벤트 14개 + 친절한 설명 | §3.7.4 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §2.5 BO Clock 트리거 11개 + Auto Blind-Up 로직 (CCR-050) | §3.7.5 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §3.1 카드 인식 RFID vs CC | §3.15.1 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §3.2 폴드 인식 CC vs RFID | §3.15.2 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §3.3 보드 카드 공개 RFID vs CC | §3.15.3 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §4 Mock 모드 이벤트 합성 (4.1~4.3) | §2.7 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §5.1 동일 이벤트 중복 수신 | §3.16.1 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §5.2 소스 간 충돌 | §3.16.2 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §6.1 선후관계 필수 케이스 | §3.17.1 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §6.2 순서 무관 케이스 | §3.17.2 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §7 트리거-HandFSM 매핑 | §3.8 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §7 SeatFSM 매트릭스 | §3.9 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §7 TableFSM 매트릭스 | §3.10 |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | §비활성 조건 | §4.11 |
 | **BS-06-09** Event_Catalog.md | §개요 (3계층 분류 + 다이어그램) | §1.3 |
 | BS-06-09 | §Input Events IE-01 ~ IE-13 (13개) | §3.1 |
 | BS-06-09 | §Input Event 유효 상태 매트릭스 | §3.2 |
@@ -1835,7 +1835,7 @@ sequenceDiagram
 | BS-06-09 | OE-19 display_to_players 플래그 (Rule 101) | §3.4 |
 | **BS-06-04** Coalescence.md | §정의 (트리거 Coalescence 병합) | §1.5 |
 | BS-06-04 | §우선순위 테이블 — Quick Reference | §3.11 |
-| BS-06-04 | §트리거 소스 정의 (CC/RFID/Engine 3 소스) | §1.2 (BS-06-00-triggers 4소스로 확장 흡수) |
+| BS-06-04 | §트리거 소스 정의 (CC/RFID/Engine 3 소스) | §1.2 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) 4소스로 확장 흡수) |
 | BS-06-04 | §RFID 카드 감지 타입 (홀/보드/덱) | §4.6 |
 | BS-06-04 | §RFID 감지 정확도 + 에러 복구 모드 | §4.5 |
 | BS-06-04 | §CC 8 논리 액션 전제조건 + 특수 케이스 (CC v4.0 = 6 키 매핑, 2026-05-07) | §4.7 |

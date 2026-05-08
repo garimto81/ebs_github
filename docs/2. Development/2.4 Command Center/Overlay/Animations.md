@@ -21,7 +21,7 @@ last-updated: 2026-04-15
 
 > **v4.0 컨텍스트** (2026-05-07): 본 문서의 Rive 애니메이션은 v4.0 5-Act 시퀀스의 Act 전환 trigger 에서 발동 — Act 2 PreFlop (HoleCard 분배), Act 3 Flop/Turn/River (커뮤니티 카드), Act 4 Showdown (핸드 공개), Act 5 Settlement (팟 분배). 자세한 Act 별 trigger 매핑: `Sequences.md §"v4.0 5-Act → Overlay 매핑"`.
 
-> **참조**: AnimationState 16개, transition_type 4종 Enum 값은 `BS-06-00-REF-game-engine-spec.md §1.6`에 정의. 이 문서는 해당 Enum이 **언제, 왜 발동하는가**를 기술한다.
+> **참조**: AnimationState 16개, transition_type 4종 Enum 값은 `Behavioral_Specs/Overview.md §1.6` (legacy-id: BS-06-00)에 정의. 이 문서는 해당 Enum이 **언제, 왜 발동하는가**를 기술한다.
 
 ---
 
@@ -197,7 +197,7 @@ Run It Twice/Thrice 시 보드를 여러 번 깐다.
 
 | 문서 | 관계 |
 |------|------|
-| `BS-06-00-REF-game-engine-spec.md §1.6` | AnimationState/transition_type Enum 정의 |
+| `Behavioral_Specs/Overview.md §1.6` (legacy-id: BS-06-00) | AnimationState/transition_type Enum 정의 |
 | `Elements.md` (legacy-id: BS-07-01) | 요소별 트리거 조건 |
 | `Skin_Loading.md` (legacy-id: BS-07-03) | 스킨별 애니메이션 파라미터 오버라이드 |
 | `BS-03-settings/` | 애니메이션 속도 설정 UI |
@@ -238,7 +238,7 @@ Overlay 애니메이션은 CC(`Seat_Management.md §6` (legacy-id: BS-05-03))의
 - **포지션 마커 색상**: Dealer `#E53935`, SB `#FDD835`, BB `#1E88E5`, UTG `#43A047` (CC와 동일)
 - **좌석 배경**: Active `#2E7D32`, Folded 40% opacity, All-In `#000000` (CC와 동일)
 
-Table별 색상 Override가 있는 경우 CC와 Overlay가 **동일 override를 공유**한다 (BS-03-02-gfx §7).
+Table별 색상 Override가 있는 경우 CC와 Overlay가 **동일 override를 공유**한다 (`Settings/Graphics.md` (legacy-id: BS-03-02) §7).
 
 ---
 

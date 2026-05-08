@@ -43,12 +43,12 @@ cd C:/claude/ebs && /ssot-align
 
 | 파일 | 주요 섹션 추정 | WSOP 소스 | 상태 | 최종 확인 |
 |------|-------------|----------|------|----------|
-| api/API-01-backend-api.md | 엔드포인트 목록 + WSOP LIVE Integration (Part II) | Staff App API 계열 + WSOPLIVE → EBS 데이터 연동 PRD (3659071655) | PENDING | — |
+| api/`Backend_HTTP.md` (legacy-id: API-01) | 엔드포인트 목록 + WSOP LIVE Integration (Part II) | Staff App API 계열 + WSOPLIVE → EBS 데이터 연동 PRD (3659071655) | PENDING | — |
 | api/API-03-rfid-hal-interface.md | 전체 | — | NATIVE | — |
-| api/API-04-overlay-output.md | 전체 | EBS UI Design Console (3646783501) 부분 | PENDING | — |
-| api/API-05-websocket-events.md | 이벤트 목록 | Staff App Live (실시간 데이터 처리) | PENDING | — |
-| api/API-06-auth-session.md | 전체 | GGPass 연동 | PENDING | — |
-| api/API-07-graphic-editor.md | 전체 | — | NATIVE | — |
+| api/`Overlay_Output_Events.md` (legacy-id: API-04) | 전체 | EBS UI Design Console (3646783501) 부분 | PENDING | — |
+| api/`WebSocket_Events.md` (legacy-id: API-05) | 이벤트 목록 | Staff App Live (실시간 데이터 처리) | PENDING | — |
+| api/`Auth_and_Session.md` (legacy-id: API-06) | 전체 | GGPass 연동 | PENDING | — |
+| api/`Graphic_Editor_API.md` (legacy-id: API-07) | 전체 | — | NATIVE | — |
 | api/README.md | — | — | NATIVE | — |
 | data/DATA-01-er-diagram.md | ERD | WSOP+ Database 설명 (1652949021) | PENDING | — |
 | data/DATA-03-state-machines.md | 상태 머신 | (혼합) | PENDING | — |
@@ -58,7 +58,7 @@ cd C:/claude/ebs && /ssot-align
 | specs/BS-00-definitions.md | 정의 | (혼합) | PENDING | — |
 | specs/BS-01-auth/BS-01-auth.md | 인증 | GGPass 연동 | PENDING | — |
 | specs/BS-04-rfid/BS-04-04-hal-contract.md | HAL | — | NATIVE | — |
-| specs/BS-06-game-engine/BS-06-00-triggers.md | 트리거 | (부분) Action History | PENDING | — |
+| specs/BS-06-game-engine/`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) | 트리거 | (부분) Action History | PENDING | — |
 | specs/BS-06-game-engine/README.md | — | — | NATIVE | — |
 | specs/README.md | — | — | NATIVE | — |
 | ccr-risk-matrix.md | — | — | NATIVE | — |

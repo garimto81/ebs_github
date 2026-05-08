@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-10 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team1, team2, team4 |
-| **변경 대상** | `contracts/specs/BS-02-lobby/BS-02-02-event-flight.md`<br/>`contracts/specs/BS-02-lobby/BS-02-03-table.md`<br/>`contracts/specs/BS-03-settings/BS-03-04-rules.md`<br/>`contracts/specs/BS-01-auth/BS-01-02-rbac.md`<br/>`contracts/data/DATA-02-entities.md` |
+| **변경 대상** | `contracts/specs/BS-02-lobby/BS-02-02-event-flight.md`<br/>`contracts/specs/BS-02-lobby/BS-02-03-table.md`<br/>`Settings/Rules.md` (legacy-id: BS-03-04)<br/>`contracts/specs/BS-01-auth/BS-01-02-rbac.md`<br/>`contracts/data/DATA-02-entities.md` |
 | **변경 유형** | modify |
 
 ## 변경 근거
@@ -26,7 +26,7 @@ WSOP LIVE Confluence 미러(`C:\claude\wsoplive\docs\confluence-mirror\`) 원본
 
 - `contracts/specs/BS-02-lobby/BS-02-02-event-flight.md`
 - `contracts/specs/BS-02-lobby/BS-02-03-table.md`
-- `contracts/specs/BS-03-settings/BS-03-04-rules.md`
+- `Settings/Rules.md` (legacy-id: BS-03-04)
 - `contracts/specs/BS-01-auth/BS-01-02-rbac.md`
 - `contracts/data/DATA-02-entities.md`
 

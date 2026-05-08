@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-14 |
 | **처리일** | 2026-04-14 |
 | **영향팀** | team1 |
-| **변경 대상** | `contracts/api/API-01-backend-api.md`<br/>`contracts/data/DATA-02-entities.md`<br/>`contracts/data/DATA-04-db-schema.md`<br/>`contracts/specs/BS-01-auth/BS-01-auth.md` |
+| **변경 대상** | `Backend_HTTP.md` (legacy-id: API-01)<br/>`contracts/data/DATA-02-entities.md`<br/>`contracts/data/DATA-04-db-schema.md`<br/>`contracts/specs/BS-01-auth/BS-01-auth.md` |
 | **변경 유형** | add |
 | **리스크 등급** | LOW |
 
@@ -25,7 +25,7 @@ WSOP LIVE Staff App(`GET/PUT /Series/{sId}/Staffs/*`, Page 1597768061) 은 유�
 
 ## 적용된 파일
 
-- `contracts/api/API-01-backend-api.md`
+- `Backend_HTTP.md` (legacy-id: API-01)
 - `contracts/data/DATA-02-entities.md`
 - `contracts/data/DATA-04-db-schema.md`
 - `contracts/specs/BS-01-auth/BS-01-auth.md`

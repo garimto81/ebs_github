@@ -29,7 +29,7 @@ reimplementability_notes: "BS-04-04 RFID HAL Operator 동작 명세 완결"
 > - **TopStrip (158px) Community Board 5 슬롯**: FLOP 1·2·3 / TURN / RIVER 카드 face-up
 > - **Reader Panel (AT-05)**: 별도 셋업 화면 — DeckRegistered 결과를 deck SSOT 에 저장
 
-> **참조**: 인터페이스 계약 정본은 `RFID_HAL_Interface.md` (API-03), 모드 정의는 `BS-00-definitions.md §9`, 이벤트 합성은 `BS-06-00-triggers.md §4`, v4.0 정체성은 `../Command_Center_UI/Overview.md §3.0`.
+> **참조**: 인터페이스 계약 정본은 `RFID_HAL_Interface.md` (API-03), 모드 정의는 `BS-00-definitions.md §9`, 이벤트 합성은 `Triggers.md §4` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))), v4.0 정체성은 `../Command_Center_UI/Overview.md §3.0`.
 
 ---
 

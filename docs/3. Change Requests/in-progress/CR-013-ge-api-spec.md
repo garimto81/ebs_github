@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-11 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team1, team2 |
-| **변경 대상** | `contracts/api/API-07-graphic-editor.md` |
+| **변경 대상** | `Graphic_Editor_API.md` (legacy-id: API-07) |
 | **변경 유형** | add |
 
 ## 변경 근거
@@ -24,7 +24,7 @@ last-updated: 2026-04-15
 
 ## 적용된 파일
 
-- `contracts/api/API-07-graphic-editor.md`
+- `Graphic_Editor_API.md` (legacy-id: API-07)
 
 ## 원본 Draft
 

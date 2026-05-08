@@ -31,7 +31,7 @@ ownership:
 
 | 파일 | 인용 | redirect_to |
 |------|------|-------------|
-| `Lobby/Overview.md` (line 1100) | "22종 게임 (`BS-06-00-triggers.md` enum)" | Lifecycle 도메인 §2.6 event_game_type Enum + Variants 도메인 §2.1 25 게임 마스터 테이블 |
+| `Lobby/Overview.md` (line 1100) | "22종 게임 (`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) enum)" | Lifecycle 도메인 §2.6 event_game_type Enum + Variants 도메인 §2.1 25 게임 마스터 테이블 |
 | `Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-050-*.md` | "변경 대상: BS-06-00-triggers.md" | (archived 폴더 — 갱신 불필요, history 보존) |
 
 ### 2. team2-backend (8 건)
@@ -48,9 +48,9 @@ ownership:
 | 파일 | 인용 | redirect_to |
 |------|------|-------------|
 | `APIs/WebSocket_Events.md:36` | "이벤트 소스 분류는 BS-06-00-triggers.md" | Triggers 도메인 §1.2 4 트리거 소스 + §3.7 Trigger 소스별 이벤트 분류 |
-| `APIs/WebSocket_Events.md:711` | "BS-06-00-triggers.md §5.2 — CC 액션과 BO ConfigChanged 동시" | Triggers 도메인 §3.16.2 충돌 해결 |
+| `APIs/WebSocket_Events.md:711` | "`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) §5.2 — CC 액션과 BO ConfigChanged 동시" | Triggers 도메인 §3.16.2 충돌 해결 |
 | `APIs/WebSocket_Events.md:1143` | "최소 베팅 규칙 (BS-06-02 참조)" | Betting 도메인 §3.3~§3.5 매트릭스 1-3 |
-| `Back_Office/Sync_Protocol.md:332` | "BS-06-00-triggers.md — BO 소스 이벤트 정의" | Triggers 도메인 §3.7.4 BO 소스 이벤트 14개 |
+| `Back_Office/Sync_Protocol.md:332` | "`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) — BO 소스 이벤트 정의" | Triggers 도메인 §3.7.4 BO 소스 이벤트 14개 |
 | `Database/ER_Diagram.md:23` | "Game Engine GameState/Player/Card/Pot 는 BS-06-00-REF Ch.2 정의" | Lifecycle 도메인 §5.1 GameState + §5.2 Player |
 | `Database/State_Machines.md:133` | "상세: BS-06-01 시나리오 문서" | Lifecycle 도메인 §3.13 유저 스토리 16건 |
 | `Database/State_Machines.md:260` | "event_flight_status enum — BS-06-00-REF 1.2.5" | (Overview.md §1.2.5 그대로 — lifecycle 발췌 외 영역) |
@@ -71,12 +71,12 @@ ownership:
 
 | 파일 | 인용 | redirect_to |
 |------|------|-------------|
-| `APIs/RFID_HAL.md:25` | "이벤트 합성은 BS-06-00-triggers.md §4" | Triggers 도메인 §2.7 Mock 모드 이벤트 합성 |
-| `APIs/RFID_HAL_Interface.md:47` | "트리거 합성 규칙은 BS-06-00-triggers.md §4" | Triggers 도메인 §2.7 |
-| `APIs/RFID_HAL_Interface.md:182` | "RFID 이벤트 카탈로그 BS-06-00-triggers.md §2.2" | Triggers 도메인 §3.7.2 RFID 소스 이벤트 6개 |
-| `APIs/RFID_HAL_Interface.md:240` | "BS-06-00-triggers.md §3.2 — 폴드 인식" | Triggers 도메인 §3.15.2 |
-| `APIs/RFID_HAL_Interface.md:538` | "BS-06-00-triggers.md §4.3 시나리오 스크립트" | Triggers 도메인 §2.7.3 시나리오 스크립트 재생 |
-| `Command_Center_UI/Action_Buttons.md:22,212,284,320,412` | "BS-06-02-holdem-betting.md §X" | Betting 도메인 §3.5 매트릭스 3 + §5.5 CALL 강제 재계산 + §3.3 Matrix 1 + §4.1 액션별 거부 |
+| `APIs/RFID_HAL.md:25` | "이벤트 합성은 `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) §4" | Triggers 도메인 §2.7 Mock 모드 이벤트 합성 |
+| `APIs/RFID_HAL_Interface.md:47` | "트리거 합성 규칙은 `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) §4" | Triggers 도메인 §2.7 |
+| `APIs/RFID_HAL_Interface.md:182` | "RFID 이벤트 카탈로그 `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) §2.2" | Triggers 도메인 §3.7.2 RFID 소스 이벤트 6개 |
+| `APIs/RFID_HAL_Interface.md:240` | "`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) §3.2 — 폴드 인식" | Triggers 도메인 §3.15.2 |
+| `APIs/RFID_HAL_Interface.md:538` | "`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) §4.3 시나리오 스크립트" | Triggers 도메인 §2.7.3 시나리오 스크립트 재생 |
+| `Command_Center_UI/Action_Buttons.md:22,212,284,320,412` | "`Holdem/Betting.md` (legacy-id: BS-06-02) §X" | Betting 도메인 §3.5 매트릭스 3 + §5.5 CALL 강제 재계산 + §3.3 Matrix 1 + §4.1 액션별 거부 |
 | `Command_Center_UI/Hand_Lifecycle.md` | (다수) | Lifecycle 도메인 §2.1 / §3.3 / §3.13 |
 | `Command_Center_UI/Manual_Card_Input.md` | (다수) | Triggers 도메인 §3.15 + Variants 도메인 §3.16 |
 | `Backlog/_archived-2026-04/notify-ccr/*.md` | "BS-06-00-triggers.md" | (archived — 갱신 불필요) |

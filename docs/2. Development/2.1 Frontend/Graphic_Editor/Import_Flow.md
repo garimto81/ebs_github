@@ -143,5 +143,5 @@ saved
 ## 5. 연관 문서
 
 - `DATA-07-gfskin-schema.md` — JSON Schema 원본
-- `API-07-graphic-editor.md §1` — POST /Skins 엔드포인트
+- `Graphic_Editor_API.md §1` (legacy-id: API-07) — POST /Skins 엔드포인트
 - `BS-08-02-metadata-editing.md` — 업로드 후 메타 편집 흐름

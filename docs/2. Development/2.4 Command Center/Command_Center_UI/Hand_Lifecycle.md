@@ -19,7 +19,7 @@ last-updated: 2026-04-15
 
 이 문서는 BS-06-01-holdem-lifecycle.md에서 정의한 HandFSM을 **운영자가 CC에서 경험하는 UI 관점**으로 재기술한다. 각 상태에서 어떤 버튼이 활성화되고, 어떤 정보가 표시되며, 운영자가 무엇을 해야 하는지를 명시한다.
 
-> 참조: HandFSM 상태 전이 규칙은 BS-06-01-holdem-lifecycle.md, 베팅 액션 규칙은 BS-06-02-holdem-betting.md
+> 참조: HandFSM 상태 전이 규칙은 `Holdem/Lifecycle.md` (legacy-id: BS-06-01), 베팅 액션 규칙은 `Holdem/Betting.md` (legacy-id: BS-06-02)
 
 ---
 
@@ -151,7 +151,7 @@ CC에서 핸드를 시작하려면 다음이 모두 충족되어야 한다:
 **카드 입력**: RFID Real 모드면 자동 감지 대기. Mock 모드면 수동 카드 입력 그리드 표시.
 **운영자 행동**: action_on 플레이어의 액션을 관찰하고 해당 버튼 클릭 (또는 단축키).
 
-> 참조: 버튼 활성 조건 상세는 `Action_Buttons.md` (legacy-id: BS-05-02), 베팅 금액 규칙은 BS-06-02-holdem-betting.md
+> 참조: 버튼 활성 조건 상세는 `Action_Buttons.md` (legacy-id: BS-05-02), 베팅 금액 규칙은 `Holdem/Betting.md` (legacy-id: BS-06-02)
 
 ### 1.4 FLOP — 플롭 베팅
 
@@ -359,6 +359,6 @@ CC에서 핸드를 시작하려면 다음이 모두 충족되어야 한다:
 |----------|----------------|
 | BS-05-02 액션 버튼 | 각 상태별 활성/비활성 버튼 조건 상세 |
 | BS-05-05 Undo/복구 | UNDO 시 상태 복원 범위 |
-| BS-06-01-holdem-lifecycle | Engine 내부 FSM 전이 규칙 (이 문서의 근거) |
-| BS-06-02-holdem-betting | 베팅 액션 유효성 규칙 (이 문서의 근거) |
+| `Holdem/Lifecycle.md` (legacy-id: BS-06-01) | Engine 내부 FSM 전이 규칙 (이 문서의 근거) |
+| `Holdem/Betting.md` (legacy-id: BS-06-02) | 베팅 액션 유효성 규칙 (이 문서의 근거) |
 | BS-07-overlay | 각 상태별 Overlay 화면 변화 |

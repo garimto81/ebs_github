@@ -10,7 +10,7 @@ last-updated: 2026-05-08
 last-synced: 2026-05-08  # Foundation v4.5 §10 정합 (S8 audit 2026-05-08, D1)
 related:
   - "Behavioral_Specs/Card_Pipeline_Overview.md"   # BS-06-12 (board card detection authority)
-  - "Behavioral_Specs/Triggers.md"                  # BS-06-00-triggers (event 트리거 SSOT)
+  - "Behavioral_Specs/Triggers.md"                  # `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) (event 트리거 SSOT)
   - "Behavioral_Specs/Holdem/Coalescence.md"        # RFID burst 처리
 ---
 
@@ -1175,7 +1175,7 @@ switch (current_state) {
 | 블라인드 / 앤티 포스팅 | BS-06-03 (Blinds domain — 차후 통합) |
 | 핸드 평가 (HandRank, kicker, side pot 분배) | BS-06-04~07 (Evaluation domain — 차후 통합) |
 | 보드 카드 감지 / 홀카드 호출 | **BS-06-12** Card_Pipeline_Overview.md |
-| 이벤트 트리거 카탈로그 (CC / RFID / Engine / BO) | BS-06-00-triggers Triggers.md |
+| 이벤트 트리거 카탈로그 (CC / RFID / Engine / BO) | `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) Triggers.md |
 | RFID burst 처리 (coalescence) | BS-06-08 Coalescence.md |
 
 본 문서는 위 영역의 결과를 **Lifecycle 측 trigger 로 수신**하지만, 그 내부 로직은 권위 문서에 위임한다.

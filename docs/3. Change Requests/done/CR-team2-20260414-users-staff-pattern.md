@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260414-users-staff-pattern
 - **제안팀**: team2
 - **제안일**: 2026-04-14
 - **영향팀**: [team1]
-- **변경 대상 파일**: contracts/api/API-01-backend-api.md, contracts/data/DATA-02-entities.md, contracts/data/DATA-04-db-schema.md, contracts/specs/BS-01-auth/BS-01-auth.md
+- **변경 대상 파일**: contracts/api/`Backend_HTTP.md` (legacy-id: API-01), contracts/data/DATA-02-entities.md, contracts/data/DATA-04-db-schema.md, contracts/specs/BS-01-auth/BS-01-auth.md
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE Staff App(`GET/PUT /Series/{sId}/Staffs/*`, Page 1597768061) 은 유저 생명주기 관리를 Suspend/Lock 2-축 패턴으로 운영. EBS 현행 API-01 §5.2 는 CRUD 5종만 보유하여 운영 관점 상태 제어(일시 정지, 보안 잠금) 수단이 부재. 정식 전체 개발 단계에서 WSOP LIVE 운영 패턴에 정렬 필요. 기존 CRUD는 Phase 1 초기 provisioning + 긴급 수정 용도로 유지.
 
@@ -24,7 +24,7 @@ legacy-id: CCR-DRAFT-team2-20260414-users-staff-pattern
 
 ## Diff 초안
 
-### contracts/api/API-01-backend-api.md §5.2
+### contracts/api/`Backend_HTTP.md` (legacy-id: API-01) §5.2
 
 ```diff
  ### 5.2 Users — 사용자 관리

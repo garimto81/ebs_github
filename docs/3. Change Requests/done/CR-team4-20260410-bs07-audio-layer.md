@@ -139,7 +139,7 @@ Rive State Machine 내부에 `trigger_sound` Input을 두고, Flutter 측에서 
 
 - BS-07-02-animations §Rive-Audio Bridge
 - BS-07-03-skin-loading §assets/audio/ 폴더
-- API-04-overlay-output §OutputEvent (사운드 트리거가 포함되는 이벤트)
+- `Overlay_Output_Events.md` (legacy-id: API-04) §OutputEvent (사운드 트리거가 포함되는 이벤트)
 - wsoplive Fatima.app Audio Player Provider 원본
 ```
 

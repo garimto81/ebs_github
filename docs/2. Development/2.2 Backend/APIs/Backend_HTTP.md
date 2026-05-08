@@ -32,7 +32,7 @@ reimplementability_notes: "API-01 REST 카탈로그 + WSOP LIVE 연동 (53KB). T
 
 이 문서는 EBS Back Office(BO) FastAPI 서버의 **REST API 전체 엔드포인트 카탈로그**(Part I)와 **WSOP LIVE Staff Page API와의 연동 계약**(Part II)을 통합 정의한다. Lobby(Flutter Desktop)와 CC(Flutter Desktop)는 Part I의 REST API를 통해 BO DB와 데이터를 주고받으며, WSOP LIVE는 대회 계층(Series/Event/Flight)과 플레이어/블라인드 데이터의 원천으로서 Part II의 폴링 프로토콜에 따라 BO DB에 캐싱된다.
 
-> **참조**: 인증 API 상세는 `API-06-auth-session.md`, WebSocket 이벤트는 `API-05-websocket-events.md`, 엔티티 필드 정의는 `DATA-04-db-schema.md`
+> **참조**: 인증 API 상세는 `Auth_and_Session.md` (legacy-id: API-06), WebSocket 이벤트는 `WebSocket_Events.md` (legacy-id: API-05), 엔티티 필드 정의는 `DATA-04-db-schema.md`
 
 ### 설계 원칙 (Part I — REST API)
 
@@ -199,7 +199,7 @@ http://{bo_host}:{bo_port}/api/v1
 
 ### 5.1 Auth — 인증
 
-> Auth API 전체 카탈로그(login, refresh, session, 2FA, password reset 등)·요청/응답 스키마·정책: `API-06-auth-session.md`. WSOP LIVE 비교(Google OAuth + 3-role RBAC + 2FA 독자 설계 등)도 API-06 §WSOP 비교 섹션 참조.
+> Auth API 전체 카탈로그(login, refresh, session, 2FA, password reset 등)·요청/응답 스키마·정책: `Auth_and_Session.md` (legacy-id: API-06). WSOP LIVE 비교(Google OAuth + 3-role RBAC + 2FA 독자 설계 등)도 API-06 §WSOP 비교 섹션 참조.
 
 ### 5.2 Users — 사용자 관리
 

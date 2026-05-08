@@ -17,9 +17,9 @@ last-updated: 2026-04-15
 
 ## 개요
 
-이 문서는 **운영자·RFID 입력이 Overlay 화면에 픽셀로 나타나기까지의 시간축 시퀀스**를 정의한다. 트리거 정의(BS-06-00-triggers), 요소 매핑(BS-07-01), 애니메이션 상태(BS-07-02)는 이미 다른 문서의 SSOT이므로, 본 문서는 그들을 **시간축 상에서 조립**한다.
+이 문서는 **운영자·RFID 입력이 Overlay 화면에 픽셀로 나타나기까지의 시간축 시퀀스**를 정의한다. 트리거 정의(`Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))), 요소 매핑(BS-07-01), 애니메이션 상태(BS-07-02)는 이미 다른 문서의 SSOT이므로, 본 문서는 그들을 **시간축 상에서 조립**한다.
 
-> **참조**: 트리거 이벤트 정의 `BS-06-00-triggers.md`, 요소별 트리거 매핑 `Elements.md` (legacy-id: BS-07-01), AnimationState/transition_type `Animations.md` (legacy-id: BS-07-02), 프로세스 모델 `API-04 §1.2`, Security Delay 아키텍처 `Security_Delay.md` (legacy-id: BS-07-07), 스킨 로드 FSM `Skin_Loading.md` (legacy-id: BS-07-03).
+> **참조**: 트리거 이벤트 정의 `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))), 요소별 트리거 매핑 `Elements.md` (legacy-id: BS-07-01), AnimationState/transition_type `Animations.md` (legacy-id: BS-07-02), 프로세스 모델 `API-04 §1.2`, Security Delay 아키텍처 `Security_Delay.md` (legacy-id: BS-07-07), 스킨 로드 FSM `Skin_Loading.md` (legacy-id: BS-07-03).
 
 ### 문서 범위
 
@@ -29,7 +29,7 @@ last-updated: 2026-04-15
 | 데이터 파이프라인 개요 | API-04 §1 요약 + 본 문서에서 UI 관점 재조립 |
 | AnimationState 발동 조건 | BS-07-02 §3 (본 문서는 링크만) |
 | 스킨 JSON 좌표/치수 | BS-07-04 scene-schema (본 문서 범위 외) |
-| 시각 모드(크로마키 등) | BS-03-01-outputs (본 문서 범위 외) |
+| 시각 모드(크로마키 등) | `Settings/Outputs.md` (legacy-id: BS-03-01) (본 문서 범위 외) |
 
 ---
 
@@ -592,7 +592,7 @@ sequenceDiagram
 
 본 문서의 각 시퀀스는 구현 시 다음을 만족해야 한다:
 
-- [ ] 모든 트리거가 BS-06-00-triggers 정의와 이름 일치
+- [ ] 모든 트리거가 `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) 정의와 이름 일치
 - [ ] 모든 AnimationState가 BS-07-02 §1과 이름·값 일치
 - [ ] Backstage/Broadcast 분기가 BS-07-07 §2와 일치 (두 Stream)
 - [ ] Security Delay 적용 시점이 BS-07-07 §4 Buffer 구조와 일치
@@ -615,5 +615,5 @@ sequenceDiagram
 | `Security_Delay.md` (legacy-id: BS-07-07) | Security Delay 아키텍처 (본 문서 §1~§2 전반의 전제) |
 | `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | 프로세스 모델 + 데이터 계약 SSOT (team3 publisher) |
 | `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` | skin_updated 이벤트 (§2.11) |
-| `BS-06-00-triggers.md` | 트리거 이벤트 정의 SSOT |
-| `BS-06-00-REF-game-engine-spec.md` | AnimationState/transition_type Enum |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) | 트리거 이벤트 정의 SSOT |
+| `Behavioral_Specs/Overview.md` (legacy-id: BS-06-00) | AnimationState/transition_type Enum |

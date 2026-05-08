@@ -19,7 +19,7 @@ last-updated: 2026-04-15
 
 이 문서는 Overlay가 렌더링하는 **10개 오버레이 요소** 각각의 트리거 조건, 갱신 조건, 데이터 소스, 가시성 규칙을 정의한다.
 
-> **참조**: Layer 1 그래픽 8종 + 보조 요소는 `Overview.md` §3 (legacy-id: BS-07-00). 트리거 정의는 `BS-06-00-triggers.md`. Enum 값은 `BS-06-00-REF-game-engine-spec.md`.
+> **참조**: Layer 1 그래픽 8종 + 보조 요소는 `Overview.md` §3 (legacy-id: BS-07-00). 트리거 정의는 `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))). Enum 값은 `Behavioral_Specs/Overview.md` (legacy-id: BS-06-00).
 
 ---
 
@@ -311,8 +311,8 @@ last-updated: 2026-04-15
 |------|------|
 | `Overview.md` (legacy-id: BS-07-00) | Layer 1 그래픽 8종 정의 |
 | `Animations.md` (legacy-id: BS-07-02) | 요소별 애니메이션 상세 |
-| `BS-06-00-REF-game-engine-spec.md` | DisplayConfig 필드 (card_reveal_type 등) |
-| `BS-06-00-triggers.md` | 트리거 이벤트 카탈로그 |
+| `Behavioral_Specs/Overview.md` (legacy-id: BS-06-00) | DisplayConfig 필드 (card_reveal_type 등) |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))) | 트리거 이벤트 카탈로그 |
 | `BS-03-settings/` | 가시성 토글 UI |
 | `Seat_Management.md §6` (legacy-id: BS-05-03) | CC 시각 규격 원본 (CCR-034 동기화) |
 

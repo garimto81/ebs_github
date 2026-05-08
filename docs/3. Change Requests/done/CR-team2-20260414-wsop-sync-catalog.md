@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260414-wsop-sync-catalog
 - **제안팀**: team2
 - **제안일**: 2026-04-14
 - **영향팀**: [team1]
-- **변경 대상 파일**: contracts/api/API-01-backend-api.md (Part II, WSOP LIVE Integration)
+- **변경 대상 파일**: contracts/api/`Backend_HTTP.md` (legacy-id: API-01) (Part II, WSOP LIVE Integration)
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE는 공개 Public API 카탈로그가 별도 존재하지 않음 (조사 결과). Staff App API는 내부 사용. 외부 통합은 GGPass External API(S2S, Page 1975582764, API Key + JWT) 경유. EBS 동기화 전략을 명시화 필요: Phase 1 mock seed, Phase 2 GGPass 통합 협상, Phase 3 Staff App API 양방향.
 

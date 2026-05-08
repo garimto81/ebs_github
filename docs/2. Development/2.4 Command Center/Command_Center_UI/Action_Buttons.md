@@ -133,7 +133,7 @@ biggestBet >  0          →  RAISE   (이미 베팅 있음, B 키)
 | **이벤트** | `StartHand` |
 | **결과** | IDLE → SETUP_HAND 전이 |
 
-> **CCR-024**: NEW HAND 버튼 클릭 시 CC는 `WriteGameInfo` WebSocket 프로토콜을 BO에 발행한다. 24 필드(`dealer_seat`, `sb_seat`, `bb_seat`, `blind_structure_id`, `active_seats`, `dead_button_mode` 등) 전체 스키마와 검증 규칙은 **`API-05-websocket-events.md §9 WriteGameInfo`** 참조.
+> **CCR-024**: NEW HAND 버튼 클릭 시 CC는 `WriteGameInfo` WebSocket 프로토콜을 BO에 발행한다. 24 필드(`dealer_seat`, `sb_seat`, `bb_seat`, `blind_structure_id`, `active_seats`, `dead_button_mode` 등) 전체 스키마와 검증 규칙은 **`WebSocket_Events.md §9 WriteGameInfo` (legacy-id: API-05)** 참조.
 
 ### 특수: Bomb Pot 모드
 
@@ -270,7 +270,7 @@ NEW HAND 전 Bomb Pot 모드가 설정되어 있으면:
 
 ### 금액 범위 (베팅 구조별)
 
-> 참조: 금액 계산 상세는 BS-06-02-holdem-betting.md §3. BET
+> 참조: 금액 계산 상세는 `Holdem/Betting.md` (legacy-id: BS-06-02) §3. BET
 
 | 베팅 구조 | 최소 | 최대 |
 |----------|------|------|
@@ -342,7 +342,7 @@ NEW HAND 전 Bomb Pot 모드가 설정되어 있으면:
 | call_amount > player.stack | 스택 전부 납부 → 자동 ALL-IN 처리, 사이드 팟 생성 |
 | 버튼 라벨 | "CALL {stack} (ALL-IN)" 표시 |
 
-> 참조: Short Call 상세는 BS-06-02-holdem-betting.md §4. CALL
+> 참조: Short Call 상세는 `Holdem/Betting.md` (legacy-id: BS-06-02) §4. CALL
 
 ---
 
@@ -378,7 +378,7 @@ NEW HAND 전 Bomb Pot 모드가 설정되어 있으면:
 
 ### 금액 범위 (베팅 구조별)
 
-> 참조: 금액 계산 상세는 BS-06-02-holdem-betting.md §5. RAISE
+> 참조: 금액 계산 상세는 `Holdem/Betting.md` (legacy-id: BS-06-02) §5. RAISE
 
 | 베팅 구조 | 최소 (min_raise_total) | 최대 |
 |----------|----------------------|------|
@@ -470,7 +470,7 @@ NEW HAND 전 Bomb Pot 모드가 설정되어 있으면:
 | **PL** | N/A | N/A | [BB, pot+2×BB] | 자동 | [min_raise, pot계산] | stack |
 | **FL** | N/A | N/A | 고정값 | 자동 | 고정값 (cap 적용) | stack |
 
-> 참조: 각 구조별 정확한 금액 계산식은 BS-06-02-holdem-betting.md
+> 참조: 각 구조별 정확한 금액 계산식은 `Holdem/Betting.md` (legacy-id: BS-06-02)
 
 ### Matrix 4: 특수 상황별 버튼 동작 변화
 
@@ -529,6 +529,6 @@ SHOWDOWN 상태에서는 기본 8버튼 대신 특수 버튼이 표시된다:
 |----------|----------------|
 | BS-05-01 핸드 라이프사이클 | 각 상태에서 활성 버튼 목록 |
 | BS-05-06 키보드 단축키 | 각 버튼의 단축키 매핑 |
-| BS-06-02-holdem-betting | 베팅 액션 유효성·금액 계산 (이 문서의 근거) |
-| BS-06-00-triggers | CC 이벤트 21종의 UI 트리거 조건 |
+| `Holdem/Betting.md` (legacy-id: BS-06-02) | 베팅 액션 유효성·금액 계산 (이 문서의 근거) |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) | CC 이벤트 21종의 UI 트리거 조건 |
 | BS-07-overlay | 액션 입력 시 Overlay 반영 |

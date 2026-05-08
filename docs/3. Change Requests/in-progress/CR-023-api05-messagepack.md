@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-10 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team1, team2 |
-| **변경 대상** | `contracts/api/API-05-websocket-events.md` |
+| **변경 대상** | `WebSocket_Events.md` (legacy-id: API-05) |
 | **변경 유형** | modify |
 
 ## 변경 근거
@@ -24,7 +24,7 @@ last-updated: 2026-04-15
 
 ## 적용된 파일
 
-- `contracts/api/API-05-websocket-events.md`
+- `WebSocket_Events.md` (legacy-id: API-05)
 
 ## 원본 Draft
 

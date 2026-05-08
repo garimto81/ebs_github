@@ -47,7 +47,7 @@ reimplementability_notes: "API-06 인증/세션 계약 완결 (17KB)"
 
 ### 멱등성 (CCR-003)
 
-`POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout`, `POST /auth/verify-2fa` 등 **모든 mutation 엔드포인트**는 `Idempotency-Key` 헤더를 수용한다. 동작 상세는 `API-01-backend-api.md §3 공통 응답 포맷 — 멱등성 동작` 을 준수한다.
+`POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout`, `POST /auth/verify-2fa` 등 **모든 mutation 엔드포인트**는 `Idempotency-Key` 헤더를 수용한다. 동작 상세는 `Backend_HTTP.md §3 공통 응답 포맷 — 멱등성 동작` (legacy-id: API-01) 을 준수한다.
 
 - 클라이언트: 네트워크 재시도·더블 클릭 방지를 위해 UUIDv4/ULID를 요청당 1회 생성
 - 서버: `idempotency_keys` 테이블(DATA-04 §4)에 24h 캐시

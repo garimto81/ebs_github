@@ -20,7 +20,7 @@ last-updated: 2026-04-15
 
 이 문서는 Overlay가 렌더링하는 **전체 상태의 직렬화 포맷**(Scene JSON Schema)을 정의한다. 씬 스키마는 특정 시점의 Overlay 상태를 완전히 기술하는 JSON 구조로, 스냅샷 저장, 리플레이, 테스트 검증에 사용된다.
 
-> **참조**: 게임 상태 Enum은 `BS-06-00-REF-game-engine-spec.md`. 오버레이 요소는 `Elements.md` (legacy-id: BS-07-01). 스킨 구조는 `Skin_Loading.md` (legacy-id: BS-07-03).
+> **참조**: 게임 상태 Enum은 `Behavioral_Specs/Overview.md` (legacy-id: BS-06-00). 오버레이 요소는 `Elements.md` (legacy-id: BS-07-01). 스킨 구조는 `Skin_Loading.md` (legacy-id: BS-07-03).
 
 ---
 
@@ -352,7 +352,7 @@ last-updated: 2026-04-15
 |------|------|
 | `Elements.md` (legacy-id: BS-07-01) | 각 element의 동작 정의 |
 | `Animations.md` (legacy-id: BS-07-02) | animations 섹션의 상태값 |
-| `BS-06-00-REF-game-engine-spec.md` | Enum 값 (game_phase, suit, rank, PlayerStatus 등) |
+| `Behavioral_Specs/Overview.md` (legacy-id: BS-06-00) | Enum 값 (game_phase, suit, rank, PlayerStatus 등) |
 | `BS-00-definitions.md` | 엔티티·상태 용어 |
 | `Seat_Management.md §6` (legacy-id: BS-05-03) | CC 시각 규격 원본 (CCR-034 동일 색상 체계) |
 
@@ -391,4 +391,4 @@ Scene Schema의 `player_state_colors` 필드는 CC와 Overlay가 공유하는 **
 **규칙**:
 - Skin마다 override 가능하지만 CC와 Overlay가 **동일 값**을 공유
 - CC 전용/Overlay 전용 색상 분리 **금지** (계약 위반)
-- Table별 색상 Override는 `BS-03-02-gfx §7` 참조 (skin 수준이 아닌 table 설정 수준)
+- Table별 색상 Override는 `Settings/Graphics.md §7` (legacy-id: BS-03-02) 참조 (skin 수준이 아닌 table 설정 수준)

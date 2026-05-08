@@ -15,7 +15,7 @@ reimplementability_notes: "UI-03 Settings UI 스펙 (29KB) 완결"
 | 2026-04-08 | 신규 작성 | Output/Overlay/Game/Statistics 4섹션 레이아웃, 탭 네비게이션, 모달 구조 |
 | 2026-04-09 | 6섹션 전면 재설계 | Console PRD v9.7 기반 Outputs/GFX/Display/Rules/Stats/Preferences |
 | 2026-04-10 | critic revision | §1.1 Ownership & Boundary 소섹션 추가 (Team 1 / Team 4 경계, 글로벌 설정 원칙), Rules 탭에 Blind 편집 범위 외 주석, ConfigChanged ASCII 데이터 흐름 추가 |
-| 2026-04-10 | CCR-011/025 후속 반영 | Graphic Editor 소유권 Team 1 이관(CCR-011 APPLIED) → §1.1 GFX 탭 책임 확장 (rive-js 프리뷰 + GE 허브 연동), Team 4 는 Overlay 렌더링 소비자로 재정의, CCR-025(BS-03-02-gfx 시각 asset 메타) 경계 반영 |
+| 2026-04-10 | CCR-011/025 후속 반영 | Graphic Editor 소유권 Team 1 이관(CCR-011 APPLIED) → §1.1 GFX 탭 책임 확장 (rive-js 프리뷰 + GE 허브 연동), Team 4 는 Overlay 렌더링 소비자로 재정의, CCR-025(`Settings/Graphics.md` (legacy-id: BS-03-02) 시각 asset 메타) 경계 반영 |
 | 2026-04-10 | UI-04 cross-link | Rules 탭 Blind 범위 외 주석에 GEM-01~25 필드 전체는 UI-04-graphic-editor.md §5 참조 1줄 추가 |
 
 ---
@@ -24,7 +24,7 @@ reimplementability_notes: "UI-03 Settings UI 스펙 (29KB) 완결"
 
 Settings는 Lobby (Flutter 앱, Docker Web 배포) 내 **6탭 페이지**로, Console의 5탭(Outputs/GFX/Display/Rules/Stats) + Preferences 다이얼로그를 통합한 구조. 오버레이 출력 파이프라인, 그래픽 배치, 수치 표시 형식, 게임 규칙, 통계/리더보드, 테이블 인증/진단/내보내기를 관리한다. Admin 전용이며, Lobby 또는 CC 어디서든 [Settings ⚙] 버튼으로 접근한다.
 
-> 참조: BS-03-00-overview, BS-00 §1
+> 참조: `Settings/Overview.md` (legacy-id: BS-03-00), BS-00 §1
 
 ---
 
@@ -37,7 +37,7 @@ Team 1 의 Settings 범위(+ Graphic Editor 허브)와 Team 4 Overlay 렌더링 
 | 탭 | Team 1 책임 | Team 4 책임 |
 |----|-------------|-------------|
 | **Outputs** | 전체 (설정 값 CRUD + 폼 UI) | — |
-| **GFX** | 전체 (Layout/Card & Player/Animation 옵션 CRUD + **rive-js 프리뷰** + Graphic Editor 허브 연동) | Overlay 실제 렌더링 소비자, BS-03-02-gfx 시각 asset 메타 정의 제공 (CCR-025) |
+| **GFX** | 전체 (Layout/Card & Player/Animation 옵션 CRUD + **rive-js 프리뷰** + Graphic Editor 허브 연동) | Overlay 실제 렌더링 소비자, `Settings/Graphics.md` (legacy-id: BS-03-02) 시각 asset 메타 정의 제공 (CCR-025) |
 | **Display** | 설정 값 저장/편집 폼 (Blinds/Precision/Mode 옵션) | 오버레이 상의 실제 수치 렌더링 결과 (BS-07) |
 | **Rules** | 전체 (Game Rules, Player Display) | — |
 | **Stats** | 전체 (Equity/Leaderboard/Strip 옵션 CRUD) | 통계 오버레이 렌더링 결과 (BS-07) |
@@ -46,7 +46,7 @@ Team 1 의 Settings 범위(+ Graphic Editor 허브)와 Team 4 Overlay 렌더링 
 **요약 (CCR-011 APPLIED 후 갱신)**:
 
 - Team 1 은 **"어떤 값을 저장할지" + "어떻게 Import/Activate 할지"** 를 담당한다. **Flutter + Dart** (Riverpod + Freezed, Docker Web 배포) 폼 컴포넌트로 Settings CRUD 를 구현하고, Flutter `rive` 패키지로 GFX 프리뷰를 렌더하며, `.gfskin` 허브(`/Lobby/GraphicEditor`)에서 ZIP Import·메타데이터 편집·Activate·`SkinUpdated` WS broadcast 를 관장한다. `PUT /Configs` 와 `PUT /api/v1/Skins/{id}/Activate` 가 주 엔드포인트.
-- Team 4 는 **"값/Asset 이 방송에서 어떻게 렌더링되는지"** 를 담당한다. Flutter+Rive Overlay(BS-07) 가 `skin_updated` WS 이벤트를 소비하여 리렌더하고, BS-03-02-gfx 의 시각 asset 메타(CCR-025) 를 제공한다. **Team 4 는 Graphic Editor UI 를 더 이상 소유하지 않는다.**
+- Team 4 는 **"값/Asset 이 방송에서 어떻게 렌더링되는지"** 를 담당한다. Flutter+Rive Overlay(BS-07) 가 `skin_updated` WS 이벤트를 소비하여 리렌더하고, `Settings/Graphics.md` (legacy-id: BS-03-02) 의 시각 asset 메타(CCR-025) 를 제공한다. **Team 4 는 Graphic Editor UI 를 더 이상 소유하지 않는다.**
 - **Rive 내부 편집은 Rive 공식 에디터(외부)** 가 담당한다. Transform/keyframe/color adjust 는 Team 1 / Team 4 모두 out-of-scope. Designer 는 Rive 에서 `.riv` 완성 → `.gfskin` ZIP 패키징 → Team 1 허브 업로드 순서를 따른다.
 
 ### 글로벌 설정 원칙 (CRITICAL)
@@ -343,7 +343,7 @@ Settings는 Lobby 내 독립 페이지(`/Settings/:tableId`)로 렌더링된다.
 > Rules 탭은 **게임 규칙 옵션** (Bomb Pot, Straddle, Player Display 등)만 다룬다.
 > **Blind 레벨 구조(레벨별 SB/BB/Ante/Duration), Blind 타이머 편집, BlindDetailType(`Blind`/`Break`/`DinnerBreak`/`HalfBlind`/`HalfBreak`) 편집 UI 는 Settings 가 아니라 Lobby 의 Flight 생성/편집 플로우가 소유한다** (UI-01 §화면 3 Flight 참조).
 > 이 원칙은 "Settings = 글로벌, Flight = Event 단위"라는 책임 분리에서 온다. Blind 구조는 Event/Flight 마다 다르므로 글로벌 Settings 에 들어갈 수 없다.
-> `BlindDetailType` 5 타입 enum(`Blind`/`Break`/`DinnerBreak`/`HalfBlind`/`HalfBreak`) 은 **CCR-017 APPLIED** 로 `../Specs/BS-03-settings/BS-03-04-rules.md` 에 이미 추가되었다 (UI-01 §9.3 참조).
+> `BlindDetailType` 5 타입 enum(`Blind`/`Break`/`DinnerBreak`/`HalfBlind`/`HalfBreak`) 은 **CCR-017 APPLIED** 로 `Settings/Rules.md` (legacy-id: BS-03-04) 에 이미 추가되었다 (UI-01 §9.3 참조).
 >
 > **GFX 탭의 시각 자산 메타데이터 (GEM-01~25)** 는 Settings 직접 편집이 아니라 `/Lobby/GraphicEditor` 허브에서 처리한다. GEM 필드 전체 목록, Upload Dropzone, rive-js 프리뷰, Activate 흐름 등 상세는 **`UI-04-graphic-editor.md §5`** 참조. Settings GFX 탭은 현재 활성화된 스킨의 메타데이터를 **읽기 전용**으로 노출하고, 편집은 [Graphic Editor 열기] 버튼으로 허브로 이동한다 (CCR-011 + CCR-025 APPLIED).
 
@@ -481,13 +481,13 @@ Equity, Outs, Rabbit Hunting, Leaderboard, Score Strip.
 
 | 참조 문서 | 경로 |
 |----------|------|
-| BS-03-00 Overview | `../Specs/BS-03-settings/BS-03-00-overview.md` |
-| BS-03-01 Outputs | `../Specs/BS-03-settings/BS-03-01-outputs.md` |
-| BS-03-02 GFX | `../Specs/BS-03-settings/BS-03-02-gfx.md` |
-| BS-03-03 Display | `../Specs/BS-03-settings/BS-03-03-display.md` |
-| BS-03-04 Rules | `../Specs/BS-03-settings/BS-03-04-rules.md` |
-| BS-03-05 Stats | `../Specs/BS-03-settings/BS-03-05-stats.md` |
-| BS-03-06 Preferences | `../Specs/BS-03-settings/BS-03-06-preferences.md` |
+| BS-03-00 Overview | `Settings/Overview.md` (legacy-id: BS-03-00) |
+| BS-03-01 Outputs | `Settings/Outputs.md` (legacy-id: BS-03-01) |
+| BS-03-02 GFX | `Settings/Graphics.md` (legacy-id: BS-03-02) |
+| BS-03-03 Display | `Settings/Display.md` (legacy-id: BS-03-03) |
+| BS-03-04 Rules | `Settings/Rules.md` (legacy-id: BS-03-04) |
+| BS-03-05 Stats | `Settings/Statistics.md` (legacy-id: BS-03-05) |
+| BS-03-06 Preferences (deprecated) | 흡수됨 → `../Lobby/Operations.md` (테이블 운영 성격으로 이전, Settings 5탭 축소) |
 | Foundation PRD | `docs/1. Product/Foundation.md` |
 
 ---
@@ -498,10 +498,10 @@ Equity, Outs, Rabbit Hunting, Leaderboard, Score Strip.
 
 | CCR | 상태 | 변경 대상 | 관련 섹션 |
 |-----|------|----------|----------|
-| **CCR-017** wsop-parity (BlindDetailType 5타입 enum, dayIndex, isPause, Bit Flag RBAC 등) | ✅ APPLIED | `../Specs/BS-03-settings/BS-03-04-rules.md` 외 4개 | Rules 탭 Blind 편집 범위 외 주석, ConfigChanged 흐름 (간접) |
+| **CCR-017** wsop-parity (BlindDetailType 5타입 enum, dayIndex, isPause, Bit Flag RBAC 등) | ✅ APPLIED | `Settings/Rules.md` (legacy-id: BS-03-04) 외 4개 | Rules 탭 Blind 편집 범위 외 주석, ConfigChanged 흐름 (간접) |
 | **CCR-016** tech-stack-ssot (Lobby Quasar 확정 + BS-00 SSOT 문장 신설) | ✅ APPLIED | `contracts/specs/BS-00-definitions.md` | §1.1 Ownership & Boundary (Team 1 Quasar 기술 근거) |
 | **CCR-011** ge-ownership-move (Graphic Editor Team 4 → Team 1 Lobby 허브 이관) | ✅ APPLIED | `../Specs/BS-08-graphic-editor/BS-08-00~04`, `BS-00-definitions.md` | §1.1 GFX 탭 책임 확장 (rive-js 프리뷰 + GE 허브), Team 4 Overlay 렌더링 소비자 재정의 |
-| **CCR-025** bs03-graphic-settings-tab (BS-03-02-gfx 시각 asset 메타 확장) | ✅ APPLIED | `../Specs/BS-03-settings/BS-03-02-gfx.md` | §1.1 GFX 탭 Team 4 기여 필드 (BS-03-02 메타 참조) |
+| **CCR-025** bs03-graphic-settings-tab (`Settings/Graphics.md` (legacy-id: BS-03-02) 시각 asset 메타 확장) | ✅ APPLIED | `Settings/Graphics.md` (legacy-id: BS-03-02) | §1.1 GFX 탭 Team 4 기여 필드 (BS-03-02 메타 참조) |
 
 CCR 경로: `docs/05-plans/ccr-inbox/promoting/CCR-{011,016,017,025}-*.md`
 원본 drafts: `docs/05-plans/ccr-inbox/archived/CCR-DRAFT-team1-20260410-{wsop-parity,tech-stack-ssot}.md`, `CCR-DRAFT-conductor-20260410-ge-ownership-move.md`, `CCR-DRAFT-team4-20260410-bs03-graphic-settings-tab.md`

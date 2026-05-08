@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-10 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team1 |
-| **변경 대상** | `contracts/specs/BS-03-settings/BS-03-02-gfx.md` |
+| **변경 대상** | `Settings/Graphics.md` (legacy-id: BS-03-02) |
 | **변경 유형** | modify |
 
 ## 변경 근거
@@ -24,7 +24,7 @@ last-updated: 2026-04-15
 
 ## 적용된 파일
 
-- `contracts/specs/BS-03-settings/BS-03-02-gfx.md`
+- `Settings/Graphics.md` (legacy-id: BS-03-02)
 
 ## 원본 Draft
 

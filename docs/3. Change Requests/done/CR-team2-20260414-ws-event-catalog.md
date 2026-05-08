@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260414-ws-event-catalog
 - **제안팀**: team2
 - **제안일**: 2026-04-14
 - **영향팀**: [team1, team3, team4]
-- **변경 대상 파일**: contracts/api/API-05-websocket-events.md
+- **변경 대상 파일**: contracts/api/`WebSocket_Events.md` (legacy-id: API-05)
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE Staff App SignalR Hub(Page 1793328277)은 8종 이벤트(Clock/ClockDetail/TournamentStatus/EventFlightSummary/BlindStructure/PrizePool/ClockReload/ClockReloadPage)를 발행. EBS API-05는 이 중 3종(event_flight_summary, clock_tick, clock_level_changed)만 대응. 정식 전체 개발에서 `blind_structure_changed`/`prize_pool_changed` 추가 + 전체 매핑 표가 필요. (clock_detail_changed/clock_reload_requested/tournament_status_changed는 별도 CCR S0-01에서 추가 제안.)
 

@@ -29,7 +29,7 @@ last-updated: 2026-04-15
 
 | 경로 | CCR |
 |------|-----|
-| `contracts/api/API-07-graphic-editor.md` | 013 |
+| `Graphic_Editor_API.md` (legacy-id: API-07) | 013 |
 | `contracts/data/DATA-07-gfskin-schema.md` | 012 |
 | `contracts/specs/BS-01-auth/BS-01-02-rbac.md` | 017 |
 | `contracts/specs/BS-02-lobby/BS-02-02-event-flight.md` | 017 |
@@ -66,17 +66,17 @@ last-updated: 2026-04-15
 | `contracts/specs/BS-08-graphic-editor/BS-08-03-activate-broadcast.md` 🆕 | Activate FSM, GameState 경고, 멀티 CC 동기화 |
 | `contracts/specs/BS-08-graphic-editor/BS-08-04-rbac-guards.md` 🆕 | Admin/Operator/Viewer UI gate |
 | `contracts/data/DATA-07-gfskin-schema.md` 🆕 | `.gfskin` ZIP 포맷 + JSON Schema ($id: gfskin-1.0.json) |
-| `contracts/api/API-07-graphic-editor.md` 🆕 | 8 엔드포인트 (Upload/List/Download/GetMetadata/PATCH/Activate/GetActive/Delete) |
+| `Graphic_Editor_API.md` (legacy-id: API-07) 🆕 | 8 엔드포인트 (Upload/List/Download/GetMetadata/PATCH/Activate/GetActive/Delete) |
 
 ### 수정된 기존 파일
 
 | 파일 | 변경 섹션 | CCR |
 |------|----------|-----|
 | `contracts/specs/BS-00-definitions.md` | §1 앱 아키텍처 (Lobby → Quasar), §7.4 GE prefix | 011/014/016 |
-| `contracts/specs/BS-03-settings/BS-03-02-gfx.md` | §6~§8 (Active Skin, Color Override, Action-Glow, Audio) | 025 |
-| `contracts/specs/BS-03-settings/BS-03-04-rules.md` | §5 `BlindDetailType` enum + Late Reg 계산식 | 017 |
+| `Settings/Graphics.md` (legacy-id: BS-03-02) | §6~§8 (Active Skin, Color Override, Action-Glow, Audio) | 025 |
+| `Settings/Rules.md` (legacy-id: BS-03-04) | §5 `BlindDetailType` enum + Late Reg 계산식 | 017 |
 | `contracts/data/DATA-02-entities.md` | Flight/Table 필드 추가 (status enum, is_registerable, day_index, is_pause) | 017 |
-| `contracts/api/API-01-backend-api.md` | `POST /tables/{id}/launch-cc` 응답에 launch_token, ws_url | 029 |
+| `Backend_HTTP.md` (legacy-id: API-01) | `POST /tables/{id}/launch-cc` 응답에 launch_token, ws_url | 029 |
 
 ### 새 요구사항 (Team 1 구현 책임)
 
@@ -124,7 +124,7 @@ last-updated: 2026-04-15
 
 | 파일 | 용도 |
 |------|------|
-| `contracts/api/API-07-graphic-editor.md` 🆕 | **8 엔드포인트 신규 구현** — POST/GET/PATCH/PUT/DELETE |
+| `Graphic_Editor_API.md` (legacy-id: API-07) 🆕 | **8 엔드포인트 신규 구현** — POST/GET/PATCH/PUT/DELETE |
 | `contracts/data/DATA-07-gfskin-schema.md` 🆕 | 서버 측 `fastjsonschema`/`jsonschema` 검증 대상 |
 | `contracts/specs/BS-01-auth/BS-01-02-rbac.md` 🆕 | Permission Bit Flag 서버 판정 로직 |
 | `contracts/specs/BS-02-lobby/BS-02-02-event-flight.md` 🆕 | Flight status enum (TEXT → INTEGER) 마이그레이션 |
@@ -136,9 +136,9 @@ last-updated: 2026-04-15
 | 파일 | 변경 | CCR |
 |------|------|-----|
 | `contracts/data/DATA-04-db-schema.md` | `idempotency_keys`/`audit_events` 테이블 | 018 |
-| `contracts/api/API-01-backend-api.md` | Idempotency-Key, saga, launch_token, replay endpoint | 019/020/021/029 |
-| `contracts/api/API-05-websocket-events.md` | seq, skin_updated, 직렬화 협상, WriteGameInfo | 015/021/023/024 |
-| `contracts/api/API-06-auth-session.md` | AUTH_PROFILE, expires_at, refresh_expires_in | 010/019 |
+| `Backend_HTTP.md` (legacy-id: API-01) | Idempotency-Key, saga, launch_token, replay endpoint | 019/020/021/029 |
+| `WebSocket_Events.md` (legacy-id: API-05) | seq, skin_updated, 직렬화 협상, WriteGameInfo | 015/021/023/024 |
+| `Auth_and_Session.md` (legacy-id: API-06) | AUTH_PROFILE, expires_at, refresh_expires_in | 010/019 |
 | `contracts/specs/BS-01-auth/BS-01-auth.md` | §5.1~5.4 JWT 정책 | 010 |
 | `contracts/specs/BS-05-command-center/BS-05-00-overview.md` | §7 Launch, §8 BO 복구, §9 FSM 경계 | 029/031 |
 
@@ -194,7 +194,7 @@ last-updated: 2026-04-15
 | 파일 | 용도 | CCR |
 |------|------|-----|
 | `contracts/api/API-03-rfid-hal-interface.md` | §9~§13 신규 (UART 생명주기, 안테나 튜닝, 펌웨어 감지, 다중 리더, ST25R3916 마이그레이션) | 022 |
-| `contracts/api/API-05-websocket-events.md §9` | `WriteGameInfo` 24 필드 스키마 — Engine 수신 + 검증 | 024 |
+| `contracts/api/`WebSocket_Events.md` (legacy-id: API-05) §9` | `WriteGameInfo` 24 필드 스키마 — Engine 수신 + 검증 | 024 |
 | `contracts/specs/BS-07-overlay/BS-07-05-audio.md` 🆕 | 오디오 레이어 — Engine이 발행할 오디오 이벤트(`CardDealt`, `PlayerAllIn` 등) | 033 |
 | `contracts/specs/BS-07-overlay/BS-07-06-layer-boundary.md` 🆕 | Layer 1 자동화 정도 (완전 자동 vs 반자동) | 035 |
 
@@ -217,7 +217,7 @@ last-updated: 2026-04-15
 
 ### Action Items
 
-- [ ] `team3-engine/specs/engine-spec/BS-06-01-holdem-lifecycle.md` — 자동 스트리트 전이 섹션 추가 (CCR-031 후속)
+- [ ] `Holdem/Lifecycle.md` (legacy-id: BS-06-01) — 자동 스트리트 전이 섹션 추가 (CCR-031 후속)
 - [ ] `team3-engine/ebs_game_engine/lib/hal/reader_state.dart` 신규 — FSM 구현
 - [ ] `team3-engine/ebs_game_engine/lib/hal/reader_reconnect_policy.dart` — 재연결 백오프
 - [ ] `team3-engine/ebs_game_engine/lib/hal/antenna_tuning.dart` — 튜닝 재시도

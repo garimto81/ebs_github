@@ -117,7 +117,7 @@ CCR-011 `ge-ownership-move` APPLIED 로 Graphic Editor 허브의 소유권이 Te
 - `../Specs/BS-08-graphic-editor/BS-08-02-metadata-editing.md` — 편집 FSM + PATCH (GEM-01~25)
 - `../Specs/BS-08-graphic-editor/BS-08-03-activate-broadcast.md` — Activate FSM + WS (GEA-01~06)
 - `../Specs/BS-08-graphic-editor/BS-08-04-rbac-guards.md` — RBAC gate (GER-01~05)
-- `contracts/api/API-07-graphic-editor.md` — 8 엔드포인트
+- `Graphic_Editor_API.md` (legacy-id: API-07) — 8 엔드포인트
 - `contracts/data/DATA-07-gfskin-schema.md` — `.gfskin` ZIP 포맷 + JSON Schema
 - CCR-011, CCR-012, CCR-013, CCR-014, CCR-015, CCR-025 (APPLIED)
 
@@ -930,7 +930,7 @@ BS-08-01 §2.7 `failed` 상태 UI:
 | **CCR-013** ge-api-spec | APPLIED | `API-07` | §4 Flows, §5 PATCH, §8 Activate |
 | **CCR-014** ge-req-id-rework | APPLIED | `BS-00 §7.4` | GEI-01~08 / GEM-01~25 / GEA-01~06 / GER-01~05 prefix 근거 |
 | **CCR-015** skin-updated-ws | APPLIED | `API-05` | §8.5 WS broadcast, §8.6 Replay |
-| **CCR-025** bs03-graphic-settings-tab | APPLIED | `BS-03-02-gfx` | §5 Metadata 와 Settings 탭 경계 (BS-03 은 비시각 설정만, 본 문서는 `.gfskin` 메타만) |
+| **CCR-025** bs03-graphic-settings-tab | APPLIED | `Settings/Graphics.md` (legacy-id: BS-03-02) | §5 Metadata 와 Settings 탭 경계 (BS-03 은 비시각 설정만, 본 문서는 `.gfskin` 메타만) |
 
 CCR 원문 경로 (읽기 전용 참조):
 
@@ -952,6 +952,6 @@ CCR 원문 경로 (읽기 전용 참조):
 | `team1-frontend/ui-design/UI-01-lobby.md` | Lobby 사이드바에서 GE 메뉴 진입점 |
 | `team1-frontend/ui-design/UI-03-settings.md` | 비시각 Settings(Game/Stats/Output)와 GE의 경계 (CCR-025) |
 | `../Specs/BS-08-graphic-editor/BS-08-00~04.md` | 행동 명세 SSOT (변경 금지, CCR 경유) |
-| `contracts/api/API-07-graphic-editor.md` | 8 엔드포인트 계약 |
+| `Graphic_Editor_API.md` (legacy-id: API-07) | 8 엔드포인트 계약 |
 | `contracts/data/DATA-07-gfskin-schema.md` | `.gfskin` 포맷 + JSON Schema SSOT |
-| `contracts/api/API-05-websocket-events.md` | `SkinUpdated` 이벤트 정의 |
+| `WebSocket_Events.md` (legacy-id: API-05) | `SkinUpdated` 이벤트 정의 |

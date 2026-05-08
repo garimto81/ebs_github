@@ -2,14 +2,14 @@
 title: Triggers
 owner: team3
 tier: deprecated
-legacy-id: BS-06-00-triggers
+legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))
 deprecated: 2026-04-28
 redirect-to: "./Triggers_and_Event_Pipeline.md"
 status: superseded
 supersedes-by: "./Triggers_and_Event_Pipeline.md"
 ---
 
-# [DEPRECATED 2026-04-28] BS-06-00-triggers: Triggers
+# [DEPRECATED 2026-04-28] `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))): Triggers
 
 > ⚠️ **본 문서는 deprecated 되었습니다 (2026-04-28).**
 >
@@ -21,7 +21,7 @@ supersedes-by: "./Triggers_and_Event_Pipeline.md"
 
 | 원본 | → 통합 위치 |
 |------|------------|
-| BS-06-00-triggers (Triggers) | Triggers & Event Pipeline 도메인 마스터 §부록 A |
+| `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) (Triggers) | Triggers & Event Pipeline 도메인 마스터 §부록 A |
 
 ## 원본 보존
 

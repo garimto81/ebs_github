@@ -11,13 +11,13 @@ legacy-id: CCR-DRAFT-team2-20260414-auth-ggpass-pattern
 - **제안팀**: team2
 - **제안일**: 2026-04-14
 - **영향팀**: [team1, team4]
-- **변경 대상 파일**: contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/API-06-auth-session.md
+- **변경 대상 파일**: contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/`Auth_and_Session.md` (legacy-id: API-06)
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE는 GGPass 통합 SSO(Page 1972863063, 2202861710, 1701380121)를 운영하며 JWT + 3-step Password Reset + 4-level 2FA + 10회 실패 자동 잠금 패턴을 표준화. EBS 현행 BS-01-auth는 일부 요소만 정의, Password Reset API/2FA 레벨/자동 잠금 정책 누락. 정식 전체 개발 단계에서 GGPass 패턴 준거 필요.
 
 ## 변경 요약
 
-1. `contracts/api/API-06-auth-session.md` 에 Password Reset 3-step 엔드포인트 추가
+1. `Auth_and_Session.md` (legacy-id: API-06) 에 Password Reset 3-step 엔드포인트 추가
 2. `contracts/specs/BS-01-auth` 에 2FA 4-level 정책 추가 (Off/Low/Medium/High)
 3. `contracts/specs/BS-01-auth` 에 자동 잠금 정책 명시 (10회 연속 실패 → Lock, Forgot Password만 해제)
 4. `contracts/specs/BS-01-auth` 에 Refresh Token TTL = 48시간 확정 (WSOP LIVE 정책 준거)
@@ -25,7 +25,7 @@ legacy-id: CCR-DRAFT-team2-20260414-auth-ggpass-pattern
 
 ## Diff 초안
 
-### contracts/api/API-06-auth-session.md (Password Reset 3-step)
+### contracts/api/`Auth_and_Session.md` (legacy-id: API-06) (Password Reset 3-step)
 
 ```diff
  ### 5.X Password Reset

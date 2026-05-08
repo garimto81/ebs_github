@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-10 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team2 |
-| **변경 대상** | `contracts/specs/BS-05-command-center/BS-05-00-overview.md`<br/>`contracts/specs/BS-05-command-center/BS-05-01-hand-lifecycle.md`<br/>`contracts/specs/BS-05-command-center/BS-05-02-action-buttons.md`<br/>`contracts/specs/BS-05-command-center/BS-05-03-seat-management.md`<br/>`contracts/specs/BS-05-command-center/BS-05-04-manual-card-input.md`<br/>`contracts/api/API-05-websocket-events.md` |
+| **변경 대상** | `contracts/specs/BS-05-command-center/BS-05-00-overview.md`<br/>`contracts/specs/BS-05-command-center/BS-05-01-hand-lifecycle.md`<br/>`contracts/specs/BS-05-command-center/BS-05-02-action-buttons.md`<br/>`contracts/specs/BS-05-command-center/BS-05-03-seat-management.md`<br/>`contracts/specs/BS-05-command-center/BS-05-04-manual-card-input.md`<br/>`WebSocket_Events.md` (legacy-id: API-05) |
 | **변경 유형** | modify |
 
 ## 변경 근거

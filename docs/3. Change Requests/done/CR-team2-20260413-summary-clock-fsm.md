@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team2-20260413-summary-clock-fsm
 - **제안팀**: team2
 - **제안일**: 2026-04-13
 - **영향팀**: [team1, team3, team4]
-- **변경 대상 파일**: contracts/api/API-05-websocket-events.md, contracts/specs/ (BS-06 확장 또는 신규 BS-06-02-clock.md)
+- **변경 대상 파일**: contracts/api/`WebSocket_Events.md` (legacy-id: API-05), contracts/specs/ (BS-06 확장 또는 신규 BS-06-02-clock.md)
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE Confluence `Staff App Live` page에서 `EventFlightSummary`(25+ 필드 실시간 모델)와 `Clock`(13필드 + BlindDetailType enum)이 WebSocket Subscribe로 전달되는데, EBS API-05에는 해당 이벤트가 전혀 없어 Lobby 대시보드와 블라인드 타이머 UI 구현 불가. WSOP `Staff App Live` page를 정본으로 참조.
 

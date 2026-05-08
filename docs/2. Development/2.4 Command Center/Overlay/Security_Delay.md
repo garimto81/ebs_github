@@ -19,7 +19,7 @@ last-updated: 2026-04-15
 
 라이브 포커 방송에서 실시간으로 홀카드가 공개되면 시청자 또는 공모자가 휴대폰/신호로 플레이어에게 카드 정보를 전달할 수 있다. 이를 방지하기 위해 방송은 **N초 지연**하여 송출되어야 한다. 이는 WSOP, EPT, WPT 등 메이저 대회의 필수 요구사항이다.
 
-> **참조**: `API-04-overlay-output`, `Layer_Boundary.md §1.1 Action Badge` (legacy-id: BS-07-06).
+> **참조**: `Overlay_Output_Events.md` (legacy-id: API-04), `Layer_Boundary.md §1.1 Action Badge` (legacy-id: BS-07-06).
 
 ---
 
@@ -48,7 +48,7 @@ EBS Overlay는 **두 가지 출력 스트림**을 동시에 제공한다:
 | **Backstage** | 운영진 / 감독용 | 1 | **없음** (즉시) |
 | **Broadcast** | 시청자용 방송 | 2 | `delay_seconds` 만큼 지연 |
 
-두 스트림은 **동일 내용**이지만 시간차로 분리된다. HDMI/NDI 출력 설정은 `BS-03-01-outputs` 참조.
+두 스트림은 **동일 내용**이지만 시간차로 분리된다. HDMI/NDI 출력 설정은 `Settings/Outputs.md` (legacy-id: BS-03-01) 참조.
 
 ---
 
@@ -56,9 +56,9 @@ EBS Overlay는 **두 가지 출력 스트림**을 동시에 제공한다:
 
 | 파라미터 | 기본값 | 범위 | 설정 위치 |
 |---------|:------:|:----:|-----------|
-| `delay_enabled` | `false` | `true/false` | `BS-03-01-outputs §Security Delay` |
-| `delay_seconds` | `30` | 0 ~ 600 (10분) | `BS-03-01-outputs §Security Delay` |
-| `delay_holecards_only` | `false` | `true/false` | `BS-03-01-outputs §Security Delay` |
+| `delay_enabled` | `false` | `true/false` | `Settings/Outputs.md §Security Delay` (legacy-id: BS-03-01) |
+| `delay_seconds` | `30` | 0 ~ 600 (10분) | `Settings/Outputs.md §Security Delay` (legacy-id: BS-03-01) |
+| `delay_holecards_only` | `false` | `true/false` | `Settings/Outputs.md §Security Delay` (legacy-id: BS-03-01) |
 
 - **운영 기본**: 30초 (WSOP 대회 표준)
 - `delay_holecards_only == true`: 홀카드만 지연, 다른 요소(액션 배지, Pot 등)는 즉시 송출
@@ -128,7 +128,7 @@ Buffer가 실행 중 크래시하면:
 `delay_seconds` 경과 전에 방송 종료하면:
 - 옵션 A (기본): Buffer flush — 모든 pending 이벤트 즉시 release
 - 옵션 B: Buffer discard — pending 이벤트 폐기
-- `BS-03-01-outputs §Security Delay` 에서 선택
+- `Settings/Outputs.md §Security Delay` (legacy-id: BS-03-01) 에서 선택
 
 ---
 
@@ -144,7 +144,7 @@ Buffer가 실행 중 크래시하면:
 
 ## 7. 연관 문서
 
-- `API-04-overlay-output` — OutputEvent buffer 흐름 (§Security Delay 참조)
-- `BS-03-01-outputs §Security Delay` — 설정 UI
+- `Overlay_Output_Events.md` (legacy-id: API-04) — OutputEvent buffer 흐름 (§Security Delay 참조)
+- `Settings/Outputs.md §Security Delay` (legacy-id: BS-03-01) — 설정 UI
 - `Layer_Boundary.md` (legacy-id: BS-07-06) — Layer 1 OutputEvent 종류
 - `Overview.md §5` (legacy-id: BS-07-00) — 출력 채널 개요

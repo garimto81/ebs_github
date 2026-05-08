@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-10 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team1 |
-| **변경 대상** | `contracts/api/API-01-backend-api.md` |
+| **변경 대상** | `Backend_HTTP.md` (legacy-id: API-01) |
 | **변경 유형** | modify |
 
 ## 변경 근거

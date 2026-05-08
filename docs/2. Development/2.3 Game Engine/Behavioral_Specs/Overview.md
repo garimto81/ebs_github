@@ -1514,7 +1514,7 @@ display_to_players = (state.bet_structure == PL)
 
 ### 7.7.5 Contracts 영향
 
-`PotUpdated` OutputEvent 시그니처 변경은 `contracts/api/API-04-overlay-output.md`에 영향이 있으며, **후속 CCR 필요**. 본 문서는 engine 측 정책만 명시하고, 외부 계약은 별도 CCR로 처리.
+`PotUpdated` OutputEvent 시그니처 변경은 `Overlay_Output_Events.md` (legacy-id: API-04)에 영향이 있으며, **후속 CCR 필요**. 본 문서는 engine 측 정책만 명시하고, 외부 계약은 별도 CCR로 처리.
 
 ---
 

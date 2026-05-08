@@ -11,7 +11,7 @@ legacy-id: CCR-DRAFT-team1-20260413-google-oauth
 - **제안팀**: team1
 - **제안일**: 2026-04-13
 - **영향팀**: [team2]
-- **변경 대상 파일**: contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/API-06-auth-session.md
+- **변경 대상 파일**: contracts/specs/BS-01-auth/BS-01-auth.md, contracts/api/`Auth_and_Session.md` (legacy-id: API-06)
 - **변경 유형**: add
 - **변경 근거**: WSOP LIVE Staff Page 스크린샷에서 Google OAuth 로그인 확인. 설계 원칙 1조 "동일하게 설계할 수 있는 것은 최대한 동일하게" 적용. Phase 2로 보류되어 있었으나 Phase 1에 포함 결정 (사용자 승인 2026-04-13).
 
@@ -38,7 +38,7 @@ legacy-id: CCR-DRAFT-team1-20260413-google-oauth
 현행: "Phase 2+: Google OAuth"
 변경: **삭제** (Phase 1으로 이동)
 
-### 2. API-06-auth-session.md 변경
+### 2. `Auth_and_Session.md` (legacy-id: API-06) 변경
 
 #### 신규 엔드포인트 2개
 
@@ -85,7 +85,7 @@ legacy-id: CCR-DRAFT-team1-20260413-google-oauth
 
 Phase 1 인증 방식 텍스트에 Google OAuth 추가. A-30 유저스토리 블록 추가. 에러 코드 테이블에 2건 추가.
 
-### API-06-auth-session.md
+### `Auth_and_Session.md` (legacy-id: API-06)
 
 엔드포인트 표에 `/auth/google`, `/auth/google/callback` 2행 추가. 응답 스키마 섹션 추가.
 

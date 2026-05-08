@@ -15,7 +15,7 @@ last-updated: 2026-04-15
 | **제안일** | 2026-04-10 |
 | **처리일** | 2026-04-10 |
 | **영향팀** | team1, team2 |
-| **변경 대상** | `contracts/specs/BS-07-overlay/BS-07-07-security-delay.md`<br/>`contracts/api/API-04-overlay-output.md` |
+| **변경 대상** | `contracts/specs/BS-07-overlay/BS-07-07-security-delay.md`<br/>`Overlay_Output_Events.md` (legacy-id: API-04) |
 | **변경 유형** | add |
 
 ## 변경 근거
@@ -25,7 +25,7 @@ last-updated: 2026-04-15
 ## 적용된 파일
 
 - `contracts/specs/BS-07-overlay/BS-07-07-security-delay.md`
-- `contracts/api/API-04-overlay-output.md`
+- `Overlay_Output_Events.md` (legacy-id: API-04)
 
 ## 원본 Draft
 

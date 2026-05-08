@@ -75,7 +75,7 @@ EMPTY → SETUP → LIVE → PAUSED → CLOSED
 ### 2.2 LIVE + `is_pause=true`의 의미
 
 브레이크/중재/카메라 리셋 중에도 CC는 연결 유지되고 UI는 접근 가능하다. 단:
-- Late Registration 타이머 증가 **중단** (BS-03-04-rules §5.1)
+- Late Registration 타이머 증가 **중단** (`Settings/Rules.md` (legacy-id: BS-03-04) §5.1)
 - Blind Level 타이머 증가 **중단**
 - Hand 진행 이벤트는 여전히 처리 (Pause가 아니므로 Admin은 "필요 시 진행" 가능)
 - Overlay에는 "BREAK" 배지가 표시될 수 있음 (skin 설정에 따라)
@@ -320,7 +320,7 @@ WSOP LIVE `PlayerMoveStatus {0=None, 1=New, 2=Move}` (Confluence page `165383376
 
 - `BS-00-definitions.md §3.1` — TableFSM 정의
 - `DATA-04-db-schema.md §1.5` — Table 필드 정의
-- `BS-03-04-rules.md §5.1` — Late Reg 타이머 계산
+- `Settings/Rules.md §5.1` (legacy-id: BS-03-04) — Late Reg 타이머 계산
 - `Registration.md` — Tournament Registration · Sit-in · Seating (별도 신규)
 - `Clock_Control.md` — Blind Level 수동 제어 · Break · Day Close (별도 신규)
 - `Operations.md` — RFID 안테나 진단

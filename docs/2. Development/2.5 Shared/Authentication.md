@@ -601,7 +601,7 @@ def compute_permission(user: User, resource: str) -> int:
 | `permission` | int | 비트 플래그 기본값 (리소스별 세분화는 API 호출 시 확정). 상세: `## Permission Bit Flag` |
 | `assigned_tables` | string[] | Operator 전용. write 가능한 테이블 ID 목록. Admin·Viewer는 빈 배열 |
 
-> 상세 응답 샘플과 에러 코드는 `API-06-auth-session.md §CCR-006` 참조.
+> 상세 응답 샘플과 에러 코드는 `Auth_and_Session.md §CCR-006` (legacy-id: API-06) 참조.
 
 ---
 

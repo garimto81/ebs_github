@@ -136,9 +136,9 @@ Team 4 원안의 "8모드(Board/Player/Dealer/House/Logo/Ticker/SSD/Action Clock
 | `BS-08-03-activate-broadcast.md` | 멀티 CC 동기화 FSM |
 | `BS-08-04-rbac-guards.md` | Admin/Operator/Viewer 행동 매트릭스 |
 | `contracts/data/DATA-07-gfskin-schema.md` | `.gfskin` ZIP 포맷 + JSON Schema |
-| `contracts/api/API-07-graphic-editor.md` | 8 엔드포인트 |
+| `Graphic_Editor_API.md` (legacy-id: API-07) | 8 엔드포인트 |
 | `contracts/specs/BS-07-overlay/BS-07-03-skin-loading.md` | Overlay 로드 FSM |
-| `contracts/api/API-05-websocket-events.md` | `skin_updated` 이벤트 (CCR-015, CCR-015 seq) |
+| `WebSocket_Events.md` (legacy-id: API-05) | `skin_updated` 이벤트 (CCR-015, CCR-015 seq) |
 
 ---
 
