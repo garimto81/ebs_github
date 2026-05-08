@@ -655,6 +655,7 @@ tier: generated
 | `docs/4. Operations/Reports/2026-04-29-v95-e2e-iteration-phase-plan.md` | V9.5 결과물 E2E Iteration — Phase / Task Plan + P5/P6 진행 | conductor | contract | - |
 | `docs/4. Operations/Reports/2026-04-29-v95-residual-cycle-wrap-up.md` | V9.5 잔존 후속 cycle wrap-up — Agent Teams 첫 적용 + P11-P14 통합 보고 | conductor | contract | - |
 | `docs/4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md` | V9.5 SSOT vs Implementation Gap Triage | conductor | contract | - |
+| `docs/4. Operations/Reports/2026-05-08-consistency-audit-final.md` | 2026-05-08 정합성 감사 — 최종 통합 검증 보고서 | conductor | internal | - |
 | `docs/4. Operations/Roadmap.md` | Roadmap | conductor | internal | - |
 | `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` | SSOT Alignment Report — Lobby Path Drift Eradication | conductor | internal | - |
 | `docs/4. Operations/SSOT_Alignment_Progress.md` | SSOT Alignment Progress | conductor | internal | - |
