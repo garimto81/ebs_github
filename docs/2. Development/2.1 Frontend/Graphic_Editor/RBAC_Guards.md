@@ -3,7 +3,7 @@ title: RBAC Guards
 owner: team1
 tier: internal
 legacy-id: BS-08-04
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-08-04 RBAC 가드 기획 완결"

@@ -3,7 +3,7 @@ title: Metadata Editing
 owner: team1
 tier: internal
 legacy-id: BS-08-02
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-08-02 메타데이터 편집 기획 완결"

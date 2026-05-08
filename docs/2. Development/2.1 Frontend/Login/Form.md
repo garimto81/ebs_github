@@ -3,7 +3,7 @@ title: Form
 owner: team1
 tier: internal
 legacy-id: BS-02-01-form
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 ---
 
 # Login — Form (로그인 입력·인증 방식)

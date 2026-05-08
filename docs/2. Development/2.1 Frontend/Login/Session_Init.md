@@ -3,7 +3,7 @@ title: Session Init
 owner: team1
 tier: internal
 legacy-id: BS-02-01-session-init
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 ---
 
 # Login — Session Init (로그인 성공 시 세션 생성)

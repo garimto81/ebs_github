@@ -3,7 +3,7 @@ title: UI
 owner: team1
 tier: internal
 legacy-id: UI-04
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "UI-04 Graphic Editor UI 스펙 (46KB) 완결"
