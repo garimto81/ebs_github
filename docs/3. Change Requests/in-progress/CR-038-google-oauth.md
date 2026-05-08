@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-038
 last-updated: 2026-04-15
+confluence-page-id: 3819275504
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819275504/EBS+CR-038-google-oauth
 ---
 
 # CCR-038: Google OAuth Phase 1 도입

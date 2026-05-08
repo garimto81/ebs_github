@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-029
 last-updated: 2026-04-15
+confluence-page-id: 3818947693
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947693/EBS+CR-029-bs05-launch-flow
 ---
 
 # CCR-029: BS-05 Lobby → BO → CC Launch 플로우 상세 명세

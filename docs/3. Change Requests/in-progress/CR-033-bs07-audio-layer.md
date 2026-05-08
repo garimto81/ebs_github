@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-033
 last-updated: 2026-04-15
+confluence-page-id: 3819275484
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819275484/EBS+CR-033-bs07-audio-layer
 ---
 
 # CCR-033: BS-07 Overlay 오디오 레이어 추가 (WSOP 1 BGM + 2 Effect 채널)

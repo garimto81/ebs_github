@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-conductor-20260410-gfskin-format-unify
+confluence-page-id: 3818816643
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816643/EBS+CR-conductor-20260410-gfskin-format-unify
 ---
 
 # CCR-DRAFT: .gfskin ZIP 포맷 단일화 및 DATA-07 신설

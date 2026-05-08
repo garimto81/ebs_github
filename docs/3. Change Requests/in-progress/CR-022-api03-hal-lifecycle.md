@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-022
 last-updated: 2026-04-15
+confluence-page-id: 3819242555
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242555/EBS+CR-022-api03-hal-lifecycle
 ---
 
 # CCR-022: API-03 RFID HAL 에러 복구 및 생명주기 시나리오 보강

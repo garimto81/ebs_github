@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team4-20260410-bs04-at05-rfid-register
+confluence-page-id: 3818947633
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947633/EBS+CR-team4-20260410-bs04-at05-rfid-register
 ---
 
 # CCR-DRAFT: BS-04 AT-05 RFID Register 화면 명세 추가

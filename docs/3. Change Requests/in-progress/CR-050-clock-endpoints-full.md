@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-050
 last-updated: 2026-04-15
+confluence-page-id: 3819602945
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602945/EBS+CR-050-clock-endpoints-full
 ---
 
 # CCR-050: Clock 엔드포인트 10종 완성 (WSOP LIVE Staff App 정렬)

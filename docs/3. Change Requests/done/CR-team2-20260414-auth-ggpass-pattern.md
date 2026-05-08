@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team2-20260414-auth-ggpass-pattern
+confluence-page-id: 3819602865
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602865/EBS+CR-team2-20260414-auth-ggpass-pattern
 ---
 
 # CCR-DRAFT: 인증 체계 WSOP LIVE GGPass 패턴 정렬

@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-051
 last-updated: 2026-04-15
+confluence-page-id: 3819078825
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078825/EBS+CR-051-payout-structure-endpoints
 ---
 
 # CCR-051: PayoutStructure (PrizePool) 엔드포인트 추가 (WSOP LIVE 정렬)

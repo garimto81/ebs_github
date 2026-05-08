@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-conductor-20260410-ge-ownership-move
+confluence-page-id: 3818587264
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818587264/EBS+CR-conductor-20260410-ge-ownership-move
 ---
 
 # CCR-DRAFT: Graphic Editor 소유권 Team 4 → Team 1 이관 (Lobby 허브)

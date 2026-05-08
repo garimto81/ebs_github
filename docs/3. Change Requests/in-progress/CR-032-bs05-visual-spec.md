@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-032
 last-updated: 2026-04-15
+confluence-page-id: 3818849366
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818849366/EBS+CR-032-bs05-visual-spec
 ---
 
 # CCR-032: BS-05 시각/동작 명세 구체화 (카드 슬롯 FSM, 포지션 색상, 애니메이션)

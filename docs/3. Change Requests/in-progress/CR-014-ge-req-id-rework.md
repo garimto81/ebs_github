@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-014
 last-updated: 2026-04-15
+confluence-page-id: 3820553440
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820553440/EBS+CR-014-ge-req-id-rework
 ---
 
 # CCR-014: GE 요구사항 ID prefix 재편 (범위 축소 반영)

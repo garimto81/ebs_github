@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-027
 last-updated: 2026-04-15
+confluence-page-id: 3818849346
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818849346/EBS+CR-027-bs05-07-statistics-screen
 ---
 
 # CCR-027: BS-05-07 Statistics 화면 (AT-04) 신규 작성

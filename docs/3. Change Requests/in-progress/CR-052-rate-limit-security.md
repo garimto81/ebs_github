@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-052
 last-updated: 2026-04-15
+confluence-page-id: 3818587384
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818587384/EBS+CR-052-rate-limit-security
 ---
 
 # CCR-052: Rate Limiting & 보안 정책 정의 (OWASP + WSOP LIVE GGPass 준거)

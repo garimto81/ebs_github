@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-055
 last-updated: 2026-04-15
+confluence-page-id: 3819209942
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209942/EBS+CR-055-output-event-buffer-ownership
 ---
 
 # CCR-055: OutputEventBuffer 구현 소유팀 명시 (API-04 §3)

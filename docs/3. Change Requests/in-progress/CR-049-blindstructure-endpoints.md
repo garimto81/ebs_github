@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-049
 last-updated: 2026-04-15
+confluence-page-id: 3818587364
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818587364/EBS+CR-049-blindstructure-endpoints
 ---
 
 # CCR-049: BlindStructure 관리 엔드포인트 추가 (WSOP LIVE 정렬)

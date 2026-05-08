@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-056
 last-updated: 2026-04-15
+confluence-page-id: 3819177169
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819177169/EBS+CR-056-deadlink-cleanup
 ---
 
 # CCR-056: 외부 파일의 구 contracts/specs/BS-0X-* 경로 dead link 일괄 정리

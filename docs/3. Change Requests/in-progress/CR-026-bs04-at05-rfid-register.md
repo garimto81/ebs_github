@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-026
 last-updated: 2026-04-15
+confluence-page-id: 3819209922
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209922/EBS+CR-026-bs04-at05-rfid-register
 ---
 
 # CCR-026: BS-04 AT-05 RFID Register 화면 명세 추가

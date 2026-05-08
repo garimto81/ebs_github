@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team2-20260414-wsop-sync-catalog
+confluence-page-id: 3819177089
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819177089/EBS+CR-team2-20260414-wsop-sync-catalog
 ---
 
 # CCR-DRAFT: WSOP LIVE Sync 대상 엔드포인트 카탈로그 + GGPass 통합 전략

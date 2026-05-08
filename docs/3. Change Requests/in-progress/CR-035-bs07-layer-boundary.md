@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-035
 last-updated: 2026-04-15
+confluence-page-id: 3818750894
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750894/EBS+CR-035-bs07-layer-boundary
 ---
 
 # CCR-035: BS-07 Overlay Layer 1/2/3 경계 및 자동화 범위 명시

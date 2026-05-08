@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team4-20260410-bs05-multi-table-ops
+confluence-page-id: 3819766902
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766902/EBS+CR-team4-20260410-bs05-multi-table-ops
 ---
 
 # CCR-DRAFT: BS-05 Multi-Table 운영자 시나리오 명시

@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team2-20260413-seat-waiting-enum
+confluence-page-id: 3819209822
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209822/EBS+CR-team2-20260413-seat-waiting-enum
 ---
 
 # CCR-DRAFT: DATA-04에 Seat Status enum 정의 + waiting_list 테이블 신설

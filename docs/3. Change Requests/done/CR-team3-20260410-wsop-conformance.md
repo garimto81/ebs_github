@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team3-20260410-wsop-conformance
+confluence-page-id: 3819602885
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602885/EBS+CR-team3-20260410-wsop-conformance
 ---
 
 # CCR-DRAFT: WSOP LIVE 공식 규칙 준수 — Engine 기획서 18건 수정 제안

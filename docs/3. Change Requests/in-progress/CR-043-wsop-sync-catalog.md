@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-043
 last-updated: 2026-04-15
+confluence-page-id: 3819242575
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242575/EBS+CR-043-wsop-sync-catalog
 ---
 
 # CCR-043: WSOP LIVE Sync 대상 엔드포인트 카탈로그 + GGPass 통합 전략

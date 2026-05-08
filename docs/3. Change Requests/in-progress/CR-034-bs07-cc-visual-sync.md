@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-034
 last-updated: 2026-04-15
+confluence-page-id: 3819602925
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602925/EBS+CR-034-bs07-cc-visual-sync
 ---
 
 # CCR-034: BS-07 Overlay 시각 일관성 (CC 색상 체계 재사용)

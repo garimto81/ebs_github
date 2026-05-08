@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team2-20260410-data-idempotency-audit
+confluence-page-id: 3819275404
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819275404/EBS+CR-team2-20260410-data-idempotency-audit
 ---
 
 # CCR-DRAFT: DATA-04에 idempotency_keys, audit_events 테이블 신설

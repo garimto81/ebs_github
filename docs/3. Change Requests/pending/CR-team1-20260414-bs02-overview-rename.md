@@ -4,6 +4,9 @@ owner: team1
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team1-20260414-bs02-overview-rename
+confluence-page-id: 3818947733
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947733/EBS+CR-team1-20260414-bs02-overview-rename
 ---
 
 # CCR-DRAFT: BS-02-lobby.md → BS-02-00-overview.md rename 외부 참조 갱신

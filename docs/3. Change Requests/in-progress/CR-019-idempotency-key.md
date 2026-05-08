@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-019
 last-updated: 2026-04-15
+confluence-page-id: 3818849286
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818849286/EBS+CR-019-idempotency-key
 ---
 
 # CCR-019: 모든 Mutation API에 Idempotency-Key 헤더 표준 도입

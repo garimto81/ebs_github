@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-010
 last-updated: 2026-04-15
+confluence-page-id: 3818947673
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947673/EBS+CR-010-jwt-expiry
 ---
 
 # CCR-010: BS-01에 JWT Access/Refresh 만료 정책 명시

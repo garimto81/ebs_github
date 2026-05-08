@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-054
 last-updated: 2026-04-15
+confluence-page-id: 3820553520
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820553520/EBS+CR-054-ws-event-catalog
 ---
 
 # CCR-054: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬

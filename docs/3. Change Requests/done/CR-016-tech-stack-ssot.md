@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-016
 last-updated: 2026-04-15
+confluence-page-id: 3820553380
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820553380/EBS+CR-016-tech-stack-ssot
 ---
 
 # CCR-016: Tech Stack SSOT를 BS-00에 명시하고 team2 IMPL 시리즈 동기화

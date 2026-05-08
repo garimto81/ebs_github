@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-21
 relates-to: CR-conductor-20260410-ge-ownership-move (CR-011)
+confluence-page-id: 3818914789
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914789/EBS+CR-conductor-20260421-ge-scope-expansion
 ---
 
 # CR: Graphic Editor scope 확장 (BS-08-05/06/07 추가, team5 신설 폐기)

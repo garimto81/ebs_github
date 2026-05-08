@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team2-20260413-event-type-catalog
+confluence-page-id: 3819177049
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819177049/EBS+CR-team2-20260413-event-type-catalog
 ---
 
 # CCR-DRAFT: audit_events.event_type 카탈로그 35값 공식 정의

@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-025
 last-updated: 2026-04-15
+confluence-page-id: 3819602905
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602905/EBS+CR-025-bs03-graphic-settings-tab
 ---
 
 # CCR-025: BS-03-02 Graphic Settings Tab 세부화 (team4 담당 영역)

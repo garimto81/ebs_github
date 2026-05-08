@@ -4,6 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team4-20260410-bs05-at-screens
+confluence-page-id: 3819275444
+confluence-parent-id: 3818521542
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819275444/EBS+CR-team4-20260410-bs05-at-screens
 ---
 
 # CCR-DRAFT: BS-05에 AT 화면 체계(AT-00~AT-07) 도입
