@@ -17,12 +17,12 @@ EBS 멀티세션은 Stream 단위로 분리된다. 사용자 진입점 = VSCode 
 
 | Product 파일 / 폴더 | Owner Stream | Read Streams | Phase |
 |--------------------|:-----------:|--------------|:-----:|
-| `Foundation.md` | **S1** | S2~S6 (all) | P1 |
+| `Foundation.md` | **S1** | S2~S8 (all) | P1 |
 | `Lobby_PRD.md` | **S2** | S6 | P2 |
 | `Command_Center_PRD.md` | **S3** | S6 | P2 |
-| `Back_Office_PRD.md` | **S1** (interim → S7 활성 시 이관) | S2, S3 | P1 |
+| `Back_Office_PRD.md` | **S1** (interim — S7 활성됨 2026-05-08, ownership 이관 PR #175 머지 후) | S2, S3, S7 | P1 |
 | `RIVE_Standards.md` | **S4** | S2, S3, S6 | P2 |
-| `Game_Rules/**` (4) | **S1** (interim → S8 활성 시 이관) | S2, S3, S6 | P1 |
+| `Game_Rules/**` (4) | **S1** (interim — S8 활성됨 2026-05-08, ownership 이관 PR #180 머지 후) | S2, S3, S6, S8 | P1 |
 | `References/**` (2) | conductor (frozen) | All | — |
 | `images/`, `visual/`, `archive/` | conductor (asset) | All | — |
 | `1. Product.md` (landing) | CI generated | — | meta |
@@ -56,8 +56,8 @@ Foundation.md Edit
 | **S4** | RIVE Standards | `C:/claude/ebs-rive-standards/` | (신설) | P2 | S1 |
 | **S5** | AI Track Restructuring | `C:/claude/ebs-ai-track/` | (`tools/ai_track/` 신설) | P3 | S1 |
 | **S6** | Prototype Stream | `C:/claude/ebs-prototype/` | `integration-tests/` | P3 | S2, S3, S4 |
-| S7 (future) | Backend Stream | `C:/claude/ebs-backend-stream/` | `team2-backend/` | P5 | (사용자 trigger) |
-| S8 (future) | Engine Stream | `C:/claude/ebs-engine-stream/` | `team3-engine/` | P5 | (사용자 trigger) |
+| **S7** | Backend Stream | `C:/claude/ebs-backend-stream/` | `team2-backend/` | P2+P5 | S1 (활성화: 2026-05-08) |
+| **S8** | Engine Stream | `C:/claude/ebs-engine-stream/` | `team3-engine/` | P2+P5 | S1 (활성화: 2026-05-08) |
 | S9 (future) | QA Stream | `C:/claude/ebs-qa/` | (신설) | P4 | (사용자 trigger) |
 
 ## Stream 별 진입 가이드
@@ -152,11 +152,9 @@ Phase 0 차단 실패 시 (드물게):
    - **publisher Stream PR > consumer Stream PR** (publisher 가 contract 진실)
 3. 판정 불가 시 Spec_Gap 등재 (`docs/4. Operations/Spec_Gap_Triage.md` Type C — 기획 모순)
 
-## 동적 Stream 추가 (S7~S9)
+## 동적 Stream 추가 (S9)
 
-future_streams 활성화 트리거 (사용자 의도 명시):
-- **S7 Backend Stream**: "backend 코드 시작" / "team2 작업 진입"
-- **S8 Engine Stream**: "engine 코드 시작" / "team3 작업 진입"
+S7/S8 은 2026-05-08 정합성 감사 (#168) Phase 0 dispatch 로 활성화 완료. 잔여 future_streams 활성화 트리거:
 - **S9 QA Stream**: "QA 추가" / "통합 테스트 보강"
 
 활성화 시퀀스 (Orchestrator Observer → Architect 일시 전환):

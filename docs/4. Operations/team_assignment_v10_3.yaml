@@ -140,21 +140,62 @@ streams:
     blocked_by: []
     blocks: []
     meta_files_blocked: *id001
-future_streams:
   S7:
     name: Backend Stream
+    role: Back Office + APIs + Database 정합 (Back_Office_PRD ownership 이관 대상)
     worktree: C:/claude/ebs-backend-stream
     absorbs_existing:
     - team2-backend
-    activation_trigger: 사용자가 'backend 코드 시작' 요청 시
-    inferred_blocked_by: []
+    activated_at: 2026-05-08
+    activation_source: "정합성 감사 #168 Phase 0 dispatch — issue #166 + #174 + PR #175"
+    phases:
+      P2:
+        scope_owns:
+        - docs/2. Development/2.2 Backend/**
+        scope_read:
+        - docs/1. Product/Foundation.md
+        - docs/1. Product/Back_Office_PRD.md
+        - docs/1. Product/References/**
+      P5:
+        scope_owns:
+        - team2-backend/**
+        - docs/2. Development/2.2 Backend/**
+        scope_read:
+        - docs/1. Product/Back_Office_PRD.md
+        - docs/1. Product/References/**
+    blocked_by: []
+    blocks: []
+    interim_ownership_note: "Back_Office_PRD ownership 이관 = 별도 작업 (현재 S1 interim 보존). PR #175 머지 + S7 owner 검증 후 frontmatter owner 변경."
+    meta_files_blocked: *id001
   S8:
     name: Engine Stream
+    role: Game Engine 22 룰 + Overlay_Output_Events 정합 (Game_Rules ownership 이관 대상)
     worktree: C:/claude/ebs-engine-stream
     absorbs_existing:
     - team3-engine
-    activation_trigger: 사용자가 'engine 코드 시작' 요청 시
-    inferred_blocked_by: []
+    activated_at: 2026-05-08
+    activation_source: "정합성 감사 #168 Phase 0 dispatch — issue #167 + PR #180"
+    phases:
+      P2:
+        scope_owns:
+        - docs/2. Development/2.3 Game Engine/**
+        scope_read:
+        - docs/1. Product/Foundation.md
+        - docs/1. Product/Game_Rules/**
+        - docs/1. Product/References/**
+      P5:
+        scope_owns:
+        - team3-engine/**
+        - ebs_game_engine/**
+        - docs/2. Development/2.3 Game Engine/**
+        scope_read:
+        - docs/1. Product/Game_Rules/**
+        - docs/1. Product/References/**
+    blocked_by: []
+    blocks: []
+    interim_ownership_note: "Game_Rules ownership 이관 = 별도 작업 (현재 S1 interim 보존). PR #180 머지 + S8 owner 검증 후 frontmatter owner 변경."
+    meta_files_blocked: *id001
+future_streams:
   S9:
     name: QA Stream
     worktree: C:/claude/ebs-qa
