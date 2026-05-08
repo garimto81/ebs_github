@@ -12,16 +12,18 @@
 
 
 ### 40.1 Login (POST /auth/logout 검증 사전 준비)
+### v0.4.1 D1/D5 정정: username → email, dev seed credentials 사용
 POST {{host}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "username": "admin@ebs.test",
-  "password": "test-password-1234"
+  "email": "admin@local",
+  "password": "Admin!Local123"
 }
 
 > {%
-client.global.set("admin_token", response.body.data.access_token);
+// v0.4.1 D2+D3: response.body.data.accessToken (envelope + camelCase, B-088)
+client.global.set("admin_token", response.body.data.accessToken);
 %}
 
 
@@ -33,12 +35,13 @@ Content-Type: application/json
 {
   "name": "V9.5 E2E Test Structure",
   "levels": [
-    {"level_no": 1, "small_blind": 100, "big_blind": 200, "ante": 0, "duration_minutes": 15}
+    {"levelNo": 1, "smallBlind": 100, "bigBlind": 200, "ante": 0, "durationMinutes": 15}
   ]
 }
 
 > {%
-client.global.set("bs_id", response.body.data.blind_structure_id);
+// v0.4.1 D3: blind_structure_id → blindStructureId (B-088 camelCase 추정)
+client.global.set("bs_id", response.body.data.blindStructureId);
 %}
 
 
@@ -48,11 +51,11 @@ Authorization: Bearer {{admin_token}}
 Content-Type: application/json
 
 {
-  "level_no": 2,
-  "small_blind": 200,
-  "big_blind": 400,
+  "levelNo": 2,
+  "smallBlind": 200,
+  "bigBlind": 400,
   "ante": 50,
-  "duration_minutes": 20
+  "durationMinutes": 20
 }
 
 > {%
@@ -71,8 +74,8 @@ Authorization: Bearer {{admin_token}}
 Content-Type: application/json
 
 {
-  "small_blind": 300,
-  "big_blind": 600
+  "smallBlind": 300,
+  "bigBlind": 600
 }
 
 

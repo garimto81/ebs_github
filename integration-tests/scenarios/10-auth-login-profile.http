@@ -1,9 +1,16 @@
-### CCR-010 — Auth Login with AUTH_PROFILE
+### CCR-010 — Auth Login (v0.4.1 drift D1~D5 정정)
 ###
 ### 검증:
-### - 환경별 expires_in 차등 (dev=1h, staging/prod=2h, live=12h)
-### - 응답에 expires_at (ISO 8601), auth_profile, refresh_expires_in 포함
-### - AUTH_PROFILE 환경 플래그에 따라 token 만료 시간 변동
+### - POST /auth/login → 200 + envelope { data: { accessToken, refreshToken, ... }, error }
+### - JWT 페이로드 role, jti, iat, exp 포함
+### - dev seed 자격증명 (admin@local / Admin!Local123)
+###
+### 2026-05-08 v0.4.1: D1~D5 drift 정정.
+### - D1: 'username' → 'email' (실제 backend 필드명)
+### - D2: flat → envelope ({ data: {}, error: {} })
+### - D3: snake_case → camelCase (B-088 migration)
+### - D4: expires_in/auth_profile/expires_at 등 응답에 없음. tokenType/refreshTokenDelivery 등으로 대체.
+### - D5: admin@ebs.test → admin@local, test-password-1234 → Admin!Local123
 
 @host = http://localhost:8000
 
@@ -12,19 +19,20 @@ POST {{host}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "username": "admin@ebs.test",
-  "password": "test-password-1234"
+  "email": "admin@local",
+  "password": "Admin!Local123"
 }
 
-# 예상 응답 (AUTH_PROFILE=dev 기동 시):
+# 예상 응답 (AUTH_PROFILE=dev):
 # 200 OK
 # {
-#   "access_token": "eyJhbGc...",
-#   "refresh_token": "eyJhbGc...",
-#   "expires_in": 3600,                          // 1h (dev)
-#   "expires_at": "2026-04-10T15:34:56Z",
-#   "auth_profile": "dev",
-#   "refresh_expires_in": 86400                  // 24h (dev)
+#   "data": {
+#     "accessToken": "eyJhbGc...",
+#     "refreshToken": "eyJhbGc...",
+#     "tokenType": "Bearer",
+#     "refreshTokenDelivery": "body"
+#   },
+#   "error": null
 # }
 
 ### 10.2 POST /api/v1/auth/login — live 프로파일 (AUTH_PROFILE=live)
@@ -33,24 +41,26 @@ Content-Type: application/json
 X-Test-Profile: live
 
 {
-  "username": "admin@ebs.test",
-  "password": "test-password-1234"
+  "email": "admin@local",
+  "password": "Admin!Local123"
 }
 
 # 예상 응답 (AUTH_PROFILE=live 기동 시):
-# expires_in: 43200           // 12h (live, 방송용)
-# refresh_expires_in: 604800  // 7d
-# auth_profile: "live"
+# 동일 envelope 구조. live profile 시 access JWT exp = 12h, refresh exp = 7d (JWT payload 검증).
 
 ### 10.3 POST /api/v1/auth/refresh — 토큰 갱신
+### v0.4.1 NOTE: backend 가 'refresh_token' (snake) 와 'refreshToken' (camel) 모두 수용.
+###            응답은 envelope 없는 flat shape (D6 — endpoint 간 envelope 불일치).
 POST {{host}}/api/v1/auth/refresh
 Content-Type: application/json
 
 {
-  "refresh_token": "{{$dotenv REFRESH_TOKEN}}"
+  "refreshToken": "{{$dotenv REFRESH_TOKEN}}"
 }
 
-# 예상 응답: 새 access_token + expires_at 갱신
+# 예상 응답: 200 OK
+# { "accessToken": "eyJ...", "refreshToken": "eyJ...", "tokenType": "Bearer", ... }
+# (login 과 달리 envelope 없음. flat shape — D6 추적)
 # WebSocket은 끊기지 않음 (BS-01-auth §5.3)
 
 ### 10.4 POST /api/v1/auth/refresh — 만료된 refresh token
@@ -58,9 +68,7 @@ POST {{host}}/api/v1/auth/refresh
 Content-Type: application/json
 
 {
-  "refresh_token": "eyJhbGc.expired..."
+  "refreshToken": "eyJhbGc.expired..."
 }
 
-# 예상 응답:
-# 401 Unauthorized
-# { "error": "REFRESH_TOKEN_EXPIRED", "message": "..." }
+# 예상 응답: 401 Unauthorized + 에러 본문 (envelope 또는 flat — 추가 검증 필요)

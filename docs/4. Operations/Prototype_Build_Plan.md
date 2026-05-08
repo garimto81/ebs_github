@@ -32,6 +32,7 @@ provenance:
 | 2026-05-08 | v0.3.0-skeleton | 사용자 directive Q1~Q5 답변 | §1/§3/§4.3/§4.4/§6 본문 채움 + §7 RESOLVED + Q6 신규 + fixture 6종 생성 + issue #189 |
 | 2026-05-08 | v0.3.1-skeleton | autonomous iteration | huge-51mb gitignore 전환, §2 Stream 상태 갱신 (S1/S4 ACTIVE, S2/S3 NOT INIT), §5 fixture/ENV 의존 명세, `_doc-integrity.sh` 신설 (CCR-014/016/025/035 자동 검증 5/5 PASS) |
 | 2026-05-08 | v0.4.0 | autonomous iteration A→B | §3.3 Stage 1 본문 신규 — Docker 런타임 smoke 검증 5/5 PASS, Spec↔Impl drift 5건 발견 (D1 username/email, D2 envelope, D3 camelCase, D4 missing fields, D5 seed creds), 26 시나리오 매트릭스 + 실패 triage 표 |
+| 2026-05-08 | v0.4.1 | autonomous iteration C | scenarios 10/40 + README 정정 (D1~D5 RESOLVED), D6 신규 (`/auth/refresh` envelope 불일치 OPEN), smoke 재검증 PASS |
 
 ## Reader Anchor
 
@@ -130,19 +131,24 @@ docker exec ebs-bo python -c "import httpx; \
 
 → docker build / healthcheck / JWT 발급 = **이미 통과**. Stage 1 진행 가능.
 
-#### 3.3.3 Spec ↔ Impl Drift 매트릭스 (smoke 검출 5건)
+#### 3.3.3 Spec ↔ Impl Drift 매트릭스 (v0.4.1 — D1~D5 RESOLVED + D6 신규)
 
-| # | Drift | 시나리오 spec | 실제 backend | 영향 |
-|:-:|-------|---------------|--------------|------|
-| D1 | login field | `username` | `email` | scenario 10 헤더 `body.email` 로 정정 필요 |
-| D2 | response wrapping | flat `{access_token, ...}` | `{data: {...}, error: {...}}` envelope | 26건 시나리오 모두 `.response.body.data.X` 로 변경 필요 |
-| D3 | field naming | snake_case (`access_token`) | camelCase (`accessToken`) | B-088 camelCase migration 결과 추정. 시나리오 일괄 정정 |
-| D4 | missing fields | `expires_in`, `auth_profile`, `expires_at`, `refresh_expires_in` | `tokenType`, `refreshTokenDelivery` 등 | 시나리오 검증 필드 재정의 |
-| D5 | seed credentials | `admin@ebs.test` / `test-password-1234` | `admin@local` / `Admin!Local123` | scenarios `_env.http` + 10번 시나리오 정정 |
+| # | Drift | 시나리오 spec | 실제 backend | 상태 (v0.4.1) |
+|:-:|-------|---------------|--------------|:-------------:|
+| D1 | login field | `username` | `email` | **RESOLVED** (10/40번 정정) |
+| D2 | response wrapping (login) | flat `{access_token, ...}` | `{data: {...}, error: {...}}` envelope | **RESOLVED** (10/40번 reference 경로 `body.data.X`) |
+| D3 | field naming | snake_case (`access_token`) | camelCase (`accessToken`) | **RESOLVED** (10/40번 + scenarios/README 정정) |
+| D4 | missing fields | `expires_in`, `auth_profile`, `expires_at`, `refresh_expires_in` | `tokenType`, `refreshTokenDelivery` | **RESOLVED** (10번 응답 주석 갱신) |
+| D5 | seed credentials | `admin@ebs.test` / `test-password-1234` | `admin@local` / `Admin!Local123` | **RESOLVED** (10/40번 + README 정정) |
+| D6 | endpoint 간 envelope 불일치 (신규) | n/a | `/auth/login` envelope vs `/auth/refresh` flat | **OPEN** — backend 일관성 결정 필요 (Type B/C 후보) |
 
-> **Drift 5건은 Spec_Gap_Triage Type D (drift 누적) 신호**. 시나리오 작성 시점(v6.0 spec) 이후 backend 가 B-088 camelCase migration + envelope 도입으로 진화. 시나리오 측이 stale.
+> **D1~D5 = Type D (drift 누적)** — v0.4.1 시나리오 측 정정 완료. smoke 재검증 통과:
+> ```
+> 10.1 PASS: envelope+camelCase 정합
+> 10.3 PASS: refresh flat shape (D6) 정합
+> ```
 >
-> **해소 방향**: 시나리오 측 일괄 정정 (16건 + 10건 신규). 정정 commit = `docs(S6): scenarios D1~D5 drift 정정`.
+> **D6 = OPEN** — `/auth/refresh` 가 envelope 없이 flat 응답하는 것이 의도인지 (예: 단순 토큰 갱신은 가벼운 응답) backend 측 결정 필요. 시나리오는 일단 현재 동작 (flat) 가정으로 작성.
 
 #### 3.3.4 시나리오 26건 매트릭스 + 실패 triage
 

@@ -131,15 +131,28 @@ VIEWER_JWT=eyJhbGc...
 
 ## 환경 설정 필요
 
-`.env` 파일 (integration-tests/.env, gitignore 대상):
+### dev seed credentials (admin)
 
 ```bash
-ADMIN_JWT=eyJhbGc...      # Admin 계정 JWT (Launch 전 /auth/login 으로 발급)
-OPERATOR_JWT=eyJhbGc...   # Operator 계정 JWT
-VIEWER_JWT=eyJhbGc...     # Viewer 계정 JWT
-CC_SERVICE_JWT=eyJhbGc... # CC 서비스 계정 JWT
-REFRESH_TOKEN=eyJhbGc...  # 10-auth 시나리오 refresh 테스트용
+# bo 컨테이너에서 admin 생성 (default seed)
+docker exec ebs-bo python tools/seed_admin.py \
+  --email admin@local --password 'Admin!Local123' \
+  --display-name 'Local Admin'
 ```
+
+> v0.4.1 정정: 시나리오는 `admin@local` / `Admin!Local123` 을 default 로 사용 (이전 spec `admin@ebs.test` / `test-password-1234` 은 backend 기본 seed 와 불일치 — D5 drift, 시나리오 측 정정 완료).
+
+### `.env` 파일 (integration-tests/.env, gitignore 대상)
+
+```bash
+ADMIN_JWT=eyJhbGc...      # POST /auth/login → response.data.accessToken
+OPERATOR_JWT=eyJhbGc...   # operator 계정 JWT (별도 seed 필요)
+VIEWER_JWT=eyJhbGc...     # viewer 계정 JWT (별도 seed 필요)
+CC_SERVICE_JWT=eyJhbGc... # CC 서비스 계정 JWT
+REFRESH_TOKEN=eyJhbGc...  # 10-auth 시나리오 refresh 테스트용 (response.data.refreshToken)
+```
+
+> v0.4.1 정정: `/auth/login` 응답은 envelope `{ data: { accessToken, refreshToken, ... }, error }` 구조 + camelCase (B-088 migration). 시나리오 reference 경로는 `response.body.data.accessToken` (D2+D3 drift 정정 완료).
 
 ## 실행 권장 순서
 
