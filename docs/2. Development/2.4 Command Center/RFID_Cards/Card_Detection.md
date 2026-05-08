@@ -14,7 +14,8 @@ last-updated: 2026-05-08
 | 2026-04-29 | §3.3 atomic 정렬 (CF-002+003) | Triggers_and_Event_Pipeline.md §1.4/§3.5 T9/§4.10 권위에 정렬. 1~2장 부분 감지 = PENDING (외부 미발행), CC-only FlopPartialAlert. 4번째 카드 = AWAITING_TURN 컨텍스트별 분기 |
 | 2026-04-29 | §1.1 안테나 시각화 (CF-005) | 24 안테나 물리 배치 Mermaid 다이어그램 추가 (좌석 20 + 보드 4) [HISTORY — 본 entry 의 24 표기는 작성 당시 사실. Foundation §C.2 SSOT 정정은 2026-05-08 entry 참조] |
 | 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 카드 감지 결과는 v4.0 PlayerGrid (1×10 가로) SeatCell 행 6 (Hole cards face-down) 또는 TopStrip Community Board 5 슬롯 (FLOP 1·2·3 / TURN / RIVER) 에 표시. 안테나 → 이벤트 → UI 표시 경로 변화 없음 (UI 위치만 4 영역 위계 매핑). SSOT: `Command_Center_UI/Overview.md §3.0`. |
-| **2026-05-08** | **#178 안테나 수 표기 정정 (24 → 12)** | Foundation §C.2 정점 SSOT 채택 (사용자 confirmed). §"정의" + API-03 §5.1 인용의 "24" 표기를 "12" 로 정정. **§1.1 표 + mermaid 다이어그램 + §1.2 매핑 룰 + Mock HAL 검증 룰 재설계는 HW 메커니즘 영향이라 `Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` 분리** (자율 한계). 현재 §1 본문은 24 안테나 가정 잔존 — 후속 PR 에서 12 안테나 분배로 재설계. |
+| 2026-05-08 | #178 안테나 수 표기 정정 (24 → 12) | Foundation §C.2 정점 SSOT 채택 (사용자 confirmed). §"정의" + API-03 §5.1 인용의 "24" 표기를 "12" 로 정정. mermaid + 매핑 룰 재설계는 HW 메커니즘 영향이라 NOTIFY 분리. |
+| **2026-05-08** | **§1 본문 12 안테나 + Mock-only 재설계 (Phase D)** | 사용자 결정 "RFID = Mock-only" (2026-05-08 user message + memory `project_rfid_out_of_scope_2026_04_29` 재확인). §1.1 표 + mermaid 다이어그램 12 안테나 분배 (좌석 10 + 보드 중앙 2). §1.2 매핑 룰 `seatIndex = antennaId` 재정의. §2.1 Mock 정규 경로 + §2.2 Real 도입 시 별도 설계 명시. §3.1 보드 안테나 10/11 재배치. cardUid 기반 홀카드 1·2 분리 명시. NOTIFY-S3-178-rfid-mechanism-redesign 해소. |
 
 ---
 
@@ -47,85 +48,95 @@ last-updated: 2026-05-08
 
 ---
 
-## 1. 안테나 배치
+## 1. 안테나 배치 (12 안테나, Mock-only 정책)
 
-### 1.1 안테나 ID 규약
+> **🔵 RFID = Mock-only**: 본 EBS 프로젝트는 RFID 하드웨어 연동을 **Mock 으로 처리** (memory `project_rfid_out_of_scope_2026_04_29` + 2026-05-08 사용자 재확인). Real 모드 흐름은 외부 vendor HW 도입 시 별도 설계 — 본 프로젝트 범위 밖. 따라서 본 §1 의 안테나 배치는 **논리적 모델** 이며, Mock HAL (`MockRfidReader.injectCard`) 가 cardUid 기반으로 분리 인식을 보장한다.
+
+### 1.1 안테나 ID 규약 (Foundation §C.2 = 12 안테나)
 
 | 안테나 ID | 위치 | 용도 |
 |:---------:|------|------|
-| 0~9 | Seat 0~9 좌측 | 홀카드 1번 |
-| 10~19 | Seat 0~9 우측 | 홀카드 2번 |
-| 20~22 | Board 좌/중/우 | Flop 카드 3장 |
-| 23 | Board 추가 | Turn / River 카드 |
+| 0~9 | Seat 0~9 (좌석당 1 안테나) | 홀카드 (Hold'em 기준 2 장 모두 — cardUid 기반 분리) |
+| 10 | Board 중앙 (Flop 영역) | Flop 3 장 (atomic, cardUid 3 개로 분리) |
+| 11 | Board 중앙 (Turn / River 영역) | Turn 1 장 + River 1 장 (cardUid 분리) |
+
+**총 12 안테나 = 좌석 10 + 보드 중앙 2** (Foundation §C.2 정점 SSOT 정합).
 
 ```mermaid
 flowchart TB
-    HAL["RFID HAL<br/>(24 안테나)"]
+    HAL["RFID HAL<br/>(12 안테나, Mock-only)"]
     HAL --> SEAT_GROUP
     HAL --> BOARD_GROUP
 
-    subgraph SEAT_GROUP["좌석 안테나 (20개)<br/>seatIndex = antennaId % 10"]
+    subgraph SEAT_GROUP["좌석 안테나 (10개)<br/>seatIndex = antennaId<br/>cardUid 기반 분리"]
         direction TB
-        SL["안테나 0~9<br/>좌석 좌측 (홀카드 1)"]
-        SR["안테나 10~19<br/>좌석 우측 (홀카드 2)"]
+        SEAT["안테나 0~9<br/>각 좌석 1 안테나<br/>홀카드 2 장 = 2 cardUid"]
     end
 
-    subgraph BOARD_GROUP["보드 안테나 (4개)"]
+    subgraph BOARD_GROUP["보드 안테나 (2개)<br/>중앙 통합"]
         direction TB
-        FL["안테나 20~22<br/>Flop 3장 (atomic)"]
-        TR["안테나 23<br/>Turn / River"]
+        FL["안테나 10<br/>Flop 영역 (3 장 atomic)"]
+        TR["안테나 11<br/>Turn / River 영역"]
     end
 ```
 
-> **참조**: API-03 §5.1 — 테이블당 최대 12개 안테나 (Foundation §C.2 정점 SSOT). Flop 의 atomic 보장은 §3.3 + Triggers §1.4 / §3.5 T6. § 1.1 본문 + mermaid 는 24 안테나 가정 잔존 — `Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` 후속 재설계.
+> **참조**: API-03 §5.1 — 테이블당 최대 12 개 안테나 (Foundation §C.2 정점 SSOT). Mock 환경에서 양 홀카드 분리 인식 = `MockRfidReader.injectCard(suit, rank, antennaId)` 가 동일 antennaId 에 대해 2 회 호출 시 두 cardUid 가 분리되어 좌석에 기록. Flop atomic 보장은 §3.3 + Triggers §1.4 / §3.5 T6.
 
-### 1.2 좌석 안테나 → 플레이어 매핑
+### 1.2 좌석 안테나 → 플레이어 매핑 (12 안테나)
 
-안테나 ID에서 좌석 번호를 도출한다:
-- 안테나 0~9 → Seat 0~9 (홀카드 1)
-- 안테나 10~19 → Seat 0~9 (홀카드 2)
-- 즉, `seatIndex = antennaId % 10`
+안테나 ID 가 곧 좌석 번호 (좌석당 1 안테나):
+- 안테나 0~9 → Seat 0~9
+- 즉, `seatIndex = antennaId` (이전의 `antennaId % 10` 룰은 24 안테나 시절 잔재)
+
+**홀카드 분리 메커니즘 (Mock-only)**:
+- Hold'em 좌석당 2 장 분배 시 동일 antennaId 에서 `CardDetected` 이벤트 2 회 발생
+- 첫 cardUid → 홀카드 1, 두 번째 cardUid → 홀카드 2
+- 운영자가 Mock UI 에서 카드 선택 시 자동으로 holeCardIndex (1 또는 2) 할당
 
 ---
 
 ## 2. 홀카드 감지
 
-### 2.1 Real 모드 흐름
+### 2.1 Mock 모드 흐름 (본 프로젝트 정규 경로)
 
-1. 딜러가 카드를 플레이어 좌석 위에 놓음
-2. 좌석 안테나가 카드 RFID 태그를 감지
-3. `CardDetected(antennaId, cardUid, suit, rank, confidence)` 이벤트 발행
-4. CC가 이벤트 수신 → 해당 좌석 플레이어의 홀카드로 기록
+1. 운영자가 CC에서 플레이어 좌석 선택 → 카드 선택 UI에서 카드 지정
+2. `MockRfidReader.injectCard(suit, rank, antennaId)` 호출 (`antennaId = seatIndex`, 0~9)
+3. `CardDetected` 이벤트 합성 (confidence=1.0, uid="MOCK-{suit}{rank}")
+4. CC 가 이벤트 수신 → 해당 좌석 플레이어의 홀카드로 기록 (cardUid 별 holeCardIndex 1/2 자동 할당)
 5. Game Engine이 홀카드 배분 상태 업데이트
 6. 모든 플레이어 홀카드 배분 완료 시 `HoleCardsDealt` → PRE_FLOP 전이
 
-### 2.2 Mock 모드 흐름
+### 2.2 Real 모드 흐름 (vendor HW 도입 시 — 본 프로젝트 범위 밖)
 
-1. 운영자가 CC에서 플레이어 좌석 선택 → 카드 선택 UI에서 카드 지정
-2. `MockRfidReader.injectCard(suit, rank, antennaId)` 호출
-3. `CardDetected` 이벤트 합성 (confidence=1.0, uid="MOCK-{suit}{rank}")
-4. 이후 흐름은 Real 모드와 동일
+> **🔵 본 §2.2 는 별도 설계** — 본 EBS 프로젝트는 Real RFID 하드웨어 연동을 **포함하지 않는다** (Mock-only). 외부 vendor HW (예: Sun-Fly, Faded Spade) 도입 시 본 흐름을 구체화.
+
+1. 딜러가 카드를 플레이어 좌석 위에 놓음
+2. 좌석 안테나가 카드 RFID 태그를 감지 (좌석당 1 안테나, cardUid 로 양 홀카드 분리)
+3. `CardDetected(antennaId, cardUid, suit, rank, confidence)` 이벤트 발행
+4. CC가 이벤트 수신 → §2.1 흐름의 4 단계 이후 동일
 
 ### 2.3 홀카드 감지 규칙
 
 | 규칙 | 설명 |
 |------|------|
-| 좌석당 최대 2장 | Hold'em 기준. 3장 이상 감지 시 경고 + 무시 |
+| 좌석당 최대 2 장 | Hold'em 기준. 동일 antennaId 에서 두 cardUid → 홀카드 1·2. 3 번째 cardUid 감지 시 경고 + 무시 |
 | 빈 좌석 무시 | SeatFSM = VACANT인 좌석의 안테나 이벤트 무시 |
 | 순서 자유 | Seat 0부터 순서대로 감지할 필요 없음 |
-| 중복 감지 무시 | 같은 좌석에 같은 카드 2회 감지 시 두 번째 무시 |
+| 중복 감지 무시 | 같은 좌석에 같은 cardUid 2 회 감지 시 두 번째 무시 (idempotent) |
 
 ---
 
 ## 3. 보드 카드 감지
 
-### 3.1 Street별 감지 규칙
+### 3.1 Street별 감지 규칙 (12 안테나)
 
 | Street | 감지 카드 수 | 안테나 | HandFSM 조건 |
 |--------|:----------:|--------|-------------|
-| **Flop** | 3장 | 안테나 20~22 | BettingRoundComplete (PRE_FLOP 종료) |
-| **Turn** | 1장 | 안테나 23 | BettingRoundComplete (FLOP 종료) |
-| **River** | 1장 | 안테나 23 | BettingRoundComplete (TURN 종료) |
+| **Flop** | 3 장 (atomic) | 안테나 10 (Flop 영역, cardUid 3 개) | BettingRoundComplete (PRE_FLOP 종료) |
+| **Turn** | 1 장 | 안테나 11 (Turn / River 영역) | BettingRoundComplete (FLOP 종료) |
+| **River** | 1 장 | 안테나 11 (Turn / River 영역) | BettingRoundComplete (TURN 종료) |
+
+> **Mock 환경**: 보드 안테나 1 개에서 3 장 atomic 인식 = `MockRfidReader.injectCard` 가 같은 `antennaId=10` 으로 3 회 연속 호출 시 buffer 가 3 cardUid 충족 시점에 1 회 `FlopRevealed` 발행 (§3.3).
 
 ### 3.2 Real 모드 흐름
 

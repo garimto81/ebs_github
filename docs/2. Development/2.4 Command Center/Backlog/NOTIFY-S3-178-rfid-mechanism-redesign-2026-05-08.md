@@ -1,19 +1,39 @@
 ---
-title: NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (HW 영향)
+title: NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (Mock-only 자율 해소)
 owner: conductor
 target: stream:S3 (Command Center)
 tier: notify
-status: OPEN
+status: RESOLVED
 issue: 178
+resolved-date: 2026-05-08
+resolution: "사용자 결정 'RFID = Mock-only' (2026-05-08) → Card_Detection.md §1 자율 재설계 완료. HW 검증 불필요 (cardUid 기반 분리 인식)."
 related: NOTIFY-S1-rfid-antenna-count-mismatch-2026-05-08.md
 last-updated: 2026-05-08
 ---
 
-# NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (HW 영향)
+# NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (Mock-only 자율 해소)
 
-## 트리거
+## 🟢 RESOLVED (2026-05-08 — 사용자 결정 + Phase D 자율 처리)
 
-Issue #178 자율 처리의 부분 cleanup. Conductor Phase C (#168 후속) 자율 iteration 에서 표기 정정 (24 → 12) 만 자율 처리됨 (commit 진행 중). HW 메커니즘 재설계는 본 NOTIFY 로 분리 — 좌석당 안테나 수 변경이 카드 인식 메커니즘 자체에 영향.
+**해소 결정**: 사용자가 2026-05-08 turn 에서 명시 — **"RFID HW 메커니즘 재설계 - 이 프로젝트에서는 rfid 기술을 mock 으로 처리"**. 메모리 `project_rfid_out_of_scope_2026_04_29.md` 와 정합 재확인.
+
+**자율 재설계 완료** (commit Phase D 진행 중):
+- §1.1 표: 24 → 12 안테나 분배 (좌석 0~9 + 보드 10/11)
+- §1.1 mermaid: 12 안테나 재설계
+- §1.2 매핑 룰: `seatIndex = antennaId` (좌석당 1 안테나, cardUid 기반 홀카드 1·2 분리)
+- §2.1: Mock 정규 경로 / §2.2: Real 별도 설계 (본 프로젝트 범위 밖)
+- §3.1: 보드 안테나 10/11 재배치
+- changelog: 2026-05-08 entry 추가 (Mock-only 재설계)
+
+**HW 검증 불필요**: Mock 환경에서 `MockRfidReader.injectCard` 가 cardUid 기반으로 분리 인식 보장. Real HW 도입 시 §2.2 흐름 + 외부 vendor 협업 별도 작업.
+
+**원 NOTIFY 본문 (HW 검증 질문)** = 본 해소로 무효. 아래는 historical reference.
+
+---
+
+## 트리거 (HISTORY)
+
+Issue #178 자율 처리의 부분 cleanup. Conductor Phase C (#168 후속) 자율 iteration 에서 표기 정정 (24 → 12) 만 자율 처리됨. HW 메커니즘 재설계는 본 NOTIFY 로 분리 — 좌석당 안테나 수 변경이 카드 인식 메커니즘 자체에 영향이라고 가정했으나, **사용자 RFID Mock-only 정책 명시로 자율 해소**.
 
 ## 자율 처리된 부분 (commit 진행 중)
 
