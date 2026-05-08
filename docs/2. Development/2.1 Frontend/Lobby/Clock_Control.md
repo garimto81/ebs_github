@@ -2,7 +2,7 @@
 title: Clock Control
 owner: team1
 tier: internal
-last-updated: 2026-04-15
+last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "Clock control 스펙 완결 (8KB)"

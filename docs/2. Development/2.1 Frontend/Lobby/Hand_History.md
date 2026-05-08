@@ -3,7 +3,7 @@ title: Hand History
 owner: team1
 tier: feature
 legacy-id: BS-02-HH
-last-updated: 2026-05-05
+last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-21
 reimplementability_notes: "Lobby 사이드바 Hand History 섹션 SSOT — 25개 분산 참조 통합 (Migration Plan 2026-04-21 Phase 1 산출물)"

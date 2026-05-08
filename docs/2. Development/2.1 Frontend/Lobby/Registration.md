@@ -2,7 +2,7 @@
 title: Registration
 owner: team1
 tier: internal
-last-updated: 2026-04-15
+last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "플레이어 등록 기획 완결 (11KB)"
