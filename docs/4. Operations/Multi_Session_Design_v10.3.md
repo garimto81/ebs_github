@@ -1,6 +1,9 @@
 ---
 title: Multi-Session Orchestration Design v10.3
-status: ACTIVE
+status: SUPERSEDED
+superseded_by: docs/4. Operations/Multi_Session_Design_v11.md
+superseded_at: 2026-05-08
+superseded_reason: "Message Bus 통합 (PR #195) → push 기반 v11 전환 (Phase A/B/C 머지: PR #197/#198/#199)"
 last-updated: 2026-05-08
 owner: conductor
 tier: internal
@@ -27,6 +30,7 @@ predecessors:
 |------|:----:|--------|------|
 | 2026-05-07 | v10.3.0 | 사용자 directive — 멀티 세션 v10.3 | 최초 작성 (글로벌 orchestrator 스킬 v10.3 적용) |
 | 2026-05-08 | v10.3.1 | 정합성 감사 #168 Phase A | S7/S8 활성화 반영 — §1 6 Streams → 8 Streams. S9 (QA) 만 future_streams 잔존. |
+| 2026-05-08 | v10.3.2 | v11 머지 (Phase A~C, PR #197/#198/#199) | **SUPERSEDED by v11**. v10.3 polling path 는 v11 의 legacy fallback (broker dead 시) 으로 보존. 신규 작업은 v11 spec 참조. |
 
 ## 🎯 Thesis
 
