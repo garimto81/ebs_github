@@ -61,6 +61,41 @@ predecessors:
 | S9   | QA               | (integration-tests/)       | P4     | All      |
 ```
 
+## §1.5 Product = SSOT, Cascade Routing
+
+`docs/1. Product/` = **기준 SSOT**. 모든 Stream 이 Product 의 자기 영역만 수정 + 다른 영역 read.
+
+상세 매핑: [`Stream_Entry_Guide.md` §Product 영역 매핑](../2. Development/2.5 Shared/Stream_Entry_Guide.md). 정책 SSOT: [`Product_SSOT_Policy.md`](../1. Product/Product_SSOT_Policy.md).
+
+### Cascade Routing 4 Layer
+
+| Layer | 도구 / 파일 | 역할 |
+|:-----:|------------|------|
+| L1 | PRD frontmatter `derivative-of` + `if-conflict` | 정본 ↔ derivative 관계 선언 |
+| L2 | `tools/doc_discovery.py --impact-of` | reverse-graph (변경 대상의 영향 list) |
+| L3 | `orch_PreToolUse.py:cascade_advisory()` | hook 으로 Edit 직전 advisory 출력 |
+| L4 | `.github/workflows/scope_check.yml` | CI gate (Product Edit + derivative 동시 변경 강제) |
+
+**Edit 흐름 예시**:
+
+```
+S1 워크트리에서 Foundation.md Edit 시도
+   ↓
+orch_PreToolUse.py
+   ├─ Layer 3 scope check: S1 의 owner 인가 → ✓
+   └─ Layer 2 cascade advisory:
+       "Editing Foundation.md may affect:
+         - Lobby_PRD.md (derivative cascade, S2 영역)
+         - Command_Center_PRD.md (derivative cascade, S3 영역)
+         - Back_Office_PRD.md (derivative cascade, S1 interim)
+         - 3 정본 (Lobby/CC/BO Overview.md, 각 Stream P5 영역)"
+   ↓
+Edit 진행 → commit → PR
+   ↓
+Layer 4 scope_check.yml
+   └─ Product 동시 변경 검증 (미동기화 PRD = WARN)
+```
+
 ## §2. Architect-then-Observer 모델
 
 ```
