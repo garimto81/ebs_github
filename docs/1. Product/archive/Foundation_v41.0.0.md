@@ -3,6 +3,8 @@ title: Foundation
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+archived: true
+superseded-by: "../Foundation.md (v4.4.0+, Graphic Novel Edition)"
 ---
 
 # EBS — 라이브 포커 방송 시스템 기획서

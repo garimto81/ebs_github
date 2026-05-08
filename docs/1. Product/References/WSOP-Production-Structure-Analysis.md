@@ -3,6 +3,8 @@ title: WSOP Production Structure Analysis
 owner: conductor
 tier: internal
 last-updated: 2026-04-15
+referenced-by:
+  - "../Foundation.md (§Ch.3 Scene 1 — 4단계 릴레이 / §Ch.3 Scene 2 — 현장 프로덕션 사슬)"
 ---
 
 # GG PRODUCTION 방송 자막 구조 분석

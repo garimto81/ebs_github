@@ -7,12 +7,13 @@ confluence-page-id: 3811672228
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228
 last-updated: 2026-05-07
-last-synced: 2026-04-15
+last-synced: 2026-05-08
 version: 3.0.0
 derivative-of: ../2. Development/2.1 Frontend/Lobby/Overview.md
 if-conflict: derivative-of takes precedence
 audience-target: 외부 stakeholder + Lobby 개발자 (이중 audience — 그림 소설 + 개발자 무결성)
 narrative-spine: "운영자가 통과하는 5 화면 + 4 진입 시점 + WSOP LIVE 정보 허브"
+rive-role: "Lobby Web = Flutter Web + Rive 런타임. RIVE_Standards 의 'EBS DB 작가' (선수 정보 / 토너 메타 공급)"
 supersedes: v2.0.1 (2026-05-06, "관제탑" 정체성 오해 — 정정 = "5 분 게이트웨이 + WSOP LIVE 거울")
 related-docs:
   - Foundation.md (§Ch.4 Lobby = 5 분 게이트웨이 / §Ch.5.A.1 5 화면 시퀀스)

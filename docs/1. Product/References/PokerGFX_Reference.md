@@ -5,6 +5,8 @@ version: "8.5.0"
 status: "consolidated"
 created: "2026-03-13"
 last_updated: "2026-04-14"
+referenced-by:
+  - "../Foundation.md (§Ch.5.C.3 Vision Layer — 1단계 EBS = PokerGFX 패러다임의 자체 구현)"
 framework: "Quasar Framework (Vue.js)"
 design_style: "White Tone Minimal"
 target_width: "640px (1/3 tiling)"
