@@ -3,7 +3,7 @@ title: Operations
 owner: team1
 tier: internal
 legacy-id: BS-03-06
-last-updated: 2026-04-15
+last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-03-06 테이블 운영 기획 완결 (8KB)"

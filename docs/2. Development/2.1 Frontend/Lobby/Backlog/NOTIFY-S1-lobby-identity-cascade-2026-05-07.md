@@ -57,4 +57,5 @@ stream:S1 (Foundation) — Foundation.md §5.1 + 관련 §Ch.4~6 lines.
 - `docs/1. Product/Lobby_PRD.md` v3.0.0 (S2 SSOT)
 - `docs/2. Development/2.1 Frontend/Lobby/Overview.md` §개요 정체성 박스 (2026-05-07)
 - `docs/2. Development/2.1 Frontend/Lobby/UI.md` §개요 정체성 박스 (2026-05-07)
-- `docs/4. Operations/Cascade_Plan_S2_Lobby_2026-05-07.md` (cascade plan)
+- `docs/4. Operations/Cascade_Plan_S2_Lobby_2026-05-07.md` (cascade plan, 사후 생성 권고 — AUDIT §H.4 참조)
+- `docs/2. Development/2.1 Frontend/Lobby/Backlog/AUDIT-S2-lobby-v3-cascade-2026-05-08.md` (S2 사후 감사 — §B 14 docs PASS / §J 코드 cascade PASS / §F 화이트리스트는 S1 cascade 시 참조)

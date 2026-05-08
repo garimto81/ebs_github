@@ -2,7 +2,7 @@
 title: Backend HTTP — 구현 현황 (2026-04-20)
 owner: team2
 tier: internal
-last-updated: 2026-04-20
+last-updated: 2026-05-08
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "2026-04-20 업데이트 — SG-007 Reports 6-endpoint 실동작 (mock data, [TODO-T2-009] MV 교체 대기), SG-003 Settings in-memory 실동작 (migration 0005 적용 후 DB 교체), SG-008 b1-b9 스펙 확정 + b10-b12 삭제 완료. pytest 242/242 pass."
@@ -62,18 +62,18 @@ parent: Backend_HTTP.md
 - `b21f199` "32→96 엔드포인트" (2026-04-16) → 라우터 범위 확장, 각 엔드포인트 스펙 완결도는 후속
 - `92cd385` "SSOT compliance recovery" (2026-04-17) → init.sql + SQLModel 간 권위 정리
 - `841a6fd` "PlayerMoveStatus + ConfigChanged broadcast" (이전) → WebSocket 이벤트 타입 확장
-- `fe8f2bd` "Foundation §6.4 Phase A" (2026-04-22) → §5.18 State Snapshot endpoint 발행 (명세만, 실구현 후속)
+- `fe8f2bd` "Foundation Ch.5 §B.4 Phase A" (2026-04-22, 옛 §6.4) → §5.18 State Snapshot endpoint 발행 (명세만, 실구현 후속)
 
 pytest 95/95 pass 는 2026-04-14 기록. `b21f199` + `92cd385` 이후 재실행 결과 미공개.
 
-## Foundation §6.4 crash 복구 매트릭스 (2026-04-22 신설)
+## Foundation Ch.5 §B.4 crash 복구 매트릭스 (2026-04-22 신설, 2026-05-08 cascade 정합)
 
-Foundation §6.4 "프로세스 재시작 시 DB snapshot 재로드" 에 따른 HTTP status 처리:
+Foundation Ch.5 §B.4 "실시간 동기화 — DB SSOT + WS push" 의 "Crash 복구: DB snapshot 재로드" 정책에 따른 HTTP status 처리:
 
 | 상황 | 권장 응답 | consumer 동작 |
 |------|-----------|----------------|
 | 프로세스 시작 → snapshot 요청 (`GET /tables/{id}/state/snapshot`) | `200 OK` + 전체 state | baseline 로드 후 WS 구독 개시 |
-| snapshot 요청 중 DB 연결 실패 | `503 Service Unavailable` + `Retry-After: 5` | 1-5초 후 재시도 (Foundation §6.4 polling 주기 범위 내) |
+| snapshot 요청 중 DB 연결 실패 | `503 Service Unavailable` + `Retry-After: 5` | 1-5초 후 재시도 (Foundation Ch.5 §B.4 polling 주기 범위 내) |
 | WS 끊김 후 replay gap > 500 (API-05 §6.4.3) | consumer 가 `/tables/{id}/state/snapshot` 로 전환 | replay 포기 → snapshot 재로드 |
 | 중앙 서버 SPOF (N PC 배포) | 네트워크 오류 (timeout/connection refused) | 로컬 buffer 모드 진입 (Operations.md §2.1.E) |
 

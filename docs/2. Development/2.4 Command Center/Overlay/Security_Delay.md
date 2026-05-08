@@ -147,4 +147,4 @@ Buffer가 실행 중 크래시하면:
 - `API-04-overlay-output` — OutputEvent buffer 흐름 (§Security Delay 참조)
 - `BS-03-01-outputs §Security Delay` — 설정 UI
 - `BS-07-06-layer-boundary` — Layer 1 OutputEvent 종류
-- `BS-07-00-overview §5` — 출력 채널 개요
+- `Overview.md §5` (legacy-id: BS-07-00) — 출력 채널 개요

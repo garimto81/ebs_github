@@ -3,7 +3,7 @@ title: Session Restore
 owner: team1
 tier: internal
 legacy-id: BS-02-01-session-restore
-last-updated: 2026-04-15
+last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-02-01-session-restore 복구 플로우 완결"

@@ -219,6 +219,18 @@ def write_by_topic(docs: list[tuple[Path, dict[str, object]]]) -> None:
         print(f"[생성] {rel(out)} ({len(matched)} 항목)")
 
 
+def _sanitize_filename(s: str) -> str:
+    """Windows-safe filename — strips chars Windows rejects in paths.
+
+    Forbidden on Windows: <>:"/\\|?* (and trailing dot/space).
+    Also replace Unicode arrows/special markers commonly used in
+    cross-stream owner labels (e.g. 'stream:S2 → notify ...').
+    """
+    cleaned = re.sub(r'[<>:"/\\|?*←-⇿]', "_", s)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip(" .")
+    return cleaned or "unknown"
+
+
 def write_by_owner(docs: list[tuple[Path, dict[str, object]]]) -> None:
     by_owner_dir = GENERATED_ROOT / "by-owner"
     by_owner_dir.mkdir(parents=True, exist_ok=True)
@@ -238,7 +250,8 @@ def write_by_owner(docs: list[tuple[Path, dict[str, object]]]) -> None:
         ]
         for p, fm in sorted(items, key=lambda x: rel(x[0])):
             lines.append(f"- `{rel(p)}` — {fm.get('title', p.stem)}")
-        out = by_owner_dir / f"{owner}.md"
+        safe_name = _sanitize_filename(owner)
+        out = by_owner_dir / f"{safe_name}.md"
         out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         print(f"[생성] {rel(out)} ({len(items)} 항목)")
 

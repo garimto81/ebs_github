@@ -2,7 +2,7 @@
 title: Chip Management
 owner: team1
 tier: feature
-last-updated: 2026-05-03
+last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-05-03
 reimplementability_notes: "Conductor Mode A 자율 cascade (2026-05-03) — WSOP LIVE Confluence 미러 SSOT lookup 후 §6 미결 3건 모두 결정 완료. (1) Multi-Table API: wsoplive Multi-Table Chip Management page 2285076509 명세 그대로 채택 (Add/Pull/Total Removal 3 endpoints). (2) Chip Discrepancy: wsoplive Chip Master 개선 page 2258535305 패턴 (Approve/Reject/Cancel + Lost Quantity 추적). (3) Color-up/Race-off: TDA Rules 표준 + EBS 자체 추가 (§5 line 117 이미 명시). 외부 개발팀 인계 가능 SSOT 확정"

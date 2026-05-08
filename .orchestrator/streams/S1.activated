@@ -1,6 +1,9 @@
 stream_id: S1
 team_name: Foundation
-activated_at: "2026-05-07T13:00:00"
+activated_at: '2026-05-08T16:40:34.183014'
 worktree_path: C:/claude/ebs-foundation
-init_pr: 125
-init_commit: 4455b537
+branch: work/s1/2026-05-08-init
+scope_owns:
+- docs/1. Product/Foundation.md
+- docs/1. Product/Back_Office_PRD.md
+- docs/1. Product/Game_Rules/**

@@ -3,7 +3,7 @@ title: Overview
 owner: team4
 tier: internal
 legacy-id: BS-05-00
-last-updated: 2026-04-15
+last-updated: 2026-05-07
 ---
 
 # BS-05-00 Command Center — 개요
@@ -327,17 +327,17 @@ ActionPanel 의 8 분리 버튼 (v1.x) 시대가 끝나고 **6 키 (5 게임 + 1
 
 #### 3.0.4 5-Act 시퀀스 카탈로그
 
-12 시간 본방송 한 회 동안 한 핸드의 흐름은 **5 Act** 로 추상화된다. HandFSM 9-state 의 의미 묶음.
+12 시간 본방송 한 회 동안 한 핸드의 흐름은 **5 Act** 로 추상화된다. 운영자 인지 layer (Hand Start → Deal → Bet → Showdown → Hand End) 와 HandFSM 9-state 묶음 layer (IDLE → PreFlop → Flop/Turn/River → Showdown → Settlement) 가 **동일 5-Act 시퀀스**의 두 표현이다. Foundation §3 의 운영자 명칭이 정점 SSOT, 정본은 매핑을 보여준다.
 
-| Act | 단계 | 9-state 매핑 | CC 화면 변화 | 6 키 활성 |
-|:---:|------|--------------|--------------|-----------|
-| **Act 1** | IDLE | IDLE | StatusBar PHASE = "IDLE", PlayerGrid 정적 | N (START HAND) |
-| **Act 2** | PreFlop | SETUP_HAND → PRE_FLOP | 블라인드 수거 → 홀카드 분배 → action_on 펄스 | F · C · B · A · M |
-| **Act 3** | Flop / Turn / River | FLOP → TURN → RIVER | Community Board 슬롯 채움, 폴드 반투명 | F · C · B · A · M |
-| **Act 4** | Showdown | SHOWDOWN | 승자 강조, 핸드 공개, ACTING 박스 = "SHOWDOWN" | (disabled, viewing) |
-| **Act 5** | Settlement | HAND_COMPLETE | 팟 분배 애니메이션, 스택 갱신, ACTING = "HAND OVER" | N (FINISH HAND) |
+| Act | 운영자 인지 (Foundation) | 9-state 묶음 (정본) | 9-state 매핑 | CC 화면 변화 | 6 키 활성 |
+|:---:|--------------------------|--------------------|--------------|--------------|-----------|
+| **Act 1** | Hand Start | IDLE | IDLE | StatusBar PHASE = "IDLE", PlayerGrid 정적 | N (START HAND) |
+| **Act 2** | Deal | PreFlop | SETUP_HAND → PRE_FLOP | 블라인드 수거 → 홀카드 분배 → action_on 펄스 | F · C · B · A · M |
+| **Act 3** | Bet | Flop / Turn / River | FLOP → TURN → RIVER | Community Board 슬롯 채움, 폴드 반투명 | F · C · B · A · M |
+| **Act 4** | Showdown | Showdown | SHOWDOWN | 승자 강조, 핸드 공개, ACTING 박스 = "SHOWDOWN" | (disabled, viewing) |
+| **Act 5** | Hand End | Settlement | HAND_COMPLETE | 팟 분배 애니메이션, 스택 갱신, ACTING = "HAND OVER" | N (FINISH HAND) |
 
-> 참조: PRD §Ch.6 (HandFSM), `Hand_Lifecycle.md` (5-Act ↔ 9-state 정합).
+> 참조: Foundation v4.5 §3 (운영자 명칭 SSOT), PRD §Ch.6 (HandFSM), `Hand_Lifecycle.md` (5-Act ↔ 9-state 정합).
 
 #### 3.0.5 v4.0 정체성 → 자매 문서 cascade 매트릭스
 

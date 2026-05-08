@@ -19,6 +19,7 @@ tier: generated
 | `docs/1. Product/Game_Rules/Flop_Games.md` | Flop Games | conductor | external | PRD-GAME-01 |
 | `docs/1. Product/Game_Rules/Seven_Card_Games.md` | Seven Card Games | conductor | external | PRD-GAME-03 |
 | `docs/1. Product/Lobby_PRD.md` | EBS Lobby — 5 화면 시퀀스 + WSOP LIVE 정보 허브 | stream:S2 (Lobby) | external | - |
+| `docs/1. Product/Product_SSOT_Policy.md` | Product SSOT Policy | conductor | internal | - |
 | `docs/1. Product/RIVE_Standards.md` | RIVE Standards — Overlay Graphics 정본 | conductor | external | - |
 | `docs/1. Product/References/PokerGFX_Reference.md` | PokerGFX Reference | conductor | internal | - |
 | `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` | WSOP Production Structure Analysis | conductor | internal | - |
@@ -112,7 +113,10 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-skin-editor.prd.md` | prd-skin-editor.prd | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` | ui-feature-verification-workflow | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md` | UI | team1 | internal | UI-04 |
+| `docs/2. Development/2.1 Frontend/Lobby/Backlog/AUDIT-S2-lobby-v3-cascade-2026-05-08.md` | AUDIT-S2 — Lobby v3.0.0 정체성 cascade + 8-항목 정합 감사 | stream:S2 (Lobby) | audit | - |
+| `docs/2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-Conductor-ci-drift-2026-05-08.md` | NOTIFY-Conductor — PR | stream:S2 (Lobby) → conductor | notify | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S1-lobby-identity-cascade-2026-05-07.md` | NOTIFY-S1 — Lobby 정체성 정정 cascade (Foundation §5.1 영향) | stream:S2 (Lobby) → notify stream:S1 (Foundation) | notify | - |
+| `docs/2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S2-pr176-ci-failure-2026-05-08.md` | NOTIFY-S2 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md` | Chip Management | team1 | feature | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Clock_Control.md` | Clock Control | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Event_and_Flight.md` | Event and Flight | team1 | internal | BS-02-02 |
@@ -265,6 +269,9 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/B-353-cross-team-bs06-citations.md` | Cross-team BS-06-XX 인용 (101건) → 도메인 마스터 redirect 갱신 — 팀별 자율 처리 위임 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-354-legacy-id-redirect-oe-mapping.md` | legacy-id-redirect.json 에 OE-level 매핑 추가 — API-04 OE-XX ↔ BS-06-09 OE-XX 번호 변환 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-355-redirect-validator-infrastructure.md` | legacy-id-redirect.json validator (Dart CLI + CI gate) | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-356-oe-catalog-self-inconsistency.md` | OE 카탈로그 self-inconsistency — OutputEvent_Serialization vs Overlay_Output_Events 정합 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` | NOTIFY-Conductor-2026-05-08-ci-infra-blockers | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-S8-pr180-ci-failure-2026-05-08.md` | NOTIFY-S8 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` | OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` | Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13) | - | - | - |
@@ -320,7 +327,10 @@ tier: generated
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` | Foundation 재설계 P3 — LOW 링크·참조 갱신 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md` | CC Visual Uplift — React 프로토타입 시각 자산 7종 흡수 (D7 보안 유지) | team4 | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/B-team4-013-seatcell-inline-edit-cascade-2026-05-07.md` | SeatCell 7행 onTap 인라인 편집 cascade — HTML 시안 vs Flutter drift | prototype-session | - | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-5act-naming-drift-2026-05-08.md` | NOTIFY-S1 — 5-Act 시퀀스 명칭 drift (Foundation vs 정본) | stream:S3 (Command Center) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-cc-identity-cascade-2026-05-07.md` | NOTIFY-S1 — CC v4.0 정체성 cascade가 Foundation §Ch.5.4 에 영향 | stream:S3 (Command Center) | notify | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S1-rfid-antenna-count-mismatch-2026-05-08.md` | NOTIFY-S1 — RFID 안테나 수 모순 (12 vs 24) | stream:S3 (Command Center) | notify | - |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-pr171-ci-failure-2026-05-08.md` | NOTIFY-S3 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | team4 | internal | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | S-11 Lobby Hand History 자동화 UI wiring 요청 | - | - | - |
 | `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team2-S11-seeder-and-endpoints.md` | S-11 자동화 실행을 위한 BO seeder + endpoint 준비 요청 | - | - | - |
@@ -389,6 +399,7 @@ tier: generated
 | `docs/2. Development/2.5 Shared/Naming_Conventions.md` | Naming Conventions (EBS Shared SSOT) | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Network_Config.md` | Network Configuration Contract | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Risk_Matrix.md` | Risk Matrix | conductor | internal | - |
+| `docs/2. Development/2.5 Shared/Stream_Entry_Guide.md` | Stream Entry Guide (v10.3 멀티세션 진입) | conductor | contract | - |
 | `docs/3. Change Requests/3. Change Requests.md` | 3. Change Requests (DEPRECATED) | conductor | internal | - |
 | `docs/3. Change Requests/done/CR-011-ge-ownership-move.md` | CR-011-ge-ownership-move | conductor | internal | CCR-011 |
 | `docs/3. Change Requests/done/CR-016-tech-stack-ssot.md` | CR-016-tech-stack-ssot | conductor | internal | CCR-016 |
@@ -584,7 +595,6 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` | Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-022-deprecation.md` | SG-022-deprecation | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` | SG-023 — 인텐트 전환 (기획서 완결 → production 출시) | conductor | internal | - |
-| `docs/4. Operations/Conductor_Backlog/SG-024-governance-expansion.md` | SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` | SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/SG-031-confluence-mirror-rebuild.md` | SG-031 — Confluence Mirror 재구축 | conductor | spec_gap | - |
 | `docs/4. Operations/Conductor_Backlog/SG-032-flutter-deps-major-bumps-deferred.md` | Flutter dependency major bumps (rive 0.14, file_picker 11) — migration deferred | team1 | backlog | - |
@@ -600,7 +610,6 @@ tier: generated
 | `docs/4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` | Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` | Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성 | conductor | internal | - |
-| `docs/4. Operations/DEPENDABOT_GOVERNANCE.md` | Dependabot Governance — Label / Major Gate / Recreate Guard | conductor | internal | - |
 | `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` | 문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결 | conductor | internal | - |
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
 | `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` | ECOSYSTEM E2E Handoff — Multi-Service Docker Validation | conductor | operations | - |
@@ -611,12 +620,10 @@ tier: generated
 | `docs/4. Operations/Load_Test_Plan_Phase1.md` | Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate | conductor | internal | - |
 | `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
 | `docs/4. Operations/Multi_Session_Design_v10.3.md` | Multi-Session Orchestration Design v10.3 | conductor | internal | - |
-| `docs/4. Operations/Multi_Session_Handoff.md` | Multi-Session Handoff Guide (2026-04-21) | conductor | internal | - |
-| `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (V9.5 — Single Session AI-Centric, Hub-and-Spoke Deprecated) | conductor | contract | - |
+| `docs/4. Operations/Multi_Session_Workflow.md` | Multi-Session Workflow (v10.3 redirect) | conductor | contract | - |
 | `docs/4. Operations/Network_Deployment.md` | Network Deployment Guide | conductor | internal | - |
 | `docs/4. Operations/OWASP_Audit_Kickoff_2026-05-03.md` | OWASP Top-10 Audit Kickoff Report — team2-backend | conductor | internal | - |
 | `docs/4. Operations/PR_AUTONOMOUS_PROCESSING.md` | PR Autonomous Processing (V10) | conductor | operations | - |
-| `docs/4. Operations/Phase_1_Decision_Queue.md` | Phase 1 Decision Queue (18건 결정 기록) | conductor | internal | - |
 | `docs/4. Operations/Phase_Plan_2027.md` | EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global | conductor | internal | - |
 | `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` | 2026-04-08-game-engine.plan | conductor | internal | - |
 | `docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md` | B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션 | team2 | internal | - |
@@ -648,6 +655,7 @@ tier: generated
 | `docs/4. Operations/Reports/2026-04-29-v95-e2e-iteration-phase-plan.md` | V9.5 결과물 E2E Iteration — Phase / Task Plan + P5/P6 진행 | conductor | contract | - |
 | `docs/4. Operations/Reports/2026-04-29-v95-residual-cycle-wrap-up.md` | V9.5 잔존 후속 cycle wrap-up — Agent Teams 첫 적용 + P11-P14 통합 보고 | conductor | contract | - |
 | `docs/4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md` | V9.5 SSOT vs Implementation Gap Triage | conductor | contract | - |
+| `docs/4. Operations/Reports/2026-05-08-consistency-audit-final.md` | 2026-05-08 정합성 감사 — 최종 통합 검증 보고서 | conductor | internal | - |
 | `docs/4. Operations/Roadmap.md` | Roadmap | conductor | internal | - |
 | `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` | SSOT Alignment Report — Lobby Path Drift Eradication | conductor | internal | - |
 | `docs/4. Operations/SSOT_Alignment_Progress.md` | SSOT Alignment Progress | conductor | internal | - |
@@ -655,16 +663,33 @@ tier: generated
 | `docs/4. Operations/Spec_Gap_Triage.md` | Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜 | conductor | internal | - |
 | `docs/4. Operations/Task_Dispatch_Board.md` | Task Dispatch Board (V9.3 — Intent/Execution Separation + AI Autonomous Merge) | conductor | contract | - |
 | `docs/4. Operations/Task_Dispatch_Board/README.md` | Task Dispatch Board (분해 디렉토리) | conductor | contract | - |
-| `docs/4. Operations/V5_Migration_Plan.md` | V5 Migration Plan — v4.0/v4.1 → v5.0/v5.1 전환 로드맵 | conductor | internal | - |
-| `docs/4. Operations/V9_2_Gate_Design.md` | V9.2 Gate Design (3-gate enforcement scaffolding) | conductor | contract | - |
-| `docs/4. Operations/V9_3_Intent_Execution_Boundary.md` | V9.3 Intent-Execution Separation (governance evolution) | conductor | contract | - |
-| `docs/4. Operations/V9_4_AI_Centric_Governance.md` | V9.4 AI-Centric Governance — SSOT-first Judgment + 전문 질문 금지 | conductor | contract | - |
-| `docs/4. Operations/V9_5_Single_Session_Output_Centric.md` | V9.5 Single Session AI-Centric — Hub-and-Spoke Deprecation | conductor | contract | - |
-| `docs/4. Operations/Workflow_Conductor_Autonomous.md` | Conductor Autonomous Workflow SOP — Hourglass 패턴 | conductor | contract | - |
 | `docs/4. Operations/handoffs/CI_CHAOS_TEST_HANDOFF.md` | CI Chaos Test Handoff (PR | conductor | internal | - |
 | `docs/4. Operations/handoffs/CI_GATE_INTEGRATION_HANDOFF.md` | CI Gate Integration + ebs_v2 Cleanup Handoff | conductor | internal | - |
 | `docs/4. Operations/handoffs/INFRA_ALIGNMENT_HANDOFF.md` | INFRA Alignment Handoff (Conductor Claim | conductor | internal | - |
 | `docs/4. Operations/handoffs/P0_REMEDIATION_HANDOFF.md` | P0 Remediation Handoff (port 3000 + Dockerfile context) | conductor | internal | - |
 | `docs/4. Operations/handoffs/P1_FOLLOWUP_HANDOFF.md` | P1/P3 Follow-up Handoff (Sentry sidecar + Flutter pin + ebs_v2 archive) | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/README.md` | 2026-05-08 정합성 감사 — Master Orchestration Plan | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/classification.md` | 683 .md 파일 전수 분류 매트릭스 | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/conductor-spec.md` | conductor-spec | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md` | Foundation v4.5 — SSOT 사실표 (정합성 감사 기준점) | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S1-foundation.md` | S1-foundation | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S2-lobby.md` | S2-lobby | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S3-cc.md` | S3-cc | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S4-rive.md` | S4-rive | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S5-index.md` | S5-index | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S6-prototype.md` | S6-prototype | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S7-backend.md` | S7-backend | conductor | internal | - |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S8-engine.md` | S8-engine | conductor | internal | - |
 | `docs/README.md` | docs/ README | conductor | internal | - |
+| `docs/_archive/governance-2026-05/DEPENDABOT_GOVERNANCE.md` | Dependabot Governance — Label / Major Gate / Recreate Guard | conductor | internal | - |
+| `docs/_archive/governance-2026-05/INDEX.md` | EBS Governance Archive Index | conductor | frozen | - |
+| `docs/_archive/governance-2026-05/Multi_Session_Handoff.md` | Multi-Session Handoff Guide (2026-04-21) | conductor | internal | - |
+| `docs/_archive/governance-2026-05/Phase_1_Decision_Queue.md` | Phase 1 Decision Queue (18건 결정 기록) | conductor | internal | - |
+| `docs/_archive/governance-2026-05/SG-024-governance-expansion.md` | SG-024 — 거버넌스 확장 (Conductor 단일 세션 전권) | conductor | internal | - |
+| `docs/_archive/governance-2026-05/V5_Migration_Plan.md` | V5 Migration Plan — v4.0/v4.1 → v5.0/v5.1 전환 로드맵 | conductor | internal | - |
+| `docs/_archive/governance-2026-05/V9_2_Gate_Design.md` | V9.2 Gate Design (3-gate enforcement scaffolding) | conductor | contract | - |
+| `docs/_archive/governance-2026-05/V9_3_Intent_Execution_Boundary.md` | V9.3 Intent-Execution Separation (governance evolution) | conductor | contract | - |
+| `docs/_archive/governance-2026-05/V9_4_AI_Centric_Governance.md` | V9.4 AI-Centric Governance — SSOT-first Judgment + 전문 질문 금지 | conductor | contract | - |
+| `docs/_archive/governance-2026-05/V9_5_Single_Session_Output_Centric.md` | V9.5 Single Session AI-Centric — Hub-and-Spoke Deprecation | conductor | contract | - |
+| `docs/_archive/governance-2026-05/Workflow_Conductor_Autonomous.md` | Conductor Autonomous Workflow SOP — Hourglass 패턴 | conductor | contract | - |
 | `docs/examples/README.md` | Examples | conductor | internal | - |

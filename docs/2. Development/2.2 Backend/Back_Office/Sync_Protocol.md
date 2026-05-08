@@ -3,7 +3,7 @@ title: Sync Protocol
 owner: team2
 tier: internal
 legacy-id: BO-02
-last-updated: 2026-04-15
+last-updated: 2026-05-08
 ---
 
 # BO-02 Sync Protocol — 동기화 프로토콜
@@ -15,6 +15,7 @@ last-updated: 2026-04-15
 | 2026-04-14 | L0 중복 제거 | §5 폴링 주기·§5.2 config 키·§6 UPSERT 규칙을 `contracts/api/API-01` Part II 인용으로 축약. team2 구현 노트만 유지. drift 위험 제거 |
 | 2026-04-15 | Task #7 outbound 인증 | "BO → WSOP LIVE outbound 인증" 섹션 신설. OAuth 2.0 client_credentials, Basic 헤더, 토큰 캐시 전략, 환경변수 명시. 구현: `src/adapters/wsop_auth.py`. BS-01 §방향별 2-스택과 cross-ref |
 | 2026-04-15 | Task #3 game_type 변환 | `wsop_sync_service.poll_series()` UPSERT 전 `src/adapters/wsop_game_type.map_to_ebs()` 호출 명시. WSOP LIVE 9종 ↔ EBS 22종 silent corruption 방지 |
+| 2026-05-08 | S7 정합성 감사 — Foundation v4.5 cascade | Foundation 옛 §6.4 표기를 Ch.5 §B.4 (실시간 동기화 — DB SSOT + WS push) 로 정정. §1.0/§1.0.1 정책표 cross-ref 갱신. |
 
 ---
 
@@ -29,11 +30,11 @@ Lobby↔BO↔CC 동기화 + WSOP LIVE 외부 데이터 수집의 **정책과 장
 
 ## 1. 동기화 개요
 
-### 1.0 정책 계층 — Foundation §6.4 준거 (2026-04-22 신설)
+### 1.0 정책 계층 — Foundation Ch.5 §B.4 준거 (2026-04-22 신설)
 
-본 문서의 동기화 구현은 **Foundation §6.4 "실시간 상태 동기화"** 를 상위 정책으로 삼는다. Foundation 은 상위 개념 계약만 정의하고, 구체적 endpoint 스키마·WS payload 상세·폴링 주기는 team2 publisher 문서에서 발행한다 (F2.5 정본/참조 규칙).
+본 문서의 동기화 구현은 **Foundation Ch.5 §B.4 "실시간 동기화 — DB SSOT + WS push"** 를 상위 정책으로 삼는다. Foundation 은 상위 개념 계약만 정의하고, 구체적 endpoint 스키마·WS payload 상세·폴링 주기는 team2 publisher 문서에서 발행한다 (F2.5 정본/참조 규칙).
 
-| 정책 | Foundation §6.4 규정 | team2 정본 위치 |
+| 정책 | Foundation Ch.5 §B.4 규정 | team2 정본 위치 |
 |------|----------------------|----------------|
 | DB = SSOT | 모든 상태 변경은 BO DB commit **후** 전파 | `Database/Schema.md §개요` |
 | DB polling (1-5초) | 복구/재진입 baseline | `APIs/Backend_HTTP.md §5.18 State Snapshot` |
@@ -43,12 +44,12 @@ Lobby↔BO↔CC 동기화 + WSOP LIVE 외부 데이터 수집의 **정책과 장
 
 **본 문서 scope 구분**:
 
-- **EBS 내부 동기화** (Lobby↔BO↔CC 실시간 상태) — Foundation §6.4 를 따른다. 아래 §1.1~§4 의 WebSocket/Redis/Circuit Breaker 구현이 이를 실현.
+- **EBS 내부 동기화** (Lobby↔BO↔CC 실시간 상태) — Foundation Ch.5 §B.4 를 따른다. 아래 §1.1~§4 의 WebSocket/Redis/Circuit Breaker 구현이 이를 실현.
 - **WSOP LIVE 외부 폴링** — Foundation 과 무관한 별도 외부 시스템 연동. §5~§7 에서 정의.
 
 ### 1.0.1 동기화 채널 매트릭스
 
-| 채널 | 방향 | 역할 | 인증 | Foundation §6.4 역할 |
+| 채널 | 방향 | 역할 | 인증 | Foundation Ch.5 §B.4 역할 |
 |------|------|------|------|----------------------|
 | **REST API (CRUD)** | Lobby → BO | 생성/수정/삭제 | JWT Bearer (내부) | 쓰기 경로 (DB commit) |
 | **REST API (snapshot)** | Lobby/CC → BO | baseline 로드 | JWT Bearer | **DB polling 1-5초** (§5.18) |

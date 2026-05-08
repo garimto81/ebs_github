@@ -1,5 +1,7 @@
 ---
 title: EBS Governance Archive Index
+owner: conductor
+tier: frozen
 archived-date: 2026-05-08
 archived-by: CLAUDE.md SSOT 일원화 + 미니멀 재설계
 ssot-after: 외부 spec 분리 (root CLAUDE.md v1.0.0 + team-policy.json v9.5 + Multi_Session_Design v10.3)
