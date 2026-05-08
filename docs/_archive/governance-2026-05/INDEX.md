@@ -31,6 +31,9 @@ status: frozen
 | V5_Migration_Plan.md | 2026-05-08 | 2026-04-22 마이그레이션 완료 (영구 폐기 가능) | (없음 — 역사 기록 only) | `git mv "docs/_archive/governance-2026-05/V5_Migration_Plan.md" "docs/4. Operations/"` |
 | SG-024-governance-expansion.md | 2026-05-08 | 결정 완료 (Mode A 채택) | CLAUDE.md §3 | `git mv "docs/_archive/governance-2026-05/SG-024-governance-expansion.md" "docs/4. Operations/Conductor_Backlog/"` |
 | DEPENDABOT_GOVERNANCE.md | 2026-05-08 | team-policy.json 으로 통합 권장 | docs/2. Development/2.5 Shared/team-policy.json | `git mv "docs/_archive/governance-2026-05/DEPENDABOT_GOVERNANCE.md" "docs/4. Operations/"` |
+| Workflow_Conductor_Autonomous.md | 2026-05-08 | 단일 turn workflow 모델 폐기. v10.3 멀티세션 (Architect-then-Observer) 단일 운영 | Multi_Session_Design_v10.3.md + team-policy.json | `git mv "docs/_archive/governance-2026-05/Workflow_Conductor_Autonomous.md" "docs/4. Operations/"` |
+| Phase_1_Decision_Queue.md | 2026-05-08 | V9.5 Phase 1 결정 SSOT. v10.3 단일화로 무관 | (해당 결정은 모두 적용 완료, 이력 only) | `git mv "docs/_archive/governance-2026-05/Phase_1_Decision_Queue.md" "docs/4. Operations/"` |
+| Multi_Session_Handoff.md | 2026-05-08 | V9.5 이관 지침. v10.3 = Stream_Entry_Guide.md 가 진입 SSOT | docs/2. Development/2.5 Shared/Stream_Entry_Guide.md | `git mv "docs/_archive/governance-2026-05/Multi_Session_Handoff.md" "docs/4. Operations/"` |
 
 ## CLAUDE.md 변경 이력 (본 파일에서 제거 후 흡수)
 
@@ -38,6 +41,7 @@ status: frozen
 
 | 날짜 | 항목 | 내용 |
 |------|------|------|
+| 2026-05-08 | 단일 turn workflow 폐기 (PR D) | Workflow_Conductor_Autonomous.md (198줄), Phase_1_Decision_Queue.md (738줄), Multi_Session_Handoff.md (279줄) 3 파일 archive 이동. v10.3 = 멀티세션 Architect-then-Observer 단일 모델. Phase 모델 disambiguation 제거 (다른 차원 자체가 사라짐). team1/team2 CLAUDE.md → Stream_Entry_Guide.md redirect. |
 | 2026-05-08 | 워크플로우 완성 (PR C) | Stream_Entry_Guide.md 신규 (docs/2.5 Shared, ~150줄). 6 Stream 진입 가이드 + 공유 contract 충돌 SOP (Phase 0 차단 + ssot_priority fallback) + 동적 Stream 추가 (S7~S9) + 6중 방어 매핑. doc2 진입점 결함 (H2) + 공유 contract SOP 결함 (H3) 해소. root CLAUDE.md Context Loading 표 갱신. |
 | 2026-05-08 | Spec 정합 (PR B) | Multi_Session_Design_v10.3.md §11 재작성 (TBD 5개 → 모두 ACTIVE, 글로벌 v10.3 자산 subsume 명시). 두 SOP 문서에 Phase 모델 disambiguation 추가 (멀티세션 생명주기 Phase ↔ 단일 turn workflow Phase 분리). |
 | 2026-05-08 | v10.3 단일화 (운영 SSOT, PR A) | team-policy.json v9.5 → v10.3 전면 재작성 (Architect-then-Observer 모델, 365→279줄). v9.x narrative 모두 제거. Phantom 도구 5개 = 글로벌 v10.3 자산 (SessionStart.py / PreToolUse.py / Architect-then-Observer 패턴 / GitHub Issue+PR 라벨) 으로 대체 명시. Multi_Session_Workflow.md V9.5 본문 → v10.3 redirect stub. |

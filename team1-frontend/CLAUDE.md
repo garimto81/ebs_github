@@ -11,7 +11,7 @@
 
 ## 🎯 2026-04-21 이관 시 우선 작업 (MUST READ)
 
-**전체 이관 가이드**: `docs/4. Operations/Multi_Session_Handoff.md` — 세션 시작 시 필독.
+**Stream 진입 가이드**: `docs/2. Development/2.5 Shared/Stream_Entry_Guide.md` — 세션 시작 시 필독.
 
 ### team1 우선 작업 (기준 커밋 `7543452`)
 
