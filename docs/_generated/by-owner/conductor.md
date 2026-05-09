@@ -220,6 +220,7 @@ tier: generated
 - `docs/4. Operations/PR_AUTONOMOUS_PROCESSING.md` — PR Autonomous Processing (V10)
 - `docs/4. Operations/Phase_Plan_2027.md` — EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
+- `docs/4. Operations/Plans/E2E_Verification_Report_2026-05-10.md` — E2E Verification Report (Docker Prototype) — 2026-05-10
 - `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` — Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정
 - `docs/4. Operations/Plans/Lobby_Renewal_Plan_2026-05-06.md` — Lobby 리뉴얼 계획 — EBS Lobby Design SSOT 1:1 정합
 - `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` — Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거
