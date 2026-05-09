@@ -19,6 +19,13 @@ permissions:
 
 jobs:
   scope-check:
+    # 2026-05-10 — dependabot PR exemption.
+    # dependabot-created PRs (chore(deps)*) update .github/workflows/* or
+    # dependency manifests outside any work/sN/ stream scope. Forcing them
+    # through scope_check.py blocks legitimate version bumps.
+    # dependabot-label-guard.yml + dependabot-major-gate.yml + dependabot-recreate-guard.yml
+    # already cover the dependabot governance surface.
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
