@@ -48,6 +48,27 @@ class _At00LoginScreenState extends ConsumerState<At00LoginScreen> {
       _wsUrlController.text = _lastSession!.wsUrl ?? _wsUrlController.text;
       _boBaseUrlController.text = _lastSession!.boBaseUrl ?? _boBaseUrlController.text;
     }
+
+    // 2026-05-10 QA E2E auto-connect — dart-define CC_AUTO_LOGIN_*
+    // Activated only in CI/QA builds. Production builds leave these empty.
+    const autoEmail = String.fromEnvironment('CC_AUTO_LOGIN_EMAIL');
+    const autoPwd = String.fromEnvironment('CC_AUTO_LOGIN_PASSWORD');
+    const autoTable = String.fromEnvironment('CC_AUTO_TABLE_ID');
+    const autoBo =
+        String.fromEnvironment('CC_AUTO_BO_URL', defaultValue: 'http://localhost:8000');
+    if (autoEmail.isNotEmpty && autoPwd.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        final tableId = int.tryParse(autoTable) ?? 1;
+        await _loginAndAuthenticate(
+          email: autoEmail,
+          password: autoPwd,
+          boBaseUrl: autoBo,
+          tableId: tableId,
+          wsUrl: '${autoBo.replaceFirst(RegExp(r'^http'), 'ws')}/ws/cc?table_id=$tableId',
+        );
+      });
+    }
   }
 
   @override
@@ -331,7 +352,9 @@ class _At00LoginScreenState extends ConsumerState<At00LoginScreen> {
         connectTimeout: const Duration(seconds: 5),
         receiveTimeout: const Duration(seconds: 5),
       ));
-      final res = await dio.post('/auth/login',
+      // 2026-05-10: BO v9.5 cascade — auth router moved to /api/v1/auth/*.
+      // Lobby was updated; CC was missing this prefix → 404 on Connect.
+      final res = await dio.post('/api/v1/auth/login',
           data: {'email': email, 'password': password});
       final data = (res.data as Map<String, dynamic>)['data']
           as Map<String, dynamic>?;

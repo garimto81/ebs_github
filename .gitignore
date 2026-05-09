@@ -39,6 +39,15 @@ __pycache__/
 # 임시 파일
 *.backup
 *.tmp_replace*
+.tmp_*.txt
+.lobby-web-build*.log
+.cc-web-build*.log
+.playwright-mcp/
+
+# B-216 작업 전 임시 환경 파일 (B-216 완료 후 환경별 .json으로 정식 분리)
+team1-frontend/production.json
+team4-cc/src/production.json
+team4-cc/production.json
 
 # 디버그/중간 산출물
 tools/debug_output/

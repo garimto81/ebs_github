@@ -515,6 +515,17 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` | 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-200-foundation-alignment-2026-04-22.md` | Foundation 재설계(2026-04-22) 정렬 — Conductor 소유 문서 전수 수정 | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md` | 회의 D3 GE 제거 결정 — 전체 전파 (Conductor + team1/team2/team4) | - | - | - |
+| `docs/4. Operations/Conductor_Backlog/B-210-overlay-rive-outputevent-mapping.md` | B-210 — Overlay Rive 21 OutputEvent 매핑 sprint | team4 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-211-e2e-full-hand-flow-scenario.md` | B-211 — End-to-End 풀 핸드 플로우 통합 테스트 시나리오 | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-212-backend-coverage-78-to-90.md` | B-212 — Backend 커버리지 78% → 90% (B-Q10 1차 단계) | team2 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-213-nfr-accuracy-quantitative-kpi.md` | B-213 — NFR "정확성" 정량 KPI 정의 | conductor | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-214-team1-quasar-residue-cleanup.md` | B-214 — team1 Quasar 잔재 정리 + feature 매니페스트 정합 | team1 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-215-dev-seed-users.md` | B-215 — Dev 환경 시드 사용자 자동화 | team2 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-216-web-build-env-separation.md` | B-216 — Lobby/CC web build 환경 분리 (localhost vs LAN) | team1 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-217-flutter-web-e2e-automation.md` | B-217 — Flutter Web E2E 자동화 (integration_test 기반) | team1 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-218-cc-auth-prefix-and-engine-host.md` | B-218 — CC Connect 후 2개 버그 (auth prefix + engine host) | team4 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-219-lobby-settings-typeerror.md` | B-219 — Lobby Settings 화면 TypeError (response schema 불일치) | team1 + team2 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-220-cc-demo-path-action-on-seat-status-missing.md` | B-220 — CC dispatchLocalDemoEvent: actionOn + seat status sync 누락 | team4 + team2 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` | 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` | B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` | B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
@@ -633,11 +644,13 @@ tier: generated
 | `docs/4. Operations/Phase_Plan_2027.md` | EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global | conductor | internal | - |
 | `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` | 2026-04-08-game-engine.plan | conductor | internal | - |
 | `docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md` | B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션 | team2 | internal | - |
+| `docs/4. Operations/Plans/E2E_Verification_Report_2026-05-10.md` | E2E Verification Report (Docker Prototype) — 2026-05-10 | conductor | internal | - |
 | `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` | Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정 | conductor | internal | - |
 | `docs/4. Operations/Plans/Lobby_Renewal_Plan_2026-05-06.md` | Lobby 리뉴얼 계획 — EBS Lobby Design SSOT 1:1 정합 | conductor | internal | - |
 | `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` | Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거 | conductor | internal | - |
 | `docs/4. Operations/Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` | Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계 | conductor | internal | - |
 | `docs/4. Operations/Plans/PLAN-BO-Phase1.md` | PLAN-BO-Phase1 | conductor | internal | - |
+| `docs/4. Operations/Plans/Planning_Prototype_Gap_Analysis_2026-05-09.md` | 기획-프로토타입 정합성 분석 보고서 (2026-05-09) | conductor | internal | - |
 | `docs/4. Operations/Plans/Redesign_Plan_2026_04_22.md` | Redesign Plan — 2026-04-22 회의록 기반 전면 재설계 | conductor | internal | - |
 | `docs/4. Operations/RENOVATE_EVALUATION.md` | Renovate vs Dependabot Evaluation | conductor | internal | - |
 | `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` | 2026-04-10-ccr-batch-team-impact | conductor | internal | - |

@@ -23,6 +23,7 @@ import '../../features/auth/auth_provider.dart';
 import '../../features/command_center/providers/action_button_provider.dart';
 import '../../features/command_center/providers/hand_display_provider.dart';
 import '../../features/command_center/providers/hand_fsm_provider.dart';
+import '../../features/command_center/providers/seat_provider.dart';
 import '../../features/command_center/providers/undo_provider.dart';
 import '../../features/overlay/services/skin_consumer.dart';
 import '../../foundation/audio/audio_player_provider.dart';
@@ -206,12 +207,22 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
       read(boardCardsProvider.notifier).state = const [];
       read(hasBetToMatchProvider.notifier).state = false;
       _fireSfx(read, SfxId.newHandShuffle);
+      // 2026-05-10 B-220 — set actionOn to first active seat after dealer.
+      // Publisher may include `first_action_seat`; otherwise derive from `dealer_seat`.
+      final firstAction = payload['first_action_seat'] as int? ??
+          () {
+            final dealer = payload['dealer_seat'] as int?;
+            if (dealer == null) return null;
+            return read(seatsProvider.notifier).nextActiveAfter(dealer);
+          }();
+      read(seatsProvider.notifier).setActionOn(firstAction);
 
     // §3.3.1 ActionPerformed — pot updated, action-on bet context derived
     // from action_type. Pre-flop seat bets update triggers hasBetToMatch.
     case 'ActionPerformed':
       final pot = payload['pot_after'] as int? ?? 0;
       final actionType = payload['action_type'] as String? ?? '';
+      final actingSeat = payload['seat'] as int?;
       read(potTotalProvider.notifier).state = pot;
       if (actionType == 'bet' ||
           actionType == 'raise' ||
@@ -219,12 +230,23 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
         read(hasBetToMatchProvider.notifier).state = true;
       }
       _fireSfx(read, _sfxForAction(actionType));
+      // 2026-05-10 B-220 — mark fold status + advance actionOn.
+      if (actionType == 'fold' && actingSeat != null) {
+        read(seatsProvider.notifier).markFolded(actingSeat);
+      }
+      final nextSeat = payload['next_action_seat'] as int? ??
+          (actingSeat != null
+              ? read(seatsProvider.notifier).nextActiveAfter(actingSeat)
+              : null);
+      read(seatsProvider.notifier).setActionOn(nextSeat);
 
     // §3.3.1 HandEnded — phase -> HAND_COMPLETE, clear undo, reset context.
     case 'HandEnded':
       read(handFsmProvider.notifier).forceState(HandFsm.handComplete);
       read(undoStackProvider.notifier).clearOnHandComplete();
       read(hasBetToMatchProvider.notifier).state = false;
+      // 2026-05-10 B-220 — clear actionOn at hand end.
+      read(seatsProvider.notifier).setActionOn(null);
       _fireSfx(read, SfxId.potWin);
 
     // §3.3.4 CardDetected board branch — publishes don't emit StreetAdvanced,

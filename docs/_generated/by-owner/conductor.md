@@ -135,6 +135,8 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
 - `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` — 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합)
 - `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` — 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서
+- `docs/4. Operations/Conductor_Backlog/B-211-e2e-full-hand-flow-scenario.md` — B-211 — End-to-End 풀 핸드 플로우 통합 테스트 시나리오
+- `docs/4. Operations/Conductor_Backlog/B-213-nfr-accuracy-quantitative-kpi.md` — B-213 — NFR "정확성" 정량 KPI 정의
 - `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` — 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비
 - `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` — B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` — B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade)
@@ -218,11 +220,13 @@ tier: generated
 - `docs/4. Operations/PR_AUTONOMOUS_PROCESSING.md` — PR Autonomous Processing (V10)
 - `docs/4. Operations/Phase_Plan_2027.md` — EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global
 - `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
+- `docs/4. Operations/Plans/E2E_Verification_Report_2026-05-10.md` — E2E Verification Report (Docker Prototype) — 2026-05-10
 - `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` — Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정
 - `docs/4. Operations/Plans/Lobby_Renewal_Plan_2026-05-06.md` — Lobby 리뉴얼 계획 — EBS Lobby Design SSOT 1:1 정합
 - `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` — Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거
 - `docs/4. Operations/Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` — Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계
 - `docs/4. Operations/Plans/PLAN-BO-Phase1.md` — PLAN-BO-Phase1
+- `docs/4. Operations/Plans/Planning_Prototype_Gap_Analysis_2026-05-09.md` — 기획-프로토타입 정합성 분석 보고서 (2026-05-09)
 - `docs/4. Operations/Plans/Redesign_Plan_2026_04_22.md` — Redesign Plan — 2026-04-22 회의록 기반 전면 재설계
 - `docs/4. Operations/RENOVATE_EVALUATION.md` — Renovate vs Dependabot Evaluation
 - `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` — 2026-04-10-ccr-batch-team-impact

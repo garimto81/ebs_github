@@ -48,6 +48,8 @@ import '../widgets/keyboard_hint_bar.dart';
 import '../widgets/mini_table_diagram.dart';
 import '../widgets/seat_cell.dart';
 import '../demo/scenario_runner.dart';
+import '../demo/scenarios.dart';
+import '../demo/local_dispatcher.dart';
 import '../providers/demo_provider.dart';
 import '../widgets/demo_control_panel.dart';
 import 'at_03_card_selector.dart';
@@ -85,6 +87,35 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
       final tableFsm = ref.read(tableStateProvider);
       if (tableFsm == TableFsm.empty) {
         ref.read(tableStateProvider.notifier).forceState(TableFsm.live);
+      }
+
+      // 2026-05-10 QA E2E auto-demo — dart-define CC_AUTO_DEMO=<scenarioName>.
+      // Activates Demo Mode + seeds players + loads + auto-plays scenario,
+      // so the entire 5-Act lifecycle is captured headlessly without operator.
+      const autoDemo = String.fromEnvironment('CC_AUTO_DEMO');
+      if (autoDemo.isNotEmpty) {
+        final container = ProviderScope.containerOf(context);
+        ref.read(demoProvider.notifier).activate();
+        seedDemoPlayers(container);
+        DemoScenario picked;
+        switch (autoDemo) {
+          case 'allInPreflop':
+            picked = allInPreflop;
+          case 'fullStreet':
+            picked = fullStreet;
+          case 'missDeal':
+            picked = missDeal;
+          case 'rfidFallback':
+            picked = rfidFallback;
+          case 'multiAction':
+            picked = multiAction;
+          default:
+            picked = quickHand;
+        }
+        _scenarioRunner = ScenarioRunner(container)..load(picked);
+        Future.delayed(const Duration(milliseconds: 800), () {
+          if (mounted) _scenarioRunner?.play();
+        });
       }
     });
   }

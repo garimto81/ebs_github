@@ -762,21 +762,23 @@ CC 가 dispatch 하는 카드 입력 (RFID 홀카드 / 커뮤니티 카드) 의 
 
 ### 12.1 13개 위젯 인벤토리 (V1 ~ V13, 2026-05-06 시각 검토 후 확장)
 
-| ID | 위젯 | 위치 | 상세 정책 SSOT | 상태 |
-|:--:|------|------|----------------|:----:|
-| **V1** | KeyboardHintBar | InfoBar 직하 32px | `Keyboard_Shortcuts.md §5` | ✅ 2026-05-06 |
-| **V2** | cc_status_bar (BO/RFID/Engine 통합) + V10 | Toolbar 대체 또는 보강 | `UI.md §Visual Uplift V2` | ⏳ |
-| **V3** | mini_table_diagram + R2 가드 | Toolbar 좌측 또는 InfoBar | `UI.md §Visual Uplift V3` | ⏳ |
-| **V4** | position_shift_chip | SeatCell 행 3 | `Seat_Management.md §8.3` | ⏳ |
-| **V5** | SeatCell 7행 + V11/V12 결합 | SeatCell 전체 | `Seat_Management.md §8.1` | ⏳ |
-| **V6** | ACTING glow ring + V9 명시 박스 | SeatCell + 우측 명시 박스 | `UI.md §Visual Uplift V6` | ⏳ |
-| **V7** | tweaks_panel (debug only) | Settings popup 또는 fab | `UI.md §Visual Uplift V7` | ⏳ |
-| **V8** | FLOP 1·2·3 / TURN / RIVER 슬롯 라벨 | community board | (이 §) | ⏳ NEW |
-| **V9** | ACTING 우측 명시 박스 | V6 일부 | V6 SSOT | ⏳ NEW |
-| **V10** | POT 좌상단 강조 박스 | V2/V3 영역 | V2/V3 SSOT | ⏳ NEW |
-| **V11** | 베팅 칩 부유 시각 | V5 일부 | V5 SSOT | ⏳ NEW |
-| **V12** | 카드 슬롯 + ADD affordance | V5 일부 | V5 SSOT | ⏳ NEW |
-| **V13** | IDLE 시 액션 disabled visual hint | ActionPanel | 현 Flutter 정합 | ✅ 확인 |
+> **2026-05-10 정합성 감사 (E2E v1.4)**: 사용자 지적 "기획-UI 차이" 분석 결과 — 본 표의 ⏳ 표기가 stale. 실제 구현 검증 (`team4-cc/src/lib/features/command_center/screens/at_01_main_screen.dart` + `widgets/`) 에 따라 V1~V13 대부분 ✅ 갱신.
+
+| ID | 위젯 | 위치 | 상세 정책 SSOT | 상태 | 코드 위치 |
+|:--:|------|------|----------------|:----:|----------|
+| **V1** | KeyboardHintBar (phase-aware) | InfoBar 직하 32px | `Keyboard_Shortcuts.md §5` | ✅ 2026-05-06 | `widgets/keyboard_hint_bar.dart` |
+| **V2** | cc_status_bar (BO/RFID/Engine 통합) | Toolbar 다음 | `UI.md §Visual Uplift V2` | ✅ 2026-05-10 | `widgets/cc_status_bar.dart` + `at_01_main_screen.dart:141` |
+| **V3** | mini_table_diagram (R2 가드) | TopStrip 좌, 120px | `UI.md §Visual Uplift V3` | ✅ 2026-05-10 | `widgets/mini_table_diagram.dart` + `_TopStrip:995` |
+| **V4** | position_shift_chip | SeatCell 행 3 | `Seat_Management.md §8.3` | ✅ 2026-05-10 | `widgets/position_shift_chip.dart` (SeatCell 통합) |
+| **V5** | SeatCell 7행 + V11/V12 결합 | SeatCell 전체 | `Seat_Management.md §8.1` | ✅ 2026-05-10 | `widgets/seat_cell.dart` |
+| **V6** | ACTING glow ring + V9 명시 박스 | SeatCell + 우측 명시 박스 | `UI.md §Visual Uplift V6` | ✅ 2026-05-10 | SeatCell + `_TopStrip` (DealerIndicator 우 120px) |
+| **V7** | tweaks_panel (debug only) | DebugLogPanel + Demo control | `UI.md §Visual Uplift V7` | ✅ 2026-05-10 | `debug/debug_log_panel.dart` + `widgets/demo_control_panel.dart` |
+| **V8** | FLOP 1·2·3 / TURN / RIVER 슬롯 라벨 | community board | (이 §) | ✅ 2026-05-10 | `at_01_main_screen.dart:1143` (_BoardArea) |
+| **V9** | ACTING 우측 명시 박스 | V6 일부 — TopStrip 우 | V6 SSOT | ✅ 2026-05-10 | `_DealerIndicator` (TopStrip 우측 120px) |
+| **V10** | POT 좌상단 강조 박스 | InfoBar 내 _InfoChip | V2/V3 SSOT | ✅ 2026-05-10 | `_InfoBar` (Pot: chip — `at_01_main_screen.dart:929`) |
+| **V11** | 베팅 칩 부유 시각 | V5 일부 (SeatCell 행) | V5 SSOT | ✅ 2026-05-10 | SeatCell stack/bet 행 (currentBet) |
+| **V12** | 카드 슬롯 + ADD affordance | V5 일부 (SeatCell) | V5 SSOT | ✅ 2026-05-10 | SeatCell EMPTY/+ ADD PLAYER 표시 |
+| **V13** | IDLE 시 액션 disabled visual hint | ActionPanel | 현 Flutter 정합 | ✅ 확인 | `_ActionPanel` enabled state |
 
 ### 12.2 가드레일 (HARD ENFORCE)
 
@@ -789,15 +791,17 @@ CC 가 dispatch 하는 카드 입력 (RFID 홀카드 / 커뮤니티 카드) 의 
 
 ### 12.3 진행 단계 (Phase A ~ G)
 
-| Phase | 작업 | 상태 |
-|:-----:|------|:----:|
-| A | archive + Backlog 등재 + critic SSOT | ✅ |
-| B | V1 KeyboardHintBar | ✅ |
-| C | V2 cc_status_bar | ⏳ |
-| D | V3 mini_table_diagram + V4 position_shift_chip | ⏳ |
-| E | V5 SeatCell 7행 (executor 위임 권장 — 250줄 변경) | ⏳ |
-| F | V6 glow + V7 tweaks_panel | ⏳ |
-| G | screenshot diff + critic verify | ⏳ |
+| Phase | 작업 | 상태 | 검증 |
+|:-----:|------|:----:|------|
+| A | archive + Backlog 등재 + critic SSOT | ✅ | 2026-05-06 |
+| B | V1 KeyboardHintBar | ✅ | 2026-05-06 |
+| C | V2 cc_status_bar | ✅ | 2026-05-10 (E2E v1.4 검증, screenshot 20) |
+| D | V3 mini_table_diagram + V4 position_shift_chip | ✅ | 2026-05-10 (`_TopStrip` integration 확인) |
+| E | V5 SeatCell 7행 | ✅ | 2026-05-10 (`seat_cell.dart` 구현 확인) |
+| F | V6 glow + V7 tweaks_panel | ✅ | 2026-05-10 (DebugLogPanel + DemoControlPanel) |
+| G | screenshot diff + critic verify | ✅ | 2026-05-10 (E2E v1.4 — `Screenshots/2026-05-10-e2e/iteration-4/20-cc-connected-main.png`) |
+
+> **2026-05-10 sync**: 코드 검증으로 V2~V12가 모두 통합 확인. §12.1 표 stale 정정. 향후 변경 시 본 표를 SSOT로 유지.
 
 ### 12.4 거절된 시안 항목 (12 결함)
 
