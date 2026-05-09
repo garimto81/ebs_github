@@ -331,7 +331,9 @@ class _At00LoginScreenState extends ConsumerState<At00LoginScreen> {
         connectTimeout: const Duration(seconds: 5),
         receiveTimeout: const Duration(seconds: 5),
       ));
-      final res = await dio.post('/auth/login',
+      // 2026-05-10: BO v9.5 cascade — auth router moved to /api/v1/auth/*.
+      // Lobby was updated; CC was missing this prefix → 404 on Connect.
+      final res = await dio.post('/api/v1/auth/login',
           data: {'email': email, 'password': password});
       final data = (res.data as Map<String, dynamic>)['data']
           as Map<String, dynamic>?;

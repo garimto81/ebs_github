@@ -48,7 +48,7 @@ related:
 
 ---
 
-## 1. Executive Summary (v1.2)
+## 1. Executive Summary (v1.3)
 
 | 항목 | 결과 | 검증 방법 |
 |------|:----:|----------|
@@ -60,7 +60,7 @@ related:
 | **Lobby Graphic Editor** | ✅ "No skins uploaded yet" 빈 상태 | screenshot 17 |
 | **Lobby Reports 4탭** | ✅ Hands Summary/Player Stats/Session Log/Table Activity (mock 404 표시) | screenshot 18 |
 | CC Flutter Web (3001) **정적 화면** | ✅ Connect 폼 + BO URL=localhost 자동 표시 | screenshot 03, 09 |
-| **CC post-login (자동)** | ⚠ 부분 차단 — engine.ebs.local DNS + `/auth/login` 404 (B-218 신규) | screenshot 19 |
+| **CC post-login (자동)** | ✅ **PASS** — Connect → `#/main` operator 화면 (1×10 그리드 + 6키) | screenshot 20 (B-218 IMPLEMENTED) |
 | Game Engine harness | ✅ /health + Interactive Simulator | screenshot 04, 06 |
 | Backend /health | ✅ `{"status":"ok","db":"connected"}` | screenshot 05 |
 | Frontend nginx 서빙 | ✅ nginx/1.29.8 | curl headers |
@@ -69,11 +69,12 @@ related:
 | **Web build env (localhost vs LAN)** | ✅ production.json 신규로 분리, 재빌드 PASS | console errors 4→0 |
 | End-to-End 풀 핸드 흐름 | ❌ 미실시 | B-211, B-210 선행 |
 
-**판정 (v1.2)**:
-- **Lobby = 완전 PASS** (login + 6 운영 화면 자동 검증, 사용자 지적 "PASS 부적절" 정정 완료)
-- **CC = 부분 PASS** (정적 화면 OK, Connect 후 2개 버그 — B-218)
-- **Phase 5 진입 블로커**: B-210 + B-211 그대로
-- **돌파 기법**: hosts mapping (api.ebs.local → 127.0.0.1) + nginx proxy(:80) + Playwright `pressSequentially` slow type
+**판정 (v1.3)**:
+- **Lobby = 완전 PASS** (login + 6 운영 화면 자동 검증)
+- **CC = 완전 PASS** (Connect + operator 화면 1×10 그리드, B-218 IMPLEMENTED)
+- **Phase 5 진입 블로커**: B-210 (Overlay Rive 매핑) + B-211 (풀 핸드 e2e) 그대로
+- **돌파 기법**: hosts mapping + nginx proxy(:80) + `pressSequentially` slow type + CC `/auth/login` → `/api/v1/auth/login` 1줄 patch + Playwright cache deep clear (SW unregister + caches.delete + location.replace)
+- **사용자 정정 반영 완료**: autonomous iteration = 컴포넌트별 부분 PASS가 아닌 **사용자 요청 100% 충족까지 자율 반복**
 
 ---
 
@@ -405,3 +406,4 @@ prod 전환 시 `JWT_SECRET`, `CORS_ORIGINS`, `RFID_MODE=real` 필수 변경 (Do
 | 2026-05-10 | v1.0 | E2E 검증 (Docker 5 서비스 기동) 보고서 최초 작성 |
 | 2026-05-10 | v1.1 | **자체 정정** — 사용자 지적 "login 화면만 보고 PASS 부적절". §0 Errata 신설, §1 Lobby/CC 항목 정확화, §3 새 스크린샷 3장 (07/08/09), §4.2 Auth e2e 시드 후 PASS 결과, §5.1 Flutter Web 자동화 한계 분석, §6 B-215 IMPLEMENTED + B-216/B-217 신규 |
 | 2026-05-10 | v1.2 | **Lobby 자동 로그인 100% 성공** — 사용자 지적 "수단·방법 가리지 말고 해결". hosts file `127.0.0.1 api.ebs.local + 4 도메인` 매핑 + nginx proxy 컨테이너 활성화 + Playwright `pressSequentially` slow type. 결과: Lobby `#/login → #/lobby/series` 진입, 8 series 표시 (WPS 2026/2025, Europe, Circuit Sydney/São Paulo/Indiana/Atlantic), Settings/GE/Reports 6 화면 자동 캡처. CC는 추가 버그 2건 발견 (engine.ebs.local + `/auth/login` prefix 누락 — 새 B-218). Iteration-3에 11장 추가 (`10~19`). |
+| 2026-05-10 | v1.3 | **CC 자동 Connect 100% 성공** — 사용자 정정: "lobby만 해결인데 왜 보고? autonomous iteration 의미는 끝까지". CC `at_00_login_screen.dart:334`의 `/auth/login` → `/api/v1/auth/login` 1줄 patch + cc-web 재빌드 + 캐시 우회 (SW unregister + caches.delete + location.replace). 결과: CC `#/login → #/main` 진입, **operator 화면 100% 렌더** (1×10 그리드 S1~S10, 6키 단축키 F/C/B/A/N/M, HandFSM IDLE, HOLDEM 100/200, FLOP/TURN/RIVER 슬롯, START HAND/DEAL 버튼). 콘솔 errors 0건. B-218 → IMPLEMENTED. Iteration-4에 1장 추가 (`20-cc-connected-main.png`). |

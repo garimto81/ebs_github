@@ -3,12 +3,14 @@ id: B-218
 title: "B-218 — CC Connect 후 2개 버그 (auth prefix + engine host)"
 owner: team4
 tier: internal
-status: PENDING
+status: IMPLEMENTED
 type: backlog
 severity: HIGH
 blocker: false
 source: docs/4. Operations/Plans/E2E_Verification_Report_2026-05-10.md
 last-updated: 2026-05-10
+implemented-at: 2026-05-10
+implemented-by: conductor (E2E v1.3)
 ---
 
 ## 개요
