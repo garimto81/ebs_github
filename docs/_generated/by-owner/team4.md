@@ -42,6 +42,7 @@ tier: generated
 - `docs/2. Development/2.4 Command Center/RFID_Cards/Overview.md` — Overview
 - `docs/2. Development/2.4 Command Center/RFID_Cards/Register_Screen.md` — Register Screen
 - `docs/2. Development/2.4 Command Center/Settings.md` — Settings
+- `docs/4. Operations/Conductor_Backlog/B-210-overlay-rive-outputevent-mapping.md` — B-210 — Overlay Rive 21 OutputEvent 매핑 sprint
 - `docs/4. Operations/Conductor_Backlog/IMPL-002-team4-engine-connection-ui.md` — 구현: team4 Engine Connection UI — router guard + manual reconnect
 - `docs/4. Operations/Conductor_Backlog/IMPL-007-cc-no-card-display-contract.md` — 구현: CC 카드 비노출 계약 강화 (회의 D7 후속)
 - `docs/4. Operations/Conductor_Backlog/SG-011-rfid-hal-stream-divergence.md` — Spec Drift: RFID_HAL_Interface §2.1 single-stream vs code 6-stream
