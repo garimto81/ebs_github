@@ -520,6 +520,9 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-212-backend-coverage-78-to-90.md` | B-212 — Backend 커버리지 78% → 90% (B-Q10 1차 단계) | team2 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-213-nfr-accuracy-quantitative-kpi.md` | B-213 — NFR "정확성" 정량 KPI 정의 | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-214-team1-quasar-residue-cleanup.md` | B-214 — team1 Quasar 잔재 정리 + feature 매니페스트 정합 | team1 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-215-dev-seed-users.md` | B-215 — Dev 환경 시드 사용자 자동화 | team2 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-216-web-build-env-separation.md` | B-216 — Lobby/CC web build 환경 분리 (localhost vs LAN) | team1 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-217-flutter-web-e2e-automation.md` | B-217 — Flutter Web E2E 자동화 (integration_test 기반) | team1 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` | 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` | B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` | B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
