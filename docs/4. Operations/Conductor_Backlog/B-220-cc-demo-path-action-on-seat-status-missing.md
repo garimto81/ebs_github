@@ -3,12 +3,14 @@ id: B-220
 title: "B-220 — CC dispatchLocalDemoEvent: actionOn + seat status sync 누락"
 owner: team4 + team2
 tier: internal
-status: PENDING
+status: IMPLEMENTED
 type: backlog
 severity: HIGH
 blocker: true
 source: docs/4. Operations/Plans/E2E_Verification_Report_2026-05-10.md
 last-updated: 2026-05-10
+implemented-at: 2026-05-10
+implemented-by: conductor (E2E v1.7)
 ---
 
 ## 개요

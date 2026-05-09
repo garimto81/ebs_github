@@ -193,11 +193,46 @@ class SeatNotifier extends StateNotifier<List<SeatState>> {
   }
 
   /// Set action-on indicator (null clears all).
+  /// 2026-05-10 B-220 — guard against EMPTY-seat actionOn:
+  /// only set if target is occupied (player != null) and not folded/busted.
   void setActionOn(int? seatNo) {
+    if (seatNo != null) {
+      final target = state.firstWhere(
+        (s) => s.seatNo == seatNo,
+        orElse: () => state.first,
+      );
+      if (!target.isOccupied ||
+          target.activity == PlayerActivity.folded ||
+          target.status == SeatStatus.busted) {
+        // Fall back: pick next active occupied seat. If none, clear.
+        seatNo = nextActiveAfter(seatNo);
+      }
+    }
     state = [
       for (final s in state)
         s.copyWith(actionOn: seatNo != null && s.seatNo == seatNo),
     ];
+  }
+
+  /// 2026-05-10 B-220 — mark seat activity = folded for current hand.
+  /// Used by ws_provider ActionPerformed (action_type=fold).
+  void markFolded(int seatNo) {
+    state = _update(seatNo, (s) => s.copyWith(activity: PlayerActivity.folded));
+  }
+
+  /// 2026-05-10 B-220 — find next occupied seat that is not folded/busted.
+  /// Returns null if no other active seat (heads-up edge or last standing).
+  int? nextActiveAfter(int fromSeat) {
+    for (var offset = 1; offset <= state.length; offset++) {
+      final idx = (fromSeat - 1 + offset) % state.length;
+      final s = state[idx];
+      if (s.isOccupied &&
+          s.activity != PlayerActivity.folded &&
+          s.status != SeatStatus.busted) {
+        return s.seatNo;
+      }
+    }
+    return null;
   }
 
   // -- card management -------------------------------------------------------
