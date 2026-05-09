@@ -1,5 +1,6 @@
 # 시스템 상태 파일
 .omc/
+.bkit/
 nul
 
 # RAG Layer 2 — auto-generated embedding cache (rebuild via tools/doc_rag.py build)
