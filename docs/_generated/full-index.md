@@ -393,6 +393,7 @@ tier: generated
 | `docs/2. Development/2.5 Shared/2.5 Shared.md` | 2.5 Shared | ci | generated | - |
 | `docs/2. Development/2.5 Shared/AI_Cascade_System.md` | AI Cascade System | ai-track (S5) | internal | - |
 | `docs/2. Development/2.5 Shared/Authentication.md` | Authentication | conductor | internal | BS-01 |
+| `docs/2. Development/2.5 Shared/Authentication/D6_D7_D8_Decision_2026-05-10.md` | D6/D7/D8 Decision Cascade (Issue | conductor | internal | - |
 | `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` | Distributed Authentication Architecture | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` | Token Lifecycle Sequences | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Authentication/Troubleshooting_Runbook.md` | Authentication Troubleshooting Runbook | conductor | contract | - |
@@ -526,6 +527,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-218-cc-auth-prefix-and-engine-host.md` | B-218 — CC Connect 후 2개 버그 (auth prefix + engine host) | team4 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-219-lobby-settings-typeerror.md` | B-219 — Lobby Settings 화면 TypeError (response schema 불일치) | team1 + team2 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-220-cc-demo-path-action-on-seat-status-missing.md` | B-220 — CC dispatchLocalDemoEvent: actionOn + seat status sync 누락 | team4 + team2 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-221-skins-multipart-upload.md` | B-221 — POST /api/v1/skins/upload multipart endpoint (CCR-013, D8 resolution) | team2 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` | 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` | B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` | B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |

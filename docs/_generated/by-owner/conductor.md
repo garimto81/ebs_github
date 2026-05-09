@@ -25,6 +25,7 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Backlog/NOTIFY-C1-frontend-non-lobby-identity-cascade-2026-05-07.md` — Phase C1 cascade — Frontend (Lobby 외) Lobby v3 / CC v4 정체성 LLM 전수 의미 정합 검토
 - `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` — NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (Mock-only 자율 해소)
 - `docs/2. Development/2.5 Shared/Authentication.md` — Authentication
+- `docs/2. Development/2.5 Shared/Authentication/D6_D7_D8_Decision_2026-05-10.md` — D6/D7/D8 Decision Cascade (Issue
 - `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` — Distributed Authentication Architecture
 - `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` — Token Lifecycle Sequences
 - `docs/2. Development/2.5 Shared/Authentication/Troubleshooting_Runbook.md` — Authentication Troubleshooting Runbook
