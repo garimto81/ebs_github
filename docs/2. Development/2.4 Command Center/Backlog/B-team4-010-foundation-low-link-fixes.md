@@ -3,6 +3,7 @@ id: B-team4-010
 title: Foundation 재설계 P3 — LOW 링크·참조 갱신
 status: PENDING
 source: docs/2. Development/2.4 Command Center/Foundation_Impact_Review.md §3.4
+mirror: none
 ---
 
 # [B-team4-010] Foundation 재설계 LOW — 참조·링크 갱신

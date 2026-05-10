@@ -3,6 +3,7 @@ id: B-044
 title: PostgreSQL 마이그레이션
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-044] PostgreSQL 마이그레이션

@@ -13,6 +13,7 @@ predecessors:
   - "Phase A: cb16c681 (Foundation v4.4 + Product Landing + BS_Overview v3/v4)"
   - "Phase B1: cf04a2b8 (Backend 1 엣지)"
   - "Phase B2: 282f4b09 (Engine 4 엣지)"
+mirror: none
 ---
 
 # NOTIFY-C1 — Frontend (Lobby 외) 정체성 cascade 검토 결과

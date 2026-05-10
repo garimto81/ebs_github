@@ -5,6 +5,7 @@ target: stream:S1 (Foundation)
 tier: notify
 status: OPEN
 last-updated: 2026-05-07
+mirror: none
 ---
 
 # NOTIFY-S1 — CC v4.0 정체성 cascade가 Foundation §Ch.5.4 에 영향

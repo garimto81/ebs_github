@@ -3,6 +3,7 @@ id: B-031
 title: Lobby WebSocket 모니터 채널 완성
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-031] Lobby WebSocket 모니터 채널 완성

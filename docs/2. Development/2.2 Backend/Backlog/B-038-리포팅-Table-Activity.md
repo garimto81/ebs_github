@@ -3,6 +3,7 @@ id: B-038
 title: 리포팅 — Table Activity
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-038] 리포팅 — Table Activity

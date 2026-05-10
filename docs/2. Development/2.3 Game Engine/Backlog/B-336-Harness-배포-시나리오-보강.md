@@ -6,6 +6,7 @@ priority: P2
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §8.5 (복수 테이블 1 PC = 1 피처 테이블) / §6.3 (ENGINE_URL 표준)"
+mirror: none
 ---
 
 # [B-336] Harness 배포 시나리오 보강 (P2)

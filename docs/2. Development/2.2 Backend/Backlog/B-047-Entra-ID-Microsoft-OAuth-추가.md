@@ -3,6 +3,7 @@ id: B-047
 title: Entra ID (Microsoft OAuth) 추가
 status: CANCELLED
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-047] Entra ID (Microsoft OAuth) 추가

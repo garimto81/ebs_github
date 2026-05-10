@@ -9,6 +9,7 @@ github-issue: https://github.com/garimto81/ebs_github/issues/192
 github-pr: https://github.com/garimto81/ebs_github/pull/176
 related:
   - AUDIT-S2-lobby-v3-cascade-2026-05-08.md (본 NOTIFY 의 trigger 가 된 PR 의 AUDIT)
+mirror: none
 ---
 
 # NOTIFY-Conductor — main drift 정정 위임

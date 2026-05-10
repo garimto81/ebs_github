@@ -6,6 +6,7 @@ priority: P1
 created: 2026-04-27
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-spec: "Behavioral_Specs/Card_Pipeline_Overview.md (BS-06-12, 본 PR 신규)"
+mirror: none
 ---
 
 # [B-343] Card Pipeline SSOT (BS-06-12) rollout (P1)

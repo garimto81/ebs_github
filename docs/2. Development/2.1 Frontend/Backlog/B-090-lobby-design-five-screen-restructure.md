@@ -7,6 +7,7 @@ updated: 2026-04-29
 owner: team1
 source: Anthropic Design API handoff (skI1cZio_-fe4N4Hgcr0Tw, EBS Lobby.html)
 depends-on: B-089
+mirror: none
 ---
 
 # B-090 — Lobby Design Phase 2: 5-Screen Drilldown

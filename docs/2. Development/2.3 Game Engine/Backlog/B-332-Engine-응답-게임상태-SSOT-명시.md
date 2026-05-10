@@ -6,6 +6,7 @@ priority: P0
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §6.3 §1.1.1 (병행 dispatch) / §6.4 (Engine SSOT)"
+mirror: none
 ---
 
 # [B-332] Engine 응답이 게임 상태 SSOT 임을 API-04 계약에 명시 (P0)

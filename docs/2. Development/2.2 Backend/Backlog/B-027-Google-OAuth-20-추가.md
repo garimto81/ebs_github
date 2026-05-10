@@ -3,6 +3,7 @@ id: B-027
 title: Google OAuth 2.0 추가
 status: DONE
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-027] Google OAuth 2.0 추가

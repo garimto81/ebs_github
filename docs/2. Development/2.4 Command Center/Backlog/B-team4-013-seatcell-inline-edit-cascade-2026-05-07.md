@@ -21,6 +21,7 @@ related_reference:
 predecessors:
   - B-team4-011  # CC Visual Uplift V5 SeatCell 7행 (2026-05-06)
   - B-team4-012  # 1×10 grid cascade (2026-05-07)
+mirror: none
 ---
 
 # B-team4-013 — SeatCell 7행 인라인 편집 cascade

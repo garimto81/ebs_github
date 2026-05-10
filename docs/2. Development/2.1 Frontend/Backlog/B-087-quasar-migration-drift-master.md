@@ -6,6 +6,7 @@ source: docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.
 created: 2026-04-21
 updated: 2026-04-21
 owner: team1
+mirror: none
 ---
 
 # B-087 — Quasar → Flutter 이전 drift master 항목

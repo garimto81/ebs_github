@@ -2,7 +2,7 @@
 title: SG-031 — Confluence Mirror 재구축
 owner: conductor
 tier: spec_gap
-status: PHASE_3_DONE
+status: PHASE_4_PARTIAL
 opened: 2026-05-04
 type_classification: Type C (도구 미사용 + 메모리 거짓 주장)
 last-updated: 2026-05-10
@@ -62,13 +62,15 @@ last-updated: 2026-05-10
 | 10 | git pre-push hook — main 머지 시 mirror 대상 변경 감지 → 자동 push 트리거 | `.githooks/pre-push` (V9.2 정책: main 직접 push 차단). drift 자동 트리거는 CI workflow 가 대체 | DONE (대체 메커니즘) |
 | 11 | mirror matrix 자동 생성기 | `tools/confluence_mirror_matrix.py` | DONE (Phase 3 보강) |
 
-### Phase 4 — 검증 + 외부 인계 (TODO)
+### Phase 4 — 검증 + 외부 인계 (PARTIAL DONE 2026-05-10)
 
-| # | 작업 | 게이트 |
-|:-:|------|--------|
-| 11 | drift_check 0 도달 (모든 mirror 대상 페이지 hash 일치) | drift_count == 0 |
-| 12 | README 페이지 "production-ready" 상태 갱신 | 외부 visible |
-| 13 | 외부 stakeholder (개발팀 + 아트 디자이너) 인계 가능 선언 | SG-023 production timeline 정렬 |
+| # | 작업 | 게이트 | 상태 |
+|:-:|------|--------|:----:|
+| 11 | drift_check 0 도달 (모든 mirror 대상 페이지 hash 일치) | drift_count == 0 | DONE — `sync_confluence.py --check` 실행 결과 EXIT=0 (343 mirror target 모두 simulation 통과) |
+| 12 | README 페이지 (3811999808) "production-ready" 상태 갱신 | 외부 visible | TODO — md2confluence.py 로 본문 갱신 필요 (별도 cycle) |
+| 13 | 외부 stakeholder (개발팀 + 아트 디자이너) 인계 가능 선언 | SG-023 production timeline 정렬 | TODO — Task 12 후 |
+| 14 | (보강) uncovered docs 자동 분류 | mirror coverage 향상 | DONE — `tools/auto_mirror_none.py` 신규, 116 docs 에 `mirror: none` 일괄 부여, coverage 50.1% → 67.0% |
+| 15 | (보강) coverage gate 점진 도입 | CI threshold | DONE — `confluence-drift.yml` 에 `--min-coverage 60` gate 활성. Phase 4 후속에서 80% → 95% 강화 |
 
 ## 영구 방어 (Phase 3 산출물)
 
@@ -107,4 +109,9 @@ last-updated: 2026-05-10
   - `tools/confluence_mirror_matrix.py` 신규 (685 docs 자동 매트릭스 생성, coverage 50.1%)
   - `.github/workflows/confluence-drift.yml` 신규 (main push + PR trigger, frontmatter coverage 정보 + drift check)
   - `docs/_generated/confluence-mirror-matrix.md` 첫 자동 생성
-- (Phase 4 후속 cycle: 남은 342 uncovered docs case-by-case 부여 → coverage 100% → drift_count == 0 → README production-ready 갱신)
+- 2026-05-10 11:15 Phase 4 partial:
+  - 실제 drift check 실행 → EXIT=0 (Task 11 게이트 만족)
+  - `tools/auto_mirror_none.py` 신규 (Backlog/Reports/examples 등 internal-only 자동 분류)
+  - 116 docs 에 `mirror: none` 일괄 부여 → coverage 50.1% → 67.0% (+16.9%p)
+  - `confluence-drift.yml` 에 `--min-coverage 60` gate 활성 (Phase 4 점진 강화 시작점)
+- (Phase 4 잔여 cycle: Task 12 README production-ready 갱신, Task 13 외부 인계 선언, 남은 226 uncovered docs case-by-case)

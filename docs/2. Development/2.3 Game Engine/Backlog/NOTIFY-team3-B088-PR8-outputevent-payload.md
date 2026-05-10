@@ -6,6 +6,7 @@ created: 2026-04-21
 from: team1 (B-088 PR-5 선행 알림)
 target: team3
 priority: P2
+mirror: none
 ---
 
 # NOTIFY → team3: B-088 OutputEvent payload 정렬

@@ -5,6 +5,7 @@ status: DONE
 completed: 2026-04-17
 branch: work/team1/20260417-api-alignment
 source: docs/2. Development/2.1 Frontend/Backlog.md
+mirror: none
 ---
 
 # B-086 — tools/run_browser_e2e.py drill-down 확장

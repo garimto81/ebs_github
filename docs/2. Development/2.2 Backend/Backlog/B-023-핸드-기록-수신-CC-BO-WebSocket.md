@@ -3,6 +3,7 @@ id: B-023
 title: 핸드 기록 수신 — CC → BO WebSocket
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-023] 핸드 기록 수신 — CC → BO WebSocket

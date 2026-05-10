@@ -3,6 +3,7 @@ id: B-089
 title: "B-088 후속 — test assertion snake→camelCase 완전 교체"
 status: PENDING
 source: docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md §2.5
+mirror: none
 ---
 
 # [B-089] team2 test assertion 완전 교체 (B-088 PR 2 후속)

@@ -3,6 +3,7 @@ id: B-078
 title: team1 specs 이미지 ↔ docs/00-reference 동기화 자동화
 status: PENDING
 source: docs/2. Development/2.1 Frontend/Backlog.md
+mirror: none
 ---
 
 # [B-078] team1 specs 이미지 ↔ docs/00-reference 동기화 자동화

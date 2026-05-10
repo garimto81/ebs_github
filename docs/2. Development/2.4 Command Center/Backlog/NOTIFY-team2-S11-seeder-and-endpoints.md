@@ -4,6 +4,7 @@ title: S-11 자동화 실행을 위한 BO seeder + endpoint 준비 요청
 target_team: team2
 status: OPEN
 source: docs/2. Development/2.4 Command Center/Backlog.md
+mirror: none
 ---
 
 # NOTIFY — team2: S-11 BO seeder + endpoint 준비

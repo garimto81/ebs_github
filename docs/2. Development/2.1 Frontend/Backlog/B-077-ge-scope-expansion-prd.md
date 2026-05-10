@@ -6,6 +6,7 @@ source: docs/3. Change Requests/done/CR-conductor-20260421-ge-scope-expansion.md
 owner: team1
 created: 2026-04-21
 blocked-by: "사용자 confirm 5개 항목 (CR-conductor-20260421-ge-scope-expansion.md §'미확정')"
+mirror: none
 ---
 
 # B-077 — GE scope 확장 PRD 작성

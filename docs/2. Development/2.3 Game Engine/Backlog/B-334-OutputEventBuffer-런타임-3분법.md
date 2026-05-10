@@ -6,6 +6,7 @@ priority: P1
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §5.0 (2 런타임 모드) / §6.3 (프로세스 경계)"
+mirror: none
 ---
 
 # [B-334] OutputEventBuffer 계약을 탭/다중창/Engine 3분법으로 재구성 (P1)

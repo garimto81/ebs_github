@@ -6,6 +6,7 @@ archived_date: 2026-04-28
 archived_phase: v8.0 Phase 6 (L0 제거)
 authority: User Full Delegation (V8.0 Autonomous Execution Authority)
 purpose: L0 인프라 폐기 + 활성 claim history 보존
+mirror: none
 ---
 
 # Phase 6 — L0 Pre-Work Contract Removal Record

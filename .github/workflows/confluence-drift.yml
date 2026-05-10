@@ -44,14 +44,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # 정확한 측정은 confluence_mirror_matrix.py --check 가 담당. 본 step 은 빠른 사전 보고용.
           total=$(find docs -name '*.md' -type f | wc -l)
           mirrored=$(grep -rln 'confluence-page-id' docs --include='*.md' | wc -l)
           excluded=$(grep -rln '^mirror: none' docs --include='*.md' | wc -l)
           covered=$((mirrored + excluded))
           uncovered=$((total - covered))
           pct=$(awk -v c="$covered" -v t="$total" 'BEGIN { if (t==0) print 0; else printf "%.1f", 100*c/t }')
-          echo "::notice title=Frontmatter coverage::${covered}/${total} (${pct}%) — mirrored=${mirrored}, mirror:none=${excluded}, uncovered=${uncovered}"
-          # Phase 3 정착 단계라 fail 하지 않음. Phase 4 도달 시 enforce 검토.
+          echo "::notice title=Frontmatter coverage (raw grep)::${covered}/${total} (${pct}%) — mirrored=${mirrored}, mirror:none=${excluded}, uncovered=${uncovered}"
+
+      - name: Coverage gate (matrix tool, threshold 60%)
+        shell: bash
+        run: |
+          # Phase 4 점진 도입 임계값. 현재 ~67% — 60% 게이트로 시작.
+          # 향후 Phase 4 완료 시 80% → 95% 점진 강화.
+          python tools/confluence_mirror_matrix.py --check --min-coverage 60
 
       - name: Run drift check (sync_confluence --check)
         shell: bash

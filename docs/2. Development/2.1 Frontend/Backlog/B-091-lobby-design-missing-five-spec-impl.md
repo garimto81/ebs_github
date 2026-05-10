@@ -12,6 +12,7 @@ related-prd:
   - docs/2. Development/2.1 Frontend/Lobby/UI.md (§공통 레이아웃 §헤더 바, §화면 1)
   - docs/2. Development/2.1 Frontend/Lobby/Overview.md (§화면 1)
   - docs/2. Development/2.1 Frontend/Lobby/References/EBS_Lobby_Design/README.md
+mirror: none
 ---
 
 # B-091 — Lobby Design 누락 5개 항목 구현

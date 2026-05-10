@@ -7,6 +7,7 @@ created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §6.3 (ENGINE_URL + Demo Mode fallback)"
 supersedes: "Backlog.md §우선작업 항목 5 (harness /engine/health endpoint)"
+mirror: none
 ---
 
 # [B-331] harness /engine/health endpoint 신설 (P0)

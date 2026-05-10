@@ -3,6 +3,7 @@ id: B-039
 title: 리포팅 — Player Statistics
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-039] 리포팅 — Player Statistics

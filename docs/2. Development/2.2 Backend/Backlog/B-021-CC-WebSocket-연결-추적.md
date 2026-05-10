@@ -3,6 +3,7 @@ id: B-021
 title: CC WebSocket 연결 추적
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-021] CC WebSocket 연결 추적

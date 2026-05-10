@@ -6,6 +6,7 @@ priority: P0
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §6.3 (프로세스 경계) / §6.4 (실시간 동기화)"
+mirror: none
 ---
 
 # [B-330] Foundation §6.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파 (P0)

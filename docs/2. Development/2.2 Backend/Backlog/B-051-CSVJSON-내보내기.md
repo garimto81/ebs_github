@@ -3,6 +3,7 @@ id: B-051
 title: CSV/JSON 내보내기
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-051] CSV/JSON 내보내기

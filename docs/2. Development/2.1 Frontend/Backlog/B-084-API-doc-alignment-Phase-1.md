@@ -5,6 +5,7 @@ status: DONE
 completed: 2026-04-17
 branch: work/team1/20260417-api-alignment
 source: docs/2. Development/2.1 Frontend/Backlog.md
+mirror: none
 ---
 
 # B-084 — Frontend API 경로를 Backend_HTTP.md 명세대로 전환

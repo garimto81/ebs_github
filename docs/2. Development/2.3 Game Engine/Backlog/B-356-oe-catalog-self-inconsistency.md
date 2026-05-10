@@ -10,6 +10,7 @@ related-files:
   - "docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md"
 related-issue: "#167 (S8 consistency audit)"
 related-foundation: "Foundation §B.1 (21 OutputEvent 카탈로그)"
+mirror: none
 ---
 
 # [B-356] OE 카탈로그 self-inconsistency 정합

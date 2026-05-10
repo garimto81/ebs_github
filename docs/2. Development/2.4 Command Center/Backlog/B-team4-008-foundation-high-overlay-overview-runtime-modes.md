@@ -3,6 +3,7 @@ id: B-team4-008
 title: Foundation 재설계 P1 — Overlay/Overview 2 런타임 모드 분기 + 배경 config flag
 status: PENDING
 source: docs/2. Development/2.4 Command Center/Foundation_Impact_Review.md §3.2
+mirror: none
 ---
 
 # [B-team4-008] Foundation 재설계 HIGH — Overlay Overview 재작성

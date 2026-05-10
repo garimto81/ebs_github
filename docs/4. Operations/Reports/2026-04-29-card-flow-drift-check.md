@@ -4,6 +4,7 @@ owner: conductor
 created: 2026-04-29
 plan: ~/.claude/plans/rfid-peaceful-seal.md
 backlog: docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md
+mirror: none
 ---
 
 # Card Flow Drift Check Report — 2026-04-29

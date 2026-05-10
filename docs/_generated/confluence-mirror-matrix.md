@@ -2,7 +2,7 @@
 title: Confluence Mirror Matrix
 auto-generated: true
 source: tools/confluence_mirror_matrix.py
-generated-at: 2026-05-10T02:42Z
+generated-at: 2026-05-10T02:50Z
 mirror: none
 ---
 
@@ -15,10 +15,10 @@ mirror: none
 
 - **Total docs**: 685
 - **Mirrored** (confluence-page-id, valid): 343
-- **Excluded** (mirror: none): 0
+- **Excluded** (mirror: none): 116
 - **Pending** (placeholder ID — null/tbd/0): 0
-- **Uncovered** (no frontmatter decision): 342
-- **Coverage** (mirrored + excluded): 343/685 = **50.1%**
+- **Uncovered** (no frontmatter decision): 226
+- **Coverage** (mirrored + excluded): 459/685 = **67.0%**
 
 ## Per-section coverage
 
@@ -26,15 +26,15 @@ mirror: none
 |---|---:|---:|---:|---:|---:|---:|
 | 1. Product | 13 | 13 | 0 | 0 | 0 | 100.0% |
 | 2. Development/2. Development.md | 1 | 1 | 0 | 0 | 0 | 100.0% |
-| 2. Development/2.1 Frontend | 111 | 42 | 0 | 0 | 69 | 37.8% |
-| 2. Development/2.2 Backend | 104 | 32 | 0 | 0 | 72 | 30.8% |
-| 2. Development/2.3 Game Engine | 65 | 10 | 0 | 0 | 55 | 15.4% |
-| 2. Development/2.4 Command Center | 77 | 35 | 0 | 0 | 42 | 45.5% |
+| 2. Development/2.1 Frontend | 111 | 42 | 22 | 0 | 47 | 57.7% |
+| 2. Development/2.2 Backend | 104 | 32 | 48 | 0 | 24 | 76.9% |
+| 2. Development/2.3 Game Engine | 65 | 10 | 20 | 0 | 35 | 46.2% |
+| 2. Development/2.4 Command Center | 77 | 35 | 19 | 0 | 23 | 70.1% |
 | 2. Development/2.5 Shared | 14 | 11 | 0 | 0 | 3 | 78.6% |
 | 3. Change Requests | 94 | 92 | 0 | 0 | 2 | 97.9% |
-| 4. Operations | 204 | 107 | 0 | 0 | 97 | 52.5% |
+| 4. Operations | 204 | 107 | 6 | 0 | 91 | 55.4% |
 | README.md | 1 | 0 | 0 | 0 | 1 | 0.0% |
-| examples | 1 | 0 | 0 | 0 | 1 | 0.0% |
+| examples | 1 | 0 | 1 | 0 | 0 | 100.0% |
 
 ## Detail
 
@@ -107,30 +107,30 @@ mirror: none
 | `2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-024-LEGACY-검토-요청-BS-07-Overlay-시각-일관성-CC-색상-체계-재사용.md` | uncovered | — | — |
 | `2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-025-LEGACY-검토-요청-BS-08-Graphic-Editor-행동-명세-신규-작성-WSOP.md` | uncovered | — | — |
 | `2. Development/2.1 Frontend/Backlog/AUDIT-Conductor-194-frontend-sister-cascade-2026-05-08.md` | mirrored | 3818881468 | 3811606750 |
-| `2. Development/2.1 Frontend/Backlog/B-068-team1-frontend-Quasar-프로젝트-실제-초기화.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-075-React-아카이브-Quasar-이식-B-068-하위.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-076-QA-LOBBY-06-기반-Vitest-Playwright-셋업.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-077-ge-scope-expansion-prd.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-077-WSOP-LIVE-기준-레포-실재-확인-인프라.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-078-team1-specs-이미지-docs00-reference-동기화-자동화.md` | uncovered | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-068-team1-frontend-Quasar-프로젝트-실제-초기화.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-075-React-아카이브-Quasar-이식-B-068-하위.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-076-QA-LOBBY-06-기반-Vitest-Playwright-셋업.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-077-ge-scope-expansion-prd.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-077-WSOP-LIVE-기준-레포-실재-확인-인프라.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-078-team1-specs-이미지-docs00-reference-동기화-자동화.md` | excluded | — | — |
 | `2. Development/2.1 Frontend/Backlog/B-079-Prize-Pool-Payout-Management.md` | mirrored | 3818455578 | 3811606750 |
 | `2. Development/2.1 Frontend/Backlog/B-080-Blind-Prize-Structure-Template.md` | mirrored | 3818816061 | 3811606750 |
 | `2. Development/2.1 Frontend/Backlog/B-081-Chip-Management-Reporter.md` | mirrored | 3819078245 | 3811606750 |
 | `2. Development/2.1 Frontend/Backlog/B-082-Staff-Role-Permission.md` | mirrored | 3818586752 | 3811606750 |
 | `2. Development/2.1 Frontend/Backlog/B-083-Tournament-Statistics-Reporting.md` | mirrored | 3819766263 | 3811606750 |
-| `2. Development/2.1 Frontend/Backlog/B-084-API-doc-alignment-Phase-1.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-085-model-nullability-audit.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-086-browser-e2e-drilldown.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-087-quasar-migration-drift-master.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-088-B-team1-docs-rest-path-pascal.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-089-lobby-design-foundation-tokens.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-090-lobby-design-five-screen-restructure.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-091-lobby-design-missing-five-spec-impl.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-092-lobby-visual-screenshots-cascade-2026-05-05.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-F004-pending-missing-api-docs.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-F005-settings-series-selector.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/B-F006-skin-upload-ui-2step.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Backlog/NOTIFY-C1-frontend-non-lobby-identity-cascade-2026-05-07.md` | uncovered | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-084-API-doc-alignment-Phase-1.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-085-model-nullability-audit.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-086-browser-e2e-drilldown.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-087-quasar-migration-drift-master.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-088-B-team1-docs-rest-path-pascal.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-089-lobby-design-foundation-tokens.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-090-lobby-design-five-screen-restructure.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-091-lobby-design-missing-five-spec-impl.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-092-lobby-visual-screenshots-cascade-2026-05-05.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-F004-pending-missing-api-docs.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-F005-settings-series-selector.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/B-F006-skin-upload-ui-2step.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Backlog/NOTIFY-C1-frontend-non-lobby-identity-cascade-2026-05-07.md` | excluded | — | — |
 | `2. Development/2.1 Frontend/Deployment.md` | mirrored | 3818684911 | 3811606750 |
 | `2. Development/2.1 Frontend/Engineering.md` | mirrored | 3818750433 | 3811606750 |
 | `2. Development/2.1 Frontend/Graphic_Editor/Activate_Broadcast.md` | mirrored | 3818684951 | 3811606750 |
@@ -148,9 +148,9 @@ mirror: none
 | `2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` | mirrored | 3819766363 | 3811606750 |
 | `2. Development/2.1 Frontend/Graphic_Editor/UI.md` | mirrored | 3818914312 | 3811606750 |
 | `2. Development/2.1 Frontend/Lobby/Backlog/AUDIT-S2-lobby-v3-cascade-2026-05-08.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-Conductor-ci-drift-2026-05-08.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S1-lobby-identity-cascade-2026-05-07.md` | uncovered | — | — |
-| `2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S2-pr176-ci-failure-2026-05-08.md` | uncovered | — | — |
+| `2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-Conductor-ci-drift-2026-05-08.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S1-lobby-identity-cascade-2026-05-07.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S2-pr176-ci-failure-2026-05-08.md` | excluded | — | — |
 | `2. Development/2.1 Frontend/Lobby/Chip_Management.md` | uncovered | — | — |
 | `2. Development/2.1 Frontend/Lobby/Clock_Control.md` | mirrored | 3818947157 | 3811606750 |
 | `2. Development/2.1 Frontend/Lobby/Event_and_Flight.md` | mirrored | 3818881488 | 3811606750 |
@@ -218,56 +218,56 @@ mirror: none
 | `2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-021-LEGACY-검토-요청-API-05-MessagePack-직렬화-프로토콜-채택-WSOP-F.md` | uncovered | — | — |
 | `2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-022-LEGACY-검토-요청-BS-04-AT-05-RFID-Register-화면-명세-추가.md` | uncovered | — | — |
 | `2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-025-LEGACY-검토-요청-BS-08-Graphic-Editor-행동-명세-신규-작성-WSOP.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-021-CC-WebSocket-연결-추적.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-022-CC-설정-잠금-매트릭스.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-023-핸드-기록-수신-CC-BO-WebSocket.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-024-핸드-조회-API.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-025-통계-계산-엔진.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-026-CC-로컬-버퍼-동기화-프로토콜.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-027-Google-OAuth-20-추가.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-028-RFID-리더-등록-관리.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-029-덱-등록-관리.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-030-출력-장비-상태-추적.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-031-Lobby-WebSocket-모니터-채널-완성.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-032-테이블-실시간-상태-이벤트.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-033-세션-복원.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-034-오버레이-프리셋-관리.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-035-Holdem-핸드-완전-지원.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-036-플레이어-DB-검색-고도화.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-037-리포팅-Dashboard-API.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-038-리포팅-Table-Activity.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-039-리포팅-Player-Statistics.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-041-WSOP-LIVE-API-폴링-스케줄러.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-042-WSOP-LIVE-UPSERT-로직.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-043-동기화-상태-조회.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-044-PostgreSQL-마이그레이션.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-045-9종-게임-핸드-기록-지원.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-046-다중-게임-통계-계산.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-047-Entra-ID-Microsoft-OAuth-추가.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-048-리포팅-Hand-Distribution.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-049-리포팅-RFID-Health-Report.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-050-리포팅-Operator-Activity-Report.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-051-CSVJSON-내보내기.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-052-자동-백업-스크립트.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-053-감사-로그-아카이브-정책.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-054-TLS-13-HTTPSWSS-설정.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-056-13종-게임-핸드-기록-완전-지원.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-057-스킨-에디터-BO-연동.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-058-Hybrid-인증.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-059-통계-AI-무인화-기반-준비.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-060-Multi-region-지원.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-061-고가용성-WebSocket-Redis-PubSub.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-062-로그-대시보드-Admin용.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-063-API-Rate-Limiting.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-064-데이터-보존-정책-자동화.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-065-성능-모니터링.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-066-SSOT-compliance-recovery.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-068-sandbox-tournament-generator.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-088-team2-camelcase-migration.md` | uncovered | — | — |
-| `2. Development/2.2 Backend/Backlog/B-089-team2-test-assertion-migration.md` | uncovered | — | — |
+| `2. Development/2.2 Backend/Backlog/B-021-CC-WebSocket-연결-추적.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-022-CC-설정-잠금-매트릭스.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-023-핸드-기록-수신-CC-BO-WebSocket.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-024-핸드-조회-API.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-025-통계-계산-엔진.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-026-CC-로컬-버퍼-동기화-프로토콜.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-027-Google-OAuth-20-추가.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-028-RFID-리더-등록-관리.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-029-덱-등록-관리.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-030-출력-장비-상태-추적.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-031-Lobby-WebSocket-모니터-채널-완성.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-032-테이블-실시간-상태-이벤트.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-033-세션-복원.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-034-오버레이-프리셋-관리.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-035-Holdem-핸드-완전-지원.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-036-플레이어-DB-검색-고도화.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-037-리포팅-Dashboard-API.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-038-리포팅-Table-Activity.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-039-리포팅-Player-Statistics.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-041-WSOP-LIVE-API-폴링-스케줄러.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-042-WSOP-LIVE-UPSERT-로직.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-043-동기화-상태-조회.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-044-PostgreSQL-마이그레이션.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-045-9종-게임-핸드-기록-지원.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-046-다중-게임-통계-계산.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-047-Entra-ID-Microsoft-OAuth-추가.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-048-리포팅-Hand-Distribution.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-049-리포팅-RFID-Health-Report.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-050-리포팅-Operator-Activity-Report.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-051-CSVJSON-내보내기.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-052-자동-백업-스크립트.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-053-감사-로그-아카이브-정책.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-054-TLS-13-HTTPSWSS-설정.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-056-13종-게임-핸드-기록-완전-지원.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-057-스킨-에디터-BO-연동.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-058-Hybrid-인증.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-059-통계-AI-무인화-기반-준비.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-060-Multi-region-지원.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-061-고가용성-WebSocket-Redis-PubSub.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-062-로그-대시보드-Admin용.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-063-API-Rate-Limiting.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-064-데이터-보존-정책-자동화.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-065-성능-모니터링.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-066-SSOT-compliance-recovery.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-068-sandbox-tournament-generator.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-088-team2-camelcase-migration.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/B-089-team2-test-assertion-migration.md` | excluded | — | — |
 | `2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-registration-sitin-events.md` | mirrored | 3818816141 | 3811770578 |
 | `2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-user-sessions-multidevice.md` | mirrored | 3819274964 | 3811770578 |
-| `2. Development/2.2 Backend/Backlog/NOTIFY-team2-B088-PR2-3-4-naming-migration.md` | uncovered | — | — |
+| `2. Development/2.2 Backend/Backlog/NOTIFY-team2-B088-PR2-3-4-naming-migration.md` | excluded | — | — |
 | `2. Development/2.2 Backend/Database/ER_Diagram.md` | mirrored | 3818619331 | 3811770578 |
 | `2. Development/2.2 Backend/Database/GFSkin_Schema.md` | mirrored | 3820552801 | 3811770578 |
 | `2. Development/2.2 Backend/Database/Schema.md` | mirrored | 3819242093 | 3811770578 |
@@ -315,26 +315,26 @@ mirror: none
 | `2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-049-검토-요청-BlindStructure-관리-엔드포인트-추가-WSOP-LIVE-정렬.md` | uncovered | — | — |
 | `2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-054-검토-요청-WebSocket-이벤트-카탈로그-WSOP-LIVE-SignalR-정렬.md` | uncovered | — | — |
 | `2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-023-LEGACY-검토-요청-BS-07-Overlay-오디오-레이어-추가-WSOP-1-BGM-2.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-320-WSOP-LIVE-BS-07-Overlay-감시.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-330-Foundation-Engine-별도-프로세스-전파.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-332-Engine-응답-게임상태-SSOT-명시.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-333-Overview-22종-게임-12-7-3-분류표.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-334-OutputEventBuffer-런타임-3분법.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-335-WriteGameInfo-SSOT-재정의.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-336-Harness-배포-시나리오-보강.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-337-Overlay-배경-투명-단색-이분법.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-338-harness-세션-재시작-복구.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-343-card-pipeline-ssot-rollout.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-349-domain-master-rollout.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-350-api04-bs0609-alignment.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-353-cross-team-bs06-citations.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-354-legacy-id-redirect-oe-mapping.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-355-redirect-validator-infrastructure.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/B-356-oe-catalog-self-inconsistency.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/NOTIFY-S8-pr180-ci-failure-2026-05-08.md` | uncovered | — | — |
-| `2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | uncovered | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-320-WSOP-LIVE-BS-07-Overlay-감시.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-330-Foundation-Engine-별도-프로세스-전파.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-332-Engine-응답-게임상태-SSOT-명시.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-333-Overview-22종-게임-12-7-3-분류표.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-334-OutputEventBuffer-런타임-3분법.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-335-WriteGameInfo-SSOT-재정의.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-336-Harness-배포-시나리오-보강.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-337-Overlay-배경-투명-단색-이분법.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-338-harness-세션-재시작-복구.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-343-card-pipeline-ssot-rollout.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-349-domain-master-rollout.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-350-api04-bs0609-alignment.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-353-cross-team-bs06-citations.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-354-legacy-id-redirect-oe-mapping.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-355-redirect-validator-infrastructure.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/B-356-oe-catalog-self-inconsistency.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/NOTIFY-S8-pr180-ci-failure-2026-05-08.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | excluded | — | — |
 | `2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` | uncovered | — | — |
 | `2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md` | mirrored | 3819274749 | 3811836049 |
 | `2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md` | uncovered | — | — |
@@ -386,26 +386,26 @@ mirror: none
 | `2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-003-LEGACY-검토-요청-모든-Mutation-API에-Idempotency-Key-헤더-표.md` | uncovered | — | — |
 | `2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-015-LEGACY-검토-요청-WebSocket-이벤트에-단조증가-seq-필드-replay-엔드포.md` | uncovered | — | — |
 | `2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-016-LEGACY-검토-요청-WSOP-LIVE-Parity-EventFlightStatusRes.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-001-AT-02-ActionView-dynamic-labels.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-002-TableRepository-phase-C-tdd.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-003-S11-e2e-automation-scaffold.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-005-position-chip-click-dealer-ux.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-006-ws-engine-parallel-dispatch.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-007-foundation-critical-multi-table-sequences.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-008-foundation-high-overlay-overview-runtime-modes.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-009-foundation-medium-reference-updates.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/B-team4-013-seatcell-inline-edit-cascade-2026-05-07.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/NOTIFY-S1-5act-naming-drift-2026-05-08.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/NOTIFY-S1-cc-identity-cascade-2026-05-07.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/NOTIFY-S1-rfid-antenna-count-mismatch-2026-05-08.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/NOTIFY-S3-pr171-ci-failure-2026-05-08.md` | uncovered | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-001-AT-02-ActionView-dynamic-labels.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-002-TableRepository-phase-C-tdd.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-003-S11-e2e-automation-scaffold.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-005-position-chip-click-dealer-ux.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-006-ws-engine-parallel-dispatch.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-007-foundation-critical-multi-table-sequences.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-008-foundation-high-overlay-overview-runtime-modes.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-009-foundation-medium-reference-updates.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-011-cc-visual-uplift-from-design-prototype.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/B-team4-013-seatcell-inline-edit-cascade-2026-05-07.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/NOTIFY-S1-5act-naming-drift-2026-05-08.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/NOTIFY-S1-cc-identity-cascade-2026-05-07.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/NOTIFY-S1-rfid-antenna-count-mismatch-2026-05-08.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/NOTIFY-S3-pr171-ci-failure-2026-05-08.md` | excluded | — | — |
 | `2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | mirrored | 3819078286 | 3811901565 |
-| `2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/NOTIFY-team2-S11-seeder-and-endpoints.md` | uncovered | — | — |
-| `2. Development/2.4 Command Center/Backlog/NOTIFY-team4-B088-PR7-cc-consumer-migration.md` | uncovered | — | — |
+| `2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/NOTIFY-team2-S11-seeder-and-endpoints.md` | excluded | — | — |
+| `2. Development/2.4 Command Center/Backlog/NOTIFY-team4-B088-PR7-cc-consumer-migration.md` | excluded | — | — |
 | `2. Development/2.4 Command Center/Command_Center_UI/Action_Buttons.md` | mirrored | 3818586873 | 3811901565 |
 | `2. Development/2.4 Command Center/Command_Center_UI/Demo_Test_Mode.md` | uncovered | — | — |
 | `2. Development/2.4 Command Center/Command_Center_UI/Game_Settings_Modal.md` | mirrored | 3820552881 | 3811901565 |
@@ -744,12 +744,12 @@ mirror: none
 | `4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md` | mirrored | 3818586974 | 3811573898 |
 | `4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase4_Delivery.md` | mirrored | 3818816321 | 3811573898 |
 | `4. Operations/Reports/2026-04-28-v8-phase4-hook-deprecation-audit.md` | mirrored | 3818881608 | 3811573898 |
-| `4. Operations/Reports/2026-04-28-v8-phase6-l0-removal-record.md` | uncovered | — | — |
-| `4. Operations/Reports/2026-04-28-v8-phase8a-multi-session-workflow-v4-history.md` | uncovered | — | — |
-| `4. Operations/Reports/2026-04-28-v8-phase8c-skill-md-v4-history.md` | uncovered | — | — |
-| `4. Operations/Reports/2026-04-28-v8-phase8d-multi-session-workflow-history.md` | uncovered | — | — |
-| `4. Operations/Reports/2026-04-28-v8-restoration-verified.md` | uncovered | — | — |
-| `4. Operations/Reports/2026-04-29-card-flow-drift-check.md` | uncovered | — | — |
+| `4. Operations/Reports/2026-04-28-v8-phase6-l0-removal-record.md` | excluded | — | — |
+| `4. Operations/Reports/2026-04-28-v8-phase8a-multi-session-workflow-v4-history.md` | excluded | — | — |
+| `4. Operations/Reports/2026-04-28-v8-phase8c-skill-md-v4-history.md` | excluded | — | — |
+| `4. Operations/Reports/2026-04-28-v8-phase8d-multi-session-workflow-history.md` | excluded | — | — |
+| `4. Operations/Reports/2026-04-28-v8-restoration-verified.md` | excluded | — | — |
+| `4. Operations/Reports/2026-04-29-card-flow-drift-check.md` | excluded | — | — |
 | `4. Operations/Reports/2026-04-29-v93-stale-worktrees-archive.md` | mirrored | 3818914452 | 3811573898 |
 | `4. Operations/Reports/2026-04-29-v94-final-worktree-cleanup.md` | mirrored | 3819078112 | 3811573898 |
 | `4. Operations/Reports/2026-04-29-v95-cycle-metrics.md` | mirrored | 3818815931 | 3811573898 |
@@ -776,5 +776,5 @@ mirror: none
 
 | File | Status | Page ID | Parent ID |
 |---|---|---|---|
-| `examples/README.md` | uncovered | — | — |
+| `examples/README.md` | excluded | — | — |
 

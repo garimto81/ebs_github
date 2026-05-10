@@ -6,6 +6,7 @@ archived_date: 2026-04-28
 archived_phase: v8.0 Phase 8d
 parent: docs/4. Operations/Multi_Session_Workflow.md (v5.1+L4)
 purpose: main doc 압축 (60+ lines 절감), 분량 모델 + 변경 이력 보존
+mirror: none
 ---
 
 # Multi_Session_Workflow — Archived sections (2026-04-28)

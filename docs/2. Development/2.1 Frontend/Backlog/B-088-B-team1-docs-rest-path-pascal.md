@@ -6,6 +6,7 @@ created: 2026-04-21
 updated: 2026-04-21
 owner: team1
 resolved-commit: ce7a063
+mirror: none
 ---
 
 # B-088-B — team1 기획 문서 REST path 정렬

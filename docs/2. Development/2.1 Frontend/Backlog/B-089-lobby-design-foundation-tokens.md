@@ -6,6 +6,7 @@ created: 2026-04-29
 updated: 2026-04-29
 owner: team1
 source: Anthropic Design API handoff (skI1cZio_-fe4N4Hgcr0Tw, EBS Lobby.html)
+mirror: none
 ---
 
 # B-089 — Lobby Design Phase 1: Foundation Visual System

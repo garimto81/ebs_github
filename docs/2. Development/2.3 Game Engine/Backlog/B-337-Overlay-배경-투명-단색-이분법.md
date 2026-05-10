@@ -6,6 +6,7 @@ priority: P2
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §7.1 (배경 투명/단색 config flag)"
+mirror: none
 ---
 
 # [B-337] Overlay 배경 모드 이분법 정렬 (P2)

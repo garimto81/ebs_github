@@ -7,6 +7,7 @@ created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §6.4 (Engine SSOT 원칙)"
 supersedes: "Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-024-WriteGameInfo 22필드"
+mirror: none
 ---
 
 # [B-335] WriteGameInfo 22 필드 SSOT 재정의 (P1)

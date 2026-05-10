@@ -6,6 +6,7 @@ created: 2026-04-21
 from: team1 (B-088 PR-5 선행 알림)
 target: team4
 priority: P1 (team2 Backend 전환 후 즉시 필요)
+mirror: none
 ---
 
 # NOTIFY → team4: B-088 CC consumer 전환

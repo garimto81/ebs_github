@@ -3,6 +3,7 @@ id: B-054
 title: TLS 1.3 HTTPS/WSS 설정
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-054] TLS 1.3 HTTPS/WSS 설정

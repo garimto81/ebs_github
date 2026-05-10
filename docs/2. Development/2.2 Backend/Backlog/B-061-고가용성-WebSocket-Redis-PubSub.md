@@ -3,6 +3,7 @@ id: B-061
 title: 고가용성 WebSocket (Redis Pub/Sub)
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-061] 고가용성 WebSocket (Redis Pub/Sub)

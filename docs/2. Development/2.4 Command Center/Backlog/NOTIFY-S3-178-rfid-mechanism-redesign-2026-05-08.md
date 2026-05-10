@@ -9,6 +9,7 @@ resolved-date: 2026-05-08
 resolution: "사용자 결정 'RFID = Mock-only' (2026-05-08) → Card_Detection.md §1 자율 재설계 완료. HW 검증 불필요 (cardUid 기반 분리 인식)."
 related: NOTIFY-S1-rfid-antenna-count-mismatch-2026-05-08.md
 last-updated: 2026-05-08
+mirror: none
 ---
 
 # NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (Mock-only 자율 해소)

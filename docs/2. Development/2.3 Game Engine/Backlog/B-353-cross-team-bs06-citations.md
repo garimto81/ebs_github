@@ -13,6 +13,7 @@ ownership:
   - "team1 — Frontend docs 갱신 (Lobby/Overview.md 등)"
   - "team2 — Backend docs + 코드 갱신 (WebSocket_Events.md, enums.py 등)"
   - "team4 — Command Center docs + Flutter 코드 갱신 (RFID_HAL.md, *.dart 등)"
+mirror: none
 ---
 
 # [B-353] Cross-team BS-06-XX 인용 grep + redirect 갱신 (P2)

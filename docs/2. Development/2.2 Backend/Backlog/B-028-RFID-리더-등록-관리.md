@@ -3,6 +3,7 @@ id: B-028
 title: RFID 리더 등록 관리
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-028] RFID 리더 등록 관리

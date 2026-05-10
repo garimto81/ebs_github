@@ -4,6 +4,7 @@ title: "문서 누락 API 경로 보강 대기 (team2/Conductor 책임)"
 status: BLOCKED
 blocker: decision_owner = Conductor (docs) → team2 (구현)
 source: docs/2. Development/2.1 Frontend/Backlog.md
+mirror: none
 ---
 
 # B-F004 — Frontend 호출하지만 Backend_HTTP.md에 없는 경로 보강 필요

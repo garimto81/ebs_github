@@ -3,6 +3,7 @@ id: B-066
 title: SSOT compliance recovery (Phase C)
 status: PENDING
 source: docs/4. Operations/Reports/2026-04-17_SSOT_Audit.md
+mirror: none
 ---
 
 # [B-066] SSOT compliance recovery (Phase C 잔여 항목)

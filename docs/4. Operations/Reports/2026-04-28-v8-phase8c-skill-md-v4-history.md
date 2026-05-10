@@ -6,6 +6,7 @@ archived_date: 2026-04-28
 archived_phase: v8.0 Phase 8c
 parent: .claude/skills/team/SKILL.md (v5.1)
 purpose: SKILL.md 압축, history 섹션 보존
+mirror: none
 ---
 
 # SKILL.md — v4.0/v4.1 폐기 이유 (Archived)

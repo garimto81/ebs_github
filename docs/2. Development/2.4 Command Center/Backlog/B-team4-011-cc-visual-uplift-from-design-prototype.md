@@ -13,6 +13,7 @@ related_specs:
   - docs/2. Development/2.4 Command Center/Command_Center_UI/Keyboard_Shortcuts.md  # §5
   - docs/2. Development/2.4 Command Center/Command_Center_UI/Seat_Management.md  # §8
   - docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md  # §12 Widget Inventory
+mirror: none
 ---
 
 # B-team4-011 — CC Visual Uplift

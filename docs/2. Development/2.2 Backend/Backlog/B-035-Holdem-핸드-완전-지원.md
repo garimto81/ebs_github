@@ -3,6 +3,7 @@ id: B-035
 title: Hold'em 핸드 완전 지원
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-035] Hold'em 핸드 완전 지원

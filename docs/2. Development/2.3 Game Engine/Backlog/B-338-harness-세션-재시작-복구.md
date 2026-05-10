@@ -6,6 +6,7 @@ priority: P1
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §8.4 (생방송의 생명줄: 긴급 복구)"
+mirror: none
 ---
 
 # [B-338] harness 세션 재시작 복구 (P1)

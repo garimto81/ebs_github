@@ -15,6 +15,7 @@ related-spec:
   - "Behavioral_Specs/Triggers_and_Event_Pipeline.md"
   - "Behavioral_Specs/Betting_and_Pots.md"
   - "Behavioral_Specs/Variants_and_Evaluation.md"
+mirror: none
 ---
 
 # [B-349] Behavioral_Specs 4 Domain Master Rollout (P1)

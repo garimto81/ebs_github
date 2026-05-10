@@ -3,6 +3,7 @@ id: B-048
 title: 리포팅 — Hand Distribution
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-048] 리포팅 — Hand Distribution

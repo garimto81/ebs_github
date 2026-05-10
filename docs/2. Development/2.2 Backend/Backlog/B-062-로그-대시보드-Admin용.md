@@ -3,6 +3,7 @@ id: B-062
 title: 로그 대시보드 (Admin용)
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-062] 로그 대시보드 (Admin용)

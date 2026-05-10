@@ -4,6 +4,7 @@ title: "Settings 화면에 Series selector UI 도입"
 status: PENDING
 priority: medium
 source: docs/2. Development/2.1 Frontend/Backlog.md
+mirror: none
 ---
 
 # B-F005 — Settings BlindStructure/PayoutStructure 탭에 Series 선택 UI

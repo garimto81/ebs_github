@@ -16,6 +16,7 @@ related-prd:
   - docs/2. Development/2.1 Frontend/Lobby/References/EBS_Lobby_Design/README.md (zip sync changelog)
 depends-on: B-091
 blocks: []
+mirror: none
 ---
 
 # B-092 — Lobby visual/screenshots 신 디자인 7장 cascade

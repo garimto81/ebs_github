@@ -8,6 +8,7 @@ decision: Foundation §C.2 = 12 안테나 채택 (정본 24 → 12 정정)
 follow-up-issue: "#178"
 last-updated: 2026-05-08
 audit-source: docs/4. Operations/orchestration/2026-05-08-consistency-audit/
+mirror: none
 ---
 
 ## 결정 (2026-05-08, 사용자 confirmed)

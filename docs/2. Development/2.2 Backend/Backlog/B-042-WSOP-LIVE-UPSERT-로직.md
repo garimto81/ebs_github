@@ -3,6 +3,7 @@ id: B-042
 title: WSOP LIVE UPSERT 로직
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-042] WSOP LIVE UPSERT 로직

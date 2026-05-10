@@ -3,6 +3,7 @@ id: B-075
 title: React 아카이브 → Quasar 이식 (B-068 하위)
 status: DONE
 source: docs/2. Development/2.1 Frontend/Backlog.md
+mirror: none
 ---
 
 # [B-075] React 아카이브 → Quasar 이식 (B-068 하위)

@@ -7,6 +7,7 @@ created: 2026-04-29
 parent: B-354 supporting infra
 related-prs:
   - "PR (본 PR — tools/validate_redirects.dart + .github/workflows/redirect-validation.yml)"
+mirror: none
 ---
 
 # [B-355] Redirect Validator Infrastructure (DONE)

@@ -3,6 +3,7 @@ id: B-049
 title: 리포팅 — RFID Health Report
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-049] 리포팅 — RFID Health Report

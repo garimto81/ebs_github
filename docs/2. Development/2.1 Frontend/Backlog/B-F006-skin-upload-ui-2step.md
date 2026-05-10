@@ -4,6 +4,7 @@ title: "Skin 업로드 UI를 2-step 플로우로 업데이트"
 status: PENDING
 priority: low
 source: docs/2. Development/2.1 Frontend/Backlog.md
+mirror: none
 ---
 
 # B-F006 — GFX Skin 업로드 UI 2-step 전환

@@ -4,6 +4,7 @@ title: S-11 Lobby Hand History 자동화 UI wiring 요청
 target_team: team1
 status: OPEN
 source: docs/2. Development/2.4 Command Center/Backlog.md
+mirror: none
 ---
 
 # NOTIFY — team1: S-11 Lobby UI wiring 요청

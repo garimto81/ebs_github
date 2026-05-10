@@ -5,6 +5,7 @@ status: verified
 verification_date: 2026-04-28
 authority: User test request "v8.0 처리되는지 테스트"
 purpose: v8.0 3-Phase workflow (Work → PR → Sync) end-to-end 검증
+mirror: none
 ---
 
 # v8.0 Workflow Verification (2026-04-28)

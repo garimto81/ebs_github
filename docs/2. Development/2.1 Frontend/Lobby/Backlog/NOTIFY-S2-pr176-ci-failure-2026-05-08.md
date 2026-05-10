@@ -7,6 +7,7 @@ status: OPEN
 pr: 176
 issue: 161
 last-updated: 2026-05-08
+mirror: none
 ---
 
 # NOTIFY-S2 — PR #176 CI FAILURE (3 checks)

@@ -3,6 +3,7 @@ id: B-088
 title: "camelCase 전수 마이그레이션 (team2 PR 2/3/4)"
 status: PENDING
 source: docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md
+mirror: none
 ---
 
 # [B-088] team2 범위 — PR 2/3/4 (B-088 masters)

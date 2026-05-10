@@ -3,6 +3,7 @@ id: B-team4-002
 title: TableRepository Phase C TDD — fetch / subscribe / applyServerEvent
 status: DONE
 source: docs/2. Development/2.4 Command Center/Backlog.md
+mirror: none
 ---
 
 # [B-team4-002] TableRepository Phase C TDD

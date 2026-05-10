@@ -5,6 +5,7 @@ tier: notify
 status: PENDING_S1
 created: 2026-05-07
 trigger: Lobby_PRD v3.0.0 정체성 정정 ("관제탑" → "5분 게이트웨이 + WSOP LIVE 거울")
+mirror: none
 ---
 
 # NOTIFY-S1 — Foundation §5.1 Lobby 정체성 정정 위임

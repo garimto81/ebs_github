@@ -3,6 +3,7 @@ id: B-320
 title: "WSOP LIVE BS-07 Overlay 완성 감시"
 status: PENDING
 source: docs/2. Development/2.3 Game Engine/Backlog.md
+mirror: none
 ---
 
 # [B-320] WSOP LIVE BS-07 Overlay 완성 감시

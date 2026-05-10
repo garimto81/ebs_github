@@ -3,6 +3,7 @@ id: B-077
 title: WSOP LIVE 기준 레포 실재 확인 (인프라)
 status: PENDING
 source: docs/2. Development/2.1 Frontend/Backlog.md
+mirror: none
 ---
 
 # [B-077] WSOP LIVE 기준 레포 실재 확인 (인프라)

@@ -3,6 +3,7 @@ id: B-team4-006
 title: WS + Engine HTTP 병행 dispatch 통합 구현 (Overview §1.1.1 준수)
 status: PENDING
 source: docs/2. Development/2.4 Command Center/Backlog.md
+mirror: none
 ---
 
 # [B-team4-006] WS + Engine HTTP 병행 dispatch 구현

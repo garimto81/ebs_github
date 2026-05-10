@@ -11,6 +11,7 @@ related-prs:
   - "PR #25 (B-351/352/353 — output_event.dart + Triggers §3.4 재정렬, MERGED 2026-04-28)"
   - "PR #65 (B-355 — redirect validator infrastructure, MERGED 2026-04-29)"
   - "PR (B-354 본체 — output_events sub-section 주입, 본 PR)"
+mirror: none
 ---
 
 # [B-354] legacy-id-redirect.json OE 매핑 추가 (P2)

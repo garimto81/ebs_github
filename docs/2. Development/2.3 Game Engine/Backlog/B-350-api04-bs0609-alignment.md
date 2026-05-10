@@ -14,6 +14,7 @@ related-prs:
 authority:
   - "API-04 §6.0 (Overlay_Output_Events.md) — 외부 권위 (subscriber 코드 의존)"
   - "Triggers 도메인 §3.4 (Triggers_and_Event_Pipeline.md) — API-04 정렬 완료"
+mirror: none
 ---
 
 ## 2026-04-28 완료

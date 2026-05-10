@@ -7,6 +7,7 @@ status: OPEN
 pr: 171
 issue: 162
 last-updated: 2026-05-08
+mirror: none
 ---
 
 # NOTIFY-S3 — PR #171 CI FAILURE (4 checks)

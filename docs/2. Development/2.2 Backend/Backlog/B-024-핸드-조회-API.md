@@ -3,6 +3,7 @@ id: B-024
 title: 핸드 조회 API
 status: PENDING
 source: docs/2. Development/2.2 Backend/Backlog.md
+mirror: none
 ---
 
 # [B-024] 핸드 조회 API
