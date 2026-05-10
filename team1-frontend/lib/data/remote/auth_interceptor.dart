@@ -61,10 +61,14 @@ class AuthInterceptor extends Interceptor {
     final status = err.response?.statusCode;
     final opts = err.requestOptions;
 
-    final isRefreshCall = opts.path.endsWith('/auth/refresh');
+    // /auth/{refresh,logout,login} 은 401 retry 대상에서 제외.
+    // logout 401 → refresh → 422 → onAuthFailure → logout … 무한 루프 차단.
+    final isAuthLifecycleCall = opts.path.endsWith('/auth/refresh') ||
+        opts.path.endsWith('/auth/logout') ||
+        opts.path.endsWith('/auth/login');
     final alreadyRetried = opts.extra['_authRetried'] == true;
 
-    if (status != 401 || isRefreshCall || alreadyRetried) {
+    if (status != 401 || isAuthLifecycleCall || alreadyRetried) {
       handler.next(err);
       return;
     }
