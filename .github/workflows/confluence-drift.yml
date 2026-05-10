@@ -1,0 +1,71 @@
+name: Confluence Mirror Drift Check
+
+# SG-031 Phase 3 Task 9 — drift_check (로컬 ↔ Confluence body 시뮬레이션)
+# - main push 또는 PR 에서 docs/ 변경 시 trigger
+# - sync_confluence.py --check 실행 (dry-run 시뮬레이션)
+# - md2confluence.py 가 CI 환경에 없으면 graceful skip (informational)
+# - frontmatter coverage 통계 출력 (정보용, fail 하지 않음)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**/*.md'
+      - 'tools/sync_confluence.py'
+      - '.github/workflows/confluence-drift.yml'
+  pull_request:
+    paths:
+      - 'docs/**/*.md'
+      - 'tools/sync_confluence.py'
+      - '.github/workflows/confluence-drift.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: confluence-drift-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  drift-check:
+    name: Confluence drift simulation (SG-031)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Frontmatter coverage report (informational)
+        shell: bash
+        run: |
+          set -euo pipefail
+          total=$(find docs -name '*.md' -type f | wc -l)
+          mirrored=$(grep -rln 'confluence-page-id' docs --include='*.md' | wc -l)
+          excluded=$(grep -rln '^mirror: none' docs --include='*.md' | wc -l)
+          covered=$((mirrored + excluded))
+          uncovered=$((total - covered))
+          pct=$(awk -v c="$covered" -v t="$total" 'BEGIN { if (t==0) print 0; else printf "%.1f", 100*c/t }')
+          echo "::notice title=Frontmatter coverage::${covered}/${total} (${pct}%) — mirrored=${mirrored}, mirror:none=${excluded}, uncovered=${uncovered}"
+          # Phase 3 정착 단계라 fail 하지 않음. Phase 4 도달 시 enforce 검토.
+
+      - name: Run drift check (sync_confluence --check)
+        shell: bash
+        run: |
+          python tools/sync_confluence.py --check
+          # md2confluence.py 가 CI 에 없으면 도구 자체가 graceful skip (exit 0).
+          # 존재하는 환경에서는 dry-run 실패 시 exit 1 → workflow fail.
+
+      - name: Drift summary annotation
+        if: always()
+        shell: bash
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "::notice title=Drift check::PASS — all targets simulated OK or environment skipped."
+          else
+            echo "::error title=Drift check::FAIL — drift detected. Inspect job log + run sync_confluence.py locally."
+          fi

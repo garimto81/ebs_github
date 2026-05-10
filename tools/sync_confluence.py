@@ -5,7 +5,7 @@ Scans docs/ for .md files with `confluence-page-id` frontmatter, then invokes
 the existing md2confluence.py converter for each. Used by SG-031 Phase 3.
 
 Usage:
-    python tools/sync_confluence.py [--dry-run] [--filter <glob>] [--list]
+    python tools/sync_confluence.py [--dry-run] [--check] [--filter <glob>] [--list]
 
 Examples:
     # Show all mirror-targeted files
@@ -16,6 +16,9 @@ Examples:
 
     # Dry-run preview only
     python tools/sync_confluence.py --dry-run
+
+    # Drift check (CI mode) — exit 1 if any target fails dry-run simulation
+    python tools/sync_confluence.py --check
 
     # Push only Game_Rules
     python tools/sync_confluence.py --filter "1. Product/Game_Rules/*"
@@ -29,6 +32,7 @@ Brand new docs with `confluence-page-id: null` are also ignored — set a real I
 
 Branch guard:
     Refuses to run unless current branch == main (override with EBS_FORCE_MIRROR=1).
+    --check and --list bypass the branch guard.
 """
 from __future__ import annotations
 
@@ -130,10 +134,17 @@ def push_one(md_path: Path, page_id: str, parent_id: str | None, dry_run: bool) 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true", help="Preview without uploading")
+    ap.add_argument("--check", action="store_true",
+                    help="Drift check (CI mode): dry-run all targets, exit 1 if any fails. Bypasses branch guard.")
     ap.add_argument("--filter", help="Glob filter relative to docs/, e.g. '1. Product/Game_Rules/*'")
     ap.add_argument("--list", action="store_true", help="List mirror targets and exit")
     ap.add_argument("--no-branch-guard", action="store_true", help="Skip main-branch check (CI override)")
     args = ap.parse_args()
+
+    # --check implies --dry-run + bypass branch guard (CI runs on any branch)
+    if args.check:
+        args.dry_run = True
+        args.no_branch_guard = True
 
     # Branch guard
     if not args.no_branch_guard and not args.list and not os.environ.get("EBS_FORCE_MIRROR"):
@@ -144,6 +155,11 @@ def main() -> int:
             return 2
 
     if not MD2CONF.exists():
+        # In --check mode, missing tool is a CI environment issue — surface as warning, not failure.
+        if args.check:
+            print(f"WARN: md2confluence.py not found at {MD2CONF} (CI environment may not have it).", file=sys.stderr)
+            print("Drift check skipped — no failure recorded.", file=sys.stderr)
+            return 0
         print(f"ERROR: md2confluence.py not found at {MD2CONF}", file=sys.stderr)
         return 1
 
@@ -152,10 +168,13 @@ def main() -> int:
         print("No mirror targets found." + (f" (filter: {args.filter})" if args.filter else ""))
         return 0
 
-    print(f"Found {len(targets)} mirror target(s):")
-    for md, pid, parent in targets:
-        move_msg = f" [parent: {parent}]" if parent else ""
-        print(f"  - {md.relative_to(REPO_ROOT)} → page {pid}{move_msg}")
+    if args.check:
+        print(f"[drift-check] {len(targets)} mirror target(s) — running dry-run simulation")
+    else:
+        print(f"Found {len(targets)} mirror target(s):")
+        for md, pid, parent in targets:
+            move_msg = f" [parent: {parent}]" if parent else ""
+            print(f"  - {md.relative_to(REPO_ROOT)} → page {pid}{move_msg}")
 
     if args.list:
         return 0
@@ -167,12 +186,17 @@ def main() -> int:
             failed.append(md)
 
     print()
-    print(f"Result: {len(targets) - len(failed)}/{len(targets)} succeeded" + (" [DRY-RUN]" if args.dry_run else ""))
+    mode = "[DRY-RUN]" if args.dry_run and not args.check else ("[DRIFT-CHECK]" if args.check else "")
+    print(f"Result: {len(targets) - len(failed)}/{len(targets)} succeeded {mode}".rstrip())
     if failed:
         print("FAILED:")
         for md in failed:
             print(f"  - {md.relative_to(REPO_ROOT)}")
+        if args.check:
+            print(f"\n[drift-check] DRIFT DETECTED — {len(failed)}/{len(targets)} target(s) failed simulation.", file=sys.stderr)
         return 1
+    if args.check:
+        print(f"\n[drift-check] OK — all {len(targets)} target(s) up-to-date.")
     return 0
 
 
