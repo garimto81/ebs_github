@@ -20,13 +20,19 @@ class TokenResponse {
     this.tempToken,
   });
 
-  factory TokenResponse.fromJson(Map<String, dynamic> json) => TokenResponse(
-        // V9.5 P19: BO 응답은 camelCase (EbsBaseModel alias) — accessToken/refreshToken/requires2Fa
-        accessToken: json['accessToken'] as String?,
-        refreshToken: json['refreshToken'] as String?,
-        requires2fa: json['requires2Fa'] as bool? ?? false,
-        tempToken: json['tempToken'] as String?,
-      );
+  factory TokenResponse.fromJson(Map<String, dynamic> json) {
+    // BO 의 LoginResponse / TwoFaLoginResponse 는 {data: {...}, error: ...} envelope.
+    // RefreshData 는 envelope 없이 직접 반환. 둘 다 호환되도록 unwrap 시도.
+    final src = (json['data'] is Map<String, dynamic>)
+        ? json['data'] as Map<String, dynamic>
+        : json;
+    return TokenResponse(
+      accessToken: src['accessToken'] as String?,
+      refreshToken: src['refreshToken'] as String?,
+      requires2fa: src['requires2Fa'] as bool? ?? false,
+      tempToken: src['tempToken'] as String?,
+    );
+  }
 }
 
 class SessionResponse {
