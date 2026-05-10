@@ -249,10 +249,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // -- Logout --------------------------------------------------------------
 
   Future<void> logout() async {
-    try {
-      await _repo.logout();
-    } catch (_) {
-      // Server may be unreachable; clear state anyway.
+    // BO logout 호출은 token 이 있을 때만. anonymous 상태에서 호출하면
+    // 401 → AuthInterceptor.onAuthFailure → 다시 logout() 호출 cascade 무한 반복.
+    // fire-and-forget: 응답 무시, 실패해도 로컬 state 는 reset.
+    final token = state.accessToken;
+    if (token != null && token.isNotEmpty) {
+      _repo.logout().catchError((_) {});
     }
     _repo.setToken(null);
     state = const AuthState();
