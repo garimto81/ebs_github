@@ -1,12 +1,10 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-18T10:35:53.831Z",
+  "lastUpdated": "2026-05-10T02:20:00.000Z",
   "activeFeatures": [
-    "morning-automation",
-    "01_Mockups_ngd",
     "tools"
   ],
-  "primaryFeature": "morning-automation",
+  "primaryFeature": "tools",
   "features": {
     "morning-automation": {
       "phase": "do",
@@ -19,7 +17,10 @@
         "started": "2026-02-04T07:27:56.699Z",
         "lastUpdated": "2026-02-05T06:38:34.495Z"
       },
-      "lastFile": "C:\\claude\\ebs\\tools\\morning-automation\\main.py"
+      "lastFile": "C:\\claude\\ebs\\tools\\morning-automation\\main.py",
+      "archived": true,
+      "archivedAt": "2026-05-10T02:20:00.000Z",
+      "archiveReason": "3개월+ dormant (last update 2026-02-05), CHECK 미진행"
     },
     "01_Mockups_ngd": {
       "phase": "do",
@@ -32,7 +33,10 @@
         "started": "2026-02-15T15:27:08.240Z",
         "lastUpdated": "2026-02-15T16:18:57.205Z"
       },
-      "lastFile": "C:\\claude\\ebs\\docs\\01_PokerGFX_Analysis\\01_Mockups_ngd\\capture-all.js"
+      "lastFile": "C:\\claude\\ebs\\docs\\01_PokerGFX_Analysis\\01_Mockups_ngd\\capture-all.js",
+      "archived": true,
+      "archivedAt": "2026-05-10T02:20:00.000Z",
+      "archiveReason": "3개월+ dormant (last update 2026-02-15), 산출물 디렉토리 부재"
     },
     "tools": {
       "phase": "do",
