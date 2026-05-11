@@ -78,3 +78,69 @@ def test_inject_chat_mentions_silent_when_broker_down(tmp_path):
                side_effect=Exception("broker dead")):
         result = hi.inject_chat_mentions(team_id="S2", state_file=state_file)
     assert result == []
+
+
+import asyncio
+
+
+def _async_run(coro):
+    return asyncio.run(coro)
+
+
+def test_consensus_returns_replies_when_answered():
+    """When a reply arrives before TTL, return ('answered', replies)."""
+    with patch("tools.chat_server.hook_integration._subscribe_async") as sub:
+        sub.return_value = {
+            "events": [
+                {
+                    "seq": 43, "topic": "chat:room:design",
+                    "source": "S3", "ts": "2026-05-11T16:01:00Z",
+                    "payload": {"reply_to": 42, "body": "ok"},
+                }
+            ],
+            "next_seq": 44,
+        }
+        outcome, replies = _async_run(
+            hi.consensus_silent_ok(
+                question_seq=42, topic="chat:room:design",
+                from_team="S2", ttl_sec=2,
+            )
+        )
+    assert outcome == "answered"
+    assert len(replies) == 1
+
+
+def test_consensus_silent_ok_after_ttl():
+    """When no reply within TTL, return ('silent_ok', [])."""
+    with patch("tools.chat_server.hook_integration._subscribe_async") as sub, \
+         patch("tools.chat_server.hook_integration._publish_async") as pub:
+        sub.return_value = {"events": [], "next_seq": 43}
+        outcome, replies = _async_run(
+            hi.consensus_silent_ok(
+                question_seq=42, topic="chat:room:design",
+                from_team="S2", ttl_sec=1,
+            )
+        )
+    assert outcome == "silent_ok"
+    assert replies == []
+    pub.assert_called_once()
+    payload = pub.call_args.kwargs["payload"]
+    assert payload["kind"] == "decision"
+    assert payload["reply_to"] == 42
+
+
+def test_consensus_user_mention_disables_silent_ok():
+    """@user 멘션이 question 메시지에 있으면 silent_ok 비활성, 사용자 응답 대기."""
+    with patch("tools.chat_server.hook_integration._subscribe_async") as sub, \
+         patch("tools.chat_server.hook_integration._publish_async") as pub:
+        sub.return_value = {"events": [], "next_seq": 43}
+        outcome, replies = _async_run(
+            hi.consensus_silent_ok(
+                question_seq=42, topic="chat:room:design",
+                from_team="S2", ttl_sec=1,
+                question_mentions=["@user", "@S3"],
+            )
+        )
+    assert outcome == "user_mention_pending"
+    assert replies == []
+    pub.assert_not_called()
