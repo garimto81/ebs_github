@@ -1,11 +1,12 @@
 ---
 title: SMEM Weekly Memory Audit — 2026-05-11
+owner: SMEM
 stream: SMEM
 type: audit
 period: 2026-05-04 → 2026-05-11
 audited_target: ~/.claude/projects/C--claude-ebs/memory/
 issue: "#228"
-related_pr: "TBD (this PR)"
+related_pr: "#229"
 init_pr: "#214"
 broker_state: alive (pid 53412, port 7383)
 ---
