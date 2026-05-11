@@ -7,6 +7,7 @@ Convention (mirrors GitHub label scheme):
   defect:*       — any Stream can publish (defect/bug report)
   audit:*        — any Stream can publish (audit signals)
   pipeline:*     — any Stream can publish (9-session pipeline: gap→write→dev→qa, v10.4)
+  chat:*         — inter-session chat layer (any source publish; source='user' reserved for chat-server)
   bus:*          — broker-internal events (not user-publishable)
   *              — broadcast (any Stream can publish)
   bench-*, test-*, poc-* — test/dev topics, anyone can publish (deny in prod mode)
@@ -115,7 +116,7 @@ def check_publish_acl(
     # v11 strict: unknown topic prefixes are DENIED (was default-allow in PoC)
     return False, (
         f"topic '{topic}' does not match any whitelist prefix. "
-        f"Allowed prefixes: stream:S<N>, cascade:, defect:, audit:, pipeline:, '*'. "
+        f"Allowed prefixes: stream:S<N>, cascade:, defect:, audit:, pipeline:, chat:, '*'. "
         f"Dev: bench-/test-/poc- (if EBS_BUS_DEV_MODE=1)."
     )
 
