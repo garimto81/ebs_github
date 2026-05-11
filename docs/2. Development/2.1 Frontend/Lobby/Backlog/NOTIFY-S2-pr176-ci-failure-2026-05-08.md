@@ -3,14 +3,18 @@ title: NOTIFY-S2 — PR #176 CI FAILURE (3 checks) — owner fix 필요
 owner: conductor (audit trail)
 target: stream:S2 (Lobby)
 tier: notify
-status: OPEN
+status: RESOLVED
 pr: 176
 issue: 161
-last-updated: 2026-05-08
+last-updated: 2026-05-11
+resolved-at: 2026-05-11
+resolved-by: stream:S2 (v10.4 cascade audit)
 mirror: none
 ---
 
-# NOTIFY-S2 — PR #176 CI FAILURE (3 checks)
+# NOTIFY-S2 — PR #176 CI FAILURE (3 checks) — RESOLVED 2026-05-11
+
+> **RESOLVED (2026-05-11, v10.4 cascade audit)**: PR #176 은 머지 후 main 의 후속 commit 들 (특히 `c5e862ce fix(ci): orchestration frontmatter owner + dead links — root cause for 4 PR CI fail`) 로 인해 모든 CI 체크가 통과 상태. `gh pr checks 176` 결과 fail/pending = 0. 추가 fix commit 불필요.
 
 ## 트리거
 
