@@ -152,11 +152,12 @@ python tools/spec_drift_check.py --settings
 | 한계 | 영향 | 개선 경로 |
 |------|------|-----------|
 | 정규식 기반 — 주석 처리된 선언 포함 가능 | false positive 소수 | AST 기반 파서 (후속) |
-| Schema detector 가 inline code backtick 을 CREATE TABLE 로 오인 | D2 noise | Schema.md 의 표준 declaration 블록 확정 후 스캐너 정밀화 |
-| Settings detector 가 탭별 scope 분리 없음 | D2 전량 false | SG-010 |
-| Settings detector 의 identifier 정규화 (camelCase ↔ snake_case ↔ dotted) | D3 false positive | **SG-010 P6 완료 (2026-04-20)** — dotted namespace (`gfx.foo`) 마지막 segment + frontmatter slash-list + whitelist bypass 적용. D4 +39, D3 -13 (netof new code keys) |
-| WebSocket detector 가 payload 필드까지 D2 수집 | D2 89 false positive | **SG-010 F2 완료 (2026-04-20)** — 이벤트 카탈로그 테이블만 수집. D2 89→20 |
+| Schema detector 가 inline code backtick 을 CREATE TABLE 로 오인 | D2 noise | ✅ **2026-05-11 해소 확인** — schema 0/0/0/27 진정한 PASS 도달 (SG-010 정밀화 누적 효과). 한계 자체는 잠재 위험으로 유지 |
+| Settings detector 가 탭별 scope 분리 없음 | D2 전량 false | SG-010 (잔여) — 2026-05-11 fresh: D2 109건 여전히 dominant false positive |
+| Settings detector 의 identifier 정규화 (camelCase ↔ snake_case ↔ dotted) | D3 false positive | **SG-010 P6 완료 (2026-04-20)** — dotted namespace (`gfx.foo`) 마지막 segment + frontmatter slash-list + whitelist bypass 적용. D4 +39, D3 -13 (netof new code keys). 2026-05-11: D3 4→3 잔여 (3건 모두 known scanner false positive — `fillKeyRouting`/`resolution`/`theme`) |
+| WebSocket detector 가 payload 필드까지 D2 수집 | D2 89 false positive | **SG-010 F2 완료 (2026-04-20)** — 이벤트 카탈로그 테이블만 수집. D2 89→20. 2026-05-11: 정밀화 안정 — 진짜 D2 1건 (`force_logout`, IMPL-009 known PENDING) 정확 검출 |
 | 반대 방향 (문서 설명된 미구현 API) 부분 커버 | D2 일부 누락 가능 | TODO 마커 병행 grep |
+| **(NEW 2026-05-11)** auth contract detector 의 d4_count reporting 누락 — `tools/spec_drift_check.py:detect_auth()` 가 실제 5 rules (MAX_FAILED + lock_permanent + blacklist + composite_PK + refresh_delivery) 모두 PASS 검증 후에도 결과를 `0/0/0/0` 으로 출력 (다른 contract detector 는 매칭된 항목을 d4 로 카운트) | §4.1 표 의 auth row total 가 misleading (실제 5건 PASS, 표시 0) | spec_drift_check.py:detect_auth() 의 PASS 누적 로직 보강 — 다른 detector 패턴과 정합. SG-010 후속 cycle |
 
 ## Changelog
 
