@@ -13,6 +13,7 @@ from __future__ import annotations
 import logging
 import os
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone, timedelta
 
 import httpx
 from fastapi import FastAPI, HTTPException, Query
@@ -71,3 +72,30 @@ async def chat_history(
         logger.exception("broker get_history failed")
         raise HTTPException(status_code=503, detail=f"broker error: {e}")
     return r
+
+
+@app.get("/chat/peers")
+async def chat_peers(active: bool = Query(False)):
+    """Active sessions (recent publishers).
+
+    active=true → last_seen within 5 minutes filter.
+    """
+    try:
+        r = await broker.discover_peers()
+    except Exception as e:
+        logger.exception("broker discover_peers failed")
+        raise HTTPException(status_code=503, detail=f"broker error: {e}")
+
+    peers = r.get("peers", [])
+    if active:
+        cutoff = datetime.now(timezone.utc) - timedelta(minutes=5)
+        filtered = []
+        for p in peers:
+            try:
+                ts = datetime.fromisoformat(p["last_seen"].replace("Z", "+00:00"))
+                if ts >= cutoff:
+                    filtered.append(p)
+            except (KeyError, ValueError):
+                continue
+        peers = filtered
+    return {"peers": peers, "count": len(peers)}
