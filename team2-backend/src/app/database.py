@@ -33,22 +33,43 @@ def init_db() -> None:
     _seed_admin()
 
 
+_DEV_SEED_ADMINS: tuple[tuple[str, str, str], ...] = (
+    # (email, password, display_name) — dev/integration-tests seed targets.
+    # SECURITY: AUTH_PROFILE != "dev" 환경에서는 seed 하지 않는다 (production 보호).
+    ("admin@ebs.local", "admin123", "System Admin"),
+    ("admin@ebs.test", "test-password-1234", "Integration Test Admin"),
+)
+
+
 def _seed_admin() -> None:
-    """Ensure default admin account exists (idempotent)."""
+    """Ensure dev/integration-tests admin accounts exist (idempotent).
+
+    seed 대상은 `_DEV_SEED_ADMINS` 표 참조. 기존 admin@ebs.local 은 backward
+    compat 보존, admin@ebs.test (test-password-1234) 는 integration-tests
+    scenarios (`_env.http`, `10-auth-login-profile.http`) 및 issue #236 KPI
+    (`curl :18001/api/v1/auth/login 200 OK`) 정합용. `AUTH_PROFILE=live`
+    환경에서는 settings.auth_profile 검사로 skip 한다 (production 보호).
+    """
     from src.models.user import User
 
+    # Production safety: 환경에 따라 seed skip.
+    auth_profile = (getattr(settings, "auth_profile", "dev") or "dev").lower()
+    if auth_profile == "live":
+        return
+
     with Session(get_engine()) as db:
-        existing = db.exec(select(User).where(User.email == "admin@ebs.local")).first()
-        if existing is None:
-            admin = User(
-                email="admin@ebs.local",
-                password_hash=bcrypt.hash("admin123"),
-                display_name="System Admin",
+        for email, password, display_name in _DEV_SEED_ADMINS:
+            existing = db.exec(select(User).where(User.email == email)).first()
+            if existing is not None:
+                continue
+            db.add(User(
+                email=email,
+                password_hash=bcrypt.hash(password),
+                display_name=display_name,
                 role="admin",
                 is_active=True,
-            )
-            db.add(admin)
-            db.commit()
+            ))
+        db.commit()
 
 
 def get_db() -> Generator[Session, None, None]:
