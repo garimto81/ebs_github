@@ -89,3 +89,52 @@ def emit_chat_advisory(
         )
     except Exception as e:
         logger.debug(f"emit_chat_advisory silent skip: {e}")
+
+
+import json
+
+
+def _subscribe_sync(topic: str, from_seq: int, timeout_sec: int = 1) -> dict:
+    """Sync wrapper for broker_client.subscribe. Raises on error (caller handles)."""
+    from tools.chat_server.broker_client import BrokerClient
+    client = BrokerClient(url="http://127.0.0.1:7383/mcp")
+    return asyncio.run(
+        client.subscribe(topic=topic, from_seq=from_seq, timeout_sec=timeout_sec)
+    )
+
+
+def _read_last_seen(state_file: Path) -> int:
+    try:
+        return json.loads(state_file.read_text(encoding="utf-8"))["last_seq"]
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        return 0
+
+
+def _write_last_seen(state_file: Path, last_seq: int) -> None:
+    state_file.parent.mkdir(parents=True, exist_ok=True)
+    state_file.write_text(json.dumps({"last_seq": last_seq}), encoding="utf-8")
+
+
+def inject_chat_mentions(team_id: str, state_file: Path) -> list[dict]:
+    """Fetch chat mentions for team_id since last seen.
+
+    Returns list of events whose payload.mentions contains '@{team_id}'.
+    Side effect: updates state_file with new next_seq.
+    Silent (returns []) on broker error.
+    """
+    last = _read_last_seen(state_file)
+    try:
+        r = _subscribe_sync(topic="chat:*", from_seq=last + 1, timeout_sec=1)
+    except Exception as e:
+        logger.debug(f"chat subscribe failed (silent): {e}")
+        return []
+
+    events = r.get("events", [])
+    next_seq = r.get("next_seq", last)
+    my_marker = f"@{team_id}"
+    my_mentions = [
+        e for e in events
+        if my_marker in (e.get("payload", {}).get("mentions") or [])
+    ]
+    _write_last_seen(state_file, next_seq)
+    return my_mentions

@@ -137,6 +137,32 @@ def emit_identity_context(team_data, status, blocker=None):
     print(f"\n📋 First action: type '작업 시작' to auto-create issue + draft PR")
 
 
+def inject_chat_mentions_block(team_data):
+    """Chat mention inject (B-222 T14).
+
+    Subscribes to chat:* from last-seen seq and prints @{team_id} mentions
+    to stderr. Silent (no exception) when broker dead.
+    state_file is worktree-local; recommended to git-ignore (out of T14 scope).
+    """
+    try:
+        from tools.chat_server.hook_integration import inject_chat_mentions
+        team_id = team_data.get("team_id") or team_data.get("stream_id") or team_data.get("team")
+        if not team_id:
+            return  # main session / no team identity → skip
+        state_file = Path.cwd() / ".claude" / f"chat_last_seen_{team_id}.json"
+        mentions = inject_chat_mentions(team_id=team_id, state_file=state_file)
+        if mentions:
+            sys.stderr.write("\n[CHAT MENTIONS — 다음 발언 차례에 응답하세요]\n")
+            for e in mentions:
+                ch = e["topic"].replace("chat:room:", "")
+                body = (e["payload"].get("body") or "")[:200]
+                sys.stderr.write(
+                    f"  - #{ch} seq={e['seq']} from={e['source']}: {body}\n"
+                )
+    except Exception as _e:
+        sys.stderr.write(f"[chat-mention] silent skip: {_e}\n")
+
+
 def main():
     team_data = detect_team()
     if not team_data:
@@ -145,6 +171,7 @@ def main():
     status, blocker = check_dependency_status(team_data)
     update_start_here(team_data, status, blocker)
     emit_identity_context(team_data, status, blocker)
+    inject_chat_mentions_block(team_data)
 
 
 if __name__ == "__main__":
