@@ -101,6 +101,11 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+    # 2026-05-11 (S11 Day-1 후속) — restart policy 누락으로 redis Exit(255) 4 일간
+    # silent down → bo healthcheck (/health only) 가 redis 의존성을 masking 하여 발견 지연.
+    # bo/engine/lobby-web/cc-web/proxy 모두 `unless-stopped` 정책 보유, redis 만 누락이었음.
+    # 자동 재시도로 transient wsl/docker networking glitch 회복 시간 단축.
+    restart: unless-stopped
 
   # ── Game Engine Harness (team3) ────────────────────────────────────────────
   engine:
