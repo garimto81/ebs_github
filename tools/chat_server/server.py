@@ -14,12 +14,15 @@ import logging
 import os
 from contextlib import asynccontextmanager
 
+import httpx
 from fastapi import FastAPI
 
 from tools.chat_server.broker_client import BrokerClient
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 logger = logging.getLogger("chat-server")
+
+VERSION = "0.1.0"
 
 broker = BrokerClient()
 
@@ -36,5 +39,19 @@ app = FastAPI(title="EBS Chat Server", lifespan=lifespan)
 
 @app.get("/health")
 async def health():
-    """Placeholder — Task 4 will replace with full impl."""
-    return {"status": "ok"}
+    """Health probe — broker connectivity included (non-blocking)."""
+    broker_alive = False
+    try:
+        async with httpx.AsyncClient(timeout=1.0) as http:
+            # broker MCP endpoint serves 4xx without proper handshake,
+            # but TCP-level reachability is what we want here.
+            r = await http.get(broker.url.replace("/mcp", "/"))
+            broker_alive = r.status_code < 500
+    except Exception:
+        broker_alive = False
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "broker_url": broker.url,
+        "broker_alive": broker_alive,
+    }
