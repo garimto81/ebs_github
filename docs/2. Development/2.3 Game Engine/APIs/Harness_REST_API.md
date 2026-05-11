@@ -3,8 +3,8 @@ title: Harness REST API
 owner: team3
 tier: contract
 legacy-id: API-04.2
-last-updated: 2026-05-08
-last-synced: 2026-05-08  # foundation_ssot.md §11 정합 (S8 audit 2026-05-08, D3 stateless 명시)
+last-updated: 2026-05-11
+last-synced: 2026-05-11  # Foundation §B.3/§B.4 정합 marker (B-332 §5.2 병행 dispatch Mermaid 신설)
 reimplementability: PASS
 reimplementability_checked: 2026-04-22
 reimplementability_notes: "§2.1 response schema 실측 정렬 (notify: team3). 이전 {id, events, currentState, outputEvents} 4필드 분리 기술 → 실제 flat state snapshot (sessionId + 모든 state 필드 최상위)."
@@ -23,6 +23,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 | 2026-04-22 | §2.13 `/engine/health` endpoint 신설 (B-331, notify: team4) | Foundation §6.3 Demo Mode fallback 지원. team4 `engine_connection_provider` 3-stage probe 용. §1 목록 13번째 endpoint 추가. |
 | 2026-04-22 | §개요 SSOT 선언 블록 신설 (B-332, notify: team4) | Foundation §6.3 §1.1.1 / §6.4 "Engine 응답이 게임 상태 SSOT. BO WS = audit 참고값" 을 API-04.2 계약 레벨에 명시. |
 | 2026-05-08 | D3 [MEDIUM] stateless 명시 보강 | §SSOT 선언 블록에 "CC → Engine REST stateless query (foundation_ssot.md §11)" 1 줄 추가. 통신 모델 명시성 보강. (S8 consistency audit 2026-05-08) |
+| 2026-05-11 | B-332 [P0] §5.2 병행 dispatch Mermaid 신설 (notify: team4) | Foundation §B.3 sequenceDiagram 을 §5 사용 흐름 예시에 인용. 동일 correlation_id 로 BO/Engine 병행 dispatch 표현. Engine 응답 = SSOT, BO ack = audit 참고값 명시. §5 기존 endpoint 시퀀스는 §5.1 로 재분류. |
 
 ## 개요
 
@@ -422,6 +423,8 @@ if (response.statusCode == 200) {
 
 ## 5. 사용 흐름 예시 (team4 연동)
 
+### 5.1 기본 endpoint 시퀀스
+
 ```
 POST /api/session                       → 세션 생성
 POST /api/session/:id/event (bet 20)    → 베팅
@@ -433,6 +436,40 @@ GET  /api/session/:id                   → 최종 상태 + outputEvents[]
 ```
 
 각 응답의 `outputEvents` 배열을 team4 OutputEventBuffer 에 enqueue → Security Delay 적용 → Overlay 렌더.
+
+### 5.2 병행 dispatch — BO + Engine 동시 호출 (B-332, Foundation §B.3)
+
+CC 는 Orchestrator 로서 운영자 액션 1건당 BO 와 Engine 을 **병행** 호출한다. 두 호출은 동일 `correlation_id` 를 공유하며, 응답 도착 순서는 무관하다. **Engine 응답이 게임 상태 SSOT**, BO ack 는 **audit 참고값** (Foundation §B.4 정책).
+
+```mermaid
+sequenceDiagram
+    participant Op as 운영자
+    participant CC as CC (Orchestrator)
+    participant BO as BO (audit)
+    participant Engine as Engine (SSOT)
+    participant Overlay
+
+    Op->>CC: 액션 클릭 (예: Bet 200)
+    Note over CC: correlation_id = corr-xyz 생성
+
+    par 병행 dispatch (동일 correlation_id)
+      CC->>BO: WS WriteAction { corrId: corr-xyz, ... }
+      CC->>Engine: REST POST /api/session/:id/event { corrId: corr-xyz, ... }
+    end
+
+    Engine-->>CC: 200 OK<br/>{ sessionId, ...state snapshot, outputEvents[] }<br/>(게임 상태 SSOT)
+    Note over CC: 즉시 provider 반영 (dispatchState)
+    CC->>Overlay: 21 OutputEvent enqueue → Security Delay → 렌더
+
+    BO-->>CC: WS ActionAck { corrId: corr-xyz, ... }
+    Note over CC: audit 참고값 — 게임 상태 판정 근거 아님.<br/>BO 실패 시 warn-only (게임 진행 계속)
+```
+
+**핵심 보장**:
+- Engine 응답 본문(`Session.toJson()` snapshot + `outputEvents[]`) **즉시 dispatchState()** — Overlay 렌더 기준
+- BO `ActionAck` 도착 = 단순 audit 기록 (DB commit 완료 신호). 도착 실패 또는 지연되더라도 게임 흐름은 차단되지 않음
+- 두 호출의 순서·타이밍이 다르더라도 `correlation_id` 로 후속 reconciliation 가능 (예: DB replay 시점)
+- 정본 근거: Foundation.md §B.3 (통신 매트릭스 sequenceDiagram) · §B.4 (DB SSOT + WS push 정책)
 
 ---
 
