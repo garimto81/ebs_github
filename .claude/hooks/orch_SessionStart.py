@@ -59,72 +59,13 @@ def detect_team():
     return team_data
 
 
-def _broker_subscribe_done(upstream, timeout_sec=5):
-    """v11 Phase C: subscribe(stream:S{N}) 로 DONE 확인 (~50ms).
-
-    Returns: True if DONE found, False if not, None if broker dead.
-    """
-    import socket
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(1.0)
-    try:
-        s.connect(("127.0.0.1", 7383))
-    except OSError:
-        return None  # broker dead
-    finally:
-        s.close()
-
-    try:
-        import asyncio as _asyncio
-        from mcp import ClientSession  # type: ignore
-        from mcp.client.streamable_http import streamablehttp_client  # type: ignore
-
-        async def _run():
-            async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
-                async with ClientSession(r, w) as sess:
-                    await sess.initialize()
-                    res = await sess.call_tool("subscribe", {
-                        "topic": f"stream:{upstream}",
-                        "from_seq": 0,
-                        "timeout_sec": timeout_sec,
-                    })
-                    if not res.content:
-                        return False
-                    data = json.loads(res.content[0].text)
-                    return any(
-                        e.get("payload", {}).get("status") == "DONE"
-                        for e in data.get("events", [])
-                    )
-
-        try:
-            return _asyncio.run(_asyncio.wait_for(_run(), timeout=timeout_sec + 2))
-        except Exception:
-            return None
-    except Exception:
-        return None
-
-
 def check_dependency_status(team_data):
-    """v11 Phase C: subscribe-first, gh fallback.
-
-    Order:
-      1. broker subscribe(stream:S{N}, timeout=5s) — ~50ms when DONE present
-      2. gh pr list — v10.3 fallback (broker dead)
-    """
+    """blocked_by Stream의 PR 머지 상태를 GitHub에서 확인"""
     blocked_by = team_data.get('blocked_by', [])
     if not blocked_by:
         return ("READY", None)
 
     for upstream in blocked_by:
-        # ── v11 path: broker subscribe ─────────────────────
-        broker_result = _broker_subscribe_done(upstream, timeout_sec=5)
-        if broker_result is True:
-            continue  # DONE found via broker
-        if broker_result is False:
-            return ("BLOCKED", upstream)
-        # broker_result is None → broker dead, fall through to gh
-
-        # ── v10.3 fallback: gh pr list ─────────────────────
         try:
             result = subprocess.run([
                 'gh', 'pr', 'list',
@@ -135,6 +76,7 @@ def check_dependency_status(team_data):
             ], capture_output=True, text=True, timeout=30)
 
             if result.returncode != 0:
+                # gh CLI 없거나 인증 실패 — 기본 READY (warning 출력)
                 sys.stderr.write(f"⚠️ gh CLI unavailable, assuming READY\n")
                 return ("READY", None)
 
@@ -195,85 +137,14 @@ def emit_identity_context(team_data, status, blocker=None):
     print(f"\n📋 First action: type '작업 시작' to auto-create issue + draft PR")
 
 
-def ensure_message_bus(team_data=None):
-    """Phase 5: probe message bus broker, auto-start if dead.
-
-    Probes 127.0.0.1:7383. Dead → spawns DETACHED start_message_bus.py.
-    Waits up to 5s for health. Silent no-op if start_message_bus.py absent
-    (e.g., feat/message-bus not yet merged).
-    """
-    import socket
-    import time
-
-    def _probe(host, port, timeout=1.0):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(timeout)
-        try:
-            s.connect((host, port))
-            return True
-        except OSError:
-            return False
-        finally:
-            s.close()
-
-    # Resolve project root (main repo, even from a worktree)
-    cwd = Path.cwd()
-    project_root = cwd
-    if team_data and team_data.get('project_root'):
-        project_root = Path(team_data['project_root'])
-
-    start_script = project_root / 'tools' / 'orchestrator' / 'start_message_bus.py'
-    if not start_script.exists():
-        # Phase 5 not yet merged — silent skip
-        return
-
-    # 1. Probe
-    if _probe('127.0.0.1', 7383):
-        sys.stderr.write("✅ message bus broker alive (127.0.0.1:7383)\n")
-        return
-
-    # 2. Auto-start detached
-    sys.stderr.write("🔄 message bus broker dead, auto-starting...\n")
-    try:
-        flags = 0
-        if sys.platform == 'win32':
-            flags = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
-        subprocess.Popen(
-            [sys.executable, str(start_script), '--detach'],
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            close_fds=True,
-            creationflags=flags,
-        )
-    except Exception as e:
-        sys.stderr.write(f"⚠ broker auto-start failed: {e}\n")
-        return
-
-    # 3. Wait health (5s max)
-    deadline = time.time() + 5
-    while time.time() < deadline:
-        if _probe('127.0.0.1', 7383):
-            sys.stderr.write("✅ message bus broker started\n")
-            return
-        time.sleep(0.2)
-
-    sys.stderr.write("⚠ broker not responding after 5s; falling back to GH-only mode\n")
-
-
 def main():
     team_data = detect_team()
     if not team_data:
-        # main session — still probe/start broker (Phase 5)
-        ensure_message_bus(None)
-        return
+        return  # main session
 
     status, blocker = check_dependency_status(team_data)
     update_start_here(team_data, status, blocker)
     emit_identity_context(team_data, status, blocker)
-
-    # Phase 5: broker auto-start (idempotent — single broker per host)
-    ensure_message_bus(team_data)
 
 
 if __name__ == "__main__":
