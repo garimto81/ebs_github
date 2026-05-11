@@ -24,7 +24,7 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 | `ebs-engine-1` | `ebs-engine` | 8080 | team3 | `team3-engine/ebs_game_engine/lib/**` 또는 `Dockerfile` 변경 |
 | `ebs-lobby-web` | `ebs/lobby-web:latest` | 3000 | team1 | `team1-frontend/lib/**` 갱신 (flutter build web 선행) |
 | `ebs-cc-web-1` ⚠ dev/test 보조 | `ebs-cc-web` | 3001 | team4 | `team4-cc/src/build/web/**` 갱신 (flutter build web 선행) — **정규 배포는 Flutter Desktop 단일 바이너리** (Foundation §A.4 SSOT) |
-| `ebs-redis-1` | `redis:7-alpine` | internal | conductor | (재빌드 불필요, `docker compose pull` 만) |
+| `ebs-redis-1` | `redis:7-alpine` | 127.0.0.1:16380 (host debug) | conductor | (재빌드 불필요, `docker compose pull` 만) |
 
 **compose 정의 파일**: `docker-compose.yml` (레포 루트)
 
@@ -47,6 +47,7 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 | 2026-05-06 | §1 표 stale 표기 정정 (lobby-web 부활) + cc-web 포트 3100→3001 정정 | Conductor 자율 (3000 포트 drift 사건 후속) |
 | **2026-05-08** | **§1 cc-web 컨테이너 dev/test 보조 표기 + §"현재 정책" Foundation §A.4 SSOT cascade 정합 (정규 = Flutter Desktop, Web = 보조)** | **Conductor 자율 (Phase C #181 정합성 감사 — Foundation §A.4 정점 SSOT 기준)** |
 | **2026-05-11** | **§4.5 Redis revival 절차 + §4.6 WSL relay glitch 진단 신설. redis host port 16379→127.0.0.1:16380 (wslrelay PID 55860 점유 회피)** | **S11 Day-1 (KPI #215). 도메인 4 docker compose 검증 중 redis 4일째 Exit(255) + BO/engine host port 미바인딩 발견. proxy 경유 흐름은 정상 → `pipeline:env-ready` 발행 (seq=6)** |
+| **2026-05-11 (후속)** | **redis service `restart: unless-stopped` 정책 추가 (PR #230). §1 표 redis 외부 포트 `internal` → `127.0.0.1:16380 (host debug)` 정정** | **S11 Day-1 autonomous iteration. bo/engine/lobby-web/cc-web/proxy 모두 정책 보유 — redis 만 누락이 4일 silent down 의 근본 원인. transient glitch 자동 회복 시간 단축** |
 
 ---
 
