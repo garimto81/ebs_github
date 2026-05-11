@@ -18,12 +18,18 @@ import re
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone, timedelta
 
+from pathlib import Path
+
 import httpx
 from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from sse_starlette.sse import EventSourceResponse
 
 from tools.chat_server.broker_client import BrokerClient
 from tools.chat_server.models import SendRequest
+
+UI_DIR = Path(__file__).parent / "ui"
 
 MENTION_RE = re.compile(r"@([A-Za-z][\w-]*)")
 
@@ -47,6 +53,13 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="EBS Chat Server", lifespan=lifespan)
+
+app.mount("/static", StaticFiles(directory=UI_DIR), name="static")
+
+
+@app.get("/")
+async def root():
+    return FileResponse(UI_DIR / "index.html")
 
 
 @app.get("/health")
