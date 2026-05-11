@@ -474,6 +474,50 @@ async def publish_deal_rejected(
     })
 
 
+# ---------------------------------------------------------------------------
+# IMPL-009 / Cycle 3 — Admin force_logout (§13.3)
+# ---------------------------------------------------------------------------
+
+
+async def publish_force_logout(
+    manager: ConnectionManager,
+    target_user_id: str,
+    actor_user_id: str,
+    *,
+    reason: str | None = None,
+    logout_at: str | None = None,
+) -> int:
+    """§13.3 force_logout — admin 강제 로그아웃 발행 + WS close.
+
+    payload (`{ "type": "force_logout", "v": 1, "ts", "seq": null,
+    "payload": { target_user_id, actor_user_id, reason, logout_at } }`) 를
+    target user 의 모든 active connection (cc + lobby) 에 송신한 후
+    `ConnectionManager.disconnect_user(close_code=4003)` 로 즉시 종료.
+
+    `seq=null` — 본 이벤트는 connection topology 변경이며 `audit_events`
+    seq 보장 대상이 아니다 (재진입 replay 제외, §13.3 envelope 주의 참조).
+    """
+    from datetime import datetime, timezone
+    ts = logout_at or (datetime.now(timezone.utc).isoformat() + "Z")
+    payload = {
+        "type": "force_logout",
+        "v": 1,
+        "ts": ts,
+        "seq": None,
+        "payload": {
+            "target_user_id": str(target_user_id),
+            "actor_user_id": str(actor_user_id),
+            "reason": reason,
+            "logout_at": ts,
+        },
+    }
+    return await manager.disconnect_user(
+        user_id=str(target_user_id),
+        payload=payload,
+        close_code=4003,
+    )
+
+
 __all__ = [
     # snake_case (7)
     "publish_clock_detail_changed",
@@ -505,4 +549,6 @@ __all__ = [
     "publish_action_rejected",
     "publish_deal_ack",
     "publish_deal_rejected",
+    # IMPL-009 admin (1)
+    "publish_force_logout",
 ]
