@@ -46,6 +46,7 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 | 2026-04-27 | SG-022 폐기 → Multi-Service Docker 회복 | 사용자 결정 (team1 CLAUDE.md 정정) |
 | 2026-05-06 | §1 표 stale 표기 정정 (lobby-web 부활) + cc-web 포트 3100→3001 정정 | Conductor 자율 (3000 포트 drift 사건 후속) |
 | **2026-05-08** | **§1 cc-web 컨테이너 dev/test 보조 표기 + §"현재 정책" Foundation §A.4 SSOT cascade 정합 (정규 = Flutter Desktop, Web = 보조)** | **Conductor 자율 (Phase C #181 정합성 감사 — Foundation §A.4 정점 SSOT 기준)** |
+| **2026-05-11** | **§4.5 Redis revival 절차 + §4.6 WSL relay glitch 진단 신설. redis host port 16379→127.0.0.1:16380 (wslrelay PID 55860 점유 회피)** | **S11 Day-1 (KPI #215). 도메인 4 docker compose 검증 중 redis 4일째 Exit(255) + BO/engine host port 미바인딩 발견. proxy 경유 흐름은 정상 → `pipeline:env-ready` 발행 (seq=6)** |
 
 ---
 
@@ -121,6 +122,68 @@ commit 메시지에 `docker-cleanup: <image>` 태그 추가.
 - **레포에서 compose 서비스 제거했는데 런타임 컨테이너는 살려두기** — 좀비 원인 1순위
 - **재빌드 없이 코드 수정만 commit 하고 브라우저 테스트 요청** — 사용자는 옛 이미지 결과만 봄
 - **unhealthy 컨테이너 방치** — 2일 이상 unhealthy 상태는 의도된 동작이 아니므로 진단 필수
+
+---
+
+## 4.5 Redis revival after wslrelay port hijack
+
+**증상**: `ebs-redis` 컨테이너 Exit(255) 후 재기동 시 `Bind for 0.0.0.0:16379 failed: port is already allocated` 에러. `netstat -ano | findstr :16379` 결과 `com.docker.backend wslrelay` (Docker Desktop 내부 relay) 가 점유 중. Docker Desktop 재시작 외에는 release 불가.
+
+**근본 원인**: Docker Desktop WSL2 백엔드의 relay 프로세스가 컨테이너 Exit 후에도 host port 점유를 유지하는 알려진 issue (v29.3.1 확인). Windows dynamic port range (1024-15001) 회피용으로 선택한 16379 도 안전하지 않음.
+
+**복구 절차 (비파괴, 2026-05-11 S11 Day-1 검증)**:
+
+```bash
+# 1. 점유 port 진단
+netstat -ano | findstr :16379
+
+# 2. 자유 port 탐색 (PowerShell)
+@(16380, 16381, 16382, 16383) | ForEach-Object {
+  $c = Get-NetTCPConnection -LocalPort $_ -State Listen -ErrorAction SilentlyContinue
+  if (-not $c) { "$_ FREE" } else { "$_ HELD by PID $($c.OwningProcess)" }
+}
+
+# 3. docker-compose.yml redis.ports 갱신 (loopback bind 권장)
+#    - "16379:6379"  →  - "127.0.0.1:16380:6379"
+
+# 4. exited 컨테이너 제거 (Network/Volume 보존)
+docker rm ebs-redis
+
+# 5. 진본 project 컨텍스트에서 재기동 (running 컨테이너와 project 정합)
+docker compose --project-name ebs -f docker-compose.yml up -d redis
+
+# 6. 검증
+docker exec ebs-redis redis-cli ping              # PONG
+docker exec ebs-bo python -c "import redis; print(redis.from_url('redis://redis:6379/0').ping())"  # True
+```
+
+**중요**: BO/Engine/Lobby/CC 는 internal `redis:6379` (ebs-net) 로 연결하므로 host port 변경의 영향을 받지 않는다. host port 는 개발자 `redis-cli` 디버깅 용도 전용.
+
+**예방**: redis service 의 `restart: unless-stopped` 정책 추가 검토 — 현재 redis 만 healthcheck 정의되고 restart 정책 없음 (BO/Engine 은 있음). Backlog 등록 권장.
+
+---
+
+## 4.6 WSL relay glitch: BO/Engine host port 미바인딩
+
+**증상**: `docker inspect ebs-bo --format '{{.HostConfig.PortBindings}}'` 는 `8000/tcp → 8000` 정상 표시되지만 `curl http://127.0.0.1:8000/health` 무응답. `localhost:8080` (engine) 동일 현상.
+
+**영향 범위 (2026-05-11 S11 Day-1 측정)**:
+
+| 접근 경로 | 상태 |
+|----------|:----:|
+| `curl http://127.0.0.1:8000/health` (BO 직접) | ✗ 미응답 |
+| `curl http://127.0.0.1:8080/health` (Engine 직접) | ✗ 미응답 |
+| `curl -H "Host: api.ebs.local" http://127.0.0.1/health` (proxy 경유 BO) | ✓ `{"status":"ok","db":"connected"}` |
+| `curl http://127.0.0.1:3000/healthz` (Lobby) | ✓ |
+| `curl http://127.0.0.1:3001/healthz` (CC) | ✓ |
+| `curl http://127.0.0.1/healthz` (Proxy) | ✓ |
+
+**해석**: 사용자 흐름 (브라우저 → nginx proxy → BO/Engine via ebs-net) 정상. 개발자 흐름 (host port 직접) 차단. proxy hostname-routing (`api.ebs.local`, `engine.ebs.local`) 으로 완전 우회 가능.
+
+**복구 옵션**:
+- **A**: 영향 컨테이너 단일 재기동 — `docker restart ebs-bo ebs-engine` (5h healthy 깨질 위험). relay 재초기화 가능성 ~80%.
+- **B**: Docker Desktop 재시작 — 모든 worktree session 영향. 마지막 수단.
+- **C (현재 채택)**: proxy 경유 + LAN_DEPLOYMENT.md `setup_lan_access` 으로 hostname 매핑 사용. 개발자 직접 접근 필요 시 `docker exec <container> curl localhost:<port>` 우회.
 
 ---
 

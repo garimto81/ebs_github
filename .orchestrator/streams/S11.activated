@@ -1,0 +1,8 @@
+stream_id: S11
+team_name: Dev Assist Stream (cross-cutting)
+activated_at: '2026-05-11T15:50:02.132408'
+worktree_path: C:/claude/ebs-devops
+branch: work/s11/2026-05-11-work-2026-05-11
+scope_owns:
+- docs/4. Operations/Docker_Runtime.md
+- docker-compose.yml
