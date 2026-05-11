@@ -138,3 +138,77 @@ def inject_chat_mentions(team_id: str, state_file: Path) -> list[dict]:
     ]
     _write_last_seen(state_file, next_seq)
     return my_mentions
+
+
+import time
+
+
+async def _subscribe_async(topic: str, from_seq: int, timeout_sec: int) -> dict:
+    from tools.chat_server.broker_client import BrokerClient
+    client = BrokerClient(url="http://127.0.0.1:7383/mcp")
+    return await client.subscribe(
+        topic=topic, from_seq=from_seq, timeout_sec=timeout_sec
+    )
+
+
+async def _publish_async(topic: str, payload: dict, source: str) -> dict:
+    from tools.chat_server.broker_client import BrokerClient
+    client = BrokerClient(url="http://127.0.0.1:7383/mcp")
+    return await client.publish(topic=topic, payload=payload, source=source)
+
+
+async def consensus_silent_ok(
+    question_seq: int,
+    topic: str,
+    from_team: str,
+    ttl_sec: int = 30,
+    question_mentions: list[str] | None = None,
+) -> tuple[str, list[dict]]:
+    """Silent OK 30s consensus model.
+
+    Logic:
+      - If question_mentions contains '@user' → return ('user_mention_pending', []).
+      - Otherwise poll for replies up to ttl_sec.
+      - If reply received → ('answered', replies).
+      - If no reply by deadline → publish decision('ASSUMED ...') + ('silent_ok', []).
+    """
+    if question_mentions and "@user" in question_mentions:
+        return ("user_mention_pending", [])
+
+    deadline = time.time() + ttl_sec
+    while time.time() < deadline:
+        remaining = max(1, int(deadline - time.time()))
+        try:
+            r = await _subscribe_async(
+                topic=topic, from_seq=question_seq + 1, timeout_sec=remaining
+            )
+        except Exception as e:
+            logger.debug(f"consensus subscribe error (silent): {e}")
+            return ("error", [])
+
+        replies = [
+            e for e in r.get("events", [])
+            if e.get("payload", {}).get("reply_to") == question_seq
+        ]
+        if replies:
+            return ("answered", replies)
+
+    # silent OK — publish decision
+    try:
+        await _publish_async(
+            topic=topic,
+            payload={
+                "kind": "decision",
+                "from": from_team,
+                "to": ["*"],
+                "body": "[ASSUMED] proceeding. raise blocker if disagree.",
+                "reply_to": question_seq,
+                "thread_id": None,
+                "mentions": [],
+                "ts": _now_iso(),
+            },
+            source=from_team,
+        )
+    except Exception as e:
+        logger.debug(f"consensus decision publish failed (silent): {e}")
+    return ("silent_ok", [])
