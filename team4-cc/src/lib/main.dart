@@ -7,11 +7,14 @@
 //
 // per BS-05-00 §Launch 플로우 상세 (CCR-029).
 
+import 'dart:async' show unawaited;
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
+import 'auto_demo.dart';
 import 'features/auth/auth_provider.dart';
 import 'foundation/configs/features.dart';
 import 'foundation/error_reporting/sentry_init.dart';
@@ -56,6 +59,33 @@ Future<void> main(List<String> args) async {
           child: const EbsCcApp(),
         ),
       );
+
+      // Cycle 2 Issue #237 — AUTO_DEMO 1-hand wire hook.
+      // CC standalone에서 ADMIN_TOKEN + AUTO_DEMO=true 시 BO launch-cc →
+      // WS connect → WriteGameInfo (CCR-024) → GameInfoAck e2e 시연.
+      // 시연 결과는 console + DebugLog (Ctrl+L)로 노출.
+      const autoDemo = bool.fromEnvironment('AUTO_DEMO', defaultValue: false);
+      const adminToken = String.fromEnvironment('ADMIN_TOKEN', defaultValue: '');
+      if (autoDemo && adminToken.isNotEmpty) {
+        const tableId = int.fromEnvironment('AUTO_DEMO_TABLE_ID', defaultValue: 1);
+        const boUrl =
+            String.fromEnvironment('BO_URL', defaultValue: 'http://localhost:8000');
+        // Fire-and-forget — UI는 정상 표시. 결과는 DebugLog에 누적.
+        unawaited(runAutoDemo(
+          adminToken: adminToken,
+          tableId: tableId,
+          boBaseUrl: boUrl,
+          onReady: (handId) {
+            DebugLog.i('AUTO_DEMO', 'cascade:cc-hand-ready candidate', {
+              'hand_id': handId,
+              'table_id': tableId,
+            });
+          },
+          onError: (e, _) {
+            DebugLog.e('AUTO_DEMO', 'wire failed', {'error': '$e'});
+          },
+        ));
+      }
     },
   );
 }
