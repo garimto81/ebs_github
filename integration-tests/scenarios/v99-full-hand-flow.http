@@ -1,0 +1,425 @@
+### B-211 — End-to-End Full Hand Flow
+###
+### 목적 (Foundation.md Ch.5 의존성 사슬 검증):
+###   RFID → Engine → CC → BO → (Overlay)
+###   1핸드 완주를 단일 시나리오에서 회귀 검증한다.
+###
+### 단위 시나리오 (10~62) 는 각 계약을 격리 검증하지만,
+### "조립" 단계의 회귀 (이벤트 순서, seq monotonic, 팟 정합) 는 본 시나리오만 검출 가능.
+###
+### Pipeline (4팀 합의 assertion 정의 = B-211 Definition of Done):
+###   Setup       — team2 (admin login, deck register, launch CC)
+###   WriteGameInfo — team2 + team4 (CC NEW HAND → GameInfoAck)
+###   Deal        — team3 (Engine deal 6 cards) + team4 (CC 카드 인식)
+###   Preflop     — team4 (CC 6 액션 입력) + team3 (Engine 정합)
+###   Flop/Turn/River — team3 (DealCommunity) + team4 (ActionPerformed)
+###   Showdown    — team3 (PotAwarded + HandCompleted)
+###   Commit      — team2 (BO hand record persistence)
+###
+### 본 파일은 HTTP request 시나리오만 직렬화한다. WebSocket 단계는 주석 + wscat 명령으로 명시.
+###
+### Coverage:
+###   - CCR-021 (WS seq monotonic + replay)
+###   - CCR-024 (WriteGameInfo + GameInfoAck)
+###   - CCR-026 (Deck register + CardDetected)
+###   - CCR-029 (CC Launch)
+###   - CCR-031 (BO reconnect — 회귀 보강)
+###   - Foundation.md Ch.5 의존성 사슬 (실시간 출력)
+###
+### 실행 환경:
+###   docker compose --profile e2e up -d (bo, engine, mocks)
+###   integration-tests-e2e.yml workflow 가 본 시나리오를 httpyac 로 자동 실행.
+###
+### 의존:
+###   - B-210 (Overlay Rive OutputEvent 매핑) — 본 시나리오에서는 stub 으로 처리.
+###     Overlay 단계 assertion 은 "WS 이벤트 발송됨" 까지만 검증, 실제 frame 렌더링은 제외.
+
+@host = http://localhost:8000
+@engine_host = http://localhost:8080
+@ws_cc = ws://localhost:8000/ws/cc
+
+@admin_token = {{$dotenv ADMIN_JWT}}
+@operator_token = {{$dotenv OPERATOR_JWT}}
+
+@test_table_id = 1
+@test_event_id = 1
+@test_flight_id = 1
+@expected_hand_id = 248
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase A: Setup
+# ──────────────────────────────────────────────────────────────────────
+
+### A.1 GET /api/v1/auth/me — Admin 인증 확인 (preflight)
+GET {{host}}/api/v1/auth/me
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK
+# {
+#   "data": {
+#     "user_id": "...",
+#     "email": "admin@ebs.local",
+#     "role": "admin"
+#   }
+# }
+#
+# Assertion (team2 owns):
+#   - status === 200
+#   - data.role === "admin"
+
+### A.2 POST /api/v1/decks — 54장 deck 등록 (RFID UID → rank/suit 매핑)
+# @name registerDeck
+POST {{host}}/api/v1/decks
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "deck_name": "v99-full-hand-test-deck",
+  "cards": [
+    { "uid": "04A3B2C1V001", "rank": 12, "suit": 0 },
+    { "uid": "04A3B2C1V002", "rank": 11, "suit": 0 },
+    { "uid": "04A3B2C1V003", "rank": 10, "suit": 0 },
+    { "uid": "04A3B2C1V004", "rank": 9,  "suit": 0 },
+    { "uid": "04A3B2C1V005", "rank": 8,  "suit": 0 },
+    { "uid": "04A3B2C1V006", "rank": 7,  "suit": 0 }
+  ]
+}
+
+# (실제 실행 시 54장 전체. 시나리오에서는 처음 6장만 필수 — 6-handed 핸드 시작 가능)
+#
+# 예상: 201 Created
+# {
+#   "deck_id": "dk_v99...",
+#   "card_count": 6,
+#   "created_at": "..."
+# }
+#
+# Assertion (team2 owns):
+#   - status === 201
+#   - data.deck_id matches /^dk_/
+#   - card_count === 54  (CI 실제 실행 시. 본 파일은 minimal — 6장만 필수)
+
+### A.3 PATCH /api/v1/tables/{id}/active_deck — deck 할당
+PATCH {{host}}/api/v1/tables/{{test_table_id}}/active_deck
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "deck_id": "{{registerDeck.response.body.deck_id}}"
+}
+
+# 예상: 200 OK
+# Assertion (team2 owns):
+#   - status === 200
+#   - data.active_deck_id === registerDeck.deck_id
+
+### A.4 POST /api/v1/tables/{id}/launch-cc — CC 인스턴스 발급
+# @name launchCC
+POST {{host}}/api/v1/tables/{{test_table_id}}/launch-cc
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{}
+
+# 예상: 200 OK
+# {
+#   "data": {
+#     "table_id": 1,
+#     "status": "live",
+#     "cc_instance_id": "cc-uuid-...",
+#     "launch_token": "eyJhbGc...",
+#     "ws_url": "ws://localhost:8000/ws/cc?table_id=1",
+#     "launched_at": "..."
+#   }
+# }
+#
+# Assertion (team2 + team4 owns):
+#   - status === 200
+#   - data.launch_token decode: { sub: cc_instance_id, exp: now+300s, role: "cc_launch", table_id: 1 }
+#   - data.ws_url 가 본 _env.http 의 ws_cc 와 일치
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase B: WriteGameInfo (WebSocket — 수동/CI runner manual step)
+# ──────────────────────────────────────────────────────────────────────
+#
+# CC 가 NEW HAND 버튼 누르면 WriteGameInfo 발행.
+# 본 시나리오는 .http 만 직렬화되므로 WS 단계는 명령어 + 예상 응답 으로 기록.
+#
+# B.1 WS 연결:
+#   wscat -c '{{ws_cc}}?table_id=1&token={{launchCC.response.body.data.launch_token}}&cc_instance_id={{launchCC.response.body.data.cc_instance_id}}&format=json'
+#
+# 예상 수신 (InitialState):
+#   { "type": "InitialState", "payload": { "table": {...}, "seats": [...], "current_hand": null } }
+#
+# Assertion (team4 owns):
+#   - type === "InitialState"
+#   - current_hand === null  (새 launch 직후)
+#
+# B.2 WS 송신 (CC → BO/Engine):
+#   {
+#     "type": "WriteGameInfo",
+#     "payload": {
+#       "table_id": 1,
+#       "hand_id": 248,
+#       "dealer_seat": 3,
+#       "sb_seat": 4,
+#       "bb_seat": 5,
+#       "sb_amount": 500,
+#       "bb_amount": 1000,
+#       "ante_amount": 0,
+#       "big_blind_ante": false,
+#       "straddle_seats": [],
+#       "blind_structure_id": "v99-test-bs",
+#       "blind_level": 1,
+#       "game_type": "no_limit_holdem",
+#       "active_seats": [1, 2, 3, 4, 5, 6],
+#       "chip_denominations": [100, 500, 1000, 5000, 25000]
+#     },
+#     "idempotency_key": "uuid-wgi-248",
+#     "source_id": "cc-table-1",
+#     "message_id": "msg-wgi-1"
+#   }
+#
+# 예상 수신:
+#   { "type": "GameInfoAck", "payload": { "hand_id": 248, "ready_for_deal": true, "seq": <N+1> } }
+#
+# Assertion (team2 + team4 owns):
+#   - type === "GameInfoAck"
+#   - ready_for_deal === true
+#   - seq 가 InitialState 의 seq + 1
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase C: Deal (RFID 6 cards × seat 1~6)
+# ──────────────────────────────────────────────────────────────────────
+#
+# Mock RFID driver 가 6 card detection 이벤트 발송.
+# 실 hardware 없이 mock: POST /api/v1/_mock/rfid/scan 으로 트리거 (CI-only endpoint).
+
+### C.1 POST /api/v1/_mock/rfid/scan — Seat 1 카드 인식 (CI-only)
+POST {{host}}/api/v1/_mock/rfid/scan
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "table_id": 1,
+  "uid": "04A3B2C1V001",
+  "antenna": "seat_1"
+}
+
+# 예상: 202 Accepted
+# {
+#   "queued": true,
+#   "event_id": "...",
+#   "expected_ws_event": "CardDetected"
+# }
+#
+# Assertion (team3 owns):
+#   - status === 202
+#   - WS 채널에 CardDetected event 도달 (수동 wscat 검증)
+#   - DealCommunity 발생 안 함 (hole card 단계)
+
+### C.2 POST /api/v1/_mock/rfid/scan — Seat 2~6 (반복, 간략 1건만 표기)
+POST {{host}}/api/v1/_mock/rfid/scan
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "table_id": 1,
+  "uid": "04A3B2C1V002",
+  "antenna": "seat_2"
+}
+
+# (Seat 3~6 동일 패턴. CI runner 가 V003~V006 까지 자동 반복.)
+#
+# Assertion (team3 owns):
+#   - 6 card 모두 CardDetected event 수신
+#   - 전체 seq 단조증가
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase D: Preflop Actions (WS — CC action input)
+# ──────────────────────────────────────────────────────────────────────
+#
+# CC operator 가 6키 입력 (각 seat 의 action). 본 시나리오는 표준 시퀀스:
+#   Seat 6 (UTG): fold
+#   Seat 1: fold
+#   Seat 2: call 1000
+#   Seat 3 (dealer): raise 3000
+#   Seat 4 (SB): fold
+#   Seat 5 (BB): call 2000 (raise to 3000 - posted 1000)
+#
+# D.1 WS 송신 (CC → BO) — 반복 6회:
+#   {
+#     "type": "ActionPerformed",
+#     "payload": { "seat_no": 6, "action": "fold" },
+#     "idempotency_key": "uuid-act-1",
+#     "local_seq": 1
+#   }
+#   ... (5회 추가, action 다양)
+#
+# 예상 수신 (BO 가 각 Action 별 broadcast):
+#   { "type": "ActionPerformed", "seq": <N>, "payload": { "seat_no": 6, "action": "fold" } }
+#
+# Assertion (team4 + team3 owns):
+#   - 모든 ActionPerformed seq 단조증가
+#   - 마지막 Action 처리 후 betting_round closed → Engine 이 DealCommunity (flop 3장) 자동 발송
+#   - 폴드 seat 은 이후 round 에서 액션 요구되지 않음
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase E: Flop (Engine DealCommunity 3 cards)
+# ──────────────────────────────────────────────────────────────────────
+#
+# Mock RFID 가 flop 3장 발송 → Engine DealCommunity event 발생.
+
+### E.1 POST /api/v1/_mock/rfid/scan — Flop 카드 1 (community)
+POST {{host}}/api/v1/_mock/rfid/scan
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{
+  "table_id": 1,
+  "uid": "04A3B2C1V010",
+  "antenna": "community_1"
+}
+
+# (community_2, community_3 반복. 총 3장 인식.)
+#
+# 예상 WS broadcast:
+#   { "type": "DealCommunity", "seq": <N>, "payload": { "street": "flop", "cards": ["Ah", "Kd", "Qs"] } }
+#
+# Assertion (team3 owns):
+#   - DealCommunity event 1회 발생
+#   - cards.length === 3
+#   - street === "flop"
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase F: Flop Actions (WS — 동일 패턴, 줄여 표기)
+# ──────────────────────────────────────────────────────────────────────
+#
+# Action 시퀀스 (예시):
+#   Seat 2: check
+#   Seat 3: bet 2000
+#   Seat 5: call 2000
+#   Seat 2: fold
+#
+# 예상 결과: 2 active seats (3, 5) → turn 진입
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase G: Turn (1 card)
+# ──────────────────────────────────────────────────────────────────────
+#
+# G.1 Mock RFID — turn community
+# (E.1 동일 패턴, uid V013, antenna community_4)
+#
+# 예상 WS:
+#   { "type": "DealCommunity", "payload": { "street": "turn", "cards": ["Js"] } }
+#
+# Turn actions: seat 3 check, seat 5 check → river
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase H: River (1 card)
+# ──────────────────────────────────────────────────────────────────────
+#
+# H.1 Mock RFID — river community
+# 예상 WS: { "type": "DealCommunity", "payload": { "street": "river", "cards": ["Td"] } }
+#
+# River actions: seat 3 bet 5000, seat 5 call → showdown
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase I: Showdown + Pot Award
+# ──────────────────────────────────────────────────────────────────────
+#
+# Engine 이 모든 자동 처리. CC operator 입력 불필요.
+#
+# 예상 WS 시퀀스 (Engine 발송):
+#   1. { "type": "Showdown", "payload": { "winners": [3], "hands": {...} } }
+#   2. { "type": "PotAwarded", "payload": { "awards": [{ "seat_no": 3, "amount": 14000 }] } }
+#   3. { "type": "HandCompleted", "payload": { "hand_number": 248 } }
+#
+# Assertion (team3 owns):
+#   - 정확히 1 PotAwarded
+#   - awards 의 amount 합 === 총 베팅액 (preflop + flop + turn + river)
+#   - HandCompleted hand_number === 248 (WriteGameInfo 의 hand_id)
+#   - 모든 이벤트 seq 단조증가
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase J: BO Commit Verification (HTTP — 자동화 가능)
+# ──────────────────────────────────────────────────────────────────────
+
+### J.1 GET /api/v1/hands/248 — 핸드 기록 영속화 확인
+GET {{host}}/api/v1/hands/{{expected_hand_id}}
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK
+# {
+#   "data": {
+#     "hand_id": 248,
+#     "table_id": 1,
+#     "status": "completed",
+#     "winner_seats": [3],
+#     "total_pot": 14000,
+#     "actions_count": 12,
+#     "community_cards": ["Ah", "Kd", "Qs", "Js", "Td"],
+#     "started_at": "...",
+#     "completed_at": "..."
+#   }
+# }
+#
+# Assertion (team2 owns):
+#   - status === 200
+#   - data.status === "completed"
+#   - data.winner_seats.length >= 1
+#   - data.total_pot > 0
+#   - data.community_cards.length === 5
+
+### J.2 GET /api/v1/events/replay?from_seq=0&channel=cc_event — 전체 이벤트 회수
+GET {{host}}/api/v1/events/replay?from_seq=0&channel=cc_event&hand_id={{expected_hand_id}}
+Authorization: Bearer {{admin_token}}
+
+# 예상: 200 OK
+# {
+#   "events": [
+#     { "seq": 1, "type": "InitialState", ... },
+#     { "seq": 2, "type": "GameInfoAck", ... },
+#     ...
+#     { "seq": N, "type": "HandCompleted", ... }
+#   ]
+# }
+#
+# Assertion (team2 + team4 owns — CCR-021 regression):
+#   - events[].seq 가 strictly monotonic increasing (gap 0)
+#   - 마지막 event.type === "HandCompleted"
+#   - 첫 event.type === "InitialState" 또는 "GameInfoAck"
+#   - "PotAwarded" 정확히 1회 등장
+
+### J.3 GET /api/v1/_mock/overlay/last-frame — Overlay 출력 stub 검증 (선택)
+GET {{host}}/api/v1/_mock/overlay/last-frame?table_id={{test_table_id}}
+Authorization: Bearer {{admin_token}}
+
+# 본 endpoint 는 B-210 (Overlay Rive OutputEvent 매핑) 완료 후 활성.
+# 현재 stub 응답:
+# {
+#   "implemented": false,
+#   "todo": "B-210 — Overlay Rive frame extraction"
+# }
+#
+# Assertion (conductor owns):
+#   - B-210 완료 시: data.frame_data 가 base64 png + last_event.type === "HandCompleted"
+#   - 현재 (stub): implemented === false 인 경우만 허용 (회귀 시 false → true 전환 검출)
+
+# ──────────────────────────────────────────────────────────────────────
+# Definition of Done (B-211 완료 기준)
+# ──────────────────────────────────────────────────────────────────────
+#
+# - [ ] integration-tests-e2e.yml workflow 가 본 시나리오를 GREEN 으로 통과
+# - [ ] 각 Phase 의 Assertion 4팀 합의 (team2/team3/team4/conductor 서명)
+# - [ ] _mock endpoint (RFID scan, overlay frame) BO 에 구현
+# - [ ] WebSocket 단계 자동화 (httpyac WS plugin 또는 별도 wscat runner)
+# - [ ] B-210 완료 시 Overlay stub assertion 활성
+#
+# 본 시나리오 작성: 2026-05-11 (S9 Phase 1 scaffold)
