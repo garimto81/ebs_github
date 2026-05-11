@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone, timedelta
 
@@ -19,6 +20,13 @@ import httpx
 from fastapi import FastAPI, HTTPException, Query
 
 from tools.chat_server.broker_client import BrokerClient
+from tools.chat_server.models import SendRequest
+
+MENTION_RE = re.compile(r"@([A-Za-z][\w-]*)")
+
+
+def _parse_mentions(body: str) -> list[str]:
+    return [f"@{m}" for m in MENTION_RE.findall(body)]
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 logger = logging.getLogger("chat-server")
@@ -99,3 +107,27 @@ async def chat_peers(active: bool = Query(False)):
                 continue
         peers = filtered
     return {"peers": peers, "count": len(peers)}
+
+
+@app.post("/chat/send")
+async def chat_send(req: SendRequest):
+    """User-initiated chat send. source is hardcoded 'user'."""
+    topic = f"chat:{req.channel}"
+    mentions = req.mentions or _parse_mentions(req.body)
+    kind = "reply" if req.reply_to is not None else "msg"
+    payload = {
+        "kind": kind,
+        "from": "user",
+        "to": [m.lstrip("@") for m in mentions],
+        "body": req.body,
+        "reply_to": req.reply_to,
+        "thread_id": req.thread_id,
+        "mentions": mentions,
+        "ts": datetime.now(timezone.utc).isoformat(),
+    }
+    try:
+        r = await broker.publish(topic=topic, payload=payload, source="user")
+    except Exception as e:
+        logger.exception("broker publish failed")
+        raise HTTPException(status_code=503, detail=f"broker error: {e}")
+    return r
