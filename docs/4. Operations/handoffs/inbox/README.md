@@ -1,3 +1,11 @@
+---
+title: Session-Bridge Inbox
+owner: S11
+tier: internal
+last-updated: 2026-05-11
+purpose: observer_loop --action-mode auto-drop target for broker events with payload.next_action.type == inbox-drop
+---
+
 # Session-Bridge Inbox (S11 Cycle 3)
 
 > 자동 drop 영역. observer_loop `--action-mode` 가 broker event 의 `payload.next_action.type == "inbox-drop"` 신호를 받아 markdown 으로 떨어뜨린다.
