@@ -3,11 +3,11 @@ title: OutputEvent Serialization
 owner: team3
 tier: contract
 legacy-id: API-04.1
-last-updated: 2026-05-08
-last-synced: 2026-05-08  # Foundation §B.1 정합 marker (S8 audit 2026-05-08, D2 awareness)
+last-updated: 2026-05-11
+last-synced: 2026-05-11  # Foundation §B.2/§B.3 정합 marker (B-330 Engine 별도 프로세스 전파)
 reimplementability: PASS
 reimplementability_checked: 2026-04-22
-reimplementability_notes: "API-04.1 OutputEvent 직렬화 계약 완결. B-332 SSOT 선언 §4.1 추가 (2026-04-22, Foundation §6.4 Engine SSOT 전파)."
+reimplementability_notes: "API-04.1 OutputEvent 직렬화 계약 완결. B-332 SSOT 선언 §4.1 추가 (2026-04-22, Foundation §6.4 Engine SSOT 전파). B-330 §개요 'in-process vs 네트워크' 주석 mode-aware 재작성 (2026-05-11)."
 audit-notes:
   - "2026-05-08 S8 audit D2: 본 파일과 Overlay_Output_Events.md §6.0 간 OE-12~21 매핑 충돌 발견. publisher (output_event.dart) 실측 정본화 후속 작업 → B-356-oe-catalog-self-inconsistency.md"
 confluence-page-id: 3818914230
@@ -24,7 +24,12 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38189
 
 > **정본 코드**: `team3-engine/ebs_game_engine/lib/core/actions/output_event.dart` (sealed class)
 >
-> **in-process vs 네트워크**: CC 내부(같은 Flutter 프로세스)는 Dart 객체를 직접 전달할 수도 있으나, **상호운용·로깅·재생 일관성** 을 위해 본 JSON 스키마를 1차 계약으로 쓴다.
+> **전송 경로 (B-330 정렬, Foundation §B.2/§B.3)**:
+> - **Engine → CC**: **항상 JSON** (Engine 은 어느 모드에서도 별도 프로세스 — REST 응답으로 JSON 직렬화 필수)
+> - **CC → Overlay (탭 모드)**: 같은 Flutter 바이너리이므로 **Dart 객체 직접 전달 가능** (in-process Stream). 단 **상호운용·로깅·재생 일관성** 을 위해 본 JSON 스키마를 1차 계약으로 유지
+> - **CC → Overlay (다중창 모드)**: BO 경유 WS broadcast 이므로 **항상 JSON** (직접 IPC 금지, Foundation §B.2)
+>
+> 결론: **JSON 이 모든 hop 의 1차 계약**. Dart 객체 직접 전달은 탭 모드 CC↔Overlay 성능 최적화 옵션일 뿐, 의미·필드 정의는 본 JSON 스키마가 SSOT.
 
 ---
 

@@ -3,10 +3,11 @@ title: OutputEventBuffer 구현 경계
 owner: team3
 tier: contract
 legacy-id: API-04.3
-last-updated: 2026-04-16
+last-updated: 2026-05-11
+last-synced: 2026-05-11  # Foundation §B.2/§B.3 정합 marker (B-330 Engine 별도 프로세스 전파)
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
-reimplementability_notes: "API-04.3 버퍼 경계 계약 완결"
+reimplementability_notes: "API-04.3 버퍼 경계 계약 완결. 2026-05-11 B-330 에서 §2/§3 mode-aware 재작성 — 계약 본질 유지(Engine=buffer-less, team4=buffer)"
 confluence-page-id: 3818521062
 confluence-parent-id: 3811836049
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521062/EBS+OutputEventBuffer
@@ -17,7 +18,15 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38185
 
 `Overlay_Output_Events.md §3.6` 이 **"team4 가 OutputEventBuffer 를 구현한다"** 고 명시했으나, **team3 Harness 와의 경계·인터페이스 시그니처가 불명확**한 상태였다. 본 문서는 두 팀의 책임을 정확히 분할한다.
 
-> **핵심 원칙**: team3 엔진은 **buffer-less emitter**. Security Delay 는 **team4 소비자가 적용**. 같은 Flutter 프로세스 안이면 Dart Stream, 프로세스 분리면 WebSocket 경유.
+> **핵심 원칙 (B-330 Foundation §B.2 정렬)**: team3 엔진은 **buffer-less emitter** + **항상 별도 프로세스** (CC 내부 in-process 라이브러리 옵션 없음). Security Delay 는 **team4 소비자(Flutter)** 가 적용한다. **Engine → CC 는 어떤 모드에서도 REST**. CC → Overlay 만 모드에 따라 분기: **탭 모드** = 같은 Flutter 바이너리 in-process Dart Stream / **다중창 모드** = BO 경유 WS broadcast (직접 IPC 금지, Foundation §B.2).
+
+> **3 주체 경계 요약 (B-330)**:
+>
+> | 주체 | 위치 | 통신 |
+> |------|------|------|
+> | Engine | 항상 별도 프로세스 (중앙 서버 또는 `dart run bin/harness.dart` 로컬 컨테이너) | CC↔Engine = REST stateless |
+> | CC + Overlay (탭) | 같은 Flutter 바이너리 | in-process Dart Stream |
+> | CC + Overlay (다중창) | 독립 OS 프로세스 | BO 경유 WS broadcast |
 
 ---
 
@@ -37,9 +46,11 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38185
 
 ---
 
-## 2. Dart Stream 인터페이스 (in-process)
+## 2. Dart Stream 인터페이스 (탭 모드 — CC+Overlay in-process)
 
-CC + Overlay + Engine 이 같은 Flutter 앱 내에서 실행되는 경우 (Phase 1 기본):
+**전제 (B-330 정렬, Foundation §B.2)**: **CC + Overlay 만** 같은 Flutter 앱 내에서 실행되는 경우 (탭 모드). **Engine 은 항상 REST 원격** (별도 프로세스) — Engine 이 같은 프로세스에 in-process 라이브러리로 포함되는 옵션은 비채택.
+
+탭 모드에서 CC orchestrator 가 Engine REST 응답을 받아 in-process Dart Stream 으로 Overlay 에 전달:
 
 ### team3 Engine 측
 
@@ -103,27 +114,60 @@ class OutputEventBuffer {
 
 ---
 
-## 3. WebSocket 경로 (프로세스 분리 시)
+## 3. 네트워크 경로 (기본 — Engine REST + 다중창 BO WS)
 
-Engine Harness 가 별도 프로세스·서버로 동작하는 경우:
+> **B-330 승격 (2026-05-11)**: 본 절은 이전 "프로세스 분리 시 대체 경로" 에서 **기본 경로** 로 승격. Foundation §B.2/§B.3 가 Engine 별도 프로세스 + 다중창 모드 BO 경유 통신을 명시했기 때문. §2 탭 모드는 "CC + Overlay 한정 in-process" 특수 케이스.
+
+### 3.1 Engine → CC (모든 모드 공통 — REST stateless)
 
 ```
-team3 Engine (Harness port 8080)
+team3 Engine 프로세스 (Harness port 8080)
     │
-    ▼ REST pull 또는 WebSocket push (API-05)
+    ▼ JSON 응답 (API-04.1 envelope)
+    │   (CC 의 REST POST event 에 대한 응답으로
+    │    gameState + OutputEvent[] 동시 반환)
     │
-    ▼ JSON envelope (API-04.1)
-    │
-team4 CC Flutter 앱
-    │ WebSocket client 가 JSON → OutputEvent 역직렬화
+team4 CC orchestrator 프로세스
+    │ REST client 가 JSON → OutputEvent 역직렬화
     ▼
-OutputEventBuffer (같은 Dart Stream 인터페이스)
-    │
-    ├─ backstageStream → 운영진 Overlay
-    └─ broadcastStream → 방송 Overlay (Security Delay 후)
+(다음 단계: §3.2 또는 §2 탭 모드 in-process)
 ```
 
-**WebSocket 프레임 규약**: `API-05 WebSocket_Events.md` 와 envelope 일치. OutputEvent 는 `payload.kind: "OutputEvent"` 서브타입으로 포함.
+**REST 규약**: `Harness_REST_API.md` (API-04.2) 의 stateless query 패턴. 동일 입력 → 동일 응답. WS push 는 미래 옵션 (§6 미해결 항목).
+
+### 3.2 CC → Overlay (다중창 모드 — BO 경유 WS broadcast)
+
+Lobby/CC/Overlay 가 독립 OS 프로세스로 실행되는 경우 (Foundation §B.2 — *"다중창 모드 시 Lobby/CC/Overlay 독립 OS 프로세스. BO 경유 통신 (직접 IPC 금지)"*):
+
+```
+CC orchestrator 프로세스
+    │
+    ▼ WS publish (API-05, ws/cc 채널)
+    │
+BO 프로세스 (중앙 서버 + DB)
+    │ DB commit (audit) + WS broadcast (API-05)
+    │
+    ▼ JSON envelope (API-04.1, payload.kind: "OutputEvent")
+    │
+team4 Overlay 프로세스 (독립 Flutter)
+    │ WS client 가 JSON → OutputEvent 역직렬화
+    ▼
+OutputEventBuffer (Overlay 프로세스 측에 위치)
+    │
+    ├─ backstageStream → 운영진 Overlay 윈도우
+    └─ broadcastStream → 방송 Overlay 윈도우 (Security Delay 후)
+```
+
+**WebSocket 프레임 규약**: `API-05 WebSocket_Events.md` 와 envelope 일치. OutputEvent 는 `payload.kind: "OutputEvent"` 서브타입으로 포함. **직접 CC↔Overlay IPC 금지** — 항상 BO 경유 (Foundation §B.2).
+
+### 3.3 버퍼 위치 비교 (탭 vs 다중창)
+
+| 모드 | 버퍼 위치 | 입력 stream | 출력 stream |
+|------|-----------|-------------|-------------|
+| **탭 모드 (§2)** | CC orchestrator (또는 Overlay widget) 내부 — 같은 Flutter 바이너리 | Engine REST 응답 → CC 내부 StreamController | backstage/broadcast Dart Stream → Overlay widget |
+| **다중창 모드 (§3.2)** | Overlay 프로세스 측 | BO WS → Overlay WS client | backstage/broadcast Dart Stream → Overlay widget (Overlay 프로세스 내부) |
+
+두 모드 공통: **Engine/Harness 는 buffer 미보유** (즉시 emit), **team4 소비자가 buffer 적용**.
 
 ---
 

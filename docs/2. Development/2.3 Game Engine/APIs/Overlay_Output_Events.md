@@ -3,8 +3,8 @@ title: Overlay Output Events
 owner: team3
 tier: internal
 legacy-id: API-04
-last-updated: 2026-05-08
-last-synced: 2026-05-08  # Foundation §B.1 정합 marker (S8 audit 2026-05-08, D2 awareness)
+last-updated: 2026-05-11
+last-synced: 2026-05-11  # Foundation §B.1/§B.2/§B.3 정합 marker (S8 B-330 Engine 별도 프로세스 전파 2026-05-11)
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "API-04 Overlay 출력 21종 이벤트 카탈로그 (21KB). TBD 5건은 NDI/BS-07 WSOP LIVE 정렬/stats 계산 등 외부 의존"
@@ -25,12 +25,23 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38185
 | 2026-04-08 | 신규 작성 | CC→Overlay 데이터 흐름, 출력 채널, Security Delay, 해상도, 크로마키 |
 | 2026-04-22 | §1 / §1.3 Engine SSOT 주석 신설 (B-332, notify: team4) | Foundation §6.3 §1.1.1 / §6.4 에 따라 "Engine 응답이 게임 상태 SSOT. BO WS = audit 참고값" 을 파이프라인 · GameState 표 상단에 명시. |
 | 2026-05-08 | D2 [HIGH] OE 카탈로그 self-inconsistency 인지 marker | OutputEvent_Serialization.md §섹션 OE-12~21 매핑이 본 파일 §6.0 publisher 실측 정본 (2026-04-15) 과 충돌. 또한 본 파일 내부에서도 변경이력 (line 18) vs §1.3 mapping (line 123) OE-05 명명 충돌. 단일 PR 로 완결 불가 → B-356 backlog 신설로 분리. (S8 consistency audit 2026-05-08) |
+| 2026-05-11 | B-330 [P0] Engine 별도 프로세스 원칙 §1.1/§1.2/§개요 전파 (notify: team4) | Foundation §B.2 / §B.3 (통신 매트릭스) 정렬: Engine 은 항상 별도 프로세스(중앙 서버), CC↔Engine 은 REST. CC↔Overlay 만 탭 모드 in-process / 다중창 모드 BO 경유. 기존 "CC + Overlay 동일 Flutter 앱 + Engine in-process" 가정 제거. 파이프라인 ASCII + Mermaid 재작성. |
 
 ---
 
 ## 개요
 
-이 문서는 **Command Center(CC) Game Engine에서 Overlay까지의 데이터 흐름과 출력 채널 계약**을 정의한다. CC와 Overlay는 동일 Flutter 앱 내에서 실행되며, 네트워크 통신 없이 in-process Dart 함수 호출로 데이터를 전달한다.
+이 문서는 **CC → Engine → CC → Overlay 데이터 흐름과 Overlay 출력 채널 계약**을 정의한다.
+
+**3 주체 프로세스 경계 (Foundation §B.2 / §B.3 정본):**
+
+| 주체 | 위치 | 통신 |
+|------|------|------|
+| **Engine** | **항상 별도 프로세스** (중앙 서버 또는 `dart run bin/harness.dart` 로컬 컨테이너) | CC↔Engine = **REST (stateless query)** |
+| **CC + Overlay (탭 모드)** | 같은 Flutter 바이너리 (피처 테이블 PC 1대) | CC↔Overlay = **in-process Dart 함수 호출** |
+| **CC + Overlay (다중창 모드)** | 독립 OS 프로세스 (Lobby/CC/Overlay 모두 독립) | CC↔Overlay = **BO 경유 WS broadcast** (직접 IPC 금지, Foundation §B.2) |
+
+> Engine 이 CC 프로세스에 in-process 라이브러리로 포함되는 옵션(Option B) 은 비채택 — 바이너리 호환 복잡도 + 엔진 업데이트 시 CC 재빌드 강제 + 로그/오류 격리 약화. Engine 은 항상 원격 REST.
 
 > **WSOP LIVE 정렬 상태**: WSOP LIVE Confluence 의 BS-07 Overlay 문서 = **TBD (미완성)**. 본 문서는 선행 설계이며 BS-07 완성 시 OutputEvent 용어·스키마 재검증 예정. 추적 항목: `../Backlog/B-320-WSOP-LIVE-BS-07-감시.md`.
 
@@ -40,11 +51,13 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38185
 
 | 원칙 | 설명 |
 |------|------|
-| **동일 프로세스** | CC와 Overlay는 같은 Flutter 앱. 네트워크 오버헤드 없음 |
+| **Engine 별도 프로세스** | Engine 은 항상 원격 (REST). CC↔Engine 응답은 stateless. (Foundation §B.2) |
+| **탭 모드 in-process** | CC + Overlay 같은 Flutter 바이너리. Dart 함수 호출 (네트워크 오버헤드 없음) |
+| **다중창 모드 BO 경유** | Lobby/CC/Overlay 독립 OS 프로세스. CC↔Overlay 는 BO WS broadcast (Foundation §B.2) |
 | **반응형 렌더링** | GameState 변경 → Overlay 위젯 자동 rebuild (Flutter 반응형) |
 | **Security Delay** | 방송 지연 버퍼로 카드 정보 선노출 방지 |
 | **다중 출력** | 동일 Overlay 데이터를 NDI/HDMI/크로마키로 동시 출력 가능 |
-| **경계** | 이 계약은 **in-process 전용**. 3-앱 간 WebSocket 이벤트는 `WebSocket_Events.md` (legacy-id: API-05) 가 소유 |
+| **경계** | CC↔BO / CC↔Engine WebSocket·REST 이벤트는 `WebSocket_Events.md` (legacy-id: API-05) + `Harness_REST_API.md` 가 소유. 본 문서는 OutputEvent 카탈로그 + Overlay 출력 계약 |
 
 ---
 
@@ -54,40 +67,63 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38185
 
 ### 1.1 전체 파이프라인
 
+**탭 모드** (피처 테이블 PC 1대, CC+Overlay 같은 Flutter 바이너리):
+
 ```
-CC Input (운영자/RFID)
-     │
-     ▼
-Game Engine ──── GameState 업데이트
-     │
-     ├── Security Delay Buffer (0~120초)
-     │         │
-     │         ▼
-     │    Delayed GameState
-     │         │
-     │         ▼
-     └── Overlay Widget Tree ──── Rive 애니메이션
-                │
-                ├── NDI 출력 (flutter_ndi TBD)
-                ├── HDMI 출력 (디스플레이 직결)
-                └── 크로마키 출력 (배경 투명)
+[CC Input: 운영자/RFID]
+        │
+        │ Dart 함수 호출 (앱 내부)
+        ▼
+   [CC orchestrator] ─────────────────────┐
+        │                                  │ 병행 dispatch
+        │ REST POST event (≤ 20ms 로컬)    │  (Foundation §B.3)
+        ▼                                  ▼
+  [Engine — 별도 프로세스]            [BO — 중앙 서버]
+        │                                  │
+        │ gameState (SSOT)                 │ ActionAck (audit 참고값)
+        │ + 21 OutputEvent stream          │
+        ▼                                  ▼
+   [CC orchestrator]  ◄───────────────────┘
+        │
+        │ in-process Dart Stream (탭 모드 한정)
+        ▼
+   [Security Delay Buffer (0~120초)]
+        │
+        ▼
+   [Overlay Widget Tree] ─── Rive 애니메이션
+        │
+        ├── NDI 출력 (flutter_ndi TBD)
+        ├── HDMI 출력 (디스플레이 직결)
+        └── 크로마키 출력 (배경 투명)
 ```
 
-> **경계 주의**: 본 문서는 CC Flutter 앱 **프로세스 내부** 데이터 흐름만 정의한다.
-> BO/Lobby 와의 네트워크 이벤트(`HandStarted`, `ActionPerformed`, `OutputStatusChanged` 등)는
-> `WebSocket_Events.md` (legacy-id: API-05) 참조. Game Engine 이 OutputEvent 를 발행한 뒤 CC 가 WS 로 BO 에
-> 재발행하는 경로는 API-05 §3.
+**다중창 모드** (Lobby/CC/Overlay 독립 OS 프로세스):
+
+```
+[CC Input] → CC process → REST → Engine process
+                         ↓ WS (BO 경유, 직접 IPC 금지)
+                       [BO process — 중앙 서버]
+                         ↓ WS broadcast
+                       [Overlay process] → Rive → NDI/HDMI/크로마키
+```
+
+> **경계 정합 (Foundation §B.2 / §B.3)**: Engine 은 어느 모드에서도 별도 프로세스. CC↔Engine 은 REST stateless query. CC↔Overlay 만 모드에 따라 in-process(탭) 또는 BO 경유 WS broadcast(다중창) 로 분기. Security Delay Buffer 는 탭 모드에서는 CC↔Overlay in-process Stream, 다중창 모드에서는 Overlay 프로세스 측에서 BO WS payload 수신 후 자체 버퍼링한다 (§3.6 참조).
+>
+> **상세 네트워크 이벤트**: BO↔CC↔Engine 간 WS·REST 페이로드는 `WebSocket_Events.md` (legacy-id: API-05) + `Harness_REST_API.md` 참조. Engine 이 OutputEvent 를 발행한 뒤 CC 가 WS 로 BO 에 재발행하는 경로는 API-05 §3.
 
 ### 1.2 데이터 전달 방식
 
-CC와 Overlay는 같은 Flutter 앱 내에서 실행되므로, **in-process Dart 함수 호출**로 데이터를 전달한다.
+Engine 은 별도 프로세스(REST), CC↔Overlay 는 모드에 따라 분기. 단일 in-process 가정은 폐기 (Foundation §B.2).
 
-| 계층 | 전달 방식 | 지연 |
-|------|----------|:----:|
-| CC Input → Game Engine | Dart 함수 호출 | < 1ms |
-| Game Engine → Security Delay Buffer | Dart Stream/Queue | < 1ms |
-| Security Delay Buffer → Overlay | 타이머 기반 GameState 방출 | 0~120초 (설정값) |
-| Overlay Widget → Rive 애니메이션 | Flutter 위젯 rebuild | < 16ms (1프레임) |
+| 계층 | 전달 방식 | 지연 | 비고 |
+|------|----------|:----:|------|
+| CC Input(운영자/RFID) → CC orchestrator | Dart 함수 호출 (앱 내부) | < 1ms | 모든 모드 공통 |
+| CC → Engine (event POST) | **REST POST** (stateless query) | ≤ 20ms (로컬) | Foundation §B.3, 항상 별도 프로세스 |
+| Engine → CC (gameState + OutputEvent) | **REST 응답** (stateless) | ≤ 20ms (로컬) | gameState = SSOT, ActionAck(BO) 은 audit 참고값 |
+| CC → Overlay (탭 모드) | **in-process Dart Stream/Queue** (Security Delay Buffer 경유) | < 1ms (버퍼 미적용 시) | 같은 Flutter 바이너리 한정 |
+| CC → Overlay (다중창 모드) | **BO 경유 WS broadcast** (직접 IPC 금지) | 수 ms (BO + 네트워크) | Foundation §B.2, Overlay 프로세스가 자체 Security Delay Buffer 보유 |
+| Security Delay Buffer → Overlay (탭/다중창 공통) | 타이머 기반 GameState 방출 | 0~120초 (설정값) | §3.5 Backstage 는 우회 즉시 송출 |
+| Overlay Widget → Rive 애니메이션 | Flutter 위젯 rebuild | < 16ms (1프레임) | 모든 모드 공통 |
 
 ### 1.3 GameState → Overlay 전달 데이터
 
@@ -271,7 +307,7 @@ Overlay는 두 개의 NDI 스트림을 **동시에** 제공한다:
 
 ### 3.6 OutputEventBuffer 구조
 
-> **구현 소유팀 (CCR-056 확정)**: **Team 4 (CC Flutter 앱)** 가 OutputEventBuffer 를 구현한다. 근거: §1.2 "CC 와 Overlay 는 동일 Flutter 앱, in-process 통신" + §3.5 "Backstage 는 buffer 우회 즉시 송출" — Backstage/Broadcast 분기는 Flutter 앱 프로세스 내부에서 자연스럽다. Team 3 harness 는 OutputEvent 를 즉시 emit 하며 buffer 미보유(Pure Dart 계산 엔진 원칙 유지). GAP-GE-009 RESOLVED.
+> **구현 소유팀 (CCR-056 확정, B-330 mode-aware 재정렬)**: **Team 4 (CC + Overlay Flutter)** 가 OutputEventBuffer 를 구현한다. 근거: §1.2 — **탭 모드** 는 CC + Overlay 가 같은 Flutter 바이너리이므로 buffer 는 CC orchestrator 내부 / **다중창 모드** 는 Overlay 프로세스가 BO WS payload 를 수신한 뒤 자체 buffer 적용. 두 모드 모두 Team 4 영역. + §3.5 "Backstage 는 buffer 우회 즉시 송출" — Backstage/Broadcast 분기는 Team 4 책임. Team 3 harness/Engine 은 OutputEvent 를 즉시 emit 하며 buffer 미보유(Pure Dart 계산 엔진 원칙 유지, Engine 은 별도 프로세스 — Foundation §B.2). GAP-GE-009 RESOLVED.
 
 | 항목 | 소유팀 | 위치 (예상) |
 |------|--------|-------------|

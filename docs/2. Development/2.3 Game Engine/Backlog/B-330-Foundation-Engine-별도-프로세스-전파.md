@@ -1,11 +1,13 @@
 ---
 id: B-330
-title: "Foundation §6.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파"
-status: PENDING
+title: "Foundation §B.2/§B.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파"
+status: DONE
 priority: P0
 created: 2026-04-22
+completed: 2026-05-11
+completed-stream: S8
 source: docs/2. Development/2.3 Game Engine/Backlog.md
-related-foundation: "docs/1. Product/Foundation.md §6.3 (프로세스 경계) / §6.4 (실시간 동기화)"
+related-foundation: "docs/1. Product/Foundation.md §B.2 (Backend 통신) / §B.3 (통신 매트릭스). 백로그 본문의 §6.3/§6.4 numbering 은 Foundation v11 재설계 후 §B.x 로 재배치되었음"
 mirror: none
 ---
 
@@ -42,12 +44,21 @@ mirror: none
 
 ## 수락 기준
 
-- [ ] 3 문서 모두에서 "Engine 이 CC 프로세스 내부" 가정을 제거
-- [ ] "탭 모드 / 다중창 모드 / Engine" 3 주체 구분 명시
-- [ ] `Overlay_Output_Events.md §1.1` 파이프라인 Mermaid 를 Foundation §6.3 시나리오 A/B 와 정합
-- [ ] 관련 subscriber 팀(team4) 에 `notify: team4` 커밋 태그
+- [x] 3 문서 모두에서 "Engine 이 CC 프로세스 내부" 가정을 제거 ✅ 2026-05-11
+- [x] "탭 모드 / 다중창 모드 / Engine" 3 주체 구분 명시 ✅ 2026-05-11 (Overlay_Output_Events §개요 핵심 원칙 표 / OutputEventBuffer_Boundary §개요 3-주체 경계 요약 / OutputEvent_Serialization §개요 전송 경로 3-bullet)
+- [x] `Overlay_Output_Events.md §1.1` 파이프라인을 Foundation §B.2/§B.3 시나리오와 정합 ✅ 2026-05-11 (탭 모드 ASCII + 다중창 모드 ASCII 분리. Mermaid 는 §B.3 sequenceDiagram 정본을 재인용)
+- [x] 관련 subscriber 팀(team4) 에 `notify: team4` 커밋 태그 ✅ 2026-05-11
+
+## 완료 요약 (2026-05-11)
+
+| 파일 | 변경 |
+|------|------|
+| `APIs/Overlay_Output_Events.md` | frontmatter last-synced 갱신 / 변경이력 +1 / §개요 3-주체 표 + 핵심 원칙 표 mode-aware / §1.1 파이프라인 ASCII 재작성 (탭 + 다중창 분리) / §1.2 데이터 전달 표 mode 분기 / §3.6 buffer 소유 mode-aware |
+| `APIs/OutputEventBuffer_Boundary.md` | frontmatter last-synced + reimplementability_notes 갱신 / §개요 3-주체 경계 요약 / §2 제목 + 전제 탭 모드 한정 / §3 네트워크 경로 (기본) 승격: §3.1 Engine→CC REST + §3.2 다중창 CC→Overlay BO 경유 WS + §3.3 버퍼 위치 비교표 |
+| `APIs/OutputEvent_Serialization.md` | frontmatter last-synced + reimplementability_notes 갱신 / §개요 전송 경로 mode 분기 + "JSON 이 모든 hop 1차 계약" 결론 |
 
 ## 관련
 
-- Foundation §4.4, §5.0, §6.3, §6.4
-- 연동 항목: B-334 (OutputEventBuffer 3 런타임 분법)
+- Foundation §A.1 (Lobby), §A.4 (Command Center), §B.2 (Backend 통신), §B.3 (통신 매트릭스), §C.1 (Overlay)
+- 연동 항목: B-334 (OutputEventBuffer 3 런타임 분법) — 본 B-330 의 mode 구분이 B-334 의 전제. B-330 완료로 B-334 진입 가능
+- subscriber 팀: team4 (CC + Overlay) — `notify: team4` 커밋 태그 필수
