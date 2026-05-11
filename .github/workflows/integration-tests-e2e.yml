@@ -1,0 +1,333 @@
+name: Integration Tests E2E — Full Hand Flow + Scenario Regression
+
+# ----------------------------------------------------------------------
+# 목적 (B-211 — Foundation.md Ch.5 의존성 사슬 검증):
+#   integration-tests/scenarios/*.http 의 HTTP/WebSocket 통합 시나리오를
+#   PR head 에서 자동 실행하여 회귀 검출.
+#
+#   단위 테스트 (각 팀의 pytest/flutter test) 는 격리 검증만 가능하고,
+#   "조립" 단계의 회귀 (이벤트 순서, seq monotonic, 팟 정합) 는 본 workflow
+#   가 유일한 자동 검출 경로.
+#
+# 트리거:
+#   PR 이 integration-tests/ 또는 백엔드 / Engine 핵심 코드를 건드릴 때.
+#
+# 동작:
+#   1. checkout
+#   2. docker compose --profile e2e up -d (bo + engine + redis + mock-rfid)
+#   3. health gate (모든 서비스 /healthz GREEN 대기, 최대 90s)
+#   4. seed admin + operator + viewer JWT 발급 → .env 주입
+#   5. httpyac send 'integration-tests/scenarios/*.http' --bail --junit
+#   6. JUnit XML artifact 업로드 + PR 코멘트
+#
+# 차단 시나리오:
+#   - v99-full-hand-flow.http 의 Phase J (BO commit verification) 가 fail
+#     → 이벤트 순서 / seq monotonic / hand record 영속화 회귀
+#   - 기존 10~62 시나리오 중 하나라도 fail → 계약 회귀
+#
+# 비-차단 (현재 — Phase 1 scaffold):
+#   - WebSocket-only 단계는 httpyac 의 ws plugin 의존 (별도 cycle)
+#   - _mock/rfid/scan endpoint BO 구현 전까지 v99 Phase C~I 는 skip
+# ----------------------------------------------------------------------
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'integration-tests/scenarios/**'
+      - '.github/workflows/integration-tests-e2e.yml'
+      - 'team2-backend/**'
+      - 'team3-engine/**'
+      - 'shared/ebs_common/**'
+      - 'docker-compose.yml'
+      - 'docker-compose.e2e.yml'
+  workflow_dispatch:
+    inputs:
+      scenarios:
+        description: 'Glob pattern (예: integration-tests/scenarios/v99-*.http)'
+        required: false
+        default: 'integration-tests/scenarios/*.http'
+
+concurrency:
+  group: integration-tests-e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────
+  # Static scenario lint — .http 문법 + frontmatter (CCR 추적) 검증
+  # 5초 안에 끝나는 빠른 fail gate.
+  # ──────────────────────────────────────────────────────────────────────
+  scenario-lint:
+    name: Scenario Lint (.http 문법 + CCR 추적)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      # httpyac v6 CLI 는 'parse' subcommand 미제공 (send/oauth2 만 제공).
+      # --dryRun 도 외부 script 평가까지 진행 → dotenv 누락 시 false-fail.
+      # 본 lint 는 .http 파일의 구조만 검증한다 (실제 syntax/실행 검증은
+      # e2e-run job 의 httpyac send 에서 수행).
+      - name: Validate .http file structure
+        run: |
+          set -e
+          shopt -s nullglob
+          fail=0
+          for f in integration-tests/scenarios/*.http; do
+            echo "::group::$f"
+            # 검증: 최소 1개 이상의 HTTP method line (GET|POST|PUT|PATCH|DELETE)
+            # _env.http 는 환경 변수만 정의하므로 면제
+            if [ "$(basename "$f")" = "_env.http" ]; then
+              echo "  ✓ (env file — skipped)"
+              echo "::endgroup::"
+              continue
+            fi
+            # WS-only 시나리오 (예: 32-cc-write-game-info.http) 는 HTTP 요청
+            # 없이 wscat 매뉴얼로 구성됨 → exempt
+            if grep -qE "wscat -c|WebSocket 송신|WebSocket 수신" "$f"; then
+              echo "  ✓ (ws-only — HTTP line waived)"
+              echo "::endgroup::"
+              continue
+            fi
+            # request line 은 literal URL 또는 {{var}} 템플릿 둘 다 허용
+            if ! grep -qE "^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS) +(https?://|\{\{)" "$f"; then
+              echo "::error file=$f::No HTTP request line found"
+              fail=$((fail + 1))
+            else
+              # 추가 검증: '@host', '@admin_token' 등 변수 참조가 있다면 정의 또는
+              # _env.http 에서 상속되어야 함 (변수명만 검증, 값은 .env runtime)
+              echo "  ✓ structure OK"
+            fi
+            echo "::endgroup::"
+          done
+          if [ "$fail" -gt 0 ]; then
+            echo "❌ $fail scenario(s) failed structure check"
+            exit 1
+          fi
+          echo "✓ All .http scenarios have valid structure"
+
+      - name: Enforce CCR header (계약 추적 추적성)
+        run: |
+          set -e
+          shopt -s nullglob
+          violations=0
+          for f in integration-tests/scenarios/*.http; do
+            # _env.http, v99-*, v95-* 는 면제
+            #   _env.http       — 환경 변수 공유 파일 (CCR 없음)
+            #   v99-*.http      — 멀티 CCR cross-cut (Coverage 섹션에 명시)
+            #   *v95-*.http     — V9.5 phase 마커 사용 (CCR scheme 도입 전 작성)
+            case "$(basename "$f")" in
+              _env.http|v99-*.http|*v95-*.http) continue ;;
+            esac
+            if ! head -10 "$f" | grep -qE "CCR-[0-9]{3}"; then
+              echo "::error file=$f::Missing CCR-NNN reference in first 10 lines"
+              violations=$((violations + 1))
+            fi
+          done
+          if [ "$violations" -gt 0 ]; then
+            echo "❌ $violations scenario(s) missing CCR reference (README.md §CCR 추적)"
+            exit 1
+          fi
+          echo "✓ All scenarios reference CCR contracts"
+
+  # ──────────────────────────────────────────────────────────────────────
+  # E2E run — docker compose stack 부팅 후 httpyac 로 시나리오 자동 실행.
+  # 본 job 은 scenario-lint 통과 후에만. 부팅 비용이 크므로 fast-fail 우선.
+  # ──────────────────────────────────────────────────────────────────────
+  e2e-run:
+    name: E2E Run (httpyac + docker compose stack)
+    needs: [scenario-lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      # docker-compose.e2e.yml 이 없을 수도 있음 (구현 전). 그 경우 이후 step
+      # 들을 graceful skip 하고 scenario-lint 만으로 PR gate 충족.
+      # (job-level if: + hashFiles() 는 runner setup 전 평가되어 invalid)
+      - name: Check e2e stack availability
+        id: stack
+        run: |
+          if [ -f docker-compose.e2e.yml ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "✓ docker-compose.e2e.yml present"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::docker-compose.e2e.yml not found — e2e-run steps will skip (scenario-lint provides gate)"
+          fi
+
+      - name: Setup Node
+        if: steps.stack.outputs.available == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Install httpyac + reporters
+        if: steps.stack.outputs.available == 'true'
+        run: |
+          npm install -g httpyac@^6
+          npm install -g junit-report-merger@^7
+
+      - name: Set up Docker Buildx
+        if: steps.stack.outputs.available == 'true'
+        uses: docker/setup-buildx-action@v4
+
+      # ───────────────────────────────────────────────────────────────
+      # Bring up e2e stack
+      # docker-compose.e2e.yml = base compose + mock-rfid override
+      # ───────────────────────────────────────────────────────────────
+      - name: docker compose up (e2e profile)
+        if: steps.stack.outputs.available == 'true'
+        env:
+          DOCKER_BUILDKIT: "1"
+          COMPOSE_DOCKER_CLI_BUILD: "1"
+        run: |
+          set -e
+          echo "::group::compose up"
+          docker compose -f docker-compose.yml -f docker-compose.e2e.yml --profile e2e up -d
+          echo "::endgroup::"
+          docker compose -f docker-compose.yml -f docker-compose.e2e.yml ps
+
+      # ───────────────────────────────────────────────────────────────
+      # Health gate — 최대 90s 대기, 모든 핵심 서비스 GREEN
+      # ───────────────────────────────────────────────────────────────
+      - name: Wait for services health
+        if: steps.stack.outputs.available == 'true'
+        run: |
+          set -e
+          max_wait=90
+          waited=0
+          until curl -fsS http://localhost:8000/healthz \
+                && curl -fsS http://localhost:8080/healthz; do
+            if [ "$waited" -ge "$max_wait" ]; then
+              echo "::error::Services did not become healthy within ${max_wait}s"
+              docker compose -f docker-compose.yml -f docker-compose.e2e.yml logs --tail=200
+              exit 1
+            fi
+            sleep 3
+            waited=$((waited + 3))
+            echo "  waiting... ${waited}/${max_wait}s"
+          done
+          echo "✓ BO (:8000) + Engine (:8080) healthy"
+
+      # ───────────────────────────────────────────────────────────────
+      # Seed credentials → .env (httpyac dotenv 참조)
+      # ───────────────────────────────────────────────────────────────
+      - name: Seed admin / operator / viewer + capture JWT
+        if: steps.stack.outputs.available == 'true'
+        run: |
+          set -e
+          # tools/seed_e2e_users.py 가 BO 에 seed 후 stdout 으로 JWT 3개 출력.
+          # 미구현 시 graceful skip — httpyac 가 401 로 fail 하지만 명확한 cause.
+          if [ -f tools/seed_e2e_users.py ]; then
+            python tools/seed_e2e_users.py --bo-url http://localhost:8000 > .env.jwt
+            grep -E '^(ADMIN_JWT|OPERATOR_JWT|VIEWER_JWT)=' .env.jwt > integration-tests/scenarios/.env
+            echo "✓ Seeded users + .env injected"
+          else
+            echo "::warning::tools/seed_e2e_users.py not found — scenarios needing auth will 401"
+            touch integration-tests/scenarios/.env
+          fi
+
+      # ───────────────────────────────────────────────────────────────
+      # Run scenarios — bail on first fail for fast feedback
+      # ───────────────────────────────────────────────────────────────
+      - name: Run httpyac scenarios
+        id: httpyac
+        if: steps.stack.outputs.available == 'true'
+        continue-on-error: true  # JUnit 업로드 후 실패 판정
+        run: |
+          set -e
+          mkdir -p test-results
+          pattern="${{ github.event.inputs.scenarios || 'integration-tests/scenarios/*.http' }}"
+          echo "Pattern: $pattern"
+          httpyac send "$pattern" \
+            --all \
+            --bail \
+            --output junit \
+            --output-file test-results/junit.xml \
+            --verbose
+
+      - name: Upload JUnit results
+        if: always() && steps.stack.outputs.available == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: httpyac-junit-${{ github.event.pull_request.number || 'manual' }}
+          path: test-results/
+          retention-days: 14
+
+      - name: Compose logs on failure
+        if: (failure() || steps.httpyac.outcome == 'failure') && steps.stack.outputs.available == 'true'
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.e2e.yml logs --tail=300 > test-results/compose.log
+          echo "::group::Last 100 lines of compose log"
+          tail -100 test-results/compose.log
+          echo "::endgroup::"
+
+      - name: Upload compose logs
+        if: (failure() || steps.httpyac.outcome == 'failure') && steps.stack.outputs.available == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: compose-logs-${{ github.event.pull_request.number || 'manual' }}
+          path: test-results/compose.log
+          retention-days: 7
+
+      - name: Fail job if scenarios failed
+        if: steps.httpyac.outcome == 'failure'
+        run: |
+          echo "❌ httpyac scenarios failed — see junit artifact + compose logs"
+          exit 1
+
+      # ───────────────────────────────────────────────────────────────
+      # PR comment on failure with B-211 cheat-sheet
+      # ───────────────────────────────────────────────────────────────
+      - name: Comment on failure
+        if: failure() && github.event.pull_request != null
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const body = [
+              '❌ **Integration Tests E2E failed**',
+              '',
+              '`httpyac send integration-tests/scenarios/*.http` 가 PR head 에서 실패했습니다.',
+              '',
+              '### 빈번한 회귀 패턴 (B-211 history)',
+              '',
+              '| Phase | 증상 | 1차 점검 |',
+              '|:-----:|------|---------|',
+              '| A (Setup) | 401 / 403 on /auth/me | tools/seed_e2e_users.py 가 admin 시드 실패. BO seed 절차 점검 |',
+              '| A.2 (Deck) | 422 DUPLICATE_UID | 이전 run 의 deck 잔존. compose volume reset 필요 |',
+              '| C (Mock RFID) | 404 /_mock/rfid/scan | _mock endpoint 미구현 (B-211 D.o.D §3) |',
+              '| J.1 (BO commit) | data.status !== "completed" | Engine HandCompleted → BO persist 경로 단절 |',
+              '| J.2 (seq) | gap detected | CCR-021 회귀 — WebSocket seq generator 결함 |',
+              '',
+              '자세한 로그: 본 run 의 `compose-logs-*` artifact 참조.',
+              '',
+              '### 시나리오 카탈로그',
+              '`integration-tests/scenarios/README.md` — 18 scenarios, CCR coverage matrix.',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body,
+            });
+
+      # ───────────────────────────────────────────────────────────────
+      # Always teardown — orphan containers 가 다음 run 에서 conflict
+      # ───────────────────────────────────────────────────────────────
+      - name: Compose down
+        if: always() && steps.stack.outputs.available == 'true'
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.e2e.yml down -v --remove-orphans

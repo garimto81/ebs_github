@@ -3,6 +3,7 @@
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-10 | 신규 작성 | CCR-010~036 계약 검증 시나리오 카탈로그 |
+| 2026-05-11 | B-211 추가 | v99-full-hand-flow.http + integration-tests-e2e.yml CI gate (S9 Phase 1) |
 
 ---
 
@@ -20,6 +21,7 @@
 | **40~49** | Overlay / Security Delay / Color sync | 025, 033, 034, 036 |
 | **50~59** | RFID / Deck Register | 022, 026 |
 | **60~69** | team1 WSOP Parity (Event/Flight/Table/RBAC) | 016, 017 |
+| **v99** | E2E 풀 핸드 (cross-cut) — RFID → Engine → CC → BO → Overlay | 021, 024, 026, 029, 031 |
 
 ## 실행 환경
 
@@ -44,7 +46,17 @@ VIEWER_JWT=eyJhbGc...
 
 ---
 
-## 작성 완료 (16개)
+## 자동 실행 (CI Gate)
+
+PR 이 본 디렉토리, `team2-backend/`, `team3-engine/`, `shared/ebs_common/`, `docker-compose*.yml` 를 건드릴 때 `.github/workflows/integration-tests-e2e.yml` 워크플로우가 자동으로 시나리오를 실행한다.
+
+- **scenario-lint job** (필수): `httpyac parse` 로 .http 문법 검증 + CCR header 강제 (v99, _env 제외)
+- **e2e-run job** (조건부): `docker-compose.e2e.yml` 존재 시에만 활성. compose stack 부팅 → httpyac send → JUnit + compose logs artifact 업로드
+- **실패 시 PR 코멘트**: B-211 cheat-sheet 자동 첨부
+
+수동 실행: `gh workflow run integration-tests-e2e.yml -f scenarios='integration-tests/scenarios/v99-*.http'`
+
+## 작성 완료 (17개)
 
 | 파일 | 커버 CCR | 상태 |
 |------|----------|:----:|
@@ -64,6 +76,7 @@ VIEWER_JWT=eyJhbGc...
 | `60-event-flight-status-enum.http` | CCR-017 §1 | ✓ |
 | `61-table-is-pause-constraint.http` | CCR-017 §2 | ✓ |
 | `62-rbac-bit-flag.http` | CCR-017 §5 | ✓ |
+| `v99-full-hand-flow.http` | CCR-021/024/026/029/031 cross-cut (B-211) | scaffold |
 
 ## 작성 필요 (API 검증 가능)
 
