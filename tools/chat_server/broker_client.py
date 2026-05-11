@@ -5,6 +5,7 @@ publisher_id 는 항상 'chat-server' 로 고정 (source='user' 발급 권한).
 """
 from __future__ import annotations
 
+import json
 import os
 from contextlib import asynccontextmanager
 
@@ -13,6 +14,30 @@ from mcp.client.streamable_http import streamablehttp_client
 
 
 PUBLISHER_ID = "chat-server"
+
+
+def _extract_result(r) -> dict:
+    """Extract result dict from CallToolResult.
+
+    FastMCP only populates `structuredContent` when the tool function has a
+    typed return model. Broker tools currently return `dict` (untyped), so the
+    result lands in `content[0].text` as a JSON string. Try structured first,
+    fall back to parsing the first text content.
+    """
+    if getattr(r, "structuredContent", None):
+        return r.structuredContent
+    content = getattr(r, "content", None) or []
+    for item in content:
+        text = getattr(item, "text", None)
+        if not text:
+            continue
+        try:
+            parsed = json.loads(text)
+        except (TypeError, ValueError):
+            continue
+        if isinstance(parsed, dict):
+            return parsed
+    return {}
 
 
 class BrokerClient:
@@ -43,7 +68,7 @@ class BrokerClient:
                     "publisher_id": PUBLISHER_ID,
                 },
             )
-            return r.structuredContent or {}
+            return _extract_result(r)
 
     async def subscribe(
         self, topic: str, from_seq: int = 0, timeout_sec: int = 30
@@ -53,7 +78,7 @@ class BrokerClient:
                 "subscribe",
                 {"topic": topic, "from_seq": from_seq, "timeout_sec": timeout_sec},
             )
-            return r.structuredContent or {}
+            return _extract_result(r)
 
     async def get_history(
         self, topic: str = "*", since_seq: int = 0, limit: int = 50
@@ -63,9 +88,9 @@ class BrokerClient:
                 "get_history",
                 {"topic": topic, "since_seq": since_seq, "limit": limit},
             )
-            return r.structuredContent or {}
+            return _extract_result(r)
 
     async def discover_peers(self) -> dict:
         async with self.session() as s:
             r = await s.call_tool("discover_peers", {})
-            return r.structuredContent or {}
+            return _extract_result(r)
