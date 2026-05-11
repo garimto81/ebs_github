@@ -139,3 +139,28 @@ body {
   background: #1f6feb;
   color: white;
 }
+
+.panel.trace { background: #0d1117; }
+.panel.trace .messages { font-size: 12px; }
+.msg.trace-stream .trace-topic   { color: var(--s2); }
+.msg.trace-cascade .trace-topic  { color: var(--accent); }
+.msg.trace-pipeline .trace-topic { color: var(--s10w); }
+.msg.trace-audit .trace-topic    { color: var(--smem); }
+.msg.trace-defect .trace-topic   { color: var(--user); }
+.msg .trace-source { color: var(--muted); }
+.msg .trace-summary { color: var(--fg); opacity: 0.7; }
+
+.trace-filters {
+  font-size: 11px;
+  font-weight: normal;
+  color: var(--muted);
+  margin-left: 10px;
+}
+.trace-filters label {
+  margin-right: 8px;
+  cursor: pointer;
+}
+.trace-filters input {
+  vertical-align: middle;
+  margin-right: 2px;
+}
