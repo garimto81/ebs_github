@@ -1,0 +1,8 @@
+stream_id: S9
+team_name: QA Stream (cross-cutting)
+activated_at: '2026-05-11T12:28:09.660474'
+worktree_path: C:/claude/ebs-qa
+branch: work/s9/2026-05-11-init
+scope_owns:
+- integration-tests/**
+- .github/workflows/*e2e*
