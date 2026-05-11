@@ -5,10 +5,18 @@ class AppConfig {
   final String wsBaseUrl;
   final bool useMock;
 
+  /// 1 hand auto-setup hook (Cycle 2, Issue #239).
+  /// When true, the Lobby will auto-execute the 1-hand demo wire on startup:
+  ///   table 생성 → CC 할당 → RFID monitor → cascade:lobby-hand-ready publish.
+  /// Enabled via `--dart-define=HAND_AUTO_SETUP=true`.
+  /// Default: false (manual operation only).
+  final bool handAutoSetup;
+
   const AppConfig({
     required this.apiBaseUrl,
     required this.wsBaseUrl,
     required this.useMock,
+    this.handAutoSetup = false,
   });
 
   /// 2026-05-06: backend auth router prefix `/api/v1` 정합 후
@@ -39,6 +47,8 @@ class AppConfig {
       apiBaseUrl: apiBase,
       wsBaseUrl: wsBase,
       useMock: const bool.fromEnvironment('USE_MOCK', defaultValue: false),
+      handAutoSetup:
+          const bool.fromEnvironment('HAND_AUTO_SETUP', defaultValue: false),
     );
   }
 }
