@@ -15,7 +15,8 @@ jobs:
         id: detect
         run: |
           BRANCH="${{ github.head_ref }}"
-          STREAM=$(echo "$BRANCH" | grep -oP 'work/\K(s\d+)' | tr '[:lower:]' '[:upper:]')
+          # v10.4: allow dashes in stream id (e.g. s10-a, s10-w) — matches topics.py ^stream:(S[\w-]+)$
+          STREAM=$(echo "$BRANCH" | grep -oP 'work/\K(s\d+(-[a-z]+)?)' | tr '[:lower:]' '[:upper:]')
           if [ -z "$STREAM" ]; then
             echo "::warning::Branch $BRANCH does not match work/sN/* pattern. Skipping scope check."
             echo "skip=true" >> $GITHUB_OUTPUT
