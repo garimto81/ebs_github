@@ -2,13 +2,29 @@
 title: NOTIFY-S1 — Lobby 정체성 정정 cascade (Foundation §5.1 영향)
 owner: stream:S2 (Lobby) → notify stream:S1 (Foundation)
 tier: notify
-status: PENDING_S1
+status: RESOLVED
 created: 2026-05-07
+resolved-at: 2026-05-11
+resolved-by: stream:S2 (autonomous iteration — Foundation 사후 검증)
 trigger: Lobby_PRD v3.0.0 정체성 정정 ("관제탑" → "5분 게이트웨이 + WSOP LIVE 거울")
 mirror: none
 ---
 
-# NOTIFY-S1 — Foundation §5.1 Lobby 정체성 정정 위임
+# NOTIFY-S1 — Foundation §5.1 Lobby 정체성 정정 위임 — RESOLVED 2026-05-11
+
+> **RESOLVED (2026-05-11, autonomous iteration)**: S1 Foundation Stream 이 본 NOTIFY 를
+> cascade 처리 완료. `docs/1. Product/Foundation.md` 의 "관제탑" 표현 0 건 (`grep -c 관제탑
+> Foundation.md` = 0). 핵심 line 매핑 확인:
+>
+> | 위치 | 검증 결과 |
+> |------|----------|
+> | Ch.5 §A.1 L545 | `Lobby — 5분 게이트웨이 + WSOP LIVE 거울 (Lobby_PRD v3.0.0)` ✅ |
+> | L462 mermaid | `L["Lobby<br/>5분 게이트웨이"]` ✅ |
+> | L502 표 | `Lobby (5분 게이트웨이 + WSOP LIVE 거울)` ✅ |
+> | L553 frontmatter | "5분 게이트웨이 + WSOP LIVE 거울 (Lobby_PRD v3.0.0)" ✅ |
+> | L1142 redirect 표 | "§5.1 | Lobby (5분 게이트웨이 + WSOP LIVE 거울) | Ch.5 §A.1" ✅ |
+>
+> 본 NOTIFY 의 위임 사항은 100% 반영됨. S1 PR 정황은 git log 의 S1 cascade commit 들에 분산.
 
 ## 발신
 
