@@ -136,27 +136,40 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
-    # docker-compose.e2e.yml 이 없을 수도 있음 (구현 전). 그 경우 본 job 은
-    # 자동 skip 하고 scenario-lint 만으로 PR gate 충족.
-    if: ${{ hashFiles('docker-compose.e2e.yml') != '' }}
-
     steps:
       - name: Checkout PR
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
 
+      # docker-compose.e2e.yml 이 없을 수도 있음 (구현 전). 그 경우 이후 step
+      # 들을 graceful skip 하고 scenario-lint 만으로 PR gate 충족.
+      # (job-level if: + hashFiles() 는 runner setup 전 평가되어 invalid)
+      - name: Check e2e stack availability
+        id: stack
+        run: |
+          if [ -f docker-compose.e2e.yml ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "✓ docker-compose.e2e.yml present"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::docker-compose.e2e.yml not found — e2e-run steps will skip (scenario-lint provides gate)"
+          fi
+
       - name: Setup Node
+        if: steps.stack.outputs.available == 'true'
         uses: actions/setup-node@v6
         with:
           node-version: '20'
 
       - name: Install httpyac + reporters
+        if: steps.stack.outputs.available == 'true'
         run: |
           npm install -g httpyac@^6
           npm install -g junit-report-merger@^7
 
       - name: Set up Docker Buildx
+        if: steps.stack.outputs.available == 'true'
         uses: docker/setup-buildx-action@v4
 
       # ───────────────────────────────────────────────────────────────
@@ -164,6 +177,7 @@ jobs:
       # docker-compose.e2e.yml = base compose + mock-rfid override
       # ───────────────────────────────────────────────────────────────
       - name: docker compose up (e2e profile)
+        if: steps.stack.outputs.available == 'true'
         env:
           DOCKER_BUILDKIT: "1"
           COMPOSE_DOCKER_CLI_BUILD: "1"
@@ -178,6 +192,7 @@ jobs:
       # Health gate — 최대 90s 대기, 모든 핵심 서비스 GREEN
       # ───────────────────────────────────────────────────────────────
       - name: Wait for services health
+        if: steps.stack.outputs.available == 'true'
         run: |
           set -e
           max_wait=90
@@ -199,6 +214,7 @@ jobs:
       # Seed credentials → .env (httpyac dotenv 참조)
       # ───────────────────────────────────────────────────────────────
       - name: Seed admin / operator / viewer + capture JWT
+        if: steps.stack.outputs.available == 'true'
         run: |
           set -e
           # tools/seed_e2e_users.py 가 BO 에 seed 후 stdout 으로 JWT 3개 출력.
@@ -217,6 +233,7 @@ jobs:
       # ───────────────────────────────────────────────────────────────
       - name: Run httpyac scenarios
         id: httpyac
+        if: steps.stack.outputs.available == 'true'
         continue-on-error: true  # JUnit 업로드 후 실패 판정
         run: |
           set -e
@@ -231,7 +248,7 @@ jobs:
             --verbose
 
       - name: Upload JUnit results
-        if: always()
+        if: always() && steps.stack.outputs.available == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: httpyac-junit-${{ github.event.pull_request.number || 'manual' }}
@@ -239,7 +256,7 @@ jobs:
           retention-days: 14
 
       - name: Compose logs on failure
-        if: failure() || steps.httpyac.outcome == 'failure'
+        if: (failure() || steps.httpyac.outcome == 'failure') && steps.stack.outputs.available == 'true'
         run: |
           docker compose -f docker-compose.yml -f docker-compose.e2e.yml logs --tail=300 > test-results/compose.log
           echo "::group::Last 100 lines of compose log"
@@ -247,7 +264,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Upload compose logs
-        if: failure() || steps.httpyac.outcome == 'failure'
+        if: (failure() || steps.httpyac.outcome == 'failure') && steps.stack.outputs.available == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: compose-logs-${{ github.event.pull_request.number || 'manual' }}
@@ -299,6 +316,6 @@ jobs:
       # Always teardown — orphan containers 가 다음 run 에서 conflict
       # ───────────────────────────────────────────────────────────────
       - name: Compose down
-        if: always()
+        if: always() && steps.stack.outputs.available == 'true'
         run: |
           docker compose -f docker-compose.yml -f docker-compose.e2e.yml down -v --remove-orphans
