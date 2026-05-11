@@ -30,6 +30,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38190
 | 2026-04-21 | §10.1/§10.5 정정 (notify: team2) | Type C 모순 해소 — "BO는 Game Engine에 전달" → "BO는 DB audit + Lobby 브로드캐스트. 게임 로직 검증은 Engine HTTP (CC 직접)". `Command_Center_UI/Overview.md §1.1.1` 확정 아키텍처 (CC=Orchestrator, Engine primary + BO secondary 병행) 반영. ActionAck 의 next_action_seat 는 참고값, SSOT 는 Engine 응답. decision_owner: team2 (team4 제안) |
 | 2026-04-22 | §9.1/§11.1/§11.3 정정 (notify: team2) | P1/P2 cascade — §10 정정과 동형 패턴. WriteGameInfo "BO→Engine" 제거. WriteDeal Engine 호출 skip 명시 (createSession 이 auto HandStart+holecards 배분). DealAck.phase 는 참고값. Ack/Rejected 필드 의미 재정의 (BO validation 만). |
 | 2026-05-11 | §4.2.10 신설 (D3 drift 해소) | `cc_session_count` 이벤트 spec 정합 — 코드 (`websocket/manager.py:_broadcast_cc_session_count`) 에는 Phase 3.C (2026-05-06) 부터 존재했으나 본 문서에 미문서화 (spec_drift_check D3). Lobby TopBar `cc-pill` 활성 CC 카운트용. EBS 독자 (WSOP LIVE 미대응). |
+| 2026-05-11 | §13.3 구현 현황 노트 (D2 투명성) | `force_logout` D2 drift 명시화 — endpoint 코드는 minimal viable (users.updated_at bump 만) 이고 JWT 무효화/WS close/이벤트 broadcast/audit_events 기록 미구현. spec §13.3 은 P5 backend 완결 대상이며 spec_drift_check D2 가 이 미구현을 가리킴. backlog IMPL-009 SUPERSEDED → V9.5 P7 본 endpoint 완결로 해소 예정. |
 
 ---
 
@@ -1269,6 +1270,8 @@ CC 운영자가 DEAL 버튼을 누르면 BO 에 audit 용 이벤트 발행. **En
 CC 수신 시: 사용 중인 gfskin 이 비활성화되면 fallback skin 으로 자동 교체. 활성 hand 영향 0 (다음 hand 부터 적용 — IMPL-008 §business rules 2 정합).
 
 ### 13.3 `force_logout` payload + close code
+
+> **구현 현황 (2026-05-11)**: HTTP endpoint `POST /users/{id}/force-logout` 은 `team2-backend/src/routers/users.py:70` 에 minimal viable 로만 존재 — `users.updated_at` bump 후 `{forced_logout: true, user_id}` 반환. JWT 무효화 / refresh token 폐기 / WebSocket close (4003) / 본 이벤트 broadcast / audit_events 기록은 모두 미구현 (해당 함수 docstring `Future: integrate with JWT blacklist + WS disconnect`). 본 §13.3 spec 은 P5 backend 코드 완결 시 정합 대상. spec_drift_check D2 (websocket / force_logout) 는 이 미구현을 가리킴 — backlog IMPL-009 (SUPERSEDED) + V9.5 P7 코드 완결로 해소.
 
 대상 user 의 active WebSocket 모든 connection 에 동일 페이로드 송신 후 즉시 connection close.
 
