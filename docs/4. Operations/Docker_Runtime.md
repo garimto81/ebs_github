@@ -196,3 +196,85 @@ docker exec ebs-bo python -c "import redis; print(redis.from_url('redis://redis:
 - 사건 기록:
   - 2026-04-22 **1차**: `ebs-lobby-web` 좀비 오판 — 5일간 옛 이미지 서빙 발견 → stop/rm/rmi 수행. **그러나 "Desktop 단일 스택" 기획 문구를 문자 그대로 해석하여 실제 운영 요구 (Docker Web 배포) 를 out-of-scope 로 단정** 한 2차 오류 발생.
   - 2026-04-22 **2차**: 사용자 지적으로 기획 ↔ 운영 괴리 (Type C) 인식. Deployment.md 신설 + Dockerfile/nginx.conf/compose `lobby-web` 서비스 복원 + Flutter Web platform 재활성. 본 문서의 "Desktop only" 선언 철회.
+
+---
+
+## Inter-Session Chat Server (B-222)
+
+> dev 보조 도구. broker (호스트 Python) 위에서 동작하는 FastAPI SSE 중계 컨테이너.
+> 본 spec: `docs/4. Operations/Inter_Session_Chat_Design.md`.
+
+### Lifecycle
+
+```bash
+# 1. broker 살아있는지 (이미 실행 중이 아니면)
+python tools/orchestrator/start_message_bus.py --detach
+
+# 2. chat-server 컨테이너 기동
+docker compose -f tools/chat_server/docker-compose.yml up -d
+
+# 3. 브라우저
+http://localhost:7390/
+
+# 중지
+docker compose -f tools/chat_server/docker-compose.yml down
+
+# 로그
+docker compose -f tools/chat_server/docker-compose.yml logs -f chat-server
+
+# 재빌드
+docker compose -f tools/chat_server/docker-compose.yml up -d --build
+```
+
+### 의존성
+
+| 서비스 | 위치 | 필수 |
+|--------|-----|:----:|
+| broker | 호스트 Python `:7383` | ✓ |
+| chat-server | 컨테이너 `:7390` | ✓ |
+| 브라우저 | 사용자 데스크톱 | ✓ |
+
+### Healthcheck
+
+```bash
+curl http://localhost:7390/health
+```
+
+Expected JSON:
+```json
+{
+  "status": "ok",
+  "version": "0.1.0",
+  "broker_url": "http://host.docker.internal:7383/mcp",
+  "broker_alive": true
+}
+```
+
+| 결과 | 의미 |
+|-----|-----|
+| `broker_alive: true` | 정상 |
+| `broker_alive: false` | broker 죽음. `start_message_bus.py --probe` 로 확인 후 `--detach` 재기동 |
+| 응답 없음 | chat-server 컨테이너 죽음. `docker compose up -d` 재기동 |
+
+### Troubleshooting
+
+| 증상 | 원인 | 조치 |
+|-----|-----|-----|
+| `http://localhost:7390/` 접속 불가 | 컨테이너 미기동 | `docker compose ps` 후 `up -d` |
+| SSE 연결 즉시 끊김 | broker 죽음 | UI 상단 빨간 배너 표시. broker 재기동 |
+| 메시지 발신 503 | broker `publish_event` 실패 | broker 로그 (`.claude/message_bus/broker.log`) 확인 |
+| `@` autocomplete peer 목록 빔 | 다른 세션 publish 없음 (5분+ idle) | 정상. 새 세션이 publish 하면 표시 |
+| CORS 에러 | localhost 외 origin 시도 | 본 도구는 localhost 전용. 외부 접속 미지원 |
+
+### root compose 와의 관계
+
+- chat-server 는 **별도 compose** (`tools/chat_server/docker-compose.yml`).
+- root compose (S11 영역 — Game Engine, CC Backend 등) 와 lifecycle 분리.
+- 동시 기동 안전 (포트 7390 충돌 없음).
+
+### Production 가이드 (선택)
+
+dev 전용으로 설계. production 배포 필요 시 별도 spec 필요:
+- broker 컨테이너화 + replication
+- 토큰 인증 (`source="user"` publisher_id 강화)
+- nginx 리버스 프록시
