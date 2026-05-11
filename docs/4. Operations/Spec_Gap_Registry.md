@@ -2,7 +2,7 @@
 title: Spec Gap Registry — Drift 집계 + 해소 추적
 owner: conductor
 tier: internal
-last-updated: 2026-04-27
+last-updated: 2026-05-11
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "감지 도구 + 분류 체계 + Registry 자체로 외부 인계 가능"
@@ -33,19 +33,20 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 - **Registry 갱신**: `python tools/spec_drift_check.py --all --format=json > logs/drift_report.json`
 - **Pre-push 경고**: `.claude/hooks/pre_push_drift_check.py` (non-blocking)
 
-## 4. 현재 Drift (2026-04-26 fresh scan)
+## 4. 현재 Drift (2026-05-11 fresh scan)
 
 ### 4.1 계약별 요약
 
 | 계약 | D1 | D2 | D3 | D4 | Total | 핵심 조치 |
 |------|:--:|:--:|:--:|:--:|:-----:|-----------|
-| REST API | 7 | 48 | 0 | 114 | 169 | 2026-04-26 fresh: D2 +6 (baseline 42→48). 분석 결과 (IMPL-005) **scanner false positive dominant** — 대부분의 D2 는 router prefix 매칭 한계 (SG-010 후속). 실제 누락 endpoint 는 소수 (SG-021 metadata, SG-008-b10/b11 삭제 권고 endpoint). team2 라우터 실구현 + scanner 정밀화 대기 |
+| REST API | 0 | 43 | 2 | 130 | 175 | 2026-05-11 fresh: **D1 7→0** (큰 개선 — Backend_HTTP `/api/v1` prefix 정정 효과 누적). D2 48→43 (router 흡수). **D3 0→2 신규** = `GET /api/v1/flights/{_}/levels`, `POST /api/v1/skins/upload` (SG-008 잔여 후속, code-only). D4 +16 |
 | OutputEvent | 0 | 0 | 0 | 21 | 21 | **PASS** 유지 |
 | FSM | 0 | 0 | 0 | 23 | 23 | **PASS** 유지 (SG-009 직렬화 규약 적용 후) |
-| DB Schema | 0 | 1 | 2 | 23 | 26 | 변화 없음. 잔여 D2 `payout_structures` + D3 `cards`/`settings_kv` (SG-010 scanner 잔여 noise) |
+| DB Schema | 0 | 0 | 0 | 27 | 27 | ✅ **진정한 PASS 도달** 2026-05-11 — D2 `payout_structures` 해소 + D3 `cards`/`settings_kv` scanner noise 해소. SG-010 detector 정밀화 효과 누적. D4 23→27 |
 | RFID HAL | 0 | 0 | 0 | 8 | 8 | **OUT_OF_SCOPE** 유지 (SG-011) |
-| Settings | 0 | 110 | 4 | 52 | 166 | 2026-04-26 IMPL-004 완료 후: D3 19→4 (15 키 (a) 매핑 해소). 잔여 4 = `fillKeyRouting` (SG-008-b15) + `twoFactorEnabled` (SG-008-b14) + `resolution`/`theme` (scanner false positive — backtick 인식 실패, SG-010). D2 +6 / D4 +13 = 신규 spec 보강의 부산물 |
-| WebSocket | 0 | 0 | 0 | 44 | 44 | ✅ **PASS 복귀** 2026-04-26 IMPL-006 완료 — publisher 6 함수 추가 + 6/6 pytest PASS. SG-020 DONE |
+| Settings | 0 | 109 | 3 | 53 | 165 | 2026-05-11: D2 110→109 / D3 4→3 (미세 변동). 잔여 D3 `fillKeyRouting`/`resolution`/`theme` 모두 `twoFactorEnabled` 해소(SG-008-b14 DONE) 후 잔류. D2 109 = scanner false positive dominant (SG-010 후속) |
+| WebSocket | 0 | 1 | 1 | 44 | 46 | ⚠️ **PASS 깨짐** 2026-05-11 — D2 `force_logout` (IMPL-009 known PENDING) + D3 `cc_session_count` (코드 완벽 구현, spec 누락). **SG-034 신규 등재** |
+| Auth | 0 | 0 | 0 | 0 | 0 | 2026-05-11 신규 contract 등장 — M1 D+1 완결 후 0/0/0/0 깨끗한 기준선 (M2~M10 IA 신설은 별 PR) |
 
 > 스캐너 자체가 정규식 기반 best-effort 이므로 D2/D3 에는 false positive 가 섞여 있다. D1 은 신뢰도 높음.
 
@@ -113,6 +114,12 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | SG-027 | workflow_extension | docs/4. Operations/Multi_Session_Workflow.md §"v7.2 — 5-Session Pipeline" | **DONE** | 2026-04-27 — 사용자 명시 5-Session Pipeline 도입 (multi-turn 분량 분할). v7.1 Mode A/B (권한) 와 직교 — v7.2 (분량). Session 1 (Infrastructure) ~ Session 5 (Final Audit). 각 session 마다 SESSION_X_HANDOFF.md 출력 + 다음 session read. Session 1 완료 (SESSION_1_HANDOFF.md), Session 2~5 후속 turn |
 | BLANK-1 | scope_clarification | Foundation §6.4 (latency) | **DONE** | 2026-04-27 — C.3 채택: 100ms = 전체 파이프라인 (RFID → Engine → WS → Render → Output) end-to-end. WebSocket 단일 구간 부연 (Phase 2 측정 대상). Foundation §6.4 분해 (Agent 1 처리) |
 | BLANK-3 | scope_clarification | Multi_Session_Workflow.md (merge) | **DONE** | 2026-04-27 — C.4 채택: worktree fast-forward + pre-push conflict hook. Multi_Session_Workflow.md L4 신규 섹션 |
+| SG-031 | meta_tooling | Confluence Mirror | **PHASE_4_PARTIAL** | `Conductor_Backlog/SG-031-confluence-mirror-rebuild.md` — Phase 3 DONE + Phase 4 partial (drift_count=0 + auto-classify + coverage 50.1%→67.0%). 잔여: Task 12/13/uncovered 226 |
+| SG-032 | dep_governance | Flutter major bumps | **DEFERRED** | `Conductor_Backlog/SG-032-flutter-deps-major-bumps-deferred.md` — rive 0.14, file_picker 11 migration deferred |
+| SG-033 | mission | EBS 미션 재선언 | **RESOLVED** | `Conductor_Backlog/SG-033-ebs-mission-redefinition.md` — 속도 KPI 폐기, 정확성·안정성·단단한 HW 5 가치 채택 |
+| SG-034 | spec_drift | websocket | PENDING | **2026-05-11 fresh scan 신규** — D2 `force_logout` (IMPL-009 known) + D3 `cc_session_count` (team1+team2 양쪽 구현, spec 누락). detail 카드 작성은 broker `pipeline:gap-classified` publish 로 위임 (S10-A scope 밖). 권고: `WebSocket_Events.md §13.X` cc_session_count event 보강 + IMPL-009 진행 후 PASS 복귀 |
+
+> Aggregate-vs-Source 동기화 (2026-05-11): SG-028~SG-030 미사용 ID. SG-031~SG-033 이미 자체 Backlog 카드 존재 — 위 표는 §4.4 진위 동기화 (Registry 표에서 누락되었던 6 entry catch-up).
 
 ## 5. 스캔 명령 레퍼런스
 
@@ -145,11 +152,12 @@ python tools/spec_drift_check.py --settings
 | 한계 | 영향 | 개선 경로 |
 |------|------|-----------|
 | 정규식 기반 — 주석 처리된 선언 포함 가능 | false positive 소수 | AST 기반 파서 (후속) |
-| Schema detector 가 inline code backtick 을 CREATE TABLE 로 오인 | D2 noise | Schema.md 의 표준 declaration 블록 확정 후 스캐너 정밀화 |
-| Settings detector 가 탭별 scope 분리 없음 | D2 전량 false | SG-010 |
-| Settings detector 의 identifier 정규화 (camelCase ↔ snake_case ↔ dotted) | D3 false positive | **SG-010 P6 완료 (2026-04-20)** — dotted namespace (`gfx.foo`) 마지막 segment + frontmatter slash-list + whitelist bypass 적용. D4 +39, D3 -13 (netof new code keys) |
-| WebSocket detector 가 payload 필드까지 D2 수집 | D2 89 false positive | **SG-010 F2 완료 (2026-04-20)** — 이벤트 카탈로그 테이블만 수집. D2 89→20 |
+| Schema detector 가 inline code backtick 을 CREATE TABLE 로 오인 | D2 noise | ✅ **2026-05-11 해소 확인** — schema 0/0/0/27 진정한 PASS 도달 (SG-010 정밀화 누적 효과). 한계 자체는 잠재 위험으로 유지 |
+| Settings detector 가 탭별 scope 분리 없음 | D2 전량 false | SG-010 (잔여) — 2026-05-11 fresh: D2 109건 여전히 dominant false positive |
+| Settings detector 의 identifier 정규화 (camelCase ↔ snake_case ↔ dotted) | D3 false positive | **SG-010 P6 완료 (2026-04-20)** — dotted namespace (`gfx.foo`) 마지막 segment + frontmatter slash-list + whitelist bypass 적용. D4 +39, D3 -13 (netof new code keys). 2026-05-11: D3 4→3 잔여 (3건 모두 known scanner false positive — `fillKeyRouting`/`resolution`/`theme`) |
+| WebSocket detector 가 payload 필드까지 D2 수집 | D2 89 false positive | **SG-010 F2 완료 (2026-04-20)** — 이벤트 카탈로그 테이블만 수집. D2 89→20. 2026-05-11: 정밀화 안정 — 진짜 D2 1건 (`force_logout`, IMPL-009 known PENDING) 정확 검출 |
 | 반대 방향 (문서 설명된 미구현 API) 부분 커버 | D2 일부 누락 가능 | TODO 마커 병행 grep |
+| **(NEW 2026-05-11)** auth contract detector 의 d4_count reporting 누락 — `tools/spec_drift_check.py:detect_auth()` 가 실제 5 rules (MAX_FAILED + lock_permanent + blacklist + composite_PK + refresh_delivery) 모두 PASS 검증 후에도 결과를 `0/0/0/0` 으로 출력 (다른 contract detector 는 매칭된 항목을 d4 로 카운트) | §4.1 표 의 auth row total 가 misleading (실제 5건 PASS, 표시 0) | spec_drift_check.py:detect_auth() 의 PASS 누적 로직 보강 — 다른 detector 패턴과 정합. SG-010 후속 cycle |
 
 ## Changelog
 
@@ -163,3 +171,4 @@ python tools/spec_drift_check.py --settings
 | 2026-04-26 | v1.5 — SG-012~019 승격 + SG-020 신설 (Phase 1 audit) | (1) SG-012~SG-019 8건 개별 SG 파일 신설 (`_template_spec_gap.md` 기반) — 2026-04-21 critic 리포트 등재 후 5일 동안 미승격. 추적 단절 해소. (2) **SG-020 신설** — WebSocket ack/reject 6 이벤트 D2 regression (baseline 2026-04-21 PASS 0/0/0/44 → fresh 2026-04-26 0/6/0/38). (3) §4.1 fresh scan 결과 갱신: api D2 +6 (42→48), settings D2 +7/D3 +2 (97/17→104/19), websocket D2 +6 (0→6). (4) audit 보고서 `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md` 발행. |
 | 2026-04-26 | v1.6 — Conductor 직접 IMPL 실행 (사용자 지시 "프로토타입 완성") | (1) **IMPL-006 DONE** — websocket publisher 6 함수 추가 (publishers.py 20→26, test_publishers.py 6/6 PASS). websocket PASS 복귀 0/0/0/44. SG-020 DONE. (2) **IMPL-007 DONE** — CC seat_cell.dart hole card 값 렌더링 제거 + face-down `?` 표시. `tools/check_cc_no_holecard.py` CI 가드 신설. Command_Center_UI/Overview.md §5.1 D7 계약 신설. (3) **IMPL-004 DONE (a)** — Settings 17 (a) 키 5개 Settings/*.md 파일 보강. settings D3 19→4 (잔여 4 = b14/b15 + scanner 2 false positive). (4) **IMPL-005 분석** — 48 D2 중 대다수 scanner false positive (router prefix 인식 한계, SG-010 후속). 그룹 A/B/C/D 분해 권고. (5) §4.1 갱신 (websocket PASS 복귀, settings 갱신). (6) pytest 248 passed (baseline 247 + 신규 ack/reject test). |
 | 2026-04-27 | v1.7 — Phase 1 Decision Queue (사용자 18건 결정 SSOT) | (1) **SG-022 신규** — 단일 Desktop 바이너리 (Lobby 포함). 2026-04-22 γ 하이브리드 supersedes. Foundation §5.0 / BS_Overview §1 정렬 (Agent 1). (2) **SG-008-b1~b9, b14, b15 = DONE** (B 그룹 11건 일괄 채택, registry 권고 옵션 1). 구현은 team2 위임. (3) **SG-003 + SG-017 = DONE** (C.1 5-level scope: Global/Series/Event/Table/User). Settings/Overview.md 재작성. (4) **SG-021 = DONE** (C.2 `.riv` 단일파일 + 표준 메타). Conductor_Backlog/SG-021 갱신. (5) **SG-020 = DONE** (IMPL-006 완료 반영). (6) **BLANK-1 신규 = DONE** (C.3 100ms 전체 파이프라인). (7) **BLANK-3 신규 = DONE** (C.4 worktree fast-forward + pre-push hook). (8) Phase_1_Decision_Queue.md 신규 작성. Multi_Session_Workflow.md L4 신설. Game_Rules 4 파일 frontmatter `tier: external` + `last-updated: 2026-04-27`. MEMORY feedback_web_flutter_separation [SUPERSEDED] + project_decision_2026_04_27_phase1.md 신규. |
+| 2026-05-11 | v1.8 — S10-A 정기 scan + SG-034 신규 (Stream 활성화 첫 산출물) | (1) **fresh scan 7 contract**: api D1 7→0 (큰 개선) / D3 0→2 (신규 endpoint 2건); schema **진정한 PASS 도달** (1/2 → 0/0); websocket **PASS 깨짐** (D2 1 + D3 1); auth 신규 contract 0/0/0/0 등장. (2) **§4.1 표 전면 갱신** (8 contract, baseline 2026-04-26 → 2026-05-11). (3) **SG-034 신규 등재** — `force_logout` (IMPL-009 known PENDING) + `cc_session_count` (코드 완벽, spec 누락) 묶음. detail 카드는 broker `pipeline:gap-classified` 발행으로 위임. (4) **§4.4 catch-up** — SG-031~SG-033 표에 누락된 3건 추가 + SG-034 신규 등재. SG-028~030 미사용 ID 명시. (5) **logs/drift_report.json 보존** (1352 lines, 44KB). (6) S10-A team_role broker contract: `publish pipeline:gap-classified` 첫 실행. |
