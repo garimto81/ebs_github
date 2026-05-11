@@ -257,7 +257,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | Overlay Output Events | team3 | internal | API-04 |
 | `docs/2. Development/2.3 Game Engine/Backlog.md` | Backlog | - | internal | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-320-WSOP-LIVE-BS-07-Overlay-감시.md` | WSOP LIVE BS-07 Overlay 완성 감시 | - | - | - |
-| `docs/2. Development/2.3 Game Engine/Backlog/B-330-Foundation-Engine-별도-프로세스-전파.md` | Foundation §6.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파 | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/B-330-Foundation-Engine-별도-프로세스-전파.md` | Foundation §B.2/§B.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md` | harness /engine/health endpoint 신설 — Foundation Demo Mode 3-stage 지원 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-332-Engine-응답-게임상태-SSOT-명시.md` | Engine 응답이 게임 상태 SSOT 임을 API-04 계약에 명시 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-333-Overview-22종-게임-12-7-3-분류표.md` | Overview §1.2.1 game_class 에 Foundation 12/7/3 분류 + 22 variant 매핑표 신설 | - | - | - |
@@ -276,6 +276,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` | NOTIFY-Conductor-2026-05-08-ci-infra-blockers | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-S8-pr180-ci-failure-2026-05-08.md` | NOTIFY-S8 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B331-engine-health-code-impl-2026-05-11.md` | NOTIFY-team3 — B-331 /engine/health 코드 구현 필요 (S8 scope 외) | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` | OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` | Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-303-Short-All-in-Rule-96-구현-DONE-2026-04-13.md` | Short All-in Rule 96 구현~~ ✅ DONE (2026-04-13) | - | - | - |
@@ -716,4 +717,5 @@ tier: generated
 | `docs/_archive/governance-2026-05/V9_4_AI_Centric_Governance.md` | V9.4 AI-Centric Governance — SSOT-first Judgment + 전문 질문 금지 | conductor | contract | - |
 | `docs/_archive/governance-2026-05/V9_5_Single_Session_Output_Centric.md` | V9.5 Single Session AI-Centric — Hub-and-Spoke Deprecation | conductor | contract | - |
 | `docs/_archive/governance-2026-05/Workflow_Conductor_Autonomous.md` | Conductor Autonomous Workflow SOP — Hourglass 패턴 | conductor | contract | - |
+| `docs/_journey/2026-05-11_smem_audit.md` | SMEM Weekly Memory Audit — 2026-05-11 | SMEM | - | - |
 | `docs/examples/README.md` | Examples | conductor | internal | - |

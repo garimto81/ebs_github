@@ -130,7 +130,7 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-025-LEGACY-검토-요청-BS-08-Graphic-Editor-행동-명세-신규-작성-WSOP.md` — [LEGACY] 검토 요청: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드)
 - `docs/2. Development/2.3 Game Engine/Backlog.md` — Backlog
 - `docs/2. Development/2.3 Game Engine/Backlog/B-320-WSOP-LIVE-BS-07-Overlay-감시.md` — WSOP LIVE BS-07 Overlay 완성 감시
-- `docs/2. Development/2.3 Game Engine/Backlog/B-330-Foundation-Engine-별도-프로세스-전파.md` — Foundation §6.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파
+- `docs/2. Development/2.3 Game Engine/Backlog/B-330-Foundation-Engine-별도-프로세스-전파.md` — Foundation §B.2/§B.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파
 - `docs/2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md` — harness /engine/health endpoint 신설 — Foundation Demo Mode 3-stage 지원
 - `docs/2. Development/2.3 Game Engine/Backlog/B-332-Engine-응답-게임상태-SSOT-명시.md` — Engine 응답이 게임 상태 SSOT 임을 API-04 계약에 명시
 - `docs/2. Development/2.3 Game Engine/Backlog/B-333-Overview-22종-게임-12-7-3-분류표.md` — Overview §1.2.1 game_class 에 Foundation 12/7/3 분류 + 22 variant 매핑표 신설
