@@ -694,6 +694,7 @@ tier: generated
 | `docs/4. Operations/handoffs/INFRA_ALIGNMENT_HANDOFF.md` | INFRA Alignment Handoff (Conductor Claim | conductor | internal | - |
 | `docs/4. Operations/handoffs/P0_REMEDIATION_HANDOFF.md` | P0 Remediation Handoff (port 3000 + Dockerfile context) | conductor | internal | - |
 | `docs/4. Operations/handoffs/P1_FOLLOWUP_HANDOFF.md` | P1/P3 Follow-up Handoff (Sentry sidecar + Flutter pin + ebs_v2 archive) | conductor | internal | - |
+| `docs/4. Operations/handoffs/inbox/README.md` | Session-Bridge Inbox | S11 | internal | - |
 | `docs/4. Operations/orchestration/2026-05-08-consistency-audit/README.md` | 2026-05-08 정합성 감사 — Master Orchestration Plan | conductor | internal | - |
 | `docs/4. Operations/orchestration/2026-05-08-consistency-audit/classification.md` | 683 .md 파일 전수 분류 매트릭스 | conductor | internal | - |
 | `docs/4. Operations/orchestration/2026-05-08-consistency-audit/conductor-spec.md` | conductor-spec | conductor | internal | - |
