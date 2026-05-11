@@ -8,7 +8,7 @@ confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228
 last-updated: 2026-05-11
 last-synced: 2026-05-11
-version: 3.0.1
+version: 3.0.2
 derivative-of: ../2. Development/2.1 Frontend/Lobby/Overview.md
 if-conflict: derivative-of takes precedence
 audience-target: 외부 stakeholder + Lobby 개발자 (이중 audience — 그림 소설 + 개발자 무결성)
@@ -209,6 +209,40 @@ Event 의 안쪽이다. 8 Flight (Day1A → Final) 가 한 줄씩 표시된다. 
 이것이 첫 진입의 끝이다.
 
 > 그가 Lobby 를 다시 보는 시점은 — 무언가 어긋났을 때, 게임이 바뀔 때, 모든 것이 끝날 때.
+
+### 1.7 — 1 hand 자동 셋업 (개발자/검증용 — 사람이 누르는 5 화면을 자동 재현)
+
+> **이 절은 운영자 화면이 아니다.** 인수인계 받은 개발자가 30 초 안에
+> "table 생성 → CC 할당 → RFID monitor → cascade publish" 의 4 단계가 끝까지
+> 작동하는지 확인하기 위한 **자동 셋업 데모** 다. 운영 화면은 §1.1~§1.6 그대로다.
+
+개발자가 다음 한 줄을 실행하면, §1.1~§1.6 의 5 화면을 사람이 누르는 대신 코드가 한 번에 재현한다.
+
+```bash
+flutter run -d chrome \
+  --dart-define=USE_MOCK=true \
+  --dart-define=HAND_AUTO_SETUP=true
+```
+
+부트스트랩 직후 Lobby 가 4 단계를 차례로 통과한다 —
+
+```
+   1. table 생성        (POST /api/v1/tables)
+   2. CC 할당          (POST /api/v1/tables/{id}/cc-session)
+   3. RFID monitor 시작 (WebSocket /ws/lobby — rfid_seat_* 구독)
+   4. cascade publish   (broker @ 7383 — cascade:lobby-hand-ready)
+```
+
+각 단계의 진행 상태는 `HandAutoSetupStep` 상태머신으로 외부에서 관찰 가능하다 (Riverpod `handAutoSetupProvider` watch). 끝까지 도달하면 `HandAutoSetupStep.cascadeReady` 가 되고, 그 시점에 broker 의 다른 stream (S0 Conductor 등) 이 "Lobby 측 1 hand 가 끝까지 통과했다" 를 받아본다.
+
+| 항목 | 위치 |
+|------|------|
+| 진입 방법 + 상태머신 + 4 단계 상세 표 | **부록 H** (1 hand 시나리오 시퀀스) |
+| state machine 코드 | `team1-frontend/lib/features/lobby/providers/hand_auto_setup_provider.dart` |
+| dart-define hook | `team1-frontend/lib/foundation/configs/app_config.dart` (`handAutoSetup` 필드) |
+| Flight status enum 정합 (정수 0,1,2,4,5,6) | `team1-frontend/lib/models/enums/flight_status.dart` + `integration-tests/scenarios/60-event-flight-status-enum.http` |
+
+기본값은 `HAND_AUTO_SETUP=false` 다. 운영 빌드에서는 자동 셋업이 작동하지 않으며, §1.1~§1.6 의 사람-주도 5 화면 시퀀스만 활성화된다.
 
 ---
 
@@ -1170,6 +1204,7 @@ Future<int> _createTable() async {
 | 2026-05-07 | 3.0.0-draft.3 | 5 화면 시퀀스 + 스크린샷 풍부 (Ch.1 6 PNG — APPROVE 5/5) |
 | 2026-05-07 | **3.0.0** | **전체 작성 완료** — Prologue + Act I~III + Epilogue + 부록 A~G + 25 PNG 모두 활용 |
 | 2026-05-11 | 3.0.1 | 부록 H 추가 (1 hand 시퀀스, Cycle 2 #239) — narrative 변경 0, additive only |
+| 2026-05-11 | 3.0.2 | §Ch.1.7 본문 추가 (1 hand 자동 셋업 데모, Cycle 3) — Ch.1 5 화면 시퀀스 ↔ 부록 H 연결, additive only |
 
 ---
 

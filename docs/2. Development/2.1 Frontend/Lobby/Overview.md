@@ -3,7 +3,7 @@ title: Overview
 owner: team1
 tier: internal
 legacy-id: BS-02-00
-last-updated: 2026-05-07
+last-updated: 2026-05-11
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-02-00 Lobby 총괄 (66KB) 정본"
@@ -32,6 +32,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38184
 | 2026-05-05 | 신 디자인 시각 자료 7장 cascade | `visual/screenshots/` 의 5장 (01 Series / 02 Events / 03 Flights / 04 Tables / 05 Players) 을 신 디자인 React prototype 기준 캡쳐로 overwrite + 06 Hand History / 07 Settings 신규 캡쳐 추가. 본문 §화면 6 Hand History · §화면 7 Settings 섹션 신설 (요소 표 + KPI 5 + 6 tabs + FREE/CONFIRM/LOCK 분류). 화면 표(line 280) 에 시각 자료 컬럼 추가. 테이블 ID 표기 `Day2-#069` → `#069` (신 디자인 정합, SHOW/FLIGHT 컨텍스트 헤더로 Day prefix 이전). References zip sync (Day2- prefix 제거, 구조 변경 0). |
 | 2026-05-06 | Lobby Renewal autonomous cascade | **Phase 1 Sidebar 통합** (`LobbyShell` 단일 chrome, `_AppShell`+`NavigationRail` 폐기, items 5→10 항목 3그룹 Navigate/Drilldown/Tools), **Phase 2 TopBar Cluster** (SHOW/EVENT/TABLE 3 dynamic → SHOW/FLIGHT/LEVEL/NEXT 4 fixed, Sidebar badge wiring), **Phase 3 backend dynamic** (신규 `GET /api/v1/flights/:id/levels` endpoint + WS `cc_session_count` broadcast + frontend `flightLevelsProvider` FutureProvider.family + `LevelsStrip` mock 제거). 부수 정정: `auth` router prefix `/auth`→`/api/v1/auth` (frontend 정합), `bcrypt<4.0` pin (passlib 1.7.4 detect_wrap_bug 호환), `AppConfig.authBaseUrl=apiBaseUrl` + `host_resolver` (LAN IP 다른 PC 지원), `LobbyDashboardScreen` 죽은 코드 cleanup (-566 lines). 빌드 옵션 `--pwa-strategy=none` + SW kill switch. E2E Playwright 통과 (login 200 + series 200 + WebSocket connected). Commit `c23032ad`. |
 | 2026-05-07 | v3 정체성 정합 | Lobby_PRD v3.0.0 cascade — 5분 게이트웨이 + WSOP LIVE 거울 정체성 반영. §개요 첫 단락에 정체성 박스 추가, §Lobby-Command Center 관계에 게이트웨이 framing 추가, §화면 계층 흐름에 4 진입 시점 카탈로그 신설. 기존 본문/changelog 변경 0 (additive only). 외부 인계 PRD 동기화 (`derivative-of: Lobby_PRD.md`). |
+| 2026-05-11 | Cycle 2/3 cascade — 1 hand 자동 셋업 | Lobby_PRD v3.0.2 (§Ch.1.7 + 부록 H) 와 team1-frontend Cycle 2 wire 의 본 정본 측 반영: 본문 narrative 변경 0, derivative-of cascade 정합만 갱신 (last-updated 2026-05-07 → 2026-05-11). 실구현 코드 = `team1-frontend/lib/features/lobby/providers/hand_auto_setup_provider.dart` (Cycle 2 PR #258, 머지 commit `55795d91`). flight_status 정수 enum 정합 = `team1-frontend/lib/models/enums/flight_status.dart` ↔ `integration-tests/scenarios/60-event-flight-status-enum.http`. cascade:lobby-hand-ready broker publish seq=64. |
 
 ---
 
