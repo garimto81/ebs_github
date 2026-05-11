@@ -15,7 +15,7 @@ import os
 from contextlib import asynccontextmanager
 
 import httpx
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 
 from tools.chat_server.broker_client import BrokerClient
 
@@ -55,3 +55,19 @@ async def health():
         "broker_url": broker.url,
         "broker_alive": broker_alive,
     }
+
+
+@app.get("/chat/history")
+async def chat_history(
+    channel: str = Query(..., description="Channel suffix (e.g. 'room:design')"),
+    since_seq: int = Query(0, ge=0),
+    limit: int = Query(50, ge=1, le=200),
+):
+    """Catch-up history for a single channel."""
+    topic = f"chat:{channel}"
+    try:
+        r = await broker.get_history(topic=topic, since_seq=since_seq, limit=limit)
+    except Exception as e:
+        logger.exception("broker get_history failed")
+        raise HTTPException(status_code=503, detail=f"broker error: {e}")
+    return r
