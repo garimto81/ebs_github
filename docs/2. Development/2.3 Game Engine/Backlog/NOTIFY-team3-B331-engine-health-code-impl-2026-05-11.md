@@ -1,12 +1,22 @@
 ---
-title: NOTIFY-team3 — B-331 /engine/health 코드 구현 필요 (S8 scope 외)
+title: NOTIFY-team3 — B-331 /engine/health 코드 (CLOSED — 코드 이미 구현됨, stale notify)
 owner: conductor (audit trail)
 target: stream:team3 (team3-engine 코드)
 tier: notify
-status: OPEN
+status: CLOSED
+closed-date: 2026-05-11
+closed-by: S8 (cycle 2)
+closed-reason: "코드 이미 구현됨 — test/harness/health_endpoint_test.dart 41 tests pass. S8 cycle 1 dispatch 시점에 unaware. cycle 2 검증 중 발견."
 related-backlog: B-331
 last-updated: 2026-05-11
 ---
+
+> ⚠️ **2026-05-11 S8 cycle 2 CLOSED**: 본 NOTIFY 는 stale. cycle 1 (B-330+B-332 audit) 시점에 S8 가 코드 영역을 직접 검증하지 않고 dispatch 했으나, cycle 2 (Issue #238) 에서 harness E2E 테스트 실행 중 `/engine/health` 코드가 이미 구현되어 있음을 확인:
+> - `test/harness/health_endpoint_test.dart` 41 tests pass
+> - GET /engine/health returns 200 + expected schema + reflects active session count + CORS header
+> - `HarnessServer listening on http://127.0.0.1:0` 실제 기동 검증
+>
+> → B-331 backlog 도 PENDING → DONE 으로 갱신 권장. team3 dispatch 불필요.
 
 # NOTIFY-team3 — B-331 `/engine/health` 코드 구현 필요
 
