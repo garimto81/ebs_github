@@ -10,6 +10,8 @@ Endpoints (B-222 plan):
 """
 from __future__ import annotations
 
+import asyncio
+import json
 import logging
 import os
 import re
@@ -17,7 +19,8 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone, timedelta
 
 import httpx
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
+from sse_starlette.sse import EventSourceResponse
 
 from tools.chat_server.broker_client import BrokerClient
 from tools.chat_server.models import SendRequest
@@ -131,3 +134,42 @@ async def chat_send(req: SendRequest):
         logger.exception("broker publish failed")
         raise HTTPException(status_code=503, detail=f"broker error: {e}")
     return r
+
+
+@app.get("/chat/stream")
+async def chat_stream(request: Request, from_seq: int = 0):
+    """SSE multiplex — subscribes to all topics, emits chat:* and stream:*/cascade:* separately.
+
+    Frontend distinguishes by `event:` field:
+      event: chat       — chat:room:* / chat:dm:* / chat:thread:*
+      event: trace      — stream:* / cascade:* / pipeline:* / audit:* (LIVE TRACE 분할)
+      event: error      — broker error (UI 빨간 배너)
+    """
+    async def event_gen():
+        last_seq = from_seq
+        backoff = 1.0
+        while True:
+            if await request.is_disconnected():
+                logger.info("SSE client disconnected")
+                break
+            try:
+                r = await broker.subscribe(
+                    topic="*", from_seq=last_seq, timeout_sec=30
+                )
+                backoff = 1.0  # reset on success
+                for event in r.get("events", []):
+                    last_seq = max(last_seq, event["seq"]) + 0
+                    topic = event.get("topic", "")
+                    ev_type = "chat" if topic.startswith("chat:") else "trace"
+                    yield {"event": ev_type, "data": json.dumps(event)}
+                last_seq = r.get("next_seq", last_seq)
+            except StopAsyncIteration:
+                # mock side_effect exhausted in tests
+                break
+            except Exception as e:
+                logger.warning(f"broker subscribe error: {e}; backing off {backoff}s")
+                yield {"event": "error", "data": json.dumps({"error": str(e)})}
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 5, 30.0)
+
+    return EventSourceResponse(event_gen())
