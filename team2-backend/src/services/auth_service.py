@@ -206,6 +206,102 @@ def logout(user_id: int, db: Session) -> None:
         db.commit()
 
 
+def _decode_jti_and_remaining_ttl(token: str | None) -> tuple[str | None, int]:
+    """JWT 에서 jti + 남은 수명 (초) 추출. 디코드 실패 / 만료 시 (None, 0).
+
+    blacklist add 시 ttl_seconds 가 양수일 때만 효과적 (이미 만료된 jti 는 자연 차단).
+    """
+    if not token:
+        return None, 0
+    try:
+        payload = decode_token(token)
+    except Exception:
+        return None, 0
+    jti = payload.get("jti")
+    exp = payload.get("exp")
+    if not jti or not isinstance(exp, (int, float)):
+        return jti, 0
+    remaining = int(exp - _utcnow().timestamp())
+    return jti, max(remaining, 0)
+
+
+def force_logout_user(
+    target_user_id: int,
+    actor_user_id: int,
+    db: Session,
+    reason: str | None = None,
+) -> dict:
+    """IMPL-009 / API-05 §13.3 — admin 강제 로그아웃 orchestration.
+
+    절차:
+      1. 대상 user 의 access / refresh jti 를 blacklist 에 등록 (남은 TTL 동안).
+      2. `user_sessions` 행 전체 삭제 (모든 device 동시 무효화 — BS-01 §A-25
+         "Admin kick → 해당 user 의 모든 활성 jti blacklist").
+      3. `audit_events` 행 삽입 (event_type=force_logout, payload JSON 에 actor /
+         target / reason / blacklisted_count 기록).
+      4. WebSocket disconnect 는 호출 router 가 ConnectionManager.disconnect_user 로
+         별도 수행 (본 함수는 sync DB 트랜잭션만 담당).
+
+    Self force-logout 차단 (actor != target) 은 본 함수 호출 전 router 가 검증한다.
+
+    Returns: 결과 요약 dict
+      {
+        "target_user_id": int,
+        "deleted_sessions": int,         # user_sessions 행 삭제 수 (device 별)
+        "blacklisted_jtis": int,         # blacklist 추가된 jti 수 (access + refresh 합)
+        "audit_event_id": int | None,    # 감사 로그 PK (없으면 None)
+      }
+    """
+    from src.models.audit_event import AuditEvent  # 지연 import — circular 회피
+    from src.security.blacklist import add_to_blacklist
+
+    blacklisted = 0
+    deleted = 0
+
+    sessions = db.exec(
+        select(UserSession).where(UserSession.user_id == target_user_id)
+    ).all()
+    for sess in sessions:
+        for tok in (sess.access_token, sess.refresh_token):
+            jti, ttl = _decode_jti_and_remaining_ttl(tok)
+            if jti and ttl > 0:
+                add_to_blacklist(jti, ttl)
+                blacklisted += 1
+        db.delete(sess)
+        deleted += 1
+
+    # audit_events insert (table_id="_global" — user-level 이벤트, table 무관).
+    import json
+    last_seq = db.exec(
+        select(AuditEvent.seq)
+        .where(AuditEvent.table_id == "_global")
+        .order_by(AuditEvent.seq.desc())  # type: ignore[attr-defined]
+    ).first()
+    next_seq = (last_seq or 0) + 1
+    audit = AuditEvent(
+        table_id="_global",
+        seq=next_seq,
+        event_type="force_logout",
+        actor_user_id=str(actor_user_id),
+        payload=json.dumps({
+            "target_user_id": target_user_id,
+            "reason": reason,
+            "deleted_sessions": deleted,
+            "blacklisted_jtis": blacklisted,
+        }),
+    )
+    db.add(audit)
+    db.commit()
+    db.refresh(audit)
+
+    return {
+        "target_user_id": target_user_id,
+        "deleted_sessions": deleted,
+        "blacklisted_jtis": blacklisted,
+        "audit_event_id": audit.id,
+    }
+
+
 def create_password_reset(email: str, db: Session) -> str | None:
     """Generate a password-reset token for the given email.
 

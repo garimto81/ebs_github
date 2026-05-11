@@ -1271,7 +1271,7 @@ CC 수신 시: 사용 중인 gfskin 이 비활성화되면 fallback skin 으로 
 
 ### 13.3 `force_logout` payload + close code
 
-> **구현 현황 (2026-05-11)**: HTTP endpoint `POST /users/{id}/force-logout` 은 `team2-backend/src/routers/users.py:70` 에 minimal viable 로만 존재 — `users.updated_at` bump 후 `{forced_logout: true, user_id}` 반환. JWT 무효화 / refresh token 폐기 / WebSocket close (4003) / 본 이벤트 broadcast / audit_events 기록은 모두 미구현 (해당 함수 docstring `Future: integrate with JWT blacklist + WS disconnect`). 본 §13.3 spec 은 P5 backend 코드 완결 시 정합 대상. spec_drift_check D2 (websocket / force_logout) 는 이 미구현을 가리킴 — backlog IMPL-009 (SUPERSEDED) + V9.5 P7 코드 완결로 해소.
+> **구현 현황 (2026-05-11 Cycle 3 #236 / IMPL-009 완결)**: HTTP endpoint `POST /api/v1/users/{user_id}/force-logout` (`team2-backend/src/routers/users.py:api_force_logout`) 가 본 spec 을 완전 구현한다. 처리 흐름: ① 대상 user 존재 검증 (404) + self force-logout 차단 (403) → ② `auth_service.force_logout_user` 가 모든 device `user_sessions.access/refresh` jti 를 blacklist 등록 + 행 삭제 + `audit_events` (`table_id="_global"`, `event_type="force_logout"`) 기록 → ③ `publishers.publish_force_logout` 가 `ConnectionManager.disconnect_user(close_code=4003)` 호출하여 cc + lobby 양 채널 강제 종료 + (cc 영향 시) `cc_session_count` broadcast (§4.2.10) → ④ `users.updated_at` bump. spec_drift_check `--websocket` D2 → D4 정합 완료 (46/46 PASS). 단위 테스트: `tests/test_force_logout.py` 11 cases.
 
 대상 user 의 active WebSocket 모든 connection 에 동일 페이로드 송신 후 즉시 connection close.
 
