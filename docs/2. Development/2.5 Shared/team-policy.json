@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": "10.3",
-  "description": "EBS 거버넌스 SSOT (v10.3 Architect-then-Observer 멀티세션 단일화). 진입점 = root CLAUDE.md (메인 지침 모델). 거버넌스 모델 = 글로벌 orchestrator 스킬 v10.3 적용 (Phase 0 사전 설계 + Phase 1+ 모니터링). 멀티세션 spec = docs/4. Operations/Multi_Session_Design_v10.3.md + team_assignment_v10_3.yaml. 외부 인계 후 governance 폐기 가능.",
+  "version": "10.4",
+  "description": "EBS 거버넌스 SSOT (v10.4 9-Session Matrix + Message Bus 통합, 2026-05-11). v10.3 위에 cross-cutting 4 stream(S9 QA / S10-A Gap Analysis / S10-W Gap Writing / S11 Dev Assist) + 옵션 SMEM 추가. 사용자 6 역할(orchestrator + dev + gap 분석 + gap 작성 + QA + 보조) × 8 도메인 매트릭스. message_bus broker(@7383) 의 pipeline:* prefix 가 단방향 흐름(gap→write→dev→qa) 연결. 멀티세션 spec = Multi_Session_Design_v11.md + team_assignment_v10_3.yaml(v10.4). 1주일 KPI: 빌드 0% → 1 hand 시나리오 50%.",
   "governance_model": {
     "name": "architect_then_observer_multi_session",
     "version": "v10.3",
@@ -196,6 +196,77 @@
       ],
       "api_subscribes": ["Overlay_Output_Events", "WebSocket_Events"],
       "api_publishes": ["RFID_HAL"]
+    },
+    "_comment_cross_cutting": "v10.4 — cross-cutting streams (S9/S10-A/S10-W/S11/SMEM). 도메인 4팀(team1~4)을 가로지르며 pipeline:* broker topic 으로 단방향 흐름.",
+    "S9": {
+      "cwd_match": ["ebs-qa"],
+      "owns": [
+        "integration-tests/",
+        ".github/workflows/team-e2e.yml"
+      ],
+      "reads": [
+        "docs/1. Product/",
+        "docs/2. Development/",
+        "team1-frontend/", "team2-backend/", "team3-engine/", "team4-cc/"
+      ],
+      "broker_publish": ["stream:S9", "pipeline:qa-pass", "pipeline:qa-fail", "cascade:*", "defect:*", "audit:*"],
+      "broker_subscribe": ["pipeline:build-success", "cascade:*", "*"]
+    },
+    "S10-A": {
+      "cwd_match": ["ebs-gap-audit"],
+      "owns": [
+        "docs/4. Operations/Spec_Gap_Registry.md",
+        "tools/spec_drift_check.py"
+      ],
+      "reads": [
+        "docs/1. Product/",
+        "docs/2. Development/",
+        "integration-tests/",
+        "docs/4. Operations/Spec_Gap_Triage.md"
+      ],
+      "broker_publish": ["stream:S10-A", "pipeline:gap-classified", "cascade:*", "defect:*", "audit:*"],
+      "broker_subscribe": ["pipeline:qa-fail", "cascade:build-fail", "*"]
+    },
+    "S10-W": {
+      "cwd_match": ["ebs-gap-write"],
+      "owns": [
+        "docs/4. Operations/Conductor_Backlog/_template_spec_gap*.md"
+      ],
+      "reads": [
+        "docs/1. Product/",
+        "docs/2. Development/",
+        "docs/4. Operations/Spec_Gap_Registry.md"
+      ],
+      "_owns_note": "PRD 본문(docs/1. Product/*_PRD.md)은 도메인 owner 가 머지 권한, S10-W 는 PR 발행만 가능 (acquire_lock ttl=300 필수)",
+      "broker_publish": ["stream:S10-W", "pipeline:spec-patched", "cascade:*", "audit:*"],
+      "broker_subscribe": ["pipeline:gap-classified", "*"],
+      "blocked_by": ["S10-A"]
+    },
+    "S11": {
+      "cwd_match": ["ebs-devops"],
+      "owns": [
+        "docs/4. Operations/Docker_Runtime.md",
+        "docker-compose.yml"
+      ],
+      "reads": [
+        "docs/4. Operations/",
+        "team1-frontend/docker-compose.yml",
+        "team2-backend/docker-compose.yml",
+        "team3-engine/docker-compose.yml",
+        "team4-cc/docker-compose.yml"
+      ],
+      "_owns_note": "root docker-compose.yml 만 직접 편집. 도메인 compose 는 read-only 감사.",
+      "broker_publish": ["stream:S11", "pipeline:env-ready", "pipeline:env-broken", "cascade:*", "audit:*"],
+      "broker_subscribe": ["cascade:build-fail", "pipeline:build-fail", "*"]
+    },
+    "SMEM": {
+      "cwd_match": ["ebs-memory"],
+      "owns": [],
+      "_owns_note": "append-only via PR — exclusive scope 없음. MEMORY.md 는 conductor 와 공유 owner.",
+      "reads": ["**/*"],
+      "broker_publish": ["audit:memory-snapshot", "audit:memory-rotate"],
+      "broker_subscribe": ["*"],
+      "optional": true
     }
   },
   "shared_blocked_for_teams": [

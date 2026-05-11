@@ -248,3 +248,88 @@ C:/claude/ebs/
 | 3. Hybrid | ✅ | supervisor (port lock + PID + heartbeat), GH mirror, kill -9 durability |
 | 4. Hardening | ✅ | broker.log, cascade race 240/240 PASS |
 | 5. ★통합★ | ⏳ | Track A 완료 + main PR + .mcp.json 배포 |
+
+---
+
+## 11. v10.4 9-Session Matrix Integration (2026-05-11)
+
+> v11 broker(@7383) 위에 사용자 6 역할(orchestrator + dev + gap 분석 + gap 작성 + QA + 보조)을 매핑한 9-세션 통합. 변경 최소: `topics.py` 1줄 + `team_assignment_v10_3.yaml` 4 신규 stream + ACL 등록.
+
+### 11.1 신규 Topic Prefix
+
+```python
+# tools/orchestrator/message_bus/topics.py — v10.4 변경
+_STREAM_TOPIC_RE = re.compile(r"^stream:(S[\w-]+)$")  # S10-A/S10-W 대시 허용
+_OPEN_TOPIC_PREFIXES = ("cascade:", "defect:", "audit:", "pipeline:")  # pipeline:* 추가
+```
+
+### 11.2 9-세션 Pub/Sub 매트릭스
+
+| Stream | Init PR | publish 권한 | subscribe |
+|--------|---------|------------|-----------|
+| S0 Conductor (main) | — | `bus:*`, `pipeline:*`, broadcast | `*` |
+| S2 Lobby (ebs-lobby-stream) | — (기존 활성) | `stream:S2`, `cascade:*`, `pipeline:build-*` | `pipeline:spec-patched`, `cascade:*` |
+| S7 Backend (ebs-backend-stream) | — (기존) | `stream:S7`, `cascade:*`, `pipeline:build-*` | `pipeline:spec-patched`, `cascade:*` |
+| S3 CC (ebs-cc-stream) | — (기존) | `stream:S3`, `cascade:*`, `pipeline:build-*` | `pipeline:spec-patched`, `cascade:*` |
+| S8 Engine (ebs-engine-stream) | — (기존) | `stream:S8`, `cascade:*`, `pipeline:build-*` | `pipeline:spec-patched`, `cascade:*` |
+| S9 QA (ebs-qa) | #211 | `stream:S9`, `pipeline:qa-pass`, `pipeline:qa-fail` | `pipeline:build-success`, `cascade:*` |
+| S10-A Gap 분석 (ebs-gap-audit) | #212 | `stream:S10-A`, `pipeline:gap-classified`, `defect:*` | `pipeline:qa-fail`, `cascade:build-fail` |
+| S10-W Gap 작성 (ebs-gap-write) | (S10-A 머지 후) | `stream:S10-W`, `pipeline:spec-patched` | `pipeline:gap-classified` |
+| S11 Dev Assist (ebs-devops) | #213 | `stream:S11`, `pipeline:env-ready`, `pipeline:env-broken` | `cascade:build-fail`, `pipeline:build-fail` |
+| SMEM Memory (ebs-memory) | #214 | `audit:memory-snapshot`, `audit:memory-rotate` | `*` (audit only) |
+
+### 11.3 단방향 Pipeline
+
+```
+spec_drift_check.py ──pipeline:gap-classified──> [S10-A]
+                                                    │
+                                            (Type B/C) │
+                                                    v
+                                              [S10-W] ──pipeline:spec-patched──> 도메인 4
+                                                                                       │
+                                                                                       │ cascade:build-success
+                                                                                       v
+                                                                                  [S11] ──pipeline:env-ready──> [S9]
+                                                                                                                  │
+                                                                                                                  ├── qa-pass ──> close (S0)
+                                                                                                                  └── qa-fail ──> [S10-A] (loop)
+```
+
+### 11.4 acquire_lock TTL 가이드
+
+| 자원 종류 | TTL | 사용 stream |
+|----------|-----|-----------|
+| PRD 본문 편집 (`docs/1. Product/*_PRD.md`) | **300s (5분)** | S10-W 만 PR 발행, 도메인 owner 머지 |
+| Conductor_Backlog ticket 신규 | 180s | S10-W, S0 |
+| root `docker-compose.yml` | 180s | S11 |
+| `Spec_Gap_Triage.md` (S0 owner) | 600s | S0 only |
+| `team_assignment_v10_3.yaml` (meta) | 600s | S0 only |
+| `MEMORY.md`, `CLAUDE.md` | 300s | S0 + SMEM |
+
+### 11.5 Graceful Degradation (broker SPOF 대응)
+
+| 시나리오 | 동작 |
+|---------|------|
+| broker 정상 | publish/subscribe push 모드 (~50ms) |
+| broker down | `orchestrator_monitor.py --legacy` 30s polling fallback. GitHub Issue/PR = source of truth. |
+| broker 재시작 | `subscribe(from_seq=<last>)` 로 missed event 최대 50건 replay (at-least-once 미보장) |
+| 메시지 손실 | 각 handler idempotent 필수 (e.g. `if already_processed(seq): skip`) |
+
+### 11.6 1주일 KPI (Issue #215 tracking)
+
+| Day | Phase | 검증 |
+|-----|-------|------|
+| 1 | broker --detach + Phase 0 활성화 + 도메인 4 `docker compose up` | broker probe alive=true |
+| 2 | 빌드 fix → `cascade:build-success`, smoke e2e → `pipeline:qa-fail` | 첫 e2e green |
+| 3 | hand 시나리오 wire, drift -50, playwright 1 case | drift trending down |
+| 4 | 1 hand 통과 + OutputEvent emit, drift -100 | 1 hand green |
+| 5 | 2 hand e2e, mid-week review | 누적 KPI |
+| 6 | 3 hand e2e, qa-fail re-triage, Schema drift -10 | regression 안정화 |
+| 7 | **1 hand 통과 verification**, Open Spec_Gap ≤ 5 | **KPI 보고** |
+
+### 11.7 Plan reference
+
+- 전체 설계: `C:\Users\AidenKim\.claude\plans\kind-mapping-rivest.md`
+- 신규 PRs: #211 S9 / #212 S10-A / #213 S11 / #214 SMEM
+- KPI tracking Issue: #215
+- yaml: `team_assignment_v10_3.yaml` v10.4.5 (5 cross-cutting future → streams 이관)

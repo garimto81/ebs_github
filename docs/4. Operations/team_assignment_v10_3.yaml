@@ -1,4 +1,4 @@
-version: 10.3.0
+version: 10.4.5
 project_name: ebs
 project_root: C:/claude/ebs
 worktree_sibling_dir: C:/claude
@@ -6,7 +6,8 @@ orchestrator: conductor (single user, AI-centric)
 streams:
   S1:
     name: Foundation
-    role: 기획 기초 + 핵심 비전 문서 + 외부 인계 정체성 SSOT (Foundation, Game_Rules, Back_Office_PRD interim)
+    role: 기획 기초 + 핵심 비전 문서 + 외부 인계 정체성 SSOT (Foundation, Game_Rules, Back_Office_PRD
+      interim)
     worktree: C:/claude/ebs-foundation
     absorbs_existing: []
     phases:
@@ -20,7 +21,8 @@ streams:
         - docs/1. Product/RIVE_Standards.md
     blocked_by: []
     blocks: []
-    interim_ownership_note: "Back_Office_PRD → S7 활성 시 이관. Game_Rules → S8 활성 시 이관. 외부 인계 정체성 SSOT 성격이라 S1 통합."
+    interim_ownership_note: Back_Office_PRD → S7 활성 시 이관. Game_Rules → S8 활성 시 이관.
+      외부 인계 정체성 SSOT 성격이라 S1 통합.
     meta_files_blocked:
     - CLAUDE.md
     - MEMORY.md
@@ -136,7 +138,6 @@ streams:
         scope_read:
         - docs/1. Product/**
         - docs/2. Development/**
-        # docs/1. Product/** 가 모든 PRD + Foundation + Game_Rules + RIVE_Standards + References 를 커버
     blocked_by: []
     blocks: []
     meta_files_blocked: *id001
@@ -147,7 +148,7 @@ streams:
     absorbs_existing:
     - team2-backend
     activated_at: 2026-05-08
-    activation_source: "정합성 감사 #168 Phase 0 dispatch — issue #166 + #174 + PR #175"
+    activation_source: '정합성 감사 #168 Phase 0 dispatch — issue #166 + #174 + PR #175'
     phases:
       P2:
         scope_owns:
@@ -165,7 +166,8 @@ streams:
         - docs/1. Product/References/**
     blocked_by: []
     blocks: []
-    interim_ownership_note: "Back_Office_PRD ownership 이관 = 별도 작업 (현재 S1 interim 보존). PR #175 머지 + S7 owner 검증 후 frontmatter owner 변경."
+    interim_ownership_note: 'Back_Office_PRD ownership 이관 = 별도 작업 (현재 S1 interim 보존).
+      PR #175 머지 + S7 owner 검증 후 frontmatter owner 변경.'
     meta_files_blocked: *id001
   S8:
     name: Engine Stream
@@ -174,7 +176,7 @@ streams:
     absorbs_existing:
     - team3-engine
     activated_at: 2026-05-08
-    activation_source: "정합성 감사 #168 Phase 0 dispatch — issue #167 + PR #180"
+    activation_source: '정합성 감사 #168 Phase 0 dispatch — issue #167 + PR #180'
     phases:
       P2:
         scope_owns:
@@ -193,15 +195,116 @@ streams:
         - docs/1. Product/References/**
     blocked_by: []
     blocks: []
-    interim_ownership_note: "Game_Rules ownership 이관 = 별도 작업 (현재 S1 interim 보존). PR #180 머지 + S8 owner 검증 후 frontmatter owner 변경."
+    interim_ownership_note: 'Game_Rules ownership 이관 = 별도 작업 (현재 S1 interim 보존). PR
+      #180 머지 + S8 owner 검증 후 frontmatter owner 변경.'
     meta_files_blocked: *id001
-future_streams:
   S9:
-    name: QA Stream
+    name: QA Stream (cross-cutting)
+    role: HTTP/WebSocket 통합 테스트 + Playwright e2e. broker publish pipeline:qa-pass|qa-fail,
+      subscribe pipeline:build-success.
     worktree: C:/claude/ebs-qa
     absorbs_existing: []
-    activation_trigger: 사용자가 'QA 추가' 요청 시
-    inferred_blocked_by: []
+    phases:
+      P4:
+        scope_owns:
+        - integration-tests/**
+        - .github/workflows/*e2e*
+        scope_read:
+        - docs/1. Product/**
+        - docs/2. Development/**
+    blocked_by: []
+    blocks: []
+    meta_files_blocked:
+    - CLAUDE.md
+    - MEMORY.md
+    - docs/orchestrator/team_assignment.yaml
+    - docs/4. Operations/team_assignment_v10_3.yaml
+  S10-A:
+    name: Gap Analysis Stream (cross-cutting)
+    role: Spec_Gap_Registry triage + spec_drift_check.py 실행. broker publish pipeline:gap-classified,
+      subscribe pipeline:qa-fail.
+    worktree: C:/claude/ebs-gap-audit
+    absorbs_existing: []
+    phases:
+      P1:
+        scope_owns:
+        - docs/4. Operations/Spec_Gap_Registry.md
+        - tools/spec_drift_check.py
+        scope_read:
+        - docs/1. Product/**
+        - docs/2. Development/**
+        - integration-tests/**
+        - docs/4. Operations/Spec_Gap_Triage.md
+    blocked_by: []
+    blocks: []
+    meta_files_blocked:
+    - CLAUDE.md
+    - MEMORY.md
+    - docs/orchestrator/team_assignment.yaml
+    - docs/4. Operations/team_assignment_v10_3.yaml
+  S10-W:
+    name: Gap Writing Stream (cross-cutting)
+    role: PRD/Overview 보강 PR + Conductor_Backlog 신규 ticket. broker publish pipeline:spec-patched,
+      subscribe pipeline:gap-classified.
+    worktree: C:/claude/ebs-gap-write
+    absorbs_existing: []
+    phases:
+      P2:
+        scope_owns:
+        - docs/4. Operations/Conductor_Backlog/_template_spec_gap*.md
+        scope_read:
+        - docs/1. Product/**
+        - docs/2. Development/**
+        - docs/4. Operations/Spec_Gap_Registry.md
+    blocked_by:
+    - S10-A
+    blocks: []
+    meta_files_blocked:
+    - CLAUDE.md
+    - MEMORY.md
+    - docs/orchestrator/team_assignment.yaml
+    - docs/4. Operations/team_assignment_v10_3.yaml
+  S11:
+    name: Dev Assist Stream (cross-cutting)
+    role: Docker_Runtime SSOT + root docker-compose + build infra. broker publish
+      pipeline:env-ready|env-broken, subscribe cascade:build-fail.
+    worktree: C:/claude/ebs-devops
+    absorbs_existing: []
+    phases:
+      P5:
+        scope_owns:
+        - docs/4. Operations/Docker_Runtime.md
+        - docker-compose.yml
+        scope_read:
+        - docs/4. Operations/**
+        - team*-*/docker-compose.yml
+        - .claude/hooks/post_build_fail.py
+    blocked_by: []
+    blocks: []
+    meta_files_blocked:
+    - CLAUDE.md
+    - MEMORY.md
+    - docs/orchestrator/team_assignment.yaml
+    - docs/4. Operations/team_assignment_v10_3.yaml
+  SMEM:
+    name: Conductor Memory Stream (Optional, cross-cutting)
+    role: MEMORY.md append-only + journey 로그. broker publish audit:memory-*, subscribe
+      '*' (감사 only).
+    worktree: C:/claude/ebs-memory
+    absorbs_existing: []
+    phases:
+      P_always:
+        scope_owns: []
+        scope_read:
+        - '**/*'
+    blocked_by: []
+    blocks: []
+    meta_files_blocked:
+    - CLAUDE.md
+    - MEMORY.md
+    - docs/orchestrator/team_assignment.yaml
+    - docs/4. Operations/team_assignment_v10_3.yaml
+future_streams: {}
 meta_files:
   owner: orchestrator
   files:
@@ -226,45 +329,143 @@ monitoring:
   - pr_age
   - last_commit_time
   - dependency_violations
-# v11 신규 — Topic ACL (L7 — 7중 다층 방어)
-# Reference: docs/4. Operations/Multi_Session_Design_v11.md §4
-# 각 Stream 의 publish/subscribe 권한. broker (tools/orchestrator/message_bus/) 가 enforce.
 topics:
-  enforcement: strict  # v11 Phase A — default-allow 제거
+  enforcement: strict
   acl:
-    # stream:S{N} — 해당 source 만 publish 가능 (정체성 = 신호 발화권)
     S1:
-      publish: ["stream:S1", "cascade:*", "defect:*", "audit:*", "*"]
-      subscribe: ["*"]  # 모든 토픽 구독 가능
+      publish:
+      - stream:S1
+      - cascade:*
+      - defect:*
+      - audit:*
+      - '*'
+      subscribe:
+      - '*'
     S2:
-      publish: ["stream:S2", "cascade:*", "defect:*", "audit:*", "*"]
-      subscribe: ["*"]
+      publish:
+      - stream:S2
+      - cascade:*
+      - defect:*
+      - audit:*
+      - '*'
+      subscribe:
+      - '*'
     S3:
-      publish: ["stream:S3", "cascade:*", "defect:*", "audit:*", "*"]
-      subscribe: ["*"]
+      publish:
+      - stream:S3
+      - cascade:*
+      - defect:*
+      - audit:*
+      - '*'
+      subscribe:
+      - '*'
     S4:
-      publish: ["stream:S4", "cascade:*", "defect:*", "audit:*", "*"]
-      subscribe: ["*"]
+      publish:
+      - stream:S4
+      - cascade:*
+      - defect:*
+      - audit:*
+      - '*'
+      subscribe:
+      - '*'
     S5:
-      publish: ["stream:S5", "cascade:*", "defect:*", "audit:*", "*"]
-      subscribe: ["*"]
+      publish:
+      - stream:S5
+      - cascade:*
+      - defect:*
+      - audit:*
+      - '*'
+      subscribe:
+      - '*'
     S6:
-      publish: ["stream:S6", "cascade:*", "defect:*", "audit:*", "*"]
-      subscribe: ["*"]
+      publish:
+      - stream:S6
+      - cascade:*
+      - defect:*
+      - audit:*
+      - '*'
+      subscribe:
+      - '*'
     S7:
-      publish: ["stream:S7", "cascade:*", "defect:*", "audit:*", "*"]
-      subscribe: ["*"]
+      publish:
+      - stream:S7
+      - cascade:*
+      - defect:*
+      - audit:*
+      - '*'
+      subscribe:
+      - '*'
     S8:
-      publish: ["stream:S8", "cascade:*", "defect:*", "audit:*", "*"]
-      subscribe: ["*"]
+      publish:
+      - stream:S8
+      - cascade:*
+      - defect:*
+      - audit:*
+      - '*'
+      subscribe:
+      - '*'
     conductor:
-      # conductor 는 모든 stream:S{N} 발화 가능 (orchestration broadcast)
-      publish: ["stream:*", "cascade:*", "defect:*", "audit:*", "*"]
-      subscribe: ["*"]
+      publish:
+      - stream:*
+      - cascade:*
+      - defect:*
+      - audit:*
+      - pipeline:*
+      - '*'
+      subscribe:
+      - '*'
+    S9:
+      publish:
+      - stream:S9
+      - pipeline:qa-pass
+      - pipeline:qa-fail
+      - cascade:*
+      - defect:*
+      - audit:*
+      subscribe:
+      - pipeline:build-success
+      - cascade:*
+      - '*'
+    S10-A:
+      publish:
+      - stream:S10-A
+      - pipeline:gap-classified
+      - cascade:*
+      - defect:*
+      - audit:*
+      subscribe:
+      - pipeline:qa-fail
+      - cascade:build-fail
+      - '*'
+    S10-W:
+      publish:
+      - stream:S10-W
+      - pipeline:spec-patched
+      - cascade:*
+      - audit:*
+      subscribe:
+      - pipeline:gap-classified
+      - '*'
+    S11:
+      publish:
+      - stream:S11
+      - pipeline:env-ready
+      - pipeline:env-broken
+      - cascade:*
+      - audit:*
+      subscribe:
+      - cascade:build-fail
+      - pipeline:build-fail
+      - '*'
+    SMEM:
+      publish:
+      - audit:memory-snapshot
+      - audit:memory-rotate
+      subscribe:
+      - '*'
   reserved_prefixes:
-    - "bus:"  # broker-internal — 어떤 source 도 publish 금지
+  - 'bus:'
   dev_prefixes:
-    # EBS_BUS_DEV_MODE=1 일 때만 허용
-    - "bench-"
-    - "test-"
-    - "poc-"
+  - bench-
+  - test-
+  - poc-

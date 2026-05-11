@@ -377,3 +377,73 @@ async def observer_loop_v11(config):
 - Stream 매트릭스 SSOT: [`team_assignment_v10_3.yaml`](./team_assignment_v10_3.yaml)
 - Plan 파일 (history): `C:/Users/AidenKim/.claude/plans/dreamy-fluttering-gem.md`
 - 글로벌 orchestrator skill: `~/.claude/skills/orchestrator/`
+
+---
+
+## §15. v10.4 9-Session Matrix Extension (2026-05-11)
+
+> **동기**: production 인텐트(SG-023) 9일째 검증 0%. 사용자 6 역할(orchestrator + dev + gap 분석 + gap 작성 + QA + 보조)을 기존 v11 8 Stream 위에 매핑.
+
+### §15.1 매트릭스
+
+```
+역할 ╲ 도메인       S2 Lobby   S7 Backend   S3 CC      S8 Engine   기타
+S0 Orchestrator   ←──── Conductor (main 폴더, broker supervisor) ────→
+프로토 개발        S2 sess    S7 sess     S3 sess    S8 sess     S4 dormant
+S9  QA            ←─────── cross-cutting (ebs-qa) ─────────────→
+S10-A Gap 분석    ←─────── cross-cutting (ebs-gap-audit) ──────→
+S10-W Gap 작성    ←─────── cross-cutting (ebs-gap-write) ──────→
+S11 Dev Assist    ←─────── cross-cutting (ebs-devops) ─────────→
+SMEM (옵션)       ←─────── cross-cutting (ebs-memory) ─────────→
+```
+
+### §15.2 신규 Stream 정의
+
+| Stream | worktree | Phase | scope_owns (요약) | broker pub | broker sub |
+|--------|----------|-------|------------------|-----------|-----------|
+| **S9** QA | `C:/claude/ebs-qa` | P4→P5 | `integration-tests/**`, e2e workflows | `pipeline:qa-pass\|qa-fail` | `pipeline:build-success` |
+| **S10-A** Gap 분석 | `C:/claude/ebs-gap-audit` | P1 | `Spec_Gap_Registry.md`, `spec_drift_check.py` | `pipeline:gap-classified` | `pipeline:qa-fail`, `cascade:build-fail` |
+| **S10-W** Gap 작성 | `C:/claude/ebs-gap-write` | P2 | `Conductor_Backlog/_template_spec_gap*.md` | `pipeline:spec-patched` | `pipeline:gap-classified` |
+| **S11** Dev Assist | `C:/claude/ebs-devops` | P5 | `Docker_Runtime.md`, root compose | `pipeline:env-ready\|env-broken` | `cascade:build-fail` |
+| **SMEM** Memory | `C:/claude/ebs-memory` | P_always | (append-only) | `audit:memory-*` | `*` |
+
+### §15.3 v11 spec 위 변경 (최소 변경)
+
+| 영역 | 변경 |
+|------|------|
+| `topics.py` | `_OPEN_TOPIC_PREFIXES` 에 `"pipeline:"` 추가 + `_STREAM_TOPIC_RE` 가 S10-A/S10-W 대시 허용 (정규식 `^stream:(S[\w-]+)$`) |
+| `team_assignment_v10_3.yaml` | version 10.3 → 10.4.5 (5 stream 활성화). `topics.acl` 에 5 stream entry |
+| `team-policy.json` | version 10.3 → 10.4. `teams` 에 5 신규 entry (cwd_match + owns + broker_pub/sub) |
+| `Message_Bus_Runbook.md` | §11 9-Session Integration 신설 |
+| 활성화 도구 | `dynamic_stream_activation.py` 그대로 동작 (5 stream 순차 활성화) |
+| Hook | 변경 없음 (v11 기존 hooks 가 신규 stream 자동 인식) |
+
+### §15.4 단방향 Pipeline
+
+```
+spec_drift_check.py ──pipeline:gap-classified──> [S10-A]
+                                                    │ (Type B/C)
+                                                    v
+                                              [S10-W] ──pipeline:spec-patched──> 도메인 4 dev
+                                                                                  │ cascade:build-success
+                                                                                  v
+                                                                             [S11] ──pipeline:env-ready──> [S9]
+                                                                                                            │
+                                                                                          ┌────qa-pass────→ close (S0)
+                                                                                          └────qa-fail────→ [S10-A] (loop)
+```
+
+### §15.5 1주일 KPI (Issue #215)
+
+- **Goal**: 빌드 검증 0% → 1 hand 시나리오 통과 50%
+- **Init PRs**: #211 S9 / #212 S10-A / #213 S11 / #214 SMEM (S10-W 는 S10-A 머지 후 unblock)
+- **Plan**: `C:\Users\AidenKim\.claude\plans\kind-mapping-rivest.md`
+- **Tracking**: `gh issue view 215`
+
+### §15.6 약점 (정직)
+
+1. 9세션은 1명에겐 과한 동시성 → 동시 활성 S0 + 2~3 권장, idle 자동 휴면
+2. Pipeline 2 hop (분석→작성→dev) 가 1주 KPI 위협 → S9 가 Type A 를 도메인 hotpath 직송 shortcut
+3. S10-A/S10-W 분리는 인지적 → 1주 후 효과 미흡 시 단일 합본 검토
+4. broker SPOF → graceful degradation (GitHub authority) + start_message_bus.py 자동 재시작 가능
+5. at-least-once 미보장 → handler idempotent + GitHub PR commit hash 가 진실

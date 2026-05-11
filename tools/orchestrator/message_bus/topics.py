@@ -2,9 +2,11 @@
 
 Convention (mirrors GitHub label scheme):
   stream:S{N}    — only that Stream's identity can publish
+                   (Stream id may contain letters/digits/dashes: e.g. S10-A, S10-W)
   cascade:*      — any Stream can publish (cascade advisory)
   defect:*       — any Stream can publish (defect/bug report)
   audit:*        — any Stream can publish (audit signals)
+  pipeline:*     — any Stream can publish (9-session pipeline: gap→write→dev→qa, v10.4)
   bus:*          — broker-internal events (not user-publishable)
   *              — broadcast (any Stream can publish)
   bench-*, test-*, poc-* — test/dev topics, anyone can publish (deny in prod mode)
@@ -20,10 +22,12 @@ import os
 import re
 
 # Topics that lock to a specific source identity
-_STREAM_TOPIC_RE = re.compile(r"^stream:(S\d+)$")
+# v10.4: allow dashes in stream id (e.g. S10-A, S10-W) for 9-session matrix
+_STREAM_TOPIC_RE = re.compile(r"^stream:(S[\w-]+)$")
 
 # Topics any source may publish
-_OPEN_TOPIC_PREFIXES = ("cascade:", "defect:", "audit:")
+# v10.4: added "pipeline:" for cross-cutting gap→write→dev→qa flow
+_OPEN_TOPIC_PREFIXES = ("cascade:", "defect:", "audit:", "pipeline:")
 _OPEN_TOPICS = {"*"}
 
 # Reserved (broker only)
@@ -88,12 +92,12 @@ def check_publish_acl(topic: str, source: str) -> tuple[bool, str | None]:
     # v11 strict: unknown topic prefixes are DENIED (was default-allow in PoC)
     return False, (
         f"topic '{topic}' does not match any whitelist prefix. "
-        f"Allowed prefixes: stream:S<N>, cascade:, defect:, audit:, '*'. "
+        f"Allowed prefixes: stream:S<N>, cascade:, defect:, audit:, pipeline:, '*'. "
         f"Dev: bench-/test-/poc- (if EBS_BUS_DEV_MODE=1)."
     )
 
 
 def parse_stream_id(source: str) -> str | None:
-    """Extract S1~S99 stream id from source string. None if not a stream."""
-    m = re.match(r"^(S\d+)", source)
+    """Extract S1~S99 (incl. S10-A/S10-W variants) stream id from source string. None if not a stream."""
+    m = re.match(r"^(S[\w-]+)", source)
     return m.group(1) if m else None
