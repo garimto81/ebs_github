@@ -84,26 +84,36 @@ mcp = FastMCP(
 # ─── Tool 1: publish_event ────────────────────────────────────────────
 
 @mcp.tool()
-async def publish_event(topic: str, payload: dict, source: str = "unknown") -> dict:
+async def publish_event(
+    topic: str, payload: dict, source: str = "unknown", publisher_id: str = ""
+) -> dict:
     """Publish an event to a topic.
 
     Args:
         topic: Topic (e.g., "stream:S1", "cascade:design"). ACL applies.
         payload: JSON-serializable payload.
         source: Sender id (e.g., "S1", "S3-cc").
+        publisher_id: Caller process identifier (v11.1 B-222 — gates
+            source='user' anti-spoofing; only "chat-server" may publish as user).
 
     Returns:
         {seq, ts, topic, recipients}
     """
-    allowed, reason = check_publish_acl(topic, source)
+    allowed, reason = check_publish_acl(topic, source, publisher_id=publisher_id)
     if not allowed:
-        logger.warning(f"ACL denied topic={topic} source={source}: {reason}")
+        logger.warning(
+            f"ACL denied topic={topic} source={source} "
+            f"publisher_id={publisher_id}: {reason}"
+        )
         raise ValueError(f"ACL denied: {reason}")
     await _ensure_initialized()
     assert _store is not None and _dispatcher is not None
     seq, ts = await _store.publish(topic, payload, source)
     recipients = await _dispatcher.notify(topic, seq, source, ts, payload)
-    logger.info(f"publish topic={topic} source={source} seq={seq} recipients={recipients}")
+    logger.info(
+        f"publish topic={topic} source={source} publisher_id={publisher_id} "
+        f"seq={seq} recipients={recipients}"
+    )
     return {"seq": seq, "ts": ts, "topic": topic, "recipients": recipients}
 
 
