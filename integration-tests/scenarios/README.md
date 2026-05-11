@@ -5,6 +5,7 @@
 | 2026-04-10 | 신규 작성 | CCR-010~036 계약 검증 시나리오 카탈로그 |
 | 2026-05-11 | B-211 추가 | v99-full-hand-flow.http + integration-tests-e2e.yml CI gate (S9 Phase 1) |
 | 2026-05-11 | Cycle 2 host shift | `_env.http` + 18 시나리오 `:8000→:18001`, `:8080→:18080` (Docker_Runtime §4.6 WSL relay glitch). 10-auth `username→email` (admin@local / Admin!Local123). 50-deck `deck_name→name` + 응답 camelCase 정정. Workflow seed_admin.py 통합. |
+| 2026-05-11 | Cycle 2 iteration | v01-1-hand-flow.http 추가 (Engine harness 직결, fold-to-BB 6-handed NL Hold'em). 10/50/v01 3건 실제 실행 PASS. 50.2 duplicate UID 미검출 drift 발견 (BO uniqueness 미구현). |
 
 ---
 
@@ -22,6 +23,7 @@
 | **40~49** | Overlay / Security Delay / Color sync | 025, 033, 034, 036 |
 | **50~59** | RFID / Deck Register | 022, 026 |
 | **60~69** | team1 WSOP Parity (Event/Flight/Table/RBAC) | 016, 017 |
+| **v01** | 1-Hand Flow (Engine harness only :18080) | S8 cascade:engine-hand-ready 회귀 |
 | **v99** | E2E 풀 핸드 (cross-cut) — RFID → Engine → CC → BO → Overlay | 021, 024, 026, 029, 031 |
 
 ## 실행 환경

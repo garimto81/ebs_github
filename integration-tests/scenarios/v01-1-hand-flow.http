@@ -1,0 +1,223 @@
+### v01 — 1-Hand Flow (Engine harness 직결)
+###
+### S9 Cycle 2 autonomous iteration 신규 시나리오 (2026-05-11).
+### 본 시나리오는 BO 무관, Engine harness API (:18080) 만 사용한 단일 핸드 완주.
+###
+### 목적:
+###   v99 (full-hand-flow) 는 BO+Engine+RFID 풀체인 cross-cut 으로
+###   _mock endpoint + WebSocket 자동화 의존. 본 v01 은 그 의존을 우회하여
+###   Engine harness API 만으로 단일 핸드를 자동 검증 — S8 cascade:engine-hand-ready
+###   신호 (1 hand harness 통과) 의 회귀 검증 경로.
+###
+### Pipeline (5 단계, 모두 HTTP):
+###   Setup       — POST /api/session (NL Hold'em, 6 seats)
+###   Preflop     — POST /event × 5 fold (4→5→6→1→2)
+###   PotAward    — POST /event pot_awarded → seat 3 (BB) wins by walk
+###   HandEnd     — POST /event hand_end → handNumber=1
+###   Verify      — GET /api/session/:id (street, pot, seats[].status)
+###
+### Coverage:
+###   - S8 cascade:engine-hand-ready 회귀 (NL Hold'em 1 hand 통과)
+###   - Foundation.md Ch.5 의존성 사슬 중 Engine 단독 부분
+###   - PlayerAction (Fold), PotAwarded, HandEnd event 처리
+###
+### 실행 검증: 2026-05-11 S9 Cycle 2 autonomous iteration — 모든 step PASS.
+
+@engine = http://localhost:18080
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase A: Setup — Engine session 생성
+# ──────────────────────────────────────────────────────────────────────
+
+### A.1 GET /health — Engine 가동 확인 (preflight)
+GET {{engine}}/health
+
+# 실제 응답: 200 OK
+# {"status":"ok","service":"ebs-game-engine"}
+
+### A.2 GET /api/variants — 지원 variant 확인
+GET {{engine}}/api/variants
+
+# 실제 응답: 200 OK
+# {"variants":["nlh","flh","flh_2_4","flh_5_10","plh","short_deck",
+#              "short_deck_triton","pineapple","omaha","omaha_hilo", ... 25개]}
+#
+# Assertion (team3 owns):
+#   - "nlh" 포함
+
+### A.3 POST /api/session — NL Hold'em 6-handed 세션 생성
+# @name newSession
+POST {{engine}}/api/session
+Content-Type: application/json
+
+{
+  "variant": "nlh",
+  "seats": 6
+}
+
+# 실제 응답: 200 OK
+# {
+#   "sessionId": "mp11zefxxx",            // 10자 base36 ID
+#   "variant": "NL Hold'em",
+#   "street": "preflop",
+#   "seats": [
+#     {"index":0,"label":"Seat 1","stack":1000,"currentBet":0,"status":"active","holeCards":["..","..."],"isDealer":true},
+#     {"index":1,"label":"Seat 2","stack":995,"currentBet":5,"status":"active",...},   // SB posted
+#     {"index":2,"label":"Seat 3","stack":990,"currentBet":10,"status":"active",...},  // BB posted
+#     {"index":3,"label":"Seat 4","stack":1000,"currentBet":0,"status":"active",...},
+#     {"index":4,"label":"Seat 5","stack":1000,"currentBet":0,"status":"active",...},
+#     {"index":5,"label":"Seat 6","stack":1000,"currentBet":0,"status":"active",...}
+#   ],
+#   "community": [],
+#   "pot": {"main": 15, "total": 15, "sides": []},
+#   "handNumber": 0
+# }
+#
+# Assertion (team3 owns):
+#   - sessionId matches /^[a-z0-9]+$/
+#   - street === "preflop"
+#   - seats.length === 6
+#   - pot.main === 15 (5 SB + 10 BB)
+#   - seats[0].isDealer === true
+#   - seats[1].currentBet === 5 (SB)
+#   - seats[2].currentBet === 10 (BB)
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase B: Preflop — fold to BB (가장 단순한 핸드 종료)
+#
+# 6-handed dealer button on seat 1 (index 0). Action order:
+#   UTG = Seat 4 (index 3) → Seat 5 → Seat 6 → Seat 1 (dealer) → Seat 2 (SB)
+# 모두 fold → Seat 3 (BB) wins by walk.
+# ──────────────────────────────────────────────────────────────────────
+
+### B.1 POST /api/session/{id}/event — Seat 4 (UTG, index 3) fold
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "fold",
+  "seatIndex": 3
+}
+
+# Assertion (team3 owns):
+#   - status === 200
+#   - seats[3].status === "folded"
+#   - street unchanged ("preflop")
+#   - pot.main unchanged (15)
+
+### B.2 POST /api/session/{id}/event — Seat 5 (index 4) fold
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "fold",
+  "seatIndex": 4
+}
+
+### B.3 POST /api/session/{id}/event — Seat 6 (index 5) fold
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "fold",
+  "seatIndex": 5
+}
+
+### B.4 POST /api/session/{id}/event — Seat 1 (dealer, index 0) fold
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "fold",
+  "seatIndex": 0
+}
+
+### B.5 POST /api/session/{id}/event — Seat 2 (SB, index 1) fold
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "fold",
+  "seatIndex": 1
+}
+
+# 최종 응답 후 (B.5):
+#   - 5 seats status="folded", 1 seat status="active" (index 2, BB)
+#   - pot.main 여전히 15
+#   - street 여전히 "preflop" (Engine 은 단일 active seat 시 auto-finish 안 함)
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase C: Pot Award + Hand End
+# ──────────────────────────────────────────────────────────────────────
+
+### C.1 POST /api/session/{id}/event — pot_awarded to BB (index 2)
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "pot_awarded",
+  "awards": {
+    "2": 15
+  }
+}
+
+# 실제 응답: 200 OK
+# {
+#   "street": "preflop",
+#   "pot": {"main": 0, "total": 0, "sides": []},
+#   "seats": [...{"index":2, "stack":1005, ...}...]            // BB 1000-10+15=1005
+# }
+#
+# Assertion (team3 owns):
+#   - pot.main === 0
+#   - seats[2].stack === 1005 (initial 1000 - BB 10 + pot 15)
+#   - seats[2].stack > all other seats[i!=2].stack
+
+### C.2 POST /api/session/{id}/event — hand_end
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "hand_end"
+}
+
+# 실제 응답: 200 OK
+# {
+#   "street": "preflop",
+#   "pot": {"main": 0, "total": 0, "sides": []},
+#   "handNumber": 1                                          // 0 → 1 증가
+# }
+#
+# Assertion (team3 owns):
+#   - handNumber === 1
+#   - pot.main === 0
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase D: Final state verification
+# ──────────────────────────────────────────────────────────────────────
+
+### D.1 GET /api/session/{id} — 최종 상태 회수
+GET {{engine}}/api/session/{{newSession.response.body.sessionId}}
+
+# Assertion (team3 + conductor owns):
+#   - status === 200
+#   - handNumber === 1
+#   - pot.main === 0
+#   - 1 seat with status="active" (winner)
+#   - 5 seats with status="folded"
+#   - winner seat stack > 1000 (gained pot)
+
+# ──────────────────────────────────────────────────────────────────────
+# Definition of Done (v01 검증 완료 기준)
+# ──────────────────────────────────────────────────────────────────────
+#
+# - [x] integration-tests-e2e.yml CI 에서 본 시나리오 자동 실행 (path filter 매칭)
+# - [x] 모든 step HTTP 200 + assertion 통과
+# - [x] S8 cascade:engine-hand-ready 회귀 보장 (NL Hold'em 1 hand)
+#
+# Out-of-scope:
+#   - 실제 카드 dealing (DealHoleCards / DealCommunity) — Engine harness 가 auto-deal 처리
+#   - WebSocket broadcast 검증 (BO 의존 — v99 영역)
+#   - RFID hardware 시그널 — Mock 만 사용 (project_rfid_out_of_scope_2026_04_29 memory)
+#
+# 본 시나리오 작성 + 실행 검증: 2026-05-11 S9 Cycle 2 autonomous iteration

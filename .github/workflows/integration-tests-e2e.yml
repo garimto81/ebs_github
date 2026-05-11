@@ -129,12 +129,13 @@ jobs:
           shopt -s nullglob
           violations=0
           for f in integration-tests/scenarios/*.http; do
-            # _env.http, v99-*, v95-* 는 면제
+            # _env.http, v99-*, v01-*, v95-* 는 면제
             #   _env.http       — 환경 변수 공유 파일 (CCR 없음)
             #   v99-*.http      — 멀티 CCR cross-cut (Coverage 섹션에 명시)
+            #   v01-*.http      — S8 cascade:engine-hand-ready 회귀 (CCR 아닌 cascade ref)
             #   *v95-*.http     — V9.5 phase 마커 사용 (CCR scheme 도입 전 작성)
             case "$(basename "$f")" in
-              _env.http|v99-*.http|*v95-*.http) continue ;;
+              _env.http|v99-*.http|v01-*.http|*v95-*.http) continue ;;
             esac
             if ! head -10 "$f" | grep -qE "CCR-[0-9]{3}"; then
               echo "::error file=$f::Missing CCR-NNN reference in first 10 lines"
