@@ -149,7 +149,9 @@ def loop_subscribe(config_path, once=False):
         return
 
     # observer_loop.py 의 subscribe loop 재사용
-    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    # 2026-05-11 (S11 Cycle 2, Issue #240) — parent.parent 는 tools/ 에서 멈춰서
+    # `from tools.orchestrator...` 절대 import 실패. project root 까지 3 hops 필요.
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
     try:
         from tools.orchestrator.message_bus.observer_loop import observer_loop
     except ImportError as e:

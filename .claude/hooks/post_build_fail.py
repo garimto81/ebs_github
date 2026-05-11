@@ -41,6 +41,60 @@ BUILD_PATTERNS = re.compile(
 )
 
 
+def _broker_publish_build_fail(command, exit_code, stderr_excerpt, source):
+    """publish cascade:build-fail to broker. silent if dead. (S11 Cycle 2, Issue #240)"""
+    import socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(1.0)
+    try:
+        sock.connect(("127.0.0.1", 7383))
+    except OSError:
+        return
+    finally:
+        sock.close()
+
+    try:
+        import asyncio
+        from mcp import ClientSession
+        from mcp.client.streamable_http import streamablehttp_client
+
+        async def _run():
+            async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
+                async with ClientSession(r, w) as s:
+                    await s.initialize()
+                    await s.call_tool("publish_event", {
+                        "topic": "cascade:build-fail",
+                        "payload": {
+                            "command_excerpt": command[:200],
+                            "exit_code": exit_code,
+                            "stderr_excerpt": stderr_excerpt[:500] if stderr_excerpt else "",
+                            "auto_published": True,
+                            "trigger": "PostToolUse:Bash exit!=0",
+                        },
+                        "source": source,
+                    })
+
+        try:
+            asyncio.run(asyncio.wait_for(_run(), timeout=2.0))
+        except Exception:
+            pass
+    except Exception:
+        pass
+
+
+def _read_team_id():
+    """Read team_id from .team if present. Return None for main session."""
+    from pathlib import Path
+    team_file = Path.cwd() / '.team'
+    if not team_file.exists():
+        return None
+    try:
+        import yaml
+        return (yaml.safe_load(team_file.read_text(encoding='utf-8')) or {}).get('team_id')
+    except Exception:
+        return None
+
+
 def main() -> int:
     try:
         payload = json.load(sys.stdin)
@@ -59,6 +113,18 @@ def main() -> int:
         return 0
     if exit_code == 0 and not is_error:
         return 0
+
+    # Cascade publish (S11 Cycle 2, Issue #240) — silent if broker dead
+    team_id = _read_team_id() or "main"
+    stderr_excerpt = ""
+    if isinstance(tool_response, dict):
+        stderr_excerpt = tool_response.get("stderr") or tool_response.get("error") or ""
+    _broker_publish_build_fail(
+        command=command,
+        exit_code=exit_code if isinstance(exit_code, int) else -1,
+        stderr_excerpt=stderr_excerpt if isinstance(stderr_excerpt, str) else str(stderr_excerpt),
+        source=team_id,
+    )
 
     # 프로토콜 reminder (stdout) — 사용자/어시스턴트 모두에게 노출
     print(
