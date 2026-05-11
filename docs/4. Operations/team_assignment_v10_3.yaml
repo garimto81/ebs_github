@@ -469,3 +469,46 @@ topics:
   - bench-
   - test-
   - poc-
+
+# B-222 — Inter-Session Chat (additive, added 2026-05-11)
+chat_acl:
+  # 모든 stream 이 chat:room:* / chat:dm:* / chat:thread:* 에 publish 가능 (open prefix)
+  open_prefix: "chat:"
+  notes: |
+    chat:* 는 _OPEN_TOPIC_PREFIXES 에 등록 (topics.py).
+    source='user' 는 publisher_id='chat-server' 에서만 발급 가능.
+  user_source_publishers:
+    - chat-server
+
+stream_topic_extensions:
+  # 각 stream 이 자율 발화 시 사용할 default chat 채널
+  S1:
+    chat_default: chat:room:design
+    chat_blocker: chat:room:blocker
+  S2:
+    chat_default: chat:room:design
+    chat_blocker: chat:room:blocker
+  S3:
+    chat_default: chat:room:design
+    chat_blocker: chat:room:blocker
+  S7:
+    chat_default: chat:room:design
+    chat_blocker: chat:room:blocker
+  S8:
+    chat_default: chat:room:design
+    chat_blocker: chat:room:blocker
+  S9:
+    chat_default: chat:room:design
+    chat_blocker: chat:room:blocker
+  S10-A:
+    chat_default: chat:room:design
+    chat_blocker: chat:room:blocker
+  S10-W:
+    chat_default: chat:room:design
+    chat_blocker: chat:room:blocker
+  S11:
+    chat_default: chat:room:handoff
+    chat_blocker: chat:room:blocker
+  SMEM:
+    chat_default: chat:room:design
+    chat_blocker: chat:room:blocker
