@@ -1,0 +1,6 @@
+stream_id: SMEM
+team_name: Conductor Memory Stream (Optional, cross-cutting)
+activated_at: '2026-05-11T12:37:45.917106'
+worktree_path: C:/claude/ebs-memory
+branch: work/smem/2026-05-11-init
+scope_owns: []
