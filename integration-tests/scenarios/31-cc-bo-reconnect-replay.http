@@ -6,7 +6,7 @@
 ### - 재연결 시 ReplayEvents 일괄 전송
 ### - BO Accept / PartialAccept / Reject 응답 처리
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 
 ### 31.1 POST /api/v1/tables/{id}/replay-events — Accept 케이스 (수동)

@@ -6,12 +6,12 @@
 ### - GameInfoAck / GameInfoRejected 응답
 ### - 검증 규칙: dealer/sb/bb ∈ active_seats, sb < bb < straddle
 
-@host = http://localhost:8000
-@ws_cc = ws://localhost:8000/ws/cc
+@host = http://localhost:18001
+@ws_cc = ws://localhost:18001/ws/cc
 
 ### 32.1 WriteGameInfo — 정상 (24 필드) (수동 WebSocket)
 ###
-### wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token=<jwt>&format=json'
+### wscat -c 'ws://localhost:18001/ws/cc?table_id=1&token=<jwt>&format=json'
 ### 다음 메시지 전송:
 ###
 ### {

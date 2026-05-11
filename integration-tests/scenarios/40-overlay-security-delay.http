@@ -6,7 +6,7 @@
 ### - delay 변경 시 buffer 재계산
 ### - delay_enabled=false 시 버퍼 우회
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 
 ### 40.1 GET /api/v1/tables/1/output-config — 현재 delay 설정 조회

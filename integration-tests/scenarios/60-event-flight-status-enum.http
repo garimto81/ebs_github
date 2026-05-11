@@ -5,7 +5,7 @@
 ### - is_registerable, day_index, is_pause 필드 반영
 ### - is_restricted = (status==1 && day_index>=1) 판정
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 
 ### 60.1 GET /api/v1/events/1/flights — 목록 조회

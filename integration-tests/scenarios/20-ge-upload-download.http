@@ -5,7 +5,7 @@
 ### - GET /skins/{id} 200 OK (byte-exact 다운로드)
 ### - JSON Schema 검증 실패 시 422
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 
 ### 20.1 POST /api/v1/skins — 정상 업로드

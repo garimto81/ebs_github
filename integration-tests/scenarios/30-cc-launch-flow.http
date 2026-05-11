@@ -7,7 +7,7 @@
 ### - Operator assigned_tables RBAC
 ### - TableFSM SETUP 이상 요구
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 @operator_token = {{$dotenv OPERATOR_JWT}}
 @viewer_token = {{$dotenv VIEWER_JWT}}
@@ -28,7 +28,7 @@ Content-Type: application/json
 #     "status": "live",
 #     "cc_instance_id": "cc-uuid-abcd-1234",
 #     "launch_token": "eyJhbGc...",         // JWT 5분 수명
-#     "ws_url": "ws://localhost:8000/ws/cc?table_id=1",
+#     "ws_url": "ws://localhost:18001/ws/cc?table_id=1",
 #     "launched_at": "2026-04-10T12:00:00Z"
 #   },
 #   "error": null
@@ -79,7 +79,7 @@ Content-Type: application/json
 
 ### 30.6 WebSocket 연결 with launch_token (수동)
 ###
-### wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token={{launchAdmin.response.body.data.launch_token}}&cc_instance_id={{launchAdmin.response.body.data.cc_instance_id}}&format=json'
+### wscat -c 'ws://localhost:18001/ws/cc?table_id=1&token={{launchAdmin.response.body.data.launch_token}}&cc_instance_id={{launchAdmin.response.body.data.cc_instance_id}}&format=json'
 ###
 ### 예상: 연결 성공 후 초기 상태 JSON 수신:
 ### {
@@ -93,7 +93,7 @@ Content-Type: application/json
 
 ### 30.7 WebSocket 연결 — cc_instance_id 불일치
 ###
-### wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token=<launch_token>&cc_instance_id=wrong-uuid&format=json'
+### wscat -c 'ws://localhost:18001/ws/cc?table_id=1&token=<launch_token>&cc_instance_id=wrong-uuid&format=json'
 ###
 ### 예상: 연결 즉시 종료 (1008 Policy Violation)
 ### 이유: launch_token 의 sub 와 cc_instance_id 가 불일치
@@ -101,7 +101,7 @@ Content-Type: application/json
 ### 30.8 WebSocket 연결 — 만료된 launch_token
 ###
 ### (launch 후 5분+ 경과)
-### wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token=<expired>&cc_instance_id=...&format=json'
+### wscat -c 'ws://localhost:18001/ws/cc?table_id=1&token=<expired>&cc_instance_id=...&format=json'
 ###
 ### 예상: 1008 Policy Violation (TOKEN_EXPIRED)
 ### 클라이언트는 Lobby에 재요청 필요

@@ -6,7 +6,7 @@
 ### - Admin은 모든 엔드포인트 허용
 ### - 에러 body: AUTH_ROLE_DENIED
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 @operator_token = {{$dotenv OPERATOR_JWT}}
 @viewer_token = {{$dotenv VIEWER_JWT}}

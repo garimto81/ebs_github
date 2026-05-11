@@ -5,7 +5,7 @@
 ### - PAUSED + is_pause=false 거부 (불변 조합)
 ### - EMPTY/SETUP/CLOSED 상태에서 is_pause=true 거부
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 
 ### 61.1 PATCH /tables/1 — LIVE + is_pause=true 허용
@@ -67,7 +67,7 @@ Authorization: Bearer {{admin_token}}
 
 ### 61.5 WebSocket TableStatusChanged 이벤트 (수동)
 ###
-### wscat -c 'ws://localhost:8000/ws/lobby?token=<jwt>&format=json'
+### wscat -c 'ws://localhost:18001/ws/lobby?token=<jwt>&format=json'
 ### 위 61.1 요청 후 수신:
 ### {
 ###   "type": "TableStatusChanged",

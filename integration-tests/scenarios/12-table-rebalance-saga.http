@@ -5,7 +5,7 @@
 ### - 207 Multi-Status (부분 성공) + 500 실패 시나리오
 ### - 각 step의 status: "pending" → "in_progress" → "completed" / "failed"
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 
 ### 12.1 POST /api/v1/tables/rebalance — 정상 (전체 성공)

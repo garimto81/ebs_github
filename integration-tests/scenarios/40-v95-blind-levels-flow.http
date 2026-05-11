@@ -8,7 +8,7 @@
 ###
 ### 사용법: REST Client (VSCode) — 순차 실행. 각 step 의 응답을 다음 step 에서 사용.
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 
 
 ### 40.1 Login (POST /auth/logout 검증 사전 준비)

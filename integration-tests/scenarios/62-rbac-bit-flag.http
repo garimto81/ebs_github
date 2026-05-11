@@ -5,7 +5,7 @@
 ### - None=0, Read=1, Write=2, Delete=4, 조합 가능
 ### - 리소스별 세분화된 권한 판정
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 @operator_token = {{$dotenv OPERATOR_JWT}}
 @viewer_token = {{$dotenv VIEWER_JWT}}

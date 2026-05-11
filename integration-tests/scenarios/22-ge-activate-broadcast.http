@@ -6,7 +6,7 @@
 ### - seq 단조증가 (CCR-021)
 ### - X-Game-State 불일치 시 409 + Warning
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 @skin_id = sk_01HVQK-test
 
@@ -38,7 +38,7 @@ Content-Type: application/json
 ### 22.3 Activate 후 Consumer WS 수신 검증 (수동)
 ###
 ### 사전에 wscat 연결:
-###   wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token=<jwt>&format=json'
+###   wscat -c 'ws://localhost:18001/ws/cc?table_id=1&token=<jwt>&format=json'
 ###
 ### 위 22.2 요청 후 수신 메시지:
 ### {

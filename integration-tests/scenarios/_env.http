@@ -2,12 +2,21 @@
 ###
 ### 사용법: REST Client (VSCode) 또는 httpyac.
 ### 각 시나리오 파일은 이 환경을 참조한다.
+###
+### Port 갱신 (2026-05-11, S9 Cycle 2):
+###   :8000  -> :18001  (BO host port — Docker_Runtime §4.6 WSL relay glitch 회피)
+###   :8080  -> :18080  (Engine host port — 동일)
+### 컨테이너 내부 (ebs-net) 통신은 :8000/:8080 그대로 사용.
+### 본 .http 시나리오는 host (개발자 머신) 에서 실행되므로 host port 사용.
 
 # @name env
-@host = http://localhost:8000
-@engine_host = http://localhost:8080
-@ws_lobby = ws://localhost:8000/ws/lobby
-@ws_cc = ws://localhost:8000/ws/cc
+@host = http://localhost:18001
+@engine_host = http://localhost:18080
+@ws_lobby = ws://localhost:18001/ws/lobby
+@ws_cc = ws://localhost:18001/ws/cc
+
+# 대체 endpoint (nginx proxy 경유 — :18001 직접 접속 차단 시)
+@proxy_host = http://localhost:80
 
 # 공통 인증 토큰 (실제 실행 시 environment에서 overide)
 @admin_token = {{$dotenv ADMIN_JWT}}
