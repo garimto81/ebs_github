@@ -188,6 +188,12 @@ def main():
                 "max_count": 6,
                 "states": states,
                 "auto_published": True,
+                # S11 Cycle 3 - observer_loop dispatch instruction
+                "next_action": {
+                    "type": "inbox-drop",
+                    "target": "S2,S3,S7,S8",
+                    "reason": "domain streams resume signal",
+                },
             },
             source="S11",
         )
