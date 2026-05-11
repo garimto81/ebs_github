@@ -89,7 +89,11 @@ services:
       # 2026-05-03 — Windows dynamic-port-range (1024-15001) collision on 6380/6381.
       # Internal `redis:6379` (ebs-net) unaffected. Host debug port shifted above
       # dynamic range to avoid bind contention with WinNAT/Hyper-V allocations.
-      - "16379:6379"
+      # 2026-05-11 (S11 Day-1) — wslrelay PID 55860 hijacked 16379 after redis Exit(255)
+      # 4 days ago; port stays allocated by Docker Desktop relay until DD reset. Shifted
+      # to 16380 (verified free). Recovery procedure: docs/4. Operations/Docker_Runtime.md
+      # §"Redis revival after wslrelay port hijack". 127.0.0.1 bind constrains exposure.
+      - "127.0.0.1:16380:6379"
     volumes:
       - redis-data:/data
     healthcheck:
