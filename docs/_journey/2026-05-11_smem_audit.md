@@ -26,6 +26,8 @@ broker_state: alive (pid 53412, port 7383)
 | MEMORY.md 200줄 한계 | ⚠️  **VIOLATION** | 현재 250줄 — 시스템 truncation 발생 |
 | frontmatter 표준 | ✅ PASS | 신규 파일 (`project_cleanup_2026_05_11`, `project_ebs_v4_separate`) name/description/type 완비 |
 | broker liveness | ✅ PASS | pid=53412 LISTEN @ 127.0.0.1:7383 |
+| broker publish (SMEM ACL) | ✅ PASS | seq=10, `audit:memory-snapshot`, e2e test PASS |
+| Init PR (Stream activation) | ✅ MERGED | #214 squash `8387779e` (2026-05-11T07:45:13Z) |
 
 **핵심 조치 권고**: MEMORY.md 50줄 축소 (인덱스 항목 압축 또는 sub-index 분할).
 
@@ -131,12 +133,36 @@ originSessionId: 70da27dd-9850-45d9-b062-60812e084dbd  # NEW field
 ```
 broker        : http://127.0.0.1:7383/mcp  (FastMCP StreamableHTTP)
 pid           : 53412 (LISTENING)
-last_seq      : 3 (project_cleanup memo 기록 기준 pipeline:cleanup-complete)
 publish 권한  : audit:memory-snapshot, audit:memory-rotate (SMEM)
 subscribe     : *  (전체 감사)
 ```
 
-본 audit 사이클에서 SMEM publish 시도 없음 (audit-only KPI 산출이 목적, snapshot/rotate 트리거 조건 미발생).
+### 6.1 본 사이클 publish 기록
+
+| seq | topic | source | ts (UTC) | recipients |
+|:---:|-------|:------:|----------|:----------:|
+| 10 | `audit:memory-snapshot` | SMEM | 2026-05-11T07:45:32Z | 0 (active subscribers 없음, 로그 보존) |
+
+Payload 요약:
+```json
+{
+  "period": "2026-05-04..2026-05-11",
+  "memory_md_lines": 250,
+  "memory_md_limit": 200,
+  "violation": "MEMORY_MD_OVER_LIMIT",
+  "append_only_pass": true,
+  "orphan_files": 0,
+  "frontmatter_pass": true,
+  "issue": 228, "pr": 229, "init_pr_merged": 214
+}
+```
+
+→ SMEM publish ACL 정상 작동 확인 (end-to-end capability test PASS).
+
+### 6.2 Init PR 활성화 신호
+
+- PR #214 (work/smem/2026-05-11-init): MERGED 2026-05-11T07:45:13Z, squash commit `8387779e36d3`
+- Orchestrator 가 `gh pr list --label stream:SMEM` 로 활성화 감지 가능 상태
 
 ## 7. Next Cycle
 
