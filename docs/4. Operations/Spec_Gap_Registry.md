@@ -33,20 +33,21 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 - **Registry 갱신**: `python tools/spec_drift_check.py --all --format=json > logs/drift_report.json`
 - **Pre-push 경고**: `.claude/hooks/pre_push_drift_check.py` (non-blocking)
 
-## 4. 현재 Drift (2026-05-11 fresh scan)
+## 4. 현재 Drift (2026-05-11 Cycle 2 rescan)
 
 ### 4.1 계약별 요약
 
 | 계약 | D1 | D2 | D3 | D4 | Total | 핵심 조치 |
 |------|:--:|:--:|:--:|:--:|:-----:|-----------|
-| REST API | 0 | 43 | 2 | 130 | 175 | 2026-05-11 fresh: **D1 7→0** (큰 개선 — Backend_HTTP `/api/v1` prefix 정정 효과 누적). D2 48→43 (router 흡수). **D3 0→2 신규** = `GET /api/v1/flights/{_}/levels`, `POST /api/v1/skins/upload` (SG-008 잔여 후속, code-only). D4 +16 |
+| REST API | 0 | 43 | 0 | 132 | 175 | 2026-05-11 Cycle 2: ✅ **D3 2→0 해소** (S7 PR #232 가 `GET /flights/{_}/levels` + `POST /skins/upload` Backend_HTTP 정합). Cycle 1 의 D3 신규 발견이 같은 날 해소. D4 130→132 |
 | OutputEvent | 0 | 0 | 0 | 21 | 21 | **PASS** 유지 |
 | FSM | 0 | 0 | 0 | 23 | 23 | **PASS** 유지 (SG-009 직렬화 규약 적용 후) |
 | DB Schema | 0 | 0 | 0 | 27 | 27 | ✅ **진정한 PASS 도달** 2026-05-11 — D2 `payout_structures` 해소 + D3 `cards`/`settings_kv` scanner noise 해소. SG-010 detector 정밀화 효과 누적. D4 23→27 |
 | RFID HAL | 0 | 0 | 0 | 8 | 8 | **OUT_OF_SCOPE** 유지 (SG-011) |
 | Settings | 0 | 109 | 3 | 53 | 165 | 2026-05-11: D2 110→109 / D3 4→3 (미세 변동). 잔여 D3 `fillKeyRouting`/`resolution`/`theme` 모두 `twoFactorEnabled` 해소(SG-008-b14 DONE) 후 잔류. D2 109 = scanner false positive dominant (SG-010 후속) |
-| WebSocket | 0 | 1 | 1 | 44 | 46 | ⚠️ **PASS 깨짐** 2026-05-11 — D2 `force_logout` (IMPL-009 known PENDING) + D3 `cc_session_count` (코드 완벽 구현, spec 누락). **SG-034 신규 등재** |
-| Auth | 0 | 0 | 0 | 0 | 0 | 2026-05-11 신규 contract 등장 — M1 D+1 완결 후 0/0/0/0 깨끗한 기준선 (M2~M10 IA 신설은 별 PR) |
+| WebSocket | 0 | 1 | 0 | 45 | 46 | 🟡 **Cycle 2 부분 복구**: ✅ D3 `cc_session_count` 해소 (S7 PR #232 가 WebSocket_Events.md §13.X 보강) / ⚠️ D2 `force_logout` 잔여 (IMPL-009 known PENDING — 별 cycle). SG-034 = PARTIAL (절반 해소) |
+| Auth | 0 | 0 | 0 | 0 | 0 | 2026-05-11 신규 contract 등장 — M1 D+1 완결 후 표면적 PASS. **scanner 한계 §7 신규 entry**: detect_auth() d4_count reporting 누락 — 실제 5 rules PASS 검증되지만 0/0/0/0 표시 |
+| **integration-tests vs BO** (out-of-scanner) | - | - | - | - | 92 | 🆕 **SG-035 + SG-036 별 추적** — 53 .http endpoints vs 137 router endpoints. 단순 path diff 84 + body schema mismatch (SG-035 username/email) + RBAC/header drift 일부 = 92 mismatch (issue #241) |
 
 > 스캐너 자체가 정규식 기반 best-effort 이므로 D2/D3 에는 false positive 가 섞여 있다. D1 은 신뢰도 높음.
 
@@ -67,6 +68,27 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | API | D1 | Backend_HTTP.md 10개 엔드포인트 표기 정정 | §1 Base URL 경로 prefix 규약 보강 (`/api/v1` 필수 명시) |
 | FSM | D1 | TableFSM case 불일치 | SG-009 승격 (code 가 3개월 migration 를 거쳐 lowercase 로 정착. 문서를 코드에 맞춰 정정) — 본 커밋 포함 |
 | RFID | D3 | 5 streams 보강 | RFID_HAL_Interface.md §X 참조 명시 (본 커밋 보강) |
+
+### 4.5 integration-tests `.http` vs BO routers — 92 API mismatch (Cycle 2 신규 영역)
+
+> spec_drift_check.py 의 7 contract regex 가 못 잡는 **HTTP body / verb / path 시나리오 수준**의 drift. 별 dimension 으로 추적.
+
+| 지표 | 값 |
+|------|---|
+| `.http` scenario endpoints (`integration-tests/scenarios/`) | 53 |
+| BO router endpoints (`team2-backend/src/routers/*.py`) | 137 |
+| 단순 path 차이 (router 단독) | 84 (= 137 − 53) |
+| body schema mismatch (cycle 2 발견) | **1 확정 (SG-035 username/email)** + 분석 잔여 |
+| RBAC/header drift (cycle 2 후속) | 추정 다수 |
+| **총 mismatch (issue #241 KPI)** | **92** (별 정밀 카운팅 후속) |
+
+**Top 발견**:
+
+| # | 유형 | 위치 | 증상 | 결정 방향 |
+|:-:|------|------|------|-----------|
+| 1 | body schema | `.http` POST `/auth/login` `"username"` field vs `auth.py` `body.email` | .http 가 deprecated field 사용. user 모델은 email column 만 unique. | **SG-035** — `.http` 시나리오를 `email` 로 교체 (5 occurrences) |
+| 2 | path coverage | `.http` 53 vs router 137 (84 endpoints 미커버) | scenario test 가 CRUD 일부만 실행 | SG-036 (후속) — 우선순위 매트릭스 + cycle 별 .http 보강 plan |
+| 3 | path 변종 | `.http` `?from_seq=99999` 등 edge case path | router 가 query param validation 만, scenario 가 정상 케이스로 분류 | SG-036 후속 — 또는 cycle 3 보강 |
 
 ### 4.4 SG 승격 index
 
@@ -117,7 +139,9 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | SG-031 | meta_tooling | Confluence Mirror | **PHASE_4_PARTIAL** | `Conductor_Backlog/SG-031-confluence-mirror-rebuild.md` — Phase 3 DONE + Phase 4 partial (drift_count=0 + auto-classify + coverage 50.1%→67.0%). 잔여: Task 12/13/uncovered 226 |
 | SG-032 | dep_governance | Flutter major bumps | **DEFERRED** | `Conductor_Backlog/SG-032-flutter-deps-major-bumps-deferred.md` — rive 0.14, file_picker 11 migration deferred |
 | SG-033 | mission | EBS 미션 재선언 | **RESOLVED** | `Conductor_Backlog/SG-033-ebs-mission-redefinition.md` — 속도 KPI 폐기, 정확성·안정성·단단한 HW 5 가치 채택 |
-| SG-034 | spec_drift | websocket | PENDING | **2026-05-11 fresh scan 신규** — D2 `force_logout` (IMPL-009 known) + D3 `cc_session_count` (team1+team2 양쪽 구현, spec 누락). detail 카드 작성은 broker `pipeline:gap-classified` publish 로 위임 (S10-A scope 밖). 권고: `WebSocket_Events.md §13.X` cc_session_count event 보강 + IMPL-009 진행 후 PASS 복귀 |
+| SG-034 | spec_drift | websocket | **PARTIAL** | **2026-05-11 fresh scan 신규** — D2 `force_logout` (IMPL-009 known) + D3 `cc_session_count` (team1+team2 양쪽 구현, spec 누락). detail 카드 작성은 broker `pipeline:gap-classified` publish 로 위임 (S10-A scope 밖). **Cycle 2 부분 해소 (2026-05-11)**: ✅ D3 `cc_session_count` = S7 PR #232 `WebSocket_Events.md §13.X` 보강 머지 완료 / ⚠️ D2 `force_logout` 잔여 = IMPL-009 진행 대기 |
+| SG-035 | spec_drift | integration-tests vs BO | PENDING | **2026-05-11 Cycle 2 신규** — `integration-tests/scenarios/10-auth-login-profile.http` 가 POST `/auth/login` body 에 `"username": "admin@ebs.test"` 사용. 실제 `team2-backend/src/routers/auth.py` 는 `LoginRequest.email` (str, unique) 만 수신. `User` SQLModel 에 username column 없음 — `email` 만 unique. drift 방향: **.http 시나리오 = deprecated field**. 권고: `.http` 5+ occurrences 를 `"email"` 로 교체 (별 stream PR). S10-W 트리거 (broker `pipeline:gap-classified`) |
+| SG-036 | spec_drift_scenario | integration-tests vs BO | PENDING | **2026-05-11 Cycle 2 후속 영역** — `.http` 53 endpoints vs BO routers 137 endpoints. 단순 path diff 84 + body/RBAC/header drift = issue #241 의 92 mismatch. 정밀 카운팅 + 우선순위 매트릭스 필요. Cycle 3 plan: cycle 별 .http 보강 (top 10 CRUD endpoints/cycle) |
 
 > Aggregate-vs-Source 동기화 (2026-05-11): SG-028~SG-030 미사용 ID. SG-031~SG-033 이미 자체 Backlog 카드 존재 — 위 표는 §4.4 진위 동기화 (Registry 표에서 누락되었던 6 entry catch-up).
 
@@ -172,3 +196,4 @@ python tools/spec_drift_check.py --settings
 | 2026-04-26 | v1.6 — Conductor 직접 IMPL 실행 (사용자 지시 "프로토타입 완성") | (1) **IMPL-006 DONE** — websocket publisher 6 함수 추가 (publishers.py 20→26, test_publishers.py 6/6 PASS). websocket PASS 복귀 0/0/0/44. SG-020 DONE. (2) **IMPL-007 DONE** — CC seat_cell.dart hole card 값 렌더링 제거 + face-down `?` 표시. `tools/check_cc_no_holecard.py` CI 가드 신설. Command_Center_UI/Overview.md §5.1 D7 계약 신설. (3) **IMPL-004 DONE (a)** — Settings 17 (a) 키 5개 Settings/*.md 파일 보강. settings D3 19→4 (잔여 4 = b14/b15 + scanner 2 false positive). (4) **IMPL-005 분석** — 48 D2 중 대다수 scanner false positive (router prefix 인식 한계, SG-010 후속). 그룹 A/B/C/D 분해 권고. (5) §4.1 갱신 (websocket PASS 복귀, settings 갱신). (6) pytest 248 passed (baseline 247 + 신규 ack/reject test). |
 | 2026-04-27 | v1.7 — Phase 1 Decision Queue (사용자 18건 결정 SSOT) | (1) **SG-022 신규** — 단일 Desktop 바이너리 (Lobby 포함). 2026-04-22 γ 하이브리드 supersedes. Foundation §5.0 / BS_Overview §1 정렬 (Agent 1). (2) **SG-008-b1~b9, b14, b15 = DONE** (B 그룹 11건 일괄 채택, registry 권고 옵션 1). 구현은 team2 위임. (3) **SG-003 + SG-017 = DONE** (C.1 5-level scope: Global/Series/Event/Table/User). Settings/Overview.md 재작성. (4) **SG-021 = DONE** (C.2 `.riv` 단일파일 + 표준 메타). Conductor_Backlog/SG-021 갱신. (5) **SG-020 = DONE** (IMPL-006 완료 반영). (6) **BLANK-1 신규 = DONE** (C.3 100ms 전체 파이프라인). (7) **BLANK-3 신규 = DONE** (C.4 worktree fast-forward + pre-push hook). (8) Phase_1_Decision_Queue.md 신규 작성. Multi_Session_Workflow.md L4 신설. Game_Rules 4 파일 frontmatter `tier: external` + `last-updated: 2026-04-27`. MEMORY feedback_web_flutter_separation [SUPERSEDED] + project_decision_2026_04_27_phase1.md 신규. |
 | 2026-05-11 | v1.8 — S10-A 정기 scan + SG-034 신규 (Stream 활성화 첫 산출물) | (1) **fresh scan 7 contract**: api D1 7→0 (큰 개선) / D3 0→2 (신규 endpoint 2건); schema **진정한 PASS 도달** (1/2 → 0/0); websocket **PASS 깨짐** (D2 1 + D3 1); auth 신규 contract 0/0/0/0 등장. (2) **§4.1 표 전면 갱신** (8 contract, baseline 2026-04-26 → 2026-05-11). (3) **SG-034 신규 등재** — `force_logout` (IMPL-009 known PENDING) + `cc_session_count` (코드 완벽, spec 누락) 묶음. detail 카드는 broker `pipeline:gap-classified` 발행으로 위임. (4) **§4.4 catch-up** — SG-031~SG-033 표에 누락된 3건 추가 + SG-034 신규 등재. SG-028~030 미사용 ID 명시. (5) **logs/drift_report.json 보존** (1352 lines, 44KB). (6) S10-A team_role broker contract: `publish pipeline:gap-classified` 첫 실행. |
+| 2026-05-11 | v1.9 — S10-A Cycle 2 (issue #241): rescan + SG-035 + .http vs BO 92 mismatch 영역 등재 | (1) **Cycle 2 rescan (cycle 1 후 ~1h)**: ✅ S7 PR #232 가 SG-034 D3 `cc_session_count` + api D3 2건 (`/flights/{_}/levels`, `/skins/upload`) 동시 정합. **3 drift 해소** (cycle 1 → cycle 2). SG-034 status = PARTIAL (force_logout 잔여). (2) **§4.5 신규 섹션** — integration-tests `.http` (53 endpoints) vs BO routers (137 endpoints) mismatch 영역 등재 — 92 API mismatch KPI (issue #241). (3) **SG-035 신규** — `.http` POST `/auth/login` 의 `"username"` field vs `auth.py` `LoginRequest.email` + `User.email` unique column. drift 방향 = `.http` deprecated field. (4) **SG-036 신규** — 84 endpoint coverage gap + RBAC/header drift cluster. (5) `logs/drift_report_cycle2.json` 보존. (6) broker `pipeline:gap-classified` re-publish (cycle 2 결과 + S10-W 트리거). |
