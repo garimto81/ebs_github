@@ -83,20 +83,43 @@
 
   function renderTrace(event) {
     const panel = PANEL_BY_CHANNEL.trace;
-    const topic = event.topic;
+    const topic = event.topic || "";
     const source = event.source || "?";
     const ts = (event.ts || "").slice(11, 16);
-    const payloadStr = JSON.stringify(event.payload || {}).slice(0, 120);
+    const payload = event.payload || {};
+
+    // 카테고리 추출
+    let category = "other";
+    if (topic.startsWith("stream:")) category = "stream";
+    else if (topic.startsWith("cascade:")) category = "cascade";
+    else if (topic.startsWith("pipeline:")) category = "pipeline";
+    else if (topic.startsWith("audit:")) category = "audit";
+    else if (topic.startsWith("defect:")) category = "defect";
+
+    // payload 요약 (status / impacted / 등)
+    let summary = "";
+    if (payload.status) summary = `status=${payload.status}`;
+    else if (payload.impacted) summary = `impacted=${payload.impacted.length}`;
+    else summary = JSON.stringify(payload).slice(0, 80);
 
     const el = document.createElement("div");
-    el.className = "msg kind-system";
+    el.className = `msg trace-${category}`;
     el.innerHTML =
       `<span class="ts">${ts}</span>` +
-      `<span class="from">${escapeHtml(topic)}</span>` +
-      `<span style="color:var(--muted)">(${escapeHtml(source)})</span> ` +
-      `<span style="color:var(--muted)">${escapeHtml(payloadStr)}</span>`;
+      `<span class="trace-topic">${escapeHtml(topic)}</span> ` +
+      `<span class="trace-source">(${escapeHtml(source)})</span> ` +
+      `<span class="trace-summary">${escapeHtml(summary)}</span>`;
+
+    // 필터 적용 (현재 비활성 카테고리면 숨김)
+    if (window.__traceFilters && window.__traceFilters[category] === false) {
+      el.style.display = "none";
+    }
+
     panel.appendChild(el);
-    panel.scrollTop = panel.scrollHeight;
+
+    const stickyBottom =
+      panel.scrollHeight - panel.scrollTop - panel.clientHeight < 40;
+    if (stickyBottom) panel.scrollTop = panel.scrollHeight;
   }
 
   function dispatchEvent(event) {
@@ -189,6 +212,20 @@
     setInterval(refreshPeers, 5000);
     connectSSE();
   })();
+
+  // Trace 필터 핸들러
+  window.__traceFilters = {stream: true, cascade: true, pipeline: true, audit: true};
+  document.querySelectorAll(".trace-filters input").forEach((cb) => {
+    cb.addEventListener("change", () => {
+      const cat = cb.dataset.filter;
+      const visible = cb.checked;
+      window.__traceFilters[cat] = visible;
+      // 기존 메시지에도 적용
+      document.querySelectorAll(`#msgs-trace .trace-${cat}`).forEach((el) => {
+        el.style.display = visible ? "" : "none";
+      });
+    });
+  });
 
   // ──────────────── @ Autocomplete ────────────────
 

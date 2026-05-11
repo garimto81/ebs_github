@@ -37,7 +37,15 @@
       </div>
     </section>
     <section class="panel trace" data-channel="trace">
-      <h2>LIVE TRACE <span class="ro">(read-only)</span></h2>
+      <h2>
+        LIVE TRACE
+        <span class="trace-filters">
+          <label><input type="checkbox" data-filter="stream" checked> stream</label>
+          <label><input type="checkbox" data-filter="cascade" checked> cascade</label>
+          <label><input type="checkbox" data-filter="pipeline" checked> pipeline</label>
+          <label><input type="checkbox" data-filter="audit" checked> audit</label>
+        </span>
+      </h2>
       <div class="messages" id="msgs-trace"></div>
     </section>
   </main>
