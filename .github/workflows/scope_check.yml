@@ -36,7 +36,9 @@ jobs:
         run: pip install pyyaml
 
       - name: Verify scope
-        if: steps.detect.outputs.skip != 'true'
+        # v10.4: governance-change labeled PRs skip scope check (mirrors tools/scope_check.py 정책)
+        # init PR 의 hook/CLAUDE.md 변경은 scope 밖이지만 governance 라벨로 명시 승인됨.
+        if: steps.detect.outputs.skip != 'true' && !contains(github.event.pull_request.labels.*.name, 'governance-change')
         run: |
           STREAM="${{ steps.detect.outputs.stream }}"
           FILES=$(git diff --name-only origin/main...HEAD | tr '\n' '|' | sed 's/|$//')
