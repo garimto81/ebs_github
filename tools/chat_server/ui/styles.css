@@ -93,8 +93,16 @@ body {
 .msg .mention { background: #3d2e10; color: #f0d264; padding: 0 2px; border-radius: 2px; }
 .msg .mention-self { background: #4d2120; color: #ff7676; }
 
-.msg .reply-ref { color: var(--muted); font-size: 11px; padding-left: 14px; }
-.msg.reply { padding-left: 14px; border-left: 2px solid var(--border); }
+.msg .reply-ref {
+  color: var(--muted);
+  font-size: 11px;
+  padding: 1px 0 2px 14px;
+  cursor: pointer;
+  border-left: 2px solid var(--border);
+  display: block;
+}
+.msg .reply-ref:hover { color: var(--accent); }
+.msg.reply { padding-left: 12px; border-left: 2px solid #1f6feb; }
 
 .composer {
   position: relative;
