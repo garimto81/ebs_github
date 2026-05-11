@@ -126,7 +126,9 @@
   // Composer Enter handler
   document.querySelectorAll(".composer textarea").forEach((ta) => {
     ta.addEventListener("keydown", async (e) => {
+      const dd = ta.parentElement.querySelector(".autocomplete");
       if (e.key === "Enter" && !e.shiftKey) {
+        if (dd && !dd.hidden) return;  // autocomplete 가 처리
         e.preventDefault();
         const channel = ta.dataset.channel;
         const body = ta.value.trim();
@@ -152,4 +154,91 @@
     setInterval(refreshPeers, 5000);
     connectSSE();
   })();
+
+  // ──────────────── @ Autocomplete ────────────────
+
+  function activePeers() {
+    return [...(window.__activePeers || []), "user", "all"];
+  }
+
+  function showAutocomplete(textarea, dropdown, query) {
+    const peers = activePeers().filter(
+      p => p.toLowerCase().startsWith(query.toLowerCase())
+    );
+    if (peers.length === 0) {
+      dropdown.hidden = true;
+      return;
+    }
+    dropdown.innerHTML = peers
+      .map((p, i) => `<div class="item${i === 0 ? " active" : ""}" data-peer="${escapeHtml(p)}">@${escapeHtml(p)}</div>`)
+      .join("");
+    dropdown.hidden = false;
+  }
+
+  function applyAutocomplete(textarea, peer) {
+    const val = textarea.value;
+    const caret = textarea.selectionStart;
+    const atIdx = val.lastIndexOf("@", caret - 1);
+    if (atIdx < 0) return;
+    const before = val.slice(0, atIdx);
+    const after = val.slice(caret);
+    const inserted = `@${peer} `;
+    textarea.value = before + inserted + after;
+    const newCaret = atIdx + inserted.length;
+    textarea.setSelectionRange(newCaret, newCaret);
+    textarea.focus();
+  }
+
+  document.querySelectorAll(".composer").forEach((composer) => {
+    const ta = composer.querySelector("textarea");
+    const dropdown = composer.querySelector(".autocomplete");
+
+    ta.addEventListener("input", () => {
+      const caret = ta.selectionStart;
+      const val = ta.value;
+      const atIdx = val.lastIndexOf("@", caret - 1);
+      if (atIdx < 0) {
+        dropdown.hidden = true;
+        return;
+      }
+      const between = val.slice(atIdx + 1, caret);
+      if (/\s/.test(between)) {
+        dropdown.hidden = true;
+        return;
+      }
+      showAutocomplete(ta, dropdown, between);
+    });
+
+    ta.addEventListener("keydown", (e) => {
+      if (dropdown.hidden) return;
+      const items = [...dropdown.querySelectorAll(".item")];
+      const activeIdx = items.findIndex(it => it.classList.contains("active"));
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        const next = (activeIdx + 1) % items.length;
+        items[activeIdx]?.classList.remove("active");
+        items[next].classList.add("active");
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const prev = (activeIdx - 1 + items.length) % items.length;
+        items[activeIdx]?.classList.remove("active");
+        items[prev].classList.add("active");
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        const sel = items[activeIdx >= 0 ? activeIdx : 0];
+        applyAutocomplete(ta, sel.dataset.peer);
+        dropdown.hidden = true;
+      } else if (e.key === "Escape") {
+        dropdown.hidden = true;
+      }
+    });
+
+    dropdown.addEventListener("click", (e) => {
+      const item = e.target.closest(".item");
+      if (item) {
+        applyAutocomplete(ta, item.dataset.peer);
+        dropdown.hidden = true;
+      }
+    });
+  });
 })();
