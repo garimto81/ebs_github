@@ -1,7 +1,7 @@
-# Conductor Memory Stream (Optional, cross-cutting) (SMEM) Worktree
+# Gap Writing Stream (cross-cutting) (S10-W) Worktree
 
 ## 🎯 Your Identity
-You are working as **Conductor Memory Stream (Optional, cross-cutting)** in the multi-session orchestration.
+You are working as **Gap Writing Stream (cross-cutting)** in the multi-session orchestration.
 Source of Truth: `.team` file in this worktree root.
 
 ## 🚫 Hard Boundaries
@@ -11,7 +11,7 @@ You CANNOT edit:
 - Files outside scope_owns
 
 You CAN edit (only):
-  (defined in .team scope_owns)
+  - docs/4. Operations/Conductor_Backlog/_template_spec_gap*.md
 
 ## ✅ Workflow
 1. Session start → SessionStart hook auto-injects identity
