@@ -3,7 +3,7 @@ title: Backend HTTP
 owner: team2
 tier: internal
 legacy-id: API-01
-last-updated: 2026-05-08
+last-updated: 2026-05-11
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "API-01 REST 카탈로그 + WSOP LIVE 연동 (53KB). TBD 3건은 프로덕션 호스트/WSOP API 인증 등 외부 계약"
@@ -28,6 +28,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 | 2026-04-14 | CCR-043 | §8.1 PayoutStructure/Staff 동기화 대상 추가, §9.7 wsop_id 매핑 전략(신규 엔티티), §13.1 GGPass S2S 인증, §14 Phase별 통합 전략, §15 sync_conflicts 감사 테이블 |
 | 2026-04-14 | 문서 통합 | API-02 WSOP LIVE Integration을 Part II로 흡수. §5.16 sync 엔드포인트 중복 해소 |
 | 2026-04-20 | SG-008 a분류 편입 | §5.17 CRUD 완결성 편입 신설 — D3(code-only) 77건 리소스별 테이블로 일괄 편입 (Users/Competitions/Series/Events/Flights/Tables/Players/Hands/BlindStructures/PayoutStructures/Skins/Decks/Configs/Reports/Settings) |
+| 2026-05-11 | D3 drift 정합 (api 2건) | §5.17.5 에 `GET /api/v1/flights/{flight_id}/levels` (Lobby TopBar 4-cluster, Phase 3 2026-05-06) + §5.17.5.1 응답 명세 신설. §5.17.11 에 `POST /api/v1/skins/upload` (CCR-013 multipart, Issue #196 D8 cascade 2026-05-10) + §5.17.11.1 응답 명세 신설. spec_drift_check `--api` D3 2→0 해소. |
 
 ---
 
@@ -1199,8 +1200,46 @@ Waiting List에서 플레이어의 현재 상태를 나타내는 enum. WSOP LIVE
 | PUT | `/api/v1/flights/{flight_id}/blind-structure` | 구조 수정 | Admin | 200 |
 | GET | `/api/v1/flights/{flight_id}/tables` | Flight의 Table 목록 | 인증 | 200 |
 | POST | `/api/v1/flights/{flight_id}/tables` | Flight 하위 Table 생성 | Admin | 201 |
+| GET | `/api/v1/flights/{flight_id}/levels` | Lobby TopBar [SHOW · FLIGHT · LEVEL · NEXT] 클러스터 데이터 (Phase 3, 2026-05-06) | 인증 | 200 / 404 |
 
 > Clock 제어 의미·request body 상세는 §5.6.1 참조. blind-structure 의미는 §5.13 참조.
+
+#### 5.17.5.1 `GET /api/v1/flights/{flight_id}/levels` 응답 (2026-05-11 D3 정합)
+
+Lobby TopBar 4-column [SHOW · FLIGHT · LEVEL · NEXT] 클러스터 (design SSOT `shell.jsx:43-51`) 를 위한 현재 / 다음 / 그 다음 레벨 묶음. `team2-backend/src/routers/event_flights.py:45` 구현.
+
+**Data sources**: `event_flights.play_level` + `event_flights.remain_time` + `events.blind_structure_id` + `blind_structure_levels.{small_blind, big_blind, ante, duration_minutes}`.
+
+**응답 본문 (200)**:
+
+```json
+{
+  "data": {
+    "now":   { "role": "Now · L8",  "blinds": "1,000 / 2,000", "meta": "ante 2,000 · 30min" },
+    "next":  { "role": "Next · L9", "blinds": "1,500 / 3,000", "meta": "ante 3,000 · 30min" },
+    "after": { "role": "L10",       "blinds": "2,000 / 4,000", "meta": "ante 4,000 · 30min" },
+    "countdownLabel": "L9 IN",
+    "countdown": "12:34"
+  }
+}
+```
+
+| 필드 | 의미 | 비고 |
+|------|------|------|
+| `data.now` | 현재 레벨 (play_level) | flight 가 1라운드 미시작 시 L1 기본 |
+| `data.next` | 다음 레벨 (play_level + 1) | 최종 레벨이면 `null` 로 채움 |
+| `data.after` | 그 다음 레벨 (play_level + 2) | 없으면 `null` |
+| `data.countdownLabel` | TopBar 안내 라벨 | next 가 없으면 `"—"` |
+| `data.countdown` | `mm:ss` 카운트다운 | `remain_time == 0` 일 때 `"—"` |
+| `data` (null) | `events.blind_structure_id` 미설정 | 200 + `{ "data": null }` (404 아님) |
+
+| Status | 조건 |
+|:---:|------|
+| 200 | 정상 (data 또는 `data:null`) |
+| 404 | `event_flights.event_flight_id` 미존재 |
+| 401 / 403 | 인증 / 권한 부재 |
+
+> **소비자**: Lobby (`team1-frontend/lib/features/lobby/widgets/top_bar.dart` flight_id watcher). 폴링 주기는 BO 가 강제하지 않음 — Lobby 가 1초 tick 으로 호출하거나 `clock_tick` WebSocket 이벤트 (API-05 §4.2.2) 와 결합하여 호출.
 
 ### 5.17.6 Tables — CRUD 완결 + 하위 리소스
 
@@ -1267,7 +1306,7 @@ Waiting List에서 플레이어의 현재 상태를 나타내는 enum. WSOP LIVE
 
 ### 5.17.11 Skins — 확장
 
-§5.12 기 정의. metadata PATCH + activate 별칭 추가.
+§5.12 기 정의. metadata PATCH + activate 별칭 추가 + `.gfskin` ZIP 업로드.
 
 | Method | Path | 용도 | RBAC | Status |
 |:------:|------|------|:----:|:------:|
@@ -1276,8 +1315,46 @@ Waiting List에서 플레이어의 현재 상태를 나타내는 enum. WSOP LIVE
 | PATCH | `/api/v1/skins/{skin_id}/metadata` | 메타데이터만 부분 수정 | Admin | 200 |
 | POST | `/api/v1/skins/{skin_id}/activate` | 활성화 (표준 — POST) | Admin/Op | 200 |
 | PUT | `/api/v1/skins/{skin_id}/activate` | 활성화 (idempotent 별칭 — PUT) | Admin/Op | 200 |
+| POST | `/api/v1/skins/upload` | `.gfskin` ZIP multipart 업로드 (CCR-013 §1 + SG-004 7-stage 검증) | Admin | 201 / 400 / 413 / 422 |
 
 > `POST`/`PUT` 두 동사 모두 구현 — PUT 은 idempotent 재요청에 안전.
+
+#### 5.17.11.1 `POST /api/v1/skins/upload` 응답 (2026-05-11 D3 정합)
+
+CCR-013 §1 spec 준수의 `.gfskin` 아카이브 업로드. `team2-backend/src/routers/skins.py:287` 구현 (Issue #196 D8 cascade, 2026-05-10). 검증 파이프라인: receive `UploadFile` → size guard (`MAX_GFSKIN_BYTES`) → `tools/validate_gfskin.py` 7-stage 검증 → `SKINS_STORAGE_ROOT/<uuid>.gfskin` 저장 → manifest 요약을 `skins` 행 (`theme_data` JSON) 에 미러.
+
+**요청**: `multipart/form-data` — `file` 필드에 `.gfskin` ZIP. Filename 은 `.gfskin` 으로 끝나야 함.
+
+**응답 본문 (201)**:
+
+```json
+{
+  "data": { "id": 42, "name": "Series A Theme", "is_active": false, "...": "SkinResponse 필드 전체" },
+  "meta": {
+    "manifest": {
+      "skin_id": "ggprod-series-a",
+      "version": "1.2.0",
+      "spec_version": "1",
+      "rive_artboard": "MainArtboard",
+      "events": 12
+    },
+    "storage_id": "<uuid hex>",
+    "storage_path": "/var/lib/ebs/skins/<uuid>.gfskin"
+  }
+}
+```
+
+| Status | 조건 | 응답 `detail.code` |
+|:---:|------|--------------------|
+| 201 | 정상 업로드 (DB row 생성 + 파일 저장 완료) | — |
+| 400 | filename 이 `.gfskin` 으로 끝나지 않음 | `GFSKIN_BAD_EXTENSION` |
+| 400 | 0 byte 업로드 | `GFSKIN_EMPTY` |
+| 413 | `len(raw) > MAX_GFSKIN_BYTES` | `GFSKIN_ZIP_TOO_LARGE` |
+| 422 | 7-stage 검증 실패 | `GFSKIN_MANIFEST_INVALID` / `GFSKIN_RIVE_MISSING` / 등 SG-004 canonical 코드 |
+| 401 / 403 | 인증 / Admin 권한 부재 | — |
+| 409 | 동일 `name` 중복 (DB unique 충돌) — 디스크 아카이브 자동 롤백 | — |
+
+> **검증 단계 (SG-004)**: ZIP 구조 / `manifest.json` 존재 / `spec_version` / `rive_file` 존재 / `rive_artboard` 존재 / `supported_output_events` array / `min_ebs_version` 호환. 단계 코드 매핑은 `Engineering/Non_Functional_Requirements.md §gfskin-validation` 참조.
 
 ### 5.17.12 Decks — RFID 카드 덱 관리 (SG-006)
 
