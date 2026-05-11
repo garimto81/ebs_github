@@ -24,6 +24,9 @@
     });
   }
 
+  // 원본 메시지 캐시 (panel 별 seq → element)
+  const MSG_CACHE = new Map();
+
   function renderMessage(panel, event) {
     const p = event.payload || {};
     const from = p.from || event.source || "unknown";
@@ -34,17 +37,49 @@
     const el = document.createElement("div");
     el.className = `msg from-${from} kind-${kind}${isReply ? " reply" : ""}`;
     el.dataset.seq = event.seq;
+
+    // Reply 첫 줄 — 원본 미리보기 (캐시에서 찾을 수 있으면)
+    let replyPreview = "";
+    if (isReply && p.reply_to != null) {
+      const original = MSG_CACHE.get(`${panel.id}:${p.reply_to}`);
+      const previewBody = original
+        ? (original.dataset.body || "").slice(0, 60)
+        : `seq=${p.reply_to}`;
+      replyPreview =
+        `<div class="reply-ref" data-target-seq="${p.reply_to}">` +
+        `↪ re: ${escapeHtml(previewBody)}${previewBody.length >= 60 ? "…" : ""}` +
+        `</div>`;
+    }
+
     el.innerHTML =
+      replyPreview +
       `<span class="ts">${ts}</span>` +
-      `<span class="from">[${escapeHtml(from)}]</span>` +
-      (isReply ? `<span class="reply-ref">re: ${p.reply_to}</span> ` : "") +
+      `<span class="from">[${escapeHtml(from)}]</span> ` +
       highlightMentions(p.body || "", SELF);
+
+    el.dataset.body = p.body || "";
+    MSG_CACHE.set(`${panel.id}:${event.seq}`, el);
 
     const stickyBottom =
       panel.scrollHeight - panel.scrollTop - panel.clientHeight < 40;
     panel.appendChild(el);
     if (stickyBottom) panel.scrollTop = panel.scrollHeight;
   }
+
+  // Reply preview click → scroll to original
+  document.body.addEventListener("click", (e) => {
+    const ref = e.target.closest(".reply-ref");
+    if (!ref) return;
+    const seq = ref.dataset.targetSeq;
+    if (!seq) return;
+    const panel = ref.closest(".panel").querySelector(".messages");
+    const original = MSG_CACHE.get(`${panel.id}:${seq}`);
+    if (original) {
+      original.scrollIntoView({behavior: "smooth", block: "center"});
+      original.style.background = "#3d2e10";
+      setTimeout(() => { original.style.background = ""; }, 1500);
+    }
+  });
 
   function renderTrace(event) {
     const panel = PANEL_BY_CHANNEL.trace;
