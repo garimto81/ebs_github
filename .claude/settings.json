@@ -37,6 +37,19 @@
           {
             "type": "command",
             "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/post_build_fail.py"
+          },
+          {
+            "type": "command",
+            "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/orch_PostToolUse.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python ${CLAUDE_PROJECT_DIR}/.claude/hooks/orch_PostToolUse.py"
           }
         ]
       }

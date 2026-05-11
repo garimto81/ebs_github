@@ -48,6 +48,7 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 | **2026-05-08** | **§1 cc-web 컨테이너 dev/test 보조 표기 + §"현재 정책" Foundation §A.4 SSOT cascade 정합 (정규 = Flutter Desktop, Web = 보조)** | **Conductor 자율 (Phase C #181 정합성 감사 — Foundation §A.4 정점 SSOT 기준)** |
 | **2026-05-11** | **§4.5 Redis revival 절차 + §4.6 WSL relay glitch 진단 신설. redis host port 16379→127.0.0.1:16380 (wslrelay PID 55860 점유 회피)** | **S11 Day-1 (KPI #215). 도메인 4 docker compose 검증 중 redis 4일째 Exit(255) + BO/engine host port 미바인딩 발견. proxy 경유 흐름은 정상 → `pipeline:env-ready` 발행 (seq=6)** |
 | **2026-05-11 (후속)** | **redis service `restart: unless-stopped` 정책 추가 (PR #230). §1 표 redis 외부 포트 `internal` → `127.0.0.1:16380 (host debug)` 정정** | **S11 Day-1 autonomous iteration. bo/engine/lobby-web/cc-web/proxy 모두 정책 보유 — redis 만 누락이 4일 silent down 의 근본 원인. transient glitch 자동 회복 시간 단축** |
+| **2026-05-11 (Cycle 2)** | **§4.7 Healthcheck 6/6 reference 신설. broker 자동 publish 흐름 다이어그램 추가 (post_build_fail → cascade:build-fail / orch_PostToolUse → pipeline:env-ready). Day-1 수동 publish 의존성 제거** | **S11 Cycle 2 (Issue #240). orchestrator_monitor PYTHONPATH fix + 두 hook 의 broker publish 통합으로 push-mode 50ms latency 활용 가능. recipients=0 문제는 별도 사이클** |
 
 ---
 
@@ -185,6 +186,50 @@ docker exec ebs-bo python -c "import redis; print(redis.from_url('redis://redis:
 - **A**: 영향 컨테이너 단일 재기동 — `docker restart ebs-bo ebs-engine` (5h healthy 깨질 위험). relay 재초기화 가능성 ~80%.
 - **B**: Docker Desktop 재시작 — 모든 worktree session 영향. 마지막 수단.
 - **C (현재 채택)**: proxy 경유 + LAN_DEPLOYMENT.md `setup_lan_access` 으로 hostname 매핑 사용. 개발자 직접 접근 필요 시 `docker exec <container> curl localhost:<port>` 우회.
+
+---
+
+## 4.7 Healthcheck 6/6 reference (S11 Cycle 2, Issue #240)
+
+Domain-4 stack 의 6 컨테이너 모두 healthcheck 정의 보유. 본 표는 `docker compose config` 기준 SSOT 이며, broker `pipeline:env-ready` payload 의 `healthy_count` 계산에 사용된다 (orch_PostToolUse 가 6 컨테이너 inspect → healthy 수 집계).
+
+| 컨테이너 | 소속팀 | endpoint | check 도구 | interval / timeout / retries | start_period |
+|----------|:------:|----------|:----------:|:-----------------------------:|:------------:|
+| `ebs-bo` | team2 | `http://localhost:8000/health` | python httpx | 30 / 5 / 3 | (없음) |
+| `ebs-redis` | conductor | `redis-cli ping` | redis-cli | 10 / 3 / 3 | (없음) |
+| `ebs-engine` | team3 | `http://127.0.0.1:8080/health` | curl -fsS | 10 / 3 / 3 | 10s |
+| `ebs-lobby-web` | team1 | `http://127.0.0.1:3000/healthz` | curl -fsS | 10 / 3 / 3 | 5s |
+| `ebs-cc-web` | team4 | `http://127.0.0.1:3001/healthz` | curl -fsS | 10 / 3 / 3 | 5s |
+| `ebs-proxy` | conductor | `http://127.0.0.1/healthz` | wget -qO- | 10 / 3 / 3 | 5s |
+
+**Endpoint 정합성** (4팀 표준화 이력):
+- 2026-04-28: engine 단독 `/` → `/health` 로 표준 정합 (PR #24, `lib/harness/server.dart`)
+- 2026-04-27 이후: `bo /health`, lobby/cc/proxy `/healthz`, engine `/health`, redis CLI ping — 6 endpoint 모두 정의
+
+**커맨드 1줄 자가 진단** (검증 스크립트):
+
+```bash
+for c in ebs-bo ebs-redis ebs-engine ebs-lobby-web ebs-cc-web ebs-proxy; do
+  docker inspect $c --format "{{printf \"%-15s\" .Name}} {{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}n/a{{end}}"
+done
+```
+
+기대 출력: 6 행 모두 `running|healthy` (단, `ebs-redis` 는 healthcheck 가 통과해도 `n/a` 표기될 수 있음 — `running` 만 보면 OK).
+
+**broker 자동 publish 흐름** (S11 Cycle 2 신규):
+
+```
+[Lead 또는 사용자] docker compose up -d
+       │
+       ▼
+[PostToolUse:Bash hook]
+  ├─ post_build_fail.py        (exit≠0 → cascade:build-fail publish)
+  └─ orch_PostToolUse.py       (exit=0 + DOCKER_UP_RE match → pipeline:env-ready publish)
+                                payload.healthy_count = 6 컨테이너 inspect 결과
+       │
+       ▼
+[broker push-mode 50ms]  → 구독 stream (S2/S3/S7/S8/S9) 즉시 wake
+```
 
 ---
 
