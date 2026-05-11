@@ -1,0 +1,8 @@
+stream_id: S10-A
+team_name: Gap Analysis Stream (cross-cutting)
+activated_at: '2026-05-11T12:37:29.054841'
+worktree_path: C:/claude/ebs-gap-audit
+branch: work/s10-a/2026-05-11-init
+scope_owns:
+- docs/4. Operations/Spec_Gap_Registry.md
+- tools/spec_drift_check.py
