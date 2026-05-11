@@ -115,6 +115,7 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` | ui-feature-verification-workflow | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md` | UI | team1 | internal | UI-04 |
 | `docs/2. Development/2.1 Frontend/Lobby/Backlog/AUDIT-S2-lobby-v3-cascade-2026-05-08.md` | AUDIT-S2 — Lobby v3.0.0 정체성 cascade + 8-항목 정합 감사 | stream:S2 (Lobby) | audit | - |
+| `docs/2. Development/2.1 Frontend/Lobby/Backlog/AUDIT-S2-v10-4-cascade-2026-05-11.md` | AUDIT-S2 — v10.4 9-Session Matrix cascade 영향 감사 | stream:S2 (Lobby) | audit | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-Conductor-ci-drift-2026-05-08.md` | NOTIFY-Conductor — PR | stream:S2 (Lobby) → conductor | notify | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S1-lobby-identity-cascade-2026-05-07.md` | NOTIFY-S1 — Lobby 정체성 정정 cascade (Foundation §5.1 영향) | stream:S2 (Lobby) → notify stream:S1 (Foundation) | notify | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S2-pr176-ci-failure-2026-05-08.md` | NOTIFY-S2 — PR | conductor (audit trail) | notify | - |
