@@ -6,6 +6,7 @@ export 'enums/bet_structure.dart';
 export 'enums/table_status.dart';
 export 'enums/seat_status.dart';
 export 'enums/event_status.dart';
+export 'enums/flight_status.dart';
 export 'enums/user_role.dart';
 export 'enums/skin_status.dart';
 export 'enums/ws_status.dart';
