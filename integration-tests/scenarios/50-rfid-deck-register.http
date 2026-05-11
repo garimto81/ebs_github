@@ -6,37 +6,50 @@
 ### - GET /decks 목록
 ### - PATCH /tables/{id}/active_deck
 ### - DeckRegistered WebSocket 이벤트
+###
+### Schema 정정 (2026-05-11, S9 Cycle 2 — Type D drift):
+###   request field: "deck_name" → "name"
+###   response field: "deck_id" → "id"; "card_count" → "cardsRegistered" (camelCase)
+###   response field: "created_at" → "createdAt"
+###   초기 응답 status = "registering" (async card add 가능성. 추후 PATCH 또는 후속
+###   POST /decks/{id}/cards 필요할 수 있음 — team2 확인 대상)
+### 근거: 실제 BO 응답 (POST /api/v1/decks 201) — 2026-05-11 S9 cycle 2 실행 검증
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 
-### 50.1 POST /api/v1/decks — 54장 등록
+### 50.1 POST /api/v1/decks — deck 생성 (실행 검증됨 2026-05-11)
 POST {{host}}/api/v1/decks
 Authorization: Bearer {{admin_token}}
 Idempotency-Key: {{$guid}}
 Content-Type: application/json
 
 {
-  "deck_name": "WSOP-FT-2026-Deck-01",
+  "name": "WSOP-FT-2026-Deck-01",
   "cards": [
     { "uid": "04A3B2C1D001", "rank": 12, "suit": 0 },
     { "uid": "04A3B2C1D002", "rank": 11, "suit": 0 },
     { "uid": "04A3B2C1D003", "rank": 10, "suit": 0 },
     { "uid": "04A3B2C1D004", "rank": 9,  "suit": 0 },
     { "uid": "04A3B2C1D005", "rank": 8,  "suit": 0 }
-
   ]
 }
 
 # (52장 + Joker 2 = 54장 전체 전송. 간결화 위해 5장만 표시)
 #
-# 예상 응답: 201 Created
+# 실제 응답: 201 Created
 # {
-#   "deck_id": "dk_01HVQK...",
-#   "deck_name": "WSOP-FT-2026-Deck-01",
-#   "card_count": 54,
-#   "created_at": "2026-04-10T14:30:00Z"
+#   "id": "a32edc46-4016-4834-b491-6096ebbccd8b",     // UUID (envelope 없음)
+#   "name": "WSOP-FT-2026-Deck-01",
+#   "status": "registering",
+#   "createdAt": "2026-05-11T09:39:48.647245Z",
+#   "notes": null,
+#   "cardsRegistered": 0                              // 초기값 0 — async 가능
 # }
+#
+# Drift 후속 검증 항목 (team2 확인 요구):
+#   - cardsRegistered 가 0 이면 어떤 후속 호출로 cards 적재되는가?
+#   - status "registering" → "ready" 전이 endpoint는?
 
 ### 50.2 POST /api/v1/decks — 중복 UID (같은 deck 내)
 POST {{host}}/api/v1/decks
@@ -92,7 +105,7 @@ Content-Type: application/json
 
 ### 50.6 WS 수신: DeckRegistered (수동)
 ###
-### wscat -c 'ws://localhost:8000/ws/lobby?token=<jwt>&format=json'
+### wscat -c 'ws://localhost:18001/ws/lobby?token=<jwt>&format=json'
 ### 위 50.5 이후 수신 메시지:
 ### {
 ###   "type": "DeckRegistered",

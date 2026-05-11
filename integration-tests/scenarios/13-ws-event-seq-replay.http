@@ -5,7 +5,7 @@
 ### - GET /api/v1/events/replay?from_seq=N 으로 누락 이벤트 재전송
 ### - 재연결 후 gap 복구 가능
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 
 ### 13.1 GET /api/v1/events/replay — from_seq 지정
@@ -40,7 +40,7 @@ Authorization: Bearer {{admin_token}}
 
 ### 13.4 WebSocket seq 단조증가 검증 (수동)
 ###
-### wscat -c 'ws://localhost:8000/ws/cc?table_id=1&token=<jwt>&format=json'
+### wscat -c 'ws://localhost:18001/ws/cc?table_id=1&token=<jwt>&format=json'
 ###
 ### 수신 메시지에서 seq 필드가 항상 monotonically increasing 인지 확인:
 ###   seq: 41 → 42 → 43 → ...

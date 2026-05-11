@@ -5,7 +5,7 @@
 ### - 최초 요청의 응답을 그대로 반환 (idempotency_keys 테이블)
 ### - API-01 mutation 전반(POST/PATCH/PUT/DELETE)에 적용
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 @idem_key = 018bf4a0-0c8f-4f8e-b8c5-4e4b2c4a7e1d
 
@@ -59,7 +59,7 @@ Authorization: Bearer {{admin_token}}
 
 ### 11.4 WebSocket command에 idempotency_key (API-05 §2.3)
 ###
-### ws://localhost:8000/ws/cc?table_id=1&token=<jwt>&format=json
+### ws://localhost:18001/ws/cc?table_id=1&token=<jwt>&format=json
 ###
 ### CC가 발행:
 ### {

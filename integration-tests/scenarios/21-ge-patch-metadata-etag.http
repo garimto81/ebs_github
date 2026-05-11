@@ -6,7 +6,7 @@
 ### - PATCH with current ETag → 200 OK + new ETag
 ### - JSON Merge Patch (RFC 7396) 동작
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 @admin_token = {{$dotenv ADMIN_JWT}}
 @skin_id = sk_01HVQK-test
 

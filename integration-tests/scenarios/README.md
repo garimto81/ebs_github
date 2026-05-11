@@ -4,6 +4,7 @@
 |------|------|------|
 | 2026-04-10 | 신규 작성 | CCR-010~036 계약 검증 시나리오 카탈로그 |
 | 2026-05-11 | B-211 추가 | v99-full-hand-flow.http + integration-tests-e2e.yml CI gate (S9 Phase 1) |
+| 2026-05-11 | Cycle 2 host shift | `_env.http` + 18 시나리오 `:8000→:18001`, `:8080→:18080` (Docker_Runtime §4.6 WSL relay glitch). 10-auth `username→email` (admin@local / Admin!Local123). 50-deck `deck_name→name` + 응답 camelCase 정정. Workflow seed_admin.py 통합. |
 
 ---
 
@@ -26,8 +27,9 @@
 ## 실행 환경
 
 - **VSCode REST Client** 또는 **httpyac** 확장
-- Backend BO 서비스(`http://localhost:8000`) 실행 중이어야 함
+- Backend BO 서비스(`http://localhost:18001`) + Engine(`http://localhost:18080`) 실행 중이어야 함 (2026-05-11 Docker_Runtime §4.6 WSL relay glitch 회피 port shift)
 - 일부 WebSocket 시나리오는 별도 `wscat`/`websocat` CLI 필요
+- Admin seed 명령: `docker compose exec bo python tools/seed_admin.py --email admin@local --password 'Admin!Local123' --force`
 
 ## 공통 설정
 

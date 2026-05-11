@@ -56,6 +56,15 @@ permissions:
   contents: read
   pull-requests: write
 
+# BO/Engine host port (2026-05-11 S9 Cycle 2 — Docker_Runtime §4.6 WSL relay
+# glitch 회피로 :8000→:18001, :8080→:18080 shift). Internal ebs-net 통신은
+# :8000/:8080 그대로 (BO_URL, ENGINE_URL 컨테이너 변수와 무관).
+env:
+  BO_HOST_PORT: 18001
+  ENGINE_HOST_PORT: 18080
+  BO_HEALTHZ: http://localhost:18001/healthz
+  ENGINE_HEALTHZ: http://localhost:18080/healthz
+
 jobs:
   # ──────────────────────────────────────────────────────────────────────
   # Static scenario lint — .http 문법 + frontmatter (CCR 추적) 검증
@@ -209,10 +218,12 @@ jobs:
           set -e
           max_wait=90
           waited=0
-          until curl -fsS http://localhost:8000/healthz \
-                && curl -fsS http://localhost:8080/healthz; do
+          until curl -fsS "$BO_HEALTHZ" \
+                && curl -fsS "$ENGINE_HEALTHZ"; do
             if [ "$waited" -ge "$max_wait" ]; then
               echo "::error::Services did not become healthy within ${max_wait}s"
+              echo "  BO target: $BO_HEALTHZ"
+              echo "  Engine target: $ENGINE_HEALTHZ"
               docker compose -f docker-compose.yml -f docker-compose.e2e.yml logs --tail=200
               exit 1
             fi
@@ -220,23 +231,50 @@ jobs:
             waited=$((waited + 3))
             echo "  waiting... ${waited}/${max_wait}s"
           done
-          echo "✓ BO (:8000) + Engine (:8080) healthy"
+          echo "✓ BO (:${BO_HOST_PORT}) + Engine (:${ENGINE_HOST_PORT}) healthy"
 
       # ───────────────────────────────────────────────────────────────
       # Seed credentials → .env (httpyac dotenv 참조)
       # ───────────────────────────────────────────────────────────────
-      - name: Seed admin / operator / viewer + capture JWT
+      - name: Seed admin + capture JWT
         if: steps.stack.outputs.available == 'true'
+        env:
+          ADMIN_EMAIL: admin@local
+          ADMIN_PASSWORD: 'Admin!Local123'
         run: |
           set -e
-          # tools/seed_e2e_users.py 가 BO 에 seed 후 stdout 으로 JWT 3개 출력.
-          # 미구현 시 graceful skip — httpyac 가 401 로 fail 하지만 명확한 cause.
-          if [ -f tools/seed_e2e_users.py ]; then
-            python tools/seed_e2e_users.py --bo-url http://localhost:8000 > .env.jwt
-            grep -E '^(ADMIN_JWT|OPERATOR_JWT|VIEWER_JWT)=' .env.jwt > integration-tests/scenarios/.env
-            echo "✓ Seeded users + .env injected"
+          # team2-backend/tools/seed_admin.py 가 SQLite/PostgreSQL 에 admin user 생성.
+          # 컨테이너 내부 실행 (host port shift 와 무관): docker exec ebs-bo python ...
+          # 이미 존재 시 --force 로 password reset (V9.5 P16 패턴).
+          if docker compose -f docker-compose.yml -f docker-compose.e2e.yml ps bo --status running | grep -q bo; then
+            echo "::group::seed admin"
+            docker compose -f docker-compose.yml -f docker-compose.e2e.yml exec -T bo \
+              python tools/seed_admin.py \
+                --email "$ADMIN_EMAIL" \
+                --password "$ADMIN_PASSWORD" \
+                --display-name "CI Admin" \
+                --role admin \
+                --force || echo "::warning::seed_admin.py failed — login will 401"
+            echo "::endgroup::"
+
+            # JWT 발급 → .env (httpyac dotenv 참조)
+            # 응답 schema: { "data": { "accessToken": "...", "refreshToken": "..." } }
+            # YAML run: | 안에서는 shell heredoc EOF 들여쓰기 충돌 위험 → echo 누적 방식.
+            echo "::group::login + .env write"
+            BO_LOGIN_URL="${BO_HEALTHZ%/healthz}/api/v1/auth/login"
+            ACCESS_TOKEN=$(curl -fsS -X POST "$BO_LOGIN_URL" \
+              -H 'Content-Type: application/json' \
+              -d "{\"email\":\"$ADMIN_EMAIL\",\"password\":\"$ADMIN_PASSWORD\"}" \
+              | python -c "import sys,json; d=json.load(sys.stdin); print(d['data']['accessToken'])")
+            {
+              echo "ADMIN_JWT=$ACCESS_TOKEN"
+              echo "OPERATOR_JWT=$ACCESS_TOKEN"
+              echo "VIEWER_JWT=$ACCESS_TOKEN"
+            } > integration-tests/scenarios/.env
+            echo "✓ .env populated (admin JWT, len=${#ACCESS_TOKEN})"
+            echo "::endgroup::"
           else
-            echo "::warning::tools/seed_e2e_users.py not found — scenarios needing auth will 401"
+            echo "::warning::bo container not running — auth scenarios will 401"
             touch integration-tests/scenarios/.env
           fi
 

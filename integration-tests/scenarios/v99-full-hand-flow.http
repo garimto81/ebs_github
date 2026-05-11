@@ -34,9 +34,9 @@
 ###   - B-210 (Overlay Rive OutputEvent 매핑) — 본 시나리오에서는 stub 으로 처리.
 ###     Overlay 단계 assertion 은 "WS 이벤트 발송됨" 까지만 검증, 실제 frame 렌더링은 제외.
 
-@host = http://localhost:8000
-@engine_host = http://localhost:8080
-@ws_cc = ws://localhost:8000/ws/cc
+@host = http://localhost:18001
+@engine_host = http://localhost:18080
+@ws_cc = ws://localhost:18001/ws/cc
 
 @admin_token = {{$dotenv ADMIN_JWT}}
 @operator_token = {{$dotenv OPERATOR_JWT}}
@@ -131,7 +131,7 @@ Content-Type: application/json
 #     "status": "live",
 #     "cc_instance_id": "cc-uuid-...",
 #     "launch_token": "eyJhbGc...",
-#     "ws_url": "ws://localhost:8000/ws/cc?table_id=1",
+#     "ws_url": "ws://localhost:18001/ws/cc?table_id=1",
 #     "launched_at": "..."
 #   }
 # }
