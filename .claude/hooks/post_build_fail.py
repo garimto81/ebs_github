@@ -70,6 +70,12 @@ def _broker_publish_build_fail(command, exit_code, stderr_excerpt, source):
                             "stderr_excerpt": stderr_excerpt[:500] if stderr_excerpt else "",
                             "auto_published": True,
                             "trigger": "PostToolUse:Bash exit!=0",
+                            # S11 Cycle 3 - observer_loop dispatch instruction
+                            "next_action": {
+                                "type": "inbox-drop",
+                                "target": "S9,S10-A",
+                                "reason": "QA + Gap Analysis attention",
+                            },
                         },
                         "source": source,
                     })

@@ -49,6 +49,7 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 | **2026-05-11** | **§4.5 Redis revival 절차 + §4.6 WSL relay glitch 진단 신설. redis host port 16379→127.0.0.1:16380 (wslrelay PID 55860 점유 회피)** | **S11 Day-1 (KPI #215). 도메인 4 docker compose 검증 중 redis 4일째 Exit(255) + BO/engine host port 미바인딩 발견. proxy 경유 흐름은 정상 → `pipeline:env-ready` 발행 (seq=6)** |
 | **2026-05-11 (후속)** | **redis service `restart: unless-stopped` 정책 추가 (PR #230). §1 표 redis 외부 포트 `internal` → `127.0.0.1:16380 (host debug)` 정정** | **S11 Day-1 autonomous iteration. bo/engine/lobby-web/cc-web/proxy 모두 정책 보유 — redis 만 누락이 4일 silent down 의 근본 원인. transient glitch 자동 회복 시간 단축** |
 | **2026-05-11 (Cycle 2)** | **§4.7 Healthcheck 6/6 reference 신설. broker 자동 publish 흐름 다이어그램 추가 (post_build_fail → cascade:build-fail / orch_PostToolUse → pipeline:env-ready). Day-1 수동 publish 의존성 제거** | **S11 Cycle 2 (Issue #240). orchestrator_monitor PYTHONPATH fix + 두 hook 의 broker publish 통합으로 push-mode 50ms latency 활용 가능. recipients=0 문제는 별도 사이클** |
+| **2026-05-11 (Cycle 3)** | **§4.8 Autonomous action chain 신설. observer_loop `--action-mode` + `next_action` payload dispatcher (inbox-drop / shell / noop). `handoffs/inbox/` 신설 + hook payload next_action 자동 명시. recipients=0 문제 해소 (observer가 즉시 파일 시스템에 drop)** | **S11 Cycle 3 (autonomous chain). end-to-end self-test PASS (seq 40 drop / seq 41 shell-block / seq 43 broadcast). Cycle 4 후보 = observer_loop background service** |
 
 ---
 
@@ -186,6 +187,55 @@ docker exec ebs-bo python -c "import redis; print(redis.from_url('redis://redis:
 - **A**: 영향 컨테이너 단일 재기동 — `docker restart ebs-bo ebs-engine` (5h healthy 깨질 위험). relay 재초기화 가능성 ~80%.
 - **B**: Docker Desktop 재시작 — 모든 worktree session 영향. 마지막 수단.
 - **C (현재 채택)**: proxy 경유 + LAN_DEPLOYMENT.md `setup_lan_access` 으로 hostname 매핑 사용. 개발자 직접 접근 필요 시 `docker exec <container> curl localhost:<port>` 우회.
+
+---
+
+## 4.8 Autonomous action chain (S11 Cycle 3 — observer_loop dispatch)
+
+broker push event 의 `payload.next_action` 을 `observer_loop --action-mode` 가 디스패치하여 hook publish → 파일 시스템 자동 drop 까지 chain. 사용자 진입 0 자동화의 1차 단계.
+
+### 흐름
+
+```
+[hook]                  [broker]                  [observer]            [filesystem]
+PostToolUse:Bash  --->  publish_event(*)  --->   subscribe push  --->  inbox-drop
+                        + next_action payload     50ms latency          docs/.../inbox/*.md
+post_build_fail   --->  cascade:build-fail
+                        next_action: inbox-drop
+                        target: S9,S10-A
+```
+
+### next_action 타입 (3 종)
+
+| type | 동작 | 안전 게이트 |
+|------|------|------------|
+| `inbox-drop` | `docs/4. Operations/handoffs/inbox/` 에 markdown 작성 | mkdir + frontmatter standardization |
+| `shell` | 명령 실행 | **allowlist**: `tools/orchestrator/actions/*` 만 허용. timeout 30s |
+| `noop` (또는 부재) | 무동작 | — |
+
+### 활성화
+
+```bash
+# 단발 (테스트):
+python -m tools.orchestrator.message_bus.observer_loop --action-mode --max-iter 1
+
+# 영구 background (권장, Cycle 4 후속 검토):
+python -m tools.orchestrator.message_bus.observer_loop --action-mode  # 무한 long-poll
+```
+
+### 자동 hook payload 매핑 (S11 owned)
+
+| hook | publish topic | next_action |
+|------|--------------|-------------|
+| `orch_PostToolUse` (Bash docker compose up exit=0) | `pipeline:env-ready` | `inbox-drop` → `S2,S3,S7,S8` |
+| `post_build_fail` (Bash build/test exit≠0) | `cascade:build-fail` | `inbox-drop` → `S9,S10-A` |
+
+### 검증 (Cycle 3 self-test 2026-05-11)
+
+- ✓ inbox-drop: `cascade:s11-selftest-drop` seq=40 → `docs/.../inbox/2026-05-11T...md` 생성
+- ✓ shell-block: `cascade:s11-selftest-shell` seq=41 `/etc/passwd` → allowlist 거부
+- ✓ broker push latency 50ms 활성
+- ✓ `cascade:observer-action-ready` seq=43 broadcast
 
 ---
 
