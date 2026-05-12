@@ -1,0 +1,142 @@
+{
+  "phase": "F3-fold-seat4",
+  "status": 200,
+  "note": "",
+  "body": {
+    "sessionId": "mp2cyy2i9j",
+    "variant": "NL Hold'em",
+    "street": "preflop",
+    "seats": [
+      {
+        "index": 0,
+        "label": "Seat 1",
+        "stack": 1000,
+        "currentBet": 0,
+        "status": "active",
+        "holeCards": [
+          "8s",
+          "As"
+        ],
+        "isDealer": true
+      },
+      {
+        "index": 1,
+        "label": "Seat 2",
+        "stack": 995,
+        "currentBet": 5,
+        "status": "active",
+        "holeCards": [
+          "4c",
+          "6c"
+        ],
+        "isDealer": false
+      },
+      {
+        "index": 2,
+        "label": "Seat 3",
+        "stack": 990,
+        "currentBet": 10,
+        "status": "active",
+        "holeCards": [
+          "Ad",
+          "7c"
+        ],
+        "isDealer": false
+      },
+      {
+        "index": 3,
+        "label": "Seat 4",
+        "stack": 1000,
+        "currentBet": 0,
+        "status": "folded",
+        "holeCards": [
+          "9d",
+          "Ah"
+        ],
+        "isDealer": false
+      },
+      {
+        "index": 4,
+        "label": "Seat 5",
+        "stack": 1000,
+        "currentBet": 0,
+        "status": "folded",
+        "holeCards": [
+          "Kd",
+          "7d"
+        ],
+        "isDealer": false
+      },
+      {
+        "index": 5,
+        "label": "Seat 6",
+        "stack": 1000,
+        "currentBet": 0,
+        "status": "active",
+        "holeCards": [
+          "9h",
+          "9s"
+        ],
+        "isDealer": false
+      }
+    ],
+    "community": [],
+    "pot": {
+      "main": 15,
+      "total": 15,
+      "sides": []
+    },
+    "actionOn": 5,
+    "dealerSeat": 0,
+    "sbSeat": 1,
+    "bbSeat": 2,
+    "legalActions": [
+      {
+        "type": "fold"
+      },
+      {
+        "type": "call",
+        "callAmount": 10
+      },
+      {
+        "type": "raise",
+        "minAmount": 20,
+        "maxAmount": 1000
+      }
+    ],
+    "handNumber": 0,
+    "anteType": null,
+    "anteAmount": null,
+    "straddleEnabled": false,
+    "straddleSeat": null,
+    "bombPotEnabled": false,
+    "bombPotAmount": null,
+    "canvasType": "broadcast",
+    "sevenDeuceEnabled": false,
+    "sevenDeuceAmount": null,
+    "runItTimes": null,
+    "runItBoard2Cards": null,
+    "actionTimeoutMs": null,
+    "isAllInRunout": false,
+    "eventCount": 4,
+    "cursor": 4,
+    "log": [
+      {
+        "type": "HandStart",
+        "description": "#0 HandStart dealer=0 blinds={1: 5, 2: 10}"
+      },
+      {
+        "type": "DealHole",
+        "description": "#1 DealHoleCards seats=[0, 1, 2, 3, 4, 5]"
+      },
+      {
+        "type": "Fold",
+        "description": "#2 PlayerAction seat=3 fold"
+      },
+      {
+        "type": "Fold",
+        "description": "#3 PlayerAction seat=4 fold"
+      }
+    ]
+  }
+}

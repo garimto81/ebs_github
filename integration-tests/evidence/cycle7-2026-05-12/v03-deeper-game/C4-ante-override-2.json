@@ -1,0 +1,115 @@
+{
+  "phase": "C4-ante-override-2",
+  "status": 200,
+  "note": "",
+  "body": {
+    "sessionId": "mp2cyi8q68",
+    "variant": "NL Hold'em",
+    "street": "idle",
+    "seats": [
+      {
+        "index": 0,
+        "label": "Seat 1",
+        "stack": 1000,
+        "currentBet": 0,
+        "status": "active",
+        "holeCards": [],
+        "isDealer": false
+      },
+      {
+        "index": 1,
+        "label": "Seat 2",
+        "stack": 995,
+        "currentBet": 0,
+        "status": "active",
+        "holeCards": [],
+        "isDealer": true
+      },
+      {
+        "index": 2,
+        "label": "Seat 3",
+        "stack": 990,
+        "currentBet": 0,
+        "status": "active",
+        "holeCards": [],
+        "isDealer": false
+      },
+      {
+        "index": 3,
+        "label": "Seat 4",
+        "stack": 1000,
+        "currentBet": 0,
+        "status": "active",
+        "holeCards": [],
+        "isDealer": false
+      },
+      {
+        "index": 4,
+        "label": "Seat 5",
+        "stack": 1000,
+        "currentBet": 0,
+        "status": "active",
+        "holeCards": [],
+        "isDealer": false
+      },
+      {
+        "index": 5,
+        "label": "Seat 6",
+        "stack": 1000,
+        "currentBet": 0,
+        "status": "active",
+        "holeCards": [],
+        "isDealer": false
+      }
+    ],
+    "community": [],
+    "pot": {
+      "main": 0,
+      "total": 0,
+      "sides": []
+    },
+    "actionOn": -1,
+    "dealerSeat": 1,
+    "sbSeat": 2,
+    "bbSeat": 3,
+    "legalActions": [],
+    "handNumber": 1,
+    "anteType": 2,
+    "anteAmount": 200,
+    "straddleEnabled": false,
+    "straddleSeat": null,
+    "bombPotEnabled": false,
+    "bombPotAmount": null,
+    "canvasType": "broadcast",
+    "sevenDeuceEnabled": false,
+    "sevenDeuceAmount": null,
+    "runItTimes": null,
+    "runItBoard2Cards": null,
+    "actionTimeoutMs": null,
+    "isAllInRunout": false,
+    "eventCount": 5,
+    "cursor": 5,
+    "log": [
+      {
+        "type": "HandStart",
+        "description": "#0 HandStart dealer=0 blinds={1: 5, 2: 10}"
+      },
+      {
+        "type": "DealHole",
+        "description": "#1 DealHoleCards seats=[0, 1, 2, 3, 4, 5]"
+      },
+      {
+        "type": "AnteOverride",
+        "description": "#2 AnteOverride amount=100 type=2"
+      },
+      {
+        "type": "NextHand",
+        "description": "#3 ManualNextHand"
+      },
+      {
+        "type": "AnteOverride",
+        "description": "#4 AnteOverride amount=200 type=null"
+      }
+    ]
+  }
+}
