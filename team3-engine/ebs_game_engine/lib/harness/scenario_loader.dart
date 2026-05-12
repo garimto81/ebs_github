@@ -358,6 +358,10 @@ class ScenarioLoader {
         buf.writeln('  - run_it_choice: $t');
       case ManualNextHand():
         buf.writeln('  - manual_next_hand: true');
+      case AnteOverride(amount: final a, type: final t):
+        buf.writeln('  - ante_override:');
+        buf.writeln('      amount: $a');
+        if (t != null) buf.writeln('      type: $t');
       case TimeoutFold(seatIndex: final s):
         buf.writeln('  - timeout_fold: $s');
       case MuckDecision(seatIndex: final s, showCards: final show):

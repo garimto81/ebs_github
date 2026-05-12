@@ -50,6 +50,8 @@ class GameState {
 
   // Run It Multiple
   final int? runItTimes;
+  // Run It Twice — board 2 community cards (v03 issue #310; null when not RIT)
+  final List<Card>? runItBoard2Cards;
 
   // Action timeout (ms, null = no timeout)
   final int? actionTimeoutMs;
@@ -84,6 +86,7 @@ class GameState {
     this.sevenDeuceEnabled = false,
     this.sevenDeuceAmount,
     this.runItTimes,
+    this.runItBoard2Cards,
     this.actionTimeoutMs,
     this.betLimit,
   })  : pot = pot ?? Pot(),
@@ -114,6 +117,7 @@ class GameState {
     bool? sevenDeuceEnabled,
     int? sevenDeuceAmount,
     int? runItTimes,
+    List<Card>? runItBoard2Cards,
     int? actionTimeoutMs,
     BetLimit? betLimit,
   }) {
@@ -144,6 +148,7 @@ class GameState {
       sevenDeuceEnabled: sevenDeuceEnabled ?? this.sevenDeuceEnabled,
       sevenDeuceAmount: sevenDeuceAmount ?? this.sevenDeuceAmount,
       runItTimes: runItTimes ?? this.runItTimes,
+      runItBoard2Cards: runItBoard2Cards ?? this.runItBoard2Cards,
       actionTimeoutMs: actionTimeoutMs ?? this.actionTimeoutMs,
       betLimit: betLimit ?? this.betLimit,
     );
