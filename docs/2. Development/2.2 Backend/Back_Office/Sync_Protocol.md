@@ -19,6 +19,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38205
 | 2026-04-15 | Task #7 outbound 인증 | "BO → WSOP LIVE outbound 인증" 섹션 신설. OAuth 2.0 client_credentials, Basic 헤더, 토큰 캐시 전략, 환경변수 명시. 구현: `src/adapters/wsop_auth.py`. BS-01 §방향별 2-스택과 cross-ref |
 | 2026-04-15 | Task #3 game_type 변환 | `wsop_sync_service.poll_series()` UPSERT 전 `src/adapters/wsop_game_type.map_to_ebs()` 호출 명시. WSOP LIVE 9종 ↔ EBS 22종 silent corruption 방지 |
 | 2026-05-08 | S7 정합성 감사 — Foundation v4.5 cascade | Foundation 옛 §6.4 표기를 Ch.5 §B.4 (실시간 동기화 — DB SSOT + WS push) 로 정정. §1.0/§1.0.1 정책표 cross-ref 갱신. |
+| 2026-05-12 | Cycle 8 — Confirm-triggered pull 패턴 신설 | §5.5 신설. preview→confirm 2-stage endpoint 3종 (`/sync/wsop-live/preview`·`/confirm`·`/preview/{diff_id}` DELETE) + polling vs Confirm 사용 기준 표. NOTIFY-S10-W-backend-sync-2026-05-12 의 §3 cascade. |
 
 ---
 

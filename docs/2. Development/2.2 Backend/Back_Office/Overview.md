@@ -21,6 +21,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38189
 | 2026-04-15 | G4-A Settings 스코프 복구 | §1.2 #8 Sysop Config 를 "✅ 글로벌" → "✅ Series/Event/Table 단위 (WSOP LIVE 정렬)" 로 수정. §3.6 시스템 설정 표의 EBS 열 "글로벌" 도 "Series/Event/Table 단위" 로 복구. 2026-04-09 글로벌 단일 세트 결정이 CLAUDE.md 원칙1 (WSOP LIVE 정렬) 과 충돌해 역전. 후속: Schema.md §configs 에 `scope`/`scope_id` 컬럼 추가 (G4-C, Task #10), BS-03 Settings 진입 경로 재구성 (G4-B, team4 decision), ConfigChanged payload 확장 (Task #13) |
 | 2026-05-07 | v3/v4 정체성 cascade Phase B | Lobby v3.0.0 (5분 게이트웨이 + WSOP LIVE 거울 + 4 진입 시점 + 5 화면 시퀀스) + Command_Center v4.0 (1×10 그리드 + 6 키 N·F·C·B·A·M + 4 영역 위계) 정체성 정합. §1.3 EBS 추가기능 #5 CC 인스턴스 추적 의미 framing 보강 ("1:N 관제" → 1 Lobby 게이트웨이 : N CC 운영자 화면 관계). LLM 전수 의미 판정. | DOC |
 | 2026-05-08 | S7 정합성 감사 — Foundation v4.5 cascade | Foundation 옛 섹션 표기 정정: §6.3→Ch.5 §B.3 (통신 매트릭스), §6.4→Ch.5 §B.4 (DB SSOT + WS push), §5.1→§A.1 (Lobby), §5.3→§A.4 (CC), §8.5→Ch.6 Scene 4 (복수 테이블 운영), §4.4 fabricated reference 제거. §2.1 Lobby 배포 형태를 Foundation Ch.5 §A.1 정합 (Flutter Web). | DOC |
+| 2026-05-12 | Cycle 8 — WSOP LIVE 3-mode pull (S10-W cascade) | §3.9 재작성: 폴링 단일 → 자동 폴링 / Confirm-triggered (preview→confirm) / Manual immediate 3 모드 + cursor 영속화 정책. Sync_Protocol §5.5 신설 cascade. NOTIFY-S10-W-backend-sync-2026-05-12 으로 PRD §3.9 통합 요청. | DOC |
 
 ---
 
@@ -285,11 +286,23 @@ flowchart LR
 
 > 상세: BO-02 Sync Protocol, API-05 WebSocket Events
 
-### 3.9 WSOP LIVE 동기화 (API 폴링)
+### 3.9 WSOP LIVE 동기화 (3-mode pull)
 
-WSOP LIVE는 EBS의 **외부 권위 데이터 소스**다. EBS는 WSOP LIVE API를 단방향 폴링하여 Series/Event/Flight/Player/Seat를 캐싱한다. API 미연결 환경(데모/테스트)에서는 Mock 시드로 독립 운영한다.
+WSOP LIVE는 EBS의 **외부 권위 데이터 소스**다. EBS는 WSOP LIVE API를 단방향 pull 하여 Series/Event/Flight/Player/Seat를 캐싱한다. API 미연결 환경(데모/테스트)에서는 Mock 시드로 독립 운영한다.
 
-> **상세 정본**: 폴링 주기·`source` 필드 규칙·UPSERT·Mock 시드 수량은 `contracts/api/API-01` Part II §7-15 (WSOP LIVE Integration) 및 BO-02 §5, §8 참조. PRD는 채택 결정만 명시.
+EBS 는 3개 pull 모드를 병행 운영한다 (2026-05-12 신설 — Sync_Protocol §5.5 cascade):
+
+| 모드 | 트리거 | 사용처 | Admin 진입점 |
+|------|--------|--------|------------|
+| **자동 폴링 (incremental)** | APScheduler (15-60s 주기) | 플레이어 칩카운트, 작은 delta | 없음 (백그라운드) |
+| **Confirm-triggered pull (preview→confirm)** | Admin 명시 호출 | Series/Event 대규모 추가, 첫 운영 import | Lobby Settings → "WSOP Sync" 탭 (2-stage UI) |
+| **Manual immediate (deprecated)** | `POST /api/v1/sync/wsop-live` | backward compat | Admin 직접 API 호출 |
+
+**1줄 정책**: 대규모/구조적 변경은 preview→confirm. 소규모/incremental 은 자동 폴링. Manual immediate 는 backward compat 만.
+
+**cursor 영속화 정책**: 모든 pull 모드는 `sync_cursors` 테이블 (`Database/Schema.md §5.4`) 에 entity 별 단조증가 cursor 를 영속화한다. Redis 옵션 (`EBS_SYNC_CURSOR_REDIS=true`) 은 dual-write 보조. 단일 PC 운영에서는 DB 만으로 충분.
+
+> **상세 정본**: 폴링 주기·`source` 필드 규칙·UPSERT·Mock 시드 수량은 `contracts/api/API-01` Part II §7-15 (WSOP LIVE Integration) 및 `Sync_Protocol.md §5, §5.5` 참조. PRD는 채택 결정만 명시.
 
 ### 3.10 리포팅 (통계/내보내기)
 
