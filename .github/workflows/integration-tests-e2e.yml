@@ -298,6 +298,27 @@ jobs:
             --output-file test-results/v01-junit.xml \
             --verbose
 
+
+      # ───────────────────────────────────────────────────────────────
+      # Priority smoke — v02-2-hand-flow (Engine /next-hand endpoint)
+      # S9 Cycle 6 Wave 3 신규. S8 Cycle 5 PR #301 (issue #287) 의
+      # multi-hand state / POST /next-hand endpoint 회귀 검증 게이트.
+      # v02 fail 시 차단.
+      # ───────────────────────────────────────────────────────────────
+      - name: Run v02-2-hand-flow (Multi-hand smoke)
+        id: v02_smoke
+        if: steps.stack.outputs.available == 'true'
+        continue-on-error: true
+        run: |
+          set -e
+          mkdir -p test-results
+          httpyac send integration-tests/scenarios/v02-2-hand-flow.http \
+            --all \
+            --bail \
+            --output junit \
+            --output-file test-results/v02-junit.xml \
+            --verbose
+
       # ───────────────────────────────────────────────────────────────
       # Full scenario run — bail on first fail for fast feedback
       # ───────────────────────────────────────────────────────────────
@@ -348,6 +369,13 @@ jobs:
           echo "    cascade:engine-hand-ready 회귀. test-results/v01-junit.xml 참조."
           exit 1
 
+
+      - name: Fail job if v02 smoke failed
+        if: steps.v02_smoke.outcome == 'failure'
+        run: |
+          echo "❌ v02-2-hand-flow smoke failed — Multi-hand state regression"
+          echo "    Cycle 5 issue #287 (POST /next-hand) 회귀. test-results/v02-junit.xml 참조."
+          exit 1
       - name: Fail job if scenarios failed
         if: steps.httpyac.outcome == 'failure'
         run: |
