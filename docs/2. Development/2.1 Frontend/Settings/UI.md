@@ -452,8 +452,8 @@ Equity, Outs, Rabbit Hunting, Leaderboard, Score Strip.
 | Diagnostics | Table Diagnostics | Button | — (별도 창 600x400px) |
 | Diagnostics | System Log | Button | — (별도 창 800x500px) |
 | Export | Hand History Folder | FolderPicker | `pref.hand_history_folder` |
-| Export | Export Logs Folder | FolderPicker | `pref.export_logs_folder` |
-| Export | API DB Export Folder | FolderPicker | `pref.api_db_export_folder` |
+| Export | Export Logs Folder | FolderPicker | *pref.export_logs_folder* — backend env-driven default (see `../../2.2 Backend/Settings.md` §3.2) |
+| Export | API DB Export Folder | FolderPicker | *pref.api_db_export_folder* — backend env-driven default (see `../../2.2 Backend/Settings.md` §3.1) |
 
 > Table Name/Password만 [Update] 버튼 커밋. 나머지 즉시 적용. 상세: BS-03-06
 
