@@ -6,9 +6,9 @@ tier: external
 confluence-page-id: 3811672228
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228
-last-updated: 2026-05-11
-last-synced: 2026-05-11
-version: 3.0.2
+last-updated: 2026-05-12
+last-synced: 2026-05-12
+version: 3.1.0
 derivative-of: ../2. Development/2.1 Frontend/Lobby/Overview.md
 if-conflict: derivative-of takes precedence
 audience-target: 외부 stakeholder + Lobby 개발자 (이중 audience — 그림 소설 + 개발자 무결성)
@@ -1195,6 +1195,184 @@ Future<int> _createTable() async {
 
 ---
 
+# 부록 I — Multi-Hand 시나리오 시퀀스 (Cycle 6 #312, Cycle 7 #326)
+
+> **목적**: 부록 H 의 1 hand wire 가 통과한 후, **연속 핸드 (Hand 1 → Hand 2 → ...)** 로 확장된 시나리오. handHistory list view + dealer button rotate indicator 의 UI 명세를 포함한다. S8 #319 v03 multi-hand engine + S7 next-hand endpoint + S3 #321 CC handNumber cascade 정합.
+
+## I.1 진입 방법
+
+```bash
+# Lobby Web (multi-hand auto demo)
+cd team1-frontend
+flutter run -d chrome \
+  --dart-define=USE_MOCK=true \
+  --dart-define=HAND_AUTO_SETUP=true \
+  --dart-define=MULTI_HAND_DEMO=true
+```
+
+`HAND_AUTO_SETUP=true` (부록 H) 위에 `MULTI_HAND_DEMO=true` 추가. Hand 1 종료 후 자동으로 Hand 2 NEW_HAND 가 발행됩니다 (정규 운영에서는 CC 오퍼레이터의 `[Next Hand]` 버튼 클릭이 트리거).
+
+## I.2 시퀀스 (Hand 1 종료 → Hand 2 시작)
+
+```
+   사용자                   Lobby UI                  CC                    Backend (S7)              Engine (S8)
+     │                         │                       │                       │                          │
+     │  (Hand 1 진행)          │                       │                       │                          │
+     │                         │                       │                       │                          │
+     │  showdown 또는          │                       │                       │                          │
+     │  전원 fold              │                       │                       │                          │
+     │                         │<── ws hand_ended ──── │<── /next-hand 결과 ── │                          │
+     │                         │                       │                       │                          │
+     │                         │── handHistory[]       │                       │                          │
+     │                         │   업데이트 (Hand 1    │                       │                          │
+     │                         │   요약 prepend)       │                       │                          │
+     │                         │                       │                       │                          │
+     │                         │                       │── POST /next-hand ──> │                          │
+     │                         │                       │   {prevHandId,         │                          │
+     │                         │                       │    triggerSource:      │                          │
+     │                         │                       │    "auto_demo"}        │                          │
+     │                         │                       │                       │── compute new state ──> │
+     │                         │                       │                       │<── dealerSeat++ ──────── │
+     │                         │                       │                       │   sbSeat/bbSeat 재배치   │
+     │                         │                       │                       │                          │
+     │                         │<── ws hand_started ── │<── tx commit ─────────│                          │
+     │                         │   {handNumber: 2,    │                       │                          │
+     │                         │    dealerSeat: N+1}   │                       │                          │
+     │                         │                       │                       │                          │
+     │                         │── dealer button       │                       │                          │
+     │                         │   indicator 회전      │                       │                          │
+     │                         │   애니메이션 (0.4s)   │                       │                          │
+     │                         │                       │                       │                          │
+     │  (Hand 2 진행)          │                       │                       │                          │
+```
+
+## I.3 4 단계 상세 (Hand N → Hand N+1)
+
+| 단계 | 액션 | 책임 | 상태 |
+|:---:|------|------|------|
+| **1. hand1Complete** | Hand N 종료 — showdown 결과 / 팟 분배 / handHistory[] prepend | S2 (Lobby UI) | Cycle 6 #312 구현 완료 |
+| **2. nextHandRotating** | dealer button indicator 회전 애니메이션 (시계 방향 1칸) | S2 (UI 위젯) | Cycle 6 #312 구현 완료 |
+| **3. /next-hand 호출** | `POST /api/v1/tables/{id}/next-hand` (prevHandId, triggerSource) | CC → S7 | S7 endpoint 발행 (Cycle 6) |
+| **4. hand2Dealt** | Hand N+1 NEW_HAND 수신 + 9 좌석 카드 reset + currentBet=BB | S2 (UI) | Cycle 6 #312 구현 완료 |
+
+## I.4 상태 머신 확장 (`HandAutoSetupStep` v2)
+
+부록 H 의 `cascadeReady` 이후 추가된 4 단계:
+
+```
+   cascadeReady (Hand 1 진입)
+      │
+      v
+   hand1Active        ← Hand 1 진행 중
+      │
+      v (showdown 또는 전원 fold)
+   hand1Complete      ← Hand 1 종료 + handHistory[] 업데이트
+      │
+      v
+   nextHandRotating   ← dealer button indicator 애니메이션
+      │
+      v
+   hand2Dealt         ← Hand 2 NEW_HAND 수신 완료
+      │
+      v
+   multiHandReady     ← 완료 (#312 KPI 통과 — 연속 핸드 wire 입증)
+```
+
+## I.5 UI 명세 — handHistory list view
+
+multi-hand 환경에서 **직전 핸드들의 요약** 을 운영자가 한눈에 확인할 수 있어야 합니다 (탈락 좌석 인지, 큰 팟 발생 인지, 비정상 hand 추적 등).
+
+### I.5.1 위치 + 트리거
+
+| 항목 | 명세 |
+|------|------|
+| 화면 | TablesScreen (테이블 상세 뷰) 우측 사이드바 또는 별도 `<HandHistoryScreen>` |
+| 진입 | 운영자가 [Hand History] 버튼 클릭 또는 키보드 단축키 `H` |
+| 데이터 소스 | `GET /api/v1/tables/{id}/hands?limit=20&order=desc` (BO endpoint) |
+| 자동 갱신 | WS `hand_ended` 이벤트 수신 시 list 상단에 prepend (실시간) |
+
+### I.5.2 행 (row) 구성
+
+```
+  +-------+--------+----------+--------+----------+----------+
+  | Hand# | Time   | Game     | Pot    | Winner   | Action   |
+  +-------+--------+----------+--------+----------+----------+
+  | #142  | 14:23  | NL HE    | 1,250  | Seat 3   | [View]   |
+  | #141  | 14:21  | NL HE    | 480    | Seat 7   | [View]   |
+  | #140  | 14:18  | NL HE    | 2,100  | Seat 1   | [View]   |
+  | ...   | ...    | ...      | ...    | ...      | ...      |
+  +-------+--------+----------+--------+----------+----------+
+```
+
+| 컬럼 | 의미 | 클릭 동작 |
+|------|------|----------|
+| `Hand#` | 핸드 번호 (currentHandNumber 역순) | row 전체 클릭 = 상세 펼침 |
+| `Time` | 핸드 시작 시각 (HH:MM) | — |
+| `Game` | 게임 약자 (NL HE, PLO, etc.) | — |
+| `Pot` | 총 팟 (Side Pot 합산) | hover = pot 분해 tooltip |
+| `Winner` | 승자 좌석 (split pot 시 "Seat 3, 7") | — |
+| `Action` | `[View]` = 상세 / `[Export]` = JSON | 후편집 export 트리거 |
+
+### I.5.3 시각적 강조 (visual emphasis)
+
+| 조건 | 시각 표현 |
+|------|----------|
+| 큰 팟 (직전 20 핸드 평균 × 3 이상) | row 배경 노란색 highlight |
+| RIT 발생 | `Action` 컬럼에 RIT 배지 표시 |
+| All-in 발생 | row 좌측에 빨간 strip |
+| 비정상 종료 (예외/timeout) | row 배경 회색 + 경고 아이콘 |
+
+## I.6 UI 명세 — Dealer Button Indicator
+
+multi-hand 환경에서 **dealer button 의 회전** 을 운영자가 시각적으로 인지할 수 있어야 합니다. 이는 매 핸드 정확한 좌석에 button 이 위치하는지 확인하는 운영 안전 장치이기도 합니다.
+
+### I.6.1 위치 + 시각 표현
+
+| 항목 | 명세 |
+|------|------|
+| 화면 | TablesScreen (9-seat 테이블 뷰) 의 각 좌석 옆 |
+| 표현 | 흰색 원형 chip 위에 "D" 텍스트 (24px diameter) |
+| 위치 | dealerSeat 인 좌석의 카드 영역 좌측 또는 좌석 번호 옆 |
+
+### I.6.2 회전 애니메이션 (Hand N → Hand N+1)
+
+`hand_started` WS 이벤트 수신 시 (새 dealerSeat 정보 포함):
+
+| 단계 | 시간 | 동작 |
+|:----:|:----:|------|
+| 1 | 0.0s | 이전 좌석에서 button 위치 시작점 |
+| 2 | 0.0~0.4s | 시계 방향으로 호 (arc) 그리며 새 좌석으로 이동 (Rive 애니메이션) |
+| 3 | 0.4s | 새 좌석에 정착 + 살짝 bounce 효과 (60ms) |
+
+> **탈락 좌석 skip 표현**: 탈락 좌석이 중간에 있으면, 애니메이션이 그 좌석을 **타고 넘어가는** 호 궤적으로 시각화됩니다 (운영자가 skip 사실을 명확히 인지).
+
+### I.6.3 SB / BB indicator 동기 회전
+
+dealer button 회전과 동시에 SB / BB indicator (작은 칩 위에 "SB" / "BB" 텍스트) 도 함께 회전합니다. 모두 0.4s 안에 완료됩니다 (시각적 일관성).
+
+> **헤즈업 예외 (§8-2)**: 2인 테이블 시 dealer = SB 이므로 SB indicator 가 dealer button 위치와 겹쳐 표시됩니다 (작은 + 큰 chip 중첩).
+
+## I.7 검증 기준 (KPI)
+
+| KPI | 측정 |
+|------|------|
+| Hand 1 → Hand 2 wire 통과 | `HandAutoSetupStep.multiHandReady` 도달 |
+| dealer button 회전 정확성 | `dealerSeat` 가 시계 방향 1칸 (탈락 좌석 skip) 으로 정확히 이동 |
+| handHistory[] prepend 정확성 | Hand 1 종료 후 list 상단에 Hand 1 요약 row 가 즉시 추가 |
+| 빌드 무결성 | `flutter build web --dart-define=MULTI_HAND_DEMO=true` 성공 |
+| 정본 cascade 정합 | Back_Office_PRD §4.4 + Betting_System §8 정합 |
+
+## I.8 자가 점검 (rule 19 P7)
+
+| 항목 | 평가 |
+|------|------|
+| 18세 일반인 이해 | ★★★★☆ — 4단계 시퀀스 + UI 표 + 시각 강조 명세 |
+| 비유 | "한 판 끝나고 딜러 의자가 옆 사람으로 옮겨가는" 자연스러운 일상 비유 |
+| 명령 1줄로 검증 가능 | ✅ — `flutter run --dart-define=MULTI_HAND_DEMO=true` |
+| derivative-of cascade | 부록 I 추가만, 본문 narrative 변경 0 (additive) |
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 |
@@ -1206,6 +1384,7 @@ Future<int> _createTable() async {
 | 2026-05-11 | 3.0.1 | 부록 H 추가 (1 hand 시퀀스, Cycle 2 #239) — narrative 변경 0, additive only |
 | 2026-05-11 | 3.0.2 | §Ch.1.7 본문 추가 (1 hand 자동 셋업 데모, Cycle 3) — Ch.1 5 화면 시퀀스 ↔ 부록 H 연결, additive only |
 | 2026-05-12 | 3.0.3 | Cycle 6 #312 — multi-hand auto_demo (Hand 1 -> Hand 2 전환). HandAutoSetupStep 4 단계 추가 (hand1Complete / nextHandRotating / hand2Dealt). handHistory[] + dealer button indicator UI 위젯. v02-lobby evidence 6 PNG. S8 #301 ManualNextHand 계약 소비. additive only — narrative 변경 0 |
+| 2026-05-12 | 3.1.0 | **Cycle 7 #326 — multi-hand UI PRD 본문 정합 (S10-W)**. 부록 I 신규 추가 — Multi-Hand 시나리오 시퀀스 (Hand N → N+1 4 단계 wire), HandAutoSetupStep v2 상태머신 (hand1Active → hand1Complete → nextHandRotating → hand2Dealt → multiHandReady), §I.5 handHistory list view UI 명세 (위치 + row 6 컬럼 + 시각 강조 4 조건), §I.6 Dealer Button Indicator UI 명세 (Rive arc 애니메이션 0.4s + SB/BB 동기 회전 + 탈락 좌석 skip 시각화), §I.7 KPI 5 항목 + §I.8 자가 점검. v3.0.3 Changelog only 상태 정정 — 본문 명세 누락분 보강. Back_Office_PRD §4.4 + Betting_System §8 cascade 정합. additive only — Ch.1~Ch.6 본문 narrative 변경 0. |
 
 ---
 

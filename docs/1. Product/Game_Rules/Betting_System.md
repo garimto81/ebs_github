@@ -18,9 +18,10 @@ reimplementability_notes: "PRD-GAME-04 완결 본문 (34KB) + Confluence 발행 
 | 2026-03-30 | 신규 작성 | 베팅 시스템 완전 가이드 초판 v2.0.0 |
 | 2026-04-13 | §1b 확장 | All-in 일반화(4인+), Dead Money, Showdown Order, 크로스 게임 적용 추가 |
 | 2026-04-13 | 모호성 제거 | "보통" 6건 → 구체 수치/설정 필드 참조로 교체 |
+| 2026-05-12 | §8 multi-hand | Cycle 7 #326 — §8 신규 (multi-hand 전이 규칙: dealer button 회전, straddle 핸드별 재합의, ante override 핸드 단위 적용, RIT split 결과 다음 핸드 반영). S8 #319 v03 정본 cascade. |
 
-> **Version**: 2.1.0
-> **Date**: 2026-04-13
+> **Version**: 2.2.0
+> **Date**: 2026-05-12
 > **대상 독자**: 포커를 모르는 사람 누구나
 > **요약 버전**: 이 문서는 베팅 구조 3종(NL/PL/FL), Ante 7종, 특수 규칙 4종의 상세 가이드입니다
 
@@ -828,4 +829,106 @@ function calculatePots(players):
 | **Phase 2** (2026 H2) | NL/PL + Ante 7종 전부 + Straddle |
 | **Phase 3** (2027 H1) | FL 추가 + Bring-in + Bomb Pot / Run It Twice |
 | **Phase 4** (2027 H2) | 7-2 Side Bet + Mixed Game 자동 전환 |
+
+---
+
+## §8. Multi-Hand 전이 규칙 — 핸드 간 베팅 상태 이전
+
+> 이 섹션은 **연속된 핸드 사이** 의 베팅 시스템 상태 전이를 다룹니다. 단일 핸드 내부의 베팅 규칙(§1~§7)과 구분됩니다. Cycle 6 multi-hand 구현 (S8 #319 v03 / S7 next-hand endpoint / S3 #321 CC handNumber) 의 PRD 측 정합 명세입니다.
+
+### 8-1. 핸드 종료 → 다음 핸드 시작 — 5단계 전이
+
+```mermaid
+flowchart LR
+    A["Hand N<br/>showdown/AllFold"] --> B["pot 분배<br/>+ 통계 확정"]
+    B --> C["dealer button<br/>1칸 회전"]
+    C --> D["blinds/ante<br/>재배치"]
+    D --> E["Hand N+1<br/>NEW_HAND"]
+```
+
+각 단계의 베팅 시스템 영향:
+
+| 단계 | 베팅 시스템 영향 |
+|:----:|----------------|
+| 1 | currentBet / pot / sidePots[] 모두 0 으로 reset |
+| 2 | dealerSeat 시계 방향 1칸 회전 (탈락 좌석 skip — `seat.chips == 0` 또는 `seat.sittingOut == true`) |
+| 3 | sbSeat / bbSeat 재계산 (Heads-up 예외 적용) — §2-3 헤즈업 규칙 참조 |
+| 4 | Ante / Straddle / Bomb Pot 재합의 (각 § 참조) |
+| 5 | 새 currentBet = BB amount, pot = blinds + antes |
+
+### 8-2. Dealer Button 회전 규칙 — Dead Button 처리
+
+플레이어 탈락 시 dealer button 이동에 두 가지 모델이 있습니다:
+
+| 모델 | 동작 | 사용처 |
+|------|------|--------|
+| **Moving Button** | 탈락 좌석을 skip 하고 다음 활성 좌석으로 이동 | EBS 기본값 (단순 + 공정성 우선) |
+| **Dead Button** | 탈락 좌석에 button 두고, blinds 만 활성 좌석으로 이동 | WSOP 일부 토너먼트 (blinds 공정성 우선) |
+
+EBS 는 **Moving Button** 을 default 로 채택합니다. 이벤트 설정 `dealer_button_mode: "moving" | "dead"` 필드로 재정의 가능합니다.
+
+> **헤즈업 전환**: 3인 → 2인 전환 시 button 모델이 자동으로 "Heads-up button" 으로 전환됩니다 (§2-3 참조 — 딜러 = SB).
+
+### 8-3. Straddle — 핸드별 재합의
+
+Straddle (§5-1) 은 **핸드 단위로 새로 합의** 됩니다:
+
+| 시점 | 동작 |
+|------|------|
+| Hand N+1 시작 전 | UTG (또는 BTN) 위치 플레이어가 자발적 Straddle 선언 가능 |
+| 합의 없음 | Straddle 없이 정상 핸드 진행 |
+| 합의 있음 | §5-1 규칙 적용 (행동 순서 변경 + 마지막 옵션) |
+
+> **Mississippi Straddle** 도 동일 — BTN 위치 플레이어가 핸드별로 선언. 이전 핸드 Straddle 은 자동 cascade 되지 않습니다.
+
+### 8-4. Ante Override — 핸드 단위 적용
+
+Ante (§4) 는 이벤트 설정 (`ante_amount`) 으로 default 가 정해지지만, **특정 핸드에서 override 가능** 합니다:
+
+| Override 유형 | 트리거 | 적용 범위 |
+|---------------|--------|----------|
+| `ante_amount` 변경 | 블라인드 레벨 상승 (이벤트 스케줄) | 다음 핸드부터 모든 핸드 |
+| `ante_type` 변경 | CC 오퍼레이터 명시 (e.g. Standard → BB Ante) | 다음 핸드부터 모든 핸드 |
+| 단발 skip | CC 오퍼레이터 명시 (e.g. "이번 핸드 ante 없음") | 해당 핸드 1회만 |
+
+Override 는 **다음 핸드의 NEW_HAND 발행 시점** 에 반영됩니다. 진행 중 핸드에는 영향 없음 (mid-hand 변경 금지 — 베팅 정합성 보호).
+
+### 8-5. Run It Twice — 다음 핸드로의 전이
+
+Run It Twice (§5-3) 결과는 **해당 핸드 내부에서 완결** 됩니다. 다음 핸드로의 영향:
+
+| 항목 | 처리 |
+|------|------|
+| 팟 분배 | RIT 합의된 비율로 즉시 분배. 다음 핸드 시작 시 모든 stack 갱신 완료 |
+| handHistory[] 기록 | RIT 사실을 별도 필드 (`rit: { boards: 2, splits: [50, 50] }`) 로 명시 — 후편집 분석용 |
+| 다음 핸드 영향 | 없음 (RIT 는 이전 핸드의 분산 감소 도구이며, 다음 핸드는 정상 시작) |
+
+### 8-6. multi-hand state 와 베팅 시스템 — 정합성 표
+
+`Back_Office_PRD §4.4.1` 의 multi-hand state 5 필드 ↔ 베팅 시스템 의존성:
+
+| BO 필드 | 베팅 시스템 의존 |
+|---------|-----------------|
+| `currentHandNumber` | handHistory[] 인덱싱 + 통계 누적 |
+| `dealerSeat` | §8-2 button 회전 결과 |
+| `sbSeat / bbSeat` | §2-2 위치 결정 + §2-3 Heads-up 예외 |
+| `handHistory[]` | §8-5 RIT 사실 + §1b Side Pot 분배 결과 보관 |
+| `nextHandReady` | §8-1 5 단계 전이 모두 완료 신호 |
+
+### 8-7. 후편집을 위한 multi-hand 데이터
+
+방송 종료 후 `handHistory[]` 는 JSON 으로 export 됩니다 (Back_Office_PRD §8.1). 베팅 시스템 측 핵심 필드:
+
+```
+  hand_N.json
+  ├── betting_structure: "NL" | "PL" | "FL"
+  ├── ante_config: { type, amount, dead_or_live }
+  ├── straddle: null | { position, amount }
+  ├── bomb_pot: bool
+  ├── rit: null | { boards, splits }
+  ├── pots: [{ amount, eligible_seats }]   ← Side Pot 포함
+  └── actions: [{ seat, type, amount, round }]
+```
+
+> 후편집 스튜디오는 이 데이터로 핸드 하이라이트 + 통계 그래픽 + 인터뷰 컷팅을 제작합니다 (Back_Office_PRD §8.2 참조).
 
