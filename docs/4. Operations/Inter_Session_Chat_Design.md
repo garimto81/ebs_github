@@ -191,7 +191,7 @@ dev 전제 (localhost) — 강한 인증 없음. chat-server (FastAPI) 가 sende
 | #design              [Live]    | #blocker             [Live]         |
 | ──────────────────────────────  | ──────────────────────────────────  |
 | 15:30 [S2] @S3 rake 누적 OK?   | 15:25 [S7] DB schema 대기중         |
-|         Lobby_PRD 정합           | 15:28 [S8] @S7 5분 후 풀려 (PR#194) |
+|         Lobby 정합           | 15:28 [S8] @S7 5분 후 풀려 (PR#194) |
 | 15:32 [S3] CC는 flat, 우리는    | 15:30 [S7] (typing...)              |
 |         hand-by-hand 정산        |                                     |
 | 15:33 [user] 누적이 맞음        |                                     |
@@ -667,7 +667,7 @@ python tools/chat_server/cli.py history room:design --last 50
 ```
 [T+0s]   S2 worktree 에서 user 가 작업 시작
          → PreToolUse hook: Foundation.md Edit 직전
-         → doc_discovery.py 가 Lobby_PRD, CC_PRD 영향 감지
+         → doc_discovery.py 가 Lobby, CC_PRD 영향 감지
          → 자동 발화 (§9.2):
            topic="chat:room:design"
            body="[AUTO] Editing Foundation.md impacts 3 docs: ..."

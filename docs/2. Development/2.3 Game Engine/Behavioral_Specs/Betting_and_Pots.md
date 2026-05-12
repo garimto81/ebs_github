@@ -35,7 +35,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38192
 | 2026-04-10 | WSOP P1/P2 (BS-06-07) | Tabled Hand 보호 (Rule 71), Folded Hand 복구 (Rule 110), Muck 재판정 (Rule 109) |
 | 2026-04-13 | GAP-C (BS-06-03) | 통합 포스팅 순서 Pseudocode + ManagerRuling 패널티 |
 | 2026-04-28 | 도메인 통합 (본 문서) | BS-06-02 + 03 + 06 + 07 lossless 병합. legacy-ids 보존. Lifecycle/Triggers 도메인 권위 위임. Chunk-by-chunk commit (sibling worktree). |
-| 2026-05-07 | v3/v4 정체성 cascade Phase B2 | Lobby_PRD v3.0.0 + CC_PRD v4.0 정체성 정합 (LLM 전수 의미 판정 — Engine). §3.1 베팅 액션 트리거 표 → "CC 입력 (6 키)" + Phase-aware framing. 단축키 "F=Fold, C=Call, R=Raise" → CC v4.0 정본 매핑 (N·F·C·B·A·M + Ctrl+Z) 으로 정정. CC v4.0 §5 V14 *위치 기반 손가락 학습* 정합. | DOC |
+| 2026-05-07 | v3/v4 정체성 cascade Phase B2 | Lobby v3.0.0 + CC_PRD v4.0 정체성 정합 (LLM 전수 의미 판정 — Engine). §3.1 베팅 액션 트리거 표 → "CC 입력 (6 키)" + Phase-aware framing. 단축키 "F=Fold, C=Call, R=Raise" → CC v4.0 정본 매핑 (N·F·C·B·A·M + Ctrl+Z) 으로 정정. CC v4.0 §5 V14 *위치 기반 손가락 학습* 정합. | DOC |
 
 ---
 
@@ -333,7 +333,7 @@ class RunItTwiceState:
 
 | 트리거 유형 | 조건 | 발동 주체 | 정확도 |
 |-----------|------|---------|--------|
-| **CC 입력 (6 키)** | 운영자가 6 키 (N·F·C·B·A·M) 로 액션 발사. C=CHECK/CALL 동적, B=BET/RAISE 동적 (CC v4.0 Phase-aware, `Command_Center_PRD.md` Ch.5) | 운영자 (수동) | ≤100ms |
+| **CC 입력 (6 키)** | 운영자가 6 키 (N·F·C·B·A·M) 로 액션 발사. C=CHECK/CALL 동적, B=BET/RAISE 동적 (CC v4.0 Phase-aware, `Command_Center.md` Ch.5) | 운영자 (수동) | ≤100ms |
 | **금액 입력 후 CONFIRM** | 운영자가 금액을 직접 입력하고 확인 (BET/RAISE 만) — v4.0 에서는 B 키 입력 시 자동 모달 + Enter 확정 | 운영자 (수동) | ≤150ms |
 | **키보드 단축키 = 정본** | CC v4.0 의 6 키가 정본 입력 표면. F=FOLD, C=CHECK/CALL, B=BET/RAISE, A=ALL-IN, N=NEW HAND, M=MUCK + Ctrl+Z=UNDO (CC_PRD §5 V14: *같은 키 = 같은 손가락 위치 = 다른 의미*) | 운영자 (수동) | ≤50ms |
 

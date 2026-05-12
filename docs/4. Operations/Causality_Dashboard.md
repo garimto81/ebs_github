@@ -28,9 +28,9 @@ EBS 문서 인과관계는 **5 정점 SSOT** 에서 cascade 한다. 각 SSOT 변
 ```mermaid
 flowchart TD
     F["Foundation.md<br/>(정점 SSOT — EBS 비전)"]
-    L["Lobby_PRD.md<br/>(외부 인계, derivative)"]
-    C["Command_Center_PRD.md<br/>(외부 인계)"]
-    B["Back_Office_PRD.md<br/>(외부 인계)"]
+    L["Lobby.md<br/>(외부 인계, derivative)"]
+    C["Command_Center.md<br/>(외부 인계)"]
+    B["Back_Office.md<br/>(외부 인계)"]
     R["RIVE_Standards.md<br/>(외부 인계, self-정본)"]
     G["Game_Rules/<br/>(4 외부 PRD)"]
 
@@ -52,9 +52,9 @@ flowchart TD
 | SSOT | 역할 | tier | Owner |
 |------|------|:----:|------|
 | `Foundation.md` | EBS 비전 + 핵심 정체성 (3 입력 → 오버레이) | internal | conductor |
-| `Lobby_PRD.md` | 외부 인계 — 5 화면 게이트웨이 | external | stream:S2 |
-| `Command_Center_PRD.md` | 외부 인계 — 운영자 조종석 v4.0 | external | conductor |
-| `Back_Office_PRD.md` | 외부 인계 — 보이지 않는 뼈대 | external | conductor |
+| `Lobby.md` | 외부 인계 — 5 화면 게이트웨이 | external | stream:S2 |
+| `Command_Center.md` | 외부 인계 — 운영자 조종석 v4.0 | external | conductor |
+| `Back_Office.md` | 외부 인계 — 보이지 않는 뼈대 | external | conductor |
 | `RIVE_Standards.md` | Overlay 그래픽 표준 (self-정본) | external | conductor |
 
 **충돌 시**: `derivative-of takes precedence` (정본 = 진실, 외부 PRD = 정본 follow).
@@ -70,7 +70,7 @@ flowchart LR
     F[Foundation v4.5]
 
     subgraph EXT["외부 인계 PRD (4)"]
-        L[Lobby_PRD]
+        L[Lobby]
         C[CC_PRD v4.0]
         B[BO_PRD]
         G[Game_Rules 4종]
@@ -109,7 +109,7 @@ flowchart LR
 
 | Label | 효과 | 예시 |
 |-------|------|------|
-| `tier-external` | 9 외부 인계 PRD | Foundation, Lobby_PRD, CC_PRD, BO_PRD, RIVE_Standards, Game_Rules 4 |
+| `tier-external` | 9 외부 인계 PRD | Foundation, Lobby, CC_PRD, BO_PRD, RIVE_Standards, Game_Rules 4 |
 | `tier-internal` | 정본 기술 명세 + governance | Foundation, 1.Product, 2.X Overview |
 | `tier-contract` | API / DATA 계약 (32) | Backend_HTTP, WebSocket_Events, Auth_and_Session |
 | `owner-s1` ~ `owner-s8` | Stream 별 owner | Lobby (S2), CC (S3), Backend (S7), Engine (S8) |

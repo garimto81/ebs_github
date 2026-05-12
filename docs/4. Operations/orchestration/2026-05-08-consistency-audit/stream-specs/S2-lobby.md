@@ -17,13 +17,13 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38192
 
 ## 🎯 미션
 
-**Lobby_PRD ↔ 정본 Overview.md ↔ Foundation 3-way 정합 + 2.1 Frontend 전 영역 cascade**.
+**Lobby ↔ 정본 Overview.md ↔ Foundation 3-way 정합 + 2.1 Frontend 전 영역 cascade**.
 
 ## 📂 영향 파일 (116)
 
 | 영역 | 패턴 | 파일 수 |
 |------|------|--------|
-| 외부 PRD | `docs/1. Product/Lobby_PRD.md` | 1 |
+| 외부 PRD | `docs/1. Product/Lobby.md` | 1 |
 | 정본 | `docs/2. Development/2.1 Frontend/Lobby/**` | ~30 |
 | 자매 영역 | `docs/2. Development/2.1 Frontend/Login/**` | ~10 |
 | 자매 영역 | `docs/2. Development/2.1 Frontend/Settings/**` | ~5 |
@@ -32,8 +32,8 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38192
 
 ## ✅ 검증 항목
 
-1. **derivative-of chain**: `Lobby_PRD.md` frontmatter `derivative-of` = `../2. Development/2.1 Frontend/Lobby/Overview.md`
-2. **last-synced 일치**: `Lobby_PRD.md last-synced` = `Overview.md last-updated`
+1. **derivative-of chain**: `Lobby.md` frontmatter `derivative-of` = `../2. Development/2.1 Frontend/Lobby/Overview.md`
+2. **last-synced 일치**: `Lobby.md last-synced` = `Overview.md last-updated`
 3. **정체성 정합 (Foundation §8)**: "5분 게이트웨이 + WSOP LIVE 거울" 명시
 4. **4 진입 시점**: (a) 첫진입 (b) 비상진입 (c) 변경진입 (d) 종료진입 모두 언급
 5. **구조 정합**: Series → Event → Flight → Table 4 단계
@@ -44,8 +44,8 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38192
 ## 🔄 자율 Iteration
 
 ```
-1. python tools/doc_discovery.py --impact-of "docs/1. Product/Lobby_PRD.md"
-2. Lobby_PRD ↔ Lobby/Overview.md 본문 비교 (derivative-of chain)
+1. python tools/doc_discovery.py --impact-of "docs/1. Product/Lobby.md"
+2. Lobby ↔ Lobby/Overview.md 본문 비교 (derivative-of chain)
 3. 2.1 Frontend/** 전수 → Foundation §8 cascade
 4. drift 발견 → 정정 (단일 commit per file)
 5. 모든 검증 통과 → PR ready
@@ -59,7 +59,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38192
 
 ## 📋 PR 체크리스트
 
-- [ ] Lobby_PRD ↔ Overview.md 본문 일치
+- [ ] Lobby ↔ Overview.md 본문 일치
 - [ ] frontmatter `last-synced` 갱신
 - [ ] `tools/doc_discovery.py --impact-of` 결과 = 0 drift
 - [ ] PR title: `docs(s2-lobby): consistency audit 2026-05-08`

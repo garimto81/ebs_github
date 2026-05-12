@@ -31,7 +31,7 @@ EBS는 **"1 CC = 1 Table = 1 Overlay"** 인스턴스 관계를 유지한다. 그
 
 ## v4.0 컨텍스트 (2026-05-07 신설)
 
-> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 — 1×10 가로 그리드 채택. multi-table 운영자가 화면을 분할할 때의 영향.
+> **트리거**: `docs/1. Product/Command_Center.md` v4.0 — 1×10 가로 그리드 채택. multi-table 운영자가 화면을 분할할 때의 영향.
 
 ### 1×10 그리드 multi-table 적용
 

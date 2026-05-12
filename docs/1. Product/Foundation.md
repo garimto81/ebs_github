@@ -12,7 +12,7 @@ version: 4.5.0
 format: "Graphic Novel Edition (markdown-native, 5 layout 변주)"
 reimplementability: PASS
 reimplementability_checked: 2026-05-08
-reimplementability_notes: "v4.5 — Phase B cascade (SSOT 100% 정합): §A.1 Lobby 4 진입 시점 흡수 (Lobby_PRD detail) + §A.4 CC Hole Card Visibility 4단 방어 흡수 (CC_PRD v4.0 D7) + §B.1 Engine Mixed Game (HORSE / 8-Game) 흡수. v4.4 = Phase A cascade: Lobby_PRD v3.0.0 + CC_PRD v4.0 정체성 정합. v4.3 = C.2 RFID 실제 이미지. v4.2 = A.1/A.2 실제 스크린샷 + Vision Layer 거대 프로젝트. v4.1 = Ch.4 3 그룹 6 기능 본질화. v4.0 = Graphic Novel 재설계."
+reimplementability_notes: "v4.5 — Phase B cascade (SSOT 100% 정합): §A.1 Lobby 4 진입 시점 흡수 (Lobby detail) + §A.4 CC Hole Card Visibility 4단 방어 흡수 (CC_PRD v4.0 D7) + §B.1 Engine Mixed Game (HORSE / 8-Game) 흡수. v4.4 = Phase A cascade: Lobby v3.0.0 + CC_PRD v4.0 정체성 정합. v4.3 = C.2 RFID 실제 이미지. v4.2 = A.1/A.2 실제 스크린샷 + Vision Layer 거대 프로젝트. v4.1 = Ch.4 3 그룹 6 기능 본질화. v4.0 = Graphic Novel 재설계."
 ---
 <p align="center">
 
@@ -542,7 +542,7 @@ flowchart TD
 
 ## §A — Front-end (사용자가 만지는 것)
 
-### A.1 / Lobby — 5분 게이트웨이 + WSOP LIVE 거울 (Lobby_PRD v3.0.0)
+### A.1 / Lobby — 5분 게이트웨이 + WSOP LIVE 거울 (Lobby v3.0.0)
 
 ![Lobby 실제 화면 — 테이블 그리드](images/foundation/ebs-lobby-tables.png)
 
@@ -550,7 +550,7 @@ flowchart TD
 
 | 항목 | 내용 |
 |---|---|
-| 정체성 | **5분 게이트웨이 + WSOP LIVE 거울** (Lobby_PRD v3.0.0) — 시프트 시작 5분 안에 활성 룰 / 좌석 / RFID 검증 끝낸 뒤 CC 로 위임. SSOT = WSOP LIVE 대회 정보 단방향 미러 |
+| 정체성 | **5분 게이트웨이 + WSOP LIVE 거울** (Lobby v3.0.0) — 시프트 시작 5분 안에 활성 룰 / 좌석 / RFID 검증 끝낸 뒤 CC 로 위임. SSOT = WSOP LIVE 대회 정보 단방향 미러 |
 | 구조 | Series → Event → Flight → Table 4 단계 (WSOP LIVE 정렬) |
 | 역할 | 게이트웨이 검증 (룰 활성 + 좌석 + RFID 정상) → 테이블 카드 클릭 → 해당 테이블 CC 열림 |
 | 4 진입 시점 | (a) **첫 진입** = 시프트 시작 / (b) **비상 진입** = 장애 복구 후 재진입 / (c) **변경 진입** = 룰 변경 또는 좌석 교체 / (d) **종료 진입** = 시프트 끝 검증 |

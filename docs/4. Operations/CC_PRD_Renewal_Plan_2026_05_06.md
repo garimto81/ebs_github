@@ -1,5 +1,5 @@
 ---
-title: "Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0)"
+title: "Command_Center.md 리뉴얼 계획 (v1.1.0 → v2.0.0)"
 owner: conductor
 tier: internal
 status: PROPOSAL
@@ -9,20 +9,20 @@ provenance:
   triggered_by: user_directive
   trigger_summary: "CC PRD 리뉴얼 계획 수립하여 보고"
   user_directive: |
-    "& 'c:\\claude\\ebs\\docs\\1. Product\\Command_Center_PRD.md'
+    "& 'c:\\claude\\ebs\\docs\\1. Product\\Command_Center.md'
      기획 문서 리뉴얼 계획 수립하여 보고"
   trigger_date: 2026-05-06
   precedent_incident: |
-    Lobby_PRD v2.0.0 (2026-05-05) 가 rule 19 Feature Block 완전 적용 +
+    Lobby v2.0.0 (2026-05-05) 가 rule 19 Feature Block 완전 적용 +
     P7 Reader Experience 10/10 통과한 reference 사례. CC PRD 는 v1.1.0
     까지 갱신됐으나 동일 표준 미적용 — Hero Block 없음, Symmetric Block 0,
     시각:텍스트 비율 ~20:80 (룰 12 Visual-First 80:20 권장 위반).
 
 predecessors:
-  - path: docs/1. Product/Command_Center_PRD.md
+  - path: docs/1. Product/Command_Center.md
     relation: source_content
     reason: "리뉴얼 대상 — v1.1.0 (613줄)"
-  - path: docs/1. Product/Lobby_PRD.md
+  - path: docs/1. Product/Lobby.md
     relation: derived_from
     reason: "v2.0.0 reference 사례 (1039줄, rule 19 완전 적용)"
   - path: C:/claude/.claude/rules/19-feature-block-document.md
@@ -36,7 +36,7 @@ predecessors:
     reason: "외부 인계 PRD 동기화 룰 (룰 20) 강제 필요"
 confluence-page-id: 3818881448
 confluence-parent-id: 3811573898
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881448/EBS+Command_Center_PRD.md+v1.1.0+v2.0.0
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881448/EBS+Command_Center.md+v1.1.0+v2.0.0
 ---
 
 # CC PRD 리뉴얼 계획 (v1.1 → v2.0)
@@ -49,7 +49,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 
 | 입구 (지금 PRD 의 상태) | 출구 (리뉴얼 후 PRD) |
 |:---|:---|
-| Hero Block 없음 / Symmetric Block 0 / 시각:텍스트 ~20:80 / Hook 부분 OK 그러나 Thesis 인용구 부재 / Reader Anchor 부재 / 4-Act 명확치 않음 / Edit History 형식 (Changelog 만) / Provenance 축 일부 누락 / Visual Uplift 흡수 13 (Ch.9) 가 산문으로만 표현 | Lobby_PRD v2.0.0 reference 와 동일 수준의 룰 19 완전 적용. 8 Feature Block 패턴 + P7 5 기준 통과 + 시각:텍스트 80:20 + 외부 stakeholder 가 첫 페이지만으로 CC 전체 그림 파악 가능 |
+| Hero Block 없음 / Symmetric Block 0 / 시각:텍스트 ~20:80 / Hook 부분 OK 그러나 Thesis 인용구 부재 / Reader Anchor 부재 / 4-Act 명확치 않음 / Edit History 형식 (Changelog 만) / Provenance 축 일부 누락 / Visual Uplift 흡수 13 (Ch.9) 가 산문으로만 표현 | Lobby v2.0.0 reference 와 동일 수준의 룰 19 완전 적용. 8 Feature Block 패턴 + P7 5 기준 통과 + 시각:텍스트 80:20 + 외부 stakeholder 가 첫 페이지만으로 CC 전체 그림 파악 가능 |
 
 **18세 일반인 비유**: **소설을 읽는 것 처럼 술술 흘러가지만, 도면처럼 정확한 PRD**. 현재는 교과서 문체, 리뉴얼 후는 매거진 문체.
 
@@ -59,7 +59,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 
 | 날짜 | 버전 | 트리거 | 변경 내용 |
 |------|:----:|--------|-----------|
-| 2026-05-06 | v1.0 | 사용자 — "리뉴얼 계획 수립하여 보고" | 최초 작성 — gap 분석 + 7-Phase 리뉴얼 plan + Lobby_PRD 패턴 흡수 매트릭스 |
+| 2026-05-06 | v1.0 | 사용자 — "리뉴얼 계획 수립하여 보고" | 최초 작성 — gap 분석 + 7-Phase 리뉴얼 plan + Lobby 패턴 흡수 매트릭스 |
 
 ---
 
@@ -72,15 +72,15 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 ```
    파일                        | 줄수  | 룰 19 적용 | P7 통과 | 시각:텍스트
    ────────────────────────── │ ─────│ ────────── │ ─────── │ ───────────
-   Lobby_PRD.md (v2.0.0)       │ 1039 │ 8 Block 6/6│ 10/10   │ 80:20 ✅
-   Back_Office_PRD.md          │  443 │ 미확인     │ 미확인  │ 미확인
-   Command_Center_PRD.md (v1.1) │  613 │ 0 Block    │ 추정 4/10│ ~20:80 ❌
+   Lobby.md (v2.0.0)       │ 1039 │ 8 Block 6/6│ 10/10   │ 80:20 ✅
+   Back_Office.md          │  443 │ 미확인     │ 미확인  │ 미확인
+   Command_Center.md (v1.1) │  613 │ 0 Block    │ 추정 4/10│ ~20:80 ❌
 ```
 
 ### CC PRD 의 5가지 결함
 
 ```
-  결함                                 | 심각도 | Lobby_PRD 비교
+  결함                                 | 심각도 | Lobby 비교
   ─────────────────────────────────── | ────── | ────────────────
   1. Hero Block 부재                   |  HIGH  | Lobby §Hero P0 ✅
   2. Symmetric Block 0개               |  HIGH  | Lobby 8 Block ✅
@@ -107,7 +107,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 
 <a id="ch-2-act-incident"></a>
 
-## Act 2 — Incident · Lobby_PRD 가 보여준 길
+## Act 2 — Incident · Lobby 가 보여준 길
 
 > *같은 EBS 프로젝트, 같은 외부 인계 audience, 같은 conductor owner — 다른 문서 품질.*
 
@@ -144,7 +144,7 @@ Part I — 정체성
 </td>
 <td width="50%" valign="top" align="left">
 
-**§2.2 · Lobby_PRD v2.0.0 첫 페이지 (Reference)**
+**§2.2 · Lobby v2.0.0 첫 페이지 (Reference)**
 
 ```markdown
 # Lobby —
@@ -174,7 +174,7 @@ Lobby 를 이해하는 법
 
 ### 격차 매트릭스
 
-| P7 기준 | CC PRD v1.1 | Lobby_PRD v2.0 | 격차 |
+| P7 기준 | CC PRD v1.1 | Lobby v2.0 | 격차 |
 |---------|:-----------:|:--------------:|------|
 | **P7-A Hook** (첫 200자 비유/인용/통계/질문) | 부분 (메타로 시작 후 비유) | ✅ | MEDIUM |
 | **P7-B Thesis** (80자 이하 한 줄 명제) | ❌ 부재 | ✅ "12테이블의 모든 진실을 단 한 화면에" | HIGH |
@@ -191,7 +191,7 @@ Lobby 를 이해하는 법
 
 ## Act 3 — Build · 7-Phase 리뉴얼 계획
 
-> *Lobby_PRD 가 5일 자율 iteration 으로 v1.4 → v2.0 도달했듯, CC PRD 도 7-Phase 로 v1.1 → v2.0 도달.*
+> *Lobby 가 5일 자율 iteration 으로 v1.4 → v2.0 도달했듯, CC PRD 도 7-Phase 로 v1.1 → v2.0 도달.*
 
 ### Phase 매트릭스
 
@@ -226,11 +226,11 @@ provenance:
   trigger_date: 2026-05-06
   precedent_incident: |
     v1.1.0 에서 Visual Uplift Ch.9 추가됐으나 텍스트 산문 형태.
-    Lobby_PRD v2.0.0 reference 와 동등 표준 적용 필요.
+    Lobby v2.0.0 reference 와 동등 표준 적용 필요.
 
 # === 축 3. 입력/계승 (From What) — NEW predecessors Block ===
 predecessors:
-  - path: ./Command_Center_PRD.md  (v1.1)
+  - path: ./Command_Center.md  (v1.1)
     relation: superseded
   - path: ../2. Development/.../Command_Center_UI/Overview.md
     relation: source_content
@@ -306,7 +306,7 @@ predecessors:
 
 ### Phase 6 (F6) — Ch.9 Visual Uplift 시각 표현 ⭐ 가장 중요
 
-직전 turn v1.1 에서 추가된 Ch.9 는 현재 **텍스트 박스 표 위주**. Lobby_PRD reference 수준으로 시각 강화:
+직전 turn v1.1 에서 추가된 Ch.9 는 현재 **텍스트 박스 표 위주**. Lobby reference 수준으로 시각 강화:
 
 | 현재 (v1.1) | 리뉴얼 후 (v2.0) |
 |-------------|------------------|
@@ -355,7 +355,7 @@ predecessors:
 | R1 | 라인 수 +80% → 토큰 한계로 1 turn 처리 불가 | Phase 7 분할, 각 Phase 별 commit |
 | R2 | 기존 Ch.4 Orchestrator Mermaid 같은 정확한 콘텐츠 손상 | additive 원칙 — 텍스트 보존 + Symmetric Block 으로 시각 추가 |
 | R3 | derivative-of 동기화 (Overview.md 변경 시 자동 stale) | 룰 20 (doc_discovery pre-work) 매번 호출 |
-| R4 | Lobby_PRD 와 너무 비슷해져 차별성 손상 | CC 고유 (4-Orchestrator + 21 OutputEvent + Mock vs Real) 시각 강화로 차별 |
+| R4 | Lobby 와 너무 비슷해져 차별성 손상 | CC 고유 (4-Orchestrator + 21 OutputEvent + Mock vs Real) 시각 강화로 차별 |
 | R5 | rule 19 SelfCheck 강제로 거부될 가능성 | 본 plan 의 Phase 7 가 SelfCheck 자동 포함 |
 
 ---
@@ -369,7 +369,7 @@ predecessors:
 ```
    Step 1  pre-work 검증 (룰 20 강제)
             $ python tools/doc_discovery.py --impact-of \
-              "docs/1. Product/Command_Center_PRD.md"
+              "docs/1. Product/Command_Center.md"
             → derivative-of 0 (PRD 자체) 확인
 
    Step 2  RAG 컨텍스트 수집
@@ -393,9 +393,9 @@ predecessors:
 
 | 옵션 | 장점 | 단점 |
 |------|------|------|
-| **A. 단일 turn 자율** | 일관성, 빠른 완성 | 토큰 한계 위험 (Lobby_PRD 1039줄 reference) |
+| **A. 단일 turn 자율** | 일관성, 빠른 완성 | 토큰 한계 위험 (Lobby 1039줄 reference) |
 | **B. 2-3 turn 분할** | 안전, 단계별 검증 | 일관성 손상 가능, 사용자 컨펌 필요 |
-| **C. Lobby_PRD 같은 5일 자율 iteration** | 최고 품질 | 5 turn 필요 |
+| **C. Lobby 같은 5일 자율 iteration** | 최고 품질 | 5 turn 필요 |
 
 **권장: 옵션 B (2 turn 분할)**:
 - Turn 1: Phase 1~4 (Frontmatter + Hero + Anchor + Ch.1~5 Symmetric)
@@ -405,7 +405,7 @@ predecessors:
 
 | # | 산출물 | 위치 |
 |:-:|-------|------|
-| 1 | Command_Center_PRD.md v2.0.0 | `docs/1. Product/Command_Center_PRD.md` |
+| 1 | Command_Center.md v2.0.0 | `docs/1. Product/Command_Center.md` |
 | 2 | Edit History v1.1 → v2.0 항목 | 본 PRD 내부 |
 | 3 | Confluence sync (자동) | 페이지 3811901603 |
 | 4 | rule 19 P7 SelfCheck 10/10 | 본 PRD 내부 |
@@ -435,7 +435,7 @@ predecessors:
 
 ---
 
-## 부록 A — Lobby_PRD 와 CC PRD 의 차별 보존 영역
+## 부록 A — Lobby 와 CC PRD 의 차별 보존 영역
 
 리뉴얼 후에도 다음은 CC 고유로 강화:
 
@@ -447,7 +447,7 @@ predecessors:
 | **8 버튼 키보드 우선** | Stat Block (24,000 액션 / 12시간 / 0.7초) |
 | **Mock vs Real RFID** | P4 Decision Block (Real / Mock 좌우) |
 
-Lobby_PRD 의 **1:N 모니터링** vs CC 의 **1 Orchestrator** 라는 정체성 차이를 시각적으로도 분명히 할 것.
+Lobby 의 **1:N 모니터링** vs CC 의 **1 Orchestrator** 라는 정체성 차이를 시각적으로도 분명히 할 것.
 
 ---
 

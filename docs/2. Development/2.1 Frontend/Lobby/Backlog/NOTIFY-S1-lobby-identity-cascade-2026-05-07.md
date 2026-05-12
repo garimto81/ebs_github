@@ -6,7 +6,7 @@ status: RESOLVED
 created: 2026-05-07
 resolved-at: 2026-05-11
 resolved-by: stream:S2 (autonomous iteration — Foundation 사후 검증)
-trigger: Lobby_PRD v3.0.0 정체성 정정 ("관제탑" → "5분 게이트웨이 + WSOP LIVE 거울")
+trigger: Lobby v3.0.0 정체성 정정 ("관제탑" → "5분 게이트웨이 + WSOP LIVE 거울")
 mirror: none
 ---
 
@@ -18,17 +18,17 @@ mirror: none
 >
 > | 위치 | 검증 결과 |
 > |------|----------|
-> | Ch.5 §A.1 L545 | `Lobby — 5분 게이트웨이 + WSOP LIVE 거울 (Lobby_PRD v3.0.0)` ✅ |
+> | Ch.5 §A.1 L545 | `Lobby — 5분 게이트웨이 + WSOP LIVE 거울 (Lobby v3.0.0)` ✅ |
 > | L462 mermaid | `L["Lobby<br/>5분 게이트웨이"]` ✅ |
 > | L502 표 | `Lobby (5분 게이트웨이 + WSOP LIVE 거울)` ✅ |
-> | L553 frontmatter | "5분 게이트웨이 + WSOP LIVE 거울 (Lobby_PRD v3.0.0)" ✅ |
+> | L553 frontmatter | "5분 게이트웨이 + WSOP LIVE 거울 (Lobby v3.0.0)" ✅ |
 > | L1142 redirect 표 | "§5.1 | Lobby (5분 게이트웨이 + WSOP LIVE 거울) | Ch.5 §A.1" ✅ |
 >
 > 본 NOTIFY 의 위임 사항은 100% 반영됨. S1 PR 정황은 git log 의 S1 cascade commit 들에 분산.
 
 ## 발신
 
-stream:S2 (Lobby) — Lobby_PRD v3.0.0 cascade (2026-05-07).
+stream:S2 (Lobby) — Lobby v3.0.0 cascade (2026-05-07).
 
 ## 수신
 
@@ -36,7 +36,7 @@ stream:S1 (Foundation) — Foundation.md §5.1 + 관련 §Ch.4~6 lines.
 
 ## 영향 사유
 
-`docs/1. Product/Lobby_PRD.md` v3.0.0 (2026-05-07) 가 Lobby 의 정체성을 정정함:
+`docs/1. Product/Lobby.md` v3.0.0 (2026-05-07) 가 Lobby 의 정체성을 정정함:
 
 | 이전 (v2.0.x) | 이후 (v3.0.0) |
 |--------------|--------------|
@@ -61,8 +61,8 @@ stream:S1 (Foundation) — Foundation.md §5.1 + 관련 §Ch.4~6 lines.
 ## S1 권장 행동
 
 1. Foundation §Ch.4 §Ch.5 §Ch.6 의 "관제탑" framing 검토
-2. v3.0.0 정체성 (`Lobby_PRD.md` Prologue) 과 narrative tone 정합
-3. Foundation changelog 항목 추가 — `2026-05-07 | Lobby 정체성 정합 (S2 NOTIFY) | "관제탑" → "5분 게이트웨이 + WSOP LIVE 거울" 정정 (Lobby_PRD v3.0.0 cascade) | DOC`
+2. v3.0.0 정체성 (`Lobby.md` Prologue) 과 narrative tone 정합
+3. Foundation changelog 항목 추가 — `2026-05-07 | Lobby 정체성 정합 (S2 NOTIFY) | "관제탑" → "5분 게이트웨이 + WSOP LIVE 거울" 정정 (Lobby v3.0.0 cascade) | DOC`
 4. PR 또는 직접 main commit (S1 권한)
 
 ## 차단 여부
@@ -71,7 +71,7 @@ stream:S1 (Foundation) — Foundation.md §5.1 + 관련 §Ch.4~6 lines.
 
 ## Cross-Reference
 
-- `docs/1. Product/Lobby_PRD.md` v3.0.0 (S2 SSOT)
+- `docs/1. Product/Lobby.md` v3.0.0 (S2 SSOT)
 - `docs/2. Development/2.1 Frontend/Lobby/Overview.md` §개요 정체성 박스 (2026-05-07)
 - `docs/2. Development/2.1 Frontend/Lobby/UI.md` §개요 정체성 박스 (2026-05-07)
 - `docs/4. Operations/Cascade_Plan_S2_Lobby_2026-05-07.md` (cascade plan, 사후 생성 권고 — AUDIT §H.4 참조)

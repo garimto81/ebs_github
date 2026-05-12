@@ -21,9 +21,9 @@ EBS 멀티세션은 Stream 단위로 분리된다. 사용자 진입점 = VSCode 
 | Product 파일 / 폴더 | Owner Stream | Read Streams | Phase |
 |--------------------|:-----------:|--------------|:-----:|
 | `Foundation.md` | **S1** | S2~S8 (all) | P1 |
-| `Lobby_PRD.md` | **S2** | S6 | P2 |
-| `Command_Center_PRD.md` | **S3** | S6 | P2 |
-| `Back_Office_PRD.md` | **S1** (interim — S7 활성됨 2026-05-08, ownership 이관 PR #175 머지 후) | S2, S3, S7 | P1 |
+| `Lobby.md` | **S2** | S6 | P2 |
+| `Command_Center.md` | **S3** | S6 | P2 |
+| `Back_Office.md` | **S1** (interim — S7 활성됨 2026-05-08, ownership 이관 PR #175 머지 후) | S2, S3, S7 | P1 |
 | `RIVE_Standards.md` | **S4** | S2, S3, S6 | P2 |
 | `Game_Rules/**` (4) | **S1** (interim — S8 활성됨 2026-05-08, ownership 이관 PR #180 머지 후) | S2, S3, S6, S8 | P1 |
 | `References/**` (2) | conductor (frozen) | All | — |
@@ -37,9 +37,9 @@ Product 파일 Edit 시 영향 받는 derivative 자동 advisory (`tools/doc_dis
 ```
 Foundation.md Edit
    ↓ cascade
-   ├─ Lobby_PRD.md (derivative-of Lobby Overview)
-   ├─ Command_Center_PRD.md (derivative-of CC Overview)
-   ├─ Back_Office_PRD.md (derivative-of BO Overview)
+   ├─ Lobby.md (derivative-of Lobby Overview)
+   ├─ Command_Center.md (derivative-of CC Overview)
+   ├─ Back_Office.md (derivative-of BO Overview)
    ├─ docs/2. Development/2.1 Frontend/Lobby/Overview.md (정본)
    ├─ docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md (정본)
    └─ docs/2. Development/2.2 Backend/Back_Office/Overview.md (정본)
@@ -86,18 +86,18 @@ Foundation.md Edit
 ### S2 — Lobby Stream (P2 → P5)
 
 - **선행**: S1 P1 완료
-- **P2 (기획)**: `scope_owns` = `docs/2. Development/2.1 Frontend/Lobby/`, `docs/1. Product/Lobby_PRD.md`
+- **P2 (기획)**: `scope_owns` = `docs/2. Development/2.1 Frontend/Lobby/`, `docs/1. Product/Lobby.md`
 - **P5 (구현)**: `scope_owns` = `team1-frontend/`, `docs/2. Development/2.1 Frontend/Lobby/`
-- **읽을 문서**: `team1-frontend/CLAUDE.md` / `docs/2. Development/2.1 Frontend/Lobby/Overview.md` / `docs/1. Product/Lobby_PRD.md` / `Foundation.md`
+- **읽을 문서**: `team1-frontend/CLAUDE.md` / `docs/2. Development/2.1 Frontend/Lobby/Overview.md` / `docs/1. Product/Lobby.md` / `Foundation.md`
 - **api_subscribes**: Backend_HTTP, WebSocket_Events, Auth_and_Session
 - **공유 contract 충돌 주의**: API-04 Overlay (team3 publisher), RFID_HAL (team4 publisher)
 
 ### S3 — Command Center Stream (P2 → P5)
 
 - **선행**: S1 P1 완료
-- **P2 (기획)**: `scope_owns` = `docs/2. Development/2.4 Command Center/`, `docs/1. Product/Command_Center_PRD.md`
+- **P2 (기획)**: `scope_owns` = `docs/2. Development/2.4 Command Center/`, `docs/1. Product/Command_Center.md`
 - **P5 (구현)**: `scope_owns` = `team4-cc/`, `docs/2. Development/2.4 Command Center/`
-- **읽을 문서**: `team4-cc/CLAUDE.md` / `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md` / `docs/1. Product/Command_Center_PRD.md`
+- **읽을 문서**: `team4-cc/CLAUDE.md` / `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md` / `docs/1. Product/Command_Center.md`
 - **api_subscribes**: Overlay_Output_Events, WebSocket_Events
 - **api_publishes**: RFID_HAL
 

@@ -18,13 +18,13 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38205
 | 2026-04-10 | 신규 작성 | Table 상태 2축 분리: TableFSM × `is_pause` (CCR-017) |
 | 2026-04-15 | UI 표시 + WSOP LIVE 통합 | §6 LIVE+is_pause UI 매트릭스 신설 (배지·색·CSS class). §7 WSOP LIVE Table Management 매핑 (Player Add/Move/Stack/Eliminate, Auto/Manual Seating, Seat 색상 코드, Reserved Seat/Table, Breaking Order). team1 발신, Round 2 Phase A. |
 | 2026-04-15 | Gap-Final-1b PlayerMoveStatus UX | §8 신설 — WSOP LIVE `PlayerMoveStatus {0=None, 1=New, 2=Move}` (Confluence 1653833763) Lobby UX. SeatStatus × PlayerMoveStatus 조합 뱃지·색상·타이머 규정. 스크린샷: `visual/screenshots/ebs-flow-table-status.png` (EBS 버전). team2 draft, **team1 decision_owner — PR 통지 필요**. |
-| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — 진입 시점 ②(어긋났을 때 — Table 회귀) 매핑 framing 추가. TableFSM 본문 변경 0 (additive only). |
+| 2026-05-07 | v3 cascade | Lobby v3.0.0 정체성 정합 — 진입 시점 ②(어긋났을 때 — Table 회귀) 매핑 framing 추가. TableFSM 본문 변경 0 (additive only). |
 
 ---
 
 ## 개요
 
-> **진입 시점 매핑 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 본 문서가 정의하는 TableFSM × `is_pause` 직교 축은 운영자가 Lobby 를 거치는 4 진입 중 **② 시점 — 어긋났을 때 다시 잡는 화면** 의 핵심 데이터 모델이다. RFID 단절 / 좌석 불일치 / 브레이크 회복 / 카메라 리셋 등 "어긋남" 상태가 본 매트릭스로 표현된다. 카탈로그: `Overview.md §4 진입 시점 카탈로그`.
+> **진입 시점 매핑 (Lobby v3.0.0 cascade, 2026-05-07)**: 본 문서가 정의하는 TableFSM × `is_pause` 직교 축은 운영자가 Lobby 를 거치는 4 진입 중 **② 시점 — 어긋났을 때 다시 잡는 화면** 의 핵심 데이터 모델이다. RFID 단절 / 좌석 불일치 / 브레이크 회복 / 카메라 리셋 등 "어긋남" 상태가 본 매트릭스로 표현된다. 카탈로그: `Overview.md §4 진입 시점 카탈로그`.
 
 Table은 **GUI status**(TableFSM, 5 상태)와 **`is_pause`**(bool, 일시정지 여부)를 **직교하는 두 축**으로 관리한다. "LIVE이면서 일시정지(브레이크/카메라 리셋/중재)" 같은 케이스를 표현하기 위해 단순 enum 확장 대신 축 분리 방식을 채택한다.
 

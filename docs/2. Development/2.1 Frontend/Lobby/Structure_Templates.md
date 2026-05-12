@@ -12,13 +12,13 @@ reimplementability_notes: "Blind/Payout 템플릿 기획 완결"
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-16 | 신규 작성 | WSOP LIVE "5. Blind Structure" (Confluence p1784479843) + "6. Prize Structure" (Confluence p1597833440) 기반 |
-| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — 정보 허브 컨텍스트 framing 추가 (additive only). |
+| 2026-05-07 | v3 cascade | Lobby v3.0.0 정체성 정합 — 정보 허브 컨텍스트 framing 추가 (additive only). |
 
 ---
 
 ## 개요
 
-> **WSOP LIVE 정보 허브 역할 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **Blind Structure / Payout Structure 템플릿**. Lobby = WSOP LIVE 거울의 한 면.
+> **WSOP LIVE 정보 허브 역할 (Lobby v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **Blind Structure / Payout Structure 템플릿**. Lobby = WSOP LIVE 거울의 한 면.
 
 Series 레벨에서 Blind Structure 와 Payout Structure 템플릿을 관리하는 CRUD 화면. 템플릿을 생성/복사/편집한 뒤 Flight에 적용한다. WSOP LIVE Staff App §05 Blind Structure + §06 Prize Structure 를 통합한 화면이다.
 

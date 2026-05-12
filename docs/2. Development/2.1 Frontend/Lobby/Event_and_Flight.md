@@ -16,13 +16,13 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-10 | 신규 작성 | WSOP LIVE parity — `EventFlightStatus` 공유 enum, `isRegisterable`/`dayIndex`/`is_pause` (CCR-017) |
-| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — 진입 시점 ②(어긋났을 때) ③(게임 바뀔 때) 매핑 framing 추가. enum 본문 변경 0 (additive only). |
+| 2026-05-07 | v3 cascade | Lobby v3.0.0 정체성 정합 — 진입 시점 ②(어긋났을 때) ③(게임 바뀔 때) 매핑 framing 추가. enum 본문 변경 0 (additive only). |
 
 ---
 
 ## 개요
 
-> **진입 시점 매핑 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 본 문서가 정의하는 `EventFlightStatus` 전이는 운영자가 Lobby 를 거치는 4 진입 중 **②(어긋났을 때 — Late Reg 종료 / Day 전환 비상) 와 ③(게임이 바뀔 때 — Day1→Day2 / Mix 게임 회전 / Flight Completed)** 시점에 직접 매핑된다. 카탈로그: `Overview.md §4 진입 시점 카탈로그`.
+> **진입 시점 매핑 (Lobby v3.0.0 cascade, 2026-05-07)**: 본 문서가 정의하는 `EventFlightStatus` 전이는 운영자가 Lobby 를 거치는 4 진입 중 **②(어긋났을 때 — Late Reg 종료 / Day 전환 비상) 와 ③(게임이 바뀔 때 — Day1→Day2 / Mix 게임 회전 / Flight Completed)** 시점에 직접 매핑된다. 카탈로그: `Overview.md §4 진입 시점 카탈로그`.
 
 Event와 Flight는 **공유된 enum `EventFlightStatus`** 로 상태를 관리한다. 문자열 상태(`created/active/done`)는 폐기되고 WSOP LIVE 원본의 정수 enum 체계를 따른다.
 

@@ -1,5 +1,5 @@
 ---
-title: "문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결"
+title: "문서 발견 실패 — Command_Center.md 누락 사고와 systematic 해결"
 owner: conductor
 tier: internal
 status: APPROVED
@@ -7,14 +7,14 @@ last_updated: 2026-05-06
 
 provenance:
   triggered_by: user_directive
-  trigger_summary: "Command_Center_PRD.md 누락 발견. 본질적 해결책 + RAG 제안 요청"
+  trigger_summary: "Command_Center.md 누락 발견. 본질적 해결책 + RAG 제안 요청"
   user_directive: |
     "최고 핵심 문서가 누락되는 치명적인 문제 발생.
      원인을 파악하여 본질적으로 해결책을 찾아서 보고.
      핵심 문서가 누락되었다는 뜻은 누락된 문서가 훨씬 많다는 이야기야.
      rag 기술을 사용하든 뭘 하든 방법을 찾아서 제안"
   trigger_date: 2026-05-06
-  precedent_incident: "직전 turn — Visual Uplift 결정이 Overview.md / UI.md / Seat_Management.md / Keyboard_Shortcuts.md 4 문서만 갱신. 외부 인계 PRD (Command_Center_PRD.md) 누락. derivative-of 동기화 룰 위반."
+  precedent_incident: "직전 turn — Visual Uplift 결정이 Overview.md / UI.md / Seat_Management.md / Keyboard_Shortcuts.md 4 문서만 갱신. 외부 인계 PRD (Command_Center.md) 누락. derivative-of 동기화 룰 위반."
 
 predecessors:
   - path: docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md
@@ -23,12 +23,12 @@ predecessors:
   - path: docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md
     relation: source_content
     reason: "변경 대상이지만 derivative-of 동기화 누락 사고의 진원지"
-  - path: docs/1. Product/Command_Center_PRD.md
+  - path: docs/1. Product/Command_Center.md
     relation: source_content
     reason: "누락된 외부 인계 PRD — 동기화 받지 못함"
 confluence-page-id: 3820552681
 confluence-parent-id: 3811573898
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552681/EBS+Command_Center_PRD.md+systematic
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552681/EBS+Command_Center.md+systematic
 ---
 
 # 문서 발견 실패 사고
@@ -41,7 +41,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38205
 
 | 입구 (현재 상태) | 출구 (도달 상태) |
 |:---|:---|
-| Conductor 가 critic 작업을 했지만 외부 인계 PRD (`Command_Center_PRD.md`) 의 존재조차 몰랐고, derivative-of 동기화를 누락한 상태. **유사 누락이 더 있을 가능성 매우 높음**. | 5 가지 systematic 결함을 명확히 진단하고, 3-Layer 해결책 (즉시 / 중기 / 장기) 을 제안. Layer 1 도구 (`tools/doc_discovery.py`) 즉시 사용 가능. RAG 기반 Layer 2 설계 제시. |
+| Conductor 가 critic 작업을 했지만 외부 인계 PRD (`Command_Center.md`) 의 존재조차 몰랐고, derivative-of 동기화를 누락한 상태. **유사 누락이 더 있을 가능성 매우 높음**. | 5 가지 systematic 결함을 명확히 진단하고, 3-Layer 해결책 (즉시 / 중기 / 장기) 을 제안. Layer 1 도구 (`tools/doc_discovery.py`) 즉시 사용 가능. RAG 기반 Layer 2 설계 제시. |
 
 **18세 일반인 비유**: **도서관에서 책 1 권을 수정한 후, 같은 내용의 영문판 / 요약본 / 외부 발간본이 함께 갱신되어야 하는데 그 사실조차 모르고 원본만 수정한 상황**. 그 외부 발간본이 뉴욕타임스에 실린다.
 
@@ -61,7 +61,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38205
 
 ### 누락된 문서 1 종 (확정)
 
-`docs/1. Product/Command_Center_PRD.md` — frontmatter 발췌:
+`docs/1. Product/Command_Center.md` — frontmatter 발췌:
 
 ```yaml
 title: Command Center — 운영자가 매 순간 머무는 조종석
@@ -86,12 +86,12 @@ related-docs:
 
 ```
 === Overview.md 변경 시 derivative-of PRD (3 종) ===
-🌐 docs/1. Product/Command_Center_PRD.md       (이번 사고)
-🌐 docs/1. Product/Lobby_PRD.md                (직전 turn 시안 critic 시 동시 영향)
-🌐 docs/1. Product/Back_Office_PRD.md          (변경 없음 — OK)
+🌐 docs/1. Product/Command_Center.md       (이번 사고)
+🌐 docs/1. Product/Lobby.md                (직전 turn 시안 critic 시 동시 영향)
+🌐 docs/1. Product/Back_Office.md          (변경 없음 — OK)
 ```
 
-**Lobby_PRD.md 도 outdated 가능**. 디자인 시안 archive 시 lobby zip 도 같이 처리됐으나, `EBS Lobby (1).zip` 의 critic 비교 분석은 미수행 — 시안 lobby 부분은 archive 만 했지 흡수/거절 결정도 없음.
+**Lobby.md 도 outdated 가능**. 디자인 시안 archive 시 lobby zip 도 같이 처리됐으나, `EBS Lobby (1).zip` 의 critic 비교 분석은 미수행 — 시안 lobby 부분은 archive 만 했지 흡수/거절 결정도 없음.
 
 ### 전체 영향 범위
 
@@ -101,7 +101,7 @@ related-docs:
 | **contract-tier (12 종)** — Authentication / Engine APIs / RFID HAL / WebSocket Events 등 | 🟡 publisher 직접 편집 권한 (cross-team notify 누락 가능) |
 | **internal-tier (619 종)** — 일반 개발 명세 | 🟢 cross-doc 영향 적음 |
 
-**총 639 문서**. 이 중 **8 external + 12 contract = 20 종이 cross-doc 동기화 의무 영역**. 우리 직전 작업은 이 20 종 중 1 종 (Command_Center_PRD) 을 누락.
+**총 639 문서**. 이 중 **8 external + 12 contract = 20 종이 cross-doc 동기화 의무 영역**. 우리 직전 작업은 이 20 종 중 1 종 (Command_Center) 을 누락.
 
 ---
 
@@ -119,12 +119,12 @@ related-docs:
 | 2 | `docs/2. Development/2.4 Command Center/` 직행 | `docs/1. Product/` 도 동시 검색 |
 | 3 | Overview.md / UI.md 만 SSOT 가정 | `derivative-of` 체인 끝까지 추적 |
 
-비유: **건물 도면 (`Overview.md`) 만 보고 수정. 그 도면이 발간된 책자 (`Command_Center_PRD.md`) 가 외부에 배포된 사실 자체를 모름**.
+비유: **건물 도면 (`Overview.md`) 만 보고 수정. 그 도면이 발간된 책자 (`Command_Center.md`) 가 외부에 배포된 사실 자체를 모름**.
 
 ### 결함 2 — Derivative-of 무시 (CRITICAL)
 
 ```yaml
-# Command_Center_PRD.md frontmatter
+# Command_Center.md frontmatter
 derivative-of: ../2. Development/2.4 Command Center/Command_Center_UI/Overview.md
 if-conflict: derivative-of takes precedence
 ```
@@ -191,7 +191,7 @@ if-conflict: derivative-of takes precedence
 | **변경 영향 분석** ⭐ | `python tools/doc_discovery.py --impact-of <path>` |
 | Topic 검색 | `python tools/doc_discovery.py --topic CC --tier external` |
 
-**검증 통과**: 직전 turn 실패 시나리오 재현 시 Command_Center_PRD.md 정확히 검출.
+**검증 통과**: 직전 turn 실패 시나리오 재현 시 Command_Center.md 정확히 검출.
 
 ```
 $ python tools/doc_discovery.py --impact-of \
@@ -199,9 +199,9 @@ $ python tools/doc_discovery.py --impact-of \
 
 📚 Scanned 639 docs ...
 === 이 파일을 derivative-of 로 가진 PRD (외부 인계 동기화 필수) (3) ===
-🌐 [external] docs/1. Product/Command_Center_PRD.md     ← 검출 ✅
-🌐 [external] docs/1. Product/Lobby_PRD.md
-🌐 [external] docs/1. Product/Back_Office_PRD.md
+🌐 [external] docs/1. Product/Command_Center.md     ← 검출 ✅
+🌐 [external] docs/1. Product/Lobby.md
+🌐 [external] docs/1. Product/Back_Office.md
 ```
 
 **즉시 사용 가능**. CLAUDE.md 룰 13 / 19 작업 시작 부분에 `python tools/doc_discovery.py --impact-of <변경 대상>` 호출을 mandatory 로 추가하는 patch 제안 (§Act 4 참조).
@@ -243,7 +243,7 @@ flowchart LR
 $ python tools/doc_rag.py "Command Center 시각 디자인 변경 시 동기화 대상"
 
 🔍 Top 5 (cosine ≥ 0.65):
-  1. [0.84] docs/1. Product/Command_Center_PRD.md
+  1. [0.84] docs/1. Product/Command_Center.md
        └ "Command Center — 운영자가 매 순간 머무는 조종석"
        └ 발췌: "...derivative-of: ../2. Development/.../Overview.md..."
   2. [0.78] docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md
@@ -298,7 +298,7 @@ $ python tools/doc_rag.py "Command Center 시각 디자인 변경 시 동기화 
 | A | CLAUDE.md 룰에 mandatory pre-work 추가 | 거버넌스 self-bootstrap | 수락 |
 | B | `tools/doc_rag.py` Layer 2 다음 turn 구현 | 1 day 작업 | 수락 |
 | C | MEMORY.md 갱신 (v9 → v10 경로) | 외부 가시성 | 수락 |
-| D | `Command_Center_PRD.md` Visual Uplift 동기화 (직전 turn 누락 해소) | 외부 PRD stale 해소 | 수락 ⭐ |
+| D | `Command_Center.md` Visual Uplift 동기화 (직전 turn 누락 해소) | 외부 PRD stale 해소 | 수락 ⭐ |
 
 ### CLAUDE.md 룰 추가 patch (제안)
 
@@ -330,8 +330,8 @@ $ python tools/doc_rag.py "Command Center 시각 디자인 변경 시 동기화 
 
 | 우선순위 | 작업 | 영향 |
 |:-:|------|------|
-| **P0** | `Command_Center_PRD.md` 갱신 — Visual Uplift V1~V13 흡수 결정 + Edit History v1.1 + Confluence sync | 외부 PRD 무결성 복구 |
-| P1 | `Lobby_PRD.md` 검토 — 디자인 시안 lobby zip critic 분석 누락분 | Lobby 외부 PRD 정합 |
+| **P0** | `Command_Center.md` 갱신 — Visual Uplift V1~V13 흡수 결정 + Edit History v1.1 + Confluence sync | 외부 PRD 무결성 복구 |
+| P1 | `Lobby.md` 검토 — 디자인 시안 lobby zip critic 분석 누락분 | Lobby 외부 PRD 정합 |
 | P2 | MEMORY.md 갱신 — v9 경로 폐기 + v10 경로 명시 | systematic 오정보 source 제거 |
 | P3 | CLAUDE.md 룰 20 patch | 거버넌스 강화 |
 | P4 | `tools/doc_rag.py` Layer 2 구현 | systematic 자동화 |

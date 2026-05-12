@@ -18,7 +18,7 @@ last-updated: 2026-05-09
 
 ## 근거
 
-- 기획: `Back_Office_PRD.md` Ch.7 SLO (가용성 99.5%, 50+ commit/sec)
+- 기획: `Back_Office.md` Ch.7 SLO (가용성 99.5%, 50+ commit/sec)
 - 현재: 261/261 tests PASS, 78% (3984 stmts, 882 missed)
 - 목표 1차: 90% (이번 백로그)
 - 목표 최종: 95% (B-Q10)

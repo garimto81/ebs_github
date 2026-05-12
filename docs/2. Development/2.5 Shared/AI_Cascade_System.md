@@ -22,7 +22,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38186
 
 | 날짜 | 사고 | 영향 |
 |------|------|------|
-| 2026-05-06 | `docs/1. Product/Command_Center_PRD.md` (외부 인계 tier=external) 의 derivative-of 정본이 변경됐으나 PRD 미반영 (5개월 stale) | 외부 개발팀 인계 시 잘못된 사양 전달 위험 |
+| 2026-05-06 | `docs/1. Product/Command_Center.md` (외부 인계 tier=external) 의 derivative-of 정본이 변경됐으나 PRD 미반영 (5개월 stale) | 외부 개발팀 인계 시 잘못된 사양 전달 위험 |
 | 진행 중 | Phase A/B/C 일괄 cascade 가 `grep -l <키워드>` 만 사용 | 동의어·완곡 표현 누락 30% |
 
 ### 1.2 keyword grep 한계 — 사용자 명시 누락 사례
@@ -431,7 +431,7 @@ python -m tools.ai_track.cia.self_test
 python -m tools.ai_track.cia.engine --desc "운영자 5분 머무는 화면" --json
 ```
 
-**기대**: L2 RAG 가 `docs/1. Product/Lobby_PRD.md` 발견 (keyword "Lobby" 부재에도 의미 매칭).
+**기대**: L2 RAG 가 `docs/1. Product/Lobby.md` 발견 (keyword "Lobby" 부재에도 의미 매칭).
 
 ### 8.3 fixture 배치 검증
 

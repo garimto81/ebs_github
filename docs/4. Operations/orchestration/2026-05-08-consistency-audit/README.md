@@ -34,7 +34,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38189
 +------+--------------------+--------------------------+------------+--------+
 | S1   | Foundation         | 1.Product/Foundation+    |            |        |
 |      |                    | BO_PRD + Game_Rules      |    6       | P1     |
-| S2   | Lobby              | 1.P/Lobby_PRD +          |            |        |
+| S2   | Lobby              | 1.P/Lobby +          |            |        |
 |      |                    | 2.1 Frontend/**          |   116      | P2     |
 | S3   | Command Center     | 1.P/CC_PRD +             |            |        |
 |      |                    | 2.4 CC/**                |    74      | P2     |

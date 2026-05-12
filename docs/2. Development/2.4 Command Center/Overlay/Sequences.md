@@ -14,7 +14,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-14 | 신규 작성 | UI-04 승격 이관. 11개 트리거 시퀀스(StartHand/HoleCard/Flop/Turn/River/Action/Equity/Fold/Showdown/HandComplete/Skin) + 파이프라인 + 타이밍 예산 |
-| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 11 트리거 시퀀스를 v4.0 5-Act 시퀀스 (Act 1 IDLE → Act 2 PreFlop → Act 3 Flop/Turn/River → Act 4 Showdown → Act 5 Settlement) 에 매핑. §"v4.0 5-Act → Overlay 매핑" 신설. SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0 §Ch.6, `../Command_Center_UI/Hand_Lifecycle.md`. |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — 11 트리거 시퀀스를 v4.0 5-Act 시퀀스 (Act 1 IDLE → Act 2 PreFlop → Act 3 Flop/Turn/River → Act 4 Showdown → Act 5 Settlement) 에 매핑. §"v4.0 5-Act → Overlay 매핑" 신설. SSOT: `docs/1. Product/Command_Center.md` v4.0 §Ch.6, `../Command_Center_UI/Hand_Lifecycle.md`. |
 
 ---
 
@@ -38,7 +38,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 
 ## v4.0 5-Act → Overlay 매핑 (2026-05-07 신설)
 
-> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. CC 의 5-Act UI 시퀀스 (운영자 인지 추상화) 가 Overlay 의 11 트리거 시퀀스 (시청자 화면 그래픽) 를 어떻게 묶는지 명시.
+> **트리거**: `docs/1. Product/Command_Center.md` v4.0 cascade. CC 의 5-Act UI 시퀀스 (운영자 인지 추상화) 가 Overlay 의 11 트리거 시퀀스 (시청자 화면 그래픽) 를 어떻게 묶는지 명시.
 
 ### Act × Overlay 트리거 매트릭스
 

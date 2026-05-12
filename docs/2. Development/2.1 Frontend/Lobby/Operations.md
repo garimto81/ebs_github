@@ -16,13 +16,13 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38185
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-15 | 신규 작성 | Settings/Preferences.md (구 BS-03-06) 를 Lobby 하위로 이전. Preferences 가 Settings 6탭 중 하나였으나 성격상 "테이블 운영" 에 가까우므로 Lobby/Operations 로 재편제. PC Specs 멀티 GPU 감지·Table Name 변경 시 AT 재연결 정책 보강 |
-| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — 4 진입 시점 컨텍스트 framing 추가 (additive only). |
+| 2026-05-07 | v3 cascade | Lobby v3.0.0 정체성 정합 — 4 진입 시점 컨텍스트 framing 추가 (additive only). |
 
 ---
 
 ## 개요
 
-> **WSOP LIVE 정보 허브 역할 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **테이블 인증 · 진단 · 내보내기** (특히 4 진입 시점 ② "어긋났을 때" RFID 안테나 진단 / ④ "모든 것이 끝날 때" Hand History export 의 핵심 화면). Lobby = WSOP LIVE 거울의 한 면.
+> **WSOP LIVE 정보 허브 역할 (Lobby v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **테이블 인증 · 진단 · 내보내기** (특히 4 진입 시점 ② "어긋났을 때" RFID 안테나 진단 / ④ "모든 것이 끝날 때" Hand History export 의 핵심 화면). Lobby = WSOP LIVE 거울의 한 면.
 
 테이블 인증(Name·Password), 시스템 진단(PC Specs·RFID 안테나·System Log), 데이터 내보내기(Hand History·Logs·DB Export) 를 Lobby 에서 관리한다. Admin 전용. Lobby 헤더 `[Operations ⚙]` 메뉴 또는 단축키 `Ctrl+,` 로 접근.
 

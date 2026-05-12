@@ -182,9 +182,9 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 
 | External PRD | 정본 (Source of Truth) |
 |--------------|-----------------------|
-| `Lobby_PRD.md` | `2.1 Frontend/Lobby/Overview.md` |
-| `Command_Center_PRD.md` | `2.4 Command Center/Command_Center_UI/Overview.md` |
-| `Back_Office_PRD.md` | `2.2 Backend/Back_Office/Overview.md` |
+| `Lobby.md` | `2.1 Frontend/Lobby/Overview.md` |
+| `Command_Center.md` | `2.4 Command Center/Command_Center_UI/Overview.md` |
+| `Back_Office.md` | `2.2 Backend/Back_Office/Overview.md` |
 | `RIVE_Standards.md` | self (정본) |
 | `Game_Rules/*.md` | self (Engine 22 룰 외부측 명세) |
 

@@ -23,7 +23,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 
 | 영역 | 패턴 | 파일 수 |
 |------|------|--------|
-| 외부 PRD | `docs/1. Product/Command_Center_PRD.md` | 1 |
+| 외부 PRD | `docs/1. Product/Command_Center.md` | 1 |
 | 정본 | `docs/2. Development/2.4 Command Center/Command_Center_UI/**` | ~10 |
 | APIs | `docs/2. Development/2.4 Command Center/APIs/**` | ~15 |
 | Overlay | `docs/2. Development/2.4 Command Center/Overlay/**` | ~15 |
@@ -33,7 +33,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 
 ## ✅ 검증 항목
 
-1. **derivative-of chain**: `Command_Center_PRD.md` frontmatter `derivative-of` = `../2. Development/2.4 Command Center/Command_Center_UI/Overview.md`
+1. **derivative-of chain**: `Command_Center.md` frontmatter `derivative-of` = `../2. Development/2.4 Command Center/Command_Center_UI/Overview.md`
 2. **last-synced 일치**: `CC_PRD last-synced` = `Overview.md last-updated`
 3. **6 키 매핑 (Foundation §3)**: N · F · C · B · A · M 정확
 4. **5-Act 시퀀스**: Hand Start → Deal → Bet → Showdown → Hand End
@@ -47,7 +47,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 ## 🔄 자율 Iteration
 
 ```
-1. python tools/doc_discovery.py --impact-of "docs/1. Product/Command_Center_PRD.md"
+1. python tools/doc_discovery.py --impact-of "docs/1. Product/Command_Center.md"
 2. CC_PRD ↔ Command_Center_UI/Overview.md 본문 비교
 3. 2.4 CC/** 전수 (74) → Foundation §3,§9,§11,§13 cascade
 4. drift 정정 (단일 commit per file)

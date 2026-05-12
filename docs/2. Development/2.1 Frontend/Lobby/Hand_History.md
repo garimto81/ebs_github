@@ -22,14 +22,14 @@ related:
 |------|------|------|
 | 2026-04-21 | 신규 작성 | SG-016 revised — Lobby 사이드바 공식화 (Migration Plan Phase 1). EBS 고유 기능, WSOP LIVE 비포함, `hands`/`hand_actions`/`hand_seats` 테이블 + WebSocket 3종 + mockup 기반 |
 | 2026-05-05 | 신 디자인 시각 자료 추가 | `visual/screenshots/ebs-lobby-06-hands.png` 인라인 추가 (split view: 좌측 hands 리스트 + 우측 hand detail). 디자인 SSOT: `Lobby/References/EBS_Lobby_Design/screens-extra.jsx:5` (`HandHistoryScreen`). |
-| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — 정보 허브 역할 framing 추가 (additive only). |
+| 2026-05-07 | v3 cascade | Lobby v3.0.0 정체성 정합 — 정보 허브 역할 framing 추가 (additive only). |
 | 2026-05-12 | v03 game rules UI (Cycle 7, #329) | hands list + hand detail 에 v03 게임 룰 가시화 추가 (additive). 신규 컬럼/배지: ①Ante (indigo) ②Straddle (orange) ③Run It Twice (teal). HandDetail Players 표는 `runItTwiceCount > 1` 인 경우 winner 행에 share % 표시. 자세히는 §"v03 게임 룰 UI" 참조. |
 
 ---
 
 ## 개요
 
-> **WSOP LIVE 정보 허브 역할 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **Hand History** (4 진입 시점 ④ "모든 것이 끝날 때" + ② "어긋났을 때" 핸드 검증의 핵심 화면). EBS 고유 기능 — WSOP LIVE 거울이 아닌 EBS 자체 보강.
+> **WSOP LIVE 정보 허브 역할 (Lobby v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **Hand History** (4 진입 시점 ④ "모든 것이 끝날 때" + ② "어긋났을 때" 핸드 검증의 핵심 화면). EBS 고유 기능 — WSOP LIVE 거울이 아닌 EBS 자체 보강.
 
 Hand History 는 Command Center 에서 기록된 포커 핸드(1판) 의 전체 이력을 Lobby 에서 조회·분석하는 EBS 고유 기능이다. 25개 문서에 분산되어 있던 참조를 본 문서가 SSOT 로 통합한다. EBS Core §1.2 경계 준수 — **라이브 운영 + 당일 기록** 범위. 장기 아카이브/편집은 포스트프로덕션 책임.
 

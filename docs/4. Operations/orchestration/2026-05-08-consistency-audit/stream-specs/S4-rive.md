@@ -33,14 +33,14 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38189
 |------|------|
 | `docs/2. Development/2.1 Frontend/Lobby/**` (rive 관련) | S2 영역 |
 | `docs/2. Development/2.4 Command Center/Overlay/**` | S3 영역 |
-| `docs/1. Product/Lobby_PRD.md` (rive-role frontmatter) | S2 영역 |
-| `docs/1. Product/Command_Center_PRD.md` (rive 참조) | S3 영역 |
-| `docs/1. Product/Back_Office_PRD.md` (rive-role) | S1 영역 |
+| `docs/1. Product/Lobby.md` (rive-role frontmatter) | S2 영역 |
+| `docs/1. Product/Command_Center.md` (rive 참조) | S3 영역 |
+| `docs/1. Product/Back_Office.md` (rive-role) | S1 영역 |
 
 ## ✅ 검증 항목
 
 1. **Foundation §7 일치**: 21 OutputEvent → Rive 애니메이션 트리거
-2. **Lobby Web = "EBS DB 작가"** 일관 (Lobby_PRD frontmatter rive-role)
+2. **Lobby Web = "EBS DB 작가"** 일관 (Lobby frontmatter rive-role)
 3. **CC + Overlay = "Rive 출력자"** 일관
 4. **Back_Office = Rive 직접 사용 X, 데이터 공급자** 일관
 5. **Rive Manager** 정의 일관 (Foundation §A.3)

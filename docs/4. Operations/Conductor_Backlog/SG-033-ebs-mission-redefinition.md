@@ -10,9 +10,9 @@ classification: Type C (기획 정렬 PR — 기획서 간 충돌 해소)
 trigger: "사용자 critic directive 2026-05-05"
 related-docs:
   - docs/1. Product/Foundation.md (§Ch.1.4 미션 / Stat Block / §Ch.3.4 / §Ch.6.4)
-  - docs/1. Product/Command_Center_PRD.md (Ch.3, §3.3, §7.1)
-  - docs/1. Product/Back_Office_PRD.md (§7.1, §7.2)
-  - docs/1. Product/Lobby_PRD.md (Ch.1.94-96, §3.2.196-198)
+  - docs/1. Product/Command_Center.md (Ch.3, §3.3, §7.1)
+  - docs/1. Product/Back_Office.md (§7.1, §7.2)
+  - docs/1. Product/Lobby.md (Ch.1.94-96, §3.2.196-198)
   - docs/2. Development/2.5 Shared/Card_Flow_Index.md (§5, §7)
   - docs/4. Operations/Roadmap.md (§품질 기준)
   - docs/1. Product/References/foundation-visual/prd-ebs-4steps.html
@@ -34,7 +34,7 @@ related-docs:
 |------|-----------|------|
 | Foundation.md line 225 (Mermaid) | `B[딜러<br/>액션 입력]` | `B[CC 오퍼레이터<br/>액션 입력]` |
 | Foundation.md line 239 본문 | "딜러가 입력한 베팅 액션" | "CC 오퍼레이터가 후방 컨트롤룸에서 입력한 베팅 액션" |
-| Command_Center_PRD.md line 206 | "운영자(딜러)" | "CC 오퍼레이터" (역할 분리 명시) |
+| Command_Center.md line 206 | "운영자(딜러)" | "CC 오퍼레이터" (역할 분리 명시) |
 
 ### 결함 #2 — EBS 핵심 가치가 속도로 정의됨
 
@@ -44,8 +44,8 @@ related-docs:
 | Foundation.md line 22 (Stat Block 첫 칼럼) | "100ms / 처리 SLA" | "0 / 누락·오류" |
 | Foundation.md §Ch.1.4 챕터명 | "0.1초의 번역가" | "**완벽한 번역가**" |
 | Foundation.md line 241 미션 선언 | "100ms 이내에... 번역해 송출" | "정확하고 빠짐없이, 단단한 장비 사슬을 통해..." |
-| Command_Center_PRD.md Ch.3 챕터명 | "0.1초의 마법" | "RFID 자동 인식의 마법" |
-| Back_Office_PRD.md §7.2 챕터명 | "100ms 약속의 의미" | "안정된 동기화의 의미" |
+| Command_Center.md Ch.3 챕터명 | "0.1초의 마법" | "RFID 자동 인식의 마법" |
+| Back_Office.md §7.2 챕터명 | "100ms 약속의 의미" | "안정된 동기화의 의미" |
 
 ### 결함 #3 — 운영자 / 딜러 역할 미분리
 
@@ -84,8 +84,8 @@ EBS 의 운영 모델 (오프라인 라이브 포커):
 | Phase | 영역 | 처리 결과 |
 |:-----:|------|-----------|
 | A | Foundation.md (Tier 1, SSOT) | ✅ §Ch.1.4 + Stat Block + 첫 줄 + Mermaid + 본문 + §Ch.3.4 + §Ch.6.4 정정 + Edit History 1행 |
-| B | Command_Center_PRD + Back_Office_PRD (Tier 2) | ✅ Ch.3 챕터명 + 본문 + 역할 분리 / §7.2 챕터명 + 운영 메트릭 강등 + Changelog |
-| C | Lobby_PRD + Roadmap + HTML 자산 (Tier 3) | ✅ 인용 표현 정합 + Lobby_PRD v1.2.0 Changelog + HTML badge |
+| B | Command_Center + Back_Office (Tier 2) | ✅ Ch.3 챕터명 + 본문 + 역할 분리 / §7.2 챕터명 + 운영 메트릭 강등 + Changelog |
+| C | Lobby + Roadmap + HTML 자산 (Tier 3) | ✅ 인용 표현 정합 + Lobby v1.2.0 Changelog + HTML badge |
 | D | Card_Flow_Index + 기술 SLA 선별 (Tier 4) | ✅ "SLA 목표" → "운영 메트릭 (NFR — 핵심 가치 아님)" 표현 정합. 86 파일 중 가치 표현만 정정, NFR 보존 |
 | E | SG-033 + B-Q12 (Tier 5) | ✅ 본 문서 + B-Q12 재명명 |
 

@@ -54,16 +54,16 @@ last-synced: <정본 last-updated 와 동일>
 | Product 파일 / 폴더 | Owner Stream | Read Streams | Phase |
 |--------------------|:-----------:|--------------|:-----:|
 | `Foundation.md` | **S1** | S2~S8 (all) | P1 |
-| `Lobby_PRD.md` | **S2** | S6 | P2 |
-| `Command_Center_PRD.md` | **S3** | S6 | P2 |
-| `Back_Office_PRD.md` | **S1** (interim — 이관 대기) | S2, S3, **S7** | P1 |
+| `Lobby.md` | **S2** | S6 | P2 |
+| `Command_Center.md` | **S3** | S6 | P2 |
+| `Back_Office.md` | **S1** (interim — 이관 대기) | S2, S3, **S7** | P1 |
 | `RIVE_Standards.md` | **S4** | S2, S3, S6 | P2 |
 | `Game_Rules/**` | **S1** (interim — 이관 대기) | S2, S3, S6, **S8** | P1 |
 | `References/**` | conductor (frozen) | All | — |
 | `images/`, `visual/`, `archive/` | conductor (asset) | All | — |
 | `1. Product.md` | CI generated (`meta_files_blocked`) | — | meta |
 
-**S1 interim 확장**: Back_Office_PRD + Game_Rules 는 외부 인계 정체성 SSOT 성격이라 S1 통합. S7 (Backend) / S8 (Engine) 은 2026-05-08 정합성 감사 (#168) Phase 0 dispatch 로 활성화 완료. ownership 이관 (Back_Office_PRD → S7 / Game_Rules → S8 frontmatter owner 변경) 은 PR #175 / #180 머지 + 각 owner 자율 검증 후 별도 작업.
+**S1 interim 확장**: Back_Office + Game_Rules 는 외부 인계 정체성 SSOT 성격이라 S1 통합. S7 (Backend) / S8 (Engine) 은 2026-05-08 정합성 감사 (#168) Phase 0 dispatch 로 활성화 완료. ownership 이관 (Back_Office → S7 / Game_Rules → S8 frontmatter owner 변경) 은 PR #175 / #180 머지 + 각 owner 자율 검증 후 별도 작업.
 
 ## 4. Cascade Routing 4 Layer
 
@@ -83,7 +83,7 @@ Stream 이 자기 영역 외 Product 파일 Edit 시도 → `orch_PreToolUse.py`
 | 상황 | 처리 |
 |------|------|
 | S2 가 Foundation.md Edit | block (S1 영역) → S2 의 의도가 Foundation 변경이면 conductor 또는 S1 세션으로 escalate |
-| S3 가 Lobby_PRD.md Edit | block (S2 영역) → contract 동시 변경 필요 시 Phase 0 Architect 가 두 Stream 순차 dispatch |
+| S3 가 Lobby.md Edit | block (S2 영역) → contract 동시 변경 필요 시 Phase 0 Architect 가 두 Stream 순차 dispatch |
 | 동시 수정 충돌 | `team-policy.json` `governance_model.conflict_resolution.ssot_priority` 적용 (Foundation > team-policy > Risk_Matrix > APIs > Backlog) |
 
 ## 6. 검증 명령

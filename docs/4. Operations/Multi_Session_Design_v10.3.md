@@ -69,7 +69,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38186
 | S9   | QA               | (ebs-qa)                   | P4     | All      |
 ```
 
-**S7/S8 활성화 출처** (2026-05-08): 정합성 감사 #168 Phase 0 dispatch (Issue #166 + #174 + PR #175 / Issue #167 + PR #180). ownership 이관 (Back_Office_PRD → S7, Game_Rules → S8) 은 별도 후속 작업 — 현재 S1 interim 보존.
+**S7/S8 활성화 출처** (2026-05-08): 정합성 감사 #168 Phase 0 dispatch (Issue #166 + #174 + PR #175 / Issue #167 + PR #180). ownership 이관 (Back_Office → S7, Game_Rules → S8) 은 별도 후속 작업 — 현재 S1 interim 보존.
 
 ## §1.5 Product = SSOT, Cascade Routing
 
@@ -95,9 +95,9 @@ orch_PreToolUse.py
    ├─ Layer 3 scope check: S1 의 owner 인가 → ✓
    └─ Layer 2 cascade advisory:
        "Editing Foundation.md may affect:
-         - Lobby_PRD.md (derivative cascade, S2 영역)
-         - Command_Center_PRD.md (derivative cascade, S3 영역)
-         - Back_Office_PRD.md (derivative cascade, S1 interim)
+         - Lobby.md (derivative cascade, S2 영역)
+         - Command_Center.md (derivative cascade, S3 영역)
+         - Back_Office.md (derivative cascade, S1 interim)
          - 3 정본 (Lobby/CC/BO Overview.md, 각 Stream P5 영역)"
    ↓
 Edit 진행 → commit → PR
@@ -178,7 +178,7 @@ START_HERE.md                  (사용자 첫 화면)
 ```
 S2 Lobby Stream:
   P2 (기획):
-    write: docs/2.1/Lobby/, docs/1./Lobby_PRD.md
+    write: docs/2.1/Lobby/, docs/1./Lobby.md
     blocked: team1-frontend/src/    ← P5에서 unlock
   P5 (코드, 사용자 동적 요청 시):
     write: team1-frontend/, docs/2.1/Lobby/

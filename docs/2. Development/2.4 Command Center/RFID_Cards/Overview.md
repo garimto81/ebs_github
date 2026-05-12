@@ -14,7 +14,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | RFID 전체 흐름, Real/Mock 모드, Feature/General Table, 이벤트 요약 |
-| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — RFID 카드 인식 결과는 CC 의 **PlayerGrid (1×10 가로) SeatCell 행 6 (Hole cards face-down)** 에 표시. Reader Panel (Register Screen) 의 정체성을 v4.0 4 영역 위계 컨텍스트로 정합. SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0 §Ch.7 (RFID), `Command_Center_UI/Overview.md §3.0`. |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — RFID 카드 인식 결과는 CC 의 **PlayerGrid (1×10 가로) SeatCell 행 6 (Hole cards face-down)** 에 표시. Reader Panel (Register Screen) 의 정체성을 v4.0 4 영역 위계 컨텍스트로 정합. SSOT: `docs/1. Product/Command_Center.md` v4.0 §Ch.7 (RFID), `Command_Center_UI/Overview.md §3.0`. |
 
 ---
 

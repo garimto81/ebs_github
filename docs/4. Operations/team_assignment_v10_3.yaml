@@ -6,7 +6,7 @@ orchestrator: conductor (single user, AI-centric)
 streams:
   S1:
     name: Foundation
-    role: 기획 기초 + 핵심 비전 문서 + 외부 인계 정체성 SSOT (Foundation, Game_Rules, Back_Office_PRD
+    role: 기획 기초 + 핵심 비전 문서 + 외부 인계 정체성 SSOT (Foundation, Game_Rules, Back_Office
       interim)
     worktree: C:/claude/ebs-foundation
     absorbs_existing: []
@@ -14,14 +14,14 @@ streams:
       P1:
         scope_owns:
         - docs/1. Product/Foundation.md
-        - docs/1. Product/Back_Office_PRD.md
+        - docs/1. Product/Back_Office.md
         - docs/1. Product/Game_Rules/**
         scope_read:
         - docs/1. Product/References/**
         - docs/1. Product/RIVE_Standards.md
     blocked_by: []
     blocks: []
-    interim_ownership_note: Back_Office_PRD → S7 활성 시 이관. Game_Rules → S8 활성 시 이관.
+    interim_ownership_note: Back_Office → S7 활성 시 이관. Game_Rules → S8 활성 시 이관.
       외부 인계 정체성 SSOT 성격이라 S1 통합.
     meta_files_blocked:
     - CLAUDE.md
@@ -40,7 +40,7 @@ streams:
       P2:
         scope_owns:
         - docs/2. Development/2.1 Frontend/Lobby/**
-        - docs/1. Product/Lobby_PRD.md
+        - docs/1. Product/Lobby.md
         scope_read:
         - docs/1. Product/Foundation.md
         - docs/1. Product/RIVE_Standards.md
@@ -54,7 +54,7 @@ streams:
         - team1-frontend/**
         - docs/2. Development/2.1 Frontend/Lobby/**
         scope_read:
-        - docs/1. Product/Lobby_PRD.md
+        - docs/1. Product/Lobby.md
         - docs/1. Product/RIVE_Standards.md
         - docs/1. Product/References/**
     blocked_by: []
@@ -74,7 +74,7 @@ streams:
       P2:
         scope_owns:
         - docs/2. Development/2.4 Command Center/**
-        - docs/1. Product/Command_Center_PRD.md
+        - docs/1. Product/Command_Center.md
         scope_read:
         - docs/1. Product/Foundation.md
         - docs/1. Product/RIVE_Standards.md
@@ -87,7 +87,7 @@ streams:
         - team4-cc/**
         - docs/2. Development/2.4 Command Center/**
         scope_read:
-        - docs/1. Product/Command_Center_PRD.md
+        - docs/1. Product/Command_Center.md
         - docs/1. Product/RIVE_Standards.md
         - docs/1. Product/References/**
     blocked_by: []
@@ -143,7 +143,7 @@ streams:
     meta_files_blocked: *id001
   S7:
     name: Backend Stream
-    role: Back Office + APIs + Database 정합 (Back_Office_PRD ownership 이관 대상)
+    role: Back Office + APIs + Database 정합 (Back_Office ownership 이관 대상)
     worktree: C:/claude/ebs-backend-stream
     absorbs_existing:
     - team2-backend
@@ -155,18 +155,18 @@ streams:
         - docs/2. Development/2.2 Backend/**
         scope_read:
         - docs/1. Product/Foundation.md
-        - docs/1. Product/Back_Office_PRD.md
+        - docs/1. Product/Back_Office.md
         - docs/1. Product/References/**
       P5:
         scope_owns:
         - team2-backend/**
         - docs/2. Development/2.2 Backend/**
         scope_read:
-        - docs/1. Product/Back_Office_PRD.md
+        - docs/1. Product/Back_Office.md
         - docs/1. Product/References/**
     blocked_by: []
     blocks: []
-    interim_ownership_note: 'Back_Office_PRD ownership 이관 = 별도 작업 (현재 S1 interim 보존).
+    interim_ownership_note: 'Back_Office ownership 이관 = 별도 작업 (현재 S1 interim 보존).
       PR #175 머지 + S7 owner 검증 후 frontmatter owner 변경.'
     meta_files_blocked: *id001
   S8:

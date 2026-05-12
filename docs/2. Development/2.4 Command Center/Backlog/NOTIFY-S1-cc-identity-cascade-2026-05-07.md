@@ -12,7 +12,7 @@ mirror: none
 
 ## 트리거
 
-`docs/1. Product/Command_Center_PRD.md` v4.0 (2026-05-07) cascade. S3 stream 이 Command Center 정본 + 30+ feature 문서에 v4.0 정체성 (1×10 그리드 / 6 키 / 4 영역 위계 / 5-Act 시퀀스) 정합 완료. Foundation §Ch.5.4 ("실시간 조종석 Command Center") 가 v1.x 기술 ("8 액션 버튼 + 10 좌석") 으로 남아 있음.
+`docs/1. Product/Command_Center.md` v4.0 (2026-05-07) cascade. S3 stream 이 Command Center 정본 + 30+ feature 문서에 v4.0 정체성 (1×10 그리드 / 6 키 / 4 영역 위계 / 5-Act 시퀀스) 정합 완료. Foundation §Ch.5.4 ("실시간 조종석 Command Center") 가 v1.x 기술 ("8 액션 버튼 + 10 좌석") 으로 남아 있음.
 
 ## 영향 위치
 
@@ -37,7 +37,7 @@ mirror: none
 
 §Ch.5.4 본문에 다음 추가 (1~2 문단):
 
-> v4.0 (2026-05-07) 부터 Command Center 는 **1×10 가로 그리드** 좌석 배치 + **6 키 동적 매핑** (N · F · C · B · A · M) + **4 영역 위계** (StatusBar 52px / TopStrip 158px / PlayerGrid 가변 / ActionPanel 124px) + **5-Act 시퀀스** (IDLE → PreFlop → Flop/Turn/River → Showdown → Settlement) 으로 재설계. 정본은 `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md §3.0`, 외부 PRD 는 `docs/1. Product/Command_Center_PRD.md` v4.0.
+> v4.0 (2026-05-07) 부터 Command Center 는 **1×10 가로 그리드** 좌석 배치 + **6 키 동적 매핑** (N · F · C · B · A · M) + **4 영역 위계** (StatusBar 52px / TopStrip 158px / PlayerGrid 가변 / ActionPanel 124px) + **5-Act 시퀀스** (IDLE → PreFlop → Flop/Turn/River → Showdown → Settlement) 으로 재설계. 정본은 `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md §3.0`, 외부 PRD 는 `docs/1. Product/Command_Center.md` v4.0.
 
 ### Option C — 이미지 교체
 
@@ -45,7 +45,7 @@ mirror: none
 
 ## SSOT 참조
 
-- `docs/1. Product/Command_Center_PRD.md` v4.0 (외부 PRD)
+- `docs/1. Product/Command_Center.md` v4.0 (외부 PRD)
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md §3.0` (정본 SSOT)
 - `docs/2. Development/2.4 Command Center/Command_Center_UI/UI.md §"v4.0 정체성"` (정본 SSOT)
 - `docs/4. Operations/Cascade_Plan_S3_CC_2026-05-07.md` (cascade 계획)

@@ -12,13 +12,13 @@ reimplementability_notes: "Prize Pool & Payout 기획 완결"
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-16 | 신규 작성 | WSOP LIVE "Prize Pool / Payout Assignment / Payments" (Confluence p1647181953) 기반 |
-| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — WSOP LIVE 정보 허브 framing 추가 (additive only). |
+| 2026-05-07 | v3 cascade | Lobby v3.0.0 정체성 정합 — WSOP LIVE 정보 허브 framing 추가 (additive only). |
 
 ---
 
 ## 개요
 
-> **WSOP LIVE 정보 허브 역할 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **Prize Pool / Payout / Payments**. Lobby = WSOP LIVE 거울의 한 면.
+> **WSOP LIVE 정보 허브 역할 (Lobby v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **Prize Pool / Payout / Payments**. Lobby = WSOP LIVE 거울의 한 면.
 
 Flight Admin 화면 내 Prize Pool / Payout Assignment / Payments 3-탭 구조. Late Registration 종료 후 Prize Pool 생성, ITM 구간 Payout 확정, 지급 상태 추적까지의 워크플로우를 제공한다. WSOP LIVE Staff App §04 "Prize Pool / Payout Assignment / Payments" 와 동일한 구조를 채택한다.
 
