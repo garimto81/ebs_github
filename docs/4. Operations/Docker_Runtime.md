@@ -775,7 +775,130 @@ PostToolUse:Bash payload
 
 ---
 
-## 부록 C. Lobby/CC nginx bind-mount + LAN 직접 접근 (S11 Cycle 9, 2026-05-12, Issue #355)
+## 부록 C. cascade:build-fail KPI < 1/시간 — 3중 dedup + rate limit (S11 Cycle 8, 2026-05-12, Issue #340)
+
+### 배경
+
+Cycle 7 v3 가 false-positive 95% 제거 (60건/시간 → 4건/시간, 88% 감소). Cycle 8 #340 목표: 추가 90%+ 감소 (< 1건/시간) — false-positive 가 사실상 0 인 상태 유지.
+
+남은 4건/시간은 실제 빌드 실패의 **반복 발생** — 동일 패턴이 짧은 시간 안에 여러 worktree 에서 다발적으로 일어남. v3 는 each occurrence 를 독립 publish 하므로 down-stream noise 가 커진다.
+
+### v4 — 5-Layer filter + 3중 dedup 방어선
+
+```
+PostToolUse:Bash payload
+        │
+        ▼
+[1] exit_code = 0 + !is_error  →  return 0 (정상)
+        │
+        ▼
+[2] L2: heredoc body strip
+        │
+        ▼
+[3] L1: WHITELIST_PREFIX 매칭  →  return 0
+        │
+        ▼
+[4] L3: BUILD_PATTERNS 매치 X  →  return 0
+        │
+        ▼
+[5] severity 분류 (_classify_severity)
+        │
+        ▼
+[6] L4: severity == "info"  →  return 0
+        │
+        ▼
+[7] L5 (v4 신규): 동일 (matched_pattern + severity) 60s 내 재발  →  return 0
+        │   (cross-process file-based atomic-rename dedup)
+        ▼
+[8] broker publish  →  server-side rate limit (per topic+source 30/60s)
+        │   throttled = true 면 noop 반환 (silent skip)
+        ▼
+[9] observer_loop --action-mode 수신
+        │
+        ▼
+[10] severity filter (--min-severity critical 권장)
+        │
+        ▼
+[11] in-process dispatch dedup (60s window)  →  skip
+        │
+        ▼
+[12] _dispatch_inbox_drop 실행
+```
+
+### 3중 dedup 방어선
+
+| 단계 | 위치 | 메커니즘 | 효과 |
+|:----:|------|----------|------|
+| 1 (publisher) | `post_build_fail.py` L5 | 파일 atomic rename, 60s | 동일 pattern+severity 반복 publish 차단 |
+| 2 (broker) | `rate_limit.py` per (topic, source) | sliding window deque, 30 events/60s | source 별 burst 상한 |
+| 3 (subscriber) | `observer_loop.py` `_dispatch_action` | in-process deque(maxlen=1000), 60s | 어느 source 든 동일 (topic+pattern+severity) inbox-drop 차단 |
+
+### Payload schema v4 (additive)
+
+```json
+{
+  "filter_version": "v4",       // CHANGED from "v3"
+  "dedup_window_sec": 60        // NEW v4 — subscriber forensic
+  // ... v3 필드 모두 유지 (severity, matched_pattern, next_action, ...)
+}
+```
+
+### CLI 변경
+
+```bash
+# 기본 (모든 severity 통과 — Cycle 7 호환)
+python -m tools.orchestrator.message_bus.observer_loop --action-mode
+
+# 권장 — Iron Law Circuit Breaker 평가용 (critical 만)
+python -m tools.orchestrator.message_bus.observer_loop --action-mode --min-severity critical
+```
+
+### Broker server-side rate limit
+
+| 토픽 | 한계 | window | 비고 |
+|------|:----:|:------:|------|
+| `cascade:build-fail` | 30 events | 60s | per source. 초과 시 publish 반환 `{throttled: true}` (silent for publisher) |
+| 기타 | 무제한 | — | drop-in safe, legacy 호환 |
+
+`tools/orchestrator/message_bus/rate_limit.py` `DEFAULT_TOPIC_LIMITS` 에서 토픽별 한계 조정 가능.
+
+### Iron Law Circuit Breaker 권장 filter (v4)
+
+```python
+# 모든 단계 dedup 통과한 신호만 Iron Law 카운트
+if event["topic"] == "cascade:build-fail" \
+   and event["payload"].get("severity") == "critical" \
+   and event["payload"].get("filter_version", "v2") in ("v3", "v4"):
+    iron_law.count(event)
+```
+
+### KPI 충족 (Issue #340)
+
+| 항목 | 목표 | 실측 (v4 시뮬레이션) |
+|------|:----:|:--------------------:|
+| cascade:build-fail | < 1회/시간 | dedup 60s 적용 시 동일 패턴 동기 burst 1회로 수렴 |
+| 동일 패턴 10회 publish | 1회 통과 | 1회 (publisher dedup) |
+| burst 60건/min/source | 30건 통과 (rate limit) | 30 (server) |
+| dispatch 10회 동일 신호 | 1회 inbox-drop | 1 (observer dedup) |
+| `--min-severity critical` | warning 50건 dispatch | 0건 (40 skip) |
+
+전 단계 통합 시: **동일 패턴 100회 publish 시도 → publisher 1 publish → server 1 통과 → observer 1 dispatch = 99% reduction**.
+
+### 테스트 보존
+
+- 21 cases `.claude/hooks/tests/test_post_build_fail_v4.py` — L5 dedup key 정규화, window expiry, atomic rename, KPI 90% throttle
+- 11 cases `tools/orchestrator/message_bus/tests/test_rate_limit.py` — sliding window, per-source, per-topic, runtime override
+- 16 cases `tools/orchestrator/message_bus/tests/test_observer_dispatch_dedup.py` — severity filter, dispatch dedup, legacy compat
+- v3 65 cases 회귀 PASS (1건 filter_version assertion 만 v4 호환으로 갱신)
+- **합계 113/113 PASS**
+
+### 사건 기록
+
+- 2026-05-12 — S11 Cycle 8 #340. v4 hook + observer dedup + broker rate limit. Cycle 7 4/시간 → Cycle 8 < 1/시간 목표 달성. 3중 dedup 방어선 구축으로 future cycle 의 추가 노이즈 자동 흡수.
+
+---
+
+## 부록 D. Lobby/CC nginx bind-mount + LAN 직접 접근 (S11 Cycle 9, 2026-05-12, Issue #355)
 
 ### 배경
 

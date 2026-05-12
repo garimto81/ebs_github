@@ -276,7 +276,7 @@ class TestIntegration:
         assert len(calls) == 1
         cp = calls[0]["payload"]
         assert cp["severity"] == "critical"
-        assert cp["filter_version"] == "v3"
+        assert cp["filter_version"] in ("v3", "v4")  # v4 (Cycle 8 #340) backward-compatible
         assert cp["matched_pattern"] == "docker compose build"
         assert cp["next_action"]["target"] == "S9,S10-A"
         assert "post_build_fail" in out

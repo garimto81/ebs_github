@@ -1,4 +1,4 @@
-"""v11 Phase C + S11 Cycle 3 - Subscribe-based Observer Loop + action dispatch.
+"""v11 Phase C + S11 Cycle 3/8 - Subscribe-based Observer Loop + action dispatch.
 
 broker push -> long-poll subscribe. idle 무 cost.
 
@@ -7,11 +7,18 @@ Usage:
   python -m tools.orchestrator.message_bus.observer_loop --topic stream:S1
   python -m tools.orchestrator.message_bus.observer_loop --print-only
   python -m tools.orchestrator.message_bus.observer_loop --action-mode
+  python -m tools.orchestrator.message_bus.observer_loop --action-mode --min-severity critical
 
 Latency: v10.3 polling 15s avg vs v11 push ~50ms.
 
 S11 Cycle 3 (autonomous chain) - --action-mode payload.next_action 디스패치.
 inbox-drop / shell / noop 3 type. shell 은 allowlist 격리.
+
+S11 Cycle 8 (#340) — action dispatch 정밀화:
+  - severity filter (--min-severity critical|warning|info). filter_version>=v3 payload 만 적용.
+  - in-process action dedup (60s window) — 동일 (topic + matched_pattern + severity)
+    inbox-drop 반복 방지.
+  - dispatch_skipped 누적 통계 출력 (forensic).
 """
 from __future__ import annotations
 
@@ -22,6 +29,8 @@ import sys
 import os
 import re
 import subprocess
+import time
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -35,6 +44,13 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 INBOX_DIR = PROJECT_ROOT / "docs" / "4. Operations" / "handoffs" / "inbox"
 SHELL_ALLOWLIST_ROOT = PROJECT_ROOT / "tools" / "orchestrator" / "actions"
 _SLUG_RE = re.compile(r"[^a-zA-Z0-9._-]+")
+
+# S11 Cycle 8 (#340) — severity ladder + in-process dispatch dedup.
+SEVERITY_LADDER = {"info": 0, "warning": 1, "critical": 2}
+DISPATCH_DEDUP_WINDOW_SEC = 60
+# Bounded deque (key, ts) — O(N) scan ok for N≤1000 (worst-case observer throughput).
+_DISPATCH_DEDUP_CACHE: deque = deque(maxlen=1000)
+_DISPATCH_STATS = {"matched": 0, "skipped_severity": 0, "skipped_dedup": 0, "executed": 0}
 
 
 def _format_event(event):
@@ -150,13 +166,83 @@ def _dispatch_shell(event, action):
         return None
 
 
-def _dispatch_action(event):
+def _payload_severity(payload: dict) -> str:
+    """v3+ payload 에서 severity 추출. 없으면 'critical' (legacy 최대 노이즈 보존)."""
+    sev = payload.get("severity")
+    if isinstance(sev, str) and sev.lower() in SEVERITY_LADDER:
+        return sev.lower()
+    # legacy (v2 이전) payload — severity 미존재 시 critical 로 간주 (보수적)
+    return "critical"
+
+
+def _dispatch_dedup_key(event: dict) -> str:
+    """Cycle 8: dispatch dedup key — topic + matched_pattern + severity."""
+    payload = event.get("payload") or {}
+    topic = event.get("topic", "")
+    matched = (payload.get("matched_pattern") or "").strip().lower()
+    sev = _payload_severity(payload)
+    return f"{topic}|{matched}|{sev}"
+
+
+def _dispatch_is_duplicate(key: str, window_sec: int = DISPATCH_DEDUP_WINDOW_SEC) -> bool:
+    """Cycle 8: in-process dispatch dedup.
+
+    동일 key 가 window_sec 내 재발생 시 True. cache 는 bounded deque (maxlen=1000).
+    Worst-case scan O(N) but observer 단일 process + 사람-스케일 event rate 면 무시 가능.
+    """
+    now = time.time()
+    # 만료 항목 정리 + key 매칭 확인 (한 번의 pass)
+    fresh = deque(maxlen=_DISPATCH_DEDUP_CACHE.maxlen)
+    hit = False
+    while _DISPATCH_DEDUP_CACHE:
+        k, ts = _DISPATCH_DEDUP_CACHE.popleft()
+        if (now - ts) >= window_sec:
+            continue  # expired — drop
+        if k == key:
+            hit = True
+        fresh.append((k, ts))
+    _DISPATCH_DEDUP_CACHE.extend(fresh)
+    if not hit:
+        _DISPATCH_DEDUP_CACHE.append((key, now))
+    return hit
+
+
+def _dispatch_action(event, min_severity_level: int = 0):
+    """Dispatch payload.next_action.
+
+    Cycle 8 (#340) 추가:
+      - severity filter: payload.severity < min_severity_level 이면 skip.
+      - in-process dedup: 동일 (topic+pattern+severity) 60s 내 재발 시 skip.
+    """
     action = (event.get("payload") or {}).get("next_action")
     if not isinstance(action, dict):
         return
     atype = action.get("type", "noop")
     if atype == "noop":
         return
+
+    _DISPATCH_STATS["matched"] += 1
+
+    # Cycle 8: severity filter (cascade:build-fail 같이 payload.severity 가진 event 만 적용)
+    topic = event.get("topic", "")
+    payload = event.get("payload") or {}
+    if "severity" in payload or topic.startswith("cascade:build-fail"):
+        sev = _payload_severity(payload)
+        if SEVERITY_LADDER.get(sev, 0) < min_severity_level:
+            _DISPATCH_STATS["skipped_severity"] += 1
+            print(f"  skip (severity={sev} < min): {topic}")
+            return
+
+    # Cycle 8: in-process dispatch dedup (cascade:build-fail 등 반복 신호 차단)
+    if topic.startswith("cascade:build-fail"):
+        key = _dispatch_dedup_key(event)
+        if _dispatch_is_duplicate(key):
+            _DISPATCH_STATS["skipped_dedup"] += 1
+            print(f"  skip (dedup 60s): {topic} key={key[:60]}")
+            return
+
+    _DISPATCH_STATS["executed"] += 1
+
     if atype == "inbox-drop":
         result = _dispatch_inbox_drop(event, action)
         if result:
@@ -171,14 +257,18 @@ def _dispatch_action(event):
         print(f"  warn unknown action type: {atype}")
 
 
-async def observer_loop(topic="*", print_only=False, max_iter=None, action_mode=False):
+async def observer_loop(topic="*", print_only=False, max_iter=None, action_mode=False,
+                        min_severity="info"):
     """Subscribe loop. push 즉시 wake, idle 무 cost.
 
     Args:
         topic: 구독 토픽 (default "*" 모두)
         print_only: 단순 출력 (handler 없음)
         max_iter: 테스트용 최대 iteration (None = 무한)
+        action_mode: payload.next_action 자동 dispatch (S11 Cycle 3)
+        min_severity: dispatch 최소 severity (info/warning/critical) — S11 Cycle 8 #340
     """
+    min_severity_level = SEVERITY_LADDER.get(min_severity.lower(), 0)
     last_seq = 0
     iter_count = 0
     start_ts = datetime.now(timezone.utc)
@@ -226,11 +316,14 @@ async def observer_loop(topic="*", print_only=False, max_iter=None, action_mode=
                             else:
                                 _handle_event(event)
                             if action_mode:
-                                _dispatch_action(event)
+                                _dispatch_action(event, min_severity_level=min_severity_level)
 
                         if mode == "timeout" and not print_only:
                             pass
                         iter_count += 1
+                        # Cycle 8: forensic stats — 100 iter 마다 1회 출력 (idle 시 침묵)
+                        if action_mode and iter_count % 100 == 0 and _DISPATCH_STATS["matched"]:
+                            print(f"  [stats] {_DISPATCH_STATS}")
         except Exception as _reconnect_exc:
             # streamablehttp_client / ClientSession failure -> reconnect with backoff
             print(f"  [reconnect] broker disconnect ({type(_reconnect_exc).__name__}): "
@@ -272,6 +365,10 @@ def main():
                    help="max iterations (default: infinite)")
     p.add_argument("--action-mode", action="store_true",
                    help="dispatch payload.next_action (S11 Cycle 3)")
+    p.add_argument("--min-severity", default="info",
+                   choices=["info", "warning", "critical"],
+                   help="dispatch 최소 severity (S11 Cycle 8 #340). "
+                        "critical = 실제 build 실패만 dispatch. 기본 info (=모두 허용).")
     args = p.parse_args()
 
     if sys.platform == "win32":
@@ -283,6 +380,7 @@ def main():
             print_only=args.print_only,
             max_iter=args.max_iter,
             action_mode=args.action_mode,
+            min_severity=args.min_severity,
         ))
     except KeyboardInterrupt:
         print("\n[observer] stopped by user")
