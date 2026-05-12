@@ -1,5 +1,5 @@
 ---
-title: "EBS Lobby — 5 화면 시퀀스 + WSOP LIVE 정보 허브"
+title: Lobby
 status: APPROVED
 owner: stream:S2 (Lobby)
 tier: external
