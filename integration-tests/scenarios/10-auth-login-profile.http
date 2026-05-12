@@ -7,7 +7,7 @@
 ###
 ### Schema 정정 (2026-05-11, S9 Cycle 2 — Type D drift):
 ###   request body field: "username" → "email" (BO LoginRequest schema 정합)
-###   seed credentials: admin@ebs.local / admin1234! (tools/seed_admin.py 출력 기준)
+###   seed credentials: admin@local / Admin!Local123 (BO tools/seed_admin.py 기본값, 2026-05-12 SG-035 정합)
 ### 근거: 40-v95-blind-levels-flow.http §V9.5 P15 spec fix + BO LoginRequest pydantic 모델
 
 @host = http://localhost:18001
@@ -17,8 +17,8 @@ POST {{host}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "admin@ebs.local",
-  "password": "test-password-1234"
+  "email": "admin@local",
+  "password": "Admin!Local123"
 }
 
 # 예상 응답 (AUTH_PROFILE=dev 기동 시):
@@ -38,8 +38,8 @@ Content-Type: application/json
 X-Test-Profile: live
 
 {
-  "email": "admin@ebs.local",
-  "password": "test-password-1234"
+  "email": "admin@local",
+  "password": "Admin!Local123"
 }
 
 # 예상 응답 (AUTH_PROFILE=live 기동 시):

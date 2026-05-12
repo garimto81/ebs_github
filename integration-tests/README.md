@@ -33,10 +33,14 @@ BO 컨테이너 기동 시 `src/app/database.py:_seed_admin()` 가 자동으로 
 
 | email | password | 용도 |
 |-------|----------|------|
-| `admin@ebs.local` | `admin123` | 기존 dev 도구 (backward compat) |
-| `admin@ebs.test` | `test-password-1234` | **integration-tests 본 시나리오 표준** |
+| `admin@local` | `Admin!Local123` | **integration-tests 본 시나리오 표준** (BO `tools/seed_admin.py` 기본값) |
+| `admin@ebs.local` | (legacy) | 기존 dev 도구 (backward compat) — 사용 비권장 |
 
-> 수동 재시드 (예: password 변경 후): `cd team2-backend && python -m seeds.admin --init-db` 또는 `EBS_SEED_FORCE=1` 환경변수로 컨테이너 entrypoint 재실행.
+> **2026-05-12 (Cycle 3, SG-035 해소)**: 직전 README 가 `admin@ebs.test/test-password-1234` 로 표기됐으나 실제 컨테이너 seed 는 `admin@local/Admin!Local123` 임 (Type D drift, BO `tools/seed_admin.py` 기본값). 시나리오를 실제 seed 에 맞춤.
+>
+> **API 요청 키 변경**: BO `/api/v1/auth/login` 은 `{"email": ..., "password": ...}` 사용 (직전 `username` 키는 Type D drift, BO 코드는 `email` 만 인식).
+>
+> 수동 재시드 (옵션): `docker exec ebs-bo python /app/tools/seed_admin.py [--force]` 또는 `--email/--password` override.
 
 ### 2. JWT 발급 (curl)
 
@@ -44,13 +48,13 @@ BO 컨테이너 기동 시 `src/app/database.py:_seed_admin()` 가 자동으로 
 # 단일 인스턴스 (compose, 포트 8000)
 curl -s -X POST http://localhost:8000/api/v1/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"username":"admin@ebs.test","password":"test-password-1234"}' \
+  -d '{"email":"admin@local","password":"Admin!Local123"}' \
   | python -c "import json,sys;print(json.load(sys.stdin)['access_token'])"
 
 # 클러스터 인스턴스 (포트 18001) — Cycle 2 KPI
 curl -s -X POST http://localhost:18001/api/v1/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"username":"admin@ebs.test","password":"test-password-1234"}'
+  -d '{"email":"admin@local","password":"Admin!Local123"}'
 ```
 
 성공 응답 (200 OK):
@@ -88,7 +92,7 @@ VSCode REST Client / httpyac 가 `{{$dotenv ADMIN_JWT}}` 를 자동 치환한다
 BASE_URL="${BASE_URL:-http://localhost:8000}"
 ADMIN_JWT=$(curl -s -X POST $BASE_URL/api/v1/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"username":"admin@ebs.test","password":"test-password-1234"}' \
+  -d '{"email":"admin@local","password":"Admin!Local123"}' \
   | python -c "import json,sys;print(json.load(sys.stdin)['access_token'])")
 echo "ADMIN_JWT=$ADMIN_JWT" > integration-tests/.env
 echo "OPERATOR_JWT=$ADMIN_JWT" >> integration-tests/.env   # 운영자 계정 별도 시드 후 교체
@@ -97,12 +101,12 @@ echo "VIEWER_JWT=$ADMIN_JWT"   >> integration-tests/.env
 
 ### 5. 검증 KPI (Cycle 2 #236)
 
-다음 명령이 200 OK 를 반환해야 한다 (BO healthy + auth/login 동작 + admin@ebs.test seed 정합 동시 검증):
+다음 명령이 200 OK 를 반환해야 한다 (BO healthy + auth/login 동작 + admin@local seed 정합 동시 검증):
 
 ```bash
 curl -i -X POST http://localhost:18001/api/v1/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"username":"admin@ebs.test","password":"test-password-1234"}'
+  -d '{"email":"admin@local","password":"Admin!Local123"}'
 # → HTTP/1.1 200 OK
 # → access_token, refresh_token, auth_profile=dev 응답
 ```
