@@ -200,3 +200,191 @@ If-Match: W/"1-etag"
 
 # 예상: 409 Conflict
 # { "error": "ACTIVE_DECK_CANNOT_DELETE", "message": "..." }
+
+###
+### ──────────────────────────────────────────────────────────────────
+### Cycle 7 (2026-05-12, S7 #323) — DRIFT-50.x 회귀 강화
+### multi-deck + edge case 시나리오. §50.2/§50.2b dup-uid 정합 후 잔여
+### 회귀 위험 영역 (cross-deck path, deck-not-found, format validation,
+### replace dup-uid, import cross_deck) 보강. Cycle 5 (#282) 누적 위에
+### 추가됨 — 기존 §50.1~§50.7 회귀 그대로 + §50.8~§50.13 신설.
+### ──────────────────────────────────────────────────────────────────
+
+### 50.8 Multi-deck non-overlap happy path
+###
+### 두 개의 deck 을 만들고 서로 다른 UID 범위로 카드 등록 시 양쪽 모두 201.
+### dup-uid 정합이 합법 다중 deck 운영을 차단하지 않음을 검증.
+###
+### Step 1 — first deck 생성
+POST {{host}}/api/v1/decks
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{ "name": "cycle7-multi-deck-A" }
+
+# 예상: 201 Created — { id, status: "registering", cardsRegistered: 0 }
+# id 를 deck_a_id 로 보존 (REST Client `@deck_a_id = ...`)
+
+###
+POST {{host}}/api/v1/decks/{{deck_a_id}}/cards
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{ "cardCode": "AS", "rfidUid": "C7A0000001" }
+
+# 예상: 201 Created — deck A 에 AS 등록
+
+###
+### Step 2 — second deck 생성 + 비충돌 UID 등록 (happy path)
+POST {{host}}/api/v1/decks
+Authorization: Bearer {{admin_token}}
+Idempotency-Key: {{$guid}}
+Content-Type: application/json
+
+{ "name": "cycle7-multi-deck-B" }
+
+# 예상: 201 Created — id 를 deck_b_id 로 보존
+
+###
+POST {{host}}/api/v1/decks/{{deck_b_id}}/cards
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{ "cardCode": "AS", "rfidUid": "C7B0000001" }
+
+# 예상: 201 Created — 동일 cardCode "AS" 라도 UID 가 다르므로 OK.
+#         card_code 충돌 검사는 deck-scoped, UID 충돌 검사는 global.
+#         _rfid_uid_index 는 UID 단위 (decks.py:283-296 cross-deck path).
+
+### 50.9 Cross-deck UID conflict via /cards POST
+###
+### deck A 의 AS UID (C7A0000001) 를 deck B 의 KS 로 재등록 시도 → 422.
+### decks.py:283-296 cross-deck uid path. DRIFT-50.2 Cycle 5 핵심 회귀.
+POST {{host}}/api/v1/decks/{{deck_b_id}}/cards
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{ "cardCode": "KS", "rfidUid": "C7A0000001" }
+
+# 예상: 422 Unprocessable Entity (cross-deck dup-uid)
+# {
+#   "detail": {
+#     "code": "DUPLICATE_UID",
+#     "uid": "C7A0000001",
+#     "existing_deck_id": "{{deck_a_id}}",
+#     "existing_card_code": "AS",
+#     "message": "UID already registered in another deck"
+#   }
+# }
+
+### 50.10 deck-not-found 404 on /cards POST
+###
+### 존재하지 않는 deck-id 에 카드 등록 시도 → 404 DECK_NOT_FOUND.
+### decks.py:262-263 guard. 422 (validation) 가 아닌 404 인 점이 핵심.
+POST {{host}}/api/v1/decks/nonexistent-deck-id-c7-0001/cards
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{ "cardCode": "QS", "rfidUid": "C7DEADBEEF" }
+
+# 예상: 404 Not Found
+# { "detail": { "code": "DECK_NOT_FOUND" } }
+
+### 50.11 PATCH /cards/{card_code} — replace 시 cross-deck dup-uid 422
+###
+### deck B 의 AS (C7B0000001) 를 deck A 의 AS UID (C7A0000001) 로 변경 시도.
+### decks.py:409-423 replace path. dup-uid 정합 (DRIFT-50.2 Cycle 5 확장).
+PATCH {{host}}/api/v1/decks/{{deck_b_id}}/cards/AS
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{ "newRfidUid": "C7A0000001", "reason": "cycle 7 replace conflict regression" }
+
+# 예상: 422 Unprocessable Entity
+# {
+#   "detail": {
+#     "code": "DUPLICATE_UID",
+#     "uid": "C7A0000001",
+#     "existing_deck_id": "{{deck_a_id}}",
+#     "existing_card_code": "AS"
+#   }
+# }
+
+### 50.12 invalid rfidUid format → 422 (pydantic validation)
+###
+### CardRegisterIn.rfid_uid pattern = ^[0-9A-F]+$, min=8, max=32.
+### 8자 미만 / 소문자 hex / non-hex 모두 422 (handler 진입 전 pydantic).
+### scope=field-level vs scope=business-rule(DUPLICATE_UID) 분리 검증.
+POST {{host}}/api/v1/decks/{{deck_a_id}}/cards
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{ "cardCode": "2S", "rfidUid": "abc" }
+
+# 예상: 422 Unprocessable Entity (pydantic — handler 진입 전)
+# {
+#   "detail": [
+#     {
+#       "type": "string_too_short" | "string_pattern_mismatch",
+#       "loc": ["body", "rfidUid"],
+#       "msg": "...",
+#       ...
+#     }
+#   ]
+# }
+# 비교: §50.9 의 422 는 business-rule (code=DUPLICATE_UID, detail object).
+#       §50.12 의 422 는 pydantic (detail array). 양쪽 422 가 의미 다름.
+
+### 50.13 POST /api/v1/decks/import — cross_deck UID conflict 422
+###
+### 기존 deck A 에 등록된 C7A0000001 UID 를 import payload 의 KS 에 매핑 →
+### intra_payload 통과 후 cross_deck 검증에서 422 (scope=cross_deck).
+### decks.py:354-368 cross-deck conflict path. §50.2b (intra_payload) 와 분리.
+POST {{host}}/api/v1/decks/import
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "name": "cycle7-cross-deck-import",
+  "cards": {
+    "AS": "C7C0000001", "KS": "C7A0000001", "QS": "C7C0000003",
+    "JS": "C7C0000004", "TS": "C7C0000005", "9S": "C7C0000006",
+    "8S": "C7C0000007", "7S": "C7C0000008", "6S": "C7C0000009",
+    "5S": "C7C000000A", "4S": "C7C000000B", "3S": "C7C000000C",
+    "2S": "C7C000000D",
+    "AH": "C7C000000E", "KH": "C7C000000F", "QH": "C7C0000010",
+    "JH": "C7C0000011", "TH": "C7C0000012", "9H": "C7C0000013",
+    "8H": "C7C0000014", "7H": "C7C0000015", "6H": "C7C0000016",
+    "5H": "C7C0000017", "4H": "C7C0000018", "3H": "C7C0000019",
+    "2H": "C7C000001A",
+    "AD": "C7C000001B", "KD": "C7C000001C", "QD": "C7C000001D",
+    "JD": "C7C000001E", "TD": "C7C000001F", "9D": "C7C0000020",
+    "8D": "C7C0000021", "7D": "C7C0000022", "6D": "C7C0000023",
+    "5D": "C7C0000024", "4D": "C7C0000025", "3D": "C7C0000026",
+    "2D": "C7C0000027",
+    "AC": "C7C0000028", "KC": "C7C0000029", "QC": "C7C000002A",
+    "JC": "C7C000002B", "TC": "C7C000002C", "9C": "C7C000002D",
+    "8C": "C7C000002E", "7C": "C7C000002F", "6C": "C7C0000030",
+    "5C": "C7C0000031", "4C": "C7C0000032", "3C": "C7C0000033",
+    "2C": "C7C0000034"
+  }
+}
+
+# 예상: 422 Unprocessable Entity (cross_deck scope)
+# {
+#   "detail": {
+#     "code": "DUPLICATE_UID",
+#     "scope": "cross_deck",
+#     "conflicts": [
+#       {
+#         "card_code": "KS",
+#         "rfid_uid": "C7A0000001",
+#         "existing_deck": "{{deck_a_id}}",
+#         "existing_card": "AS"
+#       }
+#     ]
+#   }
+# }
+# Note: §50.2b 는 intra_payload (단일 페이로드 내 자가충돌),
+#       §50.13 은 cross_deck (다른 deck 의 기존재 UID 와 충돌). scope 분리.

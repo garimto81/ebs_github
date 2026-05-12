@@ -68,4 +68,203 @@ Content-Type: application/json
 
 # 예상 응답:
 # 401 Unauthorized
-# { "error": "REFRESH_TOKEN_EXPIRED", "message": "..." }
+# { "detail": "AUTH_TOKEN_INVALID" }
+#
+# 갱신 (2026-05-12, S7 Cycle 7 — Type D drift):
+#   기존 시나리오는 "error": "REFRESH_TOKEN_EXPIRED" 를 기대했지만 실제 코드는
+#   auth.py:251-255 에서 HTTPException(401, detail="AUTH_TOKEN_INVALID").
+#   refresh_session 이 None 반환 시점에 만료/위조/blacklist 구분 안 함 — 단일
+#   AUTH_TOKEN_INVALID 만 노출 (enumeration defense).
+
+###
+### ──────────────────────────────────────────────────────────────────
+### Cycle 7 (2026-05-12, S7 #323) — auth 회귀 강화
+### login + JWT refresh 일관성 + cookie delivery + blacklist 효과.
+### auth.py 실제 코드 path 기준 (refresh_token_delivery, account state).
+### ──────────────────────────────────────────────────────────────────
+
+### 10.5 Cookie delivery (live profile) — Set-Cookie HttpOnly Secure
+###
+### AUTH_PROFILE=live 기동 시 refresh token 은 response body 가 아니라
+### Set-Cookie 헤더 (HttpOnly, Secure, SameSite=Strict, path=/auth/refresh).
+### auth.py:225-227 + _set_refresh_cookie.
+###
+### 검증 요구: 응답 body 의 refresh_token = "" (빈 문자열),
+###            refresh_token_delivery = "cookie",
+###            Set-Cookie: refresh_token=...; HttpOnly; Secure; SameSite=Strict
+###
+### 환경 셋업: AUTH_PROFILE=live python -m uvicorn src.app.main:app
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@local",
+  "password": "Admin!Local123"
+}
+
+# 예상 응답 (AUTH_PROFILE=live):
+# 200 OK
+# Set-Cookie: refresh_token=eyJ...; Max-Age=604800; Path=/auth/refresh; HttpOnly; Secure; SameSite=strict
+#
+# body:
+# {
+#   "data": {
+#     "access_token": "eyJ...",
+#     "refresh_token": "",                    // ← live profile 은 body 비움
+#     "refresh_token_delivery": "cookie",     // ← delivery 채널 명시
+#     "expires_in": 43200,
+#     "expires_at": "2026-05-13T03:34:56Z",
+#     "refresh_expires_in": 604800,
+#     "auth_profile": "live",
+#     "user": { "user_id": 1, "email": "admin@local", "role": "admin" }
+#   },
+#   "error": null
+# }
+
+### 10.6 Body delivery (dev profile) — refresh token in body
+###
+### AUTH_PROFILE=dev 기본 — refresh_token 이 body 에 평문, delivery="body".
+### Set-Cookie 헤더 없음.
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@local",
+  "password": "Admin!Local123"
+}
+
+# 예상 응답 (AUTH_PROFILE=dev, default):
+# 200 OK (Set-Cookie 없음)
+# {
+#   "data": {
+#     "access_token": "eyJ...",
+#     "refresh_token": "eyJ...",              // ← body delivery
+#     "refresh_token_delivery": "body",
+#     "expires_in": 3600,
+#     "auth_profile": "dev",
+#     ...
+#   }
+# }
+
+### 10.7 Refresh — no-rotation contract (access only)
+###
+### POST /auth/refresh 는 새 access_token 만 반환. refresh_token 은 회전 안 함
+### (auth.py:248-262 RefreshData 스키마에 refresh_token 필드 없음).
+### 같은 refresh_token 으로 반복 호출 가능 (rotation 안 함 → 만료까지 유효).
+POST {{host}}/api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "{{$dotenv REFRESH_TOKEN}}"
+}
+
+# 예상 응답:
+# 200 OK
+# {
+#   "access_token": "eyJ...",         // 새 access (jti 다름)
+#   "expires_in": 3600,
+#   "expires_at": "...",
+#   "auth_profile": "dev"
+#   // 주의: refresh_token 필드 자체가 응답에 없음 (rotation 없음).
+#   //       클라이언트는 기존 refresh_token 그대로 보존.
+# }
+
+### 10.8 Logout — access jti blacklist (잔여 TTL 동안 거부)
+###
+### POST /auth/logout 은 본 access token jti 를 blacklist 에 등록 (auth.py:265-289).
+### → 잔여 access TTL 동안 동일 토큰으로 /me 호출 시 401.
+###
+### Step 1 — login 으로 access_token 획득 후 (위 §10.1 또는 §10.6)
+###         아래 logout 호출
+POST {{host}}/api/v1/auth/logout
+Authorization: Bearer {{access_token}}
+
+# 예상 응답:
+# 200 OK
+# { "message": "Logged out successfully", "scope": "current" }
+#
+# (?all=true 시 모든 device session 종료 + scope: "all")
+
+###
+### Step 2 — 같은 access_token 으로 /me 호출 → 401 (blacklist hit)
+GET {{host}}/api/v1/auth/me
+Authorization: Bearer {{access_token}}
+
+# 예상 응답:
+# 401 Unauthorized
+# { "detail": "AUTH_TOKEN_REVOKED" } 또는 동등 — jti blacklist check.
+# 검증 핵심: access TTL 미만료지만 jti 가 blacklist 에 있어 거부.
+# (in-memory blacklist 는 단일 프로세스만 유효; live profile 은 Redis 권장)
+
+### 10.9 Invalid credentials → 401 AUTH_INVALID_CREDENTIALS
+###
+### auth.py:208-213. enumeration defense — 존재하지 않는 user / 잘못된 password
+### 양쪽 모두 동일 401 + AUTH_INVALID_CREDENTIALS (구분 안 함).
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@local",
+  "password": "wrong-password"
+}
+
+# 예상 응답:
+# 401 Unauthorized
+# { "detail": "AUTH_INVALID_CREDENTIALS" }
+
+###
+### Step 2 — 존재하지 않는 email 도 동일 401 (enumeration 차단)
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "nonexistent@cycle7.test",
+  "password": "any-password"
+}
+
+# 예상 응답:
+# 401 Unauthorized
+# { "detail": "AUTH_INVALID_CREDENTIALS" }
+# (존재/부재 구분 안 함 — user enumeration 차단)
+
+### 10.10 Locked account → 403 AUTH_ACCOUNT_LOCKED
+###
+### MAX_FAILED_ATTEMPTS 초과로 locked_until 설정된 user. 비밀번호 맞아도 거부.
+### auth.py:192-200 — authenticate() 전에 locked_until check.
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "locked-user@cycle7.test",
+  "password": "Correct!Password123"
+}
+
+# 사전 조건: locked-user@cycle7.test 가 locked_until > now() 상태.
+#           (테스트에서 fixture 로 user.locked_until = future ISO 설정)
+#
+# 예상 응답:
+# 403 Forbidden
+# { "detail": "AUTH_ACCOUNT_LOCKED" }
+# 핵심: 401 (credentials) 이 아니라 403 (lock) — 잠금 사실은 클라이언트에 노출
+#       (locked_until 까지는 재시도 무의미 신호).
+
+### 10.11 Disabled account → 403 AUTH_ACCOUNT_DISABLED
+###
+### is_active = False 인 user (admin 이 suspend) → 403, password 맞아도 거부.
+### auth.py:202-206. lock 과 분리된 영구 상태.
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "disabled-user@cycle7.test",
+  "password": "Correct!Password123"
+}
+
+# 사전 조건: disabled-user@cycle7.test 의 is_active = False.
+#
+# 예상 응답:
+# 403 Forbidden
+# { "detail": "AUTH_ACCOUNT_DISABLED" }
+#
+# Note: 403 두 종류 분리 검증 — AUTH_ACCOUNT_LOCKED (temporary, time-based)
+#       vs AUTH_ACCOUNT_DISABLED (permanent until admin re-enables).
