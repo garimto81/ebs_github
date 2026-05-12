@@ -123,7 +123,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38186
 
 ## 7. 데이터 내보내기 기본값 (Export Defaults)
 
-**저장 키**: `preferences.export_defaults`
+**저장 키**: *preferences.export_defaults* — backend env-driven default (정본: `../../2.2 Backend/Settings.md` §3.3, env **EXPORT_DEFAULTS**)
 
 ```json
 {
@@ -133,6 +133,8 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38186
   "filenamePattern": "{type}_{date}_{user}"
 }
 ```
+
+> **2026-05-12 Cycle 4 (#264)**: 본 키의 권위 정본을 `../../2.2 Backend/Settings.md` 로 이전. 위 JSON 은 사용자 override UI 표현이고, default 는 backend **EXPORT_DEFAULTS** env var 가 결정한다.
 
 B-051 (CSV/JSON 내보내기 Backlog) 과 연동.
 

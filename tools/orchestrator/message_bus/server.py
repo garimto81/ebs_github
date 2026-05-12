@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 
 # Allow running as script
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
@@ -30,7 +31,30 @@ from tools.orchestrator.message_bus.store import Store
 from tools.orchestrator.message_bus.topics import check_publish_acl
 
 DEFAULT_PORT = 7383
-DEFAULT_HOST = "127.0.0.1"
+# Bind 0.0.0.0 so dockerised chat-server can reach broker via host.docker.internal.
+# dev-only: localhost-restricted callers should switch back to 127.0.0.1 + tighter
+# allowed_hosts list when running in production / shared networks (B-222 L2 fix).
+DEFAULT_HOST = "0.0.0.0"
+
+# Override FastMCP's auto-enabled DNS rebinding protection so that Host headers
+# from Docker containers (`host.docker.internal:*`) and arbitrary loopback aliases
+# are accepted. Without this, the broker returns 421 Misdirected Request when
+# called from inside the chat-server container.
+TRANSPORT_SECURITY = TransportSecuritySettings(
+    enable_dns_rebinding_protection=False,
+    allowed_hosts=[
+        "127.0.0.1:*",
+        "localhost:*",
+        "[::1]:*",
+        "host.docker.internal:*",
+    ],
+    allowed_origins=[
+        "http://127.0.0.1:*",
+        "http://localhost:*",
+        "http://[::1]:*",
+        "http://host.docker.internal:*",
+    ],
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 LOG_FILE = PROJECT_ROOT / ".claude" / "message_bus" / "broker.log"
@@ -78,32 +102,43 @@ mcp = FastMCP(
     ),
     host=DEFAULT_HOST,
     port=DEFAULT_PORT,
+    transport_security=TRANSPORT_SECURITY,
 )
 
 
 # ─── Tool 1: publish_event ────────────────────────────────────────────
 
 @mcp.tool()
-async def publish_event(topic: str, payload: dict, source: str = "unknown") -> dict:
+async def publish_event(
+    topic: str, payload: dict, source: str = "unknown", publisher_id: str = ""
+) -> dict:
     """Publish an event to a topic.
 
     Args:
         topic: Topic (e.g., "stream:S1", "cascade:design"). ACL applies.
         payload: JSON-serializable payload.
         source: Sender id (e.g., "S1", "S3-cc").
+        publisher_id: Caller process identifier (v11.1 B-222 — gates
+            source='user' anti-spoofing; only "chat-server" may publish as user).
 
     Returns:
         {seq, ts, topic, recipients}
     """
-    allowed, reason = check_publish_acl(topic, source)
+    allowed, reason = check_publish_acl(topic, source, publisher_id=publisher_id)
     if not allowed:
-        logger.warning(f"ACL denied topic={topic} source={source}: {reason}")
+        logger.warning(
+            f"ACL denied topic={topic} source={source} "
+            f"publisher_id={publisher_id}: {reason}"
+        )
         raise ValueError(f"ACL denied: {reason}")
     await _ensure_initialized()
     assert _store is not None and _dispatcher is not None
     seq, ts = await _store.publish(topic, payload, source)
     recipients = await _dispatcher.notify(topic, seq, source, ts, payload)
-    logger.info(f"publish topic={topic} source={source} seq={seq} recipients={recipients}")
+    logger.info(
+        f"publish topic={topic} source={source} publisher_id={publisher_id} "
+        f"seq={seq} recipients={recipients}"
+    )
     return {"seq": seq, "ts": ts, "topic": topic, "recipients": recipients}
 
 

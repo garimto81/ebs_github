@@ -132,12 +132,14 @@ tier: generated
 - `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` — Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0)
 - `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` — Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획
 - `docs/4. Operations/Causality_Dashboard.md` — EBS 문서 인과관계 대시보드
+- `docs/4. Operations/Chat_Protocol.md` — Chat Protocol — Payload Schema + Channel Convention SSOT
 - `docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md` — Graphic Editor team5 분리 적합성 결정 (DONE — Option A 채택)
 - `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
 - `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` — 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합)
 - `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` — 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서
 - `docs/4. Operations/Conductor_Backlog/B-211-e2e-full-hand-flow-scenario.md` — B-211 — End-to-End 풀 핸드 플로우 통합 테스트 시나리오
 - `docs/4. Operations/Conductor_Backlog/B-213-nfr-accuracy-quantitative-kpi.md` — B-213 — NFR "정확성" 정량 KPI 정의
+- `docs/4. Operations/Conductor_Backlog/B-222-inter-session-chat-ui.md` — B-222 — Inter-Session Chat UI (4분할 Web UI + @ 멘션, Docker container)
 - `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` — 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비
 - `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` — B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade)
 - `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` — B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade)
@@ -197,6 +199,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/_template_implementation.md` — 구현: <기능명>
 - `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` — 시나리오: <검증 대상 통합 흐름>
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` — 기획 공백: <구체적 공백명>
+- `docs/4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` — 기획 공백: 외부 인계 PRD derivative-of frontmatter 미연결 5건
 - `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` — v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record
 - `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` — v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기)
 - `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` — Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A)
@@ -209,6 +212,10 @@ tier: generated
 - `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` — ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
 - `docs/4. Operations/Foundation_Alignment_Plan.md` — Foundation 재설계 정렬 계획 (Conductor 소유 문서)
 - `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` — Global SSOT Sync — SG-022 advocacy eradication
+- `docs/4. Operations/Inter_Session_Chat_Design.md` — Inter-Session Chat — Design Specification
+- `docs/4. Operations/Inter_Session_Chat_Manual_Verification.md` — Inter-Session Chat — Manual Verification (Phase L1)
+- `docs/4. Operations/Inter_Session_Chat_Plan.md` — Inter-Session Chat — Implementation Plan (7 Day)
+- `docs/4. Operations/Inter_Session_Chat_Workflow.md` — Inter-Session Chat Workflow — 멀티 세션 발화/응답 룰
 - `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Domain Access
 - `docs/4. Operations/Load_Test_Plan_Phase1.md` — Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)

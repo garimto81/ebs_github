@@ -37,6 +37,7 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Engineering/State_Management.md` — State Management
 - `docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md` — Tech Stack
 - `docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md` — Testing Strategy
+- `docs/2. Development/2.2 Backend/Settings.md` — Settings (Backend Env)
 - `docs/4. Operations/Conductor_Backlog/B-212-backend-coverage-78-to-90.md` — B-212 — Backend 커버리지 78% → 90% (B-Q10 1차 단계)
 - `docs/4. Operations/Conductor_Backlog/B-215-dev-seed-users.md` — B-215 — Dev 환경 시드 사용자 자동화
 - `docs/4. Operations/Conductor_Backlog/B-221-skins-multipart-upload.md` — B-221 — POST /api/v1/skins/upload multipart endpoint (CCR-013, D8 resolution)

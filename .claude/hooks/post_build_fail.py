@@ -41,51 +41,60 @@ BUILD_PATTERNS = re.compile(
 )
 
 
-def _broker_publish_build_fail(command, exit_code, stderr_excerpt, source):
-    """publish cascade:build-fail to broker. silent if dead. (S11 Cycle 2, Issue #240)"""
+def _broker_publish_build_fail(command, exit_code, stderr_excerpt, source, max_retries=3):
+    """publish cascade:build-fail with retry + exp backoff. (S11 Cycle 5 stabilization)
+
+    Retry policy: 3 attempts at [0s, 0.5s, 1.5s]. Each attempt timeout=2.0s.
+    Total worst-case: 8.0s. Silent if broker daemon dead (TCP probe fail).
+    """
     import socket
+    import time
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(1.0)
     try:
         sock.connect(("127.0.0.1", 7383))
     except OSError:
-        return
+        return  # daemon dead - no point retrying
     finally:
         sock.close()
 
-    try:
-        import asyncio
-        from mcp import ClientSession
-        from mcp.client.streamable_http import streamablehttp_client
-
-        async def _run():
-            async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
-                async with ClientSession(r, w) as s:
-                    await s.initialize()
-                    await s.call_tool("publish_event", {
-                        "topic": "cascade:build-fail",
-                        "payload": {
-                            "command_excerpt": command[:200],
-                            "exit_code": exit_code,
-                            "stderr_excerpt": stderr_excerpt[:500] if stderr_excerpt else "",
-                            "auto_published": True,
-                            "trigger": "PostToolUse:Bash exit!=0",
-                            # S11 Cycle 3 - observer_loop dispatch instruction
-                            "next_action": {
-                                "type": "inbox-drop",
-                                "target": "S9,S10-A",
-                                "reason": "QA + Gap Analysis attention",
-                            },
-                        },
-                        "source": source,
-                    })
-
+    backoffs = [0.0, 0.5, 1.5]
+    payload = {
+        "command_excerpt": command[:200],
+        "exit_code": exit_code,
+        "stderr_excerpt": stderr_excerpt[:500] if stderr_excerpt else "",
+        "auto_published": True,
+        "trigger": "PostToolUse:Bash exit!=0",
+        # S11 Cycle 3 - observer_loop dispatch instruction
+        "next_action": {
+            "type": "inbox-drop",
+            "target": "S9,S10-A",
+            "reason": "QA + Gap Analysis attention",
+        },
+    }
+    for attempt in range(max_retries):
+        if backoffs[attempt] > 0:
+            time.sleep(backoffs[attempt])
         try:
+            import asyncio
+            from mcp import ClientSession
+            from mcp.client.streamable_http import streamablehttp_client
+
+            async def _run():
+                async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
+                    async with ClientSession(r, w) as s:
+                        await s.initialize()
+                        await s.call_tool("publish_event", {
+                            "topic": "cascade:build-fail",
+                            "payload": payload,
+                            "source": source,
+                        })
+
             asyncio.run(asyncio.wait_for(_run(), timeout=2.0))
+            return  # success
         except Exception:
-            pass
-    except Exception:
-        pass
+            continue  # retry
+    # all retries exhausted - silent (preserves Cycle 2 contract)
 
 
 def _read_team_id():

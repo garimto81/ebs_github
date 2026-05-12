@@ -1,0 +1,94 @@
+{
+  "stream": "S2",
+  "cycle": 4,
+  "issue": 267,
+  "captured_at": "2026-05-12T03:06:00.475022+00:00",
+  "lobby_url": "http://localhost:3000",
+  "admin_email": "admin@ebs.local",
+  "stages": [
+    {
+      "step": "01-lobby-entry",
+      "state": "pending",
+      "ts": "2026-05-12T03:06:09.429231+00:00"
+    },
+    {
+      "step": "02-table-create",
+      "state": "tableCreating-to-tableCreated",
+      "ts": "2026-05-12T03:06:16.275044+00:00"
+    },
+    {
+      "step": "03-cc-assign",
+      "state": "ccAssigning-to-ccAssigned",
+      "ts": "2026-05-12T03:06:26.895465+00:00"
+    },
+    {
+      "step": "04-rfid-monitor",
+      "state": "rfidMonitoring",
+      "ts": "2026-05-12T03:06:28.448162+00:00"
+    },
+    {
+      "step": "05-hand-running",
+      "state": "hand-in-progress",
+      "ts": "2026-05-12T03:06:30.000829+00:00"
+    },
+    {
+      "step": "06-hand-done",
+      "state": "cascadeReady",
+      "ts": "2026-05-12T03:06:31.539711+00:00"
+    }
+  ],
+  "console_log": [
+    {
+      "ts": "2026-05-12T03:06:05.212054+00:00",
+      "type": "debug",
+      "text": "Injecting <script> tag. Using callback."
+    },
+    {
+      "ts": "2026-05-12T03:06:05.212054+00:00",
+      "type": "warning",
+      "text": "[GroupMarkerNotSet(crbug.com/242999)!:A8C018005C670000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content."
+    },
+    {
+      "ts": "2026-05-12T03:06:05.212553+00:00",
+      "type": "warning",
+      "text": "WebGL: CONTEXT_LOST_WEBGL: loseContext: context lost"
+    },
+    {
+      "ts": "2026-05-12T03:06:05.865930+00:00",
+      "type": "warning",
+      "text": "[GroupMarkerNotSet(crbug.com/242999)!:A8C018005C670000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content."
+    },
+    {
+      "ts": "2026-05-12T03:06:05.865930+00:00",
+      "type": "warning",
+      "text": "[GroupMarkerNotSet(crbug.com/242999)!:A8F018005C670000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content."
+    },
+    {
+      "ts": "2026-05-12T03:06:06.397628+00:00",
+      "type": "warning",
+      "text": "[GroupMarkerNotSet(crbug.com/242999)!:A82019005C670000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content."
+    },
+    {
+      "ts": "2026-05-12T03:06:06.398133+00:00",
+      "type": "warning",
+      "text": "[.WebGL-0x5d1c03396200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "ts": "2026-05-12T03:06:06.470784+00:00",
+      "type": "warning",
+      "text": "[.WebGL-0x5d1c03396200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "ts": "2026-05-12T03:06:06.588465+00:00",
+      "type": "warning",
+      "text": "[.WebGL-0x5d1c03396200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "ts": "2026-05-12T03:06:06.729104+00:00",
+      "type": "warning",
+      "text": "[.WebGL-0x5d1c03396200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    }
+  ],
+  "network_log": [],
+  "result": "SUCCESS"
+}

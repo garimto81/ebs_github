@@ -1,0 +1,166 @@
+:root {
+  --bg: #0d1117;
+  --fg: #c9d1d9;
+  --muted: #6e7681;
+  --panel: #161b22;
+  --border: #30363d;
+  --accent: #58a6ff;
+  --s1: #b392f0;
+  --s2: #56d364;
+  --s3: #58a6ff;
+  --s7: #e3b341;
+  --s8: #2dd4bf;
+  --s9: #f778ba;
+  --s10a: #ff7b72;
+  --s10w: #db6d28;
+  --s11: #8b949e;
+  --smem: #6e7681;
+  --user: #f85149;
+  --system: #6e7681;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.5 -apple-system, "Segoe UI", monospace;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+.brand { font-weight: bold; }
+.broker-state { color: var(--muted); }
+.peers { margin-left: auto; color: var(--muted); }
+
+.grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  min-height: 0;
+}
+
+.panel {
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.panel h2 {
+  margin: 0;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  background: #0d1117;
+}
+.panel h2 .hash { color: var(--accent); margin-right: 2px; }
+.panel h2 .ro { color: var(--muted); font-weight: normal; font-size: 11px; }
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+.msg { padding: 2px 0; word-break: break-word; }
+.msg .ts { color: var(--muted); margin-right: 6px; }
+.msg .from { font-weight: bold; margin-right: 6px; }
+.msg.from-S1 .from  { color: var(--s1); }
+.msg.from-S2 .from  { color: var(--s2); }
+.msg.from-S3 .from  { color: var(--s3); }
+.msg.from-S7 .from  { color: var(--s7); }
+.msg.from-S8 .from  { color: var(--s8); }
+.msg.from-S9 .from  { color: var(--s9); }
+.msg.from-S10-A .from { color: var(--s10a); }
+.msg.from-S10-W .from { color: var(--s10w); }
+.msg.from-S11 .from { color: var(--s11); }
+.msg.from-SMEM .from { color: var(--smem); }
+.msg.from-user .from { color: var(--user); }
+.msg.kind-system .from { color: var(--system); font-style: italic; }
+.msg .mention { background: #3d2e10; color: #f0d264; padding: 0 2px; border-radius: 2px; }
+.msg .mention-self { background: #4d2120; color: #ff7676; }
+
+.msg .reply-ref {
+  color: var(--muted);
+  font-size: 11px;
+  padding: 1px 0 2px 14px;
+  cursor: pointer;
+  border-left: 2px solid var(--border);
+  display: block;
+}
+.msg .reply-ref:hover { color: var(--accent); }
+.msg.reply { padding-left: 12px; border-left: 2px solid #1f6feb; }
+
+.composer {
+  position: relative;
+  border-top: 1px solid var(--border);
+  padding: 6px;
+}
+.composer textarea {
+  width: 100%;
+  background: #0d1117;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font-family: inherit;
+  padding: 4px 6px;
+  resize: none;
+  min-height: 38px;
+  max-height: 80px;
+}
+.autocomplete {
+  position: absolute;
+  bottom: 100%;
+  left: 6px;
+  background: #0d1117;
+  border: 1px solid var(--border);
+  min-width: 200px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+}
+.autocomplete .item {
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.autocomplete .item.active {
+  background: #1f6feb;
+  color: white;
+}
+
+.panel.trace { background: #0d1117; }
+.panel.trace .messages { font-size: 12px; }
+.msg.trace-stream .trace-topic   { color: var(--s2); }
+.msg.trace-cascade .trace-topic  { color: var(--accent); }
+.msg.trace-pipeline .trace-topic { color: var(--s10w); }
+.msg.trace-audit .trace-topic    { color: var(--smem); }
+.msg.trace-defect .trace-topic   { color: var(--user); }
+.msg .trace-source { color: var(--muted); }
+.msg .trace-summary { color: var(--fg); opacity: 0.7; }
+
+.trace-filters {
+  font-size: 11px;
+  font-weight: normal;
+  color: var(--muted);
+  margin-left: 10px;
+}
+.trace-filters label {
+  margin-right: 8px;
+  cursor: pointer;
+}
+.trace-filters input {
+  vertical-align: middle;
+  margin-right: 2px;
+}

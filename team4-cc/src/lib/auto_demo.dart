@@ -132,6 +132,29 @@ Future<AutoDemoResult> runAutoDemo({
     'idempotency_key': idemKey,
   });
 
+  // Step 3.5 (Cycle 4 #268): REST mirror — POST /api/v1/cc/games/{id}/info.
+  // BO 측 cc.py router (team2-backend) 가 추가되면 REST + WS 둘 다 200 OK 가 KPI.
+  // 부재 시 404/501 graceful catch — WS path만으로도 1-hand 시연은 유효.
+  final restGameId = tableId;
+  try {
+    final restResp = await api.raw.post(
+      '/api/v1/cc/games/$restGameId/info',
+      data: payload,
+      options: Options(
+        headers: {'Idempotency-Key': idemKey},
+        validateStatus: (s) => s != null && s < 500, // 4xx도 catch (404 endpoint 부재 포함)
+      ),
+    );
+    DebugLog.i('AUTO_DEMO', 'REST cc/games/info response', {
+      'status': restResp.statusCode,
+      'data_keys': (restResp.data is Map)
+          ? (restResp.data as Map).keys.toList()
+          : restResp.data.runtimeType.toString(),
+    });
+  } catch (e) {
+    DebugLog.w('AUTO_DEMO', 'REST cc/games/info error (non-fatal)', {'error': '$e'});
+  }
+
   // Step 4: await GameInfoAck.
   try {
     final handId = await ackCompleter.future.timeout(ackTimeout);

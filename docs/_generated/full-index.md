@@ -250,6 +250,7 @@ tier: generated
 | `docs/2. Development/2.2 Backend/Engineering/State_Management.md` | State Management | team2 | internal | IMPL-03 |
 | `docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md` | Tech Stack | team2 | internal | IMPL-01 |
 | `docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md` | Testing Strategy | team2 | internal | IMPL-08 |
+| `docs/2. Development/2.2 Backend/Settings.md` | Settings (Backend Env) | team2 | internal | - |
 | `docs/2. Development/2.3 Game Engine/2.3 Game Engine.md` | 2.3 Game Engine | ci | generated | - |
 | `docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md` | Harness REST API | team3 | contract | API-04.2 |
 | `docs/2. Development/2.3 Game Engine/APIs/OutputEventBuffer_Boundary.md` | OutputEventBuffer 구현 경계 | team3 | contract | API-04.3 |
@@ -274,6 +275,8 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/B-355-redirect-validator-infrastructure.md` | legacy-id-redirect.json validator (Dart CLI + CI gate) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-356-oe-catalog-self-inconsistency.md` | OE 카탈로그 self-inconsistency — OutputEvent_Serialization vs Overlay_Output_Events 정합 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/CYCLE2-2026-05-11-engine-1hand-ready.md` | CYCLE 2 — S8 Engine 1 Hand Ready (Issue | - | notify | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-2026-05-12-settings-engine-9keys.md` | CYCLE 4 — S8 Settings engine_rules 9 keys 정합 (Issue | - | notify | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-mediation-2026-05-12-betting-system-9keys.md` | CYCLE 4 mediation — Betting_System.md §7-5 9 keys default 패치 제안 | - | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` | NOTIFY-Conductor-2026-05-08-ci-infra-blockers | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-S8-pr180-ci-failure-2026-05-08.md` | NOTIFY-S8 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
@@ -317,6 +320,8 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | deprecated | `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` | Triggers & Event Pipeline — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md` | Variants & Evaluation — Domain Master | team3 | contract | - |
+| `docs/2. Development/2.3 Game Engine/Rules/Engine_Defaults.md` | Engine Defaults — Settings 9 keys 정합 | team3 (S8 Cycle 4) | contract | API-04.4 |
+| `docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_State.md` | Multi-Hand State — Button rotate + handNumber 증가 (Cycle 5 v02) | team3 (S8 Cycle 5) | contract | API-04.5 |
 | `docs/2. Development/2.4 Command Center/2.4 Command Center.md` | 2.4 Command Center | ci | generated | - |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | RFID HAL — Operator Behavior | team4 | internal | BS-04-04 |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md` | RFID HAL Interface Contract | team4 | contract | API-03 |
@@ -507,6 +512,7 @@ tier: generated
 | `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` | Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0) | conductor | internal | - |
 | `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` | Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획 | conductor | critical | - |
 | `docs/4. Operations/Causality_Dashboard.md` | EBS 문서 인과관계 대시보드 | conductor | internal | - |
+| `docs/4. Operations/Chat_Protocol.md` | Chat Protocol — Payload Schema + Channel Convention SSOT | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog.md` | Conductor_Backlog | - | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` | Phase 2 통합 테스트 + E2E | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` | Phase 3 통합 테스트 + 부하 테스트 | - | - | - |
@@ -532,6 +538,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-219-lobby-settings-typeerror.md` | B-219 — Lobby Settings 화면 TypeError (response schema 불일치) | team1 + team2 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-220-cc-demo-path-action-on-seat-status-missing.md` | B-220 — CC dispatchLocalDemoEvent: actionOn + seat status sync 누락 | team4 + team2 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-221-skins-multipart-upload.md` | B-221 — POST /api/v1/skins/upload multipart endpoint (CCR-013, D8 resolution) | team2 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-222-inter-session-chat-ui.md` | B-222 — Inter-Session Chat UI (4분할 Web UI + @ 멘션, Docker container) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` | 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` | B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` | B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
@@ -624,6 +631,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` | 기획 공백: <구체적 공백명> | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` | 기획 공백: 외부 인계 PRD derivative-of frontmatter 미연결 5건 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` | v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record | conductor | contract | - |
 | `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` | v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기) | conductor | contract | - |
 | `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` | Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A) | conductor | internal | - |
@@ -631,12 +639,17 @@ tier: generated
 | `docs/4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` | Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` | Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성 | conductor | internal | - |
+| `docs/4. Operations/Cycle_Entry_Playbook.md` | Cycle Entry Playbook (multi-session autonomous iteration) | S0 Conductor | internal | - |
 | `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` | 문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결 | conductor | internal | - |
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
 | `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` | ECOSYSTEM E2E Handoff — Multi-Service Docker Validation | conductor | operations | - |
 | `docs/4. Operations/Foundation_Alignment_Plan.md` | Foundation 재설계 정렬 계획 (Conductor 소유 문서) | conductor | internal | - |
 | `docs/4. Operations/Frozen_Build_SOP.md` | Frozen Build SOP — file revert race 우회 | prototype | internal | - |
 | `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` | Global SSOT Sync — SG-022 advocacy eradication | conductor | contract | - |
+| `docs/4. Operations/Inter_Session_Chat_Design.md` | Inter-Session Chat — Design Specification | conductor | internal | - |
+| `docs/4. Operations/Inter_Session_Chat_Manual_Verification.md` | Inter-Session Chat — Manual Verification (Phase L1) | conductor | internal | - |
+| `docs/4. Operations/Inter_Session_Chat_Plan.md` | Inter-Session Chat — Implementation Plan (7 Day) | conductor | internal | - |
+| `docs/4. Operations/Inter_Session_Chat_Workflow.md` | Inter-Session Chat Workflow — 멀티 세션 발화/응답 룰 | conductor | internal | - |
 | `docs/4. Operations/LAN_DEPLOYMENT.md` | LAN Deployment — Internal Network Domain Access | conductor | internal | - |
 | `docs/4. Operations/Load_Test_Plan_Phase1.md` | Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate | conductor | internal | - |
 | `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
@@ -721,4 +734,7 @@ tier: generated
 | `docs/_archive/governance-2026-05/Workflow_Conductor_Autonomous.md` | Conductor Autonomous Workflow SOP — Hourglass 패턴 | conductor | contract | - |
 | `docs/_journey/2026-05-11_smem_audit.md` | SMEM Weekly Memory Audit — 2026-05-11 | SMEM | - | - |
 | `docs/_journey/2026-05-11_smem_cycle2.md` | SMEM Cycle 2 — Cycle 1 weekly diff + case study | SMEM | - | - |
+| `docs/_journey/2026-05-12_smem_cycle4.md` | SMEM Cycle 4 — Cycle 3+4 weekly diff + audit | SMEM | - | - |
+| `docs/_journey/2026-05-12_smem_cycle5.md` | SMEM Cycle 5 — Cycle 4 case study + weekly diff | SMEM | - | - |
+| `docs/_journey/2026-05-12_smem_cycle6.md` | SMEM Cycle 6 — Cycle 5 case study + weekly diff (architecture pivot + Iron Law 임계) | SMEM | - | - |
 | `docs/examples/README.md` | Examples | conductor | internal | - |

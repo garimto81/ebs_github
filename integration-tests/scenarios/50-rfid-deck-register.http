@@ -51,22 +51,98 @@ Content-Type: application/json
 #   - cardsRegistered 가 0 이면 어떤 후속 호출로 cards 적재되는가?
 #   - status "registering" → "ready" 전이 endpoint는?
 
-### 50.2 POST /api/v1/decks — 중복 UID (같은 deck 내)
+### 50.2 POST /api/v1/decks/{id}/cards — 중복 UID (DRIFT-50.2 회귀 방지)
+###
+### 갱신 (2026-05-12, S7 Cycle 5 — DRIFT-50.2 dup-uid 422 fix):
+###   이전 시나리오는 obsolete 단일 POST /decks 에 cards 배열 — 현 API 는
+###   POST /decks (name 만) → POST /decks/{id}/cards (one-by-one). 422 정합.
+### Issue: #282
+###
+### Step 1 — deck 생성 + 첫 카드 등록 (UID = 04A3B2C1D001)
 POST {{host}}/api/v1/decks
 Authorization: Bearer {{admin_token}}
 Idempotency-Key: {{$guid}}
 Content-Type: application/json
 
+{ "name": "drift-50-2-dup-test" }
+
+# 예상: 201 Created — { id, name, status: "registering", cardsRegistered: 0 }
+# id 를 dup_deck_id 로 보존 (REST Client `@dup_deck_id = ...`)
+
+###
+POST {{host}}/api/v1/decks/{{dup_deck_id}}/cards
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{ "cardCode": "AS", "rfidUid": "04A3B2C1D001" }
+
+# 예상: 201 Created — cardCode "AS" 등록
+
+###
+### Step 2 — 같은 deck 에 다른 cardCode 로 동일 UID 재등록 (DRIFT-50.2 핵심)
+POST {{host}}/api/v1/decks/{{dup_deck_id}}/cards
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{ "cardCode": "KS", "rfidUid": "04A3B2C1D001" }
+
+# 예상: 422 Unprocessable Entity (DRIFT-50.2 정합 — 이전 코드는 409 반환)
+# {
+#   "detail": {
+#     "code": "DUPLICATE_UID",
+#     "uid": "04A3B2C1D001",
+#     "existing_deck_id": "{{dup_deck_id}}",
+#     "existing_card_code": "AS",
+#     "message": "UID already registered in another deck"
+#   }
+# }
+
+###
+### 50.2b POST /api/v1/decks/import — 벌크 intra-payload dup UID
+###
+### dict[card_code → uid] 구조의 함정: 다른 card_code 가 동일 uid 를 가지면
+### dict 자체로는 차단되지 않음. 명시 검증 추가됨 (DRIFT-50.2).
+POST {{host}}/api/v1/decks/import
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
 {
-  "deck_name": "duplicate-test",
-  "cards": [
-    { "uid": "04A3B2C1D001", "rank": 12, "suit": 0 },
-    { "uid": "04A3B2C1D001", "rank": 11, "suit": 1 }
-  ]
+  "name": "intra-dup-payload-test",
+  "cards": {
+    "AS": "DEADBEEF01", "KS": "DEADBEEF02", "QS": "DEADBEEF03",
+    "JS": "DEADBEEF04", "TS": "DEADBEEF05", "9S": "DEADBEEF06",
+    "8S": "DEADBEEF07", "7S": "DEADBEEF08", "6S": "DEADBEEF09",
+    "5S": "DEADBEEF0A", "4S": "DEADBEEF0B", "3S": "DEADBEEF0C",
+    "2S": "DEADBEEF0D",
+    "AH": "DEADBEEF0E", "KH": "DEADBEEF0F", "QH": "DEADBEEF10",
+    "JH": "DEADBEEF11", "TH": "DEADBEEF12", "9H": "DEADBEEF13",
+    "8H": "DEADBEEF14", "7H": "DEADBEEF15", "6H": "DEADBEEF16",
+    "5H": "DEADBEEF17", "4H": "DEADBEEF18", "3H": "DEADBEEF19",
+    "2H": "DEADBEEF1A",
+    "AD": "DEADBEEF1B", "KD": "DEADBEEF1C", "QD": "DEADBEEF1D",
+    "JD": "DEADBEEF1E", "TD": "DEADBEEF1F", "9D": "DEADBEEF20",
+    "8D": "DEADBEEF21", "7D": "DEADBEEF22", "6D": "DEADBEEF23",
+    "5D": "DEADBEEF24", "4D": "DEADBEEF25", "3D": "DEADBEEF26",
+    "2D": "DEADBEEF27",
+    "AC": "DEADBEEF28", "KC": "DEADBEEF29", "QC": "DEADBEEF2A",
+    "JC": "DEADBEEF2B", "TC": "DEADBEEF2C", "9C": "DEADBEEF2D",
+    "8C": "DEADBEEF2E", "7C": "DEADBEEF2F", "6C": "DEADBEEF30",
+    "5C": "DEADBEEF31", "4C": "DEADBEEF32", "3C": "DEADBEEF33",
+    "2C": "DEADBEEF01"
+  }
 }
 
-# 예상: 422 Unprocessable Entity
-# { "error": "DUPLICATE_UID", "uid": "04A3B2C1D001" }
+# 예상: 422 Unprocessable Entity (intra_payload scope)
+# {
+#   "detail": {
+#     "code": "DUPLICATE_UID",
+#     "scope": "intra_payload",
+#     "conflicts": [
+#       { "card_code": "2C", "rfid_uid": "DEADBEEF01", "duplicate_of_card": "AS" }
+#     ]
+#   }
+# }
+# 마지막 "2C" 가 첫 "AS" 와 동일 UID — intra-payload 충돌
 
 ### 50.3 POST /api/v1/decks — 52장 미만 (Joker 제외도 안 됨)
 POST {{host}}/api/v1/decks

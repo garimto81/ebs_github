@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../foundation/theme/design_tokens.dart';
+import 'dealer_button_indicator.dart';
 
 enum SeatCellState { active, empty, eliminated, waiting, dealer }
 
@@ -15,12 +16,17 @@ class SeatDotCell extends StatelessWidget {
     super.key,
     required this.state,
     required this.seatNo,
+    this.isDealer = false,
   });
 
   final SeatCellState state;
 
   /// 1..9 — displayed for non-empty seats.
   final int seatNo;
+
+  /// Cycle 6 (#312): overlay a small "D" button on this cell. Independent
+  /// of [state] so an active seat AND the dealer position can coexist.
+  final bool isDealer;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +47,7 @@ class SeatDotCell extends StatelessWidget {
             borderRadius: BorderRadius.circular(3),
           );
 
-    return Container(
+    final cell = Container(
       width: 22,
       height: 22,
       margin: const EdgeInsets.symmetric(horizontal: 1),
@@ -62,6 +68,20 @@ class SeatDotCell extends StatelessWidget {
               ),
             )
           : null,
+    );
+
+    if (!isDealer) return cell;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        cell,
+        const Positioned(
+          top: -4,
+          right: -4,
+          child: DealerButtonIndicator(size: 12),
+        ),
+      ],
     );
   }
 

@@ -20,6 +20,9 @@ S8 consistency audit (Issue #167, PR #180) 결과 신규 등재:
 | [NOTIFY-Conductor](Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md) | CI 인프라 blocker 4건 escalation (#183~#186) | HIGH | PR #180 CI 5 fail 분석 → 외부 책임 분리 |
 | [NOTIFY-team3 (B-331) — CLOSED](Backlog/NOTIFY-team3-B331-engine-health-code-impl-2026-05-11.md) | B-331 `/engine/health` 코드 stale notify — cycle 2 검증 중 코드 이미 구현됨 발견 (test 41 pass) | P0 | 2026-05-11 cycle 2 CLOSED |
 | [CYCLE2-2026-05-11](Backlog/CYCLE2-2026-05-11-engine-1hand-ready.md) | S8 Engine "1 Hand Ready" — Issue #238 KPI 충족 + cascade publish (seq 28) | — | NL Holdem 30 scenarios + harness 51 + OutputEvent emit 18 tests pass |
+| [CYCLE4-2026-05-12](Backlog/CYCLE4-2026-05-12-settings-engine-9keys.md) | S8 Cycle 4 Settings engine_rules 9 keys 정합 (Issue #265) — Rules/Engine_Defaults.md 신설 | P2 | spec_drift_check engine D2 9→0 |
+| [CYCLE4-mediation-2026-05-12](Backlog/CYCLE4-mediation-2026-05-12-betting-system-9keys.md) | S8 Cycle 4 2차 mediation — Betting_System.md §7-5 9 keys default 패치 제안 (Conductor merge 대기) | P2 | 옵션 A 채택 (사용자 권고), BLOCKED hook patch-by-PR-body 패턴 |
+| [CYCLE5-2026-05-12](Rules/Multi_Hand_State.md) | S8 Cycle 5 v02 multi-hand state + button rotate (Issue #287) — Rules/Multi_Hand_State.md 신설 + ManualNextHand rotation 구현 + POST /next-hand endpoint | P1 | S9 #285 v02 e2e 의존성 해소. 11 state test + 4 endpoint test + 740 regression PASS |
 
 ## 🆕 2026-04-22 Foundation.md v11 재설계 대응 (신규 등재)
 

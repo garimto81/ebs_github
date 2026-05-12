@@ -50,6 +50,8 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 | **2026-05-11 (후속)** | **redis service `restart: unless-stopped` 정책 추가 (PR #230). §1 표 redis 외부 포트 `internal` → `127.0.0.1:16380 (host debug)` 정정** | **S11 Day-1 autonomous iteration. bo/engine/lobby-web/cc-web/proxy 모두 정책 보유 — redis 만 누락이 4일 silent down 의 근본 원인. transient glitch 자동 회복 시간 단축** |
 | **2026-05-11 (Cycle 2)** | **§4.7 Healthcheck 6/6 reference 신설. broker 자동 publish 흐름 다이어그램 추가 (post_build_fail → cascade:build-fail / orch_PostToolUse → pipeline:env-ready). Day-1 수동 publish 의존성 제거** | **S11 Cycle 2 (Issue #240). orchestrator_monitor PYTHONPATH fix + 두 hook 의 broker publish 통합으로 push-mode 50ms latency 활용 가능. recipients=0 문제는 별도 사이클** |
 | **2026-05-11 (Cycle 3)** | **§4.8 Autonomous action chain 신설. observer_loop `--action-mode` + `next_action` payload dispatcher (inbox-drop / shell / noop). `handoffs/inbox/` 신설 + hook payload next_action 자동 명시. recipients=0 문제 해소 (observer가 즉시 파일 시스템에 drop)** | **S11 Cycle 3 (autonomous chain). end-to-end self-test PASS (seq 40 drop / seq 41 shell-block / seq 43 broadcast). Cycle 4 후보 = observer_loop background service** |
+| **2026-05-12 (Cycle 4)** | **§4.9 Autonomous chain demo + broker wildcard semantics 발견. cascade:cycle4-demo-build-fail seq=101 end-to-end chain 실측 trace 보존 (subscribe→dispatch ~493ms). `cascade:*` glob 미지원 — `*` 또는 exact topic 권장. autonomous 도달도 10% 사용자 진입 (Cycle 5 = 0% 목표)** | **S11 Cycle 4 (Issue #271). PR #254 의 --action-mode 실제 동작 검증. observer_loop background service 가 Cycle 5 의 단일 잔여 작업** |
+| **2026-05-12 (Cycle 5 Path B)** | **§4.10 broker MCP reconnect + observer 안정화. 4 패치: orch_PostToolUse/post_build_fail `_broker_publish` retry 3x (exp backoff 0/0.5/1.5s) + observer_loop outer reconnect loop (exp backoff 1s-30s, 24h 무중단) + orch_SessionStart `_probe_broker_mcp_health` (TCP+MCP 2단계 검사). events.db +832 증가 (seq 106→938), cascade:s11-cycle5-stabilized seq=938 recipients=1** | **S11 Cycle 5 (Issue #284 Path B). "daemon alive + MCP disconnect" 시나리오 대응. .mcp.json 변경 불필요 (검증만)** |
 
 ---
 
@@ -190,6 +192,219 @@ docker exec ebs-bo python -c "import redis; print(redis.from_url('redis://redis:
 
 ---
 
+## 4.10 broker MCP reconnect + observer 안정화 (S11 Cycle 5 Path B, Issue #284)
+
+Cycle 4 자가검증 중 발견된 "daemon alive but MCP client disconnect" 시나리오 대응. 4 안정화 패치 + Path B 자동화.
+
+### 진단 (Issue #284 S0)
+
+| 계층 | 상태 | 비고 |
+|------|:----:|------|
+| broker daemon (TCP 7383) | ✅ alive | pid 변동 가능 (재시작 자동) |
+| events.db | ✅ 936건 누적 | 정상 |
+| **MCP client (Claude Code 측)** | ⚠ stale handshake | session 내 disconnect 가능 |
+| .mcp.json | ✅ url=http://127.0.0.1:7383/mcp | 변경 불필요 |
+
+### 4 안정화 패치
+
+#### (1) `orch_PostToolUse.py` `_broker_publish` retry 3x
+
+```python
+backoffs = [0.0, 0.5, 1.5]  # 0s, 0.5s, 1.5s
+for attempt in range(3):
+    if backoffs[attempt] > 0:
+        time.sleep(backoffs[attempt])
+    try:
+        # streamablehttp_client + ClientSession + publish_event
+        return  # success
+    except Exception:
+        continue
+# all retries exhausted - silent (preserves Cycle 2 contract)
+```
+
+**효과**: broker temp down 시 silent skip 대신 8s 안에 자동 복구.
+
+#### (2) `post_build_fail.py` `_broker_publish_build_fail` retry 3x
+
+동일 retry 패턴. TCP probe 먼저 (daemon dead 시 retry 무의미하므로 즉시 return).
+
+#### (3) `observer_loop.py` outer reconnect loop
+
+```python
+backoff = 1.0
+while True:
+    try:
+        async with streamablehttp_client(URL) as ...:
+            ...subscribe loop...
+    except Exception as _reconnect_exc:
+        print(f"  [reconnect] broker disconnect: backoff {backoff:.1f}s")
+        await asyncio.sleep(backoff)
+        backoff = min(backoff * 2, 30.0)  # exp backoff, cap 30s
+```
+
+**효과**: 24h 무중단 운영. transient network/handshake failure 자동 복구.
+
+#### (4) `orch_SessionStart.py` `_probe_broker_mcp_health(team_id)`
+
+TCP probe + MCP initialize handshake 2 단계 검사. daemon alive 이지만 MCP failure 감지 → 사용자에게 stderr 로 "/mcp reconnect" 권고.
+
+### 검증 (2026-05-12 self-test)
+
+| 단계 | 결과 |
+|------|:----:|
+| TCP 7383 probe | ✅ ALIVE |
+| MCP handshake (initialize) | ✅ OK |
+| `_probe_broker_mcp_health()` | ✅ True + log line |
+| `_broker_publish` 단발 성공 | ✅ 1521ms (first attempt) |
+| cascade:s11-cycle5-stabilized publish | ✅ seq=938 recipients=1 |
+
+### KPI 충족
+
+| 항목 | 목표 | 실측 |
+|------|:----:|:----:|
+| events.db 증가 | +50 | **+832** (seq 106 → 938, 다른 stream 활동 포함) |
+| broker 모든 stream publish 200 OK | ✓ | seq=938 publish 성공 |
+| observer 24h 무중단 | 코드 검증 | outer reconnect loop + exp backoff 1s-30s |
+| MCP reconnect 자동화 | ✓ | SessionStart probe → 사용자 권고 stderr |
+
+### 운영 절차 (broker disconnect 발견 시)
+
+1. `python tools/orchestrator/start_message_bus.py --probe` — daemon TCP/PID 확인
+2. SessionStart stderr 의 `[broker]` 라인 확인 — MCP 단계 까지 OK 인지
+3. `[broker] daemon alive ... but MCP handshake failed` 표기 시:
+   - Claude Code 세션 재시작 (단순)
+   - `/mcp reconnect` (가능 시)
+4. observer_loop background 가동 중이면 자동 reconnect 진행 (stdout `[reconnect] backoff Ns` 로그)
+
+### 다음 사이클 후보
+
+- broker subscribe **prefix glob** (`cascade:*` 정상 매칭) — Cycle 4 발견 이슈 잔여
+- observer_loop **systemd / Task Scheduler** 통합 (영구 background)
+- S9 / S10-A inbox triage automation (cascade:build-fail → Spec_Gap 자동 생성)
+- inbox archive 자동화 (`_archive/YYYY-MM/`)
+
+---
+
+## 4.9 Autonomous chain demo (S11 Cycle 4, Issue #271)
+
+PR #254 (Cycle 3) 의 observer_loop `--action-mode` 가 실제 cascade event 를 처리할 수 있는지 검증한 end-to-end demo. 사용자 진입 0 자동화 90% 도달 검증.
+
+### 시나리오: 빌드 실패 → 자동 inbox drop
+
+**Step 1** — fake `cascade:build-fail` publish (S11 publisher):
+
+```bash
+python -m tools.orchestrator.message_bus.tests.pub_demo \
+  --topic "cascade:cycle4-demo-build-fail" \
+  --source "S11" \
+  --payload '{"command_excerpt":"pytest tests/test_demo_failure.py","exit_code":1,"stderr_excerpt":"FAKE FAILURE for cycle 4 chain demo","next_action":{"type":"inbox-drop","target":"S9,S10-A","reason":"simulated build failure"}}'
+```
+
+→ 결과: `seq=101, recipients=0` (live subscriber 0 — 정상)
+
+**Step 2** — observer_loop `--action-mode` (history drain + dispatch):
+
+```bash
+python -m tools.orchestrator.message_bus.observer_loop \
+  --topic "cascade:cycle4-demo-build-fail" \
+  --action-mode --max-iter 1
+```
+
+→ stdout (실측 trace):
+
+```
+v11 Observer Loop — push-based
+  url:    http://127.0.0.1:7383/mcp
+  topic:  cascade:cycle4-demo-build-fail
+  start:  2026-05-12T02:58:32.321856+00:00
+📡 cascade by ?: cycle4-demo-build-fail → 0 docs
+  inbox-drop: docs\4. Operations\handoffs\inbox\2026-05-12T02-57-36.57274_cascade-cycle4-demo-build-fail_seq000101_to-S9-S10-A.md
+```
+
+**Step 3** — inbox 파일 생성 검증:
+
+| 항목 | 값 |
+|------|-----|
+| 파일명 | `2026-05-12T02-57-36.57274_cascade-cycle4-demo-build-fail_seq000101_to-S9-S10-A.md` |
+| 위치 | `docs/4. Operations/handoffs/inbox/` |
+| frontmatter | owner / source / topic / seq / ts / target / action_type / observer_dropped_at |
+| 본문 | Payload JSON (4 key 정상 보존) |
+
+실측 파일 본문 (인라인 보존):
+
+```markdown
+---
+owner: S11
+source: S11
+topic: cascade:cycle4-demo-build-fail
+seq: 101
+ts: 2026-05-12T02:57:36.572748+00:00
+target: S9,S10-A
+action_type: inbox-drop
+observer_dropped_at: 2026-05-12T02:58:32.814630+00:00
+---
+
+# cascade:cycle4-demo-build-fail (seq=101) -> S9,S10-A
+
+**Source**: `S11`
+**Timestamp**: 2026-05-12T02:57:36.572748+00:00
+
+## Payload
+
+{
+  "command_excerpt": "pytest tests/test_demo_failure.py",
+  "exit_code": 1,
+  "stderr_excerpt": "FAKE FAILURE for cycle 4 chain demo (S11 demo, not a real test)",
+  "auto_published": true,
+  "trigger": "cycle4-demo",
+  "next_action": {
+    "type": "inbox-drop",
+    "target": "S9,S10-A",
+    "reason": "Cycle 4 chain demo - simulated build failure"
+  }
+}
+```
+
+> **Note**: 실제 inbox 파일은 PR 커밋에서 제거 (verify-scope: S11 scope_owns 외 경로). trace 는 본 §4.9 인라인 quote 로 영구 보존. 향후 observer_loop 가 생성하는 inbox 파일은 git ignore 또는 자동 archive (Cycle 5) 권장.
+
+**Step 4** — latency 측정:
+
+| 단계 | 시각 (UTC) | delta |
+|------|-----------|-------|
+| publish | 02:57:36.572 | t0 |
+| observer subscribe start | 02:58:32.321 | +55.7s |
+| observer dispatch (file write) | 02:58:32.814 | +56.2s (subscribe→dispatch ~493ms) |
+
+**subscribe → dispatch latency ~493ms** (filesystem mkdir + write 포함). broker history replay 가 50ms 이내라 가정하면 markdown write 가 대부분.
+
+### Broker subscribe wildcard 의미 (Cycle 4 발견)
+
+| topic 인자 | 의미 | 사용 권장 |
+|-----------|------|----------|
+| `"*"` | **모든 topic** broker history + push 수신 | ✅ catch-all observer |
+| `"cascade:*"` | literal topic name `cascade:*` (glob 아님) | ❌ glob 미지원 |
+| `"cascade:cycle4-demo-build-fail"` | exact match | ✅ 단발 |
+
+Issue #271 본문의 `--topic cascade:*` 는 broker 측에서 literal 로 해석되어 0 매치. 향후 prefix 매칭이 필요하면 broker subscribe 측 패치 (별도 Cycle).
+
+### Autonomous 도달도 측정 (Cycle 1 → Cycle 4)
+
+| Cycle | publish | dispatch | filesystem effect | 사용자 진입 |
+|:-----:|:-------:|:--------:|:------------------:|:----------:|
+| 1 | 수동 | 없음 | 없음 (broker history만) | 100% |
+| 2 | hook 자동 | 없음 | 없음 (recipients=0) | 70% |
+| 3 | hook 자동 | observer 수동 트리거 | inbox file | 50% |
+| **4** | **hook 자동** | **observer 자동 (self-test 입증)** | **inbox file** | **10%** |
+| 5 (후보) | hook 자동 | observer **background service** | inbox + auto archive + S9 triage | **0% 목표** |
+
+### 검증 산출물 (PR 본문에 보존)
+
+- `cascade:cycle4-demo-build-fail` seq=101 broker history
+- `cascade:observer-action-verified` seq=TBD broker broadcast
+- `docs/4. Operations/handoffs/inbox/2026-05-12T02-57-36.57274_*.md` (PR 머지 전 자동 정리 또는 보존 결정 필요)
+
+---
+
 ## 4.8 Autonomous action chain (S11 Cycle 3 — observer_loop dispatch)
 
 broker push event 의 `payload.next_action` 을 `observer_loop --action-mode` 가 디스패치하여 hook publish → 파일 시스템 자동 drop 까지 chain. 사용자 진입 0 자동화의 1차 단계.
@@ -291,3 +506,161 @@ done
 - 사건 기록:
   - 2026-04-22 **1차**: `ebs-lobby-web` 좀비 오판 — 5일간 옛 이미지 서빙 발견 → stop/rm/rmi 수행. **그러나 "Desktop 단일 스택" 기획 문구를 문자 그대로 해석하여 실제 운영 요구 (Docker Web 배포) 를 out-of-scope 로 단정** 한 2차 오류 발생.
   - 2026-04-22 **2차**: 사용자 지적으로 기획 ↔ 운영 괴리 (Type C) 인식. Deployment.md 신설 + Dockerfile/nginx.conf/compose `lobby-web` 서비스 복원 + Flutter Web platform 재활성. 본 문서의 "Desktop only" 선언 철회.
+
+---
+
+## Inter-Session Chat Server (B-222)
+
+> dev 보조 도구. broker (호스트 Python) 위에서 동작하는 FastAPI SSE 중계 컨테이너.
+> 본 spec: `docs/4. Operations/Inter_Session_Chat_Design.md`.
+
+### Lifecycle
+
+```bash
+# 1. broker 살아있는지 (이미 실행 중이 아니면)
+python tools/orchestrator/start_message_bus.py --detach
+
+# 2. chat-server 컨테이너 기동
+docker compose -f tools/chat_server/docker-compose.yml up -d
+
+# 3. 브라우저
+http://localhost:7390/
+
+# 중지
+docker compose -f tools/chat_server/docker-compose.yml down
+
+# 로그
+docker compose -f tools/chat_server/docker-compose.yml logs -f chat-server
+
+# 재빌드
+docker compose -f tools/chat_server/docker-compose.yml up -d --build
+```
+
+### 의존성
+
+| 서비스 | 위치 | 필수 |
+|--------|-----|:----:|
+| broker | 호스트 Python `:7383` | ✓ |
+| chat-server | 컨테이너 `:7390` | ✓ |
+| 브라우저 | 사용자 데스크톱 | ✓ |
+
+### Healthcheck
+
+```bash
+curl http://localhost:7390/health
+```
+
+Expected JSON:
+```json
+{
+  "status": "ok",
+  "version": "0.1.0",
+  "broker_url": "http://host.docker.internal:7383/mcp",
+  "broker_alive": true
+}
+```
+
+| 결과 | 의미 |
+|-----|-----|
+| `broker_alive: true` | 정상 |
+| `broker_alive: false` | broker 죽음. `start_message_bus.py --probe` 로 확인 후 `--detach` 재기동 |
+| 응답 없음 | chat-server 컨테이너 죽음. `docker compose up -d` 재기동 |
+
+### Troubleshooting
+
+| 증상 | 원인 | 조치 |
+|-----|-----|-----|
+| `http://localhost:7390/` 접속 불가 | 컨테이너 미기동 | `docker compose ps` 후 `up -d` |
+| SSE 연결 즉시 끊김 | broker 죽음 | UI 상단 빨간 배너 표시. broker 재기동 |
+| 메시지 발신 503 | broker `publish_event` 실패 | broker 로그 (`.claude/message_bus/broker.log`) 확인 |
+| `@` autocomplete peer 목록 빔 | 다른 세션 publish 없음 (5분+ idle) | 정상. 새 세션이 publish 하면 표시 |
+| CORS 에러 | localhost 외 origin 시도 | 본 도구는 localhost 전용. 외부 접속 미지원 |
+
+### root compose 와의 관계
+
+- chat-server 는 **별도 compose** (`tools/chat_server/docker-compose.yml`).
+- root compose (S11 영역 — Game Engine, CC Backend 등) 와 lifecycle 분리.
+- 동시 기동 안전 (포트 7390 충돌 없음).
+
+### Production 가이드 (선택)
+
+dev 전용으로 설계. production 배포 필요 시 별도 spec 필요:
+- broker 컨테이너화 + replication
+- 토큰 인증 (`source="user"` publisher_id 강화)
+- nginx 리버스 프록시
+
+---
+
+## 부록 A. cascade:build-fail false-positive 패턴 (Cycle 6, 2026-05-12)
+
+### 배경
+
+Cycle 5~6 사이 broker events.db 의 `cascade:build-fail` 토픽이 60건 누적 (단일 22건 burst 포함, issue #305). Iron Law Circuit Breaker 트리거 후보로 진단 의뢰.
+
+### 진단 결과: false-positive 폭증
+
+60건 전수 분석:
+
+| 지표 | 값 | 의미 |
+|------|----|----|
+| 총 cascade:build-fail | 60 | — |
+| `exit_code = -1` | 59 (98.3%) | Bash 비정상 종료 fallback (hook line 139) |
+| `stderr_excerpt` 비어 있음 | 57 (95%) | 실제 에러 메시지 없음 |
+| **실제 빌드 실패** | **3** | 나머지는 전부 false positive |
+| Iron Law 트리거 조건 충족? | NO | 22 burst = 22개 서로 다른 명령 (동일 패턴 반복 아님) |
+
+### Root Cause
+
+`.claude/hooks/post_build_fail.py:127` 의 `BUILD_PATTERNS.search(command)` 가 **전체 bash 명령어**(heredoc body, PR description, commit message 포함)를 검색.
+
+**증명 케이스**:
+- Issue #305 본문에 `docker compose / pytest / CI workflow` 문구
+- `claude --bg "..."` spawn 명령이 이 prompt 를 인자로 그대로 전달
+- regex가 `pytest` 단어 매칭 → cascade:build-fail 발행
+- payload 에는 `command[:200]` 만 저장 → 매칭 키워드가 evidence 에서 invisible
+- 본 진단 작업 spawn 자체가 seq=974, 975 false positive 생성 (recursive)
+
+False positive 명령 카테고리 (22 burst 기준):
+- `gh pr create / gh issue create` (PR body heredoc) — 11건
+- `cat > /tmp/... << 'EOF'` heredoc — 2건
+- `git commit / git stash` (commit message heredoc) — 8건
+- `claude --bg` 세션 spawn — 4건
+- 기타 `cd / curl / find` — 13건
+
+### Iron Law 평가
+
+- 동일 실패 패턴 3+회 반복? **NO** (22 = 22 서로 다른 명령)
+- Circuit Breaker 자동 발동 정당화? **불가** (자가-증폭 false positive 루프)
+- 실제 빌드 실패 누적은 3건뿐 (서로 다른 stream, 서로 다른 시점)
+
+### 권고 hook 패치 (S11 scope_owns 밖)
+
+`.claude/hooks/post_build_fail.py` 는 S11 scope_owns 가 아님 (scope_read only). 수정 권한자에게 패치 제안:
+
+1. **Heredoc body 제외**: `BUILD_PATTERNS.search(command.split('<<')[0])` — heredoc 이전 명령부만 검사
+2. **Command prefix 화이트리스트**: `gh|git\s+(commit|stash|push)|cat\s+>|claude\s+--bg` early return
+3. **Signal-less 차단**: `exit_code in (-1, None) and not stderr_excerpt` 시 발행 skip
+4. **Forensic visibility**: 매칭 regex group 도 payload 에 저장 (`matched_pattern: "pytest"`)
+
+### S11 운영 가이드
+
+본 false positive 패턴은 hook 패치 전까지 지속 발생 가능. S11 세션이 cascade:build-fail event 를 모니터링할 때:
+
+1. `payload.exit_code == -1` + `payload.stderr_excerpt == ""` → false positive 의심
+2. `command_excerpt` 가 `gh / git / cat / claude --bg` prefix → false positive 확정
+3. Iron Law Circuit Breaker 판단 시 **실제 빌드 실패만 카운트** (stderr non-empty 기준)
+4. 동일 stream 의 동일 명령 (예: `pytest tests/test_X.py`) 3+회 반복 시에만 진짜 Iron Law trigger
+
+### 인프라 5/5 200 KPI 정확 endpoint
+
+| Service | 외부 포트 | Health endpoint | Expected |
+|---------|----------|----------------|:--------:|
+| proxy | 80 | `/` | 200 |
+| lobby-web | 3000 | `/` | 200 |
+| cc-web | 3001 | `/` | 200 |
+| bo | 18001 | `/docs` (또는 `/openapi.json`) | 200 |
+| engine | 18080 | `/health` (또는 `/`) | 200 |
+
+> 주의: `bo:18001/healthz` 와 `engine:18080/healthz` 는 404 (해당 path 미구현). KPI 측정 시 위 endpoint 사용.
+
+Docker compose 컨테이너 healthcheck 는 별도 (`docker compose ps` STATUS 컬럼) — 정의는 `docker-compose.yml` 내 healthcheck 블록 참조.

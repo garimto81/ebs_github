@@ -96,6 +96,113 @@ def _is_ebs_endpoint(path: str) -> bool:
     return any(path.startswith(p) for p in EBS_API_PREFIXES)
 
 
+# team3 Engine (Harness_REST_API) 경로 — team2 routers/ scan 대상 아님.
+# Backend_HTTP.md 본문에 audit/snapshot 흐름 설명용으로 인용된다. 인용 위치마다
+# "Engine HTTP" / "Harness_REST_API" marker 가 있는 line 도 있고 없는 line 도
+# 있어 path prefix 기반 보조 필터가 필요.
+ENGINE_API_PATHS = ("/api/session",)
+
+
+def _is_engine_path(path: str) -> bool:
+    """team3 Engine Harness_REST_API 경로 인지 판별 (team2 scope 외)."""
+    return any(path.startswith(p) for p in ENGINE_API_PATHS)
+
+
+# ── SG-010 P11 (2026-05-12): spec walker §X.Y.Z 깊은 트리 매칭 인프라 ──
+#
+# 배경: P10 까지 line-level filter 만 사용 (deprecated_pat). 그러나 다음 false
+# positive 가 line-level 만으로 잡히지 않는다:
+#   1) §16.1 SG-008 결정 요약 행 — `| b6 | \`POST /sync/mock-seed\` | ... | §16.7 |`
+#      (decision summary, §16.6~16.10 detail 의 forward reference)
+#   2) Staff App API 대응 행 — `| **Staff** | \`GET /series/:sid/Staffs\` | ... | Staff App API 대응 |`
+#      (external system reference, not EBS endpoint)
+#   3) Engine HTTP 인용 — Backend_HTTP.md 본문에 team3 Harness_REST_API §2.1
+#      `POST /api/session` 인용 (team2 routers/ 미대상이므로 D2 오보고)
+#
+# P11 해결: 각 spec_pat 매치에 대해 (a) line-level marker (b) §X.Y.Z 섹션 경로
+# (c) 첫 컬럼 SG-008 ID 패턴 — 3중 필터.
+
+_HEADING_PAT = re.compile(r"(?m)^(#{2,5})\s+(\d+(?:\.\d+)*)\s+(.+?)\s*$")
+
+_LINE_REFERENCE_MARKERS = re.compile(
+    # 주의: "subpath 별칭" / "flat alias" 같은 alias marker 는 종종 진성 endpoint
+    # 정의 행에 함께 적힌다 (예: `| POST | \`/api/v1/sync/mock/seed\` | ... |
+    # §16.7 \`/sync/mock-seed\` 의 subpath 별칭 — 현 코드 구현 경로 |`). 이 row
+    # 의 first cell `/api/v1/sync/mock/seed` 는 실제 구현이므로 억제 X.
+    # → alias 단어 자체로 필터하지 말고, 명확한 "external/cross-team" marker 만 사용.
+    r"(Staff\s+App\s+API"     # external system reference (WSOP Staff)
+    r"|Phase\s+2\+?\s+only"    # 비-Phase 1 항목 (참고 only)
+    r"|Engine\s+HTTP"           # team3 Engine 인용 (team2 routers 미대상)
+    r"|Harness_REST_API"        # team3 Engine API 인용
+    r")"
+)
+
+# SG-008 결정 요약 행 첫 컬럼: `| b6 |`, `| a3 |`, `| b11 |` 등.
+# 행 전체에 `§\d+\.\d+` forward reference 가 함께 있으면 100% 결정 요약.
+_SG008_DECISION_ROW = re.compile(r"^\s*\|\s*[ab]\d+\s*\|.*§\d+(?:\.\d+)+\s*\|")
+
+
+def _build_heading_map(text: str) -> list[tuple[int, str, str]]:
+    """Spec 본문에서 §X.Y.Z 헤딩의 (offset, section_number, title) 목록."""
+    return [
+        (m.start(), m.group(2), m.group(3).strip())
+        for m in _HEADING_PAT.finditer(text)
+    ]
+
+
+def _section_for(headings: list[tuple[int, str, str]], offset: int) -> tuple[str, str]:
+    """offset 위치를 감싸는 가장 가까운 헤딩 (number, title) 반환.
+
+    Walker 의 핵심: line-level filter 가 놓치는 false positive 를 section path
+    로 분류한다. 예) "16.1" section 은 SG-008 b-분류 결정 요약 구역.
+    """
+    import bisect
+
+    if not headings:
+        return ("", "")
+    starts = [h[0] for h in headings]
+    idx = bisect.bisect_right(starts, offset) - 1
+    if idx < 0:
+        return ("", "")
+    return (headings[idx][1], headings[idx][2])
+
+
+def _is_reference_or_alias_line(
+    text: str,
+    match_start: int,
+    headings: list[tuple[int, str, str]] | None = None,
+) -> bool:
+    """spec_pat 매치가 reference / alias / external system 행인지 판별.
+
+    line-level + section-level 3중 필터:
+      (1) `_LINE_REFERENCE_MARKERS` 동일 line marker (Staff App API / Engine HTTP / 별칭)
+      (2) `_SG008_DECISION_ROW` 첫 컬럼 [ab]\\d+ + §X.Y 참조 셀 (§16.1 결정 요약)
+      (3) §X.Y.Z 섹션 번호가 "16.1" (SG-008 결정 요약 sub-section) 인 경우
+    """
+    # 동일 line 추출
+    line_start = text.rfind("\n", 0, match_start) + 1
+    line_end = text.find("\n", match_start)
+    if line_end < 0:
+        line_end = len(text)
+    line = text[line_start:line_end]
+
+    # (1) line marker
+    if _LINE_REFERENCE_MARKERS.search(line):
+        return True
+
+    # (2) SG-008 decision row (첫 컬럼 ID + §X.Y forward ref)
+    if _SG008_DECISION_ROW.search(line):
+        return True
+
+    # (3) §X.Y.Z 섹션 경로 — §16.1 (결정 요약) sub-section
+    if headings is not None:
+        num, _title = _section_for(headings, match_start)
+        if num == "16.1":
+            return True
+
+    return False
+
+
 def detect_api() -> ContractReport:
     """REST 엔드포인트 drift — Backend_HTTP.md / Auth_and_Session.md ↔ team2 routers."""
     rep = ContractReport(contract="api")
@@ -141,6 +248,11 @@ def detect_api() -> ContractReport:
         line = text[line_start:line_end]
         return bool(deprecated_pat.search(line))
 
+    # SG-010 P11: §X.Y.Z 섹션 경로 walker — line-level filter 가 놓치는 SG-008
+    # decision summary / Staff App API / Engine HTTP / alias 행을 section path 와
+    # row pattern 으로 추가 분류한다.
+    headings = _build_heading_map(spec_text)
+
     spec_set_all: set[tuple[str, str]] = set()
     for m in spec_pat.finditer(spec_text):
         method = m.group(1).upper()
@@ -150,6 +262,9 @@ def detect_api() -> ContractReport:
             continue
         if _is_deprecated_line(spec_text, m.start()):
             continue
+        # P11: reference / alias / external system row 제외
+        if _is_reference_or_alias_line(spec_text, m.start(), headings):
+            continue
         spec_set_all.add((method, _normalize_path(raw_path)))
     for m in spec_pat_table.finditer(spec_text):
         method = m.group(1).upper()
@@ -158,12 +273,24 @@ def detect_api() -> ContractReport:
             continue
         if _is_deprecated_line(spec_text, m.start()):
             continue
+        # P11: spec_pat_table 매치도 동일 필터 적용 (Staff App API 컬럼 등).
+        # 단, 정식 endpoint 정의 행은 일반적으로 §X.Y 참조나 alias marker 없음 →
+        # 정상적인 정의에는 영향 없음.
+        if _is_reference_or_alias_line(spec_text, m.start(), headings):
+            continue
         spec_set_all.add((method, _normalize_path(raw_path)))
 
     # WSOP LIVE 참조 경로 필터 — EBS 엔드포인트 규약 외 경로는 기획 본문 서술용 차용
     wsop_native_skipped: list[tuple[str, str]] = []
+    engine_skipped: list[tuple[str, str]] = []
     spec_set: set[tuple[str, str]] = set()
     for method, path in spec_set_all:
+        # P11 (2026-05-12): team3 Engine `/api/session` 경로는 team2 scope 외.
+        # Backend_HTTP.md 본문 audit/snapshot 흐름에 인용되어 line-level filter 가
+        # 일부 인용 위치만 잡고 누락하는 경우 보강.
+        if _is_engine_path(path):
+            engine_skipped.append((method, path))
+            continue
         # /api/v1 prefix 없는 경로지만 stripped 형태로 문서화된 경우(예: /events) 는
         # code_set 매칭 단계에서 D1 prefix 차이로 흡수되므로 유지.
         # /Series/, /EventFlights/ 같은 WSOP 원본 경로(PascalCase segment) 만 필터.
@@ -243,7 +370,8 @@ def detect_api() -> ContractReport:
     rep.d4_count = len(shared) + len(prefix_policy_matches)
     rep.scanner_note = (
         f"scanned {len(spec_set)} spec endpoints "
-        f"(+ {len(wsop_native_skipped)} WSOP-native refs skipped) / "
+        f"(+ {len(wsop_native_skipped)} WSOP-native refs"
+        f" + {len(engine_skipped)} Engine API refs skipped) / "
         f"{len(code_set)} code endpoints. 정규식 기반 best-effort + §1.1 prefix policy."
     )
     return rep
@@ -779,12 +907,32 @@ def detect_settings() -> ContractReport:
         REPO / "docs" / "2. Development" / "2.1 Frontend" / "Settings",
         REPO / "docs" / "2. Development" / "2.4 Command Center",
     ]
+    # SG-010 P10 (Cycle 5, 2026-05-12) — path-aware scope 제외:
+    # CC Settings.md (BS-03) 는 BO Config 스코프 (configs 테이블의 backend key,
+    # `scope='global/series/event/table'` override chain) 명세 문서이고,
+    # team1-frontend/lib/features/settings 는 team1 UI form 필드 (camelCase) 영역.
+    # 두 도메인을 한 detector 에 비교하면 backend BO Config key (rfid_mode,
+    # cap_bb_multiplier, allow_run_it_twice 등) 가 team1 UI code 미존재 D2 false
+    # positive 로 나타남. 따라서 CC Settings.md 파일만 spec source 에서 제외.
+    #
+    # 주의: `2.4 Command Center/Settings.md` 의 sibling 인 `Overview.md` 등은 이미
+    # 파일명 whitelist (`Outputs.md`/`Graphics.md`/.../`Settings.md`/`UI.md`) 가 처리
+    # 하므로 별 path-skip 가 필요한 항목은 Settings.md 단일.
+    _CC_SETTINGS_PATHS = {
+        REPO
+        / "docs"
+        / "2. Development"
+        / "2.4 Command Center"
+        / "Settings.md",
+    }
     spec_text = ""
     spec_sources: list[str] = []
     for d in doc_dirs:
         if not d.exists():
             continue
         for md in d.glob("*.md"):
+            if md in _CC_SETTINGS_PATHS:
+                continue  # CC scope (BO Config) — team1 UI 영역과 분리 (P10)
             # 파일명이 Settings 또는 6탭 + UI.md (legacy SG-003 consolidated spec) 경우만
             name = md.name
             if name in (
@@ -850,12 +998,24 @@ def detect_settings() -> ContractReport:
 
     # 점 구분 identifier 에서 마지막 segment 추출 (예: `gfx.show_leaderboard` → show_leaderboard)
     # dotted ref 는 명백한 setting key 이므로 whitelist 로 필터 bypass
+    #
+    # SG-010 P9 (Cycle 4, 2026-05-12) — prefix-aware filtering:
+    # `gfx.*` / `graphic.*` / `graphics.*` / `overlay.*` 는 graphics overlay scope 이며
+    # user-configurable settings 와 별 영역이므로 settings detector 에서 제외.
+    # 이 변경은 issue #269 의 P3 false positive 교훈 (`fold_delay`/`fold_display` 등
+    # `gfx.*` prefix 키가 spec 에 풍부하지만 team1 settings code 에 없음 — 다른 영역)
+    # 에 대한 정밀화. settings 영역 prefix (stats / display / output / rules /
+    # preferences / pref) 는 정상 수집.
+    _NON_SETTINGS_PREFIXES = {"gfx", "graphic", "graphics", "overlay"}
     for m in re.finditer(
-        r"`([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)+)`",
+        r"`([a-zA-Z_][a-zA-Z0-9_]*)((?:\.[a-zA-Z_][a-zA-Z0-9_]*)+)`",
         spec_text,
     ):
-        dotted = m.group(1)
-        last_segment = dotted.rsplit(".", 1)[-1]
+        prefix = m.group(1).lower()
+        if prefix in _NON_SETTINGS_PREFIXES:
+            continue  # graphics scope — settings detector 에서 제외 (P9)
+        rest = m.group(2)  # ".sub1.sub2..."
+        last_segment = rest.rsplit(".", 1)[-1]
         if len(last_segment) >= 3:
             spec_whitelist.add(last_segment)
     # YAML frontmatter 의 `reimplementability_notes` 값 안의 slash-separated list 에서

@@ -91,6 +91,38 @@ def check_scope(target_rel, team_data):
     return True
 
 
+def _detect_cascade_impact(target_rel, repo_root):
+    """B-222 L4 prereq — chat advisory feed.
+
+    Run `tools.doc_discovery.impact_of` to find docs impacted by editing `target_rel`.
+    Returns list of relative paths (max 20). Silent [] on any error.
+    Used by emit_chat_advisory (chat:room:design system message).
+    """
+    try:
+        sys.path.insert(0, str(repo_root))
+        from tools import doc_discovery
+        docs = doc_discovery.scan_docs()
+        result = doc_discovery.impact_of(docs, target_rel)
+        paths = []
+        for _bucket, metas in result.items():
+            for m in metas:
+                p = getattr(m, "path", None)
+                if p and str(p) != target_rel:
+                    paths.append(str(p))
+        # dedupe + cap
+        seen = set()
+        unique = []
+        for p in paths:
+            if p not in seen:
+                seen.add(p)
+                unique.append(p)
+            if len(unique) >= 20:
+                break
+        return unique
+    except Exception:
+        return []
+
+
 def check_dependency_status(team_data):
     """SessionStart hook과 동일 로직 (간소화)"""
     blocked_by = team_data.get('blocked_by', [])
@@ -182,6 +214,21 @@ def main():
     # SCOPE 차단
     if check_scope(target_rel, team_data):
         sys.exit(2)
+
+    # B-222 L4 prereq — cascade chat advisory (non-blocking, fire-and-forget)
+    # impacted docs 발견 시 chat:room:design 에 system message publish.
+    # broker dead / doc_discovery 실패 모두 silent skip (hook 차단 X).
+    if target_rel.endswith('.md'):
+        try:
+            impacted = _detect_cascade_impact(target_rel, repo_root)
+            if impacted:
+                from tools.chat_server.hook_integration import emit_chat_advisory
+                emit_chat_advisory(
+                    target_rel, impacted,
+                    editor_team=team_data.get('team_id', 'unknown'),
+                )
+        except Exception as _e:
+            sys.stderr.write(f"[chat-advisory] silent skip: {_e}\n")
 
     sys.exit(0)
 
