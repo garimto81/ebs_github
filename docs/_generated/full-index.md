@@ -322,6 +322,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md` | Variants & Evaluation — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Rules/Engine_Defaults.md` | Engine Defaults — Settings 9 keys 정합 | team3 (S8 Cycle 4) | contract | API-04.4 |
 | `docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_State.md` | Multi-Hand State — Button rotate + handNumber 증가 (Cycle 5 v02) | team3 (S8 Cycle 5) | contract | API-04.5 |
+| `docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_v03.md` | Multi-Hand v03 — straddle_seat 이동 + ante_override + run_it_twice 분할 pot (Cycle 6) | team3 (S8 Cycle 6) | contract | API-04.6 |
 | `docs/2. Development/2.4 Command Center/2.4 Command Center.md` | 2.4 Command Center | ci | generated | - |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | RFID HAL — Operator Behavior | team4 | internal | BS-04-04 |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md` | RFID HAL Interface Contract | team4 | contract | API-03 |
@@ -737,4 +738,5 @@ tier: generated
 | `docs/_journey/2026-05-12_smem_cycle4.md` | SMEM Cycle 4 — Cycle 3+4 weekly diff + audit | SMEM | - | - |
 | `docs/_journey/2026-05-12_smem_cycle5.md` | SMEM Cycle 5 — Cycle 4 case study + weekly diff | SMEM | - | - |
 | `docs/_journey/2026-05-12_smem_cycle6.md` | SMEM Cycle 6 — Cycle 5 case study + weekly diff (architecture pivot + Iron Law 임계) | SMEM | - | - |
+| `docs/_journey/2026-05-12_smem_cycle7.md` | SMEM Cycle 7 — Cycle 6 case study + v02 milestone 영구 기록 | SMEM | - | - |
 | `docs/examples/README.md` | Examples | conductor | internal | - |
