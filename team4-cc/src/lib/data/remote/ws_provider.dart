@@ -206,6 +206,12 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
       read(potTotalProvider.notifier).state = 0;
       read(boardCardsProvider.notifier).state = const [];
       read(hasBetToMatchProvider.notifier).state = false;
+      // 2026-05-12 Cycle 6 #313 — 9-row state reset on next-hand.
+      // SeatCell 9개 행 (ActingStrip + SEAT/POS/CTRY/NAME/CARDS/STACK/BET/LAST)
+      // 중 per-hand 표시 상태인 CARDS/BET/LAST 만 초기화. 좌석 점유/이름/스택은
+      // 보존 (Engine 이 ChipChange 등 별도 이벤트로 stack 갱신). folded 좌석은
+      // active 로 부활, sittingOut 좌석은 그대로 유지 (운영자 해제 대기).
+      read(seatsProvider.notifier).newHandReset();
       _fireSfx(read, SfxId.newHandShuffle);
       // 2026-05-10 B-220 — set actionOn to first active seat after dealer.
       // Publisher may include `first_action_seat`; otherwise derive from `dealer_seat`.

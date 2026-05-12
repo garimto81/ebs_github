@@ -1,0 +1,122 @@
+### v02 — CC 2-Hand Flow (multi-hand state — Cycle 6 Issue #313)
+###
+### S3 Cycle 6 신규 시나리오 (2026-05-12). S8 Cycle 5 #287 의 Engine multi-hand
+### state (POST /api/session/{id}/next-hand) 와 CC 측 9-row state reset 을
+### 결합한 2-hand 회귀 검증 시나리오.
+###
+### 목적:
+###   v01 (1-hand-flow) 는 Engine harness 단독 1 hand. 본 v02 는 그 위에
+###   Hand 1 → POST /next-hand → Hand 2 흐름을 검증하여 multi-hand
+###   button rotation + handNumber 증가 + CC 측 9-row reset 까지 통합.
+###
+### Pipeline (3 단계, 모두 HTTP):
+###   Setup   — POST /api/session (NL Hold'em, 6 seats)
+###   Hand 1  — GET /api/session/{id} (handNumber=0, dealer index 검증)
+###   Next-Hand — POST /api/session/{id}/next-hand (rotation 발생)
+###   Verify  — GET /api/session/{id} (handNumber=1, dealer/SB/BB 회전 확인)
+###
+### Coverage:
+###   - S8 #287 ManualNextHand rotation 회귀
+###   - CC 9-row state reset 신호 (HandStarted 이벤트 동반 시)
+###   - Foundation.md Ch.5 multi-hand 의존성 사슬
+###
+### CC 측 회귀 검증은 별도 Playwright spec:
+###   integration-tests/playwright/tests/v02-cc-2-hand.spec.ts
+###
+### 실행 검증: 2026-05-12 S3 Cycle 6 autonomous iteration 진행 중.
+
+@engine = http://localhost:18080
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase A: Setup — Engine session 생성
+# ──────────────────────────────────────────────────────────────────────
+
+### A.1 GET /health — Engine 가동 확인 (preflight)
+GET {{engine}}/health
+
+# 실제 응답: 200 OK
+# {"status":"ok","service":"ebs-game-engine"}
+
+### A.2 POST /api/session — NL Hold'em 6-handed 세션 생성
+# @name newSession
+POST {{engine}}/api/session
+Content-Type: application/json
+
+{
+  "variant": "nlh",
+  "seats": 6
+}
+
+# 실제 응답: 200 OK
+# {
+#   "sessionId": "<10자 base36>",
+#   "street": "preflop",
+#   "seats": [...],
+#   "pot": {"main": 15, "total": 15, "sides": []},
+#   "handNumber": 0
+# }
+#
+# Assertion:
+#   - handNumber === 0 (Hand 1 진행 중, 종료 시 1 로 증가)
+#   - seats[0].isDealer === true (Seat 1)
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase B: Hand 1 — 현 상태 확인 (rotation 전)
+# ──────────────────────────────────────────────────────────────────────
+
+### B.1 GET /api/session/{sessionId} — Hand 1 baseline 검증
+GET {{engine}}/api/session/{{newSession.response.body.sessionId}}
+
+# Assertion:
+#   - response.handNumber === 0
+#   - seats[0].isDealer === true       (Seat 1 = dealer)
+#   - seats[1].currentBet === 5        (Seat 2 = SB)
+#   - seats[2].currentBet === 10       (Seat 3 = BB)
+#   - street === "preflop"
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase C: Next-Hand — ManualNextHand event 발행 (#287)
+# ──────────────────────────────────────────────────────────────────────
+
+### C.1 POST /api/session/{id}/next-hand — Hand 2 진입
+# @name nextHand
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/next-hand
+Content-Type: application/json
+
+# 편의 wrapper — POST /event {type: manual_next_hand} 와 동치.
+# Spec: docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_State.md
+#
+# 실제 응답: 200 OK with full session state (post-rotation).
+#
+# Assertion:
+#   - response.handNumber === 1 (0 → 1 증가)
+#   - seats[1].isDealer === true (Seat 2 로 button 회전)
+#   - seats[0].isDealer === false (이전 dealer 해제)
+#   - seats[].holeCards === [] (모든 좌석 카드 reset)
+#   - seats[].currentBet === 0 (bet reset, SB/BB 는 새 좌석으로 이동)
+#   - pot.main === 15 (새 SB+BB)
+#   - community === [] (board reset)
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase D: Verify — Hand 2 상태 검증
+# ──────────────────────────────────────────────────────────────────────
+
+### D.1 GET /api/session/{sessionId} — Hand 2 진입 확인
+GET {{engine}}/api/session/{{newSession.response.body.sessionId}}
+
+# Assertion:
+#   - handNumber === 1 (변경 영구화)
+#   - 회전 규칙 (3+ active 표준):
+#       - dealer: Seat 1 → Seat 2
+#       - SB: Seat 2 → Seat 3
+#       - BB: Seat 3 → Seat 4
+#   - street === "preflop"
+
+# ──────────────────────────────────────────────────────────────────────
+# CC 측 검증 (별도 Playwright spec)
+# ──────────────────────────────────────────────────────────────────────
+#
+# integration-tests/playwright/tests/v02-cc-2-hand.spec.ts 가:
+#   - StatusBar 의 Hand# 표시 1 → 2 전환 캡처
+#   - 9-row state (SeatCell CARDS/BET/LAST) reset 시각 검증
+#   - test-results/v02-cc/ 에 스크린샷 저장

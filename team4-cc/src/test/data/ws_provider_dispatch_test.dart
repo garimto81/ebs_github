@@ -11,9 +11,11 @@ import 'package:ebs_cc/rfid/providers/rfid_reader_provider.dart';
 import 'package:ebs_cc/features/command_center/providers/action_button_provider.dart';
 import 'package:ebs_cc/features/command_center/providers/hand_display_provider.dart';
 import 'package:ebs_cc/features/command_center/providers/hand_fsm_provider.dart';
+import 'package:ebs_cc/features/command_center/providers/seat_provider.dart';
 import 'package:ebs_cc/features/command_center/providers/undo_provider.dart';
 import 'package:ebs_cc/features/command_center/services/undo_stack.dart';
 import 'package:ebs_cc/models/enums/hand_fsm.dart';
+import 'package:ebs_cc/models/enums/seat_status.dart';
 
 void main() {
   // Audio SFX dispatch uses platform channels; binding must exist.
@@ -52,6 +54,53 @@ void main() {
       expect(container.read(potTotalProvider), 0);
       expect(container.read(boardCardsProvider), isEmpty);
       expect(container.read(hasBetToMatchProvider), false);
+    });
+
+    // Cycle 6 #313 — 9-row state indicator reset on next-hand.
+    test('triggers newHandReset — 9-row CARDS/BET/LAST cleared, folded → active', () {
+      container = _freshContainer();
+      final seats = container.read(seatsProvider.notifier);
+
+      // Seed Hand 1 end-state across 9-row SeatCell display.
+      seats.seatPlayer(
+        1,
+        const PlayerInfo(id: 1, name: 'A', stack: 10000, countryCode: 'US'),
+      );
+      seats.seatPlayer(
+        4,
+        const PlayerInfo(id: 4, name: 'B', stack: 10000, countryCode: 'US'),
+      );
+      seats.setDealer(1);
+      seats.setHoleCards(1, [const HoleCard(suit: 's', rank: 'A')]);
+      seats.setCurrentBet(4, 800);
+      seats.markFolded(4);
+      seats.setActionOn(1);
+
+      // Dispatch HandStarted (Hand 2 — next-hand from engine).
+      dispatchIncomingEventForTest(
+        container,
+        <String, dynamic>{
+          'type': 'HandStarted',
+          'hand_id': 99,
+          'hand_number': 2,
+          'dealer_seat': 4,
+        },
+      );
+
+      // Verify 9-row reset behavior.
+      final s = container.read(seatsProvider);
+      final s1 = s.firstWhere((x) => x.seatNo == 1);
+      final s4 = s.firstWhere((x) => x.seatNo == 4);
+
+      expect(s1.holeCards, isEmpty, reason: 'CARDS row reset');
+      expect(s4.currentBet, 0, reason: 'BET row reset');
+      expect(s4.activity, PlayerActivity.active,
+          reason: 'LAST row: folded → active');
+      // Player + stack preserved.
+      expect(s1.player?.name, 'A');
+      expect(s4.player?.stack, 10000);
+      // handNumber transitioned 1 → 2.
+      expect(container.read(handNumberProvider), 2);
     });
   });
 

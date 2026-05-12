@@ -278,6 +278,27 @@ class SeatNotifier extends StateNotifier<List<SeatState>> {
     ];
   }
 
+  /// Reset per-hand seat state for HandStarted (Cycle 6 #313).
+  ///
+  /// Clears all per-hand display state across the 9 SeatCell rows
+  /// (CARDS / BET / LAST). Folded seats become active; sitting-out seats
+  /// remain sitting-out (re-activation is operator-driven via toggleSitOut).
+  /// Position flags (isDealer / isSB / isBB) are preserved — engine
+  /// publishes a subsequent GameChanged / PositionShifted to update them.
+  void newHandReset() {
+    state = [
+      for (final s in state)
+        s.copyWith(
+          holeCards: const [],
+          currentBet: 0,
+          actionOn: false,
+          activity: s.activity == PlayerActivity.sittingOut
+              ? PlayerActivity.sittingOut
+              : PlayerActivity.active,
+        ),
+    ];
+  }
+
   // -- bulk ------------------------------------------------------------------
 
   /// Bulk replace (server sync / reconnect).
