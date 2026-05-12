@@ -1,0 +1,9 @@
+{
+  "phase": "A1-health",
+  "status": 200,
+  "note": "",
+  "body": {
+    "status": "ok",
+    "service": "ebs-game-engine"
+  }
+}

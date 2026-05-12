@@ -1,0 +1,268 @@
+### v02 — 2-Hand Flow (button rotate + SB/BB shift via /next-hand)
+###
+### S9 Cycle 6 Wave 3 신규 시나리오 (2026-05-12, issue #311).
+### 본 시나리오는 v01 의 1-hand flow 위에 multi-hand state transition 을
+### 검증한다. Hand 1 (v01 동일) → POST /api/session/:id/next-hand →
+### Hand 2 setup 회전 (button +1, handNumber=2, state reset) 검증.
+###
+### 의존성:
+###   - S8 Cycle 5 PR #301 (issue #287) — Engine harness POST /next-hand
+###     endpoint + ManualNextHand event handler 머지 완료.
+###     코드: team3-engine/lib/harness/server.dart (l.117 router, l.428 handler)
+###     코드: team3-engine/lib/engine.dart (l.765 _handleManualNextHandFull)
+###     테스트: team3-engine/test/harness/next_hand_endpoint_test.dart
+###     스펙: docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_State.md
+###
+### Pipeline (10 phase):
+###   Phase A — Setup (health, variants, session 생성)
+###   Phase B — Hand 1 preflop fold-to-BB (5 fold events)
+###   Phase C — Hand 1 PotAward (BB idx 2 win)
+###   Phase D — Hand 1 HandEnd (auto-rotate dealer 0->1, handNumber 0->1)
+###   Phase E — Hand 1 final state 검증
+###   Phase F — POST /next-hand (Hand 2 setup: dealer 1->2, handNumber 1->2) [KEY]
+###   Phase G — Hand 2 rotation + state-reset 검증
+###   Phase H — 2nd POST /next-hand (round-robin: dealer 2->3, handNumber 2->3)
+###   Phase I — Round-robin 후 상태 검증 (folded->active 재설정 포함)
+###   Phase J — Final session integrity (handNumber=3, dealer=3, 6 active seats)
+###
+### Coverage:
+###   - Cycle 5 issue #287 (multi-hand state) 회귀 보장
+###   - hand_end 자동 회전 + /next-hand 명시 회전 동시 검증
+###   - state reset: community=[], currentBet=0, status folded->active
+###   - sbSeat/bbSeat 위치 변화 (toJson 비노출 — 위치 계산으로 검증)
+###
+### 실행 검증: 2026-05-12 S9 Cycle 6 — Engine harness :18080 직결.
+### Evidence: integration-tests/evidence/cycle6-2026-05-12/v02-2-hand-flow/
+
+@engine = http://localhost:18080
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase A: Setup — Engine session 생성 (v01 동일 패턴)
+# ──────────────────────────────────────────────────────────────────────
+
+### A.1 GET /health — Engine 가동 확인
+GET {{engine}}/health
+
+### A.2 GET /api/variants — 지원 variant 확인
+GET {{engine}}/api/variants
+
+### A.3 POST /api/session — NL Holdem 6-handed 세션 생성
+# @name newSession
+POST {{engine}}/api/session
+Content-Type: application/json
+
+{
+  "variant": "nlh",
+  "seats": 6
+}
+
+# Assertion (Phase A):
+#   - sessionId matches /^[a-z0-9]+$/
+#   - street === preflop
+#   - dealerSeat === 0
+#   - handNumber === 0
+#   - seats[0].isDealer === true
+#   - pot.main === 15
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase B: Hand 1 preflop — fold to BB (v01 동일)
+# Dealer button on seat 1 (idx 0). 6-handed action order:
+#   UTG (idx 3) -> idx 4 -> idx 5 -> dealer (idx 0) -> SB (idx 1) -> BB (idx 2) winner
+# ──────────────────────────────────────────────────────────────────────
+
+### B.1 POST event — Seat 4 (UTG, idx 3) fold
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "fold",
+  "seatIndex": 3
+}
+
+### B.2 POST event — Seat 5 (idx 4) fold
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "fold",
+  "seatIndex": 4
+}
+
+### B.3 POST event — Seat 6 (idx 5) fold
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "fold",
+  "seatIndex": 5
+}
+
+### B.4 POST event — Seat 1 (dealer, idx 0) fold
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "fold",
+  "seatIndex": 0
+}
+
+### B.5 POST event — Seat 2 (SB, idx 1) fold
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "fold",
+  "seatIndex": 1
+}
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase C: Hand 1 Pot Award
+# ──────────────────────────────────────────────────────────────────────
+
+### C.1 POST event — pot_awarded to BB (idx 2)
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "pot_awarded",
+  "awards": {
+    "2": 15
+  }
+}
+
+# Assertion:
+#   - pot.main === 0
+#   - seats[2].stack === 1005 (1000 - BB 10 + pot 15)
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase D: Hand 1 HandEnd (Engine 자동 dealer 회전)
+# ──────────────────────────────────────────────────────────────────────
+
+### D.1 POST event — hand_end
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "hand_end"
+}
+
+# Assertion (Engine §_endHandFull l.682-704):
+#   - handNumber === 1 (0 -> 1, hand_end 자동 증가)
+#   - dealerSeat === 1 (0 -> 1, hand_end 자동 회전 +1)
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase E: Hand 1 final state 검증
+# ──────────────────────────────────────────────────────────────────────
+
+### E.1 GET /api/session/{id} — Hand 1 종료 상태 회수
+GET {{engine}}/api/session/{{newSession.response.body.sessionId}}
+
+# Assertion:
+#   - handNumber === 1, dealerSeat === 1
+#   - pot.main === 0
+#   - 1 active seat (winner BB idx 2), 5 folded
+#   - seats[2].stack === 1005 (winner)
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase F: POST /next-hand (Hand 2 setup) — KEY ENDPOINT 검증
+#
+# /next-hand 는 Cycle 5 issue #287 신규 추가. Triggers:
+#   - dealerSeat += 1 -> 1 -> 2
+#   - sbSeat / bbSeat 재계산
+#   - handNumber += 1 -> 1 -> 2
+#   - street -> idle, actionOn -> -1
+#   - per-seat reset: holeCards=[], currentBet=0
+#   - isDealer flag 갱신
+#   - folded -> active 복귀 (Engine l.820-822)
+#   - pot.main=0
+# ──────────────────────────────────────────────────────────────────────
+
+### F.1 POST /next-hand — Hand 2 회전 트리거 (KEY)
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/next-hand
+
+# Assertion (Engine §_handleManualNextHandFull l.765-830):
+#   - handNumber === 2 (1 -> 2)
+#   - dealerSeat === 2 (1 -> 2, +1 회전)
+#   - seats[2].isDealer === true, others false
+#   - seats[i].currentBet === 0 for all i
+#   - seats[i].status === active for all i
+#   - pot.main === 0
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase G: Hand 2 dealer 회전 + state reset 검증
+# ──────────────────────────────────────────────────────────────────────
+
+### G.1 GET /api/session/{id} — Hand 2 setup 결과 검증
+GET {{engine}}/api/session/{{newSession.response.body.sessionId}}
+
+# Assertion (Phase G):
+#   - handNumber === 2, dealerSeat === 2
+#   - seats[2].isDealer === true (others false)
+#   - community === []
+#   - all seats[].currentBet === 0
+#   - all 6 seats status === active
+#
+# SB/BB 위치 (toJson 비노출 — 위치 계산):
+#   - Hand 1 (dealer=0): SB=1, BB=2
+#   - Hand 2 (dealer=2): SB=3, BB=4
+#   - SB shift +2, BB shift +2, dealer +1 (사용자 spec 일치)
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase H: 2nd /next-hand — round-robin 성질 검증
+# ──────────────────────────────────────────────────────────────────────
+
+### H.1 POST /next-hand — 2nd 회전 (Hand 3 setup)
+POST {{engine}}/api/session/{{newSession.response.body.sessionId}}/next-hand
+
+# Assertion:
+#   - handNumber === 3 (2 -> 3)
+#   - dealerSeat === 3 (2 -> 3, +1 회전)
+#   - seats[3].isDealer === true, others false
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase I: Round-robin 후 상태 검증 + folded->active 복귀 재확인
+# ──────────────────────────────────────────────────────────────────────
+
+### I.1 GET /api/session/{id} — 2nd 회전 결과 검증
+GET {{engine}}/api/session/{{newSession.response.body.sessionId}}
+
+# Assertion:
+#   - handNumber === 3, dealerSeat === 3
+#   - seats[3].isDealer === true
+#   - 5 dealer-not seats: isDealer === false
+#   - 모든 seat status === active
+#   - community === [], 모든 seats[].currentBet === 0
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase J: Final session integrity (DoD 종합 검증)
+# ──────────────────────────────────────────────────────────────────────
+
+### J.1 GET /api/session/{id} — 최종 누적 상태
+GET {{engine}}/api/session/{{newSession.response.body.sessionId}}
+
+# DoD Assertion (cumulative):
+#   - sessionId 동일
+#   - handNumber === 3 (Hand 1 hand_end + /next-hand × 2 = 3 증가)
+#   - dealerSeat === 3 (0 -> 1 -> 2 -> 3)
+#   - 6 seats 모두 active 상태
+#   - 모든 stack 보존 (winner seat[2].stack === 1005, others 1000 or 995)
+
+# ──────────────────────────────────────────────────────────────────────
+# Definition of Done (v02 검증 완료 기준)
+# ──────────────────────────────────────────────────────────────────────
+#
+# - [x] integration-tests-e2e.yml CI v02 priority smoke step 통과
+# - [x] 모든 step HTTP 200/201 + assertion 통과
+# - [x] Cycle 5 issue #287 (multi-hand state) 회귀 보장
+# - [x] hand_end 자동 회전 (E.1) + /next-hand 명시 회전 (F.1, H.1) 양쪽 검증
+# - [x] handNumber 증가 (0 -> 1 -> 2 -> 3) 누적 검증
+# - [x] dealer 회전 (0 -> 1 -> 2 -> 3) +1 stride 일관성 검증
+# - [x] state reset (community, currentBet, folded->active) 검증
+#
+# Out-of-scope:
+#   - Hand 2 실제 play-through (blinds 미게재 — 별도 hand_start trigger 필요)
+#   - SB/BB seat 필드 직접 검증 (toJson 비노출 — 위치 계산 기반 간접 검증)
+#   - 6회 완전 round-robin (dart unit test next_hand_endpoint_test.dart 담당)
+#   - WebSocket broadcast 검증 (v99 영역)
+#
+# 본 시나리오 작성 + 실행 검증: 2026-05-12 S9 Cycle 6 Wave 3 (issue #311)

@@ -1,0 +1,55 @@
+=== Scenario: v02-2-hand-flow.http (Engine harness multi-hand) ===
+Date: 2026-05-12T07:38:35.995760Z
+
+--- Phase A: Setup ---
+  A.1 /health → HTTP 200 | {'status': 'ok', 'service': 'ebs-game-engine'}
+  A.2 /api/variants → HTTP 200 | nlh: True
+  A.3 POST /api/session → HTTP 201 | sessionId=mp2bk9l28b
+      street=preflop pot.main=15 dealer=0 handNumber=0
+
+--- Phase B: Hand 1 preflop fold-to-BB ---
+  B1 fold seat[3] → HTTP 200 | status=folded
+  B2 fold seat[4] → HTTP 200 | status=folded
+  B3 fold seat[5] → HTTP 200 | status=folded
+  B4 fold seat[0] → HTTP 200 | status=folded
+  B5 fold seat[1] → HTTP 200 | status=folded
+  Phase B end: active=1, winner_idx=2 (expected BB=2)
+
+--- Phase C: PotAward ---
+  C.1 pot_awarded → HTTP 200 | seat[2].stack=1005 (expected 1005) | pot.main=0
+
+--- Phase D: HandEnd (Engine 자동 dealer 회전) ---
+  D.1 hand_end → HTTP 200 | handNumber=1 (expected 1) | dealerSeat=1 (expected 1, +1 회전)
+
+--- Phase E: Hand 1 final state 검증 ---
+  E.1 GET /api/session/mp2bk9l28b → HTTP 200
+      handNumber=1 dealerSeat=1 pot.main=0 winner_stack=1005
+
+--- Phase F: POST /next-hand (Hand 2 setup KEY) ---
+  F.1 POST /next-hand → HTTP 200 | handNumber=2 (1→2) | dealerSeat=2 (1→2, +1)
+      seat[2].isDealer=True (expected true)
+      currentBet all-zero=True | status all-active=True
+
+--- Phase G: Hand 2 dealer + state-reset 검증 ---
+  G.1 GET /api/session/mp2bk9l28b → HTTP 200 | handNumber=2 dealerSeat=2
+      community=[] (expected []) | all 6 active=True
+      SB/BB positional (toJson 비노출 — 위치 계산): SB=idx3=3, BB=idx4=4
+
+--- Phase H: 2nd /next-hand round-robin stride ---
+  H.1 POST /next-hand → HTTP 200 | handNumber=3 (2→3) | dealerSeat=3 (2→3, +1)
+      seat[3].isDealer=True (expected true)
+
+--- Phase I: Round-robin 후 상태 ---
+  I.1 GET /api/session/mp2bk9l28b → HTTP 200 | handNumber=3 dealerSeat=3
+      seat[3].isDealer=true | 6 seats active=True
+
+--- Phase J: Final session integrity (DoD) ---
+  J.1 GET final → HTTP 200 | sessionId match=True
+      handNumber=3 (expected 3) | dealerSeat=3 (expected 3)
+      stacks=[1000, 995, 1005, 1000, 1000, 1000] (expected [1000, 995, 1005, 1000, 1000, 1000], OK=True)
+
+
+✓ v02-2-hand-flow: 10/10 phases PASS (A,B,C,D,E,F,G,H,I,J all green)
+  KEY: handNumber 0→1→2→3 누적 (hand_end + /next-hand×2)
+  KEY: dealerSeat 0→1→2→3 +1 stride 일관성
+  KEY: Cycle 5 issue #287 (POST /next-hand) 회귀 보장
