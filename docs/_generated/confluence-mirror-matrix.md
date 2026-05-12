@@ -2,7 +2,7 @@
 title: Confluence Mirror Matrix
 auto-generated: true
 source: tools/confluence_mirror_matrix.py
-generated-at: 2026-05-12T15:03Z
+generated-at: 2026-05-12T23:18Z
 mirror: none
 ---
 
@@ -13,12 +13,12 @@ mirror: none
 
 ## Summary
 
-- **Total docs**: 720
+- **Total docs**: 724
 - **Mirrored** (confluence-page-id, valid): 343
 - **Excluded** (mirror: none): 118
 - **Pending** (placeholder ID — null/tbd/0): 1
-- **Uncovered** (no frontmatter decision): 258
-- **Coverage** (mirrored + excluded): 461/720 = **64.0%**
+- **Uncovered** (no frontmatter decision): 262
+- **Coverage** (mirrored + excluded): 461/724 = **63.7%**
 
 ## Per-section coverage
 
@@ -32,7 +32,7 @@ mirror: none
 | 2. Development/2.4 Command Center | 77 | 35 | 19 | 0 | 23 | 70.1% |
 | 2. Development/2.5 Shared | 14 | 11 | 0 | 0 | 3 | 78.6% |
 | 3. Change Requests | 94 | 92 | 0 | 0 | 2 | 97.9% |
-| 4. Operations | 216 | 107 | 6 | 1 | 102 | 52.3% |
+| 4. Operations | 220 | 107 | 6 | 1 | 106 | 51.4% |
 | README.md | 1 | 0 | 0 | 0 | 1 | 0.0% |
 | _journey | 7 | 0 | 0 | 0 | 7 | 0.0% |
 | examples | 1 | 0 | 1 | 0 | 0 | 100.0% |
@@ -588,6 +588,7 @@ mirror: none
 | `4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/_template_spec_gap.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` | uncovered | — | — |
+| `4. Operations/Conductor_Backlog/_template_spec_gap_SG-036_integration_tests_routers_mismatch.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/_template_spec_gap_SG-037_cc_mockup_state_sync.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` | uncovered | — | — |
@@ -706,6 +707,7 @@ mirror: none
 | `4. Operations/Conductor_Backlog/v7-6-rejection-record.md` | mirrored | 3819241956 | 3811573898 |
 | `4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` | mirrored | 3818619180 | 3811573898 |
 | `4. Operations/Conductor_Backlog/worktree-cleanup-report.md` | mirrored | 3819766444 | 3811573898 |
+| `4. Operations/Confluence_Sync_Spec.md` | uncovered | — | — |
 | `4. Operations/CONTRACT_ALIGNMENT_PLAN.md` | uncovered | — | — |
 | `4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` | mirrored | 3818848838 | 3811573898 |
 | `4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` | mirrored | 3819078366 | 3811573898 |
@@ -786,7 +788,9 @@ mirror: none
 | `4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md` | mirrored | 3819176427 | 3811573898 |
 | `4. Operations/Reports/2026-05-08-consistency-audit-final.md` | mirrored | 3818947297 | 3811573898 |
 | `4. Operations/Reports/2026-05-08-S6-prototype-audit.md` | mirrored | 3818881628 | 3811573898 |
+| `4. Operations/Reports/Overlay_9_Categories_Mapping_Audit_2026-05-13.md` | uncovered | — | — |
 | `4. Operations/Reports/Product_Naming_Unification_Plan_2026-05-12.md` | uncovered | — | — |
+| `4. Operations/Reports/Spec_Gap_Audit_Cycle_15_2026-05-13.md` | uncovered | — | — |
 | `4. Operations/Roadmap.md` | mirrored | 3818684891 | 3811573898 |
 | `4. Operations/Spec_Gap_Registry.md` | mirrored | 3818816041 | 3811573898 |
 | `4. Operations/Spec_Gap_Triage.md` | mirrored | 3819766243 | 3811573898 |

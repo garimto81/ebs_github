@@ -3,7 +3,7 @@ title: Confluence Sync Spec
 owner: conductor
 tier: internal
 last-updated: 2026-05-13
-version: 2.0.0
+version: 2.1.0
 audience-target: 운영자 + Conductor + S11
 related-docs:
   - Docker_Runtime.md
@@ -193,14 +193,30 @@ pytest tests/test_md2confluence_linkify.py -v
 
 ---
 
-## 8. 페이지명 동기화 정책 (사용자 결정 영역, 미확정)
+## 8. 페이지명 동기화 정책 (Cycle 18 부분 적용)
 
-Confluence 페이지명 = file stem 으로 강제할지는 **사용자 결정**.
+| 페이지 | 현재 Confluence 제목 | 정책 |
+|--------|---------------------|------|
+| `Back_Office.md` | **Back Office** | OK Cycle 18 rename 적용 (stem ↔ space 정규화 매칭) |
+| `Command_Center.md` | **Command Center** | OK Cycle 18 rename 적용 |
+| `Lobby.md` | **Lobby** | OK Cycle 18 rename 적용 |
+| `Foundation.md` | EBS 기초 기획서 | X rename 보류 (사용자 명시 제외) |
+| `RIVE_Standards.md` | RIVE Standards — Overlay Graphics 정본 | X rename 보류 (사용자 명시 제외) |
+| `Product_SSOT_Policy.md` | EBS · Product SSOT Policy | X rename 보류 (사용자 명시 제외) |
+| `1. Product.md` (parent) | EBS · 1. Product | X rename 보류 (사용자 명시 제외) |
 
-- **유지 (현재)**: 한국어 설명형 페이지명 그대로. URL-first linkify 로 cross-link OK
-- **rename (대안)**: 모든 페이지를 stem 으로 rename. 북마크/검색 히스토리 손실 + 외부 공유 링크에 영향
+**Rename 도구**: `tools/confluence_rename_pages.py` (S11 Cycle 18). 사용자 명시 권한 필수 (외부 북마크/검색 히스토리 손상 가능).
 
-본 spec 은 (유지) 를 default 로 가정. (rename) 채택 시 별도 PR + `python -c "...PUT /content/{id}..."` 일괄 rename 스크립트 작성.
+**Audit 정규화 규칙** (Cycle 18 신설 — `confluence_pagename_audit._normalize`):
+
+```
+underscore -> space    "Back_Office"  -> "back office"
+collapse whitespace    "Back  Office" -> "back office"
+case-insensitive       "Lobby"        -> "lobby"
+strip                  "  Lobby  "    -> "lobby"
+```
+
+-> `Back_Office.md` <-> `Back Office` 제목은 MATCH 로 분류. 회귀 가드: `tests/test_confluence_pagename_audit_normalize.py` (12 cases).
 
 ---
 
@@ -208,5 +224,6 @@ Confluence 페이지명 = file stem 으로 강제할지는 **사용자 결정**.
 
 | 날짜 | 버전 | 변경 내용 | 변경 유형 | 결정 근거 |
 |------|------|-----------|----------|----------|
+| 2026-05-13 | v2.1.0 | Cycle 18 partial rename 정책 + audit normalize 규칙 추가 | PRODUCT | 사용자 명시 권한 — Back Office / Command Center / Lobby 3 페이지 rename + audit underscore↔space 정규화 |
 | 2026-05-13 | v2.0.0 | URL-first linkify 로 전환 + 페이지명 audit 도구 추가 + spec 정정 | TECH | `tools/confluence_pagename_audit.py` 가 Product PRD 7/7 가정 위반 증명. ri:content-title=stem 전략은 실측 환경에서 dead link 생성. URL-first 가 page-id 기반이라 stable |
 | 2026-05-12 | v1.0.0 | 최초 작성 (Cycle 10 S11) — stem 기반 ri:content-title | TECH | Confluence 내 related-docs 링크가 클릭 불가능했던 사용자 보고. (Cycle 11 에서 가정 자체가 깨졌음을 발견) |

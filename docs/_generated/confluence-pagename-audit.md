@@ -8,9 +8,345 @@ approval (bookmarks + search history may break).
 | File | Stem | Confluence Title | Match |
 |---|---|---|---|
 | `docs/1. Product/1. Product.md` | `1. Product` | EBS · 1. Product | MISMATCH |
-| `docs/1. Product/Back_Office.md` | `Back_Office` | EBS · Back Office PRD — 보이지 않는 뼈대 | MISMATCH |
-| `docs/1. Product/Command_Center.md` | `Command_Center` | EBS · Command Center PRD — 운영자가 매 순간 머무는 조종석 | MISMATCH |
+| `docs/1. Product/Back_Office.md` | `Back_Office` | Back Office | OK |
+| `docs/1. Product/Command_Center.md` | `Command_Center` | Command Center | OK |
 | `docs/1. Product/Foundation.md` | `Foundation` | EBS 기초 기획서 | MISMATCH |
-| `docs/1. Product/Lobby.md` | `Lobby` | EBS · Lobby PRD — 모든 테이블을 내려다보는 관제탑 | MISMATCH |
+| `docs/1. Product/Lobby.md` | `Lobby` | Lobby | OK |
 | `docs/1. Product/Product_SSOT_Policy.md` | `Product_SSOT_Policy` | EBS · Product SSOT Policy | MISMATCH |
 | `docs/1. Product/RIVE_Standards.md` | `RIVE_Standards` | RIVE Standards — Overlay Graphics 정본 | MISMATCH |
+| `docs/2. Development/2. Development.md` | `2. Development` | EBS · 2. Development | MISMATCH |
+| `docs/3. Change Requests/3. Change Requests.md` | `3. Change Requests` | EBS · 3. Change Requests (DEPRECATED) | MISMATCH |
+| `docs/4. Operations/4. Operations.md` | `4. Operations` | EBS · 4. Operations | MISMATCH |
+| `docs/4. Operations/Causality_Dashboard.md` | `Causality_Dashboard` | EBS 문서 인과관계 대시보드 | MISMATCH |
+| `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` | `CC_Design_Prototype_Critic_2026_05_06` | EBS · CC React 디자인 프로토타입 — Critic 판정 보고서 | MISMATCH |
+| `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` | `CC_PRD_Renewal_Plan_2026_05_06` | EBS · Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog.md` | `Conductor_Backlog` | EBS · Conductor_Backlog | MISMATCH |
+| `docs/4. Operations/Docker_Runtime.md` | `Docker_Runtime` | EBS · Docker Runtime 운영 지침 | MISMATCH |
+| `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` | `Doc_Discovery_Failure_Critic_2026_05_06` | EBS · 문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결 | MISMATCH |
+| `docs/4. Operations/Foundation_Alignment_Plan.md` | `Foundation_Alignment_Plan` | EBS · Foundation 재설계 정렬 계획 (Conductor 소유 문서) | MISMATCH |
+| `docs/4. Operations/Frozen_Build_SOP.md` | `Frozen_Build_SOP` | EBS · Frozen Build SOP — file revert race 우회 | MISMATCH |
+| `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` | `GLOBAL_SSOT_SYNC_HANDOFF` | EBS · Global SSOT Sync — SG-022 advocacy eradication | MISMATCH |
+| `docs/4. Operations/LAN_DEPLOYMENT.md` | `LAN_DEPLOYMENT` | EBS · LAN Deployment — Internal Network Domain Access | MISMATCH |
+| `docs/4. Operations/Load_Test_Plan_Phase1.md` | `Load_Test_Plan_Phase1` | EBS · Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate | MISMATCH |
+| `docs/4. Operations/Message_Bus_Runbook.md` | `Message_Bus_Runbook` | EBS · Inter-Session Message Bus — Operational Runbook | MISMATCH |
+| `docs/4. Operations/Multi_Session_Design_v10.3.md` | `Multi_Session_Design_v10.3` | EBS · Multi-Session Orchestration Design v10.3 | MISMATCH |
+| `docs/4. Operations/Multi_Session_Design_v11.md` | `Multi_Session_Design_v11` | EBS · Multi-Session Orchestration Design v11 — Message Bus Push 기반 | MISMATCH |
+| `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | `MULTI_SESSION_DOCKER_HANDOFF` | EBS · Multi-Session Docker Handoff (SG-022 deprecation cascade) | MISMATCH |
+| `docs/4. Operations/Multi_Session_Workflow.md` | `Multi_Session_Workflow` | EBS · Multi-Session Workflow (v10.3 redirect) | MISMATCH |
+| `docs/4. Operations/Network_Deployment.md` | `Network_Deployment` | EBS · Network Deployment Guide | MISMATCH |
+| `docs/4. Operations/OWASP_Audit_Kickoff_2026-05-03.md` | `OWASP_Audit_Kickoff_2026-05-03` | EBS · OWASP Top-10 Audit Kickoff Report — team2-backend | MISMATCH |
+| `docs/4. Operations/Phase_Plan_2027.md` | `Phase_Plan_2027` | EBS · Phase Plan 2027 | MISMATCH |
+| `docs/4. Operations/RENOVATE_EVALUATION.md` | `RENOVATE_EVALUATION` | EBS · Renovate vs Dependabot Evaluation | MISMATCH |
+| `docs/4. Operations/Roadmap.md` | `Roadmap` | EBS · Roadmap | MISMATCH |
+| `docs/4. Operations/Spec_Gap_Registry.md` | `Spec_Gap_Registry` | EBS · Spec Gap Registry — Drift 집계 + 해소 추적 | MISMATCH |
+| `docs/4. Operations/Spec_Gap_Triage.md` | `Spec_Gap_Triage` | EBS · Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜 | MISMATCH |
+| `docs/4. Operations/SSOT_Alignment_Progress.md` | `SSOT_Alignment_Progress` | EBS · SSOT Alignment Progress | MISMATCH |
+| `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` | `SSOT_ALIGNMENT_REPORT` | EBS · SSOT Alignment Report — Lobby Path Drift Eradication | MISMATCH |
+| `docs/4. Operations/Task_Dispatch_Board.md` | `Task_Dispatch_Board` | EBS · Task Dispatch Board (V9.3 — Intent/Execution Separation + AI Autonomous Merge) | MISMATCH |
+| `docs/1. Product/Game_Rules/Betting_System.md` | `Betting_System` | EBS Game Rules — Betting System | MISMATCH |
+| `docs/1. Product/Game_Rules/Draw.md` | `Draw` | EBS Game Rules — Draw Games | MISMATCH |
+| `docs/1. Product/Game_Rules/Flop_Games.md` | `Flop_Games` | EBS Game Rules — Flop Games | MISMATCH |
+| `docs/1. Product/Game_Rules/Seven_Card_Games.md` | `Seven_Card_Games` | EBS Game Rules — Seven Card Games | MISMATCH |
+| `docs/1. Product/References/PokerGFX_Reference.md` | `PokerGFX_Reference` | EBS · PokerGFX Reference | MISMATCH |
+| `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` | `WSOP-Production-Structure-Analysis` | EBS · WSOP Production Structure Analysis | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Backlog.md` | `Backlog` | EBS · Backlog | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Deployment.md` | `Deployment` | EBS · Deployment | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Engineering.md` | `Engineering` | EBS · Engineering — Frontend (Flutter) | MISMATCH |
+| `docs/2. Development/2.2 Backend/Backlog.md` | `Backlog` | EBS · Backlog (0578) | MISMATCH |
+| `docs/2. Development/2.3 Game Engine/Backlog.md` | `Backlog` | EBS · Backlog (6049) | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Backlog.md` | `Backlog` | EBS · Backlog (1565) | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Foundation_Impact_Review.md` | `Foundation_Impact_Review` | EBS · Foundation Impact Review (2026-04-22 재설계) | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Integration_Test_Plan.md` | `Integration_Test_Plan` | EBS · Integration Test Plan | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Settings.md` | `Settings` | EBS · Settings | MISMATCH |
+| `docs/2. Development/2.5 Shared/AI_Cascade_System.md` | `AI_Cascade_System` | EBS · AI Cascade System | MISMATCH |
+| `docs/2. Development/2.5 Shared/Authentication.md` | `Authentication` | EBS · Authentication | MISMATCH |
+| `docs/2. Development/2.5 Shared/BS_Overview.md` | `BS_Overview` | EBS · BS Overview | MISMATCH |
+| `docs/2. Development/2.5 Shared/Naming_Conventions.md` | `Naming_Conventions` | EBS · Naming Conventions (EBS Shared SSOT) | MISMATCH |
+| `docs/2. Development/2.5 Shared/Network_Config.md` | `Network_Config` | EBS · Network Configuration Contract | MISMATCH |
+| `docs/2. Development/2.5 Shared/Risk_Matrix.md` | `Risk_Matrix` | EBS · Risk Matrix | MISMATCH |
+| `docs/2. Development/2.5 Shared/Stream_Entry_Guide.md` | `Stream_Entry_Guide` | EBS · Stream Entry Guide (v10.3 멀티세션 진입) | MISMATCH |
+| `docs/2. Development/2.5 Shared/Stream_Entry_Guide_v11.md` | `Stream_Entry_Guide_v11` | EBS · Stream Entry Guide v11 — 사용자 진입 가이드 | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Backlog/AUDIT-Conductor-194-frontend-sister-cascade-2026-05-08.md` | `AUDIT-Conductor-194-frontend-sister-cascade-2026-05-08` | EBS · AUDIT-Conductor-194 — Frontend 자매 영역 cascade (Login + Settings + Graphic_Editor) | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Backlog/B-079-Prize-Pool-Payout-Management.md` | `B-079-Prize-Pool-Payout-Management` | EBS · B-079 Prize Pool & Payout Management | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Backlog/B-080-Blind-Prize-Structure-Template.md` | `B-080-Blind-Prize-Structure-Template` | EBS · B-080 Blind & Prize Structure Template 관리 | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Backlog/B-081-Chip-Management-Reporter.md` | `B-081-Chip-Management-Reporter` | EBS · B-081 Chip Management & Chip Reporter | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Backlog/B-082-Staff-Role-Permission.md` | `B-082-Staff-Role-Permission` | EBS · B-082 Staff Role & Permission 관리 | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Backlog/B-083-Tournament-Statistics-Reporting.md` | `B-083-Tournament-Statistics-Reporting` | EBS · B-083 Tournament Statistics & Reporting | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/Activate_Broadcast.md` | `Activate_Broadcast` | EBS · Activate Broadcast | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/Import_Flow.md` | `Import_Flow` | EBS · Import Flow | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/Metadata_Editing.md` | `Metadata_Editing` | EBS · Metadata Editing | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/Overview.md` | `Overview` | EBS · Overview | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/RBAC_Guards.md` | `RBAC_Guards` | EBS · RBAC Guards | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md` | `UI` | EBS · UI | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Lobby/Clock_Control.md` | `Clock_Control` | EBS · Clock Control | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Lobby/Event_and_Flight.md` | `Event_and_Flight` | EBS · Event and Flight | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Lobby/Operations.md` | `Operations` | EBS · Operations | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Lobby/Overview.md` | `Overview` | EBS · Overview (6750) | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Lobby/Registration.md` | `Registration` | EBS · Registration | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Lobby/Session_Restore.md` | `Session_Restore` | EBS · Session Restore | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Lobby/Table.md` | `Table` | EBS · Table | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Lobby/UI.md` | `UI` | EBS · UI (6750) | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Login/Error_Handling.md` | `Error_Handling` | EBS · Error Handling | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Login/Form.md` | `Form` | EBS · Form | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Login/Session_Init.md` | `Session_Init` | EBS · Session Init | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Settings/Display.md` | `Display` | EBS · Display | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Settings/Graphics.md` | `Graphics` | EBS · Graphics | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Settings/Outputs.md` | `Outputs` | EBS · Outputs | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Settings/Overview.md` | `Overview` | EBS · Settings · Overview | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Settings/Preferences.md` | `Preferences` | EBS · Preferences | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Settings/Rules.md` | `Rules` | EBS · Rules | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Settings/Statistics.md` | `Statistics` | EBS · Statistics | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Settings/UI.md` | `UI` | EBS · Settings · UI | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/board-re-crosscheck.md` | `board-re-crosscheck` | EBS · board-re-crosscheck | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/EBS-Skin-Editor_v3.prd.md` | `EBS-Skin-Editor_v3.prd` | EBS-Skin-Editor_v3.prd | OK |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ebs-ui-layout-anatomy.md` | `ebs-ui-layout-anatomy` | EBS · ebs-ui-layout-anatomy | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-compact-mockup-design-system.prd.md` | `prd-compact-mockup-design-system.prd` | EBS Compact Mockup Design System | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-skin-editor.prd.md` | `prd-skin-editor.prd` | EBS · prd-skin-editor.prd | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/README.md` | `README` | EBS · README | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` | `ui-feature-verification-workflow` | EBS · ui-feature-verification-workflow | MISMATCH |
+| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/data/layout-css-extraction.md` | `layout-css-extraction` | EBS · layout-css-extraction | MISMATCH |
+| `docs/2. Development/2.2 Backend/APIs/Auth_and_Session.md` | `Auth_and_Session` | EBS · Auth and Session | MISMATCH |
+| `docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md` | `Backend_HTTP` | EBS · Backend HTTP | MISMATCH |
+| `docs/2. Development/2.2 Backend/APIs/Backend_HTTP_Status.md` | `Backend_HTTP_Status` | EBS · Backend HTTP — 구현 현황 (2026-04-20) | MISMATCH |
+| `docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md` | `Graphic_Editor_API` | EBS · Graphic Editor API | MISMATCH |
+| `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` | `WebSocket_Events` | EBS · WebSocket Events | MISMATCH |
+| `docs/2. Development/2.2 Backend/Authentication/Concurrency_and_Race_Conditions.md` | `Concurrency_and_Race_Conditions` | EBS · Concurrency and Race Conditions (Auth domain) | MISMATCH |
+| `docs/2. Development/2.2 Backend/Authentication/Production_Deployment.md` | `Production_Deployment` | EBS · Production Deployment (Auth domain) | MISMATCH |
+| `docs/2. Development/2.2 Backend/Authentication/Quickstart_Local_Cluster.md` | `Quickstart_Local_Cluster` | EBS · Quickstart — Local Cluster (Auth domain) | MISMATCH |
+| `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-registration-sitin-events.md` | `NOTIFY-team1-Round2-registration-sitin-events` | EBS · NOTIFY team1 Round2 — registration_changed · sitin_called 이벤트 신설 | MISMATCH |
+| `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-user-sessions-multidevice.md` | `NOTIFY-team1-Round2-user-sessions-multidevice` | EBS · NOTIFY team1 Round2 — user_sessions 다중 기기 · configs/preferences 이관 | MISMATCH |
+| `docs/2. Development/2.2 Backend/Back_Office/Operations.md` | `Operations` | EBS · Operations (0578) | MISMATCH |
+| `docs/2. Development/2.2 Backend/Back_Office/Overview.md` | `Overview` | EBS · Overview (0578) | MISMATCH |
+| `docs/2. Development/2.2 Backend/Back_Office/Sync_Protocol.md` | `Sync_Protocol` | EBS · Sync Protocol | MISMATCH |
+| `docs/2. Development/2.2 Backend/Database/ER_Diagram.md` | `ER_Diagram` | EBS · ER Diagram | MISMATCH |
+| `docs/2. Development/2.2 Backend/Database/GFSkin_Schema.md` | `GFSkin_Schema` | EBS · GFSkin Schema | MISMATCH |
+| `docs/2. Development/2.2 Backend/Database/Schema.md` | `Schema` | EBS · Schema | MISMATCH |
+| `docs/2. Development/2.2 Backend/Database/State_Machines.md` | `State_Machines` | EBS · State Machines | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Build_and_Deploy.md` | `Build_and_Deploy` | EBS · Build and Deploy | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Dependency_Injection.md` | `Dependency_Injection` | EBS · Dependency Injection | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Dev_Setup.md` | `Dev_Setup` | EBS · Dev Setup | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Error_Handling.md` | `Error_Handling` | EBS · Error Handling (0578) | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Foundation_Realignment_Plan_2026-04-22.md` | `Foundation_Realignment_Plan_2026-04-22` | EBS · Foundation Realignment Plan (2026-04-22) | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Logging.md` | `Logging` | EBS · Logging | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/M1_Session_Drift_Audit_2026-04-28.md` | `M1_Session_Drift_Audit_2026-04-28` | EBS · M1 Session Drift Audit (2026-04-28) | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Non_Functional_Requirements.md` | `Non_Functional_Requirements` | EBS · Non Functional Requirements | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Project_Structure.md` | `Project_Structure` | EBS · Project Structure | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Routing.md` | `Routing` | EBS · Routing | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Sandbox_Tournament_Generator.md` | `Sandbox_Tournament_Generator` | EBS · Sandbox Tournament Generator | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/State_Management.md` | `State_Management` | EBS · State Management | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md` | `Tech_Stack` | EBS · Tech Stack | MISMATCH |
+| `docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md` | `Testing_Strategy` | EBS · Testing Strategy | MISMATCH |
+| `docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md` | `Harness_REST_API` | EBS · Harness REST API | MISMATCH |
+| `docs/2. Development/2.3 Game Engine/APIs/OutputEventBuffer_Boundary.md` | `OutputEventBuffer_Boundary` | EBS · OutputEventBuffer 구현 경계 | MISMATCH |
+| `docs/2. Development/2.3 Game Engine/APIs/OutputEvent_Serialization.md` | `OutputEvent_Serialization` | EBS · OutputEvent Serialization | MISMATCH |
+| `docs/2. Development/2.3 Game Engine/APIs/Overlay_Output_Events.md` | `Overlay_Output_Events` | EBS · Overlay Output Events | MISMATCH |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md` | `Betting_and_Pots` | EBS · Betting & Pots — Domain Master | MISMATCH |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Lifecycle_and_State_Machine.md` | `Lifecycle_and_State_Machine` | EBS · Lifecycle & State Machine — Domain Master | MISMATCH |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Overview.md` | `Overview` | EBS · Overview (6049) | MISMATCH |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` | `Triggers_and_Event_Pipeline` | EBS · Triggers & Event Pipeline — Domain Master | MISMATCH |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md` | `Variants_and_Evaluation` | EBS · Variants & Evaluation — Domain Master | MISMATCH |
+| `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | `RFID_HAL` | EBS · RFID HAL — Operator Behavior | MISMATCH |
+| `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md` | `RFID_HAL_Interface` | EBS · RFID HAL Interface Contract | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-Round2-settings-menu-preferences-removed.md` | `NOTIFY-team1-Round2-settings-menu-preferences-removed` | EBS · NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거 | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Action_Buttons.md` | `Action_Buttons` | EBS · Action Buttons | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Game_Settings_Modal.md` | `Game_Settings_Modal` | EBS · Game Settings — Rules 탭 상세 규격 | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Hand_Lifecycle.md` | `Hand_Lifecycle` | EBS · Hand Lifecycle | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Keyboard_Shortcuts.md` | `Keyboard_Shortcuts` | EBS · Keyboard Shortcuts | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Manual_Card_Input.md` | `Manual_Card_Input` | EBS · Manual Card Input | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Multi_Table_Operations.md` | `Multi_Table_Operations` | EBS · Multi Table Operations | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md` | `Overview` | EBS · Overview (1565) | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Player_Edit_Modal.md` | `Player_Edit_Modal` | EBS · Player Edit Modal | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Seat_Management.md` | `Seat_Management` | EBS · Seat Management | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Statistics.md` | `Statistics` | EBS · Statistics (1565) | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/UI.md` | `UI` | EBS · UI (1565) | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Command_Center_UI/Undo_Recovery.md` | `Undo_Recovery` | EBS · Undo Recovery | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Overlay/Animations.md` | `Animations` | EBS · Animations | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Overlay/Audio.md` | `Audio` | EBS · Audio | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Overlay/Elements.md` | `Elements` | EBS · Elements | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Overlay/Engine_Dependency_Contract.md` | `Engine_Dependency_Contract` | EBS · Engine Dependency Contract | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Overlay/Layer_Boundary.md` | `Layer_Boundary` | EBS · Layer Boundary | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Overlay/Overview.md` | `Overview` | EBS · Overlay · Overview | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Overlay/Scene_Schema.md` | `Scene_Schema` | EBS · Scene Schema | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Overlay/Security_Delay.md` | `Security_Delay` | EBS · Security Delay | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Overlay/Sequences.md` | `Sequences` | EBS · Sequences | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Overlay/Skin_Loading.md` | `Skin_Loading` | EBS · Skin Loading | MISMATCH |
+| `docs/2. Development/2.4 Command Center/RFID_Cards/Card_Detection.md` | `Card_Detection` | EBS · Card Detection | MISMATCH |
+| `docs/2. Development/2.4 Command Center/RFID_Cards/Deck_Registration.md` | `Deck_Registration` | EBS · Deck Registration | MISMATCH |
+| `docs/2. Development/2.4 Command Center/RFID_Cards/Manual_Fallback.md` | `Manual_Fallback` | EBS · Manual Fallback | MISMATCH |
+| `docs/2. Development/2.4 Command Center/RFID_Cards/Overview.md` | `Overview` | EBS · RFID_Cards · Overview | MISMATCH |
+| `docs/2. Development/2.4 Command Center/RFID_Cards/Register_Screen.md` | `Register_Screen` | EBS · Register Screen | MISMATCH |
+| `docs/2. Development/2.4 Command Center/Integration_Test_Plan/automation/s11/README.md` | `README` | EBS · S-11 Lobby Hand History — E2E Automation Scaffold | MISMATCH |
+| `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` | `Distributed_Architecture` | EBS · Distributed Authentication Architecture | MISMATCH |
+| `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` | `Token_Lifecycle_Sequences` | EBS · Token Lifecycle Sequences | MISMATCH |
+| `docs/2. Development/2.5 Shared/Authentication/Troubleshooting_Runbook.md` | `Troubleshooting_Runbook` | EBS · Authentication Troubleshooting Runbook | MISMATCH |
+| `docs/3. Change Requests/done/CR-011-ge-ownership-move.md` | `CR-011-ge-ownership-move` | EBS · CR-011-ge-ownership-move | MISMATCH |
+| `docs/3. Change Requests/done/CR-016-tech-stack-ssot.md` | `CR-016-tech-stack-ssot` | EBS · CR-016-tech-stack-ssot | MISMATCH |
+| `docs/3. Change Requests/done/CR-037-bs08-graphic-editor-new.md` | `CR-037-bs08-graphic-editor-new` | EBS · CR-037-bs08-graphic-editor-new | MISMATCH |
+| `docs/3. Change Requests/done/CR-conductor-20260410-ge-ownership-move.md` | `CR-conductor-20260410-ge-ownership-move` | EBS · CR-conductor-20260410-ge-ownership-move | MISMATCH |
+| `docs/3. Change Requests/done/CR-conductor-20260410-gfskin-format-unify.md` | `CR-conductor-20260410-gfskin-format-unify` | EBS · CR-conductor-20260410-gfskin-format-unify | MISMATCH |
+| `docs/3. Change Requests/done/CR-conductor-20260411-ge-api-spec.md` | `CR-conductor-20260411-ge-api-spec` | EBS · CR-conductor-20260411-ge-api-spec | MISMATCH |
+| `docs/3. Change Requests/done/CR-conductor-20260411-ge-req-id-rework.md` | `CR-conductor-20260411-ge-req-id-rework` | EBS · CR-conductor-20260411-ge-req-id-rework | MISMATCH |
+| `docs/3. Change Requests/done/CR-conductor-20260414-skin-updated-ws.md` | `CR-conductor-20260414-skin-updated-ws` | EBS · CR-conductor-20260414-skin-updated-ws | MISMATCH |
+| `docs/3. Change Requests/done/CR-conductor-20260421-ge-scope-expansion.md` | `CR-conductor-20260421-ge-scope-expansion` | EBS · CR-conductor-20260421-ge-scope-expansion | MISMATCH |
+| `docs/3. Change Requests/done/CR-team1-20260410-tech-stack-ssot.md` | `CR-team1-20260410-tech-stack-ssot` | EBS · CR-team1-20260410-tech-stack-ssot | MISMATCH |
+| `docs/3. Change Requests/done/CR-team1-20260410-wsop-parity.md` | `CR-team1-20260410-wsop-parity` | EBS · CR-team1-20260410-wsop-parity | MISMATCH |
+| `docs/3. Change Requests/done/CR-team1-20260413-google-oauth.md` | `CR-team1-20260413-google-oauth` | EBS · CR-team1-20260413-google-oauth | MISMATCH |
+| `docs/3. Change Requests/done/CR-team1-20260414-deadlink-cleanup.md` | `CR-team1-20260414-deadlink-cleanup` | EBS · CR-team1-20260414-deadlink-cleanup | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260410-data-idempotency-audit.md` | `CR-team2-20260410-data-idempotency-audit` | EBS · CR-team2-20260410-data-idempotency-audit | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260410-idempotency-key.md` | `CR-team2-20260410-idempotency-key` | EBS · CR-team2-20260410-idempotency-key | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260410-jwt-expiry.md` | `CR-team2-20260410-jwt-expiry` | EBS · CR-team2-20260410-jwt-expiry | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260410-table-rebalance-saga.md` | `CR-team2-20260410-table-rebalance-saga` | EBS · CR-team2-20260410-table-rebalance-saga | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260410-ws-event-seq.md` | `CR-team2-20260410-ws-event-seq` | EBS · CR-team2-20260410-ws-event-seq | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260413-event-type-catalog.md` | `CR-team2-20260413-event-type-catalog` | EBS · CR-team2-20260413-event-type-catalog | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260413-refresh-token-policy.md` | `CR-team2-20260413-refresh-token-policy` | EBS · CR-team2-20260413-refresh-token-policy | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260413-seat-waiting-enum.md` | `CR-team2-20260413-seat-waiting-enum` | EBS · CR-team2-20260413-seat-waiting-enum | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260413-summary-clock-fsm.md` | `CR-team2-20260413-summary-clock-fsm` | EBS · CR-team2-20260413-summary-clock-fsm | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260414-auth-ggpass-pattern.md` | `CR-team2-20260414-auth-ggpass-pattern` | EBS · CR-team2-20260414-auth-ggpass-pattern | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260414-blindstructure-endpoints.md` | `CR-team2-20260414-blindstructure-endpoints` | EBS · CR-team2-20260414-blindstructure-endpoints | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260414-clock-endpoints-full.md` | `CR-team2-20260414-clock-endpoints-full` | EBS · CR-team2-20260414-clock-endpoints-full | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260414-competition-hierarchy.md` | `CR-team2-20260414-competition-hierarchy` | EBS · CR-team2-20260414-competition-hierarchy | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260414-payout-structure-endpoints.md` | `CR-team2-20260414-payout-structure-endpoints` | EBS · CR-team2-20260414-payout-structure-endpoints | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260414-rate-limit-security.md` | `CR-team2-20260414-rate-limit-security` | EBS · CR-team2-20260414-rate-limit-security | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260414-users-staff-pattern.md` | `CR-team2-20260414-users-staff-pattern` | EBS · CR-team2-20260414-users-staff-pattern | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260414-ws-event-catalog.md` | `CR-team2-20260414-ws-event-catalog` | EBS · CR-team2-20260414-ws-event-catalog | MISMATCH |
+| `docs/3. Change Requests/done/CR-team2-20260414-wsop-sync-catalog.md` | `CR-team2-20260414-wsop-sync-catalog` | EBS · CR-team2-20260414-wsop-sync-catalog | MISMATCH |
+| `docs/3. Change Requests/done/CR-team3-20260410-wsop-conformance.md` | `CR-team3-20260410-wsop-conformance` | EBS · CR-team3-20260410-wsop-conformance | MISMATCH |
+| `docs/3. Change Requests/done/CR-team3-20260414-output-event-buffer-ownership.md` | `CR-team3-20260414-output-event-buffer-ownership` | EBS · CR-team3-20260414-output-event-buffer-ownership | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-api03-hal-lifecycle.md` | `CR-team4-20260410-api03-hal-lifecycle` | EBS · CR-team4-20260410-api03-hal-lifecycle | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-api05-messagepack.md` | `CR-team4-20260410-api05-messagepack` | EBS · CR-team4-20260410-api05-messagepack | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-api05-writegameinfo-schema.md` | `CR-team4-20260410-api05-writegameinfo-schema` | EBS · CR-team4-20260410-api05-writegameinfo-schema | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs03-graphic-settings-tab.md` | `CR-team4-20260410-bs03-graphic-settings-tab` | EBS · CR-team4-20260410-bs03-graphic-settings-tab | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs04-at05-rfid-register.md` | `CR-team4-20260410-bs04-at05-rfid-register` | EBS · CR-team4-20260410-bs04-at05-rfid-register | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs05-07-statistics-screen.md` | `CR-team4-20260410-bs05-07-statistics-screen` | EBS · CR-team4-20260410-bs05-07-statistics-screen | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs05-at-screens.md` | `CR-team4-20260410-bs05-at-screens` | EBS · CR-team4-20260410-bs05-at-screens | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs05-launch-flow.md` | `CR-team4-20260410-bs05-launch-flow` | EBS · CR-team4-20260410-bs05-launch-flow | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs05-multi-table-ops.md` | `CR-team4-20260410-bs05-multi-table-ops` | EBS · CR-team4-20260410-bs05-multi-table-ops | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs05-protocol-gaps.md` | `CR-team4-20260410-bs05-protocol-gaps` | EBS · CR-team4-20260410-bs05-protocol-gaps | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs05-visual-spec.md` | `CR-team4-20260410-bs05-visual-spec` | EBS · CR-team4-20260410-bs05-visual-spec | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs07-audio-layer.md` | `CR-team4-20260410-bs07-audio-layer` | EBS · CR-team4-20260410-bs07-audio-layer | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs07-cc-visual-sync.md` | `CR-team4-20260410-bs07-cc-visual-sync` | EBS · CR-team4-20260410-bs07-cc-visual-sync | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs07-layer-boundary.md` | `CR-team4-20260410-bs07-layer-boundary` | EBS · CR-team4-20260410-bs07-layer-boundary | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs07-security-delay.md` | `CR-team4-20260410-bs07-security-delay` | EBS · CR-team4-20260410-bs07-security-delay | MISMATCH |
+| `docs/3. Change Requests/done/CR-team4-20260410-bs08-graphic-editor-new.md` | `CR-team4-20260410-bs08-graphic-editor-new` | EBS · CR-team4-20260410-bs08-graphic-editor-new | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-010-jwt-expiry.md` | `CR-010-jwt-expiry` | EBS · CR-010-jwt-expiry | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-012-gfskin-format-unify.md` | `CR-012-gfskin-format-unify` | EBS · CR-012-gfskin-format-unify | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-013-ge-api-spec.md` | `CR-013-ge-api-spec` | EBS · CR-013-ge-api-spec | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-014-ge-req-id-rework.md` | `CR-014-ge-req-id-rework` | EBS · CR-014-ge-req-id-rework | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-015-skin-updated-ws.md` | `CR-015-skin-updated-ws` | EBS · CR-015-skin-updated-ws | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-017-wsop-parity.md` | `CR-017-wsop-parity` | EBS · CR-017-wsop-parity | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-018-data-idempotency-audit.md` | `CR-018-data-idempotency-audit` | EBS · CR-018-data-idempotency-audit | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-019-idempotency-key.md` | `CR-019-idempotency-key` | EBS · CR-019-idempotency-key | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-020-table-rebalance-saga.md` | `CR-020-table-rebalance-saga` | EBS · CR-020-table-rebalance-saga | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-021-ws-event-seq.md` | `CR-021-ws-event-seq` | EBS · CR-021-ws-event-seq | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-022-api03-hal-lifecycle.md` | `CR-022-api03-hal-lifecycle` | EBS · CR-022-api03-hal-lifecycle | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-023-api05-messagepack.md` | `CR-023-api05-messagepack` | EBS · CR-023-api05-messagepack | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-024-api05-writegameinfo-schema.md` | `CR-024-api05-writegameinfo-schema` | EBS · CR-024-api05-writegameinfo-schema | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-025-bs03-graphic-settings-tab.md` | `CR-025-bs03-graphic-settings-tab` | EBS · CR-025-bs03-graphic-settings-tab | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-026-bs04-at05-rfid-register.md` | `CR-026-bs04-at05-rfid-register` | EBS · CR-026-bs04-at05-rfid-register | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-027-bs05-07-statistics-screen.md` | `CR-027-bs05-07-statistics-screen` | EBS · CR-027-bs05-07-statistics-screen | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-028-bs05-at-screens.md` | `CR-028-bs05-at-screens` | EBS · CR-028-bs05-at-screens | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-029-bs05-launch-flow.md` | `CR-029-bs05-launch-flow` | EBS · CR-029-bs05-launch-flow | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-030-bs05-multi-table-ops.md` | `CR-030-bs05-multi-table-ops` | EBS · CR-030-bs05-multi-table-ops | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-031-bs05-protocol-gaps.md` | `CR-031-bs05-protocol-gaps` | EBS · CR-031-bs05-protocol-gaps | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-032-bs05-visual-spec.md` | `CR-032-bs05-visual-spec` | EBS · CR-032-bs05-visual-spec | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-033-bs07-audio-layer.md` | `CR-033-bs07-audio-layer` | EBS · CR-033-bs07-audio-layer | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-034-bs07-cc-visual-sync.md` | `CR-034-bs07-cc-visual-sync` | EBS · CR-034-bs07-cc-visual-sync | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-035-bs07-layer-boundary.md` | `CR-035-bs07-layer-boundary` | EBS · CR-035-bs07-layer-boundary | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-036-bs07-security-delay.md` | `CR-036-bs07-security-delay` | EBS · CR-036-bs07-security-delay | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-038-google-oauth.md` | `CR-038-google-oauth` | EBS · CR-038-google-oauth | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-039-event-type-catalog.md` | `CR-039-event-type-catalog` | EBS · CR-039-event-type-catalog | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-040-refresh-token-policy.md` | `CR-040-refresh-token-policy` | EBS · CR-040-refresh-token-policy | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-041-seat-waiting-enum.md` | `CR-041-seat-waiting-enum` | EBS · CR-041-seat-waiting-enum | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-042-summary-clock-fsm.md` | `CR-042-summary-clock-fsm` | EBS · CR-042-summary-clock-fsm | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-043-wsop-sync-catalog.md` | `CR-043-wsop-sync-catalog` | EBS · CR-043-wsop-sync-catalog | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-047-competition-hierarchy.md` | `CR-047-competition-hierarchy` | EBS · CR-047-competition-hierarchy | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-048-auth-ggpass-pattern.md` | `CR-048-auth-ggpass-pattern` | EBS · CR-048-auth-ggpass-pattern | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-049-blindstructure-endpoints.md` | `CR-049-blindstructure-endpoints` | EBS · CR-049-blindstructure-endpoints | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-050-clock-endpoints-full.md` | `CR-050-clock-endpoints-full` | EBS · CR-050-clock-endpoints-full | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-051-payout-structure-endpoints.md` | `CR-051-payout-structure-endpoints` | EBS · CR-051-payout-structure-endpoints | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-052-rate-limit-security.md` | `CR-052-rate-limit-security` | EBS · CR-052-rate-limit-security | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-053-users-staff-pattern.md` | `CR-053-users-staff-pattern` | EBS · CR-053-users-staff-pattern | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-054-ws-event-catalog.md` | `CR-054-ws-event-catalog` | EBS · CR-054-ws-event-catalog | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md` | `CR-055-output-event-buffer-ownership` | EBS · CR-055-output-event-buffer-ownership | MISMATCH |
+| `docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md` | `CR-056-deadlink-cleanup` | EBS · CR-056-deadlink-cleanup | MISMATCH |
+| `docs/3. Change Requests/pending/CR-team1-20260414-bs02-overview-rename.md` | `CR-team1-20260414-bs02-overview-rename` | EBS · CR-team1-20260414-bs02-overview-rename | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` | `B-Q10-95-coverage-roadmap` | EBS · B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` | `B-Q11-owasp-audit` | EBS · B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md` | `B-Q12-100ms-sla-measurement` | EBS · B-Q12 — 운영 안정성 측정 framework (NFR — RFID/Engine/WS/Render 사슬 안정성) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q13-desktop-routing-implementation.md` | `B-Q13-desktop-routing-implementation` | EBS · B-Q13 — 단일 Desktop 바이너리 라우팅 구현 (SG-022 cascade) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q14-settings-ui-implementation.md` | `B-Q14-settings-ui-implementation` | EBS · B-Q14 — Settings 5-level scope UI 구현 (C.1 + SG-026 cascade) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q15-sg-008-b-endpoint-implementation.md` | `B-Q15-sg-008-b-endpoint-implementation` | EBS · B-Q15 — SG-008-b 11건 endpoint 실구현 (team2 우선 작업 7번 cascade) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q16-development-environment-standards.md` | `B-Q16-development-environment-standards` | EBS · B-Q16 — 개발 환경 표준화 (Session 1 — SG-027 cascade) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q17-engine-healthcheck-fix.md` | `B-Q17-engine-healthcheck-fix` | EBS · B-Q17 — ebs-v2-engine healthcheck unhealthy 수정 (Type A 구현 실수) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q18-structure-update-same-tx-flush-bug.md` | `B-Q18-structure-update-same-tx-flush-bug` | EBS · B-Q18 — Structure update same-transaction delete+insert IntegrityError (Type A) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q19-list-hands-row-int-bug.md` | `B-Q19-list-hands-row-int-bug` | EBS · B-Q19 — list_hands SQLAlchemy 2.x Row int() TypeError (Type A) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` | `B-Q2-docker-lobby-web-cleanup` | EBS · Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q20-coverage-final-6pp.md` | `B-Q20-coverage-final-6pp` | EBS · B-Q20 — 95% coverage 잔여 6%p 도달 (Session 2 final 후속) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` | `B-Q3-team1-frontend-web-build-assets` | EBS · team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` | `B-Q6-timeline-mvp-launch-schedule` | EBS · B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md` | `B-Q7-quality-criteria-production` | EBS · B-Q7 — 품질 기준 (Production-strict 90% 재정의 2026-04-27) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/B-Q8-vendor-rfi-rfq-reactivation.md` | `B-Q8-vendor-rfi-rfq-reactivation` | EBS · B-Q8 — vendor 모델 reactivate (RFI/RFQ 재개 여부) (사용자 명시 대기) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-PHASE2-START.md` | `NOTIFY-ALL-PHASE2-START` | EBS · Phase 1 설계 정렬 완료 — Phase 2 진입 허용 (전체 팀 broadcast) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG023-INTENT-PIVOT.md` | `NOTIFY-ALL-SG023-INTENT-PIVOT` | EBS · SG-023 인텐트 전환 (production 출시) — 전체 팀 broadcast + 작업 standby 권고 | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION.md` | `NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION` | EBS · SG-024 거버넌스 확장 — Conductor 단일 세션 전권 (broadcast) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG025-026-PRODUCTION-LAUNCH.md` | `NOTIFY-ALL-SG025-026-PRODUCTION-LAUNCH` | EBS · SG-025 + SG-026 — Production timeline + Quality gates (B-Q6 ㉠ + B-Q7 ㉠ broadcast) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/SESSION_1_HANDOFF.md` | `SESSION_1_HANDOFF` | EBS · SESSION 1 HANDOFF — Foundation & Infrastructure | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/SESSION_2_1_HANDOFF.md` | `SESSION_2_1_HANDOFF` | EBS · SESSION 2.1 HANDOFF — auth_service.py 50% → 80% (B-Q10 cascade) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/SESSION_2_2_HANDOFF.md` | `SESSION_2_2_HANDOFF` | EBS · SESSION 2.2 HANDOFF — blind/payout structure services 20-26% → 70%+ | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/SESSION_2_3a_HANDOFF.md` | `SESSION_2_3a_HANDOFF` | EBS · SESSION 2.3a HANDOFF — series_service.py 57% → 80%+ | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/SESSION_2_FINAL_REPORT.md` | `SESSION_2_FINAL_REPORT` | EBS · SESSION 2 FINAL REPORT — Core Logic & Backend Engine (B-Q10 cascade) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/SESSION_2_HANDOFF.md` | `SESSION_2_HANDOFF` | EBS · SESSION 2 HANDOFF — Core Logic & Backend Engine (Phase 1 audit 완료) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/SESSION_3_INIT.md` | `SESSION_3_INIT` | EBS · SESSION 3 INIT — Frontend Interface & Routing (team1 영역) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` | `SG-023-intent-pivot-production` | EBS · SG-023 — 인텐트 전환 (기획서 완결 → production 출시) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` | `SG-027-multi-session-pipeline` | EBS · SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/V2_PURGE_REPORT.md` | `V2_PURGE_REPORT` | EBS · V2 Purge Report — 사용자 명시 "ebs v2 별개 프로젝트" cascade | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` | `v7-6-rejection-record` | EBS · v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` | `v8-phase9-governance-decisions` | EBS · v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기) | MISMATCH |
+| `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` | `worktree-cleanup-report` | EBS · Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A) | MISMATCH |
+| `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` | `Lobby_IA_Sidebar_2026-04-21` | EBS · Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토 | MISMATCH |
+| `docs/4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` | `Lobby_Spec_Implementation_Drift_2026-05-06` | EBS · Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세 | MISMATCH |
+| `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | `Meeting_Analysis_2026_04_22` | EBS · 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | MISMATCH |
+| `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` | `SG-008-b11-v13-critic-2026-05-03` | EBS · Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성 | MISMATCH |
+| `docs/4. Operations/handoffs/CI_CHAOS_TEST_HANDOFF.md` | `CI_CHAOS_TEST_HANDOFF` | EBS · CI Chaos Test Handoff (PR #20 gate validation) | MISMATCH |
+| `docs/4. Operations/handoffs/CI_GATE_INTEGRATION_HANDOFF.md` | `CI_GATE_INTEGRATION_HANDOFF` | EBS · CI Gate Integration + ebs_v2 Cleanup Handoff | MISMATCH |
+| `docs/4. Operations/handoffs/INFRA_ALIGNMENT_HANDOFF.md` | `INFRA_ALIGNMENT_HANDOFF` | EBS · INFRA Alignment Handoff (Conductor Claim #14/#16) | MISMATCH |
+| `docs/4. Operations/handoffs/P0_REMEDIATION_HANDOFF.md` | `P0_REMEDIATION_HANDOFF` | EBS · P0 Remediation Handoff (port 3000 + Dockerfile context) | MISMATCH |
+| `docs/4. Operations/handoffs/P1_FOLLOWUP_HANDOFF.md` | `P1_FOLLOWUP_HANDOFF` | EBS · P1/P3 Follow-up Handoff (Sentry sidecar + Flutter pin + ebs_v2 archive) | MISMATCH |
+| `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` | `2026-04-08-game-engine.plan` | EBS · 2026-04-08-game-engine.plan | MISMATCH |
+| `docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md` | `B088_team2_execution_plan_2026-04-21` | EBS · B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션 | MISMATCH |
+| `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` | `Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21` | EBS · Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정 | MISMATCH |
+| `docs/4. Operations/Plans/Lobby_Renewal_Plan_2026-05-06.md` | `Lobby_Renewal_Plan_2026-05-06` | EBS · Lobby 리뉴얼 계획 — EBS Lobby Design SSOT 1:1 정합 | MISMATCH |
+| `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` | `Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21` | EBS · Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거 | MISMATCH |
+| `docs/4. Operations/Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` | `Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21` | EBS · Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계 | MISMATCH |
+| `docs/4. Operations/Plans/PLAN-BO-Phase1.md` | `PLAN-BO-Phase1` | EBS · PLAN-BO-Phase1 | MISMATCH |
+| `docs/4. Operations/Plans/Redesign_Plan_2026_04_22.md` | `Redesign_Plan_2026_04_22` | EBS · Redesign Plan — 2026-04-22 회의록 기반 전면 재설계 | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` | `2026-04-10-ccr-batch-team-impact` | EBS · 2026-04-10-ccr-batch-team-impact | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-17_SSOT_Audit.md` | `2026-04-17_SSOT_Audit` | EBS · Team 2 Backend SSOT Compliance Audit | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-21-critic-ge-multi-session.md` | `2026-04-21-critic-ge-multi-session` | EBS · Critic — GE 멀티 세션 분리 적합성 (Lobby 탭 종속 전제) | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-21-critic-graphic-editor-team5-separation.md` | `2026-04-21-critic-graphic-editor-team5-separation` | EBS · Critic — Graphic Editor team5 분리 적합성 검토 | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md` | `2026-04-21-quasar-to-flutter-migration-audit` | EBS · Quasar → Flutter 이전 누락 / 매칭 실패 감사 | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-26-Prototype_Completion_Report.md` | `2026-04-26-Prototype_Completion_Report` | EBS · Prototype Completion Report — Spec ↔ Code 양방향 동기화 (2026-04-26) | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md` | `2026-04-26-Spec_Gap_Audit_Phase1` | EBS · Spec Gap Audit — Phase 1 분석 (2026-04-26) | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase4_Delivery.md` | `2026-04-26-Spec_Gap_Audit_Phase4_Delivery` | EBS · Spec Gap Audit — Phase 4 Delivery (2026-04-26) | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-28-v8-phase4-hook-deprecation-audit.md` | `2026-04-28-v8-phase4-hook-deprecation-audit` | EBS · v8.0 Phase 4 — Deprecated Hooks Audit (branch_guard + session_branch_init) | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-29-v93-stale-worktrees-archive.md` | `2026-04-29-v93-stale-worktrees-archive` | EBS · V9.3 Stale Worktrees Archive (2026-04-29 cleanup) | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-29-v94-final-worktree-cleanup.md` | `2026-04-29-v94-final-worktree-cleanup` | EBS · V9.4 Final Worktree Cleanup — SSOT-based Autonomous Judgment | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-29-v95-cycle-metrics.md` | `2026-04-29-v95-cycle-metrics` | EBS · V9.5 Cycle Metrics — P10 결과물 Quality Report | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-29-v95-e2e-iteration-phase-plan.md` | `2026-04-29-v95-e2e-iteration-phase-plan` | EBS · V9.5 결과물 E2E Iteration — Phase / Task Plan + P5/P6 진행 | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-29-v95-residual-cycle-wrap-up.md` | `2026-04-29-v95-residual-cycle-wrap-up` | EBS · V9.5 잔존 후속 cycle wrap-up — Agent Teams 첫 적용 + P11-P14 통합 보고 | MISMATCH |
+| `docs/4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md` | `2026-04-29-v95-ssot-implementation-gap-triage` | EBS · V9.5 SSOT vs Implementation Gap Triage | MISMATCH |
+| `docs/4. Operations/Reports/2026-05-08-consistency-audit-final.md` | `2026-05-08-consistency-audit-final` | EBS · 2026-05-08 정합성 감사 — 최종 통합 검증 보고서 | MISMATCH |
+| `docs/4. Operations/Reports/2026-05-08-S6-prototype-audit.md` | `2026-05-08-S6-prototype-audit` | EBS · 2026-05-08 S6 Prototype 정합성 감사 (#165) | MISMATCH |
+| `docs/4. Operations/Task_Dispatch_Board/README.md` | `README` | EBS · Task Dispatch Board (분해 디렉토리) | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/classification.md` | `classification` | EBS · 683 .md 파일 전수 분류 매트릭스 | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/conductor-spec.md` | `conductor-spec` | EBS · Conductor — 잔여 영역 + 통합 검증 spec | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md` | `foundation_ssot` | EBS · Foundation v4.5 — SSOT 사실표 (정합성 감사 기준점) | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/README.md` | `README` | EBS · 2026-05-08 정합성 감사 — Master Orchestration Plan | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S1-foundation.md` | `S1-foundation` | EBS · S1 Foundation — 정합성 감사 작업 spec | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S2-lobby.md` | `S2-lobby` | EBS · S2 Lobby — 정합성 감사 작업 spec | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S3-cc.md` | `S3-cc` | EBS · S3 Command Center — 정합성 감사 작업 spec | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S4-rive.md` | `S4-rive` | EBS · S4 RIVE Standards — 정합성 감사 작업 spec | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S5-index.md` | `S5-index` | EBS · S5 AI Track / Index — 정합성 감사 작업 spec | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S6-prototype.md` | `S6-prototype` | EBS · S6 Prototype — 정합성 감사 작업 spec | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S7-backend.md` | `S7-backend` | EBS · S7 Backend — 정합성 감사 작업 spec | MISMATCH |
+| `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S8-engine.md` | `S8-engine` | EBS · S8 Game Engine — 정합성 감사 작업 spec | MISMATCH |

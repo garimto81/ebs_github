@@ -54,6 +54,31 @@ def fetch_title(cfg: dict, page_id: str) -> str:
     return info.get("title", "")
 
 
+def _normalize(s: str) -> str:
+    """Normalize for stem <-> title comparison.
+
+    Why this is needed (S11 Cycle 18 — 2026-05-12):
+        File stems use underscores ('Back_Office') because that is git-safe and
+        the rename of an .md file would cascade through 100+ references. But
+        Confluence page titles want natural-language ('Back Office') so users
+        searching for "Back Office" in Confluence find the page. After the
+        Cycle 18 rename, both forms refer to the same logical concept, so the
+        audit must treat them as a match — otherwise the audit will keep
+        reporting MISMATCH forever and Cycle 11's stable-link goal looks
+        broken.
+
+    Normalization steps:
+        1. Replace underscores with spaces (Back_Office -> "Back Office")
+        2. Collapse multiple whitespace
+        3. Lowercase (case-insensitive — "Lobby" == "lobby")
+        4. Strip leading/trailing whitespace
+    """
+    import re
+    s = s.replace("_", " ")
+    s = re.sub(r"\s+", " ", s)
+    return s.strip().lower()
+
+
 def audit(filter_glob: str | None) -> list[dict]:
     cfg = get_config()
     if not cfg["email"] or not cfg["token"]:
@@ -84,7 +109,7 @@ def audit(filter_glob: str | None) -> list[dict]:
             "stem": md.stem,
             "page_id": page_id,
             "title": title,
-            "match": title == md.stem,
+            "match": _normalize(title) == _normalize(md.stem),
         })
     return rows
 
