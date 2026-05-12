@@ -1067,6 +1067,53 @@ class WaitingListEntry(SQLModel, table=True):
 
 ---
 
+### 5.4 `sync_cursors` (2026-05-12 신설, WSOP LIVE delta 재개 SSOT)
+
+WSOP LIVE 폴링·Confirm-triggered pull 양자의 cursor 영속화. Sync_Protocol.md §7.1 의 `sync_cursor:{entity}` Redis 옵션과 동등한 DB 정본. Foundation Ch.5 §B.4 "DB = SSOT" 원칙 + Redis 미배포 환경 (단일 PC 운영) 대응.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `entity` | VARCHAR(32) | PK | `'series'` / `'event'` / `'event_flight'` / `'player'` / `'seat'` |
+| `cursor` | VARCHAR(64) | NOT NULL | ISO 8601 (단조증가 강제) |
+| `last_correlation_id` | VARCHAR(64) | NULL | 직전 CB OPEN 구간 묶음 ID (§7.1) |
+| `updated_at` | TIMESTAMP | NOT NULL DEFAULT now() | 마지막 갱신 시각 |
+
+**제약**:
+- `CHECK(entity IN ('series','event','event_flight','player','seat'))`
+- **단조증가 강제**: write 트랜잭션에서 `new_cursor > old_cursor` 검증. 위반 시 `409 CURSOR_ROLLBACK` (Sync_Protocol §7.1 "cursor 롤백 금지").
+
+**인덱스**:
+- `(updated_at)` — 마지막 갱신 시점 조회 (정합성 대시보드)
+
+**운영 정책**:
+- write 경로: `wsop_sync_service.poll_*()` 성공 시 commit 후 `upsert_cursor(entity, cursor)`.
+- read 경로: 재개 시 `SELECT cursor FROM sync_cursors WHERE entity=:e` → `since=cursor` 파라미터로 WSOP LIVE delta 요청.
+- Redis dual-write (옵션): 환경변수 `EBS_SYNC_CURSOR_REDIS=true` 시 DB+Redis 양쪽 갱신. 불일치 시 DB 우선.
+
+**Phase 1 SQLite 매핑**: `VARCHAR`→`TEXT`, `TIMESTAMP`→`TEXT` (ISO 8601). Alembic revision `add_sync_cursors_table` (Cycle 9 backlog).
+
+```python
+# sync_cursors
+class SyncCursor(SQLModel, table=True):
+    __tablename__ = "sync_cursors"
+
+    entity: str = Field(primary_key=True, max_length=32)
+    cursor: str = Field(nullable=False, max_length=64)         # ISO 8601
+    last_correlation_id: str | None = None
+    updated_at: str = Field(default_factory=utcnow)
+
+    __table_args__ = (
+        CheckConstraint(
+            "entity IN ('series','event','event_flight','player','seat')",
+            name="ck_sync_cursors_entity",
+        ),
+    )
+```
+
+> 후속 작업: `team2-backend/src/db/init.sql` 에 DDL 추가 + Alembic revision `0010_sync_cursors` + `wsop_sync_service` 의 in-memory `self.sync_cursors` dict 를 본 테이블로 교체 (Cycle 9 B-NEW).
+
+---
+
 ## 6. 인덱스
 
 | 테이블 | 인덱스 | 컬럼 | 용도 |
