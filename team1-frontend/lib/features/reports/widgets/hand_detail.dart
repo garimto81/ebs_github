@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../foundation/widgets/empty_state.dart';
 import '../../../models/models.dart';
+import 'game_rules_badges.dart';
 
 /// Expandable hand detail — Players table + Board cards + Actions by street.
 ///
@@ -10,6 +11,11 @@ import '../../../models/models.dart';
 /// `reportDataProvider` after expanding a row in `ReportsScreen`
 /// hands-summary tab). This keeps the widget pure/testable — I/O stays
 /// in the parent.
+///
+/// Cycle 7 (v03 game rules):
+///   - GameRulesBadges row at top (Ante / Straddle / Run It Twice).
+///   - Players table shows winner share % when runItTwiceCount > 1
+///     (e.g. star + "50%" when two winners split two boards).
 class HandDetail extends StatelessWidget {
   final Hand hand;
   final List<HandPlayer> players;
@@ -39,6 +45,11 @@ class HandDetail extends StatelessWidget {
     return grouped;
   }
 
+  bool get _hasGameRulesBadges =>
+      hand.anteAmount > 0 ||
+      (hand.straddleAmount != null && hand.straddleAmount! > 0) ||
+      hand.runItTwiceCount > 1;
+
   @override
   Widget build(BuildContext context) {
     final empty = players.isEmpty && actions.isEmpty;
@@ -56,9 +67,22 @@ class HandDetail extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // v03 game-rules badges row (Cycle 7)
+          if (_hasGameRulesBadges) ...[
+            GameRulesBadges(
+              anteAmount: hand.anteAmount,
+              straddleAmount: hand.straddleAmount,
+              runItTwiceCount: hand.runItTwiceCount,
+            ),
+            const SizedBox(height: 12),
+          ],
+
           // Players
           const _SectionLabel('Players'),
-          _PlayersTable(players: players),
+          _PlayersTable(
+            players: players,
+            runItTwiceCount: hand.runItTwiceCount,
+          ),
 
           // Board cards
           if (_boardCards.isNotEmpty) ...[
@@ -138,12 +162,26 @@ class _SectionLabel extends StatelessWidget {
 
 class _PlayersTable extends StatelessWidget {
   final List<HandPlayer> players;
-  const _PlayersTable({required this.players});
+  final int runItTwiceCount;
+  const _PlayersTable({required this.players, required this.runItTwiceCount});
 
   String _fmt(int v) => v.toString().replaceAllMapped(
         RegExp(r'(\d)(?=(\d{3})+$)'),
         (m) => '${m[1]},',
       );
+
+  /// Winner cell content:
+  /// - Single run (runItTwiceCount <= 1): star or empty.
+  /// - Multi run: star + "N%" share when isWinner & runItTwiceShare set.
+  ///   Falls back to bare star when share missing.
+  String _winnerLabel(HandPlayer p) {
+    if (!p.isWinner) return '';
+    if (runItTwiceCount <= 1) return '*';
+    final share = p.runItTwiceShare;
+    if (share == null) return '*';
+    final pct = (share * 100).round();
+    return '* $pct%';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,14 +189,16 @@ class _PlayersTable extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: DataTable(
         columnSpacing: 24,
-        columns: const [
-          DataColumn(label: Text('Seat')),
-          DataColumn(label: Text('Player')),
-          DataColumn(label: Text('Hole Cards')),
-          DataColumn(label: Text('Start'), numeric: true),
-          DataColumn(label: Text('End'), numeric: true),
-          DataColumn(label: Text('PnL'), numeric: true),
-          DataColumn(label: Text('')),
+        columns: [
+          const DataColumn(label: Text('Seat')),
+          const DataColumn(label: Text('Player')),
+          const DataColumn(label: Text('Hole Cards')),
+          const DataColumn(label: Text('Start'), numeric: true),
+          const DataColumn(label: Text('End'), numeric: true),
+          const DataColumn(label: Text('PnL'), numeric: true),
+          DataColumn(
+            label: Text(runItTwiceCount > 1 ? 'Winner (share)' : ''),
+          ),
         ],
         rows: [
           for (final p in players)
@@ -174,7 +214,13 @@ class _PlayersTable extends StatelessWidget {
                   color: p.pnl >= 0 ? Colors.green : Colors.red,
                 ),
               )),
-              DataCell(Text(p.isWinner ? '★' : '')),
+              DataCell(Text(
+                _winnerLabel(p),
+                style: TextStyle(
+                  fontWeight: p.isWinner ? FontWeight.bold : FontWeight.normal,
+                  color: p.isWinner ? Colors.amber.shade800 : null,
+                ),
+              )),
             ]),
         ],
       ),

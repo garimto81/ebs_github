@@ -23,6 +23,7 @@ related:
 | 2026-04-21 | 신규 작성 | SG-016 revised — Lobby 사이드바 공식화 (Migration Plan Phase 1). EBS 고유 기능, WSOP LIVE 비포함, `hands`/`hand_actions`/`hand_seats` 테이블 + WebSocket 3종 + mockup 기반 |
 | 2026-05-05 | 신 디자인 시각 자료 추가 | `visual/screenshots/ebs-lobby-06-hands.png` 인라인 추가 (split view: 좌측 hands 리스트 + 우측 hand detail). 디자인 SSOT: `Lobby/References/EBS_Lobby_Design/screens-extra.jsx:5` (`HandHistoryScreen`). |
 | 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — 정보 허브 역할 framing 추가 (additive only). |
+| 2026-05-12 | v03 game rules UI (Cycle 7, #329) | hands list + hand detail 에 v03 게임 룰 가시화 추가 (additive). 신규 컬럼/배지: ①Ante (indigo) ②Straddle (orange) ③Run It Twice (teal). HandDetail Players 표는 `runItTwiceCount > 1` 인 경우 winner 행에 share % 표시. 자세히는 §"v03 게임 룰 UI" 참조. |
 
 ---
 
@@ -45,6 +46,98 @@ Hand History 는 Command Center 에서 기록된 포커 핸드(1판) 의 전체 
 
 > 참조: BS-02-00 Overview "EBS 추가 기능" 표 (line 62), Foundation §Ch.6 (3입력→오버레이 파이프라인의 결과물).
 > 디자인 SSOT: `Lobby/References/EBS_Lobby_Design/screens-extra.jsx:5` (`HandHistoryScreen`).
+
+---
+
+## v03 게임 룰 UI (Cycle 7, #329, 2026-05-12)
+
+> **목적**: S8 엔진이 v03 게임 룰 (Ante / Straddle / Run It Twice) 을 데이터로 emit 하면, Lobby Hand History 가 그 정보를 한눈에 볼 수 있도록 시각화한다. 운영자가 핸드 목록을 스캔할 때 "이 핸드에 무슨 규칙이 적용됐는가?" 를 별도 진입 없이 즉시 인지.
+
+### 데이터 모델 추가 필드 (additive, backward compat)
+
+| 엔티티 | 필드 | 타입 | 기본 | 의미 |
+|--------|------|------|------|------|
+| `Hand` | `anteAmount` | int | 0 | 핸드당 ante 인당 금액. 0 = 없음. |
+| `Hand` | `straddleAmount` | int? | null | 스트래들 베팅 금액. null/0 = 없음. |
+| `Hand` | `runItTwiceCount` | int | 1 | 보드 run 횟수. 1 = single run (default). 2+ = split pot. |
+| `HandPlayer` | `runItTwiceShare` | double? | null | winner 가 가져간 pot 비율 (0.0~1.0). 1.0 = full winner. |
+
+### UI 시각화 표
+
+| 위치 | 표시 | 색상 | 예시 |
+|------|------|------|------|
+| Hands list (좌측) | "Rules" 컬럼 — 컴팩트 배지 1~3개 | A=indigo / S=orange / RIT×N=teal | `[A][S][RIT×2]` |
+| Hand detail header | 풀 라벨 배지 행 | 동일 | `Ante 200`  `Straddle 800`  `Run It Twice (×2)` |
+| Hand detail Players 표 | Winner 행에 share % | `runItTwiceCount > 1` 일 때만 컬럼 헤더 "Winner (share)" | `* 50%` 두 명 → split 의 시각적 증거 |
+
+### Stage 1 — 단순 핸드 (v03 미적용)
+
+```
++-------+--------+--------+-------+--------+
+| Hand# | Table  | Pot    | (rules) — 컬럼 없음 (any-row v03 없음)
++-------+--------+--------+-------+--------+
+|  41   |   5    | 50,000 |
++-------+--------+--------+-------+--------+
+```
+
+### Stage 2 — Ante 만 적용
+
+```
++-------+--------+---------+-------+
+| Hand# | Table  | Pot     | Rules |
++-------+--------+---------+-------+
+|  42   |   5    | 150,000 | [A]   |  ← 컴팩트 배지
++-------+--------+---------+-------+
+```
+
+### Stage 3 — Ante + Straddle + RIT×2 (모두 적용)
+
+```
++-------+--------+---------+----------------+
+| Hand# | Table  | Pot     | Rules          |
++-------+--------+---------+----------------+
+|  43   |   5    | 250,000 | [A][S][RIT×2]  |  ← 3 배지 + 행 확장 시 detail header 풀 라벨
++-------+--------+---------+----------------+
+```
+
+### Stage 4 — Hand Detail 의 split winner 표
+
+```
+Players (runItTwiceCount = 2)
++------+---------+------------+--------+--------+----------+-----------------+
+| Seat | Player  | Hole Cards | Start  | End    | PnL      | Winner (share)  |
++------+---------+------------+--------+--------+----------+-----------------+
+|  1   | Alice   | Ah Kd      | 50,000 |175,000 | +125,000 | * 50%           |
+|  4   | Bob     | Qs Qc      | 50,000 |175,000 | +125,000 | * 50%           |
+|  7   | Carol   | 9h 9d      |250,000 |      0 | -250,000 |                 |
++------+---------+------------+--------+--------+----------+-----------------+
+```
+
+### 가시화 트리거 규칙 (값 기반 자동 표시/숨김)
+
+| 필드 | 표시 조건 | 숨김 조건 |
+|------|----------|----------|
+| Ante 배지 | `anteAmount > 0` | 0 또는 null |
+| Straddle 배지 | `straddleAmount != null && > 0` | null 또는 0 |
+| RIT 배지 | `runItTwiceCount > 1` | 1 (default) |
+| Players "Winner (share)" 컬럼 | `runItTwiceCount > 1` | 1 (default) |
+| share % | `isWinner && runItTwiceShare != null` | non-winner 또는 share 없음 |
+
+### 구현 위치
+
+| 위젯 | 경로 |
+|------|------|
+| `GameRulesBadges` (재사용 — compact / full 두 모드) | `team1-frontend/lib/features/reports/widgets/game_rules_badges.dart` |
+| `HandsSummaryList` (특화 list 렌더러) | `team1-frontend/lib/features/reports/widgets/hands_summary_list.dart` |
+| `HandDetail` (header + Players 표 winner share) | `team1-frontend/lib/features/reports/widgets/hand_detail.dart` |
+| Hand 모델 v03 필드 | `team1-frontend/lib/models/entities/hand.dart` |
+| HandPlayer 모델 v03 필드 | `team1-frontend/lib/models/entities/hand_player.dart` |
+| 테스트 (17 case) | `team1-frontend/test/features/reports/v03_game_rules_ui_test.dart` |
+| Golden 스크린샷 (3 종) | `team1-frontend/test/features/reports/goldens/cycle7_*.png` |
+
+### KPI 증빙
+
+`test-results/v01-lobby/cycle7/cycle7_*.png` — 3 종 golden 스크린샷으로 v03 UI visible 검증. broker `cascade:lobby-v03` 발행.
 
 ---
 

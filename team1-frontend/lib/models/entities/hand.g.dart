@@ -21,6 +21,9 @@ _$HandImpl _$$HandImplFromJson(Map<String, dynamic> json) => _$HandImpl(
       endedAt: json['endedAt'] as String?,
       durationSec: (json['durationSec'] as num).toInt(),
       createdAt: json['createdAt'] as String,
+      anteAmount: (json['anteAmount'] as num?)?.toInt() ?? 0,
+      straddleAmount: (json['straddleAmount'] as num?)?.toInt(),
+      runItTwiceCount: (json['runItTwiceCount'] as num?)?.toInt() ?? 1,
     );
 
 Map<String, dynamic> _$$HandImplToJson(_$HandImpl instance) =>
@@ -34,9 +37,12 @@ Map<String, dynamic> _$$HandImplToJson(_$HandImpl instance) =>
       'boardCards': instance.boardCards,
       'potTotal': instance.potTotal,
       'sidePots': instance.sidePots,
-      'currentStreet': instance.currentStreet,
+      if (instance.currentStreet case final value?) 'currentStreet': value,
       'startedAt': instance.startedAt,
-      'endedAt': instance.endedAt,
+      if (instance.endedAt case final value?) 'endedAt': value,
       'durationSec': instance.durationSec,
       'createdAt': instance.createdAt,
+      'anteAmount': instance.anteAmount,
+      if (instance.straddleAmount case final value?) 'straddleAmount': value,
+      'runItTwiceCount': instance.runItTwiceCount,
     };

@@ -47,7 +47,14 @@ mixin _$Hand {
   @JsonKey(name: 'durationSec')
   int get durationSec => throw _privateConstructorUsedError;
   @JsonKey(name: 'createdAt')
-  String get createdAt => throw _privateConstructorUsedError;
+  String get createdAt =>
+      throw _privateConstructorUsedError; // v03 game-rules fields (Cycle 7, #329)
+  @JsonKey(name: 'anteAmount')
+  int get anteAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'straddleAmount')
+  int? get straddleAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'runItTwiceCount')
+  int get runItTwiceCount => throw _privateConstructorUsedError;
 
   /// Serializes this Hand to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -77,7 +84,10 @@ abstract class $HandCopyWith<$Res> {
       @JsonKey(name: 'startedAt') String startedAt,
       @JsonKey(name: 'endedAt') String? endedAt,
       @JsonKey(name: 'durationSec') int durationSec,
-      @JsonKey(name: 'createdAt') String createdAt});
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'anteAmount') int anteAmount,
+      @JsonKey(name: 'straddleAmount') int? straddleAmount,
+      @JsonKey(name: 'runItTwiceCount') int runItTwiceCount});
 }
 
 /// @nodoc
@@ -109,6 +119,9 @@ class _$HandCopyWithImpl<$Res, $Val extends Hand>
     Object? endedAt = freezed,
     Object? durationSec = null,
     Object? createdAt = null,
+    Object? anteAmount = null,
+    Object? straddleAmount = freezed,
+    Object? runItTwiceCount = null,
   }) {
     return _then(_value.copyWith(
       handId: null == handId
@@ -167,6 +180,18 @@ class _$HandCopyWithImpl<$Res, $Val extends Hand>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
+      anteAmount: null == anteAmount
+          ? _value.anteAmount
+          : anteAmount // ignore: cast_nullable_to_non_nullable
+              as int,
+      straddleAmount: freezed == straddleAmount
+          ? _value.straddleAmount
+          : straddleAmount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      runItTwiceCount: null == runItTwiceCount
+          ? _value.runItTwiceCount
+          : runItTwiceCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -192,7 +217,10 @@ abstract class _$$HandImplCopyWith<$Res> implements $HandCopyWith<$Res> {
       @JsonKey(name: 'startedAt') String startedAt,
       @JsonKey(name: 'endedAt') String? endedAt,
       @JsonKey(name: 'durationSec') int durationSec,
-      @JsonKey(name: 'createdAt') String createdAt});
+      @JsonKey(name: 'createdAt') String createdAt,
+      @JsonKey(name: 'anteAmount') int anteAmount,
+      @JsonKey(name: 'straddleAmount') int? straddleAmount,
+      @JsonKey(name: 'runItTwiceCount') int runItTwiceCount});
 }
 
 /// @nodoc
@@ -221,6 +249,9 @@ class __$$HandImplCopyWithImpl<$Res>
     Object? endedAt = freezed,
     Object? durationSec = null,
     Object? createdAt = null,
+    Object? anteAmount = null,
+    Object? straddleAmount = freezed,
+    Object? runItTwiceCount = null,
   }) {
     return _then(_$HandImpl(
       handId: null == handId
@@ -279,6 +310,18 @@ class __$$HandImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
+      anteAmount: null == anteAmount
+          ? _value.anteAmount
+          : anteAmount // ignore: cast_nullable_to_non_nullable
+              as int,
+      straddleAmount: freezed == straddleAmount
+          ? _value.straddleAmount
+          : straddleAmount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      runItTwiceCount: null == runItTwiceCount
+          ? _value.runItTwiceCount
+          : runItTwiceCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -300,7 +343,10 @@ class _$HandImpl implements _Hand {
       @JsonKey(name: 'startedAt') required this.startedAt,
       @JsonKey(name: 'endedAt') this.endedAt,
       @JsonKey(name: 'durationSec') required this.durationSec,
-      @JsonKey(name: 'createdAt') required this.createdAt});
+      @JsonKey(name: 'createdAt') required this.createdAt,
+      @JsonKey(name: 'anteAmount') this.anteAmount = 0,
+      @JsonKey(name: 'straddleAmount') this.straddleAmount,
+      @JsonKey(name: 'runItTwiceCount') this.runItTwiceCount = 1});
 
   factory _$HandImpl.fromJson(Map<String, dynamic> json) =>
       _$$HandImplFromJson(json);
@@ -347,10 +393,20 @@ class _$HandImpl implements _Hand {
   @override
   @JsonKey(name: 'createdAt')
   final String createdAt;
+// v03 game-rules fields (Cycle 7, #329)
+  @override
+  @JsonKey(name: 'anteAmount')
+  final int anteAmount;
+  @override
+  @JsonKey(name: 'straddleAmount')
+  final int? straddleAmount;
+  @override
+  @JsonKey(name: 'runItTwiceCount')
+  final int runItTwiceCount;
 
   @override
   String toString() {
-    return 'Hand(handId: $handId, tableId: $tableId, handNumber: $handNumber, gameType: $gameType, betStructure: $betStructure, dealerSeat: $dealerSeat, boardCards: $boardCards, potTotal: $potTotal, sidePots: $sidePots, currentStreet: $currentStreet, startedAt: $startedAt, endedAt: $endedAt, durationSec: $durationSec, createdAt: $createdAt)';
+    return 'Hand(handId: $handId, tableId: $tableId, handNumber: $handNumber, gameType: $gameType, betStructure: $betStructure, dealerSeat: $dealerSeat, boardCards: $boardCards, potTotal: $potTotal, sidePots: $sidePots, currentStreet: $currentStreet, startedAt: $startedAt, endedAt: $endedAt, durationSec: $durationSec, createdAt: $createdAt, anteAmount: $anteAmount, straddleAmount: $straddleAmount, runItTwiceCount: $runItTwiceCount)';
   }
 
   @override
@@ -382,7 +438,13 @@ class _$HandImpl implements _Hand {
             (identical(other.durationSec, durationSec) ||
                 other.durationSec == durationSec) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.anteAmount, anteAmount) ||
+                other.anteAmount == anteAmount) &&
+            (identical(other.straddleAmount, straddleAmount) ||
+                other.straddleAmount == straddleAmount) &&
+            (identical(other.runItTwiceCount, runItTwiceCount) ||
+                other.runItTwiceCount == runItTwiceCount));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -402,7 +464,10 @@ class _$HandImpl implements _Hand {
       startedAt,
       endedAt,
       durationSec,
-      createdAt);
+      createdAt,
+      anteAmount,
+      straddleAmount,
+      runItTwiceCount);
 
   /// Create a copy of Hand
   /// with the given fields replaced by the non-null parameter values.
@@ -435,7 +500,10 @@ abstract class _Hand implements Hand {
           @JsonKey(name: 'startedAt') required final String startedAt,
           @JsonKey(name: 'endedAt') final String? endedAt,
           @JsonKey(name: 'durationSec') required final int durationSec,
-          @JsonKey(name: 'createdAt') required final String createdAt}) =
+          @JsonKey(name: 'createdAt') required final String createdAt,
+          @JsonKey(name: 'anteAmount') final int anteAmount,
+          @JsonKey(name: 'straddleAmount') final int? straddleAmount,
+          @JsonKey(name: 'runItTwiceCount') final int runItTwiceCount}) =
       _$HandImpl;
 
   factory _Hand.fromJson(Map<String, dynamic> json) = _$HandImpl.fromJson;
@@ -481,7 +549,16 @@ abstract class _Hand implements Hand {
   int get durationSec;
   @override
   @JsonKey(name: 'createdAt')
-  String get createdAt;
+  String get createdAt; // v03 game-rules fields (Cycle 7, #329)
+  @override
+  @JsonKey(name: 'anteAmount')
+  int get anteAmount;
+  @override
+  @JsonKey(name: 'straddleAmount')
+  int? get straddleAmount;
+  @override
+  @JsonKey(name: 'runItTwiceCount')
+  int get runItTwiceCount;
 
   /// Create a copy of Hand
   /// with the given fields replaced by the non-null parameter values.
