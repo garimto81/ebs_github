@@ -6,7 +6,7 @@
 
 사용:
   cd team2-backend
-  python tools/seed_admin.py --email admin@local --password 'Admin!123' --display-name 'Local Admin'
+  python tools/seed_admin.py --email admin@local --password 'Admin!Local123' --display-name 'Local Admin'
 
 기본값:
   --email admin@local
