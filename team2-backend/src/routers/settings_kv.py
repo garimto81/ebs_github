@@ -239,7 +239,7 @@ async def upsert_setting(payload: SettingsKvIn) -> SettingsKvOut:
     return _row_out(row)
 
 
-@router.delete("", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
 async def delete_setting(payload: SettingsKvDeleteIn) -> None:
     """Delete a single (scope, tab, key). Scope falls back to next level on resolve.
 
