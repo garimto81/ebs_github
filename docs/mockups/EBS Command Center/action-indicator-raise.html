@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Action Indicator — RAISE</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #111111; --muted: #888888; --line: #d8d8d8;
+    --accent: #e53935; --soft: #f6f6f6; --table: #f0f0f0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Inter', 'Helvetica Neue', system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+  .frame { width: 720px; max-width: 720px; height: 1280px; max-height: 1280px; margin: 0 auto; padding: 32px; display: flex; flex-direction: column; gap: 16px; border: 1px solid var(--line); }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+  header h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  .stage { background: var(--table); border: 1px solid var(--line); padding: 24px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; position: relative; }
+  .stage::before { content: 'STAGE · 시청자 화면 영역 A (RIVE_Standards Ch.16) · viewer cognition 강조'; position: absolute; top: 8px; left: 12px; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
+  .player-card { width: 420px; background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 16px 20px; display: grid; grid-template-columns: 56px 1fr 96px; gap: 12px; align-items: center; }
+  .player-card .seat { width: 56px; height: 56px; border-radius: 50%; background: var(--soft); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
+  .player-card .name { font-weight: 600; font-size: 16px; }
+  .player-card .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .player-card .stack { text-align: right; font-variant-numeric: tabular-nums; font-size: 14px; }
+  .player-card .stack .label { font-size: 9px; color: var(--muted); display: block; }
+  .indicator { width: 420px; min-height: 110px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; border: 3px solid var(--accent); border-radius: 4px; background: #fff; position: relative; }
+  .indicator .label { font-size: 36px; font-weight: 900; letter-spacing: 0.14em; color: var(--accent); }
+  .indicator .amount { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .indicator .meta { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+  .progression { width: 420px; padding: 10px 14px; background: var(--soft); border: 1px solid var(--line); border-radius: 3px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+  .progression span { font-variant-numeric: tabular-nums; }
+  .progression .arrow { font-size: 18px; color: var(--accent); }
+  .legend { background: var(--soft); border: 1px solid var(--line); padding: 14px 16px; font-size: 12px; line-height: 1.6; }
+  .legend h3 { margin: 0 0 8px; font-size: 12px; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+  .legend table { width: 100%; border-collapse: collapse; }
+  .legend td { padding: 4px 0; border-bottom: 1px dashed var(--line); }
+  .legend td.k { color: var(--muted); width: 38%; }
+  .footer { font-size: 10px; color: var(--muted); text-align: right; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <header>
+    <h1>Action Indicator · RAISE</h1>
+    <p>RIVE_Standards Ch.16.1 정합 · 사용자 표 4 종 中 1 · lastAction enum <code>raise</code> · 이미 베팅 有 + 증액</p>
+  </header>
+
+  <div class="stage">
+    <div class="player-card">
+      <div class="seat">7</div>
+      <div>
+        <div class="name">FEDOR HOLZ</div>
+        <div class="sub">Seat 7 · CO · 독일</div>
+      </div>
+      <div class="stack">
+        <span class="label">STACK</span>
+        <span>3,150,000</span>
+      </div>
+    </div>
+
+    <div class="indicator" role="status" aria-label="RAISE">
+      <div class="label">RAISE</div>
+      <div class="amount">540,000</div>
+      <div class="meta">사이즈 모달 → 칩 → 베팅라인 · 이전 베팅 증액</div>
+    </div>
+
+    <div class="progression">
+      <span>이전 베팅</span>
+      <span>180,000</span>
+      <span class="arrow">→</span>
+      <span>RAISE 후</span>
+      <span>540,000</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <h3>표식 규칙 (RIVE_Standards Ch.16.1 / Command_Center.md §16.9)</h3>
+    <table>
+      <tr><td class="k">색상</td><td>적색 (#e53935) · 강조 · Brand Pack override 가능</td></tr>
+      <tr><td class="k">표시 위치</td><td>Player Dashboard 직하 · 110px tall · BET 보다 큰 라벨</td></tr>
+      <tr><td class="k">트리거 (Engine)</td><td><code>Raised</code> WS · <code>on_action[seat]</code> · 라벨 "RAISE" + amount</td></tr>
+      <tr><td class="k">CC FieldEditor</td><td>FieldEditor §16.9 lastAction 7-grid → <code>RAISE</code> tile · 사이즈 모달 동일</td></tr>
+      <tr><td class="k">lastAction enum</td><td><code>ActionType.raise</code> (team4-cc Player entity, Dart keyword 회피)</td></tr>
+      <tr><td class="k">조건</td><td>이전 round 베팅 有 + 증액 (BET 와 차별) · biggestBet max 갱신</td></tr>
+      <tr><td class="k">Exit</td><td>다음 ActorChanged · BettingRoundEnded 시 fade 200ms</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">EBS · Command Center · Cycle 17 · 2026-05-13 · cascade:cc-action-indicator-ready</div>
+</div>
+</body>
+</html>

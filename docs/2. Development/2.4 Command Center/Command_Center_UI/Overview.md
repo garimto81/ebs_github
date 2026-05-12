@@ -814,3 +814,89 @@ CC 가 dispatch 하는 카드 입력 (RFID 홀카드 / 커뮤니티 카드) 의 
 | 5 ~ 12 | RFID HAL / RBAC / UndoStack / i18n / 테스트 / AT-04~07 / 9 게임 / Babel runtime | 모두 **거절** (현 Flutter CC 패턴 보존) |
 
 상세: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` Act 2 (Incident).
+
+---
+
+## 13. Action Indicator — 4 종 시각 표식 ↔ lastAction enum (Cycle 17, 2026-05-13)
+
+> **트리거**: PR #393 §16.9 cascade (Command_Center.md FieldEditor 9-kind catalog · `lastAction` 7-grid).
+> **권위 SSOT**: `docs/1. Product/RIVE_Standards.md` Ch.16 (5 시각 표식 v0.7.0) · `docs/1. Product/Command_Center.md` §16.9 (FieldEditor lastAction 7-grid + CALL 매칭 통합 + ALL_IN Player Dashboard emphasis 결정).
+> **derivative-of**: `docs/1. Product/Command_Center.md` · `if-conflict: derivative-of takes precedence`.
+
+### 13.1 4 종 시각 표식 (시청자 화면 영역 A)
+
+시청자에게 보이는 액션 시각 표식은 **4 종** — CHECK / BET / RAISE / FOLD. CALL 과 ALL-IN 은 별도 처리 (§13.3 / §13.4).
+
+| 시각 표식 | 색상 (1차 가설) | Mockup | 운영자 입력 | Engine 트리거 |
+|----------|:----------------:|--------|---------------------------|---------------|
+| **CHECK** | 청색 (#1976d2) | `docs/mockups/EBS Command Center/action-indicator-check.html` | Check 버튼 / 키 C (베팅 無) | `Checked` WS → `on_action[seat]` |
+| **BET** | 황색 (#f9a825) | `docs/mockups/EBS Command Center/action-indicator-bet.html` | 사이즈 모달 / 키 B (베팅 無) | `BetPlaced` WS → `on_action[seat]` |
+| **RAISE** | 적색 (#e53935) | `docs/mockups/EBS Command Center/action-indicator-raise.html` | 사이즈 모달 / 키 B (베팅 有 시 증액) | `Raised` WS → `on_action[seat]` |
+| **FOLD** | 회색 (#616161) | `docs/mockups/EBS Command Center/action-indicator-fold.html` | Fold 버튼 / 키 F | `Folded` WS → `is_folded[seat]=true` |
+
+> 색상 SSOT — `team4-cc/src/lib/foundation/theme/action_colors.dart`. Brand Pack override 가능.
+
+### 13.2 lastAction enum 매핑 — Player entity ↔ FieldEditor 7-grid
+
+| FieldEditor §16.9 7-grid tile | team4-cc `ActionType` enum | Player.lastAction (String) | visual_indicator |
+|-------------------------------|---------------------------|---------------------------|:----------------:|
+| `CHECK` | `ActionType.check` | `'check'` | ON (청색 표식) |
+| `BET` | `ActionType.bet` | `'bet'` | ON (황색 표식) |
+| `RAISE` | `ActionType.raise` | `'raise'` | ON (적색 표식) |
+| `FOLD` | `ActionType.fold` | `'fold'` | ON (회색 + 좌석 dim) |
+| `CALL` | `ActionType.call` | `'call'` | **null (§13.3 BET 매칭 통합)** |
+| `ALL_IN` | `ActionType.allIn` | `'allIn'` | **null (§13.4 Dashboard emphasis)** |
+| `Clear` | — | `null` | clear |
+
+코드 SSOT:
+- Enum 정의 — `team4-cc/src/lib/models/enums/action_type.dart` (14 종, 6 핵심 + 8 보조 보존)
+- Player entity 필드 — `team4-cc/src/lib/models/entities/player.dart` (`String? lastAction`, Cycle 17 신설)
+- Overlay consumer — `team4-cc/src/lib/features/overlay/widgets/overlay_root.dart:88` (`Map<int, String> lastActions` → `ActionBadgeLayer`)
+
+### 13.3 CALL = BET 매칭 통합 (PR #393 §16.9 cascade)
+
+CALL 은 **BET 의 매칭 응답** — Engine 내부 `bet_amount` 매칭 처리. 시청자 화면에는 **별도 시각 표식 없음** (visual_indicator=null). 칩 → 베팅라인 매칭 sweep 만 진행.
+
+| 규칙 | 처리 |
+|------|------|
+| **운영자 시야** | CC FieldEditor 7-grid `CALL` tile 입력 가능 (운영자 흐름 추적) |
+| **시청자 시야** | 표식 X (viewer cognition 단순화) |
+| **state 보존** | `Player.lastAction='call'` 으로 정확히 기록 (데이터 보존) |
+| **시각 효과** | 칩 → 베팅라인 매칭 sweep 만 (Stack 차감, Pot 증액) |
+| **Mockup 참조** | `action-indicator-bet.html` 우측 State B 패널 (CALL 시각 처리 명시) |
+
+> **근거**: Command_Center.md §16.9 line 1013 — "CALL = 이전 베팅 매칭 의미 → 시각적 강조 불필요 (사용자 표 의도 — viewer cognition 단순화)".
+
+### 13.4 ALL_IN = Player Dashboard emphasis (별 box 제거)
+
+ALL-IN 은 **Player Dashboard 카테고리 #1 내부 emphasis** 로 처리. RIVE_Standards Ch.16.2 의 ★★★ 전화면 박스 (별 box) 는 폐기.
+
+| 항목 | 처리 |
+|------|------|
+| **시각 위치** | Player Dashboard (#1) — Stack=0 + bet_amount = stack 으로 표시 |
+| **별 box (★★★)** | **제거** (Ch.16.2 폐기, PR #393 §16.9 결정) |
+| **emphasis 방식** | `is_all_in=true` boolean → 좌석 highlight + Stack 값 0 강조 |
+| **state 보존** | `Player.lastAction='allIn'` + `Player.status='allIn'` 동기화 |
+| **viewer cognition** | 사용자 표 4 종에는 미포함 (Dashboard 내부 상태로 표시) |
+| **Engine trigger** | `AllInDeclared` WS · `is_all_in[seat]`, `on_action[seat]` (라벨 = "ALL-IN", visual_indicator=null) |
+
+> **근거**: Command_Center.md §16.9 line 1015 — "ALL-IN: Stack=0 + Player Dashboard #1 의 stack 표시 0 으로 + `is_all_in` boolean 으로 별도 emphasis (좌석 highlight). 사용자 표 4 종에는 미포함이지만 Player Dashboard 카테고리 #1 내부 상태로 처리".
+
+### 13.5 cascade 검증 체크리스트 (§16.9 endpoint)
+
+| # | 항목 | 검증 |
+|:-:|------|------|
+| 1 | 4 시각 표식 mockup HTML 존재 (CHECK/BET/RAISE/FOLD) | `docs/mockups/EBS Command Center/action-indicator-{check,bet,raise,fold}.html` |
+| 2 | ActionType enum 6 핵심 (fold/check/bet/call/raise/allIn) 정의 | `team4-cc/src/lib/models/enums/action_type.dart` |
+| 3 | Player.lastAction 필드 (nullable String) | `team4-cc/src/lib/models/entities/player.dart` |
+| 4 | action_colors.dart 4 색 정합 (fold=#616161, check=#43A047, bet=#FB8C00, raise=#E53935) | `team4-cc/src/lib/foundation/theme/action_colors.dart` |
+| 5 | CALL visual_indicator=null 명시 | 본 §13.3 + Command_Center.md §16.9 |
+| 6 | ALL_IN 별 box 제거 + Dashboard emphasis 명시 | 본 §13.4 + Command_Center.md §16.9 |
+| 7 | build_runner 재생성 (player.freezed.dart / player.g.dart) | `cd team4-cc/src && dart run build_runner build --delete-conflicting-outputs` |
+| 8 | broker publish cascade:cc-action-indicator-ready | S3 stream broker MCP publish |
+
+### 13.6 변경 격리 (Single Source of Truth)
+
+- **본 §13 = derivative**. 권위는 `docs/1. Product/Command_Center.md` §16.9 (사용자 표 4 종 / CALL 통합 / ALL_IN Dashboard) 와 `docs/1. Product/RIVE_Standards.md` Ch.16 (시각 표식 5 종 v0.7.0).
+- **충돌 시**: derivative-of (Product 레이어) 가 우선. 본 §13 은 Development 레이어 정합만 담당.
+- **build artifact**: `*.freezed.dart` / `*.g.dart` 는 .gitignore — 빌드 시 자동 재생성. Player 생성자는 nullable 추가만 (additive — 기존 호출부 zero impact).

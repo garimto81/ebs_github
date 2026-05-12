@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Action Indicator — BET (CALL matching integrated)</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #111111; --muted: #888888; --line: #d8d8d8;
+    --accent: #f9a825; --accent-call: #1976d2;
+    --soft: #f6f6f6; --table: #f0f0f0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Inter', 'Helvetica Neue', system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+  .frame { width: 720px; max-width: 720px; height: 1280px; max-height: 1280px; margin: 0 auto; padding: 32px; display: flex; flex-direction: column; gap: 16px; border: 1px solid var(--line); }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+  header h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  .stage { background: var(--table); border: 1px solid var(--line); padding: 24px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 16px; position: relative; }
+  .stage::before { content: 'STAGE · BET ↔ CALL 매칭 통합 (Command_Center.md §16.9)'; position: absolute; top: 8px; left: 12px; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
+  .row { display: flex; gap: 16px; width: 100%; align-items: flex-start; }
+  .col { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .col h4 { margin: 0; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .player-card { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; display: grid; grid-template-columns: 40px 1fr 70px; gap: 8px; align-items: center; }
+  .player-card .seat { width: 40px; height: 40px; border-radius: 50%; background: var(--soft); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+  .player-card .name { font-weight: 600; font-size: 13px; }
+  .player-card .sub { font-size: 10px; color: var(--muted); }
+  .player-card .stack { text-align: right; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .indicator { min-height: 78px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px; border: 2px solid var(--accent); border-radius: 4px; background: #fff; }
+  .indicator.call { border-color: var(--accent-call); border-style: dashed; }
+  .indicator .label { font-size: 24px; font-weight: 800; letter-spacing: 0.12em; color: var(--accent); }
+  .indicator.call .label { color: var(--accent-call); }
+  .indicator .amount { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .indicator .meta { font-size: 10px; color: var(--muted); letter-spacing: 0.04em; }
+  .bet-line { font-size: 11px; padding: 6px 10px; background: var(--soft); border-radius: 3px; display: flex; justify-content: space-between; }
+  .arrow { text-align: center; font-size: 28px; color: var(--muted); margin: 4px 0 0; }
+  .legend { background: var(--soft); border: 1px solid var(--line); padding: 14px 16px; font-size: 12px; line-height: 1.6; }
+  .legend h3 { margin: 0 0 8px; font-size: 12px; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+  .legend table { width: 100%; border-collapse: collapse; }
+  .legend td { padding: 4px 0; border-bottom: 1px dashed var(--line); }
+  .legend td.k { color: var(--muted); width: 30%; }
+  .footer { font-size: 10px; color: var(--muted); text-align: right; }
+  .badge { display: inline-block; padding: 2px 6px; background: var(--fg); color: #fff; font-size: 9px; border-radius: 2px; letter-spacing: 0.08em; margin-left: 6px; vertical-align: middle; }
+  .callout { font-size: 12px; text-align: center; color: var(--muted); padding: 0 20px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <header>
+    <h1>Action Indicator · BET <span class="badge">CALL 매칭 통합</span></h1>
+    <p>RIVE_Standards Ch.16.1 정합 · 사용자 표 4 종 中 1 · CALL = BET 의 매칭 응답 (별도 visual_indicator=null)</p>
+  </header>
+
+  <div class="stage">
+    <div class="row">
+      <div class="col">
+        <h4>State A · 첫 베팅 (BET · 시청자 표식 ON)</h4>
+        <div class="player-card">
+          <div class="seat">3</div>
+          <div>
+            <div class="name">DANIEL N.</div>
+            <div class="sub">Seat 3 · UTG+1</div>
+          </div>
+          <div class="stack">1,820k</div>
+        </div>
+        <div class="indicator">
+          <div class="label">BET</div>
+          <div class="amount">180,000</div>
+          <div class="meta">사이즈 모달 → 칩 → 베팅라인</div>
+        </div>
+        <div class="bet-line"><span>Bet line</span><span>180,000</span></div>
+      </div>
+
+      <div class="col">
+        <h4>State B · 매칭 응답 (CALL · visual_indicator=null)</h4>
+        <div class="player-card">
+          <div class="seat">5</div>
+          <div>
+            <div class="name">PHIL IVEY</div>
+            <div class="sub">Seat 5 · BTN</div>
+          </div>
+          <div class="stack">2,270k</div>
+        </div>
+        <div class="indicator call">
+          <div class="label">CALL</div>
+          <div class="amount">180,000</div>
+          <div class="meta">CC 운영자 시야 only — 시청자 화면 표식 X</div>
+        </div>
+        <div class="bet-line"><span>Bet line</span><span>180,000 (matched)</span></div>
+      </div>
+    </div>
+
+    <div class="arrow">↓ 매칭 통합 규칙 ↓</div>
+    <div class="callout">
+      <strong>CALL = BET 의 매칭 응답.</strong> Engine 내부 <code>bet_amount</code> 매칭 처리.<br>
+      <strong>시청자 화면 visual_indicator=null</strong> — viewer cognition 단순화 (사용자 표 의도).<br>
+      lastAction enum 은 <code>call</code> 로 별도 기록 (운영자 시야 + 데이터 보존).<br>
+      <em>(Command_Center.md §16.9 — FieldEditor lastAction 7-grid · CALL tile 입력은 가능, 시각 표식만 억제)</em>
+    </div>
+  </div>
+
+  <div class="legend">
+    <h3>표식 규칙 (BET / CALL 매칭 통합)</h3>
+    <table>
+      <tr><td class="k">색상 · BET</td><td>황색 (#f9a825) · 라벨 "BET" + amount</td></tr>
+      <tr><td class="k">CALL · visual</td><td><strong>null</strong> (시청자 화면 표식 없음) · 칩 → 베팅라인 매칭 sweep 만</td></tr>
+      <tr><td class="k">트리거 — BET</td><td><code>BetPlaced</code> WS · <code>on_action[seat]</code> · 라벨="BET"</td></tr>
+      <tr><td class="k">트리거 — CALL</td><td><code>Called</code> WS · Engine <code>bet_amount</code> 매칭 · 라벨 표시 X</td></tr>
+      <tr><td class="k">CC FieldEditor</td><td>lastAction 7-grid → <code>BET</code> · <code>CALL</code> 양쪽 tile 모두 입력 가능</td></tr>
+      <tr><td class="k">lastAction enum</td><td><code>ActionType.bet</code> 또는 <code>ActionType.call</code> (구분 보존)</td></tr>
+      <tr><td class="k">매칭 통합 규칙</td><td>이전 round 베팅 有 + 동일 amount → CALL (visual_indicator=null) / 베팅 無 + 신규 amount → BET (visual_indicator=ON)</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">EBS · Command Center · Cycle 17 · 2026-05-13 · cascade:cc-action-indicator-ready</div>
+</div>
+</body>
+</html>
