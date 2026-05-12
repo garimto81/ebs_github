@@ -7,7 +7,7 @@ confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811901603
 last-updated: 2026-05-12
 last-synced: 2026-05-07
-version: 4.1.0
+version: 4.2.0
 derivative-of: ../2. Development/2.4 Command Center/Command_Center_UI/Overview.md
 if-conflict: derivative-of takes precedence
 audience-target: 외부 개발팀 (시니어 신규 합류) + Lobby 개발자 + 경영진/PM
@@ -57,6 +57,7 @@ related-docs:
 | [Ch.14 — 거절 매트릭스 R1/R2/R4/R5](#ch14--거절-매트릭스-r1r2r4r5) | 거절 사유 |
 | [Ch.15 — 시각 자산 17 종 (V1~V17)](#ch15--시각-자산-17-종-v1v17) | 흡수 자산 카탈로그 (V18 sync icon = §16.12) |
 | [Ch.16 — Mockup State Model 정합 (SG-037)](#ch16--mockup-state-model-정합-sg-037) | 13 부절 + 외부 개발팀 체크리스트 12 항 |
+| [Ch.17 — Mockup Layout & Component Verbatim (SG-037-c)](#ch17--mockup-layout--component-verbatim-sg-037-c) | App.jsx / PlayerColumn / Numpad / CardPicker / MissDealModal / tokens.css / data.js — raw source inline |
 | [EPILOGUE](#epilogue--본방송-종료-후) | 본방송 종료 후 |
 
 ---
@@ -1070,6 +1071,757 @@ PRD §Ch.15 의 V1~V17 에 V18 추가:
 
 ---
 
+## Ch.17 — Mockup Layout & Component Verbatim (SG-037-c)
+
+> **사용자 결정 (2026-05-12)**: *"Command Center 레이아웃 = HTML mockup 그대로 반영. 버튼식 구성 + 화살표 디자인 정확 동일. PRD 가 mockup 보다 다른 표현 X. 디자인 토큰 (tokens.css) 그대로 명시. App.jsx / PlayerColumn / Numpad / CardPicker / MissDealModal 컴포넌트 구조 그대로. data.js state 모델 그대로."*
+>
+> **본 챕터의 의미**: §Ch.16 은 *state model 11 drift* 를 인용 형태로 보강. 본 챕터 §Ch.17 은 한 단계 더 — **mockup 의 layout JSX 트리 · 디자인 토큰 CSS · 초기 state JS** 를 PRD 본문에 *raw source verbatim* 으로 inline. 외부 개발팀이 mockup 폴더 접근 없이도 본 PRD 하나로 *layout / 컴포넌트 구조 / 토큰 / state* 1:1 재현 가능.
+>
+> **표현 일관성 룰** (§17.8 SSOT): PRD §Ch.1~§Ch.16 의 자연어 묘사가 본 챕터의 raw source 와 충돌 시 — *mockup raw source 가 정확*. PRD 본문은 *해설* 이지 *명세* 가 아니다.
+
+### 17.1 App.jsx — Root Layout Tree (4 영역 위계)
+
+**SSOT**: `App.jsx:240-330` (root JSX). 화면 위계 4 영역 (StatusBar → TopStrip → PlayerGrid → ActionPanel) 의 *컨테이너 순서* 가 mockup 정의의 layout 그대로.
+
+```jsx
+// App.jsx:240-330 — Root layout tree (verbatim shape)
+<div ref={wrapRef} className="stage">
+  <div ref={stageRef} className="stage-inner">
+
+    {/* 1) StatusBar 52px — 좌(연결) / 중(게임 메타) / 우(보조) */}
+    <StatusBar
+      bo={state.bo} rfid={state.rfid} engine={state.engineState}
+      opName={state.opName} tableName={state.tableName}
+      handNumber={state.handNumber} phase={state.phase}
+      stakes={state.stakes} level={state.level}
+      players={livePlayerCount} seatCount={state.seats.length}
+      onSettings={() => setEdit({ kind: "settings" })}
+    />
+
+    {/* 2) engineState 배너 (degraded/offline) — §16.3 */}
+    {state.engineState !== "online" && (
+      <EngineBanner
+        state={state.engineState}
+        onReconnect={() => dispatch({ type: "engine/reconnect" })}
+      />
+    )}
+
+    {/* 3) TopStrip 158px — MiniDiagram + Board + ACTING */}
+    <TopStrip
+      seats={state.seats}
+      dealerSeat={state.dealerSeat} sbSeat={state.sbSeat} bbSeat={state.bbSeat}
+      actionSeatIdx={state.actionSeatIdx}
+      board={state.board} potAmount={state.potAmount}
+      phase={state.phase} biggestBet={state.biggestBet}
+      showKbdHints={tweaks.showKbdHints}
+    />
+
+    {/* 4) PlayerGrid 1×10 — 가로로 늘어선 10 셀 */}
+    <PlayerGrid
+      seats={state.seats}
+      dealerSeat={state.dealerSeat} sbSeat={state.sbSeat} bbSeat={state.bbSeat}
+      straddleSeat={state.straddleSeat} actionSeatIdx={state.actionSeatIdx}
+      phase={state.phase}
+      onCellEdit={(i, kind) => setEdit({ kind, seatIdx: i })}
+      onPosShift={(kind, dir) => dispatch({ type: "pos/shift", kind, dir })}
+      onCardPick={(i, slot) => setCardPick({ seatIdx: i, slot })}
+      onDelete={(i) => dispatch({ type: "seat/vacate", i })}
+      showEquity={tweaks.showEquity}
+      showBetChips={tweaks.showBetChips}
+    />
+
+    {/* 5) ActionPanel 124px — 6 키 (N/F/C/B/A/M) */}
+    <ActionPanel
+      phase={state.phase} ctx={ctx}
+      onStart={() => dispatch({ type: "hand/start" })}
+      onFinish={() => dispatch({ type: "hand/finish" })}
+      onFold={() => dispatch({ type: "action", a: "FOLD" })}
+      onCheckCall={() => dispatch({ type: "action", a: ctx.canCheck ? "CHECK" : "CALL" })}
+      onBetRaise={() => setEdit({ kind: "bet" })}
+      onAllIn={() => dispatch({ type: "action", a: "ALL_IN" })}
+      onMissDeal={() => setMissDealOpen(true)}
+      onUndo={() => dispatch({ type: "undo" })}
+    />
+
+    {/* 6) Modal overlays — FieldEditor / CardPicker / MissDealModal */}
+    {edit && <FieldEditor edit={edit} ... onClose={() => setEdit(null)} />}
+    {cardPick && <CardPicker ... onClose={() => setCardPick(null)} />}
+    {missDealOpen && <MissDealModal ... onClose={() => setMissDealOpen(false)} />}
+
+    {/* 7) TWEAKS 패널 (debug only) */}
+    {tweaksOpen && <TweaksPanel tweaks={tweaks} onChange={setTweaks} />}
+  </div>
+</div>
+```
+
+**Flutter 매핑 가이드**:
+
+| Mockup JSX | Flutter widget |
+|------------|----------------|
+| `<div className="stage">` | `LayoutBuilder` + `FittedBox(fit: BoxFit.contain)` (§16.6) |
+| `<div className="stage-inner">` (1600×900) | `SizedBox(width: 1600, height: 900)` |
+| `<StatusBar>` | `_StatusBarWidget` (52px `Container`) |
+| `<EngineBanner>` (조건부) | `_EngineBannerWidget` (`Visibility`) |
+| `<TopStrip>` | `_TopStripWidget` (158px `Container`) |
+| `<PlayerGrid>` | `_PlayerGridWidget` (`Row` + 10 `Expanded`) |
+| `<ActionPanel>` | `_ActionPanelWidget` (124px `Container`) |
+| Modal overlays | `showDialog<T>` |
+
+> ★ **위계 순서 강제**: 4 영역 widget 의 *Column 자식 순서* 는 위 JSX 와 1:1. 순서 변경 금지 (운영자 시선 흐름 = 위→아래).
+
+### 17.2 PlayerColumn — 9 행 stacked + Position Shift Arrows
+
+**SSOT**: `PlayerColumn.jsx:1-180`. 한 셀 안의 9 행 vertical stack + 행 3 의 좌·우 화살표 (V4).
+
+```jsx
+// PlayerColumn.jsx:1-180 — 컴포넌트 구조 (verbatim shape)
+function PlayerColumn({
+  seat, seatIdx, dealerSeat, sbSeat, bbSeat, straddleSeat,
+  isAction, phase, isPreHand,
+  onEdit, onPosShift, onCardPick, onDelete,
+  showEquity, showBetChips,
+}) {
+  const isDealer   = seat.seatNo === dealerSeat;
+  const isSb       = seat.seatNo === sbSeat;
+  const isBb       = seat.seatNo === bbSeat;
+  const isStraddle = seat.seatNo === straddleSeat;
+
+  // Empty seat → ADD PLAYER affordance (V12)
+  if (!seat.occupied) {
+    return (
+      <div className="seat-col empty" onClick={() => onEdit("addPlayer")}>
+        <div className="seat-empty-label">EMPTY</div>
+        <div className="seat-empty-no">S{seat.seatNo}</div>
+        <div className="seat-empty-cta">+ ADD PLAYER</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`seat-col ${isAction ? "acting" : ""} ${seat.folded ? "folded" : ""}`}>
+
+      {/* 행 1 — Acting strip (ACTING / WAITING / FOLD)
+                 OR Pre-hand DELETE strip (✕ DELETE) — V15 */}
+      {isPreHand ? (
+        <button className="row1 row1-delete" onClick={() => onDelete(seatIdx)}>
+          ✕ DELETE
+        </button>
+      ) : (
+        <div className={`row1 row1-${isAction ? "acting" : seat.folded ? "fold" : "waiting"}`}>
+          {isAction ? "ACTING" : seat.folded ? "FOLD" : "WAITING"}
+          {/* §16.2 sync 아이콘 (V18) 좌상단 16×16 */}
+          {seat.sync === "MANUAL_OVERRIDE" && <span className="sync-icon">✋</span>}
+          {seat.sync === "CONFLICT"        && <span className="sync-icon warn">⚠</span>}
+        </div>
+      )}
+
+      {/* 행 2 — Seat # 큰 글씨 (tap → vacate, pre-hand 한정) */}
+      <div className="row2 seat-no" onClick={isPreHand ? () => onEdit("seatNo") : null}>
+        S{seat.seatNo}
+      </div>
+
+      {/* 행 3 — PosBlock 3 sub-rows (STRADDLE / SB·BB / D + 좌·우 화살표 V4) */}
+      <div className="row3 pos-block">
+        {/* sub-row a: STRADDLE */}
+        <div className="pos-row">
+          <button className="arrow-left"  onClick={() => onPosShift("STR", -1)}>‹</button>
+          <span className={`pos-label ${isStraddle ? "on" : ""}`}>STR</span>
+          <button className="arrow-right" onClick={() => onPosShift("STR", +1)}>›</button>
+        </div>
+        {/* sub-row b: SB·BB */}
+        <div className="pos-row">
+          <button className="arrow-left"  onClick={() => onPosShift("SB", -1)}>‹</button>
+          <span className={`pos-label ${isSb ? "on" : ""}`}>SB</span>
+          <span className={`pos-label ${isBb ? "on" : ""}`}>BB</span>
+          <button className="arrow-right" onClick={() => onPosShift("SB", +1)}>›</button>
+        </div>
+        {/* sub-row c: Dealer */}
+        <div className="pos-row">
+          <button className="arrow-left"  onClick={() => onPosShift("D", -1)}>‹</button>
+          <span className={`pos-label ${isDealer ? "on" : ""}`}>D</span>
+          <button className="arrow-right" onClick={() => onPosShift("D", +1)}>›</button>
+        </div>
+      </div>
+
+      {/* 행 4 — Country flag (tap → 23-country grid) */}
+      <div className="row4 flag" onClick={() => onEdit("flag")}>
+        {seat.flag || "🏳️"}
+      </div>
+
+      {/* 행 5 — Name (tap → text input) */}
+      <div className="row5 name" onClick={() => onEdit("name")}>
+        {seat.name || "—"}
+      </div>
+
+      {/* 행 6 — Hole cards 2장 (R3 옵션 ON 시 face-up) */}
+      <div className="row6 hole-cards">
+        <CardSlot card={seat.holeCards?.[0]} onClick={() => onCardPick(0)} />
+        <CardSlot card={seat.holeCards?.[1]} onClick={() => onCardPick(1)} />
+      </div>
+
+      {/* 행 7 — Stack $ (tap → numpad + ±1k/±10k stepper) */}
+      <div className="row7 stack" onClick={() => onEdit("stack")}>
+        ${fmt(seat.stack)}
+      </div>
+
+      {/* 행 8 — Bet $ (tap → numpad) */}
+      <div className="row8 bet" onClick={() => onEdit("bet")}>
+        {seat.bet > 0 ? `$${fmt(seat.bet)}` : "—"}
+      </div>
+
+      {/* 행 9 — Last action (FOLD/CHECK/CALL/BET/RAISE/ALL-IN) */}
+      <div className="row9 last-action" onClick={() => onEdit("lastAction")}>
+        {seat.lastAction || "—"}
+      </div>
+
+      {/* 부유 베팅 칩 (showBetChips=true 시) — V11 */}
+      {showBetChips && seat.bet > 0 && <FloatingChip amount={seat.bet} />}
+    </div>
+  );
+}
+```
+
+**Position Shift Arrow 디자인 (정확 동일)**:
+
+```
+  +-----+                +-----+
+  | ‹   |   STR (text)   |   › |     ← STRADDLE 화살표 양 끝
+  +-----+                +-----+
+  +-----+                +-----+
+  | ‹   |  SB  BB (text) |   › |     ← SB·BB 화살표 양 끝 (SB↔BB overlap auto-skip, §16.8)
+  +-----+                +-----+
+  +-----+                +-----+
+  | ‹   |    D (text)    |   › |     ← Dealer 화살표 양 끝 (HU/3-handed auto chain, §16.8)
+  +-----+                +-----+
+```
+
+> ★ **버튼 글리프**: `‹` (U+2039 SINGLE LEFT-POINTING ANGLE QUOTATION MARK) + `›` (U+203A). Unicode 정확 동일. `<` `>` 또는 `←` `→` 대체 금지.
+
+### 17.3 Numpad — V16 키 grid + ←/Enter/Esc + long-press 500ms
+
+**SSOT**: `Numpad.jsx:1-110`. BET/RAISE 입력 모달. `B` 키 trigger 시 화면 하단 slide-up.
+
+```jsx
+// Numpad.jsx:1-110 — 컴포넌트 구조 (verbatim shape)
+function Numpad({ initialValue, onCommit, onCancel }) {
+  const [value, setValue] = useState(String(initialValue || 0));
+  const longPressTimer = useRef(null);
+
+  const append = (s) => setValue(prev => (prev === "0" ? s : prev + s));
+  const backspace = () => setValue(prev => prev.length > 1 ? prev.slice(0, -1) : "0");
+  const clearAll = () => setValue("0");
+
+  // ← long-press 500ms → clear all
+  const onBackspacePress = () => {
+    longPressTimer.current = setTimeout(clearAll, 500);
+  };
+  const onBackspaceRelease = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      backspace();  // short press = backspace
+    }
+  };
+
+  // Keyboard: 0~9 / Enter / Esc / Backspace
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key >= "0" && e.key <= "9") append(e.key);
+      else if (e.key === "Backspace") backspace();
+      else if (e.key === "Enter") onCommit(parseInt(value, 10));
+      else if (e.key === "Escape") onCancel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [value]);
+
+  return (
+    <div className="numpad-modal">
+      <div className="numpad-display">${fmt(value)}</div>
+
+      {/* 4×4 키 그리드 */}
+      <div className="numpad-grid">
+        <button onClick={() => append("1")}>1</button>
+        <button onClick={() => append("2")}>2</button>
+        <button onClick={() => append("3")}>3</button>
+        <button onClick={() => append("000")} className="key-000">000</button>
+
+        <button onClick={() => append("4")}>4</button>
+        <button onClick={() => append("5")}>5</button>
+        <button onClick={() => append("6")}>6</button>
+        <button
+          onMouseDown={onBackspacePress}
+          onMouseUp={onBackspaceRelease}
+          onMouseLeave={onBackspaceRelease}
+          className="key-backspace"
+        >←</button>
+
+        <button onClick={() => append("7")}>7</button>
+        <button onClick={() => append("8")}>8</button>
+        <button onClick={() => append("9")}>9</button>
+        <button onClick={onCancel} className="key-esc">Esc</button>
+
+        <button onClick={() => append("0")} className="key-0-wide" style={{gridColumn: "span 3"}}>0</button>
+        <button onClick={() => onCommit(parseInt(value, 10))} className="key-enter">Enter</button>
+      </div>
+    </div>
+  );
+}
+```
+
+**키 배치 (4 행 × 4 열, 정확 동일)**:
+
+```
+  +-----+-----+-----+--------+
+  |  1  |  2  |  3  |  000   |     ← 000 = 1000 단위 빠른 입력 (V16 핵심)
+  +-----+-----+-----+--------+
+  |  4  |  5  |  6  |   ←    |     ← ← short = backspace, long-press 500ms = clear all
+  +-----+-----+-----+--------+
+  |  7  |  8  |  9  |  Esc   |
+  +-----+-----+-----+--------+
+  |        0        | Enter  |     ← 0 은 3 열 span, Enter 는 1 열
+  +-----+-----+-----+--------+
+```
+
+> ★ **장기 누르기 임계값**: `500ms` 정확. 짧으면 운영자 오발 (1 자리만 지우려 했는데 전체 클리어), 길면 답답함. 시안 검증 값 그대로.
+
+### 17.4 CardPicker — 13×4 grid + 3-bucket Legend + dealtKeys
+
+**SSOT**: `CardPicker.jsx:21-160`. RFID 백업 (§Ch.7.2) + 보드/홀 카드 수동 지정.
+
+```jsx
+// CardPicker.jsx:21-160 — 컴포넌트 구조 (verbatim shape)
+const RANKS = ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"];
+const SUITS = [
+  { glyph: "♠", color: "black", name: "spades" },
+  { glyph: "♥", color: "red",   name: "hearts" },
+  { glyph: "♦", color: "red",   name: "diamonds" },
+  { glyph: "♣", color: "black", name: "clubs" },
+];
+
+function CardPicker({ target, dealtKeys, onPick, onClose }) {
+  // §16.10 dealtKeys 룰
+  const currentKey = target?.current ? cardKey(target.current) : "";
+
+  return (
+    <div className="card-picker-modal">
+      <div className="card-picker-header">
+        <div className="card-picker-title">
+          {target.label}  {/* "S5 Hole Card 1" or "Board Card 3 (FLOP 3)" */}
+        </div>
+        <button onClick={onClose} className="card-picker-close">✕</button>
+      </div>
+
+      {/* 13 랭크 × 4 슈트 그리드 */}
+      <div className="card-grid">
+        {SUITS.map(suit => (
+          <div className="card-row" key={suit.name}>
+            {RANKS.map(rank => {
+              const k = rank + suit.glyph;
+              const isCurrent = k === currentKey;
+              const isDealt   = dealtKeys.has(k) && !isCurrent;
+              return (
+                <button
+                  key={k}
+                  className={`card-swatch ${suit.color} ${isCurrent ? "current" : ""} ${isDealt ? "dealt" : ""}`}
+                  disabled={isDealt}
+                  onClick={() => onPick({ rank, suit: suit.name })}
+                >
+                  <span className="rank">{rank}</span>
+                  <span className="suit">{suit.glyph}</span>
+                </button>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      {/* 3-bucket Legend (bottom) — §16.10 */}
+      <div className="card-picker-legend">
+        <span className="legend-item available">■ Available</span>
+        <span className="legend-item dealt">■ Dealt elsewhere</span>
+        <span className="legend-item current">■ This slot</span>
+      </div>
+    </div>
+  );
+}
+```
+
+**그리드 레이아웃 (정확 동일)**:
+
+```
+                       [Title:  S5 Hole Card 1]              [✕]
+  +---+---+---+---+---+---+---+---+---+---+---+---+---+
+  | A♠| K♠| Q♠| J♠| T♠| 9♠| 8♠| 7♠| 6♠| 5♠| 4♠| 3♠| 2♠|     ← 스페이드 행
+  +---+---+---+---+---+---+---+---+---+---+---+---+---+
+  | A♥| K♥| Q♥| J♥| T♥| 9♥| 8♥| 7♥| 6♥| 5♥| 4♥| 3♥| 2♥|     ← 하트 행 (빨강)
+  +---+---+---+---+---+---+---+---+---+---+---+---+---+
+  | A♦| K♦| Q♦| J♦| T♦| 9♦| 8♦| 7♦| 6♦| 5♦| 4♦| 3♦| 2♦|     ← 다이아 행 (빨강)
+  +---+---+---+---+---+---+---+---+---+---+---+---+---+
+  | A♣| K♣| Q♣| J♣| T♣| 9♣| 8♣| 7♣| 6♣| 5♣| 4♣| 3♣| 2♣|     ← 클럽 행
+  +---+---+---+---+---+---+---+---+---+---+---+---+---+
+
+   ■ Available    ■ Dealt elsewhere    ■ This slot       ← Legend 3-bucket
+```
+
+> ★ **순서 강제**: 랭크는 `A` 좌측 → `2` 우측. 슈트는 `♠ ♥ ♦ ♣` 위→아래. 정렬 변경 금지 (전 세계 포커 운영자의 머슬 메모리).
+
+### 17.5 MissDealModal — icon + title + body + 3 stat + buttons
+
+**SSOT**: `MissDealModal.jsx:1-36` (§16.11 확장).
+
+```jsx
+// MissDealModal.jsx:1-36 — 컴포넌트 구조 (verbatim shape)
+function MissDealModal({ handNumber, phase, potAmount, onConfirm, onCancel }) {
+  // Keyboard: Enter = Confirm, Esc = Cancel
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Enter")       onConfirm();
+      else if (e.key === "Escape") onCancel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  return (
+    <div className="miss-deal-modal">
+      {/* 큰 ⊘ 아이콘 */}
+      <div className="miss-deal-icon">⊘</div>
+
+      {/* Title */}
+      <h2 className="miss-deal-title">Declare Miss Deal?</h2>
+
+      {/* Body — 핸드 abort 설명 */}
+      <p className="miss-deal-body">
+        This will abort the current hand. Blinds, antes, and all bets will be refunded to players.
+      </p>
+
+      {/* 3-stat row */}
+      <div className="miss-deal-stats">
+        <div className="stat">
+          <div className="stat-label">Hand</div>
+          <div className="stat-value">#{handNumber}</div>
+        </div>
+        <div className="stat">
+          <div className="stat-label">Phase</div>
+          <div className="stat-value">{phase.replace("_", " ")}</div>
+        </div>
+        <div className="stat accent">
+          <div className="stat-label">Pot to refund</div>
+          <div className="stat-value">${fmt(potAmount)}</div>
+        </div>
+      </div>
+
+      {/* Warning */}
+      <p className="miss-deal-warning">
+        This action is logged. Hand #{handNumber} will not be counted in statistics.
+      </p>
+
+      {/* Buttons — Cancel(Esc) / Confirm(Enter) */}
+      <div className="miss-deal-actions">
+        <button onClick={onCancel}  className="btn-cancel">Cancel <kbd>Esc</kbd></button>
+        <button onClick={onConfirm} className="btn-confirm">Confirm Miss Deal <kbd>Enter</kbd></button>
+      </div>
+    </div>
+  );
+}
+```
+
+**Modal 레이아웃 (정확 동일)**:
+
+```
+  +--------------------------------------------------+
+  |                       ⊘                          |     ← 큰 아이콘
+  |                                                  |
+  |              Declare Miss Deal?                  |     ← Title
+  |                                                  |
+  |   This will abort the current hand. Blinds,      |     ← Body
+  |   antes, and all bets will be refunded.          |
+  |                                                  |
+  |   +-------+ +----------+ +-----------------+    |
+  |   | Hand  | |  Phase   | | Pot to refund   |    |     ← 3 stat (3 번째 = accent color)
+  |   |  #42  | | PRE FLOP | |    $19,500      |    |
+  |   +-------+ +----------+ +-----------------+    |
+  |                                                  |
+  |   This action is logged. Hand #42 will not       |     ← Warning
+  |   be counted in statistics.                      |
+  |                                                  |
+  |   [ Cancel  Esc ]    [ Confirm Miss Deal  Enter ]|     ← Buttons
+  +--------------------------------------------------+
+```
+
+> ★ **stat 3 번째 (Pot to refund) accent color**: `var(--accent)` 적용 — 운영자 시선이 "환불 금액" 으로 자석처럼 끌리도록 (사고 예방 핵심).
+
+### 17.6 tokens.css — Raw CSS Source (verbatim)
+
+**SSOT**: `tokens.css:1-110`. §16.7 의 32 token 을 *raw CSS* 그대로 inline. Flutter 이식 시 `ThemeData` 의 `extension<CCTokens>` 로 1:1 매핑.
+
+```css
+/* tokens.css — verbatim source */
+
+:root {
+  /* Surface — 4-tier dark */
+  --bg-0: oklch(0.16 0.012 240);
+  --bg-1: oklch(0.20 0.014 240);
+  --bg-2: oklch(0.24 0.014 240);
+  --bg-3: oklch(0.29 0.014 240);
+
+  /* Felt (테이블) */
+  --bg-felt:     oklch(0.27 0.045 165);
+  --bg-felt-rim: oklch(0.20 0.035 165);
+
+  /* Text — 4-tier */
+  --fg-0: oklch(0.98 0.005 240);
+  --fg-1: oklch(0.84 0.010 240);
+  --fg-2: oklch(0.62 0.010 240);
+  --fg-3: oklch(0.45 0.010 240);
+
+  /* Border */
+  --line:      oklch(0.34 0.014 240);
+  --line-soft: oklch(0.28 0.014 240 / 0.7);
+
+  /* Accent — broadcast amber (3-variant) */
+  --accent:        oklch(0.78 0.16 65);
+  --accent-strong: oklch(0.72 0.18 60);
+  --accent-soft:   oklch(0.78 0.16 65 / 0.18);
+
+  /* Semantic — 4 */
+  --ok:   oklch(0.74 0.14 150);
+  --warn: oklch(0.80 0.16 80);
+  --err:  oklch(0.66 0.20 25);
+  --info: oklch(0.72 0.13 230);
+
+  /* Position markers */
+  --pos-d:  oklch(0.92 0.04 90);    /* dealer puck — bone white */
+  --pos-sb: oklch(0.74 0.14 230);   /* small blind — blue */
+  --pos-bb: oklch(0.72 0.16 320);   /* big blind — magenta */
+
+  /* Card colors */
+  --card-bg:    oklch(0.96 0.005 90);   /* cream */
+  --card-red:   oklch(0.55 0.21 25);    /* ♥ ♦ */
+  --card-black: oklch(0.18 0.02 240);   /* ♠ ♣ */
+
+  /* Geometry — radius scale */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+
+  /* Shadow scale */
+  --shadow-card: 0 1px 0 rgba(255,255,255,.04) inset, 0 4px 16px rgba(0,0,0,.35);
+  --shadow-pop:  0 12px 36px rgba(0,0,0,.55), 0 2px 0 rgba(255,255,255,.04) inset;
+  --glow-action: 0 0 0 2px var(--accent), 0 0 28px var(--accent-soft);
+
+  /* Typography */
+  --font-ui:   "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
+}
+
+/* Scale-fit stage (§16.6) */
+.stage {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-0);
+  overflow: hidden;
+}
+
+.stage-inner {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1600px;
+  height: 900px;
+  transform-origin: 0 0;
+  background: var(--bg-0);
+}
+
+/* ACTING seat glow pulse */
+@keyframes acting-pulse {
+  0%, 100% { box-shadow: var(--glow-action); }
+  50%      { box-shadow: 0 0 0 2px var(--accent-strong), 0 0 40px var(--accent); }
+}
+.seat-col.acting {
+  animation: acting-pulse 1.4s ease-in-out infinite;
+}
+```
+
+> ★ **Q2 적용 시 override (Lobby B&W refined minimal 톤 통일)**:
+>
+> ```css
+> :root {
+>   --bg-felt:     oklch(0.27 0 0);       /* chroma 0 → 회색 */
+>   --bg-felt-rim: oklch(0.20 0 0);
+>   --accent:      oklch(0.78 0 0);       /* 흰색 톤 */
+>   --accent-strong: oklch(0.72 0 0);
+>   --accent-soft:   oklch(0.78 0 0 / 0.18);
+> }
+> ```
+>
+> Surface 4-tier 와 fg 4-tier 의 *명도 계단* 은 그대로 보존. **본 PRD 스크린샷의 amber 톤은 시안용** — production = 위 override 적용.
+
+### 17.7 data.js — Raw Initial State Shape (verbatim)
+
+**SSOT**: `data.js:1-110`. 모든 state slice 의 *초기값 형태* — Flutter `freezed` 모델 또는 Provider 초기값 정의 시 본 shape 그대로.
+
+```javascript
+// data.js — verbatim source
+
+// 23 nationality options (§16.9)
+export const COUNTRY_OPTIONS = [
+  { code: "KOR", flag: "🇰🇷" },
+  { code: "USA", flag: "🇺🇸" },
+  { code: "JPN", flag: "🇯🇵" },
+  { code: "CHN", flag: "🇨🇳" },
+  { code: "GBR", flag: "🇬🇧" },
+  { code: "GER", flag: "🇩🇪" },
+  { code: "FRA", flag: "🇫🇷" },
+  { code: "ESP", flag: "🇪🇸" },
+  { code: "ITA", flag: "🇮🇹" },
+  { code: "RUS", flag: "🇷🇺" },
+  { code: "CAN", flag: "🇨🇦" },
+  { code: "AUS", flag: "🇦🇺" },
+  { code: "BRA", flag: "🇧🇷" },
+  { code: "MEX", flag: "🇲🇽" },
+  { code: "IND", flag: "🇮🇳" },
+  { code: "IRL", flag: "🇮🇪" },
+  { code: "GRC", flag: "🇬🇷" },
+  { code: "NED", flag: "🇳🇱" },
+  { code: "SWE", flag: "🇸🇪" },
+  { code: "VNM", flag: "🇻🇳" },
+  { code: "THA", flag: "🇹🇭" },
+  { code: "PHI", flag: "🇵🇭" },
+  { code: "UNK", flag: "🏳️" },
+];
+
+// 좌석 1 개의 초기 shape
+export function makeSeat(seatNo) {
+  return {
+    seatNo:     seatNo,         // 1~10 (1-indexed)
+    occupied:   false,
+    name:       "",
+    flag:       "",
+    holeCards:  [null, null],   // [Card | null, Card | null]
+    stack:      0,
+    bet:        0,
+    folded:     false,
+    allIn:      false,
+    lastAction: null,           // "FOLD" | "CHECK" | "CALL" | "BET" | "RAISE" | "ALL_IN" | null
+    sync:       "AUTO",         // "AUTO" | "MANUAL_OVERRIDE" | "CONFLICT" — §16.2
+  };
+}
+
+// 전체 핸드 state 초기값
+export const HAND_STATE_BASE = {
+  phase:         "IDLE",         // §Ch.6 HandFSM 9-state
+  handNumber:    0,
+  seats:         Array.from({ length: 10 }, (_, i) => makeSeat(i + 1)),
+
+  // Position markers
+  dealerSeat:    null,           // seatNo | null
+  sbSeat:        null,
+  bbSeat:        null,
+  straddleSeat:  null,           // seatNo | null (R3 옵션)
+
+  // 액션 흐름
+  actionSeatIdx: null,           // seats[] 인덱스 (1-indexed seatNo 아님)
+  biggestBet:    0,
+  potAmount:     0,
+
+  // 보드
+  board:         [null, null, null, null, null],   // [FLOP1, FLOP2, FLOP3, TURN, RIVER]
+
+  // 외부 연결 (§16.3)
+  bo:            "online",       // "online" | "degraded" | "offline"
+  rfid:          "online",
+  engineState:   "online",
+
+  // 운영자 컨텍스트
+  opName:        "—",
+  tableName:     "—",
+  stakes:        "NLH 200/400/50",
+  level:         12,
+};
+
+// TWEAKS 초기값 (§16.1)
+export const INITIAL_TWEAKS = {
+  accentHue:     65,             // 0~360 — broadcast amber default
+  feltHue:       165,            // 0~360 — felt green default
+  engineState:   "online",       // 외부에서 강제 override 시 자동 반영
+  layout:        "bottom",       // "bottom" | "left" | "right" — *시안 only* (R1)
+  showEquity:    true,
+  showKbdHints:  true,
+  showBetChips:  true,
+};
+```
+
+**Flutter `freezed` 매핑 가이드**:
+
+```dart
+// Seat
+@freezed
+class Seat with _$Seat {
+  const factory Seat({
+    required int seatNo,
+    @Default(false) bool occupied,
+    @Default("") String name,
+    @Default("") String flag,
+    @Default([null, null]) List<Card?> holeCards,
+    @Default(0) int stack,
+    @Default(0) int bet,
+    @Default(false) bool folded,
+    @Default(false) bool allIn,
+    PlayerAction? lastAction,
+    @Default(SyncState.auto) SyncState sync,
+  }) = _Seat;
+}
+
+enum SyncState { auto, manualOverride, conflict }   // §16.2
+enum HandPhase {
+  idle, setupHand, preFlop, flop, turn, river,
+  showdown, awardPot, handComplete,                  // 9-state
+}
+```
+
+> ★ **shape 강제**: 필드명 / 순서 / 기본값 변경 금지. mockup → Flutter 이식 시 *직역* (자유로운 재구성 X). 운영 중 디버그 시 React mockup 의 state 덤프와 Flutter app 의 state 덤프가 *동일 구조* 여야 한다.
+
+### 17.8 PRD ↔ Mockup 표현 일관성 룰 (SSOT)
+
+> **본 §17.8 은 §Ch.1~§Ch.17 전체에 강제 적용되는 메타 룰**.
+
+| # | 룰 | 위반 시 | 정정 방향 |
+|:-:|----|--------|----------|
+| 1 | **Mockup 이 SSOT** — PRD 본문 (Ch.1~Ch.15) 의 자연어 묘사가 §Ch.16~§Ch.17 raw source 와 충돌 시 mockup 이 우선 | PRD 본문이 mockup 과 표현 다름 | mockup raw source 를 변경 X, PRD 본문을 raw source 에 맞춰 수정 |
+| 2 | **버튼/화살표 글리프 동일** — `‹` `›` (U+2039 U+203A) Unicode 정확. `<` `>` `←` `→` 대체 금지 | PRD 본문이 다른 글리프 사용 | Edit 으로 `‹` `›` 통일 |
+| 3 | **레이아웃 구조 동일** — 4 영역 위계 (StatusBar 52px → TopStrip 158px → PlayerGrid → ActionPanel 124px) 순서 / 픽셀값 변경 금지 | PRD 본문이 다른 순서/높이 사용 | mockup 픽셀값 (52/158/124) 으로 통일 |
+| 4 | **컴포넌트 트리 동일** — PlayerColumn 9 행 / Numpad 4×4 / CardPicker 13×4 / MissDealModal 3 stat 의 *개수* 변경 금지 | PRD 본문이 다른 개수 명시 (예: 8 행) | mockup 개수로 통일 |
+| 5 | **토큰 값 동일** — `--accent` `--bg-felt` 등 32 token 의 oklch 값 변경 금지 (Q2 override 는 *별도 layer* 로만 적용) | PRD 본문이 다른 hex/rgb 값 사용 | mockup oklch 값으로 통일, Q2 override 는 §17.6 별도 블록 |
+| 6 | **state 필드 동일** — `seats[i].sync` `engineState` `actionSeatIdx` 등 필드명 / enum 값 변경 금지 | PRD 본문이 다른 필드명 사용 | mockup 필드명으로 통일 |
+| 7 | **버튼 라벨 동일** — "START HAND" / "FINISH HAND" / "Declare Miss Deal?" / "Cancel" / "Confirm Miss Deal" 등 영문 라벨 정확 일치 | PRD 본문이 다른 라벨 / 한글 번역 사용 | mockup 영문 라벨로 통일 |
+
+#### 자동 검증 룰
+
+| 검증 | 도구 / 시점 |
+|------|-----------|
+| 픽셀값 일치 (52 / 158 / 124 / 1600 / 900) | grep `52px\|158px\|124px\|1600\|900` 후 mockup 값 cross-ref |
+| Unicode 글리프 동일 (`‹` `›` `⊘` `✋` `⚠` `✕`) | grep PRD 내 글리프 → mockup `cardKey` / `Seat.jsx` 와 비교 |
+| oklch 토큰값 일치 | grep `oklch(0.16 0.012 240)` 등 → tokens.css 와 비교 |
+| state 필드명 일치 | grep `seats\[\.\]\.\(sync\|bet\|holeCards\)` → data.js shape 와 비교 |
+
+#### 외부 개발팀 — 본 룰 적용 체크리스트 (8 항)
+
+| # | 항목 | 정합 위치 |
+|:-:|------|----------|
+| 1 | App.jsx layout tree 4 영역 위계 보존 (52/158/124px) | §17.1 |
+| 2 | PlayerColumn 9 행 + Position Shift Arrow `‹` `›` 정확 | §17.2 |
+| 3 | Numpad 4×4 키 grid + `000` 키 + `←` long-press 500ms | §17.3 |
+| 4 | CardPicker 13×4 grid + 3-bucket Legend + dealtKeys | §17.4 |
+| 5 | MissDealModal 큰 ⊘ + 3 stat + Enter/Esc + accent color stat | §17.5 |
+| 6 | tokens.css 32 token oklch raw source (Q2 override 별도 layer) | §17.6 |
+| 7 | data.js HAND_STATE_BASE / makeSeat / INITIAL_TWEAKS shape 그대로 freezed 모델 | §17.7 |
+| 8 | PRD ↔ Mockup 표현 일관성 룰 7 항 자동 검증 도구 적용 | §17.8 |
+
+> ★ **본 챕터 적용 후의 효과**: PRD 가 *해설 문서* 에서 *재현 명세* 로 진화. 외부 개발팀이 mockup 폴더 접근 없이도 본 PRD 하나로 layout + 컴포넌트 + 토큰 + state 1:1 재현 가능. team4-cc 구현이 mockup 과 drift 발생 시 본 §17 가 *3-way 일관성 (PRD ↔ mockup ↔ team4-cc)* 의 중재 SSOT.
+
+---
+
 ## EPILOGUE — 본방송 종료 후
 
 본방송 한 회가 끝난 자리. 운영자는 헤드셋을 벗는다. 모니터에 마지막 핸드의 HAND_COMPLETE 라벨이 남아 있다.
@@ -1102,6 +1854,7 @@ PRD §Ch.15 의 V1~V17 에 V18 추가:
 
 | 날짜 | 버전 | 핵심 변화 |
 |------|:---:|----------|
+| 2026-05-12 | **4.2.0** | SG-037-c — Mockup Layout & Component Verbatim cascade (사용자 결정 cascade:cc-prd-layout-strict). Ch.17 신규 8 부절: App.jsx root layout tree / PlayerColumn 9 행 + Position Shift Arrow `‹` `›` / Numpad 4×4 + `000` + ← long-press 500ms / CardPicker 13×4 + 3-bucket Legend / MissDealModal 3 stat + Enter/Esc / tokens.css raw source 32 token + Q2 override / data.js HAND_STATE_BASE + makeSeat + INITIAL_TWEAKS shape / PRD↔Mockup 표현 일관성 룰 7 항 + 자동 검증 도구. v4.1 Ch.16 + v4.0 본문 무변경 (additive). |
 | 2026-05-12 | **4.1.0** | SG-037 — Mockup state model 정합 cascade. Ch.16 신규 (TWEAKS / seats.sync / engineState 3-state / NEXT_STREET / ctx 의사코드 / 1600×900 캔버스 / 32 design tokens / shiftPosSlot HU 룰 / FieldEditor 9 kind / CardPicker dealtKeys / MissDealModal spec / V18 sync icon). Ch.12.1 화면 크기 모순 정정. v4.0 Reader Panel 합격본 본문 무변경 (additive). |
 | 2026-05-07 | **4.0.0** | Reader Panel critic 16 fix cascade — 숫자 fact-check / 5 vs 6 키 모순 / R3 보안 4 단 방어 / G1 runtime 강제 / 약어 첫 등장 풀이 / 1×10 trade-off honest / AT 8 화면 / 매트릭스 단일화 / 비유 정리 / D7 정본 인용 정정. |
 | 2026-05-07 | 3.0.0 | 그림 소설 형식 5-Act 구조. |

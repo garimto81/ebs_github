@@ -77,3 +77,54 @@ protocol: Spec_Gap_Triage
 | team4-cc 의 widget inventory 정합 — `cc_engine_state_banner.dart` / `seat_sync_icon.dart` 신규 + `cc_design_canvas.dart` scaler | team4 (S2/S3) | P2 |
 | Flutter ThemeData 의 30+ token catalog 매핑 | team4 / designer | P2 |
 | TWEAKS panel: production 빌드 제거 vs Admin-only flag 결정 | conductor | P3 |
+
+---
+
+## SG-037-c — Layout & Component Verbatim 보강 (2026-05-12 cycle 10 추가, PR #373 supersede)
+
+### 신규 사용자 결정 (cascade:cc-prd-layout-strict, broker seq 1110)
+
+> *"Command Center 레이아웃 = HTML mockup 그대로 반영. 버튼식 구성 + 화살표 디자인 정확 동일. PRD 가 mockup 보다 다른 표현 X. 디자인 토큰 (tokens.css) 그대로 명시. App.jsx / PlayerColumn / Numpad / CardPicker / MissDealModal 컴포넌트 구조 그대로. data.js state 모델 그대로."*
+
+### 격차 (SG-037 위에 추가 발견)
+
+| # | 항목 | SG-037 (v4.1.0 Ch.16) 현황 | SG-037-c 보강 필요 |
+|:-:|------|---------------------------|--------------------|
+| 12 | App.jsx root layout tree (4 영역 위계 + 컨테이너 순서) | 부분 (§Ch.1.1 자연어 묘사만) | **JSX 트리 verbatim inline 필요** |
+| 13 | PlayerColumn 9 행 + Position Shift Arrow `‹` `›` Unicode 정확 | 부분 (§Ch.4.1 행 표만) | **JSX 컴포넌트 verbatim + 글리프 정확 (U+2039 / U+203A)** |
+| 14 | Numpad 4×4 grid + `000` + ← long-press 500ms | 부분 (§Ch.5.2 표만) | **JSX 컴포넌트 verbatim + 임계값 500ms 명시** |
+| 15 | CardPicker 13×4 grid + 3-bucket Legend | 부분 (§16.10 의사코드만) | **JSX 컴포넌트 verbatim + 그리드 ASCII 시각** |
+| 16 | MissDealModal 큰 ⊘ + 3 stat + accent color | 부분 (§16.11 표만) | **JSX 컴포넌트 verbatim + Modal 레이아웃 ASCII** |
+| 17 | tokens.css 32 token raw CSS source | 부분 (§16.7 token 표만) | **raw `:root {}` CSS block + Q2 override block** |
+| 18 | data.js HAND_STATE_BASE / makeSeat / INITIAL_TWEAKS shape | 부분 (§16.1 / §16.2 표만) | **raw JS export verbatim + Flutter freezed 매핑 가이드** |
+| 19 | PRD ↔ Mockup 표현 일관성 룰 (글리프 / 픽셀값 / 라벨) | 없음 | **7 항 룰 + 자동 검증 grep 명령** |
+
+### 결정 — PRD additive Ch.17 (대안 1)
+
+| 대안 | 선택 | 사유 |
+|------|:----:|------|
+| 1. Ch.17 신규 8 부절 additive | ✅ | v4.0 본문 + v4.1 Ch.16 모두 보존. raw source 단일 챕터 격리. 외부 개발팀이 추가 읽기만 |
+| 2. Ch.16 in-place 확장 | ❌ | v4.1 Ch.16 의 표 형식 (state 인용) 과 Ch.17 의 raw source 형식이 다름. 분리가 가독성 ↑ |
+| 3. Mockup 측 PRD 자동 생성 도구 | ❌ | 일회성 PR 범위 초과 |
+
+### 후속 (P0~P2)
+
+| 후속 항목 | 담당 stream | 우선순위 |
+|----------|------------|:-------:|
+| team4-cc 의 widget 정합 — `cc_player_column.dart` 9 행 + Position Shift Arrow `‹` `›` Unicode | team4 (S3) | P1 |
+| `cc_numpad.dart` 4×4 grid + 000 키 + 500ms long-press 임계값 | team4 (S3) | P1 |
+| `cc_card_picker.dart` 13×4 grid + Legend 3-bucket | team4 (S3) | P1 |
+| `cc_miss_deal_modal.dart` 3 stat + Enter/Esc | team4 (S3) | P2 |
+| Flutter `ThemeData` extension `<CCTokens>` 32 token 매핑 | team4 / designer | P2 |
+| `freezed` 모델 (Seat / HandState / Tweaks) data.js shape 직역 | team4 (S3) | P2 |
+| 자동 검증 도구: PRD ↔ mockup 표현 일관성 grep 스크립트 | S11 (DevOps) | P3 |
+
+### 정합 위치 (PRD v4.2.0)
+
+`docs/1. Product/Command_Center.md` §Ch.17 (8 부절: 17.1 App.jsx / 17.2 PlayerColumn / 17.3 Numpad / 17.4 CardPicker / 17.5 MissDealModal / 17.6 tokens.css raw / 17.7 data.js raw / 17.8 표현 일관성 룰).
+
+### 이전 PR #373 정정 사유
+
+- **PR #373** (`docs(s10-w/sg-037): CC PRD v4.1.0 — mockup state model 정합`): 2026-05-12T12:12:00Z **CLOSED** (not merged)
+- 사용자가 v4.1.0 의 state model 만으로는 부족 — layout / 컴포넌트 트리 / 토큰 raw source 까지 *직접 inline* 필요 명시
+- 본 PR (v4.2.0): PR #373 의 v4.1.0 작업을 cherry-pick 으로 보존 + Ch.17 추가
