@@ -631,6 +631,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` | 기획 공백: <구체적 공백명> | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` | 기획 공백: 외부 인계 PRD derivative-of frontmatter 미연결 5건 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` | v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record | conductor | contract | - |
 | `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` | v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기) | conductor | contract | - |
 | `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` | Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A) | conductor | internal | - |
@@ -735,4 +736,5 @@ tier: generated
 | `docs/_journey/2026-05-11_smem_cycle2.md` | SMEM Cycle 2 — Cycle 1 weekly diff + case study | SMEM | - | - |
 | `docs/_journey/2026-05-12_smem_cycle4.md` | SMEM Cycle 4 — Cycle 3+4 weekly diff + audit | SMEM | - | - |
 | `docs/_journey/2026-05-12_smem_cycle5.md` | SMEM Cycle 5 — Cycle 4 case study + weekly diff | SMEM | - | - |
+| `docs/_journey/2026-05-12_smem_cycle6.md` | SMEM Cycle 6 — Cycle 5 case study + weekly diff (architecture pivot + Iron Law 임계) | SMEM | - | - |
 | `docs/examples/README.md` | Examples | conductor | internal | - |

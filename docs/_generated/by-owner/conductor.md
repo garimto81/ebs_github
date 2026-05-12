@@ -199,6 +199,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/_template_implementation.md` — 구현: <기능명>
 - `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` — 시나리오: <검증 대상 통합 흐름>
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` — 기획 공백: <구체적 공백명>
+- `docs/4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` — 기획 공백: 외부 인계 PRD derivative-of frontmatter 미연결 5건
 - `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` — v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record
 - `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` — v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기)
 - `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` — Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A)
