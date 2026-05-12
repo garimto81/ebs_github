@@ -1,0 +1,3 @@
+{"data":{"accessToken":"<REDACTED-JWT-len=267>","refreshToken":"<REDACTED-JWT-len=219>","refreshTokenDelivery":"body","tokenType":"Bearer","expiresIn":3600,"expiresAt":"2026-05-12T03:52:05.265030+00:00Z","refreshExpiresIn":86400,"authProfile":"dev","user":{"userId":2,"email":"admin@local","role":"admin","tableIds":[]},"requires2Fa":false},"error":null}
+
+HTTP 200

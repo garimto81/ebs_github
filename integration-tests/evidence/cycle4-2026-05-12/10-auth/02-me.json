@@ -1,0 +1,2 @@
+{"userId":2,"email":"admin@local","displayName":"Local Admin","role":"admin","permissions":["read:*","write:*","delete:*","audit:read","sync:trigger","users:manage"],"settingsScope":"user:2"}
+
