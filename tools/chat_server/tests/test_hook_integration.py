@@ -48,8 +48,10 @@ def test_inject_chat_mentions_returns_empty_when_no_mentions(tmp_path):
 
 
 def test_inject_chat_mentions_filters_by_team(tmp_path):
+    """Unanswered mention 만 반환 + last_seen 후퇴 (재 inject 보장)."""
     state_file = tmp_path / "chat_last_seen_S2.json"
-    with patch("tools.chat_server.hook_integration._subscribe_sync") as sub:
+    with patch("tools.chat_server.hook_integration._subscribe_sync") as sub, \
+         patch("tools.chat_server.hook_integration._has_reply_from", return_value=False):
         sub.return_value = {
             "events": [
                 {
@@ -69,7 +71,61 @@ def test_inject_chat_mentions_filters_by_team(tmp_path):
     assert len(result) == 1
     assert result[0]["seq"] == 10
     import json as J
-    assert J.loads(state_file.read_text())["last_seq"] == 12
+    # Unanswered → last_seen 후퇴 (min seq - 1 = 9) 로 재 inject 보장
+    assert J.loads(state_file.read_text())["last_seq"] == 9
+
+
+def test_inject_chat_mentions_answered_advances_last_seen(tmp_path):
+    """이미 응답한 mention → unanswered list 비고 + last_seen 정상 진행."""
+    state_file = tmp_path / "chat_last_seen_S2.json"
+    with patch("tools.chat_server.hook_integration._subscribe_sync") as sub, \
+         patch("tools.chat_server.hook_integration._has_reply_from", return_value=True):
+        sub.return_value = {
+            "events": [
+                {
+                    "seq": 10, "topic": "chat:room:design",
+                    "source": "user", "ts": "t",
+                    "payload": {"mentions": ["@S2"], "body": "ping", "from": "user"},
+                },
+            ],
+            "next_seq": 11,
+        }
+        result = hi.inject_chat_mentions(team_id="S2", state_file=state_file)
+    assert result == []
+    import json as J
+    assert J.loads(state_file.read_text())["last_seq"] == 11
+
+
+def test_inject_chat_mentions_mixed_answered_unanswered(tmp_path):
+    """일부 mention 만 응답 — unanswered 의 가장 낮은 seq - 1 로 last_seen."""
+    state_file = tmp_path / "chat_last_seen_S2.json"
+    # mention seq=10 응답함, seq=20 응답 안 함
+    def reply_check(team, seq, topic):
+        return seq == 10  # 10 만 응답
+
+    with patch("tools.chat_server.hook_integration._subscribe_sync") as sub, \
+         patch("tools.chat_server.hook_integration._has_reply_from",
+               side_effect=reply_check):
+        sub.return_value = {
+            "events": [
+                {
+                    "seq": 10, "topic": "chat:room:design",
+                    "source": "user", "ts": "t",
+                    "payload": {"mentions": ["@S2"], "body": "first", "from": "user"},
+                },
+                {
+                    "seq": 20, "topic": "chat:room:design",
+                    "source": "user", "ts": "t",
+                    "payload": {"mentions": ["@S2"], "body": "second", "from": "user"},
+                },
+            ],
+            "next_seq": 21,
+        }
+        result = hi.inject_chat_mentions(team_id="S2", state_file=state_file)
+    assert len(result) == 1
+    assert result[0]["seq"] == 20  # unanswered
+    import json as J
+    assert J.loads(state_file.read_text())["last_seq"] == 19  # min(20) - 1
 
 
 def test_inject_chat_mentions_silent_when_broker_down(tmp_path):
