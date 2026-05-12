@@ -177,6 +177,39 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 2. **Cycle 4**: P2 (engine 9 + backend env 3) — 12건. S7+S8 협력 PR.
 3. **Cycle 5**: P1 (lobby_ui 94) — 5 batch (~20건씩) S2 ↔ S10-W 협력.
 
+### Cycle 4 P3 quick win 결과 (2026-05-12, false positive 인정)
+
+**S0 Conductor autonomous iteration** — Cycle 4 진입 시 P3 3건 실제 spec 검증.
+
+| identifier | 분류 (직전) | 실제 상태 | 결정 |
+|------------|:-----------:|----------|------|
+| `fold_delay` | deprecated_unclear | ✅ Settings/UI.md §233 `gfx.fold_delay` 활용 (How to Show Fold) | **false positive — 실제 lobby_ui** |
+| `fold_display` | deprecated_unclear | ✅ Settings/UI.md §233 `gfx.fold_display` 활용 (How to Show Fold) | **false positive — 실제 lobby_ui** |
+| `rfid_mode` | rfid | ✅ CC Settings.md §156 `rfid_mode` scope=table 명세 (Real/Mock) | **false positive — 실제 lobby_ui (CC Settings)** |
+
+**3건 모두 false positive** — spec 에 실제 존재. 분류 알고리즘 한계 인정.
+
+### Cycle 4 분류 알고리즘 보정
+
+`categorize_settings_d2()` 의 keyword 매칭이 generic word 에 약함. 다음 cycle 분류 시:
+- `fold_delay`/`fold_display` → keyword `fold` 가 generic, lobby_ui (gfx.* prefix 가 진짜 분류 신호)
+- `rfid_mode` → keyword `rfid` 만으로 분류 X, prefix/path context 필요
+
+**진실의 D2**: 109 → **106** (3 false positive 제외).
+**진실의 lobby_ui**: 94 → **97**.
+
+### 진정한 처리 순서 (Cycle 4 갱신)
+
+1. ~~Cycle 3 P3 quick win~~: **false positive 였음** (이번 보고). 실제 spec 보강 불필요.
+2. **Cycle 4**: P2 12건 (engine 9 + backend env 3) — S7+S8 협력 PR. **현 cycle 진행**.
+3. **Cycle 5**: P1 97건 — 5 batch (~20건씩) S2 ↔ S10-W 협력.
+
+### SG-036 갱신 (P3 인정)
+
+| ID | 갱신 |
+|----|------|
+| SG-036 | **P3 false positive 3건** 인정 (2026-05-12). P2 12건 + P1 97건 = 진정 미해소 109건 → **109건 (조정 없음, 단 분포 정정)**. 다음 분류 시 prefix/context 매칭 필요. |
+
 ### 자동 분류 스크립트 (재현성)
 
 ```python
