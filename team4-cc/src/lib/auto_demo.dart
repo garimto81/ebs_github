@@ -39,10 +39,13 @@ Future<AutoDemoResult> runAutoDemo({
   Duration ackTimeout = const Duration(seconds: 10),
   void Function(int handId)? onReady,
   void Function(Object error, StackTrace stack)? onError,
+  bool multiHand = true,
+  void Function(int handNumber, int handId)? onHandReady,
 }) async {
-  DebugLog.i('AUTO_DEMO', 'starting 1-hand wire', {
+  DebugLog.i('AUTO_DEMO', 'starting CC wire', {
     'tableId': tableId,
     'boBaseUrl': boBaseUrl,
+    'multiHand': multiHand,
   });
 
   // Step 1: BO REST — launch-cc (30-cc-launch-flow.http §30.1).
@@ -89,8 +92,9 @@ Future<AutoDemoResult> runAutoDemo({
     fetchReplay: (_, __) async => const <Map<String, dynamic>>[],
   );
 
-  // GameInfoAck waiter — wired before connect to avoid race.
-  final ackCompleter = Completer<int>();
+  // GameInfoAck waiter — re-armable per hand. Cycle 6 #313: completer 가
+  // 각 hand 마다 새로 생성되어 sequential 수신을 보장한다.
+  Completer<int> ackCompleter = Completer<int>();
   ws.on('GameInfoAck', (payload) {
     if (ackCompleter.isCompleted) return;
     final handId = (payload['payload'] as Map?)?['hand_id'] as int? ?? -1;
@@ -111,9 +115,105 @@ Future<AutoDemoResult> runAutoDemo({
     return AutoDemoResult.failure(stage: 'ws-connect', error: e);
   }
 
-  // Step 3: WriteGameInfo (CCR-024, 24 fields).
+  // ── Hand 1 ────────────────────────────────────────────────────────────
+  final firstAckId = await _sendHandAndAwaitAck(
+    ws: ws,
+    api: api,
+    tableId: tableId,
+    handNumber: 1,
+    dealerSeat: 3,
+    sbSeat: 4,
+    bbSeat: 5,
+    ackCompleter: ackCompleter,
+    ackTimeout: ackTimeout,
+    onError: onError,
+  );
+  if (firstAckId is _AutoDemoError) {
+    return firstAckId.result;
+  }
+  final hand1Id = firstAckId as int;
+  DebugLog.i('AUTO_DEMO', 'Hand 1 wire OK', {'hand_id': hand1Id});
+  onHandReady?.call(1, hand1Id);
+  onReady?.call(hand1Id); // legacy 1-hand callback
+
+  if (!multiHand) {
+    return AutoDemoResult.success(
+      handId: hand1Id,
+      ccInstanceId: ccInstanceId,
+      tableId: tableId,
+      handsCompleted: 1,
+    );
+  }
+
+  // ── Hand 2 (Cycle 6 #313 — multi-hand wire) ───────────────────────────
+  // SeatCell 9-row reset 검증 + WriteGameInfo handNumber 갱신 검증.
+  // dealer/SB/BB 회전: 3 → 4, 4 → 5, 5 → 6 (Engine #287 rotate rule 정합).
+  await Future<void>.delayed(const Duration(milliseconds: 500));
+
+  // 새 completer — 두 번째 GameInfoAck 대기.
+  ackCompleter = Completer<int>();
+
+  final secondAckId = await _sendHandAndAwaitAck(
+    ws: ws,
+    api: api,
+    tableId: tableId,
+    handNumber: 2,
+    dealerSeat: 4,
+    sbSeat: 5,
+    bbSeat: 6,
+    ackCompleter: ackCompleter,
+    ackTimeout: ackTimeout,
+    onError: onError,
+  );
+  if (secondAckId is _AutoDemoError) {
+    return secondAckId.result;
+  }
+  final hand2Id = secondAckId as int;
+  DebugLog.i('AUTO_DEMO', 'Hand 2 wire OK — multi-hand verified', {
+    'hand_1_id': hand1Id,
+    'hand_2_id': hand2Id,
+    'hand_id_advanced': hand2Id > hand1Id,
+  });
+  onHandReady?.call(2, hand2Id);
+
+  return AutoDemoResult.success(
+    handId: hand2Id,
+    ccInstanceId: ccInstanceId,
+    tableId: tableId,
+    handsCompleted: 2,
+  );
+}
+
+/// Sentinel for early-return error path inside [_sendHandAndAwaitAck].
+class _AutoDemoError {
+  const _AutoDemoError(this.result);
+  final AutoDemoResult result;
+}
+
+/// Sends a single WriteGameInfo (WS + REST mirror) and awaits the matching
+/// GameInfoAck. Returns the [handId] from the Ack, or an [_AutoDemoError]
+/// sentinel encapsulating the failure [AutoDemoResult].
+Future<Object> _sendHandAndAwaitAck({
+  required BoWebSocketClient ws,
+  required BoApiClient api,
+  required int tableId,
+  required int handNumber,
+  required int dealerSeat,
+  required int sbSeat,
+  required int bbSeat,
+  required Completer<int> ackCompleter,
+  required Duration ackTimeout,
+  void Function(Object error, StackTrace stack)? onError,
+}) async {
   final nowUtc = DateTime.now().toUtc();
-  final payload = _sampleGameInfoPayload(tableId: tableId, nowUtc: nowUtc);
+  final payload = _sampleGameInfoPayload(
+    tableId: tableId,
+    nowUtc: nowUtc,
+    handNumber: handNumber,
+    dealerSeat: dealerSeat,
+    sbSeat: sbSeat,
+    bbSeat: bbSeat,
+  );
   final idemKey = UuidIdempotency.generate();
   final sent = ws.sendCommand(
     'WriteGameInfo',
@@ -121,57 +221,62 @@ Future<AutoDemoResult> runAutoDemo({
     idempotencyKey: idemKey,
   );
   if (!sent) {
-    return AutoDemoResult.failure(
-      stage: 'write-game-info-send',
+    return _AutoDemoError(AutoDemoResult.failure(
+      stage: 'write-game-info-send-h$handNumber',
       error: StateError('sendCommand returned false (offline buffer full)'),
-    );
+    ));
   }
 
   DebugLog.i('AUTO_DEMO', 'WriteGameInfo sent', {
+    'hand_number': handNumber,
     'hand_id': payload['hand_id'],
     'idempotency_key': idemKey,
   });
 
-  // Step 3.5 (Cycle 4 #268): REST mirror — POST /api/v1/cc/games/{id}/info.
-  // BO 측 cc.py router (team2-backend) 가 추가되면 REST + WS 둘 다 200 OK 가 KPI.
-  // 부재 시 404/501 graceful catch — WS path만으로도 1-hand 시연은 유효.
-  final restGameId = tableId;
+  // REST mirror — POST /api/v1/cc/games/{id}/info. 부재 시 404 graceful.
+  // Cycle 6 #313 — handNumber 가 payload 에 포함되어 갱신 검증 가능.
   try {
     final restResp = await api.raw.post(
-      '/api/v1/cc/games/$restGameId/info',
+      '/api/v1/cc/games/$tableId/info',
       data: payload,
       options: Options(
         headers: {'Idempotency-Key': idemKey},
-        validateStatus: (s) => s != null && s < 500, // 4xx도 catch (404 endpoint 부재 포함)
+        validateStatus: (s) => s != null && s < 500,
       ),
     );
     DebugLog.i('AUTO_DEMO', 'REST cc/games/info response', {
+      'hand_number': handNumber,
       'status': restResp.statusCode,
       'data_keys': (restResp.data is Map)
           ? (restResp.data as Map).keys.toList()
           : restResp.data.runtimeType.toString(),
     });
   } catch (e) {
-    DebugLog.w('AUTO_DEMO', 'REST cc/games/info error (non-fatal)', {'error': '$e'});
+    DebugLog.w('AUTO_DEMO', 'REST cc/games/info error (non-fatal)', {
+      'hand_number': handNumber,
+      'error': '$e',
+    });
   }
 
-  // Step 4: await GameInfoAck.
   try {
     final handId = await ackCompleter.future.timeout(ackTimeout);
-    DebugLog.i('AUTO_DEMO', '1-hand wire OK', {'hand_id': handId});
-    onReady?.call(handId);
-    return AutoDemoResult.success(
-      handId: handId,
-      ccInstanceId: ccInstanceId,
-      tableId: tableId,
-    );
+    return handId;
   } on TimeoutException catch (e, st) {
-    DebugLog.e('AUTO_DEMO', 'ack timeout', {'after': ackTimeout.inSeconds});
+    DebugLog.e('AUTO_DEMO', 'ack timeout', {
+      'hand_number': handNumber,
+      'after_seconds': ackTimeout.inSeconds,
+    });
     onError?.call(e, st);
-    return AutoDemoResult.failure(stage: 'ack-timeout', error: e);
+    return _AutoDemoError(AutoDemoResult.failure(
+      stage: 'ack-timeout-h$handNumber',
+      error: e,
+    ));
   } catch (e, st) {
     onError?.call(e, st);
-    return AutoDemoResult.failure(stage: 'ack-error', error: e);
+    return _AutoDemoError(AutoDemoResult.failure(
+      stage: 'ack-error-h$handNumber',
+      error: e,
+    ));
   }
 }
 
@@ -193,6 +298,10 @@ String _stripQuery(String url) {
 Map<String, dynamic> _sampleGameInfoPayload({
   required int tableId,
   required DateTime nowUtc,
+  int handNumber = 1,
+  int dealerSeat = 3,
+  int sbSeat = 4,
+  int bbSeat = 5,
 }) {
   final levelStart = nowUtc;
   final nextLevel = nowUtc.add(const Duration(minutes: 20));
@@ -200,6 +309,10 @@ Map<String, dynamic> _sampleGameInfoPayload({
   const bbAmount = 1000;
   const gameType = 'no_limit_holdem';
   const betStructure = 'wsop-ft-2026-lv42';
+  // hand_id 는 1초 단위 unix epoch + handNumber offset 으로 단조 증가 보장.
+  final handId = (nowUtc.millisecondsSinceEpoch ~/ 1000) + handNumber;
+  // straddle_seats — bb 다음 좌석을 표준으로 (회전 정합).
+  final straddleSeat = ((bbSeat - 1) % 10) + 1;
   return <String, dynamic>{
     // ── BO required (4 필드, camelCase canonical) ───────────────────────
     'gameType': gameType,
@@ -208,15 +321,17 @@ Map<String, dynamic> _sampleGameInfoPayload({
     'bigBlind': bbAmount,
     // ── Spec 24 필드 (snake_case) — BO 무시 / consumer 측에서 활용 ─────
     'table_id': tableId,
-    'hand_id': nowUtc.millisecondsSinceEpoch ~/ 1000,
-    'dealer_seat': 3,
-    'sb_seat': 4,
-    'bb_seat': 5,
+    'hand_id': handId,
+    // Cycle 6 #313 — hand_number 명시 (consumer 가 handNumberProvider 갱신).
+    'hand_number': handNumber,
+    'dealer_seat': dealerSeat,
+    'sb_seat': sbSeat,
+    'bb_seat': bbSeat,
     'sb_amount': sbAmount,
     'bb_amount': bbAmount,
     'ante_amount': 100,
     'big_blind_ante': false,
-    'straddle_seats': <int>[6],
+    'straddle_seats': <int>[straddleSeat],
     'straddle_amount': 2000,
     'blind_structure_id': betStructure,
     'blind_level': 42,
@@ -240,6 +355,7 @@ class AutoDemoResult {
     this.handId,
     this.ccInstanceId,
     this.tableId,
+    this.handsCompleted = 0,
     this.stage,
     this.error,
   });
@@ -248,6 +364,8 @@ class AutoDemoResult {
   final int? handId;
   final String? ccInstanceId;
   final int? tableId;
+  // Cycle 6 #313 — multi-hand wire 시 완료된 hand 수 (1 또는 2).
+  final int handsCompleted;
   final String? stage;
   final Object? error;
 
@@ -255,12 +373,14 @@ class AutoDemoResult {
     required int handId,
     required String ccInstanceId,
     required int tableId,
+    int handsCompleted = 1,
   }) =>
       AutoDemoResult._(
         ok: true,
         handId: handId,
         ccInstanceId: ccInstanceId,
         tableId: tableId,
+        handsCompleted: handsCompleted,
       );
 
   factory AutoDemoResult.failure({

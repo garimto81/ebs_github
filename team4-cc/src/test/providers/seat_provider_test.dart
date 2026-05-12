@@ -300,6 +300,71 @@ void main() {
     });
   });
 
+  // Cycle 6 #313 — 9-row state indicator reset on next-hand.
+  group('SeatNotifier — newHandReset (Cycle 6 #313)', () {
+    test('clears holeCards / bets / actionOn; revives folded → active', () {
+      // Setup: seats 1, 4, 7 with per-hand state from Hand 1.
+      notifier.seatPlayer(1, _player(100));
+      notifier.seatPlayer(4, _player(400));
+      notifier.seatPlayer(7, _player(700));
+      notifier.setDealer(4);
+      notifier.setHoleCards(1, [
+        const HoleCard(suit: 's', rank: 'A'),
+        const HoleCard(suit: 'h', rank: 'K'),
+      ]);
+      notifier.setCurrentBet(1, 1000);
+      notifier.setCurrentBet(7, 500);
+      notifier.markFolded(7);
+      notifier.setActionOn(4);
+
+      // Hand 2 진입.
+      notifier.newHandReset();
+      final seats = container.read(seatsProvider);
+
+      // 9-row state 의 per-hand 표시 행 (CARDS / BET / LAST) 모두 reset.
+      for (final s in seats.where((s) => s.isOccupied)) {
+        expect(s.holeCards, isEmpty, reason: 'CARDS row');
+        expect(s.currentBet, 0, reason: 'BET row');
+        expect(s.activity, PlayerActivity.active, reason: 'LAST row → active');
+        expect(s.actionOn, isFalse);
+      }
+
+      // 보존: SEAT/NAME/STACK/POS/CTRY (per-table 정보).
+      expect(seats.firstWhere((s) => s.seatNo == 1).player, isNotNull);
+      expect(seats.firstWhere((s) => s.seatNo == 4).isDealer, isTrue,
+          reason: 'isDealer preserved — Engine 가 GameChanged 로 회전');
+    });
+
+    test('sittingOut seats remain sittingOut (operator opt-in)', () {
+      notifier.seatPlayer(1, _player(100));
+      notifier.seatPlayer(2, _player(200));
+      notifier.toggleSitOut(2);
+      expect(container.read(seatsProvider)[1].activity,
+          PlayerActivity.sittingOut);
+
+      notifier.newHandReset();
+      final seats = container.read(seatsProvider);
+
+      expect(seats[0].activity, PlayerActivity.active);
+      expect(seats[1].activity, PlayerActivity.sittingOut,
+          reason: 'sittingOut 은 운영자가 toggleSitOut 으로만 해제');
+    });
+
+    test('empty seats unaffected', () {
+      // Only seat 3 occupied; others empty.
+      notifier.seatPlayer(3, _player(300));
+      notifier.setCurrentBet(3, 200);
+
+      notifier.newHandReset();
+      final seats = container.read(seatsProvider);
+
+      for (final s in seats.where((s) => !s.isOccupied)) {
+        expect(s.isEmpty, isTrue);
+      }
+      expect(seats.firstWhere((s) => s.seatNo == 3).currentBet, 0);
+    });
+  });
+
   group('HoleCard value object', () {
     test('equality by suit and rank', () {
       const c1 = HoleCard(suit: 's', rank: 'A');
