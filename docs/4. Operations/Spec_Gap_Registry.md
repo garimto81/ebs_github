@@ -238,6 +238,28 @@ def categorize_settings_d2(identifier):
 
 ---
 
+## 4.6 SG-037 — Product 폴더 명명 일관성 부재 (2026-05-12 Cycle 10)
+
+**Type C** (기획 모순) — filename 규약 미명시. 외부 인계 PRD 3종이 filename 에만 `_PRD` 접미사 부착 (frontmatter title / 본문 H1 / Confluence page title 은 짧은 이름 정합).
+
+| 항목 | 값 |
+|------|----|
+| Rename 대상 | `Lobby_PRD.md` → `Lobby.md`, `Back_Office_PRD.md` → `Back_Office.md`, `Command_Center_PRD.md` → `Command_Center.md` |
+| Cascade 영향 | 195 refs / 61 files |
+| derivative-of 역방향 검증 | ✅ PASS (정본 → PRD 역참조 ZERO, Grep no matches) |
+| Open PR 충돌 위험 | LOW (#363 RIVE pivot 만 open, `_PRD` 파일 disjoint) |
+| Confluence 영향 | 0 (page_id 고정, title 변경 불필요) |
+| 보고서 | `docs/4. Operations/Reports/Product_Naming_Unification_Plan_2026-05-12.md` |
+| Resolution Plan | Wave 2 — S10-W (rename + sed 일괄) + S11 (orchestrator scope: team_assignment_v10_3.yaml) |
+| Broker topic | `pipeline:gap-classified` publish (Cycle 10 trigger) |
+| Issue | #364 |
+
+| ID | type | category | status | note |
+|----|------|----------|:------:|------|
+| SG-037 | spec_drift | naming | OPEN | Product 폴더 외부 인계 PRD 3종 filename `_PRD` 접미사 — frontmatter title 정합 위해 제거. Cycle 10 (2026-05-12). 해소 = Wave 2 S10-W rename PR 머지. |
+
+---
+
 ## 5. 스캔 명령 레퍼런스
 
 ```bash
@@ -303,3 +325,4 @@ python tools/spec_drift_check.py --settings
 | 2026-05-12 | v1.16 — **registry §4.4 aggregate-vs-source sync + SG-018 default 채택** | (1) **5 카드 frontmatter `status: DONE` (2026-05-03 conductor Mode A 처리)** 였으나 registry §4.4 표 미갱신 — Cycle 2026-04-22 SG-001/002/005 와 동일 패턴. 동기화: SG-012 (Lobby nav_sections), SG-013 (Tournaments/Lobby nomenclature), SG-015 (Players rationale), SG-016 (handHistory SSOT), SG-019 (Reports postproduction boundary). (2) **SG-018 default 채택** — registry 권고 그대로: 8종 메타모델 중 핵심 3종 (nav_sections/report_templates/game_rules) Phase 1 우선. team2 cascade 위임. (3) **SG-008-b13 DONE** — (b) 2 = b14/b15 이미 DONE + (a) 6 P9~P12 detector 자동 해소. (4) **drift 카운트**: 18 → **8** (PENDING/OPEN). (5) 잔여: SG-009 IN_PROGRESS / SG-010 IN_PROGRESS / SG-023 후속 B-Q6/Q7/Q8 (큰 방향성 사용자 결정) / SG-034 force_logout (IMPL-009 진행) 등. (6) over-engineering 회피 — 자율 가능 영역 일괄 처리. |
 | 2026-05-12 | v1.15 — **SG-008-b10/b11/b12 default 일괄 채택** (over-engineering 회피, 사용자 결정 1회) | (1) **사용자 의도 재정의** — 핵심 = 기획 vs 프로토타입 정합성 100% + 실증 (게임 룰 확장 X). over-engineering 회피 지시. (2) **3 drift 일괄 해소** — registry 권고 default 옵션 그대로 채택: SG-008-b10 (POST /events/{id}/undo) Phase 1 미지원 옵션 3 / SG-008-b11 (POST /tables/{id}/launch-cc) deep-link 전환 옵션 1 / SG-008-b12 (GET /reports/{type}) 즉시 삭제 옵션 1. (3) **spec 삭제 위임** — Spec_Gap_Registry §4.4 status PENDING → DONE. 실제 BO router 코드 정리는 team2 또는 다음 cycle 위임. (4) **drift 카운트**: 18 → 15 (PENDING/OPEN). (5) 잔여 SG-012~019 (Lobby SSOT) + SG-018 (DB metamodel) + SG-019 (Reports boundary) + SG-023 후속 B-Q6/Q7/Q8 = 사용자 결정 영역. (6) cross-contract 영향 0. |
 | 2026-05-12 | v1.14 — Cycle 7 (issue #324) **SG-010 P12 settings underscore-gfx prefix filter** + SG-034 진정한 DONE | (1) **Path A scope_owns 내 자율 진행** (Cycle 6 P11 api spec walker 후속, settings 영역). (2) **settings detector 정밀화** — P9 의 dotted form (`gfx.show_leaderboard`) 사각지대 보완. spec text 안에서 underscore form (`gfx_vertical`/`gfx_bottom_up`/`gfx_fit`/`gfx_screen`) 도 graphics overlay scope 인데 P9 dotted regex (line 1009-1016) 가 못 잡아 settings 영역으로 흡수되던 false positive 4건. 신규 모듈 도입: `_UNDERSCORE_GFX_PREFIXES = ("gfx_", "graphic_", "graphics_", "overlay_")` tuple + `_is_graphics_scope_underscore(name)` 헬퍼. `_looks_like_setting_key` (spec_candidates backtick identifier 필터) + `spec_whitelist` (frontmatter slash list 처리) 양쪽 모두에서 동일 prefix 차단 — 흡수 경로 2개 일관 적용. (3) **효과 검증** — settings **D2 84→80 (-4)** ✅. D3=5 D4=51 unchanged (회귀 없음). 제거된 4건 spec source: Settings/Graphics.md §59 (Player Layout 3 bool 조합) + Overlay/Elements.md §397 (스킨 설정 매핑 테이블) + Field_Registry.json (gfx skin_type) + Game Engine Behavioral_Specs/Overview.md §1097-1099. (4) **누적 drift (Cycle 4 baseline 대비)** — settings 109→80 (-29, -27%) + api 43→39 (-4) = **drift -33** (P9+P10+P11+P12 누적). graphics scope conflate 완전 차단 3 layer: P9 (dotted) + P10 (path-aware CC scope) + P12 (underscore). (5) **SG-034 진정한 DONE** — Cycle 7 rescan 시점 websocket 0/0/0/46 PASS 도달. IMPL-009 #236 (Cycle 3) 완결 + spec §4.2.10 `cc_session_count` + §13.3 `force_logout` close code 4003 + payload 완전 명시 누적 효과. Cycle 2 closure 가 진단한 detector 매칭 실패 (P9 한계) + IMPL-009 미완 두 조건 모두 해소. P12 직접 작용 아닌 cross-stream 환경 변화 — 진단 정확성을 위한 명시. (6) §4.1 Settings row + WebSocket row + §4.4 SG-010 entry (P12 누적 효과) + SG-034 status DONE + §7 한계 P12 신규 entry 동시 갱신. (7) cross-contract 영향 0 (api/events/fsm/schema/rfid/auth unchanged). settings detector 변경만으로 회귀 0 + 잔여 진성 D2 (4 `*_mode` Display/Resolution dropdown + 70 lobby_ui SG-036 P1) 의도 유지. (8) self-audit: `python tools/spec_drift_check.py --all` 후 D2/D3/D4 카운트 검증 + 진성 D2 의도 유지 확인 + logs/drift_report_cycle7_p12.json 보존 (1069 lines). (9) broker publish `pipeline:gap-classified` cycle 7 (S10-W 트리거 — SG-036 P1 70건 lobby_ui 잔여 분할 PR planning). |
+| 2026-05-12 | v1.18 — Cycle 10 (issue #364) **SG-037 신규 — Product 폴더 명명 통일 Gap Analysis** | (1) **사용자 명시 4축 분석** — (a) 195 refs / 61 files 영향 매트릭스, (b) Confluence ↔ 로컬 정합 5 page_id mismatch 표, (c) derivative-of cascade 단방향 안전 검증, (d) open PR 충돌 위험 LOW. (2) **SG-037 신규 등재** — Type C 기획 모순. 외부 인계 PRD 3종 (`Lobby_PRD.md`/`Back_Office_PRD.md`/`Command_Center_PRD.md`) filename 만 `_PRD` 접미사 보유. frontmatter title / 본문 H1 / Confluence page title 은 짧은 이름 정합 (4-way 매트릭스 결과). (3) **§4.6 신규 섹션** — SG-037 진단 + Migration Plan + Decision Points + Wave 2 분담 (S10-W rename + S11 broker subscribe). (4) **보고서 발행** — `docs/4. Operations/Reports/Product_Naming_Unification_Plan_2026-05-12.md`. (5) **GO 판정** — rename 즉시 가능, 충돌 위험 LOW (#363 RIVE pivot 만 open, `_PRD` 파일 disjoint), derivative-of 역방향 ZERO. (6) **broker publish** `pipeline:gap-classified` cycle 10 (S10-W rename 트리거 + S11 orchestrator scope: `team_assignment_v10_3.yaml` 7 refs). |
