@@ -1,5 +1,5 @@
 ---
-title: Command Center — 운영자가 머무는 조종석 (v4.0)
+title: Command Center
 owner: conductor
 tier: external
 confluence-page-id: 3811901603
