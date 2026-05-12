@@ -42,8 +42,11 @@ def _extract_result(r) -> dict:
 
 class BrokerClient:
     def __init__(self, url: str | None = None):
+        # Default host-friendly. Docker container overrides via BROKER_URL env
+        # (compose.yml → http://host.docker.internal:7383/mcp). 호스트에서
+        # 실행되는 CLI / hooks / pytest 가 default 로 connect 가능.
         self.url = url or os.environ.get(
-            "BROKER_URL", "http://host.docker.internal:7383/mcp"
+            "BROKER_URL", "http://127.0.0.1:7383/mcp"
         )
 
     @asynccontextmanager
