@@ -748,18 +748,83 @@ class Engine {
     ]);
   }
 
+  /// ManualNextHand: rotate button + SB/BB to next active seats, increment
+  /// handNumber, reset board/hole cards for the next hand.
+  ///
+  /// Rotation rules (Cycle 5 v02, issue #287):
+  ///   - dealerSeat advances to the next non-sittingOut seat (skipping
+  ///     sittingOut seats). If no other active seat exists, dealer stays put.
+  ///   - 3+ active seats: SB = first active after dealer; BB = second active
+  ///     after dealer.
+  ///   - heads-up (exactly 2 active seats): dealer = SB; the other = BB
+  ///     (standard hold'em rule; preserved by _startHandFull).
+  ///   - handNumber += 1.
+  ///   - Street to idle, community/hole cards cleared, bombPot flag reset.
+  ///
+  /// Spec: docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_State.md
   static ReduceResult _handleManualNextHandFull(GameState state) {
+    final n = state.seats.length;
+
+    // 1) Rotate dealer: skip sittingOut seats
+    int nextDealer = state.dealerSeat;
+    for (var i = 1; i <= n; i++) {
+      final idx = (state.dealerSeat + i) % n;
+      if (state.seats[idx].status != SeatStatus.sittingOut) {
+        nextDealer = idx;
+        break;
+      }
+    }
+
+    // 2) Compute SB/BB from new dealer (exclude dealer itself: i < n)
+    final activeAfterDealer = <int>[];
+    for (var i = 1; i < n; i++) {
+      final idx = (nextDealer + i) % n;
+      if (state.seats[idx].status != SeatStatus.sittingOut) {
+        activeAfterDealer.add(idx);
+      }
+    }
+
+    int nextSb = state.sbSeat;
+    int nextBb = state.bbSeat;
+    final dealerActive =
+        state.seats[nextDealer].status != SeatStatus.sittingOut;
+    final totalActive = (dealerActive ? 1 : 0) + activeAfterDealer.length;
+
+    if (totalActive >= 3 && activeAfterDealer.length >= 2) {
+      nextSb = activeAfterDealer[0];
+      nextBb = activeAfterDealer[1];
+    } else if (totalActive == 2 && activeAfterDealer.isNotEmpty) {
+      // Heads-up: dealer = SB, the other active seat = BB
+      nextSb = nextDealer;
+      nextBb = activeAfterDealer[0];
+    }
+
+    // 3) Reset per-hand state
     final newState = state.copyWith(
       handInProgress: false,
       actionOn: -1,
       street: Street.idle,
       community: [],
       bombPotEnabled: false,
+      dealerSeat: nextDealer,
+      sbSeat: nextSb,
+      bbSeat: nextBb,
+      handNumber: state.handNumber + 1,
     );
-    // Clear hole cards for all seats
+
     for (final seat in newState.seats) {
       seat.holeCards = [];
+      seat.currentBet = 0;
+      seat.antePosted = 0;
+      seat.isDealer = (seat.index == nextDealer);
+      if (seat.status == SeatStatus.folded) {
+        seat.status = SeatStatus.active;
+      }
     }
+
+    newState.pot.main = 0;
+    newState.pot.sides = [];
+
     return ReduceResult(state: newState, outputs: [
       StateChanged(fromState: state.street.name, toState: Street.idle.name),
     ]);
