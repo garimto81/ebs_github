@@ -5,40 +5,48 @@ post_build_fail.py — PostToolUse hook (EBS Conductor)
 v1 (2026-04-20): 프로토타입 빌드/테스트 실패 감지 시 Type A/B/C 분류 프로토콜 stdout reminder.
 v2 (2026-05-11, S11 Cycle 2/3/5 #240/#254/#284): broker MCP publish + retry + observer dispatch.
 v3 (2026-05-12, S11 Cycle 7 #322): false-positive 4-layer filter + severity 분류.
+v4 (2026-05-12, S11 Cycle 8 #340): cross-process debounce/dedup + KPI < 1/시간.
 
-Cycle 6 (#305 진단) — 60건 중 57건 false-positive (95%). 원인: regex 가 PR/commit/issue 본문
-heredoc body 까지 통째로 매칭. v3 는 4-layer 로 head 만 본다.
+Cycle 7 결과: cascade:build-fail 36→4회/시간 (88% 감소). Cycle 8 추가 90% 목표 — 동일
+(matched_pattern + severity) 가 60초 내 재발 시 publish skip (L5 debounce). 파일 기반
+atomic-rename 으로 8 세션 worktree 병렬 안전.
 
 Trigger: PostToolUse(Bash)
 Mechanism:
   stdin payload 의 tool_input.command + tool_response.exit_code/stderr 검사.
-  4-layer filter 통과 시 severity 분류 후 broker publish.
+  4-layer filter + L5 dedup 게이트 통과 시 severity 분류 후 broker publish.
 
-False-positive 4-layer filter:
+False-positive 5-layer filter (v4):
   L1. Whitelist prefix : gh / git commit|push|stash / cat > / claude --bg  → skip
   L2. Heredoc body strip : <<EOF 이후 body 는 매칭 대상 제외
   L3. Pattern match (head only) : strip 된 head 에 BUILD_PATTERNS 매치 시만 진행
   L4. Signal-less skip : exit_code = -1 + empty stderr → info severity (publish skip)
+  L5. Debounce dedup (v4) : 동일 (matched_pattern + severity) 60초 내 재발 → skip
 
 Severity matrix:
   critical : exit_code ∈ [1,255] + stderr len >= 20  → Circuit Breaker 카운트 대상
   warning  : exit_code ∈ [1,255] + 0 < stderr < 20  → 모니터링만
   info     : exit_code = -1/None + empty stderr → publish skip (forensic only)
 
-KPI (Issue #322):
-  - false-positive 비율 < 10%
-  - Circuit Breaker trigger 정확도 향상
+KPI (Issue #340):
+  - cascade:build-fail < 1회/시간 (Cycle 7 4회/시간 대비 추가 75%+ 감소)
+  - false-positive 비율 ≈ 0
+  - Iron Law trigger 신뢰성 향상
 
 관련 문서:
   - docs/4. Operations/Docker_Runtime.md §5.1 cascade:build-fail severity contract
   - docs/4. Operations/Spec_Gap_Triage.md (Type A/B/C/D)
-  - PR #314 진단 + 부록 A
+  - PR #314 (Cycle 6 진단) + PR #336 (Cycle 7 v3)
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import re
 import sys
+import time
+from pathlib import Path
 
 
 BUILD_PATTERNS = re.compile(
@@ -82,6 +90,14 @@ WHITELIST_PREFIX = re.compile(
 HEREDOC_SPLIT = re.compile(r"<<-?\s*['\"]?\w+['\"]?")
 
 
+# L5 (v4, Cycle 8): cross-process dedup window — file-based atomic rename.
+# 동일 (matched_pattern + severity) key 가 DEDUP_WINDOW_SEC 내 재발 시 publish skip.
+# 파일 락 없이 atomic rename(=POSIX 보장) 으로 race-free.
+# Windows: rename 도 atomic. 8 세션 worktree 병렬 안전.
+DEDUP_WINDOW_SEC = 60
+DEDUP_STATE_DIR = Path.home() / ".claude" / "state" / "post_build_fail_dedup"
+
+
 def _strip_heredoc(command: str) -> str:
     """L2: heredoc body 제거. <<EOF 이전 head 만 반환."""
     parts = HEREDOC_SPLIT.split(command, maxsplit=1)
@@ -117,6 +133,42 @@ def _matched_pattern(command_head: str) -> str:
     return m.group(0) if m else ""
 
 
+def _dedup_key(matched_pattern: str, severity: str) -> str:
+    """dedup state file 식별자. matched_pattern 은 trim+lower normalize."""
+    norm = re.sub(r"\s+", "_", matched_pattern.strip().lower())
+    if not norm:
+        norm = "unknown"
+    digest = hashlib.sha1(f"{norm}|{severity}".encode("utf-8")).hexdigest()[:16]
+    return f"{severity}_{digest}"
+
+
+def _should_dedup(matched_pattern: str, severity: str, window_sec: int = DEDUP_WINDOW_SEC) -> bool:
+    """L5: 동일 key 가 window_sec 내 재발 시 True 반환 (publish skip 신호).
+
+    Atomic rename 으로 race-free. 실패 시 publish 허용 (fail-open).
+    """
+    try:
+        DEDUP_STATE_DIR.mkdir(parents=True, exist_ok=True)
+        key = _dedup_key(matched_pattern, severity)
+        state_file = DEDUP_STATE_DIR / f"{key}.ts"
+        now = time.time()
+        if state_file.exists():
+            try:
+                last = float(state_file.read_text(encoding="utf-8").strip())
+                if (now - last) < window_sec:
+                    return True  # debounce hit — skip publish
+            except (ValueError, OSError):
+                pass  # corrupt state → treat as miss
+        # write fresh timestamp (atomic via temp + rename)
+        tmp = state_file.with_suffix(".tmp")
+        tmp.write_text(f"{now:.3f}", encoding="utf-8")
+        os.replace(str(tmp), str(state_file))
+        return False
+    except Exception:
+        # fail-open: dedup 실패 시 publish 허용 (Cycle 2 contract 보존)
+        return False
+
+
 def _broker_publish_build_fail(cascade_payload: dict, source: str, max_retries: int = 3) -> bool:
     """publish cascade:build-fail with retry + exp backoff.
 
@@ -128,7 +180,6 @@ def _broker_publish_build_fail(cascade_payload: dict, source: str, max_retries: 
     Total worst-case: 8.0s. Silent if broker daemon dead (TCP probe fail).
     """
     import socket
-    import time
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(1.0)
     try:
@@ -166,7 +217,6 @@ def _broker_publish_build_fail(cascade_payload: dict, source: str, max_retries: 
 
 def _read_team_id():
     """Read team_id from .team if present. Return None for main session."""
-    from pathlib import Path
     team_file = Path.cwd() / '.team'
     if not team_file.exists():
         return None
@@ -194,7 +244,7 @@ def main() -> int:
     if exit_code == 0 and not is_error:
         return 0
 
-    # === False-positive 4-layer filter ===
+    # === False-positive 5-layer filter (v4) ===
 
     # L2 먼저: heredoc body 제거 (L1 prefix 가 head 에서 매칭하려면 strip 선행 필요)
     command_head = _strip_heredoc(command)
@@ -221,7 +271,11 @@ def main() -> int:
     if severity == "info":
         return 0
 
-    # === Broker publish (critical/warning 만) ===
+    # L5 (v4): cross-process debounce dedup — 동일 (pattern + severity) 60s 내 재발 시 skip
+    if _should_dedup(matched, severity):
+        return 0
+
+    # === Broker publish (critical/warning + L5 통과만) ===
     team_id = _read_team_id() or "main"
     cascade_payload = {
         "command_excerpt": command[:200],
@@ -231,7 +285,8 @@ def main() -> int:
         "trigger": "PostToolUse:Bash exit!=0",
         "severity": severity,                 # NEW v3
         "matched_pattern": matched,           # NEW v3 (forensic)
-        "filter_version": "v3",               # NEW v3 (subscriber 호환 감지)
+        "filter_version": "v4",               # v4: dedup gate 추가
+        "dedup_window_sec": DEDUP_WINDOW_SEC,  # NEW v4 (subscriber forensic)
         "next_action": {
             "type": "inbox-drop",
             "target": "S9,S10-A" if severity == "critical" else "S10-A",

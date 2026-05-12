@@ -27,6 +27,7 @@ from mcp.server.transport_security import TransportSecuritySettings
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from tools.orchestrator.message_bus.dispatcher import EventDispatcher
+from tools.orchestrator.message_bus.rate_limit import get_limiter
 from tools.orchestrator.message_bus.store import Store
 from tools.orchestrator.message_bus.topics import check_publish_acl
 
@@ -131,6 +132,22 @@ async def publish_event(
             f"publisher_id={publisher_id}: {reason}"
         )
         raise ValueError(f"ACL denied: {reason}")
+
+    # S11 Cycle 8 (#340): per-(topic, source) sliding-window rate limit.
+    # cascade:build-fail 등 noisy 토픽의 server-side 상한선. soft throttle —
+    # 누적 카운트만 갱신하고 publisher 에게는 throttled 결과 반환 (silent skip).
+    rate_allowed, rate_reason = get_limiter().check(topic, source)
+    if not rate_allowed:
+        logger.warning(f"rate_limit throttled: {rate_reason}")
+        return {
+            "seq": -1,
+            "ts": "",
+            "topic": topic,
+            "recipients": 0,
+            "throttled": True,
+            "throttle_reason": rate_reason,
+        }
+
     await _ensure_initialized()
     assert _store is not None and _dispatcher is not None
     seq, ts = await _store.publish(topic, payload, source)
