@@ -129,6 +129,30 @@ class ConfigNotifier extends StateNotifier<GameConfig> {
     state = state.copyWith(gameType: gameType);
   }
 
+  /// v03 — Toggle straddle marker on a seat.
+  /// If seat is already in straddleSeats, remove it. Otherwise add it.
+  /// Empty list = no straddle active.
+  void toggleStraddleSeat(int seatNo) {
+    final current = state.straddleSeats;
+    final next = current.contains(seatNo)
+        ? current.where((s) => s != seatNo).toList()
+        : [...current, seatNo];
+    state = state.copyWith(straddleSeats: next);
+  }
+
+  /// v03 — Clear all straddle seats (e.g., new hand reset).
+  void clearStraddleSeats() {
+    if (state.straddleSeats.isEmpty) return;
+    state = state.copyWith(straddleSeats: const []);
+  }
+
+  /// v03 — Manual ante override (operator edits ante mid-hand).
+  /// amount must be >= 0. Negative values are clamped to 0.
+  void setAnteOverride(int amount) {
+    final clamped = amount < 0 ? 0 : amount;
+    state = state.copyWith(ante: clamped);
+  }
+
   /// Force state (server sync / reconnect).
   void forceState(GameConfig config) => state = config;
 }

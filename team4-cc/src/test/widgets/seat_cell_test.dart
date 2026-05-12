@@ -19,7 +19,7 @@ Widget _buildTestWidget({
         body: Center(
           child: SizedBox(
             width: 200,
-            height: 150,
+            height: 280,
             child: SeatCell(seatIndex: seatIndex),
           ),
         ),
@@ -37,11 +37,13 @@ void main() {
       expect(find.text('S3'), findsOneWidget);
     });
 
-    testWidgets('empty seat shows "Empty" text', (tester) async {
+    testWidgets('empty seat shows "EMPTY" text', (tester) async {
+      // cycle 6 #321 — empty seat label changed from "Empty" to "EMPTY"
+      // (uppercase + letterSpacing 1.2). Test sync deferred until v03 (#330).
       await tester.pumpWidget(_buildTestWidget(seatIndex: 1));
       await tester.pump();
 
-      expect(find.text('Empty'), findsOneWidget);
+      expect(find.text('EMPTY'), findsOneWidget);
     });
 
     testWidgets('occupied seat shows player name', (tester) async {
@@ -61,7 +63,7 @@ void main() {
               body: Center(
                 child: SizedBox(
                   width: 200,
-                  height: 150,
+                  height: 280,
                   child: SeatCell(seatIndex: 2),
                 ),
               ),
@@ -91,7 +93,7 @@ void main() {
               body: Center(
                 child: SizedBox(
                   width: 200,
-                  height: 150,
+                  height: 280,
                   child: SeatCell(seatIndex: 1),
                 ),
               ),
@@ -122,7 +124,7 @@ void main() {
               body: Center(
                 child: SizedBox(
                   width: 200,
-                  height: 150,
+                  height: 280,
                   child: SeatCell(seatIndex: 4),
                 ),
               ),

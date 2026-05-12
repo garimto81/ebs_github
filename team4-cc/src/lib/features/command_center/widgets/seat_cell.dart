@@ -17,6 +17,7 @@ import '../../../foundation/theme/ebs_typography.dart';
 import '../../../foundation/theme/seat_colors.dart';
 import '../../../models/enums/hand_fsm.dart';
 import '../../../models/enums/seat_status.dart';
+import '../providers/config_provider.dart';
 import '../providers/hand_fsm_provider.dart';
 import '../providers/seat_provider.dart';
 
@@ -649,6 +650,9 @@ class _SeatCellState extends ConsumerState<SeatCell>
     final preHand = handFsm == HandFsm.idle ||
         handFsm == HandFsm.showdown ||
         handFsm == HandFsm.handComplete;
+    // v03: straddle marker (cycle 7 #330)
+    final straddleSeats = ref.watch(configProvider).straddleSeats;
+    final isStraddle = straddleSeats.contains(seat.seatNo);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -694,6 +698,15 @@ class _SeatCellState extends ConsumerState<SeatCell>
           dim: seat.activity == PlayerActivity.active && !seat.actionOn,
           highlightColor: _activityHighlight(seat),
           onTap: () => _editLastAction(seat),
+        ),
+        // STRADDLE 행 — v03 cycle 7 #330. tap → toggleStraddleSeat.
+        _RowCell(
+          label: 'STRADDLE',
+          value: isStraddle ? 'ON' : '-',
+          dim: !isStraddle,
+          highlightColor: isStraddle ? const Color(0xFFFFD700) : null,
+          onTap: () =>
+              ref.read(configProvider.notifier).toggleStraddleSeat(seat.seatNo),
         ),
       ],
     );
