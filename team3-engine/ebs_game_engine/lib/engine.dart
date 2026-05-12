@@ -53,6 +53,7 @@ import 'core/actions/action.dart';
 import 'core/actions/event.dart';
 import 'core/rules/betting_rules.dart';
 import 'core/rules/no_limit.dart';
+import 'core/rules/showdown.dart';
 import 'core/rules/street_machine.dart';
 import 'core/variants/variants.dart';
 import 'core/actions/output_event.dart';
@@ -84,6 +85,7 @@ class Engine {
       final BombPotConfig e => _handleBombPotConfigFull(state, e),
       final RunItChoice e => _handleRunItChoiceFull(state, e),
       final ManualNextHand _ => _handleManualNextHandFull(state),
+      final AnteOverride e => _handleAnteOverrideFull(state, e),
       final TimeoutFold e => _handleTimeoutFoldFull(state, e),
       final MuckDecision e => _handleMuckDecisionFull(state, e),
     };
@@ -737,15 +739,132 @@ class Engine {
     ));
   }
 
+  /// RunItChoice: state 전환 + (v03, river-trigger 시) board 2 카드 생성.
+  ///
+  /// v03 (Cycle 6, issue #310) — times=2 + community.length == 5 시:
+  ///   - board 2 community = state.community 의 flop 3장 공유 + 새 turn/river 2장
+  ///     deal (river 트리거 표준 패턴; spec §3.3)
+  ///   - `runItBoard2Cards` 필드에 보존
+  ///   - pot/seat 은 건드리지 않음. 실제 award 는 `runItAwards` helper 또는
+  ///     명시적 `PotAwarded` event 로 계산/적용 (legacy scenario 호환).
+  ///
+  /// 그 외 경우 (times=3, variant 미등록, community < 5) — 기존 동작 (state 전환만).
+  ///
+  /// Spec: docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_v03.md §3
   static ReduceResult _handleRunItChoiceFull(GameState state, RunItChoice event) {
     if (event.times != 2 && event.times != 3) return ReduceResult(state: state);
-    final resultState = state.copyWith(
+
+    final variantFactory = variantRegistry[state.variantName];
+    final canSplit = event.times == 2 &&
+        variantFactory != null &&
+        state.community.length == 5;
+
+    if (!canSplit) {
+      // v02 legacy: 단순 state 전환
+      final resultState = state.copyWith(
+        runItTimes: event.times,
+        street: Street.runItMultiple,
+      );
+      return ReduceResult(state: resultState, outputs: [
+        StateChanged(fromState: state.street.name, toState: Street.runItMultiple.name),
+      ]);
+    }
+
+    // v03 river-trigger: board 2 카드 생성 (pot/seat 은 건드리지 않음)
+    final newState = state.copyWith();
+    final board2 = <Card>[];
+    // flop 3장 공유
+    for (var i = 0; i < 3; i++) {
+      board2.add(state.community[i]);
+    }
+    // 새 turn + river deal
+    while (board2.length < 5) {
+      board2.add(newState.deck.draw());
+    }
+
+    final resultState = newState.copyWith(
       runItTimes: event.times,
+      runItBoard2Cards: board2,
       street: Street.runItMultiple,
     );
     return ReduceResult(state: resultState, outputs: [
       StateChanged(fromState: state.street.name, toState: Street.runItMultiple.name),
     ]);
+  }
+
+  /// Compute split-pot awards for run-it-twice (v03, Cycle 6 issue #310).
+  ///
+  /// 호출 조건:
+  ///   - `state.runItTimes == 2`
+  ///   - `state.runItBoard2Cards != null` (RunItChoice river-trigger 후)
+  ///   - variantRegistry 에 `state.variantName` 등록
+  ///
+  /// 동작:
+  ///   - totalPot = state.pot.main + sum(state.pot.sides[].amount)
+  ///   - board2Pot = totalPot ~/ 2; board1Pot = totalPot - board2Pot  (board1 odd chip 흡수)
+  ///   - 각 board 의 winners 산출 (Showdown.evaluate) → awards 합산 반환
+  ///
+  /// Side-effect 없음 — 반환된 Map 을 사용자가 명시 PotAwarded event 로 적용.
+  /// 반환값이 null 이면 호출 조건 미충족 (호출 측에서 fallback 처리).
+  ///
+  /// Spec: docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_v03.md §3.4
+  static Map<int, int>? runItAwards(GameState state) {
+    if (state.runItTimes != 2 || state.runItBoard2Cards == null) return null;
+    final variantFactory = variantRegistry[state.variantName];
+    if (variantFactory == null) return null;
+    final variant = variantFactory();
+
+    final totalPot = state.pot.main +
+        state.pot.sides.fold<int>(0, (sum, sp) => sum + sp.amount);
+    if (totalPot <= 0) return <int, int>{};
+
+    final sidePots = state.pot.sides.isEmpty
+        ? <SidePot>[SidePot(state.pot.main, _eligibleSeatIndices(state))]
+        : List<SidePot>.of(state.pot.sides);
+
+    final board1Pots = <SidePot>[];
+    final board2Pots = <SidePot>[];
+    for (final sp in sidePots) {
+      final spBoard2 = sp.amount ~/ 2;
+      final spBoard1 = sp.amount - spBoard2;
+      board1Pots.add(SidePot(spBoard1, Set<int>.of(sp.eligible)));
+      board2Pots.add(SidePot(spBoard2, Set<int>.of(sp.eligible)));
+    }
+
+    final board1Awards = Showdown.evaluate(
+      seats: state.seats,
+      community: state.community,
+      pots: board1Pots,
+      variant: variant,
+      dealerSeat: state.dealerSeat,
+    );
+    final board2Awards = Showdown.evaluate(
+      seats: state.seats,
+      community: state.runItBoard2Cards!,
+      pots: board2Pots,
+      variant: variant,
+      dealerSeat: state.dealerSeat,
+    );
+
+    final merged = <int, int>{};
+    for (final e in board1Awards.entries) {
+      merged[e.key] = (merged[e.key] ?? 0) + e.value;
+    }
+    for (final e in board2Awards.entries) {
+      merged[e.key] = (merged[e.key] ?? 0) + e.value;
+    }
+    return merged;
+  }
+
+  /// RIT helper: 분할 pot 에 사용할 eligible seat indices (non-folded).
+  static Set<int> _eligibleSeatIndices(GameState state) {
+    final result = <int>{};
+    for (var i = 0; i < state.seats.length; i++) {
+      if (!state.seats[i].isFolded && state.seats[i].holeCards.isNotEmpty) {
+        result.add(i);
+      }
+    }
+    return result;
   }
 
   /// ManualNextHand: rotate button + SB/BB to next active seats, increment
@@ -799,7 +918,29 @@ class Engine {
       nextBb = activeAfterDealer[0];
     }
 
-    // 3) Reset per-hand state
+    // 3) Compute straddle rotation (Cycle 6 v03, issue #310)
+    //   - heads-up 진입 (totalActive == 2): straddle 무효화
+    //   - 활성 seat ≥ 3 + straddle 활성: next non-sittingOut seat 으로 1칸 회전
+    //   - 그 외: 기존 straddleSeat 유지
+    bool nextStraddleEnabled = state.straddleEnabled;
+    int? nextStraddleSeat = state.straddleSeat;
+    if (state.straddleEnabled && state.straddleSeat != null) {
+      if (totalActive == 2) {
+        nextStraddleEnabled = false;
+        // straddleSeat 은 그대로 두지만 enabled=false 로 무효화
+      } else if (totalActive >= 3) {
+        final s = state.straddleSeat!;
+        for (var i = 1; i <= n; i++) {
+          final idx = (s + i) % n;
+          if (state.seats[idx].status != SeatStatus.sittingOut) {
+            nextStraddleSeat = idx;
+            break;
+          }
+        }
+      }
+    }
+
+    // 4) Reset per-hand state
     final newState = state.copyWith(
       handInProgress: false,
       actionOn: -1,
@@ -810,6 +951,8 @@ class Engine {
       sbSeat: nextSb,
       bbSeat: nextBb,
       handNumber: state.handNumber + 1,
+      straddleEnabled: nextStraddleEnabled,
+      straddleSeat: nextStraddleSeat,
     );
 
     for (final seat in newState.seats) {
@@ -828,6 +971,19 @@ class Engine {
     return ReduceResult(state: newState, outputs: [
       StateChanged(fromState: state.street.name, toState: Street.idle.name),
     ]);
+  }
+
+  /// AnteOverride: 다음 hand 의 ante amount 및 (선택) type 변경.
+  /// amount <= 0 은 무시. type 미지정 시 기존 anteType 유지.
+  ///
+  /// Spec: docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_v03.md §2
+  static ReduceResult _handleAnteOverrideFull(GameState state, AnteOverride event) {
+    if (event.amount <= 0) return ReduceResult(state: state);
+    final newState = state.copyWith(
+      anteAmount: event.amount,
+      anteType: event.type ?? state.anteType,
+    );
+    return ReduceResult(state: newState);
   }
 
   static ReduceResult _handleTimeoutFoldFull(GameState state, TimeoutFold event) {

@@ -89,6 +89,8 @@ class Session {
       },
       'actionOn': state.actionOn,
       'dealerSeat': state.dealerSeat,
+      'sbSeat': state.sbSeat,
+      'bbSeat': state.bbSeat,
       'legalActions': Engine.legalActions(state).map((a) => a.toJson()).toList(),
       'handNumber': state.handNumber,
       'anteType': state.anteType,
@@ -101,6 +103,7 @@ class Session {
       'sevenDeuceEnabled': state.sevenDeuceEnabled,
       'sevenDeuceAmount': state.sevenDeuceAmount,
       'runItTimes': state.runItTimes,
+      'runItBoard2Cards': state.runItBoard2Cards?.map((c) => c.notation).toList(),
       'actionTimeoutMs': state.actionTimeoutMs,
       'isAllInRunout': Engine.isAllInRunout(state),
       'eventCount': events.length,
@@ -132,6 +135,7 @@ class Session {
         BombPotConfig() => 'BombPot',
         RunItChoice() => 'RunIt',
         ManualNextHand() => 'NextHand',
+        AnteOverride() => 'AnteOverride',
         TimeoutFold() => 'Timeout',
         MuckDecision() => 'Muck',
       };
@@ -164,6 +168,8 @@ class Session {
       BombPotConfig(amount: final a) => '#$idx BombPotConfig amount=$a',
       RunItChoice(times: final t) => '#$idx RunItChoice times=$t',
       ManualNextHand() => '#$idx ManualNextHand',
+      AnteOverride(amount: final a, type: final t) =>
+        '#$idx AnteOverride amount=$a type=$t',
       TimeoutFold(seatIndex: final s) => '#$idx TimeoutFold seat=$s',
       MuckDecision(seatIndex: final s, showCards: final show) =>
         '#$idx MuckDecision seat=$s show=$show',

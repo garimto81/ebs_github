@@ -399,6 +399,15 @@ class HarnessServer {
         event = RunItChoice((data['times'] as num).toInt());
       case 'manual_next_hand':
         event = const ManualNextHand();
+      case 'ante_override':
+        // amount: 변경할 ante 금액, anteType: optional ante type (0-6)
+        // 주의: top-level 'type' 은 event routing 용이므로 안티 타입은 'anteType' 필드로 받는다.
+        final overrideAmount = (data['amount'] as num).toInt();
+        final t = data['anteType'];
+        event = AnteOverride(
+          amount: overrideAmount,
+          type: t == null ? null : (t as num).toInt(),
+        );
       case 'timeout_fold':
         event = TimeoutFold(seatIndex);
       case 'muck':

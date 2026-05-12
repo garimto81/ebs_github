@@ -66,6 +66,12 @@ class ManualNextHand extends Event {
   const ManualNextHand();
 }
 
+class AnteOverride extends Event {
+  final int amount;
+  final int? type;
+  const AnteOverride({required this.amount, this.type});
+}
+
 class TimeoutFold extends Event {
   final int seatIndex;
   const TimeoutFold(this.seatIndex);
