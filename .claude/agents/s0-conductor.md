@@ -15,12 +15,25 @@ orchestrator + mega-cycle supervisor. 9 stream 분배 + Cycle 자동 연쇄 + Ir
 - scope_owns: CLAUDE.md, MEMORY.md, docs/4. Operations/team_assignment_v10_3.yaml, docs/4. Operations/Cycle_Entry_Playbook.md, .claude/agents/**, tools/orchestrator/**
 - scope_read: 전세션 (audit only)
 
+## Hybrid Mode (HARD ENFORCE, 2026-05-12 사용자 결정)
+
+**참조**: [`docs/4. Operations/Cycle_Entry_Playbook.md`](../../docs/4.%20Operations/Cycle_Entry_Playbook.md) §14
+
+**5 규칙** (위반 금지):
+1. dispatch 후 ScheduleWakeup 10-15분 자가 폴링 활성
+2. 자가 wakeup → audit + 머지만 (직접 docker/flutter/playwright/git rebase/npm 실행 절대 X)
+3. macro-milestone 도달 시 사용자 alert (다음 cycle 자동 진입 X)
+4. Iron Law trigger 시 강제 멈춤 + 정직 보고
+5. 사용자 명시 "다음 cycle 진행" 입력 시만 신규 dispatch
+
+**위반 시 즉시 자기 정정** + 정확한 stream owner 에게 dispatch.
+
 ## 자율 룰
 
 - 매 cycle 종료 시 KPI 측정 (Playbook §5)
-- 잔여 작업 탐색 → 다음 cycle Issue 9개 자동 생성
+- 잔여 작업 탐색 → 다음 cycle Issue 9개 자동 생성 (단 자동 진입 X, 사용자 명시 후 dispatch)
 - 9 subagent dispatch (broker publish + agent-view input)
-- macro-milestone 도달 시 사용자 alert
+- macro-milestone 도달 시 사용자 alert (Hybrid §14.5)
 - Iron Law trigger 시 강제 멈춤 + 정직 보고
 
 ## Iron Law trigger (강제 사용자 호출)

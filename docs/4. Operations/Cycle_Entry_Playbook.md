@@ -335,9 +335,81 @@ mega-cycle 정의는 본 plan §🚀 (`~/.claude/plans/kind-mapping-rivest.md`) 
 
 ---
 
+## 14. Hybrid Mode (v1.2 신규, 2026-05-12 사용자 결정)
+
+S0 Conductor 의 자율 폴링 + 직접 처리 금지 + macro-milestone alert 통합 모드. **모든 신규 cycle 진입 시 본 모드 엄격 준수**.
+
+### 14.1 Hybrid 5 규칙 (HARD ENFORCE)
+
+```
+1. dispatch 후 ScheduleWakeup 10-15분 자가 폴링 활성
+2. 자가 wakeup → audit + 머지만 (직접 docker/flutter/playwright/git rebase/npm 실행 절대 X)
+3. macro-milestone 도달 시 사용자 alert (다음 cycle 자동 진입 X)
+4. Iron Law trigger 시 강제 멈춤 + 정직 보고
+5. 사용자 명시 "다음 cycle 진행" 입력 시만 신규 dispatch
+```
+
+### 14.2 본 모드 vs 이전 모드 비교
+
+| 항목 | mega-cycle 자율 (Cycle 4~8) | **Hybrid (v1.2)** | audit only (Cycle 9~10 보수) |
+|------|--------------------------|--------------------|-------------------------|
+| ScheduleWakeup | 무한 반복 | 1회 후 milestone 대기 | X |
+| 자동 cycle 진입 | YES (Iron Law 까지) | **NO** | NO |
+| 사용자 진입점 | 1회 | **milestone 별 1~2회** | cycle 당 3~5회 |
+| over-engineering | 누적 위험 | **차단** | 차단 |
+| Conductor 직접 처리 | 일부 | **금지** | 금지 |
+
+### 14.3 위반 자동 감지 + 정정
+
+```
+위반 패턴 (반복 금지):
+  ❌ ScheduleWakeup 무한 chain (자동 cycle 진입)
+  ❌ Conductor 가 flutter build / docker rebuild / playwright run 직접 실행
+  ❌ curl 200 만으로 QA 통과 판정 (QA_Pass_Criteria.md §1 위반)
+  ❌ macro-milestone 도달 후 사용자 alert 우회
+
+정정 절차:
+  1. 위반 감지 시 즉시 응답 중단
+  2. 정직 인정 (사용자 입력 받기 전에 본 세션 self-audit)
+  3. Conductor 룰로 복귀
+  4. 정확한 stream owner 에게 dispatch
+```
+
+### 14.4 본 모드 결정 근거 (사용자 비판 누적 cascade)
+
+| 사용자 비판 | 정정 룰 |
+|------------|--------|
+| "장난해 (S9 활용 안 함)" | Conductor 직접 처리 X, S2/S7/S9/S11 dispatch |
+| "qa 통과 기준 = screenshot + 사용자 확인" | curl 200 / evidence 머지 만 X. QA_Pass_Criteria.md §1 |
+| "Lobby 3000 로그인 실패" | paper-work registry sync ≠ 실 검증 |
+| "over-engineering 회피" | 무한 cycle 자동 진입 X |
+| "Hybrid 모드 orchestrator 지침 엄격" | 본 §14 SSOT 영구 |
+
+### 14.5 macro-milestone 정의 (사용자 alert trigger)
+
+```
+사용자 alert 발동 시점:
+  - Cycle 9/9 Issue closed + main 머지 완료
+  - 영역 통일 작업 완료 (예: Product 명명 통일)
+  - macro 기능 완성 (예: v01/v02/v03 e2e PASS)
+  - 정합성 100% 도달
+  - Iron Law trigger 영역 진입 (production / DB / 외부 action)
+
+alert 후 사용자가 "다음 cycle 진행" 명시 시만 신규 dispatch.
+```
+
+### 14.6 본 SSOT 의 영구성
+
+- 모든 신규 cycle 진입 시 본 §14 규칙 자동 적용
+- 임의 변경 금지 (사용자 명시 사항 없이는 본 모드 유지)
+- 위반 시 즉시 정정 (self-audit + 사용자 알림)
+
+---
+
 ## Changelog
 
 | 날짜 | 버전 | 변경 내용 | 근거 |
 |------|------|----------|------|
 | 2026-05-12 | v1.0 | 최초 작성 — Cycle 1~4 실 적용 결과 통합 | 사용자 2026-05-12 지시 반복하지 않도록 명시 |
 | 2026-05-12 | v1.1 | §13 Agent View Integration 추가 — Claude Code v2.1.139 agent-view 통합 + 10 subagent 매트릭스 | 사용자 2026-05-12 지시 "agent-view 활용. 1 터미널 멀티세션" |
+| 2026-05-12 | v1.2 | §14 Hybrid Mode 추가 — ScheduleWakeup 자가 폴링 1회 + macro-milestone alert + Conductor 직접 처리 금지. **HARD ENFORCE 5 규칙**. 사용자 비판 4건 누적 정정 | 사용자 2026-05-12 지시 "hybrid 모드 orchestrator 지침에 엄격히 지킬것 명시" |
