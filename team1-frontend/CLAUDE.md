@@ -177,25 +177,43 @@ flutter build windows --release   # 프로덕션 빌드
 
 ## 환경변수
 
-### 방법 1: 호스트 지정 (권장)
+### 방법 1: Same-origin 모드 (Docker / nginx proxy 배포 — 권장, cycle 9 이후 기본)
+```bash
+flutter build web --release \
+  --dart-define=USE_MOCK=false \
+  --dart-define=EBS_SAME_ORIGIN=true
+```
+→ Lobby 가 자기 브라우저 origin (http://<host>:3000) 으로 `/api/`, `/ws/` 호출.
+nginx 가 bo:8000 으로 reverse proxy. port hardcoding 없어, LAN IP (192.168.x.x:3000)
+디바이스도 재빌드 없이 자동 작동. HTTPS 배포 시 wss:// 자동 전환.
+
+### 방법 2: 호스트 지정 (네이티브 개발 / 비-proxy 환경)
 ```bash
 flutter run -d windows --dart-define=EBS_BO_HOST=192.168.1.100
 ```
 → API: `http://192.168.1.100:8000/api/v1`, WS: `ws://192.168.1.100:8000` 자동 구성
 
-### 방법 2: 직접 URL 지정
+### 방법 3: 직접 URL 지정 (최우선, 디버깅)
 ```bash
 flutter run -d windows \
   --dart-define=API_BASE_URL=http://custom-host:9000/api/v1 \
   --dart-define=WS_BASE_URL=ws://custom-host:9000
 ```
+→ `API_BASE_URL` + `WS_BASE_URL` 동시 지정 시 다른 모드 무시.
+
+### 우선순위 (`AppConfig.fromEnvironment`)
+1. `API_BASE_URL` + `WS_BASE_URL` 명시 → 그대로 사용
+2. `EBS_SAME_ORIGIN=true` + web 빌드 → `window.location` origin 동적 사용
+3. `EBS_BO_HOST` + `EBS_BO_PORT` → `http://<host>:<port>/api/v1` 구성
 
 ### 기본값 (개발)
-| 변수 | 기본값 |
-|------|--------|
-| `EBS_BO_HOST` | (미설정 → localhost) |
-| `EBS_BO_PORT` | 8000 |
-| `USE_MOCK` | false |
+| 변수 | 기본값 | 비고 |
+|------|--------|------|
+| `EBS_SAME_ORIGIN` | false | true 시 web 빌드는 same-origin 우선 |
+| `EBS_BO_HOST` | (미설정 → localhost) | web 빌드는 window.location.hostname 자동 fallback |
+| `EBS_BO_PORT` | 8000 | same-origin 모드에서는 사용 안 함 |
+| `USE_MOCK` | false | true 시 MockDioAdapter 활성화 |
+| `HAND_AUTO_SETUP` | false | 1 hand demo auto-wire (Cycle 2 #239) |
 
 ## 이전 코드 참조
 
