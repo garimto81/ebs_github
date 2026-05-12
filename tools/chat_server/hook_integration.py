@@ -115,11 +115,50 @@ def _write_last_seen(state_file: Path, last_seq: int) -> None:
     state_file.write_text(json.dumps({"last_seq": last_seq}), encoding="utf-8")
 
 
-def inject_chat_mentions(team_id: str, state_file: Path) -> list[dict]:
-    """Fetch chat mentions for team_id since last seen.
+def _get_history_sync(topic: str, since_seq: int, limit: int = 50) -> dict:
+    """Sync wrapper for broker_client.get_history."""
+    from tools.chat_server.broker_client import BrokerClient
+    client = BrokerClient(url="http://127.0.0.1:7383/mcp")
+    return asyncio.run(
+        client.get_history(topic=topic, since_seq=since_seq, limit=limit)
+    )
 
-    Returns list of events whose payload.mentions contains '@{team_id}'.
-    Side effect: updates state_file with new next_seq.
+
+def _has_reply_from(team_id: str, mention_seq: int, mention_topic: str) -> bool:
+    """team_id 가 mention_seq 에 대해 reply 했는지 broker history 로 확인.
+
+    Reply 조건: kind in (reply, msg) AND reply_to == mention_seq AND from == team_id.
+    """
+    try:
+        r = _get_history_sync(topic=mention_topic, since_seq=mention_seq, limit=50)
+    except Exception:
+        return False  # 확인 불가 → unanswered 처리 (재 inject)
+    for e in r.get("events", []):
+        p = e.get("payload", {})
+        if (
+            p.get("reply_to") == mention_seq
+            and p.get("from") == team_id
+        ):
+            return True
+    return False
+
+
+def inject_chat_mentions(team_id: str, state_file: Path) -> list[dict]:
+    """Fetch unanswered chat mentions for team_id.
+
+    Spec (Inter_Session_Chat_Workflow.md §3): mention 받으면 다음 발언 차례에
+    reply 필수. 응답 X = 매 cycle 재 inject (응답 보장).
+
+    Algorithm:
+      1. last_seen + 1 부터 subscribe (chat:*)
+      2. mentions = events where @{team_id} ∈ payload.mentions
+      3. 각 mention 에 대해 broker get_history 로 reply 여부 확인
+      4. unanswered = 응답 안 한 mentions
+      5. last_seen update:
+         - unanswered 있으면 → min(unanswered.seq) - 1 (재 inject 유지)
+         - unanswered 없으면 → next_seq (정상 진행)
+      6. return unanswered (stderr inject 대상)
+
     Silent (returns []) on broker error.
     """
     last = _read_last_seen(state_file)
@@ -132,12 +171,29 @@ def inject_chat_mentions(team_id: str, state_file: Path) -> list[dict]:
     events = r.get("events", [])
     next_seq = r.get("next_seq", last)
     my_marker = f"@{team_id}"
-    my_mentions = [
+    all_mentions = [
         e for e in events
         if my_marker in (e.get("payload", {}).get("mentions") or [])
     ]
-    _write_last_seen(state_file, next_seq)
-    return my_mentions
+
+    if not all_mentions:
+        _write_last_seen(state_file, next_seq)
+        return []
+
+    # 각 mention 에 대해 응답 여부 확인 (broker get_history 별도 query)
+    unanswered = [
+        m for m in all_mentions
+        if not _has_reply_from(team_id, m["seq"], m["topic"])
+    ]
+
+    if unanswered:
+        # 재 inject 보장 위해 가장 낮은 seq - 1 로 last_seen 후퇴
+        new_last = min(m["seq"] for m in unanswered) - 1
+        _write_last_seen(state_file, max(new_last, 0))
+    else:
+        _write_last_seen(state_file, next_seq)
+
+    return unanswered
 
 
 import time
