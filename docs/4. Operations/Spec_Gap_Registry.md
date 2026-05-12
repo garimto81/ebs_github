@@ -2,7 +2,7 @@
 title: Spec Gap Registry — Drift 집계 + 해소 추적
 owner: conductor
 tier: internal
-last-updated: 2026-05-11
+last-updated: 2026-05-12
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "감지 도구 + 분류 체계 + Registry 자체로 외부 인계 가능"
@@ -33,7 +33,7 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 - **Registry 갱신**: `python tools/spec_drift_check.py --all --format=json > logs/drift_report.json`
 - **Pre-push 경고**: `.claude/hooks/pre_push_drift_check.py` (non-blocking)
 
-## 4. 현재 Drift (2026-05-11 Cycle 2 rescan)
+## 4. 현재 Drift (2026-05-12 Cycle 4 P9 quick win 적용)
 
 ### 4.1 계약별 요약
 
@@ -44,7 +44,7 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | FSM | 0 | 0 | 0 | 23 | 23 | **PASS** 유지 (SG-009 직렬화 규약 적용 후) |
 | DB Schema | 0 | 0 | 0 | 27 | 27 | ✅ **진정한 PASS 도달** 2026-05-11 — D2 `payout_structures` 해소 + D3 `cards`/`settings_kv` scanner noise 해소. SG-010 detector 정밀화 효과 누적. D4 23→27 |
 | RFID HAL | 0 | 0 | 0 | 8 | 8 | **OUT_OF_SCOPE** 유지 (SG-011) |
-| Settings | 0 | 109 | 3 | 53 | 165 | 2026-05-11: D2 110→109 / D3 4→3 (미세 변동). 잔여 D3 `fillKeyRouting`/`resolution`/`theme` 모두 `twoFactorEnabled` 해소(SG-008-b14 DONE) 후 잔류. D2 109 = scanner false positive dominant (SG-010 후속) |
+| Settings | 0 | 93 | 5 | 51 | 149 | 2026-05-12 **Cycle 4 P9 quick win 적용**: D2 109→**93 (-16 false positive 제거)** ✅. `gfx.*` prefix exclusion (graphics overlay scope 가 settings detector 에 흡수되던 false positive 제거 — `fold_delay`/`fold_display` 등 16건). D3 3→5 (+2 새 expose: `language`/`showLeaderboard` — detector 정확성 향상 부산물). 잔여 D2 93 중 `rfid_mode`/`*_mode` 5건 = CC Settings.md 영역 (SG-010 **P10** 후속 — CC scope 분리 필요) |
 | WebSocket | 0 | 1 | 1 | 45 | 46 | 🟡 **Cycle 2 closure correction**: spec 정합 ✅ (S7 PR #232 `WebSocket_Events.md §4.2.10 cc_session_count + §13.3 force_logout 노트` 신설) but detector **D3 1 잔여** (매칭 실패 — SG-010 한계). D2 `force_logout` 잔여 (IMPL-009 known). SG-034 = PARTIAL (spec 정합 + detector 미인식 + IMPL-009 대기) |
 | Auth | 0 | 0 | 0 | 0 | 0 | 2026-05-11 신규 contract 등장 — M1 D+1 완결 후 표면적 PASS. **scanner 한계 §7 신규 entry**: detect_auth() d4_count reporting 누락 — 실제 5 rules PASS 검증되지만 0/0/0/0 표시 |
 | **integration-tests vs BO** (out-of-scanner) | - | - | - | - | 92 | 🆕 **SG-035 + SG-036 별 추적** — 53 .http endpoints vs 137 router endpoints. 단순 path diff 84 + body schema mismatch (SG-035 username/email) + RBAC/header drift 일부 = 92 mismatch (issue #241) |
@@ -115,7 +115,7 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 | SG-008-b14 | spec_drift_b | settings | **DONE** | 2026-04-27 — `Settings.twoFactorEnabled` = User scope (per user) 채택. 구현은 team1/team2 위임 |
 | SG-008-b15 | spec_drift_b | settings | **DONE** | 2026-04-27 — `Settings.fillKeyRouting` = NDI fill/key param (Hardware Out Phase 2) 채택. 구현은 team1/team2 위임 |
 | SG-009 | spec_drift | fsm | IN_PROGRESS | TableFSM case 통일 — 이번 커밋에서 BS_Overview §3.1 직렬화 규약 추가 |
-| SG-010 | tooling | meta | PENDING | spec_drift_check.py 정밀화 (Settings, Schema, WebSocket). **F2 WebSocket detector 정밀화 완료 (2026-04-20)**, **P6 Settings detector 정규화 완료 (2026-04-20)** — camelCase/snake_case/dotted namespace/frontmatter 지원. D4 +39 |
+| SG-010 | tooling | meta | **IN_PROGRESS** | spec_drift_check.py 정밀화 (Settings, Schema, WebSocket). **F2 WebSocket detector 정밀화 완료 (2026-04-20)**, **P6 Settings detector 정규화 완료 (2026-04-20)** — camelCase/snake_case/dotted namespace/frontmatter 지원. D4 +39. **P9 Settings prefix-aware filtering 완료 (2026-05-12 Cycle 4, issue #269)**: `gfx.*`/`overlay.*` graphics scope 제외 → settings D2 109→93 (-16 false positive). 잔여 후속: **P10** (CC Settings.md scope 분리, 5건 `*_mode` false positive 잔여), **P11** (api/websocket detector spec walker §X.Y.Z 깊은 트리 매칭 — Cycle 2 closure 발견) |
 | SG-011 | spec_drift | rfid | **OUT_OF_SCOPE** | RFID_HAL_Interface §2.1. **프로토타입 범위 밖** — 실제 HAL 은 개발팀 + 제조사 SDK 확정 후 결정 (2026-04-20 재정의) |
 | SG-012 | doc_ssot | 2.1 Frontend/Lobby | PENDING | `Conductor_Backlog/SG-012-lobby-sidebar-ssot.md` (2026-04-26 승격) — UI.md `nav_sections` 데이터 스키마 표 추가 필요 |
 | SG-013 | nomenclature | 2.1 Frontend/Lobby | PENDING | `Conductor_Backlog/SG-013-lobby-tournaments-nomenclature.md` — 섹션명="Tournaments" 고정, 앱명="Lobby" 분리 (원칙 1) |
@@ -276,6 +276,7 @@ python tools/spec_drift_check.py --settings
 | 반대 방향 (문서 설명된 미구현 API) 부분 커버 | D2 일부 누락 가능 | TODO 마커 병행 grep |
 | **(NEW 2026-05-11)** auth contract detector 의 d4_count reporting 누락 — `tools/spec_drift_check.py:detect_auth()` 가 실제 5 rules (MAX_FAILED + lock_permanent + blacklist + composite_PK + refresh_delivery) 모두 PASS 검증 후에도 결과를 `0/0/0/0` 으로 출력 (다른 contract detector 는 매칭된 항목을 d4 로 카운트) | §4.1 표 의 auth row total 가 misleading (실제 5건 PASS, 표시 0) | spec_drift_check.py:detect_auth() 의 PASS 누적 로직 보강 — 다른 detector 패턴과 정합. SG-010 후속 cycle |
 | **(NEW 2026-05-11 Cycle 2 closure)** api / websocket detector 가 **신규 보강 spec section 매칭 실패** — S7 PR #232 가 `Backend_HTTP §5.17.5 (GET /flights/{_}/levels) + §5.17.11 (POST /skins/upload)` + `WebSocket_Events §4.2.10 (cc_session_count)` 정확히 신설했음에도 `detect_api()` / `detect_websocket()` 는 D3 로 표면 잔여. 새 § 깊은 트리 (X.Y.Z) + §4.2.X sub-event 형식이 기존 spec walker 와 정합 안 됨 | spec 정합 후에도 D3 false-잔여 — Registry 보고 정확성 훼손 | **SG-010 P9** — detector 의 spec section walker 가 §X.Y.Z 깊은 트리 + 신규 §4.2.X event sub-section 매칭 보강. Cycle 2 closure 가 발견 trigger |
+| **(NEW 2026-05-12 Cycle 4 P9 quick win)** settings detector 가 graphics overlay scope (`gfx.*` / `overlay.*`) dotted spec key 를 settings 영역으로 흡수 → `fold_delay`/`fold_display` 등 16건 false positive | settings D2 부풀려진 카운트 (S0 진단 commit 01e8c2af 인정) | ✅ **PARTIAL DONE 2026-05-12 (issue #269)** — `_NON_SETTINGS_PREFIXES = {gfx, graphic, graphics, overlay}` set 도입 + prefix-aware filtering (settings_drift_check.py:detect_settings line ~853). 효과: D2 109→93 (-16). 잔여: CC Settings.md `rfid_mode`/`*_mode` 5건 = **SG-010 P10** 후속 (CC scope 분리) |
 
 ## Changelog
 
@@ -292,3 +293,4 @@ python tools/spec_drift_check.py --settings
 | 2026-05-11 | v1.8 — S10-A 정기 scan + SG-034 신규 (Stream 활성화 첫 산출물) | (1) **fresh scan 7 contract**: api D1 7→0 (큰 개선) / D3 0→2 (신규 endpoint 2건); schema **진정한 PASS 도달** (1/2 → 0/0); websocket **PASS 깨짐** (D2 1 + D3 1); auth 신규 contract 0/0/0/0 등장. (2) **§4.1 표 전면 갱신** (8 contract, baseline 2026-04-26 → 2026-05-11). (3) **SG-034 신규 등재** — `force_logout` (IMPL-009 known PENDING) + `cc_session_count` (코드 완벽, spec 누락) 묶음. detail 카드는 broker `pipeline:gap-classified` 발행으로 위임. (4) **§4.4 catch-up** — SG-031~SG-033 표에 누락된 3건 추가 + SG-034 신규 등재. SG-028~030 미사용 ID 명시. (5) **logs/drift_report.json 보존** (1352 lines, 44KB). (6) S10-A team_role broker contract: `publish pipeline:gap-classified` 첫 실행. |
 | 2026-05-11 | v1.9 — S10-A Cycle 2 (issue #241): rescan + SG-035 + .http vs BO 92 mismatch 영역 등재 | (1) **Cycle 2 rescan (cycle 1 후 ~1h)**: ✅ S7 PR #232 가 SG-034 D3 `cc_session_count` + api D3 2건 (`/flights/{_}/levels`, `/skins/upload`) 동시 정합. **3 drift 해소** (cycle 1 → cycle 2). SG-034 status = PARTIAL (force_logout 잔여). (2) **§4.5 신규 섹션** — integration-tests `.http` (53 endpoints) vs BO routers (137 endpoints) mismatch 영역 등재 — 92 API mismatch KPI (issue #241). (3) **SG-035 신규** — `.http` POST `/auth/login` 의 `"username"` field vs `auth.py` `LoginRequest.email` + `User.email` unique column. drift 방향 = `.http` deprecated field. (4) **SG-036 신규** — 84 endpoint coverage gap + RBAC/header drift cluster. (5) `logs/drift_report_cycle2.json` 보존. (6) broker `pipeline:gap-classified` re-publish (cycle 2 결과 + S10-W 트리거). |
 | 2026-05-11 | v1.10 — Cycle 2 **closure correction** (자기 검증, autonomous iteration 룰 1 발동) | (1) **Cycle 2 종료 baseline rescan** (`python tools/spec_drift_check.py --all`) 에서 **보고-reality 불일치 발견**: 표는 api/websocket D3 0/0 보고, 실제 = D3 2/1 잔여. (2) 원인: **spec 정합 ✅ (S7 PR #232 §5.17.5/§5.17.11/§4.2.10 정확 신설) but detector 매칭 실패 ❌** — SG-010 본질적 한계. (3) **§4.1 정정** — api/websocket D3 잔여 + cycle 2 보고 부정확 인정. SG-034 status 설명 정정. (4) **§7 신규 한계 entry** — SG-010 **P9**: api/websocket detector spec walker 가 §X.Y.Z 깊은 트리 + 신규 §4.2.X event sub-section 매칭 못함. (5) **자기 정정 가치**: broker contract 효과 (Cycle 1 → S7 → spec 정합) **검증 성공** ✅. 정확성 위한 self-correction 으로 cycle 2 보고 보강. (6) broker publish (closure correction + iteration 룰 4건 명시 + S10-W 협력 + Cycle 3 자동 진입 신호). |
+| 2026-05-12 | v1.11 — Cycle 4 (issue #269) **SG-010 P9 quick win 적용** | (1) **자율 iteration 룰 1 발동** (정기 rescan + Cycle 4 P3 quick win 후속). (2) **settings detector 정밀화** — `tools/spec_drift_check.py:detect_settings()` 의 dotted-key 추출 로직에 `_NON_SETTINGS_PREFIXES = {gfx, graphic, graphics, overlay}` set 도입 + prefix-aware filtering. graphics overlay scope (`gfx.fold_delay` 등) 가 settings 영역으로 흡수되던 false positive 차단. (3) **효과 검증** — settings D2 **109→93 (-16)** ✅. P3 진단 키워드 (`fold_delay`/`fold_display`) 정확히 제거. (4) **D3 +2 신규 expose** (`language`/`showLeaderboard`) — detector 정확성 향상 부산물. (5) **SG-010 status PENDING → IN_PROGRESS**. P9 PARTIAL DONE + P10 (CC Settings.md scope 분리, 잔여 5건 `*_mode` false positive) + P11 (api/ws spec walker 깊은 트리) 후속 명시. (6) §4.1 settings row + §7 한계 entry + §4.4 SG-010 status 동시 갱신. (7) tests/test_drift_check_settings_p9.py 작성 시도 → **scope 차단** (S10-A 의 `tests/` 미포함, 6중 다층 방어 정상 작동). 단위 테스트는 별 stream 위임. (8) broker publish 시도 → **MCP server disconnected** — Registry 본문에 명시로 대체. |

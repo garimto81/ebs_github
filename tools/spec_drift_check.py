@@ -850,12 +850,24 @@ def detect_settings() -> ContractReport:
 
     # 점 구분 identifier 에서 마지막 segment 추출 (예: `gfx.show_leaderboard` → show_leaderboard)
     # dotted ref 는 명백한 setting key 이므로 whitelist 로 필터 bypass
+    #
+    # SG-010 P9 (Cycle 4, 2026-05-12) — prefix-aware filtering:
+    # `gfx.*` / `graphic.*` / `graphics.*` / `overlay.*` 는 graphics overlay scope 이며
+    # user-configurable settings 와 별 영역이므로 settings detector 에서 제외.
+    # 이 변경은 issue #269 의 P3 false positive 교훈 (`fold_delay`/`fold_display` 등
+    # `gfx.*` prefix 키가 spec 에 풍부하지만 team1 settings code 에 없음 — 다른 영역)
+    # 에 대한 정밀화. settings 영역 prefix (stats / display / output / rules /
+    # preferences / pref) 는 정상 수집.
+    _NON_SETTINGS_PREFIXES = {"gfx", "graphic", "graphics", "overlay"}
     for m in re.finditer(
-        r"`([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)+)`",
+        r"`([a-zA-Z_][a-zA-Z0-9_]*)((?:\.[a-zA-Z_][a-zA-Z0-9_]*)+)`",
         spec_text,
     ):
-        dotted = m.group(1)
-        last_segment = dotted.rsplit(".", 1)[-1]
+        prefix = m.group(1).lower()
+        if prefix in _NON_SETTINGS_PREFIXES:
+            continue  # graphics scope — settings detector 에서 제외 (P9)
+        rest = m.group(2)  # ".sub1.sub2..."
+        last_segment = rest.rsplit(".", 1)[-1]
         if len(last_segment) >= 3:
             spec_whitelist.add(last_segment)
     # YAML frontmatter 의 `reimplementability_notes` 값 안의 slash-separated list 에서
