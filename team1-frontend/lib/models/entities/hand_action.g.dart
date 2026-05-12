@@ -27,9 +27,9 @@ Map<String, dynamic> _$$HandActionImplToJson(_$HandActionImpl instance) =>
       'seatNo': instance.seatNo,
       'actionType': instance.actionType,
       'actionAmount': instance.actionAmount,
-      'potAfter': instance.potAfter,
+      if (instance.potAfter case final value?) 'potAfter': value,
       'street': instance.street,
       'actionOrder': instance.actionOrder,
-      'boardCards': instance.boardCards,
-      'actionTime': instance.actionTime,
+      if (instance.boardCards case final value?) 'boardCards': value,
+      if (instance.actionTime case final value?) 'actionTime': value,
     };

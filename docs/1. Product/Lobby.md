@@ -1206,6 +1206,7 @@ Future<int> _createTable() async {
 | 2026-05-11 | 3.0.1 | 부록 H 추가 (1 hand 시퀀스, Cycle 2 #239) — narrative 변경 0, additive only |
 | 2026-05-11 | 3.0.2 | §Ch.1.7 본문 추가 (1 hand 자동 셋업 데모, Cycle 3) — Ch.1 5 화면 시퀀스 ↔ 부록 H 연결, additive only |
 | 2026-05-12 | 3.0.3 | Cycle 6 #312 — multi-hand auto_demo (Hand 1 -> Hand 2 전환). HandAutoSetupStep 4 단계 추가 (hand1Complete / nextHandRotating / hand2Dealt). handHistory[] + dealer button indicator UI 위젯. v02-lobby evidence 6 PNG. S8 #301 ManualNextHand 계약 소비. additive only — narrative 변경 0 |
+| 2026-05-12 | 3.0.4 | Cycle 10 S2 hierarchy wire — Series → Event → Flight → Table drill-down 이 실 BO 와 nested route 로 통신하도록 wire 정정. `EventRepository.listBySeries()` + `TableRepository.listByFlight()` 신규. 이전 `?seriesId=` / `?flightId=` 쿼리 파라미터는 BO (FastAPI snake_case) 와 SSOT Naming_Conventions.md (camelCase JSON) 간 divergence 로 인해 무시되어 다른 event 가 같은 flight 목록을 보여주는 증상 야기. 본 cycle 은 path-variable nested route 로 우회. v01-lobby evidence 6 PNG (login → series → event → flight → table → KPI 증명: event A vs event B distinct flight id). KPI 통과. additive only — narrative 변경 0 |
 
 ---
 

@@ -26,7 +26,7 @@ Map<String, dynamic> _$$SessionUserImplToJson(_$SessionUserImpl instance) =>
     <String, dynamic>{
       'userId': instance.userId,
       'email': instance.email,
-      'displayName': instance.displayName,
+      if (instance.displayName case final value?) 'displayName': value,
       'role': instance.role,
       'permissions': instance.permissions,
       'tableIds': instance.tableIds,

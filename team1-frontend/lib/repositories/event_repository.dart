@@ -19,6 +19,20 @@ class EventRepository {
     );
   }
 
+  // Cycle 10 (S2 hierarchy wire): nested route uses a path variable instead
+  // of a query string, sidestepping the camelCase/snake_case divergence
+  // between BO (FastAPI snake_case) and the SSOT Naming_Conventions.md
+  // (camelCase JSON).  See docs/2. Development/2.5 Shared/Naming_Conventions.md
+  // §1.  BO endpoint: routers/series.py L119 `/series/{series_id}/events`.
+  Future<List<EbsEvent>> listBySeries(int seriesId) async {
+    return _client.get<List<EbsEvent>>(
+      '/series/$seriesId/events',
+      fromJson: (json) => (json as List)
+          .map((e) => EbsEvent.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
   Future<EbsEvent> getEvent(int id) async {
     return _client.get<EbsEvent>(
       '/events/$id',

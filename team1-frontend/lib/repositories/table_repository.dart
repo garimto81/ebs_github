@@ -26,6 +26,20 @@ class TableRepository {
     );
   }
 
+  // Cycle 10 (S2 hierarchy wire): nested route uses a path variable so the
+  // Lobby drill-down does not depend on the `?flightId=` vs `?flight_id=`
+  // query-param naming divergence (BO routers/tables.py L61 expects
+  // snake_case; SSOT Naming_Conventions.md §1 mandates camelCase JSON).
+  // BO endpoint: routers/tables.py L90 `/flights/{flight_id}/tables`.
+  Future<List<EbsTable>> listByFlight(int flightId) async {
+    return _client.get<List<EbsTable>>(
+      '/flights/$flightId/tables',
+      fromJson: (json) => (json as List)
+          .map((e) => EbsTable.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
   Future<EbsTable> getTable(int id) async {
     return _client.get<EbsTable>(
       '/tables/$id',

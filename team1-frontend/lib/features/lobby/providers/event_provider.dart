@@ -17,12 +17,17 @@ class EventListNotifier extends StateNotifier<AsyncValue<List<EbsEvent>>> {
   final EventRepository _repo;
 
   /// Fetch events for [seriesId].
+  ///
+  /// Cycle 10 (S2 hierarchy wire): uses the nested route
+  /// `/series/{id}/events`.  The flat `/events?seriesId=` route used the
+  /// camelCase param `seriesId`, which real BO ignores (it expects
+  /// `series_id`), so every series ended up showing the full event list.
+  /// Switching to the path-variable form removes the dependency on
+  /// query-param naming entirely.
   Future<void> fetch() async {
     state = const AsyncValue.loading();
     try {
-      final list = await _repo.listEvents(
-        params: {'seriesId': seriesId},
-      );
+      final list = await _repo.listBySeries(seriesId);
       state = AsyncValue.data(list);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

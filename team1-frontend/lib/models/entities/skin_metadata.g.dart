@@ -20,6 +20,6 @@ Map<String, dynamic> _$$SkinMetadataImplToJson(_$SkinMetadataImpl instance) =>
     <String, dynamic>{
       'title': instance.title,
       'description': instance.description,
-      'author': instance.author,
+      if (instance.author case final value?) 'author': value,
       'tags': instance.tags,
     };
