@@ -1,0 +1,117 @@
+Cycle 9 — LAN E2E Screenshot Evidence Summary
+================================================
+Date: 2026-05-12 (planned execution)
+Stream: S9 (QA, cross-cutting)
+Branch: work/s9/cycle9-lan-e2e-2026-05-12
+Trigger: 사용자 비판 "e2e screenshot 검증 안 했다" 수용
+
+------------------------------------------------
+1. 의도
+------------------------------------------------
+직전 cycle 들 (Cycle 6 v02, Cycle 7 v03) 은 Engine API/Phase 단위로 PASS
+선언했으나 LAN 환경 실제 Lobby/CC UI 화면 전환에 대한 evidence 가
+부족했음 (사용자 비판 시점).
+
+본 Cycle 9 작업은 두 spec 으로 LAN 환경 실 검증을 캡처:
+  - lobby-login.spec.ts    : Login UI 6 phase screenshot
+  - lan-full-flow.spec.ts  : Lobby → Table → CC → RFID → Hand 6 phase
+
+evidence 폴더 단일 SSOT (lan-2026-05-12/) 로 통합하여 사용자가 한 곳에서
+모든 screenshot 을 확인 가능하도록 정리.
+
+------------------------------------------------
+2. 의존성 (실행 사전 조건)
+------------------------------------------------
+[Wait] S2 (Lobby) cycle 9 fix PR 머지 — Lobby login UI 동작 정상화
+[Wait] S11 (DevOps) Docker stack 가용 (broker MCP 지속성 포함)
+[OK]   S7 (BO) admin@local / Admin!Local123 seed (SG-035, Cycle 5 머지)
+[OK]   S8 (Engine) v03 deeper-game spec (Cycle 7 머지, #335/#338)
+[OK]   S3 (CC) v03 straddle/ante override (Cycle 7 머지, #339)
+
+S2 fix 가 늦어질 경우 lan-full-flow.spec.ts 의 phase 1 은 PARTIAL/SKIP 처리.
+그래도 phase 2~6 은 BO/Engine API 로 graceful 진행 가능 (DoD: 4 phase PASS+PARTIAL).
+
+------------------------------------------------
+3. 실행 계획
+------------------------------------------------
+[Step 1] S2 fix PR 머지 확인
+[Step 2] Docker compose stack 가동 + healthcheck
+         - lobby-web:3000 (HTTP 200)
+         - cc:3001 (HTTP 200)
+         - bo:18001 (POST /auth/login 200)
+         - engine:18080 (GET /health 200)
+[Step 3] cd integration-tests/playwright
+         npm install (필요 시)
+         npx playwright test tests/lobby-login.spec.ts
+         npx playwright test tests/lan-full-flow.spec.ts
+[Step 4] test-results/lan-2026-05-12/ 에서 screenshot 확인
+         - lobby-login/ : 6 phase
+         - full-flow/   : 6 phase
+[Step 5] 본 summary.txt 의 "Execution Result" 섹션 채움
+
+------------------------------------------------
+4. 기대 결과 (DoD)
+------------------------------------------------
+[Spec 1] lobby-login.spec.ts
+  - DoD: URL 변화 또는 token 저장 (둘 중 하나)
+  - Evidence: 6 screenshot 캡처
+  - Hard assertion: lobby → BO /auth 호출 1회 이상
+
+[Spec 2] lan-full-flow.spec.ts
+  - DoD: 6 phase 중 4 phase 이상 PASS 또는 PARTIAL
+  - Hard fail 금지 (PARTIAL/SKIP graceful)
+  - Evidence: 6 screenshot 캡처
+
+[broker MCP]
+  - 두 spec 모두 PASS 시 → publish pipeline:qa-pass
+  - 한 spec 이라도 FAIL 시 → publish pipeline:qa-fail + Type 분류 (B/C/D)
+
+------------------------------------------------
+5. 직전 Cycle 들과의 차별점
+------------------------------------------------
+Cycle 6 (#320, v02): Engine API 10/10 phase PASS — UI screenshot 부족
+Cycle 7 (#338, v03): Engine API 9/9 phase PASS + graceful UI — evidence
+                     폴더 분산 (test-results/v03-deeper-game/)
+
+Cycle 9 (본 작업) : LAN 실 환경 evidence 단일 폴더 (lan-2026-05-12/)
+                   + UI 6 phase * 2 spec = 12 screenshot evidence
+
+------------------------------------------------
+6. Execution Result (S2 fix 머지 후 실행 시 채움)
+------------------------------------------------
+[TBD] Date executed:
+[TBD] Lobby fix PR:
+[TBD] Docker stack version:
+[TBD] Spec 1 result:
+[TBD]   - PASS/FAIL:
+[TBD]   - Screenshot count:
+[TBD]   - Notes:
+[TBD] Spec 2 result:
+[TBD]   - PASS/FAIL:
+[TBD]   - Phase summary:
+[TBD]     Phase 1 (Lobby login)         :
+[TBD]     Phase 2 (Dashboard + Table)   :
+[TBD]     Phase 3 (Table → CC 할당)     :
+[TBD]     Phase 4 (CC 진입)             :
+[TBD]     Phase 5 (RFID mock)           :
+[TBD]     Phase 6 (Hand play)           :
+[TBD]   - Screenshot count:
+[TBD] broker MCP publish:
+[TBD] Next cycle followups:
+
+------------------------------------------------
+7. Carry-over 참조
+------------------------------------------------
+- DRIFT-50.2 (Cycle 5 #298 해소 후 재발 여부 본 spec 으로 검증)
+- broker MCP self-test PASS ≠ 지속 가용성 (Cycle 5 학습) — Step 2 healthcheck 강화
+- post_build_fail.py false-positive (Cycle 6 #314 / Cycle 7 #336 100% filter)
+- agent-view 8 worktree 자동 격리 (Cycle 5 #303 / Cycle 6 검증)
+
+------------------------------------------------
+8. 작성 책임
+------------------------------------------------
+Author: S9 (QA Stream)
+Worktree: C:/claude/ebs/.claude/worktrees/s9-cycle9-lan-e2e
+Spec: integration-tests/playwright/tests/{lobby-login,lan-full-flow}.spec.ts
+Issue: (cycle 9 issue 번호 채울 자리)
+PR:    (draft PR 번호 채울 자리)
