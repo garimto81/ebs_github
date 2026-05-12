@@ -13,14 +13,14 @@ import { test, expect, type APIRequestContext } from '@playwright/test';
  * 사전 요구:
  *   - BO container http://localhost:8000 healthy
  *   - lobby-web container http://localhost:3000 healthy (baseURL)
- *   - admin@ebs.test / test-password-1234 계정 존재 (또는 env override)
+ *   - admin@local / Admin!Local123 계정 존재 (BO tools/seed_admin.py 기본값, 또는 env override)
  */
 
-const BO_BASE_URL = process.env.BO_BASE_URL ?? 'http://localhost:8000';
-// SSOT: team2-backend/src/app/database.py::_seed_admin() — admin@ebs.local / admin123
-// (V9.5 P17: BO entrypoint init_db() 가 startup 시 자동 seed)
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@ebs.local';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin123';
+const BO_BASE_URL = process.env.BO_BASE_URL ?? 'http://localhost:18001';
+// SSOT: BO /app/tools/seed_admin.py 기본값 — admin@local / Admin!Local123
+// (2026-05-12 SG-035 정합: 직전 admin@ebs.local/admin123 은 Type D drift)
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@local';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'Admin!Local123';
 
 async function login(request: APIRequestContext): Promise<string> {
   // SSOT (Backend_HTTP.md L87): /auth/* 는 root, /api/v1 prefix 미적용

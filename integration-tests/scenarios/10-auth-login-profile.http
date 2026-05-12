@@ -4,16 +4,21 @@
 ### - 환경별 expires_in 차등 (dev=1h, staging/prod=2h, live=12h)
 ### - 응답에 expires_at (ISO 8601), auth_profile, refresh_expires_in 포함
 ### - AUTH_PROFILE 환경 플래그에 따라 token 만료 시간 변동
+###
+### Schema 정정 (2026-05-11, S9 Cycle 2 — Type D drift):
+###   request body field: "username" → "email" (BO LoginRequest schema 정합)
+###   seed credentials: admin@local / Admin!Local123 (BO tools/seed_admin.py 기본값, 2026-05-12 SG-035 정합)
+### 근거: 40-v95-blind-levels-flow.http §V9.5 P15 spec fix + BO LoginRequest pydantic 모델
 
-@host = http://localhost:8000
+@host = http://localhost:18001
 
 ### 10.1 POST /api/v1/auth/login — dev 프로파일 (AUTH_PROFILE=dev)
 POST {{host}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "username": "admin@ebs.test",
-  "password": "test-password-1234"
+  "email": "admin@local",
+  "password": "Admin!Local123"
 }
 
 # 예상 응답 (AUTH_PROFILE=dev 기동 시):
@@ -33,8 +38,8 @@ Content-Type: application/json
 X-Test-Profile: live
 
 {
-  "username": "admin@ebs.test",
-  "password": "test-password-1234"
+  "email": "admin@local",
+  "password": "Admin!Local123"
 }
 
 # 예상 응답 (AUTH_PROFILE=live 기동 시):

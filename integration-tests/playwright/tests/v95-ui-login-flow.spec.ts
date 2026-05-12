@@ -19,8 +19,9 @@ import { expect, test } from '@playwright/test';
 import * as path from 'path';
 
 const LOBBY_BASE_URL = process.env.LOBBY_BASE_URL ?? 'http://localhost:3000';
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@ebs.local';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin123';
+// 2026-05-12 SG-035 정합: BO tools/seed_admin.py 기본값 (직전 admin@ebs.local/admin123 은 Type D drift)
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@local';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'Admin!Local123';
 
 const SCREENSHOT_DIR = path.join('test-results', 'v95-ui-login');
 
