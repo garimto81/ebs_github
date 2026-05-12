@@ -588,3 +588,79 @@ dev 전용으로 설계. production 배포 필요 시 별도 spec 필요:
 - broker 컨테이너화 + replication
 - 토큰 인증 (`source="user"` publisher_id 강화)
 - nginx 리버스 프록시
+
+---
+
+## 부록 A. cascade:build-fail false-positive 패턴 (Cycle 6, 2026-05-12)
+
+### 배경
+
+Cycle 5~6 사이 broker events.db 의 `cascade:build-fail` 토픽이 60건 누적 (단일 22건 burst 포함, issue #305). Iron Law Circuit Breaker 트리거 후보로 진단 의뢰.
+
+### 진단 결과: false-positive 폭증
+
+60건 전수 분석:
+
+| 지표 | 값 | 의미 |
+|------|----|----|
+| 총 cascade:build-fail | 60 | — |
+| `exit_code = -1` | 59 (98.3%) | Bash 비정상 종료 fallback (hook line 139) |
+| `stderr_excerpt` 비어 있음 | 57 (95%) | 실제 에러 메시지 없음 |
+| **실제 빌드 실패** | **3** | 나머지는 전부 false positive |
+| Iron Law 트리거 조건 충족? | NO | 22 burst = 22개 서로 다른 명령 (동일 패턴 반복 아님) |
+
+### Root Cause
+
+`.claude/hooks/post_build_fail.py:127` 의 `BUILD_PATTERNS.search(command)` 가 **전체 bash 명령어**(heredoc body, PR description, commit message 포함)를 검색.
+
+**증명 케이스**:
+- Issue #305 본문에 `docker compose / pytest / CI workflow` 문구
+- `claude --bg "..."` spawn 명령이 이 prompt 를 인자로 그대로 전달
+- regex가 `pytest` 단어 매칭 → cascade:build-fail 발행
+- payload 에는 `command[:200]` 만 저장 → 매칭 키워드가 evidence 에서 invisible
+- 본 진단 작업 spawn 자체가 seq=974, 975 false positive 생성 (recursive)
+
+False positive 명령 카테고리 (22 burst 기준):
+- `gh pr create / gh issue create` (PR body heredoc) — 11건
+- `cat > /tmp/... << 'EOF'` heredoc — 2건
+- `git commit / git stash` (commit message heredoc) — 8건
+- `claude --bg` 세션 spawn — 4건
+- 기타 `cd / curl / find` — 13건
+
+### Iron Law 평가
+
+- 동일 실패 패턴 3+회 반복? **NO** (22 = 22 서로 다른 명령)
+- Circuit Breaker 자동 발동 정당화? **불가** (자가-증폭 false positive 루프)
+- 실제 빌드 실패 누적은 3건뿐 (서로 다른 stream, 서로 다른 시점)
+
+### 권고 hook 패치 (S11 scope_owns 밖)
+
+`.claude/hooks/post_build_fail.py` 는 S11 scope_owns 가 아님 (scope_read only). 수정 권한자에게 패치 제안:
+
+1. **Heredoc body 제외**: `BUILD_PATTERNS.search(command.split('<<')[0])` — heredoc 이전 명령부만 검사
+2. **Command prefix 화이트리스트**: `gh|git\s+(commit|stash|push)|cat\s+>|claude\s+--bg` early return
+3. **Signal-less 차단**: `exit_code in (-1, None) and not stderr_excerpt` 시 발행 skip
+4. **Forensic visibility**: 매칭 regex group 도 payload 에 저장 (`matched_pattern: "pytest"`)
+
+### S11 운영 가이드
+
+본 false positive 패턴은 hook 패치 전까지 지속 발생 가능. S11 세션이 cascade:build-fail event 를 모니터링할 때:
+
+1. `payload.exit_code == -1` + `payload.stderr_excerpt == ""` → false positive 의심
+2. `command_excerpt` 가 `gh / git / cat / claude --bg` prefix → false positive 확정
+3. Iron Law Circuit Breaker 판단 시 **실제 빌드 실패만 카운트** (stderr non-empty 기준)
+4. 동일 stream 의 동일 명령 (예: `pytest tests/test_X.py`) 3+회 반복 시에만 진짜 Iron Law trigger
+
+### 인프라 5/5 200 KPI 정확 endpoint
+
+| Service | 외부 포트 | Health endpoint | Expected |
+|---------|----------|----------------|:--------:|
+| proxy | 80 | `/` | 200 |
+| lobby-web | 3000 | `/` | 200 |
+| cc-web | 3001 | `/` | 200 |
+| bo | 18001 | `/docs` (또는 `/openapi.json`) | 200 |
+| engine | 18080 | `/health` (또는 `/`) | 200 |
+
+> 주의: `bo:18001/healthz` 와 `engine:18080/healthz` 는 404 (해당 path 미구현). KPI 측정 시 위 endpoint 사용.
+
+Docker compose 컨테이너 healthcheck 는 별도 (`docker compose ps` STATUS 컬럼) — 정의는 `docker-compose.yml` 내 healthcheck 블록 참조.
