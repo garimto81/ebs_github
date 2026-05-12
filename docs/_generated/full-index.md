@@ -250,6 +250,7 @@ tier: generated
 | `docs/2. Development/2.2 Backend/Engineering/State_Management.md` | State Management | team2 | internal | IMPL-03 |
 | `docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md` | Tech Stack | team2 | internal | IMPL-01 |
 | `docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md` | Testing Strategy | team2 | internal | IMPL-08 |
+| `docs/2. Development/2.2 Backend/Settings.md` | Settings (Backend Env) | team2 | internal | - |
 | `docs/2. Development/2.3 Game Engine/2.3 Game Engine.md` | 2.3 Game Engine | ci | generated | - |
 | `docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md` | Harness REST API | team3 | contract | API-04.2 |
 | `docs/2. Development/2.3 Game Engine/APIs/OutputEventBuffer_Boundary.md` | OutputEventBuffer 구현 경계 | team3 | contract | API-04.3 |
@@ -274,6 +275,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/B-355-redirect-validator-infrastructure.md` | legacy-id-redirect.json validator (Dart CLI + CI gate) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/B-356-oe-catalog-self-inconsistency.md` | OE 카탈로그 self-inconsistency — OutputEvent_Serialization vs Overlay_Output_Events 정합 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/CYCLE2-2026-05-11-engine-1hand-ready.md` | CYCLE 2 — S8 Engine 1 Hand Ready (Issue | - | notify | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-2026-05-12-settings-engine-9keys.md` | CYCLE 4 — S8 Settings engine_rules 9 keys 정합 (Issue | - | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` | NOTIFY-Conductor-2026-05-08-ci-infra-blockers | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-S8-pr180-ci-failure-2026-05-08.md` | NOTIFY-S8 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
@@ -317,6 +319,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | deprecated | `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` | Triggers & Event Pipeline — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md` | Variants & Evaluation — Domain Master | team3 | contract | - |
+| `docs/2. Development/2.3 Game Engine/Rules/Engine_Defaults.md` | Engine Defaults — Settings 9 keys 정합 | team3 (S8 Cycle 4) | contract | API-04.4 |
 | `docs/2. Development/2.4 Command Center/2.4 Command Center.md` | 2.4 Command Center | ci | generated | - |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | RFID HAL — Operator Behavior | team4 | internal | BS-04-04 |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md` | RFID HAL Interface Contract | team4 | contract | API-03 |
@@ -721,4 +724,5 @@ tier: generated
 | `docs/_archive/governance-2026-05/Workflow_Conductor_Autonomous.md` | Conductor Autonomous Workflow SOP — Hourglass 패턴 | conductor | contract | - |
 | `docs/_journey/2026-05-11_smem_audit.md` | SMEM Weekly Memory Audit — 2026-05-11 | SMEM | - | - |
 | `docs/_journey/2026-05-11_smem_cycle2.md` | SMEM Cycle 2 — Cycle 1 weekly diff + case study | SMEM | - | - |
+| `docs/_journey/2026-05-12_smem_cycle4.md` | SMEM Cycle 4 — Cycle 3+4 weekly diff + audit | SMEM | - | - |
 | `docs/examples/README.md` | Examples | conductor | internal | - |
