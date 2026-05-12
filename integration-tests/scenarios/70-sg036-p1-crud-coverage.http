@@ -1,0 +1,178 @@
+### SG-036 P1 — Top-10 CRUD coverage 보강 (Cycle 9, 2026-05-12)
+###
+### 배경:
+###   integration-tests vs BO routers 정합성 분석 (Cycle 9):
+###   .http 59 unique vs router 137 unique → coverage 19.7% (27/137).
+###   110 uncovered + 26 orphan = 136 mismatch (1차 92 추정 → 정밀 136).
+###
+### Scope:
+###   P1-core-list 9 + P1-core-create 7 + P1-core-update 25 중에서 사용자/운영
+###   영향 최상위 10건만 본 cycle. 잔여는 Cycle 10~ 분할 PR.
+###
+### Schema 정합 (BO src/models/schemas.py 기준):
+###   SeriesCreate: competition_id, series_name, year, begin_at, end_at, time_zone, currency
+###   EventCreate: series_id, event_no, event_name, game_type, bet_structure, table_size
+###   CompetitionCreate: name, competition_type, competition_tag
+###   PlayerCreate: first_name, last_name, wsop_id?, nationality?, country_code?
+###   UserCreate: email, password, display_name, role
+###   BlindStructureCreate: name, levels[]
+###
+### Cycle 9 priority matrix (108 P1 uncovered → top 10):
+###   1. GET  /api/v1/series              (사용자 ↑↑ — Lobby 최상위 list)
+###   2. GET  /api/v1/competitions        (운영 ↑ — Series 부모)
+###   3. GET  /api/v1/tables              (사용자 ↑↑ — Lobby/CC 진입)
+###   4. GET  /api/v1/players             (운영 ↑ — Player 관리)
+###   5. GET  /api/v1/users               (RBAC critical — admin 화면)
+###   6. GET  /api/v1/blind-structures    (운영 ↑ — Final Table)
+###   7. POST /api/v1/series              (운영 ↑↑ — series 신규)
+###   8. POST /api/v1/competitions        (운영 ↑ — 최상위 entity)
+###   9. POST /api/v1/players             (운영 ↑ — player 등록)
+###  10. POST /api/v1/users               (RBAC critical — admin 만)
+###
+### 잔여 (Cycle 10+ 분할):
+###   - P1-core-update/delete 25건 (PUT/PATCH/DELETE)
+###   - P1-core-read 10건 (GET .../{id})
+###   - P2 auth-2fa/audit/settings 16건
+###   - P3 reports/sync 13건
+###   - P4 clock/seats/skin-action 등 30건
+###
+### Source: SG-036 Spec_Gap_Registry §4.5 + integration-tests/_audit/sg036-cycle9/
+
+@host = http://localhost:18001
+@admin_token = {{$dotenv ADMIN_JWT}}
+@viewer_token = {{$dotenv VIEWER_JWT}}
+
+### 70.1 GET /api/v1/series — list series (viewer OK)
+GET {{host}}/api/v1/series?skip=0&limit=20
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답:
+# 200 OK
+# {
+#   "data": [SeriesResponse, ...],
+#   "meta": { "skip": 0, "limit": 20, "total": <int> }
+# }
+# RBAC: get_current_user (viewer 이상). 401 = AUTH_TOKEN_MISSING/INVALID.
+
+### 70.2 GET /api/v1/competitions — list competitions (viewer OK)
+GET {{host}}/api/v1/competitions?skip=0&limit=20
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[CompetitionResponse[]] + meta total.
+# RBAC: get_current_user.
+
+### 70.3 GET /api/v1/tables — list tables (viewer OK)
+GET {{host}}/api/v1/tables
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[TableResponse[]].
+# Lobby 진입 시 최초 호출. RBAC: get_current_user.
+
+### 70.4 GET /api/v1/players — list players (viewer OK)
+GET {{host}}/api/v1/players?skip=0&limit=20
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[PlayerResponse[]] + pagination meta.
+# 운영 도구: Player 검색/등록 화면 진입.
+
+### 70.5 GET /api/v1/users — list users (admin only)
+GET {{host}}/api/v1/users?skip=0&limit=50
+Authorization: Bearer {{admin_token}}
+
+# 예상 응답: ApiResponse[UserResponse[]].
+# RBAC critical: require_role("admin"). 403 = AUTH_INSUFFICIENT_ROLE (viewer/operator).
+# 검증 핵심: 403 분기 — viewer_token 으로 호출 시 거부.
+
+### 70.5b GET /api/v1/users — viewer 거부 (403)
+GET {{host}}/api/v1/users
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: 403 Forbidden, AUTH_INSUFFICIENT_ROLE.
+# RBAC 분기 검증 (admin only endpoint).
+
+### 70.6 GET /api/v1/blind-structures — list (viewer OK)
+GET {{host}}/api/v1/blind-structures
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[BlindStructureResponse[]] (각 항목에 levels 포함).
+# Final Table 시 blind level 선택 진입.
+
+### 70.7 POST /api/v1/series — create series (admin only)
+POST {{host}}/api/v1/series
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "competition_id": 1,
+  "series_name": "WSOP 2026 Main Event",
+  "year": 2026,
+  "begin_at": "2026-07-01T00:00:00Z",
+  "end_at": "2026-07-15T23:59:59Z",
+  "time_zone": "America/Los_Angeles",
+  "currency": "USD",
+  "country_code": "US"
+}
+
+# 예상 응답: 201 Created + ApiResponse[SeriesResponse].
+# RBAC: require_role("admin"). 사전 조건: competition_id=1 존재 (FK 검증).
+
+### 70.8 POST /api/v1/competitions — create competition (admin only)
+POST {{host}}/api/v1/competitions
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "name": "WSOP",
+  "competition_type": 0,
+  "competition_tag": 0
+}
+
+# 예상 응답: 201 Created + ApiResponse[CompetitionResponse].
+# 최상위 entity (Series 부모). 단순 schema 검증용.
+
+### 70.9 POST /api/v1/players — create player (admin only)
+POST {{host}}/api/v1/players
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "first_name": "Daniel",
+  "last_name": "Negreanu",
+  "wsop_id": "WSOP-12345",
+  "nationality": "Canada",
+  "country_code": "CA"
+}
+
+# 예상 응답: 201 Created + ApiResponse[PlayerResponse].
+# RBAC: require_role("admin"). wsop_id unique 검증.
+
+### 70.10 POST /api/v1/users — create user (admin only)
+POST {{host}}/api/v1/users
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "email": "operator1@cycle9.test",
+  "password": "Operator!Test123",
+  "display_name": "Cycle 9 Operator",
+  "role": "operator"
+}
+
+# 예상 응답: 201 Created + ApiResponse[UserResponse].
+# RBAC critical: require_role("admin"). 403 = AUTH_INSUFFICIENT_ROLE.
+# email unique 검증 — 중복 시 409 또는 400.
+
+### 70.10b POST /api/v1/users — viewer 거부 (403)
+POST {{host}}/api/v1/users
+Authorization: Bearer {{viewer_token}}
+Content-Type: application/json
+
+{
+  "email": "denied@cycle9.test",
+  "password": "Denied!Test123",
+  "display_name": "Should Fail",
+  "role": "viewer"
+}
+
+# 예상 응답: 403 Forbidden, AUTH_INSUFFICIENT_ROLE.
+# admin only endpoint 거부 분기 검증.

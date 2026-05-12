@@ -1,0 +1,180 @@
+=== Priority breakdown ===
+
+P1-core-create            기본 CRUD create                                       7
+P1-core-list              기본 CRUD list (사용자 화면)                                9
+P1-core-read              기본 CRUD read-by-id                                  10
+P1-core-update            기본 CRUD update/delete                               25
+P2-audit                  audit-events + audit-logs                            3
+P2-auth-2fa               auth 2FA + password reset                            9
+P2-settings               settings KV                                          4
+P3-reports                reports dashboard 6종                                 6
+P3-sync                   sync (WSOP LIVE + mock)                              7
+P4-clock                  flights clock 액션 (start/pause/resume/restart)        9
+P4-event-flights          events {}/flights                                    1
+P4-event-flights-list     events flights list                                  1
+P4-flight-cancel-complete flight cancel/complete                               2
+P4-flight-tables          flights tables 서브                                    4
+P4-hand-detail            hand actions/players 서브                              2
+P4-player-search          player search                                        1
+P4-seats                  tables seats CRUD                                    2
+P4-series-events          series events 서브                                     2
+P4-skin-action            skin upload/activate/deactivate                      3
+P4-table-status           tables status/events                                 2
+P4-user-force-logout      users force-logout                                   1
+
+Total: 110
+
+
+=== Detail by priority ===
+
+--- P1-core-create 기본 CRUD create (7) ---
+  POST    /api/v1/competitions                                    competitions.py
+  POST    /api/v1/events                                          series.py
+  POST    /api/v1/flights                                         series.py
+  POST    /api/v1/payout-structures                               payout_structures.py
+  POST    /api/v1/players                                         players.py
+  POST    /api/v1/series                                          series.py
+  POST    /api/v1/users                                           users.py
+
+--- P1-core-list 기본 CRUD list (사용자 화면) (9) ---
+  GET     /api/v1/blind-structures                                blind_structures.py
+  GET     /api/v1/competitions                                    competitions.py
+  GET     /api/v1/events                                          series.py
+  GET     /api/v1/flights                                         series.py
+  GET     /api/v1/payout-structures                               payout_structures.py
+  GET     /api/v1/players                                         players.py
+  GET     /api/v1/series                                          series.py
+  GET     /api/v1/tables                                          tables.py
+  GET     /api/v1/users                                           users.py
+
+--- P1-core-read 기본 CRUD read-by-id (10) ---
+  GET     /api/v1/blind-structures/{}                             blind_structures.py
+  GET     /api/v1/competitions/{}                                 competitions.py
+  GET     /api/v1/configs/{}                                      configs.py
+  GET     /api/v1/decks/{}                                        decks.py
+  GET     /api/v1/flights/{}                                      series.py
+  GET     /api/v1/hands/{}                                        hands.py
+  GET     /api/v1/payout-structures/{}                            payout_structures.py
+  GET     /api/v1/players/{}                                      players.py
+  GET     /api/v1/series/{}                                       series.py
+  GET     /api/v1/users/{}                                        users.py
+
+--- P1-core-update 기본 CRUD update/delete (25) ---
+  DELETE  /api/v1/blind-structures/{}                             blind_structures.py
+  PUT     /api/v1/blind-structures/{}                             blind_structures.py
+  DELETE  /api/v1/blind-structures/{}/levels/{}                   blind_structures.py
+  PUT     /api/v1/blind-structures/{}/levels/{}                   blind_structures.py
+  DELETE  /api/v1/competitions/{}                                 competitions.py
+  PUT     /api/v1/competitions/{}                                 competitions.py
+  PUT     /api/v1/configs/{}                                      configs.py
+  PATCH   /api/v1/decks/{}                                        decks.py
+  DELETE  /api/v1/events/{}                                       series.py
+  PUT     /api/v1/events/{}                                       series.py
+  DELETE  /api/v1/flights/{}                                      series.py
+  PUT     /api/v1/flights/{}                                      series.py
+  DELETE  /api/v1/payout-structures/{}                            payout_structures.py
+  PUT     /api/v1/payout-structures/{}                            payout_structures.py
+  DELETE  /api/v1/players/{}                                      players.py
+  PUT     /api/v1/players/{}                                      players.py
+  DELETE  /api/v1/series/{}                                       series.py
+  PUT     /api/v1/series/{}                                       series.py
+  DELETE  /api/v1/skins/{}                                        skins.py
+  PUT     /api/v1/skins/{}                                        skins.py
+  PUT     /api/v1/tables/{}                                       tables.py
+  DELETE  /api/v1/tables/{}/seats/{}                              tables.py
+  PUT     /api/v1/tables/{}/seats/{}                              tables.py
+  DELETE  /api/v1/users/{}                                        users.py
+  PUT     /api/v1/users/{}                                        users.py
+
+--- P2-audit audit-events + audit-logs (3) ---
+  GET     /api/v1/audit-events                                    audit.py
+  GET     /api/v1/audit-logs                                      audit.py
+  GET     /api/v1/audit-logs/download                             audit.py
+
+--- P2-auth-2fa auth 2FA + password reset (9) ---
+  POST    /api/v1/auth/2fa/disable                                auth.py
+  POST    /api/v1/auth/2fa/setup                                  auth.py
+  GET     /api/v1/auth/google                                     auth.py
+  GET     /api/v1/auth/google/callback                            auth.py
+  POST    /api/v1/auth/password/reset                             auth.py
+  POST    /api/v1/auth/password/reset/send                        auth.py
+  POST    /api/v1/auth/password/reset/verify                      auth.py
+  GET     /api/v1/auth/session                                    auth.py
+  POST    /api/v1/auth/verify-2fa                                 auth.py
+
+--- P2-settings settings KV (4) ---
+  DELETE  /api/v1/settings                                        settings_kv.py
+  GET     /api/v1/settings                                        settings_kv.py
+  PUT     /api/v1/settings                                        settings_kv.py
+  GET     /api/v1/settings/resolved                               settings_kv.py
+
+--- P3-reports reports dashboard 6종 (6) ---
+  GET     /api/v1/reports/dashboard                               reports.py
+  GET     /api/v1/reports/hand-distribution                       reports.py
+  GET     /api/v1/reports/operator-activity                       reports.py
+  GET     /api/v1/reports/player-stats                            reports.py
+  GET     /api/v1/reports/rfid-health                             reports.py
+  GET     /api/v1/reports/table-activity                          reports.py
+
+--- P3-sync sync (WSOP LIVE + mock) (7) ---
+  GET     /api/v1/sync/conflicts                                  sync.py
+  DELETE  /api/v1/sync/mock/reset                                 sync.py
+  POST    /api/v1/sync/mock/seed                                  sync.py
+  GET     /api/v1/sync/status                                     sync.py
+  POST    /api/v1/sync/trigger/{}                                 sync.py
+  POST    /api/v1/sync/wsop-live                                  sync.py
+  GET     /api/v1/sync/wsop-live/status                           sync.py
+
+--- P4-clock flights clock 액션 (start/pause/resume/restart) (9) ---
+  GET     /api/v1/flights/{}/clock                                series.py
+  PUT     /api/v1/flights/{}/clock                                series.py
+  PUT     /api/v1/flights/{}/clock/adjust-stack                   series.py
+  PUT     /api/v1/flights/{}/clock/detail                         series.py
+  POST    /api/v1/flights/{}/clock/pause                          series.py
+  PUT     /api/v1/flights/{}/clock/reload-page                    series.py
+  POST    /api/v1/flights/{}/clock/restart                        series.py
+  POST    /api/v1/flights/{}/clock/resume                         series.py
+  POST    /api/v1/flights/{}/clock/start                          series.py
+
+--- P4-event-flights events {}/flights (1) ---
+  POST    /api/v1/events/{}/flights                               series.py
+
+--- P4-event-flights-list events flights list (1) ---
+  GET     /api/v1/flights/{}/levels                               event_flights.py
+
+--- P4-flight-cancel-complete flight cancel/complete (2) ---
+  PUT     /api/v1/flights/{}/cancel                               series.py
+  PUT     /api/v1/flights/{}/complete                             series.py
+
+--- P4-flight-tables flights tables 서브 (4) ---
+  GET     /api/v1/flights/{}/blind-structure                      blind_structures.py
+  PUT     /api/v1/flights/{}/blind-structure                      blind_structures.py
+  GET     /api/v1/flights/{}/tables                               tables.py
+  POST    /api/v1/flights/{}/tables                               tables.py
+
+--- P4-hand-detail hand actions/players 서브 (2) ---
+  GET     /api/v1/hands/{}/actions                                hands.py
+  GET     /api/v1/hands/{}/players                                hands.py
+
+--- P4-player-search player search (1) ---
+  GET     /api/v1/players/search                                  players.py
+
+--- P4-seats tables seats CRUD (2) ---
+  GET     /api/v1/tables/{}/seats                                 tables.py
+  POST    /api/v1/tables/{}/seats                                 tables.py
+
+--- P4-series-events series events 서브 (2) ---
+  GET     /api/v1/series/{}/events                                series.py
+  POST    /api/v1/series/{}/events                                series.py
+
+--- P4-skin-action skin upload/activate/deactivate (3) ---
+  POST    /api/v1/skins/upload                                    skins.py
+  POST    /api/v1/skins/{}/activate                               skins.py
+  POST    /api/v1/skins/{}/deactivate                             skins.py
+
+--- P4-table-status tables status/events (2) ---
+  GET     /api/v1/tables/{}/events                                replay.py
+  GET     /api/v1/tables/{}/status                                tables.py
+
+--- P4-user-force-logout users force-logout (1) ---
+  POST    /api/v1/users/{}/force-logout                           users.py
