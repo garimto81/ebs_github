@@ -2,7 +2,7 @@
 title: Confluence Mirror Matrix
 auto-generated: true
 source: tools/confluence_mirror_matrix.py
-generated-at: 2026-05-10T02:50Z
+generated-at: 2026-05-12T15:03Z
 mirror: none
 ---
 
@@ -13,12 +13,12 @@ mirror: none
 
 ## Summary
 
-- **Total docs**: 685
+- **Total docs**: 720
 - **Mirrored** (confluence-page-id, valid): 343
-- **Excluded** (mirror: none): 116
-- **Pending** (placeholder ID — null/tbd/0): 0
-- **Uncovered** (no frontmatter decision): 226
-- **Coverage** (mirrored + excluded): 459/685 = **67.0%**
+- **Excluded** (mirror: none): 118
+- **Pending** (placeholder ID — null/tbd/0): 1
+- **Uncovered** (no frontmatter decision): 258
+- **Coverage** (mirrored + excluded): 461/720 = **64.0%**
 
 ## Per-section coverage
 
@@ -26,14 +26,15 @@ mirror: none
 |---|---:|---:|---:|---:|---:|---:|
 | 1. Product | 13 | 13 | 0 | 0 | 0 | 100.0% |
 | 2. Development/2. Development.md | 1 | 1 | 0 | 0 | 0 | 100.0% |
-| 2. Development/2.1 Frontend | 111 | 42 | 22 | 0 | 47 | 57.7% |
-| 2. Development/2.2 Backend | 104 | 32 | 48 | 0 | 24 | 76.9% |
-| 2. Development/2.3 Game Engine | 65 | 10 | 20 | 0 | 35 | 46.2% |
+| 2. Development/2.1 Frontend | 113 | 42 | 24 | 0 | 47 | 58.4% |
+| 2. Development/2.2 Backend | 106 | 32 | 48 | 0 | 26 | 75.5% |
+| 2. Development/2.3 Game Engine | 77 | 10 | 20 | 0 | 47 | 39.0% |
 | 2. Development/2.4 Command Center | 77 | 35 | 19 | 0 | 23 | 70.1% |
 | 2. Development/2.5 Shared | 14 | 11 | 0 | 0 | 3 | 78.6% |
 | 3. Change Requests | 94 | 92 | 0 | 0 | 2 | 97.9% |
-| 4. Operations | 204 | 107 | 6 | 0 | 91 | 55.4% |
+| 4. Operations | 216 | 107 | 6 | 1 | 102 | 52.3% |
 | README.md | 1 | 0 | 0 | 0 | 1 | 0.0% |
+| _journey | 7 | 0 | 0 | 0 | 7 | 0.0% |
 | examples | 1 | 0 | 1 | 0 | 0 | 100.0% |
 
 ## Detail
@@ -148,7 +149,9 @@ mirror: none
 | `2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` | mirrored | 3819766363 | 3811606750 |
 | `2. Development/2.1 Frontend/Graphic_Editor/UI.md` | mirrored | 3818914312 | 3811606750 |
 | `2. Development/2.1 Frontend/Lobby/Backlog/AUDIT-S2-lobby-v3-cascade-2026-05-08.md` | uncovered | — | — |
+| `2. Development/2.1 Frontend/Lobby/Backlog/AUDIT-S2-v10-4-cascade-2026-05-11.md` | excluded | — | — |
 | `2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-Conductor-ci-drift-2026-05-08.md` | excluded | — | — |
+| `2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-Conductor-claude-md-smem-regression-2026-05-11.md` | excluded | — | — |
 | `2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S1-lobby-identity-cascade-2026-05-07.md` | excluded | — | — |
 | `2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-S2-pr176-ci-failure-2026-05-08.md` | excluded | — | — |
 | `2. Development/2.1 Frontend/Lobby/Chip_Management.md` | uncovered | — | — |
@@ -265,6 +268,7 @@ mirror: none
 | `2. Development/2.2 Backend/Backlog/B-068-sandbox-tournament-generator.md` | excluded | — | — |
 | `2. Development/2.2 Backend/Backlog/B-088-team2-camelcase-migration.md` | excluded | — | — |
 | `2. Development/2.2 Backend/Backlog/B-089-team2-test-assertion-migration.md` | excluded | — | — |
+| `2. Development/2.2 Backend/Backlog/NOTIFY-S10-W-backend-sync-2026-05-12.md` | uncovered | — | — |
 | `2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-registration-sitin-events.md` | mirrored | 3818816141 | 3811770578 |
 | `2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-user-sessions-multidevice.md` | mirrored | 3819274964 | 3811770578 |
 | `2. Development/2.2 Backend/Backlog/NOTIFY-team2-B088-PR2-3-4-naming-migration.md` | excluded | — | — |
@@ -286,6 +290,7 @@ mirror: none
 | `2. Development/2.2 Backend/Engineering/State_Management.md` | mirrored | 3820552821 | 3811770578 |
 | `2. Development/2.2 Backend/Engineering/Tech_Stack.md` | mirrored | 3819176645 | 3811770578 |
 | `2. Development/2.2 Backend/Engineering/Testing_Strategy.md` | mirrored | 3818914352 | 3811770578 |
+| `2. Development/2.2 Backend/Settings.md` | uncovered | — | — |
 
 ### 2. Development/2.3 Game Engine
 
@@ -332,9 +337,15 @@ mirror: none
 | `2. Development/2.3 Game Engine/Backlog/B-354-legacy-id-redirect-oe-mapping.md` | excluded | — | — |
 | `2. Development/2.3 Game Engine/Backlog/B-355-redirect-validator-infrastructure.md` | excluded | — | — |
 | `2. Development/2.3 Game Engine/Backlog/B-356-oe-catalog-self-inconsistency.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/CYCLE2-2026-05-11-engine-1hand-ready.md` | uncovered | — | — |
+| `2. Development/2.3 Game Engine/Backlog/CYCLE4-2026-05-12-settings-engine-9keys.md` | uncovered | — | — |
+| `2. Development/2.3 Game Engine/Backlog/CYCLE4-mediation-2026-05-12-betting-system-9keys.md` | uncovered | — | — |
 | `2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-cycle7-v04-betting-system-7-6-patch.md` | uncovered | — | — |
 | `2. Development/2.3 Game Engine/Backlog/NOTIFY-S8-pr180-ci-failure-2026-05-08.md` | excluded | — | — |
 | `2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | excluded | — | — |
+| `2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B331-engine-health-code-impl-2026-05-11.md` | uncovered | — | — |
+| `2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-impl-cycle7-v04-bomb-seven-rit3.md` | uncovered | — | — |
 | `2. Development/2.3 Game Engine/Behavioral_Specs/Action_Rotation.md` | uncovered | — | — |
 | `2. Development/2.3 Game Engine/Behavioral_Specs/Betting_and_Pots.md` | mirrored | 3819274749 | 3811836049 |
 | `2. Development/2.3 Game Engine/Behavioral_Specs/Card_Pipeline_Overview.md` | uncovered | — | — |
@@ -356,6 +367,12 @@ mirror: none
 | `2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | uncovered | — | — |
 | `2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` | mirrored | 3819274789 | 3811836049 |
 | `2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md` | mirrored | 3819241936 | 3811836049 |
+| `2. Development/2.3 Game Engine/Rules/Bomb_Pot.md` | uncovered | — | — |
+| `2. Development/2.3 Game Engine/Rules/Engine_Defaults.md` | uncovered | — | — |
+| `2. Development/2.3 Game Engine/Rules/Multi_Hand_State.md` | uncovered | — | — |
+| `2. Development/2.3 Game Engine/Rules/Multi_Hand_v03.md` | uncovered | — | — |
+| `2. Development/2.3 Game Engine/Rules/Run_It_Three.md` | uncovered | — | — |
+| `2. Development/2.3 Game Engine/Rules/Seven_Deuce.md` | uncovered | — | — |
 
 ### 2. Development/2.4 Command Center
 
@@ -565,10 +582,13 @@ mirror: none
 | `4. Operations/Causality_Dashboard.md` | mirrored | 3818848647 | 3811344758 |
 | `4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` | mirrored | 3819242032 | 3811573898 |
 | `4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` | mirrored | 3818881448 | 3811573898 |
+| `4. Operations/Chat_Protocol.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog.md` | mirrored | 3818586692 | 3811573898 |
 | `4. Operations/Conductor_Backlog/_template_implementation.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/_template_spec_gap.md` | uncovered | — | — |
+| `4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` | uncovered | — | — |
+| `4. Operations/Conductor_Backlog/_template_spec_gap_SG-037_cc_mockup_state_sync.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/B-066-재해-복구-절차-문서화.md` | uncovered | — | — |
@@ -593,6 +613,7 @@ mirror: none
 | `4. Operations/Conductor_Backlog/B-219-lobby-settings-typeerror.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/B-220-cc-demo-path-action-on-seat-status-missing.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/B-221-skins-multipart-upload.md` | uncovered | — | — |
+| `4. Operations/Conductor_Backlog/B-222-inter-session-chat-ui.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` | uncovered | — | — |
 | `4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` | mirrored | 3818750573 | 3811573898 |
 | `4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` | mirrored | 3819766384 | 3811573898 |
@@ -690,6 +711,7 @@ mirror: none
 | `4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` | mirrored | 3819078366 | 3811573898 |
 | `4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | mirrored | 3818750613 | 3811573898 |
 | `4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` | mirrored | 3819176705 | 3811573898 |
+| `4. Operations/Cycle_Entry_Playbook.md` | uncovered | — | — |
 | `4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` | mirrored | 3820552681 | 3811573898 |
 | `4. Operations/Docker_Runtime.md` | mirrored | 3818816021 | 3811573898 |
 | `4. Operations/ECOSYSTEM_E2E_HANDOFF.md` | uncovered | — | — |
@@ -698,9 +720,14 @@ mirror: none
 | `4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` | mirrored | 3819602444 | 3811573898 |
 | `4. Operations/handoffs/CI_CHAOS_TEST_HANDOFF.md` | mirrored | 3819766464 | 3811573898 |
 | `4. Operations/handoffs/CI_GATE_INTEGRATION_HANDOFF.md` | mirrored | 3818914412 | 3811573898 |
+| `4. Operations/handoffs/inbox/README.md` | uncovered | — | — |
 | `4. Operations/handoffs/INFRA_ALIGNMENT_HANDOFF.md` | mirrored | 3818914432 | 3811573898 |
 | `4. Operations/handoffs/P0_REMEDIATION_HANDOFF.md` | mirrored | 3818685091 | 3811573898 |
 | `4. Operations/handoffs/P1_FOLLOWUP_HANDOFF.md` | mirrored | 3818685111 | 3811573898 |
+| `4. Operations/Inter_Session_Chat_Design.md` | pending | TBD | 3811573898 |
+| `4. Operations/Inter_Session_Chat_Manual_Verification.md` | uncovered | — | — |
+| `4. Operations/Inter_Session_Chat_Plan.md` | uncovered | — | — |
+| `4. Operations/Inter_Session_Chat_Workflow.md` | uncovered | — | — |
 | `4. Operations/LAN_DEPLOYMENT.md` | mirrored | 3818750373 | 3811573898 |
 | `4. Operations/Load_Test_Plan_Phase1.md` | mirrored | 3818717608 | 3811573898 |
 | `4. Operations/Message_Bus_Runbook.md` | mirrored | 3819274844 | 3811573898 |
@@ -734,6 +761,7 @@ mirror: none
 | `4. Operations/Plans/Planning_Prototype_Gap_Analysis_2026-05-09.md` | uncovered | — | — |
 | `4. Operations/Plans/Redesign_Plan_2026_04_22.md` | mirrored | 3819176725 | 3811573898 |
 | `4. Operations/PR_AUTONOMOUS_PROCESSING.md` | uncovered | — | — |
+| `4. Operations/QA_Pass_Criteria.md` | uncovered | — | — |
 | `4. Operations/RENOVATE_EVALUATION.md` | mirrored | 3819602516 | 3811573898 |
 | `4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` | mirrored | 3819766484 | 3811573898 |
 | `4. Operations/Reports/2026-04-17_SSOT_Audit.md` | mirrored | 3818685131 | 3811573898 |
@@ -758,6 +786,7 @@ mirror: none
 | `4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md` | mirrored | 3819176427 | 3811573898 |
 | `4. Operations/Reports/2026-05-08-consistency-audit-final.md` | mirrored | 3818947297 | 3811573898 |
 | `4. Operations/Reports/2026-05-08-S6-prototype-audit.md` | mirrored | 3818881628 | 3811573898 |
+| `4. Operations/Reports/Product_Naming_Unification_Plan_2026-05-12.md` | uncovered | — | — |
 | `4. Operations/Roadmap.md` | mirrored | 3818684891 | 3811573898 |
 | `4. Operations/Spec_Gap_Registry.md` | mirrored | 3818816041 | 3811573898 |
 | `4. Operations/Spec_Gap_Triage.md` | mirrored | 3819766243 | 3811573898 |
@@ -771,6 +800,18 @@ mirror: none
 | File | Status | Page ID | Parent ID |
 |---|---|---|---|
 | `README.md` | uncovered | — | — |
+
+### _journey
+
+| File | Status | Page ID | Parent ID |
+|---|---|---|---|
+| `_journey/2026-05-11_smem_audit.md` | uncovered | — | — |
+| `_journey/2026-05-11_smem_cycle2.md` | uncovered | — | — |
+| `_journey/2026-05-12_smem_cycle4.md` | uncovered | — | — |
+| `_journey/2026-05-12_smem_cycle5.md` | uncovered | — | — |
+| `_journey/2026-05-12_smem_cycle6.md` | uncovered | — | — |
+| `_journey/2026-05-12_smem_cycle7.md` | uncovered | — | — |
+| `_journey/2026-05-12_smem_cycle8.md` | uncovered | — | — |
 
 ### examples
 
