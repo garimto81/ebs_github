@@ -779,12 +779,32 @@ def detect_settings() -> ContractReport:
         REPO / "docs" / "2. Development" / "2.1 Frontend" / "Settings",
         REPO / "docs" / "2. Development" / "2.4 Command Center",
     ]
+    # SG-010 P10 (Cycle 5, 2026-05-12) — path-aware scope 제외:
+    # CC Settings.md (BS-03) 는 BO Config 스코프 (configs 테이블의 backend key,
+    # `scope='global/series/event/table'` override chain) 명세 문서이고,
+    # team1-frontend/lib/features/settings 는 team1 UI form 필드 (camelCase) 영역.
+    # 두 도메인을 한 detector 에 비교하면 backend BO Config key (rfid_mode,
+    # cap_bb_multiplier, allow_run_it_twice 등) 가 team1 UI code 미존재 D2 false
+    # positive 로 나타남. 따라서 CC Settings.md 파일만 spec source 에서 제외.
+    #
+    # 주의: `2.4 Command Center/Settings.md` 의 sibling 인 `Overview.md` 등은 이미
+    # 파일명 whitelist (`Outputs.md`/`Graphics.md`/.../`Settings.md`/`UI.md`) 가 처리
+    # 하므로 별 path-skip 가 필요한 항목은 Settings.md 단일.
+    _CC_SETTINGS_PATHS = {
+        REPO
+        / "docs"
+        / "2. Development"
+        / "2.4 Command Center"
+        / "Settings.md",
+    }
     spec_text = ""
     spec_sources: list[str] = []
     for d in doc_dirs:
         if not d.exists():
             continue
         for md in d.glob("*.md"):
+            if md in _CC_SETTINGS_PATHS:
+                continue  # CC scope (BO Config) — team1 UI 영역과 분리 (P10)
             # 파일명이 Settings 또는 6탭 + UI.md (legacy SG-003 consolidated spec) 경우만
             name = md.name
             if name in (
