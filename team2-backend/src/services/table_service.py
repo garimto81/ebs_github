@@ -262,6 +262,35 @@ def update_seat_status(table_id: int, seat_no: int, new_status: str, db: Session
     return seat
 
 
+def list_players_by_table(
+    table_id: int,
+    db: Session,
+    skip: int = 0,
+    limit: int = 20,
+) -> tuple[list[Player], int]:
+    """List all players currently seated at a table.
+
+    Joins `table_seats` -> `players` for the given `table_id`. Only seats with
+    `player_id IS NOT NULL` and `status != 'empty'` are returned (active,
+    busted, moved seats are surfaced — Lobby renders them all).
+
+    Used by Lobby drill-down: Series -> Event -> Flight -> Table -> Players
+    (5-level hierarchy completion; cascade `bo-hierarchy-ready`, 2026-05-12).
+    """
+    _ = get_table(table_id, db)
+
+    stmt = (
+        select(Player)
+        .join(TableSeat, TableSeat.player_id == Player.player_id)
+        .where(TableSeat.table_id == table_id)
+        .where(TableSeat.status != "empty")
+    )
+    all_items = db.exec(stmt).all()
+    total = len(all_items)
+    items = all_items[skip : skip + limit]
+    return items, total
+
+
 def vacate_seat(table_id: int, seat_no: int, db: Session) -> TableSeat:
     """Force vacate: set status→empty, clear player data."""
     seat = _get_seat(table_id, seat_no, db)

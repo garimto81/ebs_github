@@ -1,0 +1,141 @@
+### v10 Series → Event → Flight → Table → Players (5-level hierarchy)
+###
+### S7 / S9 Cycle 8 — cascade:bo-hierarchy-ready (2026-05-12).
+###
+### 사용자 비판 해소:
+###   "Lobby 에서 어떤 event 선택해도 동일 flight mock 처리"
+###   원인: 일부 active event 만 flight 보유. 나머지는 frontend mock fallback.
+###   해소: seed_demo_data.py 가 모든 active event 에 최소 2 flight 시드 →
+###         event A → flightX, event B → flightY 진짜 다름을 검증.
+###
+### 사전 조건:
+###   1. python team2-backend/tools/init_db.py --force
+###   2. python team2-backend/tools/seed_admin.py
+###   3. python team2-backend/tools/seed_demo_data.py
+###   4. ADMIN_JWT 환경변수 = admin@ebs.local 의 JWT
+###
+### KPI: 서로 다른 event 가 서로 다른 flight 집합을 반환
+
+@host = http://localhost:18001
+@admin_token = {{$dotenv ADMIN_JWT}}
+
+
+### v10.1 Login → ADMIN_JWT 확보
+# @name login
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@ebs.local",
+  "password": "admin123"
+}
+
+###
+@token = {{login.response.body.access_token}}
+
+
+### v10.2 GET /api/v1/series — 8 series 노출 (E2E_Demo competition)
+# @name list_series
+GET {{host}}/api/v1/series?limit=20
+Authorization: Bearer {{token}}
+
+# 예상: meta.total >= 8, 각 series 가 series_id 고유
+# 검증: data[].series_id 모두 unique, year ∈ {2025, 2026}
+
+
+### v10.3 첫 series 의 events 목록 — wpse26 (Europe 14 events sample 10) 가정
+# @name list_events_series_A
+GET {{host}}/api/v1/series/{{list_series.response.body.data[0].series_id}}/events?limit=20
+Authorization: Bearer {{token}}
+
+# 예상: meta.total >= 1 (실제 wpse26 = 10 events seed)
+
+
+### v10.4 두번째 series 의 events 목록 (다른 series)
+# @name list_events_series_B
+GET {{host}}/api/v1/series/{{list_series.response.body.data[1].series_id}}/events?limit=20
+Authorization: Bearer {{token}}
+
+# 예상: meta.total >= 1, series_A 와 다른 event_id 집합
+
+
+### v10.5 ★ 핵심 검증 ★ Event A 의 flight 목록
+# @name flights_event_A
+GET {{host}}/api/v1/events/{{list_events_series_A.response.body.data[0].event_id}}/flights
+Authorization: Bearer {{token}}
+
+# 예상: data[] 모두 event_id = list_events_series_A.data[0].event_id
+# 검증: display_name 패턴 "E#N Day 1A" or "Day 1A" — event_no 가 prefix 에 포함됨
+
+
+### v10.6 ★ 핵심 검증 ★ Event B (같은 series 다른 event) 의 flight 목록
+# @name flights_event_B
+GET {{host}}/api/v1/events/{{list_events_series_A.response.body.data[1].event_id}}/flights
+Authorization: Bearer {{token}}
+
+# 예상: data[] 모두 event_id = list_events_series_A.data[1].event_id
+# 검증: flight_id 집합이 v10.5 와 **disjoint** (교집합 = ∅)
+#       즉 event A 와 event B 는 서로 다른 flight 보유 → 사용자 비판 해소 핵심
+
+
+### v10.7 Flight A 의 tables 목록 (flat endpoint 우선)
+# @name tables_flight_A
+GET {{host}}/api/v1/tables?flight_id={{flights_event_A.response.body.data[0].event_flight_id}}
+Authorization: Bearer {{token}}
+
+# 예상: data[] 모두 event_flight_id 일치
+
+
+### v10.8 Flight A 의 tables 목록 (nested deprecated alias)
+GET {{host}}/api/v1/flights/{{flights_event_A.response.body.data[0].event_flight_id}}/tables
+Authorization: Bearer {{token}}
+
+# 예상: v10.7 과 동일 응답
+
+
+### v10.9 ★ 신규 ★ Table 의 players 목록 (5-level 완성)
+# @name players_table_1
+GET {{host}}/api/v1/tables/{{tables_flight_A.response.body.data[0].table_id}}/players
+Authorization: Bearer {{token}}
+
+# 예상: 200 OK
+# {
+#   "data": [{ "player_id": ..., "first_name": ..., "last_name": ..., ... }],
+#   "meta": { "skip": 0, "limit": 20, "total": N, "table_id": <table_id> }
+# }
+# 검증:
+#   - meta.table_id 일치
+#   - data[].player_id 모두 unique
+#   - data 길이 == meta.total
+#   - data[0].first_name 이 PLAYERS_SEED 의 알려진 이름 (e.g., "Daniel")
+
+
+### v10.10 ★ Disjoint 검증 ★ 다른 table 의 players 는 첫 table 과 다름
+GET {{host}}/api/v1/tables/{{tables_flight_A.response.body.data[1].table_id}}/players
+Authorization: Bearer {{token}}
+
+# 예상: data[].player_id 가 v10.9 와 disjoint
+# 검증: 두 table 의 player 풀이 서로 다름 (28 players modulo 9 → table 별 다른 슬라이스)
+
+
+### v10.11 Players 마스터 검색 — Daniel Negreanu
+GET {{host}}/api/v1/players?search=Negreanu&limit=5
+Authorization: Bearer {{token}}
+
+# 예상: data[0] = { first_name: "Daniel", last_name: "Negreanu", country_code: "CA", ... }
+
+
+### v10.12 빈 table 검증 — players 0개
+# Day 2 first 3 table 만 시드. 4번째 table = empty
+GET {{host}}/api/v1/tables/{{tables_flight_A.response.body.data[3].table_id}}/players
+Authorization: Bearer {{token}}
+
+# 예상: meta.total = 0, data = []
+# 검증: 시드 안된 table 도 정상 응답 (404 가 아님)
+
+
+### v10.13 404 케이스 — 존재하지 않는 table
+GET {{host}}/api/v1/tables/999999/players
+Authorization: Bearer {{token}}
+
+# 예상: 404 { code: "RESOURCE_NOT_FOUND" }
