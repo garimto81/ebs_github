@@ -12,6 +12,7 @@
 // 통합 결정은 다음 turn 사용자 검토 후. D7 / 통신 / HandFSM 변경 없음.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/remote/ws_provider.dart';
@@ -77,6 +78,8 @@ class CcStatusBar extends ConsumerWidget {
               config.ante,
             ),
             potAmount: pot, // V10 — POT 강조
+            currentAnte: config.ante,
+            onAnteTap: () => _showAnteOverrideDialog(context, ref, config.ante),
           ),
           const Spacer(),
           _RightGroup(
@@ -91,6 +94,68 @@ class CcStatusBar extends ConsumerWidget {
   static String _blindsText(int sb, int bb, int ante) {
     final base = '$sb/$bb';
     return ante > 0 ? '$base (ante $ante)' : base;
+  }
+
+  /// v03 cycle 7 #330 — Manual ante override dialog.
+  /// Operator can edit ante mid-hand. Tied to ConfigNotifier.setAnteOverride.
+  static Future<void> _showAnteOverrideDialog(
+    BuildContext context,
+    WidgetRef ref,
+    int currentAnte,
+  ) async {
+    final controller = TextEditingController(text: currentAnte.toString());
+    final result = await showDialog<int>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Ante Override'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Manual ante (chips). 0 = no ante.',
+              style: TextStyle(fontSize: 12, color: Colors.black54),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              autofocus: true,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: const InputDecoration(
+                labelText: 'Ante amount',
+                hintText: 'e.g., 25',
+                border: OutlineInputBorder(),
+              ),
+              onSubmitted: (v) {
+                final parsed = int.tryParse(v);
+                if (parsed != null && parsed >= 0) {
+                  Navigator.of(ctx).pop(parsed);
+                }
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final parsed = int.tryParse(controller.text);
+              if (parsed != null && parsed >= 0) {
+                Navigator.of(ctx).pop(parsed);
+              }
+            },
+            child: const Text('Apply'),
+          ),
+        ],
+      ),
+    );
+    if (result != null) {
+      ref.read(configProvider.notifier).setAnteOverride(result);
+    }
   }
 }
 
@@ -170,6 +235,8 @@ class _CenterGroup extends StatelessWidget {
     required this.gameType,
     required this.blindsLabel,
     required this.potAmount,
+    required this.currentAnte,
+    required this.onAnteTap,
   });
 
   final int handNumber;
@@ -177,6 +244,8 @@ class _CenterGroup extends StatelessWidget {
   final String gameType;
   final String blindsLabel;
   final int potAmount;
+  final int currentAnte;
+  final VoidCallback onAnteTap;
 
   @override
   Widget build(BuildContext context) {
@@ -212,8 +281,35 @@ class _CenterGroup extends StatelessWidget {
           ),
         ),
         const SizedBox(width: EbsSpacing.sm),
-        // GameType + Blinds
-        _KeyVal(label: gameType, value: blindsLabel, mono: true),
+        // GameType + Blinds — tap to open ante override dialog (v03 cycle 7 #330)
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: onAnteTap,
+            child: Tooltip(
+              message: 'Tap to override ante (current: $currentAnte)',
+              child: Container(
+                key: const ValueKey('cc-status-blinds-tap'),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: currentAnte > 0
+                      ? const Color(0xFFFFD700).withValues(alpha: 0.12)
+                      : Colors.transparent,
+                  border: Border.all(
+                    color: currentAnte > 0
+                        ? const Color(0xFFFFD700)
+                        : Colors.white24,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child:
+                    _KeyVal(label: gameType, value: blindsLabel, mono: true),
+              ),
+            ),
+          ),
+        ),
         // POT (V10) — only when live
         if (isLive) ...[
           const SizedBox(width: EbsSpacing.md),
