@@ -972,13 +972,33 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST http://localhost:3000/api/v1/au
 # expected: 401 또는 422 (405 가 아니면 PASS)
 ```
 
-### 향후 cycle 후보
+### Cycle 10 흡수 (Issue #380, 2026-05-12)
 
-- S2/S3 가 `infra/web/*.nginx.conf` 를 in-image config 로 sync (PR 후속). 본 cycle 의 bind-mount mount 는 backward-compat 으로 유지 또는 제거.
-- TLS termination (nginx-proxy + Let's Encrypt) 추가 — 현재 HTTP only.
+PR #369 (S9 QA real-Playwright evidence) 가 Lobby login 실패의 진짜 root cause 를 확정:
+- Flutter Lobby 가 `production.json` 의 절대 URL `http://api.ebs.local/api/v1/auth/login` 호출
+- 사용자 PC `hosts` 매핑 없으면 connection error (특히 모바일 — 편집 불가)
+
+Cycle 9 bind-mount 는 nginx 측 fix 였고 root cause (Flutter same-origin 호출 부재) 는 후속 cycle 로 양도되었음. Cycle 10 작업:
+
+| 변경 | 위치 | 효과 |
+|------|------|------|
+| `team1-frontend/docker/lobby-web/nginx.conf` 영구 흡수 | image build COPY 대상 | bind-mount 의존 제거 가능 (Cycle 11) |
+| `team4-cc/docker/cc-web/nginx.conf` 영구 흡수 | 동일 | 동일 |
+| `scripts/lan-deploy.ps1` 3중 probe | localhost /api + LAN /healthz + LAN /api | 모바일 reachability KPI 자동화 |
+| `LAN_DEPLOYMENT.md` 방식 ② DEPRECATED 마크 | docs | hosts 의존 제거 명시 |
+| `docker-compose.yml` bind-mount 주석 갱신 | volumes 블록 | 안전 fallback 으로 유지 + Cycle 11 cleanup 시그널 |
+
+본 cycle 의 image config 영구 흡수는 S2/S3 boundary cross-cut 이지만 Cycle 9 #355 의 cross-cut 패턴 (S11 dev-assist 의 정의) 을 그대로 계승. S2 가 Flutter same-origin 호출 (`EBS_SAME_ORIGIN=true` 빌드) 을 도입한 후 본 nginx /api/ proxy 가 비로소 의도된 same-origin 흐름의 출구가 된다.
+
+### 향후 cycle 후보 (Cycle 10 갱신)
+
+- Cycle 11 — bind-mount 제거 가능 여부 검증 (image rebuild 직후 `/api/` proxy 정상이면 제거). `docker-compose.yml volumes:` 라인 제거 PR.
+- TLS termination (nginx-proxy + Let's Encrypt) 추가 — 현재 HTTP only. 외부 WAN 노출 시 필요.
 - 8000 (bo) firewall 인바운드 정책 — production 환경에서 외부 노출 차단 (현재 dev `["*"]`).
-- production.example.json 의 `BO_URL=http://api.ebs.local` 이 방식 ① 에서 무관해짐 — `BO_URL=""` (same-origin) 로 build profile 분기 고려.
+- production.example.json 의 `BO_URL=http://api.ebs.local` 제거 + `EBS_SAME_ORIGIN=true` build profile 단일화 (S2 cycle).
+- ebs-proxy (subdomain proxy :80) 컨테이너 자체 제거 검토 — DEPRECATED 후 사용자 없으면 docker-compose `profile: legacy-subdomain` 로 분리.
 
 ### 사건 기록
 
 - 2026-05-12 — S11 Cycle 9 issue #355. nginx /api proxy 부재로 lobby/cc 로그인 불가 → bind-mount override + LAN one-shot script + LAN_DEPLOYMENT.md 두 방식 병기. 첫 commit 시점 카탈로그된 stale config 는 S2/S3 후속 sync 대상.
+- 2026-05-12 — S11 Cycle 10 issue #380. PR #369 root cause 확정 후 image 내부 nginx config SSOT 영구 흡수 + LAN reachability KPI 3중 probe 자동화 + 방식 ② subdomain DEPRECATED 명시. bind-mount 는 안전 fallback 으로 1 cycle 유지 후 Cycle 11 정리 예정.
