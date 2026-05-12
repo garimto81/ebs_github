@@ -1,0 +1,475 @@
+### v03 — Deeper Game Flow (straddle + ante_override + run_it_twice 회귀)
+###
+### S9 Cycle 7 신규 시나리오 (2026-05-12, issue #328).
+### 본 시나리오는 v02 의 multi-hand state transition 위에 Cycle 6 v03 룰 3종 회귀를 추가한다.
+###
+### 의존성:
+###   - S8 Cycle 6 PR #319 (issue #310) — Multi_Hand_v03 룰 머지 완료
+###     코드: team3-engine/lib/engine.dart::_handleManualNextHandFull (straddle 회전)
+###     코드: team3-engine/lib/engine.dart::_handleAnteOverrideFull (신규)
+###     코드: team3-engine/lib/engine.dart::_handleRunItChoiceFull (분할 pot)
+###     코드: team3-engine/lib/harness/server.dart::_addEvent (ante_override / run_it_choice routing)
+###     코드: team3-engine/lib/harness/server.dart::_nextHand (response.runItBoard2Cards key 추가)
+###     테스트: team3-engine/test/multi_hand_v03_test.dart (18 cases ALL PASS)
+###     테스트: team3-engine/test/harness/next_hand_v03_endpoint_test.dart (3 cases ALL PASS)
+###     스펙: docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_v03.md (contract tier)
+###   - S9 Cycle 6 PR #320 (issue #311) — v02 multi-hand e2e baseline
+###
+### Pipeline (9 phase):
+###   Phase A — Setup (health, variants)
+###   Phase B — Straddle session + /next-hand straddleSeat 회전 검증 [v03 KEY #1]
+###   Phase C — AnteOverride 이벤트 + /next-hand anteAmount 영속화 검증 [v03 KEY #2]
+###   Phase D — RunItChoice 이벤트 routing + runItBoard2Cards key shape 검증 [v03 KEY #3]
+###   Phase E — Combined straddle + ante 동시 활성 회귀
+###   Phase F — v01 baseline 회귀 (fold-to-BB 1-hand)
+###   Phase G — v02 baseline 회귀 (POST /next-hand rotation)
+###   Phase H — v03 4-hand round-robin straddle wrap-around
+###   Phase I — Final DoD cumulative
+###
+### Coverage:
+###   - Multi_Hand_v03.md §1 straddle_seat 회전 (6-seat round-robin)
+###   - Multi_Hand_v03.md §2 ante_override 영속성 (다음 hand 까지 유지)
+###   - Multi_Hand_v03.md §3 run_it_twice routing (helper 호환 — pre-river 시 runItBoard2Cards=null)
+###   - Multi_Hand_v03.md §4 next-hand response 신규 필드 (sbSeat / bbSeat / runItBoard2Cards)
+###   - Cycle 5 issue #287 (v02 /next-hand) 회귀 보장
+###   - Cycle 4 issue #248 (v01 1-hand flow) 회귀 보장
+###
+### 실행 검증: 2026-05-12 S9 Cycle 7 — Engine harness :18080 직결.
+### Evidence: integration-tests/evidence/cycle7-2026-05-12/v03-deeper-game/
+
+@engine = http://localhost:18080
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase A: Setup — Engine 가동 확인 (v01/v02 동일 baseline)
+# ──────────────────────────────────────────────────────────────────────
+
+### A.1 GET /health — Engine harness 가동 확인
+GET {{engine}}/health
+
+# Assertion:
+#   - status === 200
+#   - body.status === "ok"
+#   - body.service === "ebs-game-engine"
+
+### A.2 GET /api/variants — variant registry 회귀 (nlh 포함)
+GET {{engine}}/api/variants
+
+# Assertion:
+#   - status === 200
+#   - variants includes "nlh"
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase B: Straddle session — straddleSeat 회전 (v03 KEY #1)
+#
+# config.straddleEnabled=true, straddleSeat=3 으로 6-seat 세션 생성.
+# POST /next-hand 시 dealer 0→1 회전과 함께 straddleSeat 3→4 회전 검증.
+# ──────────────────────────────────────────────────────────────────────
+
+### B.1 POST /api/session — straddle 활성 6-seat 세션
+# @name straddleSession
+POST {{engine}}/api/session
+Content-Type: application/json
+
+{
+  "variant": "nlh",
+  "seatCount": 6,
+  "config": {
+    "straddleEnabled": true,
+    "straddleSeat": 3
+  }
+}
+
+# Assertion (Phase B.1):
+#   - status === 201
+#   - sessionId matches /^[a-z0-9]+$/
+#   - straddleEnabled === true (v03 NEW field in toJson)
+#   - straddleSeat === 3
+#   - handNumber === 0
+#   - dealerSeat === 0
+
+### B.2 POST /next-hand — straddleSeat 1칸 회전 [v03 KEY]
+POST {{engine}}/api/session/{{straddleSession.response.body.sessionId}}/next-hand
+
+# Assertion (Multi_Hand_v03.md §1.4):
+#   - status === 200
+#   - handNumber === 1 (0 → 1)
+#   - dealerSeat === 1 (0 → 1)
+#   - sbSeat === 2 (dealer+1, v03 NEW key)
+#   - bbSeat === 3 (dealer+2, v03 NEW key)
+#   - straddleEnabled === true
+#   - straddleSeat === 4 (3 → 4, 1칸 회전)
+#   - runItBoard2Cards === null (RIT 미발동)
+
+### B.3 POST /next-hand — straddle round-robin 2회차
+POST {{engine}}/api/session/{{straddleSession.response.body.sessionId}}/next-hand
+
+# Assertion:
+#   - handNumber === 2
+#   - dealerSeat === 2 (1 → 2)
+#   - straddleSeat === 5 (4 → 5)
+#   - sbSeat === 3, bbSeat === 4
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase C: AnteOverride — anteAmount 영속화 (v03 KEY #2)
+#
+# 새 세션 생성 후 ante_override 이벤트 dispatch.
+# /next-hand 진행 시 anteAmount 가 override 값으로 유지되는지 검증.
+# ──────────────────────────────────────────────────────────────────────
+
+### C.1 POST /api/session — vanilla 6-seat 세션 (ante 미설정)
+# @name anteSession
+POST {{engine}}/api/session
+Content-Type: application/json
+
+{
+  "variant": "nlh",
+  "seatCount": 6
+}
+
+# Assertion:
+#   - status === 201
+#   - anteAmount === null (또는 0)
+
+### C.2 POST event — ante_override (amount=100, anteType=2 BB Ante)
+POST {{engine}}/api/session/{{anteSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "ante_override",
+  "amount": 100,
+  "anteType": 2
+}
+
+# Assertion (Multi_Hand_v03.md §2.3):
+#   - status === 200
+#   - anteAmount === 100
+#   - anteType === 2
+
+### C.3 POST /next-hand — anteAmount 100 유지 검증 (Multi_Hand_v03.md §2.2)
+POST {{engine}}/api/session/{{anteSession.response.body.sessionId}}/next-hand
+
+# Assertion:
+#   - status === 200
+#   - handNumber === 1
+#   - anteAmount === 100 (override 영구 유지)
+#   - anteType === 2
+
+### C.4 POST event — ante_override 재갱신 (amount=200)
+POST {{engine}}/api/session/{{anteSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "ante_override",
+  "amount": 200
+}
+
+# Assertion:
+#   - anteAmount === 200 (재override)
+#   - anteType === 2 (이전 값 유지 — type 미지정)
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase D: RunItChoice routing — runItBoard2Cards key shape (v03 KEY #3)
+#
+# run_it_choice 이벤트가 harness 에서 정상 routing 되는지 검증.
+# Pre-river 상태에서는 runItBoard2Cards=null (Multi_Hand_v03.md §3.1
+# "river 이후 (community.length == 5) 에 RunItChoice 가 dispatch 되면" 조건).
+# 본 phase 는 event 수용성 + response field shape 검증 (helper 정합).
+# ──────────────────────────────────────────────────────────────────────
+
+### D.1 POST /api/session — 신규 vanilla 세션
+# @name ritSession
+POST {{engine}}/api/session
+Content-Type: application/json
+
+{
+  "variant": "nlh",
+  "seatCount": 6
+}
+
+# Assertion:
+#   - status === 201
+#   - runItTimes === null (또는 미포함)
+#   - runItBoard2Cards === null (또는 미포함)
+
+### D.2 POST event — run_it_choice (times=2)
+POST {{engine}}/api/session/{{ritSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "run_it_choice",
+  "times": 2
+}
+
+# Assertion (Multi_Hand_v03.md §3 — graceful pre-river):
+#   - status === 200 (event 정상 수용, "Unknown event type" 400 금지)
+#   - runItBoard2Cards key present (값은 null — pre-river)
+#
+# Note: 실 RIT 분할 pot 산출은 community.length==5 + 2+ all-in 상태 필요.
+#       본 phase 는 routing + response shape 검증만 (단위 테스트 multi_hand_v03_test.dart
+#       에서 분할 로직 18 cases ALL PASS 보장).
+
+### D.3 POST /next-hand — RIT 미적용 시 runItBoard2Cards 유지
+POST {{engine}}/api/session/{{ritSession.response.body.sessionId}}/next-hand
+
+# Assertion:
+#   - handNumber === 1
+#   - runItBoard2Cards === null
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase E: Combined straddle + ante 동시 활성
+#
+# straddle + ante 가 같은 세션에서 독립적으로 작동하는지 검증.
+# ──────────────────────────────────────────────────────────────────────
+
+### E.1 POST /api/session — straddle + ante 동시 활성
+# @name combinedSession
+POST {{engine}}/api/session
+Content-Type: application/json
+
+{
+  "variant": "nlh",
+  "seatCount": 6,
+  "config": {
+    "straddleEnabled": true,
+    "straddleSeat": 4,
+    "anteType": 0,
+    "anteAmount": 5
+  }
+}
+
+# Assertion:
+#   - status === 201
+#   - straddleEnabled === true
+#   - straddleSeat === 4
+#   - anteAmount === 5
+#   - anteType === 0 (Standard Ante)
+#   - pot.main > 15 (SB 5 + BB 10 + 6×ante 5 = 45) — ante 정상 처리
+
+### E.2 POST event — ante_override 중간 변경
+POST {{engine}}/api/session/{{combinedSession.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "ante_override",
+  "amount": 50
+}
+
+# Assertion:
+#   - anteAmount === 50
+#   - straddleSeat === 4 (straddle 미영향)
+
+### E.3 POST /next-hand — straddle 회전 + ante 유지 동시 검증
+POST {{engine}}/api/session/{{combinedSession.response.body.sessionId}}/next-hand
+
+# Assertion:
+#   - handNumber === 1
+#   - dealerSeat === 1
+#   - straddleSeat === 5 (4 → 5)
+#   - anteAmount === 50 (override 영구 유지)
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase F: v01 baseline 회귀 — fold-to-BB 1-hand
+#
+# v01-1-hand-flow.http 의 핵심 시나리오를 압축 재실행하여
+# Cycle 4 baseline 이 v03 환경에서 회귀하지 않는지 검증.
+# ──────────────────────────────────────────────────────────────────────
+
+### F.1 POST /api/session — v01 baseline 6-seat (config 없음)
+# @name v01Regression
+POST {{engine}}/api/session
+Content-Type: application/json
+
+{
+  "variant": "nlh",
+  "seatCount": 6
+}
+
+# Assertion (v01 동일):
+#   - status === 201
+#   - street === "preflop"
+#   - dealerSeat === 0
+#   - handNumber === 0
+#   - pot.main === 15
+
+### F.2 POST event — fold UTG seat 3
+POST {{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event
+Content-Type: application/json
+
+{ "type": "fold", "seatIndex": 3 }
+
+### F.3 POST event — fold seat 4
+POST {{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event
+Content-Type: application/json
+
+{ "type": "fold", "seatIndex": 4 }
+
+### F.4 POST event — fold seat 5
+POST {{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event
+Content-Type: application/json
+
+{ "type": "fold", "seatIndex": 5 }
+
+### F.5 POST event — fold dealer seat 0
+POST {{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event
+Content-Type: application/json
+
+{ "type": "fold", "seatIndex": 0 }
+
+### F.6 POST event — fold SB seat 1
+POST {{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event
+Content-Type: application/json
+
+{ "type": "fold", "seatIndex": 1 }
+
+### F.7 POST event — pot_awarded to BB (idx 2)
+POST {{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event
+Content-Type: application/json
+
+{
+  "type": "pot_awarded",
+  "awards": { "2": 15 }
+}
+
+# Assertion (v01 동일):
+#   - seat[2].stack === 1005
+#   - pot.main === 0
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase G: v02 baseline 회귀 — /next-hand rotation
+# ──────────────────────────────────────────────────────────────────────
+
+### G.1 POST event — hand_end (Engine 자동 회전)
+POST {{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event
+Content-Type: application/json
+
+{ "type": "hand_end" }
+
+# Assertion (v02 동일):
+#   - handNumber === 1
+#   - dealerSeat === 1
+
+### G.2 POST /next-hand — v02 회귀
+POST {{engine}}/api/session/{{v01Regression.response.body.sessionId}}/next-hand
+
+# Assertion (v02 동일 + v03 신규 키):
+#   - handNumber === 2
+#   - dealerSeat === 2
+#   - sbSeat === 3 (v03 NEW key)
+#   - bbSeat === 4 (v03 NEW key)
+#   - 모든 seats[].currentBet === 0
+#   - 모든 seats[].status === active (folded → active 복귀)
+#   - pot.main === 0
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase H: v03 4-hand round-robin straddle wrap-around (Multi_Hand_v03.md §1.4)
+#
+# 6-seat 에서 straddleSeat 가 wrap-around 4회 발생하는지 검증.
+# hand 1 straddle=3 → hand 2 = 4 → hand 3 = 5 → hand 4 = 0 (wrap)
+# ──────────────────────────────────────────────────────────────────────
+
+### H.1 POST /api/session — straddle 활성 (wrap-around 검증 전용)
+# @name roundRobinSession
+POST {{engine}}/api/session
+Content-Type: application/json
+
+{
+  "variant": "nlh",
+  "seatCount": 6,
+  "config": {
+    "straddleEnabled": true,
+    "straddleSeat": 3
+  }
+}
+
+### H.2 POST /next-hand × 1 — straddle=3 → 4
+POST {{engine}}/api/session/{{roundRobinSession.response.body.sessionId}}/next-hand
+
+# Assertion: straddleSeat === 4
+
+### H.3 POST /next-hand × 2 — straddle=4 → 5
+POST {{engine}}/api/session/{{roundRobinSession.response.body.sessionId}}/next-hand
+
+# Assertion: straddleSeat === 5
+
+### H.4 POST /next-hand × 3 — straddle=5 → 0 (WRAP)
+POST {{engine}}/api/session/{{roundRobinSession.response.body.sessionId}}/next-hand
+
+# Assertion (Multi_Hand_v03.md §1.4):
+#   - straddleSeat === 0 (5 → 0 wrap-around)
+#   - dealerSeat === 3
+
+### H.5 POST /next-hand × 4 — straddle=0 → 1
+POST {{engine}}/api/session/{{roundRobinSession.response.body.sessionId}}/next-hand
+
+# Assertion:
+#   - straddleSeat === 1
+#   - dealerSeat === 4
+#   - handNumber === 4
+
+# ──────────────────────────────────────────────────────────────────────
+# Phase I: Final DoD cumulative
+# ──────────────────────────────────────────────────────────────────────
+
+### I.1 GET — straddle session 최종 상태 검증
+GET {{engine}}/api/session/{{straddleSession.response.body.sessionId}}
+
+# DoD Assertion (Phase B 누적):
+#   - handNumber === 2
+#   - dealerSeat === 2
+#   - straddleSeat === 5
+
+### I.2 GET — ante session 최종 상태 검증
+GET {{engine}}/api/session/{{anteSession.response.body.sessionId}}
+
+# DoD Assertion (Phase C 누적):
+#   - anteAmount === 200 (C.4 재override 결과)
+#   - handNumber === 1
+
+### I.3 GET — combined session 최종 상태 검증
+GET {{engine}}/api/session/{{combinedSession.response.body.sessionId}}
+
+# DoD Assertion (Phase E 누적):
+#   - straddleSeat === 5
+#   - anteAmount === 50
+#   - handNumber === 1
+
+### I.4 GET — round-robin session 최종 상태 검증
+GET {{engine}}/api/session/{{roundRobinSession.response.body.sessionId}}
+
+# DoD Assertion (Phase H 누적 — wrap-around 검증):
+#   - handNumber === 4
+#   - dealerSeat === 4
+#   - straddleSeat === 1
+
+### I.5 GET — v01 regression session 최종 상태
+GET {{engine}}/api/session/{{v01Regression.response.body.sessionId}}
+
+# DoD Assertion (Phase F+G 누적):
+#   - handNumber === 2
+#   - dealerSeat === 2
+#   - sbSeat === 3, bbSeat === 4
+#   - seat[2].stack === 1005 (v01 winner 보존)
+#   - seat[1].stack === 995 (v01 SB 소모)
+
+# ──────────────────────────────────────────────────────────────────────
+# Definition of Done (v03 검증 완료 기준)
+# ──────────────────────────────────────────────────────────────────────
+#
+# - [x] Phase A-I 모든 step HTTP 200/201 + assertion 통과
+# - [x] Cycle 6 issue #310 (Multi_Hand_v03) 회귀 보장
+# - [x] straddleSeat 회전: hand-to-hand +1 stride 일관성 + wrap-around (5→0)
+# - [x] AnteOverride 영속화: 다음 hand 까지 anteAmount 유지
+# - [x] RunItChoice routing: event 정상 수용 (400 금지) + runItBoard2Cards key
+# - [x] Combined straddle + ante 독립 작동 (서로 간섭 없음)
+# - [x] v01 baseline 회귀 (fold-to-BB, pot_award)
+# - [x] v02 baseline 회귀 (/next-hand rotation, folded→active 복귀)
+# - [x] /next-hand response 신규 필드 (sbSeat / bbSeat / runItBoard2Cards) 존재
+#
+# Out-of-scope (별도 시나리오 또는 단위 테스트 담당):
+#   - 실 RIT 분할 pot 산출 (community.length==5 도달 후 — multi_hand_v03_test.dart 담당)
+#   - heads-up straddle 무효화 (harness sittingOut 노출 미지원 — dart unit test 담당)
+#   - runItTimes=3 (Multi_Hand_v03.md §7 미해결 항목)
+#   - WebSocket broadcast 검증 (v99 영역)
+#   - Lobby / CC UI 검증 (별도 playwright spec — v03-deeper-game.spec.ts 담당)
+#
+# 본 시나리오 작성 + 실행 검증: 2026-05-12 S9 Cycle 7 Wave 3 (issue #328)

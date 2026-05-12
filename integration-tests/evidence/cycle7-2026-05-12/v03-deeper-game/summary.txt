@@ -1,0 +1,74 @@
+=== Scenario: v03-deeper-game.http (Engine harness v03 회귀) ===
+Date: 2026-05-12T08:17:33.789746+00:00
+
+--- Phase A: Setup ---
+  A.1 /health → HTTP 200 | {'status': 'ok', 'service': 'ebs-game-engine'}
+  A.2 /api/variants → HTTP 200 | nlh present: True
+
+--- Phase B: Straddle session (v03 KEY #1) ---
+  B.1 POST /api/session (straddle) → HTTP 201 | sessionId=mp2cydh93y
+      straddleEnabled=True straddleSeat=3 handNumber=0 dealer=0
+  B.2 /next-hand → HTTP 200 | handNumber=1 dealerSeat=1 sbSeat=2 bbSeat=3 straddleSeat=4 runItBoard2Cards=null | OK=True
+  B.3 /next-hand × 2 → HTTP 200 | handNumber=2 dealerSeat=2 straddleSeat=5 | OK=True
+
+--- Phase C: AnteOverride (v03 KEY #2) ---
+  C.1 POST /api/session → HTTP 201 | sessionId=mp2cyi8q68
+      initial anteAmount=None anteType=None
+  C.2 POST ante_override (100, type=2) → HTTP 200 | anteAmount=100 anteType=2 | OK=True
+  C.3 /next-hand → HTTP 200 | handNumber=1 anteAmount=100 anteType=2 | OK=True
+  C.4 POST ante_override (200, type 미지정) → HTTP 200 | anteAmount=200 anteType=2 (preserved) | OK=True
+
+--- Phase D: RunItChoice routing (v03 KEY #3) ---
+  D.1 POST /api/session → HTTP 201 | sessionId=mp2cyokt1d | runItBoard2Cards=None
+  D.2 POST run_it_choice (times=2) → HTTP 200 | routing OK (no 400 'Unknown event type'): True | runItBoard2Cards=None
+  D.3 /next-hand → HTTP 200 | handNumber=1 runItBoard2Cards=null | OK=True
+
+--- Phase E: Combined straddle + ante ---
+  E.1 POST /api/session (combined) → HTTP 201 | straddleSeat=4 anteAmount=5 pot.main=65 (>15 expected) | OK=True
+  E.2 POST ante_override (50) → HTTP 200 | anteAmount=50 straddleSeat=4 (unaffected) | OK=True
+  E.3 /next-hand → HTTP 200 | handNumber=1 dealerSeat=1 straddleSeat=5 anteAmount=50 | OK=True
+
+--- Phase F: v01 baseline 회귀 (fold-to-BB 1-hand) ---
+  F.1 POST /api/session → HTTP 201 | sessionId=mp2cyy2i9j | street=preflop dealer=0 pot.main=15 | OK=True
+  F.2 fold seat[3] → HTTP 200
+  F.3 fold seat[4] → HTTP 200
+  F.4 fold seat[5] → HTTP 200
+  F.5 fold seat[0] → HTTP 200
+  F.6 fold seat[1] → HTTP 200
+  F.7 pot_awarded(2:15) → HTTP 200 | seat[2].stack=1005 pot.main=0 | OK=True
+
+--- Phase G: v02 baseline 회귀 (/next-hand rotation) ---
+  G.1 hand_end → HTTP 200 | handNumber=1 dealerSeat=1 (auto-rotate) | OK=True
+  G.2 /next-hand → HTTP 200 | handNumber=2 dealerSeat=2 sbSeat=3 bbSeat=4 all-active=True all-zero-bet=True pot=0 | OK=True
+
+--- Phase H: 4-hand round-robin straddle wrap-around ---
+  H.1 POST /api/session → HTTP 201 | sessionId=mp2czcbxgn
+  H2-next-hand-1 → HTTP 200 | handNumber=1 (exp 1) dealer=1 (exp 1) straddleSeat=4 (exp 4) | OK=True
+  H3-next-hand-2 → HTTP 200 | handNumber=2 (exp 2) dealer=2 (exp 2) straddleSeat=5 (exp 5) | OK=True
+  H4-next-hand-3 → HTTP 200 | handNumber=3 (exp 3) dealer=3 (exp 3) straddleSeat=0 (exp 0) (WRAP 5→0) | OK=True
+  H5-next-hand-4 → HTTP 200 | handNumber=4 (exp 4) dealer=4 (exp 4) straddleSeat=1 (exp 1) | OK=True
+
+--- Phase I: Final DoD cumulative ---
+  I.1 GET straddle session → HTTP 200 | handNumber=2 dealerSeat=2 straddleSeat=5 | OK=True
+  I.2 GET ante session → HTTP 200 | anteAmount=200 handNumber=1 | OK=True
+  I.3 GET combined session → HTTP 200 | straddleSeat=5 anteAmount=50 handNumber=1 | OK=True
+  I.4 GET round-robin session → HTTP 200 | handNumber=4 dealerSeat=4 straddleSeat=1 | OK=True
+  I.5 GET v01 regression session → HTTP 200 | handNumber=2 dealerSeat=2 sbSeat=3 bbSeat=4 seat[2].stack=1005 seat[1].stack=995 | OK=True
+
+
+  [PASS] Phase A setup
+  [PASS] Phase B straddle rotation (3→4→5)
+  [PASS] Phase C AnteOverride 영속화
+  [PASS] Phase D RunItChoice routing
+  [PASS] Phase E Combined straddle+ante
+  [PASS] Phase F v01 baseline 회귀
+  [PASS] Phase G v02 baseline 회귀
+  [PASS] Phase H wrap-around (5→0)
+  [PASS] Phase I Final DoD
+
+✓ v03-deeper-game: 9/9 phases PASS
+  KEY: straddleSeat 회전 + wrap-around (Multi_Hand_v03 §1)
+  KEY: AnteOverride 영속화 (Multi_Hand_v03 §2)
+  KEY: RunItChoice routing + runItBoard2Cards key (Multi_Hand_v03 §3)
+  KEY: Cycle 6 issue #310 (v03 multi-hand) 회귀 보장
+  KEY: v01/v02 baseline 회귀 (Cycle 4 #248 + Cycle 5 #287)
