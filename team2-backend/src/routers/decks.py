@@ -282,10 +282,13 @@ async def register_card(deck_id: str, payload: CardRegisterIn) -> DeckCardOut:
         )
     if payload.rfid_uid in _rfid_uid_index:
         (existing_deck, existing_code) = _rfid_uid_index[payload.rfid_uid]
+        # DRIFT-50.2 (2026-05-12, Cycle 5): 422 per integration-tests/scenarios/
+        # 50-rfid-deck-register.http SSOT. code=DUPLICATE_UID matches .http convention.
         raise HTTPException(
-            status_code=409,
+            status_code=422,
             detail={
-                "code": "RFID_UID_DUPLICATE",
+                "code": "DUPLICATE_UID",
+                "uid": payload.rfid_uid,
                 "message": "UID already registered in another deck",
                 "existing_deck_id": existing_deck,
                 "existing_card_code": existing_code,
@@ -326,6 +329,28 @@ async def import_deck(payload: DeckImportIn) -> DeckWithCardsOut:
     except ValueError as e:
         raise HTTPException(status_code=400, detail={"code": "INVALID_IMPORT", "message": str(e)})
 
+    # DRIFT-50.2 (2026-05-12, Cycle 5): intra-payload dup UID detect.
+    # dict[card_code → uid] 구조는 키 중복은 자동 차단하지만 동일 UID 가 다른
+    # card_code 에 매핑되는 경우는 통과 — 명시적 검사 필요.
+    seen: dict[str, str] = {}  # uid -> card_code first seen
+    intra_conflicts: list[dict] = []
+    for cc, uid in payload.cards.items():
+        if uid in seen:
+            intra_conflicts.append(
+                {"card_code": cc, "rfid_uid": uid, "duplicate_of_card": seen[uid]}
+            )
+        else:
+            seen[uid] = cc
+    if intra_conflicts:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "code": "DUPLICATE_UID",
+                "scope": "intra_payload",
+                "conflicts": intra_conflicts,
+            },
+        )
+
     # Cross-deck UID conflict check before mutating
     conflicts: list[dict] = []
     for cc, uid in payload.cards.items():
@@ -334,8 +359,12 @@ async def import_deck(payload: DeckImportIn) -> DeckWithCardsOut:
             conflicts.append({"card_code": cc, "rfid_uid": uid, "existing_deck": ed, "existing_card": ec})
     if conflicts:
         raise HTTPException(
-            status_code=409,
-            detail={"code": "RFID_UID_DUPLICATE", "conflicts": conflicts},
+            status_code=422,
+            detail={
+                "code": "DUPLICATE_UID",
+                "scope": "cross_deck",
+                "conflicts": conflicts,
+            },
         )
 
     deck_id = str(uuid.uuid4())
@@ -380,10 +409,12 @@ async def replace_card(
     if payload.new_rfid_uid in _rfid_uid_index:
         (ed, ec) = _rfid_uid_index[payload.new_rfid_uid]
         if (ed, ec) != (deck_id, card_code):
+            # DRIFT-50.2 (2026-05-12, Cycle 5): replace 도 dup-uid 정합 (422/DUPLICATE_UID)
             raise HTTPException(
-                status_code=409,
+                status_code=422,
                 detail={
-                    "code": "RFID_UID_DUPLICATE",
+                    "code": "DUPLICATE_UID",
+                    "uid": payload.new_rfid_uid,
                     "existing_deck_id": ed,
                     "existing_card_code": ec,
                 },
@@ -432,7 +463,11 @@ async def update_deck_status(
     return _deck_out(deck)
 
 
-@router.delete("/{deck_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{deck_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_model=None,
+)
 async def delete_deck(deck_id: str) -> None:
     """Hard delete — Admin only. Prefer PATCH status=retired for soft archival.
 
