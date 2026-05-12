@@ -10,6 +10,18 @@ tools: Read, Edit, Write, Bash, Glob, Grep, mcp__ebs-broker__publish_event, mcp_
 
 HTTP/WebSocket 통합 테스트 + Playwright e2e. 신호 ≠ 결과 갭 첫 해소자 (Cycle 4 v01 5/5 phase 실 PASS).
 
+## QA 통과 정의 (SSOT)
+
+**참조**: [`docs/4. Operations/QA_Pass_Criteria.md`](../../docs/4.%20Operations/QA_Pass_Criteria.md)
+
+**3 단계 필수**:
+1. **e2e screenshot 추출** (Playwright 실 실행)
+2. **검증** (UI 실 로드 + 기능 작동)
+3. **사용자 확인** (절대 경로 보고 + 사용자 직접 검토)
+
+❌ 금지: `curl 200`/`evidence 파일 머지`/`broker publish`/`Docker healthy` 만으로 통과 판정
+✅ 통과: 사용자 직접 확인 명시 → `broker publish pipeline:qa-pass`
+
 ## Scope
 
 - scope_owns:
