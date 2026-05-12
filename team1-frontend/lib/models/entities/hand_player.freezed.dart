@@ -45,7 +45,10 @@ mixin _$HandPlayer {
   @JsonKey(name: 'winProbability')
   double? get winProbability => throw _privateConstructorUsedError;
   bool get vpip => throw _privateConstructorUsedError;
-  bool get pfr => throw _privateConstructorUsedError;
+  bool get pfr =>
+      throw _privateConstructorUsedError; // v03 game-rules fields (Cycle 7, #329)
+  @JsonKey(name: 'runItTwiceShare')
+  double? get runItTwiceShare => throw _privateConstructorUsedError;
 
   /// Serializes this HandPlayer to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -78,7 +81,8 @@ abstract class $HandPlayerCopyWith<$Res> {
       @JsonKey(name: 'handRank') String? handRank,
       @JsonKey(name: 'winProbability') double? winProbability,
       bool vpip,
-      bool pfr});
+      bool pfr,
+      @JsonKey(name: 'runItTwiceShare') double? runItTwiceShare});
 }
 
 /// @nodoc
@@ -111,6 +115,7 @@ class _$HandPlayerCopyWithImpl<$Res, $Val extends HandPlayer>
     Object? winProbability = freezed,
     Object? vpip = null,
     Object? pfr = null,
+    Object? runItTwiceShare = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -173,6 +178,10 @@ class _$HandPlayerCopyWithImpl<$Res, $Val extends HandPlayer>
           ? _value.pfr
           : pfr // ignore: cast_nullable_to_non_nullable
               as bool,
+      runItTwiceShare: freezed == runItTwiceShare
+          ? _value.runItTwiceShare
+          : runItTwiceShare // ignore: cast_nullable_to_non_nullable
+              as double?,
     ) as $Val);
   }
 }
@@ -200,7 +209,8 @@ abstract class _$$HandPlayerImplCopyWith<$Res>
       @JsonKey(name: 'handRank') String? handRank,
       @JsonKey(name: 'winProbability') double? winProbability,
       bool vpip,
-      bool pfr});
+      bool pfr,
+      @JsonKey(name: 'runItTwiceShare') double? runItTwiceShare});
 }
 
 /// @nodoc
@@ -231,6 +241,7 @@ class __$$HandPlayerImplCopyWithImpl<$Res>
     Object? winProbability = freezed,
     Object? vpip = null,
     Object? pfr = null,
+    Object? runItTwiceShare = freezed,
   }) {
     return _then(_$HandPlayerImpl(
       id: null == id
@@ -293,6 +304,10 @@ class __$$HandPlayerImplCopyWithImpl<$Res>
           ? _value.pfr
           : pfr // ignore: cast_nullable_to_non_nullable
               as bool,
+      runItTwiceShare: freezed == runItTwiceShare
+          ? _value.runItTwiceShare
+          : runItTwiceShare // ignore: cast_nullable_to_non_nullable
+              as double?,
     ));
   }
 }
@@ -315,7 +330,8 @@ class _$HandPlayerImpl implements _HandPlayer {
       @JsonKey(name: 'handRank') this.handRank,
       @JsonKey(name: 'winProbability') this.winProbability,
       required this.vpip,
-      required this.pfr});
+      required this.pfr,
+      @JsonKey(name: 'runItTwiceShare') this.runItTwiceShare});
 
   factory _$HandPlayerImpl.fromJson(Map<String, dynamic> json) =>
       _$$HandPlayerImplFromJson(json);
@@ -361,10 +377,14 @@ class _$HandPlayerImpl implements _HandPlayer {
   final bool vpip;
   @override
   final bool pfr;
+// v03 game-rules fields (Cycle 7, #329)
+  @override
+  @JsonKey(name: 'runItTwiceShare')
+  final double? runItTwiceShare;
 
   @override
   String toString() {
-    return 'HandPlayer(id: $id, handId: $handId, seatNo: $seatNo, playerId: $playerId, playerName: $playerName, holeCards: $holeCards, startStack: $startStack, endStack: $endStack, finalAction: $finalAction, isWinner: $isWinner, pnl: $pnl, handRank: $handRank, winProbability: $winProbability, vpip: $vpip, pfr: $pfr)';
+    return 'HandPlayer(id: $id, handId: $handId, seatNo: $seatNo, playerId: $playerId, playerName: $playerName, holeCards: $holeCards, startStack: $startStack, endStack: $endStack, finalAction: $finalAction, isWinner: $isWinner, pnl: $pnl, handRank: $handRank, winProbability: $winProbability, vpip: $vpip, pfr: $pfr, runItTwiceShare: $runItTwiceShare)';
   }
 
   @override
@@ -395,7 +415,9 @@ class _$HandPlayerImpl implements _HandPlayer {
             (identical(other.winProbability, winProbability) ||
                 other.winProbability == winProbability) &&
             (identical(other.vpip, vpip) || other.vpip == vpip) &&
-            (identical(other.pfr, pfr) || other.pfr == pfr));
+            (identical(other.pfr, pfr) || other.pfr == pfr) &&
+            (identical(other.runItTwiceShare, runItTwiceShare) ||
+                other.runItTwiceShare == runItTwiceShare));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -416,7 +438,8 @@ class _$HandPlayerImpl implements _HandPlayer {
       handRank,
       winProbability,
       vpip,
-      pfr);
+      pfr,
+      runItTwiceShare);
 
   /// Create a copy of HandPlayer
   /// with the given fields replaced by the non-null parameter values.
@@ -436,21 +459,23 @@ class _$HandPlayerImpl implements _HandPlayer {
 
 abstract class _HandPlayer implements HandPlayer {
   const factory _HandPlayer(
-      {required final int id,
-      @JsonKey(name: 'handId') required final int handId,
-      @JsonKey(name: 'seatNo') required final int seatNo,
-      @JsonKey(name: 'playerId') final int? playerId,
-      @JsonKey(name: 'playerName') required final String playerName,
-      @JsonKey(name: 'holeCards') required final String holeCards,
-      @JsonKey(name: 'startStack') required final int startStack,
-      @JsonKey(name: 'endStack') required final int endStack,
-      @JsonKey(name: 'finalAction') final String? finalAction,
-      @JsonKey(name: 'isWinner') required final bool isWinner,
-      required final int pnl,
-      @JsonKey(name: 'handRank') final String? handRank,
-      @JsonKey(name: 'winProbability') final double? winProbability,
-      required final bool vpip,
-      required final bool pfr}) = _$HandPlayerImpl;
+          {required final int id,
+          @JsonKey(name: 'handId') required final int handId,
+          @JsonKey(name: 'seatNo') required final int seatNo,
+          @JsonKey(name: 'playerId') final int? playerId,
+          @JsonKey(name: 'playerName') required final String playerName,
+          @JsonKey(name: 'holeCards') required final String holeCards,
+          @JsonKey(name: 'startStack') required final int startStack,
+          @JsonKey(name: 'endStack') required final int endStack,
+          @JsonKey(name: 'finalAction') final String? finalAction,
+          @JsonKey(name: 'isWinner') required final bool isWinner,
+          required final int pnl,
+          @JsonKey(name: 'handRank') final String? handRank,
+          @JsonKey(name: 'winProbability') final double? winProbability,
+          required final bool vpip,
+          required final bool pfr,
+          @JsonKey(name: 'runItTwiceShare') final double? runItTwiceShare}) =
+      _$HandPlayerImpl;
 
   factory _HandPlayer.fromJson(Map<String, dynamic> json) =
       _$HandPlayerImpl.fromJson;
@@ -495,7 +520,10 @@ abstract class _HandPlayer implements HandPlayer {
   @override
   bool get vpip;
   @override
-  bool get pfr;
+  bool get pfr; // v03 game-rules fields (Cycle 7, #329)
+  @override
+  @JsonKey(name: 'runItTwiceShare')
+  double? get runItTwiceShare;
 
   /// Create a copy of HandPlayer
   /// with the given fields replaced by the non-null parameter values.

@@ -23,6 +23,7 @@ _$HandPlayerImpl _$$HandPlayerImplFromJson(Map<String, dynamic> json) =>
       winProbability: (json['winProbability'] as num?)?.toDouble(),
       vpip: json['vpip'] as bool,
       pfr: json['pfr'] as bool,
+      runItTwiceShare: (json['runItTwiceShare'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$$HandPlayerImplToJson(_$HandPlayerImpl instance) =>
@@ -30,16 +31,17 @@ Map<String, dynamic> _$$HandPlayerImplToJson(_$HandPlayerImpl instance) =>
       'id': instance.id,
       'handId': instance.handId,
       'seatNo': instance.seatNo,
-      'playerId': instance.playerId,
+      if (instance.playerId case final value?) 'playerId': value,
       'playerName': instance.playerName,
       'holeCards': instance.holeCards,
       'startStack': instance.startStack,
       'endStack': instance.endStack,
-      'finalAction': instance.finalAction,
+      if (instance.finalAction case final value?) 'finalAction': value,
       'isWinner': instance.isWinner,
       'pnl': instance.pnl,
-      'handRank': instance.handRank,
-      'winProbability': instance.winProbability,
+      if (instance.handRank case final value?) 'handRank': value,
+      if (instance.winProbability case final value?) 'winProbability': value,
       'vpip': instance.vpip,
       'pfr': instance.pfr,
+      if (instance.runItTwiceShare case final value?) 'runItTwiceShare': value,
     };

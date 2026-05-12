@@ -13,6 +13,7 @@ import '../../../foundation/widgets/empty_state.dart';
 import '../../../foundation/widgets/loading_state.dart';
 import '../../../repositories/report_repository.dart';
 import '../providers/report_provider.dart';
+import '../widgets/hands_summary_list.dart';
 
 // ---------------------------------------------------------------------------
 // Tab ↔ ReportType mapping
@@ -154,6 +155,13 @@ class _ReportTabBody extends ConsumerWidget {
             message: 'No data for this report',
             icon: _iconForType(reportType),
           );
+        }
+
+        // Cycle 7 (v03): hands-summary uses a specialized renderer that
+        // recognizes ante_amount / straddle_amount / run_it_twice_count
+        // and projects them as compact GameRulesBadges.
+        if (reportType == ReportType.handsSummary) {
+          return HandsSummaryList(rows: rows);
         }
 
         final columns = rows.first.keys.toList();
