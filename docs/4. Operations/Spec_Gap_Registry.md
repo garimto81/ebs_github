@@ -121,6 +121,66 @@ Type D sub-type 정의 및 해소 규칙: `Spec_Gap_Triage.md §7`.
 
 > Aggregate-vs-Source 동기화 (2026-05-11): SG-028~SG-030 미사용 ID. SG-031~SG-033 이미 자체 Backlog 카드 존재 — 위 표는 §4.4 진위 동기화 (Registry 표에서 누락되었던 6 entry catch-up).
 
+## 4.5 Settings D2 109건 카테고리 분류 + 우선순위 (2026-05-12, SG-036)
+
+**S0 Conductor autonomous iteration** — Cycle 3 자율 항목 2. D2 109건을 `spec_drift_check.py --settings` 출력 키워드 기반 자동 분류 (`identifier` 컬럼).
+
+### 분류 결과
+
+| 카테고리 | 카운트 | 우선순위 | owner | 처리 방식 |
+|---------|:-----:|:--------:|------|----------|
+| **lobby_ui** | **94** | **P1** (사용자/운영 가치 ↑) | S2 (또는 S10-W) | Lobby Settings UI ↔ providers 정합 |
+| **engine_rules** | 9 | P2 (게임 룰 default) | S8 (또는 S10-W) | NL/PLO/Mix 게임 default 정합 |
+| **backend_env** | 3 | P2 (env var) | S7 | docker-compose env 매핑 |
+| **rfid** | 1 | P3 (HW mock-only) | S8 (또는 S10-W) | RFID mode mock 정합 |
+| **deprecated_unclear** | 2 | P3 (정리 후보) | S0/S10-A | 사용처 검증 → 폐기 |
+
+### 분류 샘플
+
+```
+[lobby_ui] _displayModeOptions, _layoutPresetOptions, _resolutionOptions,
+           action_precision, add_seat_num, ... (94개)
+[engine_rules] _blindsFormatOptions, all_in, allow_rabbit,
+               allow_run_it_twice, ante_override, ... (9개)
+[backend_env] api_db_export_folder, export_defaults, export_logs_folder
+[rfid] rfid_mode
+[deprecated_unclear] fold_delay, fold_display
+```
+
+### 처리 순서 (Cycle 3-5 계획)
+
+1. **Cycle 3**: P3 (deprecated 2 + rfid 1) — quick win 3건. S10-A 가 polled scan 후 정리 PR.
+2. **Cycle 4**: P2 (engine 9 + backend env 3) — 12건. S7+S8 협력 PR.
+3. **Cycle 5**: P1 (lobby_ui 94) — 5 batch (~20건씩) S2 ↔ S10-W 협력.
+
+### 자동 분류 스크립트 (재현성)
+
+```python
+# 위 카테고리 결정 알고리즘 (idempotent — 향후 scan 시 동일 결과)
+def categorize_settings_d2(identifier):
+    lc = identifier.lower()
+    if any(k in lc for k in ['rfid','reader','antenna','rssi','tag','uid']):
+        return 'rfid'
+    if any(k in lc for k in ['rabbit','run_it','straddle','bomb_pot',
+                              'seven_deuce','all_in','ante','blind',
+                              'holdem','omaha']):
+        return 'engine_rules'
+    if any(k in lc for k in ['db_','jwt_','auth_','secret','env',
+                              'port','redis','postgres']):
+        return 'backend_env'
+    if any(k in lc for k in ['deprecated','legacy','old_']):
+        return 'deprecated_unclear'
+    return 'lobby_ui'
+```
+
+### SG-036 신규 등재 (이 분류 자체)
+
+| ID | type | category | status | note |
+|----|------|----------|:------:|------|
+| SG-036 | spec_drift | settings | OPEN | D2 109건 카테고리 분류 + 우선순위 — Cycle 3 자율 항목 2 (2026-05-12). 해소 = Cycle 3-5 분할 PR 머지. |
+
+---
+
 ## 5. 스캔 명령 레퍼런스
 
 ```bash
