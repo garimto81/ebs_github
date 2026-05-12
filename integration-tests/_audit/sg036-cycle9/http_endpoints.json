@@ -1,0 +1,1082 @@
+[
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/login",
+    "path_norm": "/api/v1/auth/login"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/login",
+    "path_norm": "/api/v1/auth/login"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/refresh",
+    "path_norm": "/api/v1/auth/refresh"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/refresh",
+    "path_norm": "/api/v1/auth/refresh"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/login",
+    "path_norm": "/api/v1/auth/login"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/login",
+    "path_norm": "/api/v1/auth/login"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/refresh",
+    "path_norm": "/api/v1/auth/refresh"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/logout",
+    "path_norm": "/api/v1/auth/logout"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/auth/me",
+    "path_norm": "/api/v1/auth/me"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/login",
+    "path_norm": "/api/v1/auth/login"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/login",
+    "path_norm": "/api/v1/auth/login"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/login",
+    "path_norm": "/api/v1/auth/login"
+  },
+  {
+    "file": "10-auth-login-profile.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/login",
+    "path_norm": "/api/v1/auth/login"
+  },
+  {
+    "file": "11-idempotency-key.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables",
+    "path_norm": "/api/v1/tables"
+  },
+  {
+    "file": "11-idempotency-key.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables",
+    "path_norm": "/api/v1/tables"
+  },
+  {
+    "file": "11-idempotency-key.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables",
+    "path_norm": "/api/v1/tables"
+  },
+  {
+    "file": "12-table-rebalance-saga.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables/rebalance",
+    "path_norm": "/api/v1/tables/rebalance"
+  },
+  {
+    "file": "12-table-rebalance-saga.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables/rebalance",
+    "path_norm": "/api/v1/tables/rebalance"
+  },
+  {
+    "file": "12-table-rebalance-saga.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/sagas/rbl-01HVQK-test-saga-id",
+    "path_norm": "/api/v1/sagas/rbl-01HVQK-test-saga-id"
+  },
+  {
+    "file": "12-table-rebalance-saga.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/sagas/rbl-01HVQK-test-saga-id/rollback",
+    "path_norm": "/api/v1/sagas/rbl-01HVQK-test-saga-id/rollback"
+  },
+  {
+    "file": "13-ws-event-seq-replay.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/events/replay?from_seq=40&channel=cc_event",
+    "path_norm": "/api/v1/events/replay"
+  },
+  {
+    "file": "13-ws-event-seq-replay.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/events/replay?from_seq=1&channel=cc_event&limit=100",
+    "path_norm": "/api/v1/events/replay"
+  },
+  {
+    "file": "13-ws-event-seq-replay.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/events/replay?from_seq=99999&channel=cc_event",
+    "path_norm": "/api/v1/events/replay"
+  },
+  {
+    "file": "20-ge-upload-download.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/skins",
+    "path_norm": "/api/v1/skins"
+  },
+  {
+    "file": "20-ge-upload-download.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/skins?limit=20&offset=0&sort=-modified_at",
+    "path_norm": "/api/v1/skins"
+  },
+  {
+    "file": "20-ge-upload-download.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/skins/sk_01HVQK-test",
+    "path_norm": "/api/v1/skins/sk_01HVQK-test"
+  },
+  {
+    "file": "20-ge-upload-download.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/skins",
+    "path_norm": "/api/v1/skins"
+  },
+  {
+    "file": "20-ge-upload-download.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/skins",
+    "path_norm": "/api/v1/skins"
+  },
+  {
+    "file": "21-ge-patch-metadata-etag.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/skins/{{skin_id}}/metadata",
+    "path_norm": "/api/v1/skins//metadata"
+  },
+  {
+    "file": "21-ge-patch-metadata-etag.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/skins/{{skin_id}}/metadata",
+    "path_norm": "/api/v1/skins//metadata"
+  },
+  {
+    "file": "21-ge-patch-metadata-etag.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/skins/{{skin_id}}/metadata",
+    "path_norm": "/api/v1/skins//metadata"
+  },
+  {
+    "file": "21-ge-patch-metadata-etag.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/skins/{{skin_id}}/metadata",
+    "path_norm": "/api/v1/skins//metadata"
+  },
+  {
+    "file": "21-ge-patch-metadata-etag.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/skins/{{skin_id}}/metadata",
+    "path_norm": "/api/v1/skins//metadata"
+  },
+  {
+    "file": "22-ge-activate-broadcast.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/skins/active",
+    "path_norm": "/api/v1/skins/active"
+  },
+  {
+    "file": "22-ge-activate-broadcast.http",
+    "method": "PUT",
+    "path_raw": "{{host}}/api/v1/skins/{{skin_id}}/activate",
+    "path_norm": "/api/v1/skins//activate"
+  },
+  {
+    "file": "22-ge-activate-broadcast.http",
+    "method": "PUT",
+    "path_raw": "{{host}}/api/v1/skins/{{skin_id}}/activate",
+    "path_norm": "/api/v1/skins//activate"
+  },
+  {
+    "file": "22-ge-activate-broadcast.http",
+    "method": "PUT",
+    "path_raw": "{{host}}/api/v1/skins/{{skin_id}}/activate",
+    "path_norm": "/api/v1/skins//activate"
+  },
+  {
+    "file": "22-ge-activate-broadcast.http",
+    "method": "PUT",
+    "path_raw": "{{host}}/api/v1/skins/{{skin_id}}/activate",
+    "path_norm": "/api/v1/skins//activate"
+  },
+  {
+    "file": "23-ge-rbac-denied.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/skins",
+    "path_norm": "/api/v1/skins"
+  },
+  {
+    "file": "23-ge-rbac-denied.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/skins/sk_01HVQK-test/metadata",
+    "path_norm": "/api/v1/skins/sk_01HVQK-test/metadata"
+  },
+  {
+    "file": "23-ge-rbac-denied.http",
+    "method": "PUT",
+    "path_raw": "{{host}}/api/v1/skins/sk_01HVQK-test/activate",
+    "path_norm": "/api/v1/skins/sk_01HVQK-test/activate"
+  },
+  {
+    "file": "23-ge-rbac-denied.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/skins?limit=20",
+    "path_norm": "/api/v1/skins"
+  },
+  {
+    "file": "23-ge-rbac-denied.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/skins/sk_01HVQK-test/metadata",
+    "path_norm": "/api/v1/skins/sk_01HVQK-test/metadata"
+  },
+  {
+    "file": "23-ge-rbac-denied.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/skins?limit=20",
+    "path_norm": "/api/v1/skins"
+  },
+  {
+    "file": "23-ge-rbac-denied.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/skins",
+    "path_norm": "/api/v1/skins"
+  },
+  {
+    "file": "23-ge-rbac-denied.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/skins/sk_01HVQK-test",
+    "path_norm": "/api/v1/skins/sk_01HVQK-test"
+  },
+  {
+    "file": "23-ge-rbac-denied.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/skins",
+    "path_norm": "/api/v1/skins"
+  },
+  {
+    "file": "30-cc-launch-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables/1/launch-cc",
+    "path_norm": "/api/v1/tables/1/launch-cc"
+  },
+  {
+    "file": "30-cc-launch-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables/1/launch-cc",
+    "path_norm": "/api/v1/tables/1/launch-cc"
+  },
+  {
+    "file": "30-cc-launch-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables/999/launch-cc",
+    "path_norm": "/api/v1/tables/999/launch-cc"
+  },
+  {
+    "file": "30-cc-launch-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables/99/launch-cc",
+    "path_norm": "/api/v1/tables/99/launch-cc"
+  },
+  {
+    "file": "31-cc-bo-reconnect-replay.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables/1/replay-events",
+    "path_norm": "/api/v1/tables/1/replay-events"
+  },
+  {
+    "file": "31-cc-bo-reconnect-replay.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables/1/replay-events",
+    "path_norm": "/api/v1/tables/1/replay-events"
+  },
+  {
+    "file": "31-cc-bo-reconnect-replay.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables/1/replay-events",
+    "path_norm": "/api/v1/tables/1/replay-events"
+  },
+  {
+    "file": "31-cc-bo-reconnect-replay.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/tables/1/state",
+    "path_norm": "/api/v1/tables/1/state"
+  },
+  {
+    "file": "40-overlay-security-delay.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/tables/1/output-config",
+    "path_norm": "/api/v1/tables/1/output-config"
+  },
+  {
+    "file": "40-overlay-security-delay.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/1/output-config",
+    "path_norm": "/api/v1/tables/1/output-config"
+  },
+  {
+    "file": "40-overlay-security-delay.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/1/output-config",
+    "path_norm": "/api/v1/tables/1/output-config"
+  },
+  {
+    "file": "40-overlay-security-delay.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/1/output-config",
+    "path_norm": "/api/v1/tables/1/output-config"
+  },
+  {
+    "file": "40-overlay-security-delay.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/tables/1/delay-buffer-status",
+    "path_norm": "/api/v1/tables/1/delay-buffer-status"
+  },
+  {
+    "file": "40-v95-blind-levels-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/login",
+    "path_norm": "/api/v1/auth/login"
+  },
+  {
+    "file": "40-v95-blind-levels-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/blind-structures",
+    "path_norm": "/api/v1/blind-structures"
+  },
+  {
+    "file": "40-v95-blind-levels-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/blind-structures/{{bs_id}}/levels",
+    "path_norm": "/api/v1/blind-structures//levels"
+  },
+  {
+    "file": "40-v95-blind-levels-flow.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/blind-structures/{{bs_id}}/levels",
+    "path_norm": "/api/v1/blind-structures//levels"
+  },
+  {
+    "file": "40-v95-blind-levels-flow.http",
+    "method": "PUT",
+    "path_raw": "{{host}}/api/v1/blind-structures/{{bs_id}}/levels/{{level_id}}",
+    "path_norm": "/api/v1/blind-structures//levels"
+  },
+  {
+    "file": "40-v95-blind-levels-flow.http",
+    "method": "DELETE",
+    "path_raw": "{{host}}/api/v1/blind-structures/{{bs_id}}/levels/{{level_id}}",
+    "path_norm": "/api/v1/blind-structures//levels"
+  },
+  {
+    "file": "40-v95-blind-levels-flow.http",
+    "method": "DELETE",
+    "path_raw": "{{host}}/api/v1/blind-structures/{{bs_id}}",
+    "path_norm": "/api/v1/blind-structures"
+  },
+  {
+    "file": "40-v95-blind-levels-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/auth/logout",
+    "path_norm": "/api/v1/auth/logout"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks",
+    "path_norm": "/api/v1/decks"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks",
+    "path_norm": "/api/v1/decks"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks/{{dup_deck_id}}/cards",
+    "path_norm": "/api/v1/decks//cards"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks/{{dup_deck_id}}/cards",
+    "path_norm": "/api/v1/decks//cards"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks/import",
+    "path_norm": "/api/v1/decks/import"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks",
+    "path_norm": "/api/v1/decks"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/decks?flight_id=1",
+    "path_norm": "/api/v1/decks"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/1/active_deck",
+    "path_norm": "/api/v1/tables/1/active_deck"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "DELETE",
+    "path_raw": "{{host}}/api/v1/decks/dk_01HVQK-wsop-ft-2026",
+    "path_norm": "/api/v1/decks/dk_01HVQK-wsop-ft-2026"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks",
+    "path_norm": "/api/v1/decks"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks/{{deck_a_id}}/cards",
+    "path_norm": "/api/v1/decks//cards"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks",
+    "path_norm": "/api/v1/decks"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks/{{deck_b_id}}/cards",
+    "path_norm": "/api/v1/decks//cards"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks/{{deck_b_id}}/cards",
+    "path_norm": "/api/v1/decks//cards"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks/nonexistent-deck-id-c7-0001/cards",
+    "path_norm": "/api/v1/decks/nonexistent-deck-id-c7-0001/cards"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/decks/{{deck_b_id}}/cards/AS",
+    "path_norm": "/api/v1/decks//cards/AS"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks/{{deck_a_id}}/cards",
+    "path_norm": "/api/v1/decks//cards"
+  },
+  {
+    "file": "50-rfid-deck-register.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks/import",
+    "path_norm": "/api/v1/decks/import"
+  },
+  {
+    "file": "60-event-flight-status-enum.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/events/1/flights",
+    "path_norm": "/api/v1/events/1/flights"
+  },
+  {
+    "file": "60-event-flight-status-enum.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/flights/fl_01HVQK-day1a",
+    "path_norm": "/api/v1/flights/fl_01HVQK-day1a"
+  },
+  {
+    "file": "60-event-flight-status-enum.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/flights/fl_01HVQK-day1a",
+    "path_norm": "/api/v1/flights/fl_01HVQK-day1a"
+  },
+  {
+    "file": "60-event-flight-status-enum.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/flights/fl_01HVQK-day1a",
+    "path_norm": "/api/v1/flights/fl_01HVQK-day1a"
+  },
+  {
+    "file": "60-event-flight-status-enum.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/flights/fl_01HVQK-day1a",
+    "path_norm": "/api/v1/flights/fl_01HVQK-day1a"
+  },
+  {
+    "file": "60-event-flight-status-enum.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/flights/fl_01HVQK-day1a/late-reg-remaining",
+    "path_norm": "/api/v1/flights/fl_01HVQK-day1a/late-reg-remaining"
+  },
+  {
+    "file": "61-table-is-pause-constraint.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/1",
+    "path_norm": "/api/v1/tables/1"
+  },
+  {
+    "file": "61-table-is-pause-constraint.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/1",
+    "path_norm": "/api/v1/tables/1"
+  },
+  {
+    "file": "61-table-is-pause-constraint.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/1",
+    "path_norm": "/api/v1/tables/1"
+  },
+  {
+    "file": "61-table-is-pause-constraint.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/tables/1",
+    "path_norm": "/api/v1/tables/1"
+  },
+  {
+    "file": "62-rbac-bit-flag.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/auth/me",
+    "path_norm": "/api/v1/auth/me"
+  },
+  {
+    "file": "62-rbac-bit-flag.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/auth/me",
+    "path_norm": "/api/v1/auth/me"
+  },
+  {
+    "file": "62-rbac-bit-flag.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/auth/me",
+    "path_norm": "/api/v1/auth/me"
+  },
+  {
+    "file": "62-rbac-bit-flag.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/1",
+    "path_norm": "/api/v1/tables/1"
+  },
+  {
+    "file": "62-rbac-bit-flag.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/99",
+    "path_norm": "/api/v1/tables/99"
+  },
+  {
+    "file": "62-rbac-bit-flag.http",
+    "method": "DELETE",
+    "path_raw": "{{host}}/api/v1/tables/1",
+    "path_norm": "/api/v1/tables/1"
+  },
+  {
+    "file": "62-rbac-bit-flag.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/1",
+    "path_norm": "/api/v1/tables/1"
+  },
+  {
+    "file": "62-rbac-bit-flag.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/tables/1",
+    "path_norm": "/api/v1/tables/1"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/health",
+    "path_norm": "/health"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/variants",
+    "path_norm": "/api/variants"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v01-1-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/health",
+    "path_norm": "/health"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/variants",
+    "path_norm": "/api/variants"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v02-2-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v02-cc-2-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/health",
+    "path_norm": "/health"
+  },
+  {
+    "file": "v02-cc-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v02-cc-2-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v02-cc-2-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v02-cc-2-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{newSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/health",
+    "path_norm": "/health"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/variants",
+    "path_norm": "/api/variants"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{straddleSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{straddleSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{anteSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{anteSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{anteSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{ritSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{ritSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{combinedSession.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{combinedSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{v01Regression.response.body.sessionId}}/event",
+    "path_norm": "/api/session//event"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{v01Regression.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{roundRobinSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{roundRobinSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{roundRobinSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "POST",
+    "path_raw": "{{engine}}/api/session/{{roundRobinSession.response.body.sessionId}}/next-hand",
+    "path_norm": "/api/session//next-hand"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{straddleSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{anteSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{combinedSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{roundRobinSession.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v03-deeper-game.http",
+    "method": "GET",
+    "path_raw": "{{engine}}/api/session/{{v01Regression.response.body.sessionId}}",
+    "path_norm": "/api/session"
+  },
+  {
+    "file": "v99-full-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/auth/me",
+    "path_norm": "/api/v1/auth/me"
+  },
+  {
+    "file": "v99-full-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/decks",
+    "path_norm": "/api/v1/decks"
+  },
+  {
+    "file": "v99-full-hand-flow.http",
+    "method": "PATCH",
+    "path_raw": "{{host}}/api/v1/tables/{{test_table_id}}/active_deck",
+    "path_norm": "/api/v1/tables//active_deck"
+  },
+  {
+    "file": "v99-full-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/tables/{{test_table_id}}/launch-cc",
+    "path_norm": "/api/v1/tables//launch-cc"
+  },
+  {
+    "file": "v99-full-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/_mock/rfid/scan",
+    "path_norm": "/api/v1/_mock/rfid/scan"
+  },
+  {
+    "file": "v99-full-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/_mock/rfid/scan",
+    "path_norm": "/api/v1/_mock/rfid/scan"
+  },
+  {
+    "file": "v99-full-hand-flow.http",
+    "method": "POST",
+    "path_raw": "{{host}}/api/v1/_mock/rfid/scan",
+    "path_norm": "/api/v1/_mock/rfid/scan"
+  },
+  {
+    "file": "v99-full-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/hands/{{expected_hand_id}}",
+    "path_norm": "/api/v1/hands"
+  },
+  {
+    "file": "v99-full-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/events/replay?from_seq=0&channel=cc_event&hand_id={{expected_hand_id}}",
+    "path_norm": "/api/v1/events/replay"
+  },
+  {
+    "file": "v99-full-hand-flow.http",
+    "method": "GET",
+    "path_raw": "{{host}}/api/v1/_mock/overlay/last-frame?table_id={{test_table_id}}",
+    "path_norm": "/api/v1/_mock/overlay/last-frame"
+  }
+]

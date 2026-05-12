@@ -1,0 +1,597 @@
+{
+  "total_uncovered": 110,
+  "by_priority": {
+    "P1-core-create|기본 CRUD create": [
+      {
+        "method": "POST",
+        "path": "/api/v1/competitions",
+        "file": "competitions.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/events",
+        "file": "series.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/flights",
+        "file": "series.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/payout-structures",
+        "file": "payout_structures.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/players",
+        "file": "players.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/series",
+        "file": "series.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/users",
+        "file": "users.py"
+      }
+    ],
+    "P1-core-list|기본 CRUD list (사용자 화면)": [
+      {
+        "method": "GET",
+        "path": "/api/v1/blind-structures",
+        "file": "blind_structures.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/competitions",
+        "file": "competitions.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/events",
+        "file": "series.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/flights",
+        "file": "series.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/payout-structures",
+        "file": "payout_structures.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/players",
+        "file": "players.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/series",
+        "file": "series.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/tables",
+        "file": "tables.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/users",
+        "file": "users.py"
+      }
+    ],
+    "P1-core-read|기본 CRUD read-by-id": [
+      {
+        "method": "GET",
+        "path": "/api/v1/blind-structures/{}",
+        "file": "blind_structures.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/competitions/{}",
+        "file": "competitions.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/configs/{}",
+        "file": "configs.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/decks/{}",
+        "file": "decks.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/flights/{}",
+        "file": "series.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/hands/{}",
+        "file": "hands.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/payout-structures/{}",
+        "file": "payout_structures.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/players/{}",
+        "file": "players.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/series/{}",
+        "file": "series.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/users/{}",
+        "file": "users.py"
+      }
+    ],
+    "P1-core-update|기본 CRUD update/delete": [
+      {
+        "method": "DELETE",
+        "path": "/api/v1/blind-structures/{}",
+        "file": "blind_structures.py"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/blind-structures/{}/levels/{}",
+        "file": "blind_structures.py"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/competitions/{}",
+        "file": "competitions.py"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/events/{}",
+        "file": "series.py"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/flights/{}",
+        "file": "series.py"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/payout-structures/{}",
+        "file": "payout_structures.py"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/players/{}",
+        "file": "players.py"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/series/{}",
+        "file": "series.py"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/skins/{}",
+        "file": "skins.py"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/tables/{}/seats/{}",
+        "file": "tables.py"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/users/{}",
+        "file": "users.py"
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/v1/decks/{}",
+        "file": "decks.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/blind-structures/{}",
+        "file": "blind_structures.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/blind-structures/{}/levels/{}",
+        "file": "blind_structures.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/competitions/{}",
+        "file": "competitions.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/configs/{}",
+        "file": "configs.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/events/{}",
+        "file": "series.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/flights/{}",
+        "file": "series.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/payout-structures/{}",
+        "file": "payout_structures.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/players/{}",
+        "file": "players.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/series/{}",
+        "file": "series.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/skins/{}",
+        "file": "skins.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/tables/{}",
+        "file": "tables.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/tables/{}/seats/{}",
+        "file": "tables.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/users/{}",
+        "file": "users.py"
+      }
+    ],
+    "P2-audit|audit-events + audit-logs": [
+      {
+        "method": "GET",
+        "path": "/api/v1/audit-events",
+        "file": "audit.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/audit-logs",
+        "file": "audit.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/audit-logs/download",
+        "file": "audit.py"
+      }
+    ],
+    "P2-auth-2fa|auth 2FA + password reset": [
+      {
+        "method": "GET",
+        "path": "/api/v1/auth/google",
+        "file": "auth.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/auth/google/callback",
+        "file": "auth.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/auth/session",
+        "file": "auth.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/auth/2fa/disable",
+        "file": "auth.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/auth/2fa/setup",
+        "file": "auth.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/auth/password/reset",
+        "file": "auth.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/auth/password/reset/send",
+        "file": "auth.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/auth/password/reset/verify",
+        "file": "auth.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/auth/verify-2fa",
+        "file": "auth.py"
+      }
+    ],
+    "P2-settings|settings KV": [
+      {
+        "method": "DELETE",
+        "path": "/api/v1/settings",
+        "file": "settings_kv.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/settings",
+        "file": "settings_kv.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/settings/resolved",
+        "file": "settings_kv.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/settings",
+        "file": "settings_kv.py"
+      }
+    ],
+    "P3-reports|reports dashboard 6종": [
+      {
+        "method": "GET",
+        "path": "/api/v1/reports/dashboard",
+        "file": "reports.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/reports/hand-distribution",
+        "file": "reports.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/reports/operator-activity",
+        "file": "reports.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/reports/player-stats",
+        "file": "reports.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/reports/rfid-health",
+        "file": "reports.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/reports/table-activity",
+        "file": "reports.py"
+      }
+    ],
+    "P3-sync|sync (WSOP LIVE + mock)": [
+      {
+        "method": "DELETE",
+        "path": "/api/v1/sync/mock/reset",
+        "file": "sync.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/sync/conflicts",
+        "file": "sync.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/sync/status",
+        "file": "sync.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/sync/wsop-live/status",
+        "file": "sync.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/sync/mock/seed",
+        "file": "sync.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/sync/trigger/{}",
+        "file": "sync.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/sync/wsop-live",
+        "file": "sync.py"
+      }
+    ],
+    "P4-clock|flights clock 액션 (start/pause/resume/restart)": [
+      {
+        "method": "GET",
+        "path": "/api/v1/flights/{}/clock",
+        "file": "series.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/flights/{}/clock/pause",
+        "file": "series.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/flights/{}/clock/restart",
+        "file": "series.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/flights/{}/clock/resume",
+        "file": "series.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/flights/{}/clock/start",
+        "file": "series.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/flights/{}/clock",
+        "file": "series.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/flights/{}/clock/adjust-stack",
+        "file": "series.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/flights/{}/clock/detail",
+        "file": "series.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/flights/{}/clock/reload-page",
+        "file": "series.py"
+      }
+    ],
+    "P4-event-flights|events {}/flights": [
+      {
+        "method": "POST",
+        "path": "/api/v1/events/{}/flights",
+        "file": "series.py"
+      }
+    ],
+    "P4-event-flights-list|events flights list": [
+      {
+        "method": "GET",
+        "path": "/api/v1/flights/{}/levels",
+        "file": "event_flights.py"
+      }
+    ],
+    "P4-flight-cancel-complete|flight cancel/complete": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/flights/{}/cancel",
+        "file": "series.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/flights/{}/complete",
+        "file": "series.py"
+      }
+    ],
+    "P4-flight-tables|flights tables 서브": [
+      {
+        "method": "GET",
+        "path": "/api/v1/flights/{}/blind-structure",
+        "file": "blind_structures.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/flights/{}/tables",
+        "file": "tables.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/flights/{}/tables",
+        "file": "tables.py"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/flights/{}/blind-structure",
+        "file": "blind_structures.py"
+      }
+    ],
+    "P4-hand-detail|hand actions/players 서브": [
+      {
+        "method": "GET",
+        "path": "/api/v1/hands/{}/actions",
+        "file": "hands.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/hands/{}/players",
+        "file": "hands.py"
+      }
+    ],
+    "P4-player-search|player search": [
+      {
+        "method": "GET",
+        "path": "/api/v1/players/search",
+        "file": "players.py"
+      }
+    ],
+    "P4-seats|tables seats CRUD": [
+      {
+        "method": "GET",
+        "path": "/api/v1/tables/{}/seats",
+        "file": "tables.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/tables/{}/seats",
+        "file": "tables.py"
+      }
+    ],
+    "P4-series-events|series events 서브": [
+      {
+        "method": "GET",
+        "path": "/api/v1/series/{}/events",
+        "file": "series.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/series/{}/events",
+        "file": "series.py"
+      }
+    ],
+    "P4-skin-action|skin upload/activate/deactivate": [
+      {
+        "method": "POST",
+        "path": "/api/v1/skins/upload",
+        "file": "skins.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/skins/{}/activate",
+        "file": "skins.py"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/skins/{}/deactivate",
+        "file": "skins.py"
+      }
+    ],
+    "P4-table-status|tables status/events": [
+      {
+        "method": "GET",
+        "path": "/api/v1/tables/{}/events",
+        "file": "replay.py"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/tables/{}/status",
+        "file": "tables.py"
+      }
+    ],
+    "P4-user-force-logout|users force-logout": [
+      {
+        "method": "POST",
+        "path": "/api/v1/users/{}/force-logout",
+        "file": "users.py"
+      }
+    ]
+  }
+}
