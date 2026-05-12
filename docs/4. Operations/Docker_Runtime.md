@@ -664,3 +664,111 @@ False positive 명령 카테고리 (22 burst 기준):
 > 주의: `bo:18001/healthz` 와 `engine:18080/healthz` 는 404 (해당 path 미구현). KPI 측정 시 위 endpoint 사용.
 
 Docker compose 컨테이너 healthcheck 는 별도 (`docker compose ps` STATUS 컬럼) — 정의는 `docker-compose.yml` 내 healthcheck 블록 참조.
+
+---
+
+## 부록 B. cascade:build-fail severity contract (S11 Cycle 7, 2026-05-12, Issue #322)
+
+### 배경
+
+부록 A (Cycle 6) 가 false-positive 폭증의 원인과 권고 패치를 기록. Cycle 7 #322 가 그 권고를 실제 hook 코드에 적용 + payload schema 확장 + subscriber filter 계약 명시.
+
+### Hook v3 — 4-Layer false-positive filter
+
+`.claude/hooks/post_build_fail.py` v3 (Cycle 7) 가 stdin payload 를 평가하는 순서:
+
+```
+PostToolUse:Bash payload
+        │
+        ▼
+[1] exit_code = 0 + !is_error  →  return 0 (정상)
+        │
+        ▼
+[2] L2: heredoc body strip (<<EOF 이전 head 추출)
+        │
+        ▼
+[3] L1: WHITELIST_PREFIX 매칭  →  return 0 (false-positive 차단)
+        │   gh|git commit/push/stash/...|cat >|claude --bg|echo|printf|sleep
+        ▼
+[4] L3: BUILD_PATTERNS.search(command_head) 매치 X  →  return 0
+        │   (flutter|dart|pytest|ruff|pnpm|npm|docker(-)?compose|...)
+        ▼
+[5] severity 분류  (_classify_severity)
+        │
+        ▼
+[6] L4: severity == "info"  →  return 0 (Circuit Breaker 카운트 차단)
+        │
+        ▼
+[7] broker publish cascade:build-fail (critical or warning)
+        + severity / matched_pattern / filter_version 필드
+        + next_action.target = "S9,S10-A" (critical) 또는 "S10-A" (warning)
+        │
+        ▼
+[8] stdout reminder (critical 만, warning 은 broker 만)
+```
+
+### Severity 분류 매트릭스
+
+| severity | exit_code | stderr 길이 | publish | stdout reminder | Circuit Breaker 카운트 | 대상 |
+|----------|:---------:|:-----------:|:-------:|:---------------:|:----------------------:|------|
+| `critical` | 1 ~ 255 | ≥ 20 chars | ✅ | ✅ | ✅ | S9 + S10-A inbox |
+| `warning`  | 1 ~ 255 | 0 ~ 19 chars | ✅ | ❌ | ❌ | S10-A inbox only |
+| `info`     | -1 / None | (무관) | ❌ | ❌ | ❌ | (drop, forensic only) |
+
+- `exit_code = -1` 은 Claude bash tool 의 internal failure marker (Windows cmd.exe 비정상 종료 등). 실제 빌드 실패 신호 아님.
+- `info` 는 publish 자체를 skip → events.db 누적 차단.
+
+### Payload schema v3 (additive)
+
+기존 v2 필드는 모두 유지. v3 에서 3 필드 추가 (subscribers backward-compatible):
+
+```json
+{
+  "command_excerpt": "docker compose build bo",
+  "exit_code": 1,
+  "stderr_excerpt": "Error response from daemon: build failed",
+  "auto_published": true,
+  "trigger": "PostToolUse:Bash exit!=0",
+  "next_action": { "type": "inbox-drop", "target": "S9,S10-A", "reason": "..." },
+
+  "severity": "critical",          // NEW v3 — critical / warning (info 는 publish 안 함)
+  "matched_pattern": "docker compose build",  // NEW v3 — forensic visibility
+  "filter_version": "v3"           // NEW v3 — subscriber 가 v2/v3 구분
+}
+```
+
+### Subscriber 계약 (Circuit Breaker / Iron Law 평가자 대상)
+
+| Subscriber | 권장 filter | 이유 |
+|-----------|------------|------|
+| Iron Law Circuit Breaker (3-회 반복 자동 trigger 판단자) | `severity == "critical"` 만 카운트 | warning 은 약한 신호, info 는 false-positive |
+| S10-A (Gap 분석 inbox) | 전체 (`severity in ["critical","warning"]`) | 약한 신호도 Gap 후보 |
+| S9 (QA inbox) | `severity == "critical"` 만 | QA 대응은 신호 명확할 때만 |
+| Forensic 감사 (events.db 직접 쿼리) | 전체 | 사후 분석은 모든 publish 검토 |
+
+### KPI 충족 (Issue #322)
+
+| 항목 | 목표 | 실측 (Cycle 6 events.db 100건 시뮬레이션) |
+|------|:----:|:-----------------------------------------:|
+| false-positive 비율 | < 10% | **0%** (100/100 모두 차단) |
+| L1 whitelist 차단율 | — | 38% (gh/git/cat/claude --bg 등) |
+| L2/L3 no-build 차단율 | — | 5% (heredoc body strip 후 매치 X) |
+| L4 info severity 차단율 | — | 57% (exit=-1 + empty stderr) |
+| 실제 빌드 실패 critical 검출 | 100% | 100% (synthetic + KPI corpus 5/5) |
+
+### 테스트 보존
+
+- 65 test cases at `.claude/hooks/tests/test_post_build_fail_v3.py`
+- 카테고리: L1 whitelist (13건) / L2 heredoc strip (5건) / L3 pattern (17건) / severity (8건) / integration (8건) / KPI corpus (22 false-positive + 5 real failure)
+- 실행: `pytest .claude/hooks/tests/test_post_build_fail_v3.py -v`
+
+### 향후 사이클 후보 (Cycle 8+)
+
+- `info` severity 도 별도 topic (`cascade:build-fail-info`) 으로 분리 publish — 완전 forensic preservation
+- subscriber 측 prefix glob 지원 (Cycle 4 발견 — broker subscribe `cascade:*` literal 해석)
+- Iron Law 자동 trigger 로직 구현 (현재는 manual 평가)
+- non-Windows 환경에서 exit_code = -1 패턴 검증 (현재 가정: Claude bash tool internal failure marker, Windows 특화 가능성)
+
+### 사건 기록
+
+- 2026-05-12 — S11 Cycle 7 #322. 부록 A 권고 (Cycle 6 #305 진단) 의 4 패치 모두 hook v3 에 적용. KPI 0% false-positive 달성.
