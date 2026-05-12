@@ -7,6 +7,8 @@
 | 2026-05-11 | Cycle 2 host shift | `_env.http` + 18 시나리오 `:8000→:18001`, `:8080→:18080` (Docker_Runtime §4.6 WSL relay glitch). 10-auth `username→email` (admin@local / Admin!Local123). 50-deck `deck_name→name` + 응답 camelCase 정정. Workflow seed_admin.py 통합. |
 | 2026-05-11 | Cycle 2 iteration | v01-1-hand-flow.http 추가 (Engine harness 직결, fold-to-BB 6-handed NL Hold'em). 10/50/v01 3건 실제 실행 PASS. 50.2 duplicate UID 미검출 drift 발견 (BO uniqueness 미구현). |
 | 2026-05-12 | Cycle 4 e2e | v01 5/5 phase + 10-auth 3/3 + 50-rfid 2/3 실제 재실행. Evidence: `evidence/cycle4-2026-05-12/`. Workflow에 v01 priority smoke step 추가. POST /api/session 201 정정 (이전 cycle: 200). 50.2 drift 잔존 재확인. |
+| 2026-05-12 | Cycle 5 dup-uid 422 | 50.2 cross-deck dup + 50.2b intra-payload bulk dup 시나리오 422/`DUPLICATE_UID` 정합 (#282). team2 `decks.py` 422 핸들러 (cross-deck/intra-payload/replace) 3개. |
+| 2026-05-12 | Cycle 7 회귀 강화 (#323) | 50-rfid §50.8~§50.13 (multi-deck happy / cross-deck conflict / deck-not-found 404 / replace dup-uid / pydantic format 422 / import cross_deck) + 10-auth §10.5~§10.11 (cookie/body delivery, no-rotation, logout blacklist, invalid credentials, locked/disabled 403). §10.4 Type D drift 정정 (`AUTH_TOKEN_INVALID`). |
 
 ---
 
