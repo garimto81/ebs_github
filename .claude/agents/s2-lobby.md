@@ -15,7 +15,7 @@ team1-frontend Lobby 측 코드 + 기획 (Lobby_PRD, Frontend/Lobby/**).
 - scope_owns:
   - team1-frontend/**
   - docs/2. Development/2.1 Frontend/Lobby/**
-  - docs/1. Product/Lobby_PRD.md
+  - docs/1. Product/Lobby.md
 - scope_read:
   - docs/1. Product/Foundation.md
   - docs/1. Product/RIVE_Standards.md

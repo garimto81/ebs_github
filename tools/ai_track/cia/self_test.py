@@ -120,7 +120,7 @@ def test_unit_layer() -> tuple[int, int, list[str]]:
     # E36 - path-with-spaces regex
     import re as _re
     _PAT = "docs/[^" + chr(10) + chr(13) + chr(9) + r"<>|*?]+?\.md"
-    test_line = "[external] docs/1. Product/Command_Center_PRD.md"
+    test_line = "[external] docs/1. Product/Command_Center.md"
     m = _re.search(_PAT, test_line)
     check(m and "Command_Center" in m.group(0), "E36-spaces-path",
           f"got {m.group(0) if m else None}")
@@ -134,7 +134,7 @@ def test_unit_layer() -> tuple[int, int, list[str]]:
           f"got {m3.groups() if m3 else None}")
 
     # E36 - bracketed score format [0.617]  <- doc_rag actual output
-    test_rag2 = "  [0.617] docs/1. Product/Lobby_PRD.md"
+    test_rag2 = "  [0.617] docs/1. Product/Lobby.md"
     _RAG_PAT2 = r"\[?(\d+\.\d+)\]?\s+(" + _PAT + ")"
     m4 = _re.search(_RAG_PAT2, test_rag2)
     check(m4 and m4.group(1) == "0.617", "E36-rag-bracket",

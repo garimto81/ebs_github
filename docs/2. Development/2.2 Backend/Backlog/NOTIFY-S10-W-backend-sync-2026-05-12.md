@@ -8,14 +8,14 @@ related:
   - ../Back_Office/Overview.md
   - ../Back_Office/Sync_Protocol.md
   - ../Database/Schema.md
-  - ../../../1. Product/Back_Office_PRD.md
+  - ../../../1. Product/Back_Office.md
 ---
 
 # NOTIFY-S10-W — Back_Office_PRD 통합용 백엔드 동기 자료
 
 **발신**: S7 Backend (Cycle 8 / 2026-05-12)
-**수신**: S10-W (Gap Writing Stream — Back_Office_PRD.md 재작성 진행 중)
-**목적**: S10-W 가 `docs/1. Product/Back_Office_PRD.md` 에 반영해야 할 백엔드 측 사실 3가지 (DB schema 정합·WSOP LIVE Confirm-triggered pull 패턴·PokerGFX 패턴 매핑) 1-page 요약.
+**수신**: S10-W (Gap Writing Stream — Back_Office.md 재작성 진행 중)
+**목적**: S10-W 가 `docs/1. Product/Back_Office.md` 에 반영해야 할 백엔드 측 사실 3가지 (DB schema 정합·WSOP LIVE Confirm-triggered pull 패턴·PokerGFX 패턴 매핑) 1-page 요약.
 
 ---
 
@@ -70,7 +70,7 @@ CREATE TABLE sync_cursors (
 CREATE INDEX idx_sync_cursors_updated ON sync_cursors(updated_at);
 ```
 
-**S10-W 가 Back_Office_PRD.md 에 추가**:
+**S10-W 가 Back_Office.md 에 추가**:
 - §3.9 WSOP LIVE 동기화 끝에 "단조증가 cursor 영속화 — DB SSOT (Redis 옵션은 운영 환경 한정)" 1줄 추가.
 
 ---
@@ -130,7 +130,7 @@ CREATE INDEX idx_sync_cursors_updated ON sync_cursors(updated_at);
 | 첫 운영 시 초기 import | **Confirm-triggered (initial)** | 전체 데이터 import — Admin 결정 필요 |
 | 장애 복구 후 재개 | **자동 폴링 + Fallback Queue** | Sync_Protocol §7.1 의 기존 cursor-based delta |
 
-### 3.5 S10-W 가 Back_Office_PRD.md 에 반영해야 할 것
+### 3.5 S10-W 가 Back_Office.md 에 반영해야 할 것
 
 §3.9 "WSOP LIVE 동기화" 를 아래 구조로 보강:
 
@@ -187,7 +187,7 @@ poker_sessions  (gfx_session_id BIGINT UNIQUE, event_title, payouts JSON)
 2. `cumulative_winnings` 는 view 도출 가능 (정규화 손해 회피)
 3. `num_boards`/`run_it` 등 게임 변형 필드는 v04 deeper-game spec (Cycle 7 #335) 에서 game_rules JSON 으로 흡수 진행 중 — DB column 보다 JSON 유연성 우선
 
-**S10-W 가 Back_Office_PRD.md 에 추가**:
+**S10-W 가 Back_Office.md 에 추가**:
 §3.5 "핸드 기록" 끝에 "PokerGFX 벤치마크 대비 의도된 차이" 1박스 추가. 자세히는 본 NOTIFY 의 §4.2 표 인용.
 
 ---
@@ -196,9 +196,9 @@ poker_sessions  (gfx_session_id BIGINT UNIQUE, event_title, payouts JSON)
 
 | # | 위치 | 변경 | 출처 |
 |:-:|------|------|------|
-| 1 | Back_Office_PRD.md §3.9 | 자동 폴링 + Confirm-triggered + Fallback 3-mode 표 추가 | 본 NOTIFY §3.5 |
-| 2 | Back_Office_PRD.md §3.9 끝 | "단조증가 cursor 영속화 — DB SSOT (sync_cursors)" 1줄 | 본 NOTIFY §2.4 |
-| 3 | Back_Office_PRD.md §3.5 끝 | "PokerGFX 벤치마크 대비 의도된 차이" 박스 (§4.2 표 인용) | 본 NOTIFY §4.3 |
+| 1 | Back_Office.md §3.9 | 자동 폴링 + Confirm-triggered + Fallback 3-mode 표 추가 | 본 NOTIFY §3.5 |
+| 2 | Back_Office.md §3.9 끝 | "단조증가 cursor 영속화 — DB SSOT (sync_cursors)" 1줄 | 본 NOTIFY §2.4 |
+| 3 | Back_Office.md §3.5 끝 | "PokerGFX 벤치마크 대비 의도된 차이" 박스 (§4.2 표 인용) | 본 NOTIFY §4.3 |
 | 4 | (S10-W 판단) | Option A vs B 결정 시 S7 에 회신 (issue comment) | 본 NOTIFY §4.3 |
 
 S7 측에서 추가로 수행할 작업 (병행):
@@ -221,7 +221,7 @@ S7 측에서 추가로 수행할 작업 (병행):
   "ts": "2026-05-12T...",
   "payload": {
     "notify_path": "docs/2. Development/2.2 Backend/Backlog/NOTIFY-S10-W-backend-sync-2026-05-12.md",
-    "target_prd": "docs/1. Product/Back_Office_PRD.md",
+    "target_prd": "docs/1. Product/Back_Office.md",
     "decisions_needed": ["Option A vs B (PokerGFX 매핑)"],
     "decisions_made_by_s7": ["sync_cursors 테이블 신설", "Confirm-triggered 2-stage endpoint 설계", "polling vs Confirm 사용 기준 정의"]
   }

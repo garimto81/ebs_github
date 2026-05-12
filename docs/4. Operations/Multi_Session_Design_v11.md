@@ -88,7 +88,7 @@ S1 워크트리에서 Foundation.md Edit 시도
 orch_PreToolUse.py
    ├─ Layer 3 scope check: S1 의 owner 인가 → ✓
    ├─ Layer 2 cascade advisory:
-   │   "Editing Foundation.md may affect: Lobby.md (S2), CC_PRD.md (S3), ..."
+   │   "Editing Foundation.md may affect: Lobby.md (S2), Command_Center.md (S3), ..."
    ├─ Layer 3 (v11): publish_event(topic="cascade:Foundation.md", impacted=[...])
    │   → 다른 stream 의 subscribe(topic="cascade:*") 즉시 wake
    └─ Layer 5: acquire_lock(resource="cascade:Foundation.md", holder=S1, ttl=60)

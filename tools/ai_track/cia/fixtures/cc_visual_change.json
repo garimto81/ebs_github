@@ -2,6 +2,6 @@
   "name": "CC visual cross-PRD cascade",
   "description": "Command Center 좌측 사이드바에 액션 패널 추가 — Lobby 디자인 토큰 통일",
   "diff": "diff --git a/docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md b/docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md\n--- a/docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md\n+++ b/docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md\n@@ -120,6 +120,12 @@\n ## Layout\n-The Command Center has a single-column layout.\n+The Command Center has a two-column layout:\n+- Left sidebar: Action panel (256px) using Lobby design tokens\n+- Main: Game board\n",
-  "expected_cascades": ["docs/1. Product/Command_Center_PRD.md"],
+  "expected_cascades": ["docs/1. Product/Command_Center.md"],
   "expected_edge_cases": []
 }

@@ -75,8 +75,8 @@ async def test_l4_cascade_advisory(broker_alive):
     """
     target_rel = "docs/1. Product/Foundation.md"
     impacted = [
-        "docs/1. Product/Lobby_PRD.md",
-        "docs/1. Product/Command_Center_PRD.md",
+        "docs/1. Product/Lobby.md",
+        "docs/1. Product/Command_Center.md",
         "docs/2. Development/2.1 Frontend/Lobby/Overview.md",
     ]
 

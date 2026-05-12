@@ -15,7 +15,7 @@ team4-cc Command Center 측 코드 + 기획 (Command_Center_PRD, 2.4 Command Cen
 - scope_owns:
   - team4-cc/**
   - docs/2. Development/2.4 Command Center/**
-  - docs/1. Product/Command_Center_PRD.md
+  - docs/1. Product/Command_Center.md
 - scope_read:
   - docs/1. Product/Foundation.md
   - docs/1. Product/RIVE_Standards.md

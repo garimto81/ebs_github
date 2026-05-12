@@ -1984,7 +1984,7 @@ def test_emit_chat_advisory_publishes_with_mentions():
         resolve.return_value = ["S3", "S7"]
         hi.emit_chat_advisory(
             "docs/Foundation.md",
-            impacted=["docs/Lobby.md", "docs/CC_PRD.md"],
+            impacted=["docs/Lobby.md", "docs/Command_Center.md"],
             editor_team="S1",
         )
         pub.assert_called_once()

@@ -2,7 +2,7 @@
 doc_discovery.py — 기획 작업 시작 전 mandatory pre-work 도구
 ==============================================================
 
-문제: 직전 turn 에서 `docs/1. Product/Command_Center_PRD.md` (tier=external,
+문제: 직전 turn 에서 `docs/1. Product/Command_Center.md` (tier=external,
 audience=외부 stakeholder, derivative-of=Command_Center_UI/Overview.md) 의
 존재를 인지하지 못한 채 Overview.md 를 보강. 외부 인계 PRD 가 stale 됨.
 
