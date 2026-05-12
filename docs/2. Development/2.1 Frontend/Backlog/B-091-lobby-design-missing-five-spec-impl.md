@@ -8,7 +8,7 @@ owner: team1
 source: "사용자 디자인 자산 (EBS Lobby.zip, 2026-04-29) cascade — 2026-05-05 기획 보강 완료"
 depends-on: B-090
 related-prd:
-  - docs/1. Product/Lobby_PRD.md (v1.1.0 Changelog 2026-05-05)
+  - docs/1. Product/Lobby.md (v1.1.0 Changelog 2026-05-05)
   - docs/2. Development/2.1 Frontend/Lobby/UI.md (§공통 레이아웃 §헤더 바, §화면 1)
   - docs/2. Development/2.1 Frontend/Lobby/Overview.md (§화면 1)
   - docs/2. Development/2.1 Frontend/Lobby/References/EBS_Lobby_Design/README.md
@@ -76,4 +76,4 @@ mirror: none
 
 | 날짜 | 변경 |
 |------|------|
-| 2026-05-05 | 신규 작성 — 기획 보강 완료 (UI.md / Overview.md / Lobby_PRD.md) 후 구현 추적용 backlog 등재 |
+| 2026-05-05 | 신규 작성 — 기획 보강 완료 (UI.md / Overview.md / Lobby.md) 후 구현 추적용 backlog 등재 |

@@ -17,7 +17,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38197
 
 ## 🎯 미션
 
-**Foundation v4.5 자체 self-consistency + Game_Rules 4 + Back_Office_PRD 정합 (interim)**.
+**Foundation v4.5 자체 self-consistency + Game_Rules 4 + Back_Office 정합 (interim)**.
 S1 PR 머지 = S2~S8 unblock signal.
 
 ## 📂 영향 파일 (6)
@@ -25,7 +25,7 @@ S1 PR 머지 = S2~S8 unblock signal.
 | 파일 | 작업 |
 |------|------|
 | `docs/1. Product/Foundation.md` | self-consistency 검증 (16 fact 표 cross-ref) |
-| `docs/1. Product/Back_Office_PRD.md` | Foundation Ch.5 §B + B.4 와 cascade |
+| `docs/1. Product/Back_Office.md` | Foundation Ch.5 §B + B.4 와 cascade |
 | `docs/1. Product/Game_Rules/Flop_Games.md` | Foundation §10 (12 공유카드 종) cascade |
 | `docs/1. Product/Game_Rules/Draw.md` | Foundation §10 (7 카드교환 종) cascade |
 | `docs/1. Product/Game_Rules/Seven_Card_Games.md` | Foundation §10 (3 부분공개 종) cascade |
@@ -37,7 +37,7 @@ S1 PR 머지 = S2~S8 unblock signal.
 2. **명칭 정합**: HORSE / 8-Game / NLHE / PLO / Razz / Stud
 3. **정의 정합**: 5분 게이트웨이, WSOP LIVE 거울, 1×10+6키, Engine SSOT, 1단계 입력
 4. **Game_Rules 4종 → Foundation §10**: 22 게임 = 12+7+3 합 일치
-5. **Back_Office_PRD ↔ Foundation Ch.5 §B**: 3 핵심 임무 + 통신 매트릭스
+5. **Back_Office ↔ Foundation Ch.5 §B**: 3 핵심 임무 + 통신 매트릭스
 
 ## 🔄 자율 Iteration
 

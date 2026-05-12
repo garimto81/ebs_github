@@ -41,9 +41,9 @@ template_kind: derivative_audit  # 본 파일은 `_template_spec_gap*.md` glob �
 
 | 외부 PRD | derivative-of | if-conflict 룰 | 상태 |
 |----------|---------------|----------------|:----:|
-| `docs/1. Product/Command_Center_PRD.md` | `../2. Development/2.4 Command Center/Command_Center_UI/Overview.md` | ✅ 존재 | ✅ PASS |
-| `docs/1. Product/Lobby_PRD.md` | `../2. Development/2.1 Frontend/Lobby/Overview.md` | ✅ 존재 | ✅ PASS |
-| `docs/1. Product/Back_Office_PRD.md` | `../2. Development/2.2 Backend/Back_Office/Overview.md` | ✅ 존재 | ✅ PASS |
+| `docs/1. Product/Command_Center.md` | `../2. Development/2.4 Command Center/Command_Center_UI/Overview.md` | ✅ 존재 | ✅ PASS |
+| `docs/1. Product/Lobby.md` | `../2. Development/2.1 Frontend/Lobby/Overview.md` | ✅ 존재 | ✅ PASS |
+| `docs/1. Product/Back_Office.md` | `../2. Development/2.2 Backend/Back_Office/Overview.md` | ✅ 존재 | ✅ PASS |
 
 → Task 의 "외부 PRD 3종 unique pair 검증" 항목은 모두 PASS. 정본 파일 존재 + 1:1 매핑 + if-conflict 룰 모두 확인.
 

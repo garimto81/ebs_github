@@ -84,9 +84,9 @@ b120cd7e  #179 5-Act 시퀀스 명칭 통합
 $ python tools/doc_discovery.py --impact-of "docs/1. Product/Foundation.md"
 === derivative-of (0) ===
 === related-docs (4) ===
-🌐 [external] Back_Office_PRD.md (last-updated: 2026-05-08)  ✓
-🌐 [external] Command_Center_PRD.md                          ✓
-🌐 [external] Lobby_PRD.md                                   ✓
+🌐 [external] Back_Office.md (last-updated: 2026-05-08)  ✓
+🌐 [external] Command_Center.md                          ✓
+🌐 [external] Lobby.md                                   ✓
    [-       ] Conductor_Backlog/SG-033-ebs-mission-redefinition.md
 === legacy-id 중복 (0) ===
 

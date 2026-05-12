@@ -1191,7 +1191,7 @@ Future<int> _createTable() async {
 | 18세 일반인 이해 | ★★★★☆ — 4단계 다이어그램 + 표 구성, 기술 용어 (dart-define) 는 비유 미흡 |
 | 비유 | ASCII 시퀀스 다이어그램으로 시각 우선 (rule 11 정합) |
 | 명령 1줄로 검증 가능 | ✅ — `flutter run --dart-define=HAND_AUTO_SETUP=true` |
-| derivative-of cascade | Lobby_PRD.md 부록 추가만, 본문 narrative 변경 0 (additive) |
+| derivative-of cascade | Lobby.md 부록 추가만, 본문 narrative 변경 0 (additive) |
 
 ---
 

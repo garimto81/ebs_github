@@ -18,7 +18,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38192
 | 2026-04-14 | 좌석 번호 재정의 | S1~S10 시계방향(D 왼쪽=S1, D 오른쪽=S10), SB/BB 언급 제거(포지션은 로테이션 개념으로 분리), HTML 목업 캡처 삽입 |
 | 2026-04-14 | 화면 4 단순화 | 키패드 0 옆에 000 인접 배치, ALL-IN을 BET 상단에 우측 세로 버튼 스택으로 이동, C 버튼 제거(← 롱프레스로 전체 삭제 대체) |
 | 2026-05-06 | **§Visual Uplift 신설** (B-team4-011) | React 디자인 시안 critic 판정 결과 시각 자산 7종 (V1~V7) 흡수 결정. StatusBar 통합 / MiniDiagram / SeatCell 7행 / ACTING glow 정책 추가. SSOT: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md`. D7 / 통신 / HandFSM 가드 4개 강제. |
-| 2026-05-07 | **v4 정체성 정합** | CC_PRD v4.0 cascade — 1×10 그리드 + 6 키 + 4 영역 위계 + 5-Act 시퀀스 반영. §"v4.0 정체성" 신설. 구 §"CC 레이아웃 3영역"/§"화면 1: 메인 화면"/§"화면 4: 금액 입력" 의 v1.x 타원형/8 버튼 기술은 layout/structure 만 archive 마킹 (색상은 무시 — Lobby B&W refined minimal 톤이 최종). SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0. |
+| 2026-05-07 | **v4 정체성 정합** | CC_PRD v4.0 cascade — 1×10 그리드 + 6 키 + 4 영역 위계 + 5-Act 시퀀스 반영. §"v4.0 정체성" 신설. 구 §"CC 레이아웃 3영역"/§"화면 1: 메인 화면"/§"화면 4: 금액 입력" 의 v1.x 타원형/8 버튼 기술은 layout/structure 만 archive 마킹 (색상은 무시 — Lobby B&W refined minimal 톤이 최종). SSOT: `docs/1. Product/Command_Center.md` v4.0. |
 
 ---
 
@@ -45,7 +45,7 @@ Command Center(CC)는 운영자가 포커 핸드를 실시간 진행하는 Flutt
 
 ## v4.0 정체성 (2026-05-07 신설, SSOT)
 
-> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. 본 §이 *layout / structure / interaction* 측면에서 아래 §"CC 레이아웃 3영역" 이하 v1.x 와이어프레임을 *override* 한다. **색상은 무시** — PRD v4.0 스크린샷은 다크 broadcast 톤이지만 EBS 최종은 Lobby B&W refined minimal 톤.
+> **트리거**: `docs/1. Product/Command_Center.md` v4.0 cascade. 본 §이 *layout / structure / interaction* 측면에서 아래 §"CC 레이아웃 3영역" 이하 v1.x 와이어프레임을 *override* 한다. **색상은 무시** — PRD v4.0 스크린샷은 다크 broadcast 톤이지만 EBS 최종은 Lobby B&W refined minimal 톤.
 
 ### 4 영역 위계 (StatusBar / TopStrip / PlayerGrid / ActionPanel)
 

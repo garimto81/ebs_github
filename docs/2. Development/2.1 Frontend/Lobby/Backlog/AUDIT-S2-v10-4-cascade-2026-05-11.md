@@ -7,7 +7,7 @@ created: 2026-05-11
 last-updated: 2026-05-11
 trigger: commit 684449a3 `feat(governance): v10.4 9-Session Matrix + Message Bus 통합 bootstrap`
 related:
-  - ../../../1. Product/Lobby_PRD.md
+  - ../../../1. Product/Lobby.md
   - ../Overview.md
   - ../../../4. Operations/team_assignment_v10_3.yaml
   - ../../../4. Operations/Message_Bus_Runbook.md
@@ -19,7 +19,7 @@ mirror: none
 # AUDIT-S2 — v10.4 9-Session Matrix cascade 사후 감사
 
 > v10.4 governance bootstrap (S9 QA / S10-A·W Gap / S11 Dev Assist / SMEM 추가) 가
-> S2 scope (`docs/1. Product/Lobby_PRD.md` + `docs/2. Development/2.1 Frontend/Lobby/**`) 에
+> S2 scope (`docs/1. Product/Lobby.md` + `docs/2. Development/2.1 Frontend/Lobby/**`) 에
 > 미친 cascade 영향을 점검한다.
 
 ---
@@ -28,12 +28,12 @@ mirror: none
 
 | 항목 | 도구 / 절차 | 결과 |
 |------|------------|:----:|
-| Lobby_PRD 본문 v10.x 키워드 검색 | `grep "v10\.[34]" Lobby_PRD.md` | 0 건 |
+| Lobby 본문 v10.x 키워드 검색 | `grep "v10\.[34]" Lobby.md` | 0 건 |
 | Lobby/**/*.md governance 키워드 검색 | `grep "team_assignment|Message_Bus|pipeline:|broker"` | 0 건 |
-| derivative-of chain 무결성 | `tools/doc_discovery.py --impact-of Lobby_PRD.md` | PASS (related-docs 2 건 정합) |
-| Lobby_PRD frontmatter owner 표기 | `owner: stream:S2 (Lobby)` | PASS (v10.4 stream-prefix 표기 정합) |
+| derivative-of chain 무결성 | `tools/doc_discovery.py --impact-of Lobby.md` | PASS (related-docs 2 건 정합) |
+| Lobby frontmatter owner 표기 | `owner: stream:S2 (Lobby)` | PASS (v10.4 stream-prefix 표기 정합) |
 | Overview.md frontmatter owner | `owner: team1` (legacy) | KEEP (`absorbs_existing: team1-frontend` 매핑 보존, 변경 시 영향 광범위) |
-| last-synced 일치 | Lobby_PRD.last-synced = 2026-05-08, Overview.last-updated = 2026-05-07 | PASS (1일 lag 허용 범위) |
+| last-synced 일치 | Lobby.last-synced = 2026-05-08, Overview.last-updated = 2026-05-07 | PASS (1일 lag 허용 범위) |
 | Message Bus §11 — S2 publish 권한 | `stream:S2`, `cascade:*`, `pipeline:build-*` | 본문 영향 0 (운영 layer) |
 | Message Bus §11 — S2 subscribe | `pipeline:spec-patched`, `cascade:*` | 본문 영향 0 (운영 layer) |
 | PR #176 CI 잔존 fail | `gh pr checks 176` fail/pending | 0 건 |
@@ -71,17 +71,17 @@ mirror: none
 
 | 항목 | 권고 |
 |------|------|
-| Lobby_PRD 신규 변경 | v10.4 영향 없음 — 기존 v3.0.0 narrative 유지 |
+| Lobby 신규 변경 | v10.4 영향 없음 — 기존 v3.0.0 narrative 유지 |
 | Backlog NOTIFY 패턴 | v10.4 stream-prefix (`stream:S2`) 표기는 이미 적용됨. 변경 불필요 |
 | 신규 cross-cutting stream (S9/S10-A/S10-W/S11) 과의 interaction | Lobby 영역은 직접 publish 대상 아님 (PRD 본문은 S0 conductor 가 cascade lock 보유). 단, build 단계에서 S9 QA 가 검증 가능 |
-| Message Bus topic 구독 | S2 가 `pipeline:spec-patched` subscribe 시 (해당될 경우) Lobby_PRD 변경 알림 수신 가능 — 현재 본문에 반영할 내용 없음 |
+| Message Bus topic 구독 | S2 가 `pipeline:spec-patched` subscribe 시 (해당될 경우) Lobby 변경 알림 수신 가능 — 현재 본문에 반영할 내용 없음 |
 
 ---
 
 ## §E. PR 체크리스트
 
 - [x] v10.4 변경 파일 (commit 684449a3) S2 영향 분석 완료
-- [x] Lobby_PRD + Lobby/**/*.md v10.x 키워드 검색 0 건
+- [x] Lobby + Lobby/**/*.md v10.x 키워드 검색 0 건
 - [x] derivative-of chain 무결성 PASS
 - [x] NOTIFY-S2-pr176-ci-failure RESOLVED 갱신
 - [x] 본 AUDIT 문서 생성

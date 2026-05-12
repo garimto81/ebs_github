@@ -8,7 +8,7 @@ linked-docs:
   - ../UI.md
   - ../Overview.md
   - ../../README.md
-  - ../../../../1. Product/Lobby_PRD.md
+  - ../../../../1. Product/Lobby.md
 ---
 
 # EBS Lobby Reference Design
@@ -16,7 +16,7 @@ linked-docs:
 본 폴더는 **사용자가 제공한 HTML/JSX 프로토타입** (Downloads/EBS Lobby.zip, 2026-04-29) 의
 원본 자산을 보존하여 team1 Lobby 기획·구현의 design SSOT 로 활용한다.
 
-> **정체성 cross-reference (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 본 React/JSX prototype 의 5 화면 시퀀스 (Series → Events → Flights → Tables → Players + Hand History / Settings) 는 `docs/1. Product/Lobby_PRD.md` v3.0.0 의 narrative 정체성 (**5분 게이트웨이 + WSOP LIVE 거울**) + 4 진입 시점 카탈로그 와 1:1 매핑된다. PRD 본문 25 PNG (visual/screenshots/) 는 본 prototype 의 `screens.jsx` + `screens-extra.jsx` 결과물 캡쳐다 — 디자인 SSOT (코드) ↔ 외부 PRD (이미지) 동기화의 시각적 거울 관계.
+> **정체성 cross-reference (Lobby v3.0.0 cascade, 2026-05-07)**: 본 React/JSX prototype 의 5 화면 시퀀스 (Series → Events → Flights → Tables → Players + Hand History / Settings) 는 `docs/1. Product/Lobby.md` v3.0.0 의 narrative 정체성 (**5분 게이트웨이 + WSOP LIVE 거울**) + 4 진입 시점 카탈로그 와 1:1 매핑된다. PRD 본문 25 PNG (visual/screenshots/) 는 본 prototype 의 `screens.jsx` + `screens-extra.jsx` 결과물 캡쳐다 — 디자인 SSOT (코드) ↔ 외부 PRD (이미지) 동기화의 시각적 거울 관계.
 
 ## 자산 목록
 
@@ -107,6 +107,6 @@ const STATUS_LABEL = {
 | 날짜 | 변경 |
 |------|------|
 | 2026-05-05 | **zip 갱신본 sync** — 사용자 제공 `EBS Lobby (1).zip` 의 minor 디자인 정제 반영. 변경: 테이블 ID 시각 표기 `Day2-#071` → `#071` (data.jsx 13 라인 + screens-extra.jsx 9 라인). 구조 변경 없음. 정본 visual asset 동기화: `Lobby/visual/screenshots/` 7장 신 디자인 캡쳐로 교체 (01~05 overwrite + 06 hands / 07 settings 신규). 00 Login 은 BS-02-01 분리로 보류. |
-| 2026-05-05 | 누락 5개 항목 **기획 보강 완료** (P1 TopBar Show Context Cluster + Active CC pill / P2 Year-grouped + Status Badge 5-color Legend / P3 Bookmark 검증). 정본 변경: `UI.md §공통 레이아웃 §헤더 바` + `§화면 1` + `Overview.md §화면 1` + `Lobby_PRD.md v1.1.0 Changelog`. 후속 구현: `B-091`. 매트릭스를 spec ✅ / impl ⏳ 2축으로 갱신. |
+| 2026-05-05 | 누락 5개 항목 **기획 보강 완료** (P1 TopBar Show Context Cluster + Active CC pill / P2 Year-grouped + Status Badge 5-color Legend / P3 Bookmark 검증). 정본 변경: `UI.md §공통 레이아웃 §헤더 바` + `§화면 1` + `Overview.md §화면 1` + `Lobby.md v1.1.0 Changelog`. 후속 구현: `B-091`. 매트릭스를 spec ✅ / impl ⏳ 2축으로 갱신. |
 | 2026-05-05 | AlertsScreen 폐기 (사용자 결정) — 매트릭스 행 strikethrough + 누락 항목 6번 strikethrough. 디자인 자산 (screens-extra.jsx) 은 자연 보존 |
 | 2026-05-03 | 사용자 제공 자산 보존 + Lobby 매핑/누락 분석 (R8 신설) |

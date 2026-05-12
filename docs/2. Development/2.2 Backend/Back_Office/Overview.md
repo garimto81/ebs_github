@@ -19,7 +19,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38189
 | 2026-04-14 | L0 중복 제거 | §3.9 WSOP LIVE 폴링 주기 표 → 정본 pointer로 축약 (정본: contracts/api/API-01 Part II §7, BO-02 §5). PRD는 "왜 동기화하는가"만 유지 |
 | 2026-04-14 | BO-01 흡수 | BO-01-overview.md 폐기. §2 아키텍처에 §2.3 핵심 원칙, §2.4 성능 요구사항 추가. §2.2 기술 스택에 Phase 진화표 흡수. PRD가 BO 아키텍처 SSOT |
 | 2026-04-15 | G4-A Settings 스코프 복구 | §1.2 #8 Sysop Config 를 "✅ 글로벌" → "✅ Series/Event/Table 단위 (WSOP LIVE 정렬)" 로 수정. §3.6 시스템 설정 표의 EBS 열 "글로벌" 도 "Series/Event/Table 단위" 로 복구. 2026-04-09 글로벌 단일 세트 결정이 CLAUDE.md 원칙1 (WSOP LIVE 정렬) 과 충돌해 역전. 후속: Schema.md §configs 에 `scope`/`scope_id` 컬럼 추가 (G4-C, Task #10), BS-03 Settings 진입 경로 재구성 (G4-B, team4 decision), ConfigChanged payload 확장 (Task #13) |
-| 2026-05-07 | v3/v4 정체성 cascade Phase B | Lobby_PRD v3.0.0 (5분 게이트웨이 + WSOP LIVE 거울 + 4 진입 시점 + 5 화면 시퀀스) + Command_Center_PRD v4.0 (1×10 그리드 + 6 키 N·F·C·B·A·M + 4 영역 위계) 정체성 정합. §1.3 EBS 추가기능 #5 CC 인스턴스 추적 의미 framing 보강 ("1:N 관제" → 1 Lobby 게이트웨이 : N CC 운영자 화면 관계). LLM 전수 의미 판정. | DOC |
+| 2026-05-07 | v3/v4 정체성 cascade Phase B | Lobby v3.0.0 (5분 게이트웨이 + WSOP LIVE 거울 + 4 진입 시점 + 5 화면 시퀀스) + Command_Center v4.0 (1×10 그리드 + 6 키 N·F·C·B·A·M + 4 영역 위계) 정체성 정합. §1.3 EBS 추가기능 #5 CC 인스턴스 추적 의미 framing 보강 ("1:N 관제" → 1 Lobby 게이트웨이 : N CC 운영자 화면 관계). LLM 전수 의미 판정. | DOC |
 | 2026-05-08 | S7 정합성 감사 — Foundation v4.5 cascade | Foundation 옛 섹션 표기 정정: §6.3→Ch.5 §B.3 (통신 매트릭스), §6.4→Ch.5 §B.4 (DB SSOT + WS push), §5.1→§A.1 (Lobby), §5.3→§A.4 (CC), §8.5→Ch.6 Scene 4 (복수 테이블 운영), §4.4 fabricated reference 제거. §2.1 Lobby 배포 형태를 Foundation Ch.5 §A.1 정합 (Flutter Web). | DOC |
 
 ---
@@ -102,7 +102,7 @@ WSOP LIVE Staff Page는 아래 BO 기능을 제공한다 (Confluence Staff App A
 | 2 | **덱 등록 관리** | RFID 카드 52장 매핑, 덱 교체 이력 | Feature Table 방송에 덱 등록 필수 | BO-04 |
 | 3 | **출력 장비 관리** | NDI/SDI/RTMP 출력 상태 추적 | 방송 출력 모니터링 | BO-07 |
 | 4 | **오버레이 프리셋 (= Graphic Editor)** | 스킨/레이아웃/애니메이션 관리 | 방송별 오버레이 커스터마이징 | `docs/2. Development/2.1 Frontend/Graphic_Editor/Overview.md` (team1 소유) |
-| 5 | **CC 인스턴스 추적** | 테이블당 CC 연결 상태 모니터링 | 1 Lobby (5분 게이트웨이) : N CC (운영자가 머무는 1×10 + 6 키 화면) 관계에서 BO 가 연결 상태를 추적 (정체성 SSOT: `Lobby_PRD.md` v3.0.0, `Command_Center_PRD.md` v4.0) | BO-04 |
+| 5 | **CC 인스턴스 추적** | 테이블당 CC 연결 상태 모니터링 | 1 Lobby (5분 게이트웨이) : N CC (운영자가 머무는 1×10 + 6 키 화면) 관계에서 BO 가 연결 상태를 추적 (정체성 SSOT: `Lobby.md` v3.0.0, `Command_Center.md` v4.0) | BO-04 |
 | 6 | **핸드 기록 (Event Sourcing)** | 핸드별 카드/액션/결과 영구 저장 | RFID 기반 자동 핸드 기록 (WSOP LIVE는 별도 시스템) | BO-06 |
 | 7 | **통계 계산 엔진** | VPIP/PFR/AGR 자동 계산 | 방송 오버레이 실시간 통계 표시 | BO-06, BO-11 |
 | 8 | **WSOP LIVE 동기화** | API 폴링, 데이터 캐싱, Mock 데이터 | WSOP LIVE 데이터를 EBS에서 사용 | BO-10 |

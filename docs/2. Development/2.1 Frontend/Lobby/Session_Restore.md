@@ -17,13 +17,13 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38192
 |------|------|------|
 | 2026-04-15 | v10 분할 | 구 `BS-02-01-auth-session.md` §유저 스토리 K. 세션 복원 을 본 파일로 분리 (Login 화면 아닌 Lobby 진입 후 복원 흐름이므로 Lobby/ 배치). |
 | 2026-04-15 | 다중 기기 정책 | §다중 기기 동시 로그인 정책 신설 (마지막 활동 기기 우선·비활동 2분 자동 로그아웃). team1 발신, Round 2 Phase A. |
-| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — 진입 시점 ①(처음 진입) ②(어긋났을 때) 매핑 framing 추가. 복원 플로우 본문 변경 0 (additive only). |
+| 2026-05-07 | v3 cascade | Lobby v3.0.0 정체성 정합 — 진입 시점 ①(처음 진입) ②(어긋났을 때) 매핑 framing 추가. 복원 플로우 본문 변경 0 (additive only). |
 
 ---
 
 ## 개요
 
-> **진입 시점 매핑 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 본 문서가 정의하는 세션 복원 흐름은 운영자가 Lobby 를 거치는 4 진입 중 **① 처음 진입 (last_table_id 로 직접 CC 복귀)** + **② 어긋났을 때 (네트워크 단절 / 비정상 종료 후 재접속)** 두 시점에 직접 매핑된다. 카탈로그: `Overview.md §4 진입 시점 카탈로그`.
+> **진입 시점 매핑 (Lobby v3.0.0 cascade, 2026-05-07)**: 본 문서가 정의하는 세션 복원 흐름은 운영자가 Lobby 를 거치는 4 진입 중 **① 처음 진입 (last_table_id 로 직접 CC 복귀)** + **② 어긋났을 때 (네트워크 단절 / 비정상 종료 후 재접속)** 두 시점에 직접 매핑된다. 카탈로그: `Overview.md §4 진입 시점 카탈로그`.
 
 정상/비정상 종료 후 재접속 시 이전 Command Center 상태 복원 흐름을 정의한다. 토큰 검증 가드 통과 후 실행된다.
 

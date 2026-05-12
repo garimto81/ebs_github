@@ -5,9 +5,9 @@ tier: internal
 last-updated: 2026-05-09
 related:
   - 1. Product/Foundation.md
-  - 1. Product/Lobby_PRD.md
-  - 1. Product/Command_Center_PRD.md
-  - 1. Product/Back_Office_PRD.md
+  - 1. Product/Lobby.md
+  - 1. Product/Command_Center.md
+  - 1. Product/Back_Office.md
   - 2. Development/2.5 Shared/Risk_Matrix.md
   - 4. Operations/Conductor_Backlog.md
   - 4. Operations/Roadmap.md
@@ -57,10 +57,10 @@ related:
 
 | 컴포넌트 | 기획 (PRD) | 정본 (Overview/API) | 프로토타입 (코드) | Δ (갭) |
 |---------|-----------|--------------------|------------------|--------|
-| **Lobby (team1)** | `Lobby_PRD.md` (2026-05-07) — 5화면 시퀀스 정의 | `2.1 Frontend/Lobby/Overview.md` ~1000줄, 66 API 정의 | Flutter Web, 7 features, 10 tests | ⚠ Quasar 잔재(node_modules, pnpm-lock) 미정리 / Players·Audit_Log·Hand_History 미구현(8선언 vs 6실측) |
-| **Command Center (team4)** | `Command_Center_PRD.md` v4.0 (2026-05-07) — 1×10 그리드, 6키, HandFSM 9-state | `2.4 Command Center/Command_Center_UI/Overview.md` 813줄, 20+ 이벤트 | Flutter Desktop, 6 features, 25 tests, Engine 3-stage UI 완성 | 🔴 Overlay Rive 21 OutputEvent **매핑 0/21** (skeleton) |
+| **Lobby (team1)** | `Lobby.md` (2026-05-07) — 5화면 시퀀스 정의 | `2.1 Frontend/Lobby/Overview.md` ~1000줄, 66 API 정의 | Flutter Web, 7 features, 10 tests | ⚠ Quasar 잔재(node_modules, pnpm-lock) 미정리 / Players·Audit_Log·Hand_History 미구현(8선언 vs 6실측) |
+| **Command Center (team4)** | `Command_Center.md` v4.0 (2026-05-07) — 1×10 그리드, 6키, HandFSM 9-state | `2.4 Command Center/Command_Center_UI/Overview.md` 813줄, 20+ 이벤트 | Flutter Desktop, 6 features, 25 tests, Engine 3-stage UI 완성 | 🔴 Overlay Rive 21 OutputEvent **매핑 0/21** (skeleton) |
 | **Game Engine (team3)** | `Foundation.md` Ch.5 §B.1 — 21 OutputEvent / Game_Rules 22종 | `2.3 Game Engine/Behavioral_Specs/Overview.md`, OutputEvent 21종 정의 | Pure Dart, 25 variants, 40 tests, 21/21 OutputEvent ✅ | △ Draw 7종/Stud 3종 variant 테스트 완결성 / HandEvaluator Low·Sidepot |
-| **Back Office (team2)** | `Back_Office_PRD.md` (2026-05-08) — 9영역 채택/13제외 | `2.2 Backend/Back_Office/Overview.md` 351줄, 77+ API | FastAPI, 261 tests / 78% cov, 16 routers, 13 services | ⚠ 커버리지 95% 목표 대비 -17%p / reports.py MV mock / decks.py DB session(IMPL-003) |
+| **Back Office (team2)** | `Back_Office.md` (2026-05-08) — 9영역 채택/13제외 | `2.2 Backend/Back_Office/Overview.md` 351줄, 77+ API | FastAPI, 261 tests / 78% cov, 16 routers, 13 services | ⚠ 커버리지 95% 목표 대비 -17%p / reports.py MV mock / decks.py DB session(IMPL-003) |
 
 **판정**: 4 컴포넌트 모두 기획→정본→코드의 cascade 사슬은 형성되어 있음. **단절은 Overlay 매핑 한 곳뿐** — 그러나 이것이 시각적 최종 산출물의 진입점이라 **리스크 가중치는 가장 높음**.
 
@@ -72,7 +72,7 @@ related:
 |:-:|----|:--------:|:-----:|----------|---------|:-------:|
 | 1 | **Overlay Rive 21 OutputEvent 매핑** | 🔴 HIGH | team4 | `Foundation.md` Ch.5 §B.1 (오버레이 = MVP 핵심 산출물) | OutputEvent 21종 정의 PASS, Rive 위젯 매핑 skeleton | YES — 시청자 산출물 미생성 |
 | 2 | **End-to-End 핸드 플로우 통합 테스트** | 🔴 HIGH | Conductor + 4팀 | `Foundation.md` Ch.5 의존성 사슬 (RFID→Engine→CC→BO→Overlay) | `integration-tests/`에 단계별 .http 18개, **deal→flop→showdown 풀 핸드 시나리오 없음** | YES — 회귀 검출 불가 |
-| 3 | **Backend 커버리지 17%p 갭** | 🟠 MEDIUM | team2 | `Back_Office_PRD.md` Ch.7 SLO (가용성 99.5%, 50+ commit/sec) | 261/261 PASS, 78% / 95% 목표, `B-Q10-95-coverage-roadmap.md` | NO (단계적 해소 가능) |
+| 3 | **Backend 커버리지 17%p 갭** | 🟠 MEDIUM | team2 | `Back_Office.md` Ch.7 SLO (가용성 99.5%, 50+ commit/sec) | 261/261 PASS, 78% / 95% 목표, `B-Q10-95-coverage-roadmap.md` | NO (단계적 해소 가능) |
 | 4 | **NFR "정확성" 정량 수치 부재** | 🟠 MEDIUM | Conductor (Foundation) | `Foundation.md` Ch.1 Scene 4 — "정확성"이 5 핵심가치 1순위 | 응답·가용·복구는 수치화, 정확성은 정성 표현만 | NO (운영 KPI 누락) |
 | 5 | **team1 Quasar 잔재 정리** | 🟡 LOW | team1 | `1. Product.md` γ하이브리드 — Flutter 통일 결정 | node_modules, pnpm-lock.yaml, .quasar/ 잔존 (기술 부채) | NO |
 | 6 | **RFID 실하드웨어(ST25R3911B)** | 🟡 LOW (의도적 deferral) | team4 + HW팀 | MVP 필수 (`Foundation.md` Ch.5 §C.3) | MockRfidReader만, SG-011로 Phase 2 명시 deferral | NO (1단계 폴백 충분) |

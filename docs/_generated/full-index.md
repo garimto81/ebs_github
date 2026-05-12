@@ -11,14 +11,14 @@ tier: generated
 | 경로 | 제목 | Owner | Tier | Legacy |
 |------|------|-------|------|--------|
 | `docs/1. Product/1. Product.md` | 1. Product | conductor | internal | - |
-| `docs/1. Product/Back_Office_PRD.md` | Back Office — 보이지 않는 뼈대 | conductor | external | - |
-| `docs/1. Product/Command_Center_PRD.md` | Command Center — 운영자가 머무는 조종석 (v4.0) | conductor | external | - |
+| `docs/1. Product/Back_Office.md` | Back Office — 보이지 않는 뼈대 | conductor | external | - |
+| `docs/1. Product/Command_Center.md` | Command Center — 운영자가 머무는 조종석 (v4.0) | conductor | external | - |
 | `docs/1. Product/Foundation.md` | EBS 기초 기획서 | conductor | internal | - |
 | `docs/1. Product/Game_Rules/Betting_System.md` | Betting System | conductor | external | PRD-GAME-04 |
 | `docs/1. Product/Game_Rules/Draw.md` | Draw | conductor | external | PRD-GAME-02 |
 | `docs/1. Product/Game_Rules/Flop_Games.md` | Flop Games | conductor | external | PRD-GAME-01 |
 | `docs/1. Product/Game_Rules/Seven_Card_Games.md` | Seven Card Games | conductor | external | PRD-GAME-03 |
-| `docs/1. Product/Lobby_PRD.md` | EBS Lobby — 5 화면 시퀀스 + WSOP LIVE 정보 허브 | stream:S2 (Lobby) | external | - |
+| `docs/1. Product/Lobby.md` | EBS Lobby — 5 화면 시퀀스 + WSOP LIVE 정보 허브 | stream:S2 (Lobby) | external | - |
 | `docs/1. Product/Product_SSOT_Policy.md` | Product SSOT Policy | conductor | internal | - |
 | `docs/1. Product/RIVE_Standards.md` | RIVE Standards — Overlay Graphics 정본 | conductor | external | - |
 | `docs/1. Product/References/PokerGFX_Reference.md` | PokerGFX Reference | conductor | internal | - |
@@ -510,7 +510,7 @@ tier: generated
 | `docs/3. Change Requests/pending/CR-team1-20260417-cc-network-config.md` | CR: Team4 CC boApiClientProvider localhost 하드코딩 제거 | - | - | - |
 | `docs/4. Operations/4. Operations.md` | 4. Operations | conductor | internal | - |
 | `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` | CC React 디자인 프로토타입 — Critic 판정 보고서 | conductor | internal | - |
-| `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` | Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0) | conductor | internal | - |
+| `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` | Command_Center.md 리뉴얼 계획 (v1.1.0 → v2.0.0) | conductor | internal | - |
 | `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` | Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획 | conductor | critical | - |
 | `docs/4. Operations/Causality_Dashboard.md` | EBS 문서 인과관계 대시보드 | conductor | internal | - |
 | `docs/4. Operations/Chat_Protocol.md` | Chat Protocol — Payload Schema + Channel Convention SSOT | conductor | internal | - |
@@ -641,7 +641,7 @@ tier: generated
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` | Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성 | conductor | internal | - |
 | `docs/4. Operations/Cycle_Entry_Playbook.md` | Cycle Entry Playbook (multi-session autonomous iteration) | S0 Conductor | internal | - |
-| `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` | 문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결 | conductor | internal | - |
+| `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` | 문서 발견 실패 — Command_Center.md 누락 사고와 systematic 해결 | conductor | internal | - |
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
 | `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` | ECOSYSTEM E2E Handoff — Multi-Service Docker Validation | conductor | operations | - |
 | `docs/4. Operations/Foundation_Alignment_Plan.md` | Foundation 재설계 정렬 계획 (Conductor 소유 문서) | conductor | internal | - |

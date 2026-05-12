@@ -20,7 +20,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38184
 | ID   | 이름                | Files  | Path 패턴                         |
 +------+--------------------+--------+-----------------------------------+
 | S1   | Foundation         |   6    | 1.P/{Foundation,BO_PRD,GR/**}     |
-| S2   | Lobby              |  116   | 1.P/Lobby_PRD + 2.1 Frontend/**   |
+| S2   | Lobby              |  116   | 1.P/Lobby + 2.1 Frontend/**   |
 | S3   | Command Center     |   74   | 1.P/CC_PRD + 2.4 CC/**            |
 | S4   | RIVE Standards     |    1   | 1.P/RIVE_Standards.md             |
 | S5   | AI Track / Index   |   ~3   | docs/_generated/**                |
@@ -42,13 +42,13 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38184
 | 파일/패턴 | Owner | 비고 |
 |----------|:-----:|------|
 | `Foundation.md` | **S1** | 정점 SSOT (v4.5.0) |
-| `Back_Office_PRD.md` | **S1** (interim) | S7 활성 후에도 PRD = S1 유지 (외부 인계 정체성 SSOT) |
+| `Back_Office.md` | **S1** (interim) | S7 활성 후에도 PRD = S1 유지 (외부 인계 정체성 SSOT) |
 | `Game_Rules/Flop_Games.md` | **S1** (interim) | 22 게임 룰 외부 측 명세 |
 | `Game_Rules/Draw.md` | **S1** | |
 | `Game_Rules/Seven_Card_Games.md` | **S1** | |
 | `Game_Rules/Betting_System.md` | **S1** | |
-| `Lobby_PRD.md` | **S2** | derivative-of `2.1 Frontend/Lobby/Overview.md` |
-| `Command_Center_PRD.md` | **S3** | derivative-of `2.4 CC/Command_Center_UI/Overview.md` |
+| `Lobby.md` | **S2** | derivative-of `2.1 Frontend/Lobby/Overview.md` |
+| `Command_Center.md` | **S3** | derivative-of `2.4 CC/Command_Center_UI/Overview.md` |
 | `RIVE_Standards.md` | **S4** | self (정본) |
 | `Product_SSOT_Policy.md` | conductor | governance meta |
 | `References/PokerGFX_Reference.md` | frozen (conductor read) | 벤치마크 참조 |
@@ -75,7 +75,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38184
 | `2.2 Backend/APIs/**` | S7 |
 | `2.2 Backend/Authentication/**` | S7 |
 | `2.2 Backend/Backlog/**` | S7 |
-| `2.2 Backend/Back_Office/**` | S7 (정본 — `Back_Office_PRD.md` derivative-of) |
+| `2.2 Backend/Back_Office/**` | S7 (정본 — `Back_Office.md` derivative-of) |
 | `2.2 Backend/Database/**` | S7 |
 | `2.2 Backend/Engineering/**` | S7 |
 | `2.2 Backend/2.2 Backend.md` | CI generated (skip) |
@@ -95,7 +95,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38184
 |------|:-----:|
 | `2.4 CC/APIs/**` | S3 |
 | `2.4 CC/Backlog/**` | S3 |
-| `2.4 CC/Command_Center_UI/**` | S3 (정본 — `Command_Center_PRD.md` derivative-of) |
+| `2.4 CC/Command_Center_UI/**` | S3 (정본 — `Command_Center.md` derivative-of) |
 | `2.4 CC/Integration_Test_Plan/**` | S3 |
 | `2.4 CC/Overlay/**` | S3 |
 | `2.4 CC/RFID_Cards/**` | S3 |

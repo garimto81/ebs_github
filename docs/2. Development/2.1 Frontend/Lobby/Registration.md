@@ -15,13 +15,13 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-15 | 신규 작성 | WSOP LIVE Confluence p1616674829 (Tournament Registration, Sit-in, Seating) 의 기능을 EBS Lobby 에 반영. team1 발신, Round 2 Phase A. |
-| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — WSOP LIVE 정보 허브 framing 추가 (additive only). |
+| 2026-05-07 | v3 cascade | Lobby v3.0.0 정체성 정합 — WSOP LIVE 정보 허브 framing 추가 (additive only). |
 
 ---
 
 ## 개요
 
-> **WSOP LIVE 정보 허브 역할 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **Tournament Registration · Sit-in · Seating**. Lobby = WSOP LIVE 거울의 한 면.
+> **WSOP LIVE 정보 허브 역할 (Lobby v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **Tournament Registration · Sit-in · Seating**. Lobby = WSOP LIVE 거울의 한 면.
 
 Tournament 등록 수락·거부, Sit-in 처리, Seating 배정, Late Registration 컨트롤, No-Show 처리, Refund 절차를 Lobby 에서 관리한다.
 

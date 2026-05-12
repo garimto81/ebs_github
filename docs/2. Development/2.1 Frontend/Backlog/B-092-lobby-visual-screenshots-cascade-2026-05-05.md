@@ -8,7 +8,7 @@ completed: 2026-05-05
 owner: conductor
 source: "사용자 directive (2026-05-05): zip 검토 → 7장 캡쳐 → 교체 → 모든 로비 문서 정합 cascade"
 related-prd:
-  - docs/1. Product/Lobby_PRD.md (v1.3.0 Changelog 2026-05-05)
+  - docs/1. Product/Lobby.md (v1.3.0 Changelog 2026-05-05)
   - docs/2. Development/2.1 Frontend/Lobby/Overview.md (§화면 6/7 신설)
   - docs/2. Development/2.1 Frontend/Lobby/UI.md (mockup HTML 5건 redirect)
   - docs/2. Development/2.1 Frontend/Lobby/Hand_History.md (PNG 인라인)
@@ -43,7 +43,7 @@ mirror: none
 | 10 | UI.md mockup HTML 5건 redirect (legacy 보존) | ✅ |
 | 11 | Hand_History.md PNG 인라인 + 영역 표 추가 | ✅ |
 | 12 | Table.md line 303 캡션 보강 | ✅ |
-| 13 | Lobby_PRD.md §Ch.8 화면 갤러리 7장 PNG 인라인 (8.7 Settings 신규) + "월별→연도별" 정정 + v1.3.0 Changelog | ✅ |
+| 13 | Lobby.md §Ch.8 화면 갤러리 7장 PNG 인라인 (8.7 Settings 신규) + "월별→연도별" 정정 + v1.3.0 Changelog | ✅ |
 | 14 | References/README.md zip sync changelog | ✅ |
 
 ## 보류 / 후속 (비범위)
@@ -59,7 +59,7 @@ mirror: none
 ```
 docs/
 +- 1. Product/
-|  +- Lobby_PRD.md                                v1.3.0 (Ch.8 + 7 PNG 인라인)
+|  +- Lobby.md                                v1.3.0 (Ch.8 + 7 PNG 인라인)
 +- 2. Development/2.1 Frontend/Lobby/
 |  +- Overview.md                                 §화면 6/7 신설 + Day2 prefix 제거
 |  +- UI.md                                       mockup 5건 redirect
@@ -79,7 +79,7 @@ docs/
 | UI.md | +12 / -5 |
 | Hand_History.md | +18 / -1 |
 | Table.md | +1 / -1 |
-| Lobby_PRD.md | +18 / -8 |
+| Lobby.md | +18 / -8 |
 | References/README.md | +1 / 0 |
 | .gitignore | +4 / 0 |
 

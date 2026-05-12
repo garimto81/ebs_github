@@ -37,7 +37,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38192
 | 2026-04-27 | BS-06-12 신규 (PR #4) | Turn-based hole release + 3-card atomic flop SSOT |
 | 2026-04-27 | BS-06-12 압축 (PR #5) | verbose → quickref Trigger Matrix (T1~T11) |
 | 2026-04-27 | 도메인 통합 (본 문서) | `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) + BS-06-09 + BS-06-04 + BS-06-12 (verbose) 를 lossless 병합. legacy-ids 보존. Lifecycle 도메인 마스터 cross-ref. **Chunk-by-chunk commit 으로 작성** (sibling worktree retry after 2026-04-27 subdir conflict) |
-| 2026-05-07 | v3/v4 정체성 cascade Phase B2 | Lobby_PRD v3.0.0 + CC_PRD v4.0 정체성 정합 (LLM 전수 의미 판정 — Engine). §4.7 "8가지 액션 버튼" → "8 논리 액션 (Engine 인지) × 6 키 (CC v4.0 입력 표면)" framing 정정. CC v4.0 6 키 (N·F·C·B·A·M) 매핑 표 신설. CC v4.0 §1.2 "8 분리 버튼 시대 종료" 와 정합. | DOC |
+| 2026-05-07 | v3/v4 정체성 cascade Phase B2 | Lobby v3.0.0 + CC_PRD v4.0 정체성 정합 (LLM 전수 의미 판정 — Engine). §4.7 "8가지 액션 버튼" → "8 논리 액션 (Engine 인지) × 6 키 (CC v4.0 입력 표면)" framing 정정. CC v4.0 6 키 (N·F·C·B·A·M) 매핑 표 신설. CC v4.0 §1.2 "8 분리 버튼 시대 종료" 와 정합. | DOC |
 
 ---
 
@@ -755,7 +755,7 @@ events:
 
 운영자가 CC 에서 버튼/키보드/터치로 발동하는 이벤트.
 
-> **CC v4.0 입력 표면 (2026-05-07)**: 본 표의 25개 이벤트는 **게임 엔진이 인지하는 논리 이벤트** 이며, CC v4.0 운영자 화면의 **물리 입력 표면 = 6 키 (N·F·C·B·A·M)** 와 1:1 이 아니다 (`Command_Center_PRD.md` v4.0 Ch.5 참조). 핸드 진행 8 논리 액션 → 6 키 매핑은 §4.7.1 표. 좌석/테이블 관리 이벤트 (SeatAssign / SeatMove / PauseTable 등) 는 v4.0 Ch.4 PlayerGrid (1×10 가로) 의 컨텍스트 메뉴 + Lobby 화면 분담. 즉 **25 이벤트 = 6 키 + Phase-aware + 컨텍스트 메뉴 + Lobby 흐름** 으로 분산된다.
+> **CC v4.0 입력 표면 (2026-05-07)**: 본 표의 25개 이벤트는 **게임 엔진이 인지하는 논리 이벤트** 이며, CC v4.0 운영자 화면의 **물리 입력 표면 = 6 키 (N·F·C·B·A·M)** 와 1:1 이 아니다 (`Command_Center.md` v4.0 Ch.5 참조). 핸드 진행 8 논리 액션 → 6 키 매핑은 §4.7.1 표. 좌석/테이블 관리 이벤트 (SeatAssign / SeatMove / PauseTable 등) 는 v4.0 Ch.4 PlayerGrid (1×10 가로) 의 컨텍스트 메뉴 + Lobby 화면 분담. 즉 **25 이벤트 = 6 키 + Phase-aware + 컨텍스트 메뉴 + Lobby 흐름** 으로 분산된다.
 
 | 이벤트 | 트리거 조건 | 대상 FSM | 설명 |
 |--------|-----------|---------|------|
@@ -1352,7 +1352,7 @@ Event B (계층 2): 운영자 FOLD 클릭 @ t=2005ms [아직 전송 중]
 
 ### 4.7 CC 입력 특수 케이스 (BS-06-04 §CC 버튼)
 
-> **CC v4.0 정체성 정합 (2026-05-07)**: 본 절은 게임 엔진이 인지하는 **8 논리 액션** (NEW HAND / DEAL / FOLD / CHECK / CALL / BET / RAISE / ALL-IN) 의 전제조건 명세이다. 이 8 논리 액션은 CC v4.0 운영자 화면에서 **6 키 (N · F · C · B · A · M)** 로 발사된다 — `Command_Center_PRD.md` v4.0 Ch.5 참조. 매핑: N=NEW HAND, F=FOLD, C=CHECK/CALL (동적), B=BET/RAISE (동적), A=ALL-IN, M=MUCK + Ctrl+Z=UNDO. DEAL 은 RFID 자동 감지 + SETUP_HAND 진입에 흡수되어 별도 키 불필요. 즉 **8 액션 ≠ 8 분리 버튼** 이다 — 운영자 입력 표면은 6 키이며, Phase-aware 한 키가 두 액션을 시점별로 분담한다 (단축키 우선, 손가락은 알파벳을 외우지 않고 *위치* 를 외운다 — CC_PRD §5).
+> **CC v4.0 정체성 정합 (2026-05-07)**: 본 절은 게임 엔진이 인지하는 **8 논리 액션** (NEW HAND / DEAL / FOLD / CHECK / CALL / BET / RAISE / ALL-IN) 의 전제조건 명세이다. 이 8 논리 액션은 CC v4.0 운영자 화면에서 **6 키 (N · F · C · B · A · M)** 로 발사된다 — `Command_Center.md` v4.0 Ch.5 참조. 매핑: N=NEW HAND, F=FOLD, C=CHECK/CALL (동적), B=BET/RAISE (동적), A=ALL-IN, M=MUCK + Ctrl+Z=UNDO. DEAL 은 RFID 자동 감지 + SETUP_HAND 진입에 흡수되어 별도 키 불필요. 즉 **8 액션 ≠ 8 분리 버튼** 이다 — 운영자 입력 표면은 6 키이며, Phase-aware 한 키가 두 액션을 시점별로 분담한다 (단축키 우선, 손가락은 알파벳을 외우지 않고 *위치* 를 외운다 — CC_PRD §5).
 
 #### 4.7.1 8 논리 액션 × 게임 엔진 전제조건 (입력 표면은 6 키)
 

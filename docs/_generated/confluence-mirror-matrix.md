@@ -43,14 +43,14 @@ mirror: none
 | File | Status | Page ID | Parent ID |
 |---|---|---|---|
 | `1. Product/1. Product.md` | mirrored | 3811344758 | 3184328827 |
-| `1. Product/Back_Office_PRD.md` | mirrored | 3811967073 | 3811344758 |
-| `1. Product/Command_Center_PRD.md` | mirrored | 3811901603 | 3811344758 |
+| `1. Product/Back_Office.md` | mirrored | 3811967073 | 3811344758 |
+| `1. Product/Command_Center.md` | mirrored | 3811901603 | 3811344758 |
 | `1. Product/Foundation.md` | mirrored | 3625189547 | 3811344758 |
 | `1. Product/Game_Rules/Betting_System.md` | mirrored | 3811410570 | 3812360338 |
 | `1. Product/Game_Rules/Draw.md` | mirrored | 3810853753 | 3812360338 |
 | `1. Product/Game_Rules/Flop_Games.md` | mirrored | 3811443642 | 3812360338 |
 | `1. Product/Game_Rules/Seven_Card_Games.md` | mirrored | 3811771012 | 3812360338 |
-| `1. Product/Lobby_PRD.md` | mirrored | 3811672228 | 3811344758 |
+| `1. Product/Lobby.md` | mirrored | 3811672228 | 3811344758 |
 | `1. Product/Product_SSOT_Policy.md` | mirrored | 3818848697 | 3811344758 |
 | `1. Product/References/PokerGFX_Reference.md` | mirrored | 3819078185 | 3811344758 |
 | `1. Product/References/WSOP-Production-Structure-Analysis.md` | mirrored | 3819274864 | 3811344758 |

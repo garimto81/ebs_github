@@ -14,7 +14,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38205
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-08 | 신규 작성 | 운영자 UI 관점 핸드 진행, HandFSM 상태별 CC 화면, 유저 스토리 24개 |
-| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — §"5-Act 시퀀스 (UI 추상화)" 신설. HandFSM 9-state 를 5 Act (IDLE → PreFlop → Flop/Turn/River → Showdown → Settlement) 로 묶어 UI level 에서 운영자 인지 부담 절감. 6 키 활성 phase 매핑 동시 명시. SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0 §Ch.6. |
+| 2026-05-07 | v4 cascade | CC_PRD v4.0 정체성 정합 — §"5-Act 시퀀스 (UI 추상화)" 신설. HandFSM 9-state 를 5 Act (IDLE → PreFlop → Flop/Turn/River → Showdown → Settlement) 로 묶어 UI level 에서 운영자 인지 부담 절감. 6 키 활성 phase 매핑 동시 명시. SSOT: `docs/1. Product/Command_Center.md` v4.0 §Ch.6. |
 
 ---
 
@@ -34,7 +34,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38205
 
 ## 5-Act 시퀀스 (UI 추상화, 2026-05-07 신설 / 2026-05-08 명칭 통합)
 
-> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. HandFSM 9-state 의 의미 묶음. 운영자가 12 시간 본방송 동안 한 핸드 = 한 영화 5 막으로 인지하도록 추상화.
+> **트리거**: `docs/1. Product/Command_Center.md` v4.0 cascade. HandFSM 9-state 의 의미 묶음. 운영자가 12 시간 본방송 동안 한 핸드 = 한 영화 5 막으로 인지하도록 추상화.
 >
 > **2026-05-08 cascade (#179)**: 운영자 인지 layer (Foundation §3 = Hand Start → Deal → Bet → Showdown → Hand End) 와 9-state 묶음 layer 가 **동일 시퀀스의 두 표현**임을 매핑 표에 명시. Foundation 명칭이 정점 SSOT.
 

@@ -18,20 +18,20 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38186
 
 ## 🎯 미션
 
-**2.2 Backend 전 영역 ↔ Back_Office_PRD ↔ Foundation 3-way 정합 + 정본 Back_Office/Overview.md 보증**.
+**2.2 Backend 전 영역 ↔ Back_Office ↔ Foundation 3-way 정합 + 정본 Back_Office/Overview.md 보증**.
 
 ## 📂 영향 파일 (104)
 
 | 영역 | 패턴 |
 |------|------|
-| 정본 | `docs/2. Development/2.2 Backend/Back_Office/**` (`Back_Office_PRD.md` derivative-of) |
+| 정본 | `docs/2. Development/2.2 Backend/Back_Office/**` (`Back_Office.md` derivative-of) |
 | APIs | `docs/2. Development/2.2 Backend/APIs/**` |
 | Authentication | `docs/2. Development/2.2 Backend/Authentication/**` |
 | Database | `docs/2. Development/2.2 Backend/Database/**` |
 | Engineering | `docs/2. Development/2.2 Backend/Engineering/**` |
 | Backlog | `docs/2. Development/2.2 Backend/Backlog/**` |
 
-> **Note**: `Back_Office_PRD.md` 자체는 S1 owner (interim). S7 은 정본 Overview.md 만 owner.
+> **Note**: `Back_Office.md` 자체는 S1 owner (interim). S7 은 정본 Overview.md 만 owner.
 
 ## ✅ 검증 항목
 
@@ -52,12 +52,12 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38186
 3. 2.2 Backend/** 전수 → Foundation cascade
 4. APIs/ 카탈로그 self-consistency
 5. drift 정정
-6. PR ready (S1 = Back_Office_PRD frontmatter last-synced 동시 갱신은 cross-stream NOTIFY)
+6. PR ready (S1 = Back_Office frontmatter last-synced 동시 갱신은 cross-stream NOTIFY)
 ```
 
 ## 🚫 금지
 
-- `Back_Office_PRD.md` 직접 수정 → S1 영역
+- `Back_Office.md` 직접 수정 → S1 영역
 - 다른 Stream 영역 수정
 - meta files 수정
 

@@ -7,8 +7,8 @@ completed: 2026-05-07
 owner: conductor
 source: "Phase C1 cascade autonomous executor (LLM 전수 의미 판정 모드)"
 related-prd:
-  - docs/1. Product/Lobby_PRD.md (v3.0.0 — 5분 게이트웨이 + WSOP LIVE 거울)
-  - docs/1. Product/Command_Center_PRD.md (v4.0 — 1×10 그리드 + 6 키 + Reader Panel)
+  - docs/1. Product/Lobby.md (v3.0.0 — 5분 게이트웨이 + WSOP LIVE 거울)
+  - docs/1. Product/Command_Center.md (v4.0 — 1×10 그리드 + 6 키 + Reader Panel)
 predecessors:
   - "Phase A: cb16c681 (Foundation v4.4 + Product Landing + BS_Overview v3/v4)"
   - "Phase B1: cf04a2b8 (Backend 1 엣지)"
@@ -22,7 +22,7 @@ mirror: none
 
 **정정 0건. 4 분류 모든 파일 정합 확인됨.**
 
-Frontend Lobby 외 영역 (`docs/2. Development/2.1 Frontend/**/*.md`, Lobby/ 제외, archive 제외) **52 개 파일** 을 LLM 전수 의미 판정 (keyword scan 의존 X) 으로 검토. Lobby_PRD v3.0.0 / Command_Center_PRD v4.0 정체성과 직접/간접 의미 충돌 0 건.
+Frontend Lobby 외 영역 (`docs/2. Development/2.1 Frontend/**/*.md`, Lobby/ 제외, archive 제외) **52 개 파일** 을 LLM 전수 의미 판정 (keyword scan 의존 X) 으로 검토. Lobby v3.0.0 / Command_Center v4.0 정체성과 직접/간접 의미 충돌 0 건.
 
 ## 4 분류 결과
 

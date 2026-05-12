@@ -37,7 +37,7 @@ CC 하단에 배치된 8개 액션 버튼은 운영자가 게임을 진행하는
 
 ## v4.0 6 키 매핑 (SSOT, 2026-05-07 신설)
 
-> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. ActionPanel 의 8 분리 버튼 (v1.x) 시대가 끝나고 **6 키 (5 게임 + 1 비상)** 의 시대가 시작된다. 같은 키, phase 에 따라 의미가 자동 전환 (Phase-aware).
+> **트리거**: `docs/1. Product/Command_Center.md` v4.0 cascade. ActionPanel 의 8 분리 버튼 (v1.x) 시대가 끝나고 **6 키 (5 게임 + 1 비상)** 의 시대가 시작된다. 같은 키, phase 에 따라 의미가 자동 전환 (Phase-aware).
 
 ### 6 키 카탈로그
 

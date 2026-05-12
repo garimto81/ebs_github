@@ -21,7 +21,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38196
 | 2026-04-13 | UI-02 redesign | 좌석 S1~S10 변경, 대칭 배치, 수동 편집 우선 원칙, 인라인 편집 전환 |
 | 2026-04-17 | 연동 아키텍처 명확화 | §1.1 데이터 흐름 신설 — CC↔Engine(직접 HTTP) + CC↔BO(WS 이벤트 발행) |
 | 2026-05-06 | **§Widget Inventory 신설** (B-team4-011) | React 시안 critic 판정 후속 — Visual Uplift V1~V7 위젯 인벤토리. KeyboardHintBar (V1, ✅ 구현) / StatusBar (V2) / MiniDiagram (V3) / PositionShiftChip (V4) / SeatCell 7행 (V5) / ACTING glow (V6) / TweaksPanel (V7). SSOT: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md`. |
-| 2026-05-07 | **v4 정체성 정합** | CC_PRD v4.0 cascade — 1×10 그리드 + 6 키 + 4 영역 위계 + 5-Act 시퀀스 반영. §3.0 v4.0 정체성 신설 (구 §3.1/§3.3/§3.4 v1.x 타원형/8 버튼 기술은 archive 마킹). SSOT: `docs/1. Product/Command_Center_PRD.md` v4.0. |
+| 2026-05-07 | **v4 정체성 정합** | CC_PRD v4.0 cascade — 1×10 그리드 + 6 키 + 4 영역 위계 + 5-Act 시퀀스 반영. §3.0 v4.0 정체성 신설 (구 §3.1/§3.3/§3.4 v1.x 타원형/8 버튼 기술은 archive 마킹). SSOT: `docs/1. Product/Command_Center.md` v4.0. |
 
 ---
 
@@ -246,7 +246,7 @@ CC가 비정상 종료 후 재시작되면:
 
 ### 3.0 v4.0 정체성 (2026-05-07 신설, SSOT)
 
-> **트리거**: `docs/1. Product/Command_Center_PRD.md` v4.0 cascade. 본 §3.0 가 §3.1~§3.4 v1.x 기술을 *override* 한다. 구 v1.x 타원형 테이블 + 8 버튼 액션 패널 기술은 archive 보존 (다음 메이저 정리에서 제거 예정).
+> **트리거**: `docs/1. Product/Command_Center.md` v4.0 cascade. 본 §3.0 가 §3.1~§3.4 v1.x 기술을 *override* 한다. 구 v1.x 타원형 테이블 + 8 버튼 액션 패널 기술은 archive 보존 (다음 메이저 정리에서 제거 예정).
 
 #### 3.0.1 4 영역 위계 (StatusBar / TopStrip / PlayerGrid / ActionPanel)
 

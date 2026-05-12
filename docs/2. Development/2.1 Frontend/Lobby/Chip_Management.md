@@ -12,13 +12,13 @@ reimplementability_notes: "Conductor Mode A 자율 cascade (2026-05-03) — WSOP
 | 날짜 | 항목 | 내용 |
 |------|------|------|
 | 2026-04-16 | 신규 작성 | WSOP LIVE "08. Chip Management" (Confluence p1801684299) + "Multi-Table Chip Management" (p2285076509) + "Chip Reporter Admin" (p1666155046) 기반 |
-| 2026-05-07 | v3 cascade | Lobby_PRD v3.0.0 정체성 정합 — 운영자 게이트웨이 흐름 framing 추가 (additive only). |
+| 2026-05-07 | v3 cascade | Lobby v3.0.0 정체성 정합 — 운영자 게이트웨이 흐름 framing 추가 (additive only). |
 
 ---
 
 ## 개요
 
-> **WSOP LIVE 정보 허브 역할 (Lobby_PRD v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **테이블별 Chip Set / Multi-Table 일괄 처리 / Chip Reporter**. Lobby = WSOP LIVE 거울의 한 면.
+> **WSOP LIVE 정보 허브 역할 (Lobby v3.0.0 cascade, 2026-05-07)**: 운영자가 5 분 게이트웨이 동안 확인하는 **테이블별 Chip Set / Multi-Table 일괄 처리 / Chip Reporter**. Lobby = WSOP LIVE 거울의 한 면.
 
 Flight 내 테이블별 Chip Set 관리 화면. 개별 테이블 칩 수 조회, Multi-Table 일괄 Add/Pull/Total Removal, Chip Reporter 역할 지원. WSOP LIVE Staff App §08 Chip Management 와 동일한 구조를 채택한다.
 
