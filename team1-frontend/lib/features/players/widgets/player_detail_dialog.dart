@@ -5,8 +5,9 @@ import '../../../models/models.dart';
 /// Player 상세 다이얼로그 — `Lobby/UI.md §화면 4 Player (독립 레이어)` 의
 /// "Player 행 클릭 → 플레이어 상세 다이얼로그" 스펙 구현.
 ///
-/// 읽기 전용. 프로필 이미지 (있으면) + WSOP ID + 이름 + 국적 + 현재 테이블/좌석
-/// + 칩 + 상태. 편집/이동/제거는 후속 스토리 (B-F005).
+/// 읽기 전용. 프로필 이미지 (있으면) + WSOP ID + 이름 + 국적 + 포지션 +
+/// 현재 테이블/좌석 + 칩 + 상태. Cycle 17 cascade — 4 핵심 필드
+/// (Name + Country + Position + Stack) 강조. 편집/이동/제거는 후속 (B-F005).
 class PlayerDetailDialog extends StatelessWidget {
   final Player player;
 
@@ -68,6 +69,7 @@ class PlayerDetailDialog extends StatelessWidget {
           children: [
             _row(context, 'Nationality', player.nationality ?? '—'),
             _row(context, 'Country Code', player.countryCode ?? '—'),
+            _row(context, 'Position', player.position ?? '—'),
             const Divider(),
             _row(context, 'Current Table', player.tableName ?? 'Not seated'),
             _row(

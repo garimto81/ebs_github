@@ -10,7 +10,8 @@ import '../widgets/player_detail_dialog.dart';
 
 /// Players 독립 화면 — `Lobby/UI.md §화면 4 Player (독립 레이어)` 구현.
 ///
-/// DataTable 컬럼: Name / Table / Seat / Stack / Status / Actions.
+/// DataTable 컬럼: Name / Country / Position / Table / Seat / Stack / Status / Actions.
+/// Cycle 17 cascade — Player Dashboard 4 핵심 필드 (Name + 국적 + 포지션 + 칩스택) 강제.
 /// 검색 + Status 필터 + Add Player 버튼. 행 클릭 시 상세 다이얼로그.
 ///
 /// Player 는 Lobby 의 Series/Event/Flight/Table drill-down 과 독립된 레이어 —
@@ -63,6 +64,64 @@ class _PlayersScreenState extends ConsumerState<PlayersScreen> {
             RegExp(r'(\d)(?=(\d{3})+$)'),
             (m) => '${m[1]},',
           );
+
+  /// ISO-3166 alpha-2 → 🇦-🇿 Regional Indicator emoji.
+  /// Cycle 17 Player Dashboard cascade — 국기 표시 (Overview.md §화면 4).
+  String _flagEmoji(String? iso2) {
+    if (iso2 == null || iso2.length != 2) return '';
+    final upper = iso2.toUpperCase();
+    final buf = StringBuffer();
+    for (final cu in upper.codeUnits) {
+      if (cu < 0x41 || cu > 0x5A) return '';
+      buf.writeCharCode(0x1F1E6 + (cu - 0x41));
+    }
+    return buf.toString();
+  }
+
+  Widget _countryCell(Player p) {
+    final flag = _flagEmoji(p.countryCode);
+    final code = p.countryCode ?? '—';
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (flag.isNotEmpty)
+          Text(flag, style: const TextStyle(fontSize: 16)),
+        if (flag.isNotEmpty) const SizedBox(width: 6),
+        Text(code, style: const TextStyle(fontFamily: 'monospace')),
+      ],
+    );
+  }
+
+  /// Position chip — D/SB/BB/UTG/MP/CO/HJ. Hand-time derived value.
+  /// null/unknown 시 '—'. Dealer (D) / Small Blind (SB) / Big Blind (BB) 강조.
+  Widget _positionBadge(String? position) {
+    if (position == null || position.isEmpty) {
+      return Text('—', style: TextStyle(color: Colors.grey.shade500));
+    }
+    final upper = position.toUpperCase();
+    final (Color bg, Color fg) = switch (upper) {
+      'D' => (Colors.amber.shade200, Colors.amber.shade900),
+      'SB' => (Colors.blue.shade100, Colors.blue.shade800),
+      'BB' => (Colors.indigo.shade100, Colors.indigo.shade800),
+      _ => (Colors.grey.shade200, Colors.grey.shade800),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        upper,
+        style: TextStyle(
+          color: fg,
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+          fontFamily: 'monospace',
+        ),
+      ),
+    );
+  }
 
   Widget _statusBadge(String status) {
     final spec = switch (status) {
@@ -195,12 +254,15 @@ class _PlayersScreenState extends ConsumerState<PlayersScreen> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 900),
+          constraints: const BoxConstraints(minWidth: 1080),
           child: DataTable(
             columnSpacing: 24,
             showCheckboxColumn: false,
+            // Cycle 17 Player Dashboard cascade — 4 핵심 필드 (Name + Country + Position + Stack).
             columns: const [
               DataColumn(label: Text('Name')),
+              DataColumn(label: Text('Country')),
+              DataColumn(label: Text('Pos')),
               DataColumn(label: Text('Table')),
               DataColumn(label: Text('Seat'), numeric: true),
               DataColumn(label: Text('Stack'), numeric: true),
@@ -210,9 +272,12 @@ class _PlayersScreenState extends ConsumerState<PlayersScreen> {
             rows: [
               for (final p in players)
                 DataRow(
+                  key: ValueKey('player-row-${p.playerId}'),
                   onSelectChanged: (_) => _showDetail(p),
                   cells: [
                     DataCell(Text('${p.firstName} ${p.lastName}')),
+                    DataCell(_countryCell(p)),
+                    DataCell(_positionBadge(p.position)),
                     DataCell(Text(p.tableName ?? '—')),
                     DataCell(Text(p.seatIndex?.toString() ?? '—')),
                     DataCell(Text(_fmt(p.stack))),

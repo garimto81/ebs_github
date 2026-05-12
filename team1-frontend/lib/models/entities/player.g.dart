@@ -23,6 +23,7 @@ _$PlayerImpl _$$PlayerImplFromJson(Map<String, dynamic> json) => _$PlayerImpl(
       stack: (json['stack'] as num?)?.toInt(),
       tableName: json['tableName'] as String?,
       seatIndex: (json['seatIndex'] as num?)?.toInt(),
+      position: json['position'] as String?,
     );
 
 Map<String, dynamic> _$$PlayerImplToJson(_$PlayerImpl instance) =>
@@ -43,4 +44,5 @@ Map<String, dynamic> _$$PlayerImplToJson(_$PlayerImpl instance) =>
       if (instance.stack case final value?) 'stack': value,
       if (instance.tableName case final value?) 'tableName': value,
       if (instance.seatIndex case final value?) 'seatIndex': value,
+      if (instance.position case final value?) 'position': value,
     };

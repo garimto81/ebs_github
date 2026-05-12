@@ -22,6 +22,7 @@ class Player with _$Player {
     int? stack,
     @JsonKey(name: 'tableName') String? tableName,
     @JsonKey(name: 'seatIndex') int? seatIndex,
+    @JsonKey(name: 'position') String? position,
   }) = _Player;
 
   factory Player.fromJson(Map<String, dynamic> json) =>
