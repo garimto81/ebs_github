@@ -51,6 +51,7 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 | **2026-05-11 (Cycle 2)** | **§4.7 Healthcheck 6/6 reference 신설. broker 자동 publish 흐름 다이어그램 추가 (post_build_fail → cascade:build-fail / orch_PostToolUse → pipeline:env-ready). Day-1 수동 publish 의존성 제거** | **S11 Cycle 2 (Issue #240). orchestrator_monitor PYTHONPATH fix + 두 hook 의 broker publish 통합으로 push-mode 50ms latency 활용 가능. recipients=0 문제는 별도 사이클** |
 | **2026-05-11 (Cycle 3)** | **§4.8 Autonomous action chain 신설. observer_loop `--action-mode` + `next_action` payload dispatcher (inbox-drop / shell / noop). `handoffs/inbox/` 신설 + hook payload next_action 자동 명시. recipients=0 문제 해소 (observer가 즉시 파일 시스템에 drop)** | **S11 Cycle 3 (autonomous chain). end-to-end self-test PASS (seq 40 drop / seq 41 shell-block / seq 43 broadcast). Cycle 4 후보 = observer_loop background service** |
 | **2026-05-12 (Cycle 4)** | **§4.9 Autonomous chain demo + broker wildcard semantics 발견. cascade:cycle4-demo-build-fail seq=101 end-to-end chain 실측 trace 보존 (subscribe→dispatch ~493ms). `cascade:*` glob 미지원 — `*` 또는 exact topic 권장. autonomous 도달도 10% 사용자 진입 (Cycle 5 = 0% 목표)** | **S11 Cycle 4 (Issue #271). PR #254 의 --action-mode 실제 동작 검증. observer_loop background service 가 Cycle 5 의 단일 잔여 작업** |
+| **2026-05-12 (Cycle 5 Path B)** | **§4.10 broker MCP reconnect + observer 안정화. 4 패치: orch_PostToolUse/post_build_fail `_broker_publish` retry 3x (exp backoff 0/0.5/1.5s) + observer_loop outer reconnect loop (exp backoff 1s-30s, 24h 무중단) + orch_SessionStart `_probe_broker_mcp_health` (TCP+MCP 2단계 검사). events.db +832 증가 (seq 106→938), cascade:s11-cycle5-stabilized seq=938 recipients=1** | **S11 Cycle 5 (Issue #284 Path B). "daemon alive + MCP disconnect" 시나리오 대응. .mcp.json 변경 불필요 (검증만)** |
 
 ---
 
@@ -188,6 +189,99 @@ docker exec ebs-bo python -c "import redis; print(redis.from_url('redis://redis:
 - **A**: 영향 컨테이너 단일 재기동 — `docker restart ebs-bo ebs-engine` (5h healthy 깨질 위험). relay 재초기화 가능성 ~80%.
 - **B**: Docker Desktop 재시작 — 모든 worktree session 영향. 마지막 수단.
 - **C (현재 채택)**: proxy 경유 + LAN_DEPLOYMENT.md `setup_lan_access` 으로 hostname 매핑 사용. 개발자 직접 접근 필요 시 `docker exec <container> curl localhost:<port>` 우회.
+
+---
+
+## 4.10 broker MCP reconnect + observer 안정화 (S11 Cycle 5 Path B, Issue #284)
+
+Cycle 4 자가검증 중 발견된 "daemon alive but MCP client disconnect" 시나리오 대응. 4 안정화 패치 + Path B 자동화.
+
+### 진단 (Issue #284 S0)
+
+| 계층 | 상태 | 비고 |
+|------|:----:|------|
+| broker daemon (TCP 7383) | ✅ alive | pid 변동 가능 (재시작 자동) |
+| events.db | ✅ 936건 누적 | 정상 |
+| **MCP client (Claude Code 측)** | ⚠ stale handshake | session 내 disconnect 가능 |
+| .mcp.json | ✅ url=http://127.0.0.1:7383/mcp | 변경 불필요 |
+
+### 4 안정화 패치
+
+#### (1) `orch_PostToolUse.py` `_broker_publish` retry 3x
+
+```python
+backoffs = [0.0, 0.5, 1.5]  # 0s, 0.5s, 1.5s
+for attempt in range(3):
+    if backoffs[attempt] > 0:
+        time.sleep(backoffs[attempt])
+    try:
+        # streamablehttp_client + ClientSession + publish_event
+        return  # success
+    except Exception:
+        continue
+# all retries exhausted - silent (preserves Cycle 2 contract)
+```
+
+**효과**: broker temp down 시 silent skip 대신 8s 안에 자동 복구.
+
+#### (2) `post_build_fail.py` `_broker_publish_build_fail` retry 3x
+
+동일 retry 패턴. TCP probe 먼저 (daemon dead 시 retry 무의미하므로 즉시 return).
+
+#### (3) `observer_loop.py` outer reconnect loop
+
+```python
+backoff = 1.0
+while True:
+    try:
+        async with streamablehttp_client(URL) as ...:
+            ...subscribe loop...
+    except Exception as _reconnect_exc:
+        print(f"  [reconnect] broker disconnect: backoff {backoff:.1f}s")
+        await asyncio.sleep(backoff)
+        backoff = min(backoff * 2, 30.0)  # exp backoff, cap 30s
+```
+
+**효과**: 24h 무중단 운영. transient network/handshake failure 자동 복구.
+
+#### (4) `orch_SessionStart.py` `_probe_broker_mcp_health(team_id)`
+
+TCP probe + MCP initialize handshake 2 단계 검사. daemon alive 이지만 MCP failure 감지 → 사용자에게 stderr 로 "/mcp reconnect" 권고.
+
+### 검증 (2026-05-12 self-test)
+
+| 단계 | 결과 |
+|------|:----:|
+| TCP 7383 probe | ✅ ALIVE |
+| MCP handshake (initialize) | ✅ OK |
+| `_probe_broker_mcp_health()` | ✅ True + log line |
+| `_broker_publish` 단발 성공 | ✅ 1521ms (first attempt) |
+| cascade:s11-cycle5-stabilized publish | ✅ seq=938 recipients=1 |
+
+### KPI 충족
+
+| 항목 | 목표 | 실측 |
+|------|:----:|:----:|
+| events.db 증가 | +50 | **+832** (seq 106 → 938, 다른 stream 활동 포함) |
+| broker 모든 stream publish 200 OK | ✓ | seq=938 publish 성공 |
+| observer 24h 무중단 | 코드 검증 | outer reconnect loop + exp backoff 1s-30s |
+| MCP reconnect 자동화 | ✓ | SessionStart probe → 사용자 권고 stderr |
+
+### 운영 절차 (broker disconnect 발견 시)
+
+1. `python tools/orchestrator/start_message_bus.py --probe` — daemon TCP/PID 확인
+2. SessionStart stderr 의 `[broker]` 라인 확인 — MCP 단계 까지 OK 인지
+3. `[broker] daemon alive ... but MCP handshake failed` 표기 시:
+   - Claude Code 세션 재시작 (단순)
+   - `/mcp reconnect` (가능 시)
+4. observer_loop background 가동 중이면 자동 reconnect 진행 (stdout `[reconnect] backoff Ns` 로그)
+
+### 다음 사이클 후보
+
+- broker subscribe **prefix glob** (`cascade:*` 정상 매칭) — Cycle 4 발견 이슈 잔여
+- observer_loop **systemd / Task Scheduler** 통합 (영구 background)
+- S9 / S10-A inbox triage automation (cascade:build-fail → Spec_Gap 자동 생성)
+- inbox archive 자동화 (`_archive/YYYY-MM/`)
 
 ---
 

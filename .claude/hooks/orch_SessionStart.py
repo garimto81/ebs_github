@@ -163,6 +163,65 @@ def inject_chat_mentions_block(team_data):
         sys.stderr.write(f"[chat-mention] silent skip: {_e}\n")
 
 
+def _probe_broker_mcp_health(team_id_for_log="?"):
+    """Probe broker daemon (TCP) + MCP handshake. (S11 Cycle 5 Path B, Issue #284)
+
+    Daemon alive but MCP handshake failure scenario:
+    - TCP probe alone passes -> false positive
+    - MCP initialize call must succeed too
+
+    stderr output:
+    - alive (TCP + MCP both OK)
+    - daemon alive but MCP handshake failed (suggest reconnect)
+    - daemon dead (TCP fail)
+    """
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1.0)
+    try:
+        s.connect(("127.0.0.1", 7383))
+        tcp_ok = True
+    except OSError:
+        tcp_ok = False
+    finally:
+        s.close()
+
+    if not tcp_ok:
+        sys.stderr.write("[broker] daemon dead (TCP 7383 unreachable)\n")
+        return False
+
+    try:
+        import asyncio
+        if sys.platform == "win32":
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        from mcp import ClientSession
+        from mcp.client.streamable_http import streamablehttp_client
+
+        async def _handshake():
+            async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
+                async with ClientSession(r, w) as sess:
+                    await sess.initialize()
+                    return True
+
+        try:
+            ok = asyncio.run(asyncio.wait_for(_handshake(), timeout=3.0))
+            if ok:
+                sys.stderr.write(f"[broker] alive (TCP + MCP handshake OK) [{team_id_for_log}]\n")
+                return True
+        except Exception as e:
+            sys.stderr.write(
+                f"[broker] daemon alive (TCP 7383) but MCP handshake failed: "
+                f"{type(e).__name__}\n"
+                f"   .mcp.json: http://127.0.0.1:7383/mcp\n"
+                f"   recovery: restart Claude Code session or /mcp reconnect\n"
+            )
+            return False
+    except ImportError:
+        sys.stderr.write("[broker] mcp package missing - handshake probe skipped\n")
+        return False
+    return False
+
+
 def main():
     team_data = detect_team()
     if not team_data:
@@ -172,6 +231,8 @@ def main():
     update_start_here(team_data, status, blocker)
     emit_identity_context(team_data, status, blocker)
     inject_chat_mentions_block(team_data)
+    # S11 Cycle 5 Path B - broker MCP health check
+    _probe_broker_mcp_health(team_data.get('team_id', '?'))
 
 
 if __name__ == "__main__":
