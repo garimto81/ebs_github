@@ -6,7 +6,17 @@
 #   cd team1-frontend
 #   flutter pub get
 #   dart run build_runner build --delete-conflicting-outputs
-#   flutter build web --release --dart-define=USE_MOCK=false
+#   flutter build web --release \
+#     --dart-define=USE_MOCK=false \
+#     --dart-define=EBS_SAME_ORIGIN=true
+#
+# EBS_SAME_ORIGIN=true (cycle 9, 2026-05-12):
+#   Lobby Web 이 자기 브라우저 origin (http://<host>:3000) 으로 /api/, /ws/ 를
+#   호출. nginx (이 컨테이너) 가 bo:8000 으로 reverse proxy 한다. port hardcoding
+#   제거 효과:
+#     - 호스트의 BO port 매핑이 무엇이든 (8000 / 18001 / 미노출) 무관
+#     - LAN 디바이스가 http://192.168.x.x:3000 접속 시 자동 작동
+#     - HTTPS 배포 시 wss:// 자동 전환
 #
 # 빌드:
 #   cd <repo root>
