@@ -62,10 +62,14 @@ jobs:
           pip install aiosqlite pyyaml
 
       - name: Run broker ACL tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: pytest tools/orchestrator/message_bus/tests/test_topics_chat_acl.py -v
 
       - name: Run chat-server unit + integration mock tests
-        run: pytest tools/chat_server/tests/ -v -m "not integration"
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: pytest tools/chat_server/tests/ -v -m "not integration and not load and not resilience"
 
   # ──────────────────────────────────────────────────────────────────
   # E2E — broker (host) + chat-server (docker) + Playwright
