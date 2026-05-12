@@ -49,6 +49,8 @@ mixin _$Player {
   String? get tableName => throw _privateConstructorUsedError;
   @JsonKey(name: 'seatIndex')
   int? get seatIndex => throw _privateConstructorUsedError;
+  @JsonKey(name: 'position')
+  String? get position => throw _privateConstructorUsedError;
 
   /// Serializes this Player to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -80,7 +82,8 @@ abstract class $PlayerCopyWith<$Res> {
       @JsonKey(name: 'updatedAt') String updatedAt,
       int? stack,
       @JsonKey(name: 'tableName') String? tableName,
-      @JsonKey(name: 'seatIndex') int? seatIndex});
+      @JsonKey(name: 'seatIndex') int? seatIndex,
+      @JsonKey(name: 'position') String? position});
 }
 
 /// @nodoc
@@ -114,6 +117,7 @@ class _$PlayerCopyWithImpl<$Res, $Val extends Player>
     Object? stack = freezed,
     Object? tableName = freezed,
     Object? seatIndex = freezed,
+    Object? position = freezed,
   }) {
     return _then(_value.copyWith(
       playerId: null == playerId
@@ -180,6 +184,10 @@ class _$PlayerCopyWithImpl<$Res, $Val extends Player>
           ? _value.seatIndex
           : seatIndex // ignore: cast_nullable_to_non_nullable
               as int?,
+      position: freezed == position
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -207,7 +215,8 @@ abstract class _$$PlayerImplCopyWith<$Res> implements $PlayerCopyWith<$Res> {
       @JsonKey(name: 'updatedAt') String updatedAt,
       int? stack,
       @JsonKey(name: 'tableName') String? tableName,
-      @JsonKey(name: 'seatIndex') int? seatIndex});
+      @JsonKey(name: 'seatIndex') int? seatIndex,
+      @JsonKey(name: 'position') String? position});
 }
 
 /// @nodoc
@@ -239,6 +248,7 @@ class __$$PlayerImplCopyWithImpl<$Res>
     Object? stack = freezed,
     Object? tableName = freezed,
     Object? seatIndex = freezed,
+    Object? position = freezed,
   }) {
     return _then(_$PlayerImpl(
       playerId: null == playerId
@@ -305,6 +315,10 @@ class __$$PlayerImplCopyWithImpl<$Res>
           ? _value.seatIndex
           : seatIndex // ignore: cast_nullable_to_non_nullable
               as int?,
+      position: freezed == position
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -328,7 +342,8 @@ class _$PlayerImpl implements _Player {
       @JsonKey(name: 'updatedAt') required this.updatedAt,
       this.stack,
       @JsonKey(name: 'tableName') this.tableName,
-      @JsonKey(name: 'seatIndex') this.seatIndex});
+      @JsonKey(name: 'seatIndex') this.seatIndex,
+      @JsonKey(name: 'position') this.position});
 
   factory _$PlayerImpl.fromJson(Map<String, dynamic> json) =>
       _$$PlayerImplFromJson(json);
@@ -378,10 +393,13 @@ class _$PlayerImpl implements _Player {
   @override
   @JsonKey(name: 'seatIndex')
   final int? seatIndex;
+  @override
+  @JsonKey(name: 'position')
+  final String? position;
 
   @override
   String toString() {
-    return 'Player(playerId: $playerId, wsopId: $wsopId, firstName: $firstName, lastName: $lastName, nationality: $nationality, countryCode: $countryCode, profileImage: $profileImage, playerStatus: $playerStatus, isDemo: $isDemo, source: $source, syncedAt: $syncedAt, createdAt: $createdAt, updatedAt: $updatedAt, stack: $stack, tableName: $tableName, seatIndex: $seatIndex)';
+    return 'Player(playerId: $playerId, wsopId: $wsopId, firstName: $firstName, lastName: $lastName, nationality: $nationality, countryCode: $countryCode, profileImage: $profileImage, playerStatus: $playerStatus, isDemo: $isDemo, source: $source, syncedAt: $syncedAt, createdAt: $createdAt, updatedAt: $updatedAt, stack: $stack, tableName: $tableName, seatIndex: $seatIndex, position: $position)';
   }
 
   @override
@@ -416,7 +434,9 @@ class _$PlayerImpl implements _Player {
             (identical(other.tableName, tableName) ||
                 other.tableName == tableName) &&
             (identical(other.seatIndex, seatIndex) ||
-                other.seatIndex == seatIndex));
+                other.seatIndex == seatIndex) &&
+            (identical(other.position, position) ||
+                other.position == position));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -438,7 +458,8 @@ class _$PlayerImpl implements _Player {
       updatedAt,
       stack,
       tableName,
-      seatIndex);
+      seatIndex,
+      position);
 
   /// Create a copy of Player
   /// with the given fields replaced by the non-null parameter values.
@@ -473,7 +494,8 @@ abstract class _Player implements Player {
       @JsonKey(name: 'updatedAt') required final String updatedAt,
       final int? stack,
       @JsonKey(name: 'tableName') final String? tableName,
-      @JsonKey(name: 'seatIndex') final int? seatIndex}) = _$PlayerImpl;
+      @JsonKey(name: 'seatIndex') final int? seatIndex,
+      @JsonKey(name: 'position') final String? position}) = _$PlayerImpl;
 
   factory _Player.fromJson(Map<String, dynamic> json) = _$PlayerImpl.fromJson;
 
@@ -522,6 +544,9 @@ abstract class _Player implements Player {
   @override
   @JsonKey(name: 'seatIndex')
   int? get seatIndex;
+  @override
+  @JsonKey(name: 'position')
+  String? get position;
 
   /// Create a copy of Player
   /// with the given fields replaced by the non-null parameter values.
