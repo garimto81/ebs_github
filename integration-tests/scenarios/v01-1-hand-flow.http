@@ -55,7 +55,8 @@ Content-Type: application/json
   "seats": 6
 }
 
-# 실제 응답: 200 OK
+# 실제 응답: 201 Created (Cycle 4 정정 — 이전 cycle 2 는 200 으로 기록.
+#   Engine v?? 부터 resource creation 시 201 반환. 200/201 둘 다 허용)
 # {
 #   "sessionId": "mp11zefxxx",            // 10자 base36 ID
 #   "variant": "NL Hold'em",
@@ -81,6 +82,10 @@ Content-Type: application/json
 #   - seats[0].isDealer === true
 #   - seats[1].currentBet === 5 (SB)
 #   - seats[2].currentBet === 10 (BB)
+#
+# Cycle 4 실행 검증 (2026-05-12):
+#   sessionId=mp21ivpi35 → HTTP 201, dealer=idx0, SB=idx1, BB=idx2,
+#   pot.main=15. Evidence: test-results/v01-1-hand-flow/A3-session-create.json
 
 # ──────────────────────────────────────────────────────────────────────
 # Phase B: Preflop — fold to BB (가장 단순한 핸드 종료)

@@ -1,0 +1,9 @@
+=== Scenario: 50-rfid-deck-register.http ===
+--- 50.1 POST /decks ---
+  HTTP 201
+  deckId=9a315096-b572-42a0-a445-ded948db6ac7
+--- 50.4 GET /decks ---
+  HTTP 200 | 2 decks
+--- 50.2 dup UID (drift check) ---
+  HTTP 201 ⚠️ (DRIFT-50.2-dup-uid 잔존 — team2 미해결)
+✓ 50-rfid: create(201) + list(200) PASS, dup drift recorded

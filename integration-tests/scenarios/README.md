@@ -6,6 +6,7 @@
 | 2026-05-11 | B-211 추가 | v99-full-hand-flow.http + integration-tests-e2e.yml CI gate (S9 Phase 1) |
 | 2026-05-11 | Cycle 2 host shift | `_env.http` + 18 시나리오 `:8000→:18001`, `:8080→:18080` (Docker_Runtime §4.6 WSL relay glitch). 10-auth `username→email` (admin@local / Admin!Local123). 50-deck `deck_name→name` + 응답 camelCase 정정. Workflow seed_admin.py 통합. |
 | 2026-05-11 | Cycle 2 iteration | v01-1-hand-flow.http 추가 (Engine harness 직결, fold-to-BB 6-handed NL Hold'em). 10/50/v01 3건 실제 실행 PASS. 50.2 duplicate UID 미검출 drift 발견 (BO uniqueness 미구현). |
+| 2026-05-12 | Cycle 4 e2e | v01 5/5 phase + 10-auth 3/3 + 50-rfid 2/3 실제 재실행. Evidence: `evidence/cycle4-2026-05-12/`. Workflow에 v01 priority smoke step 추가. POST /api/session 201 정정 (이전 cycle: 200). 50.2 drift 잔존 재확인. |
 
 ---
 

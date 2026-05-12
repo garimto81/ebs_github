@@ -280,7 +280,26 @@ jobs:
           fi
 
       # ───────────────────────────────────────────────────────────────
-      # Run scenarios — bail on first fail for fast feedback
+      # Priority smoke — v01-1-hand-flow (Engine harness only, BO 무관)
+      # BO seed 실패해도 본 step 은 PASS 가능. S8 cascade:engine-hand-ready
+      # 회귀 검증 게이트. v01 fail 시 곧바로 차단.
+      # ───────────────────────────────────────────────────────────────
+      - name: Run v01-1-hand-flow (Engine smoke)
+        id: v01_smoke
+        if: steps.stack.outputs.available == 'true'
+        continue-on-error: true
+        run: |
+          set -e
+          mkdir -p test-results
+          httpyac send integration-tests/scenarios/v01-1-hand-flow.http \
+            --all \
+            --bail \
+            --output junit \
+            --output-file test-results/v01-junit.xml \
+            --verbose
+
+      # ───────────────────────────────────────────────────────────────
+      # Full scenario run — bail on first fail for fast feedback
       # ───────────────────────────────────────────────────────────────
       - name: Run httpyac scenarios
         id: httpyac
@@ -321,6 +340,13 @@ jobs:
           name: compose-logs-${{ github.event.pull_request.number || 'manual' }}
           path: test-results/compose.log
           retention-days: 7
+
+      - name: Fail job if v01 smoke failed
+        if: steps.v01_smoke.outcome == 'failure'
+        run: |
+          echo "❌ v01-1-hand-flow smoke failed — Engine harness regression"
+          echo "    cascade:engine-hand-ready 회귀. test-results/v01-junit.xml 참조."
+          exit 1
 
       - name: Fail job if scenarios failed
         if: steps.httpyac.outcome == 'failure'

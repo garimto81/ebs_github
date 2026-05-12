@@ -1,0 +1,29 @@
+=== Scenario: v01-1-hand-flow.http (Engine harness) ===
+Date: 2026-05-12T02:57:37Z
+
+--- Phase A: Setup ---
+  A.1 /health → HTTP 200 | {"status":"ok","service":"ebs-game-engine"}
+
+  A.2 /api/variants → HTTP 200 | nlh: True
+  A.3 POST /api/session → HTTP 201 | sessionId=mp21ivpi35
+      street=preflop pot.main=15 seats=6 dealer=idx0 SB=idx1 BB=idx2
+
+--- Phase B: Preflop fold-to-BB ---
+  B1 fold seat[3] (UTG) → HTTP 200 | status=folded
+  B2 fold seat[4] (Seat5) → HTTP 200 | status=folded
+  B3 fold seat[5] (Seat6) → HTTP 200 | status=folded
+  B4 fold seat[0] (dealer) → HTTP 200 | status=folded
+  B5 fold seat[1] (SB) → HTTP 200 | status=folded
+  Phase B end: active=1, winner_idx=2 (expected BB=2)
+
+--- Phase C: PotAward ---
+  C.1 pot_awarded → HTTP 200 | seat[2].stack=1005 (1000-10+15=1005) | pot.main=0
+
+--- Phase D: HandEnd ---
+  D.1 hand_end → HTTP 200 | handNumber=1
+
+--- Phase E: Verify ---
+  E.1 GET /api/session/mp21ivpi35 → HTTP 200
+      handNumber=1 pot.main=0 folded=5 active=1 winner_stack=1005
+
+✓ v01-1-hand-flow: 5/5 phases PASS (A,B,C,D,E all green)

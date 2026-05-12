@@ -1,0 +1,9 @@
+=== Scenario: 10-auth-login-profile.http ===
+--- 10.1 login (admin@local) ---
+  HTTP 200
+  accessToken len=267, refreshToken len=219
+--- 10.x /auth/me ---
+  HTTP 200 — 
+--- 10.3 /auth/refresh ---
+  HTTP 200 — authProfile= expiresIn=
+✓ 10-auth: 3/3 PASS
