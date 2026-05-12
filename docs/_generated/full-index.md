@@ -637,6 +637,7 @@ tier: generated
 | `docs/4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` | Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` | Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성 | conductor | internal | - |
+| `docs/4. Operations/Cycle_Entry_Playbook.md` | Cycle Entry Playbook (multi-session autonomous iteration) | S0 Conductor | internal | - |
 | `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` | 문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결 | conductor | internal | - |
 | `docs/4. Operations/Docker_Runtime.md` | Docker Runtime 운영 지침 | conductor | internal | - |
 | `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` | ECOSYSTEM E2E Handoff — Multi-Service Docker Validation | conductor | operations | - |
