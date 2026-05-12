@@ -1047,9 +1047,26 @@ def detect_settings() -> ContractReport:
         "players_view", "table_view",
     }
 
+    # SG-010 P12 (Cycle 7, 2026-05-12, issue #324) — underscore-form graphics
+    # prefix 필터.
+    # P9 는 dotted form (`gfx.show_leaderboard`) 만 처리했으나, spec text 안에는
+    # underscore form (`gfx_vertical`, `gfx_bottom_up`, `gfx_fit`, `gfx_screen`)
+    # 도 풍부하다 — Settings/Graphics.md §59 (Player Layout), Overlay/Elements.md
+    # §397 (스킨 설정 매핑) 등. 이들 키는 graphics overlay scope 이며
+    # team1 settings UI form 필드와 다른 영역이므로 settings detector 에서 제외.
+    # spec_candidates 의 필터 (_looks_like_setting_key) 와 spec_whitelist 의
+    # 추가 (frontmatter slash list) 양쪽 모두에서 동일 prefix 차단.
+    _UNDERSCORE_GFX_PREFIXES = ("gfx_", "graphic_", "graphics_", "overlay_")
+
+    def _is_graphics_scope_underscore(name: str) -> bool:
+        return name.lower().startswith(_UNDERSCORE_GFX_PREFIXES)
+
     def _looks_like_setting_key(name: str) -> bool:
         # 최소 길이·단어성 검사
         if len(name) < 4:
+            return False
+        # SG-010 P12: graphics overlay scope (gfx_*/graphic_*/overlay_*) 제외
+        if _is_graphics_scope_underscore(name):
             return False
         # 공통 noise 단어
         _noise = {
@@ -1072,10 +1089,13 @@ def detect_settings() -> ContractReport:
 
     spec_keys = {k for k in spec_candidates if _looks_like_setting_key(k)}
     # whitelist (dotted/slash 컨텍스트로 명시적 setting 키) 는 filter bypass
-    # 단 structural noise 는 계속 제외
+    # 단 structural noise + graphics underscore prefix (P12) 는 계속 제외
     for k in spec_whitelist:
-        if k not in _structural_noise and len(k) >= 3:
-            spec_keys.add(k)
+        if k in _structural_noise or len(k) < 3:
+            continue
+        if _is_graphics_scope_underscore(k):
+            continue  # P12: graphics overlay scope underscore prefix 제외
+        spec_keys.add(k)
 
     # 대칭 D3: 코드에만 — 대소문자/언더스코어 정규화 후 매칭
     def _normalize(k: str) -> str:
