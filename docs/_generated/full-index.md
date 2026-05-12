@@ -276,6 +276,7 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/B-356-oe-catalog-self-inconsistency.md` | OE 카탈로그 self-inconsistency — OutputEvent_Serialization vs Overlay_Output_Events 정합 | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/CYCLE2-2026-05-11-engine-1hand-ready.md` | CYCLE 2 — S8 Engine 1 Hand Ready (Issue | - | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-2026-05-12-settings-engine-9keys.md` | CYCLE 4 — S8 Settings engine_rules 9 keys 정합 (Issue | - | notify | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-mediation-2026-05-12-betting-system-9keys.md` | CYCLE 4 mediation — Betting_System.md §7-5 9 keys default 패치 제안 | - | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` | NOTIFY-Conductor-2026-05-08-ci-infra-blockers | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-S8-pr180-ci-failure-2026-05-08.md` | NOTIFY-S8 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
