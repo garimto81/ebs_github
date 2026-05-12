@@ -1,0 +1,390 @@
+{
+  "uncovered_count": 77,
+  "uncovered": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/competitions/{}",
+      "file": "competitions.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/events/{}",
+      "file": "series.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/flights/{}",
+      "file": "series.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/payout-structures/{}",
+      "file": "payout_structures.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/players/{}",
+      "file": "players.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/series/{}",
+      "file": "series.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/settings",
+      "file": "settings_kv.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/skins/{}",
+      "file": "skins.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sync/mock/reset",
+      "file": "sync.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/tables/{}/seats/{}",
+      "file": "tables.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/users/{}",
+      "file": "users.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit-events",
+      "file": "audit.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit-logs",
+      "file": "audit.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit-logs/download",
+      "file": "audit.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/google",
+      "file": "auth.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/google/callback",
+      "file": "auth.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/session",
+      "file": "auth.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/events",
+      "file": "series.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights",
+      "file": "series.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{}/blind-structure",
+      "file": "blind_structures.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{}/clock",
+      "file": "series.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{}/levels",
+      "file": "event_flights.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{}/tables",
+      "file": "tables.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/hands",
+      "file": "hands.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/hands/{}/actions",
+      "file": "hands.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/hands/{}/players",
+      "file": "hands.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/payout-structures",
+      "file": "payout_structures.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/players/search",
+      "file": "players.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/dashboard",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/hand-distribution",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/operator-activity",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/player-stats",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/rfid-health",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/table-activity",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/series/{}/events",
+      "file": "series.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/settings",
+      "file": "settings_kv.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/settings/resolved",
+      "file": "settings_kv.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sync/conflicts",
+      "file": "sync.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sync/status",
+      "file": "sync.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sync/wsop-live/status",
+      "file": "sync.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/{}/events",
+      "file": "replay.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/{}/seats",
+      "file": "tables.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/{}/status",
+      "file": "tables.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/2fa/disable",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/2fa/setup",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/password/reset",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/password/reset/send",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/password/reset/verify",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/verify-2fa",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/events",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/events/{}/flights",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{}/clock/pause",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{}/clock/restart",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{}/clock/resume",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{}/clock/start",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{}/tables",
+      "file": "tables.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/payout-structures",
+      "file": "payout_structures.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/series/{}/events",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/skins/upload",
+      "file": "skins.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/skins/{}/activate",
+      "file": "skins.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/skins/{}/deactivate",
+      "file": "skins.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sync/mock/seed",
+      "file": "sync.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sync/trigger/{}",
+      "file": "sync.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sync/wsop-live",
+      "file": "sync.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tables/{}/seats",
+      "file": "tables.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/users/{}/force-logout",
+      "file": "users.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/blind-structure",
+      "file": "blind_structures.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/cancel",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/clock",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/clock/adjust-stack",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/clock/detail",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/clock/reload-page",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/complete",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/settings",
+      "file": "settings_kv.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/skins/{}",
+      "file": "skins.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/tables/{}/seats/{}",
+      "file": "tables.py"
+    }
+  ]
+}

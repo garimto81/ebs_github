@@ -1,0 +1,843 @@
+{
+  "stats": {
+    "http_total_calls": 215,
+    "http_unique_endpoints": 89,
+    "router_unique_endpoints": 137,
+    "covered_http_count": 66,
+    "orphan_http_count": 23,
+    "covered_router_count": 60,
+    "uncovered_router_count": 77,
+    "coverage_pct": 43.8
+  },
+  "covered_http": [
+    {
+      "method": "DELETE",
+      "http_path": "/api/v1/blind-structures/{}",
+      "router_pattern": "/api/v1/blind-structures/{}"
+    },
+    {
+      "method": "DELETE",
+      "http_path": "/api/v1/blind-structures/{}/levels/{}",
+      "router_pattern": "/api/v1/blind-structures/{}/levels/{}"
+    },
+    {
+      "method": "DELETE",
+      "http_path": "/api/v1/decks/dk_01HVQK-wsop-ft-2026",
+      "router_pattern": "/api/v1/decks/{}"
+    },
+    {
+      "method": "DELETE",
+      "http_path": "/api/v1/tables/1",
+      "router_pattern": "/api/v1/tables/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/auth/me",
+      "router_pattern": "/api/v1/auth/me"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/blind-structures",
+      "router_pattern": "/api/v1/blind-structures"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/blind-structures/{}",
+      "router_pattern": "/api/v1/blind-structures/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/blind-structures/{}/levels",
+      "router_pattern": "/api/v1/blind-structures/{}/levels"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/competitions",
+      "router_pattern": "/api/v1/competitions"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/competitions/{}",
+      "router_pattern": "/api/v1/competitions/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/configs/{}",
+      "router_pattern": "/api/v1/configs/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/decks",
+      "router_pattern": "/api/v1/decks"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/decks/{}",
+      "router_pattern": "/api/v1/decks/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/events/1/flights",
+      "router_pattern": "/api/v1/events/{}/flights"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/events/replay",
+      "router_pattern": "/api/v1/events/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/flights/{}",
+      "router_pattern": "/api/v1/flights/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/hands/{}",
+      "router_pattern": "/api/v1/hands/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/payout-structures/{}",
+      "router_pattern": "/api/v1/payout-structures/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/players",
+      "router_pattern": "/api/v1/players"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/players/{}",
+      "router_pattern": "/api/v1/players/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/series",
+      "router_pattern": "/api/v1/series"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/series/{}",
+      "router_pattern": "/api/v1/series/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/skins",
+      "router_pattern": "/api/v1/skins"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/skins/active",
+      "router_pattern": "/api/v1/skins/active"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/skins/sk_01HVQK-test",
+      "router_pattern": "/api/v1/skins/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/tables",
+      "router_pattern": "/api/v1/tables"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/tables/1",
+      "router_pattern": "/api/v1/tables/{}"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/users",
+      "router_pattern": "/api/v1/users"
+    },
+    {
+      "method": "GET",
+      "http_path": "/api/v1/users/{}",
+      "router_pattern": "/api/v1/users/{}"
+    },
+    {
+      "method": "PATCH",
+      "http_path": "/api/v1/decks/{}",
+      "router_pattern": "/api/v1/decks/{}"
+    },
+    {
+      "method": "PATCH",
+      "http_path": "/api/v1/decks/{}/cards/AS",
+      "router_pattern": "/api/v1/decks/{}/cards/{}"
+    },
+    {
+      "method": "PATCH",
+      "http_path": "/api/v1/skins/sk_01HVQK-test/metadata",
+      "router_pattern": "/api/v1/skins/{}/metadata"
+    },
+    {
+      "method": "PATCH",
+      "http_path": "/api/v1/skins/{}/metadata",
+      "router_pattern": "/api/v1/skins/{}/metadata"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/auth/login",
+      "router_pattern": "/api/v1/auth/login"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/auth/logout",
+      "router_pattern": "/api/v1/auth/logout"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/auth/refresh",
+      "router_pattern": "/api/v1/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/blind-structures",
+      "router_pattern": "/api/v1/blind-structures"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/blind-structures/{}/levels",
+      "router_pattern": "/api/v1/blind-structures/{}/levels"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/competitions",
+      "router_pattern": "/api/v1/competitions"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/decks",
+      "router_pattern": "/api/v1/decks"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/decks/import",
+      "router_pattern": "/api/v1/decks/import"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/decks/nonexistent-deck-id-c7-0001/cards",
+      "router_pattern": "/api/v1/decks/{}/cards"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/decks/{}/cards",
+      "router_pattern": "/api/v1/decks/{}/cards"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/players",
+      "router_pattern": "/api/v1/players"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/series",
+      "router_pattern": "/api/v1/series"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/skins",
+      "router_pattern": "/api/v1/skins"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/tables",
+      "router_pattern": "/api/v1/tables"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/tables/1/launch-cc",
+      "router_pattern": "/api/v1/tables/{}/launch-cc"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/tables/99/launch-cc",
+      "router_pattern": "/api/v1/tables/{}/launch-cc"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/tables/999/launch-cc",
+      "router_pattern": "/api/v1/tables/{}/launch-cc"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/tables/rebalance",
+      "router_pattern": "/api/v1/tables/rebalance"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/tables/{}/launch-cc",
+      "router_pattern": "/api/v1/tables/{}/launch-cc"
+    },
+    {
+      "method": "POST",
+      "http_path": "/api/v1/users",
+      "router_pattern": "/api/v1/users"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/blind-structures/{}",
+      "router_pattern": "/api/v1/blind-structures/{}"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/blind-structures/{}/levels/{}",
+      "router_pattern": "/api/v1/blind-structures/{}/levels/{}"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/competitions/{}",
+      "router_pattern": "/api/v1/competitions/{}"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/configs/{}",
+      "router_pattern": "/api/v1/configs/{}"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/events/{}",
+      "router_pattern": "/api/v1/events/{}"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/flights/{}",
+      "router_pattern": "/api/v1/flights/{}"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/payout-structures/{}",
+      "router_pattern": "/api/v1/payout-structures/{}"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/players/{}",
+      "router_pattern": "/api/v1/players/{}"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/series/{}",
+      "router_pattern": "/api/v1/series/{}"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/skins/sk_01HVQK-test/activate",
+      "router_pattern": "/api/v1/skins/{}/activate"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/skins/{}/activate",
+      "router_pattern": "/api/v1/skins/{}/activate"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/tables/{}",
+      "router_pattern": "/api/v1/tables/{}"
+    },
+    {
+      "method": "PUT",
+      "http_path": "/api/v1/users/{}",
+      "router_pattern": "/api/v1/users/{}"
+    }
+  ],
+  "orphan_http": [
+    {
+      "method": "GET",
+      "path": "/api/session/{}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/_mock/overlay/last-frame"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/fl_01HVQK-day1a/late-reg-remaining"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sagas/rbl-01HVQK-test-saga-id"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/skins/sk_01HVQK-test/metadata"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/skins/{}/metadata"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/1/delay-buffer-status"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/1/output-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/1/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/variants"
+    },
+    {
+      "method": "GET",
+      "path": "/health"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/flights/fl_01HVQK-day1a"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/tables/1"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/tables/1/active_deck"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/tables/1/output-config"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/tables/99"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/tables/{}/active_deck"
+    },
+    {
+      "method": "POST",
+      "path": "/api/session"
+    },
+    {
+      "method": "POST",
+      "path": "/api/session/{}/event"
+    },
+    {
+      "method": "POST",
+      "path": "/api/session/{}/next-hand"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/_mock/rfid/scan"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sagas/rbl-01HVQK-test-saga-id/rollback"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tables/1/replay-events"
+    }
+  ],
+  "uncovered_routers": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/competitions/{}",
+      "file": "competitions.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/events/{}",
+      "file": "series.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/flights/{}",
+      "file": "series.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/payout-structures/{}",
+      "file": "payout_structures.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/players/{}",
+      "file": "players.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/series/{}",
+      "file": "series.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/settings",
+      "file": "settings_kv.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/skins/{}",
+      "file": "skins.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sync/mock/reset",
+      "file": "sync.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/tables/{}/seats/{}",
+      "file": "tables.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/users/{}",
+      "file": "users.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit-events",
+      "file": "audit.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit-logs",
+      "file": "audit.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audit-logs/download",
+      "file": "audit.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/google",
+      "file": "auth.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/google/callback",
+      "file": "auth.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/session",
+      "file": "auth.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/events",
+      "file": "series.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights",
+      "file": "series.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{}/blind-structure",
+      "file": "blind_structures.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{}/clock",
+      "file": "series.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{}/levels",
+      "file": "event_flights.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/flights/{}/tables",
+      "file": "tables.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/hands",
+      "file": "hands.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/hands/{}/actions",
+      "file": "hands.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/hands/{}/players",
+      "file": "hands.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/payout-structures",
+      "file": "payout_structures.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/players/search",
+      "file": "players.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/dashboard",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/hand-distribution",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/operator-activity",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/player-stats",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/rfid-health",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/table-activity",
+      "file": "reports.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/series/{}/events",
+      "file": "series.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/settings",
+      "file": "settings_kv.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/settings/resolved",
+      "file": "settings_kv.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sync/conflicts",
+      "file": "sync.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sync/status",
+      "file": "sync.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sync/wsop-live/status",
+      "file": "sync.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/{}/events",
+      "file": "replay.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/{}/seats",
+      "file": "tables.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tables/{}/status",
+      "file": "tables.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/2fa/disable",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/2fa/setup",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/password/reset",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/password/reset/send",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/password/reset/verify",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/verify-2fa",
+      "file": "auth.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/events",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/events/{}/flights",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{}/clock/pause",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{}/clock/restart",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{}/clock/resume",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{}/clock/start",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/flights/{}/tables",
+      "file": "tables.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/payout-structures",
+      "file": "payout_structures.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/series/{}/events",
+      "file": "series.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/skins/upload",
+      "file": "skins.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/skins/{}/activate",
+      "file": "skins.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/skins/{}/deactivate",
+      "file": "skins.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sync/mock/seed",
+      "file": "sync.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sync/trigger/{}",
+      "file": "sync.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sync/wsop-live",
+      "file": "sync.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tables/{}/seats",
+      "file": "tables.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/users/{}/force-logout",
+      "file": "users.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/blind-structure",
+      "file": "blind_structures.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/cancel",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/clock",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/clock/adjust-stack",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/clock/detail",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/clock/reload-page",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/flights/{}/complete",
+      "file": "series.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/settings",
+      "file": "settings_kv.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/skins/{}",
+      "file": "skins.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/tables/{}/seats/{}",
+      "file": "tables.py"
+    }
+  ],
+  "uncovered_by_file": {
+    "series.py": 21,
+    "auth.py": 9,
+    "sync.py": 7,
+    "tables.py": 7,
+    "reports.py": 6,
+    "skins.py": 5,
+    "settings_kv.py": 4,
+    "payout_structures.py": 3,
+    "audit.py": 3,
+    "hands.py": 3,
+    "players.py": 2,
+    "users.py": 2,
+    "blind_structures.py": 2,
+    "competitions.py": 1,
+    "event_flights.py": 1,
+    "replay.py": 1
+  }
+}
