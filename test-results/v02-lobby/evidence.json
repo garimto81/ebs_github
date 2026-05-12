@@ -1,0 +1,112 @@
+{
+  "stream": "S2",
+  "cycle": 6,
+  "issue": 312,
+  "build": "v02-lobby",
+  "captured_at": "2026-05-12T07:32:24.388785+00:00",
+  "lobby_url": "http://localhost:3020",
+  "stages": [
+    {
+      "step": "01-idle",
+      "target_ms": 50,
+      "description": "pending — overlay rendered, run() not yet kicked",
+      "ts": "2026-05-12T07:32:32.473411+00:00",
+      "file": "01-idle.png",
+      "bytes": 30287
+    },
+    {
+      "step": "02-hand1-dealt",
+      "target_ms": 800,
+      "description": "cascadeReady — Hand 1 dealt, dealer=seat 1",
+      "ts": "2026-05-12T07:32:33.297283+00:00",
+      "file": "02-hand1-dealt.png",
+      "bytes": 37364
+    },
+    {
+      "step": "03-hand1-complete",
+      "target_ms": 1200,
+      "description": "hand1Complete — pot=240, winner seat 1",
+      "ts": "2026-05-12T07:32:33.744120+00:00",
+      "file": "03-hand1-complete.png",
+      "bytes": 37358
+    },
+    {
+      "step": "04-next-hand-pressed",
+      "target_ms": 1450,
+      "description": "nextHandRotating — POST /next-hand",
+      "ts": "2026-05-12T07:32:34.042315+00:00",
+      "file": "04-next-hand-pressed.png",
+      "bytes": 37358
+    },
+    {
+      "step": "05-hand2-dealt",
+      "target_ms": 1750,
+      "description": "hand2Dealt — dealer rotated 1->2, pot reset",
+      "ts": "2026-05-12T07:32:34.393585+00:00",
+      "file": "05-hand2-dealt.png",
+      "bytes": 37364
+    },
+    {
+      "step": "06-history-visible",
+      "target_ms": 2500,
+      "description": "hand2Dealt sustained — history panel visible",
+      "ts": "2026-05-12T07:32:35.193063+00:00",
+      "file": "06-history-visible.png",
+      "bytes": 37364
+    }
+  ],
+  "console_log": [
+    {
+      "ts": "2026-05-12T07:32:31.236357+00:00",
+      "type": "warning",
+      "text": "[GroupMarkerNotSet(crbug.com/242999)!:A8401900EC030000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content."
+    },
+    {
+      "ts": "2026-05-12T07:32:31.236860+00:00",
+      "type": "warning",
+      "text": "WebGL: CONTEXT_LOST_WEBGL: loseContext: context lost"
+    },
+    {
+      "ts": "2026-05-12T07:32:31.241359+00:00",
+      "type": "debug",
+      "text": "Injecting <script> tag. Using callback."
+    },
+    {
+      "ts": "2026-05-12T07:32:31.714640+00:00",
+      "type": "warning",
+      "text": "[GroupMarkerNotSet(crbug.com/242999)!:A8401900EC030000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content."
+    },
+    {
+      "ts": "2026-05-12T07:32:31.714640+00:00",
+      "type": "warning",
+      "text": "[GroupMarkerNotSet(crbug.com/242999)!:A8701900EC030000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content."
+    },
+    {
+      "ts": "2026-05-12T07:32:32.337151+00:00",
+      "type": "warning",
+      "text": "[GroupMarkerNotSet(crbug.com/242999)!:A8A01900EC030000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content."
+    },
+    {
+      "ts": "2026-05-12T07:32:32.337151+00:00",
+      "type": "warning",
+      "text": "[.WebGL-0x26f401335b00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "ts": "2026-05-12T07:32:32.409885+00:00",
+      "type": "warning",
+      "text": "[.WebGL-0x26f401335b00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "ts": "2026-05-12T07:32:32.464909+00:00",
+      "type": "warning",
+      "text": "[.WebGL-0x26f401335b00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "ts": "2026-05-12T07:32:32.561979+00:00",
+      "type": "warning",
+      "text": "[.WebGL-0x26f401335b00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    }
+  ],
+  "network_log": [],
+  "result": "SUCCESS"
+}
