@@ -975,3 +975,114 @@ function calculatePots(players):
 | **Phase 3** (2027 H1) | FL 추가 + Bring-in + Bomb Pot / Run It Twice |
 | **Phase 4** (2027 H2) | 7-2 Side Bet + Mixed Game 자동 전환 |
 
+---
+
+## §8. Overlay 9 카테고리 정합 명세 — Cycle 16 Wave 2 SSOT (2026-05-13)
+
+본 섹션은 사용자 표 v1.0.0 의 9 카테고리 중 Betting_System 도메인이 직접 채우는 **#4 (실시간 승률 통계) + #7 (블라인드 정보 창) + #8 (중앙 팟 정보)** 의 계산 spec 정합 명세이다. RIVE_Standards.md Ch.2 (v0.8.0) / Foundation.md Ch.2 Scene 1 (v2.0) 정합.
+
+### 8-1. 카테고리 #4 — 실시간 승률 통계 (Equity) 계산 Spec
+
+**사용자 표 verbatim**: 실시간 승률 통계 (Equity)
+**범용 역할**: 핸드 강도 + Equity 백분율 (0~100%)
+**데이터 소스**: Game Engine (Monte Carlo simulation)
+
+#### 8-1-1. Equity 정의
+
+> **Equity** = 현재 시점에서 핸드를 끝까지 보았을 때 이길 확률 (단, "이길" = Hi 1위 + Lo 자격 시 분할 포함).
+> Hi-Lo Split / Omaha must-use 2+3 / Short Deck 등 게임 규칙은 §1 (Action 5종) / §3 (베팅 구조) / §4 (Ante) 의 룰을 그대로 적용한 후 핸드 평가.
+
+#### 8-1-2. 계산 알고리즘 (Monte Carlo)
+
+| 단계 | 동작 | 비고 |
+|------|------|------|
+| 1. 입력 수집 | 각 player 의 hole cards (RFID 공급) + 현재 board cards (RFID 공급) + 활성 player 목록 (`is_folded=false`) | Fold 한 player 는 Equity 계산 제외 |
+| 2. 남은 카드 풀 산정 | 52 장 (Short Deck = 36 장) − 알려진 카드 (hole + board) | Mixed Game 자동 전환 시 deck size 갱신 |
+| 3. Monte Carlo 시뮬레이션 | 남은 board 카드 random sampling × **N 회** (기본 N = 10,000) | N 은 운영 부하 / 정확도 trade-off |
+| 4. 핸드 평가 | 각 sample 마다 활성 player 의 최종 핸드 평가 (게임별 룰 적용) | Hi-Lo Split = Hi/Lo 분리 평가 |
+| 5. 승률 집계 | win_count[i] / N → Equity (0.0~1.0). Split = 1/n 로 분배 | tie = 1/n_winners |
+| 6. 출력 | `equity_percent[i]` (0~100 float, 1 자리 소수) | Overlay Rive `equity_percent` 변수 주입 |
+
+#### 8-1-3. 갱신 트리거
+
+| 시점 | Equity 재계산 여부 |
+|------|:------------------:|
+| Pre-Flop (hole cards 배분 직후) | ✓ 즉시 계산 |
+| Flop (board 3장 공개) | ✓ 재계산 |
+| Turn (board 4장) | ✓ 재계산 |
+| River (board 5장) | ✓ 재계산 (이 시점 = 결정적, N=1 충분) |
+| 베팅 액션 (Fold 발생) | ✓ 재계산 (활성 player 변경) |
+| Fold 외 액션 (Check/Bet/Raise/Call) | ✗ 재계산 X (카드 정보 불변) |
+| Run It Twice 활성 | ✓ 각 board 별 별도 Equity 계산 (board A / board B) |
+
+#### 8-1-4. 정합 cross-reference
+
+| 정합 항목 | 위치 | 비고 |
+|----------|------|------|
+| Overlay Rive 변수 매핑 | RIVE_Standards.md Ch.15 + Ch.2 #4 | `equity_percent` (Number, 0~100) |
+| Game Engine 정본 SSOT | `docs/2. Development/2.3 Game Engine/Rules/Equity_Calculator.md` | Cascade Note: 신규 작성 필요 (Type B 기획 공백 — S8 trigger) |
+| Hand Strength 표시 | RIVE_Standards.md Ch.15 (핸드 강도와 Equity) | 사용자 표 #4 = Equity 백분율 위주, Hand Rank 텍스트 (예: "Top Pair") 는 보조 |
+| 기존 "아웃츠" 표시 흡수 | Foundation.md Ch.2 (v2.0) | 아웃츠 = Equity 의 내부 계산 (sample 중 outs 수). 별도 카테고리 X |
+
+> **Cascade Note (Type B 기획 공백)**: `Equity_Calculator.md` engine 정본 SSOT 가 부재. Multi_Hand_v03.md 와 동일 구조로 신규 작성 필요. S8 Engine stream 트리거 (post-S10-W).
+
+### 8-2. 카테고리 #7 — 블라인드 정보 창 (Blind Level + Ante)
+
+**사용자 표 verbatim**: 블라인드 정보 창 (블라인드 레벨 + 앤티)
+**범용 역할**: 현재 레벨의 Small Blind / Big Blind / Ante 표시
+**데이터 소스**: DB (Blind Structure 스케줄) + Engine (현재 레벨 카운터)
+
+#### 8-2-1. 표시 필드 4 종
+
+| 필드 | 값 예시 | 출처 | Overlay Rive 변수 |
+|------|---------|------|------------------|
+| **Level Number** | "Level 7" | DB Blind Structure (current_level) | `blind_level_number` (Number) |
+| **Small Blind** | "500" | DB Blind Structure (sb_amount) — §2-1 정의 | `sb_amount` (Number) |
+| **Big Blind** | "1,000" | DB Blind Structure (bb_amount) | `bb_amount` (Number) |
+| **Ante** | "100" (Standard) / "1,000" (BB Ante) / "0" (Ante 없음) | DB Blind Structure (ante_amount + ante_type) — §4 정의 | `ante_amount` (Number) + `ante_type` (Text: enum 7 종) |
+
+#### 8-2-2. Ante 7 종 표시 룰 (§4 정합)
+
+| ante_type | 표시 문자열 | 비고 |
+|-----------|------------|------|
+| 1 = Standard Ante | "Ante: 100" | 전원 동일 (§4-1) |
+| 2 = Button Ante | "Button Ante: 600" | 딜러만 (§4-2) |
+| 3 = BB Ante | "BB Ante: 1,000" | BB 전원분 대납 (§4-3) |
+| 4 = SB Ante | "SB Ante: 600" | SB 1 명 (§4 변형) |
+| 5 = Heads-up Ante | "HU Ante: 200" | 2 인 한정 |
+| 6 = Bomb Pot Ante | "Bomb Pot: 5,000" | 핸드 한정 (§7-3) |
+| 7 = No Ante | (Ante 라인 미표시) | Level 초기 / disable |
+
+#### 8-2-3. 레벨 전환 트리거
+
+| 시점 | 동작 |
+|------|------|
+| Level 만료 (Hand Clock 또는 Level Clock 종료) | DB current_level += 1 → blind/ante 값 즉시 갱신 → Overlay #7 변수 update |
+| Color-up break | 별도 brake state 표시 ("Break — Level 7 시작 5 분 후") — Auxiliary (Ch.20 Clock 정합) |
+
+### 8-3. 카테고리 #8 — 중앙 팟 정보 (Total Pot)
+
+**사용자 표 verbatim**: 중앙 팟 정보 (총 베팅 칩)
+**범용 역할**: Main Pot + Side Pot 누적 표시
+**데이터 소스**: Game Engine (§1.3 Side Pot 계산 룰)
+
+#### 8-3-1. 표시 필드
+
+| 필드 | 값 예시 | 출처 | Overlay Rive 변수 |
+|------|---------|------|------------------|
+| **Total Pot** | "32,500" | Engine (main + side 합산) | `pot_total` (Number) |
+| **Main Pot** | "20,000" | Engine (main only) | `pot_main` (Number) |
+| **Side Pot 1, 2, 3** | "12,500" / etc | Engine (side[i]) — §1.3 정합 | `pot_side[i]` (Number array) |
+| **Pot Number** | 1 (Main only) / 2 (Main + 1 Side) / N | Engine (count) | `pot_count` (Number) — 사용자 시각 위계 표시용 |
+
+> **Side Pot 분할 시점**: §1.3 룰 그대로 — All-in 발생 시 자동 분리. Overlay 는 분리 직후 시각적 split 애니메이션 권고 (RIVE_Standards Ch.17 — Pot Edge-case 7 종).
+
+### 8-4. 정합 검증 체크리스트 (Wave 2.3 cascade)
+
+| 정합 대상 | 정합 stream | 작업 |
+|----------|------------|------|
+| Equity_Calculator.md engine 정본 SSOT 신규 작성 | S8 Engine | Multi_Hand_v03.md 와 동일 구조 |
+| Blind Structure 테이블 schema (sb_amount/bb_amount/ante_amount/ante_type) | S7 Backend | 현재 ERD 미존재 — `BlindStructure` 테이블 추가 |
+| Pot edge-case 7 종 정합 (Side Pot 시각화) | S2 Lobby / S3 CC | RIVE_Standards Ch.17 와 동기화 |
+| Brand Pack 테이블 schema (카테고리 #6 정합) | S7 Backend | Back_Office.md 5.3.2 정합 |
+
