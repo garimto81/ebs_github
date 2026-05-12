@@ -1,0 +1,207 @@
+### SG-036 P1-core-update — 11 endpoint coverage 보강 (Cycle 10, 2026-05-12)
+###
+### 배경:
+###   Cycle 10-A (71): P1-read 10 추가 → 79 unique 예상.
+###   본 cycle (72): P1-core-update 25건 중 첫 11건 (PUT 위주) 보강.
+###   목표: 79 → 90 unique, mismatch 126 → 115 (11 감소).
+###
+### Scope:
+###   P1-core-update 25건 중 11건 — 모든 entity 의 PUT (DELETE 는 Cycle 11).
+###   특히 PATCH/PUT method 정합 검증 (Type D drift 측정 — tables/active_deck).
+###
+### Schema 정합 (BO src/models/schemas.py 기준):
+###   각 RequestModel 은 `{Resource}Update` 형태 (optional 필드).
+###   RBAC: require_role("admin") (대부분).
+###
+### Cycle 10 update matrix (P1-core-update 11건 / PUT 위주):
+###   1. PUT /api/v1/series/{id}
+###   2. PUT /api/v1/competitions/{id}
+###   3. PUT /api/v1/players/{id}
+###   4. PUT /api/v1/users/{id}
+###   5. PUT /api/v1/blind-structures/{id}
+###   6. PUT /api/v1/payout-structures/{id}
+###   7. PUT /api/v1/flights/{id}
+###   8. PUT /api/v1/events/{id}
+###   9. PUT /api/v1/configs/{id}
+###  10. PATCH /api/v1/decks/{id}             (router 가 PATCH 사용)
+###  11. PUT /api/v1/tables/{id}              (Type D drift 검증 — .http 는 PATCH 가 있을 수 있음)
+###
+### Type D drift (router PUT ↔ .http PATCH) 명시:
+###   - tables/{id}: router=PUT, .http history 에 PATCH 존재 → 본 cycle 에서 PUT 추가.
+###   - tables/{id}/active_deck: 동일 패턴. 별도 cycle 11 에서 보강.
+###
+### 잔여 (Cycle 11+ 분할):
+###   - DELETE 14건 (blind-structures, competitions, events, flights, payout-structures, players, series, users, skins, tables/seats, blind-structures/levels)
+###   - blind-structures/{id}/levels/{id} PUT/DELETE
+###   - tables/{id}/seats/{id} PUT/DELETE
+###
+### Source: SG-036 Spec_Gap_Registry §4.5
+
+@host = http://localhost:18001
+@admin_token = {{$dotenv ADMIN_JWT}}
+@viewer_token = {{$dotenv VIEWER_JWT}}
+
+@series_id = {{$dotenv TEST_SERIES_ID}}
+@competition_id = {{$dotenv TEST_COMPETITION_ID}}
+@player_id = {{$dotenv TEST_PLAYER_ID}}
+@user_id = {{$dotenv TEST_USER_ID}}
+@blind_structure_id = {{$dotenv TEST_BLIND_STRUCTURE_ID}}
+@payout_structure_id = {{$dotenv TEST_PAYOUT_STRUCTURE_ID}}
+@flight_id = {{$dotenv TEST_FLIGHT_ID}}
+@event_id = {{$dotenv TEST_EVENT_ID}}
+@config_id = {{$dotenv TEST_CONFIG_ID}}
+@deck_id = {{$dotenv TEST_DECK_ID}}
+@table_id = {{$dotenv TEST_TABLE_ID}}
+
+### 72.1 PUT /api/v1/series/{id} — update series (admin only)
+PUT {{host}}/api/v1/series/{{series_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "series_name": "WSOP 2026 Main Event — Updated",
+  "end_at": "2026-07-16T23:59:59Z"
+}
+
+# 예상 응답:
+# 200 OK + ApiResponse[SeriesResponse]
+# 404 = SERIES_NOT_FOUND. RBAC: admin only.
+
+### 72.1b PUT /api/v1/series/{id} — viewer 거부 (403)
+PUT {{host}}/api/v1/series/{{series_id}}
+Authorization: Bearer {{viewer_token}}
+Content-Type: application/json
+
+{
+  "series_name": "Should fail"
+}
+
+# 예상 응답: 403 Forbidden, AUTH_INSUFFICIENT_ROLE.
+
+### 72.2 PUT /api/v1/competitions/{id} — update competition (admin)
+PUT {{host}}/api/v1/competitions/{{competition_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "name": "WSOP 2026 — Updated"
+}
+
+# 예상 응답: 200 OK + ApiResponse[CompetitionResponse].
+# RBAC: admin only.
+
+### 72.3 PUT /api/v1/players/{id} — update player (admin)
+PUT {{host}}/api/v1/players/{{player_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "nationality": "United States",
+  "country_code": "US"
+}
+
+# 예상 응답: 200 OK + ApiResponse[PlayerResponse].
+
+### 72.4 PUT /api/v1/users/{id} — update user (admin)
+PUT {{host}}/api/v1/users/{{user_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "display_name": "Updated Operator Name",
+  "role": "operator"
+}
+
+# 예상 응답: 200 OK + ApiResponse[UserResponse].
+# RBAC critical: admin only. password 변경은 별도 endpoint.
+
+### 72.5 PUT /api/v1/blind-structures/{id} — update blind structure (admin)
+PUT {{host}}/api/v1/blind-structures/{{blind_structure_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "name": "Updated Blind Structure",
+  "levels": [
+    { "level": 1, "small_blind": 100, "big_blind": 200, "ante": 0, "duration_minutes": 20 },
+    { "level": 2, "small_blind": 200, "big_blind": 400, "ante": 0, "duration_minutes": 20 }
+  ]
+}
+
+# 예상 응답: 200 OK + ApiResponse[BlindStructureResponse].
+# levels 전체 교체 (PUT semantics).
+
+### 72.6 PUT /api/v1/payout-structures/{id} — update payout (admin)
+PUT {{host}}/api/v1/payout-structures/{{payout_structure_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "name": "Updated Payout Structure"
+}
+
+# 예상 응답: 200 OK + ApiResponse[PayoutStructureResponse].
+
+### 72.7 PUT /api/v1/flights/{id} — update flight (admin)
+PUT {{host}}/api/v1/flights/{{flight_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "flight_name": "Day 1A — Updated",
+  "scheduled_start_at": "2026-07-01T12:00:00Z"
+}
+
+# 예상 응답: 200 OK + ApiResponse[FlightResponse].
+# Type D 후보: .http history 에 PATCH 있음 — 본 entry 는 router PUT 정합 검증.
+
+### 72.8 PUT /api/v1/events/{id} — update event (admin)
+PUT {{host}}/api/v1/events/{{event_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "event_name": "Event #1 — Updated",
+  "table_size": 9
+}
+
+# 예상 응답: 200 OK + ApiResponse[EventResponse].
+
+### 72.9 PUT /api/v1/configs/{id} — update config (admin)
+PUT {{host}}/api/v1/configs/{{config_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "value": "updated_value",
+  "value_type": "string"
+}
+
+# 예상 응답: 200 OK + ApiResponse[ConfigResponse].
+
+### 72.10 PATCH /api/v1/decks/{id} — patch deck metadata (admin)
+PATCH {{host}}/api/v1/decks/{{deck_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "is_active": true
+}
+
+# 예상 응답: 200 OK + ApiResponse[DeckResponse].
+# router 는 PATCH (RESTful partial update).
+
+### 72.11 PUT /api/v1/tables/{id} — update table (admin)
+PUT {{host}}/api/v1/tables/{{table_id}}
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "table_name": "Featured Table — Updated",
+  "seats_count": 9
+}
+
+# 예상 응답:
+# 200 OK + ApiResponse[TableResponse].
+# Type D drift 측정 — 일부 .http 가 PATCH /api/v1/tables/{id} 사용 중.
+# 본 entry 는 router 정본 (PUT) 검증. PATCH .http 는 cycle 14 Orphan-C 결정 PR.

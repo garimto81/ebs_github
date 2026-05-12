@@ -1,0 +1,124 @@
+### SG-036 P1-core-read — 10 endpoint coverage 보강 (Cycle 10, 2026-05-12)
+###
+### 배경:
+###   Cycle 9 baseline: .http 69 unique vs router 137 unique → coverage 19.7%.
+###   본 cycle: P1-core-read 10건 (`GET /api/v1/{resource}/{id}`) 보강.
+###   목표: 69 → 79 unique, mismatch 136 → 126 (10 감소).
+###
+### Scope:
+###   P1-core-read 10건 — 모든 entity 의 read-by-id endpoint.
+###   사전 조건: list endpoint 호출하여 실재 id 확보 후 read 호출 패턴.
+###
+### Schema 정합 (BO src/models/schemas.py 기준):
+###   각 ResponseModel 은 ApiResponse[{Resource}Response] 형태.
+###   RBAC: get_current_user (viewer 이상). users 만 admin 권장.
+###
+### Cycle 10 priority matrix (P1-core-read 10건):
+###   1. GET /api/v1/series/{id}
+###   2. GET /api/v1/competitions/{id}
+###   3. GET /api/v1/players/{id}
+###   4. GET /api/v1/users/{id}              (admin 권장)
+###   5. GET /api/v1/blind-structures/{id}
+###   6. GET /api/v1/payout-structures/{id}
+###   7. GET /api/v1/flights/{id}
+###   8. GET /api/v1/hands/{id}
+###   9. GET /api/v1/configs/{id}
+###  10. GET /api/v1/decks/{id}
+###
+### Source: SG-036 Spec_Gap_Registry §4.5 + integration-tests/_audit/sg036-cycle9/
+
+@host = http://localhost:18001
+@admin_token = {{$dotenv ADMIN_JWT}}
+@viewer_token = {{$dotenv VIEWER_JWT}}
+
+# 사전 조건 변수 (실행 전 list 호출로 id 확보 또는 .env 주입)
+@series_id = {{$dotenv TEST_SERIES_ID}}
+@competition_id = {{$dotenv TEST_COMPETITION_ID}}
+@player_id = {{$dotenv TEST_PLAYER_ID}}
+@user_id = {{$dotenv TEST_USER_ID}}
+@blind_structure_id = {{$dotenv TEST_BLIND_STRUCTURE_ID}}
+@payout_structure_id = {{$dotenv TEST_PAYOUT_STRUCTURE_ID}}
+@flight_id = {{$dotenv TEST_FLIGHT_ID}}
+@hand_id = {{$dotenv TEST_HAND_ID}}
+@config_id = {{$dotenv TEST_CONFIG_ID}}
+@deck_id = {{$dotenv TEST_DECK_ID}}
+
+### 71.1 GET /api/v1/series/{id} — read series by id (viewer OK)
+GET {{host}}/api/v1/series/{{series_id}}
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답:
+# 200 OK
+# { "data": SeriesResponse, "meta": {} }
+# 404 NOT_FOUND = SERIES_NOT_FOUND.
+# RBAC: get_current_user.
+
+### 71.2 GET /api/v1/competitions/{id} — read competition (viewer OK)
+GET {{host}}/api/v1/competitions/{{competition_id}}
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[CompetitionResponse].
+# 404 = COMPETITION_NOT_FOUND.
+
+### 71.3 GET /api/v1/players/{id} — read player (viewer OK)
+GET {{host}}/api/v1/players/{{player_id}}
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[PlayerResponse].
+# 404 = PLAYER_NOT_FOUND.
+
+### 71.4 GET /api/v1/users/{id} — read user (admin OK)
+GET {{host}}/api/v1/users/{{user_id}}
+Authorization: Bearer {{admin_token}}
+
+# 예상 응답: ApiResponse[UserResponse].
+# RBAC: admin 권장 (PII 보호). 404 = USER_NOT_FOUND.
+
+### 71.4b GET /api/v1/users/{id} — viewer 거부 (403)
+GET {{host}}/api/v1/users/{{user_id}}
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: 403 Forbidden, AUTH_INSUFFICIENT_ROLE (admin only 시).
+# 또는 200 (BO 가 viewer 허용 시) — 실측 후 BO 정합 결정.
+
+### 71.5 GET /api/v1/blind-structures/{id} — read blind structure (viewer OK)
+GET {{host}}/api/v1/blind-structures/{{blind_structure_id}}
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[BlindStructureResponse] (levels 포함).
+# Final Table 진입 시 blind level 화면 호출.
+
+### 71.6 GET /api/v1/payout-structures/{id} — read payout structure (viewer OK)
+GET {{host}}/api/v1/payout-structures/{{payout_structure_id}}
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[PayoutStructureResponse].
+# 토너먼트 상금 구조 조회.
+
+### 71.7 GET /api/v1/flights/{id} — read flight (viewer OK)
+GET {{host}}/api/v1/flights/{{flight_id}}
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[FlightResponse] (clock/blind/tables 메타).
+# Flight 상세 진입.
+
+### 71.8 GET /api/v1/hands/{id} — read hand (viewer OK)
+GET {{host}}/api/v1/hands/{{hand_id}}
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[HandResponse] (actions/players 메타).
+# Hand 상세 조회 (replay 진입).
+
+### 71.9 GET /api/v1/configs/{id} — read config (admin)
+GET {{host}}/api/v1/configs/{{config_id}}
+Authorization: Bearer {{admin_token}}
+
+# 예상 응답: ApiResponse[ConfigResponse] (key/value 메타).
+# 운영 config 조회. admin 권장.
+
+### 71.10 GET /api/v1/decks/{id} — read deck (viewer OK)
+GET {{host}}/api/v1/decks/{{deck_id}}
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: ApiResponse[DeckResponse] (RFID registry 메타).
+# Deck register 후 verification 호출.

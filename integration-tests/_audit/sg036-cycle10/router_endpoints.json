@@ -1,0 +1,1235 @@
+[
+  {
+    "file": "audit.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/audit-logs",
+    "path_norm": "/api/v1/audit-logs",
+    "line": 27,
+    "func": "list_audit_logs"
+  },
+  {
+    "file": "audit.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/audit-logs/download",
+    "path_norm": "/api/v1/audit-logs/download",
+    "line": 70,
+    "func": "download_audit_logs"
+  },
+  {
+    "file": "audit.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/audit-events",
+    "path_norm": "/api/v1/audit-events",
+    "line": 104,
+    "func": "list_audit_events"
+  },
+  {
+    "file": "auth.py",
+    "method": "POST",
+    "prefix": "/auth",
+    "path_raw": "/login",
+    "path_norm": "/auth/login",
+    "line": 186,
+    "func": "login"
+  },
+  {
+    "file": "auth.py",
+    "method": "POST",
+    "prefix": "/auth",
+    "path_raw": "/refresh",
+    "path_norm": "/auth/refresh",
+    "line": 248,
+    "func": "refresh"
+  },
+  {
+    "file": "auth.py",
+    "method": "POST",
+    "prefix": "/auth",
+    "path_raw": "/logout",
+    "path_norm": "/auth/logout",
+    "line": 265,
+    "func": "logout"
+  },
+  {
+    "file": "auth.py",
+    "method": "GET",
+    "prefix": "/auth",
+    "path_raw": "/me",
+    "path_norm": "/auth/me",
+    "line": 291,
+    "func": "me"
+  },
+  {
+    "file": "auth.py",
+    "method": "GET",
+    "prefix": "/auth",
+    "path_raw": "/session",
+    "path_norm": "/auth/session",
+    "line": 304,
+    "func": "get_session"
+  },
+  {
+    "file": "auth.py",
+    "method": "POST",
+    "prefix": "/auth",
+    "path_raw": "/verify-2fa",
+    "path_norm": "/auth/verify-2fa",
+    "line": 321,
+    "func": "verify_2fa"
+  },
+  {
+    "file": "auth.py",
+    "method": "POST",
+    "prefix": "/auth",
+    "path_raw": "/2fa/setup",
+    "path_norm": "/auth/2fa/setup",
+    "line": 372,
+    "func": "setup_2fa"
+  },
+  {
+    "file": "auth.py",
+    "method": "POST",
+    "prefix": "/auth",
+    "path_raw": "/2fa/disable",
+    "path_norm": "/auth/2fa/disable",
+    "line": 382,
+    "func": "disable_2fa"
+  },
+  {
+    "file": "auth.py",
+    "method": "POST",
+    "prefix": "/auth",
+    "path_raw": "/password/reset/send",
+    "path_norm": "/auth/password/reset/send",
+    "line": 412,
+    "func": "password_reset_send"
+  },
+  {
+    "file": "auth.py",
+    "method": "POST",
+    "prefix": "/auth",
+    "path_raw": "/password/reset/verify",
+    "path_norm": "/auth/password/reset/verify",
+    "line": 422,
+    "func": "password_reset_verify"
+  },
+  {
+    "file": "auth.py",
+    "method": "POST",
+    "prefix": "/auth",
+    "path_raw": "/password/reset",
+    "path_norm": "/auth/password/reset",
+    "line": 455,
+    "func": "password_reset"
+  },
+  {
+    "file": "auth.py",
+    "method": "GET",
+    "prefix": "/auth",
+    "path_raw": "/google",
+    "path_norm": "/auth/google",
+    "line": 470,
+    "func": "google_oauth_start"
+  },
+  {
+    "file": "auth.py",
+    "method": "GET",
+    "prefix": "/auth",
+    "path_raw": "/google/callback",
+    "path_norm": "/auth/google/callback",
+    "line": 486,
+    "func": "google_oauth_callback"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/blind-structures",
+    "path_norm": "/api/v1/blind-structures",
+    "line": 41,
+    "func": "api_list_blind_structures"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/blind-structures/{bs_id}",
+    "path_norm": "/api/v1/blind-structures/{}",
+    "line": 67,
+    "func": "api_get_blind_structure"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/blind-structures",
+    "path_norm": "/api/v1/blind-structures",
+    "line": 86,
+    "func": "api_create_blind_structure"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/blind-structures/{bs_id}",
+    "path_norm": "/api/v1/blind-structures/{}",
+    "line": 105,
+    "func": "api_update_blind_structure"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/blind-structures/{bs_id}",
+    "path_norm": "/api/v1/blind-structures/{}",
+    "line": 125,
+    "func": "api_delete_blind_structure"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/blind-structures/{bs_id}/levels",
+    "path_norm": "/api/v1/blind-structures/{}/levels",
+    "line": 138,
+    "func": "api_list_blind_structure_levels"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/blind-structures/{bs_id}/levels",
+    "path_norm": "/api/v1/blind-structures/{}/levels",
+    "line": 152,
+    "func": "api_create_blind_structure_level"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/blind-structures/{bs_id}/levels/{level_id}",
+    "path_norm": "/api/v1/blind-structures/{}/levels/{}",
+    "line": 166,
+    "func": "api_update_blind_structure_level"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/blind-structures/{bs_id}/levels/{level_id}",
+    "path_norm": "/api/v1/blind-structures/{}/levels/{}",
+    "line": 189,
+    "func": "api_delete_blind_structure_level"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/blind-structure",
+    "path_norm": "/api/v1/flights/{}/blind-structure",
+    "line": 211,
+    "func": "api_get_flight_blind_structure"
+  },
+  {
+    "file": "blind_structures.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/blind-structure",
+    "path_norm": "/api/v1/flights/{}/blind-structure",
+    "line": 230,
+    "func": "api_apply_blind_structure"
+  },
+  {
+    "file": "competitions.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/competitions",
+    "path_norm": "/api/v1/competitions",
+    "line": 25,
+    "func": "api_list_competitions"
+  },
+  {
+    "file": "competitions.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/competitions",
+    "path_norm": "/api/v1/competitions",
+    "line": 39,
+    "func": "api_create_competition"
+  },
+  {
+    "file": "competitions.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/competitions/{competition_id}",
+    "path_norm": "/api/v1/competitions/{}",
+    "line": 49,
+    "func": "api_get_competition"
+  },
+  {
+    "file": "competitions.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/competitions/{competition_id}",
+    "path_norm": "/api/v1/competitions/{}",
+    "line": 59,
+    "func": "api_update_competition"
+  },
+  {
+    "file": "competitions.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/competitions/{competition_id}",
+    "path_norm": "/api/v1/competitions/{}",
+    "line": 70,
+    "func": "api_delete_competition"
+  },
+  {
+    "file": "configs.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/configs/{section}",
+    "path_norm": "/api/v1/configs/{}",
+    "line": 19,
+    "func": "api_list_configs_by_section"
+  },
+  {
+    "file": "configs.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/configs/{section}",
+    "path_norm": "/api/v1/configs/{}",
+    "line": 32,
+    "func": "api_bulk_update_configs"
+  },
+  {
+    "file": "decks.py",
+    "method": "POST",
+    "prefix": "/api/v1/decks",
+    "path_raw": "",
+    "path_norm": "/api/v1/decks",
+    "line": 200,
+    "func": "create_deck"
+  },
+  {
+    "file": "decks.py",
+    "method": "GET",
+    "prefix": "/api/v1/decks",
+    "path_raw": "",
+    "path_norm": "/api/v1/decks",
+    "line": 218,
+    "func": "list_decks"
+  },
+  {
+    "file": "decks.py",
+    "method": "GET",
+    "prefix": "/api/v1/decks",
+    "path_raw": "/{deck_id}",
+    "path_norm": "/api/v1/decks/{}",
+    "line": 233,
+    "func": "get_deck"
+  },
+  {
+    "file": "decks.py",
+    "method": "POST",
+    "prefix": "/api/v1/decks",
+    "path_raw": "/{deck_id}/cards",
+    "path_norm": "/api/v1/decks/{}/cards",
+    "line": 244,
+    "func": "register_card"
+  },
+  {
+    "file": "decks.py",
+    "method": "POST",
+    "prefix": "/api/v1/decks",
+    "path_raw": "/import",
+    "path_norm": "/api/v1/decks/import",
+    "line": 317,
+    "func": "import_deck"
+  },
+  {
+    "file": "decks.py",
+    "method": "PATCH",
+    "prefix": "/api/v1/decks",
+    "path_raw": "/{deck_id}/cards/{card_code}",
+    "path_norm": "/api/v1/decks/{}/cards/{}",
+    "line": 392,
+    "func": "replace_card"
+  },
+  {
+    "file": "decks.py",
+    "method": "PATCH",
+    "prefix": "/api/v1/decks",
+    "path_raw": "/{deck_id}",
+    "path_norm": "/api/v1/decks/{}",
+    "line": 433,
+    "func": "update_deck_status"
+  },
+  {
+    "file": "decks.py",
+    "method": "DELETE",
+    "prefix": "/api/v1/decks",
+    "path_raw": "/{deck_id}",
+    "path_norm": "/api/v1/decks/{}",
+    "line": 466,
+    "func": "delete_deck"
+  },
+  {
+    "file": "event_flights.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/levels",
+    "path_norm": "/api/v1/flights/{}/levels",
+    "line": 45,
+    "func": "api_get_flight_levels"
+  },
+  {
+    "file": "hands.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/hands",
+    "path_norm": "/api/v1/hands",
+    "line": 37,
+    "func": "api_list_hands"
+  },
+  {
+    "file": "hands.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/hands/{hand_id}",
+    "path_norm": "/api/v1/hands/{}",
+    "line": 111,
+    "func": "api_get_hand"
+  },
+  {
+    "file": "hands.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/hands/{hand_id}/players",
+    "path_norm": "/api/v1/hands/{}/players",
+    "line": 124,
+    "func": "api_get_hand_players"
+  },
+  {
+    "file": "hands.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/hands/{hand_id}/actions",
+    "path_norm": "/api/v1/hands/{}/actions",
+    "line": 139,
+    "func": "api_get_hand_actions"
+  },
+  {
+    "file": "payout_structures.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/payout-structures",
+    "path_norm": "/api/v1/payout-structures",
+    "line": 32,
+    "func": "api_list_payout_structures"
+  },
+  {
+    "file": "payout_structures.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/payout-structures/{ps_id}",
+    "path_norm": "/api/v1/payout-structures/{}",
+    "line": 58,
+    "func": "api_get_payout_structure"
+  },
+  {
+    "file": "payout_structures.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/payout-structures",
+    "path_norm": "/api/v1/payout-structures",
+    "line": 77,
+    "func": "api_create_payout_structure"
+  },
+  {
+    "file": "payout_structures.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/payout-structures/{ps_id}",
+    "path_norm": "/api/v1/payout-structures/{}",
+    "line": 96,
+    "func": "api_update_payout_structure"
+  },
+  {
+    "file": "payout_structures.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/payout-structures/{ps_id}",
+    "path_norm": "/api/v1/payout-structures/{}",
+    "line": 116,
+    "func": "api_delete_payout_structure"
+  },
+  {
+    "file": "players.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/players",
+    "path_norm": "/api/v1/players",
+    "line": 25,
+    "func": "api_list_players"
+  },
+  {
+    "file": "players.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/players",
+    "path_norm": "/api/v1/players",
+    "line": 40,
+    "func": "api_create_player"
+  },
+  {
+    "file": "players.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/players/search",
+    "path_norm": "/api/v1/players/search",
+    "line": 50,
+    "func": "api_search_players"
+  },
+  {
+    "file": "players.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/players/{player_id}",
+    "path_norm": "/api/v1/players/{}",
+    "line": 65,
+    "func": "api_get_player"
+  },
+  {
+    "file": "players.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/players/{player_id}",
+    "path_norm": "/api/v1/players/{}",
+    "line": 75,
+    "func": "api_update_player"
+  },
+  {
+    "file": "players.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/players/{player_id}",
+    "path_norm": "/api/v1/players/{}",
+    "line": 86,
+    "func": "api_delete_player"
+  },
+  {
+    "file": "replay.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/{table_id}/events",
+    "path_norm": "/api/v1/tables/{}/events",
+    "line": 15,
+    "func": "replay_events"
+  },
+  {
+    "file": "reports.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/reports/dashboard",
+    "path_norm": "/api/v1/reports/dashboard",
+    "line": 109,
+    "func": "report_dashboard"
+  },
+  {
+    "file": "reports.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/reports/table-activity",
+    "path_norm": "/api/v1/reports/table-activity",
+    "line": 139,
+    "func": "report_table_activity"
+  },
+  {
+    "file": "reports.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/reports/player-stats",
+    "path_norm": "/api/v1/reports/player-stats",
+    "line": 163,
+    "func": "report_player_stats"
+  },
+  {
+    "file": "reports.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/reports/hand-distribution",
+    "path_norm": "/api/v1/reports/hand-distribution",
+    "line": 201,
+    "func": "report_hand_distribution"
+  },
+  {
+    "file": "reports.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/reports/rfid-health",
+    "path_norm": "/api/v1/reports/rfid-health",
+    "line": 229,
+    "func": "report_rfid_health"
+  },
+  {
+    "file": "reports.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/reports/operator-activity",
+    "path_norm": "/api/v1/reports/operator-activity",
+    "line": 256,
+    "func": "report_operator_activity"
+  },
+  {
+    "file": "series.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/series",
+    "path_norm": "/api/v1/series",
+    "line": 61,
+    "func": "api_list_series"
+  },
+  {
+    "file": "series.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/series",
+    "path_norm": "/api/v1/series",
+    "line": 75,
+    "func": "api_create_series"
+  },
+  {
+    "file": "series.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/series/{series_id}",
+    "path_norm": "/api/v1/series/{}",
+    "line": 85,
+    "func": "api_get_series"
+  },
+  {
+    "file": "series.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/series/{series_id}",
+    "path_norm": "/api/v1/series/{}",
+    "line": 95,
+    "func": "api_update_series"
+  },
+  {
+    "file": "series.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/series/{series_id}",
+    "path_norm": "/api/v1/series/{}",
+    "line": 106,
+    "func": "api_delete_series"
+  },
+  {
+    "file": "series.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/series/{series_id}/events",
+    "path_norm": "/api/v1/series/{}/events",
+    "line": 119,
+    "func": "api_list_events"
+  },
+  {
+    "file": "series.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/series/{series_id}/events",
+    "path_norm": "/api/v1/series/{}/events",
+    "line": 134,
+    "func": "api_create_event"
+  },
+  {
+    "file": "series.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/events",
+    "path_norm": "/api/v1/events",
+    "line": 147,
+    "func": "api_list_all_events"
+  },
+  {
+    "file": "series.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/events",
+    "path_norm": "/api/v1/events",
+    "line": 162,
+    "func": "api_create_event_flat"
+  },
+  {
+    "file": "series.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/events/{event_id}",
+    "path_norm": "/api/v1/events/{}",
+    "line": 173,
+    "func": "api_get_event"
+  },
+  {
+    "file": "series.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/events/{event_id}",
+    "path_norm": "/api/v1/events/{}",
+    "line": 183,
+    "func": "api_update_event"
+  },
+  {
+    "file": "series.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/events/{event_id}",
+    "path_norm": "/api/v1/events/{}",
+    "line": 194,
+    "func": "api_delete_event"
+  },
+  {
+    "file": "series.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/flights",
+    "path_norm": "/api/v1/flights",
+    "line": 207,
+    "func": "api_list_flights_flat"
+  },
+  {
+    "file": "series.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/flights",
+    "path_norm": "/api/v1/flights",
+    "line": 223,
+    "func": "api_create_flight_flat"
+  },
+  {
+    "file": "series.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/events/{event_id}/flights",
+    "path_norm": "/api/v1/events/{}/flights",
+    "line": 234,
+    "func": "api_list_flights"
+  },
+  {
+    "file": "series.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/events/{event_id}/flights",
+    "path_norm": "/api/v1/events/{}/flights",
+    "line": 250,
+    "func": "api_create_flight"
+  },
+  {
+    "file": "series.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}",
+    "path_norm": "/api/v1/flights/{}",
+    "line": 264,
+    "func": "api_get_flight"
+  },
+  {
+    "file": "series.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}",
+    "path_norm": "/api/v1/flights/{}",
+    "line": 274,
+    "func": "api_update_flight"
+  },
+  {
+    "file": "series.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}",
+    "path_norm": "/api/v1/flights/{}",
+    "line": 285,
+    "func": "api_delete_flight"
+  },
+  {
+    "file": "series.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/complete",
+    "path_norm": "/api/v1/flights/{}/complete",
+    "line": 307,
+    "func": "api_complete_flight"
+  },
+  {
+    "file": "series.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/cancel",
+    "path_norm": "/api/v1/flights/{}/cancel",
+    "line": 319,
+    "func": "api_cancel_flight"
+  },
+  {
+    "file": "series.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/clock",
+    "path_norm": "/api/v1/flights/{}/clock",
+    "line": 334,
+    "func": "api_get_clock"
+  },
+  {
+    "file": "series.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/clock/start",
+    "path_norm": "/api/v1/flights/{}/clock/start",
+    "line": 344,
+    "func": "api_start_clock"
+  },
+  {
+    "file": "series.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/clock/pause",
+    "path_norm": "/api/v1/flights/{}/clock/pause",
+    "line": 354,
+    "func": "api_pause_clock"
+  },
+  {
+    "file": "series.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/clock/resume",
+    "path_norm": "/api/v1/flights/{}/clock/resume",
+    "line": 364,
+    "func": "api_resume_clock"
+  },
+  {
+    "file": "series.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/clock/restart",
+    "path_norm": "/api/v1/flights/{}/clock/restart",
+    "line": 374,
+    "func": "api_restart_clock"
+  },
+  {
+    "file": "series.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/clock",
+    "path_norm": "/api/v1/flights/{}/clock",
+    "line": 384,
+    "func": "api_adjust_clock"
+  },
+  {
+    "file": "series.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/clock/detail",
+    "path_norm": "/api/v1/flights/{}/clock/detail",
+    "line": 409,
+    "func": "api_clock_detail"
+  },
+  {
+    "file": "series.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/clock/reload-page",
+    "path_norm": "/api/v1/flights/{}/clock/reload-page",
+    "line": 425,
+    "func": "api_clock_reload_page"
+  },
+  {
+    "file": "series.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/clock/adjust-stack",
+    "path_norm": "/api/v1/flights/{}/clock/adjust-stack",
+    "line": 440,
+    "func": "api_clock_adjust_stack"
+  },
+  {
+    "file": "settings_kv.py",
+    "method": "GET",
+    "prefix": "/api/v1/settings",
+    "path_raw": "",
+    "path_norm": "/api/v1/settings",
+    "line": 184,
+    "func": "list_settings"
+  },
+  {
+    "file": "settings_kv.py",
+    "method": "PUT",
+    "prefix": "/api/v1/settings",
+    "path_raw": "",
+    "path_norm": "/api/v1/settings",
+    "line": 214,
+    "func": "upsert_setting"
+  },
+  {
+    "file": "settings_kv.py",
+    "method": "DELETE",
+    "prefix": "/api/v1/settings",
+    "path_raw": "",
+    "path_norm": "/api/v1/settings",
+    "line": 242,
+    "func": "delete_setting"
+  },
+  {
+    "file": "settings_kv.py",
+    "method": "GET",
+    "prefix": "/api/v1/settings",
+    "path_raw": "/resolved",
+    "path_norm": "/api/v1/settings/resolved",
+    "line": 261,
+    "func": "get_resolved_settings"
+  },
+  {
+    "file": "skins.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/skins",
+    "path_norm": "/api/v1/skins",
+    "line": 169,
+    "func": "api_list_skins"
+  },
+  {
+    "file": "skins.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/skins/active",
+    "path_norm": "/api/v1/skins/active",
+    "line": 183,
+    "func": "api_get_active_skin"
+  },
+  {
+    "file": "skins.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/skins/{skin_id}",
+    "path_norm": "/api/v1/skins/{}",
+    "line": 194,
+    "func": "api_get_skin"
+  },
+  {
+    "file": "skins.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/skins",
+    "path_norm": "/api/v1/skins",
+    "line": 204,
+    "func": "api_create_skin"
+  },
+  {
+    "file": "skins.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/skins/{skin_id}",
+    "path_norm": "/api/v1/skins/{}",
+    "line": 214,
+    "func": "api_update_skin"
+  },
+  {
+    "file": "skins.py",
+    "method": "PATCH",
+    "prefix": "/api/v1",
+    "path_raw": "/skins/{skin_id}/metadata",
+    "path_norm": "/api/v1/skins/{}/metadata",
+    "line": 226,
+    "func": "api_update_skin_metadata_legacy"
+  },
+  {
+    "file": "skins.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/skins/{skin_id}/activate",
+    "path_norm": "/api/v1/skins/{}/activate",
+    "line": 238,
+    "func": "api_activate_skin"
+  },
+  {
+    "file": "skins.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/skins/{skin_id}/deactivate",
+    "path_norm": "/api/v1/skins/{}/deactivate",
+    "line": 249,
+    "func": "api_deactivate_skin"
+  },
+  {
+    "file": "skins.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/skins/{skin_id}/activate",
+    "path_norm": "/api/v1/skins/{}/activate",
+    "line": 261,
+    "func": "api_activate_skin_legacy"
+  },
+  {
+    "file": "skins.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/skins/{skin_id}",
+    "path_norm": "/api/v1/skins/{}",
+    "line": 272,
+    "func": "api_delete_skin"
+  },
+  {
+    "file": "skins.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/skins/upload",
+    "path_norm": "/api/v1/skins/upload",
+    "line": 287,
+    "func": "api_upload_skin"
+  },
+  {
+    "file": "sync.py",
+    "method": "GET",
+    "prefix": "/api/v1/sync",
+    "path_raw": "/status",
+    "path_norm": "/api/v1/sync/status",
+    "line": 33,
+    "func": "sync_status"
+  },
+  {
+    "file": "sync.py",
+    "method": "GET",
+    "prefix": "/api/v1/sync",
+    "path_raw": "/wsop-live/status",
+    "path_norm": "/api/v1/sync/wsop-live/status",
+    "line": 50,
+    "func": "sync_wsop_live_status"
+  },
+  {
+    "file": "sync.py",
+    "method": "POST",
+    "prefix": "/api/v1/sync",
+    "path_raw": "/wsop-live",
+    "path_norm": "/api/v1/sync/wsop-live",
+    "line": 59,
+    "func": "sync_wsop_live_trigger"
+  },
+  {
+    "file": "sync.py",
+    "method": "GET",
+    "prefix": "/api/v1/sync",
+    "path_raw": "/conflicts",
+    "path_norm": "/api/v1/sync/conflicts",
+    "line": 78,
+    "func": "sync_conflicts"
+  },
+  {
+    "file": "sync.py",
+    "method": "POST",
+    "prefix": "/api/v1/sync",
+    "path_raw": "/trigger/{source}",
+    "path_norm": "/api/v1/sync/trigger/{}",
+    "line": 91,
+    "func": "trigger_sync"
+  },
+  {
+    "file": "sync.py",
+    "method": "POST",
+    "prefix": "/api/v1/sync",
+    "path_raw": "/mock/seed",
+    "path_norm": "/api/v1/sync/mock/seed",
+    "line": 116,
+    "func": "seed_mock"
+  },
+  {
+    "file": "sync.py",
+    "method": "DELETE",
+    "prefix": "/api/v1/sync",
+    "path_raw": "/mock/reset",
+    "path_norm": "/api/v1/sync/mock/reset",
+    "line": 131,
+    "func": "reset_mock"
+  },
+  {
+    "file": "tables.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/rebalance",
+    "path_norm": "/api/v1/tables/rebalance",
+    "line": 45,
+    "func": "api_rebalance"
+  },
+  {
+    "file": "tables.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/tables",
+    "path_norm": "/api/v1/tables",
+    "line": 57,
+    "func": "api_list_tables_flat"
+  },
+  {
+    "file": "tables.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/tables",
+    "path_norm": "/api/v1/tables",
+    "line": 73,
+    "func": "api_create_table_flat"
+  },
+  {
+    "file": "tables.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/tables",
+    "path_norm": "/api/v1/flights/{}/tables",
+    "line": 90,
+    "func": "api_list_tables"
+  },
+  {
+    "file": "tables.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/flights/{flight_id}/tables",
+    "path_norm": "/api/v1/flights/{}/tables",
+    "line": 106,
+    "func": "api_create_table"
+  },
+  {
+    "file": "tables.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/{table_id}",
+    "path_norm": "/api/v1/tables/{}",
+    "line": 118,
+    "func": "api_get_table"
+  },
+  {
+    "file": "tables.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/{table_id}",
+    "path_norm": "/api/v1/tables/{}",
+    "line": 128,
+    "func": "api_update_table"
+  },
+  {
+    "file": "tables.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/{table_id}",
+    "path_norm": "/api/v1/tables/{}",
+    "line": 139,
+    "func": "api_delete_table"
+  },
+  {
+    "file": "tables.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/{table_id}/launch-cc",
+    "path_norm": "/api/v1/tables/{}/launch-cc",
+    "line": 155,
+    "func": "api_launch_cc"
+  },
+  {
+    "file": "tables.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/{table_id}/status",
+    "path_norm": "/api/v1/tables/{}/status",
+    "line": 205,
+    "func": "api_get_table_status"
+  },
+  {
+    "file": "tables.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/{table_id}/seats",
+    "path_norm": "/api/v1/tables/{}/seats",
+    "line": 226,
+    "func": "api_get_seats"
+  },
+  {
+    "file": "tables.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/{table_id}/seats",
+    "path_norm": "/api/v1/tables/{}/seats",
+    "line": 238,
+    "func": "api_assign_seat"
+  },
+  {
+    "file": "tables.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/{table_id}/seats/{seat_no}",
+    "path_norm": "/api/v1/tables/{}/seats/{}",
+    "line": 259,
+    "func": "api_vacate_seat"
+  },
+  {
+    "file": "tables.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/tables/{table_id}/seats/{seat_no}",
+    "path_norm": "/api/v1/tables/{}/seats/{}",
+    "line": 272,
+    "func": "api_update_seat"
+  },
+  {
+    "file": "users.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/users",
+    "path_norm": "/api/v1/users",
+    "line": 28,
+    "func": "api_list_users"
+  },
+  {
+    "file": "users.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/users",
+    "path_norm": "/api/v1/users",
+    "line": 42,
+    "func": "api_create_user"
+  },
+  {
+    "file": "users.py",
+    "method": "GET",
+    "prefix": "/api/v1",
+    "path_raw": "/users/{user_id}",
+    "path_norm": "/api/v1/users/{}",
+    "line": 52,
+    "func": "api_get_user"
+  },
+  {
+    "file": "users.py",
+    "method": "PUT",
+    "prefix": "/api/v1",
+    "path_raw": "/users/{user_id}",
+    "path_norm": "/api/v1/users/{}",
+    "line": 62,
+    "func": "api_update_user"
+  },
+  {
+    "file": "users.py",
+    "method": "POST",
+    "prefix": "/api/v1",
+    "path_raw": "/users/{user_id}/force-logout",
+    "path_norm": "/api/v1/users/{}/force-logout",
+    "line": 73,
+    "func": "api_force_logout"
+  },
+  {
+    "file": "users.py",
+    "method": "DELETE",
+    "prefix": "/api/v1",
+    "path_raw": "/users/{user_id}",
+    "path_norm": "/api/v1/users/{}",
+    "line": 152,
+    "func": "api_delete_user"
+  }
+]
