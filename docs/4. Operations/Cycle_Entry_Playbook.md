@@ -243,6 +243,95 @@ Step 4. 사용자에게 정직한 보고
 | tools/orchestrator/orchestrator_monitor.py | 9 stream 모니터링 |
 | tools/orchestrator/dynamic_stream_activation.py | 신규 stream 활성화 |
 | .claude/message_bus/events.db | broker event 영속 저장 |
+| .claude/agents/s{0,2,3,7,8,9,10-a,10-w,11}-*.md | agent-view subagent 정의 (v1.1) |
+| .claude/agents/smem-memory.md | SMEM subagent 정의 (v1.1) |
+
+---
+
+## 13. Agent View Integration (v1.1 신규)
+
+Claude Code v2.1.139+ agent-view 통합. 9 sibling-worktree 분산 -> 1 터미널 + N background session.
+
+### 13.1 사용자 진입 방식 변경
+
+```
+v1.0 (9 sibling-worktree):
+  VSCode 9개 폴더 진입 -> 각 폴더 첫 입력 -> 9회 사용자 진입
+  C:\claude\ebs-lobby-stream, ebs-cc-stream, ebs-backend-stream, ...
+
+v1.1 (agent-view):
+  $ claude agents
+  Dispatch input: "@s7-backend Cycle N 작업 시작 — ..."
+  1회 진입 + peek/reply UI
+```
+
+### 13.2 9 Subagent 매트릭스
+
+| Subagent | 폴더 (v1.0 sibling) | dispatch 패턴 |
+|----------|---------------------|---------------|
+| s0-conductor | C:\claude\ebs (main) | @s0-conductor (또는 직접 작업) |
+| s2-lobby | C:\claude\ebs-lobby-stream | @s2-lobby Cycle N 작업 시작 — ... |
+| s3-cc | C:\claude\ebs-cc-stream | @s3-cc Cycle N 작업 시작 — ... |
+| s7-backend | C:\claude\ebs-backend-stream | @s7-backend Cycle N 작업 시작 — ... |
+| s8-engine | C:\claude\ebs-engine-stream | @s8-engine Cycle N 작업 시작 — ... |
+| s9-qa | C:\claude\ebs-qa | @s9-qa Cycle N 작업 시작 — ... |
+| s10-a-gap-audit | C:\claude\ebs-gap-audit | @s10-a-gap-audit Cycle N 작업 시작 — ... |
+| s10-w-gap-write | C:\claude\ebs-gap-write | @s10-w-gap-write Cycle N 작업 시작 — ... |
+| s11-devops | C:\claude\ebs-devops | @s11-devops Cycle N 작업 시작 — ... |
+| smem-memory | C:\claude\ebs-memory | @smem-memory Cycle N 작업 시작 — ... |
+
+### 13.3 자동 worktree isolation
+
+agent-view dispatch session 은 `.claude/worktrees/<id>/` 에 자동 isolation:
+- 같은 main checkout 공유 (읽기)
+- 각 session 자체 worktree 에 쓰기
+- parallel session conflict 없음
+- session 삭제 시 worktree 자동 cleanup
+
+subagent frontmatter `isolation: worktree` 가 이를 보장.
+
+### 13.4 agent-view UI 핵심 단축키
+
+| 단축키 | 동작 |
+|--------|------|
+| `claude agents` | view 열기 |
+| `Enter` (input) | dispatch |
+| `Space` | 선택 row peek (요약 + reply) |
+| `Enter` / `→` | session attach (full conversation) |
+| `←` | detach (background 유지) |
+| `/bg <prompt>` | 현재 session background |
+| `claude --bg "<prompt>"` | shell 직접 background dispatch |
+| `Alt+1~9` | N번째 session 즉시 attach |
+
+### 13.5 사용자 진입 비용 비교
+
+```
+v1.0: cycle 당 5~9회 진입 (Wave 1/2/3)
+v1.1: cycle 시작 1회 진입 (claude agents) + peek/reply 만
+       Iron Law trigger 시 reply
+
+진입 절감 효과: 매 cycle 80%+ 감소
+```
+
+### 13.6 v1.0 sibling-worktree 처리 (점진 전환)
+
+```
+Phase A: subagent 정의 추가 (현재 — 본 v1.1)
+Phase B: 신규 cycle 부터 agent-view dispatch 만 사용
+Phase C: sibling-worktree 작업 완료 시 archive
+        - ebs-gap-write 는 main worktree 라 영구 보존
+        - 나머지 8 sibling 는 `git worktree remove` 권장 (Phase 5)
+```
+
+### 13.7 Mega-cycle 결합 (Full mega-cycle 모드)
+
+v1.1 + mega-cycle 결합 시:
+- 사용자 진입 = cycle 시작 1회
+- macro-milestone 도달 시 사용자 alert
+- Iron Law trigger 시 강제 멈춤 + 정직 보고
+- 그 외 모든 작업 = S0 + 9 subagent 자율 연쇄
+
+mega-cycle 정의는 본 plan §🚀 (`~/.claude/plans/kind-mapping-rivest.md`) 참조.
 
 ---
 
@@ -251,3 +340,4 @@ Step 4. 사용자에게 정직한 보고
 | 날짜 | 버전 | 변경 내용 | 근거 |
 |------|------|----------|------|
 | 2026-05-12 | v1.0 | 최초 작성 — Cycle 1~4 실 적용 결과 통합 | 사용자 2026-05-12 지시 반복하지 않도록 명시 |
+| 2026-05-12 | v1.1 | §13 Agent View Integration 추가 — Claude Code v2.1.139 agent-view 통합 + 10 subagent 매트릭스 | 사용자 2026-05-12 지시 "agent-view 활용. 1 터미널 멀티세션" |
