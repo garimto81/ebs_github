@@ -172,9 +172,10 @@ void main() {
   group('event loading on series change', () {
     test('events load when series is selected', () async {
       final events = [_makeEvent(id: 10, seriesId: 1)];
-      when(() => mockEventRepo.listEvents(
-            params: {'seriesId': 1},
-          )).thenAnswer((_) async => events);
+      // Cycle 10 (S2 hierarchy wire): provider now uses nested route
+      // `/series/{id}/events` via listBySeries.  See event_provider.dart.
+      when(() => mockEventRepo.listBySeries(1))
+          .thenAnswer((_) async => events);
 
       // Simulate series selection
       container.read(currentSeriesIdProvider.notifier).state = 1;
@@ -213,9 +214,10 @@ void main() {
 
       when(() => mockFlightRepo.listByEvent(10))
           .thenAnswer((_) async => flights);
-      when(() => mockTableRepo.listTables(
-            params: {'eventFlightId': 100},
-          )).thenAnswer((_) async => tables);
+      // Cycle 10 (S2 hierarchy wire): provider now uses nested route
+      // `/flights/{id}/tables` via listByFlight.  See table_provider.dart.
+      when(() => mockTableRepo.listByFlight(100))
+          .thenAnswer((_) async => tables);
 
       // Load flights for event
       container.read(currentEventIdProvider.notifier).state = 10;

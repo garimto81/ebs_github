@@ -23,9 +23,9 @@ Map<String, dynamic> _$$AuditLogImplToJson(_$AuditLogImpl instance) =>
       'id': instance.id,
       'userId': instance.userId,
       'entityType': instance.entityType,
-      'entityId': instance.entityId,
+      if (instance.entityId case final value?) 'entityId': value,
       'action': instance.action,
-      'detail': instance.detail,
-      'ipAddress': instance.ipAddress,
+      if (instance.detail case final value?) 'detail': value,
+      if (instance.ipAddress case final value?) 'ipAddress': value,
       'createdAt': instance.createdAt,
     };

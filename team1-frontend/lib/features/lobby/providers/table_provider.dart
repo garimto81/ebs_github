@@ -20,9 +20,9 @@ class TableListNotifier extends StateNotifier<AsyncValue<List<EbsTable>>> {
   Future<void> fetch() async {
     state = const AsyncValue.loading();
     try {
-      final list = await _repo.listTables(
-        params: {'flightId': flightId},
-      );
+      // Cycle 10 (S2 hierarchy wire): nested route avoids the
+      // `?flightId=` vs `?flight_id=` divergence — see table_repository.dart.
+      final list = await _repo.listByFlight(flightId);
       state = AsyncValue.data(list);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

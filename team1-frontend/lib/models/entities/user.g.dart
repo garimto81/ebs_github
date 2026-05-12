@@ -26,7 +26,7 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'role': instance.role,
       'isActive': instance.isActive,
       'totpEnabled': instance.totpEnabled,
-      'lastLoginAt': instance.lastLoginAt,
+      if (instance.lastLoginAt case final value?) 'lastLoginAt': value,
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
     };

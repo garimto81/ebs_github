@@ -21,5 +21,5 @@ Map<String, dynamic> _$$EbsConfigImplToJson(_$EbsConfigImpl instance) =>
       'key': instance.key,
       'value': instance.value,
       'category': instance.category,
-      'description': instance.description,
+      if (instance.description case final value?) 'description': value,
     };

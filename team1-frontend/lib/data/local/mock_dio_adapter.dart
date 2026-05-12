@@ -132,6 +132,17 @@ class MockDioAdapter implements HttpClientAdapter {
     if (p == '/series' && method == 'GET') {
       return _ok(MockData.series.map((s) => s.toJson()).toList());
     }
+    // Cycle 10 (S2 hierarchy wire): nested route `/series/:id/events`
+    // mirrors BO routers/series.py L119.  Lobby UI uses this in place of
+    // the flat `/events?seriesId=` to dodge the camelCase / snake_case
+    // query-param drift between mock and real BO.
+    final seriesEventsMatch = _match(r'/series/(\d+)/events', p);
+    if (seriesEventsMatch != null && method == 'GET') {
+      final sid = int.parse(seriesEventsMatch);
+      final filtered =
+          MockData.events.where((e) => e.seriesId == sid).toList();
+      return _ok(filtered.map((e) => e.toJson()).toList());
+    }
     final seriesMatch = _match(r'/series/(\d+)', p);
     if (seriesMatch != null && method == 'GET') {
       final id = int.parse(seriesMatch);
@@ -179,6 +190,15 @@ class MockDioAdapter implements HttpClientAdapter {
     final rebalanceMatch = _match(r'/flights/(\d+)/rebalance', p);
     if (rebalanceMatch != null && method == 'POST') {
       return _ok({'moved': 3});
+    }
+    // Cycle 10 (S2 hierarchy wire): nested route `/flights/:id/tables`
+    // mirrors BO routers/tables.py L90.  Lobby UI uses this in place of
+    // the flat `/tables?flightId=` form.
+    final flightTablesMatch = _match(r'/flights/(\d+)/tables', p);
+    if (flightTablesMatch != null && method == 'GET') {
+      final fid = int.parse(flightTablesMatch);
+      final filtered = _tables.where((t) => t['eventFlightId'] == fid);
+      return _ok(filtered.toList());
     }
     final flightMatch = _match(r'/flights/(\d+)', p);
     if (flightMatch != null && method == 'GET') {

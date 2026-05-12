@@ -26,9 +26,9 @@ Map<String, dynamic> _$$SkinImplToJson(_$SkinImpl instance) =>
       'name': instance.name,
       'version': instance.version,
       'status': instance.status,
-      'metadata': instance.metadata,
+      if (instance.metadata?.toJson() case final value?) 'metadata': value,
       'fileSize': instance.fileSize,
-      'uploadedAt': instance.uploadedAt,
-      'activatedAt': instance.activatedAt,
-      'previewUrl': instance.previewUrl,
+      if (instance.uploadedAt case final value?) 'uploadedAt': value,
+      if (instance.activatedAt case final value?) 'activatedAt': value,
+      if (instance.previewUrl case final value?) 'previewUrl': value,
     };
