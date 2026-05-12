@@ -1,17 +1,22 @@
 ---
 title: "Product 폴더 명명 통일 + Confluence↔로컬 정합 Gap Analysis (Cycle 10)"
-status: PROPOSED
+status: EXECUTED
+status-history:
+  - "2026-05-12 PROPOSED (Cycle 10, issue #364)"
+  - "2026-05-12 EXECUTED Wave 2.1 (PR #367 — 3 파일 git mv + 283 refs cascade, commit dbc519bf)"
+  - "2026-05-12 EXECUTED Wave 2.2 (S10-W cycle-12 — 잔존 30 refs / 17 files 정합 보완, 본 보고서 EXECUTED 갱신)"
 owner: stream:S10-A (Gap Analysis)
 tier: internal
 last-updated: 2026-05-12
 cycle: 10
 issue: "#364"
 trigger: "사용자 명시 4축 분석 → Wave 2 (S10-W rename + S11 broker subscribe) trigger"
+note: "본문은 PROPOSED 시점 분석 history 보존 — Lobby_PRD.md / Back_Office_PRD.md / Command_Center_PRD.md 잔존은 의도된 역사 기록"
 related-docs:
   - ../Spec_Gap_Registry.md
-  - ../../1. Product/Lobby_PRD.md
-  - ../../1. Product/Back_Office_PRD.md
-  - ../../1. Product/Command_Center_PRD.md
+  - ../../1. Product/Lobby.md
+  - ../../1. Product/Back_Office.md
+  - ../../1. Product/Command_Center.md
   - ../../_generated/confluence-mirror-matrix.md
 ---
 

@@ -248,7 +248,7 @@ async def acquire_lock(resource: str, holder: str, ttl_sec: int = 60) -> dict:
     """Try to acquire an advisory lock on a resource.
 
     Args:
-        resource: Lock name (e.g., "cascade:Lobby_PRD.md").
+        resource: Lock name (e.g., "cascade:Lobby.md").
         holder: Holder identity (e.g., "S2").
         ttl_sec: TTL in seconds (default 60).
 

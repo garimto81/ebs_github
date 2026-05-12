@@ -77,9 +77,9 @@
 .claude/skills/vercel-react-best-practices/SKILL.md
 .claude/skills/webapp-testing/SKILL.md
 docs/1. Product/1. Product.md
-docs/1. Product/Back_Office_PRD.md
-docs/1. Product/Command_Center_PRD.md
-docs/1. Product/Lobby_PRD.md
+docs/1. Product/Back_Office.md
+docs/1. Product/Command_Center.md
+docs/1. Product/Lobby.md
 docs/1. Product/References/WSOP-Production-Structure-Analysis.md
 docs/2. Development/2. Development.md
 docs/2. Development/2.1 Frontend/2.1 Frontend.md

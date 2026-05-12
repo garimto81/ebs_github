@@ -17,7 +17,7 @@ team2-backend FastAPI BO + API + DB schema. Back_Office_PRD ownership (S1 interi
   - docs/2. Development/2.2 Backend/**
 - scope_read:
   - docs/1. Product/Foundation.md
-  - docs/1. Product/Back_Office_PRD.md
+  - docs/1. Product/Back_Office.md
   - docs/1. Product/References/**
 
 ## broker topics

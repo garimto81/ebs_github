@@ -41,7 +41,7 @@ body:
       description: Paste from .team scope_owns
       placeholder: |
         - docs/2. Development/2.1 Frontend/Lobby/**
-        - docs/1. Product/Lobby_PRD.md
+        - docs/1. Product/Lobby.md
     validations:
       required: true
 

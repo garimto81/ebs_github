@@ -44,7 +44,7 @@ async def try_release(holder: str, resource: str) -> dict:
 async def test_8_concurrent_acquire():
     """8 clients race for the same lock — exactly 1 wins."""
     print("\n[test 1] 8 concurrent acquire on same resource")
-    resource = "cascade:Lobby_PRD.md"
+    resource = "cascade:Lobby.md"
     results = await asyncio.gather(
         *(try_acquire(f"S{i}", resource, ttl_sec=10) for i in range(1, 9))
     )
@@ -61,7 +61,7 @@ async def test_8_concurrent_acquire():
 async def test_release_then_acquire():
     """After release, next client can acquire."""
     print("\n[test 2] release + reacquire")
-    resource = "cascade:CC_PRD.md"
+    resource = "cascade:Command_Center.md"
     r1 = await try_acquire("S1", resource, ttl_sec=60)
     assert r1["acquired"], "S1 should acquire fresh lock"
     print(f"  S1 acquired: {r1}")
