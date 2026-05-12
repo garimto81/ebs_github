@@ -993,6 +993,26 @@ if (posKind === "SB") {
 | `pos` | PosEditor (4 토글 D/SB/BB/STR + HU/3-handed auto chain) | toggle | `dealerSeat/sbSeat/bbSeat/straddleSeat` + auto chain (§16.8) |
 | `lastAction` | 7-grid (FOLD/CHECK/CALL/BET/RAISE/ALL-IN/Clear) | enum | `seats[i].lastAction = a` + folded/allIn 동기화 |
 | `occupy` | Confirm dialog | bool | `seats[i].occupied = true` + 기본 100k stack |
+
+#### Overlay 9 카테고리 #3 (액션 인디케이터) 시각 표식 매핑 — Cycle 16 Wave 2 SSOT (2026-05-13)
+
+CC `lastAction` 7-grid 입력 → Overlay 시청자 화면의 액션 인디케이터 4 종 시각 표식 매핑 (사용자 표 v1.0.0 — RIVE_Standards.md Ch.2 #3 / Foundation.md Ch.2 Scene 1 #3 정합).
+
+| CC `lastAction` enum | Overlay 시각 표식 | Rive Trigger Variable | 비고 |
+|----------------------|------------------|----------------------|------|
+| `CHECK` | **체크** (사용자 표 #3 ①) | `play_check_animation` | 액션 인디케이터 4 종 정합 |
+| `BET` | **벳** (사용자 표 #3 ②) | `play_bet_animation` + `bet_amount` | 액션 인디케이터 4 종 정합 |
+| `RAISE` | **레이즈** (사용자 표 #3 ③) | `play_raise_animation` + `bet_amount` | 액션 인디케이터 4 종 정합 |
+| `FOLD` | **폴드** (사용자 표 #3 ④) | `play_fold_animation` + `is_folded=true` | 액션 인디케이터 4 종 정합 |
+| `CALL` | ⓘ Bet 매칭 패턴 통합 (시각 표식 X) | (none) — `bet_amount` 만 갱신 | 사용자 표 4 종 명시 제외. Engine 내부 계산상 존재 |
+| `ALL_IN` | ⓘ Stack=0 + bet_amount = stack 으로 표시 (별도 emphasis) | `is_all_in=true` | 사용자 표 4 종 명시 제외. CC `lastAction` 표시는 유지 (운영자 시야) |
+| `Clear` | 표식 제거 | `clear_action_indicator` | 좌석 인디케이터 reset |
+
+> **사용자 표 4 종 정합 (2026-05-13)**: 시청자 화면 = 체크 / 벳 / 레이즈 / 폴드 4 표식만. CC `lastAction` 7-grid 는 운영 입력 채널 (CALL / ALL-IN / Clear 포함) — 시각 표식은 4 종 매핑 + 2 종 보조 처리.
+>
+> **CALL 액션 처리 결정**: CC 운영자는 CALL 입력 가능 → Engine 내부 `bet_amount` 매칭 + 시각상 별도 "체크/벳/레이즈/폴드" 표식 없음. 운영 흐름상 CALL = "이전 베팅 매칭" 의미라서 시각적 강조 불필요 (사용자 표 의도 — viewer cognition 단순화). Cascade Note: 2.3 Game Engine 명세 (`docs/2. Development/2.3 Game Engine/.../*.md`) — CALL 의 `state.lastAction` 보존 + `visual_indicator=null` flag 정합 권고.
+>
+> **ALL-IN 처리 결정**: Stack=0 + Player Dashboard #1 의 stack 표시 0 으로 + `is_all_in` boolean 으로 별도 emphasis (좌석 highlight). 사용자 표 4 종에는 미포함이지만 Player Dashboard 카테고리 #1 내부 상태로 처리.
 | `addPlayer` | Multi-field (name + flag grid + starting stack quick) | 3 필드 | full seat populate |
 | `flag` | 23-country grid | flag | `seats[i].flag = c.flag` |
 | `seatNo` | Vacate confirm | confirm | `seats[i].occupied = false` + 포지션 자동 제거 |

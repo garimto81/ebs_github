@@ -366,6 +366,37 @@ erDiagram
 
 **왜 6 단인가**: 대회 (Series) 안에 여러 이벤트가 있고, 이벤트 한 회는 여러 날 (Flight) 로 나뉘며, 한 Flight 안에 여러 테이블이 있고, 각 테이블은 좌석 10 개를 가지며, 각 좌석엔 플레이어 1 명이 앉습니다. 이 6 단 구조는 WSOP LIVE 와 동일합니다.
 
+### 5.3.1 Overlay 9 카테고리 #1 (플레이어 대시보드) 데이터 모델 매핑 — Cycle 16 Wave 2 SSOT (2026-05-13)
+
+사용자 표 v1.0.0 의 카테고리 #1 (플레이어 대시보드) = Name + 국적 + 포지션 SB/BB/D + 칩스택 4 필드. BO ERD 의 어느 테이블 / 어느 필드 에서 채워지는지 매핑.
+
+| 사용자 표 필드 (verbatim) | BO 테이블 | BO 컬럼 | Overlay Rive Variable | 책임 stream |
+|--------------------------|-----------|---------|----------------------|------------|
+| **Name** | `Player` | `first_name` + `last_name` (concat) | `player_name` (Text) | S7 Backend |
+| **국적** (Country) | `Player` | `country_code` (ISO 2 자리) + `nationality` | `country_code` (Text) | S7 Backend |
+| **포지션 SB/BB/D** | `Hand` (또는 Seat 의 dynamic state) | `dealer_seat` + Hand 내 SB/BB 좌석 계산 (BTN 기준 시계 방향) | `position` (Text: "SB"/"BB"/"D"/"") | S8 Engine (계산) |
+| **칩스택** (Chip Stack) | `Seat` | `chip_count` (현재 좌석 칩) | `stack_amount` (Number) | S8 Engine (계산) + S7 Backend (영속) |
+
+> **포지션 계산 룰** (Cascade Note → 2.3 Game Engine 명세 확인): SB = `dealer_seat + 1` (시계방향), BB = `dealer_seat + 2`, D = `dealer_seat`. Straddle 좌석은 별도 (사용자 표 미포함 — Auxiliary). Heads-up (2 인): dealer = SB.
+>
+> **stack vs chip_count 정합**: BO 의 `Seat.chip_count` 는 현재 좌석 칩 영속 상태. Engine 의 실시간 `stack_amount` 는 hand 진행 중 베팅 차감 반영. 두 값은 hand 종료 시 정합 (Cascade Note → 2.2 Backend Overview 의 sync 룰 참조).
+
+### 5.3.2 Overlay 9 카테고리 #6 (이벤트 브랜딩) 데이터 모델 — Cycle 16 Wave 2 SSOT (2026-05-13)
+
+사용자 표 v1.0.0 의 카테고리 #6 (이벤트 브랜딩) = WSOP/APT 로고. BO 의 Brand Pack 테이블 (또는 Event 메타데이터) 에서 sponsor logos / tournament names / 색상 팔레트 / 폰트 설정 송출.
+
+| 데이터 항목 | BO 위치 | 형식 | Overlay 출력 채널 |
+|-------------|---------|------|------------------|
+| **Tournament Name** (예: "WSOP Paradise 2026") | `Event.event_name` (또는 `Event.brand_name`) | string | JSON Output Only (B 영역) |
+| **Sponsor Logos** (sponsor brand images) | `BrandPack.sponsor_logos[]` (이미지 URL 또는 Rive Brand Asset) | image refs | JSON Output Only — 외부 그래픽 시스템 자체 렌더링 |
+| **Tournament Logo** (예: WSOP / APT 메인 로고) | `BrandPack.main_logo` | image ref | JSON Output Only |
+| **Color Palette** (테마 색상) | `BrandPack.theme_colors` | hex array | JSON Output Only — 외부 자막 시스템 활용 |
+| **Font Settings** (대회 공식 폰트) | `BrandPack.font_family` | string | JSON Output Only |
+
+> **B 영역 (JSON Output Only) 정합**: EBS 는 Brand Pack 데이터를 JSON 으로 송출만. 그래픽 형태 자체는 외부 그래픽 시스템 (방송 자막 / 후편집 팀) 의 책임. RIVE_Standards Ch.21 (브랜딩) 정합.
+>
+> **Cascade Note → 2.2 Backend Overview**: `BrandPack` 테이블 신규 생성 필요 (현재 ERD 미존재). Event 와 1:N 관계 (한 Event = 한 Brand Pack). 향후 S7 Backend stream 에서 schema migration 필요 — Type B (기획 공백) drift 해소.
+
 ### 5.4 게임 도메인 상세 ERD (2 층)
 
 핸드 데이터는 Command Center 의 액션을 받아 BO 가 저장합니다. **이벤트 소싱 (Event Sourcing)** 방식 — 모든 액션이 시간순으로 보존됩니다.
