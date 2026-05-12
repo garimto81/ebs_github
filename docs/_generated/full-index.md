@@ -511,6 +511,7 @@ tier: generated
 | `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` | Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0) | conductor | internal | - |
 | `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` | Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획 | conductor | critical | - |
 | `docs/4. Operations/Causality_Dashboard.md` | EBS 문서 인과관계 대시보드 | conductor | internal | - |
+| `docs/4. Operations/Chat_Protocol.md` | Chat Protocol — Payload Schema + Channel Convention SSOT | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog.md` | Conductor_Backlog | - | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` | Phase 2 통합 테스트 + E2E | - | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` | Phase 3 통합 테스트 + 부하 테스트 | - | - | - |
@@ -536,6 +537,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/B-219-lobby-settings-typeerror.md` | B-219 — Lobby Settings 화면 TypeError (response schema 불일치) | team1 + team2 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-220-cc-demo-path-action-on-seat-status-missing.md` | B-220 — CC dispatchLocalDemoEvent: actionOn + seat status sync 누락 | team4 + team2 | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-221-skins-multipart-upload.md` | B-221 — POST /api/v1/skins/upload multipart endpoint (CCR-013, D8 resolution) | team2 | internal | - |
+| `docs/4. Operations/Conductor_Backlog/B-222-inter-session-chat-ui.md` | B-222 — Inter-Session Chat UI (4분할 Web UI + @ 멘션, Docker container) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` | 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` | B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
 | `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` | B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade) | conductor | internal | - |
@@ -641,6 +643,9 @@ tier: generated
 | `docs/4. Operations/Foundation_Alignment_Plan.md` | Foundation 재설계 정렬 계획 (Conductor 소유 문서) | conductor | internal | - |
 | `docs/4. Operations/Frozen_Build_SOP.md` | Frozen Build SOP — file revert race 우회 | prototype | internal | - |
 | `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` | Global SSOT Sync — SG-022 advocacy eradication | conductor | contract | - |
+| `docs/4. Operations/Inter_Session_Chat_Design.md` | Inter-Session Chat — Design Specification | conductor | internal | - |
+| `docs/4. Operations/Inter_Session_Chat_Manual_Verification.md` | Inter-Session Chat — Manual Verification (Phase L1) | conductor | internal | - |
+| `docs/4. Operations/Inter_Session_Chat_Plan.md` | Inter-Session Chat — Implementation Plan (7 Day) | conductor | internal | - |
 | `docs/4. Operations/LAN_DEPLOYMENT.md` | LAN Deployment — Internal Network Domain Access | conductor | internal | - |
 | `docs/4. Operations/Load_Test_Plan_Phase1.md` | Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate | conductor | internal | - |
 | `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
