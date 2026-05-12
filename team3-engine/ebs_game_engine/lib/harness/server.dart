@@ -110,6 +110,17 @@ class HarnessServer {
       return;
     }
 
+    // POST /api/session/:id/next-hand
+    // Convenience over POST /event with type=manual_next_hand. Triggers
+    // button + SB/BB rotation, handNumber++, hole/community/pot reset.
+    // Cycle 5 v02 issue #287.
+    final nextHandMatch =
+        RegExp(r'^/api/session/([^/]+)/next-hand$').firstMatch(path);
+    if (method == 'POST' && nextHandMatch != null) {
+      await _nextHand(req, nextHandMatch.group(1)!);
+      return;
+    }
+
     // POST /api/session/:id/undo
     final undoMatch = RegExp(r'^/api/session/([^/]+)/undo$').firstMatch(path);
     if (method == 'POST' && undoMatch != null) {
@@ -401,6 +412,26 @@ class HarnessServer {
     }
 
     session.addEvent(event);
+    _sendJson(req.response, 200, session.toJson());
+  }
+
+  /// POST /api/session/:id/next-hand — convenience wrapper that emits a
+  /// ManualNextHand event. Triggers dealer/SB/BB rotation, handNumber++,
+  /// and per-hand state reset (community/hole/pot). The response is the
+  /// post-rotation session JSON.
+  ///
+  /// Returns 404 if session not found, 200 with full session state on
+  /// success.
+  ///
+  /// Spec: docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_State.md
+  /// Cycle 5 v02 issue #287.
+  Future<void> _nextHand(HttpRequest req, String id) async {
+    final session = _sessions[id];
+    if (session == null) {
+      _sendJson(req.response, 404, {'error': 'Session not found: $id'});
+      return;
+    }
+    session.addEvent(const ManualNextHand());
     _sendJson(req.response, 200, session.toJson());
   }
 
