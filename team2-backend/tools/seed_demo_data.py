@@ -29,10 +29,9 @@ TEAM2_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TEAM2_ROOT))
 
 from sqlmodel import Session, create_engine, delete, select  # noqa: E402
-
 from src.app.config import settings  # noqa: E402
 from src.models.competition import Competition, Event, EventFlight, Series  # noqa: E402
-from src.models.table import Table  # noqa: E402
+from src.models.table import Player, Table, TableSeat  # noqa: E402
 
 # ── Demo data (Lobby Reference Design 정렬) ─────────────────────────────────
 
@@ -105,6 +104,50 @@ EVENTS_SEED_FOR_WPS26 = [
 
 # Flights for top events (2~3 day1 flights + day2 + final)
 FLIGHTS_PER_EVENT = ["Day 1A", "Day 1B", "Day 1C", "Day 2", "Final Day"]
+
+# ── 5-level hierarchy completion (2026-05-12 S7 cycle-8) ──
+# cascade:bo-hierarchy-ready
+#
+# 문제: Lobby에서 어떤 event를 선택해도 동일 flight mock이 노출됨.
+# 원인: wpse26 event #5 + wps26 event #4만 flight 보유. 나머지는 0개 →
+#       frontend mock fallback이 동일 데이터를 표시.
+# 해소: 모든 active event에 최소 1개 flight + per-event 고유 display_name +
+#       table에 player seat 시드 → 5-level hierarchy 실데이터 연결.
+
+# Per-event 최소 flight 보장 (active events 한정 — running/registering/announced)
+ACTIVE_FLIGHT_STATUSES = {"running", "registering", "announced"}
+DEFAULT_FLIGHTS_PER_ACTIVE_EVENT = 2  # Day 1A + Day 1B 최소 보장
+
+# Player master pool — 다양한 국가 + 이름 (table seat에 attach)
+PLAYERS_SEED = [
+    ("Daniel", "Negreanu", "Canadian", "CA"),
+    ("Phil", "Ivey", "American", "US"),
+    ("Doyle", "Brunson", "American", "US"),
+    ("Phil", "Hellmuth", "American", "US"),
+    ("Erik", "Seidel", "American", "US"),
+    ("Vanessa", "Selbst", "American", "US"),
+    ("Fedor", "Holz", "German", "DE"),
+    ("Stephen", "Chidwick", "British", "GB"),
+    ("Bryn", "Kenney", "American", "US"),
+    ("Justin", "Bonomo", "American", "US"),
+    ("Jason", "Koon", "American", "US"),
+    ("Dan", "Smith", "American", "US"),
+    ("David", "Peters", "American", "US"),
+    ("Mikita", "Badziakouski", "Belarusian", "BY"),
+    ("Sam", "Greenwood", "Canadian", "CA"),
+    ("Steffen", "Sontheimer", "German", "DE"),
+    ("Adrian", "Mateos", "Spanish", "ES"),
+    ("Manig", "Loeser", "German", "DE"),
+    ("Patrik", "Antonius", "Finnish", "FI"),
+    ("Tom", "Dwan", "American", "US"),
+    ("Antonio", "Esfandiari", "American", "US"),
+    ("Liv", "Boeree", "British", "GB"),
+    ("Maria", "Ho", "American", "US"),
+    ("Jennifer", "Tilly", "American", "US"),
+    ("Gus", "Hansen", "Danish", "DK"),
+    ("Viktor", "Blom", "Swedish", "SE"),
+    ("Alec", "Torelli", "American", "US"),
+]
 
 
 def _ensure_competition(db: Session) -> Competition:
@@ -236,6 +279,119 @@ def _seed_tables(db: Session, flight: EventFlight, count: int = 5) -> list[Table
     return out
 
 
+def _seed_default_flights_for_active_events(
+    db: Session, events: list[Event], default_count: int = DEFAULT_FLIGHTS_PER_ACTIVE_EVENT,
+) -> int:
+    """모든 active event에 최소 N개 flight 보장.
+
+    cascade:bo-hierarchy-ready 해소: Lobby에서 어떤 event 선택해도 자기만의
+    flight 가 노출되도록 보장. event_name 일부를 display_name 에 포함하여
+    event 간 식별성 확보 (단순 "Day 1A" 가 아니라 "E#1 Day 1A").
+    """
+    created = 0
+    for event in events:
+        if event.status not in ACTIVE_FLIGHT_STATUSES:
+            continue
+        # 이미 flight 가 있으면 skip (top events 는 별도 시드 사용)
+        existing_count = len(db.exec(
+            select(EventFlight).where(EventFlight.event_id == event.event_id)
+        ).all())
+        if existing_count >= default_count:
+            continue
+
+        prefix = f"E#{event.event_no}"
+        for name in FLIGHTS_PER_EVENT[: default_count - existing_count]:
+            display = f"{prefix} {name}"
+            existing = db.exec(
+                select(EventFlight).where(
+                    EventFlight.event_id == event.event_id,
+                    EventFlight.display_name == display,
+                )
+            ).first()
+            if existing:
+                continue
+            f = EventFlight(
+                event_id=event.event_id,
+                display_name=display,
+                status="created" if event.status == "announced" else event.status,
+                play_level=1 if event.status == "running" else 0,
+            )
+            db.add(f)
+            db.commit()
+            db.refresh(f)
+            created += 1
+    return created
+
+
+def _seed_players(db: Session) -> list[Player]:
+    """Demo player master pool (idempotent on first_name + last_name)."""
+    out: list[Player] = []
+    for (first, last, nationality, cc) in PLAYERS_SEED:
+        existing = db.exec(
+            select(Player).where(
+                Player.first_name == first,
+                Player.last_name == last,
+            )
+        ).first()
+        if existing:
+            out.append(existing)
+            continue
+        p = Player(
+            first_name=first,
+            last_name=last,
+            nationality=nationality,
+            country_code=cc,
+            is_demo=True,
+            source="manual",
+        )
+        db.add(p)
+        db.commit()
+        db.refresh(p)
+        out.append(p)
+    return out
+
+
+def _fill_table_with_players(
+    db: Session, table: Table, players: list[Player], fill_count: int = 9,
+) -> int:
+    """Attach players to empty seats of a table.
+
+    Idempotent: skips seats that are already non-empty. Returns how many seats
+    were newly filled. fill_count caps at min(9, len(players)).
+    """
+    fill_count = min(fill_count, 9, len(players))
+    filled = 0
+    for seat_no in range(fill_count):
+        seat = db.exec(
+            select(TableSeat).where(
+                TableSeat.table_id == table.table_id,
+                TableSeat.seat_no == seat_no,
+            )
+        ).first()
+        if seat is None:
+            # Auto-create seats if missing (older tables predate create_table seats)
+            seat = TableSeat(
+                table_id=table.table_id, seat_no=seat_no, status="empty",
+            )
+            db.add(seat)
+            db.commit()
+            db.refresh(seat)
+        if seat.status != "empty":
+            continue
+
+        player = players[seat_no % len(players)]
+        seat.player_id = player.player_id
+        seat.player_name = f"{player.first_name} {player.last_name}"
+        seat.nationality = player.nationality
+        seat.country_code = player.country_code
+        seat.chip_count = 50000 + (seat_no * 5000)
+        seat.status = "playing" if table.status == "running" else "new"
+        db.add(seat)
+        db.commit()
+        filled += 1
+    return filled
+
+
 def _reset_demo(db: Session) -> None:
     """Hard delete all demo competitions and cascading rows.
     Used only with --reset flag.
@@ -254,12 +410,19 @@ def _reset_demo(db: Session) -> None:
             select(EventFlight).where(EventFlight.event_id.in_(event_ids))
         ).all()] if event_ids else []
         if flight_ids:
-            db.exec(delete(Table).where(Table.event_flight_id.in_(flight_ids)))
+            table_ids = [t.table_id for t in db.exec(
+                select(Table).where(Table.event_flight_id.in_(flight_ids))
+            ).all()]
+            if table_ids:
+                db.exec(delete(TableSeat).where(TableSeat.table_id.in_(table_ids)))
+                db.exec(delete(Table).where(Table.table_id.in_(table_ids)))
             db.exec(delete(EventFlight).where(EventFlight.event_id.in_(event_ids)))
         if event_ids:
             db.exec(delete(Event).where(Event.series_id.in_(series_ids)))
         db.exec(delete(Series).where(Series.competition_id == comp.competition_id))
     db.exec(delete(Competition).where(Competition.competition_id == comp.competition_id))
+    # Demo players (is_demo=True) — keep separate cleanup
+    db.exec(delete(Player).where(Player.is_demo))  # type: ignore[arg-type]
     db.commit()
 
 
@@ -307,6 +470,7 @@ def main(argv: list[str]) -> int:
         print(f"  Flights: {flights_total}")
 
         # 5. Tables for "Europe Main Event Day 2" (heaviest)
+        day2_flight = None
         if wpse26_main:
             day2_flight = db.exec(
                 select(EventFlight).where(
@@ -318,10 +482,32 @@ def main(argv: list[str]) -> int:
                 tables = _seed_tables(db, day2_flight, count=10)
                 print(f"  Tables: Day 2 → {len(tables)}")
 
+        # 6. ▼ 5-level hierarchy completion (cascade:bo-hierarchy-ready, 2026-05-12)
+        #    각 active event 에 최소 default flight 보장 → frontend mock fallback 해소.
+        active_events = list(events_wpse26) + list(events_wps26)
+        default_flights = _seed_default_flights_for_active_events(db, active_events)
+        print(f"  Default flights (per active event): +{default_flights}")
+
+        # 7. Player master pool (27 players, idempotent)
+        players = _seed_players(db)
+        print(f"  Players (master): {len(players)}")
+
+        # 8. Fill Day 2 tables with players (실 데이터 가시화)
+        seats_filled = 0
+        if day2_flight:
+            day2_tables = db.exec(
+                select(Table).where(Table.event_flight_id == day2_flight.event_flight_id)
+            ).all()
+            # 처음 3 table 만 채움 (전체 채우면 lobby 가 무거움)
+            for tbl in day2_tables[:3]:
+                seats_filled += _fill_table_with_players(db, tbl, players, fill_count=9)
+        print(f"  Seats filled (Day 2 first 3 tables): {seats_filled}")
+
     print()
     print("✓ Demo seed complete.")
     print("  Login: admin@ebs.local / admin123")
     print("  Endpoint: GET /api/v1/series → 8 series")
+    print("  5-level: Series → Event → Flight → Table → Players (bo-hierarchy-ready)")
     return 0
 
 

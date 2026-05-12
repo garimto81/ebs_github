@@ -257,3 +257,123 @@ def test_operator_table_access_phase1(client, seed_users, db_session):
     resp = client.get(f"/api/v1/tables/{table_id}/seats", headers=op_headers)
     assert resp.status_code == 200
     # TODO: Gate 2-16 full — restrict operator to assigned tables only
+
+
+# ── cascade:bo-hierarchy-ready (S7 cycle-8, 2026-05-12) ──
+# GET /tables/{id}/players — 5-level hierarchy completion
+# Series → Event → Flight → Table → **Players**
+
+
+def test_list_players_by_table_empty(client, seed_users, db_session):
+    """Empty table returns 200 + empty data + meta.total=0 (not 404)."""
+    headers = _auth(client, "admin")
+    ids = _seed_hierarchy(client, db_session, headers)
+
+    tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
+        "tableNo": 1, "name": "T1",
+    }, headers=headers)
+    table_id = tr.json()["data"]["tableId"]
+
+    resp = client.get(f"/api/v1/tables/{table_id}/players", headers=headers)
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["data"] == []
+    assert body["meta"]["total"] == 0
+    assert body["meta"]["table_id"] == table_id
+
+
+def test_list_players_by_table_with_seats(client, seed_users, db_session):
+    """Table with assigned players returns them; busted seats included."""
+    headers = _auth(client, "admin")
+    ids = _seed_hierarchy(client, db_session, headers)
+
+    tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
+        "tableNo": 1, "name": "T1",
+    }, headers=headers)
+    table_id = tr.json()["data"]["tableId"]
+
+    p1 = _create_player(client, headers, "Alice", "A")
+    p2 = _create_player(client, headers, "Bob", "B")
+    p3 = _create_player(client, headers, "Carol", "C")
+
+    client.put(f"/api/v1/tables/{table_id}/seats/0", json={"playerId": p1}, headers=headers)
+    client.put(f"/api/v1/tables/{table_id}/seats/1", json={"playerId": p2}, headers=headers)
+    client.put(f"/api/v1/tables/{table_id}/seats/2", json={"playerId": p3}, headers=headers)
+
+    resp = client.get(f"/api/v1/tables/{table_id}/players", headers=headers)
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["meta"]["total"] == 3
+    player_ids = sorted([row["playerId"] for row in body["data"]])
+    assert player_ids == sorted([p1, p2, p3])
+
+
+def test_list_players_by_table_excludes_vacated(client, seed_users, db_session):
+    """After vacating a seat (status→empty), player no longer in /players response."""
+    headers = _auth(client, "admin")
+    ids = _seed_hierarchy(client, db_session, headers)
+
+    tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
+        "tableNo": 1, "name": "T1",
+    }, headers=headers)
+    table_id = tr.json()["data"]["tableId"]
+
+    p1 = _create_player(client, headers, "Alice", "A")
+    p2 = _create_player(client, headers, "Bob", "B")
+
+    client.put(f"/api/v1/tables/{table_id}/seats/0", json={"playerId": p1}, headers=headers)
+    client.put(f"/api/v1/tables/{table_id}/seats/1", json={"playerId": p2}, headers=headers)
+
+    client.delete(f"/api/v1/tables/{table_id}/seats/0", headers=headers)
+
+    resp = client.get(f"/api/v1/tables/{table_id}/players", headers=headers)
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["meta"]["total"] == 1
+    assert body["data"][0]["playerId"] == p2
+
+
+def test_list_players_by_table_404(client, seed_users, db_session):
+    """Nonexistent table returns 404."""
+    headers = _auth(client, "admin")
+    resp = client.get("/api/v1/tables/999999/players", headers=headers)
+    assert resp.status_code == 404
+    assert "RESOURCE_NOT_FOUND" in str(resp.json())
+
+
+def test_list_players_by_table_pagination(client, seed_users, db_session):
+    """skip/limit pagination works."""
+    headers = _auth(client, "admin")
+    ids = _seed_hierarchy(client, db_session, headers)
+
+    tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
+        "tableNo": 1, "name": "T1",
+    }, headers=headers)
+    table_id = tr.json()["data"]["tableId"]
+
+    for i in range(5):
+        pid = _create_player(client, headers, f"P{i}", f"Last{i}")
+        client.put(f"/api/v1/tables/{table_id}/seats/{i}", json={"playerId": pid}, headers=headers)
+
+    resp = client.get(f"/api/v1/tables/{table_id}/players?skip=2&limit=2", headers=headers)
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["meta"]["total"] == 5
+    assert body["meta"]["skip"] == 2
+    assert body["meta"]["limit"] == 2
+    assert len(body["data"]) == 2
+
+
+def test_list_players_by_table_viewer_can_read(client, seed_users, db_session):
+    """Viewer role can read /tables/{id}/players (no admin required)."""
+    admin_headers = _auth(client, "admin")
+    ids = _seed_hierarchy(client, db_session, admin_headers)
+
+    tr = client.post(f"/api/v1/flights/{ids['flight_id']}/tables", json={
+        "tableNo": 1, "name": "T1",
+    }, headers=admin_headers)
+    table_id = tr.json()["data"]["tableId"]
+
+    viewer_headers = _auth(client, "viewer")
+    resp = client.get(f"/api/v1/tables/{table_id}/players", headers=viewer_headers)
+    assert resp.status_code == 200

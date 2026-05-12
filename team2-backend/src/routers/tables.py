@@ -6,6 +6,7 @@ from src.app.database import get_db
 from src.middleware.rbac import get_current_user, require_role
 from src.models.schemas import (
     ApiResponse,
+    PlayerResponse,
     RebalanceRequest,
     SeatResponse,
     SeatUpdate,
@@ -22,6 +23,7 @@ from src.services.table_service import (
     get_table_seats,
     launch_cc,
     list_all_tables,
+    list_players_by_table,
     list_tables,
     rebalance_tables,
     update_seat_status,
@@ -77,7 +79,8 @@ def api_create_table_flat(
     db: Session = Depends(get_db),
 ):
     """SSOT Backend_HTTP.md L404 — flat POST. `event_flight_id` required in body."""
-    from fastapi import HTTPException, status as fa_status
+    from fastapi import HTTPException
+    from fastapi import status as fa_status
     if body.event_flight_id is None:
         raise HTTPException(
             status_code=fa_status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -171,7 +174,8 @@ def api_launch_cc(
     """
     # RBAC — admin 자율, operator 는 assigned table 만 (TODO: assigned_tables 매핑 추가 시 enforce)
     if user.role == "viewer":
-        from fastapi import HTTPException, status as fa_status
+        from fastapi import HTTPException
+        from fastapi import status as fa_status
 
         raise HTTPException(
             status_code=fa_status.HTTP_403_FORBIDDEN,
@@ -218,6 +222,35 @@ def api_get_table_status(
         "occupiedSeats": occupied,
         "maxPlayers": t.max_players,
     })
+
+
+# ── Players-by-Table (5-level hierarchy completion) ─
+# cascade:bo-hierarchy-ready (2026-05-12 S7 cycle-8)
+#
+# Lobby drill-down: Series → Event → Flight → Table → **Players**.
+# Backed by `table_seats` join with `players` master. Returns active +
+# busted + moved seats; empty seats are excluded. `seats` endpoint below
+# remains the lower-level view (includes empties + seat metadata).
+
+
+@router.get("/tables/{table_id}/players")
+def api_list_players_by_table(
+    table_id: int,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """List players currently seated at a table.
+
+    SSOT: 5-level hierarchy completion (cascade:bo-hierarchy-ready, 2026-05-12).
+    Series → Event → Flight → Table → **Players** drill-down for Lobby.
+    """
+    items, total = list_players_by_table(table_id, db, skip, limit)
+    return ApiResponse(
+        data=[PlayerResponse.model_validate(p, from_attributes=True) for p in items],
+        meta={"skip": skip, "limit": limit, "total": total, "table_id": table_id},
+    )
 
 
 # ── Seats ───────────────────────────────────────────
