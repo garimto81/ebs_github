@@ -85,6 +85,7 @@ def _dispatch_inbox_drop(event, action):
         now_iso = datetime.now(timezone.utc).isoformat()
         body_lines = [
             "---",
+            f"owner: S11",
             f"source: {source}",
             f"topic: {topic}",
             f"seq: {seq}",
