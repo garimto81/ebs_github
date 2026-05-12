@@ -159,11 +159,12 @@ services:
       - BO_URL=${BO_URL:-http://bo:8000}
       - ENGINE_URL=${ENGINE_URL:-http://engine:8080}
       - CC_URL=${CC_URL:-http://cc-web:3001}
-    # 2026-05-12 (S11 Cycle 9, issue #355) — nginx config runtime override.
-    # team1-frontend/docker/lobby-web/nginx.conf (Phase 5 stale) 는 /api/, /ws/ proxy 부재.
-    # bind-mount 로 image 내 default.conf 를 infra/web/lobby-web.nginx.conf 로 덮어쓰면
-    # /api/v1/auth/login 등이 nginx → bo:8000 reverse proxy 됨 (동일 origin, CORS 무관).
-    # S2 가 향후 in-image config 와 sync 하면 본 mount 제거 가능.
+    # 2026-05-12 (S11 Cycle 9 #355 → Cycle 10 #380) — nginx config bind-mount.
+    # Cycle 9: team1-frontend/docker/lobby-web/nginx.conf (Phase 5 stale) 가 /api/, /ws/ proxy 부재 →
+    #         infra/web/lobby-web.nginx.conf 로 임시 override 도입.
+    # Cycle 10: image 내부 team1-frontend/docker/lobby-web/nginx.conf 가 동일 SSOT 로 흡수됨.
+    #         bind-mount 는 안전 fallback 으로 유지 (image rebuild 누락 시 차단막).
+    #         Cycle 11 에서 image 정합 확인 후 본 volumes 블록 제거 검토.
     volumes:
       - ./infra/web/lobby-web.nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
@@ -203,8 +204,10 @@ services:
       - BO_URL=${BO_URL:-http://bo:8000}
       - ENGINE_URL=${ENGINE_URL:-http://engine:8080}
       - LOBBY_URL=${LOBBY_URL:-http://lobby-web:3000}
-    # 2026-05-12 (S11 Cycle 9, issue #355) — nginx config runtime override.
-    # team4-cc/docker/cc-web/nginx.conf 도 동일하게 /api/, /ws/ proxy 부재. lobby-web 패턴 적용.
+    # 2026-05-12 (S11 Cycle 9 #355 → Cycle 10 #380) — nginx config bind-mount.
+    # Cycle 9: team4-cc/docker/cc-web/nginx.conf 가 /api/, /ws/ proxy 부재 → infra/web/cc-web.nginx.conf bind-mount.
+    # Cycle 10: image 내부 team4-cc/docker/cc-web/nginx.conf 가 동일 SSOT 로 흡수됨.
+    #         bind-mount 는 안전 fallback 으로 유지. Cycle 11 에서 제거 검토.
     volumes:
       - ./infra/web/cc-web.nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:

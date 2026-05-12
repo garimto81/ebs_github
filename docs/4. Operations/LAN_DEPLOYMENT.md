@@ -1,60 +1,70 @@
 ---
-title: LAN Deployment — Internal Network Access (Two Methods)
+title: LAN Deployment — Internal Network Access (port-direct only, subdomain DEPRECATED)
 owner: conductor
 tier: internal
 last-updated: 2026-05-12
-related-pr: "#69 (subdomain method), S11 Cycle 9 issue #355 (direct-port method)"
+related-pr: "#69 (subdomain — DEPRECATED), Cycle 9 #355 (bind-mount 도입), Cycle 10 #380 (image 영구 흡수 + LAN reachability KPI)"
+related-root-cause: "#369 (Lobby login hosts 의존 root cause 확정)"
 status: ACTIVE
 confluence-page-id: 3818750373
 confluence-parent-id: 3811573898
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750373/EBS+LAN+Deployment+Internal+Network+Domain+Access
 ---
 
-# EBS LAN 배포 가이드 — 두 가지 접근 방식
+# EBS LAN 배포 가이드 — port-direct 단일 방식 (Cycle 10 정리)
 
-## TL;DR — 어떤 방식을 쓸지 한눈에
+## TL;DR — Cycle 10 갱신 (모바일 KPI)
 
-호스트 머신 1대에서 `docker compose --profile web up -d` 실행 후 두 방식 중 택일:
+**모바일 / iPad / 태블릿 = 방식 ① (포트 직접) 만 사용. hosts 매핑 의존 금지.**
 
-### 방식 ① — 포트 직접 접근 (NEW, 권장 — Cycle 9 #355)
+호스트 머신 1대에서 다음 한 줄:
 
-**hosts file 등록 불필요 → 모바일/iPad/노트북 즉시 접근.**
+```powershell
+.\scripts\lan-deploy.ps1
+```
 
-| URL | 서비스 |
-|-----|--------|
-| `http://<LAN_IP>:3000/` | Lobby (운영자 대시보드) |
-| `http://<LAN_IP>:3001/` | Command Center (테이블 운영) |
-| `http://<LAN_IP>:8000/docs` | Backend OpenAPI (디버그) |
+LAN IP 자동 감지 + `docker compose --profile web up -d` + nginx /api proxy 검증 + **LAN IP reachability KPI 검증 (3중 probe)** + 접속 URL 출력 + 모바일 가이드 모두 자동.
 
-브라우저는 동일 origin 으로 모든 요청 → nginx 가 내부에서 `/api/*` 와 `/ws/*` 를 BO 로 reverse proxy.
-CORS preflight 미발생 → 모바일 Safari 호환성 ↑.
+| URL | 서비스 | 디바이스 | hosts 매핑 |
+|-----|--------|----------|:----------:|
+| `http://<LAN_IP>:3000/` | Lobby (운영자 대시보드) | PC / 모바일 / iPad / Android | 불필요 |
+| `http://<LAN_IP>:3001/` | Command Center | PC / 태블릿 | 불필요 |
+| `http://<LAN_IP>:8000/docs` | Backend OpenAPI (Swagger) | PC 만 (디버그) | 불필요 |
 
-기동: `.\scripts\lan-deploy.ps1` (LAN IP 자동 감지 + compose up + URL 출력).
+### Cycle 9 vs Cycle 10 변화
 
-### 방식 ② — 서브도메인 (기존 PR #69)
+| 항목 | Cycle 9 (PR #360) | Cycle 10 (PR #380) |
+|------|-------------------|--------------------|
+| nginx /api proxy 적용 위치 | docker-compose `volumes:` bind-mount | image 내부 `team{1,4}/docker/{lobby,cc}-web/nginx.conf` SSOT |
+| image rebuild 안전성 | bind-mount 의존 (제거 시 silent drift) | image 자체 정합 (bind-mount 제거 가능) |
+| 모바일 reachability 검증 | localhost:3000 만 | localhost + LAN IP healthz + LAN IP /api/ 3중 |
+| PR #369 root cause | 우회 (bind-mount 임시 fix) | 영구 해소 (image SSOT same-origin) |
 
-| 도메인 | 서비스 | 용도 |
+### 방식 ② — 서브도메인 (DEPRECATED, PR #69)
+
+> **DEPRECATED 2026-05-12 Cycle 10**: hosts file 의존 → 모바일/iPad 편집 불가 → 본 가이드 권장 시나리오에서 제외. 인프라(`ebs-proxy` :80) 자체는 PC-만-LAN 환경 위해 유지하지만, **신규 배포 / 모바일 시연 / 외부 시연에서는 사용 금지**.
+
+PC-만-LAN 환경 (모바일 시연 없음 + 사용자 모두 hosts 편집 가능) 의 보조 도구로만 활용. 모든 새 자동화 도구는 방식 ① 만 검증한다.
+
+| 도메인 | 서비스 | 상태 |
 |--------|--------|------|
-| `http://lobby.ebs.local/` | team1 lobby | 운영자 대시보드 |
-| `http://cc.ebs.local/`    | team4 command center | 테이블별 액션 |
-| `http://ebs.local/`       | (default → lobby) | 짧은 진입점 |
-| `http://api.ebs.local/`   | team2 BO REST + WS | 직접 API 호출 |
-| `http://engine.ebs.local/`| team3 game engine | harness UI |
+| `http://lobby.ebs.local/`  | team1 lobby | DEPRECATED — `http://<LAN_IP>:3000/` 사용 |
+| `http://cc.ebs.local/`     | team4 CC | DEPRECATED — `http://<LAN_IP>:3001/` 사용 |
+| `http://ebs.local/`        | default lobby | DEPRECATED |
+| `http://api.ebs.local/`    | team2 BO REST + WS | DEPRECATED — `<LAN_IP>:3000` 의 nginx /api 사용 |
+| `http://engine.ebs.local/` | team3 engine | DEPRECATED |
 
-도메인 매핑은 단일 nginx reverse proxy (port 80) + LAN 클라이언트 hosts file 등록.
-PC 환경 단독일 때 권장 (도메인 일관성 / production-like).
+### 비교 (Cycle 10)
 
-### 비교
-
-| 항목 | 방식 ① (:3000 직접) | 방식 ② (subdomain) |
-|------|:------------------:|:------------------:|
+| 항목 | 방식 ① (port-direct) — **권장** | 방식 ② (subdomain) — DEPRECATED |
+|------|:-------------------------------:|:---------------------------------:|
 | hosts file 등록 | 불필요 | 필요 (모든 디바이스) |
-| 모바일/iPad | OK (직접 접속) | 제한 (jailbreak/root 필요) |
-| URL 깔끔함 | 평범 (`:3000`) | OK (`lobby.ebs.local`) |
-| TLS 확장 용이성 | OK | OK |
-| 기존 PR | Cycle 9 #355 | #69 |
-
-**동시 사용 가능** — 두 방식 모두 동일 컨테이너를 가리키므로 충돌 없음.
+| 모바일 / iPad / Android | OK | 제한 (편집 불가) |
+| 모바일 시연 시나리오 | ✓ | ✗ |
+| nginx config 위치 | image 내부 SSOT | 별도 proxy 컨테이너 |
+| image rebuild 안전 | 자체 정합 | proxy config drift 위험 |
+| 새 자동화 도구 검증 | ✓ | ✗ |
+| PR 추적 | #355 → #380 (image fold) | #69 (frozen) |
 
 ---
 
@@ -131,17 +141,43 @@ Invoke-WebRequest -Uri "http://localhost:3000/api/v1/auth/login" -Method POST `
 nginx 가 동일 origin 으로 reverse proxy 하므로 브라우저는 CORS preflight 를 발생시키지 않음.
 이는 모바일 Safari 의 third-party origin 제약을 우회.
 
-### bind-mount 검증
+### nginx /api proxy 컨테이너 검증 (Cycle 10 갱신)
 
 ```powershell
-docker exec ebs-lobby-web cat /etc/nginx/conf.d/default.conf | Select-String "/api/"
+docker exec ebs-lobby-web sh -c "cat /etc/nginx/conf.d/default.conf" | Select-String "/api/|/ws/"
 # location /api/ {
 # proxy_pass http://bo:8000/api/;
+# location /ws/ {
+# proxy_pass http://bo:8000/ws/;
 ```
 
-출력이 없으면 `docker-compose.yml` 의 `volumes:` 설정이 누락된 것 — `infra/web/lobby-web.nginx.conf` 와 mount path 확인.
+Cycle 10 이후 image 내부 SSOT (`team1-frontend/docker/lobby-web/nginx.conf` + `team4-cc/docker/cc-web/nginx.conf`) 가 default. bind-mount 가 docker-compose 에 여전히 남아있어도 image config 와 동일 내용이라 silent drift 발생 안 함.
+
+출력이 없으면:
+1. 컨테이너가 cycle 10 image 로 rebuild 되었는지 확인 — `docker images | grep ebs/lobby-web` 의 created 시각
+2. bind-mount 가 의도적으로 제거된 후 image rebuild 누락 → `docker compose --profile web build lobby-web`
+
+### LAN IP reachability KPI (모바일 시연 사전 검증)
+
+```powershell
+# 호스트 PC 에서 자기 LAN IP 로 self-reach -> 모바일에서 보는 것과 동일한 origin
+$ip = (Get-NetIPAddress -AddressFamily IPv4 |
+       Where-Object { $_.IPAddress -like "192.168.*" -or $_.IPAddress -like "10.*" } |
+       Select-Object -First 1).IPAddress
+Invoke-WebRequest -Uri "http://${ip}:3000/healthz" -UseBasicParsing | Select-Object StatusCode
+# StatusCode: 200 -> 모바일/태블릿이 hosts 매핑 없이 접속 가능
+```
+
+`scripts/lan-deploy.ps1` 가 본 KPI 를 자동 수행 (localhost /api + LAN IP /healthz + LAN IP /api 3중 probe). 200 이 아니면:
+- Windows firewall 인바운드 3000/3001 차단 → 방화벽 인바운드 규칙 수동 추가
+- LAN IP 변경 (DHCP) → 라우터 DHCP reservation 권장
+- lobby-web 비정상 → `docker compose ps` healthy 확인 후 `docker compose logs lobby-web`
 
 ---
+
+---
+
+> **⚠️ DEPRECATED 2026-05-12 (Cycle 10) — 다음 섹션 (방식 ②) 은 PC-only LAN 환경의 보조 절차**: hosts file 의존 — 모바일/iPad/태블릿 편집 불가. 새 모바일 시연 / 신규 배포에서는 방식 ① 만 사용. 인프라(`ebs-proxy` :80) 자체는 호환성을 위해 유지하지만 active 권장 경로 아님.
 
 ## 방식 ② — Step 1: hosts file 등록 (호스트 머신)
 
@@ -358,18 +394,27 @@ docker compose --profile web down
 
 ## 관련 PR / 문서
 
-### 방식 ① (Cycle 9 #355)
-- `scripts/lan-deploy.ps1` — Windows LAN one-shot deploy
-- `infra/web/lobby-web.nginx.conf` — lobby :3000 nginx config (bind-mount)
-- `infra/web/cc-web.nginx.conf` — cc :3001 nginx config (bind-mount)
-- `docker-compose.yml` — `volumes:` bind-mount 으로 image stale config override
+### 방식 ① — 진화 chain
+- PR #355 (Cycle 9 issue) — root cause 진단 + 방식 ① 도입 결정
+- PR #360 (Cycle 9) — bind-mount 우회로 image stale config 덮어쓰기 (임시 해소)
+- PR #369 (Cycle 9 QA, MERGED) — 6 screenshot e2e evidence + Lobby login hosts 의존 root cause 확정
+- PR #380 (Cycle 10) — image 내부 `team{1,4}/docker/{lobby,cc}-web/nginx.conf` 영구 흡수 + LAN reachability KPI 자동 검증 + 본 docs 갱신
 
-### 방식 ② (PR #69)
-- `infra/proxy/nginx.conf` — reverse proxy (port 80, subdomain routing)
-- `tools/setup_lan_access.{ps1,sh}` — 자동 hosts 등록 / 제거
-- `team1-frontend/production.example.json` — lobby 빌드 시 API host (subdomain)
-- `team4-cc/docker/cc-web/Dockerfile` — cc 빌드 시 API host (inline JSON)
+### 방식 ① — 자산 위치 (Cycle 10 이후)
+
+| 자산 | 위치 | 역할 |
+|------|------|------|
+| Lobby nginx SSOT | `team1-frontend/docker/lobby-web/nginx.conf` | image 내부 SSOT (Cycle 10 흡수) |
+| CC nginx SSOT | `team4-cc/docker/cc-web/nginx.conf` | image 내부 SSOT (Cycle 10 흡수) |
+| bind-mount fallback | `infra/web/{lobby,cc}-web.nginx.conf` | `docker-compose.yml volumes:` 안전 fallback (Cycle 11 에서 제거 검토) |
+| LAN one-shot deploy | `scripts/lan-deploy.ps1` | LAN IP 자동 감지 + 3중 reachability 검증 |
+
+### 방식 ② — frozen (PR #69)
+- `infra/proxy/nginx.conf` — reverse proxy (port 80, subdomain routing) — DEPRECATED
+- `tools/setup_lan_access.{ps1,sh}` — 자동 hosts 등록 / 제거 — DEPRECATED
+- `team1-frontend/production.example.json` — lobby 빌드 시 API host (subdomain) — Cycle 10 same-origin 도입 후 deprecated
+- `team4-cc/docker/cc-web/Dockerfile` — cc 빌드 시 API host (inline JSON) — 동일 deprecated
 
 ### 공통
 - 인프라 SSOT: `docs/4. Operations/Docker_Runtime.md`
-- 검증 스크립트: `team1-frontend/scripts/verify_harness.py`, `team1-frontend/tools/verify_team1_e2e.py`
+- 검증 스크립트: `scripts/lan-deploy.ps1` (3중 probe), `team1-frontend/scripts/verify_harness.py`, `team1-frontend/tools/verify_team1_e2e.py`

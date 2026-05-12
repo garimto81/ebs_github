@@ -15,7 +15,8 @@
 # 정합
 #   S11 SSOT: docs/4. Operations/Docker_Runtime.md
 #   LAN 가이드: docs/4. Operations/LAN_DEPLOYMENT.md
-#   본 cycle: GitHub issue #355 (S11 Cycle 9)
+#   본 cycle: GitHub issue #355 (S11 Cycle 9 — bind-mount 우회 도입),
+#             issue #380 (S11 Cycle 10 — image 영구 흡수 + LAN IP reachability 추가)
 
 [CmdletBinding()]
 param(
@@ -95,7 +96,7 @@ function Get-LanIPv4 {
     }
 }
 
-Write-Section "EBS LAN Deploy - Cycle 9"
+Write-Section "EBS LAN Deploy - Cycle 10 (image fold + LAN reachability)"
 
 if (-not $EbsHost) {
     Write-Step "LAN IPv4 자동 감지 중..."
@@ -177,23 +178,75 @@ if (-not $allHealthy) {
     Write-Step "모든 컨테이너 healthy OK"
 }
 
-# nginx /api proxy 검증
-Write-Section "nginx /api proxy 검증"
-try {
-    $resp = Invoke-WebRequest -Uri "http://localhost:3000/api/v1/auth/login" `
-        -Method POST -ContentType "application/json" `
-        -Body '{"username":"_probe","password":"_probe"}' `
-        -UseBasicParsing -SkipHttpErrorCheck -TimeoutSec 5
-    $code = $resp.StatusCode
-    if ($code -eq 405) {
-        Write-Err "FAIL: HTTP 405 - nginx 가 /api/ 를 proxy 하지 못함 (SPA fallback). bind-mount 확인 필요."
-    } elseif ($code -ge 200 -and $code -lt 500) {
-        Write-Step "PASS: HTTP $code - /api/ proxy 활성화 (401/422 도 정상, 405 만 아니면 됨)"
-    } else {
-        Write-Warn "HTTP $code - BO 측 오류일 가능성. 'docker logs ebs-bo' 확인."
+# Probe helper — PowerShell 5.1 + 7 호환 (SkipHttpErrorCheck 는 PS7 전용이라 try-catch fallback)
+function Invoke-EbsProbe {
+    param(
+        [string]$Uri,
+        [string]$Method = "GET",
+        [string]$Body = $null,
+        [int]$TimeoutSec = 5
+    )
+    try {
+        $params = @{
+            Uri              = $Uri
+            Method           = $Method
+            UseBasicParsing  = $true
+            TimeoutSec       = $TimeoutSec
+            ErrorAction      = "Stop"
+        }
+        if ($Body) {
+            $params["ContentType"] = "application/json"
+            $params["Body"]        = $Body
+        }
+        $resp = Invoke-WebRequest @params
+        return [pscustomobject]@{ Status = $resp.StatusCode; Ok = $true; Err = $null }
+    } catch [System.Net.WebException] {
+        $code = 0
+        try { $code = [int]$_.Exception.Response.StatusCode } catch {}
+        return [pscustomobject]@{ Status = $code; Ok = $false; Err = $_.Exception.Message }
+    } catch {
+        return [pscustomobject]@{ Status = 0; Ok = $false; Err = "$_" }
     }
-} catch {
-    Write-Warn "검증 요청 실패: $_"
+}
+
+# nginx /api proxy 검증 (localhost — host PC 시점)
+Write-Section "nginx /api proxy 검증 (localhost)"
+$probe1 = Invoke-EbsProbe -Uri "http://localhost:3000/api/v1/auth/login" -Method POST `
+    -Body '{"username":"_probe","password":"_probe"}'
+if ($probe1.Status -eq 405) {
+    Write-Err "FAIL: HTTP 405 - nginx 가 /api/ 를 proxy 하지 못함 (SPA fallback). image rebuild 후 재실행 필요."
+} elseif ($probe1.Status -ge 200 -and $probe1.Status -lt 500) {
+    Write-Step "PASS: HTTP $($probe1.Status) - /api/ proxy 활성 (401/422 정상, 405 만 FAIL)"
+} elseif ($probe1.Status -eq 0) {
+    Write-Warn "probe 요청 자체 실패: $($probe1.Err)"
+} else {
+    Write-Warn "HTTP $($probe1.Status) - BO 측 5xx 가능. 'docker logs ebs-bo' 확인."
+}
+
+# LAN IP reachability 검증 (KPI — hosts 매핑 없이 모바일/태블릿 접속 가능?)
+# 외부 디바이스가 보는 것과 동일한 호스트 시점 (호스트 자기 LAN IP 로 self-reach)
+Write-Section "LAN IP reachability 검증 (hosts 매핑 없이 작동 KPI)"
+$probe2 = Invoke-EbsProbe -Uri "http://${EbsHost}:3000/healthz"
+if ($probe2.Ok -and $probe2.Status -eq 200) {
+    Write-Step "PASS: http://${EbsHost}:3000/healthz -> 200. 모바일/태블릿이 hosts 없이 도달 가능 예상."
+} else {
+    Write-Warn "FAIL: http://${EbsHost}:3000/healthz status=$($probe2.Status) err=$($probe2.Err)"
+    Write-Warn "원인 후보: (a) Windows firewall 인바운드 3000 차단, (b) LAN IP 변경, (c) lobby-web 비정상."
+}
+
+$probe3 = Invoke-EbsProbe -Uri "http://${EbsHost}:3001/healthz"
+if ($probe3.Ok -and $probe3.Status -eq 200) {
+    Write-Step "PASS: http://${EbsHost}:3001/healthz -> 200 (CC 도 LAN 도달 가능)."
+} else {
+    Write-Warn "FAIL: http://${EbsHost}:3001/healthz status=$($probe3.Status) err=$($probe3.Err)"
+}
+
+$probe4 = Invoke-EbsProbe -Uri "http://${EbsHost}:3000/api/v1/auth/login" -Method POST `
+    -Body '{"username":"_probe","password":"_probe"}'
+if ($probe4.Status -ge 200 -and $probe4.Status -lt 500 -and $probe4.Status -ne 405) {
+    Write-Step "PASS: LAN IP /api/ proxy 도 정상 (HTTP $($probe4.Status), BO 도달)."
+} else {
+    Write-Warn "LAN IP /api/ proxy 결과 비정상: status=$($probe4.Status) err=$($probe4.Err)"
 }
 
 # 접속 URL 출력
@@ -208,17 +261,17 @@ Write-Host ""
 Write-Host "  Backend (REST 직접 - 디버그용)" -ForegroundColor Gray
 Write-Host "      http://${EbsHost}:8000/docs   (OpenAPI Swagger)" -ForegroundColor Gray
 Write-Host ""
-Write-Host "  대안: subdomain 방식 (port 80, hosts file 등록 필요)" -ForegroundColor Gray
-Write-Host "      http://lobby.ebs.local/  (기존 PR #69, .\tools\setup_lan_access.ps1)" -ForegroundColor Gray
+Write-Host "  [DEPRECATED] subdomain 방식 (port 80, hosts file 의존)" -ForegroundColor DarkGray
+Write-Host "      http://lobby.ebs.local/  (PR #69, 모바일/태블릿 hosts 편집 불가 -> 비권장)" -ForegroundColor DarkGray
 Write-Host ""
 
 Write-Section "모바일 / iPad / 노트북 접속 가이드"
 Write-Host "1. 동일 LAN 에 연결 (Wi-Fi SSID 일치 확인)"
 Write-Host "2. 호스트 머신 firewall 인바운드 3000/3001 허용 (Windows 방화벽 자동)"
-Write-Host "3. 모바일 브라우저에서 http://${EbsHost}:3000/ 직접 입력"
+Write-Host "3. 모바일 브라우저에서 http://${EbsHost}:3000/ 직접 입력 (hosts 매핑 불필요)"
 Write-Host "4. 로그인 화면 도달 -> /api/v1/auth/login 정상 작동 확인"
 Write-Host "5. F12 (또는 Safari 개발자 도구) Network 탭에서 /api/ 호출이 200 응답 확인"
 Write-Host ""
 Write-Host "문제 시 트러블슈팅: docs/4. Operations/LAN_DEPLOYMENT.md"
 Write-Host ""
-Write-Step "Cycle 9 LAN deploy 완료. 정리: .\scripts\lan-deploy.ps1 -Down"
+Write-Step "Cycle 10 LAN deploy 완료. 정리: .\scripts\lan-deploy.ps1 -Down"
