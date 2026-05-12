@@ -1,368 +1,205 @@
-// EBS Lobby — drilldown shell (TopBar + SideRail + body).
+// EBS Lobby — mockup-style shell (top-bar + body).
 //
-// Wraps the 5 lobby drilldown screens (Series / Events / Flights / Tables /
-// Players) with the design source's TopBar + SideRail. Each screen embeds
-// its own LobbyBreadcrumb at the top of [child] so the trail is path-aware.
+// 2026-05-12 cycle 11 — 사용자 비판 후 mockup HTML 정합 재설계.
+// 이전: TopBar + SideRail (rich navigation). 변경: dark mockup top-bar 만.
+// SSOT: docs/mockups/ebs-lobby-{01,02,03,04}-*.html 모두 sidebar 없음.
 //
-// Used by go_router as a `ShellRoute` builder.
+// Sub-feature (Settings / Graphic Editor / Reports / Staff / Players /
+// Hand History) 접근은 admin user menu popup (top-bar 우측) 으로 이전.
+// 데이터 흐름 (Series → Event → Flight → Table) 은 PR #377 그대로 유지.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../foundation/theme/design_tokens.dart';
-import '../../../foundation/widgets/build_id_label.dart';
-import '../../../foundation/widgets/lobby_side_rail.dart';
-import '../../../foundation/widgets/lobby_top_bar.dart';
+import '../../../foundation/theme/lobby_mockup_tokens.dart';
 import '../../auth/auth_provider.dart';
 import '../providers/cc_session_provider.dart';
-import '../providers/event_provider.dart';
-import '../providers/flight_provider.dart';
-import '../providers/nav_provider.dart';
-import '../providers/series_provider.dart';
-import '../providers/table_provider.dart';
 
-/// Lobby sidebar destinations — drilldown 5 + tools 5 (단일 chrome, 2026-05-06).
-enum LobbyRail {
-  // ── Navigate / Drilldown ──
-  series,
-  events,
-  flights,
-  tables,
-  players,
-  // ── Tools ──
-  handHistory,
-  settings,
-  gfx,
-  reports,
-  staff,
-}
-
-extension LobbyRailX on LobbyRail {
-  String get id => name;
-  IconData get icon {
-    switch (this) {
-      case LobbyRail.series:
-        return Icons.workspace_premium_outlined;
-      case LobbyRail.events:
-        return Icons.event_outlined;
-      case LobbyRail.flights:
-        return Icons.flight_takeoff_outlined;
-      case LobbyRail.tables:
-        return Icons.grid_view_outlined;
-      case LobbyRail.players:
-        return Icons.people_outline;
-      case LobbyRail.handHistory:
-        return Icons.bolt_outlined;
-      case LobbyRail.settings:
-        return Icons.settings_outlined;
-      case LobbyRail.gfx:
-        return Icons.brush_outlined;
-      case LobbyRail.reports:
-        return Icons.assessment_outlined;
-      case LobbyRail.staff:
-        return Icons.badge_outlined;
-    }
-  }
-
-  String get label {
-    switch (this) {
-      case LobbyRail.series:
-        return 'Series';
-      case LobbyRail.events:
-        return 'Events';
-      case LobbyRail.flights:
-        return 'Flights';
-      case LobbyRail.tables:
-        return 'Tables';
-      case LobbyRail.players:
-        return 'Players';
-      case LobbyRail.handHistory:
-        return 'Hand History';
-      case LobbyRail.settings:
-        return 'Settings';
-      case LobbyRail.gfx:
-        return 'Graphic Editor';
-      case LobbyRail.reports:
-        return 'Reports';
-      case LobbyRail.staff:
-        return 'Staff';
-    }
-  }
-}
-
-class LobbyShell extends ConsumerStatefulWidget {
+class LobbyShell extends ConsumerWidget {
   const LobbyShell({super.key, required this.child});
 
   final Widget child;
 
-  static LobbyRail railFromLocation(String location) {
-    // Tools (top-level meta routes)
-    if (location.startsWith('/staff')) return LobbyRail.staff;
-    if (location.startsWith('/settings')) return LobbyRail.settings;
-    if (location.startsWith('/graphic-editor')) return LobbyRail.gfx;
-    if (location.startsWith('/reports/hand-history')) return LobbyRail.handHistory;
-    if (location.startsWith('/reports')) return LobbyRail.reports;
-    // Drilldown
-    if (location.startsWith('/lobby/events')) return LobbyRail.events;
-    if (location.startsWith('/lobby/flights')) return LobbyRail.flights;
-    if (location.contains('/players')) return LobbyRail.players;
-    if (location.contains('/tables')) return LobbyRail.tables;
-    return LobbyRail.series;
-  }
-
   @override
-  ConsumerState<LobbyShell> createState() => _LobbyShellState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      backgroundColor: LobbyMockupTokens.bg,
+      body: Column(
+        children: [
+          const _MockupTopBar(),
+          Expanded(child: child),
+        ],
+      ),
+    );
+  }
 }
 
-class _LobbyShellState extends ConsumerState<LobbyShell> {
-  bool _railCollapsed = false;
-  late String _clock;
+/// Mockup 정합 top bar — `.hdr` 의 정확한 재현.
+///
+/// Layout: `[EBS LOBBY label]  spacer  [Active CC pill] [Admin: <name> ▼]`
+/// All dimensions, colors, font sizes from mockup CSS.
+class _MockupTopBar extends ConsumerWidget {
+  const _MockupTopBar();
 
   @override
-  void initState() {
-    super.initState();
-    _clock = _format(DateTime.now());
-    _scheduleClock();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final auth = ref.watch(authProvider);
+    final user = auth.user;
+    final userName = user?.displayName ?? 'Guest';
+    final userRole = user?.role ?? 'viewer';
+    final ccCount = ref.watch(activeCcCountProvider);
 
-  void _scheduleClock() {
-    Future.delayed(const Duration(seconds: 1), () {
-      if (!mounted) return;
-      setState(() => _clock = _format(DateTime.now()));
-      _scheduleClock();
-    });
-  }
+    return Container(
+      height: 32, // mockup: padding 6px + ~20px content
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      color: LobbyMockupTokens.headerBg,
+      child: Row(
+        children: [
+          // ── EBS LOBBY label (left) — click → /lobby/series ──
+          GestureDetector(
+            onTap: () => context.go('/lobby/series'),
+            child: const MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Text(
+                'EBS LOBBY',
+                style: TextStyle(
+                  color: LobbyMockupTokens.headerInk,
+                  fontSize: LobbyMockupTokens.fsHeaderLogo,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: LobbyMockupTokens.letterSpacingHeader,
+                ),
+              ),
+            ),
+          ),
 
-  String _format(DateTime t) =>
-      '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}:${t.second.toString().padLeft(2, '0')}';
+          const Spacer(),
+
+          // ── Active CC pill ──
+          _CcPill(count: ccCount),
+
+          const SizedBox(width: 12),
+
+          // ── User menu popup (Admin: J.Kim) ──
+          _UserMenu(name: userName, role: userRole),
+        ],
+      ),
+    );
+  }
+}
+
+/// Mockup `.cc-btn` — Active CC pill with green dot.
+class _CcPill extends StatelessWidget {
+  const _CcPill({required this.count});
+  final int count;
 
   @override
   Widget build(BuildContext context) {
-    final loc = GoRouterState.of(context).matchedLocation;
-    final selected = LobbyShell.railFromLocation(loc);
-
-    final auth = ref.watch(authProvider);
-    final user = auth.user;
-    final initials = _initialsOf(user?.displayName ?? 'EBS');
-    final userLabel = user == null
-        ? 'Sign in'
-        : '${user.displayName} · ${user.role[0].toUpperCase()}${user.role.substring(1)}';
-
-    final clusters = _clusterFromSelection(ref);
-    final badges = _badgesFromProviders(ref);
-
-    return Scaffold(
-      backgroundColor: DesignTokens.lightBg,
-      body: Column(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+      color: LobbyMockupTokens.headerCcBg,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          LobbyTopBar(
-            collapsed: _railCollapsed,
-            clusters: clusters,
-            activeCcCount: ref.watch(activeCcCountProvider),
-            clock: _clock,
-            userInitials: initials,
-            userLabel: userLabel,
-            onBrandTap: () =>
-                setState(() => _railCollapsed = !_railCollapsed),
+          const Text(
+            'Active CC',
+            style: TextStyle(
+              color: LobbyMockupTokens.headerInk,
+              fontSize: LobbyMockupTokens.fsXs,
+              fontWeight: FontWeight.w700,
+              letterSpacing: LobbyMockupTokens.letterSpacingBtn,
+            ),
           ),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                LobbySideRail(
-                  collapsed: _railCollapsed,
-                  selectedId: selected.id,
-                  onSelect: (id) => _onRailSelect(context, id),
-                  footerVersion: kBuildLabel,
-                  items: [
-                    // ── Navigate ──
-                    LobbySideRailItem(
-                      id: LobbyRail.series.id,
-                      label: LobbyRail.series.label,
-                      icon: LobbyRail.series.icon,
-                      badge: badges[LobbyRail.series],
-                      section: 'Navigate',
-                    ),
-                    // ── Drilldown (current series context) ──
-                    LobbySideRailItem(
-                      id: LobbyRail.events.id,
-                      label: LobbyRail.events.label,
-                      icon: LobbyRail.events.icon,
-                      badge: badges[LobbyRail.events],
-                      section: ref.watch(currentSeriesNameProvider) != null
-                          ? '${ref.watch(currentSeriesNameProvider)} · Drilldown'
-                          : 'Drilldown',
-                    ),
-                    LobbySideRailItem(
-                      id: LobbyRail.flights.id,
-                      label: LobbyRail.flights.label,
-                      icon: LobbyRail.flights.icon,
-                      badge: badges[LobbyRail.flights],
-                    ),
-                    LobbySideRailItem(
-                      id: LobbyRail.tables.id,
-                      label: LobbyRail.tables.label,
-                      icon: LobbyRail.tables.icon,
-                      badge: badges[LobbyRail.tables],
-                    ),
-                    LobbySideRailItem(
-                      id: LobbyRail.players.id,
-                      label: LobbyRail.players.label,
-                      icon: LobbyRail.players.icon,
-                      badge: badges[LobbyRail.players],
-                    ),
-                    // ── Tools (always-on meta) ──
-                    LobbySideRailItem(
-                      id: LobbyRail.handHistory.id,
-                      label: LobbyRail.handHistory.label,
-                      icon: LobbyRail.handHistory.icon,
-                      section: 'Tools',
-                    ),
-                    LobbySideRailItem(
-                      id: LobbyRail.settings.id,
-                      label: LobbyRail.settings.label,
-                      icon: LobbyRail.settings.icon,
-                    ),
-                    LobbySideRailItem(
-                      id: LobbyRail.gfx.id,
-                      label: LobbyRail.gfx.label,
-                      icon: LobbyRail.gfx.icon,
-                    ),
-                    LobbySideRailItem(
-                      id: LobbyRail.reports.id,
-                      label: LobbyRail.reports.label,
-                      icon: LobbyRail.reports.icon,
-                    ),
-                    LobbySideRailItem(
-                      id: LobbyRail.staff.id,
-                      label: LobbyRail.staff.label,
-                      icon: LobbyRail.staff.icon,
-                    ),
-                  ],
-                ),
-                Expanded(child: widget.child),
-              ],
+          const SizedBox(width: 4),
+          Container(
+            width: 6,
+            height: 6,
+            decoration: const BoxDecoration(
+              color: LobbyMockupTokens.ccLive,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            '$count',
+            style: const TextStyle(
+              color: LobbyMockupTokens.headerInk,
+              fontSize: LobbyMockupTokens.fsXs,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  void _onRailSelect(BuildContext context, String id) {
-    final rail = LobbyRail.values.firstWhere((e) => e.id == id);
-    final seriesId = ref.read(currentSeriesIdProvider);
-    final eventId = ref.read(currentEventIdProvider);
-    final flightId = ref.read(currentFlightIdProvider);
+/// Mockup `.hdr-user` — 'Admin: J.Kim' + popup menu (sub-feature 접근).
+class _UserMenu extends ConsumerWidget {
+  const _UserMenu({required this.name, required this.role});
+  final String name;
+  final String role;
 
-    switch (rail) {
-      // ── Drilldown ──
-      case LobbyRail.series:
-        context.go('/lobby/series');
-      case LobbyRail.events:
-        context.go(seriesId != null
-            ? '/lobby/events/$seriesId'
-            : '/lobby/series');
-      case LobbyRail.flights:
-        context.go(eventId != null
-            ? '/lobby/flights/$eventId'
-            : '/lobby/series');
-      case LobbyRail.tables:
-        context.go(flightId != null
-            ? '/lobby/flight/$flightId/tables'
-            : '/lobby/series');
-      case LobbyRail.players:
-        context.go(flightId != null
-            ? '/lobby/flight/$flightId/players'
-            : '/lobby/series');
-      // ── Tools ──
-      case LobbyRail.handHistory:
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final roleLabel = role.isEmpty
+        ? '—'
+        : '${role[0].toUpperCase()}${role.substring(1)}';
+    final label = '$roleLabel: $name';
+    return PopupMenuButton<String>(
+      tooltip: 'Menu',
+      color: LobbyMockupTokens.bg,
+      offset: const Offset(0, 28),
+      onSelected: (v) => _onSelect(context, ref, v),
+      itemBuilder: (_) => const [
+        PopupMenuItem(value: 'players', child: Text('Players')),
+        PopupMenuItem(value: 'hand-history', child: Text('Hand History')),
+        PopupMenuItem(value: 'reports', child: Text('Reports')),
+        PopupMenuDivider(),
+        PopupMenuItem(value: 'settings', child: Text('Settings')),
+        PopupMenuItem(value: 'gfx', child: Text('Graphic Editor')),
+        PopupMenuItem(value: 'staff', child: Text('Staff')),
+        PopupMenuDivider(),
+        PopupMenuItem(value: 'logout', child: Text('Logout')),
+      ],
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              color: LobbyMockupTokens.headerUserInk,
+              fontSize: LobbyMockupTokens.fsXs,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          const SizedBox(width: 2),
+          const Icon(
+            Icons.arrow_drop_down,
+            size: 14,
+            color: LobbyMockupTokens.headerUserInk,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onSelect(BuildContext context, WidgetRef ref, String v) {
+    switch (v) {
+      case 'players':
+        context.go('/players');
+      case 'hand-history':
         context.go('/reports/hand-history');
-      case LobbyRail.settings:
-        context.go('/settings');
-      case LobbyRail.gfx:
-        context.go('/graphic-editor');
-      case LobbyRail.reports:
+      case 'reports':
         context.go('/reports');
-      case LobbyRail.staff:
+      case 'settings':
+        context.go('/settings');
+      case 'gfx':
+        context.go('/graphic-editor');
+      case 'staff':
         context.go('/staff');
+      case 'logout':
+        ref.read(authProvider.notifier).logout();
     }
-  }
-
-  String _initialsOf(String name) {
-    final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.isEmpty || parts.first.isEmpty) return '?';
-    if (parts.length == 1) {
-      return parts.first.substring(0, parts.first.length.clamp(0, 2)).toUpperCase();
-    }
-    return (parts.first[0] + parts.last[0]).toUpperCase();
-  }
-
-  /// Build the design's [SHOW · FLIGHT · LEVEL · NEXT] cluster — 4 columns fixed
-  /// per shell.jsx:43-51. SHOW/FLIGHT 는 nav state, LEVEL/NEXT 는 flight
-  /// levels provider (Phase 3 backend 연결 시 자동 갱신).
-  List<LobbyTopBarCluster> _clusterFromSelection(WidgetRef ref) {
-    final seriesName = ref.watch(currentSeriesNameProvider);
-    final flightId = ref.watch(currentFlightIdProvider);
-    final eventId = ref.watch(currentEventIdProvider);
-    String? flightLabel;
-    if (flightId != null && eventId != null) {
-      final flights =
-          ref.watch(flightListProvider(eventId)).valueOrNull ?? const [];
-      final f = flights.cast<dynamic>().firstWhere(
-            (x) => x?.eventFlightId == flightId,
-            orElse: () => null,
-          );
-      flightLabel = f?.displayName as String?;
-    }
-    final levelsAsync = flightId != null
-        ? ref.watch(flightLevelsProvider(flightId))
-        : const AsyncValue<LobbyLevelsSnapshot?>.data(null);
-    final levels = levelsAsync.valueOrNull;
-    final levelText = levels != null
-        ? '${levels.now.role.split(' · ').last} · ${levels.now.blinds}'
-        : '—';
-    final nextText = levels?.countdown ?? '—';
-    return [
-      LobbyTopBarCluster('SHOW', _short(seriesName) ?? '—'),
-      LobbyTopBarCluster('FLIGHT', _short(flightLabel) ?? '—'),
-      LobbyTopBarCluster('LEVEL', _short(levelText) ?? '—'),
-      LobbyTopBarCluster('NEXT', nextText),
-    ];
-  }
-
-  /// Sidebar item badge counts pulled from Riverpod providers when the
-  /// underlying list has been fetched. Returns null per-item until the list
-  /// loads — `_Badge` widget hides nulls.
-  Map<LobbyRail, int?> _badgesFromProviders(WidgetRef ref) {
-    final seriesCount = ref.watch(seriesListProvider).valueOrNull?.length;
-    final seriesId = ref.watch(currentSeriesIdProvider);
-    final eventCount = seriesId != null
-        ? ref.watch(eventListProvider(seriesId)).valueOrNull?.length
-        : null;
-    final eventId = ref.watch(currentEventIdProvider);
-    final flightCount = eventId != null
-        ? ref.watch(flightListProvider(eventId)).valueOrNull?.length
-        : null;
-    final flightId = ref.watch(currentFlightIdProvider);
-    final tables = flightId != null
-        ? ref.watch(tableListProvider(flightId)).valueOrNull
-        : null;
-    final tableCount = tables?.length;
-    final playerCount = tables?.fold<int>(0, (s, t) => s + (t.seatedCount ?? 0));
-    return {
-      LobbyRail.series: seriesCount,
-      LobbyRail.events: eventCount,
-      LobbyRail.flights: flightCount,
-      LobbyRail.tables: tableCount,
-      LobbyRail.players: playerCount,
-    };
-  }
-
-  String? _short(String? s) {
-    if (s == null) return null;
-    if (s.length <= 22) return s;
-    return '${s.substring(0, 21)}…';
   }
 }

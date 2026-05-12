@@ -6,9 +6,9 @@ tier: external
 confluence-page-id: 3811672228
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228
-last-updated: 2026-05-11
+last-updated: 2026-05-12
 last-synced: 2026-05-11
-version: 3.0.2
+version: 3.0.4
 derivative-of: ../2. Development/2.1 Frontend/Lobby/Overview.md
 if-conflict: derivative-of takes precedence
 audience-target: 외부 stakeholder + Lobby 개발자 (이중 audience — 그림 소설 + 개발자 무결성)
@@ -1206,6 +1206,7 @@ Future<int> _createTable() async {
 | 2026-05-11 | 3.0.1 | 부록 H 추가 (1 hand 시퀀스, Cycle 2 #239) — narrative 변경 0, additive only |
 | 2026-05-11 | 3.0.2 | §Ch.1.7 본문 추가 (1 hand 자동 셋업 데모, Cycle 3) — Ch.1 5 화면 시퀀스 ↔ 부록 H 연결, additive only |
 | 2026-05-12 | 3.0.3 | Cycle 6 #312 — multi-hand auto_demo (Hand 1 -> Hand 2 전환). HandAutoSetupStep 4 단계 추가 (hand1Complete / nextHandRotating / hand2Dealt). handHistory[] + dealer button indicator UI 위젯. v02-lobby evidence 6 PNG. S8 #301 ManualNextHand 계약 소비. additive only — narrative 변경 0 |
+| 2026-05-12 | 3.0.4 | **Cycle 11 #379** — 사용자 비판 2건 해소. (A) Login 안정화: `app_config.dart` `EBS_SAME_ORIGIN` default `true` 화. LAN 디바이스가 호스트 PC hosts 파일 의존 없이 작동. 절대 URL fallback 은 native build 만. Web origin 빈 경우 상대 `/api/v1` graceful fallback. (B) Lobby HTML mockup 정합: `lobby_mockup_tokens.dart` 신규 (mockup CSS hex 단일 SSOT). `LobbyShell` sidebar 제거 → mockup `.hdr` dark top-bar (EBS LOBBY / Active CC pill / Admin user popup). `LoginScreen` 재설계: dark `EBS` 헤더 + 흰 카드 (340px) + email/password rows + Forgot link + Login + Entra ID (TBD). Sub-feature (Settings/GE/Reports/Staff/Players/HandHistory) = user menu popup. PR #377 BO API call data flow 유지. additive only — narrative 변경 0 |
 | 2026-05-12 | 3.0.4 | Cycle 10 S2 hierarchy wire — Series → Event → Flight → Table drill-down 이 실 BO 와 nested route 로 통신하도록 wire 정정. `EventRepository.listBySeries()` + `TableRepository.listByFlight()` 신규. 이전 `?seriesId=` / `?flightId=` 쿼리 파라미터는 BO (FastAPI snake_case) 와 SSOT Naming_Conventions.md (camelCase JSON) 간 divergence 로 인해 무시되어 다른 event 가 같은 flight 목록을 보여주는 증상 야기. 본 cycle 은 path-variable nested route 로 우회. v01-lobby evidence 6 PNG (login → series → event → flight → table → KPI 증명: event A vs event B distinct flight id). KPI 통과. additive only — narrative 변경 0 |
 
 ---
