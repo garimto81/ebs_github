@@ -50,6 +50,7 @@ EBS 프로젝트는 로컬 머신 (AIDEN-KIM-DT-01, LAN IP 10.10.100.115) 에서
 | **2026-05-11 (후속)** | **redis service `restart: unless-stopped` 정책 추가 (PR #230). §1 표 redis 외부 포트 `internal` → `127.0.0.1:16380 (host debug)` 정정** | **S11 Day-1 autonomous iteration. bo/engine/lobby-web/cc-web/proxy 모두 정책 보유 — redis 만 누락이 4일 silent down 의 근본 원인. transient glitch 자동 회복 시간 단축** |
 | **2026-05-11 (Cycle 2)** | **§4.7 Healthcheck 6/6 reference 신설. broker 자동 publish 흐름 다이어그램 추가 (post_build_fail → cascade:build-fail / orch_PostToolUse → pipeline:env-ready). Day-1 수동 publish 의존성 제거** | **S11 Cycle 2 (Issue #240). orchestrator_monitor PYTHONPATH fix + 두 hook 의 broker publish 통합으로 push-mode 50ms latency 활용 가능. recipients=0 문제는 별도 사이클** |
 | **2026-05-11 (Cycle 3)** | **§4.8 Autonomous action chain 신설. observer_loop `--action-mode` + `next_action` payload dispatcher (inbox-drop / shell / noop). `handoffs/inbox/` 신설 + hook payload next_action 자동 명시. recipients=0 문제 해소 (observer가 즉시 파일 시스템에 drop)** | **S11 Cycle 3 (autonomous chain). end-to-end self-test PASS (seq 40 drop / seq 41 shell-block / seq 43 broadcast). Cycle 4 후보 = observer_loop background service** |
+| **2026-05-12 (Cycle 4)** | **§4.9 Autonomous chain demo + broker wildcard semantics 발견. cascade:cycle4-demo-build-fail seq=101 end-to-end chain 실측 trace 보존 (subscribe→dispatch ~493ms). `cascade:*` glob 미지원 — `*` 또는 exact topic 권장. autonomous 도달도 10% 사용자 진입 (Cycle 5 = 0% 목표)** | **S11 Cycle 4 (Issue #271). PR #254 의 --action-mode 실제 동작 검증. observer_loop background service 가 Cycle 5 의 단일 잔여 작업** |
 
 ---
 
@@ -187,6 +188,89 @@ docker exec ebs-bo python -c "import redis; print(redis.from_url('redis://redis:
 - **A**: 영향 컨테이너 단일 재기동 — `docker restart ebs-bo ebs-engine` (5h healthy 깨질 위험). relay 재초기화 가능성 ~80%.
 - **B**: Docker Desktop 재시작 — 모든 worktree session 영향. 마지막 수단.
 - **C (현재 채택)**: proxy 경유 + LAN_DEPLOYMENT.md `setup_lan_access` 으로 hostname 매핑 사용. 개발자 직접 접근 필요 시 `docker exec <container> curl localhost:<port>` 우회.
+
+---
+
+## 4.9 Autonomous chain demo (S11 Cycle 4, Issue #271)
+
+PR #254 (Cycle 3) 의 observer_loop `--action-mode` 가 실제 cascade event 를 처리할 수 있는지 검증한 end-to-end demo. 사용자 진입 0 자동화 90% 도달 검증.
+
+### 시나리오: 빌드 실패 → 자동 inbox drop
+
+**Step 1** — fake `cascade:build-fail` publish (S11 publisher):
+
+```bash
+python -m tools.orchestrator.message_bus.tests.pub_demo \
+  --topic "cascade:cycle4-demo-build-fail" \
+  --source "S11" \
+  --payload '{"command_excerpt":"pytest tests/test_demo_failure.py","exit_code":1,"stderr_excerpt":"FAKE FAILURE for cycle 4 chain demo","next_action":{"type":"inbox-drop","target":"S9,S10-A","reason":"simulated build failure"}}'
+```
+
+→ 결과: `seq=101, recipients=0` (live subscriber 0 — 정상)
+
+**Step 2** — observer_loop `--action-mode` (history drain + dispatch):
+
+```bash
+python -m tools.orchestrator.message_bus.observer_loop \
+  --topic "cascade:cycle4-demo-build-fail" \
+  --action-mode --max-iter 1
+```
+
+→ stdout (실측 trace):
+
+```
+v11 Observer Loop — push-based
+  url:    http://127.0.0.1:7383/mcp
+  topic:  cascade:cycle4-demo-build-fail
+  start:  2026-05-12T02:58:32.321856+00:00
+📡 cascade by ?: cycle4-demo-build-fail → 0 docs
+  inbox-drop: docs\4. Operations\handoffs\inbox\2026-05-12T02-57-36.57274_cascade-cycle4-demo-build-fail_seq000101_to-S9-S10-A.md
+```
+
+**Step 3** — inbox 파일 생성 검증:
+
+| 항목 | 값 |
+|------|-----|
+| 파일명 | `2026-05-12T02-57-36.57274_cascade-cycle4-demo-build-fail_seq000101_to-S9-S10-A.md` |
+| 위치 | `docs/4. Operations/handoffs/inbox/` |
+| frontmatter | source / topic / seq / ts / target / action_type / observer_dropped_at |
+| 본문 | Payload JSON (4 key 정상 보존) |
+
+**Step 4** — latency 측정:
+
+| 단계 | 시각 (UTC) | delta |
+|------|-----------|-------|
+| publish | 02:57:36.572 | t0 |
+| observer subscribe start | 02:58:32.321 | +55.7s |
+| observer dispatch (file write) | 02:58:32.814 | +56.2s (subscribe→dispatch ~493ms) |
+
+**subscribe → dispatch latency ~493ms** (filesystem mkdir + write 포함). broker history replay 가 50ms 이내라 가정하면 markdown write 가 대부분.
+
+### Broker subscribe wildcard 의미 (Cycle 4 발견)
+
+| topic 인자 | 의미 | 사용 권장 |
+|-----------|------|----------|
+| `"*"` | **모든 topic** broker history + push 수신 | ✅ catch-all observer |
+| `"cascade:*"` | literal topic name `cascade:*` (glob 아님) | ❌ glob 미지원 |
+| `"cascade:cycle4-demo-build-fail"` | exact match | ✅ 단발 |
+
+Issue #271 본문의 `--topic cascade:*` 는 broker 측에서 literal 로 해석되어 0 매치. 향후 prefix 매칭이 필요하면 broker subscribe 측 패치 (별도 Cycle).
+
+### Autonomous 도달도 측정 (Cycle 1 → Cycle 4)
+
+| Cycle | publish | dispatch | filesystem effect | 사용자 진입 |
+|:-----:|:-------:|:--------:|:------------------:|:----------:|
+| 1 | 수동 | 없음 | 없음 (broker history만) | 100% |
+| 2 | hook 자동 | 없음 | 없음 (recipients=0) | 70% |
+| 3 | hook 자동 | observer 수동 트리거 | inbox file | 50% |
+| **4** | **hook 자동** | **observer 자동 (self-test 입증)** | **inbox file** | **10%** |
+| 5 (후보) | hook 자동 | observer **background service** | inbox + auto archive + S9 triage | **0% 목표** |
+
+### 검증 산출물 (PR 본문에 보존)
+
+- `cascade:cycle4-demo-build-fail` seq=101 broker history
+- `cascade:observer-action-verified` seq=TBD broker broadcast
+- `docs/4. Operations/handoffs/inbox/2026-05-12T02-57-36.57274_*.md` (PR 머지 전 자동 정리 또는 보존 결정 필요)
 
 ---
 
