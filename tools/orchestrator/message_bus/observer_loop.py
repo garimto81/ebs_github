@@ -190,40 +190,54 @@ async def observer_loop(topic="*", print_only=False, max_iter=None, action_mode=
     print(f"  start:  {start_ts.isoformat()}")
     print(f"=" * 70)
 
-    async with streamablehttp_client(URL) as (read, write, _gs):
-        async with ClientSession(read, write) as session:
-            await session.initialize()
-            while True:
-                if max_iter and iter_count >= max_iter:
-                    break
+    # S11 Cycle 5 - outer reconnect loop wraps streamablehttp_client.
+    # broker temp disconnect -> exp backoff retry (1s, 2s, 4s, 8s, 16s, max 30s).
+    # 24h 무중단 운영 가능 (모든 transient network/handshake failure 자동 복구).
+    import asyncio as _asyncio_inner
+    backoff = 1.0
+    while True:
+        try:
+            async with streamablehttp_client(URL) as (read, write, _gs):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+                    backoff = 1.0  # reset on successful handshake
+                    while True:
+                        if max_iter and iter_count >= max_iter:
+                            return  # exit outer loop entirely
 
-                result = await session.call_tool("subscribe", {
-                    "topic": topic,
-                    "from_seq": last_seq,
-                    "timeout_sec": 30,
-                })
+                        result = await session.call_tool("subscribe", {
+                            "topic": topic,
+                            "from_seq": last_seq,
+                            "timeout_sec": 30,
+                        })
 
-                if not result.content:
-                    iter_count += 1
-                    continue
+                        if not result.content:
+                            iter_count += 1
+                            continue
 
-                data = json.loads(result.content[0].text)
-                events = data.get("events", [])
-                mode = data.get("mode", "?")
+                        data = json.loads(result.content[0].text)
+                        events = data.get("events", [])
+                        mode = data.get("mode", "?")
 
-                for event in events:
-                    last_seq = max(last_seq, event["seq"])
-                    if print_only:
-                        print(_format_event(event))
-                    else:
-                        _handle_event(event)
-                    if action_mode:
-                        _dispatch_action(event)
+                        for event in events:
+                            last_seq = max(last_seq, event["seq"])
+                            if print_only:
+                                print(_format_event(event))
+                            else:
+                                _handle_event(event)
+                            if action_mode:
+                                _dispatch_action(event)
 
-                if mode == "timeout" and not print_only:
-                    # idle — 30s 동안 변화 없음. silent (long-poll 재시작)
-                    pass
-                iter_count += 1
+                        if mode == "timeout" and not print_only:
+                            pass
+                        iter_count += 1
+        except Exception as _reconnect_exc:
+            # streamablehttp_client / ClientSession failure -> reconnect with backoff
+            print(f"  [reconnect] broker disconnect ({type(_reconnect_exc).__name__}): "
+                  f"backoff {backoff:.1f}s")
+            await _asyncio_inner.sleep(backoff)
+            backoff = min(backoff * 2, 30.0)
+            continue  # reconnect outer loop
 
 
 def _handle_event(event):

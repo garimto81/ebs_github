@@ -72,27 +72,36 @@ def _broker_release_lock(resource, holder):
         pass
 
 
-def _broker_publish(topic, payload, source):
-    """publish_event call. silent if broker dead or call fails. (S11 Cycle 2)"""
-    try:
-        import asyncio
-        from mcp import ClientSession
-        from mcp.client.streamable_http import streamablehttp_client
+def _broker_publish(topic, payload, source, max_retries=3):
+    """publish_event call with retry + exp backoff. (S11 Cycle 5 stabilization)
 
-        async def _run():
-            async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
-                async with ClientSession(r, w) as s:
-                    await s.initialize()
-                    await s.call_tool("publish_event", {
-                        "topic": topic, "payload": payload, "source": source,
-                    })
-
+    Retry policy: 3 attempts at [0s, 0.5s, 1.5s]. Each attempt timeout=2.0s.
+    Total worst-case latency: 2 + 0.5 + 2 + 1.5 + 2 = 8.0s.
+    Silent if all retries fail.
+    """
+    import time
+    backoffs = [0.0, 0.5, 1.5]
+    for attempt in range(max_retries):
+        if backoffs[attempt] > 0:
+            time.sleep(backoffs[attempt])
         try:
+            import asyncio
+            from mcp import ClientSession
+            from mcp.client.streamable_http import streamablehttp_client
+
+            async def _run():
+                async with streamablehttp_client("http://127.0.0.1:7383/mcp") as (r, w, _gs):
+                    async with ClientSession(r, w) as s:
+                        await s.initialize()
+                        await s.call_tool("publish_event", {
+                            "topic": topic, "payload": payload, "source": source,
+                        })
+
             asyncio.run(asyncio.wait_for(_run(), timeout=2.0))
+            return  # success
         except Exception:
-            pass
-    except Exception:
-        pass
+            continue  # retry next iteration
+    # all retries exhausted - silent (preserves Cycle 2 contract)
 
 
 def _domain4_healthy_count():
