@@ -1,41 +1,149 @@
 ---
-title: LAN Deployment — Internal Network Domain Access
+title: LAN Deployment — Internal Network Access (Two Methods)
 owner: conductor
 tier: internal
-last-updated: 2026-04-29
-related-pr: "#69 (LAN domain deployment)"
+last-updated: 2026-05-12
+related-pr: "#69 (subdomain method), S11 Cycle 9 issue #355 (direct-port method)"
 status: ACTIVE
 confluence-page-id: 3818750373
 confluence-parent-id: 3811573898
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750373/EBS+LAN+Deployment+Internal+Network+Domain+Access
 ---
 
-# EBS LAN 배포 가이드 — 내부 네트워크 도메인 접근
+# EBS LAN 배포 가이드 — 두 가지 접근 방식
 
-## TL;DR
+## TL;DR — 어떤 방식을 쓸지 한눈에
 
-호스트 머신 1대에서 `docker compose --profile web up -d` 실행 후 LAN 내 모든 기기에서 다음 도메인으로 접근:
+호스트 머신 1대에서 `docker compose --profile web up -d` 실행 후 두 방식 중 택일:
+
+### 방식 ① — 포트 직접 접근 (NEW, 권장 — Cycle 9 #355)
+
+**hosts file 등록 불필요 → 모바일/iPad/노트북 즉시 접근.**
+
+| URL | 서비스 |
+|-----|--------|
+| `http://<LAN_IP>:3000/` | Lobby (운영자 대시보드) |
+| `http://<LAN_IP>:3001/` | Command Center (테이블 운영) |
+| `http://<LAN_IP>:8000/docs` | Backend OpenAPI (디버그) |
+
+브라우저는 동일 origin 으로 모든 요청 → nginx 가 내부에서 `/api/*` 와 `/ws/*` 를 BO 로 reverse proxy.
+CORS preflight 미발생 → 모바일 Safari 호환성 ↑.
+
+기동: `.\scripts\lan-deploy.ps1` (LAN IP 자동 감지 + compose up + URL 출력).
+
+### 방식 ② — 서브도메인 (기존 PR #69)
 
 | 도메인 | 서비스 | 용도 |
 |--------|--------|------|
-| `http://lobby.ebs.local/` | team1 lobby | 운영자 대시보드 (Series/Event/Flight/Table) |
-| `http://cc.ebs.local/`    | team4 command center | 테이블별 실시간 액션 트래킹 |
+| `http://lobby.ebs.local/` | team1 lobby | 운영자 대시보드 |
+| `http://cc.ebs.local/`    | team4 command center | 테이블별 액션 |
 | `http://ebs.local/`       | (default → lobby) | 짧은 진입점 |
-| `http://api.ebs.local/`   | team2 BO REST + WS | 직접 API 호출 (디버깅) |
+| `http://api.ebs.local/`   | team2 BO REST + WS | 직접 API 호출 |
 | `http://engine.ebs.local/`| team3 game engine | harness UI |
 
 도메인 매핑은 단일 nginx reverse proxy (port 80) + LAN 클라이언트 hosts file 등록.
+PC 환경 단독일 때 권장 (도메인 일관성 / production-like).
+
+### 비교
+
+| 항목 | 방식 ① (:3000 직접) | 방식 ② (subdomain) |
+|------|:------------------:|:------------------:|
+| hosts file 등록 | 불필요 | 필요 (모든 디바이스) |
+| 모바일/iPad | OK (직접 접속) | 제한 (jailbreak/root 필요) |
+| URL 깔끔함 | 평범 (`:3000`) | OK (`lobby.ebs.local`) |
+| TLS 확장 용이성 | OK | OK |
+| 기존 PR | Cycle 9 #355 | #69 |
+
+**동시 사용 가능** — 두 방식 모두 동일 컨테이너를 가리키므로 충돌 없음.
 
 ---
+
+
 
 ## 사전 요구
 
 - **호스트 머신**: Docker Desktop (Windows) 또는 docker engine (Linux/macOS) + docker-compose v2+
-- **호스트 LAN IP**: 고정 IP 권장 (DHCP reservation 또는 static). IP 변경 시 LAN 클라이언트 hosts 갱신 필요
-- **포트 80 공개**: 호스트 firewall 에서 80 inbound 허용 (Windows 방화벽 자동 또는 수동)
-- **LAN 클라이언트**: hosts file 수정 권한 (Admin/sudo)
+- **호스트 LAN IP**: 고정 IP 권장 (DHCP reservation 또는 static). IP 변경 시 LAN 클라이언트 재설정 필요
+- **방화벽 인바운드 허용**:
+  - 방식 ①: TCP 3000 (lobby), 3001 (cc), 선택 8000 (bo 직접)
+  - 방식 ②: TCP 80 (proxy)
+  - Windows 방화벽은 docker compose up 시 자동 등록 (PowerShell 관리자 권한)
+- **LAN 클라이언트**: 방식 ② 사용 시 hosts file 수정 권한 (Admin/sudo). 방식 ① 은 권한 불필요.
 
-## Step 1 — hosts file 등록 (호스트 머신)
+## 방식 ① — 포트 직접 접근 (간단, NEW Cycle 9)
+
+### 한 번에 — `scripts/lan-deploy.ps1`
+
+```powershell
+cd C:\claude\ebs
+.\scripts\lan-deploy.ps1
+```
+
+스크립트가 자동 수행:
+1. LAN IPv4 감지 (docker bridge / VPN 가상 NIC 제외, `192.168.x.x` → `10.x.x.x` 우선)
+2. `EBS_EXTERNAL_HOST` 환경변수 주입 (BO 의 `ws_url/rest_url` 생성에 사용)
+3. `docker compose --profile web build` + `up -d`
+4. 모든 컨테이너 healthy 대기 (최대 60초)
+5. nginx `/api/` proxy 검증 (`POST localhost:3000/api/v1/auth/login` → 200/401/422 OK, 405 FAIL)
+6. 접속 URL 출력 + 모바일 가이드
+
+옵션:
+- `-DryRun` — 실제 기동 없이 IP 감지 + URL 출력만
+- `-Down` — `docker compose --profile web down`
+- `-EbsHost 10.10.0.5` — IP 수동 지정
+- `-SkipBuild` — 이미지 재사용 (build 생략)
+
+### 수동 실행 (스크립트 없이)
+
+```powershell
+# 1. LAN IP 확인
+Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -like "192.168.*" -or $_.IPAddress -like "10.*" }
+
+# 2. 환경변수 주입 + 기동
+$env:EBS_EXTERNAL_HOST = "10.10.100.115"   # 위에서 확인한 IP
+$env:CORS_ORIGINS = '["*"]'
+docker compose --profile web up -d
+
+# 3. 검증
+Invoke-WebRequest -Uri "http://localhost:3000/api/v1/auth/login" -Method POST `
+  -ContentType "application/json" -Body '{"username":"a","password":"b"}' `
+  -UseBasicParsing -SkipHttpErrorCheck | Select-Object StatusCode
+# StatusCode: 401 (또는 422) — 405 가 아니면 nginx /api proxy 정상
+```
+
+### 모바일 / iPad / 노트북 접속
+
+1. 동일 LAN (Wi-Fi SSID 일치)
+2. 브라우저에 `http://<HOST_LAN_IP>:3000/` 직접 입력 — hosts 등록 불필요
+3. F12 / Safari 개발자도구 Network 탭에서 `/api/v1/*` 호출이 200 응답 확인
+
+### 동작 원리
+
+```
+모바일 브라우저                  호스트 머신 (LAN IP)
+  http://10.10.100.115:3000/ ─→  ebs-lobby-web (nginx, port 3000)
+                                  │
+                                  ├─ /                   → SPA (index.html)
+                                  ├─ /api/v1/auth/login  → bo:8000/api/...
+                                  └─ /ws/lobby           → bo:8000/ws/...  (Upgrade)
+```
+
+nginx 가 동일 origin 으로 reverse proxy 하므로 브라우저는 CORS preflight 를 발생시키지 않음.
+이는 모바일 Safari 의 third-party origin 제약을 우회.
+
+### bind-mount 검증
+
+```powershell
+docker exec ebs-lobby-web cat /etc/nginx/conf.d/default.conf | Select-String "/api/"
+# location /api/ {
+# proxy_pass http://bo:8000/api/;
+```
+
+출력이 없으면 `docker-compose.yml` 의 `volumes:` 설정이 누락된 것 — `infra/web/lobby-web.nginx.conf` 와 mount path 확인.
+
+---
+
+## 방식 ② — Step 1: hosts file 등록 (호스트 머신)
 
 자동 스크립트 실행:
 
@@ -63,7 +171,7 @@ sudo bash tools/setup_lan_access.sh
 - `-DryRun` / `--dry-run` → 변경 미리보기만 (실제 수정 안 함)
 - `-RemoveOnly` / `--remove-only` → 등록 제거 (cleanup)
 
-## Step 2 — Docker stack 빌드 + 기동
+## 방식 ② — Step 2: Docker stack 빌드 + 기동
 
 ```bash
 # 1. 빌드 (lobby/cc Flutter web rebuild — production.json 의 api.ebs.local 반영)
@@ -88,7 +196,7 @@ ebs-engine      Up X seconds (healthy)
 ebs-redis       Up X seconds (healthy)
 ```
 
-## Step 3 — 호스트 머신 검증
+## 방식 ② — Step 3: 호스트 머신 검증
 
 ```bash
 # 도메인 resolve 확인
@@ -105,7 +213,7 @@ open http://lobby.ebs.local          # macOS
 xdg-open http://lobby.ebs.local      # Linux
 ```
 
-## Step 4 — LAN 내 다른 기기에서 접근
+## 방식 ② — Step 4: LAN 내 다른 기기에서 접근
 
 각 기기 (개발자/운영자 노트북, 태블릿 등) 에 hosts file 등록 필요. 두 가지 방법 중 택일:
 
@@ -250,10 +358,18 @@ docker compose --profile web down
 
 ## 관련 PR / 문서
 
-- **PR #69** — 본 LAN 배포 인프라 도입
-- `infra/proxy/nginx.conf` — reverse proxy config
-- `tools/setup_lan_access.{ps1,sh}` — 자동 hosts 등록
-- `team1-frontend/production.example.json` — lobby 빌드 시 API host
+### 방식 ① (Cycle 9 #355)
+- `scripts/lan-deploy.ps1` — Windows LAN one-shot deploy
+- `infra/web/lobby-web.nginx.conf` — lobby :3000 nginx config (bind-mount)
+- `infra/web/cc-web.nginx.conf` — cc :3001 nginx config (bind-mount)
+- `docker-compose.yml` — `volumes:` bind-mount 으로 image stale config override
+
+### 방식 ② (PR #69)
+- `infra/proxy/nginx.conf` — reverse proxy (port 80, subdomain routing)
+- `tools/setup_lan_access.{ps1,sh}` — 자동 hosts 등록 / 제거
+- `team1-frontend/production.example.json` — lobby 빌드 시 API host (subdomain)
 - `team4-cc/docker/cc-web/Dockerfile` — cc 빌드 시 API host (inline JSON)
+
+### 공통
 - 인프라 SSOT: `docs/4. Operations/Docker_Runtime.md`
 - 검증 스크립트: `team1-frontend/scripts/verify_harness.py`, `team1-frontend/tools/verify_team1_e2e.py`

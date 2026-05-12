@@ -772,3 +772,90 @@ PostToolUse:Bash payload
 ### 사건 기록
 
 - 2026-05-12 — S11 Cycle 7 #322. 부록 A 권고 (Cycle 6 #305 진단) 의 4 패치 모두 hook v3 에 적용. KPI 0% false-positive 달성.
+
+---
+
+## 부록 C. Lobby/CC nginx bind-mount + LAN 직접 접근 (S11 Cycle 9, 2026-05-12, Issue #355)
+
+### 배경
+
+Cycle 8 KPI(`POST http://localhost:3000/api/v1/auth/login → 200 OK`) 미달성. 진단 결과:
+
+- `team1-frontend/docker/lobby-web/nginx.conf` (Phase 5, 2026-04-28) — `/api/`, `/ws/` proxy 라우트 **없음**
+- `team4-cc/docker/cc-web/nginx.conf` — 동일
+- 결과: lobby/cc 브라우저가 `POST /api/v1/auth/login` 시도 → nginx SPA fallback (`try_files /index.html`) → HTTP 405
+
+리포지토리에는 `team1-frontend/nginx.conf` (root) 에 올바른 proxy 설계가 존재했으나 Dockerfile 이 이를 COPY 하지 않아 컨테이너에 도달하지 않음.
+
+### Fix: bind-mount runtime override
+
+S2 (team1) / S3 (team4) Dockerfile 변경 없이 docker-compose 의 `volumes:` 로 image 내 stale config 를 덮어쓰기.
+
+```yaml
+# docker-compose.yml
+lobby-web:
+  volumes:
+    - ./infra/web/lobby-web.nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+cc-web:
+  volumes:
+    - ./infra/web/cc-web.nginx.conf:/etc/nginx/conf.d/default.conf:ro
+```
+
+장점:
+- **Hot-swap** — config 만 변경하고 `docker compose restart lobby-web` 으로 즉시 반영 (rebuild 불필요)
+- **scope 침범 없음** — S11 scope_owns(`docker-compose.yml`) 안에서 완결
+- **롤백 즉시** — `volumes:` 라인만 제거하면 image 내 in-image config 로 복귀
+
+단점:
+- **S2/S3 future cleanup 필요** — in-image config 와 영구 sync 시 mount 제거 가능
+- **mount path 의존** — repo root 에서 compose 실행 필수 (cwd-relative)
+
+### nginx config 책임 (`infra/web/*.nginx.conf`)
+
+| 항목 | lobby :3000 | cc :3001 |
+|------|:-----------:|:--------:|
+| SPA fallback | OK (go_router) | OK |
+| `/api/` → bo:8000 reverse proxy | OK (NEW) | OK (NEW) |
+| `/ws/` → bo:8000 Upgrade | OK (NEW) | OK (NEW) |
+| `/engine/` → engine:8080 | — | OK (옵션, fallback) |
+| `/healthz` | OK | OK |
+| Hashed asset 1y immutable cache | OK | OK (+ `.riv`) |
+| 보안 헤더 (CSP/XFO/Referrer) | OK | OK |
+
+### LAN 직접 접근 (방식 ①)
+
+PR #69 의 subdomain (방식 ②, port 80) 와 병행:
+
+| 방식 | 진입 | hosts file | 모바일 |
+|------|------|:----------:|:------:|
+| ① 직접 접근 | `:3000`/`:3001` | 불필요 | OK |
+| ② subdomain | `:80` + 서브도메인 | 필요 | 제한 |
+
+자동화: `scripts/lan-deploy.ps1` — LAN IPv4 감지 → `EBS_EXTERNAL_HOST` 주입 → `compose up` → healthy 대기 → `/api/` proxy 검증 → URL 출력.
+
+상세: `docs/4. Operations/LAN_DEPLOYMENT.md` (방식 ①/② 비교 + 트러블슈팅).
+
+### KPI 검증
+
+```bash
+docker compose --profile web up -d
+docker exec ebs-lobby-web cat /etc/nginx/conf.d/default.conf | grep -E '/api/|/ws/'
+# expected: location /api/ + proxy_pass http://bo:8000/api/ 출력
+# expected: location /ws/  + proxy_pass http://bo:8000/ws/  출력
+
+curl -s -o /dev/null -w '%{http_code}\n' -X POST http://localhost:3000/api/v1/auth/login \
+  -H 'Content-Type: application/json' -d '{"username":"x","password":"y"}'
+# expected: 401 또는 422 (405 가 아니면 PASS)
+```
+
+### 향후 cycle 후보
+
+- S2/S3 가 `infra/web/*.nginx.conf` 를 in-image config 로 sync (PR 후속). 본 cycle 의 bind-mount mount 는 backward-compat 으로 유지 또는 제거.
+- TLS termination (nginx-proxy + Let's Encrypt) 추가 — 현재 HTTP only.
+- 8000 (bo) firewall 인바운드 정책 — production 환경에서 외부 노출 차단 (현재 dev `["*"]`).
+- production.example.json 의 `BO_URL=http://api.ebs.local` 이 방식 ① 에서 무관해짐 — `BO_URL=""` (same-origin) 로 build profile 분기 고려.
+
+### 사건 기록
+
+- 2026-05-12 — S11 Cycle 9 issue #355. nginx /api proxy 부재로 lobby/cc 로그인 불가 → bind-mount override + LAN one-shot script + LAN_DEPLOYMENT.md 두 방식 병기. 첫 commit 시점 카탈로그된 stale config 는 S2/S3 후속 sync 대상.
