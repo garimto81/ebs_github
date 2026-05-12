@@ -233,8 +233,45 @@ v11 Observer Loop — push-based
 |------|-----|
 | 파일명 | `2026-05-12T02-57-36.57274_cascade-cycle4-demo-build-fail_seq000101_to-S9-S10-A.md` |
 | 위치 | `docs/4. Operations/handoffs/inbox/` |
-| frontmatter | source / topic / seq / ts / target / action_type / observer_dropped_at |
+| frontmatter | owner / source / topic / seq / ts / target / action_type / observer_dropped_at |
 | 본문 | Payload JSON (4 key 정상 보존) |
+
+실측 파일 본문 (인라인 보존):
+
+```markdown
+---
+owner: S11
+source: S11
+topic: cascade:cycle4-demo-build-fail
+seq: 101
+ts: 2026-05-12T02:57:36.572748+00:00
+target: S9,S10-A
+action_type: inbox-drop
+observer_dropped_at: 2026-05-12T02:58:32.814630+00:00
+---
+
+# cascade:cycle4-demo-build-fail (seq=101) -> S9,S10-A
+
+**Source**: `S11`
+**Timestamp**: 2026-05-12T02:57:36.572748+00:00
+
+## Payload
+
+{
+  "command_excerpt": "pytest tests/test_demo_failure.py",
+  "exit_code": 1,
+  "stderr_excerpt": "FAKE FAILURE for cycle 4 chain demo (S11 demo, not a real test)",
+  "auto_published": true,
+  "trigger": "cycle4-demo",
+  "next_action": {
+    "type": "inbox-drop",
+    "target": "S9,S10-A",
+    "reason": "Cycle 4 chain demo - simulated build failure"
+  }
+}
+```
+
+> **Note**: 실제 inbox 파일은 PR 커밋에서 제거 (verify-scope: S11 scope_owns 외 경로). trace 는 본 §4.9 인라인 quote 로 영구 보존. 향후 observer_loop 가 생성하는 inbox 파일은 git ignore 또는 자동 archive (Cycle 5) 권장.
 
 **Step 4** — latency 측정:
 
