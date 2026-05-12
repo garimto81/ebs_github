@@ -1,0 +1,44 @@
+Cycle 14 QA — Lobby 매핑 사용자 확인 evidence
+================================================================
+
+Run timestamp:   2026-05-12T15:38:00.957Z
+Lobby base URL:  http://localhost:3000
+Input strategy:  canvas-coordinate
+Submit strategy: canvas-coordinate
+After login URL: http://localhost:3000/login?enable-semantics-on-app-start=true#/lobby/series
+Token stored:    false
+
+[hosts-free 검증]
+  api.ebs.local 절대 URL 호출: 0 (기대값 0)
+  → hosts-free 통과: PASS
+
+[Lobby 매핑 검증]
+  Login (admin@local) 200: 1 회
+  Event A (id=11, "Casino Employees No-Limit Hold'em")
+    GET /api/v1/events/11/flights: 1 회
+    Response flightId: 18 (기대 18)
+  Event B (id=12, "Mystery Millions")
+    GET /api/v1/events/12/flights: 1 회
+    Response flightId: 19 (기대 19)
+  Flight ID 차이: PASS (18 ≠ 19)
+
+[Screenshot evidence (사용자 직접 확인용)]
+  C:\claude\ebs-qa\integration-tests\evidence\cycle14-mapping-verify\01-login.png
+  C:\claude\ebs-qa\integration-tests\evidence\cycle14-mapping-verify\02-series.png
+  C:\claude\ebs-qa\integration-tests\evidence\cycle14-mapping-verify\03-event-A-flight.png    ← Event A=11, Flight=18
+  C:\claude\ebs-qa\integration-tests\evidence\cycle14-mapping-verify\04-event-B-flight.png    ← Event B=12, Flight=19
+  C:\claude\ebs-qa\integration-tests\evidence\cycle14-mapping-verify\05-comparison.png
+
+[Network log]
+  POST http://localhost:3000/api/v1/auth/login → 200
+  GET http://localhost:3000/api/v1/auth/session → 200
+  GET http://localhost:3000/api/v1/series → 200
+  GET http://localhost:3000/api/v1/events/11/flights → 200
+  GET http://localhost:3000/api/v1/series/1/events → 200
+  GET http://localhost:3000/api/v1/events/12/flights → 200
+
+[DoD 사용자 정의]
+  - 5 screenshot 모두 non-empty                          ✓
+  - hosts-free (절대 URL 0건)                            ✓
+  - flight ID 차이 입증 (18 ≠ 19)    ✓
+  - 로그인 200                                           ✓
