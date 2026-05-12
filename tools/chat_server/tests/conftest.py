@@ -11,6 +11,12 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "integration: requires live broker"
     )
+    config.addinivalue_line(
+        "markers", "load: chat-server load + perf benchmarks (requires broker live)"
+    )
+    config.addinivalue_line(
+        "markers", "resilience: SPOF recovery scenarios (broker kill/restart)"
+    )
 
 
 @pytest.fixture
