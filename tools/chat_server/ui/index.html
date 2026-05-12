@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>EBS Chat</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <span class="brand">EBS Chat</span>
+    <span class="broker-state" id="broker-state">broker: ...</span>
+    <span class="peers" id="peers"></span>
+  </header>
+  <main class="grid">
+    <section class="panel" data-channel="room:design">
+      <h2><span class="hash">#</span>design</h2>
+      <div class="messages" id="msgs-design"></div>
+      <div class="composer">
+        <textarea data-channel="room:design" placeholder="메시지 (@ 입력 → 멘션)"></textarea>
+        <div class="autocomplete" hidden></div>
+      </div>
+    </section>
+    <section class="panel" data-channel="room:blocker">
+      <h2><span class="hash">#</span>blocker</h2>
+      <div class="messages" id="msgs-blocker"></div>
+      <div class="composer">
+        <textarea data-channel="room:blocker" placeholder="메시지 (@ 입력 → 멘션)"></textarea>
+        <div class="autocomplete" hidden></div>
+      </div>
+    </section>
+    <section class="panel" data-channel="room:handoff">
+      <h2><span class="hash">#</span>handoff</h2>
+      <div class="messages" id="msgs-handoff"></div>
+      <div class="composer">
+        <textarea data-channel="room:handoff" placeholder="메시지 (@ 입력 → 멘션)"></textarea>
+        <div class="autocomplete" hidden></div>
+      </div>
+    </section>
+    <section class="panel trace" data-channel="trace">
+      <h2>
+        LIVE TRACE
+        <span class="trace-filters">
+          <label><input type="checkbox" data-filter="stream" checked> stream</label>
+          <label><input type="checkbox" data-filter="cascade" checked> cascade</label>
+          <label><input type="checkbox" data-filter="pipeline" checked> pipeline</label>
+          <label><input type="checkbox" data-filter="audit" checked> audit</label>
+        </span>
+      </h2>
+      <div class="messages" id="msgs-trace"></div>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+services:
+  chat-server:
+    build:
+      context: ../..              # repo root
+      dockerfile: tools/chat_server/Dockerfile
+    container_name: ebs-chat-server
+    ports:
+      - "7390:7390"
+    environment:
+      - BROKER_URL=http://host.docker.internal:7383/mcp
+      - LOG_LEVEL=INFO
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7390/health', timeout=2)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
