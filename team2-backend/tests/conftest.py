@@ -16,6 +16,7 @@ from src.models.audit_log import AuditLog  # noqa: F401 — register table
 from src.models.config import Config  # noqa: F401 — register configs table (G4-C)
 from src.models.hand import Hand, HandAction, HandPlayer  # noqa: F401
 from src.models.skin import Skin  # noqa: F401
+from src.models.brand_pack import BrandPack  # noqa: F401
 from src.models.blind_structure import BlindStructure, BlindStructureLevel  # noqa: F401
 from src.models.payout_structure import PayoutStructure, PayoutStructureLevel  # noqa: F401
 from src.security.password import hash_password

@@ -18,6 +18,7 @@ from src.repositories.event_repository import event_repository
 from src.routers.audit import router as audit_router
 from src.routers.auth import router as auth_router
 from src.routers.blind_structures import router as blind_structures_router
+from src.routers.brand_packs import router as brand_packs_router
 from src.routers.competitions import router as competitions_router
 from src.routers.configs import router as configs_router
 from src.routers.decks import router as decks_router
@@ -79,12 +80,14 @@ app.include_router(configs_router)
 app.include_router(competitions_router)
 app.include_router(hands_router)
 app.include_router(blind_structures_router)
+app.include_router(brand_packs_router)
 app.include_router(skins_router)
 app.include_router(payout_structures_router)
 app.include_router(reports_router)
 app.include_router(decks_router)  # SG-006 in-memory deck router
 app.include_router(settings_kv_router)  # SG-003 Settings 6탭 skeleton (501)
 from src.routers.event_flights import router as event_flights_router  # noqa: E402
+
 app.include_router(event_flights_router)  # Phase 3.B (2026-05-06) — Lobby TopBar cluster levels
 
 

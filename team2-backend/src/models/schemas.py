@@ -342,6 +342,54 @@ class SkinResponse(EbsBaseModel):
     updated_at: str
 
 
+# ── BrandPack (Cycle 17 — 사용자 표 #6) ─────────────
+# SSOT: docs/1. Product/RIVE_Standards.md Ch.7 — 컬러 팔레트, 폰트, 로고 (3종), 모티프
+
+class BrandPackCreate(EbsBaseModel):
+    name: str
+    display_name: str
+    primary_color: str
+    secondary_color: str
+    accent_color: str
+    font_family: Optional[str] = None
+    logo_primary_url: Optional[str] = None
+    logo_secondary_url: Optional[str] = None
+    logo_tertiary_url: Optional[str] = None
+    motif_data: str = "{}"
+    is_default: bool = False
+
+
+class BrandPackUpdate(EbsBaseModel):
+    name: Optional[str] = None
+    display_name: Optional[str] = None
+    primary_color: Optional[str] = None
+    secondary_color: Optional[str] = None
+    accent_color: Optional[str] = None
+    font_family: Optional[str] = None
+    logo_primary_url: Optional[str] = None
+    logo_secondary_url: Optional[str] = None
+    logo_tertiary_url: Optional[str] = None
+    motif_data: Optional[str] = None
+    is_default: Optional[bool] = None
+
+
+class BrandPackResponse(EbsBaseModel):
+    brand_pack_id: int
+    name: str
+    display_name: str
+    primary_color: str
+    secondary_color: str
+    accent_color: str
+    font_family: Optional[str] = None
+    logo_primary_url: Optional[str] = None
+    logo_secondary_url: Optional[str] = None
+    logo_tertiary_url: Optional[str] = None
+    motif_data: str
+    is_default: bool
+    created_at: str
+    updated_at: str
+
+
 # ── Hand ──────────────────────────────────────────
 
 class HandResponse(EbsBaseModel):
