@@ -28,9 +28,14 @@ services:
       - RFID_MODE=mock
       - LOG_LEVEL=DEBUG
       - CORS_ORIGINS=["http://localhost:3000","http://lobby:3000"]
+      # Export folders / defaults (Cycle 4 #264 — docs/2.2 Backend/Settings.md §3)
+      - API_DB_EXPORT_FOLDER=${API_DB_EXPORT_FOLDER:-/app/data/exports/db}
+      - EXPORT_LOGS_FOLDER=${EXPORT_LOGS_FOLDER:-/app/data/exports/logs}
+      - EXPORT_DEFAULTS=${EXPORT_DEFAULTS:-{"format":"csv","includeHeaders":true,"maxRows":100000,"timezone":"UTC","compression":"none"}}
     volumes:
       - bo-data:/app/data
       - bo-logs:/app/logs
+      - bo-exports:/app/data/exports
     depends_on:
       redis:
         condition: service_healthy
@@ -58,6 +63,8 @@ volumes:
   bo-data:
     driver: local
   bo-logs:
+    driver: local
+  bo-exports:
     driver: local
   redis-data:
     driver: local

@@ -46,6 +46,17 @@ class Settings(BaseSettings):
     log_level: str = "DEBUG"
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    # ── Export folders / defaults (Cycle 4 #264, docs/2.2 Backend/Settings.md) ──
+    # 컨테이너 내부 절대 경로. host 매핑은 docker-compose volumes 책임.
+    api_db_export_folder: str = "/app/data/exports/db"
+    export_logs_folder: str = "/app/data/exports/logs"
+    # JSON 문자열 로 보관 (pydantic-settings 가 dict 자동 파싱 시도 회피).
+    # 사용 시 `json.loads(settings.export_defaults)` — Settings.md §3.3 schema.
+    export_defaults: str = (
+        '{"format":"csv","includeHeaders":true,"maxRows":100000,'
+        '"timezone":"UTC","compression":"none"}'
+    )
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
     @model_validator(mode="after")
