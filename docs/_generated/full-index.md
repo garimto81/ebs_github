@@ -647,6 +647,7 @@ tier: generated
 | `docs/4. Operations/Inter_Session_Chat_Design.md` | Inter-Session Chat — Design Specification | conductor | internal | - |
 | `docs/4. Operations/Inter_Session_Chat_Manual_Verification.md` | Inter-Session Chat — Manual Verification (Phase L1) | conductor | internal | - |
 | `docs/4. Operations/Inter_Session_Chat_Plan.md` | Inter-Session Chat — Implementation Plan (7 Day) | conductor | internal | - |
+| `docs/4. Operations/Inter_Session_Chat_Workflow.md` | Inter-Session Chat Workflow — 멀티 세션 발화/응답 룰 | conductor | internal | - |
 | `docs/4. Operations/LAN_DEPLOYMENT.md` | LAN Deployment — Internal Network Domain Access | conductor | internal | - |
 | `docs/4. Operations/Load_Test_Plan_Phase1.md` | Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate | conductor | internal | - |
 | `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
