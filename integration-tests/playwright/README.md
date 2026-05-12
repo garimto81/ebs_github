@@ -10,7 +10,7 @@
 |------|----------|-----|
 | `POST /api/v1/auth/login` → 404 | Backend_HTTP.md L87: `/auth/*` 는 root | spec: `/auth/login` |
 | login 422 (missing `email`) | BO LoginRequest schema | spec body: `{email, password}` |
-| AUTH_INVALID_CREDENTIALS | seed/README.md: `admin@ebs.local`/`admin1234!` | spec default credentials |
+| AUTH_INVALID_CREDENTIALS | BO seed: `admin@local`/`Admin!Local123` | spec default credentials (SG-035 정합) |
 | logout 동일 root prefix issue | 동일 | spec: `/auth/logout` |
 
 ## 사전 조건
@@ -33,7 +33,7 @@
 | Node.js | v18+ 권장 |
 | BO container | `http://localhost:8000` healthy (team2) |
 | lobby-web container | `http://localhost:3000` healthy (team1) |
-| admin 계정 | `admin@ebs.test` / `test-password-1234` (또는 env override) |
+| admin 계정 | `admin@local` / `Admin!Local123` (BO seed 기본값, 또는 env override) |
 
 `docker ps` 로 `ebs-bo`, `ebs-lobby-web` 컨테이너 healthy 상태 확인. 운영 절차: `docs/4. Operations/Docker_Runtime.md`.
 
@@ -68,8 +68,8 @@ npm run report
 |------|--------|------|
 | `LOBBY_BASE_URL` | `http://localhost:3000` | Playwright `baseURL` |
 | `BO_BASE_URL` | `http://localhost:8000` | API request 대상 |
-| `ADMIN_USERNAME` | `admin@ebs.test` | 로그인 계정 |
-| `ADMIN_PASSWORD` | `test-password-1234` | 로그인 비밀번호 |
+| `ADMIN_USERNAME` | `admin@local` | 로그인 계정 (BO seed 기본값) |
+| `ADMIN_PASSWORD` | `Admin!Local123` | 로그인 비밀번호 |
 | `CI` | (unset) | true 시 retries=2, forbidOnly=true |
 
 ## V9.5 cycle 정합 검증 매핑
