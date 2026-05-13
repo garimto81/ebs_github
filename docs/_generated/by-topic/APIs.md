@@ -12,6 +12,8 @@ tier: generated
 | `docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md` | team2 | API-01 |
 | `docs/2. Development/2.2 Backend/APIs/Backend_HTTP_Status.md` | team2 | - |
 | `docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md` | team2 | API-07 |
+| `docs/2. Development/2.2 Backend/APIs/Players_HandHistory_API.md` | s7 | - |
+| `docs/2. Development/2.2 Backend/APIs/WSOP_LIVE_Chip_Count_Sync.md` | s7 | - |
 | `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` | team2 | API-05 |
 | `docs/2. Development/2.3 Game Engine/APIs/Harness_REST_API.md` | team3 | API-04.2 |
 | `docs/2. Development/2.3 Game Engine/APIs/OutputEventBuffer_Boundary.md` | team3 | API-04.3 |

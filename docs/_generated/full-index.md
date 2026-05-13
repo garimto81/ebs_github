@@ -11,14 +11,14 @@ tier: generated
 | 경로 | 제목 | Owner | Tier | Legacy |
 |------|------|-------|------|--------|
 | `docs/1. Product/1. Product.md` | 1. Product | conductor | internal | - |
-| `docs/1. Product/Back_Office.md` | Back Office — 보이지 않는 뼈대 | conductor | external | - |
-| `docs/1. Product/Command_Center.md` | Command Center — 운영자가 머무는 조종석 (v4.0) | conductor | external | - |
+| `docs/1. Product/Back_Office.md` | Back Office | conductor | external | - |
+| `docs/1. Product/Command_Center.md` | Command Center | conductor | external | - |
 | `docs/1. Product/Foundation.md` | EBS 기초 기획서 | conductor | internal | - |
 | `docs/1. Product/Game_Rules/Betting_System.md` | Betting System | conductor | external | PRD-GAME-04 |
 | `docs/1. Product/Game_Rules/Draw.md` | Draw | conductor | external | PRD-GAME-02 |
 | `docs/1. Product/Game_Rules/Flop_Games.md` | Flop Games | conductor | external | PRD-GAME-01 |
 | `docs/1. Product/Game_Rules/Seven_Card_Games.md` | Seven Card Games | conductor | external | PRD-GAME-03 |
-| `docs/1. Product/Lobby.md` | EBS Lobby — 5 화면 시퀀스 + WSOP LIVE 정보 허브 | stream:S2 (Lobby) | external | - |
+| `docs/1. Product/Lobby.md` | Lobby | stream:S2 (Lobby) | external | - |
 | `docs/1. Product/Product_SSOT_Policy.md` | Product SSOT Policy | conductor | internal | - |
 | `docs/1. Product/RIVE_Standards.md` | RIVE Standards — Overlay Graphics 정본 | conductor | external | - |
 | `docs/1. Product/References/PokerGFX_Reference.md` | PokerGFX Reference | conductor | internal | - |
@@ -151,6 +151,8 @@ tier: generated
 | `docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md` | Backend HTTP | team2 | internal | API-01 |
 | `docs/2. Development/2.2 Backend/APIs/Backend_HTTP_Status.md` | Backend HTTP — 구현 현황 (2026-04-20) | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/APIs/Graphic_Editor_API.md` | Graphic Editor API | team2 | internal | API-07 |
+| `docs/2. Development/2.2 Backend/APIs/Players_HandHistory_API.md` | Players + Hand History API (Lobby DB 연동 contract) | s7 | contract | - |
+| `docs/2. Development/2.2 Backend/APIs/WSOP_LIVE_Chip_Count_Sync.md` | WSOP LIVE → EBS Chip Count Sync (Webhook Contract) | s7 | contract | - |
 | `docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md` | WebSocket Events | team2 | internal | API-05 |
 | `docs/2. Development/2.2 Backend/Authentication/Concurrency_and_Race_Conditions.md` | Concurrency and Race Conditions (Auth domain) | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/Authentication/Production_Deployment.md` | Production Deployment (Auth domain) | team2 | internal | - |
@@ -206,6 +208,7 @@ tier: generated
 | `docs/2. Development/2.2 Backend/Backlog/B-068-sandbox-tournament-generator.md` | Sandbox Tournament Generator 구현 | - | - | - |
 | `docs/2. Development/2.2 Backend/Backlog/B-088-team2-camelcase-migration.md` | camelCase 전수 마이그레이션 (team2 PR 2/3/4) | - | - | - |
 | `docs/2. Development/2.2 Backend/Backlog/B-089-team2-test-assertion-migration.md` | B-088 후속 — test assertion snake→camelCase 완전 교체 | - | - | - |
+| `docs/2. Development/2.2 Backend/Backlog/NOTIFY-S10-W-backend-sync-2026-05-12.md` | NOTIFY-S10-W — Back_Office_PRD 통합용 백엔드 동기 자료 (2026-05-12) | S7 | internal | - |
 | `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-registration-sitin-events.md` | NOTIFY team1 Round2 — registration_changed · sitin_called 이벤트 신설 | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team1-Round2-user-sessions-multidevice.md` | NOTIFY team1 Round2 — user_sessions 다중 기기 · configs/preferences 이관 | team2 | internal | - |
 | `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team2-B088-PR2-3-4-naming-migration.md` | B-088 PR-2/3/4 — Backend camelCase 전환 (Pydantic + WS publisher + REST path) | - | - | - |
@@ -278,9 +281,11 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-2026-05-12-settings-engine-9keys.md` | CYCLE 4 — S8 Settings engine_rules 9 keys 정합 (Issue | - | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-mediation-2026-05-12-betting-system-9keys.md` | CYCLE 4 mediation — Betting_System.md §7-5 9 keys default 패치 제안 | - | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` | NOTIFY-Conductor-2026-05-08-ci-infra-blockers | - | - | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-cycle7-v04-betting-system-7-6-patch.md` | NOTIFY Conductor — Betting_System.md §7-6 v04 deeper game 룰 추가 요청 (BLOCKED meta) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-S8-pr180-ci-failure-2026-05-08.md` | NOTIFY-S8 — PR | conductor (audit trail) | notify | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` | B-088 PR-8 — Engine OutputEvent payload 필드 camelCase | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B331-engine-health-code-impl-2026-05-11.md` | NOTIFY-team3 — B-331 /engine/health 코드 (CLOSED — 코드 이미 구현됨, stale notify) | conductor (audit trail) | notify | - |
+| `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-impl-cycle7-v04-bomb-seven-rit3.md` | NOTIFY team3-impl — Cycle 7 v04 Engine 코드 변경 인계 (bomb_pot + seven_deuce + run_it_three) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` | OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` | Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13) | - | - | - |
 | `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-303-Short-All-in-Rule-96-구현-DONE-2026-04-13.md` | Short All-in Rule 96 구현~~ ✅ DONE (2026-04-13) | - | - | - |
@@ -308,9 +313,9 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Flop_Variants.md` | Flop Variants | team3 | deprecated | BS-06-1X |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Betting.md` | Betting | team3 | deprecated | BS-06-02 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Blinds_and_Ante.md` | Blinds and Ante | team3 | deprecated | BS-06-03 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Coalescence.md` | Coalescence | team3 | deprecated | BS-06-04 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Evaluation.md` | Evaluation | team3 | deprecated | BS-06-05 |
-| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Exceptions.md` | Exceptions | team3 | deprecated | BS-06-08 |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Coalescence.md` | Coalescence | team3 | deprecated | - |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Evaluation.md` | Evaluation | team3 | deprecated | - |
+| `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Exceptions.md` | Exceptions | team3 | deprecated | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Lifecycle.md` | Lifecycle | team3 | deprecated | BS-06-01 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Showdown.md` | Showdown | team3 | deprecated | BS-06-07 |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Holdem/Side_Pot.md` | Side Pot | team3 | deprecated | BS-06-06 |
@@ -320,9 +325,13 @@ tier: generated
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers.md` | Triggers | team3 | deprecated | `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Triggers_and_Event_Pipeline.md` | Triggers & Event Pipeline — Domain Master | team3 | contract | - |
 | `docs/2. Development/2.3 Game Engine/Behavioral_Specs/Variants_and_Evaluation.md` | Variants & Evaluation — Domain Master | team3 | contract | - |
+| `docs/2. Development/2.3 Game Engine/Rules/Bomb_Pot.md` | Bomb Pot — 강제 ante + preflop 스킵 (Cycle 7 v04) | team3 (S8 Cycle 7) | contract | BS-06-04 |
 | `docs/2. Development/2.3 Game Engine/Rules/Engine_Defaults.md` | Engine Defaults — Settings 9 keys 정합 | team3 (S8 Cycle 4) | contract | API-04.4 |
+| `docs/2. Development/2.3 Game Engine/Rules/Equity_Calculator.md` | Equity Calculator — Overlay 9 카테고리 | team3 (S8 Cycle 17) | contract | API-04.8 |
 | `docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_State.md` | Multi-Hand State — Button rotate + handNumber 증가 (Cycle 5 v02) | team3 (S8 Cycle 5) | contract | API-04.5 |
 | `docs/2. Development/2.3 Game Engine/Rules/Multi_Hand_v03.md` | Multi-Hand v03 — straddle_seat 이동 + ante_override + run_it_twice 분할 pot (Cycle 6) | team3 (S8 Cycle 6) | contract | API-04.6 |
+| `docs/2. Development/2.3 Game Engine/Rules/Run_It_Three.md` | Run It Three — all-in 3분할 runout (Cycle 7 v04) | team3 (S8 Cycle 7) | contract | BS-06-08 |
+| `docs/2. Development/2.3 Game Engine/Rules/Seven_Deuce.md` | Seven-Deuce Side Bet — 7-2 offsuit winner 보너스 (Cycle 7 v04) | team3 (S8 Cycle 7) | contract | BS-06-05 |
 | `docs/2. Development/2.4 Command Center/2.4 Command Center.md` | 2.4 Command Center | ci | generated | - |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL.md` | RFID HAL — Operator Behavior | team4 | internal | BS-04-04 |
 | `docs/2. Development/2.4 Command Center/APIs/RFID_HAL_Interface.md` | RFID HAL Interface Contract | team4 | contract | API-03 |
@@ -409,6 +418,7 @@ tier: generated
 | `docs/2. Development/2.5 Shared/Authentication/Troubleshooting_Runbook.md` | Authentication Troubleshooting Runbook | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/BS_Overview.md` | BS Overview | conductor | internal | BS-00 |
 | `docs/2. Development/2.5 Shared/Card_Flow_Index.md` | Card Flow Index — RFID 입력 → Engine → Overlay | conductor | shared-index | — |
+| `docs/2. Development/2.5 Shared/Chip_Count_State.md` | Chip Count State (Engine vs WSOP LIVE Reconcile) | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Naming_Conventions.md` | Naming Conventions (EBS Shared SSOT) | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Network_Config.md` | Network Configuration Contract | conductor | contract | - |
 | `docs/2. Development/2.5 Shared/Risk_Matrix.md` | Risk Matrix | conductor | internal | - |
@@ -632,10 +642,15 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/_template_implementation.md` | 구현: <기능명> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` | 시나리오: <검증 대상 통합 흐름> | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` | 기획 공백: <구체적 공백명> | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-036_integration_tests_routers_mismatch.md` | 기획 공백 + 구현 drift: integration-tests `.http` 시나리오 vs Back Office routers — 100 endpoint mismatch (Cycle 10 snapshot) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-037_cc_mockup_state_sync.md` | 기획 공백: CC PRD ↔ HTML mockup state model drift (TWEAKS / seats.sync / 1600×900 canvas 등) | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-040_overlay_9_categories_foundation_gap.md` | 기획 공백 + 모순: User 9 카테고리 vs Foundation Scene 1 (8 그래픽) vs RIVE Ch.2 (11 카테고리) 부정합 | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-041_overlay_widget_3_missing.md` | 기획-구현 drift: overlay/layer1 widget 3종 누락 — Branding STUB / Blind STUB / Field MISSING | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` | 기획 공백: 외부 인계 PRD derivative-of frontmatter 미연결 5건 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` | v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record | conductor | contract | - |
 | `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` | v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기) | conductor | contract | - |
 | `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` | Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A) | conductor | internal | - |
+| `docs/4. Operations/Confluence_Sync_Spec.md` | Confluence Sync Spec | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` | Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` | Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세 | conductor | internal | - |
 | `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` | 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건 | conductor | internal | - |
@@ -651,7 +666,7 @@ tier: generated
 | `docs/4. Operations/Inter_Session_Chat_Manual_Verification.md` | Inter-Session Chat — Manual Verification (Phase L1) | conductor | internal | - |
 | `docs/4. Operations/Inter_Session_Chat_Plan.md` | Inter-Session Chat — Implementation Plan (7 Day) | conductor | internal | - |
 | `docs/4. Operations/Inter_Session_Chat_Workflow.md` | Inter-Session Chat Workflow — 멀티 세션 발화/응답 룰 | conductor | internal | - |
-| `docs/4. Operations/LAN_DEPLOYMENT.md` | LAN Deployment — Internal Network Domain Access | conductor | internal | - |
+| `docs/4. Operations/LAN_DEPLOYMENT.md` | LAN Deployment — Internal Network Access (port-direct only, subdomain DEPRECATED) | conductor | internal | - |
 | `docs/4. Operations/Load_Test_Plan_Phase1.md` | Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate | conductor | internal | - |
 | `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` | Multi-Session Docker Handoff (SG-022 deprecation cascade) | conductor | contract | - |
 | `docs/4. Operations/Message_Bus_Runbook.md` | Inter-Session Message Bus — Operational Runbook | conductor | internal | - |
@@ -672,6 +687,7 @@ tier: generated
 | `docs/4. Operations/Plans/PLAN-BO-Phase1.md` | PLAN-BO-Phase1 | conductor | internal | - |
 | `docs/4. Operations/Plans/Planning_Prototype_Gap_Analysis_2026-05-09.md` | 기획-프로토타입 정합성 분석 보고서 (2026-05-09) | conductor | internal | - |
 | `docs/4. Operations/Plans/Redesign_Plan_2026_04_22.md` | Redesign Plan — 2026-04-22 회의록 기반 전면 재설계 | conductor | internal | - |
+| `docs/4. Operations/QA_Pass_Criteria.md` | QA Pass Criteria — e2e Screenshot 추출 + 사용자 확인 SSOT | S0 Conductor | internal | - |
 | `docs/4. Operations/RENOVATE_EVALUATION.md` | Renovate vs Dependabot Evaluation | conductor | internal | - |
 | `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` | 2026-04-10-ccr-batch-team-impact | conductor | internal | - |
 | `docs/4. Operations/Reports/2026-04-17_SSOT_Audit.md` | Team 2 Backend SSOT Compliance Audit | conductor | internal | - |
@@ -696,6 +712,14 @@ tier: generated
 | `docs/4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md` | V9.5 SSOT vs Implementation Gap Triage | conductor | contract | - |
 | `docs/4. Operations/Reports/2026-05-08-S6-prototype-audit.md` | 2026-05-08 S6 Prototype 정합성 감사 (#165) | conductor | internal | - |
 | `docs/4. Operations/Reports/2026-05-08-consistency-audit-final.md` | 2026-05-08 정합성 감사 — 최종 통합 검증 보고서 | conductor | internal | - |
+| `docs/4. Operations/Reports/Confluence_Cleanup_Cycle_18_2026-05-13.md` | Confluence Cleanup + 5 PRD Sync — Cycle 18 | stream:S11 (Dev Assist - cross-cutting) | internal | - |
+| `docs/4. Operations/Reports/Confluence_Cycle18_Rename_Push_2026-05-13.md` | Confluence Cycle 18 Rename + Content Push Report | stream:S11 | internal | - |
+| `docs/4. Operations/Reports/Doc_Causality_Audit_2026-05-13.md` | Doc Causality Audit (Cycle 22 W1) | s10-a | internal | - |
+| `docs/4. Operations/Reports/Doc_Causality_Audit_Verify_2026-05-13.md` | Doc Causality Audit Verify (Cycle 22 W5 close) | s10-a | internal | - |
+| `docs/4. Operations/Reports/Lobby_Tone_Cascade_Audit_2026-05-13.md` | Lobby 톤 cascade audit — CC v4.3 Broadcast Dark Amber 채택의 Lobby 영향 평가 | stream:S2 (Lobby) — Cycle 19 Wave 5 | internal | - |
+| `docs/4. Operations/Reports/Overlay_9_Categories_Mapping_Audit_2026-05-13.md` | Overlay 9 Categories Mapping Audit — 사용자 표 vs 4-source 정합 검증 (Cycle 16) | stream:S10-A | internal | - |
+| `docs/4. Operations/Reports/Product_Naming_Unification_Plan_2026-05-12.md` | Product 폴더 명명 통일 + Confluence↔로컬 정합 Gap Analysis (Cycle 10) | stream:S10-A (Gap Analysis) | internal | - |
+| `docs/4. Operations/Reports/Spec_Gap_Audit_Cycle_15_2026-05-13.md` | Spec Gap Audit — Cycle 15 (S10-A) | stream:S10-A | internal | - |
 | `docs/4. Operations/Roadmap.md` | Roadmap | conductor | internal | - |
 | `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` | SSOT Alignment Report — Lobby Path Drift Eradication | conductor | internal | - |
 | `docs/4. Operations/SSOT_Alignment_Progress.md` | SSOT Alignment Progress | conductor | internal | - |
@@ -739,4 +763,5 @@ tier: generated
 | `docs/_journey/2026-05-12_smem_cycle5.md` | SMEM Cycle 5 — Cycle 4 case study + weekly diff | SMEM | - | - |
 | `docs/_journey/2026-05-12_smem_cycle6.md` | SMEM Cycle 6 — Cycle 5 case study + weekly diff (architecture pivot + Iron Law 임계) | SMEM | - | - |
 | `docs/_journey/2026-05-12_smem_cycle7.md` | SMEM Cycle 7 — Cycle 6 case study + v02 milestone 영구 기록 | SMEM | - | - |
+| `docs/_journey/2026-05-12_smem_cycle8.md` | SMEM Cycle 8 — Cycle 7 case study + v03 milestone + KPI | SMEM | - | - |
 | `docs/examples/README.md` | Examples | conductor | internal | - |

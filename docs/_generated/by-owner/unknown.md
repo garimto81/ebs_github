@@ -150,7 +150,9 @@ tier: generated
 - `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-2026-05-12-settings-engine-9keys.md` — CYCLE 4 — S8 Settings engine_rules 9 keys 정합 (Issue
 - `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-mediation-2026-05-12-betting-system-9keys.md` — CYCLE 4 mediation — Betting_System.md §7-5 9 keys default 패치 제안
 - `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` — NOTIFY-Conductor-2026-05-08-ci-infra-blockers
+- `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-cycle7-v04-betting-system-7-6-patch.md` — NOTIFY Conductor — Betting_System.md §7-6 v04 deeper game 룰 추가 요청 (BLOCKED meta)
 - `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` — B-088 PR-8 — Engine OutputEvent payload 필드 camelCase
+- `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-impl-cycle7-v04-bomb-seven-rit3.md` — NOTIFY team3-impl — Cycle 7 v04 Engine 코드 변경 인계 (bomb_pot + seven_deuce + run_it_three)
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` — OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13)
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` — Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13)
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-303-Short-All-in-Rule-96-구현-DONE-2026-04-13.md` — Short All-in Rule 96 구현~~ ✅ DONE (2026-04-13)

@@ -7,8 +7,8 @@ tier: generated
 # conductor
 
 - `docs/1. Product/1. Product.md` — 1. Product
-- `docs/1. Product/Back_Office_PRD.md` — Back Office — 보이지 않는 뼈대
-- `docs/1. Product/Command_Center_PRD.md` — Command Center — 운영자가 머무는 조종석 (v4.0)
+- `docs/1. Product/Back_Office.md` — Back Office
+- `docs/1. Product/Command_Center.md` — Command Center
 - `docs/1. Product/Foundation.md` — EBS 기초 기획서
 - `docs/1. Product/Game_Rules/Betting_System.md` — Betting System
 - `docs/1. Product/Game_Rules/Draw.md` — Draw
@@ -31,6 +31,7 @@ tier: generated
 - `docs/2. Development/2.5 Shared/Authentication/Troubleshooting_Runbook.md` — Authentication Troubleshooting Runbook
 - `docs/2. Development/2.5 Shared/BS_Overview.md` — BS Overview
 - `docs/2. Development/2.5 Shared/Card_Flow_Index.md` — Card Flow Index — RFID 입력 → Engine → Overlay
+- `docs/2. Development/2.5 Shared/Chip_Count_State.md` — Chip Count State (Engine vs WSOP LIVE Reconcile)
 - `docs/2. Development/2.5 Shared/Naming_Conventions.md` — Naming Conventions (EBS Shared SSOT)
 - `docs/2. Development/2.5 Shared/Network_Config.md` — Network Configuration Contract
 - `docs/2. Development/2.5 Shared/Risk_Matrix.md` — Risk Matrix
@@ -129,7 +130,7 @@ tier: generated
 - `docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md` — CR-056-deadlink-cleanup
 - `docs/4. Operations/4. Operations.md` — 4. Operations
 - `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` — CC React 디자인 프로토타입 — Critic 판정 보고서
-- `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` — Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0)
+- `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` — Command_Center.md 리뉴얼 계획 (v1.1.0 → v2.0.0)
 - `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` — Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획
 - `docs/4. Operations/Causality_Dashboard.md` — EBS 문서 인과관계 대시보드
 - `docs/4. Operations/Chat_Protocol.md` — Chat Protocol — Payload Schema + Channel Convention SSOT
@@ -199,15 +200,20 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/_template_implementation.md` — 구현: <기능명>
 - `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` — 시나리오: <검증 대상 통합 흐름>
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` — 기획 공백: <구체적 공백명>
+- `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-036_integration_tests_routers_mismatch.md` — 기획 공백 + 구현 drift: integration-tests `.http` 시나리오 vs Back Office routers — 100 endpoint mismatch (Cycle 10 snapshot)
+- `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-037_cc_mockup_state_sync.md` — 기획 공백: CC PRD ↔ HTML mockup state model drift (TWEAKS / seats.sync / 1600×900 canvas 등)
+- `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-040_overlay_9_categories_foundation_gap.md` — 기획 공백 + 모순: User 9 카테고리 vs Foundation Scene 1 (8 그래픽) vs RIVE Ch.2 (11 카테고리) 부정합
+- `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-041_overlay_widget_3_missing.md` — 기획-구현 drift: overlay/layer1 widget 3종 누락 — Branding STUB / Blind STUB / Field MISSING
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` — 기획 공백: 외부 인계 PRD derivative-of frontmatter 미연결 5건
 - `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` — v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record
 - `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` — v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기)
 - `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` — Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A)
+- `docs/4. Operations/Confluence_Sync_Spec.md` — Confluence Sync Spec
 - `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
 - `docs/4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` — Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세
 - `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
 - `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` — Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성
-- `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` — 문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결
+- `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` — 문서 발견 실패 — Command_Center.md 누락 사고와 systematic 해결
 - `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
 - `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` — ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
 - `docs/4. Operations/Foundation_Alignment_Plan.md` — Foundation 재설계 정렬 계획 (Conductor 소유 문서)
@@ -216,7 +222,7 @@ tier: generated
 - `docs/4. Operations/Inter_Session_Chat_Manual_Verification.md` — Inter-Session Chat — Manual Verification (Phase L1)
 - `docs/4. Operations/Inter_Session_Chat_Plan.md` — Inter-Session Chat — Implementation Plan (7 Day)
 - `docs/4. Operations/Inter_Session_Chat_Workflow.md` — Inter-Session Chat Workflow — 멀티 세션 발화/응답 룰
-- `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Domain Access
+- `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Access (port-direct only, subdomain DEPRECATED)
 - `docs/4. Operations/Load_Test_Plan_Phase1.md` — Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
 - `docs/4. Operations/Message_Bus_Runbook.md` — Inter-Session Message Bus — Operational Runbook

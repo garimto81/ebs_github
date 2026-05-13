@@ -12,3 +12,4 @@ tier: generated
 - `docs/_journey/2026-05-12_smem_cycle5.md` — SMEM Cycle 5 — Cycle 4 case study + weekly diff
 - `docs/_journey/2026-05-12_smem_cycle6.md` — SMEM Cycle 6 — Cycle 5 case study + weekly diff (architecture pivot + Iron Law 임계)
 - `docs/_journey/2026-05-12_smem_cycle7.md` — SMEM Cycle 7 — Cycle 6 case study + v02 milestone 영구 기록
+- `docs/_journey/2026-05-12_smem_cycle8.md` — SMEM Cycle 8 — Cycle 7 case study + v03 milestone + KPI
