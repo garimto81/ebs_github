@@ -4,6 +4,13 @@ Backend_HTTP.md §5.10.1 GET /hands 필터 명세 준거 (2026-04-21 확장):
   - event_id, day, table_id(CSV 지원), player_id, date_from, date_to, hand_number
   - page / page_size (1-indexed)
 
+Cycle 21 (Players_HandHistory_API.md v1.0.0) 확장:
+  - cursor-based pagination (LIMIT n+1 → has_more)
+  - flight_id 필터 (tables.event_flight_id 직접 매칭)
+  - showdown_only 필터 (ended_at IS NOT NULL AND JSON array length(board_cards) >= 3)
+  - winner_player_name derive (hand_players JOIN WHERE is_winner=1 LIMIT 1)
+  - get_hand_with_nested (hand + players + actions 한 번에)
+
 실제 DB schema 기준 JOIN:
   event_id → JOIN event_flights ON tables.event_flight_id → event_flights.event_id
   day      → event_flights.display_name 매칭 (e.g. "Day 1A")
@@ -11,18 +18,25 @@ Backend_HTTP.md §5.10.1 GET /hands 필터 명세 준거 (2026-04-21 확장):
 """
 from __future__ import annotations
 
+import base64
+import json
 from typing import Optional, Sequence
 
 from fastapi import HTTPException, status
-from sqlalchemy import and_, func, select as sa_select
+from sqlalchemy import and_, func
+from sqlalchemy import select as sa_select
 from sqlmodel import Session, select
 
-from src.models.competition import Event, EventFlight
+from src.models.competition import EventFlight
 from src.models.hand import Hand, HandAction, HandPlayer
 from src.models.table import Table
 
 MAX_PAGE_SIZE = 200
 DEFAULT_PAGE_SIZE = 20
+
+# Cycle 21 cursor pagination defaults
+DEFAULT_CURSOR_LIMIT = 50
+MAX_CURSOR_LIMIT = 200
 
 
 # ── Hand queries ───────────────────────────────────
@@ -138,3 +152,134 @@ def get_hand_actions(hand_id: int, db: Session) -> list[HandAction]:
         .where(HandAction.hand_id == hand_id)
         .order_by(HandAction.action_order)
     ).all()
+
+
+# ── Cycle 21: cursor pagination + nested detail ────
+
+
+def encode_hand_cursor(hand_id: int) -> str:
+    payload = json.dumps({"hand_id": hand_id}).encode()
+    return base64.urlsafe_b64encode(payload).decode().rstrip("=")
+
+
+def decode_hand_cursor(cursor: str) -> int:
+    padded = cursor + "=" * (-len(cursor) % 4)
+    try:
+        payload = json.loads(base64.urlsafe_b64decode(padded.encode()).decode())
+        return int(payload["hand_id"])
+    except (ValueError, KeyError, json.JSONDecodeError) as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": "INVALID_CURSOR", "message": f"cursor decode failed: {exc}"},
+        ) from exc
+
+
+def list_hands_with_cursor(
+    db: Session,
+    *,
+    event_id: Optional[int] = None,
+    flight_id: Optional[int] = None,
+    table_id: Optional[int] = None,
+    player_id: Optional[int] = None,
+    showdown_only: bool = False,
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    limit: int = DEFAULT_CURSOR_LIMIT,
+    cursor: Optional[str] = None,
+) -> tuple[list[Hand], Optional[int], bool, dict[int, str]]:
+    """Cycle 21 contract — cursor-based hands list.
+
+    Returns (hands, next_cursor_hand_id_or_None, has_more, winner_name_by_hand_id).
+
+    Ordering: hand_id DESC (newest first → stable cursor against new INSERTs).
+    """
+    if limit < 1 or limit > MAX_CURSOR_LIMIT:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": "INVALID_LIMIT", "message": f"limit must be 1..{MAX_CURSOR_LIMIT}"},
+        )
+
+    stmt = select(Hand)
+
+    if table_id is not None:
+        stmt = stmt.where(Hand.table_id == table_id)
+
+    if flight_id is not None:
+        stmt = (
+            stmt.join(Table, Table.table_id == Hand.table_id)
+            .where(Table.event_flight_id == flight_id)
+        )
+
+    if event_id is not None:
+        # Avoid double JOIN if flight_id already joined Table
+        if flight_id is None:
+            stmt = stmt.join(Table, Table.table_id == Hand.table_id)
+        stmt = (
+            stmt.join(EventFlight, EventFlight.event_flight_id == Table.event_flight_id)
+            .where(EventFlight.event_id == event_id)
+        )
+
+    if player_id is not None:
+        subq = sa_select(HandPlayer.hand_id).where(HandPlayer.player_id == player_id)
+        stmt = stmt.where(Hand.hand_id.in_(subq))
+
+    if showdown_only:
+        # ended_at IS NOT NULL AND board_cards JSON length >= 3 (flop+).
+        # SQLite/PostgreSQL 양립을 위해 단순 문자열 길이 가드 사용:
+        #   "[\"As\",\"Kh\",\"Qd\"]" 는 약 22자 이상 → "[" + 3 카드(약 6자/카드) = 길이 기준.
+        # 정확도 위해 hand_id 별 후처리 필터링 가능하지만 list endpoint 는 DB 측 가드만.
+        stmt = stmt.where(Hand.ended_at.isnot(None))
+        stmt = stmt.where(func.length(Hand.board_cards) >= 10)
+
+    if date_from is not None:
+        stmt = stmt.where(Hand.started_at >= date_from)
+    if date_to is not None:
+        stmt = stmt.where(Hand.started_at < date_to)
+
+    if cursor:
+        cursor_hid = decode_hand_cursor(cursor)
+        stmt = stmt.where(Hand.hand_id < cursor_hid)
+
+    stmt = stmt.order_by(Hand.hand_id.desc()).limit(limit + 1)
+    rows = db.exec(stmt).all()
+
+    has_more = len(rows) > limit
+    items = list(rows[:limit])
+    next_cursor_hid: Optional[int] = None
+    if has_more and items:
+        next_cursor_hid = items[-1].hand_id
+
+    # Derive winner_player_name (single JOIN hand_players WHERE is_winner=1)
+    winner_by_hid: dict[int, str] = {}
+    if items:
+        hand_ids = [h.hand_id for h in items]
+        winner_stmt = sa_select(HandPlayer.hand_id, HandPlayer.player_name).where(
+            and_(
+                HandPlayer.hand_id.in_(hand_ids),
+                HandPlayer.is_winner == 1,
+            )
+        )
+        for hid, pname in db.exec(winner_stmt).all():
+            # first winner per hand wins (multi-winner edge case → first encountered)
+            if hid not in winner_by_hid:
+                winner_by_hid[hid] = pname
+
+    return items, next_cursor_hid, has_more, winner_by_hid
+
+
+def get_hand_with_nested(
+    hand_id: int, db: Session
+) -> tuple[Hand, list[HandPlayer], list[HandAction]]:
+    """Hand detail — hand + nested players + actions (단일 트랜잭션)."""
+    h = get_hand(hand_id, db)
+    players = db.exec(
+        select(HandPlayer)
+        .where(HandPlayer.hand_id == hand_id)
+        .order_by(HandPlayer.seat_no)
+    ).all()
+    actions = db.exec(
+        select(HandAction)
+        .where(HandAction.hand_id == hand_id)
+        .order_by(HandAction.action_order)
+    ).all()
+    return h, list(players), list(actions)

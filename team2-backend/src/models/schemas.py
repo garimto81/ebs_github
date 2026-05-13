@@ -203,10 +203,125 @@ class PlayerResponse(EbsBaseModel):
     last_name: str
     nationality: Optional[str] = None
     country_code: Optional[str] = None
+    profile_image: Optional[str] = None
     player_status: str
+    is_demo: bool = False
     source: str
+    synced_at: Optional[str] = None
     created_at: str
     updated_at: str
+
+
+# ── Cycle 21 (Players + Hand History API contract v1.0.0) ────
+# Spec: docs/2. Development/2.2 Backend/APIs/Players_HandHistory_API.md
+# cursor-based pagination ({items, next_cursor, has_more})
+
+
+class PlayerStats(EbsBaseModel):
+    total_hands: int = 0
+    wins: int = 0
+    cumulative_pnl: int = 0
+    vpip_pct: float = 0.0
+    pfr_pct: float = 0.0
+    agr_pct: float = 0.0
+
+
+class PlayerListItem(EbsBaseModel):
+    player_id: int
+    wsop_id: Optional[str] = None
+    first_name: str
+    last_name: str
+    nationality: Optional[str] = None
+    country_code: Optional[str] = None
+    profile_image: Optional[str] = None
+    player_status: str
+    is_demo: bool = False
+    source: str
+    synced_at: Optional[str] = None
+    created_at: str
+    updated_at: str
+
+
+class PlayerListResponse(EbsBaseModel):
+    items: list[PlayerListItem]
+    next_cursor: Optional[str] = None
+    has_more: bool = False
+
+
+class PlayerDetailResponse(PlayerListItem):
+    stats: Optional[PlayerStats] = None
+
+
+class HandListItem(EbsBaseModel):
+    hand_id: int
+    table_id: int
+    hand_number: int
+    game_type: int
+    bet_structure: int
+    dealer_seat: int
+    board_cards: str
+    pot_total: int
+    side_pots: str
+    current_street: Optional[str] = None
+    started_at: str
+    ended_at: Optional[str] = None
+    duration_sec: int
+    winner_player_name: Optional[str] = None
+
+
+class HandListResponse(EbsBaseModel):
+    items: list[HandListItem]
+    next_cursor: Optional[str] = None
+    has_more: bool = False
+
+
+class HandPlayerNested(EbsBaseModel):
+    id: int
+    hand_id: int
+    seat_no: int
+    player_id: Optional[int] = None
+    player_name: str
+    hole_cards: str
+    start_stack: int
+    end_stack: int
+    final_action: Optional[str] = None
+    is_winner: bool = False
+    pnl: int = 0
+    hand_rank: Optional[str] = None
+    win_probability: Optional[float] = None
+    vpip: bool = False
+    pfr: bool = False
+
+
+class HandActionNested(EbsBaseModel):
+    id: int
+    hand_id: int
+    seat_no: int
+    action_type: str
+    action_amount: int
+    pot_after: Optional[int] = None
+    street: str
+    action_order: int
+    board_cards: Optional[str] = None
+    action_time: Optional[str] = None
+
+
+class HandDetailResponse(EbsBaseModel):
+    hand_id: int
+    table_id: int
+    hand_number: int
+    game_type: int
+    bet_structure: int
+    dealer_seat: int
+    board_cards: str
+    pot_total: int
+    side_pots: str
+    current_street: Optional[str] = None
+    started_at: str
+    ended_at: Optional[str] = None
+    duration_sec: int
+    hand_players: list[HandPlayerNested] = []
+    hand_actions: list[HandActionNested] = []
 
 
 # ── User ──────────────────────────────────────────

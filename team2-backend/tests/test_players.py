@@ -1,5 +1,10 @@
-"""Gate 2 — Player E2E tests."""
-import pytest
+"""Gate 2 — Player E2E tests.
+
+Cycle 21 (Players_HandHistory_API.md v1.0.0) 응답 형태 변경:
+  - GET list  : ApiResponse{data, meta} → PlayerListResponse{items, next_cursor, has_more}
+  - GET detail: ApiResponse{data}       → PlayerDetailResponse (직접 PlayerListItem 필드)
+  - POST/PUT/DELETE: ApiResponse 유지 (관리 endpoint 는 contract 밖)
+"""
 
 
 # ── Helpers ──────────────────────────────────────────
@@ -51,17 +56,18 @@ def test_search_players(client, seed_users):
         "nationality": "CAN",
     }, headers=headers)
 
-    # Search Korean name
+    # Search Korean name (Cycle 21 v1.0.0 — items/next_cursor/has_more)
     resp = client.get("/api/v1/players?search=홍", headers=headers)
     assert resp.status_code == 200
-    data = resp.json()["data"]
-    assert len(data) == 1
-    assert data[0]["lastName"] == "홍"
+    body = resp.json()
+    assert "items" in body and "hasMore" in body
+    assert len(body["items"]) == 1
+    assert body["items"][0]["lastName"] == "홍"
 
     # Search all
     resp = client.get("/api/v1/players", headers=headers)
     assert resp.status_code == 200
-    assert len(resp.json()["data"]) == 2
+    assert len(resp.json()["items"]) == 2
 
 
 def test_get_player_detail(client, seed_users):
@@ -72,9 +78,13 @@ def test_get_player_detail(client, seed_users):
     }, headers=headers)
     pid = cr.json()["data"]["playerId"]
 
+    # Cycle 21 v1.0.0: detail 응답은 PlayerDetailResponse 직접 (no ApiResponse wrap)
     resp = client.get(f"/api/v1/players/{pid}", headers=headers)
     assert resp.status_code == 200
-    assert resp.json()["data"]["firstName"] == "Phil"
+    body = resp.json()
+    assert body["firstName"] == "Phil"
+    assert body["playerId"] == pid
+    assert body.get("stats") is None  # include_stats=false default
 
 
 def test_update_player(client, seed_users):
