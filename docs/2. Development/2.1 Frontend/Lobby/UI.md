@@ -3,7 +3,7 @@ title: UI
 owner: team1
 tier: internal
 legacy-id: UI-01
-last-updated: 2026-05-07
+last-updated: 2026-05-13
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "UI-01 Lobby UI 스펙 (68KB) 정본"
@@ -24,6 +24,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 | 2026-05-05 | EBS Lobby Design 누락 5개 보강 (P1/P2/P3) | §공통 레이아웃 §헤더 바: Show Context Cluster (SHOW/FLIGHT/LEVEL/NEXT) + Active CC pill 신규 (P1, shell.jsx:43-53 정합). §화면 1 Series 목록: Status Badge 5-color Legend + Year-grouped 그룹핑 정책 명시 (P2, screens.jsx:29 정합). Bookmark 검증 (P3, 이미 line 505/509 존재 — 디자인 자산과 정합 확인). AlertsScreen 폐기 (사용자 결정, EBS scope 외). |
 | 2026-05-05 | mockup HTML 5건 redirect | 5개 화면 섹션 (0 Login / 1 Series / 2 Events / 3 Tables / 4 Players) 의 `> 목업 참조: docs/mockups/ebs-lobby-XX.html` 를 신 디자인 SSOT 표기로 교체 (`References/EBS_Lobby_Design/screens.jsx:N` + `visual/screenshots/ebs-lobby-XX.png`). Legacy mockup HTML 은 보존 (외부 링크 안전). 본문 ASCII 와이어프레임은 그대로 유지 (정본 source of truth = 코드). Hand History/Settings 본문은 `Overview.md §화면 6/§화면 7` 가 SSOT — 본 UI.md 는 mockup redirect 만 적용. |
 | 2026-05-07 | v3 정체성 정합 | Lobby v3.0.0 cascade — 5분 게이트웨이 + WSOP LIVE 거울 정체성 framing 을 §개요 첫 단락에 추가. UI 본문 (3계층 + 독립 레이어 + 화면별 spec) 은 변경 0 — 정체성 박스만 additive. 외부 인계 PRD `docs/1. Product/Lobby.md` v3.0.0 narrative SSOT 정합. |
+| 2026-05-13 | **Cycle 21 Wave 1 — Hand History 독립 + Players 보강 + Reports 폐기** | 사용자 결정 (2026-05-13). §좌측 사이드바 §Hand History 박스 보강: **Hand History 독립 격상** 명시 — `lib/features/reports/` 통합 폐기 → `lib/features/hand_history/` 독립 feature. 3 sidebar 항목 (Hand Browser / Hand Detail / Player Hand Stats) 의 BO REST endpoint 바인딩 표 신설 (`Players_HandHistory_API.md` v1.0). §Players 섹션 (NEW) 신설: `GET /api/v1/players` BO REST 연동 + 사이드바 3 항목 endpoint 매핑. Reports 섹션 폐기 박스 신설 — 본 PR 은 spec 변경만, `Reports.md` cleanup + `Hand_History.md` 매핑 정정은 W3 frontend impl cycle. additive only — 기존 본문 변경 0. |
 
 ---
 
@@ -528,6 +529,26 @@ i18n key: `$t('login.restoreTitle')`, `$t('login.restoreContinue')`, `$t('login.
 | | Player Hand Stats | `Hand_History.md` §2.3 (당일 한정 VPIP/PFR/AGR/WTSD) |
 
 > **Hand History 섹션 (2026-04-21 신설)**: SG-016 revised. EBS 고유 기능. WSOP LIVE Staff App 에는 없으나 EBS Core §1.2 (3입력→오버레이 결과물) 의 사후 조회 도구로 필수. `BS-02-HH Hand_History.md` 가 SSOT — 진입 경로/RBAC/데이터 바인딩/Overlay 경계 정의. (Migration Plan: `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` Phase 2)
+>
+> **Hand History 독립 격상 (Cycle 21 Wave 1, 2026-05-13)**: 사용자 결정으로 Reports 탭 폐기에 따라 Hand History 는 **독립 sidebar 섹션** 으로 격상. Flutter 구현 위치도 `lib/features/reports/` 통합 폐기 → `lib/features/hand_history/` 독립 feature. 데이터 바인딩은 BO REST API (`Players_HandHistory_API.md` v1.0) 직접 호출:
+>
+> | sidebar 항목 | BO REST endpoint | 응답 nested |
+> |--------------|------------------|-------------|
+> | Hand Browser | `GET /api/v1/hands?event_id=&flight_id=&table_id=&player_id=&date_from=&date_to=&limit=&cursor=` | flat list (성능: hand_actions JOIN 안 함) |
+> | Hand Detail | `GET /api/v1/hands/{id}` | nested `hand_players[]` + `hand_actions[]` |
+> | Player Hand Stats | `GET /api/v1/players/{id}` + `GET /api/v1/hands?player_id={id}` 클라이언트 집계 (VPIP/PFR/AGR/WTSD) | — |
+
+#### Players 섹션 (Cycle 21 Wave 1 보강, 2026-05-13)
+
+> **데이터 소스**: BO REST API `Players_HandHistory_API.md` v1.0 — `GET /api/v1/players?event_id=X&search=Y&limit=N&cursor=Z` (사이드바 검색/필터링) + `GET /api/v1/players/{id}` (상세). DB 스키마 `players` 테이블 (`Schema.md` §players SSOT).
+
+| sidebar 항목 | 동작 | BO REST endpoint |
+|--------------|------|------------------|
+| Create Player | Player 등록 다이얼로그 → POST | `POST /api/v1/players` (S7 owner) |
+| Player Verification | Player 검증 화면 | `GET /api/v1/players?status=pending_verification` |
+| (검색) | 사이드바 진입 시 list 화면 | `GET /api/v1/players?event_id=X&search=Y&limit=N&cursor=Z` |
+
+> **Reports 섹션 폐기 (Cycle 21 Wave 1, 2026-05-13)**: 사용자 결정. 이전 WSOP LIVE Staff App §09 Reports 영역 (`Reports.md` SSOT) 은 EBS 운영 5분 게이트웨이 가치에서 제외. `Reports.md` 본문 cleanup 및 `Hand_History.md` `lib/features/reports/` 경로 매핑 정정은 W3 (frontend impl) cycle 에서 수행 — 본 PR 범위 밖.
 
 **WSOP에 있지만 EBS에서 제외하는 메뉴** (§10 Divergence 참조):
 Cage, Cashier Page, Wallet Status, Payroll, Payout, Chip Master, Series Chips, Tournament Ticket, Player Rating (EBS Core 범위 외). Floor Staff, Edit Tournament Entries, Auto Sequences, Player Message, Invite New Staff, Staff Notes (Phase 2+ 검토).
