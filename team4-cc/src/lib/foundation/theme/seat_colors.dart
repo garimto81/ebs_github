@@ -1,28 +1,48 @@
-// SSOT for CC and Overlay seat/position colors.
+// SSOT for CC and Overlay seat / position colors (OKLCH-sourced).
 //
 // Defined in BS-05-03 §시각 규격 and BS-07-01 §시각 규격 (CCR-032, CCR-034).
 // Both CC (`features/command_center/widgets/seat_cell.dart`) and
 // Overlay (`features/overlay/layer1/player_info.dart`) must import from here.
 //
+// Cycle 19 Wave 2 — re-sourced from `EbsOklch` Broadcast Dark Amber palette.
+// Previous Material palette (Red 600 / Yellow 600 / Blue 600) replaced.
+//
 // Rationale: CC (operator) and Overlay (viewer) must share the same visual
-// language. Hardcoding colors in either location violates the SSOT principle.
+// language sourced from the HTML SSOT (`docs/mockups/EBS Command Center/
+// tokens.css`).
 
-import 'package:flutter/material.dart';
+import 'ebs_oklch.dart';
 
 class SeatColors {
   SeatColors._();
 
   // ── Position markers (BS-05-03 §시각 규격) ───────────────────
-  static const dealer = Color(0xFFE53935); // Material Red 600
-  static const sb = Color(0xFFFDD835); // Material Yellow 600
-  static const bb = Color(0xFF1E88E5); // Material Blue 600
-  static const utg = Color(0xFF43A047); // Material Green 600
-  static const positionDefault = Color(0xFFFFFFFF);
+  /// Dealer puck — bone white (`--pos-d`).
+  static const dealer = EbsOklch.posD;
+
+  /// Small blind — cool blue (`--pos-sb`).
+  static const sb = EbsOklch.posSb;
+
+  /// Big blind — magenta-pink (`--pos-bb`).
+  static const bb = EbsOklch.posBb;
+
+  /// UTG — no dedicated OKLCH token; reuse semantic OK (success/green)
+  /// for first-to-act emphasis. TODO(cycle-19+): introduce `--pos-utg`
+  /// if PRD differentiates.
+  static const utg = EbsOklch.ok;
+
+  /// Default position (neutral) — light text fg-0.
+  static const positionDefault = EbsOklch.fg0;
 
   // ── Seat state backgrounds (BS-05-03 §시각 규격) ─────────────
-  static const vacant = Color(0xFF616161); // Gray 700
-  static const active = Color(0xFF2E7D32); // Green 800
-  static const allIn = Color(0xFF000000);
+  /// Vacant seat — bg-3 raised surface (no player).
+  static const vacant = EbsOklch.bg3;
+
+  /// Active hand — green success token, repurposed for "in hand".
+  static const active = EbsOklch.ok;
+
+  /// All-in — deepest frame surface bg-0 (matches HTML mockup).
+  static const allIn = EbsOklch.bg0;
 
   // Folded uses `vacant` base with opacity 0.4
   static const foldedOpacity = 0.4;
@@ -31,7 +51,13 @@ class SeatColors {
   static const sittingOutOpacity = 0.6;
 
   // ── action-glow pulse animation (BS-05-03 §시각 규격) ────────
+  // HTML SSOT: `--glow-action: 0 0 0 2px var(--accent), 0 0 28px var(--accent-soft)`
+  // Pulse animates the seat from accent-soft (low alpha) → accent (full).
   static const actionGlowDuration = Duration(milliseconds: 800);
-  static const actionGlowFrom = Color(0x66FDD835); // alpha 0.4
-  static const actionGlowTo = Color(0xFFFDD835); // alpha 1.0
+
+  /// Pulse start — accent-soft (alpha 0x2E ≈ 0.18).
+  static const actionGlowFrom = EbsOklch.accentSoft;
+
+  /// Pulse end — accent full opacity.
+  static const actionGlowTo = EbsOklch.accent;
 }

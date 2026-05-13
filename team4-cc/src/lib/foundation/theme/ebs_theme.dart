@@ -1,36 +1,51 @@
-// EBS Command Center dark theme.
+// EBS Command Center theme — Broadcast Dark Amber OKLCH (v4.3).
 //
-// Optimized for broadcast environments (6+ hour continuous operation).
-// Material 3 dark theme with custom color scheme for poker table aesthetics.
+// Optimized for broadcast environments (12-hour continuous operation).
+// Reference: docs/mockups/EBS Command Center/tokens.css (HTML SSOT).
+// Spec: docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md §13
+// PRD: docs/1. Product/Command_Center.md v4.3 Ch.11.5.
+//
+// Cycle 19 Wave 2 — Token Layer adoption. Previous Material 3 default
+// scheme (blue/yellow/red) replaced by OKLCH amber/charcoal palette.
 
 import 'package:flutter/material.dart';
+
+import 'ebs_oklch.dart';
+import 'ebs_typography.dart';
 
 class EbsTheme {
   EbsTheme._();
 
   static ThemeData get dark {
     const colorScheme = ColorScheme.dark(
-      primary: Color(0xFF1E88E5), // Blue 600 — primary actions
-      secondary: Color(0xFFFDD835), // Yellow 600 — emphasis/dealer
-      error: Color(0xFFE53935), // Red 600 — error/fold
-      surface: Color(0xFF1A1A2E), // Dark navy — card table feel
-      onSurface: Color(0xFFE0E0E0), // Light gray text
+      primary: EbsOklch.accent, // broadcast amber
+      onPrimary: EbsOklch.fg0,
+      secondary: EbsOklch.accentStrong, // amber emphasis
+      onSecondary: EbsOklch.fg0,
+      error: EbsOklch.err,
+      onError: EbsOklch.fg0,
+      surface: EbsOklch.bg2, // cards, seats, controls
+      onSurface: EbsOklch.fg0,
     );
 
-    return ThemeData.dark(useMaterial3: true).copyWith(
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: const Color(0xFF0D0D1A),
-      cardColor: colorScheme.surface,
-      dividerColor: const Color(0xFF2A2A40),
-      appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.surface,
-        foregroundColor: colorScheme.onSurface,
+      scaffoldBackgroundColor: EbsOklch.bg0,
+      canvasColor: EbsOklch.bg1,
+      cardColor: EbsOklch.bg2,
+      dividerColor: EbsOklch.line,
+      textTheme: EbsTypography.textTheme,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: EbsOklch.bg1,
+        foregroundColor: EbsOklch.fg0,
         elevation: 0,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: colorScheme.primary,
-          foregroundColor: Colors.white,
+          backgroundColor: EbsOklch.accent,
+          foregroundColor: EbsOklch.fg0,
           minimumSize: const Size(80, 56),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -38,16 +53,17 @@ class EbsTheme {
         ),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: colorScheme.surface,
+        backgroundColor: EbsOklch.bg2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
       ),
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
-          color: const Color(0xFF2A2A40),
+          color: EbsOklch.bg3,
           borderRadius: BorderRadius.circular(4),
         ),
+        textStyle: const TextStyle(color: EbsOklch.fg0),
       ),
     );
   }
