@@ -19,16 +19,9 @@ class AuditLogRepository {
     );
   }
 
-  Future<Map<String, dynamic>> getReport(
-    String type, {
-    Map<String, dynamic>? params,
-  }) async {
-    return _client.get<Map<String, dynamic>>(
-      '/reports/$type',
-      queryParameters: params,
-      fromJson: (json) => json as Map<String, dynamic>,
-    );
-  }
+  // Cycle 21 W3 — `getReport(type)` 제거. backend `/api/v1/reports/{type}` 는
+  // Players_HandHistory_API.md §8 에 따라 폐기. hand history 는 hand_history
+  // feature 의 HandHistoryRepository, audit logs 는 본 listAuditLogs 사용.
 }
 
 final auditLogRepositoryProvider = Provider<AuditLogRepository>((ref) {

@@ -1,6 +1,11 @@
-// Player list provider — ported from lobbyStore.ts players section.
+// Player list provider — Cycle 21 W3 (Players_HandHistory_API.md v1.0.0).
 //
-// Global player list (not family) with search capability.
+// 이전 (Reports cascade 시대): /players 가 bare List<Player> 반환했다고 가정.
+// 현재 (Reports 폐기 + cursor 페이징): /players → {items, nextCursor, hasMore}.
+//
+// 점진 도입: fetch()/search() 는 cursor 를 모두 누적하여 List<Player> 를 반환
+// (UI PlayersScreen 은 List 단일 입력 — 무한 스크롤 도입은 후속 cycle).
+// WebSocket 패치(remote update/add/delete)는 그대로 유지.
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,12 +18,13 @@ class PlayerListNotifier extends StateNotifier<AsyncValue<List<Player>>> {
   final PlayerRepository _repo;
 
   /// Fetch all players, optionally filtered by [query].
+  /// cursor 페이지를 자동 누적하여 단일 `List<Player>` 로 반환.
   Future<void> fetch({String? query}) async {
     state = const AsyncValue.loading();
     try {
       final list = query != null && query.isNotEmpty
-          ? await _repo.searchPlayers(query)
-          : await _repo.listPlayers();
+          ? await _repo.searchAll(query)
+          : await _repo.fetchAll();
       state = AsyncValue.data(list);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

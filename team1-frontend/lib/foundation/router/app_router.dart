@@ -14,9 +14,10 @@ import '../../features/lobby/screens/lobby_players_screen.dart';
 import '../../features/lobby/screens/lobby_tables_screen.dart';
 import '../../features/lobby/screens/series_screen.dart';
 import '../../features/lobby/screens/table_detail_screen.dart';
+import '../../features/hand_history/screens/hand_detail_screen.dart';
+import '../../features/hand_history/screens/hand_history_screen.dart';
 import '../../features/lobby/widgets/lobby_shell.dart';
 import '../../features/players/screens/players_screen.dart';
-import '../../features/reports/screens/reports_screen.dart';
 import '../../features/staff/screens/staff_list_screen.dart';
 import '../../features/settings/screens/settings_layout.dart';
 import '../observability/logger.dart';
@@ -129,14 +130,17 @@ final routerProvider = Provider<GoRouter>((ref) {
               skinId: state.pathParameters['skinId']!,
             ),
           ),
+          // ── Hand History (Cycle 21 W3 — Reports 폐기 후 독립 격상) ──
+          // SSOT: docs/2. Development/2.1 Frontend/Lobby/Hand_History.md
+          //       docs/2. Development/2.2 Backend/APIs/Players_HandHistory_API.md
           GoRoute(
-            path: '/reports',
-            redirect: (_, __) => '/reports/hands-summary',
+            path: '/hand-history',
+            builder: (_, __) => const HandHistoryScreen(),
           ),
           GoRoute(
-            path: '/reports/:type',
-            builder: (_, state) => ReportsScreen(
-              reportType: state.pathParameters['type'] ?? 'hands-summary',
+            path: '/hand-history/:id',
+            builder: (_, state) => HandDetailScreen(
+              handId: int.parse(state.pathParameters['id']!),
             ),
           ),
         ],
