@@ -1,0 +1,57 @@
+# Confluence Sync 제외 패턴
+# Product_SSOT_Policy.md §9.3 Confluence Sync 정책 기반
+# 사용: tools/confluence_sync.py 또는 lib/confluence/md2confluence.py 가 본 파일 로드
+# 형식: glob 패턴, 한 줄에 하나, # 주석 허용
+
+# === Archive 폴더 (변경 금지, sync 제외) ===
+docs/_archive/**/*.md
+docs/_journey/**/*.md
+docs/**/archive/**/*.md
+docs/**/_archive/**/*.md
+
+# === Generated (CI auto-regen, sync 제외) ===
+docs/_generated/**/*.md
+docs/1. Product.md
+docs/2. Development.md
+docs/3. Change Requests.md
+docs/4. Operations.md
+docs/1. Product/1. Product.md
+docs/2. Development/2.1 Frontend/2.1 Frontend.md
+docs/2. Development/2.2 Backend/2.2 Backend.md
+docs/2. Development/2.3 Game Engine/2.3 Game Engine.md
+docs/2. Development/2.4 Command Center/2.4 Command Center.md
+
+# === Operations 기록 (시간순, sync 제외) ===
+docs/4. Operations/Cycle_*/**/*.md
+docs/4. Operations/Critic_Reports/**/*.md
+docs/4. Operations/Conductor_Backlog/done/**/*.md
+docs/4. Operations/*_Critic_*.md
+docs/4. Operations/*_Audit_*.md
+
+# === Backlog (작업 항목, sync 제외) ===
+docs/2. Development/2.1 Frontend/Backlog/**/*.md
+docs/2. Development/2.2 Backend/Backlog/**/*.md
+docs/2. Development/2.3 Game Engine/Backlog/**/*.md
+docs/2. Development/2.4 Command Center/Backlog/**/*.md
+docs/2. Development/2.5 Shared/Backlog/**/*.md
+docs/2. Development/*/Backlog/B-*.md
+docs/2. Development/*/Backlog/SG-*.md
+docs/2. Development/*/Backlog/NOTIFY-*.md
+docs/2. Development/*/Backlog/AUDIT-*.md
+
+# === Change Requests (내부 변경 추적, sync 제외) ===
+docs/3. Change Requests/**/*.md
+docs/3. Change Requests/done/**/*.md
+docs/3. Change Requests/active/**/*.md
+docs/3. Change Requests/rejected/**/*.md
+
+# === Notes ===
+# 위 패턴 적용 시 sync 대상은 자동으로 다음만 남음:
+#   docs/1. Product/Foundation.md, Lobby.md, Command_Center.md, Back_Office.md,
+#   docs/1. Product/RIVE_Standards.md, Product_SSOT_Policy.md,
+#   docs/1. Product/Game_Rules/Flop_Games.md, Draw.md, Seven_Card_Games.md, Betting_System.md,
+#   docs/2. Development/2.{N}/.../Overview.md (DEV-01~04),
+#   docs/2. Development/2.{N}/.../*.md (tier: contract 만)
+#   docs/2. Development/2.{N}/.../*.md (tier: internal 중 owner 명시된 것)
+#
+# 즉 Category A (SSOT 정본) + B (Contract) + F (Internal 활성) 만 sync.

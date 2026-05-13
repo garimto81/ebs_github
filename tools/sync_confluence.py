@@ -92,9 +92,9 @@ def find_mirror_targets(filter_glob: str | None = None) -> list[tuple[Path, str,
     """Return [(md_path, page_id, parent_id_or_None)] for all docs with valid confluence-page-id."""
     targets: list[tuple[Path, str, str | None]] = []
     for md in DOCS_ROOT.rglob("*.md"):
-        # Skip _generated and archive
+        # Skip _generated, _archive, _journey, archive (Product_SSOT_Policy.md §9.3)
         rel = md.relative_to(DOCS_ROOT)
-        if "_generated" in rel.parts or "archive" in rel.parts:
+        if any(p in ("_generated", "_archive", "_journey", "archive") for p in rel.parts):
             continue
         if filter_glob and not md.match(str(DOCS_ROOT / filter_glob)):
             continue
