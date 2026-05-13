@@ -1,7 +1,18 @@
-// MiniTableDiagram — V3 of B-team4-011 visual uplift.
+// MiniTableDiagram — V4 (Cycle 19 U2 OKLCH realignment).
 //
-// 디자인 reference: claude-design-archive/2026-05-06/cc-react-extracted/MiniDiagram.jsx
-//   §"MiniDiagram" (120×120 SVG oval + 10 dots + D/SB/BB tags + ACTING pulse).
+// 디자인 reference:
+//   - HTML SSOT: `docs/mockups/EBS Command Center/MiniDiagram.jsx` +
+//                `docs/mockups/EBS Command Center/app.css` §".mini-diagram"
+//   - Spec: `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md` §13
+//
+// V4 변경 — Broadcast Dark Amber OKLCH 정합:
+//   * `cs.surfaceContainer`           → `EbsOklch.bgFelt` (felt)
+//   * `cs.outlineVariant`             → `EbsOklch.line`   (rim)
+//   * `cs.primary` (ACTING ring)      → `EbsOklch.accent` (`.pcol.action-on` ring)
+//   * Material `0xFFFDD835` (dealer)  → `EbsOklch.posD`   (`--pos-d` bone white)
+//   * Material `0xFF42A5F5` (SB)      → `EbsOklch.posSb`  (`--pos-sb` blue)
+//   * Material `0xFFAB47BC` (BB)      → `EbsOklch.posBb`  (`--pos-bb` magenta)
+//   * Badge text 대비 → `EbsOklch.cardBlack` (`oklch(0.18 0.04 60)` 대응)
 //
 // Flutter 구현: CustomPaint 기반. SVG 의존 없음.
 //
@@ -18,6 +29,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../foundation/theme/ebs_oklch.dart';
 import '../../../models/enums/seat_status.dart';
 import '../providers/seat_provider.dart';
 
@@ -56,7 +68,6 @@ class _MiniTableDiagramState extends ConsumerState<MiniTableDiagram>
   @override
   Widget build(BuildContext context) {
     final seats = ref.watch(seatsProvider);
-    final cs = Theme.of(context).colorScheme;
 
     return SizedBox(
       width: widget.size,
@@ -67,15 +78,6 @@ class _MiniTableDiagramState extends ConsumerState<MiniTableDiagram>
           painter: _MiniTablePainter(
             seats: seats,
             pulseT: _pulse.value,
-            feltColor: cs.surfaceContainer,
-            rimColor: cs.outlineVariant,
-            occupiedColor: cs.onSurface,
-            foldedColor: cs.onSurfaceVariant.withValues(alpha: 0.5),
-            actionColor: cs.primary,
-            dealerColor: const Color(0xFFFDD835),
-            sbColor: const Color(0xFF42A5F5),
-            bbColor: const Color(0xFFAB47BC),
-            labelColor: cs.onSurface.withValues(alpha: 0.4),
           ),
         ),
       ),
@@ -87,28 +89,26 @@ class _MiniTablePainter extends CustomPainter {
   _MiniTablePainter({
     required this.seats,
     required this.pulseT,
-    required this.feltColor,
-    required this.rimColor,
-    required this.occupiedColor,
-    required this.foldedColor,
-    required this.actionColor,
-    required this.dealerColor,
-    required this.sbColor,
-    required this.bbColor,
-    required this.labelColor,
   });
 
   final List<SeatState> seats;
   final double pulseT; // 0.0 ~ 1.0
-  final Color feltColor;
-  final Color rimColor;
-  final Color occupiedColor;
-  final Color foldedColor;
-  final Color actionColor;
-  final Color dealerColor;
-  final Color sbColor;
-  final Color bbColor;
-  final Color labelColor;
+
+  // OKLCH-aligned color slots. Centralized here so the painter is pure
+  // const-Color-driven (no Theme.of lookup in paint loop).
+  static const Color _felt = EbsOklch.bgFelt;
+  static const Color _rim = EbsOklch.line;
+  static const Color _occupied = EbsOklch.fg0;
+  static const Color _action = EbsOklch.accent;
+  static const Color _dealer = EbsOklch.posD;
+  static const Color _sb = EbsOklch.posSb;
+  static const Color _bb = EbsOklch.posBb;
+  // `.pcol.folded { opacity: 0.42; filter: saturate(0.6) }` → fg3 (muted) 으로 환원.
+  static const Color _folded = EbsOklch.fg3;
+  // `TABLE` center label — muted to felt overlay (alpha ≈ 0.55 / fg2).
+  static final Color _label = EbsOklch.fg2.withValues(alpha: 0.55);
+  // Badge text 대비 — HTML 의 `oklch(0.18 0.04 60)` 와 동등 (card-black 근사).
+  static const Color _badgeText = EbsOklch.cardBlack;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -118,7 +118,7 @@ class _MiniTablePainter extends CustomPainter {
     final ry = size.height * 0.32;
 
     // Felt
-    final feltPaint = Paint()..color = feltColor;
+    final feltPaint = Paint()..color = _felt;
     canvas.drawOval(
       Rect.fromCenter(center: Offset(cx, cy), width: rx * 2, height: ry * 2),
       feltPaint,
@@ -126,7 +126,7 @@ class _MiniTablePainter extends CustomPainter {
 
     // Rim
     final rimPaint = Paint()
-      ..color = rimColor
+      ..color = _rim
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     canvas.drawOval(
@@ -139,7 +139,7 @@ class _MiniTablePainter extends CustomPainter {
       text: TextSpan(
         text: 'TABLE',
         style: TextStyle(
-          color: labelColor,
+          color: _label,
           fontSize: 7,
           fontWeight: FontWeight.w800,
           letterSpacing: 1.2,
@@ -163,22 +163,22 @@ class _MiniTablePainter extends CustomPainter {
       Color fill;
       double radius = 4;
       if (seat.actionOn) {
-        fill = actionColor;
+        fill = _action;
         radius = 5.5;
-        // pulse ring
+        // pulse ring — `.pcol.action-on::before { animation: action-pulse }`
         final ringR = 5.5 + 6 * pulseT;
         final ringA = 0.5 * (1 - pulseT);
         final ring = Paint()
-          ..color = actionColor.withValues(alpha: ringA)
+          ..color = _action.withValues(alpha: ringA)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.2;
         canvas.drawCircle(Offset(dx, dy), ringR, ring);
       } else if (!seat.isOccupied) {
         fill = Colors.transparent;
       } else if (seat.activity == PlayerActivity.folded) {
-        fill = foldedColor;
+        fill = _folded;
       } else {
-        fill = occupiedColor;
+        fill = _occupied;
       }
 
       final dotPaint = Paint()..color = fill;
@@ -186,7 +186,7 @@ class _MiniTablePainter extends CustomPainter {
 
       if (!seat.isOccupied) {
         final outlinePaint = Paint()
-          ..color = rimColor
+          ..color = _rim
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.0;
         canvas.drawCircle(Offset(dx, dy), radius, outlinePaint);
@@ -197,8 +197,8 @@ class _MiniTablePainter extends CustomPainter {
         final numTp = TextPainter(
           text: TextSpan(
             text: '$seatNo',
-            style: TextStyle(
-              color: feltColor,
+            style: const TextStyle(
+              color: _felt,
               fontSize: 6,
               fontWeight: FontWeight.w900,
               fontFamily: 'monospace',
@@ -212,18 +212,19 @@ class _MiniTablePainter extends CustomPainter {
         );
       }
 
-      // Position badge — D / SB / BB (R2 가드: 단일 source — 미니맵만)
+      // Position badge — D / SB / BB (R2 가드: 단일 source — 미니맵만).
+      // 색 → `.pb-row.pos-D | pos-SB | pos-BB` 의 border-color.
       String? badgeText;
-      Color badgeBg = dealerColor;
+      Color badgeBg = _dealer;
       if (seat.isDealer) {
         badgeText = 'D';
-        badgeBg = dealerColor;
+        badgeBg = _dealer;
       } else if (seat.isSB) {
         badgeText = 'SB';
-        badgeBg = sbColor;
+        badgeBg = _sb;
       } else if (seat.isBB) {
         badgeText = 'BB';
-        badgeBg = bbColor;
+        badgeBg = _bb;
       }
       if (badgeText != null) {
         // Badge offset toward outside
@@ -245,7 +246,7 @@ class _MiniTablePainter extends CustomPainter {
           text: TextSpan(
             text: badgeText,
             style: const TextStyle(
-              color: Colors.black,
+              color: _badgeText,
               fontSize: 5.5,
               fontWeight: FontWeight.w900,
               fontFamily: 'monospace',
