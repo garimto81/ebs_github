@@ -1,0 +1,121 @@
+### CCR-NEW (pending §2 of Players_HandHistory_API.md v1.0.0) — Players + Hand History API contract test
+###
+### Cycle 21 Wave 4 (issue #459) — S9 QA contract test
+### SSOT:
+###   docs/2. Development/2.2 Backend/APIs/Players_HandHistory_API.md  (v1.0.0, contract)
+###   docs/2. Development/2.2 Backend/Database/Schema.md §players + §hands
+###   docs/2. Development/2.1 Frontend/Lobby/UI.md §Players + §Hand History
+###
+### 검증 범위 (§2 4 endpoint, 모두 GET / read-only):
+### - A GET /api/v1/players?limit=20            (200 + items[] + cursor pagination)
+### - B GET /api/v1/players?event_id=5          (filter — events_players JOIN)
+### - C GET /api/v1/players/{id}                (detail — 단일 player)
+### - D GET /api/v1/players/{id}?include_stats  (detail + 누적 stats)
+### - E GET /api/v1/hands?event_id=5&limit=10   (list — winner JOIN only, flat)
+### - F GET /api/v1/hands/{id}                  (detail — nested hand_players + hand_actions)
+### - G GET /api/v1/players?cursor=<base64>     (cursor pagination idempotency)
+### - H RBAC — viewer hole_cards 마스킹 검증 (hand detail 응답에서 "[]" 검증)
+###
+### Cycle 21 Wave 1 SSOT (PR #444 머지):
+###   사용자 결정 — Lobby prototype 의 mockup data 폐기, BO REST 직접 연동.
+###   contract endpoint 구현 = S7 Backend Cycle 21 Wave 2 (PR #457 머지, players +
+###   hands router 추가 + cursor pagination + event_id filter).
+###
+### DoD:
+###   - 6 GET endpoint 모두 200 OK + 응답 schema 정합 (items[] / next_cursor / has_more)
+###   - cursor base64-decode 시 {"player_id": N} / {"hand_id": N} 형태
+###   - hand detail nested hand_players[] + hand_actions[] 존재
+###   - viewer 권한 hole_cards 마스킹 ("[]") — RBAC 분기
+
+@host = http://localhost:18001
+@admin_token = {{$dotenv ADMIN_JWT}}
+@viewer_token = {{$dotenv VIEWER_JWT}}
+@operator_token = {{$dotenv OPERATOR_JWT}}
+
+### A. GET /api/v1/players — list (viewer OK)
+GET {{host}}/api/v1/players?limit=20
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답 (Players_HandHistory_API.md §2.1):
+# 200 OK
+# {
+#   "items": [{ "player_id": int, "wsop_id": str?, "first_name": str, "last_name": str,
+#               "nationality": str?, "country_code": str?, "profile_image": str?,
+#               "player_status": str, "is_demo": bool, "source": str,
+#               "synced_at": ISO8601?, "created_at": ISO8601, "updated_at": ISO8601 }],
+#   "next_cursor": "base64({\"player_id\": N})" | null,
+#   "has_more": bool
+# }
+# 검증 핵심: items[] 배열 형태, next_cursor base64-decode 가능, has_more bool.
+
+### B. GET /api/v1/players?event_id=5 — filter by event (events_players JOIN)
+GET {{host}}/api/v1/players?event_id=5&limit=20
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: §2.1 동일 schema, 단 event_id=5 등록 player 만 반환.
+# 검증 핵심: events_players JOIN 으로 filter 정합. 응답 items[] 가 0개 가능 (정상).
+
+### C. GET /api/v1/players/{id} — detail (viewer OK, stats 미포함)
+GET {{host}}/api/v1/players/1
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답 (Players_HandHistory_API.md §2.2, include_stats=false):
+# 200 OK — single player object (items[] 아님, 단일 객체)
+# 404 if player_id 없음.
+# 검증 핵심: stats 키 부재 (include_stats default false).
+
+### D. GET /api/v1/players/{id}?include_stats=true — detail + stats
+GET {{host}}/api/v1/players/1?include_stats=true
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: §2.2 stats 객체 추가 — total_hands / wins / cumulative_pnl /
+#   vpip_pct / pfr_pct / agr_pct.
+# 검증 핵심: stats 객체 6 키 모두 존재 + numeric.
+
+### E. GET /api/v1/hands?event_id=5&limit=10 — list (winner JOIN only)
+GET {{host}}/api/v1/hands?event_id=5&limit=10
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답 (Players_HandHistory_API.md §2.3):
+# 200 OK
+# {
+#   "items": [{ "hand_id": int, "table_id": int, "hand_number": int,
+#               "game_type": int, "bet_structure": int, "dealer_seat": int,
+#               "board_cards": str (JSON array), "pot_total": int, "side_pots": str,
+#               "current_street": str?, "started_at": ISO8601, "ended_at": ISO8601?,
+#               "duration_sec": int?, "winner_player_name": str? }],
+#   "next_cursor": str?, "has_more": bool
+# }
+# Performance 약속: hand_actions JOIN 안 함 + hand_players 는 winner LIMIT 1 만.
+# 검증 핵심: items[] 의 어느 항목도 hand_players/hand_actions nested 미포함 (flat).
+
+### F. GET /api/v1/hands/{id} — detail (nested hand_players + hand_actions)
+GET {{host}}/api/v1/hands/1
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답 (Players_HandHistory_API.md §2.4):
+# 200 OK — flat hand 필드 + hand_players[] + hand_actions[] nested.
+# hand_players[i]: { id, hand_id, seat_no, player_id, player_name,
+#                    hole_cards (RBAC), start_stack, end_stack, final_action,
+#                    is_winner, pnl, hand_rank, win_probability, vpip, pfr }
+# hand_actions[i]: { id, hand_id, seat_no, action_type, action_amount, pot_after,
+#                    street, action_order, board_cards, action_time }
+# 404 if hand_id 없음.
+# 검증 핵심: hand_players[] + hand_actions[] 배열 형태로 nested 존재.
+
+### G. GET /api/v1/players?cursor=<base64> — pagination idempotency
+GET {{host}}/api/v1/players?limit=20&cursor=eyJwbGF5ZXJfaWQiOjB9
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답: §2.1 동일 schema. cursor `{"player_id": 0}` (base64) 로 첫 페이지부터.
+# 동일 cursor 재요청은 idempotent — 동일 결과 반환.
+# 검증 핵심: cursor base64 decode 가능, next_cursor 가 cursor 와 다름 (단조 증가).
+
+### H. GET /api/v1/hands/{id} — viewer RBAC hole_cards 마스킹 검증
+GET {{host}}/api/v1/hands/1
+Authorization: Bearer {{viewer_token}}
+
+# 예상 응답 (Hand_History.md §3 RBAC SSOT):
+# 200 OK — hand_players[i].hole_cards = "[]" (마스킹).
+# 검증 핵심: viewer 권한일 때 hole_cards 값 "[]" (admin/operator 와 분기).
+# 대조군 (admin 호출 시): hole_cards 가 실제 카드 JSON 배열 "[\"Ah\",\"As\"]" 등.
