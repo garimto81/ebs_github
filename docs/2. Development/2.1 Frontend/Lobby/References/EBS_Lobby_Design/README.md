@@ -2,13 +2,14 @@
 title: EBS Lobby Reference Design (HTML/JSX prototype, 2026-04-29)
 owner: team1 (consumer)
 tier: reference
-last-updated: 2026-05-07
+last-updated: 2026-05-13
 source: "Downloads/EBS Lobby.zip (사용자 제공, 2026-04-29)"
 linked-docs:
   - ../UI.md
   - ../Overview.md
   - ../../README.md
   - ../../../../1. Product/Lobby.md
+  - ../../../2.2 Backend/APIs/Players_HandHistory_API.md
 ---
 
 # EBS Lobby Reference Design
@@ -17,6 +18,8 @@ linked-docs:
 원본 자산을 보존하여 team1 Lobby 기획·구현의 design SSOT 로 활용한다.
 
 > **정체성 cross-reference (Lobby v3.0.0 cascade, 2026-05-07)**: 본 React/JSX prototype 의 5 화면 시퀀스 (Series → Events → Flights → Tables → Players + Hand History / Settings) 는 `docs/1. Product/Lobby.md` v3.0.0 의 narrative 정체성 (**5분 게이트웨이 + WSOP LIVE 거울**) + 4 진입 시점 카탈로그 와 1:1 매핑된다. PRD 본문 25 PNG (visual/screenshots/) 는 본 prototype 의 `screens.jsx` + `screens-extra.jsx` 결과물 캡쳐다 — 디자인 SSOT (코드) ↔ 외부 PRD (이미지) 동기화의 시각적 거울 관계.
+>
+> **Reports 폐기 + Hand History 독립 (Cycle 21, 2026-05-13)**: 사용자 결정으로 prototype 의 Reports 탭 (`Reports.md` SSOT) 및 `lib/features/reports/` Flutter 통합 구현은 **폐기**. Hand History 는 `lib/features/hand_history/` 독립 feature 로 격상되며 BO REST API (`Players_HandHistory_API.md`) 와 직접 연동한다. `Reports.md` 와 `Hand_History.md §매핑` 행은 W3 (frontend impl) cycle 에서 cleanup 예정.
 
 ## 자산 목록
 
@@ -43,7 +46,7 @@ linked-docs:
 | **FlightsScreen**: drill-down per event | flight 화면 | ⏳ |
 | **TablesScreen**: tables list + onLaunch (CC) + waitlist | `table_detail_screen.dart` (`_handleLaunchCc` 구현됨, SG-008-b11 v1.3) | ✅ |
 | **PlayersScreen**: 918 players sample, search | `lib/features/players/` | ⏳ |
-| **HandHistoryScreen** | `lib/features/reports/` (Hand History 통합?) | ⏳ |
+| **HandHistoryScreen** | `lib/features/hand_history/` (독립 feature — BO REST `GET /api/v1/hands` 직접 연동) | ⏳ B-091 |
 | ~~**AlertsScreen**~~ | **폐기 (2026-05-05 사용자 결정)** — EBS scope 외, screens-extra.jsx 자산은 보존하되 구현 대상 아님 | 🚫 |
 | **SettingsScreen** | `lib/features/settings/` (6탭 — SG-003 DONE) | ✅ |
 
@@ -106,6 +109,7 @@ const STATUS_LABEL = {
 
 | 날짜 | 변경 |
 |------|------|
+| 2026-05-13 | **Cycle 21 Wave 1** — 사용자 결정 (2026-05-13). (A) Reports 탭 폐기: prototype `screens-extra.jsx` Reports 화면 및 Flutter `lib/features/reports/` 통합 구현 모두 폐기. (B) Hand History 독립화: `lib/features/hand_history/` 독립 feature 로 격상, BO REST `GET /api/v1/hands` + `GET /api/v1/players` 직접 연동. 디자인 매핑 row "HandHistoryScreen" 경로 정정 (line 46). 신규 contract `Players_HandHistory_API.md` linked-docs 추가. `Reports.md` / `Hand_History.md` cleanup 은 W3 frontend impl cycle 에서 수행. additive only — narrative 변경 0. |
 | 2026-05-05 | **zip 갱신본 sync** — 사용자 제공 `EBS Lobby (1).zip` 의 minor 디자인 정제 반영. 변경: 테이블 ID 시각 표기 `Day2-#071` → `#071` (data.jsx 13 라인 + screens-extra.jsx 9 라인). 구조 변경 없음. 정본 visual asset 동기화: `Lobby/visual/screenshots/` 7장 신 디자인 캡쳐로 교체 (01~05 overwrite + 06 hands / 07 settings 신규). 00 Login 은 BS-02-01 분리로 보류. |
 | 2026-05-05 | 누락 5개 항목 **기획 보강 완료** (P1 TopBar Show Context Cluster + Active CC pill / P2 Year-grouped + Status Badge 5-color Legend / P3 Bookmark 검증). 정본 변경: `UI.md §공통 레이아웃 §헤더 바` + `§화면 1` + `Overview.md §화면 1` + `Lobby.md v1.1.0 Changelog`. 후속 구현: `B-091`. 매트릭스를 spec ✅ / impl ⏳ 2축으로 갱신. |
 | 2026-05-05 | AlertsScreen 폐기 (사용자 결정) — 매트릭스 행 strikethrough + 누락 항목 6번 strikethrough. 디자인 자산 (screens-extra.jsx) 은 자연 보존 |
