@@ -11,7 +11,7 @@ reimplementability_notes: "PR #393 §8-1 사용자 표 9 카테고리 v1.0.0 cas
 related-issue: 393
 related-cycle: 17
 related-spec: ../APIs/Harness_REST_API.md
-derivative-of: ../../1. Product/Game_Rules/Betting_System.md
+derivative-of: ../../../1. Product/Game_Rules/Betting_System.md
 if-conflict: derivative-of takes precedence
 cascade-from: cascade:overlay-9-categories
 cascade-emits: cascade:engine-equity-spec
