@@ -45,6 +45,10 @@ export 'core/rules/showdown_order.dart';
 export 'core/rules/bring_in.dart';
 export 'core/rules/coalescence.dart';
 
+// Reconcile (Cycle 20 Wave 3b — issue #438)
+export 'models/drift_event.dart';
+export 'reconcile/chip_count_reconcile.dart';
+
 import 'core/cards/card.dart';
 import 'core/state/game_state.dart';
 import 'core/state/pot.dart';
@@ -58,11 +62,46 @@ import 'core/rules/street_machine.dart';
 import 'core/variants/variants.dart';
 import 'core/actions/output_event.dart';
 import 'core/actions/reduce_result.dart';
+import 'models/drift_event.dart';
+import 'reconcile/chip_count_reconcile.dart';
 
 /// The main game engine. All methods are pure functions:
 /// given a state and an event, produce a new state.
 class Engine {
   Engine._();
+
+  /// Reconcile this table's chip counts against a WSOP LIVE webhook truth.
+  ///
+  /// Subscribe path (BO → Engine in-process notification, NOT a WS direct
+  /// connection):
+  ///   1. BO commits `chip_count_snapshot` to DB after HMAC validation.
+  ///   2. BO calls this method with the parsed payload.
+  ///   3. Engine applies truth + emits drift events.
+  ///   4. Caller (BO ingestor) persists drifts via the audit channel.
+  ///
+  /// Race-avoidance: when the hand FSM is in an active street (not idle /
+  /// handComplete), the truth is still applied — WSOP LIVE is authority
+  /// during break per Chip_Count_State.md D2 — but every emitted
+  /// [DriftEvent] is flagged with `auditedDuringActiveHand: true`. The
+  /// caller is responsible for surfacing the race to operations (Slack
+  /// alert or BO audit table) regardless of drift level.
+  ///
+  /// Pure: no global state mutation. Returns the new [GameState] and the
+  /// drift events to be logged. [now] is injectable for tests.
+  ///
+  /// Spec: docs/2. Development/2.5 Shared/Chip_Count_State.md §2-4
+  ///       docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md §4.2.11
+  static ChipCountReconcileResult handleChipCountSynced({
+    required GameState state,
+    required ChipCountSyncedPayload payload,
+    DateTime? now,
+  }) {
+    return ChipCountReconcile.reconcile(
+      state: state,
+      payload: payload,
+      now: now,
+    );
+  }
 
   /// Apply an event to the current state, producing a new state.
   /// Legacy wrapper: returns only the new state (backward compatible).
