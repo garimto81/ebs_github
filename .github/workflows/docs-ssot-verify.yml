@@ -1,0 +1,26 @@
+name: Docs SSOT Verify
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'tools/ssot_verify.py'
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'tools/ssot_verify.py'
+
+jobs:
+  ssot-verify:
+    name: SSOT Verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pyyaml
+      - name: Run SSOT verification
+        run: python tools/ssot_verify.py
