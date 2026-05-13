@@ -2,8 +2,8 @@
 //
 // EMPTY → DETECTING → DEALT / FALLBACK / WRONG_CARD
 // Visual contract per Manual_Card_Input.md §6.2:
-// - DETECTING: pulse #FFD600 at 600 ms interval
-// - WRONG_CARD: red border #DD0000 + 400 ms shake
+// - DETECTING: pulse at 600 ms interval (warn token)
+// - WRONG_CARD: red border + 400 ms shake (err token)
 // - FALLBACK: orange border + "TAP TO ENTER" label (modal opening is the
 //   responsibility of at_01_main_screen.dart per §6.4.1)
 //
@@ -12,9 +12,16 @@
 //   manual entry path (open AT-03 modal directly).
 // - DETECTING / DEALT / WRONG_CARD: tap is forwarded to [onTap] for the
 //   host's discretion (e.g. open AT-03 to re-enter a wrong card).
+//
+// Cycle 19 Wave 3 (U3) — OKLCH token 정합.
+//   - Hardcoded #FFD600 / #DD0000 / #F57C00 / #616161 / Colors.white / black
+//     모두 EbsOklch / CardColors 토큰으로 치환.
+//   - DETECTING/FALLBACK warn 톤, WRONG_CARD err 톤, DEALT cardBg/cardBlack.
 
 import 'package:flutter/material.dart';
 
+import '../../../foundation/theme/card_colors.dart';
+import '../../../foundation/theme/ebs_oklch.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 
 enum HoleCardSlotState { empty, detecting, dealt, fallback, wrongCard }
@@ -24,6 +31,7 @@ class HoleCardSlot extends StatefulWidget {
     super.key,
     required this.state,
     this.cardLabel,
+    this.suit,
     this.size = const Size(56, 80),
     this.onTap,
   });
@@ -33,6 +41,10 @@ class HoleCardSlot extends StatefulWidget {
   /// Display string for [HoleCardSlotState.dealt] (e.g. 'A♠'). Ignored
   /// in other states.
   final String? cardLabel;
+
+  /// 카드 suit (H/D/S/C). null 이면 [cardLabel] 의 마지막 글자로 추론.
+  /// HoleCard 색 결정 — H/D → cardRed, S/C → cardBlack.
+  final String? suit;
 
   /// Slot dimensions. Default mirrors the AT-01 hole card cell.
   final Size size;
@@ -91,11 +103,32 @@ class _HoleCardSlotState extends State<HoleCardSlot>
     super.dispose();
   }
 
-  // ── Visual specs (Manual_Card_Input.md §6.2) ──────────────────────────
-  static const Color _detectingColor = Color(0xFFFFD600);
-  static const Color _wrongColor = Color(0xFFDD0000);
-  static const Color _fallbackColor = Color(0xFFF57C00);
-  static const Color _emptyBorder = Color(0xFF616161);
+  // ── Visual specs (Manual_Card_Input.md §6.2, OKLCH-sourced) ─────────────
+  /// DETECTING pulse — warn token (broadcast amber-gold).
+  static const Color _detectingColor = EbsOklch.warn;
+
+  /// WRONG_CARD border + shake — err token (broadcast red).
+  static const Color _wrongColor = EbsOklch.err;
+
+  /// FALLBACK border — warn token (same family as DETECTING, distinct via state).
+  static const Color _fallbackColor = EbsOklch.warn;
+
+  /// EMPTY border — fg-3 muted text/line token.
+  static const Color _emptyBorder = EbsOklch.fg3;
+
+  /// DEALT 카드 suit → 텍스트 색.
+  Color _dealtTextColor() {
+    final s = widget.suit ??
+        (widget.cardLabel?.isNotEmpty == true
+            ? widget.cardLabel!.substring(widget.cardLabel!.length - 1)
+            : null);
+    if (s == null) return CardColors.spade; // default black
+    final normalized = s.toUpperCase();
+    if (normalized == 'H' || normalized == '♥' || normalized == 'D' || normalized == '♦') {
+      return CardColors.heart; // H/D → red
+    }
+    return CardColors.spade; // S/C → black
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,13 +185,13 @@ class _HoleCardSlotState extends State<HoleCardSlot>
         );
       case HoleCardSlotState.dealt:
         return _decorated(
-          border: const _Border(color: Colors.white24, width: 1),
-          fill: Colors.white,
+          border: const _Border(color: EbsOklch.line, width: 1),
+          fill: CardColors.cardFaceUp,
           child: Center(
             child: Text(
               widget.cardLabel ?? '?',
               style: EbsTypography.cardLabel.copyWith(
-                color: Colors.black,
+                color: _dealtTextColor(),
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -206,7 +239,6 @@ class _HoleCardSlotState extends State<HoleCardSlot>
         border: Border.all(
           color: border.color,
           width: border.width,
-          style: border.dashed ? BorderStyle.solid : BorderStyle.solid,
           // Flutter has no native dashed border — we approximate with a
           // muted solid line + the "—" placeholder so the EMPTY state still
           // reads as 'no card here yet' without bringing in a third-party
