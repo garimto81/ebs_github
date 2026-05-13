@@ -4,11 +4,19 @@
 // based on ActionButtonState from action_button_provider.
 // Dynamic labels: CHECK↔CALL, BET↔RAISE.
 // Amount keypad visible only when BET or RAISE is selected.
+//
+// Cycle 19 Wave 3 U4 — surface tokens re-sourced from `EbsOklch`
+// (Broadcast Dark Amber palette). Legacy hard-coded purple surfaces
+// (0xFF1A1A2E / 0xFF2A2A3E / 0xFF0D0D1A / 0xFF444466) removed.
+// Visual SSOT: `docs/mockups/EBS Command Center/app.css`
+//   §.actionpanel, §.btn, §.numpad-overlay.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../foundation/theme/action_colors.dart';
+import '../../../foundation/theme/ebs_oklch.dart';
+import '../../../foundation/theme/ebs_shadows.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../models/enums/hand_fsm.dart';
@@ -46,8 +54,12 @@ class ActionPanel extends ConsumerWidget {
     final showKeypad = ref.watch(showKeypadProvider);
 
     return Container(
-      height: 140,
-      color: const Color(0xFF1A1A2E),
+      // §13 panel height = 124 (top-rail 56 inset). HTML uses bg-1 surface.
+      height: EbsSpacing.actionPanelHeight + EbsSpacing.xs,
+      decoration: const BoxDecoration(
+        color: EbsOklch.bg1,
+        border: Border(top: BorderSide(color: EbsOklch.line)),
+      ),
       padding: const EdgeInsets.symmetric(
         horizontal: EbsSpacing.sm,
         vertical: EbsSpacing.xs,
@@ -120,14 +132,14 @@ class ActionPanel extends ConsumerWidget {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF2A2A3E),
+        backgroundColor: EbsOklch.bg2,
         title: Text(
           'MISS DEAL',
           style: EbsTypography.modalTitle.copyWith(color: ActionColors.missDeal),
         ),
         content: const Text(
           'Miss Deal을 선언하시겠습니까?\n현재 핸드가 취소됩니다.',
-          style: TextStyle(color: Colors.white70),
+          style: TextStyle(color: EbsOklch.fg1),
         ),
         actions: [
           TextButton(
@@ -142,7 +154,7 @@ class ActionPanel extends ConsumerWidget {
               Navigator.of(ctx).pop(true);
               onAction?.call(action);
             },
-            child: const Text('확인', style: TextStyle(color: Colors.white)),
+            child: const Text('확인', style: TextStyle(color: EbsOklch.fg0)),
           ),
         ],
       ),
@@ -151,107 +163,11 @@ class ActionPanel extends ConsumerWidget {
 }
 
 // ---------------------------------------------------------------------------
-// _ActionButtons — 8-button grid
-// ---------------------------------------------------------------------------
-
-class _ActionButtons extends StatelessWidget {
-  const _ActionButtons({
-    required this.buttonState,
-    required this.onAction,
-  });
-
-  final ActionButtonState buttonState;
-  final void Function(CcAction) onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Row 1: main action buttons
-        Expanded(
-          child: Row(
-            children: [
-              _ActionBtn(
-                label: 'NEW HAND',
-                shortcut: 'N',
-                color: ActionColors.newHand,
-                enabled: buttonState.isEnabled(CcAction.newHand),
-                onPressed: () => onAction(CcAction.newHand),
-              ),
-              _ActionBtn(
-                label: 'DEAL',
-                shortcut: 'D',
-                color: ActionColors.deal,
-                enabled: buttonState.isEnabled(CcAction.deal),
-                onPressed: () => onAction(CcAction.deal),
-              ),
-              _ActionBtn(
-                label: 'FOLD',
-                shortcut: 'F',
-                color: ActionColors.fold,
-                enabled: buttonState.isEnabled(CcAction.fold),
-                onPressed: () => onAction(CcAction.fold),
-              ),
-              _ActionBtn(
-                label: buttonState.checkCallLabel,
-                shortcut: 'C',
-                color: ActionColors.check,
-                enabled: buttonState.isEnabled(CcAction.checkCall),
-                onPressed: () => onAction(CcAction.checkCall),
-              ),
-              _ActionBtn(
-                label: buttonState.betRaiseLabel,
-                shortcut: buttonState.betRaiseLabel == 'BET' ? 'B' : 'R',
-                color: buttonState.betRaiseLabel == 'BET'
-                    ? ActionColors.bet
-                    : ActionColors.raise_,
-                enabled: buttonState.isEnabled(CcAction.betRaise),
-                onPressed: () => onAction(CcAction.betRaise),
-              ),
-              _ActionBtn(
-                label: 'ALL-IN',
-                shortcut: 'A',
-                color: ActionColors.allIn,
-                borderColor: ActionColors.allInBorder,
-                enabled: buttonState.isEnabled(CcAction.allIn),
-                onPressed: () => onAction(CcAction.allIn),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: EbsSpacing.xs),
-        // Row 2: utility buttons
-        SizedBox(
-          height: 36,
-          child: Row(
-            children: [
-              _ActionBtn(
-                label: 'UNDO',
-                shortcut: 'Ctrl+Z',
-                color: ActionColors.undo,
-                enabled: buttonState.isEnabled(CcAction.undo),
-                onPressed: () => onAction(CcAction.undo),
-                compact: true,
-              ),
-              _ActionBtn(
-                label: 'MISS DEAL',
-                shortcut: '',
-                color: ActionColors.missDeal,
-                enabled: buttonState.isEnabled(CcAction.missDeal),
-                onPressed: () => onAction(CcAction.missDeal),
-                compact: true,
-              ),
-              const Spacer(),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
 // _ActionBtn — single action button with shortcut hint
+//
+// Note: the legacy 8-button `_ActionButtons` grid was replaced by the
+// zone-decomposed layout (`_UtilityZone` + `_MainZone` + `_LifecycleZone`)
+// during Cycle 18. Dead-code class removed in Cycle 19 U4 cleanup.
 // ---------------------------------------------------------------------------
 
 class _ActionBtn extends StatelessWidget {
@@ -279,44 +195,46 @@ class _ActionBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bgColor = enabled ? color : ActionColors.disabled;
-    final fgColor = enabled ? Colors.white : ActionColors.disabledText;
+    final fgColor = enabled ? EbsOklch.fg0 : ActionColors.disabledText;
 
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2),
-        child: SizedBox(
-          height: compact ? 36 : EbsSpacing.actionButtonHeight,
-          child: Material(
-            color: bgColor,
+    // Cycle 19 U4 — _ActionBtn no longer wraps itself in `Expanded`.
+    // Callers (_UtilityZone / _MainZone / _LifecycleZone) are responsible
+    // for the surrounding Expanded so that one `Expanded` writes
+    // FlexParentData per layout slot (Flutter rejects competing parents).
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: SizedBox(
+        height: compact ? 36 : EbsSpacing.actionButtonHeight,
+        child: Material(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(6),
+          child: InkWell(
+            onTap: enabled ? onPressed : null,
             borderRadius: BorderRadius.circular(6),
-            child: InkWell(
-              onTap: enabled ? onPressed : null,
-              borderRadius: BorderRadius.circular(6),
-              child: Container(
-                decoration: borderColor != null && enabled
-                    ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: borderColor!, width: 2),
-                      )
-                    : null,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+            child: Container(
+              decoration: borderColor != null && enabled
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: borderColor!, width: 2),
+                    )
+                  : null,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    label,
+                    style: (compact
+                            ? EbsTypography.infoBar
+                            : EbsTypography.actionButton)
+                        .copyWith(color: fgColor),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (shortcut.isNotEmpty && !compact)
                     Text(
-                      label,
-                      style: (compact
-                              ? EbsTypography.infoBar
-                              : EbsTypography.actionButton)
-                          .copyWith(color: fgColor),
-                      overflow: TextOverflow.ellipsis,
+                      shortcut,
+                      style: EbsTypography.shortcutHint,
                     ),
-                    if (shortcut.isNotEmpty && !compact)
-                      Text(
-                        shortcut,
-                        style: EbsTypography.shortcutHint,
-                      ),
-                  ],
-                ),
+                ],
               ),
             ),
           ),
@@ -340,29 +258,32 @@ class _AmountKeypad extends ConsumerWidget {
     final amount = ref.watch(amountInputProvider);
     final error = ref.watch(amountErrorProvider);
 
-    return SizedBox(
+    return Container(
       width: 200,
+      // Numpad overlay surface — HTML §.numpad-overlay uses bg-1 + shadow-pop.
+      decoration: const BoxDecoration(
+        color: EbsOklch.bg1,
+        boxShadow: EbsShadows.pop,
+      ),
       child: Column(
         children: [
-          // Amount display
+          // Amount display — HTML §.np-amount .display uses bg-0 frame + accent text.
           Container(
             height: 28,
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: EbsSpacing.sm),
             decoration: BoxDecoration(
-              color: const Color(0xFF0D0D1A),
+              color: EbsOklch.bg0,
               borderRadius: BorderRadius.circular(4),
               border: Border.all(
-                color: error.isNotEmpty
-                    ? ActionColors.missDeal
-                    : const Color(0xFF444466),
+                color: error.isNotEmpty ? EbsOklch.err : EbsOklch.line,
               ),
             ),
             alignment: Alignment.centerRight,
             child: Text(
               amount.isEmpty ? '0' : _formatAmount(amount),
               style: EbsTypography.stackAmount.copyWith(
-                color: error.isNotEmpty ? ActionColors.missDeal : Colors.white,
+                color: error.isNotEmpty ? EbsOklch.err : EbsOklch.accent,
               ),
             ),
           ),
@@ -371,10 +292,7 @@ class _AmountKeypad extends ConsumerWidget {
               padding: const EdgeInsets.only(top: 2),
               child: Text(
                 error,
-                style: const TextStyle(
-                  color: ActionColors.missDeal,
-                  fontSize: 9,
-                ),
+                style: const TextStyle(color: EbsOklch.err, fontSize: 9),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -411,7 +329,7 @@ class _AmountKeypad extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: EbsOklch.fg0,
                 ),
               ),
             ),
@@ -489,19 +407,26 @@ class _KeypadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // HTML §.np-key uses bg-2 surface + line border + fg-0 text.
     return Material(
-      color: const Color(0xFF2A2A3E),
+      color: EbsOklch.bg2,
       borderRadius: BorderRadius.circular(4),
       child: InkWell(
         onTap: onPressed,
         borderRadius: BorderRadius.circular(4),
-        child: Center(
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: EbsOklch.line),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: EbsOklch.fg0,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),
@@ -539,31 +464,53 @@ class _MainZone extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final seats = ref.watch(seatsProvider);
     final actionSeat = seats.where((s) => s.actionOn).firstOrNull;
-    final biggestBet = seats.fold<int>(0, (m, s) => s.currentBet > m ? s.currentBet : m);
+    final biggestBet =
+        seats.fold<int>(0, (m, s) => s.currentBet > m ? s.currentBet : m);
     final myBet = actionSeat?.currentBet ?? 0;
     final callAmount = (biggestBet - myBet).clamp(0, 1 << 30);
     final stack = actionSeat?.player?.stack ?? 0;
     final isCall = buttonState.checkCallLabel == 'CALL';
     final isRaise = buttonState.betRaiseLabel == 'RAISE';
     return Row(children: [
-      _ActionBtn(label: 'FOLD', shortcut: 'F', color: ActionColors.fold,
-        enabled: buttonState.isEnabled(CcAction.fold),
-        onPressed: () => onAction(CcAction.fold)),
-      _ActionBtn(label: buttonState.checkCallLabel, shortcut: 'C',
-        color: ActionColors.check,
-        enabled: buttonState.isEnabled(CcAction.checkCall),
-        subText: isCall && callAmount > 0 ? '\$' + _apFmt(callAmount) : null,
-        onPressed: () => onAction(CcAction.checkCall)),
-      _ActionBtn(label: buttonState.betRaiseLabel,
-        shortcut: isRaise ? 'R' : 'B',
-        color: isRaise ? ActionColors.raise_ : ActionColors.bet,
-        enabled: buttonState.isEnabled(CcAction.betRaise),
-        onPressed: () => onAction(CcAction.betRaise)),
-      _ActionBtn(label: 'ALL-IN', shortcut: 'A',
-        color: ActionColors.allIn, borderColor: ActionColors.allInBorder,
-        enabled: buttonState.isEnabled(CcAction.allIn),
-        subText: stack > 0 ? '\$' + _apFmt(stack) : null,
-        onPressed: () => onAction(CcAction.allIn)),
+      Expanded(
+        child: _ActionBtn(
+          label: 'FOLD',
+          shortcut: 'F',
+          color: ActionColors.fold,
+          enabled: buttonState.isEnabled(CcAction.fold),
+          onPressed: () => onAction(CcAction.fold),
+        ),
+      ),
+      Expanded(
+        child: _ActionBtn(
+          label: buttonState.checkCallLabel,
+          shortcut: 'C',
+          color: ActionColors.check,
+          enabled: buttonState.isEnabled(CcAction.checkCall),
+          subText: isCall && callAmount > 0 ? '\$${_apFmt(callAmount)}' : null,
+          onPressed: () => onAction(CcAction.checkCall),
+        ),
+      ),
+      Expanded(
+        child: _ActionBtn(
+          label: buttonState.betRaiseLabel,
+          shortcut: isRaise ? 'R' : 'B',
+          color: isRaise ? ActionColors.raise_ : ActionColors.bet,
+          enabled: buttonState.isEnabled(CcAction.betRaise),
+          onPressed: () => onAction(CcAction.betRaise),
+        ),
+      ),
+      Expanded(
+        child: _ActionBtn(
+          label: 'ALL-IN',
+          shortcut: 'A',
+          color: ActionColors.allIn,
+          borderColor: ActionColors.allInBorder,
+          enabled: buttonState.isEnabled(CcAction.allIn),
+          subText: stack > 0 ? '\$${_apFmt(stack)}' : null,
+          onPressed: () => onAction(CcAction.allIn),
+        ),
+      ),
     ]);
   }
 }
@@ -578,18 +525,39 @@ class _LifecycleZone extends ConsumerWidget {
     final isIdle = fsm == HandFsm.idle || fsm == HandFsm.handComplete;
     final isShowdown = fsm == HandFsm.showdown;
     final canStart = buttonState.isEnabled(CcAction.newHand);
-    final label = isIdle ? 'START HAND' : (isShowdown ? 'FINISH HAND' : 'IN PROGRESS');
-    final sub = isIdle ? 'Ready to deal' : isShowdown ? 'Tap to reset' : fsm.name.toUpperCase();
+    final label =
+        isIdle ? 'START HAND' : (isShowdown ? 'FINISH HAND' : 'IN PROGRESS');
+    final sub = isIdle
+        ? 'Ready to deal'
+        : isShowdown
+            ? 'Tap to reset'
+            : fsm.name.toUpperCase();
     final color = isIdle ? ActionColors.newHand : ActionColors.deal;
     return Column(children: [
-      Expanded(flex: 3, child: _ActionBtn(label: label, shortcut: '',
-        subText: sub, color: color, enabled: canStart, big: true,
-        onPressed: () => onAction(CcAction.newHand))),
+      Expanded(
+        flex: 3,
+        child: _ActionBtn(
+          label: label,
+          shortcut: '',
+          subText: sub,
+          color: color,
+          enabled: canStart,
+          big: true,
+          onPressed: () => onAction(CcAction.newHand),
+        ),
+      ),
       const SizedBox(height: 4),
-      SizedBox(height: 32, child: _ActionBtn(label: 'DEAL', shortcut: 'D',
-        color: ActionColors.deal,
-        enabled: buttonState.isEnabled(CcAction.deal),
-        onPressed: () => onAction(CcAction.deal), compact: true)),
+      SizedBox(
+        height: 32,
+        child: _ActionBtn(
+          label: 'DEAL',
+          shortcut: 'D',
+          color: ActionColors.deal,
+          enabled: buttonState.isEnabled(CcAction.deal),
+          onPressed: () => onAction(CcAction.deal),
+          compact: true,
+        ),
+      ),
     ]);
   }
 }
