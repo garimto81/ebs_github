@@ -20,8 +20,10 @@ import 'package:ebs_lobby/data/remote/lobby_websocket_client.dart';
 import 'package:ebs_lobby/data/remote/ws_provider.dart';
 import 'package:ebs_lobby/features/auth/auth_provider.dart';
 import 'package:ebs_lobby/features/auth/screens/login_screen.dart';
-import 'package:ebs_lobby/features/lobby/screens/lobby_dashboard_screen.dart';
-import 'package:ebs_lobby/features/reports/screens/reports_screen.dart';
+// Cycle 21 W3 — Reports 폐기. LobbyDashboardScreen (legacy) → SeriesScreen 으로
+// 정합 (lobby_shell.dart 가 ShellRoute 로 변경된 후 default landing).
+import 'package:ebs_lobby/features/hand_history/screens/hand_history_screen.dart';
+import 'package:ebs_lobby/features/lobby/screens/series_screen.dart';
 import 'package:ebs_lobby/features/settings/screens/settings_layout.dart';
 import 'package:ebs_lobby/foundation/error/async_value_widget.dart';
 import 'package:ebs_lobby/foundation/error/error_boundary.dart';
@@ -50,8 +52,10 @@ void main() {
 
   // -------------------------------------------------------------------------
   // SCENARIO A — Happy Path (Golden Path)
+  //   Cycle 21 W3 — Reports 폐기 → Hand History 로 happy-path 시나리오 갱신.
+  //   /reports 라우트 제거, /hand-history 로 진입 검증.
   // -------------------------------------------------------------------------
-  patrolWidgetTest('A: 로그인 → 로비 → 리포트 → 로그아웃 골든패스',
+  patrolWidgetTest('A: 로그인 → 로비 → Hand History → 로그아웃 골든패스',
       ($) async {
     await $.pumpWidgetAndSettle(harness.buildTestApp());
 
@@ -63,13 +67,15 @@ void main() {
         .enterText(TestCredentials.password);
     await $(const ValueKey('login-submit')).tap();
 
-    await $(LobbyDashboardScreen).waitUntilVisible();
-    expect($(LobbyDashboardScreen), findsOneWidget);
-
-    await $(const Icon(Icons.assessment)).tap();
-    await $(ReportsScreen).waitUntilVisible();
+    await $(SeriesScreen).waitUntilVisible();
+    expect($(SeriesScreen), findsOneWidget);
 
     final container = _container($);
+    final router = container.read(routerProvider);
+    router.go('/hand-history');
+    await $.pumpAndSettle();
+    await $(HandHistoryScreen).waitUntilVisible();
+
     await container.read(authProvider.notifier).logout();
     await $.pumpAndSettle();
 
@@ -88,7 +94,7 @@ void main() {
 
     await $.pumpWidgetAndSettle(harness.buildTestApp());
     await _login($);
-    await $(LobbyDashboardScreen).waitUntilVisible();
+    await $(SeriesScreen).waitUntilVisible();
 
     expect(
       harness.hitContains('GET /Series => unauthorized'),

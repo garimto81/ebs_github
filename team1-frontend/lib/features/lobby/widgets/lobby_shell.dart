@@ -4,8 +4,11 @@
 // 이전: TopBar + SideRail (rich navigation). 변경: dark mockup top-bar 만.
 // SSOT: docs/mockups/ebs-lobby-{01,02,03,04}-*.html 모두 sidebar 없음.
 //
-// Sub-feature (Settings / Graphic Editor / Reports / Staff / Players /
-// Hand History) 접근은 admin user menu popup (top-bar 우측) 으로 이전.
+// 2026-05-13 cycle 21 W3 — Reports 탭 폐기 + Hand History 독립 격상.
+// SSOT: Players_HandHistory_API.md §8 Reports 폐기 영향.
+//
+// Sub-feature (Settings / Graphic Editor / Staff / Players / Hand History)
+// 접근은 admin user menu popup (top-bar 우측) 으로 이전.
 // 데이터 흐름 (Series → Event → Flight → Table) 은 PR #377 그대로 유지.
 
 import 'package:flutter/material.dart';
@@ -154,7 +157,6 @@ class _UserMenu extends ConsumerWidget {
       itemBuilder: (_) => const [
         PopupMenuItem(value: 'players', child: Text('Players')),
         PopupMenuItem(value: 'hand-history', child: Text('Hand History')),
-        PopupMenuItem(value: 'reports', child: Text('Reports')),
         PopupMenuDivider(),
         PopupMenuItem(value: 'settings', child: Text('Settings')),
         PopupMenuItem(value: 'gfx', child: Text('Graphic Editor')),
@@ -189,9 +191,7 @@ class _UserMenu extends ConsumerWidget {
       case 'players':
         context.go('/players');
       case 'hand-history':
-        context.go('/reports/hand-history');
-      case 'reports':
-        context.go('/reports');
+        context.go('/hand-history');
       case 'settings':
         context.go('/settings');
       case 'gfx':

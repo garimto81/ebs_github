@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:ebs_lobby/features/lobby/providers/player_provider.dart';
 import 'package:ebs_lobby/features/players/screens/players_screen.dart';
 import 'package:ebs_lobby/models/entities/player.dart';
 import 'package:ebs_lobby/repositories/player_repository.dart';
@@ -22,19 +21,47 @@ class _FakePlayerRepository implements PlayerRepository {
   _FakePlayerRepository(this._players);
   final List<Player> _players;
 
+  // Cycle 21 W3 — cursor 페이지로 시그니처 변경. 본 fake 는 단일 페이지로 응답.
   @override
-  Future<List<Player>> listPlayers({Map<String, dynamic>? params}) async =>
-      _players;
+  Future<PlayerPage> listPlayers({
+    int? eventId,
+    String? nationality,
+    String? playerStatus,
+    String? cursor,
+    int limit = 50,
+  }) async =>
+      PlayerPage(items: _players);
 
   @override
-  Future<Player> getPlayer(int id) async =>
+  Future<Player> getPlayer(int id, {bool includeStats = false}) async =>
       _players.firstWhere((p) => p.playerId == id);
 
   @override
-  Future<List<Player>> searchPlayers(
+  Future<PlayerPage> searchPlayers(
     String query, {
-    Map<String, dynamic>? params,
+    String? cursor,
+    int limit = 50,
   }) async =>
+      PlayerPage(
+        items: _players
+            .where(
+              (p) => '${p.firstName} ${p.lastName}'
+                  .toLowerCase()
+                  .contains(query.toLowerCase()),
+            )
+            .toList(),
+      );
+
+  @override
+  Future<List<Player>> fetchAll({
+    int? eventId,
+    String? playerStatus,
+    int pageSize = 100,
+  }) async =>
+      _players;
+
+  @override
+  Future<List<Player>> searchAll(String query, {int pageSize = 100}) async =>
       _players
           .where(
             (p) => '${p.firstName} ${p.lastName}'

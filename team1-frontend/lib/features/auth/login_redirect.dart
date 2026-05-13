@@ -24,7 +24,7 @@ class LoginRedirect {
     '/staff',
     '/settings',
     '/graphic-editor',
-    '/reports',
+    '/hand-history', // Cycle 21 W3 — Reports 폐기 후 추가, /reports 제거.
   ];
 
   /// /login?redirect=... 의 raw 값을 받아 안전한 경로로 정규화.
