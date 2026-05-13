@@ -1,0 +1,52 @@
+### CCR-034 — CC Visual Sync (HTML mockup ↔ Flutter cc-web pixel parity)
+###
+### S9 Cycle 19 Wave 4 (#425) 신규.
+### 본 시나리오는 픽셀 회귀 테스트 (cc-pixel-regression.spec.ts) 의
+### 환경 사전 확인 (healthcheck) 시나리오다. 실제 픽셀 비교는 Playwright 가 수행.
+###
+### 검증 범위:
+###   - cc-web (3001) 가용성 — Flutter 렌더링 대상
+###   - bo (18001) 가용성 — CC 의 backend dependency
+###   - engine (18080) 가용성 — game state source
+###   - HTML mockup 파일 존재 검증은 Playwright spec 내에서 fs.existsSync 로 수행
+###
+### 참조:
+###   - SSOT HTML 목업: C:/claude/ebs/docs/mockups/EBS Command Center/EBS Command Center.html
+###   - Docker_Runtime.md §1 (cc-web=3001, bo=18001, engine=18080)
+###   - 인접 시나리오: 30-cc-launch-flow.http (CCR-029), 40-overlay-security-delay.http (CCR-036)
+###   - Playwright spec: integration-tests/playwright/tests/cc-pixel-regression.spec.ts
+
+@host_bo = http://localhost:18001
+@host_engine = http://localhost:18080
+@host_cc_web = http://localhost:3001
+
+### CCR-034 §1 cc-web 가용성 (Flutter 렌더링 타겟)
+GET {{host_cc_web}}/
+Accept: text/html
+
+# 예상 응답: 200 OK
+# - text/html (Flutter web index)
+# - 200 이 아니면 픽셀 회귀 spec 의 Step B 가 nav fail → graceful blank capture 로 fallback
+
+### CCR-034 §2 BO healthz (CC 의 백엔드 의존성)
+GET {{host_bo}}/healthz
+
+# 예상 응답: 200 OK
+# {
+#   "status": "ok",
+#   ...
+# }
+
+### CCR-034 §3 Engine healthz (game state source)
+GET {{host_engine}}/health
+
+# 예상 응답: 200 OK / 404 (engine harness 는 endpoint 노출 차이 가능)
+# 본 시나리오는 best-effort sanity check — 404 도 허용 (engine 컨테이너만 UP 이면 충분)
+
+### CCR-034 §4 cc-web tokens.css (디자인 토큰 무결성)
+GET {{host_cc_web}}/tokens.css
+
+# 예상 응답: 200 OK / 404
+# Flutter web 빌드는 tokens.css 를 별도 자산으로 serve 하지 않음.
+# 404 가 정상. 본 요청은 HTML mockup 의 tokens.css 와 Flutter 의
+# 디자인 토큰 정합성 확인을 위한 회귀 anchor.
