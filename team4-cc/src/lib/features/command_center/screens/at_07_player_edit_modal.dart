@@ -4,11 +4,27 @@
 //
 // 480×auto Dialog. 7 fields. [Save] [Cancel] [Reset Seat].
 // RBAC: Admin/Operator (assigned tables only).
+//
+// Cycle 19 Wave 4 U6 — Broadcast Dark Amber OKLCH 정합.
+// 디자인 reference:
+//   - HTML SSOT : `docs/mockups/EBS Command Center/FieldEditor.jsx`
+//   - CSS SSOT  : `docs/mockups/EBS Command Center/app.css` §".fe-popover"
+//   - 토큰 적용 :
+//       Surface       : EbsOklch.bg3 + EbsShadows.card
+//       Input bg/fg   : EbsOklch.bg1 / EbsOklch.fg0
+//       Focus ring    : EbsOklch.accent (2px)
+//       Validation    : EbsOklch.err (label + helper text)
+//       Section line  : EbsOklch.line
+//       Field label   : EbsOklch.fg2 (uppercase, 10.5px)
+//       Sub helper    : EbsOklch.fg3
+//       Reset button  : EbsOklch.err (destructive)
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/remote/bo_api_client.dart';
+import '../../../foundation/theme/ebs_oklch.dart';
+import '../../../foundation/theme/ebs_shadows.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../models/enums/hand_fsm.dart';
@@ -117,7 +133,6 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     final auth = ref.watch(authProvider);
     final handFsm = ref.watch(handFsmProvider);
     final seat = ref.watch(seatsProvider)
@@ -127,89 +142,161 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
     final canEdit = auth.role == 'Admin' || auth.role == 'Operator';
 
     if (!canEdit) {
-      return AlertDialog(
-        title: Text('Seat ${widget.seatNo}'),
-        content:
-            const Text('You do not have permission to edit player details.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Close'),
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          width: EbsSpacing.modalWidthSm,
+          decoration: BoxDecoration(
+            color: EbsOklch.bg3,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: EbsOklch.line),
+            boxShadow: EbsShadows.card,
           ),
-        ],
+          padding: const EdgeInsets.all(EbsSpacing.lg),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Seat ${widget.seatNo}',
+                style: EbsTypography.modalTitle.copyWith(color: EbsOklch.fg0),
+              ),
+              const SizedBox(height: EbsSpacing.sm),
+              const Text(
+                'You do not have permission to edit player details.',
+                style: TextStyle(color: EbsOklch.fg1, fontSize: 13),
+              ),
+              const SizedBox(height: EbsSpacing.md),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  style: TextButton.styleFrom(foregroundColor: EbsOklch.fg1),
+                  child: const Text('Close'),
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
     return Dialog(
-      child: SizedBox(
+      // Strip Material default surface — root Container owns the bg3 popover.
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.symmetric(
+        horizontal: EbsSpacing.lg,
+        vertical: EbsSpacing.xl,
+      ),
+      child: Container(
         width: EbsSpacing.modalWidthSm,
+        decoration: BoxDecoration(
+          color: EbsOklch.bg3,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: EbsOklch.line),
+          boxShadow: EbsShadows.card,
+        ),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // -- Title --
-              Container(
+              Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  EbsSpacing.md, EbsSpacing.md, EbsSpacing.sm, 0,
+                  EbsSpacing.md + 2,
+                  EbsSpacing.sm + 6,
+                  EbsSpacing.sm + 2,
+                  EbsSpacing.sm + 6,
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      'Edit Player — Seat ${widget.seatNo}',
-                      style: EbsTypography.modalTitle,
+                    // Seat chip (.fe-seat parity).
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: EbsSpacing.sm,
+                        vertical: EbsSpacing.xs,
+                      ),
+                      decoration: BoxDecoration(
+                        color: EbsOklch.bg2,
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: EbsOklch.line),
+                      ),
+                      child: Text(
+                        'S${widget.seatNo}',
+                        style: const TextStyle(
+                          fontFamily: 'JetBrains Mono',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: EbsOklch.accent,
+                        ),
+                      ),
                     ),
-                    const Spacer(),
+                    const SizedBox(width: EbsSpacing.sm + 2),
+                    Expanded(
+                      child: Text(
+                        'Edit Player',
+                        style: EbsTypography.modalTitle.copyWith(
+                          fontSize: 14,
+                          color: EbsOklch.fg0,
+                          letterSpacing: -0.14,
+                        ),
+                      ),
+                    ),
                     IconButton(
-                      icon: const Icon(Icons.close, size: 20),
+                      icon: const Icon(Icons.close, size: 18),
+                      color: EbsOklch.fg1,
                       onPressed: () => Navigator.of(context).pop(false),
                       splashRadius: 16,
+                      tooltip: 'Close',
                     ),
                   ],
                 ),
               ),
 
-              const Divider(),
+              const _SectionDivider(),
 
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: EbsSpacing.md,
-                  vertical: EbsSpacing.sm,
+                  horizontal: EbsSpacing.md + 2,
+                  vertical: EbsSpacing.md,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 1. Name
                     const _FieldLabel('Name'),
-                    const SizedBox(height: EbsSpacing.xs),
-                    TextField(
+                    const SizedBox(height: EbsSpacing.xs + 2),
+                    _OklchTextField(
                       controller: _nameController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                      ),
+                      hintText: 'Player name',
                     ),
 
                     const SizedBox(height: EbsSpacing.md),
 
                     // 2. Player ID (read-only)
                     const _FieldLabel('Player ID'),
-                    const SizedBox(height: EbsSpacing.xs),
+                    const SizedBox(height: EbsSpacing.xs + 2),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: EbsSpacing.sm,
-                        vertical: EbsSpacing.sm + 2,
+                        horizontal: EbsSpacing.sm + 4,
+                        vertical: EbsSpacing.sm + 4,
                       ),
                       decoration: BoxDecoration(
-                        color: cs.surface,
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: cs.outline),
+                        color: EbsOklch.bg1,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: EbsOklch.line),
                       ),
                       child: Text(
                         '${seat.player?.id ?? "—"}',
-                        style: EbsTypography.infoBar.copyWith(
-                          fontFamily: 'monospace',
+                        style: const TextStyle(
+                          fontFamily: 'JetBrains Mono',
+                          fontSize: 13,
+                          color: EbsOklch.fg2,
+                          fontFeatures: [FontFeature.tabularFigures()],
                         ),
                       ),
                     ),
@@ -218,15 +305,11 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
 
                     // 3. Nationality (dropdown + flag)
                     const _FieldLabel('Nationality'),
-                    const SizedBox(height: EbsSpacing.xs),
-                    DropdownButtonFormField<String>(
+                    const SizedBox(height: EbsSpacing.xs + 2),
+                    _OklchDropdown<String>(
                       value: _countries.containsKey(_countryCode)
                           ? _countryCode
                           : '',
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                      ),
                       items: _countries.entries.map((e) {
                         final flag = e.key.isNotEmpty
                             ? '${_countryFlag(e.key)} '
@@ -246,14 +329,11 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
                     _IdleField(
                       label: 'Stack',
                       isIdle: isIdle,
-                      child: TextField(
+                      child: _OklchTextField(
                         controller: _stackController,
                         enabled: isIdle,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          isDense: true,
-                        ),
+                        mono: true,
                       ),
                     ),
 
@@ -261,27 +341,19 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
 
                     // 5. Avatar URL
                     const _FieldLabel('Avatar URL'),
-                    const SizedBox(height: EbsSpacing.xs),
-                    TextField(
+                    const SizedBox(height: EbsSpacing.xs + 2),
+                    _OklchTextField(
                       controller: _avatarUrlController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                        hintText: 'https://...',
-                      ),
+                      hintText: 'https://...',
                     ),
 
                     const SizedBox(height: EbsSpacing.md),
 
                     // 6. VIP Level
                     const _FieldLabel('VIP Level'),
-                    const SizedBox(height: EbsSpacing.xs),
-                    DropdownButtonFormField<String>(
+                    const SizedBox(height: EbsSpacing.xs + 2),
+                    _OklchDropdown<String>(
                       value: _vipLevel,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                      ),
                       items: _vipLevels.map((v) {
                         return DropdownMenuItem(value: v, child: Text(v));
                       }).toList(),
@@ -295,12 +367,8 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
                     _IdleField(
                       label: 'Seat Status',
                       isIdle: isIdle,
-                      child: DropdownButtonFormField<SeatStatus>(
+                      child: _OklchDropdown<SeatStatus>(
                         value: _seatStatus,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          isDense: true,
-                        ),
                         items: SeatStatus.values.map((s) {
                           return DropdownMenuItem(
                             value: s,
@@ -311,6 +379,7 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
                             ? (v) => setState(
                                 () => _seatStatus = v ?? _seatStatus)
                             : null,
+                        enabled: isIdle,
                       ),
                     ),
 
@@ -318,15 +387,29 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
 
                     // Sitting Out toggle (always available)
                     SwitchListTile(
-                      title: const Text('Sitting Out'),
+                      title: const Text(
+                        'Sitting Out',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: EbsOklch.fg0,
+                        ),
+                      ),
                       subtitle: Text(
                         isIdle
                             ? 'Immediate effect'
                             : 'Takes effect next hand',
-                        style: EbsTypography.infoBar.copyWith(
-                          color: cs.onSurface.withAlpha(150),
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 11,
+                          color: EbsOklch.fg2,
                         ),
                       ),
+                      activeThumbColor: EbsOklch.accent,
+                      activeTrackColor: EbsOklch.accentSoft,
+                      inactiveThumbColor: EbsOklch.fg3,
+                      inactiveTrackColor: EbsOklch.bg1,
                       value: _activity == PlayerActivity.sittingOut,
                       onChanged: (v) => setState(() {
                         _activity = v
@@ -339,30 +422,80 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
                 ),
               ),
 
-              const Divider(),
+              const _SectionDivider(),
 
               // -- Actions --
               Padding(
-                padding: const EdgeInsets.all(EbsSpacing.md),
+                padding: const EdgeInsets.all(EbsSpacing.md + 2),
                 child: Row(
                   children: [
-                    // Reset Seat (dangerous)
+                    // Reset Seat (destructive — err token).
                     TextButton(
                       onPressed: () => _handleResetSeat(context),
                       style: TextButton.styleFrom(
-                        foregroundColor: cs.error,
+                        foregroundColor: EbsOklch.err,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EbsSpacing.sm + 4,
+                          vertical: EbsSpacing.sm,
+                        ),
                       ),
-                      child: const Text('Reset Seat'),
+                      child: const Text(
+                        'Reset Seat',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                     const Spacer(),
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('Cancel'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: EbsOklch.fg1,
+                        backgroundColor: EbsOklch.bg2,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EbsSpacing.md,
+                          vertical: EbsSpacing.sm + 2,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          side: const BorderSide(color: EbsOklch.line),
+                        ),
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: EbsSpacing.sm),
+                    const SizedBox(width: EbsSpacing.sm + 2),
                     ElevatedButton(
                       onPressed: _handleSave,
-                      child: const Text('Save'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: EbsOklch.accent,
+                        foregroundColor: EbsOklch.bg0,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EbsSpacing.md + 2,
+                          vertical: EbsSpacing.sm + 2,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                      child: const Text(
+                        'Save',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.36,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -430,13 +563,23 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Reset Seat'),
+        backgroundColor: EbsOklch.bg2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: const BorderSide(color: EbsOklch.err),
+        ),
+        title: const Text(
+          'Reset Seat',
+          style: TextStyle(color: EbsOklch.fg0, fontSize: 16),
+        ),
         content: Text(
           'Vacate Seat ${widget.seatNo} and remove all player data?',
+          style: const TextStyle(color: EbsOklch.fg1, fontSize: 13),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
+            style: TextButton.styleFrom(foregroundColor: EbsOklch.fg1),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
@@ -446,7 +589,9 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
               Navigator.of(context).pop(true);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
+              backgroundColor: EbsOklch.err,
+              foregroundColor: Colors.white,
+              elevation: 0,
             ),
             child: const Text('Reset'),
           ),
@@ -457,16 +602,166 @@ class _At07PlayerEditModalState extends ConsumerState<At07PlayerEditModal> {
 }
 
 // =============================================================================
-// Helpers
+// Helpers — OKLCH-skinned form primitives
 // =============================================================================
 
+/// `.fe-label` — uppercase 10.5px / 0.10em letter-spacing / fg-2.
 class _FieldLabel extends StatelessWidget {
   const _FieldLabel(this.text);
   final String text;
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: EbsTypography.playerName.copyWith(fontSize: 13));
+    return Text(
+      text.toUpperCase(),
+      style: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 10.5,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1.05, // 0.10em
+        color: EbsOklch.fg2,
+      ),
+    );
+  }
+}
+
+/// Section divider — `border-bottom: 1px solid var(--line)`.
+class _SectionDivider extends StatelessWidget {
+  const _SectionDivider();
+  @override
+  Widget build(BuildContext context) =>
+      const Divider(height: 1, thickness: 1, color: EbsOklch.line);
+}
+
+/// `.fe-input` — bg-1 surface, fg-0 text, accent focus ring (2px).
+class _OklchTextField extends StatelessWidget {
+  const _OklchTextField({
+    required this.controller,
+    this.hintText,
+    this.enabled = true,
+    this.keyboardType,
+    this.mono = false,
+  });
+
+  final TextEditingController controller;
+  final String? hintText;
+  final bool enabled;
+  final TextInputType? keyboardType;
+  final bool mono;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      enabled: enabled,
+      keyboardType: keyboardType,
+      style: TextStyle(
+        fontFamily: mono ? 'JetBrains Mono' : 'Inter',
+        fontSize: mono ? 14 : 14,
+        fontWeight: FontWeight.w600,
+        color: enabled ? EbsOklch.fg0 : EbsOklch.fg3,
+        fontFeatures: mono ? const [FontFeature.tabularFigures()] : null,
+      ),
+      cursorColor: EbsOklch.accent,
+      decoration: InputDecoration(
+        isDense: true,
+        filled: true,
+        fillColor: enabled ? EbsOklch.bg1 : EbsOklch.bg2,
+        hintText: hintText,
+        hintStyle: const TextStyle(color: EbsOklch.fg3, fontSize: 13),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: EbsSpacing.sm + 4,
+          vertical: EbsSpacing.sm + 4,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: const BorderSide(color: EbsOklch.line),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: const BorderSide(color: EbsOklch.line),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: const BorderSide(color: EbsOklch.accent, width: 2),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: BorderSide(color: EbsOklch.line.withValues(alpha: 0.5)),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: const BorderSide(color: EbsOklch.err),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: const BorderSide(color: EbsOklch.err, width: 2),
+        ),
+        errorStyle: const TextStyle(
+          color: EbsOklch.err,
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
+
+/// OKLCH-skinned dropdown wrapper around `DropdownButtonFormField`.
+class _OklchDropdown<T> extends StatelessWidget {
+  const _OklchDropdown({
+    required this.value,
+    required this.items,
+    required this.onChanged,
+    this.enabled = true,
+  });
+
+  final T value;
+  final List<DropdownMenuItem<T>> items;
+  final ValueChanged<T?>? onChanged;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<T>(
+      initialValue: value,
+      items: items,
+      onChanged: enabled ? onChanged : null,
+      dropdownColor: EbsOklch.bg2,
+      iconEnabledColor: EbsOklch.fg1,
+      iconDisabledColor: EbsOklch.fg3,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: enabled ? EbsOklch.fg0 : EbsOklch.fg3,
+      ),
+      decoration: InputDecoration(
+        isDense: true,
+        filled: true,
+        fillColor: enabled ? EbsOklch.bg1 : EbsOklch.bg2,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: EbsSpacing.sm + 4,
+          vertical: EbsSpacing.sm + 4,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: const BorderSide(color: EbsOklch.line),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: const BorderSide(color: EbsOklch.line),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: const BorderSide(color: EbsOklch.accent, width: 2),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: BorderSide(color: EbsOklch.line.withValues(alpha: 0.5)),
+        ),
+      ),
+    );
   }
 }
 
@@ -488,24 +783,21 @@ class _IdleField extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(
-              label,
-              style: EbsTypography.playerName.copyWith(fontSize: 13),
-            ),
+            _FieldLabel(label),
             if (!isIdle) ...[
               const SizedBox(width: EbsSpacing.xs),
-              Tooltip(
+              const Tooltip(
                 message: 'Can only be changed between hands (IDLE state)',
                 child: Icon(
                   Icons.lock_outline,
-                  size: 14,
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+                  size: 13,
+                  color: EbsOklch.fg3,
                 ),
               ),
             ],
           ],
         ),
-        const SizedBox(height: EbsSpacing.xs),
+        const SizedBox(height: EbsSpacing.xs + 2),
         child,
       ],
     );
