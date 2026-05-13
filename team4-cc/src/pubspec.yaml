@@ -48,6 +48,9 @@ dependencies:
   collection: ^1.18.0
   logging: ^1.2.0
 
+  # 폰트 (OKLCH design token — Inter + JetBrains Mono, cycle-19 Wave 2)
+  google_fonts: ^6.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
