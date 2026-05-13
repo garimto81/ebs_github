@@ -33,6 +33,7 @@ from src.routers.skins import router as skins_router
 from src.routers.sync import router as sync_router
 from src.routers.tables import router as tables_router
 from src.routers.users import router as users_router
+from src.routers.wsop_live import router as wsop_live_router
 from src.services.undo_service import UndoService
 from src.services.wsop_sync_service import WsopSyncService
 from src.websocket.cc_handler import handle_cc_message
@@ -89,6 +90,7 @@ app.include_router(settings_kv_router)  # SG-003 Settings 6탭 skeleton (501)
 from src.routers.event_flights import router as event_flights_router  # noqa: E402
 
 app.include_router(event_flights_router)  # Phase 3.B (2026-05-06) — Lobby TopBar cluster levels
+app.include_router(wsop_live_router)  # Cycle 20 Wave 2 — WSOP LIVE chip count webhook (#435)
 
 
 @app.get("/health")

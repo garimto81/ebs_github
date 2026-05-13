@@ -23,10 +23,7 @@ SG-008 scanner D2 drift 해소 대상 20 event + SG-020 Ack/Reject 6 event = 총
 """
 from __future__ import annotations
 
-from typing import Any
-
 from .manager import ConnectionManager
-
 
 # ---------------------------------------------------------------------------
 # snake_case state-change events (CCR-050/054)
@@ -518,6 +515,48 @@ async def publish_force_logout(
     )
 
 
+
+# ---------------------------------------------------------------------------
+# Cycle 20 Wave 2 — WSOP LIVE chip count sync (issue #435)
+# ---------------------------------------------------------------------------
+
+
+async def publish_chip_count_synced(
+    manager: ConnectionManager,
+    table_id: int,
+    snapshot_id: str,
+    break_id: int,
+    seats: list[dict],
+    recorded_at: str,
+    received_at: str,
+    signature_ok: bool = True,
+    *,
+    seq: int | None = None,
+) -> int:
+    """WSOP LIVE webhook commit 후 chip_count_synced broadcast.
+
+    SSOT: WebSocket_Events.md §4.2.11 + WSOP_LIVE_Chip_Count_Sync.md §10.
+    브레이크 = WSOP LIVE 가 stack 의 권위 시점. webhook truth 를 lobby +
+    overlay + cc 채널에 즉시 broadcast 하여 9 카테고리 #1 플레이어 대시보드
+    chipstack 을 동기화한다. table_id 를 string 화하여 envelope subscription
+    filter (manager.broadcast) 와 호환되게 한다.
+    """
+    return await manager.broadcast("lobby", str(table_id), {
+        "type": "chip_count_synced",
+        "seq": seq,
+        "data": {
+            "table_id": table_id,
+            "snapshot_id": snapshot_id,
+            "break_id": break_id,
+            "seats": seats,
+            "recorded_at": recorded_at,
+            "received_at": received_at,
+            "signature_ok": signature_ok,
+        },
+    })
+
+
+
 __all__ = [
     # snake_case (7)
     "publish_clock_detail_changed",
@@ -551,4 +590,6 @@ __all__ = [
     "publish_deal_rejected",
     # IMPL-009 admin (1)
     "publish_force_logout",
+    # Cycle 20 Wave 2 chip count sync (1)
+    "publish_chip_count_synced",
 ]
