@@ -48,7 +48,7 @@ RUN flutter build web \
 # -----------------------------------------------------------------------------
 # Stage 2: Serve
 # -----------------------------------------------------------------------------
-FROM nginx:1.29-alpine AS runtime
+FROM nginx:1.31-alpine AS runtime
 
 RUN apk add --no-cache curl tini
 
