@@ -7,11 +7,21 @@
 // - 인라인 편집: 각 요소 탭 → 수정 다이얼로그 (화면 2 좌석 상세 패널 대체)
 // - 수동 편집 우선 원칙: 동기화 아이콘(🔄)으로 DB 값 수용/거부 제어
 // - 좌석 번호: S1~S10 (기존 S0~S9에서 변경)
+//
+// Cycle 19 Wave 3 (U3) — OKLCH token 정합.
+// - Colors.white* / Color(0xFFFFD700) / Colors.red.shade* / amberAccent 등
+//   잔존 하드코딩을 EbsOklch / EbsShadows / CardColors 토큰으로 치환.
+// - ACTING glow: SeatColors.actionGlowTo 단일 BoxShadow → EbsShadows.glowAction
+//   (accent ring + soft outer glow) 2-stop.
+// - LAST 행 inline 구현 → ActionBadge 위젯으로 분리.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../foundation/theme/card_colors.dart';
+import '../../../foundation/theme/ebs_oklch.dart';
+import '../../../foundation/theme/ebs_shadows.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../foundation/theme/seat_colors.dart';
@@ -20,6 +30,7 @@ import '../../../models/enums/seat_status.dart';
 import '../providers/config_provider.dart';
 import '../providers/hand_fsm_provider.dart';
 import '../providers/seat_provider.dart';
+import 'action_badge.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -136,15 +147,16 @@ class _SeatCellState extends ConsumerState<SeatCell>
   BorderSide _borderSide(SeatState seat) {
     if (seat.isEmpty) {
       return const BorderSide(
-        color: Colors.white24,
+        color: EbsOklch.line,
         width: 1.0,
         // Dashed border simulated via CustomPaint below for empty seats.
       );
     }
     if (seat.activity == PlayerActivity.allIn) {
-      return const BorderSide(color: Color(0xFFFFD700), width: 2.0); // gold
+      // ALL-IN gold ring → broadcast warn token (replaces 0xFFD700).
+      return const BorderSide(color: EbsOklch.warn, width: 2.0);
     }
-    return const BorderSide(color: Colors.white24, width: 1.0);
+    return const BorderSide(color: EbsOklch.line, width: 1.0);
   }
 
   // -- inline edit helpers --------------------------------------------------
@@ -330,7 +342,7 @@ class _SeatCellState extends ConsumerState<SeatCell>
               },
             ),
             ListTile(
-              leading: const Icon(Icons.person_remove, color: Colors.red),
+              leading: const Icon(Icons.person_remove, color: EbsOklch.err),
               title: const Text('Vacate Seat'),
               onTap: () {
                 Navigator.of(ctx).pop();
@@ -525,7 +537,7 @@ class _SeatCellState extends ConsumerState<SeatCell>
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Vacate', style: TextStyle(color: Colors.red)),
+            child: const Text('Vacate', style: TextStyle(color: EbsOklch.err)),
           ),
         ],
       ),
@@ -557,16 +569,24 @@ class _SeatCellState extends ConsumerState<SeatCell>
     final Widget cell = AnimatedBuilder(
       animation: _glowAnimation,
       builder: (context, child) {
+        // ACTING glow — `EbsShadows.glowAction` (HTML SSOT `--glow-action`:
+        // accent ring + soft outer glow). Animate alpha across both shadows
+        // via _glowAnimation (0.4 → 1.0) so the ring + glow pulse together.
+        final alpha = _glowAnimation.value;
         final glowShadows = seat.actionOn
             ? [
                 BoxShadow(
-                  color: SeatColors.actionGlowTo
-                      .withValues(alpha: _glowAnimation.value),
-                  blurRadius: 12,
+                  color: EbsOklch.accent.withValues(alpha: alpha),
                   spreadRadius: 2,
+                  blurRadius: 0,
+                ),
+                BoxShadow(
+                  color: EbsOklch.accentSoft.withValues(alpha: alpha),
+                  spreadRadius: 0,
+                  blurRadius: 28,
                 ),
               ]
-            : <BoxShadow>[];
+            : EbsShadows.card;
 
         return Container(
           decoration: BoxDecoration(
@@ -611,23 +631,23 @@ class _SeatCellState extends ConsumerState<SeatCell>
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 4),
-          color: Colors.white12,
+          color: EbsOklch.bg2.withValues(alpha: 0.5),
           alignment: Alignment.center,
           child: const Text('EMPTY',
             style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-              color: Colors.white54, letterSpacing: 1.2)),
+              color: EbsOklch.fg2, letterSpacing: 1.2)),
         ),
         const Spacer(),
         Center(child: Text('S${widget.seatIndex}',
           style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w800,
-            color: Colors.white24))),
+            color: EbsOklch.fg3))),
         const SizedBox(height: 8),
         const Center(child: Text('+ ADD PLAYER',
           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700,
-            color: Colors.white60, letterSpacing: 0.6))),
+            color: EbsOklch.fg2, letterSpacing: 0.6))),
         const SizedBox(height: 4),
         const Center(child: Text('click to seat',
-          style: TextStyle(fontSize: 10, color: Colors.white30))),
+          style: TextStyle(fontSize: 10, color: EbsOklch.fg3))),
         const Spacer(),
       ],
     );
@@ -637,7 +657,7 @@ class _SeatCellState extends ConsumerState<SeatCell>
     // Flutter does not natively support dashed borders. Use a solid border
     // with reduced opacity as an approximation. A full dashed border would
     // require CustomPaint, which is deferred to a polish pass.
-    return Border.all(color: Colors.white24, width: 1.0);
+    return Border.all(color: EbsOklch.line, width: 1.0);
   }
 
   // -- occupied seat --------------------------------------------------------
@@ -690,39 +710,28 @@ class _SeatCellState extends ConsumerState<SeatCell>
         _RowCell(label: 'BET',
           value: seat.currentBet > 0 ? '\$${_formatStack(seat.currentBet)}' : '-',
           mono: true, dim: seat.currentBet == 0,
-          highlightColor: seat.currentBet > 0 ? Colors.amberAccent : null,
+          highlightColor: seat.currentBet > 0 ? EbsOklch.accent : null,
           onTap: () => _editBet(seat),
         ),
-        // LAST 행 — activity enum 토글
-        _RowCell(label: 'LAST', value: _activityToLastAction(seat),
-          dim: seat.activity == PlayerActivity.active && !seat.actionOn,
-          highlightColor: _activityHighlight(seat),
-          onTap: () => _editLastAction(seat),
+        // LAST 행 — activity enum 토글 (Cycle 19 U3: ActionBadge 위젯 이관)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 2),
+          child: ActionBadge.fromActivity(
+            seat.activity,
+            onTap: () => _editLastAction(seat),
+          ),
         ),
         // STRADDLE 행 — v03 cycle 7 #330. tap → toggleStraddleSeat.
         _RowCell(
           label: 'STRADDLE',
           value: isStraddle ? 'ON' : '-',
           dim: !isStraddle,
-          highlightColor: isStraddle ? const Color(0xFFFFD700) : null,
+          highlightColor: isStraddle ? EbsOklch.warn : null,
           onTap: () =>
               ref.read(configProvider.notifier).toggleStraddleSeat(seat.seatNo),
         ),
       ],
     );
-  }
-
-  String _activityToLastAction(SeatState seat) {
-    if (seat.activity == PlayerActivity.folded) return 'FOLD';
-    if (seat.activity == PlayerActivity.allIn) return 'ALL-IN';
-    if (seat.activity == PlayerActivity.sittingOut) return 'SIT OUT';
-    return '-';
-  }
-
-  Color? _activityHighlight(SeatState seat) {
-    if (seat.activity == PlayerActivity.folded) return Colors.redAccent.shade100;
-    if (seat.activity == PlayerActivity.allIn) return const Color(0xFFFFD700);
-    return null;
   }
 
   /// D7 — hole card 뒷면(face-down) 만 표시. 카드 값은 노출하지 않는다.
@@ -739,8 +748,8 @@ class _SeatCellState extends ConsumerState<SeatCell>
               width: 14,
               height: 18,
               decoration: BoxDecoration(
-                color: Colors.blueGrey.shade800,
-                border: Border.all(color: Colors.white24, width: 0.5),
+                color: CardColors.cardFaceDown,
+                border: Border.all(color: EbsOklch.line, width: 0.5),
                 borderRadius: BorderRadius.circular(2),
               ),
               child: const Center(
@@ -749,7 +758,7 @@ class _SeatCellState extends ConsumerState<SeatCell>
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white54,
+                    color: EbsOklch.fg2,
                   ),
                 ),
               ),
@@ -760,6 +769,9 @@ class _SeatCellState extends ConsumerState<SeatCell>
     );
   }
 
+  // Dormant helper — reserved for future name-row variant. Cycle 19 U3 토큰
+  // 정합만 유지 (LAST 행은 ActionBadge 로 이관).
+  // ignore: unused_element
   Widget _buildNameRow(String flag, String name, int seatNo) {
     return Row(
       children: [
@@ -771,14 +783,14 @@ class _SeatCellState extends ConsumerState<SeatCell>
         Expanded(
           child: Text(
             name,
-            style: EbsTypography.playerName.copyWith(color: Colors.white),
+            style: EbsTypography.playerName.copyWith(color: EbsOklch.fg0),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
         ),
         Text(
           'S$seatNo',
-          style: EbsTypography.shortcutHint.copyWith(color: Colors.white54),
+          style: EbsTypography.shortcutHint.copyWith(color: EbsOklch.fg2),
         ),
       ],
     );
@@ -788,21 +800,27 @@ class _SeatCellState extends ConsumerState<SeatCell>
   // 이전에는 카드 값(랭크 + 슈트) 을 CC widget 에 표시했으나, 운영자가 카드를
   // 미리 알게 되어 부정 행위 위험. 이제 `_buildHoleCardBack` 만 사용 (face-down).
 
+  // Dormant — reserved for Seat_Management.md §2.3.2 BTN re-assign dialog
+  // 진입점 (현재는 dialog 만 보존, chip 자체는 PosBlock 으로 이관 예정).
+  // ignore: unused_element
   Widget _buildPositionMarker(String label) {
+    final color = _positionColor(label);
+    // Position chip 텍스트 — bone-white (BTN) 배경은 진한 텍스트, 그 외는 fg-0.
+    final textColor = label == 'BTN' ? EbsOklch.bg0 : EbsOklch.fg0;
     final chip = Padding(
       padding: const EdgeInsets.only(top: 1),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
         decoration: BoxDecoration(
-          color: _positionColor(label),
+          color: color,
           borderRadius: BorderRadius.circular(3),
         ),
         child: Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w700,
-            color: Colors.white,
+            color: textColor,
           ),
         ),
       ),
@@ -824,10 +842,10 @@ class _SeatCellState extends ConsumerState<SeatCell>
     if (!isIdle) {
       // Seat_Management.md §5.2 — "딜러 위치 변경 ❌ 핸드 내 불변"
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('핸드 진행 중에는 딜러 변경 불가 (Seat_Management.md §5.2)'),
-          backgroundColor: Colors.red.shade700,
-          duration: const Duration(seconds: 3),
+        const SnackBar(
+          content: Text('핸드 진행 중에는 딜러 변경 불가 (Seat_Management.md §5.2)'),
+          backgroundColor: EbsOklch.err,
+          duration: Duration(seconds: 3),
         ),
       );
       return;
@@ -858,6 +876,8 @@ class _SeatCellState extends ConsumerState<SeatCell>
     ref.read(seatsProvider.notifier).setDealer(selected);
   }
 
+  // Dormant — generic mini-badge builder kept for reuse.
+  // ignore: unused_element
   Widget _buildBadge(String text, Color color) {
     return Padding(
       padding: const EdgeInsets.only(top: 1),
@@ -872,7 +892,7 @@ class _SeatCellState extends ConsumerState<SeatCell>
           style: const TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: EbsOklch.fg0,
           ),
         ),
       ),
@@ -923,7 +943,7 @@ class _DealerReassignDialogState extends State<_DealerReassignDialog> {
         children: [
           const Text(
             'Seat_Management.md §2.3.2 — IDLE 상태에서만 변경 가능',
-            style: TextStyle(fontSize: 12, color: Colors.black54),
+            style: TextStyle(fontSize: 12, color: EbsOklch.fg2),
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<int>(
@@ -969,11 +989,13 @@ class _RowCell extends StatelessWidget {
   final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
-    final c = highlightColor ?? (dim ? Colors.white38 : Colors.white);
+    // Cycle 19 U3 — OKLCH 토큰 정합.
+    final c = highlightColor ?? (dim ? EbsOklch.fg3 : EbsOklch.fg0);
     final body = Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        // `.row-cell` subtle surface — bg-1 @ low alpha (HTML SSOT `--bg-1`).
+        color: EbsOklch.bg1.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(3)),
       child: Row(
         mainAxisAlignment: big ? MainAxisAlignment.center
@@ -981,7 +1003,7 @@ class _RowCell extends StatelessWidget {
         children: [
           if (label != null && !big)
             Text(label!, style: const TextStyle(fontSize: 9,
-              fontWeight: FontWeight.w700, color: Colors.white38)),
+              fontWeight: FontWeight.w700, color: EbsOklch.fg3)),
           Flexible(child: Text(value, style: TextStyle(
             fontSize: big ? 22 : 12,
             fontWeight: big ? FontWeight.w800 : FontWeight.w600,
@@ -1002,28 +1024,53 @@ class _ActingStrip extends StatelessWidget {
   final VoidCallback onDelete;
   @override
   Widget build(BuildContext context) {
+    // Cycle 19 U3 — HTML SSOT `.pcol-acting-strip.{acting|waiting|fold|...}`
+    // 매핑. err/accent/warn/fg-3 토큰으로 일원화.
     if (preHand) {
       return GestureDetector(onTap: onDelete,
         child: Container(width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 4),
-          decoration: BoxDecoration(color: Colors.red.shade900.withValues(alpha: 0.6),
+          decoration: BoxDecoration(
+            color: EbsOklch.err.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(3)),
           alignment: Alignment.center,
           child: const Text('DELETE', style: TextStyle(fontSize: 11,
-            fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 1.0))));
+            fontWeight: FontWeight.w800, color: EbsOklch.fg0, letterSpacing: 1.0))));
     }
-    String l; Color c;
-    if (seat.activity == PlayerActivity.folded) { l='FOLD'; c=Colors.grey.shade800; }
-    else if (seat.activity == PlayerActivity.allIn) { l='ALL-IN'; c=const Color(0xFF8B6914); }
-    else if (seat.activity == PlayerActivity.sittingOut) { l='SIT OUT'; c=Colors.orange.shade800; }
-    else if (seat.actionOn) { l='ACTING'; c=Colors.green.shade700; }
-    else { l='WAITING'; c=Colors.blueGrey.shade700; }
+    // 상태별 (label, background tone, foreground text).
+    String l;
+    Color bg;
+    Color fg = EbsOklch.fg0;
+    if (seat.activity == PlayerActivity.folded) {
+      l = 'FOLD';
+      bg = EbsOklch.err.withValues(alpha: 0.55);
+      fg = EbsOklch.fg0;
+    } else if (seat.activity == PlayerActivity.allIn) {
+      l = 'ALL-IN';
+      bg = EbsOklch.warn.withValues(alpha: 0.55);
+      fg = EbsOklch.bg0;
+    } else if (seat.activity == PlayerActivity.sittingOut) {
+      l = 'SIT OUT';
+      bg = EbsOklch.bg3;
+      fg = EbsOklch.fg2;
+    } else if (seat.actionOn) {
+      // `.pcol-acting-strip.acting` — accent bg + dark warm fg (oklch 0.18 0.04 60).
+      l = 'ACTING';
+      bg = EbsOklch.accent;
+      fg = EbsOklch.bg0;
+    } else {
+      // `.pcol-acting-strip.waiting` — oklch(0.30 0.015 240) bg + fg-3 text.
+      l = 'WAITING';
+      bg = EbsOklch.bg3;
+      fg = EbsOklch.fg3;
+    }
     return Container(width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(color: c.withValues(alpha: 0.7),
+      decoration: BoxDecoration(
+        color: bg,
         borderRadius: BorderRadius.circular(3)),
       alignment: Alignment.center,
-      child: Text(l, style: const TextStyle(fontSize: 11,
-        fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 1.0)));
+      child: Text(l, style: TextStyle(fontSize: 11,
+        fontWeight: FontWeight.w800, color: fg, letterSpacing: 1.0)));
   }
 }

@@ -11,9 +11,15 @@
 //   SB, BB      — Game Engine 자동 결정 (§2.3.3) — shift 비활성 + tooltip 안내
 //
 // D7 / 통신 / HandFSM 변경 없음 — 시각 + UX 보강만.
+//
+// Cycle 19 Wave 3 (U3) — OKLCH token 정합.
+//   - ColorScheme.onSurfaceVariant 강결합 제거 → EbsOklch.fg3 직접 사용
+//   - SeatColors (dealer/sb/bb) + EbsOklch.warn (straddle) 토큰 매핑
+//   - app.css `.pb-row.pos-*` background alpha 0.16 / border full 정합
 
 import 'package:flutter/material.dart';
 
+import '../../../foundation/theme/ebs_oklch.dart';
 import '../../../foundation/theme/seat_colors.dart';
 
 enum PositionKind { dealer, sb, bb, straddle }
@@ -41,11 +47,15 @@ extension on PositionKind {
         PositionKind.bb => false, // Engine 결정
       };
 
+  /// OKLCH-sourced color per app.css `.pb-row.pos-{D|SB|BB|STRADDLE}`.
   Color get color => switch (this) {
         PositionKind.dealer => SeatColors.dealer,
         PositionKind.sb => SeatColors.sb,
         PositionKind.bb => SeatColors.bb,
-        PositionKind.straddle => const Color(0xFFFF7043),
+        // Straddle: `oklch(0.78 0.18 30)` (app.css L610) — warm orange.
+        // No dedicated EbsOklch token; reuse `warn` (`oklch(0.80 0.16 80)`)
+        // for visual proximity. TODO(cycle-19+): introduce `--pos-straddle`.
+        PositionKind.straddle => EbsOklch.warn,
       };
 }
 
@@ -80,10 +90,8 @@ class PositionShiftChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
     if (!present) {
-      return _PlaceholderRow(label: kind.displayLabel, cs: cs);
+      return _PlaceholderRow(label: kind.displayLabel);
     }
 
     final canShift = kind.isOperatorShiftable && handPhaseAllowsShift;
@@ -108,6 +116,7 @@ class PositionShiftChip extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 4),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
           decoration: BoxDecoration(
+            // app.css `.pb-row.pos-*` background — tone @ alpha 0.18 ≈ 0x2E
             color: color.withValues(alpha: 0.18),
             border: Border.all(color: color, width: 1),
             borderRadius: BorderRadius.circular(3),
@@ -139,13 +148,13 @@ class PositionShiftChip extends StatelessWidget {
 }
 
 class _PlaceholderRow extends StatelessWidget {
-  const _PlaceholderRow({required this.label, required this.cs});
+  const _PlaceholderRow({required this.label});
 
   final String label;
-  final ColorScheme cs;
 
   @override
   Widget build(BuildContext context) {
+    // app.css `.pb-empty .pb-lbl` → fg-3 muted; `.pb-val.placeholder` → fg-3.
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1),
       child: Row(
@@ -156,15 +165,15 @@ class _PlaceholderRow extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 9,
-              color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+              color: EbsOklch.fg3.withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(width: 4),
-          Text(
+          const Text(
             '—',
             style: TextStyle(
               fontSize: 11,
-              color: cs.onSurfaceVariant.withValues(alpha: 0.4),
+              color: EbsOklch.fg3,
             ),
           ),
         ],
@@ -192,8 +201,8 @@ class _Arrow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final iconColor = enabled ? color : cs.onSurfaceVariant.withValues(alpha: 0.4);
+    final iconColor =
+        enabled ? color : EbsOklch.fg3.withValues(alpha: 0.6);
     final char = direction == _ArrowDir.prev ? '‹' : '›';
 
     return Tooltip(
