@@ -275,6 +275,7 @@ streams:
         scope_owns:
         - docs/4. Operations/Docker_Runtime.md
         - docker-compose.yml
+        - .github/workflows/**
         scope_read:
         - docs/4. Operations/**
         - team*-*/docker-compose.yml
