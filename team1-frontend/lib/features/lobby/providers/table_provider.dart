@@ -91,6 +91,21 @@ class TableListNotifier extends StateNotifier<AsyncValue<List<EbsTable>>> {
       ]);
     });
   }
+
+  /// Replace `chipTotal` for a table from a `chip_count_synced` WS event.
+  ///
+  /// Cycle 20 (#439, S2 Wave 3c). Caller passes the already-summed total —
+  /// aggregation lives in `ws_dispatch.dart` so this notifier stays state-only.
+  /// No-op when the table is not in the current flight's list (multi-table
+  /// isolation: an event for tableId=A leaves tableId=B untouched).
+  void updateChipTotal(int tableId, int total) {
+    state.whenData((list) {
+      state = AsyncValue.data([
+        for (final t in list)
+          if (t.tableId == tableId) t.copyWith(chipTotal: total) else t,
+      ]);
+    });
+  }
 }
 
 final tableListProvider = StateNotifierProvider.family<TableListNotifier,

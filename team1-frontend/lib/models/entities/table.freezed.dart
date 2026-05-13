@@ -60,7 +60,12 @@ mixin _$EbsTable {
   @JsonKey(name: 'updatedAt')
   String get updatedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'seatedCount')
-  int? get seatedCount => throw _privateConstructorUsedError;
+  int? get seatedCount =>
+      throw _privateConstructorUsedError; // Cycle 20 (#439, S2 Wave 3c): aggregate chip count for the table.
+// Derived locally from `chip_count_synced` WS events (sum of seats[].chipCount).
+// Not part of REST schema — backend persists chip_count per-seat only.
+  @JsonKey(name: 'chipTotal')
+  int get chipTotal => throw _privateConstructorUsedError;
 
   /// Serializes this EbsTable to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -100,7 +105,8 @@ abstract class $EbsTableCopyWith<$Res> {
       String source,
       @JsonKey(name: 'createdAt') String createdAt,
       @JsonKey(name: 'updatedAt') String updatedAt,
-      @JsonKey(name: 'seatedCount') int? seatedCount});
+      @JsonKey(name: 'seatedCount') int? seatedCount,
+      @JsonKey(name: 'chipTotal') int chipTotal});
 }
 
 /// @nodoc
@@ -141,6 +147,7 @@ class _$EbsTableCopyWithImpl<$Res, $Val extends EbsTable>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? seatedCount = freezed,
+    Object? chipTotal = null,
   }) {
     return _then(_value.copyWith(
       tableId: null == tableId
@@ -235,6 +242,10 @@ class _$EbsTableCopyWithImpl<$Res, $Val extends EbsTable>
           ? _value.seatedCount
           : seatedCount // ignore: cast_nullable_to_non_nullable
               as int?,
+      chipTotal: null == chipTotal
+          ? _value.chipTotal
+          : chipTotal // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -270,7 +281,8 @@ abstract class _$$EbsTableImplCopyWith<$Res>
       String source,
       @JsonKey(name: 'createdAt') String createdAt,
       @JsonKey(name: 'updatedAt') String updatedAt,
-      @JsonKey(name: 'seatedCount') int? seatedCount});
+      @JsonKey(name: 'seatedCount') int? seatedCount,
+      @JsonKey(name: 'chipTotal') int chipTotal});
 }
 
 /// @nodoc
@@ -309,6 +321,7 @@ class __$$EbsTableImplCopyWithImpl<$Res>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? seatedCount = freezed,
+    Object? chipTotal = null,
   }) {
     return _then(_$EbsTableImpl(
       tableId: null == tableId
@@ -403,6 +416,10 @@ class __$$EbsTableImplCopyWithImpl<$Res>
           ? _value.seatedCount
           : seatedCount // ignore: cast_nullable_to_non_nullable
               as int?,
+      chipTotal: null == chipTotal
+          ? _value.chipTotal
+          : chipTotal // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -433,7 +450,8 @@ class _$EbsTableImpl implements _EbsTable {
       required this.source,
       @JsonKey(name: 'createdAt') required this.createdAt,
       @JsonKey(name: 'updatedAt') required this.updatedAt,
-      @JsonKey(name: 'seatedCount') this.seatedCount});
+      @JsonKey(name: 'seatedCount') this.seatedCount,
+      @JsonKey(name: 'chipTotal') this.chipTotal = 0});
 
   factory _$EbsTableImpl.fromJson(Map<String, dynamic> json) =>
       _$$EbsTableImplFromJson(json);
@@ -502,10 +520,16 @@ class _$EbsTableImpl implements _EbsTable {
   @override
   @JsonKey(name: 'seatedCount')
   final int? seatedCount;
+// Cycle 20 (#439, S2 Wave 3c): aggregate chip count for the table.
+// Derived locally from `chip_count_synced` WS events (sum of seats[].chipCount).
+// Not part of REST schema — backend persists chip_count per-seat only.
+  @override
+  @JsonKey(name: 'chipTotal')
+  final int chipTotal;
 
   @override
   String toString() {
-    return 'EbsTable(tableId: $tableId, eventFlightId: $eventFlightId, tableNo: $tableNo, name: $name, type: $type, status: $status, maxPlayers: $maxPlayers, gameType: $gameType, smallBlind: $smallBlind, bigBlind: $bigBlind, anteType: $anteType, anteAmount: $anteAmount, rfidReaderId: $rfidReaderId, deckRegistered: $deckRegistered, outputType: $outputType, currentGame: $currentGame, delaySeconds: $delaySeconds, ring: $ring, isBreakingTable: $isBreakingTable, source: $source, createdAt: $createdAt, updatedAt: $updatedAt, seatedCount: $seatedCount)';
+    return 'EbsTable(tableId: $tableId, eventFlightId: $eventFlightId, tableNo: $tableNo, name: $name, type: $type, status: $status, maxPlayers: $maxPlayers, gameType: $gameType, smallBlind: $smallBlind, bigBlind: $bigBlind, anteType: $anteType, anteAmount: $anteAmount, rfidReaderId: $rfidReaderId, deckRegistered: $deckRegistered, outputType: $outputType, currentGame: $currentGame, delaySeconds: $delaySeconds, ring: $ring, isBreakingTable: $isBreakingTable, source: $source, createdAt: $createdAt, updatedAt: $updatedAt, seatedCount: $seatedCount, chipTotal: $chipTotal)';
   }
 
   @override
@@ -551,7 +575,9 @@ class _$EbsTableImpl implements _EbsTable {
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
             (identical(other.seatedCount, seatedCount) ||
-                other.seatedCount == seatedCount));
+                other.seatedCount == seatedCount) &&
+            (identical(other.chipTotal, chipTotal) ||
+                other.chipTotal == chipTotal));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -580,7 +606,8 @@ class _$EbsTableImpl implements _EbsTable {
         source,
         createdAt,
         updatedAt,
-        seatedCount
+        seatedCount,
+        chipTotal
       ]);
 
   /// Create a copy of EbsTable
@@ -623,7 +650,8 @@ abstract class _EbsTable implements EbsTable {
       required final String source,
       @JsonKey(name: 'createdAt') required final String createdAt,
       @JsonKey(name: 'updatedAt') required final String updatedAt,
-      @JsonKey(name: 'seatedCount') final int? seatedCount}) = _$EbsTableImpl;
+      @JsonKey(name: 'seatedCount') final int? seatedCount,
+      @JsonKey(name: 'chipTotal') final int chipTotal}) = _$EbsTableImpl;
 
   factory _EbsTable.fromJson(Map<String, dynamic> json) =
       _$EbsTableImpl.fromJson;
@@ -691,7 +719,13 @@ abstract class _EbsTable implements EbsTable {
   String get updatedAt;
   @override
   @JsonKey(name: 'seatedCount')
-  int? get seatedCount;
+  int?
+      get seatedCount; // Cycle 20 (#439, S2 Wave 3c): aggregate chip count for the table.
+// Derived locally from `chip_count_synced` WS events (sum of seats[].chipCount).
+// Not part of REST schema — backend persists chip_count per-seat only.
+  @override
+  @JsonKey(name: 'chipTotal')
+  int get chipTotal;
 
   /// Create a copy of EbsTable
   /// with the given fields replaced by the non-null parameter values.
