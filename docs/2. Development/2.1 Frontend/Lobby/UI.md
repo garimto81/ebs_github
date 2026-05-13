@@ -25,6 +25,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38188
 | 2026-05-05 | mockup HTML 5건 redirect | 5개 화면 섹션 (0 Login / 1 Series / 2 Events / 3 Tables / 4 Players) 의 `> 목업 참조: docs/mockups/ebs-lobby-XX.html` 를 신 디자인 SSOT 표기로 교체 (`References/EBS_Lobby_Design/screens.jsx:N` + `visual/screenshots/ebs-lobby-XX.png`). Legacy mockup HTML 은 보존 (외부 링크 안전). 본문 ASCII 와이어프레임은 그대로 유지 (정본 source of truth = 코드). Hand History/Settings 본문은 `Overview.md §화면 6/§화면 7` 가 SSOT — 본 UI.md 는 mockup redirect 만 적용. |
 | 2026-05-07 | v3 정체성 정합 | Lobby v3.0.0 cascade — 5분 게이트웨이 + WSOP LIVE 거울 정체성 framing 을 §개요 첫 단락에 추가. UI 본문 (3계층 + 독립 레이어 + 화면별 spec) 은 변경 0 — 정체성 박스만 additive. 외부 인계 PRD `docs/1. Product/Lobby.md` v3.0.0 narrative SSOT 정합. |
 | 2026-05-13 | **Cycle 21 Wave 1 — Hand History 독립 + Players 보강 + Reports 폐기** | 사용자 결정 (2026-05-13). §좌측 사이드바 §Hand History 박스 보강: **Hand History 독립 격상** 명시 — `lib/features/reports/` 통합 폐기 → `lib/features/hand_history/` 독립 feature. 3 sidebar 항목 (Hand Browser / Hand Detail / Player Hand Stats) 의 BO REST endpoint 바인딩 표 신설 (`Players_HandHistory_API.md` v1.0). §Players 섹션 (NEW) 신설: `GET /api/v1/players` BO REST 연동 + 사이드바 3 항목 endpoint 매핑. Reports 섹션 폐기 박스 신설 — 본 PR 은 spec 변경만, `Reports.md` cleanup + `Hand_History.md` 매핑 정정은 W3 frontend impl cycle. additive only — 기존 본문 변경 0. |
+| 2026-05-13 | **Cycle 22 Wave 2 — UI cascade repair (Players BO API 보강)** | Cycle 21 Wave 1 spec PR (`#444`) cascade 정합 후속. 본 Wave 2 는 spec 변경 0 — cascade 정합 보강만 수행. (A) §좌측 사이드바 Reports 섹션 잔존 검증: 본문 잔존 0 (Cycle 21 폐기 박스만 changelog 표기 유지). (B) §Players 섹션 (Cycle 21 신설) 의 BO API 연동 표기 cross-reference 강화 — `Players_HandHistory_API.md` v1.0 contract 와 `Schema.md §players` SSOT 명시. (C) §Hand History sidebar 박스의 BO REST endpoint 바인딩 표 (Hand Browser/Detail/Player Stats) 의 derivative-of cascade audit 정합 확인. (D) 본 Wave 2 narrative 변경 0 — `docs/2. Development/2.1 Frontend/2.1 Frontend.md` cascade 갱신 인계만 추가. additive only. |
 
 ---
 
@@ -538,9 +539,14 @@ i18n key: `$t('login.restoreTitle')`, `$t('login.restoreContinue')`, `$t('login.
 > | Hand Detail | `GET /api/v1/hands/{id}` | nested `hand_players[]` + `hand_actions[]` |
 > | Player Hand Stats | `GET /api/v1/players/{id}` + `GET /api/v1/hands?player_id={id}` 클라이언트 집계 (VPIP/PFR/AGR/WTSD) | — |
 
-#### Players 섹션 (Cycle 21 Wave 1 보강, 2026-05-13)
+#### Players 섹션 (Cycle 21 Wave 1 신설 + Cycle 22 Wave 2 cascade 보강, 2026-05-13)
 
-> **데이터 소스**: BO REST API `Players_HandHistory_API.md` v1.0 — `GET /api/v1/players?event_id=X&search=Y&limit=N&cursor=Z` (사이드바 검색/필터링) + `GET /api/v1/players/{id}` (상세). DB 스키마 `players` 테이블 (`Schema.md` §players SSOT).
+> **데이터 소스 (Cycle 22 Wave 2 cross-reference 강화)**: BO REST API contract `Players_HandHistory_API.md` v1.0 + DB 스키마 `Schema.md` §players SSOT. **연동 endpoint**:
+> - `GET /api/v1/players?event_id=X&search=Y&limit=N&cursor=Z` (사이드바 검색/필터링)
+> - `GET /api/v1/players/{id}` (상세)
+> - `POST /api/v1/players` (등록, Admin only — S7 ownership)
+>
+> **owner 경계**: contract 정의 = S2 Lobby (본 spec) / endpoint 구현 = S7 Backend (`docs/2. Development/2.2 Backend/2.2 APIs/Players_HandHistory_API.md`). cascade 정합 audit = S10-A Doc Causality (Cycle 22 W5 인계).
 
 | sidebar 항목 | 동작 | BO REST endpoint |
 |--------------|------|------------------|
