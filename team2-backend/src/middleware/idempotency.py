@@ -11,6 +11,12 @@ from src.repositories.idempotency_store import IdempotencyStore
 
 _MUTATION_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 
+# Server-to-server webhooks that enforce idempotency at the application layer.
+# Cycle 20 Wave 2 (#435): WSOP LIVE chip count snapshot uses HMAC + DB-level
+# UNIQUE(snapshot_id) and must own the 200/already_processed vs 202/accepted
+# response shape — skipping the generic cache replay (spec §7).
+_BYPASS_PATHS = {"/api/wsop-live/chip-count-snapshot"}
+
 
 class IdempotencyMiddleware(BaseHTTPMiddleware):
     """Intercept mutation requests with Idempotency-Key header.
@@ -25,6 +31,10 @@ class IdempotencyMiddleware(BaseHTTPMiddleware):
     ) -> Response:
         # Only intercept mutation methods
         if request.method not in _MUTATION_METHODS:
+            return await call_next(request)
+
+        # Endpoints owning their own idempotency layer (DB-level).
+        if request.url.path in _BYPASS_PATHS:
             return await call_next(request)
 
         idem_key = request.headers.get("Idempotency-Key")

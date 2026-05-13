@@ -24,8 +24,8 @@ class FakeManager:
 
 @pytest.mark.asyncio
 async def test_all_publishers_exported():
-    """publishers.__all__ 에 26건 모두 등록 (J2 20 + SG-020 6)."""
-    assert len(PUBLISHER_NAMES) == 26
+    """publishers.__all__ 에 28건 모두 등록 (J2 20 + SG-020 6 + force_logout + chip_count_synced)."""
+    assert len(PUBLISHER_NAMES) == 28
     for name in PUBLISHER_NAMES:
         assert hasattr(publishers, name), f"missing: {name}"
         assert callable(getattr(publishers, name))

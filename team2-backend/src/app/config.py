@@ -40,6 +40,13 @@ class Settings(BaseSettings):
     # ── WSOP LIVE ──
     wsop_live_base_url: str = ""
     wsop_poll_interval_s: int = 5
+    # Cycle 20 Wave 2 — webhook receiver (chip count sync, issue #435).
+    # Shared HMAC-SHA256 secret with WSOP LIVE. Out-of-band rotation; _prev
+    # holds the previous secret during grace period (spec §6.3).
+    wsop_live_webhook_secret: str = ""
+    wsop_live_webhook_secret_prev: str = ""
+    # Replay-protection window (seconds). Spec §6.2 = 300s.
+    wsop_live_webhook_timestamp_skew_s: int = 300
 
     # ── Misc ──
     rfid_mode: str = "mock"
