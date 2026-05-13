@@ -7,6 +7,8 @@ from: team1 (B-088 PR-5 선행 알림)
 target: team2
 priority: P1 (team1 코드 기 camelCase 전환 완료 → Backend 응답이 snake_case 인 동안 실 BO 연결 불가)
 mirror: none
+tier: internal
+backlog-status: open
 ---
 
 # NOTIFY → team2: B-088 camelCase 마이그레이션 Backend 파트

@@ -16,6 +16,8 @@ protocol: Spec_Gap_Triage §7.2
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "2026-04-20 RESOLVED — 옵션 3 채택 (team2 세션 구현 완료)"
+tier: internal
+backlog-status: open
 ---
 
 # SG-008-b10 — `POST /api/v1/events/{event_id}/undo` 기능 범위

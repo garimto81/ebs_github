@@ -18,6 +18,8 @@ protocol: Spec_Gap_Triage
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "status=RESOLVED, default 채택 완결"
+tier: internal
+backlog-status: open
 ---
 # SG-002 — Engine 의존 계약
 

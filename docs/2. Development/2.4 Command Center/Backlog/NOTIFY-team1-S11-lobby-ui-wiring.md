@@ -5,6 +5,8 @@ target_team: team1
 status: OPEN
 source: docs/2. Development/2.4 Command Center/Backlog.md
 mirror: none
+tier: internal
+backlog-status: open
 ---
 
 # NOTIFY — team1: S-11 Lobby UI wiring 요청

@@ -5,6 +5,8 @@ target_team: team2
 status: OPEN
 source: docs/2. Development/2.4 Command Center/Backlog.md
 mirror: none
+tier: internal
+backlog-status: open
 ---
 
 # NOTIFY — team2: S-11 BO seeder + endpoint 준비

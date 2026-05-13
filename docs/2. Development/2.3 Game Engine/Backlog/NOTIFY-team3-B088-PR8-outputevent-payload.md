@@ -7,6 +7,8 @@ from: team1 (B-088 PR-5 선행 알림)
 target: team3
 priority: P2
 mirror: none
+tier: internal
+backlog-status: open
 ---
 
 # NOTIFY → team3: B-088 OutputEvent payload 정렬

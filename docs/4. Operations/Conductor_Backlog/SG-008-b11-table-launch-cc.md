@@ -16,6 +16,8 @@ protocol: Spec_Gap_Triage §7.2
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "v1.3 (2026-05-03) — same-window + URL query parsing cascade"
+tier: internal
+backlog-status: open
 ---
 
 # SG-008-b11 — `POST /api/v1/tables/{table_id}/launch-cc` 필요성

@@ -15,6 +15,8 @@ protocol: Spec_Gap_Triage §7.2
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "2026-04-20 RESOLVED — 옵션 1 채택 (team2 세션 구현 완료)"
+tier: internal
+backlog-status: open
 ---
 
 # SG-008-b4 — `GET /auth/me` 반환 필드 + 캐싱

@@ -12,6 +12,8 @@ filed-issues:
   - "#185 — B3 2.1 Frontend.md skin-editor 5 broken links (stream:S2)"
   - "#186 — B4 RIVE_Standards.md 2 broken image paths (stream:S1)"
 mirror: none
+tier: internal
+backlog-status: open
 ---
 
 # NOTIFY-Conductor: CI 인프라 blocker 4건 (Wave 2 영향)
