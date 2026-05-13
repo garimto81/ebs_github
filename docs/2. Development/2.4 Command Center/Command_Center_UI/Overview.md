@@ -3,10 +3,13 @@ title: Overview
 owner: team4
 tier: internal
 legacy-id: BS-05-00
-last-updated: 2026-05-07
+last-updated: 2026-05-13
 confluence-page-id: 3819602576
 confluence-parent-id: 3811901565
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602576/EBS+Overview+1565
+related-docs:
+  - ../../../mockups/EBS Command Center/tokens.css (디자인 SSOT — Broadcast Dark Amber OKLCH)
+  - ../../../mockups/EBS Command Center/EBS Command Center.html (구조 참조)
 ---
 
 # BS-05-00 Command Center — 개요
@@ -22,6 +25,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38196
 | 2026-04-17 | 연동 아키텍처 명확화 | §1.1 데이터 흐름 신설 — CC↔Engine(직접 HTTP) + CC↔BO(WS 이벤트 발행) |
 | 2026-05-06 | **§Widget Inventory 신설** (B-team4-011) | React 시안 critic 판정 후속 — Visual Uplift V1~V7 위젯 인벤토리. KeyboardHintBar (V1, ✅ 구현) / StatusBar (V2) / MiniDiagram (V3) / PositionShiftChip (V4) / SeatCell 7행 (V5) / ACTING glow (V6) / TweaksPanel (V7). SSOT: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md`. |
 | 2026-05-07 | **v4 정체성 정합** | CC_PRD v4.0 cascade — 1×10 그리드 + 6 키 + 4 영역 위계 + 5-Act 시퀀스 반영. §3.0 v4.0 정체성 신설 (구 §3.1/§3.3/§3.4 v1.x 타원형/8 버튼 기술은 archive 마킹). SSOT: `docs/1. Product/Command_Center.md` v4.0. |
+| 2026-05-13 | **디자인 토큰 정합** | PRD v4.3 cascade — Broadcast Dark Amber OKLCH 채택 (#409/#410). §디자인 토큰 신규: OKLCH→sRGB 변환 표 + Inter+JBM 폰트 + 1600×900 letterbox Flutter 가이드. related-docs 에 HTML SSOT 추가. |
 
 ---
 
@@ -812,6 +816,78 @@ CC 가 dispatch 하는 카드 입력 (RFID 홀카드 / 커뮤니티 카드) 의 
 | 3 | WebSocket / Engine 통신 부재 | **§1.1.1 Engine + BO 병행 dispatch 유지** |
 | 4 | HandFSM 단순 phase string | **9-state Riverpod FSM 유지** (`hand_fsm_provider.dart`) |
 | 5 ~ 12 | RFID HAL / RBAC / UndoStack / i18n / 테스트 / AT-04~07 / 9 게임 / Babel runtime | 모두 **거절** (현 Flutter CC 패턴 보존) |
+
+---
+
+## §13. 디자인 토큰 (OKLCH SSOT)
+
+> 2026-05-13 신설 — PRD v4.3 cascade (#410). 디자인 SSOT: `docs/mockups/EBS Command Center/tokens.css` (HTML 참고자료).
+
+### §13.1 OKLCH → Flutter sRGB 변환 표
+
+Flutter 는 sRGB 만 지원하므로 OKLCH 값을 컴파일 타임에 정적 sRGB 로 변환.
+변환 도구: 표준 OKLCH→Lab→XYZ→sRGB 공식.
+Flutter 구현 위치: `team4-cc/src/lib/foundation/theme/ebs_oklch.dart` (const Color 정의)
+
+아래 sRGB 값은 대략값 (근사치). 정확한 변환은 Wave 2 Token Layer 에서 수행.
+
+| OKLCH 토큰 | OKLCH 값 | Flutter sRGB (대략) |
+|-----------|---------|---------------------|
+| `--bg-0` | `oklch(0.16 0.012 240)` | `Color(0xFF1F2326)` |
+| `--bg-1` | `oklch(0.20 0.014 240)` | `Color(0xFF272C30)` |
+| `--bg-2` | `oklch(0.24 0.014 240)` | `Color(0xFF2F343A)` |
+| `--bg-3` | `oklch(0.29 0.014 240)` | `Color(0xFF393F46)` |
+| `--bg-felt` | `oklch(0.27 0.045 165)` | `Color(0xFF2E4038)` |
+| `--bg-felt-rim` | `oklch(0.20 0.035 165)` | `Color(0xFF223027)` |
+| `--line` | `oklch(0.34 0.014 240)` | `Color(0xFF42484F)` |
+| `--line-soft` | `oklch(0.28 0.014 240 / 0.7)` | `Color(0xB33A3F45)` |
+| `--fg-0` | `oklch(0.98 0.005 240)` | `Color(0xFFF5F6F7)` |
+| `--fg-1` | `oklch(0.84 0.010 240)` | `Color(0xFFCDD1D6)` |
+| `--fg-2` | `oklch(0.62 0.010 240)` | `Color(0xFF909599)` |
+| `--fg-3` | `oklch(0.45 0.010 240)` | `Color(0xFF636770)` |
+| `--accent` | `oklch(0.78 0.16 65)` | `Color(0xFFF4A028)` |
+| `--accent-strong` | `oklch(0.72 0.18 60)` | `Color(0xFFE08A1A)` |
+| `--accent-soft` | `oklch(0.78 0.16 65 / 0.18)` | `Color(0x2EF4A028)` |
+| `--ok` | `oklch(0.74 0.14 150)` | `Color(0xFF53B981)` |
+| `--warn` | `oklch(0.80 0.16 80)` | `Color(0xFFE0B23F)` |
+| `--err` | `oklch(0.66 0.20 25)` | `Color(0xFFD8593A)` |
+| `--info` | `oklch(0.72 0.13 230)` | `Color(0xFF5A98D8)` |
+| `--pos-d` | `oklch(0.92 0.04 90)` | `Color(0xFFE8E0CC)` |
+| `--pos-sb` | `oklch(0.74 0.14 230)` | `Color(0xFF5B98D6)` |
+| `--pos-bb` | `oklch(0.72 0.16 320)` | `Color(0xFFCB7AB8)` |
+| `--card-bg` | `oklch(0.96 0.005 90)` | `Color(0xFFF5F2EC)` |
+| `--card-red` | `oklch(0.55 0.21 25)` | `Color(0xFFCC3B20)` |
+| `--card-black` | `oklch(0.18 0.02 240)` | `Color(0xFF242830)` |
+
+(전체 토큰 목록 + Geometry + Shadow 는 `tokens.css` 직접 참조)
+
+### §13.2 폰트 (Flutter google_fonts)
+
+```dart
+import 'package:google_fonts/google_fonts.dart';
+
+final ebsTextTheme = TextTheme(
+  // UI 텍스트
+  bodyMedium: GoogleFonts.inter(fontWeight: FontWeight.w400),
+  titleMedium: GoogleFonts.inter(fontWeight: FontWeight.w600),
+  // 데이터 / 숫자 (tabular-nums)
+  bodySmall: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.w400),
+);
+```
+
+### §13.3 Fixed canvas 1600×900 letterbox
+
+```dart
+FittedBox(
+  fit: BoxFit.contain,
+  child: ConstrainedBox(
+    constraints: const BoxConstraints(maxWidth: 1600, maxHeight: 900),
+    child: CommandCenterStage(),
+  ),
+);
+```
+
+16:9 / 16:10 호환. ultrawide 는 중앙 letterbox + `--bg-0` (`Color(0xFF1F2326)`) 배경.
 
 상세: `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` Act 2 (Incident).
 
