@@ -1,7 +1,7 @@
 ---
 id: B-041
 title: WSOP LIVE API 폴링 스케줄러
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.2 Backend/Backlog.md
 mirror: none
 ---

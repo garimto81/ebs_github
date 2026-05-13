@@ -1,7 +1,7 @@
 ---
 id: B-353
 title: "Cross-team BS-06-XX 인용 (101건) → 도메인 마스터 redirect 갱신 — 팀별 자율 처리 위임"
-status: PENDING
+backlog-status: open
 priority: P2
 created: 2026-04-28
 parent: B-349 §6

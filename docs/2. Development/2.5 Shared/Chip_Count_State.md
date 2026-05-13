@@ -5,6 +5,11 @@ tier: contract
 last-updated: 2026-05-13
 version: 1.0.0
 audience-target: Engine 개발자 (S8) + Backend 개발자 (S7) + 운영팀
+related-spec:
+  - ../2.1 Frontend/Lobby/Overview.md
+  - ../2.2 Backend/Back_Office/Overview.md
+  - ../2.3 Game Engine/Rules/Multi_Hand_v03.md
+  - ../2.4 Command Center/Command_Center_UI/Overview.md
 ---
 
 # Chip Count State Machine — Engine vs WSOP LIVE Reconcile

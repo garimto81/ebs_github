@@ -1,9 +1,10 @@
 ---
 id: B-team4-001
 title: AT-02 ActionView — CHECK↔CALL / BET↔RAISE-TO 동적 라벨 구현
-status: DONE
+backlog-status: done
 source: docs/2. Development/2.4 Command Center/Backlog.md
 mirror: none
+close-date: 2026-05-13
 ---
 
 # [B-team4-001] AT-02 ActionView — CHECK↔CALL / BET↔RAISE-TO 동적 라벨 구현

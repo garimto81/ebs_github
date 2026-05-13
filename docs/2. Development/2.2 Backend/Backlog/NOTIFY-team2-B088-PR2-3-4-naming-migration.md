@@ -9,6 +9,7 @@ priority: P1 (team1 코드 기 camelCase 전환 완료 → Backend 응답이 sna
 mirror: none
 tier: internal
 backlog-status: open
+owner: S7
 ---
 
 # NOTIFY → team2: B-088 camelCase 마이그레이션 Backend 파트

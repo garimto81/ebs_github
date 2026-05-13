@@ -1,7 +1,7 @@
 ---
 id: B-060
 title: Multi-region 지원
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.2 Backend/Backlog.md
 mirror: none
 ---

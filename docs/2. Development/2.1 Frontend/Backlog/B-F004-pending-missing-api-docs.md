@@ -1,7 +1,7 @@
 ---
 id: B-F004
 title: "문서 누락 API 경로 보강 대기 (team2/Conductor 책임)"
-status: BLOCKED
+backlog-status: blocked
 blocker: decision_owner = Conductor (docs) → team2 (구현)
 source: docs/2. Development/2.1 Frontend/Backlog.md
 mirror: none

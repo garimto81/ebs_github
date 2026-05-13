@@ -1,7 +1,7 @@
 ---
 id: B-354
 title: "legacy-id-redirect.json 에 OE-level 매핑 추가 — API-04 OE-XX ↔ BS-06-09 OE-XX 번호 변환"
-status: DONE
+backlog-status: done
 priority: P2
 created: 2026-04-28
 completed: 2026-04-29
@@ -12,6 +12,7 @@ related-prs:
   - "PR #65 (B-355 — redirect validator infrastructure, MERGED 2026-04-29)"
   - "PR (B-354 본체 — output_events sub-section 주입, 본 PR)"
 mirror: none
+close-date: 2026-05-13
 ---
 
 # [B-354] legacy-id-redirect.json OE 매핑 추가 (P2)

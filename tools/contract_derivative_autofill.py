@@ -78,7 +78,8 @@ def determine_action(md: Path) -> tuple[str, str]:
     # Shared root (Authentication 하위 제외)
     if rel.startswith("2. Development/2.5 Shared/") and "/Authentication/" not in rel:
         # Shared 루트 파일 (Chip_Count_State, Naming_Conventions, Network_Config, Stream_Entry_Guide)
-        if rel.count("/") == 3:  # docs/2. Development/2.5 Shared/XXX.md
+        # rel format: "2. Development/2.5 Shared/XXX.md" → slash count = 2
+        if rel.count("/") == 2:
             return ("add-related-spec", ",".join(SHARED_ROOT_RELATED))
 
     # 매핑 룰 매칭

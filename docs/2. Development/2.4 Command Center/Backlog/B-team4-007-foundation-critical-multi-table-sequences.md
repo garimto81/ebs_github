@@ -1,7 +1,7 @@
 ---
 id: B-team4-007
 title: Foundation 재설계 P0 — Multi_Table Pattern B 재정의 + Sequences 2 모드 다이어그램
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.4 Command Center/Foundation_Impact_Review.md §3.1
 mirror: none
 ---

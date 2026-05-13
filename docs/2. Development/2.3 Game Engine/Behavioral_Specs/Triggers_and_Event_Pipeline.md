@@ -3,10 +3,10 @@ title: Triggers & Event Pipeline — Domain Master
 owner: team3
 tier: contract
 legacy-ids:
-  - `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))   # Triggers.md (CC/RFID/Engine/BO 트리거 경계 정의)
-  - BS-06-09            # Event_Catalog.md (Input/Internal/Output 이벤트 카탈로그)
-  - BS-06-04            # Holdem/Coalescence.md (RFID burst 병합 알고리즘)
-  - BS-06-12            # Card_Pipeline_Overview.md (Turn-based deal + Atomic flop)
+  - "BS-06-00-triggers"   # Triggers.md (CC/RFID/Engine/BO 트리거 경계 정의)
+  - "BS-06-09"            # Event_Catalog.md (Input/Internal/Output 이벤트 카탈로그)
+  - "BS-06-04"            # Holdem/Coalescence.md (RFID burst 병합 알고리즘)
+  - "BS-06-12"            # Card_Pipeline_Overview.md (Turn-based deal + Atomic flop)
 last-updated: 2026-04-27
 related:
   - "Behavioral_Specs/Lifecycle_and_State_Machine.md"  # Lifecycle 도메인 마스터 (Phase 1)

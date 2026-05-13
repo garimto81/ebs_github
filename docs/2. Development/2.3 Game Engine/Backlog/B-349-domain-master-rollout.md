@@ -1,7 +1,7 @@
 ---
 id: B-349
 title: "Behavioral_Specs 4 Domain Master Rollout — Deprecation Shim + Audit Mapping + Cross-team 정합 검증"
-status: IN_PROGRESS
+backlog-status: in-progress
 priority: P1
 created: 2026-04-28
 source: docs/2. Development/2.3 Game Engine/Backlog.md

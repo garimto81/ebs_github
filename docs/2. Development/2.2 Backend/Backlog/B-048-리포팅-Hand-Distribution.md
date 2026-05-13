@@ -1,7 +1,7 @@
 ---
 id: B-048
 title: 리포팅 — Hand Distribution
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.2 Backend/Backlog.md
 mirror: none
 ---

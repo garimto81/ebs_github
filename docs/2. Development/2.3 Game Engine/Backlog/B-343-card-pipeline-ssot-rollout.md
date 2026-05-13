@@ -1,7 +1,7 @@
 ---
 id: B-343
 title: "Card Pipeline SSOT (BS-06-12) rollout — Lifecycle/Triggers/OutputEvents 정렬 + 테스트 추가"
-status: PENDING
+backlog-status: open
 priority: P1
 created: 2026-04-27
 source: docs/2. Development/2.3 Game Engine/Backlog.md

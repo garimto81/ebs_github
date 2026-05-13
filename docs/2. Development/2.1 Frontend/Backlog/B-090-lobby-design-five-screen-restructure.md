@@ -1,7 +1,7 @@
 ---
 id: B-090
 title: "Lobby Design — 5-screen drilldown 재구조화 (Phase 2)"
-status: IN_PROGRESS
+backlog-status: in-progress
 created: 2026-04-29
 updated: 2026-04-29
 owner: team1

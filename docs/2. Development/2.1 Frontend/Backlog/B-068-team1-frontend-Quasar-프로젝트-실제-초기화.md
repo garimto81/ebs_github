@@ -1,9 +1,10 @@
 ---
 id: B-068
 title: team1-frontend Quasar 프로젝트 실제 초기화
-status: DONE
+backlog-status: done
 source: docs/2. Development/2.1 Frontend/Backlog.md
 mirror: none
+close-date: 2026-05-13
 ---
 
 # [B-068] team1-frontend Quasar 프로젝트 실제 초기화

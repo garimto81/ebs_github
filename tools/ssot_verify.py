@@ -210,6 +210,8 @@ def classify_file(md: Path, docs_root: Path, fm: Optional[dict]) -> str:
     # H: Archive (변경 금지)
     if any(p.startswith("_") for p in parts) or "archive" in parts:
         return "H"
+    if tier in ("deprecated", "frozen", "archive"):
+        return "H"
 
     # G: Generated (CI auto)
     if tier == "generated":
@@ -382,7 +384,7 @@ def check_backlog_status(docs_root: Path, cat_stats: CategoryStats) -> list[Back
         if status in ("done", "abandoned"):
             is_valid = close_date is not None
         else:
-            is_valid = status in ("open", "in-progress", "in_progress", None)
+            is_valid = status in ("open", "in-progress", "in_progress", "blocked", None)
         results.append(BacklogCheck(
             file=md,
             status=str(status) if status else None,
@@ -416,7 +418,7 @@ def check_cr_impacts(docs_root: Path, cat_stats: CategoryStats) -> list[CRImpact
 # ----------------------------------------------------------------------------
 
 def check_contract_derivative(docs_root: Path, cat_stats: CategoryStats) -> list[ContractDerivCheck]:
-    """B 카테고리(Contract) 의 derivative-of / related-spec 검증."""
+    """B 카테고리(Contract) 의 derivative-of / related-spec / related / references 검증."""
     results: list[ContractDerivCheck] = []
     for md in cat_stats.files_by_cat["B"]:
         fm = read_frontmatter(md) or {}
@@ -424,6 +426,7 @@ def check_contract_derivative(docs_root: Path, cat_stats: CategoryStats) -> list
             fm.get("derivative-of")
             or fm.get("related-spec")
             or fm.get("references")
+            or fm.get("related")
         )
         results.append(ContractDerivCheck(file=md, has_link=has_link))
     return results

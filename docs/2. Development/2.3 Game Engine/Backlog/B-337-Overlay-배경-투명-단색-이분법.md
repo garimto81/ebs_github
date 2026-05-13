@@ -1,7 +1,7 @@
 ---
 id: B-337
 title: "Overlay §5 크로마키 — Foundation §7.1 '투명(방송) vs 단색(디자이너 QA)' 이분법 정렬"
-status: PENDING
+backlog-status: open
 priority: P2
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md

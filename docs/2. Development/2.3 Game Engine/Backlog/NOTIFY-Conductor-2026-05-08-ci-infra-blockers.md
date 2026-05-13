@@ -14,6 +14,7 @@ filed-issues:
 mirror: none
 tier: internal
 backlog-status: open
+owner: S8
 ---
 
 # NOTIFY-Conductor: CI 인프라 blocker 4건 (Wave 2 영향)

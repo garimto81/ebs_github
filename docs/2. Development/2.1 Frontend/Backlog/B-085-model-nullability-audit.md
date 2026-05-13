@@ -1,11 +1,12 @@
 ---
 id: B-085
 title: "Flutter 모델 required 필드 BO 응답 매칭 감사"
-status: DONE
+backlog-status: done
 completed: 2026-04-17
 branch: work/team1/20260417-api-alignment
 source: docs/2. Development/2.1 Frontend/Backlog.md
 mirror: none
+close-date: 2026-05-13
 ---
 
 # B-085 — tools/audit_model_nullability.py 작성 + Skin 모델 방어화

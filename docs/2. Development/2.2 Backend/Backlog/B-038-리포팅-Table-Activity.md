@@ -1,7 +1,7 @@
 ---
 id: B-038
 title: 리포팅 — Table Activity
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.2 Backend/Backlog.md
 mirror: none
 ---

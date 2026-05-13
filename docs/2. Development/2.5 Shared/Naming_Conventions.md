@@ -10,6 +10,11 @@ reimplementability_notes: "WSOP LIVE 규약 준수 SSOT, 원칙 1 정렬, 대상
 confluence-page-id: 3818881385
 confluence-parent-id: 3812032646
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881385/EBS+Naming+Conventions+EBS+Shared+SSOT
+related-spec:
+  - ../2.1 Frontend/Lobby/Overview.md
+  - ../2.2 Backend/Back_Office/Overview.md
+  - ../2.3 Game Engine/Rules/Multi_Hand_v03.md
+  - ../2.4 Command Center/Command_Center_UI/Overview.md
 ---
 # Naming Conventions — EBS 전역 네이밍 규약 SSOT
 

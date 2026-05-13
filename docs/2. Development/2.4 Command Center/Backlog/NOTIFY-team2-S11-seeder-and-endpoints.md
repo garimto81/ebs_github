@@ -7,6 +7,7 @@ source: docs/2. Development/2.4 Command Center/Backlog.md
 mirror: none
 tier: internal
 backlog-status: open
+owner: S3
 ---
 
 # NOTIFY — team2: S-11 BO seeder + endpoint 준비

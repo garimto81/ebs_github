@@ -9,6 +9,7 @@ priority: P1 (team2 Backend 전환 후 즉시 필요)
 mirror: none
 tier: internal
 backlog-status: open
+owner: S3
 ---
 
 # NOTIFY → team4: B-088 CC consumer 전환

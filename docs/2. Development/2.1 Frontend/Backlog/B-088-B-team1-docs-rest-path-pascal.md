@@ -1,12 +1,13 @@
 ---
 id: B-088-B
 title: "team1 기획 문서 REST path kebab → PascalCase 변환 (B-088 subscope)"
-status: DONE
+backlog-status: done
 created: 2026-04-21
 updated: 2026-04-21
 owner: team1
 resolved-commit: ce7a063
 mirror: none
+close-date: 2026-05-13
 ---
 
 # B-088-B — team1 기획 문서 REST path 정렬

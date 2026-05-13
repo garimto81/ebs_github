@@ -1,7 +1,7 @@
 ---
 id: B-068
 title: "Sandbox Tournament Generator 구현"
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.2 Backend/Engineering/Sandbox_Tournament_Generator.md
 mirror: none
 ---

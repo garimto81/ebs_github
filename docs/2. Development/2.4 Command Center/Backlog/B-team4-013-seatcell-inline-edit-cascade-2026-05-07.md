@@ -1,7 +1,7 @@
 ---
 id: B-team4-013
 title: "SeatCell 7행 onTap 인라인 편집 cascade — HTML 시안 vs Flutter drift"
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.4 Command Center/Backlog.md
 created: 2026-05-07
 owner: prototype-session

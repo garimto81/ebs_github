@@ -1,7 +1,7 @@
 ---
 id: B-330
 title: "Foundation §B.2/§B.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파"
-status: DONE
+backlog-status: done
 priority: P0
 created: 2026-04-22
 completed: 2026-05-11
@@ -9,6 +9,7 @@ completed-stream: S8
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §B.2 (Backend 통신) / §B.3 (통신 매트릭스). 백로그 본문의 §6.3/§6.4 numbering 은 Foundation v11 재설계 후 §B.x 로 재배치되었음"
 mirror: none
+close-date: 2026-05-13
 ---
 
 # [B-330] Foundation §6.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파 (P0)

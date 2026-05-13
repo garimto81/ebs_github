@@ -1,7 +1,7 @@
 ---
 id: B-092
 title: "Lobby visual/screenshots — 신 디자인 7장 cascade + 본문 문서 정합 갱신"
-status: DONE
+backlog-status: done
 created: 2026-05-05
 updated: 2026-05-05
 completed: 2026-05-05
@@ -17,6 +17,7 @@ related-prd:
 depends-on: B-091
 blocks: []
 mirror: none
+close-date: 2026-05-13
 ---
 
 # B-092 — Lobby visual/screenshots 신 디자인 7장 cascade

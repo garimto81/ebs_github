@@ -22,5 +22,5 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: pip install pyyaml
-      - name: Run SSOT verification
-        run: python tools/ssot_verify.py
+      - name: Run SSOT verification (strict mode)
+        run: python tools/ssot_verify.py --strict-tier --strict-backlog --strict-internal

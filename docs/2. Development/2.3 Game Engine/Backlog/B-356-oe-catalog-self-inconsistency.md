@@ -1,7 +1,7 @@
 ---
 id: B-356
 title: "OE 카탈로그 self-inconsistency — OutputEvent_Serialization vs Overlay_Output_Events 정합"
-status: PENDING
+backlog-status: open
 priority: P1
 created: 2026-05-08
 parent: S8 consistency audit 2026-05-08 (D2)

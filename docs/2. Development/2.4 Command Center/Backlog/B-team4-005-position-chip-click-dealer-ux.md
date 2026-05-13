@@ -1,7 +1,7 @@
 ---
 id: B-team4-005
 title: 포지션 뱃지 클릭 → 포지션 재지정 메뉴 UX 구현 (Seat_Management.md §2 준수)
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.4 Command Center/Backlog.md
 mirror: none
 ---

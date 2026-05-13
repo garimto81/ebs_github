@@ -1,7 +1,7 @@
 ---
 id: B-077
 title: "GE scope 확장 PRD 작성 (BS-08-05/06/07 — Trigger / DB Mapping / Extension Points)"
-status: PENDING
+backlog-status: open
 source: docs/3. Change Requests/done/CR-conductor-20260421-ge-scope-expansion.md
 owner: team1
 created: 2026-04-21

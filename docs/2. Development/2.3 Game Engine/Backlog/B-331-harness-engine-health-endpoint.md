@@ -1,7 +1,7 @@
 ---
 id: B-331
 title: "harness /engine/health endpoint 신설 — Foundation Demo Mode 3-stage 지원"
-status: DONE
+backlog-status: done
 priority: P0
 created: 2026-04-22
 completed: 2026-05-11
@@ -11,6 +11,7 @@ source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §B.3 (Demo Mode fallback)"
 supersedes: "Backlog.md §우선작업 항목 5 (harness /engine/health endpoint)"
 mirror: none
+close-date: 2026-05-13
 ---
 
 > **2026-05-11 S8 cycle 2 발견**: 본 항목은 cycle 1 dispatch 시점 (NOTIFY-team3) 에 PENDING 으로 분류됐으나, cycle 2 harness E2E 검증 중 코드 이미 구현됨을 확인. 즉시 DONE 처리. NOTIFY-team3 도 CLOSED.

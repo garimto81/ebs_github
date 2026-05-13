@@ -1,7 +1,7 @@
 ---
 id: B-334
 title: "OutputEventBuffer_Boundary §2-§3 탭 모드 / 다중창 모드 / Engine 3분법으로 재구성"
-status: PENDING
+backlog-status: open
 priority: P1
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md

@@ -9,6 +9,7 @@ priority: P2
 mirror: none
 tier: internal
 backlog-status: open
+owner: S8
 ---
 
 # NOTIFY → team3: B-088 OutputEvent payload 정렬

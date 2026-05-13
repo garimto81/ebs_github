@@ -1,7 +1,7 @@
 ---
 id: B-332
 title: "Engine 응답이 게임 상태 SSOT 임을 API-04 계약에 명시"
-status: DONE
+backlog-status: done
 priority: P0
 created: 2026-04-22
 completed: 2026-05-11
@@ -9,6 +9,7 @@ completed-stream: S8
 source: docs/2. Development/2.3 Game Engine/Backlog.md
 related-foundation: "docs/1. Product/Foundation.md §B.3 (통신 매트릭스 — 병행 dispatch) / §B.4 (DB SSOT + WS push)"
 mirror: none
+close-date: 2026-05-13
 ---
 
 # [B-332] Engine 응답이 게임 상태 SSOT 임을 API-04 계약에 명시 (P0)

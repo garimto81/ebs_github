@@ -1,7 +1,7 @@
 ---
 id: B-089
 title: "Lobby Design — Foundation visual system 이식 (Phase 1)"
-status: IN_PROGRESS
+backlog-status: in-progress
 created: 2026-04-29
 updated: 2026-04-29
 owner: team1

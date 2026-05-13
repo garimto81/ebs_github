@@ -1,7 +1,7 @@
 ---
 id: B-350
 title: "API-04 §6.0 (21종) ↔ BS-06-09 (19종) OutputEvent 정합 검증 — 누락 3 OE + 번호 shift 분석"
-status: DONE
+backlog-status: done
 priority: P1
 created: 2026-04-28
 completed: 2026-04-28
@@ -15,6 +15,7 @@ authority:
   - "API-04 §6.0 (Overlay_Output_Events.md) — 외부 권위 (subscriber 코드 의존)"
   - "Triggers 도메인 §3.4 (Triggers_and_Event_Pipeline.md) — API-04 정렬 완료"
 mirror: none
+close-date: 2026-05-13
 ---
 
 ## 2026-04-28 완료

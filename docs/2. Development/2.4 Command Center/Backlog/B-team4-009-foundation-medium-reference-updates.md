@@ -1,7 +1,7 @@
 ---
 id: B-team4-009
 title: Foundation 재설계 P2 — MEDIUM 일괄 참조·주석 보강
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.4 Command Center/Foundation_Impact_Review.md §3.3
 mirror: none
 ---

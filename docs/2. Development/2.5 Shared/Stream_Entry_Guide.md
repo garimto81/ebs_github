@@ -6,6 +6,11 @@ governance: v10.3 architect_then_observer
 confluence-page-id: 3818586623
 confluence-parent-id: 3812032646
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586623/EBS+Stream+Entry+Guide+v10.3
+related-spec:
+  - ../2.1 Frontend/Lobby/Overview.md
+  - ../2.2 Backend/Back_Office/Overview.md
+  - ../2.3 Game Engine/Rules/Multi_Hand_v03.md
+  - ../2.4 Command Center/Command_Center_UI/Overview.md
 ---
 
 # Stream Entry Guide — v10.3

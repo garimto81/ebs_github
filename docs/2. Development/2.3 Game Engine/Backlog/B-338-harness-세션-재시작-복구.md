@@ -1,7 +1,7 @@
 ---
 id: B-338
 title: "harness 세션 재시작 복구 — Foundation §8.4 긴급 복구 계약 대응"
-status: PENDING
+backlog-status: open
 priority: P1
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md

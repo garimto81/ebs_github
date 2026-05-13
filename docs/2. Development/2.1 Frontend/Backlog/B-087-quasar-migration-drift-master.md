@@ -1,7 +1,7 @@
 ---
 id: B-087
 title: "Quasar → Flutter 이전 누락/Drift 전수 수정 (master)"
-status: IN_PROGRESS
+backlog-status: in-progress
 source: docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md
 created: 2026-04-21
 updated: 2026-04-21

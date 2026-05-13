@@ -1,13 +1,14 @@
 ---
 id: B-355
 title: "legacy-id-redirect.json validator (Dart CLI + CI gate)"
-status: DONE
+backlog-status: done
 priority: P2
 created: 2026-04-29
 parent: B-354 supporting infra
 related-prs:
   - "PR (본 PR — tools/validate_redirects.dart + .github/workflows/redirect-validation.yml)"
 mirror: none
+close-date: 2026-05-13
 ---
 
 # [B-355] Redirect Validator Infrastructure (DONE)

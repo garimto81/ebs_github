@@ -1,7 +1,7 @@
 ---
 id: B-335
 title: "NOTIFY-CCR-024 WriteGameInfo 22 필드 — Engine OutputEvent vs BO WS SSOT 재정의"
-status: PENDING
+backlog-status: open
 priority: P1
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md

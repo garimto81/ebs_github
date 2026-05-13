@@ -1,7 +1,7 @@
 ---
 id: B-F006
 title: "Skin 업로드 UI를 2-step 플로우로 업데이트"
-status: PENDING
+backlog-status: open
 priority: low
 source: docs/2. Development/2.1 Frontend/Backlog.md
 mirror: none

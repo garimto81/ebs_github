@@ -1,7 +1,7 @@
 ---
 id: B-088
 title: "camelCase 전수 마이그레이션 (team2 PR 2/3/4)"
-status: PENDING
+backlog-status: open
 source: docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md
 mirror: none
 ---

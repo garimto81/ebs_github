@@ -1,9 +1,10 @@
 ---
 id: B-team4-003
 title: S-11 E2E 자동화 스캐폴드 — Playwright + flutter_driver
-status: DONE
+backlog-status: done
 source: docs/2. Development/2.4 Command Center/Backlog.md
 mirror: none
+close-date: 2026-05-13
 ---
 
 # [B-team4-003] S-11 E2E 자동화 스캐폴드

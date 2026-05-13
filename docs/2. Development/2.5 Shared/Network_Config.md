@@ -9,6 +9,11 @@ reimplementability_notes: "네트워크 구성 계약 (tier=contract, 3KB)"
 confluence-page-id: 3819209219
 confluence-parent-id: 3812032646
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209219/EBS+Network+Configuration+Contract
+related-spec:
+  - ../2.1 Frontend/Lobby/Overview.md
+  - ../2.2 Backend/Back_Office/Overview.md
+  - ../2.3 Game Engine/Rules/Multi_Hand_v03.md
+  - ../2.4 Command Center/Command_Center_UI/Overview.md
 ---
 # Network Configuration Contract
 

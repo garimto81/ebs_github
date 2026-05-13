@@ -1,7 +1,7 @@
 ---
 id: B-078
 title: team1 specs 이미지 ↔ docs/00-reference 동기화 자동화
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.1 Frontend/Backlog.md
 mirror: none
 ---

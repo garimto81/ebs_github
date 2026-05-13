@@ -2,7 +2,7 @@
 title: Triggers
 owner: team3
 tier: deprecated
-legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers)))
+legacy-id: "BS-06-00-triggers"
 deprecated: 2026-04-28
 redirect-to: "./Triggers_and_Event_Pipeline.md"
 status: superseded

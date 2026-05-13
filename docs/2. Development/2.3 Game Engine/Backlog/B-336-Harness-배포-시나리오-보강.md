@@ -1,7 +1,7 @@
 ---
 id: B-336
 title: "Harness_REST_API §1 배포 시나리오 — 1 PC vs 중앙 서버 / LAN 배치 보강"
-status: PENDING
+backlog-status: open
 priority: P2
 created: 2026-04-22
 source: docs/2. Development/2.3 Game Engine/Backlog.md

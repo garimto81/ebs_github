@@ -1,7 +1,7 @@
 ---
 id: B-team4-011
 title: "CC Visual Uplift — React 프로토타입 시각 자산 7종 흡수 (D7 보안 유지)"
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.4 Command Center/Backlog.md
 created: 2026-05-06
 owner: team4

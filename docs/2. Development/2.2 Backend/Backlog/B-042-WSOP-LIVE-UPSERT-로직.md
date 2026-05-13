@@ -1,7 +1,7 @@
 ---
 id: B-042
 title: WSOP LIVE UPSERT 로직
-status: PENDING
+backlog-status: open
 source: docs/2. Development/2.2 Backend/Backlog.md
 mirror: none
 ---

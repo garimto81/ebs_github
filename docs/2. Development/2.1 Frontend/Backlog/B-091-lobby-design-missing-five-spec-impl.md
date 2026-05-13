@@ -1,7 +1,7 @@
 ---
 id: B-091
 title: "Lobby Design — 누락 5개 항목 구현 (TopBar + Series 화면 + Bookmark 검증)"
-status: PENDING
+backlog-status: open
 created: 2026-05-05
 updated: 2026-05-05
 owner: team1

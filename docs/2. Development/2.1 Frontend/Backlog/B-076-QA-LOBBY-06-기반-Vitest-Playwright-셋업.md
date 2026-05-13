@@ -1,9 +1,10 @@
 ---
 id: B-076
 title: QA-LOBBY-06 기반 Vitest + Playwright 셋업
-status: DONE
+backlog-status: done
 source: docs/2. Development/2.1 Frontend/Backlog.md
 mirror: none
+close-date: 2026-05-13
 ---
 
 # [B-076] QA-LOBBY-06 기반 Vitest + Playwright 셋업
