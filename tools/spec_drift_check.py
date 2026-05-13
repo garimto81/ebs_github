@@ -1149,15 +1149,31 @@ def detect_websocket() -> ContractReport:
         false positive 가 심각 (D2=89).
       - 신 알고리즘은 **"이벤트 카탈로그" 구조** 만 신뢰 소스로 사용.
 
+    P13 정밀화 (Cycle 8, 2026-05-12):
+      - **Dot-separated event 이름 지원** — `table.seat.added`, `gfskin.deactivated`,
+        `table.seat.removed` 같은 namespaced event 가 이전 regex (`[A-Za-z_][A-Za-z0-9_]*`)
+        에서 _silent false negative_ 였음. spec 본문 §13.2/13.4/13.5 의 JSON literal
+        `"type": "table.seat.added"` 가 매치되지 않고 동시에 code 측에서도 동일 패턴
+        부재로 0=0 매칭 → D4 에도 안 잡힘. 식별자 charset 에 `.` 추가하여 가시화.
+      - **Subsection backtick header alias 추출 (소스 #6)** — "### N.N `event_name` payload"
+        헤더에서도 event 이름 추출 (JSON literal 누락 spec 변경분 방어 — defense in depth).
+      - **D2/D3 항목별 진단 강화 (scope_note)**:
+        * D2: spec 본문 인근 `IMPL-NNN` marker 자동 검출 → "IMPL-NNN PENDING" 진단
+        * D3: Lobby/Overview.md, Plans/Lobby_Renewal_Plan_*.md cross-reference scan →
+              mention 발견 시 "Plan doc mentioned (정본 카탈로그 누락)" 진단
+        목적: 매 cycle 사용자 수동 audit 비용 절감 (false-positive 자체 audit 자동화).
+
     Spec 측 추출 전략 (명시적 event type 만):
       1. Markdown 이벤트 카탈로그 테이블: 헤더가 `| 이벤트 |` 로 시작하는
          테이블의 첫 컬럼 값이 backtick-wrapped identifier 일 때만 수집.
-      2. Envelope 예시의 `"type": "EventName"` JSON 리터럴.
+      2. Envelope 예시의 `"type": "EventName"` JSON 리터럴 (dot 포함).
       3. Subscribe 예시의 `event_types: [...]` 배열 원소.
       4. WSOP LIVE ↔ EBS 매핑 테이블 (CCR-054) 의 `EBS 이벤트` 컬럼.
+      5. Subsection `#### N.N.N event_name` snake_case 헤더 (F2 origin).
+      6. Subsection "### N.N `event_name` payload" backtick alias (P13 신규).
 
     Code 측 추출 전략:
-      1. 정적 `"type": "EventName"` 문자열 리터럴.
+      1. 정적 `"type": "EventName"` 문자열 리터럴 (dot 포함).
       2. 동적 forwarding: cc_handler.py `event_type_map` dict 의 key (PascalCase
          CC 이벤트) — publisher 가 `msg.get("type")` 로 그대로 포워딩.
       3. Write command dict `_WRITE_COMMANDS` 의 key + (ack_type, rejected_type).
@@ -1207,9 +1223,12 @@ def detect_websocket() -> ContractReport:
                 if m:
                     spec_events.add(m.group(1))
 
-    # (2) Envelope JSON 예시의 `"type": "EventName"` 리터럴
+    # (2) Envelope JSON 예시의 `"type": "EventName"` 리터럴 (P13: dot 지원)
+    # P13 변경: charset 에 dot 추가하여 namespaced events 가시화
+    #   (table.seat.added, gfskin.deactivated, table.seat.removed).
+    # 시작 char 는 letter/underscore 만 (dot leading 차단), 이후 letter/digit/underscore/dot.
     for m in re.finditer(
-        r'["\']type["\']\s*:\s*["\']([A-Za-z_][A-Za-z0-9_]*)["\']',
+        r'["\']type["\']\s*:\s*["\']([A-Za-z_][A-Za-z0-9_.]*)["\']',
         spec_text,
     ):
         spec_events.add(m.group(1))
@@ -1247,6 +1266,16 @@ def detect_websocket() -> ContractReport:
         if "_" in name:
             spec_events.add(name)
 
+    # (6) Subsection 헤더 패턴: `### N.N \`event_name\` payload` — P13 신규
+    # §13.2 `gfskin.deactivated` payload / §13.3 `force_logout` payload + close code
+    # §13.4 `table.seat.added` payload / §13.5 `table.seat.removed` payload
+    # backtick 안 식별자 (dot 포함) 추출 — defense in depth (JSON literal 누락 방어)
+    for m in re.finditer(
+        r"(?m)^#{2,5}\s+\d+\.\d+(?:\.\d+)?\s+`([A-Za-z_][A-Za-z0-9_.]*)`",
+        spec_text,
+    ):
+        spec_events.add(m.group(1))
+
     # Spec 추출 공용 noise — envelope meta 필드 (event type 아님)
     _meta_noise = {
         "Auth",
@@ -1262,7 +1291,8 @@ def detect_websocket() -> ContractReport:
 
     # ── Code 추출 ──
     code_events: set[str] = set()
-    type_pat = re.compile(r'["\']type["\']\s*:\s*["\']([A-Za-z_][A-Za-z0-9_]*)["\']')
+    # P13: dot 지원 (namespaced event 매칭 — spec/code 대칭성 보장)
+    type_pat = re.compile(r'["\']type["\']\s*:\s*["\']([A-Za-z_][A-Za-z0-9_.]*)["\']')
     for py in ws_dir.glob("*.py"):
         text = _read(py)
         for m in type_pat.finditer(text):
@@ -1335,6 +1365,72 @@ def detect_websocket() -> ContractReport:
         )
         return rep
 
+    # ── P13 진단 보조: D2/D3 항목별 추가 evidence trace ──
+
+    def _d2_diagnose(event_name: str) -> str:
+        """D2 항목 진단: spec 본문 인근 IMPL-NNN marker / TODO / PENDING 마커 검출.
+
+        규칙:
+          1. event 이름이 spec 본문에 등장하는 모든 라인을 찾음.
+          2. 같은 라인 ±10 라인 윈도우에 `IMPL-\\d+` / `TODO` / `PENDING` 검출.
+          3. 발견 시 진성 미구현 (PENDING_IMPL) 으로 분류.
+        """
+        try:
+            idx_list = [
+                i for i, ln in enumerate(lines) if event_name in ln
+            ]
+        except Exception:
+            return "기획에만 존재 (미구현 또는 발행자 미확인)"
+        if not idx_list:
+            return "기획에만 존재 (미구현 또는 발행자 미확인)"
+        # ±10 라인 윈도우 union
+        markers: set[str] = set()
+        for i in idx_list:
+            lo = max(0, i - 10)
+            hi = min(len(lines), i + 11)
+            window = "\n".join(lines[lo:hi])
+            for m in re.finditer(r"IMPL-\d+", window):
+                markers.add(m.group(0))
+            if re.search(r"\b(TODO|PENDING|TBD)\b", window):
+                markers.add("PENDING")
+        if markers:
+            tag = ", ".join(sorted(markers))
+            return f"PENDING_IMPL ({tag}) — spec 명세 + 코드 미구현 acknowledged"
+        return "기획에만 존재 (미구현 또는 발행자 미확인)"
+
+    # D3 진단: plan / overview 문서 cross-reference scan (캐시)
+    _plan_overview_texts: dict[str, str] = {}
+    _plan_overview_paths = [
+        REPO / "docs" / "2. Development" / "2.1 Frontend" / "Lobby" / "Overview.md",
+        REPO / "docs" / "2. Development" / "2.4 Command Center"
+            / "Command_Center_UI" / "Overview.md",
+        REPO / "docs" / "2. Development" / "2.2 Backend"
+            / "Back_Office" / "Overview.md",
+    ]
+    _plans_dir = REPO / "docs" / "4. Operations" / "Plans"
+    if _plans_dir.exists():
+        _plan_overview_paths.extend(sorted(_plans_dir.glob("*.md")))
+    for p in _plan_overview_paths:
+        if p.exists():
+            _plan_overview_texts[str(p)] = _read(p)
+
+    def _d3_diagnose(event_name: str) -> str:
+        """D3 항목 진단: plan/overview cross-reference scan."""
+        mentions: list[str] = []
+        for p_str, txt in _plan_overview_texts.items():
+            if event_name in txt:
+                # 짧은 파일명만 (basename)
+                from pathlib import Path as _P
+                mentions.append(_P(p_str).name)
+        if mentions:
+            head = ", ".join(mentions[:3])
+            extra = f" (+{len(mentions) - 3})" if len(mentions) > 3 else ""
+            return (
+                f"Plan doc mentioned ({head}{extra}) — "
+                "WebSocket_Events.md 정본 카탈로그 누락 (spec author 보강 필요)"
+            )
+        return "WebSocket_Events.md 에 언급 없음"
+
     # Diff
     for e in sorted(code_events - spec_events):
         rep.d3.append(
@@ -1343,7 +1439,7 @@ def detect_websocket() -> ContractReport:
                 drift_type="D3",
                 identifier=e,
                 code_value=f'"type": "{e}"',
-                note="WebSocket_Events.md 에 언급 없음",
+                note=_d3_diagnose(e),
             )
         )
     for e in sorted(spec_events - code_events):
@@ -1353,7 +1449,7 @@ def detect_websocket() -> ContractReport:
                 drift_type="D2",
                 identifier=e,
                 spec_value=e,
-                note="기획에만 존재 (미구현 또는 발행자 미확인)",
+                note=_d2_diagnose(e),
             )
         )
 
@@ -1361,7 +1457,9 @@ def detect_websocket() -> ContractReport:
     rep.scanner_note = (
         f"spec events={len(spec_events)} code events={len(code_events)}. "
         "F2 정밀화: 이벤트 카탈로그 테이블 + JSON literal + event_types 배열만 수집, "
-        "payload 필드 제외."
+        "payload 필드 제외. "
+        "P13 (Cycle 8): dot-name regex + subsection backtick header (#6) + "
+        "D2 IMPL marker / D3 plan-doc cross-reference 진단."
     )
     return rep
 
