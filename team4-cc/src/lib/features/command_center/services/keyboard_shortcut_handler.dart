@@ -9,6 +9,11 @@
 // FOCUS_MISMATCH_GUARD: 200ms suppression after window/widget focus gain
 // prevents stale OS-level key events from triggering CC actions when the
 // operator Alt+Tabs back into a multi-table CC instance.
+//
+// Cycle 19 Wave 3 U4 — exposes `actionPulseDuration` (1600ms) so the 6-key
+// hint surfaces (keyboard hint chips, acting-seat highlight) share a single
+// animation cadence. Matches HTML SSOT
+// (`docs/mockups/EBS Command Center/app.css` keyframe `action-pulse`).
 
 import 'dart:async';
 
@@ -16,6 +21,27 @@ import 'package:flutter/services.dart';
 
 import '../../../models/enums/card.dart';
 import '../providers/action_button_provider.dart';
+
+// ---------------------------------------------------------------------------
+// Animation cadence — SSOT for 6-key visual feedback (FOLD, CHECK/CALL,
+// BET/RAISE, ALL-IN, NEW HAND, MISS DEAL).
+// ---------------------------------------------------------------------------
+
+/// Pulse cycle for the acting-seat ring and keyboard hint chip glow.
+///
+/// Mirrors HTML keyframe `@keyframes action-pulse` in app.css §.pcol.action-on
+/// (1.6s ease-in-out infinite). Any widget that pulses in sync with the
+/// currently-acting shortcut MUST reuse this constant — otherwise the
+/// keyboard hint chip and seat highlight drift out of phase.
+const Duration actionPulseDuration = Duration(milliseconds: 1600);
+
+/// Suit pending timeout for two-step card entry (card-input mode).
+///
+/// Extracted as a named constant to make the suit→rank window explicit.
+const Duration suitPendingTimeout = Duration(seconds: 1);
+
+/// FOCUS_MISMATCH_GUARD suppression window.
+const Duration focusMismatchGuardWindow = Duration(milliseconds: 200);
 
 // ---------------------------------------------------------------------------
 // Input mode
@@ -117,8 +143,7 @@ class KeyboardShortcutHandler {
 
   bool get _isFocusMismatchGuardActive =>
       _lastFocusGain != null &&
-      DateTime.now().difference(_lastFocusGain!) <
-          const Duration(milliseconds: 200);
+      DateTime.now().difference(_lastFocusGain!) < focusMismatchGuardWindow;
 
   // -- system keys ----------------------------------------------------------
 
@@ -309,7 +334,7 @@ class KeyboardShortcutHandler {
   void _setPendingSuit(Suit suit) {
     _suitTimeout?.cancel();
     _pendingSuit = suit;
-    _suitTimeout = Timer(const Duration(seconds: 1), () {
+    _suitTimeout = Timer(suitPendingTimeout, () {
       _pendingSuit = null;
       _suitTimeout = null;
     });
