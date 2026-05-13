@@ -21,7 +21,7 @@ cascade-emits: cascade:engine-equity-spec
 
 ## 개요
 
-[Betting_System.md §8-1](../../1.%20Product/Game_Rules/Betting_System.md) 의 "실시간 승률 통계 (Equity)" Monte Carlo 계산 spec 을 Game Engine 구현 차원에서 정본화한다. PR [#393](https://github.com/garimto81/ebs_github/pull/393) Cascade Note (Type B 기획 공백 — S8 trigger) 해소.
+[Betting_System.md §8-1](../../../1.%20Product/Game_Rules/Betting_System.md) 의 "실시간 승률 통계 (Equity)" Monte Carlo 계산 spec 을 Game Engine 구현 차원에서 정본화한다. PR [#393](https://github.com/garimto81/ebs_github/pull/393) Cascade Note (Type B 기획 공백 — S8 trigger) 해소.
 
 | 항목 | 값 |
 |------|------|

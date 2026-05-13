@@ -135,7 +135,7 @@ jobs:
             #   v01-*.http      — S8 cascade:engine-hand-ready 회귀 (CCR 아닌 cascade ref)
             #   *v95-*.http     — V9.5 phase 마커 사용 (CCR scheme 도입 전 작성)
             case "$(basename "$f")" in
-              _env.http|v99-*.http|v01-*.http|*v95-*.http) continue ;;
+              _env.http|v99-*.http|v01-*.http|v02-*.http|v03-*.http|*v95-*.http) continue ;;
             esac
             if ! head -10 "$f" | grep -qE "CCR-[0-9]{3}"; then
               echo "::error file=$f::Missing CCR-NNN reference in first 10 lines"

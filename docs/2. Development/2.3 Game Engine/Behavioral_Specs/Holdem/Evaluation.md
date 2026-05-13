@@ -2,7 +2,6 @@
 title: Evaluation
 owner: team3
 tier: deprecated
-legacy-id: BS-06-05
 deprecated: 2026-04-28
 redirect-to: "../Variants_and_Evaluation.md"
 status: superseded
