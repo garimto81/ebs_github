@@ -1,7 +1,7 @@
 ---
 title: V9.5 SSOT vs Implementation Gap Triage
 owner: conductor
-tier: contract
+tier: operations
 last-updated: 2026-04-29
 governance: v9.5
 related: ["Spec_Gap_Triage.md", "../../docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md"]

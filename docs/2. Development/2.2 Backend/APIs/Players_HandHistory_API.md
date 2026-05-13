@@ -5,6 +5,8 @@ tier: contract
 last-updated: 2026-05-13
 version: 1.0.0
 audience-target: 외부 백엔드 + Lobby 프론트엔드 시니어
+derivative-of: ../Back_Office/Overview.md
+if-conflict: derivative-of takes precedence
 ---
 
 # Players + Hand History API — Lobby DB 연동 Contract

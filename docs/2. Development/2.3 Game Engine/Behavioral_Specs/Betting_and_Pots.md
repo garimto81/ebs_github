@@ -15,6 +15,8 @@ related:
 confluence-page-id: 3819274749
 confluence-parent-id: 3811836049
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274749/EBS+Betting+Pots+Domain+Master
+derivative-of: ../Rules/Multi_Hand_v03.md
+if-conflict: derivative-of takes precedence
 ---
 
 # Betting & Pots — Domain Master

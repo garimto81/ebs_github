@@ -1,7 +1,7 @@
 ---
 title: Global SSOT Sync — SG-022 advocacy eradication
 owner: conductor
-tier: contract
+tier: operations
 last-updated: 2026-04-27
 status: active
 supersedes: SG-022 single-binary advocacy across all docs/team* trees

@@ -5,6 +5,8 @@ tier: contract
 last-updated: 2026-05-13
 version: 1.0.0
 audience-target: 외부 개발팀 (WSOP LIVE 측 + EBS 측) + 백엔드 시니어
+derivative-of: ../Back_Office/Overview.md
+if-conflict: derivative-of takes precedence
 ---
 
 # WSOP LIVE → EBS Chip Count Sync — Webhook Contract

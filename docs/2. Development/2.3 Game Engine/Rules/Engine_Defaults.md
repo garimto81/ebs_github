@@ -10,6 +10,8 @@ reimplementability_checked: 2026-05-12
 reimplementability_notes: "9 keys × default × Engine 매핑 표 + 코드 file:line. spec_drift_check engine D2 9→0 KPI 충족"
 related-issue: 265
 related-cycle: 4
+derivative-of: ./Multi_Hand_v03.md
+if-conflict: derivative-of takes precedence
 ---
 
 # Engine Defaults — Settings 9 keys 정합 (Cycle 4)

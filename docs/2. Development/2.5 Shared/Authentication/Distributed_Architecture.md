@@ -12,6 +12,8 @@ reimplementability_notes: "M2 운영 토폴로지 SSOT, multi-instance + Redis +
 confluence-page-id: 3819373018
 confluence-parent-id: 3812032646
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819373018/EBS+Distributed+Authentication+Architecture
+derivative-of: ../../2.2 Backend/Back_Office/Overview.md
+if-conflict: derivative-of takes precedence
 ---
 # Distributed Authentication Architecture (M2)
 

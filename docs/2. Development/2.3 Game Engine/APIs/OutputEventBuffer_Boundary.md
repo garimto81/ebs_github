@@ -11,6 +11,8 @@ reimplementability_notes: "API-04.3 버퍼 경계 계약 완결. 2026-05-11 B-33
 confluence-page-id: 3818521062
 confluence-parent-id: 3811836049
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521062/EBS+OutputEventBuffer
+derivative-of: ../Rules/Multi_Hand_v03.md
+if-conflict: derivative-of takes precedence
 ---
 # OutputEventBuffer 구현 경계 (API-04.3)
 

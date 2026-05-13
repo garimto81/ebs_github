@@ -1,7 +1,7 @@
 ---
 title: V9.5 Cycle Metrics — P10 결과물 Quality Report
 owner: conductor
-tier: contract
+tier: operations
 last-updated: 2026-04-29
 governance: v9.5
 related: ["v93_metrics.yml", "2026-04-29-v95-e2e-iteration-phase-plan.md"]

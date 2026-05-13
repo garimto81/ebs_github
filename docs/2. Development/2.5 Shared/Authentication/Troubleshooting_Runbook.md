@@ -13,6 +13,8 @@ reimplementability_notes: "M6 — 6 시나리오 catalog + 진단/해소 절차 
 confluence-page-id: 3818914250
 confluence-parent-id: 3812032646
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914250/EBS+Authentication+Troubleshooting+Runbook
+derivative-of: ../../2.2 Backend/Back_Office/Overview.md
+if-conflict: derivative-of takes precedence
 ---
 # Authentication Troubleshooting Runbook (M6)
 

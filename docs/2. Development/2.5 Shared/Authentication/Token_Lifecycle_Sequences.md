@@ -13,6 +13,8 @@ reimplementability_notes: "M3 — 7 Mermaid 시퀀스 + invariant 명시, 외부
 confluence-page-id: 3818684817
 confluence-parent-id: 3812032646
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684817/EBS+Token+Lifecycle+Sequences
+derivative-of: ../../2.2 Backend/Back_Office/Overview.md
+if-conflict: derivative-of takes precedence
 ---
 # Token Lifecycle Sequences (M3)
 

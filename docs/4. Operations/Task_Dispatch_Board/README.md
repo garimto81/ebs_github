@@ -1,7 +1,7 @@
 ---
 title: Task Dispatch Board (분해 디렉토리)
 owner: conductor
-tier: contract
+tier: operations
 last-updated: 2026-04-29
 governance: v9.3
 related: ["../Task_Dispatch_Board.md", "../../2. Development/2.5 Shared/team-policy.json"]

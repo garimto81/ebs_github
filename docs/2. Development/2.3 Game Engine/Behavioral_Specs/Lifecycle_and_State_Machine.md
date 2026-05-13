@@ -15,6 +15,8 @@ related:
 confluence-page-id: 3819274769
 confluence-parent-id: 3811836049
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274769/EBS+Lifecycle+State+Machine+Domain+Master
+derivative-of: ../Rules/Multi_Hand_v03.md
+if-conflict: derivative-of takes precedence
 ---
 
 # Lifecycle & State Machine — Domain Master

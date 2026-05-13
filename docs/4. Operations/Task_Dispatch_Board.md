@@ -1,7 +1,7 @@
 ---
 title: Task Dispatch Board (V9.3 — Intent/Execution Separation + AI Autonomous Merge)
 owner: conductor
-tier: contract
+tier: operations
 last-updated: 2026-04-29
 governance: V9.3 intent_execution_separation_with_ai_autonomous_merge
 confluence-page-id: 3818947055

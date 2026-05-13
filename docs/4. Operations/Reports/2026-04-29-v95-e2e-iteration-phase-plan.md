@@ -1,7 +1,7 @@
 ---
 title: V9.5 결과물 E2E Iteration — Phase / Task Plan + P5/P6 진행
 owner: conductor
-tier: contract
+tier: operations
 last-updated: 2026-04-29
 governance: v9.5
 related: ["2026-04-29-v95-ssot-implementation-gap-triage.md"]

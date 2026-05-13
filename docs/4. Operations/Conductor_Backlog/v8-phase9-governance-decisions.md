@@ -1,7 +1,7 @@
 ---
 title: v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기)
 owner: conductor
-tier: contract
+tier: operations
 status: pending-user-decision
 last-updated: 2026-04-28
 related:

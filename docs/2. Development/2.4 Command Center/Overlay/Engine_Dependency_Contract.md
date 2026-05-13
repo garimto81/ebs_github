@@ -7,6 +7,8 @@ related-sg: SG-002
 confluence-page-id: 3819372998
 confluence-parent-id: 3811901565
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819372998/EBS+Engine+Dependency+Contract
+derivative-of: ../Command_Center_UI/Overview.md
+if-conflict: derivative-of takes precedence
 ---
 
 # Engine Dependency Contract

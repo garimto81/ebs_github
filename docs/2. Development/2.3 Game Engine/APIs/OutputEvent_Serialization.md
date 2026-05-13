@@ -13,6 +13,8 @@ audit-notes:
 confluence-page-id: 3818914230
 confluence-parent-id: 3811836049
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914230/EBS+OutputEvent+Serialization
+derivative-of: ../Rules/Multi_Hand_v03.md
+if-conflict: derivative-of takes precedence
 ---
 # OutputEvent JSON 직렬화 계약 (API-04.1)
 

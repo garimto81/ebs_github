@@ -13,6 +13,8 @@ drift_ignore_reason: "SG-011 OUT_OF_SCOPE — 프로토타입 범위 밖. single
 confluence-page-id: 3818455474
 confluence-parent-id: 3811901565
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455474/EBS+RFID+HAL+Interface+Contract
+derivative-of: ../Command_Center_UI/Overview.md
+if-conflict: derivative-of takes precedence
 ---
 # API-03 RFID HAL Interface — Real/Mock RFID 교체 계약
 

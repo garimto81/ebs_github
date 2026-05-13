@@ -1,7 +1,7 @@
 ---
 title: V9.5 잔존 후속 cycle wrap-up — Agent Teams 첫 적용 + P11-P14 통합 보고
 owner: conductor
-tier: contract
+tier: operations
 last-updated: 2026-04-29
 governance: v9.5
 related: ["2026-04-29-v95-cycle-metrics.md"]

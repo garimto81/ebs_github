@@ -1,7 +1,7 @@
 ---
 title: v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record
 owner: conductor
-tier: contract
+tier: operations
 status: REJECTED
 decision_date: 2026-04-28
 decision_authority: user (decision 2A in v8-phase9-governance-decisions.md)

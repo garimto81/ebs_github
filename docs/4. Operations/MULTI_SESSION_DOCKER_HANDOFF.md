@@ -1,7 +1,7 @@
 ---
 title: Multi-Session Docker Handoff (SG-022 deprecation cascade)
 owner: conductor
-tier: contract
+tier: operations
 last-updated: 2026-04-27
 status: active
 supersedes: SG-022 single-binary-desktop intent

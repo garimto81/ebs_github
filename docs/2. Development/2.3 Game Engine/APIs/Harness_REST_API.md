@@ -11,6 +11,8 @@ reimplementability_notes: "§2.1 response schema 실측 정렬 (notify: team3). 
 confluence-page-id: 3818815911
 confluence-parent-id: 3811836049
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818815911/EBS+Harness+REST+API
+derivative-of: ../Rules/Multi_Hand_v03.md
+if-conflict: derivative-of takes precedence
 ---
 # Harness REST API 명세 (API-04.2)
 

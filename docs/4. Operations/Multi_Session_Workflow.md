@@ -1,7 +1,7 @@
 ---
 title: Multi-Session Workflow (v10.3 redirect)
 owner: conductor
-tier: contract
+tier: operations
 governance: v10.3 architect_then_observer
 confluence-page-id: 3818717573
 confluence-parent-id: 3811573898
