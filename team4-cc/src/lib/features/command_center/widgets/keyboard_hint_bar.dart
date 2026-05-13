@@ -1,7 +1,16 @@
-// Keyboard Hint Bar — V1 of B-team4-011 visual uplift.
+// Keyboard Hint Bar — V2 (Cycle 19 U2 OKLCH realignment).
 //
-// 디자인 reference: claude-design-archive/2026-05-06/cc-react-extracted/App.jsx
-//   §"kbd-hint" (TopStrip 우측 단축키 시각 표시).
+// 디자인 reference:
+//   - HTML SSOT: `docs/mockups/EBS Command Center/app.css` §".kbd-hint" + ".kbd"
+//   - Spec: `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md` §13
+//
+// V2 변경 — Broadcast Dark Amber OKLCH 정합:
+//   * `cs.surfaceContainerLow`  → `EbsOklch.bg2`   (`.kbd { background: var(--bg-2) }`)
+//   * `cs.outlineVariant`       → `EbsOklch.line`  (`.kbd { border: 1px solid var(--line) }`)
+//   * Material 6종 accent 하드코딩 → 의미 보존 OKLCH 매핑
+//     (FOLD = err / CHECK·CALL = info / BET·RAISE = accent / ALL-IN = err /
+//      NEW·FINISH = ok / MISS DEAL = warn / DEBUG = fg3)
+//   * `cs.onSurface` / `cs.onSurfaceVariant` → `EbsOklch.fg0` / `EbsOklch.fg3`
 //
 // 운영자 화면 하단 또는 상단 슬림 바 (높이 32px) 에 6개 단축키 칩 노출.
 // 활성화 상태는 actionButtonProvider 매트릭스에 동기. 비활성 키는 dimmed.
@@ -11,6 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../foundation/theme/ebs_oklch.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../providers/action_button_provider.dart';
@@ -26,54 +36,53 @@ class KeyboardHintBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final btn = ref.watch(actionButtonProvider);
-    final cs = Theme.of(context).colorScheme;
 
     final hints = <_HintData>[
       _HintData(
         keyLabel: 'F',
         actionLabel: 'FOLD',
         active: btn.isEnabled(CcAction.fold),
-        accent: cs.error,
+        accent: EbsOklch.err,
       ),
       _HintData(
         keyLabel: 'C',
         actionLabel: btn.checkCallLabel,
         active: btn.isEnabled(CcAction.checkCall),
-        accent: const Color(0xFF78909C),
+        accent: EbsOklch.info,
       ),
       _HintData(
         keyLabel: 'B',
         actionLabel: btn.betRaiseLabel,
         active: btn.isEnabled(CcAction.betRaise),
-        accent: const Color(0xFFFFA726),
+        accent: EbsOklch.accent,
       ),
       _HintData(
         keyLabel: 'A',
         actionLabel: 'ALL-IN',
         active: btn.isEnabled(CcAction.allIn),
-        accent: const Color(0xFFEF5350),
+        accent: EbsOklch.err,
       ),
       _HintData(
         keyLabel: 'N',
         actionLabel: btn.isEnabled(CcAction.newHand) ? 'NEW' : 'FINISH',
         active: btn.isEnabled(CcAction.newHand) ||
             btn.isEnabled(CcAction.deal),
-        accent: const Color(0xFF66BB6A),
+        accent: EbsOklch.ok,
       ),
       _HintData(
         keyLabel: 'M',
         actionLabel: 'MISS DEAL',
         active: btn.isEnabled(CcAction.missDeal),
-        accent: const Color(0xFFFFB74D),
+        accent: EbsOklch.warn,
       ),
     ];
 
     return Container(
       height: _heightPx,
       padding: const EdgeInsets.symmetric(horizontal: EbsSpacing.md),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        border: Border(bottom: BorderSide(color: cs.outlineVariant)),
+      decoration: const BoxDecoration(
+        color: EbsOklch.bg2,
+        border: Border(bottom: BorderSide(color: EbsOklch.line)),
       ),
       child: Row(
         children: [
@@ -87,7 +96,7 @@ class KeyboardHintBar extends ConsumerWidget {
               keyLabel: 'Ctrl+L',
               actionLabel: 'DEBUG',
               active: true,
-              accent: Color(0xFF9E9E9E),
+              accent: EbsOklch.fg3,
             ),
           ),
         ],
@@ -117,9 +126,9 @@ class _HintChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final keyColor = data.active ? data.accent : cs.outline;
-    final textColor = data.active ? cs.onSurface : cs.onSurfaceVariant;
+    // HTML SSOT — active 칩: 액션 의미색 + bg-2 / inactive: line(border) + fg3(text).
+    final keyColor = data.active ? data.accent : EbsOklch.line;
+    final textColor = data.active ? EbsOklch.fg0 : EbsOklch.fg3;
 
     return Tooltip(
       message: data.active

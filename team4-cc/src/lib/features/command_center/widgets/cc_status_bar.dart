@@ -1,7 +1,15 @@
-// CC Status Bar — V2 of B-team4-011 visual uplift.
+// CC Status Bar — V3 (Cycle 19 U2 OKLCH realignment).
 //
-// 디자인 reference: claude-design-archive/2026-05-06/cc-react-extracted/App.jsx
-//   §"statusbar" (StatusBar 컴포넌트 — BO/RFID/Engine 통합 + 좌/중/우 3-zone).
+// 디자인 reference:
+//   - HTML SSOT: `docs/mockups/EBS Command Center/app.css` §".statusbar"
+//   - Spec: `docs/2. Development/2.4 Command Center/Command_Center_UI/Overview.md` §13
+//
+// V3 변경 — Broadcast Dark Amber OKLCH 정합:
+//   * `cs.surfaceContainerHigh` → `EbsOklch.bg1`  (`.statusbar { background: var(--bg-1) }`)
+//   * `cs.outlineVariant`       → `EbsOklch.line` (`border-bottom: 1px solid var(--line)`)
+//   * `cs.primary` (POT 강조)   → `EbsOklch.accent` (`.phase.live { color: var(--accent) }`)
+//   * Material 하드코딩 dot 색 → `EbsOklch.ok | warn | err | fg3` (`.dot.ok / .dot.warn / .dot.err`)
+//   * Phase pill Material 색  → 의미 보존 후 OKLCH 매핑 (HTML SSOT 의 phase 시각 룰 정합)
 //
 // 통합 정책 (V2 + V10 결합):
 //   좌측 그룹: BO/RFID/Engine dot 3종 + Operator + Table
@@ -9,7 +17,7 @@
 //   우측 그룹: Players (active/total) + 아이콘 슬롯
 //
 // 본 위젯은 기존 _Toolbar + _InfoBar 와 **공존** 가능 (선택적 교체).
-// 통합 결정은 다음 turn 사용자 검토 후. D7 / 통신 / HandFSM 변경 없음.
+// D7 / 통신 / HandFSM 변경 없음.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +25,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/remote/ws_provider.dart';
 import '../../auth/auth_provider.dart';
+import '../../../foundation/theme/ebs_oklch.dart';
 import '../../../foundation/theme/ebs_spacing.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../models/enums/hand_fsm.dart';
@@ -43,7 +52,6 @@ class CcStatusBar extends ConsumerWidget {
     final handNum = ref.watch(handNumberProvider);
     final pot = ref.watch(potTotalProvider);
     final auth = ref.watch(authProvider);
-    final cs = Theme.of(context).colorScheme;
 
     final activePlayers = seats
         .where((s) => s.isOccupied && s.activity != PlayerActivity.folded)
@@ -53,9 +61,9 @@ class CcStatusBar extends ConsumerWidget {
     return Container(
       height: _heightPx,
       padding: const EdgeInsets.symmetric(horizontal: EbsSpacing.md),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
-        border: Border(bottom: BorderSide(color: cs.outlineVariant)),
+      decoration: const BoxDecoration(
+        color: EbsOklch.bg1,
+        border: Border(bottom: BorderSide(color: EbsOklch.line)),
       ),
       child: Row(
         children: [
@@ -187,7 +195,7 @@ class _LeftGroup extends StatelessWidget {
         const SizedBox(width: EbsSpacing.sm),
         const _StatusDot(
           label: 'RFID',
-          color: Color(0xFF66BB6A), // Mock OK by default
+          color: EbsOklch.ok, // Mock HAL = OK by default
           tooltip: 'RFID HAL — Mock active',
         ),
         const SizedBox(width: EbsSpacing.sm),
@@ -204,22 +212,23 @@ class _LeftGroup extends StatelessWidget {
     );
   }
 
+  // HTML SSOT — `.dot.ok | .dot.warn | .dot.err` 정합.
   Color _wsColor(WsConnectionState s) {
     return switch (s) {
-      WsConnectionState.connected    => const Color(0xFF66BB6A),
-      WsConnectionState.connecting   => const Color(0xFFFFA726),
-      WsConnectionState.reconnecting => const Color(0xFFFFA726),
-      WsConnectionState.failed       => const Color(0xFFEF5350),
-      WsConnectionState.disconnected => const Color(0xFF9E9E9E),
+      WsConnectionState.connected    => EbsOklch.ok,
+      WsConnectionState.connecting   => EbsOklch.warn,
+      WsConnectionState.reconnecting => EbsOklch.warn,
+      WsConnectionState.failed       => EbsOklch.err,
+      WsConnectionState.disconnected => EbsOklch.fg3,
     };
   }
 
   Color _engineColor(EngineConnectionStage s) {
     return switch (s) {
-      EngineConnectionStage.online     => const Color(0xFF66BB6A),
-      EngineConnectionStage.connecting => const Color(0xFFFFA726),
-      EngineConnectionStage.degraded   => const Color(0xFFFFA726),
-      EngineConnectionStage.offline    => const Color(0xFFEF5350),
+      EngineConnectionStage.online     => EbsOklch.ok,
+      EngineConnectionStage.connecting => EbsOklch.warn,
+      EngineConnectionStage.degraded   => EbsOklch.warn,
+      EngineConnectionStage.offline    => EbsOklch.err,
     };
   }
 }
@@ -249,7 +258,6 @@ class _CenterGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     final (phaseLabel, phaseColor) = _phaseLook(phase);
     final isLive = phase != HandFsm.idle && phase != HandFsm.handComplete;
 
@@ -262,7 +270,7 @@ class _CenterGroup extends StatelessWidget {
           style: EbsTypography.toolbarTitle.copyWith(fontSize: 14),
         ),
         const SizedBox(width: EbsSpacing.sm),
-        // Phase pill
+        // Phase pill — `.phase.live { color: var(--accent); background: var(--accent-soft) }`
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
           decoration: BoxDecoration(
@@ -294,12 +302,12 @@ class _CenterGroup extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: currentAnte > 0
-                      ? const Color(0xFFFFD700).withValues(alpha: 0.12)
+                      ? EbsOklch.accentSoft
                       : Colors.transparent,
                   border: Border.all(
                     color: currentAnte > 0
-                        ? const Color(0xFFFFD700)
-                        : Colors.white24,
+                        ? EbsOklch.accent
+                        : EbsOklch.lineSoft,
                     width: 1,
                   ),
                   borderRadius: BorderRadius.circular(3),
@@ -310,36 +318,36 @@ class _CenterGroup extends StatelessWidget {
             ),
           ),
         ),
-        // POT (V10) — only when live
+        // POT (V10) — only when live. `.md-pot` (accent border + accent-soft glow).
         if (isLive) ...[
           const SizedBox(width: EbsSpacing.md),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
             decoration: BoxDecoration(
-              color: cs.primary.withValues(alpha: 0.18),
-              border: Border.all(color: cs.primary, width: 1),
+              color: EbsOklch.accentSoft,
+              border: Border.all(color: EbsOklch.accent, width: 1),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   'POT',
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
-                    color: cs.primary,
+                    color: EbsOklch.accent,
                     letterSpacing: 0.7,
                   ),
                 ),
                 const SizedBox(width: 4),
                 Text(
                   '\$${_fmt(potAmount)}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'monospace',
-                    color: cs.primary,
+                    color: EbsOklch.accent,
                   ),
                 ),
               ],
@@ -350,16 +358,19 @@ class _CenterGroup extends StatelessWidget {
     );
   }
 
+  // Phase pill 색 — HTML SSOT 의 phase 분류 시각 룰 정합.
+  // LIVE 상태 (preFlop/flop/turn/river/showdown) 는 accent / accent-strong /
+  // info / ok / pos-bb 등 의미 있는 OKLCH 토큰으로 매핑.
   static (String, Color) _phaseLook(HandFsm fsm) => switch (fsm) {
-        HandFsm.idle          => ('IDLE', const Color(0xFF9E9E9E)),
-        HandFsm.setupHand     => ('SETUP', const Color(0xFFFFA726)),
-        HandFsm.preFlop       => ('PRE-FLOP', const Color(0xFF42A5F5)),
-        HandFsm.flop          => ('FLOP', const Color(0xFF66BB6A)),
-        HandFsm.turn          => ('TURN', const Color(0xFFAB47BC)),
-        HandFsm.river         => ('RIVER', const Color(0xFFEF5350)),
-        HandFsm.showdown      => ('SHOWDOWN', const Color(0xFFFDD835)),
-        HandFsm.handComplete  => ('COMPLETE', const Color(0xFF78909C)),
-        HandFsm.runItMultiple => ('RUN IT', const Color(0xFFFF7043)),
+        HandFsm.idle          => ('IDLE', EbsOklch.fg3),
+        HandFsm.setupHand     => ('SETUP', EbsOklch.warn),
+        HandFsm.preFlop       => ('PRE-FLOP', EbsOklch.info),
+        HandFsm.flop          => ('FLOP', EbsOklch.ok),
+        HandFsm.turn          => ('TURN', EbsOklch.posBb),
+        HandFsm.river         => ('RIVER', EbsOklch.err),
+        HandFsm.showdown      => ('SHOWDOWN', EbsOklch.accent),
+        HandFsm.handComplete  => ('COMPLETE', EbsOklch.fg2),
+        HandFsm.runItMultiple => ('RUN IT', EbsOklch.accentStrong),
       };
 }
 
@@ -447,7 +458,7 @@ class _KeyVal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    // HTML SSOT — `.sb-item .lbl { color: var(--fg-2) }` + `.val { color: var(--fg-0) }`.
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -455,7 +466,7 @@ class _KeyVal extends StatelessWidget {
           label,
           style: EbsTypography.shortcutHint.copyWith(
             fontSize: 10,
-            color: cs.onSurfaceVariant,
+            color: EbsOklch.fg2,
           ),
         ),
         const SizedBox(width: 4),
@@ -465,7 +476,7 @@ class _KeyVal extends StatelessWidget {
             fontSize: 12,
             fontWeight: FontWeight.w600,
             fontFamily: mono ? 'monospace' : null,
-            color: cs.onSurface,
+            color: EbsOklch.fg0,
           ),
         ),
       ],
