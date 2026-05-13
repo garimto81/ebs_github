@@ -331,6 +331,9 @@ class _TablesGrid extends StatelessWidget {
             DataColumn(label: Text('RFID')),
             DataColumn(label: Text('OUTPUT')),
             DataColumn(label: Text('CC')),
+            // Cycle 20 (#439, S2 Wave 3c) — aggregate chip total from
+            // `chip_count_synced` WS events.
+            DataColumn(label: Text('CHIPS'), numeric: true),
             DataColumn(label: Text('ACTION')),
           ],
           rows: [
@@ -347,6 +350,7 @@ class _TablesGrid extends StatelessWidget {
                     style: EbsTypography.monoSmall,
                   )),
                   DataCell(_CcCell(t: t)),
+                  DataCell(_ChipTotalCell(chipTotal: t.chipTotal)),
                   DataCell(TextButton(
                     onPressed: () => onOpen(t),
                     child: const Text('Open ›'),
@@ -358,6 +362,68 @@ class _TablesGrid extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Right-aligned compact chip total cell with a brief tint pulse when the
+/// value changes (Cycle 20, #439 S2 Wave 3c).
+///
+/// AnimatedSwitcher keys on the value so a transition fires whenever the
+/// chipTotal updates from a `chip_count_synced` WS event.
+class _ChipTotalCell extends StatelessWidget {
+  const _ChipTotalCell({required this.chipTotal});
+  final int chipTotal;
+
+  @override
+  Widget build(BuildContext context) {
+    final display = formatChipTotal(chipTotal);
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 280),
+      transitionBuilder: (child, animation) {
+        // Brief amber tint that fades to the regular ink as the new number
+        // settles. Pure opacity transition keeps it cheap to repaint.
+        final tint = ColorTween(
+          begin: DesignTokens.warnBase,
+          end: DesignTokens.lightInk,
+        ).animate(animation);
+        return AnimatedBuilder(
+          animation: tint,
+          builder: (_, __) => DefaultTextStyle.merge(
+            style: TextStyle(color: tint.value),
+            child: FadeTransition(opacity: animation, child: child),
+          ),
+        );
+      },
+      child: Text(
+        display,
+        key: ValueKey<int>(chipTotal),
+        textAlign: TextAlign.right,
+        style: TextStyle(
+          fontFamily: DesignTokens.fontFamilyMono,
+          fontSize: 11.5,
+          fontWeight: FontWeight.w600,
+          color: chipTotal > 0
+              ? DesignTokens.lightInk
+              : DesignTokens.lightInk5,
+          fontFeatures: const [FontFeature.tabularFigures()],
+        ),
+      ),
+    );
+  }
+}
+
+/// Compact display: 0 → "—", < 1k → raw, 1234 → "1.2k", 1234567 → "1.2M".
+///
+/// Exported (library-visible) for test parity. Cycle 20 (#439 S2 Wave 3c).
+String formatChipTotal(int total) {
+  if (total <= 0) return '—';
+  if (total < 1000) return '$total';
+  if (total < 1000000) {
+    return '${(total / 1000).toStringAsFixed(1)}k';
+  }
+  if (total < 1000000000) {
+    return '${(total / 1000000).toStringAsFixed(1)}M';
+  }
+  return '${(total / 1000000000).toStringAsFixed(1)}B';
 }
 
 class _TableNameCell extends StatelessWidget {

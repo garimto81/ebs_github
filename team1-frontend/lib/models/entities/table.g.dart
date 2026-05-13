@@ -31,6 +31,7 @@ _$EbsTableImpl _$$EbsTableImplFromJson(Map<String, dynamic> json) =>
       createdAt: json['createdAt'] as String,
       updatedAt: json['updatedAt'] as String,
       seatedCount: (json['seatedCount'] as num?)?.toInt(),
+      chipTotal: (json['chipTotal'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$$EbsTableImplToJson(_$EbsTableImpl instance) =>
@@ -58,4 +59,5 @@ Map<String, dynamic> _$$EbsTableImplToJson(_$EbsTableImpl instance) =>
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
       if (instance.seatedCount case final value?) 'seatedCount': value,
+      'chipTotal': instance.chipTotal,
     };

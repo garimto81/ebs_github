@@ -327,6 +327,35 @@ void dispatchWsEvent(ProviderReadFn read, WsDispatchEnvelope envelope) {
       debugPrint('[WS] Reply envelope: ${envelope.event}');
 
     // ------------------------------------------------------------------
+    // Cycle 20 (#439, S2 Wave 3c) — Table aggregate chip total
+    // ------------------------------------------------------------------
+    // Backend (team2, S7 #435/#436) publishes `chip_count_synced` after a
+    // SyncChip webhook from the engine. Payload: { tableId, seats: [...] }
+    // where each seat carries chipCount (or chip_count for legacy emitters).
+    // We sum the seats and replace the table's local chipTotal — the REST
+    // schema does NOT carry chipTotal, so this aggregate lives only in the
+    // Lobby's in-memory table list.
+    case 'chip_count_synced':
+      if (payload == null) return;
+      final tableId = (payload['tableId'] ?? payload['table_id']) as int?;
+      final flightId = read(currentFlightIdProvider);
+      if (tableId == null || flightId == null) return;
+      final seats = payload['seats'];
+      if (seats is! List) return;
+      var total = 0;
+      for (final s in seats) {
+        if (s is! Map) continue;
+        final raw = s['chipCount'] ?? s['chip_count'];
+        if (raw is int) {
+          total += raw;
+        } else if (raw is num) {
+          total += raw.toInt();
+        }
+      }
+      read(tableListProvider(flightId).notifier)
+          .updateChipTotal(tableId, total);
+
+    // ------------------------------------------------------------------
     // Phase 3.C (2026-05-06) — TopBar Active CC pill live update
     // ------------------------------------------------------------------
     case 'cc_session_count':

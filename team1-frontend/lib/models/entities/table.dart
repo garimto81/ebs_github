@@ -29,6 +29,10 @@ class EbsTable with _$EbsTable {
     @JsonKey(name: 'createdAt') required String createdAt,
     @JsonKey(name: 'updatedAt') required String updatedAt,
     @JsonKey(name: 'seatedCount') int? seatedCount,
+    // Cycle 20 (#439, S2 Wave 3c): aggregate chip count for the table.
+    // Derived locally from `chip_count_synced` WS events (sum of seats[].chipCount).
+    // Not part of REST schema — backend persists chip_count per-seat only.
+    @JsonKey(name: 'chipTotal') @Default(0) int chipTotal,
   }) = _EbsTable;
 
   factory EbsTable.fromJson(Map<String, dynamic> json) =>
