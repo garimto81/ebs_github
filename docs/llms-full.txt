@@ -1,0 +1,85 @@
+# EBS Documentation — Full Causal Graph
+
+> EBS (Event Broadcasting System) — 완전한 인과관계 그래프 + DEV 정본 기술 명세 + Confluence ID 매핑.
+> 기준 정책: docs/1. Product/Product_SSOT_Policy.md (§8 인과관계 매핑)
+> 검증 도구: python tools/ssot_verify.py
+
+---
+
+## Causal Map (POL ↔ DEV)
+
+Document A defines the policy that Document B implements:
+
+- POL-01 [Foundation.md] is the SSOT root — all PRDs derive their identity from it.
+- DEV-01 [2.1 Frontend/Lobby/Overview.md] defines the technical spec → POL-02 [Lobby.md] is its external PRD derivative.
+- DEV-02 [2.2 Backend/Back_Office/Overview.md] defines the technical spec → POL-04 [Back_Office.md] is its external PRD derivative.
+- DEV-03 [2.3 Game Engine/Rules/Multi_Hand_v03.md] defines the betting rules → POL-06 [Game_Rules/Betting_System.md] is its external PRD derivative.
+- DEV-04 [2.4 Command Center/Command_Center_UI/Overview.md] defines the technical spec → POL-03 [Command_Center.md] is its external PRD derivative.
+
+---
+
+## Product Nodes (POL) — Full Manifest
+
+| ID | Path | Confluence ID | Confluence URL | derivative-of |
+|:--:|------|:-------------:|---------------|:-------------:|
+| POL-01 | docs/1. Product/Foundation.md | 3625189547 | https://ggnetwork.atlassian.net/wiki/x/qwAU2 | local SSOT |
+| POL-02 | docs/1. Product/Lobby.md | 3811672228 | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228 | DEV-01 |
+| POL-03 | docs/1. Product/Command_Center.md | 3811901603 | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811901603 | DEV-04 |
+| POL-04 | docs/1. Product/Back_Office.md | 3811967073 | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811967073 | DEV-02 |
+| POL-05 | docs/1. Product/RIVE_Standards.md | 3816784235 | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3816784235 | — |
+| POL-06 | docs/1. Product/Game_Rules/Betting_System.md | 3811410570 | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811410570 | DEV-03 |
+| POL-07 | docs/1. Product/Game_Rules/Flop_Games.md | 3811443642 | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811443642 | — |
+| POL-08 | docs/1. Product/Game_Rules/Draw.md | 3810853753 | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3810853753 | — |
+| POL-09 | docs/1. Product/Game_Rules/Seven_Card_Games.md | 3811771012 | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811771012 | — |
+| META | docs/1. Product/Product_SSOT_Policy.md | 3818848697 | https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818848697 | — |
+
+---
+
+## Development Nodes (DEV) — Technical Spec Primary Sources
+
+| DEV ID | Path (docs/2. Development/ 기준) | Owner Stream | PRD 관계 |
+|:------:|----------------------------------|:------------:|---------|
+| DEV-01 | 2.1 Frontend/Lobby/Overview.md | S2 | POL-02의 derivative 소스 |
+| DEV-02 | 2.2 Backend/Back_Office/Overview.md | S7 | POL-04의 derivative 소스 |
+| DEV-03 | 2.3 Game Engine/Rules/Multi_Hand_v03.md | S8 | POL-06의 derivative 소스 |
+| DEV-04 | 2.4 Command Center/Command_Center_UI/Overview.md | S3 | POL-03의 derivative 소스 |
+
+---
+
+## Key Contracts (docs/2. Development/ — tier: contract)
+
+- 2.2 Backend/APIs/WSOP_LIVE_Chip_Count_Sync.md — WSOP LIVE 칩카운트 웹훅 수신 계약 (HMAC-SHA256 + replay protection)
+- 2.2 Backend/APIs/Backend_HTTP.md — REST API 카탈로그
+- 2.2 Backend/APIs/WebSocket_Events.md — WS 이벤트 카탈로그
+- 2.2 Backend/APIs/Players_HandHistory_API.md — Players + Hand History cursor pagination API
+- 2.5 Shared/Chip_Count_State.md — Engine vs WSOP LIVE chipstack reconcile FSM
+
+---
+
+## Stream Ownership Matrix
+
+| Stream | 코드 | Product 파일 소유 | Development 파일 소유 |
+|--------|:----:|-------------------|----------------------|
+| S1 (Foundation) | S1 | Foundation.md, Back_Office.md*, Game_Rules/** | — |
+| S2 (Lobby) | S2 | Lobby.md | 2.1 Frontend/Lobby/** |
+| S3 (CC) | S3 | Command_Center.md | 2.4 Command Center/** |
+| S7 (Backend) | S7 | — | 2.2 Backend/** |
+| S8 (Engine) | S8 | — | 2.3 Game Engine/** |
+
+*S1 interim — Back_Office 이관 대기
+
+---
+
+## Validation
+
+Run to verify all POL/DEV causal chains + Confluence IDs + llms.txt coverage:
+
+```bash
+python tools/ssot_verify.py
+# Expected: OVERALL PASS (exit 0)
+```
+
+Expected checks:
+- derivative-of chain: 4 POL nodes with valid DEV backlinks
+- Confluence page-id: 10 files with numeric ID
+- llms.txt coverage: 10 Product docs all mentioned

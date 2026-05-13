@@ -101,3 +101,33 @@ Stream 이 자기 영역 외 Product 파일 Edit 시도 → `orch_PreToolUse.py`
 2. 변경 사항이 Stream 매트릭스 영향 시 `team_assignment_v10_3.yaml` 동시 갱신
 3. archive INDEX.md 변경 이력 entry 추가
 4. main 머지 후 모든 Stream 에 cascade advisory (다음 hook trigger 시 자동)
+
+## 8. 인과관계 매핑 (Causal Map)
+
+ID 체계: `[POL-NN]` = Product SSOT 노드 / `[DEV-NN]` = Development 정본 기술 명세 노드.
+`derivative-of` 방향: **DEV → POL** (정본 변경 → PRD 갱신 cascade).
+
+### Product 노드 (POL)
+
+| ID | 문서 | 역할 | 인과 방향 | Confluence ID |
+|:--:|------|------|:--------:|:-------------:|
+| POL-01 | `Foundation.md` | SSOT 루트 — EBS 비전 + 핵심 정체성 | Source | 3625189547 |
+| POL-02 | `Lobby.md` | Lobby PRD (외부 인계) | DEV-01 → POL-02 | 3811672228 |
+| POL-03 | `Command_Center.md` | CC PRD (외부 인계) | DEV-04 → POL-03 | 3811901603 |
+| POL-04 | `Back_Office.md` | BO PRD (외부 인계) | DEV-02 → POL-04 | 3811967073 |
+| POL-05 | `RIVE_Standards.md` | Rive 오버레이 그래픽 표준 | POL-01 → POL-05 | 3816784235 |
+| POL-06 | `Game_Rules/Betting_System.md` | 베팅 시스템 룰 (외부 측) | DEV-03 → POL-06 | 3811410570 |
+| POL-07 | `Game_Rules/Flop_Games.md` | Flop 계열 게임 룰 | POL-01 → POL-07 | 3811443642 |
+| POL-08 | `Game_Rules/Draw.md` | Draw 게임 룰 | POL-01 → POL-08 | 3810853753 |
+| POL-09 | `Game_Rules/Seven_Card_Games.md` | 7 Card 게임 룰 | POL-01 → POL-09 | 3811771012 |
+
+### Development 정본 노드 (DEV)
+
+| DEV ID | 파일 (`docs/2. Development/` 기준) | PRD 관계 |
+|:------:|-------------------------------------|---------|
+| DEV-01 | `2.1 Frontend/Lobby/Overview.md` | POL-02 의 derivative 소스 |
+| DEV-02 | `2.2 Backend/Back_Office/Overview.md` | POL-04 의 derivative 소스 |
+| DEV-03 | `2.3 Game Engine/Rules/Multi_Hand_v03.md` | POL-06 의 derivative 소스 |
+| DEV-04 | `2.4 Command Center/Command_Center_UI/Overview.md` | POL-03 의 derivative 소스 |
+
+**자동 검증**: `python tools/ssot_verify.py` — 모든 POL/DEV 체인 0 orphan + 0 broken link + llms.txt 커버리지 일관성.

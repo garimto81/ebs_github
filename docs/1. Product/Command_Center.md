@@ -1939,6 +1939,19 @@ enum HandPhase {
 | 날짜 | 버전 | 핵심 변화 |
 |------|:---:|----------|
 | 2026-05-13 | **4.3.0** | Broadcast Dark Amber OKLCH 톤 채택 (사용자 결정, #409). Q2 재결정 — "Lobby B&W refined minimal" → "Broadcast Dark Amber OKLCH". Ch.11 전면 갱신 + §11.3 신설 (Lobby 톤 차이 명시) + Ch.11.5 신규 (25 OKLCH 토큰 표 + Inter+JBM 폰트 + 1600×900 letterbox). Lobby 톤과의 차이는 별도 cycle (cross-app cascade audit). |
+
+---
+
+## Traceability Matrix
+
+| 항목 | 값 |
+|------|-----|
+| **노드 ID** | POL-03 |
+| **Parent Policy** | [[Product_SSOT_Policy#derivative-of-룰]] |
+| **Derivative of** | [`2. Development/2.4 Command Center/Command_Center_UI/Overview.md`](../2.%20Development/2.4%20Command%20Center/Command_Center_UI/Overview.md) (DEV-04) |
+| **Downstream Impact** | Flutter cc-web (team4-cc) · OKLCH token layer (EbsTheme.dark) · 6키 keyboard shortcut handler |
+| **Validation Status** | Linked to Confluence [3811901603](https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811901603) · `last-synced: 2026-05-13` |
+| **검증 명령** | `python tools/ssot_verify.py` |
 | 2026-05-12 | **4.2.0** | SG-037-c — Mockup Layout & Component Verbatim cascade (사용자 결정 cascade:cc-prd-layout-strict). Ch.17 신규 8 부절: App.jsx root layout tree / PlayerColumn 9 행 + Position Shift Arrow `‹` `›` / Numpad 4×4 + `000` + ← long-press 500ms / CardPicker 13×4 + 3-bucket Legend / MissDealModal 3 stat + Enter/Esc / tokens.css raw source 32 token + Q2 override / data.js HAND_STATE_BASE + makeSeat + INITIAL_TWEAKS shape / PRD↔Mockup 표현 일관성 룰 7 항 + 자동 검증 도구. v4.1 Ch.16 + v4.0 본문 무변경 (additive). |
 | 2026-05-12 | **4.1.0** | SG-037 — Mockup state model 정합 cascade. Ch.16 신규 (TWEAKS / seats.sync / engineState 3-state / NEXT_STREET / ctx 의사코드 / 1600×900 캔버스 / 32 design tokens / shiftPosSlot HU 룰 / FieldEditor 9 kind / CardPicker dealtKeys / MissDealModal spec / V18 sync icon). Ch.12.1 화면 크기 모순 정정. v4.0 Reader Panel 합격본 본문 무변경 (additive). |
 | 2026-05-07 | **4.0.0** | Reader Panel critic 16 fix cascade — 숫자 fact-check / 5 vs 6 키 모순 / R3 보안 4 단 방어 / G1 runtime 강제 / 약어 첫 등장 풀이 / 1×10 trade-off honest / AT 8 화면 / 매트릭스 단일화 / 비유 정리 / D7 정본 인용 정정. |
