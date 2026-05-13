@@ -1,0 +1,38 @@
+# EBS Documentation
+
+> EBS (Event Broadcasting System) — WSOP LIVE 포커 대회를 실시간 방송하는 시스템.
+> 3 입력 (WSOP LIVE 대회정보 + RFID 카드인식 + Command Center 액션) → Game Engine → 오버레이 그래픽 출력.
+> 기술 스택: Flutter+Rive (크로스 플랫폼), FastAPI (백엔드), ST25R3911B+ESP32 (RFID 하드웨어).
+
+## Core Policy
+
+- [Product SSOT Policy](1.%20Product/Product_SSOT_Policy.md): 문서 SSOT 정책 — derivative-of 룰, Stream 책임 매트릭스, Cascade Routing 4 Layer, 인과관계 매핑 (POL-01~09 / DEV-01~04).
+
+## Foundation
+
+- [Foundation (기초 기획서)](1.%20Product/Foundation.md): EBS 비전 + 핵심 정체성. 모든 PRD의 상위 SSOT. 3 입력→오버레이 아키텍처, RFID 하드웨어, RBAC (Admin/Operator/Viewer), Graphic Novel 형식 (v4.5.0).
+
+## Product PRDs
+
+- [Lobby PRD](1.%20Product/Lobby.md): 운영자 5 화면 (Dashboard / Table Management / Player Management / Hand History / Players) + WSOP LIVE 정보 허브. derivative-of: 2.1 Frontend/Lobby/Overview.md (DEV-01).
+- [Command Center PRD](1.%20Product/Command_Center.md): RFID 카드 인식 + CC 오퍼레이터 액션 입력 + 실시간 오버레이 제어. Broadcast Dark Amber OKLCH 톤, 1600×900 fixed canvas, 6키 단축키. derivative-of: 2.4 Command Center/Command_Center_UI/Overview.md (DEV-04).
+- [Back Office PRD](1.%20Product/Back_Office.md): 20-entity DB (대회/선수/핸드 기록) + WSOP LIVE Confirm-triggered pull + 운영자 관리. FastAPI 중앙 데이터 허브. derivative-of: 2.2 Backend/Back_Office/Overview.md (DEV-02).
+
+## Game Rules
+
+- [Flop Games](1.%20Product/Game_Rules/Flop_Games.md): Hold'em, Omaha (Hi/Hi-Lo), Short-Deck, Pineapple 등 Flop 계열 게임 룰 명세.
+- [Draw Games](1.%20Product/Game_Rules/Draw.md): 5-Card Draw, 2-7 Triple Draw, Badugi 등 Draw 계열 게임 룰 명세.
+- [Seven Card Games](1.%20Product/Game_Rules/Seven_Card_Games.md): Stud, Razz, Seven Card Hi-Lo 등 7-Card 계열 게임 룰 명세.
+- [Betting System](1.%20Product/Game_Rules/Betting_System.md): 베팅 구조 + No Limit / Pot Limit / Fixed Limit 공통 룰. derivative-of: 2.3 Game Engine/Rules/Multi_Hand_v03.md (DEV-03).
+
+## Standards
+
+- [RIVE Standards](1.%20Product/RIVE_Standards.md): Flutter+Rive 오버레이 그래픽 표준. 애니메이션 상태 머신 규약, EBS DB 작가 역할 정의.
+
+## Generated Files
+
+- [1. Product.md (landing index)](1.%20Product/1.%20Product.md): CI 자동 생성 문서 인덱스 — 최신 Product 파일 목록 자동 갱신. 직접 편집 금지.
+
+## Optional (Extended Context)
+
+- [llms-full.txt](llms-full.txt): 전체 인과관계 그래프 + DEV 정본 기술 명세 + Confluence ID 매핑 + SSOT 검증 명령.

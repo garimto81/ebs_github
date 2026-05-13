@@ -1218,3 +1218,15 @@ X 축 (기능 4 단계) + Y 축 (입력 2 단계) 진화가 이 두 목적지로
 |---|---|---|
 | 2026-05-08 | 4.5.0 | Phase B cascade — §A.1 Lobby 4 진입 시점 / §A.4 CC Hole Card Visibility 4단 방어 / §B.1 Mixed Game (HORSE / 8-Game) 흡수. Issue #156 C-01-a 정정 (Ch.5 §A.4 "8 액션" → "6 키" + cascade 잔재 3곳). |
 | 2026-05-07 | 4.0.0-draft | Phase 2 완성. Ch.1~6 6 챕터 / 20 Scene + 8 §-subsections. 5 layout 변주. HTML table 패턴 완전 제거. 35 fact 보존. |
+
+---
+
+## Traceability Matrix
+
+| 항목 | 값 |
+|------|-----|
+| **노드 ID** | POL-01 |
+| **Parent Policy** | [[Product_SSOT_Policy#SSOT-진술]] — SSOT 루트 (상위 없음) |
+| **Downstream Impact** | Lobby.md (POL-02) / Command_Center.md (POL-03) / Back_Office.md (POL-04) / RIVE_Standards.md (POL-05) / Game_Rules/* (POL-06~09) |
+| **Validation Status** | Linked to Confluence [3625189547](https://ggnetwork.atlassian.net/wiki/x/qwAU2) |
+| **검증 명령** | `python tools/ssot_verify.py` |

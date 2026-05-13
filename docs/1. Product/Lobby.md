@@ -1249,6 +1249,19 @@ Future<int> _createTable() async {
 
 ---
 
+## Traceability Matrix
+
+| 항목 | 값 |
+|------|-----|
+| **노드 ID** | POL-02 |
+| **Parent Policy** | [[Product_SSOT_Policy#derivative-of-룰]] |
+| **Derivative of** | [`2. Development/2.1 Frontend/Lobby/Overview.md`](../2.%20Development/2.1%20Frontend/Lobby/Overview.md) (DEV-01) |
+| **Downstream Impact** | Flutter Lobby Web (team1-frontend) · Rive 'EBS DB 작가' 오버레이 자산 |
+| **Validation Status** | Linked to Confluence [3811672228](https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228) · `last-synced: 2026-05-11` |
+| **검증 명령** | `python tools/ssot_verify.py` |
+
+---
+
 ---
 
 ---
