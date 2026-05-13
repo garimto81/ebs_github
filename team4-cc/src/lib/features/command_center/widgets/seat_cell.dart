@@ -14,6 +14,12 @@
 // - ACTING glow: SeatColors.actionGlowTo 단일 BoxShadow → EbsShadows.glowAction
 //   (accent ring + soft outer glow) 2-stop.
 // - LAST 행 inline 구현 → ActionBadge 위젯으로 분리.
+//
+// Cycle 19 Wave 4 (U7) — ACTING glow extracted to `ActingGlowOverlay`.
+//   인라인 `AnimationController + AnimatedBuilder` 로직을 재사용 가능한
+//   `ActingGlowOverlay` 위젯으로 이관. SeatCell 은 ACTING-on 여부만 전달.
+//   ticker / dispose 책임도 overlay 위젯이 소유 → 코드 단순화 + 시각 표현
+//   재사용성 확보. 기타 layout / inline edit / context menu 동작 그대로.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +36,7 @@ import '../../../models/enums/seat_status.dart';
 import '../providers/config_provider.dart';
 import '../providers/hand_fsm_provider.dart';
 import '../providers/seat_provider.dart';
+import 'acting_glow_overlay.dart';
 import 'action_badge.dart';
 
 // ---------------------------------------------------------------------------
@@ -92,29 +99,10 @@ class SeatCell extends ConsumerStatefulWidget {
   ConsumerState<SeatCell> createState() => _SeatCellState();
 }
 
-class _SeatCellState extends ConsumerState<SeatCell>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _glowController;
-  late final Animation<double> _glowAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _glowController = AnimationController(
-      vsync: this,
-      duration: SeatColors.actionGlowDuration,
-    );
-    _glowAnimation = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
-    );
-    _glowController.repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _glowController.dispose();
-    super.dispose();
-  }
+class _SeatCellState extends ConsumerState<SeatCell> {
+  // U7 (cycle 19 Wave 4) — AnimationController / Tween ownership moved into
+  // `ActingGlowOverlay`. SeatCell now passes the ACTING flag and lets the
+  // overlay widget manage its ticker + dispose.
 
   // -- seat state -----------------------------------------------------------
 
@@ -566,40 +554,16 @@ class _SeatCellState extends ConsumerState<SeatCell>
       content = _buildOccupiedSeat(seat);
     }
 
-    final Widget cell = AnimatedBuilder(
-      animation: _glowAnimation,
-      builder: (context, child) {
-        // ACTING glow — `EbsShadows.glowAction` (HTML SSOT `--glow-action`:
-        // accent ring + soft outer glow). Animate alpha across both shadows
-        // via _glowAnimation (0.4 → 1.0) so the ring + glow pulse together.
-        final alpha = _glowAnimation.value;
-        final glowShadows = seat.actionOn
-            ? [
-                BoxShadow(
-                  color: EbsOklch.accent.withValues(alpha: alpha),
-                  spreadRadius: 2,
-                  blurRadius: 0,
-                ),
-                BoxShadow(
-                  color: EbsOklch.accentSoft.withValues(alpha: alpha),
-                  spreadRadius: 0,
-                  blurRadius: 28,
-                ),
-              ]
-            : EbsShadows.card;
-
-        return Container(
-          decoration: BoxDecoration(
-            color: bgColor,
-            border: seat.isEmpty
-                ? _dashedBorder()
-                : Border.fromBorderSide(border),
-            borderRadius: BorderRadius.circular(6),
-            boxShadow: glowShadows,
-          ),
-          child: child,
-        );
-      },
+    // U7 — static surface (no animated BoxShadow). ACTING glow is layered on
+    // top by `ActingGlowOverlay` below, which owns its own AnimationController.
+    final Widget surface = Container(
+      decoration: BoxDecoration(
+        color: bgColor,
+        border:
+            seat.isEmpty ? _dashedBorder() : Border.fromBorderSide(border),
+        borderRadius: BorderRadius.circular(6),
+        boxShadow: seat.actionOn ? null : EbsShadows.card,
+      ),
       child: Opacity(
         opacity: opacity,
         child: Padding(
@@ -610,6 +574,12 @@ class _SeatCellState extends ConsumerState<SeatCell>
           child: content,
         ),
       ),
+    );
+
+    final Widget cell = ActingGlowOverlay(
+      active: seat.actionOn,
+      borderRadius: BorderRadius.circular(6),
+      child: surface,
     );
 
     // Tap → add player (empty) or inline edit name (occupied).

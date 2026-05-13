@@ -16,6 +16,13 @@
 //   - ColorScheme.onSurfaceVariant 강결합 제거 → EbsOklch.fg3 직접 사용
 //   - SeatColors (dealer/sb/bb) + EbsOklch.warn (straddle) 토큰 매핑
 //   - app.css `.pb-row.pos-*` background alpha 0.16 / border full 정합
+//
+// Cycle 19 Wave 4 (U7) — animation polish.
+//   - `present` 토글 시 AnimatedSwitcher 로 chip ↔ placeholder 사이를
+//     300ms scale (0.92 → 1.0) + fade 로 전환. `kind` 자체는 위젯 인스턴스
+//     수명 동안 불변이므로 key 비교 없이 child type 변경만으로 충분.
+//   - 시안 `@keyframes cp-pop` (200ms cubic-bezier) 와 비슷한 결을 사용해
+//     position 마커가 이동/해제될 때 jarring cut 을 제거.
 
 import 'package:flutter/material.dart';
 
@@ -90,10 +97,58 @@ class PositionShiftChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!present) {
-      return _PlaceholderRow(label: kind.displayLabel);
-    }
+    // U7 — `present` 토글 시 chip ↔ placeholder 사이 300ms scale + fade 전환.
+    // AnimatedSwitcher 가 child 의 ValueKey 변경을 감지하여 incoming child 는
+    // 0.92 → 1.0 scale + 0 → 1 opacity, outgoing 은 역방향으로 전이.
+    final Widget body = present
+        ? _ChipBody(
+            key: ValueKey<String>('chip-${kind.name}'),
+            kind: kind,
+            handPhaseAllowsShift: handPhaseAllowsShift,
+            onShiftPrev: onShiftPrev,
+            onShiftNext: onShiftNext,
+          )
+        : _PlaceholderRow(
+            key: ValueKey<String>('placeholder-${kind.name}'),
+            label: kind.displayLabel,
+          );
 
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (child, animation) {
+        // Subtle pop: scale starts at 0.92 so the change feels lively but not
+        // distracting on a 1920px Operator surface dense with seats.
+        final scale = Tween<double>(begin: 0.92, end: 1.0).animate(animation);
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(scale: scale, child: child),
+        );
+      },
+      child: body,
+    );
+  }
+}
+
+/// chip body extracted so `AnimatedSwitcher` can swap it against the
+/// placeholder with a single child swap.
+class _ChipBody extends StatelessWidget {
+  const _ChipBody({
+    required this.kind,
+    required this.handPhaseAllowsShift,
+    required this.onShiftPrev,
+    required this.onShiftNext,
+    super.key,
+  });
+
+  final PositionKind kind;
+  final bool handPhaseAllowsShift;
+  final VoidCallback? onShiftPrev;
+  final VoidCallback? onShiftNext;
+
+  @override
+  Widget build(BuildContext context) {
     final canShift = kind.isOperatorShiftable && handPhaseAllowsShift;
     final color = kind.color;
 
@@ -148,7 +203,7 @@ class PositionShiftChip extends StatelessWidget {
 }
 
 class _PlaceholderRow extends StatelessWidget {
-  const _PlaceholderRow({required this.label});
+  const _PlaceholderRow({required this.label, super.key});
 
   final String label;
 
