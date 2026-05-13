@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 
 import 'features/command_center/screens/at_06_game_settings_modal.dart';
 import 'features/command_center/screens/at_07_player_edit_modal.dart';
+import 'foundation/theme/ebs_theme.dart';
 import 'routing/app_router.dart';
 
 // Re-export AppRoutes for backward compatibility.
@@ -32,7 +33,7 @@ class EbsCcApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'EBS CC',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(useMaterial3: true),
+      theme: EbsTheme.dark,
       routerConfig: router,
     );
   }
