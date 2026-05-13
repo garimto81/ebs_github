@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Lobby 톤 cascade audit — CC v4.3 Broadcast Dark Amber 채택의 Lobby 영향 평가"
 status: AUDIT (write-only, 구현 NO)
 owner: stream:S2 (Lobby) — Cycle 19 Wave 5
