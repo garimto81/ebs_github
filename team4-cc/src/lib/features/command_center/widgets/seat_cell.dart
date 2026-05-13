@@ -20,6 +20,13 @@
 //   `ActingGlowOverlay` 위젯으로 이관. SeatCell 은 ACTING-on 여부만 전달.
 //   ticker / dispose 책임도 overlay 위젯이 소유 → 코드 단순화 + 시각 표현
 //   재사용성 확보. 기타 layout / inline edit / context menu 동작 그대로.
+//
+// Cycle 20 Wave 3a (#437) — WSOP LIVE chip_count_synced glow.
+//   `seat.lastChipUpdate` 가 새 timestamp 로 바뀔 때 (브레이크 webhook 수신)
+//   `EbsShadows.glowAction` 을 1 초간 적용해 운영자에게 권위 동기화 신호를
+//   시각화한다. ACTING glow 와 별개 (1 회성 tint).
+
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -103,6 +110,38 @@ class _SeatCellState extends ConsumerState<SeatCell> {
   // U7 (cycle 19 Wave 4) — AnimationController / Tween ownership moved into
   // `ActingGlowOverlay`. SeatCell now passes the ACTING flag and lets the
   // overlay widget manage its ticker + dispose.
+
+  // Cycle 20 #437 — chip_count_synced glow tint state.
+  DateTime? _lastSeenChipUpdate;
+  bool _chipSyncGlow = false;
+  Timer? _chipSyncGlowTimer;
+
+  @override
+  void dispose() {
+    _chipSyncGlowTimer?.cancel();
+    super.dispose();
+  }
+
+  /// Called from `ref.listen` in build — if the seat's lastChipUpdate moved
+  /// forward, light up the glow for 1 second.
+  void _onSeatsChanged(
+    List<SeatState>? prev,
+    List<SeatState> next,
+  ) {
+    final nextSeat = next.firstWhere(
+      (s) => s.seatNo == widget.seatIndex,
+      orElse: () => next.first,
+    );
+    final ts = nextSeat.lastChipUpdate;
+    if (ts == null) return;
+    if (_lastSeenChipUpdate == ts) return;
+    _lastSeenChipUpdate = ts;
+    _chipSyncGlowTimer?.cancel();
+    setState(() => _chipSyncGlow = true);
+    _chipSyncGlowTimer = Timer(const Duration(seconds: 1), () {
+      if (mounted) setState(() => _chipSyncGlow = false);
+    });
+  }
 
   // -- seat state -----------------------------------------------------------
 
@@ -540,6 +579,11 @@ class _SeatCellState extends ConsumerState<SeatCell> {
 
   @override
   Widget build(BuildContext context) {
+    // Cycle 20 #437 — listen for chip_count_synced bumps. Fires 1 s glow tint
+    // when seat.lastChipUpdate advances. ref.listen is the Riverpod-sanctioned
+    // way to react to state transitions from inside build.
+    ref.listen<List<SeatState>>(seatsProvider, _onSeatsChanged);
+
     final seats = ref.watch(seatsProvider);
     final seat = _seatState(seats);
 
@@ -556,13 +600,19 @@ class _SeatCellState extends ConsumerState<SeatCell> {
 
     // U7 — static surface (no animated BoxShadow). ACTING glow is layered on
     // top by `ActingGlowOverlay` below, which owns its own AnimationController.
+    // Cycle 20 #437 — chip sync glow overrides the default card shadow for 1 s
+    // when `_chipSyncGlow` is true. ACTING glow (actionOn) still wins via the
+    // ActingGlowOverlay layered on top.
+    final List<BoxShadow>? shadow = _chipSyncGlow
+        ? EbsShadows.glowAction
+        : (seat.actionOn ? null : EbsShadows.card);
     final Widget surface = Container(
       decoration: BoxDecoration(
         color: bgColor,
         border:
             seat.isEmpty ? _dashedBorder() : Border.fromBorderSide(border),
         borderRadius: BorderRadius.circular(6),
-        boxShadow: seat.actionOn ? null : EbsShadows.card,
+        boxShadow: shadow,
       ),
       child: Opacity(
         opacity: opacity,

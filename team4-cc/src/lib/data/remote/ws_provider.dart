@@ -285,6 +285,28 @@ void _dispatchIncomingEvent(ProviderReadFn read, Map<String, dynamic> payload) {
     case 'skin_updated':
       read(skinConsumerProvider.notifier).handleSkinUpdatedEvent(payload);
 
+    // §4.2.11 chip_count_synced (Cycle 20 #437) — BO forwards a WSOP LIVE
+    // webhook chip count snapshot. Update each listed seat's stack + stamp
+    // lastChipUpdate so SeatCell renders its 1s glow tint.
+    // Spec: docs/2. Development/2.2 Backend/APIs/WSOP_LIVE_Chip_Count_Sync.md
+    case 'chip_count_synced':
+      final data = payload['data'];
+      if (data is! Map) break;
+      final rawSeats = data['seats'];
+      if (rawSeats is! List) break;
+      final updates = <({int seatNumber, int chipCount})>[];
+      for (final entry in rawSeats) {
+        if (entry is! Map) continue;
+        final seatNo = entry['seat_number'];
+        final chip = entry['chip_count'];
+        if (seatNo is int && chip is int && chip >= 0) {
+          updates.add((seatNumber: seatNo, chipCount: chip));
+        }
+      }
+      if (updates.isNotEmpty) {
+        read(seatsProvider.notifier).applyChipCountSync(updates);
+      }
+
     // API-05 §5 ConfigChanged — BO pushes operator config updates, incl.
     // Security Delay (BS-07-07). Parse + publish to securityDelayConfigProvider.
     case 'ConfigChanged':

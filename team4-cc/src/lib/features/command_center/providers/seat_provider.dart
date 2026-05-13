@@ -53,6 +53,10 @@ class SeatState with _$SeatState {
     @Default(false) bool actionOn,
     @Default([]) List<HoleCard> holeCards,
     @Default(0) int currentBet,
+    // Cycle 20 #437 — WSOP LIVE chip_count_synced timestamp. Set when the BO
+    // forwards a webhook snapshot that touches this seat. Drives the 1s glow
+    // tint in SeatCell. Null = never synced from WSOP LIVE (Engine-auto).
+    DateTime? lastChipUpdate,
   }) = _SeatState;
 
   bool get isOccupied => player != null;
@@ -269,6 +273,43 @@ class SeatNotifier extends StateNotifier<List<SeatState>> {
       seatNo,
       (s) => s.copyWith(player: s.player!.copyWith(stack: newStack)),
     );
+  }
+
+  /// Cycle 20 #437 — apply a WSOP LIVE `chip_count_synced` snapshot.
+  ///
+  /// Updates `player.stack` for each seat present in [updates] and stamps
+  /// `lastChipUpdate` so SeatCell can render its 1s glow tint.
+  ///
+  /// Rules (per Chip_Count_State.md authority window):
+  ///   • Seats not listed in [updates] are untouched (stack + lastChipUpdate
+  ///     preserved).
+  ///   • Seat numbers outside the 1..10 range are silently ignored
+  ///     (forward-compatible with WSOP LIVE roster drift).
+  ///   • Empty seats listed in [updates] are skipped (no player to update).
+  ///
+  /// Spec: docs/2. Development/2.2 Backend/APIs/WSOP_LIVE_Chip_Count_Sync.md
+  ///       docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md §4.2.11
+  void applyChipCountSync(
+    List<({int seatNumber, int chipCount})> updates,
+  ) {
+    if (updates.isEmpty) return;
+    final now = DateTime.now();
+    final byNo = <int, int>{};
+    for (final u in updates) {
+      if (u.seatNumber < 1 || u.seatNumber > state.length) continue;
+      byNo[u.seatNumber] = u.chipCount;
+    }
+    if (byNo.isEmpty) return;
+    state = [
+      for (final s in state)
+        if (byNo.containsKey(s.seatNo) && s.player != null)
+          s.copyWith(
+            player: s.player!.copyWith(stack: byNo[s.seatNo]!),
+            lastChipUpdate: now,
+          )
+        else
+          s,
+    ];
   }
 
   /// Clear bets for all seats (new street).

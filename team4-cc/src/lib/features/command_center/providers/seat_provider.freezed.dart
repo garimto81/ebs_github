@@ -19,7 +19,9 @@ mixin _$HoleCard {
   String get suit => throw _privateConstructorUsedError; // "s", "h", "d", "c"
   String get rank => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of HoleCard
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $HoleCardCopyWith<HoleCard> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -42,6 +44,8 @@ class _$HoleCardCopyWithImpl<$Res, $Val extends HoleCard>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of HoleCard
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -80,6 +84,8 @@ class __$$HoleCardImplCopyWithImpl<$Res>
       _$HoleCardImpl _value, $Res Function(_$HoleCardImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of HoleCard
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -122,7 +128,9 @@ class _$HoleCardImpl extends _HoleCard {
   @override
   int get hashCode => Object.hash(runtimeType, suit, rank);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of HoleCard
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$HoleCardImplCopyWith<_$HoleCardImpl> get copyWith =>
@@ -136,11 +144,14 @@ abstract class _HoleCard extends HoleCard {
   const _HoleCard._() : super._();
 
   @override
-  String get suit;
-  @override // "s", "h", "d", "c"
-  String get rank;
+  String get suit; // "s", "h", "d", "c"
   @override
-  @JsonKey(ignore: true)
+  String get rank;
+
+  /// Create a copy of HoleCard
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$HoleCardImplCopyWith<_$HoleCardImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -153,7 +164,9 @@ mixin _$PlayerInfo {
   String get countryCode => throw _privateConstructorUsedError;
   String? get avatarUrl => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PlayerInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PlayerInfoCopyWith<PlayerInfo> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -178,6 +191,8 @@ class _$PlayerInfoCopyWithImpl<$Res, $Val extends PlayerInfo>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PlayerInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -232,6 +247,8 @@ class __$$PlayerInfoImplCopyWithImpl<$Res>
       _$PlayerInfoImpl _value, $Res Function(_$PlayerInfoImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PlayerInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -312,7 +329,9 @@ class _$PlayerInfoImpl implements _PlayerInfo {
   int get hashCode =>
       Object.hash(runtimeType, id, name, stack, countryCode, avatarUrl);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PlayerInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PlayerInfoImplCopyWith<_$PlayerInfoImpl> get copyWith =>
@@ -337,8 +356,11 @@ abstract class _PlayerInfo implements PlayerInfo {
   String get countryCode;
   @override
   String? get avatarUrl;
+
+  /// Create a copy of PlayerInfo
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PlayerInfoImplCopyWith<_$PlayerInfoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -354,9 +376,15 @@ mixin _$SeatState {
   bool get isBB => throw _privateConstructorUsedError;
   bool get actionOn => throw _privateConstructorUsedError;
   List<HoleCard> get holeCards => throw _privateConstructorUsedError;
-  int get currentBet => throw _privateConstructorUsedError;
+  int get currentBet =>
+      throw _privateConstructorUsedError; // Cycle 20 #437 — WSOP LIVE chip_count_synced timestamp. Set when the BO
+// forwards a webhook snapshot that touches this seat. Drives the 1s glow
+// tint in SeatCell. Null = never synced from WSOP LIVE (Engine-auto).
+  DateTime? get lastChipUpdate => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SeatState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SeatStateCopyWith<SeatState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -376,7 +404,8 @@ abstract class $SeatStateCopyWith<$Res> {
       bool isBB,
       bool actionOn,
       List<HoleCard> holeCards,
-      int currentBet});
+      int currentBet,
+      DateTime? lastChipUpdate});
 
   $PlayerInfoCopyWith<$Res>? get player;
 }
@@ -391,6 +420,8 @@ class _$SeatStateCopyWithImpl<$Res, $Val extends SeatState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SeatState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -404,6 +435,7 @@ class _$SeatStateCopyWithImpl<$Res, $Val extends SeatState>
     Object? actionOn = null,
     Object? holeCards = null,
     Object? currentBet = null,
+    Object? lastChipUpdate = freezed,
   }) {
     return _then(_value.copyWith(
       seatNo: null == seatNo
@@ -446,9 +478,15 @@ class _$SeatStateCopyWithImpl<$Res, $Val extends SeatState>
           ? _value.currentBet
           : currentBet // ignore: cast_nullable_to_non_nullable
               as int,
+      lastChipUpdate: freezed == lastChipUpdate
+          ? _value.lastChipUpdate
+          : lastChipUpdate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 
+  /// Create a copy of SeatState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $PlayerInfoCopyWith<$Res>? get player {
@@ -480,7 +518,8 @@ abstract class _$$SeatStateImplCopyWith<$Res>
       bool isBB,
       bool actionOn,
       List<HoleCard> holeCards,
-      int currentBet});
+      int currentBet,
+      DateTime? lastChipUpdate});
 
   @override
   $PlayerInfoCopyWith<$Res>? get player;
@@ -494,6 +533,8 @@ class __$$SeatStateImplCopyWithImpl<$Res>
       _$SeatStateImpl _value, $Res Function(_$SeatStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SeatState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -507,6 +548,7 @@ class __$$SeatStateImplCopyWithImpl<$Res>
     Object? actionOn = null,
     Object? holeCards = null,
     Object? currentBet = null,
+    Object? lastChipUpdate = freezed,
   }) {
     return _then(_$SeatStateImpl(
       seatNo: null == seatNo
@@ -549,6 +591,10 @@ class __$$SeatStateImplCopyWithImpl<$Res>
           ? _value.currentBet
           : currentBet // ignore: cast_nullable_to_non_nullable
               as int,
+      lastChipUpdate: freezed == lastChipUpdate
+          ? _value.lastChipUpdate
+          : lastChipUpdate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -566,7 +612,8 @@ class _$SeatStateImpl extends _SeatState {
       this.isBB = false,
       this.actionOn = false,
       final List<HoleCard> holeCards = const [],
-      this.currentBet = 0})
+      this.currentBet = 0,
+      this.lastChipUpdate})
       : _holeCards = holeCards,
         super._();
 
@@ -605,10 +652,15 @@ class _$SeatStateImpl extends _SeatState {
   @override
   @JsonKey()
   final int currentBet;
+// Cycle 20 #437 — WSOP LIVE chip_count_synced timestamp. Set when the BO
+// forwards a webhook snapshot that touches this seat. Drives the 1s glow
+// tint in SeatCell. Null = never synced from WSOP LIVE (Engine-auto).
+  @override
+  final DateTime? lastChipUpdate;
 
   @override
   String toString() {
-    return 'SeatState(seatNo: $seatNo, status: $status, activity: $activity, player: $player, isDealer: $isDealer, isSB: $isSB, isBB: $isBB, actionOn: $actionOn, holeCards: $holeCards, currentBet: $currentBet)';
+    return 'SeatState(seatNo: $seatNo, status: $status, activity: $activity, player: $player, isDealer: $isDealer, isSB: $isSB, isBB: $isBB, actionOn: $actionOn, holeCards: $holeCards, currentBet: $currentBet, lastChipUpdate: $lastChipUpdate)';
   }
 
   @override
@@ -630,7 +682,9 @@ class _$SeatStateImpl extends _SeatState {
             const DeepCollectionEquality()
                 .equals(other._holeCards, _holeCards) &&
             (identical(other.currentBet, currentBet) ||
-                other.currentBet == currentBet));
+                other.currentBet == currentBet) &&
+            (identical(other.lastChipUpdate, lastChipUpdate) ||
+                other.lastChipUpdate == lastChipUpdate));
   }
 
   @override
@@ -645,9 +699,12 @@ class _$SeatStateImpl extends _SeatState {
       isBB,
       actionOn,
       const DeepCollectionEquality().hash(_holeCards),
-      currentBet);
+      currentBet,
+      lastChipUpdate);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SeatState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SeatStateImplCopyWith<_$SeatStateImpl> get copyWith =>
@@ -665,12 +722,13 @@ abstract class _SeatState extends SeatState {
       final bool isBB,
       final bool actionOn,
       final List<HoleCard> holeCards,
-      final int currentBet}) = _$SeatStateImpl;
+      final int currentBet,
+      final DateTime? lastChipUpdate}) = _$SeatStateImpl;
   const _SeatState._() : super._();
 
   @override
-  int get seatNo;
-  @override // 1-based (1..10)
+  int get seatNo; // 1-based (1..10)
+  @override
   SeatStatus get status;
   @override
   PlayerActivity get activity;
@@ -687,9 +745,16 @@ abstract class _SeatState extends SeatState {
   @override
   List<HoleCard> get holeCards;
   @override
-  int get currentBet;
+  int get currentBet; // Cycle 20 #437 — WSOP LIVE chip_count_synced timestamp. Set when the BO
+// forwards a webhook snapshot that touches this seat. Drives the 1s glow
+// tint in SeatCell. Null = never synced from WSOP LIVE (Engine-auto).
   @override
-  @JsonKey(ignore: true)
+  DateTime? get lastChipUpdate;
+
+  /// Create a copy of SeatState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SeatStateImplCopyWith<_$SeatStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

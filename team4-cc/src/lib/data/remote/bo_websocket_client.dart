@@ -5,6 +5,8 @@
 //   invokes `GET /events/replay?from_seq=X&to_seq=Y` before applying the
 //   triggering event.
 // - Dispatches `skin_updated` events (CCR-015) to the SkinConsumer.
+// - Dispatches `chip_count_synced` events (Cycle 20 #437, WS §4.2.11) — BO
+//   forwards WSOP LIVE webhook chip count snapshots to update seat stacks.
 // - Reconnect policy (CCR-022 §9 / BS-05-00 §BO 복구):
 //     0ms → 5s → 10s × 100 → stop.
 // - Heartbeat: ping every 30s, pong timeout 10s, 3 consecutive failures →
@@ -14,6 +16,7 @@
 //
 // See: docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md
 //      §1 endpoint + envelope (seq, CCR-015), §3 event types, §reconnect policy.
+//      §4.2.11 chip_count_synced (Cycle 20 #437).
 
 import 'dart:async';
 import 'dart:convert';
@@ -392,6 +395,21 @@ class BoWebSocketClient {
     return sendCommand('WriteDeal', {
       'hand_id': handId,
     }, idempotencyKey: idempotencyKey);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Typed subscriptions (WebSocket_Events.md §4)
+  // ---------------------------------------------------------------------------
+
+  /// §4.2.11 chip_count_synced (Cycle 20 #437) — register a handler for the
+  /// WSOP LIVE chip count snapshot broadcast. The handler receives the raw
+  /// envelope `{type, seq, data: {table_id, snapshot_id, break_id, seats,
+  /// recorded_at, received_at, signature_ok}}`.
+  ///
+  /// Thin convenience over [on] — included for discoverability + type-aligned
+  /// onboarding (matches the typed `sendAction` / `sendDeal` outgoing API).
+  void onChipCountSynced(EventHandler handler) {
+    on('chip_count_synced', handler);
   }
 
   // ---------------------------------------------------------------------------
