@@ -3,6 +3,8 @@ title: EBS 오너 Executive Summary (9-slide)
 owner: conductor
 tier: external
 audience: owner
+page-id: null
+legacy-id: null
 last-updated: 2026-05-14
 version: 2.0.0
 format: "9-slide markdown deck (ASCII wireframe per slide)"
