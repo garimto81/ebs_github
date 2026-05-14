@@ -75,7 +75,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38186
 
 `docs/1. Product/` = **기준 SSOT**. 모든 Stream 이 Product 의 자기 영역만 수정 + 다른 영역 read.
 
-상세 매핑: [`Stream_Entry_Guide.md` §Product 영역 매핑](../2. Development/2.5 Shared/Stream_Entry_Guide.md). 정책 SSOT: [`Product_SSOT_Policy.md`](../1. Product/Product_SSOT_Policy.md).
+상세 매핑: [`Stream_Entry_Guide.md` §Product 영역 매핑](../2. Development/2.5 Shared/Stream_Entry_Guide.md). 정책 SSOT: [`Product_SSOT_Policy.md`](../_meta/Product_SSOT_Policy.md).
 
 ### Cascade Routing 4 Layer
 

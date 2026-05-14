@@ -52,7 +52,7 @@ PRODUCT_ROOT_FILES = (
     "Command_Center.md",
     "Back_Office.md",
     "RIVE_Standards.md",
-    "Product_SSOT_Policy.md",
+    # Product_SSOT_Policy.md → docs/_meta/ 이동 (PR #474)
 )
 
 GAME_RULES_FILES = (

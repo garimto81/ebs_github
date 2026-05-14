@@ -68,7 +68,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38187
 
 `docs/1. Product/` = **기준 SSOT**. v10.3 의 4 Layer 에 **L5 acquire_lock** 추가.
 
-상세 매핑: [`Stream_Entry_Guide.md`](../2. Development/2.5 Shared/Stream_Entry_Guide.md). 정책 SSOT: [`Product_SSOT_Policy.md`](../1. Product/Product_SSOT_Policy.md).
+상세 매핑: [`Stream_Entry_Guide.md`](../2. Development/2.5 Shared/Stream_Entry_Guide.md). 정책 SSOT: [`Product_SSOT_Policy.md`](../_meta/Product_SSOT_Policy.md).
 
 ### Cascade Routing 5 Layer (v11 신규 L5)
 
