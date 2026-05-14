@@ -1,0 +1,154 @@
+name: "Doc Wiki — Candidate PR Review (doc_critic)"
+
+# -----------------------------------------------------------------------
+# 목적 (S11 Karpathy P3):
+#   docs/_meta/doc-wiki/candidates/ 에 영향을 주는 PR Draft 에
+#   doc_critic 자동 실행. APPROVE/REJECT comment 자동 추가.
+#
+# doc_critic 기준:
+#   - frontmatter 필수 필드 존재 여부 (id/topic/owner_stream/last_ingest_at)
+#   - token_estimate < 500 (압축 충분?)
+#   - source_files 비어있지 않음
+#
+# APPROVE: PR comment "doc_critic: APPROVE" 추가
+# REJECT : PR comment "doc_critic: REJECT [사유]" 추가
+# -----------------------------------------------------------------------
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+    paths:
+      - "docs/_meta/doc-wiki/candidates/**"
+      - "docs/_meta/doc-wiki/*.md"
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  doc-critic:
+    name: "doc_critic — wiki candidate review"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run doc_critic on changed wiki files
+        id: critic
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          python - <<'PYEOF'
+          import os, re, sys
+          from pathlib import Path
+
+          # 변경된 파일 목록 (docs/_meta/doc-wiki/ 만)
+          import subprocess
+          result = subprocess.run(
+              ["git", "diff", "--name-only", "origin/main...HEAD"],
+              capture_output=True, text=True
+          )
+          changed = [
+              f for f in result.stdout.splitlines()
+              if f.startswith("docs/_meta/doc-wiki/") and f.endswith(".md")
+              and not f.endswith("Log.md")
+              and not f.endswith("Index.md")
+              and not f.endswith("_schema.md")
+          ]
+
+          if not changed:
+              print("wiki 파일 변경 없음 — critic 스킵")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("verdict=SKIP
+")
+                  f.write("comment=wiki 파일 변경 없음 — doc_critic 스킵
+")
+              sys.exit(0)
+
+          issues = []
+          for fpath in changed:
+              p = Path(fpath)
+              if not p.exists():
+                  continue
+              text = p.read_text(encoding="utf-8", errors="ignore")
+
+              # frontmatter 필수 필드 검사
+              required = ["id:", "topic:", "owner_stream:", "last_ingest_at:", "source_files:"]
+              missing = [r for r in required if r not in text]
+              if missing:
+                  issues.append(f"{p.name}: frontmatter 누락 — {missing}")
+
+              # token_estimate 상한 검사
+              m = re.search(r"token_estimate:\s*(\d+)", text)
+              if m and int(m.group(1)) > 500:
+                  issues.append(f"{p.name}: token_estimate {m.group(1)} > 500 (압축 불충분)")
+
+              # source_files 비어있지 않음 검사
+              if "source_files:" in text and ("  []" in text or text.count("  - ") == 0):
+                  issues.append(f"{p.name}: source_files 비어있음")
+
+          verdict = "REJECT" if issues else "APPROVE"
+          summary = chr(10).join(issues) if issues else "모든 기준 통과"
+
+          comment_lines = [
+              "## doc_critic 자동 검토",
+              "",
+              f"**결과: {verdict}**",
+              "",
+              f"검토 파일: {len(changed)}개",
+          ]
+          if issues:
+              comment_lines += ["", "### 문제점", ""] + ["- " + i for i in issues]
+          else:
+              comment_lines += ["", "### 통과 기준", "- frontmatter 필수 필드 OK", "- token_estimate < 500", "- source_files 비어있지 않음"]
+
+          comment = chr(10).join(comment_lines)
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"verdict={verdict}
+")
+              # multiline output
+              delim = "COMMENT_EOF"
+              f.write(f"comment<<{delim}
+{comment}
+{delim}
+")
+
+          print(f"verdict={verdict}")
+          print(f"issues={len(issues)}")
+          'PYEOF'
+
+      - name: Post critic result as PR comment
+        if: steps.critic.outputs.verdict != 'SKIP'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const verdict = "${{ steps.critic.outputs.verdict }}";
+            const body = `${{ steps.critic.outputs.comment }}`;
+            const emoji = verdict === "APPROVE" ? "✅" : "❌";
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: `${emoji} **doc_critic: ${verdict}**
+
+${body}`
+            });
+
+      - name: Fail job on REJECT
+        if: steps.critic.outputs.verdict == 'REJECT'
+        run: |
+          echo "::error::doc_critic REJECT — wiki 파일 기준 미달. PR comment 확인"
+          exit 1
