@@ -8,7 +8,7 @@ reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "WSOP LIVE 정렬 진척표 구조 명확"
 confluence-page-id: 3818586732
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586732/EBS+SSOT+Alignment+Progress
 ---
 

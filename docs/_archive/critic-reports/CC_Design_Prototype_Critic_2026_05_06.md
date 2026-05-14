@@ -27,7 +27,7 @@ predecessors:
     relation: derived_from
     reason: "본 보고서의 7개 흡수 결정이 Backlog 항목으로 단계화됨"
 confluence-page-id: 3819242032
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242032/EBS+CC+React+Critic
 ---
 

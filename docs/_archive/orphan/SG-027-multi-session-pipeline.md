@@ -13,7 +13,7 @@ reimplementability: PASS
 reimplementability_checked: 2026-05-03
 reimplementability_notes: "status=DONE — 5-Session Pipeline (multi-turn) 도입 완료"
 confluence-page-id: 3818881568
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881568/EBS+SG-027+5-Session+Pipeline+multi-turn
 ---
 ## 결정 (사용자 명시 2026-04-27)

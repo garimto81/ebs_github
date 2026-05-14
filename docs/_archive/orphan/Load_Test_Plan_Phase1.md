@@ -11,7 +11,7 @@ linked-decisions:
 last-updated: 2026-05-03
 reimplementability: PASS
 confluence-page-id: 3818717608
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818717608/EBS+Phase+1+Load+Test+Plan+8+Soak+Production-strict+Gate
 ---
 

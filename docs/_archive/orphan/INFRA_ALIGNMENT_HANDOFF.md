@@ -6,7 +6,7 @@ session: work/conductor/infra-alignment-cleanup
 last-updated: 2026-04-28
 status: PASS — 5/5 containers healthy, E2E 8/8 PASS
 confluence-page-id: 3818914432
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914432/EBS+INFRA+Alignment+Handoff+Conductor+Claim+14+16
 ---
 

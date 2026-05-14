@@ -11,7 +11,7 @@ related:
   - tools/spec_drift_check.py
   - Conductor_Backlog/
 confluence-page-id: 3818816041
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816041/EBS+Spec+Gap+Registry+Drift
 ---
 

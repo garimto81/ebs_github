@@ -14,7 +14,7 @@ predecessors:
     relation: extends
     reason: v11 의 7중 다층 방어 (Topic ACL) 위에 chat:* prefix 추가
 confluence-page-id: TBD
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 ---
 
 # Inter-Session Chat — Design Specification

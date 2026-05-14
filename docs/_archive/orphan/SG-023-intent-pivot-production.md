@@ -13,7 +13,7 @@ reimplementability: PASS
 reimplementability_checked: 2026-05-03
 reimplementability_notes: "status=DONE — 인텐트 전환 (기획서 완결 → 인계 준비) governance 적용"
 confluence-page-id: 3820552961
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552961/EBS+SG-023+production
 ---
 ## 결정 (사용자 명시 2026-04-27)

@@ -6,7 +6,7 @@ audit: "8 Stream + Conductor 자율 iteration"
 master-issue: 168
 last-updated: 2026-05-08
 confluence-page-id: 3818947297
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947297/EBS+2026-05-08
 ---
 

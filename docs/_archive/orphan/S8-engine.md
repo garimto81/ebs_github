@@ -10,7 +10,7 @@ audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/found
 note: "2026-05-08 정합성 감사용 활성화. team_assignment v10.3 에서 streams.S8 로 promote 완료."
 last-updated: 2026-05-08
 confluence-page-id: 3819209416
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209416/EBS+S8+Game+Engine+spec
 ---
 

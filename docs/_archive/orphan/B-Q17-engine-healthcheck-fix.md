@@ -7,7 +7,7 @@ type: backlog
 linked-decision: Session 1 발견 (2026-04-27)
 last-updated: 2026-04-27
 confluence-page-id: 3819766404
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766404/EBS+B-Q17+ebs-v2-engine+healthcheck+unhealthy+Type+A
 ---
 

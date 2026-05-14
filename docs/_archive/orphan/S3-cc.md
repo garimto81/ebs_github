@@ -9,7 +9,7 @@ blocked_by: S1
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
 last-updated: 2026-05-08
 confluence-page-id: 3818848858
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818848858/EBS+S3+Command+Center+spec
 ---
 

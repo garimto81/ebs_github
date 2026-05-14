@@ -9,7 +9,7 @@ audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/found
 priority: HIGHEST (다른 모든 Stream 의 blocking gate)
 last-updated: 2026-05-08
 confluence-page-id: 3819766504
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766504/EBS+S1+Foundation+spec
 ---
 

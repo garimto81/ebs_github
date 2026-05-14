@@ -23,7 +23,7 @@ predecessors:
     relation: continued
     reason: SCOPE 매트릭스 보존, Phase 게이트 추가
 confluence-page-id: 3818684851
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684851/EBS+Multi-Session+Orchestration+Design+v10.3
 ---
 

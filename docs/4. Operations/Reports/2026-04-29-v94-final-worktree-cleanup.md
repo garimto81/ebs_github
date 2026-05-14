@@ -6,7 +6,7 @@ last-updated: 2026-04-29
 governance: v9.4
 related: ["2026-04-29-v93-stale-worktrees-archive.md", "../V9_4_AI_Centric_Governance.md"]
 confluence-page-id: 3819078112
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078112/EBS+V9.4+Final+Worktree+Cleanup+SSOT-based+Autonomous+Judgment
 ---
 

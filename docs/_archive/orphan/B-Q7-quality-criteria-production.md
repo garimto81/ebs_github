@@ -8,7 +8,7 @@ linked-sg: SG-023, SG-026
 linked-decision: 사용자 ㉠ Production-strict 채택 + 90% 재정의 (2026-04-27 Session 2 final 후)
 last-updated: 2026-04-27
 confluence-page-id: 3818750593
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750593/EBS+B-Q7+Production-strict+90+2026-04-27
 ---
 

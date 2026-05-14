@@ -7,7 +7,7 @@ related-pr: "#69 (subdomain — DEPRECATED), Cycle 9 #355 (bind-mount 도입), C
 related-root-cause: "#369 (Lobby login hosts 의존 root cause 확정)"
 status: ACTIVE
 confluence-page-id: 3818750373
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750373/EBS+LAN+Deployment+Internal+Network+Domain+Access
 ---
 
