@@ -3,8 +3,8 @@ title: Karpathy LLM Wiki 패턴 EBS 적용 v2 — 멀티스트림 분산 wiki + 
 tier: meta
 confluence-sync: false
 owner: conductor
-legacy-id: null
 last-updated: 2026-05-14
+supersedes: karpathy-idea-ebs-application_2026-05-14.md  (v1, additive 보강)
 ---
 
 # Karpathy LLM Wiki 패턴 EBS 적용 v2
