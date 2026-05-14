@@ -9,7 +9,7 @@ linked-sg: SG-027
 linked-decision: 5-Session Pipeline (사용자 명시 2026-04-27)
 last-updated: 2026-04-27
 confluence-page-id: 3819209356
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209356/EBS+SESSION+1+HANDOFF+Foundation+Infrastructure
 ---
 

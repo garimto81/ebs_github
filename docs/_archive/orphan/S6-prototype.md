@@ -9,7 +9,7 @@ blocked_by: [S2, S3, S4, S7, S8]
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
 last-updated: 2026-05-08
 confluence-page-id: 3819766524
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766524/EBS+S6+Prototype+spec
 ---
 

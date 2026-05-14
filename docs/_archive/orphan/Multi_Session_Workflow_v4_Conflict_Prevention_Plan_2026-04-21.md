@@ -11,7 +11,7 @@ related:
   - .claude/hooks/branch_guard.py v3.1
   - ~/.claude/skills/team/SKILL.md
 confluence-page-id: 3818619391
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818619391/EBS+Plan+Multi_Session_Workflow+v4.0+Pre-Declaration
 ---
 

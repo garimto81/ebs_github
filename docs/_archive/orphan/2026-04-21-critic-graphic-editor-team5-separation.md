@@ -5,7 +5,7 @@ tier: internal
 last-updated: 2026-04-21
 critic-mode: parallel-2-critic
 confluence-page-id: 3818816301
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816301/EBS+Critic+Graphic+Editor+team5
 ---
 

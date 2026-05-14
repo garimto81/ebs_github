@@ -34,7 +34,7 @@ related-docs:
   - ../../1. Product/Lobby.md
   - ../../../team1-frontend/CLAUDE.md
 confluence-page-id: 3819078366
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078366/EBS+Lobby+-+3000+vs
 ---
 

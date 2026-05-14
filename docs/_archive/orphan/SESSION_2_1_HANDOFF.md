@@ -9,7 +9,7 @@ linked-sg: SG-026
 linked-decision: B-Q10 Session 2.1 (auth_service coverage)
 last-updated: 2026-04-27
 confluence-page-id: 3819209376
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209376/EBS+SESSION+2.1+HANDOFF+auth_service.py+50+80+B-Q10+cascade
 ---
 

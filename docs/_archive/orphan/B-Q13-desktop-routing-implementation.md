@@ -8,7 +8,7 @@ linked-sg: SG-022
 linked-decision: SG-022 + B-Q5 ㉠ (Mode A 활성)
 last-updated: 2026-04-27
 confluence-page-id: 3818816221
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816221/EBS+B-Q13+Desktop+SG-022+cascade
 ---
 

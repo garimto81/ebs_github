@@ -27,7 +27,7 @@ predecessors:
     relation: source_content
     reason: "누락된 외부 인계 PRD — 동기화 받지 못함"
 confluence-page-id: 3820552681
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552681/EBS+Command_Center.md+systematic
 ---
 

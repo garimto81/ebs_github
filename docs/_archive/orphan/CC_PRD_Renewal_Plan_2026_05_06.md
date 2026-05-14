@@ -35,7 +35,7 @@ predecessors:
     relation: source_content
     reason: "외부 인계 PRD 동기화 룰 (룰 20) 강제 필요"
 confluence-page-id: 3818881448
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881448/EBS+Command_Center.md+v1.1.0+v2.0.0
 ---
 

@@ -9,7 +9,7 @@ related:
   - docs/1. Product/Foundation.md
 last-updated: 2026-04-22
 confluence-page-id: 3819176725
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176725/EBS+Redesign+Plan+2026-04-22
 ---
 

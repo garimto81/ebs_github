@@ -6,7 +6,7 @@ session: work/conductor/chaos-test-ci-gate (closed)
 last-updated: 2026-04-28
 status: PARTIAL — gate response 검증 ✅, gate 정확도 부분 결함 발견 ⚠
 confluence-page-id: 3819766464
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766464/EBS+CI+Chaos+Test+Handoff+PR+20+gate+validation
 ---
 

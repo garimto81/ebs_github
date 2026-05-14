@@ -9,7 +9,7 @@ relates-to:
   - docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md
   - docs/3. Change Requests/done/CR-conductor-20260421-ge-scope-expansion.md
 confluence-page-id: 3818881588
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881588/EBS+Critic+GE+Lobby
 ---
 

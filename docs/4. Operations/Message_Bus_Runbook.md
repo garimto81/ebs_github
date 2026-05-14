@@ -6,7 +6,7 @@ status: ACTIVE (Phase 5 통합 완료 후)
 plan: C:/Users/AidenKim/.claude/plans/dreamy-fluttering-gem.md
 last-updated: 2026-05-08
 confluence-page-id: 3819274844
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274844/EBS+Inter-Session+Message+Bus+Operational+Runbook
 ---
 

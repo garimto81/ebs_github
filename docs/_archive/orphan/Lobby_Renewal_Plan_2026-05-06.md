@@ -33,7 +33,7 @@ related-docs:
   - ../../../team1-frontend/lib/foundation/router/app_router.dart
   - ../../2. Development/2.1 Frontend/Lobby/UI.md
 confluence-page-id: 3818586954
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586954/EBS+Lobby+EBS+Lobby+Design+SSOT+1+1
 ---
 

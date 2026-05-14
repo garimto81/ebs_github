@@ -10,7 +10,7 @@ linked-commit: f0ec249
 status: ACTIVE
 last-updated: 2026-04-27
 confluence-page-id: 3819242133
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242133/EBS+Phase+1+Phase+2+broadcast
 ---
 

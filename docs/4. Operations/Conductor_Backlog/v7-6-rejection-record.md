@@ -10,7 +10,7 @@ related:
   - docs/2. Development/2.5 Shared/team-policy.json `governance_model.freeze` (4A)
   - 이전 conversation turn: v7.6 critic 보고서 (5-Phase EBS critic skill)
 confluence-page-id: 3819241956
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819241956/EBS+v7.6+Autonomous+CI+CD+Pipeline+Agent+Official+Rejection+Record
 ---
 

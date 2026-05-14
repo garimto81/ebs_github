@@ -6,7 +6,7 @@ last-updated: 2026-04-28
 status: DECISION — Stay on Dependabot for now (revisit Q4 2026)
 related-pr: "#26 (Dependabot 6 ecosystem 도입), #27 (P6 확장 + 본 평가)"
 confluence-page-id: 3819602516
-confluence-parent-id: 3811573898
+confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602516/EBS+Renovate+vs+Dependabot+Evaluation
 ---
 
