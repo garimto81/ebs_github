@@ -227,6 +227,57 @@ def print_block(title: str, docs: list[DocMeta]) -> None:
         print(fmt(d))
 
 
+
+# --------------------------------------------------------------------------
+# Layer 0: doc-wiki 빠른 조회 (--wiki-lookup)
+# --------------------------------------------------------------------------
+
+WIKI_DIR = DOCS / "_meta" / "doc-wiki"
+
+
+def _parse_wiki_frontmatter(text: str) -> dict:
+    """doc-wiki frontmatter 에서 topic/title/owner_stream 추출.
+    
+    기존 parse_frontmatter 재사용.
+    """
+    fm = parse_frontmatter(text)
+    # list 값은 str 로 변환
+    return {k: str(v) if not isinstance(v, list) else "" for k, v in fm.items()}
+
+def wiki_lookup(keyword: str) -> list[dict]:
+    """doc-wiki Layer 0 조회.
+
+    keyword 와 topic/title 이 매칭되는 wiki 페이지 목록 반환.
+    wiki hit 시 raw docs scan 생략 가능 (96% 토큰 절감).
+
+    Returns:
+        list of {"topic": str, "title": str, "owner_stream": str, "path": str}
+    """
+    if not WIKI_DIR.exists():
+        return []
+
+    keyword_lower = keyword.lower()
+    hits = []
+    for md in sorted(WIKI_DIR.glob("*.md")):
+        if md.name in {"_schema.md", "Log.md", "Index.md"}:
+            continue
+        try:
+            text = md.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        fm = _parse_wiki_frontmatter(text)
+        topic = fm.get("topic", md.stem)
+        title = fm.get("title", "")
+        owner = fm.get("owner_stream", "")
+        if keyword_lower in topic.lower() or keyword_lower in title.lower():
+            hits.append({
+                "topic": topic,
+                "title": title,
+                "owner_stream": owner,
+                "path": str(md.relative_to(REPO)).replace("\\", "/"),
+            })
+    return hits
+
 # --------------------------------------------------------------------------
 # CLI
 # --------------------------------------------------------------------------
@@ -239,9 +290,25 @@ def main(argv: list[str]) -> int:
     p.add_argument("--derives-from", help="derivative-of 매칭 substring")
     p.add_argument("--impact-of", help="이 파일 변경 시 영향 받는 문서 검색")
     p.add_argument("--topic", help="topic tag (CC, lobby, bo, engine 등)")
+    p.add_argument("--wiki-lookup", metavar="KEYWORD",
+                       help="[Layer 0] doc-wiki 우선 조회 (raw scan 생략)")
     args = p.parse_args(argv)
 
-    docs = scan_docs()
+    # Layer 0: doc-wiki 빠른 조회 (--wiki-lookup)
+    if args.wiki_lookup:
+        hits = wiki_lookup(args.wiki_lookup)
+        if hits:
+            print("")
+            print("[Layer 0 wiki hit] '" + args.wiki_lookup + "' -- " + str(len(hits)) + " 결과 (raw scan 생략)")
+            for h in hits:
+                print("  [" + h["owner_stream"] + "] " + h["topic"] + "  ->  " + h["path"])
+                if h["title"]:
+                    print("     -> " + h["title"])
+            return 0
+        else:
+            print("[Layer 0 wiki miss] '" + args.wiki_lookup + "' -- raw docs scan 으로 fallback")
+
+        docs = scan_docs()
     print(f"📚 Scanned {len(docs)} docs under docs/ (excluded: _generated/, archive/)")
 
     if args.impact_of:

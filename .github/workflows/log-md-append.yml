@@ -1,0 +1,135 @@
+name: "Doc Wiki — PR Merge Log Append"
+
+# -----------------------------------------------------------------------
+# 목적 (S11 Karpathy P3):
+#   PR merge 시 docs/_meta/doc-wiki/Log.md 에 event 자동 append.
+#   5 event 종류: ingest / lint / supersede / contradict / prune
+#   형식: ISO timestamp [event] topic src=... reason=PR-#NNN
+#
+# 동작:
+#   1. PR 제목/라벨/본문에서 wiki event 메타 추출
+#   2. Log.md 에 append (append-only 원칙)
+#   3. 변경사항 commit + push
+#
+# Log.md 없으면 자동 생성 (초기화).
+# -----------------------------------------------------------------------
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  append-wiki-log:
+    name: "Append wiki event to Log.md"
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Detect wiki event from PR
+        id: event
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          python - <<'PYEOF'
+          import os, re
+          from datetime import datetime, timezone
+
+          title = os.environ.get("PR_TITLE", "")
+          pr_num = os.environ.get("PR_NUMBER", "")
+          body = os.environ.get("PR_BODY", "") or ""
+          labels = os.environ.get("PR_LABELS", "")
+
+          # event 타입 추론 (라벨 → 제목 순서)
+          event_type = "ingest"  # default
+          for label in labels.split(","):
+              label = label.strip().lower()
+              if "supersede" in label: event_type = "supersede"
+              elif "contradict" in label: event_type = "contradict"
+              elif "prune" in label: event_type = "prune"
+              elif "lint" in label: event_type = "lint"
+              elif "ingest" in label: event_type = "ingest"
+
+          # 제목에서 topic 추출 (예: feat(s11/lobby): ... → lobby)
+          topic = "unknown"
+          m = re.search(r"\((?:s\d+[\w-]*/)?([\w-]+)\)", title)
+          if m: topic = m.group(1)
+
+          # src 추출 (body 에서 첫 docs/ 경로)
+          src = "N/A"
+          m2 = re.search(r"(docs/[\w./ -]+\.md)", body)
+          if m2: src = m2.group(1)
+
+          now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+          log_line = f"{now} [{event_type:<12}] {topic:<20} src={src}  reason=PR-#{pr_num}"
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"log_line={log_line}
+")
+              f.write(f"event_type={event_type}
+")
+              f.write(f"topic={topic}
+")
+
+          print(f"Log line: {log_line}")
+          'PYEOF'
+
+      - name: Append to Log.md
+        run: |
+          LOG_DIR="docs/_meta/doc-wiki"
+          LOG_FILE="$LOG_DIR/Log.md"
+          mkdir -p "$LOG_DIR"
+
+          # Log.md 없으면 헤더 생성
+          if [ ! -f "$LOG_FILE" ]; then
+            cat > "$LOG_FILE" <<'HEADER'
+# Doc Wiki — Append-Only Event Log
+
+형식: `ISO-timestamp [event] topic src=<path>  reason=PR-#NNN`
+
+event 종류:
+- `ingest`    — raw docs PR merge → wiki 흡수
+- `lint`      — wiki 본문 변경 / 주간 재계산
+- `supersede` — source file 이동/이름 변경
+- `contradict`— 두 wiki 정의 충돌 발견
+- `prune`     — source file 삭제/archive
+
+---
+
+HEADER
+          fi
+
+          # 이벤트 append
+          echo "${{ steps.event.outputs.log_line }}" >> "$LOG_FILE"
+          echo "Log.md 에 추가됨: ${{ steps.event.outputs.log_line }}"
+
+      - name: Commit log update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "docs/_meta/doc-wiki/Log.md"
+          if git diff --cached --quiet; then
+            echo "변경사항 없음 — 커밋 스킵"
+          else
+            git commit -m "chore(wiki/log): PR-#${{ github.event.pull_request.number }} [${{ steps.event.outputs.event_type }}] ${{ steps.event.outputs.topic }} append"
+            git push
+          fi
