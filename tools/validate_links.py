@@ -24,14 +24,14 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 INLINE_CODE_PATTERN = re.compile(r"`[^`]*`")
 
-LINK_EXCLUDE_DIRS = {"archive", "References"}
+LINK_EXCLUDE_DIRS = {"archive", "_archive", "References"}
 
 
 def is_link_excluded(path: Path) -> bool:
     """링크 검증 제외 대상.
 
     제외:
-    - archive/ — 역사 기록, 자산 stale 허용
+    - archive/ 또는 _archive/ — 역사 기록, 자산 stale 허용
     - References/ — 외부 PRD/UI 역설계 자료 (PokerGFX 등). 자산 일부는 별도 레포 (ebs_reverse) 또는 외부 mockup 폴더에 위치
     """
     return any(part in LINK_EXCLUDE_DIRS for part in path.parts)

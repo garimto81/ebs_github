@@ -11,7 +11,7 @@ reimplementability_notes: "PR #393 §8-1 사용자 표 9 카테고리 v1.0.0 cas
 related-issue: 393
 related-cycle: 17
 related-spec: ../APIs/Harness_REST_API.md
-derivative-of: ../../1. Product/Game_Rules/Betting_System.md
+derivative-of: ../../../1. Product/Game_Rules/Betting_System.md
 if-conflict: derivative-of takes precedence
 cascade-from: cascade:overlay-9-categories
 cascade-emits: cascade:engine-equity-spec
@@ -21,7 +21,7 @@ cascade-emits: cascade:engine-equity-spec
 
 ## 개요
 
-[Betting_System.md §8-1](../../1.%20Product/Game_Rules/Betting_System.md) 의 "실시간 승률 통계 (Equity)" Monte Carlo 계산 spec 을 Game Engine 구현 차원에서 정본화한다. PR [#393](https://github.com/garimto81/ebs_github/pull/393) Cascade Note (Type B 기획 공백 — S8 trigger) 해소.
+[Betting_System.md §8-1](../../../1.%20Product/Game_Rules/Betting_System.md) 의 "실시간 승률 통계 (Equity)" Monte Carlo 계산 spec 을 Game Engine 구현 차원에서 정본화한다. PR [#393](https://github.com/garimto81/ebs_github/pull/393) Cascade Note (Type B 기획 공백 — S8 trigger) 해소.
 
 | 항목 | 값 |
 |------|------|

@@ -2,7 +2,6 @@
 title: Coalescence
 owner: team3
 tier: deprecated
-legacy-id: BS-06-04
 deprecated: 2026-04-28
 redirect-to: "../Triggers_and_Event_Pipeline.md"
 status: superseded

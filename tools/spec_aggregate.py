@@ -26,7 +26,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DOCS_ROOT = REPO_ROOT / "docs"
 GENERATED_ROOT = DOCS_ROOT / "_generated"
 
-CHECK_EXCLUDE_DIRS = {"Backlog", "archive", "3. Change Requests"}
+CHECK_EXCLUDE_DIRS = {"Backlog", "archive", "_archive", "3. Change Requests"}
 CHECK_EXCLUDE_NAMES = {"Backlog.md", "Active_Work.md", "Conductor_Backlog.md",
                        "Backlog_Aggregate.md"}
 CHECK_EXCLUDE_PREFIXES = ("NOTIFY-",)
@@ -38,7 +38,7 @@ def is_check_excluded(path: Path) -> bool:
     제외:
     - Backlog/ 항목 디렉토리 (각 팀 + Conductor_Backlog)
     - NOTIFY-*.md 메시지 파일
-    - archive/ 폴더 (역사 기록)
+    - archive/ 또는 _archive/ 폴더 (역사 기록)
     - 3. Change Requests/ 폴더 (v7 거버넌스로 폐기, 역사 보존)
     - 집계 인덱스 (Active_Work, Backlog, Backlog_Aggregate, Conductor_Backlog)
     """
@@ -66,6 +66,7 @@ except ImportError:
 
 def parse_frontmatter(text: str) -> dict[str, object]:
     """마크다운 앞부분 frontmatter 를 dict 로 파싱."""
+    text = text.lstrip("﻿")  # UTF-8 BOM 제거 (Windows 편집기로 저장된 파일 대응)
     if not text.startswith("---"):
         return {}
     lines = text.splitlines()
