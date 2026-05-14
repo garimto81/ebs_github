@@ -3,7 +3,7 @@ title: Backend HTTP
 owner: team2
 tier: internal
 legacy-id: API-01
-last-updated: 2026-05-11
+last-updated: 2026-05-14
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "API-01 REST 카탈로그 + WSOP LIVE 연동 (53KB). TBD 3건은 프로덕션 호스트/WSOP API 인증 등 외부 계약"
@@ -1437,9 +1437,113 @@ CCR-013 §1 spec 준수의 `.gfskin` 아카이브 업로드. `team2-backend/src/
 | Reports | 6 | §5.15, §5.17.14 |
 | Settings | 1 | §5.17.15 |
 | Sync (subpath 변형) | 3 | §5.16, §16.7~16.10, §5.17.16 |
-| **합계** | **87** | — |
+| WSOP LIVE Webhook | 2 | §5.17.18 |
+| **합계** | **89** | — |
 
-> 총 87건 — SG-008 마스터 (a) 분류 77건 + 이미 §5.6.1 Clock 등에 부분 명세되어 있던 7건 + Sync subpath 변형 3건 (2026-04-20 scanner D3 재감지 후 편입). §6 총괄표는 리소스 대분류 단위로 유지되며 본 편입은 상세 보강.
+> 총 89건 — SG-008 마스터 (a) 분류 77건 + §5.6.1 Clock 등 7건 + Sync subpath 변형 3건 + SG-042 WSOP LIVE Webhook 2건 (2026-05-14 추가). §6 총괄표는 리소스 대분류 단위로 유지.
+
+### 5.17.18 WSOP LIVE Webhook Endpoints (SG-042 PR-A, 2026-05-14)
+
+WSOP LIVE 와 EBS 간 chip count 동기화 전용 endpoint. 인증 방식이 일반 JWT 와 다르므로 §5.16 WSOP LIVE Sync 와 별도로 명세한다.
+
+#### POST /api/wsop-live/chip-count-snapshot
+
+브레이크 중 WSOP LIVE → EBS chip count 스냅샷 push 수신.
+
+| 항목 | 값 |
+|------|-----|
+| **인증** | HMAC-SHA256 (`X-WSOP-Signature` 헤더) — server-to-server, JWT 불필요 |
+| **Idempotency** | `Idempotency-Key` 헤더 == `body.snapshot_id` (UUID v4) |
+| **멱등성** | 동일 `snapshot_id` 재수신 시 `200 already_processed` |
+| **성공** | `202 accepted` + `ws_event_dispatched: bool` |
+| **SSOT** | `contracts/api/WSOP_LIVE_Chip_Count_Sync.md §3-10` |
+
+**Request Headers**:
+
+| Header | 필수 | 설명 |
+|--------|:----:|------|
+| `Content-Type` | ✅ | `application/json` |
+| `X-WSOP-Timestamp` | ✅ | ISO-8601 UTC — replay protection (±300s) |
+| `X-WSOP-Signature` | ✅ | HMAC-SHA256 hex |
+| `Idempotency-Key` | ✅ | snapshot UUID (== body.snapshot_id) |
+
+**Request Body** (JSON):
+
+```json
+{
+  "snapshot_id": "uuid-v4",
+  "break_id": 1001,
+  "table_id": 1,
+  "recorded_at": "2026-05-14T10:00:00Z",
+  "seats": [
+    {"seat_number": 1, "player_id": 42, "chip_count": 50000},
+    {"seat_number": 2, "player_id": null, "chip_count": 30000}
+  ]
+}
+```
+
+**Response** (`202`):
+
+```json
+{
+  "status": "accepted",
+  "snapshot_id": "uuid-v4",
+  "received_at": "2026-05-14T10:00:05Z",
+  "ws_event_dispatched": true
+}
+```
+
+**Error Codes**:
+
+| HTTP | error | 조건 |
+|:----:|-------|------|
+| 401 | `TIMESTAMP_DRIFT` | ±300s 초과 |
+| 401 | `SIGNATURE_INVALID` | HMAC 불일치 또는 secret 미설정 |
+| 400 | `VALIDATION` | JSON schema 오류 |
+| 409 | `IDEMPOTENCY_MISMATCH` | header key ≠ body snapshot_id |
+| 422 | `TABLE_UNKNOWN` | table_id 미존재 |
+
+> **로컬 개발**: `team2-backend/tools/wsop_live_mock_webhook.py --dry-run` 으로 WSOP LIVE 없이 시뮬레이션 가능.
+
+---
+
+#### GET /api/wsop-live/chip-count-state/{table_id}
+
+테이블의 마지막 chip count 동기화 상태 조회.
+
+| 항목 | 값 |
+|------|-----|
+| **인증** | JWT Bearer (Admin 또는 Operator) |
+| **RBAC** | `require_role("admin", "operator")` |
+| **용도** | 최신 스냅샷 per-seat 칩 카운트 + total_chips 조회 (DR-F) |
+
+**Response** (`200`):
+
+```json
+{
+  "table_id": 1,
+  "last_snapshot_id": "uuid-v4",
+  "break_id": 1001,
+  "recorded_at": "2026-05-14T10:00:00Z",
+  "received_at": "2026-05-14T10:00:05Z",
+  "seat_states": [
+    {"seat_number": 1, "player_id": 42, "chip_count": 50000},
+    {"seat_number": 2, "player_id": null, "chip_count": 30000}
+  ],
+  "total_chips": 80000,
+  "drift_threshold_exceeded": null
+}
+```
+
+> `drift_threshold_exceeded`: Engine(S8) 제공 예정 (현재 `null`). Engine reconcile 결과가 PR-B 이후 연동될 때 채워진다.
+
+**Error Codes**:
+
+| HTTP | error | 조건 |
+|:----:|-------|------|
+| 401 | — | 미인증 |
+| 403 | `PERMISSION_DENIED` | viewer 이하 역할 |
+| 404 | `NO_SNAPSHOT` | 테이블 미존재 또는 스냅샷 없음 |
 
 ---
 
