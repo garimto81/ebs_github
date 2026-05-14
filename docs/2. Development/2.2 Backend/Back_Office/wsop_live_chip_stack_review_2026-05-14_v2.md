@@ -2,6 +2,7 @@
 title: WSOP LIVE → BO → Engine Chip Stack Sync — 백엔드 검토 v2
 owner: s7
 tier: internal
+legacy-id: null
 audience-target: 백엔드 시니어 + S7/S8 stream owner + 운영팀
 last-updated: 2026-05-14
 version: 2.0.0
