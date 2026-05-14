@@ -1,13 +1,19 @@
-"""WSOP LIVE webhook router — Cycle 20 Wave 2 (issue #435).
+"""WSOP LIVE webhook router — Cycle 20 Wave 2 (issue #435) + SG-042 PR-A (Area 3).
 
 SSOT contract: docs/2. Development/2.2 Backend/APIs/WSOP_LIVE_Chip_Count_Sync.md
 WS event: docs/2. Development/2.2 Backend/APIs/WebSocket_Events.md §4.2.11
 State machine: docs/2. Development/2.5 Shared/Chip_Count_State.md
+Backend HTTP: docs/2. Development/2.2 Backend/APIs/Backend_HTTP.md §5.17.18
 
 Receives POST /api/wsop-live/chip-count-snapshot push from WSOP LIVE during
 tournament breaks. Authenticated via HMAC-SHA256 (out-of-band secret), not
 JWT — this endpoint is server-to-server. Idempotency is enforced at the DB
 layer per spec §7 to honour the 200/already_processed vs 202/accepted shape.
+
+SG-042 PR-A Area 3 추가:
+  GET /api/wsop-live/chip-count-state/{table_id}
+  마지막 동기화 상태 (latest snapshot per seat) + total_chips 조회.
+  인증: Admin/Operator only (RBAC).
 """
 from __future__ import annotations
 
@@ -18,15 +24,17 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Optional
 
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, ValidationError, field_validator
 from sqlmodel import Session, select
 
 from src.app.config import settings as app_settings
 from src.app.database import get_engine
+from src.middleware.rbac import require_role
 from src.models.chip_count_snapshot import ChipCountSnapshot
 from src.models.table import Table
+from src.models.user import User
 from src.websocket.publishers import publish_chip_count_synced
 
 logger = logging.getLogger(__name__)
@@ -249,5 +257,84 @@ async def chip_count_snapshot(request: Request) -> Response:
             "snapshot_id": snap.snapshot_id,
             "received_at": received_at,
             "ws_event_dispatched": ws_dispatched,
+        },
+    )
+
+
+# ── GET /chip-count-state/{table_id} ────────────────────────────────────────
+# SG-042 PR-A Area 3 — DR-F (data retrieval)
+# 인증: Admin/Operator only (require_role)
+# 마지막 동기화 상태 + seat_states + total_chips 반환.
+
+
+@router.get("/chip-count-state/{table_id}")
+def chip_count_state(
+    table_id: int,
+    _user: User = Depends(require_role("admin", "operator")),
+) -> Response:
+    """마지막 WSOP LIVE chip count 동기화 상태 조회.
+
+    Backend HTTP §5.17.18 — GET /api/wsop-live/chip-count-state/{table_id}
+
+    Returns:
+        200: 최신 snapshot 기준 seat_states + total_chips.
+        404: 테이블이 존재하지 않거나 스냅샷 없음.
+    """
+    engine = get_engine()
+    with Session(engine) as db:
+        # 테이블 존재 확인
+        tbl = db.exec(
+            select(Table).where(Table.table_id == table_id).limit(1)
+        ).first()
+        if tbl is None:
+            return _error(404, {"error": "NO_SNAPSHOT", "table_id": table_id})
+
+        # 가장 최신 break_id 식별 (break_id 최댓값 기준)
+        all_snaps: list[ChipCountSnapshot] = db.exec(
+            select(ChipCountSnapshot).where(
+                ChipCountSnapshot.table_id == table_id,
+            ).order_by(ChipCountSnapshot.id.desc())  # type: ignore[attr-defined]
+        ).all()
+
+        if not all_snaps:
+            return _error(404, {"error": "NO_SNAPSHOT", "table_id": table_id})
+
+        # 가장 최신 break_id 결정
+        latest_break_id = max(s.break_id for s in all_snaps)
+        latest_snaps = [s for s in all_snaps if s.break_id == latest_break_id]
+
+        # 좌석별 최신 스냅샷 (break_id 동일 → id 내림차순 첫 번째)
+        seat_latest: dict[int, ChipCountSnapshot] = {}
+        for snap in sorted(latest_snaps, key=lambda s: s.id or 0, reverse=True):
+            if snap.seat_number not in seat_latest:
+                seat_latest[snap.seat_number] = snap
+
+        # 대표 snapshot_id (break 내 첫 번째 row)
+        rep = sorted(latest_snaps, key=lambda s: s.id or 0)[0]
+        last_snapshot_id = rep.snapshot_id
+        recorded_at = rep.recorded_at
+        received_at = rep.received_at
+
+        seat_states = [
+            {
+                "seat_number": snap.seat_number,
+                "player_id": snap.player_id,
+                "chip_count": snap.chip_count,
+            }
+            for snap in sorted(seat_latest.values(), key=lambda s: s.seat_number)
+        ]
+        total_chips = sum(s["chip_count"] for s in seat_states)
+
+    return JSONResponse(
+        status_code=200,
+        content={
+            "table_id": table_id,
+            "last_snapshot_id": last_snapshot_id,
+            "break_id": latest_break_id,
+            "recorded_at": recorded_at,
+            "received_at": received_at,
+            "seat_states": seat_states,
+            "total_chips": total_chips,
+            "drift_threshold_exceeded": None,  # Engine(S8) 제공 예정
         },
     )

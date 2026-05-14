@@ -2,7 +2,7 @@
 title: Overview
 owner: team2
 tier: internal
-last-updated: 2026-05-08
+last-updated: 2026-05-14
 confluence-page-id: 3818947197
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947197/EBS+Overview+0578
@@ -22,6 +22,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38189
 | 2026-05-07 | v3/v4 정체성 cascade Phase B | Lobby v3.0.0 (5분 게이트웨이 + WSOP LIVE 거울 + 4 진입 시점 + 5 화면 시퀀스) + Command_Center v4.0 (1×10 그리드 + 6 키 N·F·C·B·A·M + 4 영역 위계) 정체성 정합. §1.3 EBS 추가기능 #5 CC 인스턴스 추적 의미 framing 보강 ("1:N 관제" → 1 Lobby 게이트웨이 : N CC 운영자 화면 관계). LLM 전수 의미 판정. | DOC |
 | 2026-05-08 | S7 정합성 감사 — Foundation v4.5 cascade | Foundation 옛 섹션 표기 정정: §6.3→Ch.5 §B.3 (통신 매트릭스), §6.4→Ch.5 §B.4 (DB SSOT + WS push), §5.1→§A.1 (Lobby), §5.3→§A.4 (CC), §8.5→Ch.6 Scene 4 (복수 테이블 운영), §4.4 fabricated reference 제거. §2.1 Lobby 배포 형태를 Foundation Ch.5 §A.1 정합 (Flutter Web). | DOC |
 | 2026-05-12 | Cycle 8 — WSOP LIVE 3-mode pull (S10-W cascade) | §3.9 재작성: 폴링 단일 → 자동 폴링 / Confirm-triggered (preview→confirm) / Manual immediate 3 모드 + cursor 영속화 정책. Sync_Protocol §5.5 신설 cascade. NOTIFY-S10-W-backend-sync-2026-05-12 으로 PRD §3.9 통합 요청. | DOC |
+| 2026-05-14 | SG-042 PR-A — chip count 3-mode 관계 명확화 | §3.9.1 신설: Chip Count 입력 3-mode (Auto/Manual/Override) 우선순위 + conflict resolution 정책. GAP-CS-03 해소. `Backend_HTTP.md §5.17.18` + `break_lifecycle.py` 연동. | CODE+DOC |
 
 ---
 
@@ -303,6 +304,40 @@ EBS 는 3개 pull 모드를 병행 운영한다 (2026-05-12 신설 — Sync_Prot
 **cursor 영속화 정책**: 모든 pull 모드는 `sync_cursors` 테이블 (`Database/Schema.md §5.4`) 에 entity 별 단조증가 cursor 를 영속화한다. Redis 옵션 (`EBS_SYNC_CURSOR_REDIS=true`) 은 dual-write 보조. 단일 PC 운영에서는 DB 만으로 충분.
 
 > **상세 정본**: 폴링 주기·`source` 필드 규칙·UPSERT·Mock 시드 수량은 `contracts/api/API-01` Part II §7-15 (WSOP LIVE Integration) 및 `Sync_Protocol.md §5, §5.5` 참조. PRD는 채택 결정만 명시.
+
+#### 3.9.1 Chip Count 3-mode — 입력 우선순위 및 Conflict Resolution (SG-042 GAP-CS-03)
+
+브레이크 중 chip count 는 3가지 경로에서 입력된다. **우선순위(높음→낮음) 순서로 충돌이 해소**된다.
+
+| 우선순위 | 모드 | 트리거 | 소스 | RBAC |
+|:--------:|------|--------|------|:----:|
+| **1 — Auto** | WSOP LIVE webhook push | `POST /api/wsop-live/chip-count-snapshot` (HMAC 인증) | WSOP LIVE → EBS | server-to-server (no JWT) |
+| **2 — Manual** | Operator 수동 입력 | BO UI 또는 `PATCH /api/v1/tables/{id}/seats/{no}/chip-count` | Operator 직접 입력 | Operator+ |
+| **3 — Override** | SysOp 강제 덮어쓰기 | `POST /api/v1/admin/chip-count/override` | SysOp 명시 | Admin only |
+
+**우선순위 규칙 (동시 입력 시 충돌 해소)**:
+
+1. **Auto > Manual**: WSOP LIVE webhook 이 도착하면, 해당 `(table_id, break_id)` 에 대해 Manual 입력을 **자동으로 무효화**한다. WSOP LIVE = 권위 시점 데이터.
+2. **Override > Auto**: SysOp 이 Override 를 적용하면, 동일 `(table_id, break_id)` 의 Auto/Manual 입력을 **덮어쓴다**. 운영 사고 대응 전용.
+3. **이후 Auto 재도착**: Override 이후에 같은 `break_id` 로 webhook 이 재도착하더라도, Override 상태는 유지된다 (`break_completion_markers.override=true` 플래그 확인).
+
+**Auto 감지 자동화 — `break_lifecycle.py`**:
+
+```
+webhook 도착 (POST /chip-count-snapshot)
+    ↓
+DB INSERT (chip_count_snapshots)
+    ↓
+break_lifecycle.trigger_break_complete_if_ready(table_id, break_id, db)
+    ↓ 모든 활성 좌석 제출 완료?
+   Yes → WS 브로드캐스트 (break_table_chip_count_complete)
+          BreakCompletionMarker INSERT (idempotency 보장)
+    No  → PENDING (다음 webhook 대기)
+```
+
+**Mock 개발 환경**: `tools/wsop_live_mock_webhook.py` 로 WSOP LIVE 없이 webhook 시뮬레이션 가능.
+
+> **정본 참조**: webhook contract 상세는 `contracts/api/WSOP_LIVE_Chip_Count_Sync.md §3-10`. 구현은 `team2-backend/src/services/break_lifecycle.py` + `src/routers/wsop_live.py`.
 
 ### 3.10 리포팅 (통계/내보내기)
 

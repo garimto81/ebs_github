@@ -20,6 +20,7 @@ from src.models.brand_pack import BrandPack  # noqa: F401
 from src.models.chip_count_snapshot import ChipCountSnapshot  # noqa: F401
 from src.models.blind_structure import BlindStructure, BlindStructureLevel  # noqa: F401
 from src.models.payout_structure import PayoutStructure, PayoutStructureLevel  # noqa: F401
+from src.services.break_lifecycle import BreakCompletionMarker  # noqa: F401 — register table
 from src.security.password import hash_password
 
 
