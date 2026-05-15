@@ -1,0 +1,6492 @@
+{
+  "generated_at": "2026-05-15T11:52:30.713016",
+  "summary": {
+    "ok": 341,
+    "page_id_mismatch": 0,
+    "url_mismatch": 1,
+    "page_not_found": 2,
+    "duplicate_confluence": 1,
+    "duplicate_git": 0,
+    "unmapped_confluence": 343,
+    "auto_corrected": 1
+  },
+  "details": {
+    "ok": [
+      {
+        "path": "1. Product\\1. Product.md",
+        "page_id": "3811344758",
+        "title": "EBS · 1. Product",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "1. Product\\Back_Office.md",
+        "page_id": "3811967073",
+        "title": "EBS Back Office",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "1. Product\\Command_Center.md",
+        "page_id": "3811901603",
+        "title": "EBS Command Center",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "1. Product\\Game_Rules\\Betting_System.md",
+        "page_id": "3811410570",
+        "title": "EBS Game Rules — Betting System",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "1. Product\\Game_Rules\\Draw.md",
+        "page_id": "3810853753",
+        "title": "EBS Game Rules — Draw Games",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "1. Product\\Game_Rules\\Flop_Games.md",
+        "page_id": "3811443642",
+        "title": "EBS Game Rules — Flop Games",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "1. Product\\Game_Rules\\Seven_Card_Games.md",
+        "page_id": "3811771012",
+        "title": "EBS Game Rules — Seven Card Games",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "1. Product\\Lobby.md",
+        "page_id": "3811672228",
+        "title": "EBS Lobby",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "1. Product\\Product_SSOT_Policy.md",
+        "page_id": "3818848697",
+        "title": "EBS · Product SSOT Policy",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "1. Product\\References\\PokerGFX_Reference.md",
+        "page_id": "3819078185",
+        "title": "EBS · PokerGFX Reference",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "1. Product\\RIVE_Standards.md",
+        "page_id": "3816784235",
+        "title": "EBS Overlay Graphics - RIVE Standards",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2. Development.md",
+        "page_id": "3811377375",
+        "title": "EBS · 2. Development",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Backlog\\AUDIT-Conductor-194-frontend-sister-cascade-2026-05-08.md",
+        "page_id": "3818881468",
+        "title": "EBS · AUDIT-Conductor-194 — Frontend 자매 영역 cascade (Login + Settings + Graphic_Editor)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Backlog\\B-079-Prize-Pool-Payout-Management.md",
+        "page_id": "3818455578",
+        "title": "EBS · B-079 Prize Pool & Payout Management",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Backlog\\B-080-Blind-Prize-Structure-Template.md",
+        "page_id": "3818816061",
+        "title": "EBS · B-080 Blind & Prize Structure Template 관리",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Backlog\\B-081-Chip-Management-Reporter.md",
+        "page_id": "3819078245",
+        "title": "EBS · B-081 Chip Management & Chip Reporter",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Backlog\\B-082-Staff-Role-Permission.md",
+        "page_id": "3818586752",
+        "title": "EBS · B-082 Staff Role & Permission 관리",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Backlog\\B-083-Tournament-Statistics-Reporting.md",
+        "page_id": "3819766263",
+        "title": "EBS · B-083 Tournament Statistics & Reporting",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Backlog.md",
+        "page_id": "3820552701",
+        "title": "EBS · Backlog",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Deployment.md",
+        "page_id": "3818684911",
+        "title": "EBS · Deployment",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Engineering.md",
+        "page_id": "3818750433",
+        "title": "EBS · Engineering — Frontend (Flutter)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\Activate_Broadcast.md",
+        "page_id": "3818684951",
+        "title": "EBS · Activate Broadcast",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\Import_Flow.md",
+        "page_id": "3820552721",
+        "title": "EBS · Import Flow",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\Metadata_Editing.md",
+        "page_id": "3819766283",
+        "title": "EBS · Metadata Editing",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\Overview.md",
+        "page_id": "3818684971",
+        "title": "EBS · Overview",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\RBAC_Guards.md",
+        "page_id": "3818750453",
+        "title": "EBS · RBAC Guards",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\References\\skin-editor\\board-re-crosscheck.md",
+        "page_id": "3818848738",
+        "title": "EBS · board-re-crosscheck",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\References\\skin-editor\\data\\layout-css-extraction.md",
+        "page_id": "3818750473",
+        "title": "EBS · layout-css-extraction",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\References\\skin-editor\\EBS-Skin-Editor_v3.prd.md",
+        "page_id": "3818717668",
+        "title": "EBS-Skin-Editor_v3.prd",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\References\\skin-editor\\ebs-ui-layout-anatomy.md",
+        "page_id": "3818521139",
+        "title": "EBS · ebs-ui-layout-anatomy",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\References\\skin-editor\\prd-compact-mockup-design-system.prd.md",
+        "page_id": "3819274944",
+        "title": "EBS Compact Mockup Design System",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\References\\skin-editor\\prd-skin-editor.prd.md",
+        "page_id": "3818717688",
+        "title": "EBS · prd-skin-editor.prd",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\References\\skin-editor\\README.md",
+        "page_id": "3818619311",
+        "title": "EBS · README",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\References\\skin-editor\\ui-feature-verification-workflow.md",
+        "page_id": "3819766363",
+        "title": "EBS · ui-feature-verification-workflow",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\UI.md",
+        "page_id": "3818914312",
+        "title": "EBS · UI",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Lobby\\Clock_Control.md",
+        "page_id": "3818947157",
+        "title": "EBS · Clock Control",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Lobby\\Event_and_Flight.md",
+        "page_id": "3818881488",
+        "title": "EBS · Event and Flight",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Lobby\\Operations.md",
+        "page_id": "3818586772",
+        "title": "EBS · Operations",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Lobby\\Overview.md",
+        "page_id": "3818455598",
+        "title": "EBS · Overview (6750)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Lobby\\Registration.md",
+        "page_id": "3818848718",
+        "title": "EBS · Registration",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Lobby\\Session_Restore.md",
+        "page_id": "3819274904",
+        "title": "EBS · Session Restore",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Lobby\\Table.md",
+        "page_id": "3820552741",
+        "title": "EBS · Table",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Lobby\\UI.md",
+        "page_id": "3818816081",
+        "title": "EBS · UI (6750)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Login\\Error_Handling.md",
+        "page_id": "3819274924",
+        "title": "EBS · Error Handling",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Login\\Form.md",
+        "page_id": "3818455618",
+        "title": "EBS · Form",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Login\\Session_Init.md",
+        "page_id": "3819176565",
+        "title": "EBS · Session Init",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Settings\\Display.md",
+        "page_id": "3819766303",
+        "title": "EBS · Display",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Settings\\Graphics.md",
+        "page_id": "3819766323",
+        "title": "EBS · Graphics",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Settings\\Outputs.md",
+        "page_id": "3818619271",
+        "title": "EBS · Outputs",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Settings\\Overview.md",
+        "page_id": "3818914500",
+        "title": "EBS · Settings · Overview",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Settings\\Preferences.md",
+        "page_id": "3818619291",
+        "title": "EBS · Preferences",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Settings\\Rules.md",
+        "page_id": "3818947177",
+        "title": "EBS · Rules",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Settings\\Statistics.md",
+        "page_id": "3819766343",
+        "title": "EBS · Statistics",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.1 Frontend\\Settings\\UI.md",
+        "page_id": "3819209450",
+        "title": "EBS · Settings · UI",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\APIs\\Auth_and_Session.md",
+        "page_id": "3818586793",
+        "title": "EBS · Auth and Session",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\APIs\\Backend_HTTP.md",
+        "page_id": "3818816101",
+        "title": "EBS · Backend HTTP",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\APIs\\Backend_HTTP_Status.md",
+        "page_id": "3818914332",
+        "title": "EBS · Backend HTTP — 구현 현황 (2026-04-20)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\APIs\\Graphic_Editor_API.md",
+        "page_id": "3820552761",
+        "title": "EBS · Graphic Editor API",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\APIs\\WebSocket_Events.md",
+        "page_id": "3819078266",
+        "title": "EBS · WebSocket Events",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Authentication\\Concurrency_and_Race_Conditions.md",
+        "page_id": "3818816121",
+        "title": "EBS · Concurrency and Race Conditions (Auth domain)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Authentication\\Production_Deployment.md",
+        "page_id": "3818586813",
+        "title": "EBS · Production Deployment (Auth domain)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Authentication\\Quickstart_Local_Cluster.md",
+        "page_id": "3818455638",
+        "title": "EBS · Quickstart — Local Cluster (Auth domain)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Back_Office\\Operations.md",
+        "page_id": "3818848758",
+        "title": "EBS · Operations (0578)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Back_Office\\Overview.md",
+        "page_id": "3818947197",
+        "title": "EBS · Overview (0578)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Back_Office\\Sync_Protocol.md",
+        "page_id": "3820552781",
+        "title": "EBS · Sync Protocol",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Backlog\\NOTIFY-team1-Round2-registration-sitin-events.md",
+        "page_id": "3818816141",
+        "title": "EBS · NOTIFY team1 Round2 — registration_changed · sitin_called 이벤트 신설",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Backlog\\NOTIFY-team1-Round2-user-sessions-multidevice.md",
+        "page_id": "3819274964",
+        "title": "EBS · NOTIFY team1 Round2 — user_sessions 다중 기기 · configs/preferences 이관",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Backlog.md",
+        "page_id": "3818717648",
+        "title": "EBS · Backlog (0578)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Database\\ER_Diagram.md",
+        "page_id": "3818619331",
+        "title": "EBS · ER Diagram",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Database\\GFSkin_Schema.md",
+        "page_id": "3820552801",
+        "title": "EBS · GFSkin Schema",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Database\\Schema.md",
+        "page_id": "3819242093",
+        "title": "EBS · Schema",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Database\\State_Machines.md",
+        "page_id": "3818684991",
+        "title": "EBS · State Machines",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Build_and_Deploy.md",
+        "page_id": "3819602536",
+        "title": "EBS · Build and Deploy",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Dependency_Injection.md",
+        "page_id": "3818685011",
+        "title": "EBS · Dependency Injection",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Dev_Setup.md",
+        "page_id": "3818816161",
+        "title": "EBS · Dev Setup",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Error_Handling.md",
+        "page_id": "3818455658",
+        "title": "EBS · Error Handling (0578)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Foundation_Realignment_Plan_2026-04-22.md",
+        "page_id": "3819176585",
+        "title": "EBS · Foundation Realignment Plan (2026-04-22)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Logging.md",
+        "page_id": "3819176605",
+        "title": "EBS · Logging",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\M1_Session_Drift_Audit_2026-04-28.md",
+        "page_id": "3819209316",
+        "title": "EBS · M1 Session Drift Audit (2026-04-28)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Non_Functional_Requirements.md",
+        "page_id": "3818455678",
+        "title": "EBS · Non Functional Requirements",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Project_Structure.md",
+        "page_id": "3819176625",
+        "title": "EBS · Project Structure",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Routing.md",
+        "page_id": "3818586833",
+        "title": "EBS · Routing",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Sandbox_Tournament_Generator.md",
+        "page_id": "3818816181",
+        "title": "EBS · Sandbox Tournament Generator",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\State_Management.md",
+        "page_id": "3820552821",
+        "title": "EBS · State Management",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Tech_Stack.md",
+        "page_id": "3819176645",
+        "title": "EBS · Tech Stack",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.2 Backend\\Engineering\\Testing_Strategy.md",
+        "page_id": "3818914352",
+        "title": "EBS · Testing Strategy",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.3 Game Engine\\APIs\\Harness_REST_API.md",
+        "page_id": "3818815911",
+        "title": "EBS · Harness REST API",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.3 Game Engine\\APIs\\OutputEvent_Serialization.md",
+        "page_id": "3818914230",
+        "title": "EBS · OutputEvent Serialization",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.3 Game Engine\\APIs\\OutputEventBuffer_Boundary.md",
+        "page_id": "3818521062",
+        "title": "EBS · OutputEventBuffer 구현 경계",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.3 Game Engine\\APIs\\Overlay_Output_Events.md",
+        "page_id": "3818586853",
+        "title": "EBS · Overlay Output Events",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.3 Game Engine\\Backlog.md",
+        "page_id": "3818947117",
+        "title": "EBS · Backlog (6049)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.3 Game Engine\\Behavioral_Specs\\Betting_and_Pots.md",
+        "page_id": "3819274749",
+        "title": "EBS · Betting & Pots — Domain Master",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.3 Game Engine\\Behavioral_Specs\\Lifecycle_and_State_Machine.md",
+        "page_id": "3819274769",
+        "title": "EBS · Lifecycle & State Machine — Domain Master",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.3 Game Engine\\Behavioral_Specs\\Overview.md",
+        "page_id": "3820552841",
+        "title": "EBS · Overview (6049)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.3 Game Engine\\Behavioral_Specs\\Triggers_and_Event_Pipeline.md",
+        "page_id": "3819274789",
+        "title": "EBS · Triggers & Event Pipeline — Domain Master",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.3 Game Engine\\Behavioral_Specs\\Variants_and_Evaluation.md",
+        "page_id": "3819241936",
+        "title": "EBS · Variants & Evaluation — Domain Master",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\APIs\\RFID_HAL.md",
+        "page_id": "3820552861",
+        "title": "EBS · RFID HAL — Operator Behavior",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\APIs\\RFID_HAL_Interface.md",
+        "page_id": "3818455474",
+        "title": "EBS · RFID HAL Interface Contract",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Backlog\\NOTIFY-team1-Round2-settings-menu-preferences-removed.md",
+        "page_id": "3819078286",
+        "title": "EBS · NOTIFY team1 Round2 — CC Settings ⚙ 메뉴 Preferences 탭 제거",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Backlog.md",
+        "page_id": "3819209295",
+        "title": "EBS · Backlog (1565)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Action_Buttons.md",
+        "page_id": "3818586873",
+        "title": "EBS · Action Buttons",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Game_Settings_Modal.md",
+        "page_id": "3820552881",
+        "title": "EBS · Game Settings — Rules 탭 상세 규격",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Hand_Lifecycle.md",
+        "page_id": "3820552901",
+        "title": "EBS · Hand Lifecycle",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Keyboard_Shortcuts.md",
+        "page_id": "3819176665",
+        "title": "EBS · Keyboard Shortcuts",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Manual_Card_Input.md",
+        "page_id": "3818816201",
+        "title": "EBS · Manual Card Input",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Multi_Table_Operations.md",
+        "page_id": "3819602556",
+        "title": "EBS · Multi Table Operations",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Overview.md",
+        "page_id": "3819602576",
+        "title": "EBS · Overview (1565)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Player_Edit_Modal.md",
+        "page_id": "3818848778",
+        "title": "EBS · Player Edit Modal",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Seat_Management.md",
+        "page_id": "3818750493",
+        "title": "EBS · Seat Management",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Statistics.md",
+        "page_id": "3819242113",
+        "title": "EBS · Statistics (1565)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\UI.md",
+        "page_id": "3819209336",
+        "title": "EBS · UI (1565)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Command_Center_UI\\Undo_Recovery.md",
+        "page_id": "3818914372",
+        "title": "EBS · Undo Recovery",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Foundation_Impact_Review.md",
+        "page_id": "3819242053",
+        "title": "EBS · Foundation Impact Review (2026-04-22 재설계)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Integration_Test_Plan\\automation\\s11\\README.md",
+        "page_id": "3818750553",
+        "title": "EBS · S-11 Lobby Hand History — E2E Automation Scaffold",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Integration_Test_Plan.md",
+        "page_id": "3819078205",
+        "title": "EBS · Integration Test Plan",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Overlay\\Animations.md",
+        "page_id": "3818750513",
+        "title": "EBS · Animations",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Overlay\\Audio.md",
+        "page_id": "3818619351",
+        "title": "EBS · Audio",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Overlay\\Elements.md",
+        "page_id": "3818521159",
+        "title": "EBS · Elements",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Overlay\\Engine_Dependency_Contract.md",
+        "page_id": "3819372998",
+        "title": "EBS · Engine Dependency Contract",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Overlay\\Layer_Boundary.md",
+        "page_id": "3818881508",
+        "title": "EBS · Layer Boundary",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Overlay\\Overview.md",
+        "page_id": "3818587003",
+        "title": "EBS · Overlay · Overview",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Overlay\\Scene_Schema.md",
+        "page_id": "3818947217",
+        "title": "EBS · Scene Schema",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Overlay\\Security_Delay.md",
+        "page_id": "3818685031",
+        "title": "EBS · Security Delay",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Overlay\\Sequences.md",
+        "page_id": "3818848798",
+        "title": "EBS · Sequences",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Overlay\\Skin_Loading.md",
+        "page_id": "3818750533",
+        "title": "EBS · Skin Loading",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\RFID_Cards\\Card_Detection.md",
+        "page_id": "3818685051",
+        "title": "EBS · Card Detection",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\RFID_Cards\\Deck_Registration.md",
+        "page_id": "3818947237",
+        "title": "EBS · Deck Registration",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\RFID_Cards\\Manual_Fallback.md",
+        "page_id": "3818455698",
+        "title": "EBS · Manual Fallback",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\RFID_Cards\\Overview.md",
+        "page_id": "3818881678",
+        "title": "EBS · RFID_Cards · Overview",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\RFID_Cards\\Register_Screen.md",
+        "page_id": "3818586893",
+        "title": "EBS · Register Screen",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.4 Command Center\\Settings.md",
+        "page_id": "3819274884",
+        "title": "EBS · Settings",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\AI_Cascade_System.md",
+        "page_id": "3818684931",
+        "title": "EBS · AI Cascade System",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\Authentication\\Distributed_Architecture.md",
+        "page_id": "3819373018",
+        "title": "EBS · Distributed Authentication Architecture",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\Authentication\\Token_Lifecycle_Sequences.md",
+        "page_id": "3818684817",
+        "title": "EBS · Token Lifecycle Sequences",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\Authentication\\Troubleshooting_Runbook.md",
+        "page_id": "3818914250",
+        "title": "EBS · Authentication Troubleshooting Runbook",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\Authentication.md",
+        "page_id": "3819176545",
+        "title": "EBS · Authentication",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\BS_Overview.md",
+        "page_id": "3818947137",
+        "title": "EBS · BS Overview",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\Naming_Conventions.md",
+        "page_id": "3818881385",
+        "title": "EBS · Naming Conventions (EBS Shared SSOT)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\Network_Config.md",
+        "page_id": "3819209219",
+        "title": "EBS · Network Configuration Contract",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\Risk_Matrix.md",
+        "page_id": "3819242073",
+        "title": "EBS · Risk Matrix",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\Stream_Entry_Guide.md",
+        "page_id": "3818586623",
+        "title": "EBS · Stream Entry Guide (v10.3 멀티세션 진입)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "2. Development\\2.5 Shared\\Stream_Entry_Guide_v11.md",
+        "page_id": "3819078225",
+        "title": "EBS · Stream Entry Guide v11 — 사용자 진입 가이드",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "3. Change Requests\\3. Change Requests.md",
+        "page_id": "3818882170",
+        "title": "EBS · 3. Change Requests (DEPRECATED)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Conductor_Backlog\\v7-6-rejection-record.md",
+        "page_id": "3819241956",
+        "title": "EBS · v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Conductor_Backlog\\v8-phase9-governance-decisions.md",
+        "page_id": "3818619180",
+        "title": "EBS · v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Conductor_Backlog.md",
+        "page_id": "3818586692",
+        "title": "EBS · Conductor_Backlog",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Docker_Runtime.md",
+        "page_id": "3818816021",
+        "title": "EBS · Docker Runtime 운영 지침",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\GLOBAL_SSOT_SYNC_HANDOFF.md",
+        "page_id": "3819602444",
+        "title": "EBS · Global SSOT Sync — SG-022 advocacy eradication",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Message_Bus_Runbook.md",
+        "page_id": "3819274844",
+        "title": "EBS · Inter-Session Message Bus — Operational Runbook",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Multi_Session_Design_v10.3.md",
+        "page_id": "3818684851",
+        "title": "EBS · Multi-Session Orchestration Design v10.3",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Multi_Session_Design_v11.md",
+        "page_id": "3818750393",
+        "title": "EBS · Multi-Session Orchestration Design v11 — Message Bus Push 기반",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\MULTI_SESSION_DOCKER_HANDOFF.md",
+        "page_id": "3818455454",
+        "title": "EBS · Multi-Session Docker Handoff (SG-022 deprecation cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Multi_Session_Workflow.md",
+        "page_id": "3818717573",
+        "title": "EBS · Multi-Session Workflow (v10.3 redirect)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\orchestration\\2026-05-08-consistency-audit\\README.md",
+        "page_id": "3818947317",
+        "title": "EBS · 2026-05-08 정합성 감사 — Master Orchestration Plan",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Reports\\2026-04-29-v94-final-worktree-cleanup.md",
+        "page_id": "3819078112",
+        "title": "EBS · V9.4 Final Worktree Cleanup — SSOT-based Autonomous Judgment",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Reports\\2026-04-29-v95-cycle-metrics.md",
+        "page_id": "3818815931",
+        "title": "EBS · V9.5 Cycle Metrics — P10 결과물 Quality Report",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Reports\\2026-04-29-v95-e2e-iteration-phase-plan.md",
+        "page_id": "3819766194",
+        "title": "EBS · V9.5 결과물 E2E Iteration — Phase / Task Plan + P5/P6 진행",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Reports\\2026-04-29-v95-residual-cycle-wrap-up.md",
+        "page_id": "3818586643",
+        "title": "EBS · V9.5 잔존 후속 cycle wrap-up — Agent Teams 첫 적용 + P11-P14 통합 보고",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Reports\\2026-04-29-v95-ssot-implementation-gap-triage.md",
+        "page_id": "3819176427",
+        "title": "EBS · V9.5 SSOT vs Implementation Gap Triage",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Roadmap.md",
+        "page_id": "3818684891",
+        "title": "EBS · Roadmap",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Spec_Gap_Registry.md",
+        "page_id": "3818816041",
+        "title": "EBS · Spec Gap Registry — Drift 집계 + 해소 추적",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Task_Dispatch_Board\\README.md",
+        "page_id": "3819602464",
+        "title": "EBS · Task Dispatch Board (분해 디렉토리)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "4. Operations\\Task_Dispatch_Board.md",
+        "page_id": "3818947055",
+        "title": "EBS · Task Dispatch Board (V9.3 — Intent/Execution Separation + AI Autonomous Merge)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\audit-reports\\2026-04-26-Spec_Gap_Audit_Phase1.md",
+        "page_id": "3818586974",
+        "title": "EBS · Spec Gap Audit — Phase 1 분석 (2026-04-26)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\audit-reports\\2026-04-26-Spec_Gap_Audit_Phase4_Delivery.md",
+        "page_id": "3818816321",
+        "title": "EBS · Spec Gap Audit — Phase 4 Delivery (2026-04-26)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\audit-reports\\OWASP_Audit_Kickoff_2026-05-03.md",
+        "page_id": "3818717628",
+        "title": "EBS · OWASP Top-10 Audit Kickoff Report — team2-backend",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-011-ge-ownership-move.md",
+        "page_id": "3820553360",
+        "title": "EBS · CR-011-ge-ownership-move",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-016-tech-stack-ssot.md",
+        "page_id": "3820553380",
+        "title": "EBS · CR-016-tech-stack-ssot",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-037-bs08-graphic-editor-new.md",
+        "page_id": "3818882190",
+        "title": "EBS · CR-037-bs08-graphic-editor-new",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-conductor-20260410-ge-ownership-move.md",
+        "page_id": "3818587264",
+        "title": "EBS · CR-conductor-20260410-ge-ownership-move",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-conductor-20260410-gfskin-format-unify.md",
+        "page_id": "3818816643",
+        "title": "EBS · CR-conductor-20260410-gfskin-format-unify",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-conductor-20260411-ge-api-spec.md",
+        "page_id": "3818587284",
+        "title": "EBS · CR-conductor-20260411-ge-api-spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-conductor-20260411-ge-req-id-rework.md",
+        "page_id": "3818521571",
+        "title": "EBS · CR-conductor-20260411-ge-req-id-rework",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-conductor-20260414-skin-updated-ws.md",
+        "page_id": "3819078749",
+        "title": "EBS · CR-conductor-20260414-skin-updated-ws",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-conductor-20260421-ge-scope-expansion.md",
+        "page_id": "3818914789",
+        "title": "EBS · CR-conductor-20260421-ge-scope-expansion",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team1-20260410-tech-stack-ssot.md",
+        "page_id": "3818914809",
+        "title": "EBS · CR-team1-20260410-tech-stack-ssot",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team1-20260410-wsop-parity.md",
+        "page_id": "3818521591",
+        "title": "EBS · CR-team1-20260410-wsop-parity",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team1-20260413-google-oauth.md",
+        "page_id": "3819275384",
+        "title": "EBS · CR-team1-20260413-google-oauth",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team1-20260414-deadlink-cleanup.md",
+        "page_id": "3818849246",
+        "title": "EBS · CR-team1-20260414-deadlink-cleanup",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260410-data-idempotency-audit.md",
+        "page_id": "3819275404",
+        "title": "EBS · CR-team2-20260410-data-idempotency-audit",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260410-idempotency-key.md",
+        "page_id": "3819209796",
+        "title": "EBS · CR-team2-20260410-idempotency-key",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260410-jwt-expiry.md",
+        "page_id": "3819766856",
+        "title": "EBS · CR-team2-20260410-jwt-expiry",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260410-table-rebalance-saga.md",
+        "page_id": "3818816663",
+        "title": "EBS · CR-team2-20260410-table-rebalance-saga",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260410-ws-event-seq.md",
+        "page_id": "3819242495",
+        "title": "EBS · CR-team2-20260410-ws-event-seq",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260413-event-type-catalog.md",
+        "page_id": "3819177049",
+        "title": "EBS · CR-team2-20260413-event-type-catalog",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260413-refresh-token-policy.md",
+        "page_id": "3818849266",
+        "title": "EBS · CR-team2-20260413-refresh-token-policy",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260413-seat-waiting-enum.md",
+        "page_id": "3819209822",
+        "title": "EBS · CR-team2-20260413-seat-waiting-enum",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260413-summary-clock-fsm.md",
+        "page_id": "3819766882",
+        "title": "EBS · CR-team2-20260413-summary-clock-fsm",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260414-auth-ggpass-pattern.md",
+        "page_id": "3819602865",
+        "title": "EBS · CR-team2-20260414-auth-ggpass-pattern",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260414-blindstructure-endpoints.md",
+        "page_id": "3818750874",
+        "title": "EBS · CR-team2-20260414-blindstructure-endpoints",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260414-clock-endpoints-full.md",
+        "page_id": "3818947613",
+        "title": "EBS · CR-team2-20260414-clock-endpoints-full",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260414-competition-hierarchy.md",
+        "page_id": "3818587304",
+        "title": "EBS · CR-team2-20260414-competition-hierarchy",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260414-payout-structure-endpoints.md",
+        "page_id": "3819177069",
+        "title": "EBS · CR-team2-20260414-payout-structure-endpoints",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260414-rate-limit-security.md",
+        "page_id": "3818816683",
+        "title": "EBS · CR-team2-20260414-rate-limit-security",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260414-users-staff-pattern.md",
+        "page_id": "3818587324",
+        "title": "EBS · CR-team2-20260414-users-staff-pattern",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260414-ws-event-catalog.md",
+        "page_id": "3818882210",
+        "title": "EBS · CR-team2-20260414-ws-event-catalog",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team2-20260414-wsop-sync-catalog.md",
+        "page_id": "3819177089",
+        "title": "EBS · CR-team2-20260414-wsop-sync-catalog",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team3-20260410-wsop-conformance.md",
+        "page_id": "3819602885",
+        "title": "EBS · CR-team3-20260410-wsop-conformance",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team3-20260414-output-event-buffer-ownership.md",
+        "page_id": "3819275424",
+        "title": "EBS · CR-team3-20260414-output-event-buffer-ownership",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-api03-hal-lifecycle.md",
+        "page_id": "3818816703",
+        "title": "EBS · CR-team4-20260410-api03-hal-lifecycle",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-api05-messagepack.md",
+        "page_id": "3819177109",
+        "title": "EBS · CR-team4-20260410-api05-messagepack",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-api05-writegameinfo-schema.md",
+        "page_id": "3819177129",
+        "title": "EBS · CR-team4-20260410-api05-writegameinfo-schema",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs03-graphic-settings-tab.md",
+        "page_id": "3819242515",
+        "title": "EBS · CR-team4-20260410-bs03-graphic-settings-tab",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs04-at05-rfid-register.md",
+        "page_id": "3818947633",
+        "title": "EBS · CR-team4-20260410-bs04-at05-rfid-register",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs05-07-statistics-screen.md",
+        "page_id": "3820553400",
+        "title": "EBS · CR-team4-20260410-bs05-07-statistics-screen",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs05-at-screens.md",
+        "page_id": "3819275444",
+        "title": "EBS · CR-team4-20260410-bs05-at-screens",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs05-launch-flow.md",
+        "page_id": "3820553420",
+        "title": "EBS · CR-team4-20260410-bs05-launch-flow",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs05-multi-table-ops.md",
+        "page_id": "3819766902",
+        "title": "EBS · CR-team4-20260410-bs05-multi-table-ops",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs05-protocol-gaps.md",
+        "page_id": "3819209842",
+        "title": "EBS · CR-team4-20260410-bs05-protocol-gaps",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs05-visual-spec.md",
+        "page_id": "3819209862",
+        "title": "EBS · CR-team4-20260410-bs05-visual-spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs07-audio-layer.md",
+        "page_id": "3818947653",
+        "title": "EBS · CR-team4-20260410-bs07-audio-layer",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs07-cc-visual-sync.md",
+        "page_id": "3819177149",
+        "title": "EBS · CR-team4-20260410-bs07-cc-visual-sync",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs07-layer-boundary.md",
+        "page_id": "3819078785",
+        "title": "EBS · CR-team4-20260410-bs07-layer-boundary",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs07-security-delay.md",
+        "page_id": "3819242535",
+        "title": "EBS · CR-team4-20260410-bs07-security-delay",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\cr-done\\CR-team4-20260410-bs08-graphic-editor-new.md",
+        "page_id": "3818882230",
+        "title": "EBS · CR-team4-20260410-bs08-graphic-editor-new",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\critic-reports\\CC_Design_Prototype_Critic_2026_05_06.md",
+        "page_id": "3819242032",
+        "title": "EBS · CC React 디자인 프로토타입 — Critic 판정 보고서",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\critic-reports\\Doc_Discovery_Failure_Critic_2026_05_06.md",
+        "page_id": "3820552681",
+        "title": "EBS · 문서 발견 실패 — Command_Center_PRD.md 누락 사고와 systematic 해결",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\critic-reports\\Lobby_IA_Sidebar_2026-04-21.md",
+        "page_id": "3818848838",
+        "title": "EBS · Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\critic-reports\\Lobby_Spec_Implementation_Drift_2026-05-06.md",
+        "page_id": "3819078366",
+        "title": "EBS · Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\critic-reports\\Meeting_Analysis_2026_04_22.md",
+        "page_id": "3818750613",
+        "title": "EBS · 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\critic-reports\\SG-008-b11-v13-critic-2026-05-03.md",
+        "page_id": "3819176705",
+        "title": "EBS · Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-04-08-game-engine.plan.md",
+        "page_id": "3818586934",
+        "title": "EBS · 2026-04-08-game-engine.plan",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-04-10-ccr-batch-team-impact.md",
+        "page_id": "3819766484",
+        "title": "EBS · 2026-04-10-ccr-batch-team-impact",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-04-17_SSOT_Audit.md",
+        "page_id": "3818685131",
+        "title": "EBS · Team 2 Backend SSOT Compliance Audit",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-04-21-critic-ge-multi-session.md",
+        "page_id": "3818881588",
+        "title": "EBS · Critic — GE 멀티 세션 분리 적합성 (Lobby 탭 종속 전제)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-04-21-critic-graphic-editor-team5-separation.md",
+        "page_id": "3818816301",
+        "title": "EBS · Critic — Graphic Editor team5 분리 적합성 검토",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-04-21-quasar-to-flutter-migration-audit.md",
+        "page_id": "3818619411",
+        "title": "EBS · Quasar → Flutter 이전 누락 / 매칭 실패 감사",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-04-26-Prototype_Completion_Report.md",
+        "page_id": "3819176745",
+        "title": "EBS · Prototype Completion Report — Spec ↔ Code 양방향 동기화 (2026-04-26)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-04-28-v8-phase4-hook-deprecation-audit.md",
+        "page_id": "3818881608",
+        "title": "EBS · v8.0 Phase 4 — Deprecated Hooks Audit (branch_guard + session_branch_init)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-04-29-v93-stale-worktrees-archive.md",
+        "page_id": "3818914452",
+        "title": "EBS · V9.3 Stale Worktrees Archive (2026-04-29 cleanup)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-05-08-consistency-audit-final.md",
+        "page_id": "3818947297",
+        "title": "EBS · 2026-05-08 정합성 감사 — 최종 통합 검증 보고서",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\2026-05-08-S6-prototype-audit.md",
+        "page_id": "3818881628",
+        "title": "EBS · 2026-05-08 S6 Prototype 정합성 감사 (#165)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q10-95-coverage-roadmap.md",
+        "page_id": "3818750573",
+        "title": "EBS · B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q11-owasp-audit.md",
+        "page_id": "3819766384",
+        "title": "EBS · B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q12-100ms-sla-measurement.md",
+        "page_id": "3818947257",
+        "title": "EBS · B-Q12 — 운영 안정성 측정 framework (NFR — RFID/Engine/WS/Render 사슬 안정성)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q13-desktop-routing-implementation.md",
+        "page_id": "3818816221",
+        "title": "EBS · B-Q13 — 단일 Desktop 바이너리 라우팅 구현 (SG-022 cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q14-settings-ui-implementation.md",
+        "page_id": "3818586913",
+        "title": "EBS · B-Q14 — Settings 5-level scope UI 구현 (C.1 + SG-026 cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q15-sg-008-b-endpoint-implementation.md",
+        "page_id": "3819274985",
+        "title": "EBS · B-Q15 — SG-008-b 11건 endpoint 실구현 (team2 우선 작업 7번 cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q16-development-environment-standards.md",
+        "page_id": "3818619371",
+        "title": "EBS · B-Q16 — 개발 환경 표준화 (Session 1 — SG-027 cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q17-engine-healthcheck-fix.md",
+        "page_id": "3819766404",
+        "title": "EBS · B-Q17 — ebs-v2-engine healthcheck unhealthy 수정 (Type A 구현 실수)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q18-structure-update-same-tx-flush-bug.md",
+        "page_id": "3818881528",
+        "title": "EBS · B-Q18 — Structure update same-transaction delete+insert IntegrityError (Type A)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q19-list-hands-row-int-bug.md",
+        "page_id": "3819766424",
+        "title": "EBS · B-Q19 — list_hands SQLAlchemy 2.x Row int() TypeError (Type A)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q2-docker-lobby-web-cleanup.md",
+        "page_id": "3819078306",
+        "title": "EBS · Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q20-coverage-final-6pp.md",
+        "page_id": "3818914392",
+        "title": "EBS · B-Q20 — 95% coverage 잔여 6%p 도달 (Session 2 final 후속)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q3-team1-frontend-web-build-assets.md",
+        "page_id": "3819176685",
+        "title": "EBS · team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q6-timeline-mvp-launch-schedule.md",
+        "page_id": "3820552921",
+        "title": "EBS · B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q7-quality-criteria-production.md",
+        "page_id": "3818750593",
+        "title": "EBS · B-Q7 — 품질 기준 (Production-strict 90% 재정의 2026-04-27)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B-Q8-vendor-rfi-rfq-reactivation.md",
+        "page_id": "3819275005",
+        "title": "EBS · B-Q8 — vendor 모델 reactivate (RFI/RFQ 재개 여부) (사용자 명시 대기)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\B088_team2_execution_plan_2026-04-21.md",
+        "page_id": "3818816261",
+        "title": "EBS · B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Causality_Dashboard.md",
+        "page_id": "3818848647",
+        "title": "EBS 문서 인과관계 대시보드",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CC_PRD_Renewal_Plan_2026_05_06.md",
+        "page_id": "3818881448",
+        "title": "EBS · Command_Center_PRD.md 리뉴얼 계획 (v1.1.0 → v2.0.0)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CI_CHAOS_TEST_HANDOFF.md",
+        "page_id": "3819766464",
+        "title": "EBS · CI Chaos Test Handoff (PR #20 gate validation)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CI_GATE_INTEGRATION_HANDOFF.md",
+        "page_id": "3818914412",
+        "title": "EBS · CI Gate Integration + ebs_v2 Cleanup Handoff",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\classification.md",
+        "page_id": "3818455738",
+        "title": "EBS · 683 .md 파일 전수 분류 매트릭스",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\conductor-spec.md",
+        "page_id": "3818521179",
+        "title": "EBS · Conductor — 잔여 영역 + 통합 검증 spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-010-jwt-expiry.md",
+        "page_id": "3818947673",
+        "title": "EBS · CR-010-jwt-expiry",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-012-gfskin-format-unify.md",
+        "page_id": "3819078805",
+        "title": "EBS · CR-012-gfskin-format-unify",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-013-ge-api-spec.md",
+        "page_id": "3818587344",
+        "title": "EBS · CR-013-ge-api-spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-014-ge-req-id-rework.md",
+        "page_id": "3820553440",
+        "title": "EBS · CR-014-ge-req-id-rework",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-015-skin-updated-ws.md",
+        "page_id": "3818914835",
+        "title": "EBS · CR-015-skin-updated-ws",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-017-wsop-parity.md",
+        "page_id": "3819209882",
+        "title": "EBS · CR-017-wsop-parity",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-018-data-idempotency-audit.md",
+        "page_id": "3820553460",
+        "title": "EBS · CR-018-data-idempotency-audit",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-019-idempotency-key.md",
+        "page_id": "3818849286",
+        "title": "EBS · CR-019-idempotency-key",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-020-table-rebalance-saga.md",
+        "page_id": "3818849306",
+        "title": "EBS · CR-020-table-rebalance-saga",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-021-ws-event-seq.md",
+        "page_id": "3818882250",
+        "title": "EBS · CR-021-ws-event-seq",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-022-api03-hal-lifecycle.md",
+        "page_id": "3819242555",
+        "title": "EBS · CR-022-api03-hal-lifecycle",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-023-api05-messagepack.md",
+        "page_id": "3818849326",
+        "title": "EBS · CR-023-api05-messagepack",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-024-api05-writegameinfo-schema.md",
+        "page_id": "3819209902",
+        "title": "EBS · CR-024-api05-writegameinfo-schema",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-025-bs03-graphic-settings-tab.md",
+        "page_id": "3819602905",
+        "title": "EBS · CR-025-bs03-graphic-settings-tab",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-026-bs04-at05-rfid-register.md",
+        "page_id": "3819209922",
+        "title": "EBS · CR-026-bs04-at05-rfid-register",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-027-bs05-07-statistics-screen.md",
+        "page_id": "3818849346",
+        "title": "EBS · CR-027-bs05-07-statistics-screen",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-028-bs05-at-screens.md",
+        "page_id": "3818521611",
+        "title": "EBS · CR-028-bs05-at-screens",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-029-bs05-launch-flow.md",
+        "page_id": "3818947693",
+        "title": "EBS · CR-029-bs05-launch-flow",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-030-bs05-multi-table-ops.md",
+        "page_id": "3819275464",
+        "title": "EBS · CR-030-bs05-multi-table-ops",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-031-bs05-protocol-gaps.md",
+        "page_id": "3818947713",
+        "title": "EBS · CR-031-bs05-protocol-gaps",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-032-bs05-visual-spec.md",
+        "page_id": "3818849366",
+        "title": "EBS · CR-032-bs05-visual-spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-033-bs07-audio-layer.md",
+        "page_id": "3819275484",
+        "title": "EBS · CR-033-bs07-audio-layer",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-034-bs07-cc-visual-sync.md",
+        "page_id": "3819602925",
+        "title": "EBS · CR-034-bs07-cc-visual-sync",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-035-bs07-layer-boundary.md",
+        "page_id": "3818750894",
+        "title": "EBS · CR-035-bs07-layer-boundary",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-036-bs07-security-delay.md",
+        "page_id": "3820553480",
+        "title": "EBS · CR-036-bs07-security-delay",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-038-google-oauth.md",
+        "page_id": "3819275504",
+        "title": "EBS · CR-038-google-oauth",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-039-event-type-catalog.md",
+        "page_id": "3818521631",
+        "title": "EBS · CR-039-event-type-catalog",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-040-refresh-token-policy.md",
+        "page_id": "3818521651",
+        "title": "EBS · CR-040-refresh-token-policy",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-041-seat-waiting-enum.md",
+        "page_id": "3820553500",
+        "title": "EBS · CR-041-seat-waiting-enum",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-042-summary-clock-fsm.md",
+        "page_id": "3818750914",
+        "title": "EBS · CR-042-summary-clock-fsm",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-043-wsop-sync-catalog.md",
+        "page_id": "3819242575",
+        "title": "EBS · CR-043-wsop-sync-catalog",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-047-competition-hierarchy.md",
+        "page_id": "3818849386",
+        "title": "EBS · CR-047-competition-hierarchy",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-048-auth-ggpass-pattern.md",
+        "page_id": "3819275524",
+        "title": "EBS · CR-048-auth-ggpass-pattern",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-049-blindstructure-endpoints.md",
+        "page_id": "3818587364",
+        "title": "EBS · CR-049-blindstructure-endpoints",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-050-clock-endpoints-full.md",
+        "page_id": "3819602945",
+        "title": "EBS · CR-050-clock-endpoints-full",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-051-payout-structure-endpoints.md",
+        "page_id": "3819078825",
+        "title": "EBS · CR-051-payout-structure-endpoints",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-052-rate-limit-security.md",
+        "page_id": "3818587384",
+        "title": "EBS · CR-052-rate-limit-security",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-053-users-staff-pattern.md",
+        "page_id": "3818914855",
+        "title": "EBS · CR-053-users-staff-pattern",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-054-ws-event-catalog.md",
+        "page_id": "3820553520",
+        "title": "EBS · CR-054-ws-event-catalog",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-055-output-event-buffer-ownership.md",
+        "page_id": "3819209942",
+        "title": "EBS · CR-055-output-event-buffer-ownership",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-056-deadlink-cleanup.md",
+        "page_id": "3819177169",
+        "title": "EBS · CR-056-deadlink-cleanup",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\CR-team1-20260414-bs02-overview-rename.md",
+        "page_id": "3818947733",
+        "title": "EBS · CR-team1-20260414-bs02-overview-rename",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Foundation_Alignment_Plan.md",
+        "page_id": "3819274824",
+        "title": "EBS · Foundation 재설계 정렬 계획 (Conductor 소유 문서)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\foundation_ssot.md",
+        "page_id": "3818881648",
+        "title": "EBS · Foundation v4.5 — SSOT 사실표 (정합성 감사 기준점)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Frozen_Build_SOP.md",
+        "page_id": "3818586712",
+        "title": "EBS · Frozen Build SOP — file revert race 우회",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\INFRA_ALIGNMENT_HANDOFF.md",
+        "page_id": "3818914432",
+        "title": "EBS · INFRA Alignment Handoff (Conductor Claim #14/#16)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\LAN_DEPLOYMENT.md",
+        "page_id": "3818750373",
+        "title": "EBS · LAN Deployment — Internal Network Domain Access",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Load_Test_Plan_Phase1.md",
+        "page_id": "3818717608",
+        "title": "EBS · Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md",
+        "page_id": "3818816281",
+        "title": "EBS · Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Lobby_Renewal_Plan_2026-05-06.md",
+        "page_id": "3818586954",
+        "title": "EBS · Lobby 리뉴얼 계획 — EBS Lobby Design SSOT 1:1 정합",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md",
+        "page_id": "3819078386",
+        "title": "EBS · Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md",
+        "page_id": "3818619391",
+        "title": "EBS · Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Network_Deployment.md",
+        "page_id": "3818684871",
+        "title": "EBS · Network Deployment Guide",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\NOTIFY-ALL-PHASE2-START.md",
+        "page_id": "3819242133",
+        "title": "EBS · Phase 1 설계 정렬 완료 — Phase 2 진입 허용 (전체 팀 broadcast)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\NOTIFY-ALL-SG023-INTENT-PIVOT.md",
+        "page_id": "3819078326",
+        "title": "EBS · SG-023 인텐트 전환 (production 출시) — 전체 팀 broadcast + 작업 standby 권고",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION.md",
+        "page_id": "3819078346",
+        "title": "EBS · SG-024 거버넌스 확장 — Conductor 단일 세션 전권 (broadcast)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\NOTIFY-ALL-SG025-026-PRODUCTION-LAUNCH.md",
+        "page_id": "3818947277",
+        "title": "EBS · SG-025 + SG-026 — Production timeline + Quality gates (B-Q6 ㉠ + B-Q7 ㉠ broadcast)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\P0_REMEDIATION_HANDOFF.md",
+        "page_id": "3818685091",
+        "title": "EBS · P0 Remediation Handoff (port 3000 + Dockerfile context)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\P1_FOLLOWUP_HANDOFF.md",
+        "page_id": "3818685111",
+        "title": "EBS · P1/P3 Follow-up Handoff (Sentry sidecar + Flutter pin + ebs_v2 archive)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Phase_Plan_2027.md",
+        "page_id": "3811869217",
+        "title": "EBS · Phase Plan 2027",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\PLAN-BO-Phase1.md",
+        "page_id": "3819209396",
+        "title": "EBS · PLAN-BO-Phase1",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Redesign_Plan_2026_04_22.md",
+        "page_id": "3819176725",
+        "title": "EBS · Redesign Plan — 2026-04-22 회의록 기반 전면 재설계",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\RENOVATE_EVALUATION.md",
+        "page_id": "3819602516",
+        "title": "EBS · Renovate vs Dependabot Evaluation",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\S1-foundation.md",
+        "page_id": "3819766504",
+        "title": "EBS · S1 Foundation — 정합성 감사 작업 spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\S2-lobby.md",
+        "page_id": "3819275025",
+        "title": "EBS · S2 Lobby — 정합성 감사 작업 spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\S3-cc.md",
+        "page_id": "3818848858",
+        "title": "EBS · S3 Command Center — 정합성 감사 작업 spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\S4-rive.md",
+        "page_id": "3818914472",
+        "title": "EBS · S4 RIVE Standards — 정합성 감사 작업 spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\S5-index.md",
+        "page_id": "3820552981",
+        "title": "EBS · S5 AI Track / Index — 정합성 감사 작업 spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\S6-prototype.md",
+        "page_id": "3819766524",
+        "title": "EBS · S6 Prototype — 정합성 감사 작업 spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\S7-backend.md",
+        "page_id": "3818619431",
+        "title": "EBS · S7 Backend — 정합성 감사 작업 spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\S8-engine.md",
+        "page_id": "3819209416",
+        "title": "EBS · S8 Game Engine — 정합성 감사 작업 spec",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SESSION_1_HANDOFF.md",
+        "page_id": "3819209356",
+        "title": "EBS · SESSION 1 HANDOFF — Foundation & Infrastructure",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SESSION_2_1_HANDOFF.md",
+        "page_id": "3819209376",
+        "title": "EBS · SESSION 2.1 HANDOFF — auth_service.py 50% → 80% (B-Q10 cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SESSION_2_2_HANDOFF.md",
+        "page_id": "3818685071",
+        "title": "EBS · SESSION 2.2 HANDOFF — blind/payout structure services 20-26% → 70%+",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SESSION_2_3a_HANDOFF.md",
+        "page_id": "3818848818",
+        "title": "EBS · SESSION 2.3a HANDOFF — series_service.py 57% → 80%+",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SESSION_2_FINAL_REPORT.md",
+        "page_id": "3818881548",
+        "title": "EBS · SESSION 2 FINAL REPORT — Core Logic & Backend Engine (B-Q10 cascade)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SESSION_2_HANDOFF.md",
+        "page_id": "3818455718",
+        "title": "EBS · SESSION 2 HANDOFF — Core Logic & Backend Engine (Phase 1 audit 완료)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SESSION_3_INIT.md",
+        "page_id": "3820552941",
+        "title": "EBS · SESSION 3 INIT — Frontend Interface & Routing (team1 영역)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SG-023-intent-pivot-production.md",
+        "page_id": "3820552961",
+        "title": "EBS · SG-023 — 인텐트 전환 (기획서 완결 → production 출시)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SG-027-multi-session-pipeline.md",
+        "page_id": "3818881568",
+        "title": "EBS · SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\Spec_Gap_Triage.md",
+        "page_id": "3819766243",
+        "title": "EBS · Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SSOT_Alignment_Progress.md",
+        "page_id": "3818586732",
+        "title": "EBS · SSOT Alignment Progress",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\SSOT_ALIGNMENT_REPORT.md",
+        "page_id": "3818750413",
+        "title": "EBS · SSOT Alignment Report — Lobby Path Drift Eradication",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\V2_PURGE_REPORT.md",
+        "page_id": "3818816241",
+        "title": "EBS · V2 Purge Report — 사용자 명시 \"ebs v2 별개 프로젝트\" cascade",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\worktree-cleanup-report.md",
+        "page_id": "3819766444",
+        "title": "EBS · Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A)",
+        "space": "WSOPLive"
+      },
+      {
+        "path": "_archive\\orphan\\WSOP-Production-Structure-Analysis.md",
+        "page_id": "3819274864",
+        "title": "EBS · WSOP Production Structure Analysis",
+        "space": "WSOPLive"
+      }
+    ],
+    "page_id_mismatch": [],
+    "url_mismatch": [
+      {
+        "path": "1. Product\\Foundation.md",
+        "page_id": "3625189547",
+        "git_url": "https://ggnetwork.atlassian.net/wiki/x/qwAU2",
+        "live_url": "https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3625189547/EBS+기초+기획서",
+        "live_title": "EBS 기초 기획서"
+      }
+    ],
+    "page_not_found": [
+      {
+        "path": "4. Operations\\4. Operations.md",
+        "page_id": "3811573898",
+        "title": "4. Operations"
+      },
+      {
+        "path": "4. Operations\\Inter_Session_Chat_Design.md",
+        "page_id": "TBD",
+        "title": "Inter-Session Chat — Design Specification"
+      }
+    ],
+    "duplicate_confluence": [
+      {
+        "path": "2. Development\\2.1 Frontend\\Graphic_Editor\\References\\skin-editor\\EBS-Skin-Editor_v3.prd.md",
+        "git_page_id": "3818717668",
+        "title": "EBS-Skin-Editor_v3.prd",
+        "pages": [
+          {
+            "id": "3818717668",
+            "space": "WSOPLive",
+            "version": 2
+          },
+          {
+            "id": "3833462916",
+            "space": "~71202036ff7e0a7684471195434d342e3315ed",
+            "version": 3
+          }
+        ]
+      }
+    ],
+    "duplicate_git": [],
+    "unmapped_confluence": [
+      {
+        "page_id": "3184328827",
+        "title": "EBS",
+        "space": "WSOPLive",
+        "version": 1,
+        "ancestors": []
+      },
+      {
+        "page_id": "3818521542",
+        "title": "EBS · 3. Change Requests",
+        "space": "WSOPLive",
+        "version": 1,
+        "ancestors": [
+          "EBS"
+        ]
+      },
+      {
+        "page_id": "3812360338",
+        "title": "EBS · 1. Product · Game Rules",
+        "space": "WSOPLive",
+        "version": 1,
+        "ancestors": [
+          "EBS",
+          "EBS · 1. Product"
+        ]
+      },
+      {
+        "page_id": "3811606750",
+        "title": "EBS · 2.1 Frontend",
+        "space": "WSOPLive",
+        "version": 2,
+        "ancestors": [
+          "EBS",
+          "EBS · 2. Development"
+        ]
+      },
+      {
+        "page_id": "3811770578",
+        "title": "EBS · 2.2 Backend",
+        "space": "WSOPLive",
+        "version": 2,
+        "ancestors": [
+          "EBS",
+          "EBS · 2. Development"
+        ]
+      },
+      {
+        "page_id": "3811836049",
+        "title": "EBS · 2.3 Game Engine",
+        "space": "WSOPLive",
+        "version": 2,
+        "ancestors": [
+          "EBS",
+          "EBS · 2. Development"
+        ]
+      },
+      {
+        "page_id": "3811901565",
+        "title": "EBS · 2.4 Command Center",
+        "space": "WSOPLive",
+        "version": 2,
+        "ancestors": [
+          "EBS",
+          "EBS · 2. Development"
+        ]
+      },
+      {
+        "page_id": "3812032646",
+        "title": "EBS · 2.5 Shared",
+        "space": "WSOPLive",
+        "version": 2,
+        "ancestors": [
+          "EBS",
+          "EBS · 2. Development"
+        ]
+      },
+      {
+        "page_id": "3833167989",
+        "title": "EBS",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요"
+        ]
+      },
+      {
+        "page_id": "3833495705",
+        "title": "1. Product",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS"
+        ]
+      },
+      {
+        "page_id": "3834249275",
+        "title": "2. Development",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS"
+        ]
+      },
+      {
+        "page_id": "3835789350",
+        "title": "[샘플] 자동 번역 라벨 설계 시연 — translate-eng",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS"
+        ]
+      },
+      {
+        "page_id": "3832938580",
+        "title": "References",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product"
+        ]
+      },
+      {
+        "page_id": "3833430137",
+        "title": "Foundation",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product"
+        ]
+      },
+      {
+        "page_id": "3834282062",
+        "title": "Game_Rules",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product"
+        ]
+      },
+      {
+        "page_id": "3834118269",
+        "title": "Back_Office (1. Product)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 5,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product"
+        ]
+      },
+      {
+        "page_id": "3833495726",
+        "title": "Command_Center",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product"
+        ]
+      },
+      {
+        "page_id": "3832873166",
+        "title": "Command_Center (1. Product)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 5,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product"
+        ]
+      },
+      {
+        "page_id": "3833888948",
+        "title": "Foundation (1. Product)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 5,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product"
+        ]
+      },
+      {
+        "page_id": "3832807544",
+        "title": "Lobby (1. Product)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 6,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product"
+        ]
+      },
+      {
+        "page_id": "3834282083",
+        "title": "RIVE_Standards",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product"
+        ]
+      },
+      {
+        "page_id": "3834052681",
+        "title": "Roadmap",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product"
+        ]
+      },
+      {
+        "page_id": "3833004159",
+        "title": "2.1 Frontend",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development"
+        ]
+      },
+      {
+        "page_id": "3833626776",
+        "title": "2.2 Backend",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development"
+        ]
+      },
+      {
+        "page_id": "3832840302",
+        "title": "2.3 Game Engine",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development"
+        ]
+      },
+      {
+        "page_id": "3832938601",
+        "title": "2.4 Command Center",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development"
+        ]
+      },
+      {
+        "page_id": "3833725052",
+        "title": "2.5 Shared",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development"
+        ]
+      },
+      {
+        "page_id": "3835658337",
+        "title": "[샘플] 자동 번역 라벨 설계 시연 — translate-eng (eng)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "[샘플] 자동 번역 라벨 설계 시연 — translate-eng"
+        ]
+      },
+      {
+        "page_id": "3834216584",
+        "title": "PokerGFX_Reference",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product",
+          "References"
+        ]
+      },
+      {
+        "page_id": "3833036921",
+        "title": "Betting_System",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product",
+          "Game_Rules"
+        ]
+      },
+      {
+        "page_id": "3833462896",
+        "title": "Betting_System (Game_Rules)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product",
+          "Game_Rules"
+        ]
+      },
+      {
+        "page_id": "3833954399",
+        "title": "Draw",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product",
+          "Game_Rules"
+        ]
+      },
+      {
+        "page_id": "3834085561",
+        "title": "Flop_Games",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product",
+          "Game_Rules"
+        ]
+      },
+      {
+        "page_id": "3833790514",
+        "title": "Seven_Card_Games",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "1. Product",
+          "Game_Rules"
+        ]
+      },
+      {
+        "page_id": "3832873103",
+        "title": "Backlog",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend"
+        ]
+      },
+      {
+        "page_id": "3834052660",
+        "title": "Graphic_Editor",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend"
+        ]
+      },
+      {
+        "page_id": "3834216497",
+        "title": "Lobby",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend"
+        ]
+      },
+      {
+        "page_id": "3833364570",
+        "title": "Login",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend"
+        ]
+      },
+      {
+        "page_id": "3834118248",
+        "title": "Settings",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend"
+        ]
+      },
+      {
+        "page_id": "3833069663",
+        "title": "Backlog (2.1 Frontend)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend"
+        ]
+      },
+      {
+        "page_id": "3833626839",
+        "title": "Deployment",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend"
+        ]
+      },
+      {
+        "page_id": "3832971399",
+        "title": "Engineering (2.1 Frontend)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend"
+        ]
+      },
+      {
+        "page_id": "3832840323",
+        "title": "APIs",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend"
+        ]
+      },
+      {
+        "page_id": "3833102444",
+        "title": "Authentication",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend"
+        ]
+      },
+      {
+        "page_id": "3834183752",
+        "title": "Back_Office",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend"
+        ]
+      },
+      {
+        "page_id": "3832971335",
+        "title": "2.2 Backend / Backlog",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend"
+        ]
+      },
+      {
+        "page_id": "3832873124",
+        "title": "Database",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend"
+        ]
+      },
+      {
+        "page_id": "3833036900",
+        "title": "Engineering",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend"
+        ]
+      },
+      {
+        "page_id": "3833004180",
+        "title": "Backlog (2.2 Backend)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend"
+        ]
+      },
+      {
+        "page_id": "3833299103",
+        "title": "2.3 Game Engine / APIs",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine"
+        ]
+      },
+      {
+        "page_id": "3833725073",
+        "title": "2.3 Game Engine / Backlog",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine"
+        ]
+      },
+      {
+        "page_id": "3832873145",
+        "title": "Behavioral_Specs",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine"
+        ]
+      },
+      {
+        "page_id": "3834216518",
+        "title": "Rules",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine"
+        ]
+      },
+      {
+        "page_id": "3833430177",
+        "title": "Backlog (2.3 Game Engine)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine"
+        ]
+      },
+      {
+        "page_id": "3832905876",
+        "title": "2.4 Command Center / APIs",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center"
+        ]
+      },
+      {
+        "page_id": "3833397369",
+        "title": "2.4 Command Center / Backlog",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center"
+        ]
+      },
+      {
+        "page_id": "3833299124",
+        "title": "Command_Center_UI",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center"
+        ]
+      },
+      {
+        "page_id": "3833561190",
+        "title": "Integration_Test_Plan",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center"
+        ]
+      },
+      {
+        "page_id": "3833266224",
+        "title": "Overlay",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center"
+        ]
+      },
+      {
+        "page_id": "3833593947",
+        "title": "RFID_Cards",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center"
+        ]
+      },
+      {
+        "page_id": "3833954649",
+        "title": "Backlog (2.4 Command Center)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center"
+        ]
+      },
+      {
+        "page_id": "3833102625",
+        "title": "Foundation_Impact_Review",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center"
+        ]
+      },
+      {
+        "page_id": "3834118431",
+        "title": "Integration_Test_Plan (2.4 Command Center)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center"
+        ]
+      },
+      {
+        "page_id": "3833462999",
+        "title": "Settings (2.4 Command Center)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center"
+        ]
+      },
+      {
+        "page_id": "3834216540",
+        "title": "2.5 Shared / Authentication",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3832873327",
+        "title": "AI_Cascade_System",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3833921810",
+        "title": "Authentication (2.5 Shared)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3833725177",
+        "title": "BS_Overview",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3833332013",
+        "title": "Card_Flow_Index",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3833233630",
+        "title": "Chip_Count_State",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3832873347",
+        "title": "Naming_Conventions",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3833004261",
+        "title": "Network_Config",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3833954689",
+        "title": "Risk_Matrix",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3833626989",
+        "title": "Stream_Entry_Guide",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3833987192",
+        "title": "Stream_Entry_Guide_v11",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared"
+        ]
+      },
+      {
+        "page_id": "3833790534",
+        "title": "AUDIT-Conductor-194-frontend-sister-cascade-2026-05-08",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833856158",
+        "title": "B-068-team1-frontend-Quasar-프로젝트-실제-초기화",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833266245",
+        "title": "B-075-React-아카이브-Quasar-이식-B-068-하위",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3834118290",
+        "title": "B-076-QA-LOBBY-06-기반-Vitest-Playwright-셋업",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833987144",
+        "title": "B-077-ge-scope-expansion-prd",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833266265",
+        "title": "B-077-WSOP-LIVE-기준-레포-실재-확인-인프라",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833725095",
+        "title": "B-078-team1-specs-이미지-docs00-reference-동기화-자동화",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833266285",
+        "title": "B-079-Prize-Pool-Payout-Management",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833954419",
+        "title": "B-080-Blind-Prize-Structure-Template",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833626818",
+        "title": "B-081-Chip-Management-Reporter",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3834314839",
+        "title": "B-082-Staff-Role-Permission",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833364591",
+        "title": "B-083-Tournament-Statistics-Reporting",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3834118310",
+        "title": "B-084-API-doc-alignment-Phase-1",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3834216604",
+        "title": "B-085-model-nullability-audit",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3834085601",
+        "title": "B-086-browser-e2e-drilldown",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833495766",
+        "title": "B-087-quasar-migration-drift-master",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833856178",
+        "title": "B-088-B-team1-docs-rest-path-pascal",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3832840344",
+        "title": "B-089-lobby-design-foundation-tokens",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3832938630",
+        "title": "B-090-lobby-design-five-screen-restructure",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833954439",
+        "title": "B-091-lobby-design-missing-five-spec-impl",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833397390",
+        "title": "B-092-lobby-visual-screenshots-cascade-2026-05-05",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833168013",
+        "title": "B-F004-pending-missing-api-docs",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833790554",
+        "title": "B-F005-settings-series-selector",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3832807565",
+        "title": "B-F006-skin-upload-ui-2step",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833200764",
+        "title": "NOTIFY-C1-frontend-non-lobby-identity-cascade-2026-05-07",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Backlog"
+        ]
+      },
+      {
+        "page_id": "3833299146",
+        "title": "Graphic_Editor / References",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor"
+        ]
+      },
+      {
+        "page_id": "3834151003",
+        "title": "Activate_Broadcast",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor"
+        ]
+      },
+      {
+        "page_id": "3833987164",
+        "title": "Import_Flow",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor"
+        ]
+      },
+      {
+        "page_id": "3833200784",
+        "title": "Metadata_Editing",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor"
+        ]
+      },
+      {
+        "page_id": "3833856204",
+        "title": "Overview",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor"
+        ]
+      },
+      {
+        "page_id": "3833626859",
+        "title": "RBAC_Guards",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor"
+        ]
+      },
+      {
+        "page_id": "3833528483",
+        "title": "UI",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor"
+        ]
+      },
+      {
+        "page_id": "3834314818",
+        "title": "Lobby / Backlog",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833233548",
+        "title": "Lobby / References",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3834282103",
+        "title": "Chip_Management",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833397410",
+        "title": "Clock_Control",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833528503",
+        "title": "Event_and_Flight",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833561211",
+        "title": "Hand_History",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3834151023",
+        "title": "Operations",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3834282123",
+        "title": "Overview (Lobby)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833561231",
+        "title": "Prize_Pool",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3834118330",
+        "title": "Registration",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833331851",
+        "title": "Reports",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833561251",
+        "title": "Session_Restore",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833790594",
+        "title": "Staff_Management",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833069691",
+        "title": "Structure_Templates",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833888968",
+        "title": "Table",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833168033",
+        "title": "UI (Lobby)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby"
+        ]
+      },
+      {
+        "page_id": "3833331871",
+        "title": "Error_Handling",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Login"
+        ]
+      },
+      {
+        "page_id": "3834118350",
+        "title": "Form",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Login"
+        ]
+      },
+      {
+        "page_id": "3833528523",
+        "title": "Session_Init",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Login"
+        ]
+      },
+      {
+        "page_id": "3834249297",
+        "title": "Display",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Settings"
+        ]
+      },
+      {
+        "page_id": "3833462936",
+        "title": "Graphics",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Settings"
+        ]
+      },
+      {
+        "page_id": "3833069711",
+        "title": "Outputs",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Settings"
+        ]
+      },
+      {
+        "page_id": "3833954480",
+        "title": "Overview (Settings)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Settings"
+        ]
+      },
+      {
+        "page_id": "3832873186",
+        "title": "Preferences",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Settings"
+        ]
+      },
+      {
+        "page_id": "3833036941",
+        "title": "Rules (Settings)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Settings"
+        ]
+      },
+      {
+        "page_id": "3833069731",
+        "title": "Statistics",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Settings"
+        ]
+      },
+      {
+        "page_id": "3833495786",
+        "title": "UI (Settings)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Settings"
+        ]
+      },
+      {
+        "page_id": "3833528543",
+        "title": "Auth_and_Session",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "APIs"
+        ]
+      },
+      {
+        "page_id": "3833921650",
+        "title": "Backend_HTTP",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "APIs"
+        ]
+      },
+      {
+        "page_id": "3833266314",
+        "title": "Backend_HTTP_Status",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "APIs"
+        ]
+      },
+      {
+        "page_id": "3833331891",
+        "title": "Graphic_Editor_API",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "APIs"
+        ]
+      },
+      {
+        "page_id": "3832873206",
+        "title": "Players_HandHistory_API",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "APIs"
+        ]
+      },
+      {
+        "page_id": "3834052721",
+        "title": "WebSocket_Events",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "APIs"
+        ]
+      },
+      {
+        "page_id": "3834183773",
+        "title": "WSOP_LIVE_Chip_Count_Sync",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "APIs"
+        ]
+      },
+      {
+        "page_id": "3833888988",
+        "title": "Concurrency_and_Race_Conditions",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Authentication"
+        ]
+      },
+      {
+        "page_id": "3834151043",
+        "title": "Production_Deployment",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Authentication"
+        ]
+      },
+      {
+        "page_id": "3833626899",
+        "title": "Quickstart_Local_Cluster",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Authentication"
+        ]
+      },
+      {
+        "page_id": "3833364611",
+        "title": "Operations (Back_Office)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Back_Office"
+        ]
+      },
+      {
+        "page_id": "3833266334",
+        "title": "Overview (Back_Office)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Back_Office"
+        ]
+      },
+      {
+        "page_id": "3833397430",
+        "title": "Sync_Protocol",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Back_Office"
+        ]
+      },
+      {
+        "page_id": "3833561271",
+        "title": "B-021-CC-WebSocket-연결-추적",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833168053",
+        "title": "B-022-CC-설정-잠금-매트릭스",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833856248",
+        "title": "B-023-핸드-기록-수신-CC-BO-WebSocket",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833200804",
+        "title": "B-024-핸드-조회-API",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833954500",
+        "title": "B-025-통계-계산-엔진",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832840404",
+        "title": "B-026-CC-로컬-버퍼-동기화-프로토콜",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833790614",
+        "title": "B-027-Google-OAuth-20-추가",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833397450",
+        "title": "B-028-RFID-리더-등록-관리",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833561291",
+        "title": "B-029-덱-등록-관리",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832840424",
+        "title": "B-030-출력-장비-상태-추적",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833921670",
+        "title": "B-031-Lobby-WebSocket-모니터-채널-완성",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834249317",
+        "title": "B-032-테이블-실시간-상태-이벤트",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833626919",
+        "title": "B-033-세션-복원",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832938670",
+        "title": "B-034-오버레이-프리셋-관리",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833954529",
+        "title": "B-035-Holdem-핸드-완전-지원",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833462956",
+        "title": "B-036-플레이어-DB-검색-고도화",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833102485",
+        "title": "B-037-리포팅-Dashboard-API",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833430157",
+        "title": "B-038-리포팅-Table-Activity",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833921690",
+        "title": "B-039-리포팅-Player-Statistics",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833790634",
+        "title": "B-041-WSOP-LIVE-API-폴링-스케줄러",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833069751",
+        "title": "B-042-WSOP-LIVE-UPSERT-로직",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833168073",
+        "title": "B-043-동기화-상태-조회",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833397470",
+        "title": "B-044-PostgreSQL-마이그레이션",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833331912",
+        "title": "B-045-9종-게임-핸드-기록-지원",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832840444",
+        "title": "B-046-다중-게임-통계-계산",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834314865",
+        "title": "B-047-Entra-ID-Microsoft-OAuth-추가",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834052741",
+        "title": "B-048-리포팅-Hand-Distribution",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834216644",
+        "title": "B-049-리포팅-RFID-Health-Report",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832807605",
+        "title": "B-050-리포팅-Operator-Activity-Report",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833593969",
+        "title": "B-051-CSVJSON-내보내기",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833364631",
+        "title": "B-052-자동-백업-스크립트",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833889009",
+        "title": "B-053-감사-로그-아카이브-정책",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832905922",
+        "title": "B-054-TLS-13-HTTPSWSS-설정",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833954549",
+        "title": "B-056-13종-게임-핸드-기록-완전-지원",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833856268",
+        "title": "B-057-스킨-에디터-BO-연동",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833889029",
+        "title": "B-058-Hybrid-인증",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833495806",
+        "title": "B-059-통계-AI-무인화-기반-준비",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833757824",
+        "title": "B-060-Multi-region-지원",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833102505",
+        "title": "B-061-고가용성-WebSocket-Redis-PubSub",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834085621",
+        "title": "B-062-로그-대시보드-Admin용",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833168093",
+        "title": "B-063-API-Rate-Limiting",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833856288",
+        "title": "B-064-데이터-보존-정책-자동화",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833036970",
+        "title": "B-065-성능-모니터링",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833856308",
+        "title": "B-066-SSOT-compliance-recovery",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833036990",
+        "title": "B-068-sandbox-tournament-generator",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833462976",
+        "title": "B-088-team2-camelcase-migration",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833725116",
+        "title": "B-089-team2-test-assertion-migration",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832807625",
+        "title": "NOTIFY-team1-Round2-registration-sitin-events",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833921710",
+        "title": "NOTIFY-team1-Round2-user-sessions-multidevice",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834216664",
+        "title": "NOTIFY-team2-B088-PR2-3-4-naming-migration",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "2.2 Backend / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833102525",
+        "title": "ER_Diagram",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Database"
+        ]
+      },
+      {
+        "page_id": "3832840464",
+        "title": "GFSkin_Schema",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Database"
+        ]
+      },
+      {
+        "page_id": "3833168113",
+        "title": "Schema",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Database"
+        ]
+      },
+      {
+        "page_id": "3832971420",
+        "title": "State_Machines",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Database"
+        ]
+      },
+      {
+        "page_id": "3833561311",
+        "title": "Build_and_Deploy",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3833561331",
+        "title": "Dependency_Injection",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3834249338",
+        "title": "Dev_Setup",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3832873227",
+        "title": "Error_Handling (Engineering)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3834085641",
+        "title": "Foundation_Realignment_Plan_2026-04-22",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3832971440",
+        "title": "Logging",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3832938690",
+        "title": "Non_Functional_Requirements",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3833757844",
+        "title": "Project_Structure",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3833593989",
+        "title": "Routing",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3833921730",
+        "title": "Sandbox_Tournament_Generator",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3833626939",
+        "title": "State_Management",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3832938710",
+        "title": "Tech_Stack",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3832873247",
+        "title": "Testing_Strategy",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.2 Backend",
+          "Engineering"
+        ]
+      },
+      {
+        "page_id": "3833331933",
+        "title": "Harness_REST_API",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / APIs"
+        ]
+      },
+      {
+        "page_id": "3833233569",
+        "title": "OutputEvent_Serialization",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / APIs"
+        ]
+      },
+      {
+        "page_id": "3832807653",
+        "title": "OutputEventBuffer_Boundary",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / APIs"
+        ]
+      },
+      {
+        "page_id": "3832873267",
+        "title": "Overlay_Output_Events",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / APIs"
+        ]
+      },
+      {
+        "page_id": "3834052762",
+        "title": "B-320-WSOP-LIVE-BS-07-Overlay-감시",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833921750",
+        "title": "B-330-Foundation-Engine-별도-프로세스-전파",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832971460",
+        "title": "B-331-harness-engine-health-endpoint",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833561371",
+        "title": "B-332-Engine-응답-게임상태-SSOT-명시",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833954569",
+        "title": "B-333-Overview-22종-게임-12-7-3-분류표",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833790654",
+        "title": "B-334-OutputEventBuffer-런타임-3분법",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833889064",
+        "title": "B-335-WriteGameInfo-SSOT-재정의",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832938730",
+        "title": "B-336-Harness-배포-시나리오-보강",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833102545",
+        "title": "B-337-Overlay-배경-투명-단색-이분법",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833921770",
+        "title": "B-338-harness-세션-재시작-복구",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832840485",
+        "title": "B-343-card-pipeline-ssot-rollout",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832840505",
+        "title": "B-349-domain-master-rollout",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833495827",
+        "title": "B-350-api04-bs0609-alignment",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834151063",
+        "title": "B-353-cross-team-bs06-citations",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833397490",
+        "title": "B-354-legacy-id-redirect-oe-mapping",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833856328",
+        "title": "B-355-redirect-validator-infrastructure",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834282143",
+        "title": "B-356-oe-catalog-self-inconsistency",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834118370",
+        "title": "CYCLE2-2026-05-11-engine-1hand-ready",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833233589",
+        "title": "CYCLE4-2026-05-12-settings-engine-9keys",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834085661",
+        "title": "CYCLE4-mediation-2026-05-12-betting-system-9keys",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834249358",
+        "title": "NOTIFY-Conductor-2026-05-08-ci-infra-blockers",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833102565",
+        "title": "NOTIFY-S8-pr180-ci-failure-2026-05-08",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832938750",
+        "title": "NOTIFY-team3-B088-PR8-outputevent-payload",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833954589",
+        "title": "NOTIFY-team3-B331-engine-health-code-impl-2026-05-11",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "2.3 Game Engine / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834216561",
+        "title": "Holdem",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833954609",
+        "title": "Action_Rotation",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833004200",
+        "title": "Betting_and_Pots",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833954629",
+        "title": "Card_Pipeline_Overview",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833856348",
+        "title": "Draw_Games",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833102585",
+        "title": "Evaluation_Reference",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833626969",
+        "title": "Event_Catalog",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3834118390",
+        "title": "Flop_Variants",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833037010",
+        "title": "Lifecycle_and_State_Machine",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833364651",
+        "title": "Overview (Behavioral_Specs)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833299188",
+        "title": "Stud_Games",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3834282203",
+        "title": "Triggers",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833430197",
+        "title": "Triggers_and_Event_Pipeline",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833495847",
+        "title": "Variants_and_Evaluation",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs"
+        ]
+      },
+      {
+        "page_id": "3833299208",
+        "title": "Bomb_Pot",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Rules"
+        ]
+      },
+      {
+        "page_id": "3833757864",
+        "title": "Engine_Defaults",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Rules"
+        ]
+      },
+      {
+        "page_id": "3832873287",
+        "title": "Equity_Calculator",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Rules"
+        ]
+      },
+      {
+        "page_id": "3833725137",
+        "title": "Multi_Hand_State",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Rules"
+        ]
+      },
+      {
+        "page_id": "3833004221",
+        "title": "Multi_Hand_v03",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Rules"
+        ]
+      },
+      {
+        "page_id": "3834052782",
+        "title": "Run_It_Three",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Rules"
+        ]
+      },
+      {
+        "page_id": "3833430217",
+        "title": "Seven_Deuce",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Rules"
+        ]
+      },
+      {
+        "page_id": "3833397510",
+        "title": "RFID_HAL",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / APIs"
+        ]
+      },
+      {
+        "page_id": "3833495867",
+        "title": "RFID_HAL_Interface",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / APIs"
+        ]
+      },
+      {
+        "page_id": "3833790688",
+        "title": "B-team4-001-AT-02-ActionView-dynamic-labels",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833430237",
+        "title": "B-team4-002-TableRepository-phase-C-tdd",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833594009",
+        "title": "B-team4-003-S11-e2e-automation-scaffold",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832905943",
+        "title": "B-team4-005-position-chip-click-dealer-ux",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834085721",
+        "title": "B-team4-006-ws-engine-parallel-dispatch",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833299228",
+        "title": "B-team4-007-foundation-critical-multi-table-sequences",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833856368",
+        "title": "B-team4-008-foundation-high-overlay-overview-runtime-modes",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833299248",
+        "title": "B-team4-009-foundation-medium-reference-updates",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833757884",
+        "title": "B-team4-010-foundation-low-link-fixes",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832905963",
+        "title": "B-team4-011-cc-visual-uplift-from-design-prototype",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833004241",
+        "title": "B-team4-013-seatcell-inline-edit-cascade-2026-05-07",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833921790",
+        "title": "NOTIFY-S1-5act-naming-drift-2026-05-08",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832971480",
+        "title": "NOTIFY-S1-cc-identity-cascade-2026-05-07",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834216684",
+        "title": "NOTIFY-S1-rfid-antenna-count-mismatch-2026-05-08",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833266354",
+        "title": "NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833102605",
+        "title": "NOTIFY-S3-pr171-ci-failure-2026-05-08",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832840525",
+        "title": "NOTIFY-team1-Round2-settings-menu-preferences-removed",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833430257",
+        "title": "NOTIFY-team1-S11-lobby-ui-wiring",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833528565",
+        "title": "NOTIFY-team2-S11-seeder-and-endpoints",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834249378",
+        "title": "NOTIFY-team4-B088-PR7-cc-consumer-migration",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "2.4 Command Center / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833037030",
+        "title": "Action_Buttons",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3833725157",
+        "title": "Demo_Test_Mode",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3833430277",
+        "title": "Game_Settings_Modal",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3833757904",
+        "title": "Hand_Lifecycle",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3833331973",
+        "title": "Keyboard_Shortcuts",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3833069771",
+        "title": "Manual_Card_Input",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3833299268",
+        "title": "Multi_Table_Operations",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3833790708",
+        "title": "Overview (Command_Center_UI)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3833233610",
+        "title": "Player_Edit_Modal",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3834183793",
+        "title": "Seat_Management",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3834118410",
+        "title": "Statistics (Command_Center_UI)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3834052802",
+        "title": "UI (Command_Center_UI)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3833954669",
+        "title": "Undo_Recovery",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Command_Center_UI"
+        ]
+      },
+      {
+        "page_id": "3834085540",
+        "title": "automation",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Integration_Test_Plan"
+        ]
+      },
+      {
+        "page_id": "3832873307",
+        "title": "Animations",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Overlay"
+        ]
+      },
+      {
+        "page_id": "3834216704",
+        "title": "Audio",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Overlay"
+        ]
+      },
+      {
+        "page_id": "3833299288",
+        "title": "Elements",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Overlay"
+        ]
+      },
+      {
+        "page_id": "3833331993",
+        "title": "Engine_Dependency_Contract",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Overlay"
+        ]
+      },
+      {
+        "page_id": "3832971500",
+        "title": "Layer_Boundary",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Overlay"
+        ]
+      },
+      {
+        "page_id": "3833495887",
+        "title": "Overview (Overlay)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Overlay"
+        ]
+      },
+      {
+        "page_id": "3833299308",
+        "title": "Scene_Schema",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Overlay"
+        ]
+      },
+      {
+        "page_id": "3833430297",
+        "title": "Security_Delay",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Overlay"
+        ]
+      },
+      {
+        "page_id": "3833299328",
+        "title": "Sequences",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Overlay"
+        ]
+      },
+      {
+        "page_id": "3833299348",
+        "title": "Skin_Loading",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Overlay"
+        ]
+      },
+      {
+        "page_id": "3833299368",
+        "title": "Card_Detection",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "RFID_Cards"
+        ]
+      },
+      {
+        "page_id": "3832840545",
+        "title": "Deck_Registration",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "RFID_Cards"
+        ]
+      },
+      {
+        "page_id": "3832971520",
+        "title": "Manual_Fallback",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "RFID_Cards"
+        ]
+      },
+      {
+        "page_id": "3834118451",
+        "title": "Overview (RFID_Cards)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "RFID_Cards"
+        ]
+      },
+      {
+        "page_id": "3833037052",
+        "title": "Register_Screen",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "RFID_Cards"
+        ]
+      },
+      {
+        "page_id": "3833200825",
+        "title": "Distributed_Architecture",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared",
+          "2.5 Shared / Authentication"
+        ]
+      },
+      {
+        "page_id": "3834052822",
+        "title": "Token_Lifecycle_Sequences",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared",
+          "2.5 Shared / Authentication"
+        ]
+      },
+      {
+        "page_id": "3832971540",
+        "title": "Troubleshooting_Runbook",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.5 Shared",
+          "2.5 Shared / Authentication"
+        ]
+      },
+      {
+        "page_id": "3833626797",
+        "title": "skin-editor",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor",
+          "Graphic_Editor / References"
+        ]
+      },
+      {
+        "page_id": "3833626879",
+        "title": "AUDIT-S2-lobby-v3-cascade-2026-05-08",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby",
+          "Lobby / Backlog"
+        ]
+      },
+      {
+        "page_id": "3833954459",
+        "title": "NOTIFY-Conductor-ci-drift-2026-05-08",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby",
+          "Lobby / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832905898",
+        "title": "NOTIFY-S1-lobby-identity-cascade-2026-05-07",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby",
+          "Lobby / Backlog"
+        ]
+      },
+      {
+        "page_id": "3834216624",
+        "title": "NOTIFY-S2-pr176-ci-failure-2026-05-08",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 2,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby",
+          "Lobby / Backlog"
+        ]
+      },
+      {
+        "page_id": "3832971356",
+        "title": "EBS_Lobby_Design",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby",
+          "Lobby / References"
+        ]
+      },
+      {
+        "page_id": "3834085681",
+        "title": "Betting",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs",
+          "Holdem"
+        ]
+      },
+      {
+        "page_id": "3834282163",
+        "title": "Blinds_and_Ante",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs",
+          "Holdem"
+        ]
+      },
+      {
+        "page_id": "3833168133",
+        "title": "Coalescence",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs",
+          "Holdem"
+        ]
+      },
+      {
+        "page_id": "3834282183",
+        "title": "Evaluation",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs",
+          "Holdem"
+        ]
+      },
+      {
+        "page_id": "3833299168",
+        "title": "Exceptions",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs",
+          "Holdem"
+        ]
+      },
+      {
+        "page_id": "3832807673",
+        "title": "Lifecycle",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs",
+          "Holdem"
+        ]
+      },
+      {
+        "page_id": "3834151083",
+        "title": "Showdown",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs",
+          "Holdem"
+        ]
+      },
+      {
+        "page_id": "3834085701",
+        "title": "Side_Pot",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.3 Game Engine",
+          "Behavioral_Specs",
+          "Holdem"
+        ]
+      },
+      {
+        "page_id": "3833921609",
+        "title": "s11",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Integration_Test_Plan",
+          "automation"
+        ]
+      },
+      {
+        "page_id": "3833167992",
+        "title": "data",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 1,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor",
+          "Graphic_Editor / References",
+          "skin-editor"
+        ]
+      },
+      {
+        "page_id": "3833790574",
+        "title": "board-re-crosscheck",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor",
+          "Graphic_Editor / References",
+          "skin-editor"
+        ]
+      },
+      {
+        "page_id": "3833462916",
+        "title": "EBS-Skin-Editor_v3.prd",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor",
+          "Graphic_Editor / References",
+          "skin-editor"
+        ]
+      },
+      {
+        "page_id": "3832807585",
+        "title": "ebs-ui-layout-anatomy",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor",
+          "Graphic_Editor / References",
+          "skin-editor"
+        ]
+      },
+      {
+        "page_id": "3834052701",
+        "title": "prd-compact-mockup-design-system.prd",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor",
+          "Graphic_Editor / References",
+          "skin-editor"
+        ]
+      },
+      {
+        "page_id": "3832938650",
+        "title": "prd-skin-editor.prd",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor",
+          "Graphic_Editor / References",
+          "skin-editor"
+        ]
+      },
+      {
+        "page_id": "3833856224",
+        "title": "README",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor",
+          "Graphic_Editor / References",
+          "skin-editor"
+        ]
+      },
+      {
+        "page_id": "3832840364",
+        "title": "ui-feature-verification-workflow",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor",
+          "Graphic_Editor / References",
+          "skin-editor"
+        ]
+      },
+      {
+        "page_id": "3832840384",
+        "title": "README (EBS_Lobby_Design)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Lobby",
+          "Lobby / References",
+          "EBS_Lobby_Design"
+        ]
+      },
+      {
+        "page_id": "3834282224",
+        "title": "README (s11)",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 4,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.4 Command Center",
+          "Integration_Test_Plan",
+          "automation",
+          "s11"
+        ]
+      },
+      {
+        "page_id": "3833921630",
+        "title": "layout-css-extraction",
+        "space": "~71202036ff7e0a7684471195434d342e3315ed",
+        "version": 3,
+        "ancestors": [
+          "개요",
+          "EBS",
+          "2. Development",
+          "2.1 Frontend",
+          "Graphic_Editor",
+          "Graphic_Editor / References",
+          "skin-editor",
+          "data"
+        ]
+      }
+    ],
+    "auto_corrected": [
+      {
+        "path": "1. Product\\Foundation.md",
+        "type": "url_mismatch",
+        "old_url": "https://ggnetwork.atlassian.net/wiki/x/qwAU2",
+        "new_url": "https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3625189547/EBS+기초+기획서"
+      }
+    ]
+  }
+}
