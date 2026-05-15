@@ -46,6 +46,7 @@ import '../widgets/cc_status_bar.dart';
 import '../widgets/engine_connection_banner.dart';
 import '../widgets/keyboard_hint_bar.dart';
 import '../widgets/mini_table_diagram.dart';
+import '../widgets/action_panel.dart';
 import '../widgets/seat_cell.dart';
 import '../demo/scenario_runner.dart';
 import '../demo/scenarios.dart';
@@ -183,7 +184,9 @@ class _At01MainScreenState extends ConsumerState<At01MainScreen> {
                   const Expanded(
                     child: _SeatArea(),
                   ),
-                  _ActionPanel(
+                  // Cycle 21 UI-quality-fix: 구형 _ActionPanel(하드코딩 dark색상) →
+                  // action_panel.dart의 정식 ActionPanel(EbsOklch 토큰 + 키패드 내장).
+                  ActionPanel(
                     onAction: (action, {amount}) => _dispatchAction(ref, action,
                         amount: amount, context: context),
                   ),
@@ -1241,158 +1244,18 @@ class _CardSlot extends StatelessWidget {
 }
 
 // =============================================================================
-// M-07: Action Panel (120px)
+// M-07: Action Panel — Cycle 21 UI-quality-fix
+// ActionPanel (action_panel.dart) 로 이관 완료. 구형 _ActionPanel / _ActionButton
+// 클래스 제거. EbsOklch 토큰 + 키패드 내장 버전 사용 중.
 // =============================================================================
-
-class _ActionPanel extends ConsumerWidget {
-  const _ActionPanel({required this.onAction});
-
-  final void Function(CcAction, {int? amount}) onAction;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final btnState = ref.watch(actionButtonProvider);
-    final seats = ref.watch(seatsProvider);
-    final fsm = ref.watch(handFsmProvider);
-    final actionSeat = seats.where((s) => s.actionOn).firstOrNull;
-    final biggestBet = seats.fold<int>(0, (m, s) => s.currentBet > m ? s.currentBet : m);
-    final myBet = actionSeat?.currentBet ?? 0;
-    final callAmount = (biggestBet - myBet).clamp(0, 1 << 30);
-    final stack = actionSeat?.player?.stack ?? 0;
-    final isCall = btnState.checkCallLabel == 'CALL';
-    final isRaise = btnState.betRaiseLabel == 'RAISE';
-    final isIdle = fsm == HandFsm.idle || fsm == HandFsm.handComplete;
-    final isShowdown = fsm == HandFsm.showdown;
-    final lifecycleLabel = isIdle ? 'START HAND' : (isShowdown ? 'FINISH HAND' : 'IN PROGRESS');
-    final lifecycleSub = isIdle ? 'Ready to deal' : isShowdown ? 'Tap to reset' : fsm.name.toUpperCase();
-
-    String fmt(int n) {
-      final s = n.toString();
-      final buf = StringBuffer();
-      for (var i = 0; i < s.length; i++) {
-        if (i > 0 && (s.length - i) % 3 == 0) buf.write(',');
-        buf.write(s[i]);
-      }
-      return buf.toString();
-    }
-
-    return Container(
-      height: 140,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A1A2E),
-        border: Border(top: BorderSide(color: Colors.white12)),
-      ),
-      child: Row(children: [
-        Expanded(flex: 2, child: Column(children: [
-          Expanded(child: _ActionButton(label: 'UNDO',
-            enabled: btnState.isEnabled(CcAction.undo),
-            color: const Color(0xFF9E9E9E),
-            onPressed: btnState.isEnabled(CcAction.undo) ? () => onAction(CcAction.undo) : null)),
-          const SizedBox(height: 4),
-          Expanded(child: _ActionButton(label: 'MISS DEAL',
-            enabled: btnState.isEnabled(CcAction.missDeal),
-            color: const Color(0xFF9E9E9E),
-            onPressed: btnState.isEnabled(CcAction.missDeal) ? () => onAction(CcAction.missDeal) : null)),
-        ])),
-        const SizedBox(width: 8),
-        Expanded(flex: 6, child: Row(children: [
-          _ActionButton(label: 'FOLD',
-            enabled: btnState.isEnabled(CcAction.fold),
-            color: const Color(0xFFE53935),
-            onPressed: btnState.isEnabled(CcAction.fold) ? () => onAction(CcAction.fold) : null),
-          _ActionButton(label: btnState.checkCallLabel,
-            enabled: btnState.isEnabled(CcAction.checkCall),
-            color: const Color(0xFF78909C),
-            subText: isCall && callAmount > 0 ? '\$${fmt(callAmount)}' : null,
-            onPressed: btnState.isEnabled(CcAction.checkCall) ? () => onAction(CcAction.checkCall) : null),
-          _ActionButton(label: btnState.betRaiseLabel,
-            enabled: btnState.isEnabled(CcAction.betRaise),
-            color: const Color(0xFFFFA726),
-            onPressed: btnState.isEnabled(CcAction.betRaise) ? () => onAction(CcAction.betRaise) : null),
-          _ActionButton(label: 'ALL-IN',
-            enabled: btnState.isEnabled(CcAction.allIn),
-            color: const Color(0xFFEF5350),
-            subText: stack > 0 ? '\$${fmt(stack)}' : null,
-            onPressed: btnState.isEnabled(CcAction.allIn) ? () => onAction(CcAction.allIn) : null),
-        ])),
-        const SizedBox(width: 8),
-        Expanded(flex: 3, child: Column(children: [
-          Expanded(flex: 3, child: _ActionButton(label: lifecycleLabel,
-            enabled: btnState.isEnabled(CcAction.newHand),
-            color: const Color(0xFF66BB6A),
-            big: true,
-            subText: lifecycleSub,
-            onPressed: btnState.isEnabled(CcAction.newHand) ? () => onAction(CcAction.newHand) : null)),
-          const SizedBox(height: 4),
-          Expanded(child: _ActionButton(label: 'DEAL',
-            enabled: btnState.isEnabled(CcAction.deal),
-            color: const Color(0xFF42A5F5),
-            onPressed: btnState.isEnabled(CcAction.deal) ? () => onAction(CcAction.deal) : null)),
-        ])),
-      ]),
-    );
-  
-  }
-}
-
-class _ActionButton extends StatelessWidget {
-  const _ActionButton({
-    required this.label,
-    required this.enabled,
-    required this.color,
-    this.onPressed,
-    this.big = false,
-    this.subText,
-  });
-
-  final String label;
-  final bool enabled;
-  final Color color;
-  final VoidCallback? onPressed;
-  final bool big;
-  final String? subText;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: EbsSpacing.xs),
-        child: SizedBox(
-          height: EbsSpacing.actionButtonHeight,
-          child: ElevatedButton(
-            onPressed: onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: enabled ? color : color.withAlpha(40),
-              foregroundColor: enabled ? Colors.white : Colors.white38,
-              minimumSize: const Size(EbsSpacing.actionButtonMinWidth,
-                  EbsSpacing.actionButtonHeight),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FittedBox(fit: BoxFit.scaleDown,
-                  child: Text(label,
-                    style: EbsTypography.actionButton.copyWith(
-                      fontSize: big ? 18 : null,
-                      fontWeight: big ? FontWeight.w800 : null))),
-                if (subText != null)
-                  Padding(padding: const EdgeInsets.only(top: 2),
-                    child: Text(subText!,
-                      style: TextStyle(fontSize: 10,
-                        fontFamily: subText!.startsWith('\$') ? 'monospace' : null,
-                        color: enabled ? Colors.white70 : Colors.white30,
-                        fontWeight: FontWeight.w600))),
-              ]
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// REMOVED: class _ActionPanel (하드코딩 Color(0xFF1A1A2E) dark palette)
+// REMOVED: class _ActionButton (Expanded 반환, Cycle 19 이전 패턴)
+// NOTE: 위 두 클래스는 action_panel.dart의 ActionPanel / _ActionBtn 으로 대체.
+//
+// 잔여 클래스 없음 — 파일 끝.
+//
+// 아래 임시 주석은 _ActionPanel / _ActionButton 제거 후 불필요한 import 잔재 제거를
+// lint에 의존하여 확인할 것 (dart analyze). 실제로는 제거된 클래스의 내부 참조
+// (Colors.white70 등)가 사라지므로 import 정리 필요 없음.
+// =============================================================================
 

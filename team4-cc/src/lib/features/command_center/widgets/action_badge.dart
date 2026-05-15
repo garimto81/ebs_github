@@ -3,10 +3,11 @@
 // 디자인 reference: claude-design-archive/2026-05-06/cc-react-extracted/PlayerColumn.jsx
 //   §"ROW 7 — LAST ACTION"  + app.css `.row-action.{fold|check|call|bet|raise|allin}`
 //
-// 토큰 매핑 (cycle-19 U3 spec):
-//   FOLD       → EbsOklch.err     (red)
-//   CHECK/CALL → EbsOklch.ok      (green)
-//   BET/RAISE  → EbsOklch.accent  (broadcast amber)
+// 토큰 매핑 (Cycle 21 UI-quality-fix — HTML mockup SSOT 정합):
+//   FOLD       → EbsOklch.fg2     (muted-gray, HTML #616161)
+//   CHECK/CALL → EbsOklch.info    (blue, HTML #1976d2)
+//   BET        → EbsOklch.accent  (broadcast amber, HTML #f9a825)
+//   RAISE      → EbsOklch.err     (red, HTML #e53935)
 //   ALL-IN     → EbsOklch.warn    (gold)
 //   none       → fg-3 dashed placeholder
 //
@@ -41,14 +42,19 @@ extension ActionBadgeTypeX on ActionBadgeType {
       };
 
   /// 본문(label) 색 + 배경/테두리 tint 색의 기준이 되는 token.
+  ///
+  /// HTML mockup SSOT (docs/mockups/EBS Command Center/action-indicator-*.html):
+  ///   BET   #f9a825 → accent  CHECK #1976d2 → info
+  ///   RAISE #e53935 → err     CALL  #1976d2 → info (CC 운영자 뷰)
+  ///   FOLD  #616161 → fg2     ALL-IN gold   → warn
   Color get tone => switch (this) {
         ActionBadgeType.none => EbsOklch.fg3,
-        ActionBadgeType.fold => EbsOklch.err,
-        ActionBadgeType.check => EbsOklch.ok,
-        ActionBadgeType.call => EbsOklch.ok,
-        ActionBadgeType.bet => EbsOklch.accent,
-        ActionBadgeType.raise => EbsOklch.accent,
-        ActionBadgeType.allIn => EbsOklch.warn,
+        ActionBadgeType.fold => EbsOklch.fg2,    // HTML: #616161 → fg2 muted-gray
+        ActionBadgeType.check => EbsOklch.info,  // HTML: #1976d2 → info blue
+        ActionBadgeType.call => EbsOklch.info,   // HTML: CALL = CHECK color (CC 운영자)
+        ActionBadgeType.bet => EbsOklch.accent,  // HTML: #f9a825 ≈ accent amber ✓
+        ActionBadgeType.raise => EbsOklch.err,   // HTML: #e53935 → err red
+        ActionBadgeType.allIn => EbsOklch.warn,  // gold ✓
       };
 }
 

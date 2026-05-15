@@ -606,7 +606,14 @@ class _SeatCellState extends ConsumerState<SeatCell> {
     final List<BoxShadow>? shadow = _chipSyncGlow
         ? EbsShadows.glowAction
         : (seat.actionOn ? null : EbsShadows.card);
-    final Widget surface = Container(
+    // Cycle 21 UI-quality-fix — AnimatedContainer + AnimatedOpacity 로 전환 부드럽게.
+    // HTML mockup: `opacity: 0.45; filter: grayscale(0.85); transition: opacity 0.4s`
+    // - bgColor 변화(active→folded 등)는 AnimatedContainer 가 400ms easeOut 보간
+    // - opacity 변화(folded 0.4 ↔ 1.0)는 AnimatedOpacity 가 400ms easeOut 보간
+    // boxShadow: shadow 는 AnimatedContainer decoration 에 포함 — 전환 없이 즉시 적용
+    final Widget surface = AnimatedContainer(
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOut,
       decoration: BoxDecoration(
         color: bgColor,
         border:
@@ -614,8 +621,10 @@ class _SeatCellState extends ConsumerState<SeatCell> {
         borderRadius: BorderRadius.circular(6),
         boxShadow: shadow,
       ),
-      child: Opacity(
+      child: AnimatedOpacity(
         opacity: opacity,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOut,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: EbsSpacing.xs,
@@ -734,11 +743,20 @@ class _SeatCellState extends ConsumerState<SeatCell> {
           onTap: () => _editBet(seat),
         ),
         // LAST 행 — activity enum 토글 (Cycle 19 U3: ActionBadge 위젯 이관)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 2),
-          child: ActionBadge.fromActivity(
-            seat.activity,
-            onTap: () => _editLastAction(seat),
+        // Cycle 21 UI-quality-fix: AnimatedSwitcher 200ms FadeTransition for activity change.
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (child, anim) => FadeTransition(
+            opacity: anim,
+            child: child,
+          ),
+          child: Padding(
+            key: ValueKey(seat.activity),
+            padding: const EdgeInsets.only(bottom: 2),
+            child: ActionBadge.fromActivity(
+              seat.activity,
+              onTap: () => _editLastAction(seat),
+            ),
           ),
         ),
         // STRADDLE 행 — v03 cycle 7 #330. tap → toggleStraddleSeat.
@@ -1084,7 +1102,12 @@ class _ActingStrip extends StatelessWidget {
       bg = EbsOklch.bg3;
       fg = EbsOklch.fg3;
     }
-    return Container(width: double.infinity,
+    // Cycle 21 UI-quality-fix — AnimatedContainer for bg color transition (200ms).
+    // HTML SSOT: `.pcol-acting-strip.{acting|waiting|fold|...}` color transition.
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         color: bg,
