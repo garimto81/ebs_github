@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team4-20260410-bs05-visual-spec
 confluence-page-id: 3819209862
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209862/EBS+CR-team4-20260410-bs05-visual-spec
+mirror: none
 ---
 
 # CCR-DRAFT: BS-05 시각/동작 명세 구체화 (카드 슬롯 FSM, 포지션 색상, 애니메이션)

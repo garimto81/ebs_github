@@ -3,9 +3,9 @@ title: Betting System
 owner: conductor
 tier: external
 legacy-id: PRD-GAME-04
-confluence-page-id: 3811410570
+confluence-page-id: 3834085681
 confluence-parent-id: 3812360338
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811410570/EBS+Game+Rules+Betting+System
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3834085681/Betting
 last-updated: 2026-05-12
 reimplementability: PASS
 reimplementability_checked: 2026-05-12

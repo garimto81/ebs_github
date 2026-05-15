@@ -10,9 +10,9 @@ related-plan: ~/.claude/plans/role-and-objective-reactive-canyon.md (M3)
 reimplementability: PASS
 reimplementability_checked: 2026-05-03
 reimplementability_notes: "M3 — 7 Mermaid 시퀀스 + invariant 명시, 외부 재구현 가능"
-confluence-page-id: 3818684817
+confluence-page-id: 3832807673
 confluence-parent-id: 3812032646
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684817/EBS+Token+Lifecycle+Sequences
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3832807673/Lifecycle
 derivative-of: ../../2.2 Backend/Back_Office/Overview.md
 if-conflict: derivative-of takes precedence
 ---

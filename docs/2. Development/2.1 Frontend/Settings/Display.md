@@ -9,9 +9,9 @@ reimplementability_checked: 2026-04-21
 reimplementability_notes: "2026-04-21 교차검증 완료: display_screen.dart 에 theme/density/font_size_scale/timezone/show_debug_overlay 11 references (grep). SG-003 §Tab 3 스키마 충족."
 sg_reference: SG-003
 scope: user
-confluence-page-id: 3819766303
+confluence-page-id: 3834249297
 confluence-parent-id: 3811606750
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766303/EBS+Display
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3834249297/Display
 ---
 
 # BS-03-03 Display — 수치 표시 형식

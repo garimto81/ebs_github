@@ -6,9 +6,9 @@ issue: 194
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
 audit_pattern: "S2 AUDIT-S2-lobby-v3-cascade-2026-05-08.md (8 검증 항목 차용)"
 last-updated: 2026-05-08
-confluence-page-id: 3818881468
+confluence-page-id: 3834052660
 confluence-parent-id: 3811606750
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881468/EBS+AUDIT-Conductor-194+Frontend+cascade+Login+Settings+Graphic_Editor
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3834052660/Graphic_Editor
 ---
 
 # AUDIT-Conductor-194 — Frontend 자매 영역 cascade audit

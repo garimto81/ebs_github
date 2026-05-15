@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260414-blindstructure-endpoints
 confluence-page-id: 3818750874
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750874/EBS+CR-team2-20260414-blindstructure-endpoints
+mirror: none
 ---
 
 # CCR-DRAFT: BlindStructure 관리 엔드포인트 추가 (WSOP LIVE 정렬)

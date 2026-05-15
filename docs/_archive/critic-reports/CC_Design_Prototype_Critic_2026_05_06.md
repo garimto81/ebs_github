@@ -29,6 +29,7 @@ predecessors:
 confluence-page-id: 3819242032
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242032/EBS+CC+React+Critic
+mirror: none
 ---
 
 # CC React 디자인 프로토타입 — Critic 판정 보고서

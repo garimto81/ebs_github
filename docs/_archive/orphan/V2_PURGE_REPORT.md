@@ -12,6 +12,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3818816241
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816241/EBS+V2+Purge+Report+ebs+v2+cascade
+mirror: none
 ---
 
 ## 결정 (사용자 명시 2026-04-27)

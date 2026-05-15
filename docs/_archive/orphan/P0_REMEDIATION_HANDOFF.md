@@ -8,6 +8,7 @@ status: PASS — 5/5 healthy on canonical port 3000, E2E 6/6 PASS exit 0
 confluence-page-id: 3818685091
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818685091/EBS+P0+Remediation+Handoff+port+3000+Dockerfile+context
+mirror: none
 ---
 
 # P0 Remediation — Port 3000 좀비 + Dockerfile Build Context Promotion

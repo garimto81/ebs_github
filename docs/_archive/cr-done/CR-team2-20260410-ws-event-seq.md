@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260410-ws-event-seq
 confluence-page-id: 3819242495
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242495/EBS+CR-team2-20260410-ws-event-seq
+mirror: none
 ---
 
 # CCR-DRAFT: WebSocket 이벤트에 단조증가 seq 필드 + replay 엔드포인트 추가

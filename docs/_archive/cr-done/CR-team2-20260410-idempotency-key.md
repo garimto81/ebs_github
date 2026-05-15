@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260410-idempotency-key
 confluence-page-id: 3819209796
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209796/EBS+CR-team2-20260410-idempotency-key
+mirror: none
 ---
 
 # CCR-DRAFT: 모든 Mutation API에 Idempotency-Key 헤더 표준 도입

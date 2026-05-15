@@ -6,9 +6,9 @@ last-updated: 2026-04-15
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "UI 레이아웃 해부 분석 (26KB) 완결"
-confluence-page-id: 3818521139
+confluence-page-id: 3832807585
 confluence-parent-id: 3811606750
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521139/EBS+ebs-ui-layout-anatomy
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3832807585/ebs-ui-layout-anatomy
 ---
 # EBS UI Layout Anatomy — 화면별 상세 레이아웃 명세서
 

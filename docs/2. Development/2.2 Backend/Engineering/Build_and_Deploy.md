@@ -7,6 +7,7 @@ last-updated: 2026-05-08
 confluence-page-id: 3819602536
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602536/EBS+Build+and+Deploy
+mirror: none
 ---
 
 # IMPL-09 Build & Deployment — 빌드 타겟, Docker, 환경 변수

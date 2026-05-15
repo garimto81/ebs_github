@@ -9,6 +9,7 @@ related-plan: ~/.claude/plans/role-and-objective-reactive-canyon.md (M5)
 confluence-page-id: 3818455638
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455638/EBS+Quickstart+Local+Cluster+Auth+domain
+mirror: none
 ---
 
 # Quickstart — Local Cluster (M5)

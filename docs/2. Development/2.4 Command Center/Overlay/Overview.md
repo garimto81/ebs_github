@@ -4,9 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-07-00
 last-updated: 2026-04-15
-confluence-page-id: 3818587003
+confluence-page-id: 3833266224
 confluence-parent-id: 3811901565
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818587003/EBS+Overlay+Overview
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833266224/Overlay
 ---
 
 # BS-07-00 Overview — Overlay 시스템 개요

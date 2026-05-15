@@ -36,6 +36,7 @@ related-docs:
 confluence-page-id: 3819078366
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078366/EBS+Lobby+-+3000+vs
+mirror: none
 ---
 
 # Lobby 기획-구현 정합성 점검

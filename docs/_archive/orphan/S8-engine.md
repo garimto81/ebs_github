@@ -12,6 +12,7 @@ last-updated: 2026-05-08
 confluence-page-id: 3819209416
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209416/EBS+S8+Game+Engine+spec
+mirror: none
 ---
 
 # S8 Game Engine — 정합성 감사 작업 spec

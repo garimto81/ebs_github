@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3820553480
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820553480/EBS+CR-036-bs07-security-delay
+mirror: none
 ---
 
 # CCR-036: BS-07 Security Delay (홀카드 공개 지연) 명세

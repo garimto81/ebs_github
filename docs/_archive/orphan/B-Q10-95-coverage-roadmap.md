@@ -10,6 +10,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3818750573
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750573/EBS+B-Q10+95+test+coverage+plan+B-Q7+Production-strict+cascade
+mirror: none
 ---
 
 ## 개요

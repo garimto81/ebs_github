@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260413-refresh-token-policy
 confluence-page-id: 3818849266
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818849266/EBS+CR-team2-20260413-refresh-token-policy
+mirror: none
 ---
 
 # CCR-DRAFT: BS-01 refresh_token 전달 방식을 환경별 조건부로 통일

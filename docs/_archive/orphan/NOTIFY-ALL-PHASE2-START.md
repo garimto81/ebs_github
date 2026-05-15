@@ -12,6 +12,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3819242133
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242133/EBS+Phase+1+Phase+2+broadcast
+mirror: none
 ---
 
 ## 공식 선언

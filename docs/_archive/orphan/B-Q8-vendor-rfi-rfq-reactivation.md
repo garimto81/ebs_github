@@ -10,6 +10,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3819275005
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819275005/EBS+B-Q8+vendor+reactivate+RFI+RFQ
+mirror: none
 ---
 
 ## 개요

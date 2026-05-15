@@ -4,9 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-03
 last-updated: 2026-04-16
-confluence-page-id: 3819274884
+confluence-page-id: 3834118248
 confluence-parent-id: 3811901565
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274884/EBS+Settings
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3834118248/Settings
 ---
 
 # BS-03 Settings — Command Center 설정 행동 명세

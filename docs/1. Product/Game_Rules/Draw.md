@@ -10,6 +10,7 @@ last-updated: 2026-05-04
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "PRD-GAME-02 완결 본문 (29KB) + Confluence 발행 대상, 독립 완결"
+mirror: none
 ---
 # Draw 계열 — 7종 게임 규칙 가이드
 

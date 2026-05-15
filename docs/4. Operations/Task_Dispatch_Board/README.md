@@ -8,6 +8,7 @@ related: ["../Task_Dispatch_Board.md", "../../2. Development/2.5 Shared/team-pol
 confluence-page-id: 3819602464
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602464/EBS+Task+Dispatch+Board
+mirror: none
 ---
 
 # Task Dispatch Board — 팀별 file 분해 (M2 해소 scaffold)

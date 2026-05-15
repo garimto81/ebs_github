@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818849306
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818849306/EBS+CR-020-table-rebalance-saga
+mirror: none
 ---
 
 # CCR-020: /tables/rebalance 응답에 saga 구조 추가

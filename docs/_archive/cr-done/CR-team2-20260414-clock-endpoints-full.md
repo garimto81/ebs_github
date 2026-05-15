@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260414-clock-endpoints-full
 confluence-page-id: 3818947613
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947613/EBS+CR-team2-20260414-clock-endpoints-full
+mirror: none
 ---
 
 # CCR-DRAFT: Clock 엔드포인트 10종 완성 (WSOP LIVE Staff App 정렬)

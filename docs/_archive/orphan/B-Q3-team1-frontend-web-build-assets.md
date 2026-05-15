@@ -11,6 +11,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3819176685
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176685/EBS+team1-frontend+Flutter+Web+SG-022+cascade
+mirror: none
 ---
 
 ## 개요

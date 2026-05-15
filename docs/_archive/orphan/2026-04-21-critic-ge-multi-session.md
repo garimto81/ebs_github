@@ -11,6 +11,7 @@ relates-to:
 confluence-page-id: 3818881588
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881588/EBS+Critic+GE+Lobby
+mirror: none
 ---
 
 # Critic Report — GE 멀티 세션 분리 적합성

@@ -8,6 +8,7 @@ referenced-by:
 confluence-page-id: 3819274864
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274864/EBS+WSOP+Production+Structure+Analysis
+mirror: none
 ---
 
 # GG PRODUCTION 방송 자막 구조 분석

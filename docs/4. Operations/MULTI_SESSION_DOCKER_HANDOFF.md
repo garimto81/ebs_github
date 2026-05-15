@@ -8,6 +8,7 @@ supersedes: SG-022 single-binary-desktop intent
 confluence-page-id: 3818455454
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455454/EBS+Multi-Session+Docker+Handoff+SG-022+deprecation+cascade
+mirror: none
 ---
 
 # Multi-Session Docker Handoff

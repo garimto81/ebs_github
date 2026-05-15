@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818914855
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914855/EBS+CR-053-users-staff-pattern
+mirror: none
 ---
 
 # CCR-053: Users 엔드포인트에 WSOP LIVE Staff 패턴 (Suspend/Lock/Download) 추가

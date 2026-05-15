@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818881508
 confluence-parent-id: 3811901565
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881508/EBS+Layer+Boundary
+mirror: none
 ---
 
 # BS-07-06 Layer Boundary

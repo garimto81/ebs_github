@@ -12,6 +12,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3818947277
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947277/EBS+SG-025+SG-026+Production+timeline+Quality+gates+B-Q6+B-Q7+broadcast
+mirror: none
 ---
 
 ## 공식 선언

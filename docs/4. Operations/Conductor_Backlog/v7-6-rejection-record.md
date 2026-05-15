@@ -12,6 +12,7 @@ related:
 confluence-page-id: 3819241956
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819241956/EBS+v7.6+Autonomous+CI+CD+Pipeline+Agent+Official+Rejection+Record
+mirror: none
 ---
 
 # v7.6 Autonomous CI/CD Pipeline Agent — REJECTED

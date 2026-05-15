@@ -12,6 +12,7 @@ related:
 confluence-page-id: 3819078386
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078386/EBS+Plan+Lobby+Hand+History+Insights
+mirror: none
 ---
 
 # Plan — Lobby 사이드바 Hand History 섹션 공식화

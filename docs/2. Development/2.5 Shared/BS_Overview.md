@@ -7,9 +7,9 @@ legacy-id: BS-00
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "§1 Tech Stack SSOT 3중화 해소 (SG-001 채택: Flutter 채택 + 원칙 1 예외 justify). Lobby/GE 행을 Flutter 로 정렬 완료. 2026-04-27 SG-022: §1 전면 재작성 — 단일 Desktop 바이너리 (Lobby + CC + Overlay), γ 하이브리드 폐기."
-confluence-page-id: 3818947137
+confluence-page-id: 3833856204
 confluence-parent-id: 3812032646
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947137/EBS+BS+Overview
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833856204/Overview
 ---
 
 # BS-00 Definitions — 용어·상태·트리거 총괄 정의서

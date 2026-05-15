@@ -14,6 +14,7 @@ reimplementability_notes: "PRD-CMD001 status=approved (20KB) — 디자인 시�
 confluence-page-id: 3819274944
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274944/EBS+Compact+Mockup+Design+System
+mirror: none
 ---
 # EBS Compact Mockup Design System
 

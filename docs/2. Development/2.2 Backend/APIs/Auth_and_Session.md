@@ -10,6 +10,7 @@ reimplementability_notes: "API-06 인증/세션 계약 완결 (17KB)"
 confluence-page-id: 3818586793
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586793/EBS+Auth+and+Session
+mirror: none
 ---
 # API-06 Auth & Session — 인증·토큰·세션·RBAC API
 

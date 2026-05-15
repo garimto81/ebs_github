@@ -12,6 +12,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3818455718
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455718/EBS+SESSION+2+HANDOFF+Core+Logic+Backend+Engine+Phase+1+audit
+mirror: none
 ---
 
 ## Session 2 — Core Logic & Backend Engine

@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team1-20260413-google-oauth
 confluence-page-id: 3819275384
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819275384/EBS+CR-team1-20260413-google-oauth
+mirror: none
 ---
 
 # CCR-DRAFT: Google OAuth Phase 1 도입

@@ -8,6 +8,7 @@ supersedes: SG-022 single-binary advocacy across all docs/team* trees
 confluence-page-id: 3819602444
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602444/EBS+Global+SSOT+Sync+SG-022+advocacy+eradication
+mirror: none
 ---
 
 # Global SSOT Sync Handoff

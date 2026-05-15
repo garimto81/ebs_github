@@ -8,6 +8,7 @@ related: ["2026-04-29-v95-ssot-implementation-gap-triage.md"]
 confluence-page-id: 3819766194
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766194/EBS+V9.5+E2E+Iteration+Phase+Task+Plan+P5+P6
+mirror: none
 ---
 
 # V9.5 결과물 E2E Iteration Phase Plan

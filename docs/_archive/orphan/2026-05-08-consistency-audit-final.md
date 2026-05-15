@@ -8,6 +8,7 @@ last-updated: 2026-05-08
 confluence-page-id: 3818947297
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947297/EBS+2026-05-08
+mirror: none
 ---
 
 # 2026-05-08 정합성 감사 — 최종 보고서

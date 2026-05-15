@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-conductor-20260411-ge-req-id-rework
 confluence-page-id: 3818521571
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521571/EBS+CR-conductor-20260411-ge-req-id-rework
+mirror: none
 ---
 
 # CCR-DRAFT: GE 요구사항 ID prefix 재편 (범위 축소 반영)

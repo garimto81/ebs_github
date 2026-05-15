@@ -14,6 +14,7 @@ related-docs:
   - ../../../1. Product/Foundation.md
   - WSOP_LIVE_Chip_Count_Sync.md
   - ../../2.5 Shared/Chip_Count_State.md
+mirror: none
 ---
 # API-05 WebSocket Events — CC ↔ BO ↔ Lobby 실시간 이벤트 프로토콜
 

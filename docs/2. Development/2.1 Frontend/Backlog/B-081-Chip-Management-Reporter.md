@@ -5,6 +5,7 @@ tier: internal
 confluence-page-id: 3819078245
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078245/EBS+B-081+Chip+Management+Chip+Reporter
+mirror: none
 ---
 
 # B-081 — Chip Management & Chip Reporter

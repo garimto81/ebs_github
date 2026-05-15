@@ -34,9 +34,9 @@ predecessors:
   - path: docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md
     relation: source_content
     reason: "외부 인계 PRD 동기화 룰 (룰 20) 강제 필요"
-confluence-page-id: 3818881448
+confluence-page-id: 3833495726
 confluence-parent-id: 3184328827
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881448/EBS+Command_Center.md+v1.1.0+v2.0.0
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833495726/Command_Center
 ---
 
 # CC PRD 리뉴얼 계획 (v1.1 → v2.0)

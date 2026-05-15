@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818914372
 confluence-parent-id: 3811901565
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914372/EBS+Undo+Recovery
+mirror: none
 ---
 
 # BS-05-05 Command Center — Undo 및 에러 복구

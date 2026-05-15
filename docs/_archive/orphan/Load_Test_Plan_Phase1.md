@@ -13,6 +13,7 @@ reimplementability: PASS
 confluence-page-id: 3818717608
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818717608/EBS+Phase+1+Load+Test+Plan+8+Soak+Production-strict+Gate
+mirror: none
 ---
 
 # Phase 1 Load Test Plan — 2027-01 Korea Soft-Launch 게이트

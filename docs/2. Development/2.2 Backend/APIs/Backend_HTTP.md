@@ -10,6 +10,7 @@ reimplementability_notes: "API-01 REST 카탈로그 + WSOP LIVE 연동 (53KB). T
 confluence-page-id: 3818816101
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816101/EBS+Backend+HTTP
+mirror: none
 ---
 # API-01 Backend API — BO REST API + WSOP LIVE Integration
 

@@ -4,9 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-05-01
 last-updated: 2026-04-15
-confluence-page-id: 3820552901
+confluence-page-id: 3832807673
 confluence-parent-id: 3811901565
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552901/EBS+Hand+Lifecycle
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3832807673/Lifecycle
 ---
 
 # BS-05-01 Command Center — 핸드 라이프사이클 (운영자 관점)

@@ -6,9 +6,9 @@ last-updated: 2026-04-15
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "UI 검증 워크플로우 (8KB) 완결"
-confluence-page-id: 3819766363
+confluence-page-id: 3832840364
 confluence-parent-id: 3811606750
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766363/EBS+ui-feature-verification-workflow
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3832840364/ui-feature-verification-workflow
 ---
 # UI Feature Verification Workflow
 

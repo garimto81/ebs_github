@@ -19,6 +19,7 @@ related-docs:
   - ../2. Development/2.2 Backend/APIs/WebSocket_Events.md (WS 이벤트 카탈로그)
   - ../2. Development/2.2 Backend/Database/ER_Diagram.md (ERD 정본 SSOT)
   - ../2. Development/2.2 Backend/Database/Schema.md (DB Schema 정본 SSOT)
+mirror: none
 ---
 
 # Back Office — 보이지 않는 뼈대

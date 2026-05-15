@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3819209882
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209882/EBS+CR-017-wsop-parity
+mirror: none
 ---
 
 # CCR-017: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC

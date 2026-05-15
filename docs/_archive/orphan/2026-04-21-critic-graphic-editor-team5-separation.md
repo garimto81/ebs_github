@@ -7,6 +7,7 @@ critic-mode: parallel-2-critic
 confluence-page-id: 3818816301
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816301/EBS+Critic+Graphic+Editor+team5
+mirror: none
 ---
 
 # Critic Report — Graphic Editor `team5` 분리 적합성 검토

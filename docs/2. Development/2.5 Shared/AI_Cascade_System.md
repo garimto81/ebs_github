@@ -8,6 +8,7 @@ version: 1.0.0
 confluence-page-id: 3818684931
 confluence-parent-id: 3812032646
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684931/EBS+AI+Cascade+System
+mirror: none
 ---
 
 # AI Cascade System (RAG + LLM CIA 기반 의미 cascade 자동화)

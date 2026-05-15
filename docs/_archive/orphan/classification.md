@@ -7,6 +7,7 @@ last-updated: 2026-05-08
 confluence-page-id: 3818455738
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455738/EBS+683+.md
+mirror: none
 ---
 
 # 683 .md 파일 전수 분류 매트릭스

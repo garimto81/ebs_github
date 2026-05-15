@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260414-payout-structure-endpoints
 confluence-page-id: 3819177069
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819177069/EBS+CR-team2-20260414-payout-structure-endpoints
+mirror: none
 ---
 
 # CCR-DRAFT: PayoutStructure (PrizePool) 엔드포인트 추가 (WSOP LIVE 정렬)

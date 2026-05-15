@@ -10,6 +10,7 @@ last-updated: 2026-05-03
 confluence-page-id: 3818881528
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881528/EBS+B-Q18+Structure+update+same-transaction+delete+insert+IntegrityError+Type+A
+mirror: none
 ---
 
 ## 발견

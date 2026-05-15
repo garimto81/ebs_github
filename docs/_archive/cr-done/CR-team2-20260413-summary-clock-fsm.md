@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260413-summary-clock-fsm
 confluence-page-id: 3819766882
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766882/EBS+CR-team2-20260413-summary-clock-fsm
+mirror: none
 ---
 
 # CCR-DRAFT: API-05에 EventFlightSummary 이벤트 + Clock FSM 행동 명세 신설

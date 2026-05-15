@@ -8,9 +8,9 @@ phase: P1 (정합성 감사)
 audit_basis: docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md
 priority: HIGHEST (다른 모든 Stream 의 blocking gate)
 last-updated: 2026-05-08
-confluence-page-id: 3819766504
+confluence-page-id: 3833430137
 confluence-parent-id: 3184328827
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766504/EBS+S1+Foundation+spec
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833430137/Foundation
 ---
 
 # S1 Foundation — 정합성 감사 작업 spec

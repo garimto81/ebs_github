@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818586893
 confluence-parent-id: 3811901565
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586893/EBS+Register+Screen
+mirror: none
 ---
 
 # BS-04-05 RFID Register Screen (AT-05)

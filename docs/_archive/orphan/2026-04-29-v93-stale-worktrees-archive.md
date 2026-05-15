@@ -10,6 +10,7 @@ reimplementability_notes: "운영 archive 보고서 — branch ref + git reflog 
 confluence-page-id: 3818914452
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914452/EBS+V9.3+Stale+Worktrees+Archive+2026-04-29+cleanup
+mirror: none
 ---
 
 # V9.3 Stale Worktrees Archive

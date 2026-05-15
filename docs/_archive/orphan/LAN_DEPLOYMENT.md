@@ -6,9 +6,9 @@ last-updated: 2026-05-12
 related-pr: "#69 (subdomain — DEPRECATED), Cycle 9 #355 (bind-mount 도입), Cycle 10 #380 (image 영구 흡수 + LAN reachability KPI)"
 related-root-cause: "#369 (Lobby login hosts 의존 root cause 확정)"
 status: ACTIVE
-confluence-page-id: 3818750373
+confluence-page-id: 3833626839
 confluence-parent-id: 3184328827
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750373/EBS+LAN+Deployment+Internal+Network+Domain+Access
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833626839/Deployment
 ---
 
 # EBS LAN 배포 가이드 — port-direct 단일 방식 (Cycle 10 정리)

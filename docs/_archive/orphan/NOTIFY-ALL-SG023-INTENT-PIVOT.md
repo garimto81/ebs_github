@@ -12,6 +12,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3819078326
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078326/EBS+SG-023+production+broadcast+standby
+mirror: none
 ---
 
 ## 공식 선언

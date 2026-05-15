@@ -26,9 +26,9 @@ predecessors:
   - path: docs/1. Product/Command_Center.md
     relation: source_content
     reason: "누락된 외부 인계 PRD — 동기화 받지 못함"
-confluence-page-id: 3820552681
+confluence-page-id: 3833495726
 confluence-parent-id: 3184328827
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552681/EBS+Command_Center.md+systematic
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833495726/Command_Center
 ---
 
 # 문서 발견 실패 사고
@@ -67,7 +67,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38205
 title: Command Center — 운영자가 매 순간 머무는 조종석
 owner: conductor
 tier: external                      ← 외부 인계용 최상위 tier
-confluence-page-id: 3811901603       ← 외부 publication 완료
+confluence-page-id: 3833495726
 last-updated: 2026-05-04             ← 2일 전 발행
 version: 1.0.0
 derivative-of: ../2. Development/2.4 Command Center/Command_Center_UI/Overview.md

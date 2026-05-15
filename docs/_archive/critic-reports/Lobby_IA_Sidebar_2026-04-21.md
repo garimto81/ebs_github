@@ -14,6 +14,7 @@ related:
 confluence-page-id: 3818848838
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818848838/EBS+Critic+Lobby+IA+5NF
+mirror: none
 ---
 
 # Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토

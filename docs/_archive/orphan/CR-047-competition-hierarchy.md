@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818849386
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818849386/EBS+CR-047-competition-hierarchy
+mirror: none
 ---
 
 # CCR-047: Competition 계층 WSOP LIVE 정렬 (Series→Event→EventFlight)

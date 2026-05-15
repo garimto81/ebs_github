@@ -2,9 +2,9 @@
 title: Backlog
 tier: internal
 decomposed: true
-confluence-page-id: 3819209295
+confluence-page-id: 3832873103
 confluence-parent-id: 3811901565
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209295/EBS+Backlog+1565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3832873103/Backlog
 owner: S3
 ---
 

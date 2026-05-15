@@ -5,6 +5,7 @@ tier: internal
 confluence-page-id: 3818455578
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455578/EBS+B-079+Prize+Pool+Payout+Management
+mirror: none
 ---
 
 # B-079 — Prize Pool & Payout Management

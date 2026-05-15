@@ -7,6 +7,7 @@ last-updated: 2026-05-08
 confluence-page-id: 3820552781
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820552781/EBS+Sync+Protocol
+mirror: none
 ---
 
 # BO-02 Sync Protocol — 동기화 프로토콜

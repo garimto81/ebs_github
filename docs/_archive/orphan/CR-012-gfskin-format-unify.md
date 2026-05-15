@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3819078805
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078805/EBS+CR-012-gfskin-format-unify
+mirror: none
 ---
 
 # CCR-012: .gfskin ZIP 포맷 단일화 및 DATA-07 신설

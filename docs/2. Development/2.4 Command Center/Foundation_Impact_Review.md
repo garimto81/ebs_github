@@ -4,9 +4,9 @@ owner: team4
 tier: internal
 last-updated: 2026-04-22
 related-commits: 7aa1576, 30d009c, a756f6c, 32c0015, 133e5f5, 027d15a
-confluence-page-id: 3819242053
+confluence-page-id: 3833430137
 confluence-parent-id: 3811901565
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242053/EBS+Foundation+Impact+Review+2026-04-22
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833430137/Foundation
 ---
 
 # Foundation Impact Review — team4 기획 문서 전면 재검토

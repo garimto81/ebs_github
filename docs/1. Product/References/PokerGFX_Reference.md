@@ -18,7 +18,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3819078185
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078185/EBS+PokerGFX+Reference
-mirror: none  # 2026-05-15: 본 프로젝트 의도 외 (경쟁사 분석 = 시장 분석 범위). Confluence sync 중단. file 자체는 참고용 보존.
+mirror: none
 ---
 
 # EBS Action Tracker — 통합 Reference (v8.5.0)

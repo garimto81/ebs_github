@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818849326
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818849326/EBS+CR-023-api05-messagepack
+mirror: none
 ---
 
 # CCR-023: API-05 MessagePack 직렬화 프로토콜 채택 (WSOP Fatima.app 패턴)

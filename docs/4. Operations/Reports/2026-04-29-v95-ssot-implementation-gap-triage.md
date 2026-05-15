@@ -8,6 +8,7 @@ related: ["Spec_Gap_Triage.md", "../../docs/2. Development/2.2 Backend/APIs/Back
 confluence-page-id: 3819176427
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176427/EBS+V9.5+SSOT+vs+Implementation+Gap+Triage
+mirror: none
 ---
 
 # V9.5 SSOT vs Implementation Gap Triage

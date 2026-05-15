@@ -7,6 +7,7 @@ last-updated: 2026-05-13
 confluence-page-id: 3819209336
 confluence-parent-id: 3811901565
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209336/EBS+UI+1565
+mirror: none
 ---
 
 # UI-02 Command Center — 7화면 와이어프레임

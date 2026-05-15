@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-conductor-20260414-skin-updated-ws
 confluence-page-id: 3819078749
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078749/EBS+CR-conductor-20260414-skin-updated-ws
+mirror: none
 ---
 
 # CCR-DRAFT: API-05에 skin_updated WebSocket 이벤트 추가

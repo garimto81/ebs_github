@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260410-table-rebalance-saga
 confluence-page-id: 3818816663
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816663/EBS+CR-team2-20260410-table-rebalance-saga
+mirror: none
 ---
 
 # CCR-DRAFT: /tables/rebalance 응답에 saga 구조 추가

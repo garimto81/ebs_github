@@ -7,6 +7,7 @@ audit-scope: team1-frontend
 confluence-page-id: 3818619411
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818619411/EBS+Quasar+Flutter
+mirror: none
 ---
 
 # Quasar → Flutter 이전 감사 — 누락 · 매칭 실패 · 기획 drift

@@ -13,6 +13,7 @@ related:
 confluence-page-id: 3818881608
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881608/EBS+v8.0+Phase+4+Deprecated+Hooks+Audit+branch_guard+session_branch_init
+mirror: none
 ---
 
 # Phase 4 Audit — Deprecated Hooks Disposition

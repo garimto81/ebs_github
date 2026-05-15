@@ -6,6 +6,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818586934
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586934/EBS+2026-04-08-game-engine.plan
+mirror: none
 ---
 
 # EBS Game Engine Implementation Plan

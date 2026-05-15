@@ -11,6 +11,7 @@ last-updated: 2026-04-22
 confluence-page-id: 3819176725
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176725/EBS+Redesign+Plan+2026-04-22
+mirror: none
 ---
 
 # Redesign Plan — 2026-04-22

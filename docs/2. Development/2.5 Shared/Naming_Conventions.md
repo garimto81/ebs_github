@@ -15,6 +15,7 @@ related-spec:
   - ../2.2 Backend/Back_Office/Overview.md
   - ../2.3 Game Engine/Rules/Multi_Hand_v03.md
   - ../2.4 Command Center/Command_Center_UI/Overview.md
+mirror: none
 ---
 # Naming Conventions — EBS 전역 네이밍 규약 SSOT
 

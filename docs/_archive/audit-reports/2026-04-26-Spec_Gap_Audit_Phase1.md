@@ -14,6 +14,7 @@ last-updated: 2026-04-26
 confluence-page-id: 3818586974
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586974/EBS+Spec+Gap+Audit+Phase+1+2026-04-26
+mirror: none
 ---
 
 # Spec Gap Audit — Phase 1 (2026-04-26)

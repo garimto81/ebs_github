@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260414-competition-hierarchy
 confluence-page-id: 3818587304
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818587304/EBS+CR-team2-20260414-competition-hierarchy
+mirror: none
 ---
 
 # CCR-DRAFT: Competition 계층 WSOP LIVE 정렬 (Series→Event→EventFlight)

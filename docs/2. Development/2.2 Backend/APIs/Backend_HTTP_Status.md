@@ -10,6 +10,7 @@ parent: Backend_HTTP.md
 confluence-page-id: 3818914332
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914332/EBS+Backend+HTTP+2026-04-20
+mirror: none
 ---
 
 # Backend HTTP — 구현 현황 (Conductor Audit 2026-04-20)

@@ -12,6 +12,7 @@ last-updated: 2026-05-08
 confluence-page-id: 3818619431
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818619431/EBS+S7+Backend+spec
+mirror: none
 ---
 
 # S7 Backend — 정합성 감사 작업 spec

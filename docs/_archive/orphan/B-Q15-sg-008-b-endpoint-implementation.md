@@ -12,6 +12,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3819274985
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274985/EBS+B-Q15+SG-008-b+11+endpoint+team2+7+cascade
+mirror: none
 ---
 
 ## 개요

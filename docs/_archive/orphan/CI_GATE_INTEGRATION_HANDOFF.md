@@ -8,6 +8,7 @@ status: PARTIAL — CI gate + README done. ebs_v2 dir shell removal blocked by W
 confluence-page-id: 3818914412
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914412/EBS+CI+Gate+Integration+ebs_v2+Cleanup+Handoff
+mirror: none
 ---
 
 # CI Pre-Merge Gate Integration + Documentation Sync

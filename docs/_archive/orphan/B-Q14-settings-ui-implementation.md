@@ -7,9 +7,9 @@ type: backlog
 linked-sg: SG-003, SG-017, SG-026
 linked-decision: C.1 (SG-003+017) + B-Q5 ㉠ (Mode A) + B-Q7 ㉠ (Production-strict)
 last-updated: 2026-04-27
-confluence-page-id: 3818586913
+confluence-page-id: 3834118248
 confluence-parent-id: 3184328827
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586913/EBS+B-Q14+Settings+5-level+scope+UI+C.1+SG-026+cascade
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3834118248/Settings
 ---
 
 ## 개요

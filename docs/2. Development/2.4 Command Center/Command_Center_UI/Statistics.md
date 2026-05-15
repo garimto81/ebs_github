@@ -4,9 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-05-07
 last-updated: 2026-04-15
-confluence-page-id: 3819242113
+confluence-page-id: 3833069731
 confluence-parent-id: 3811901565
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242113/EBS+Statistics+1565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833069731/Statistics
 ---
 
 # BS-05-07 Statistics Screen (AT-04)

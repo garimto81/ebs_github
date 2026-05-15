@@ -13,6 +13,7 @@ confluence-parent-id: 3811836049
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521062/EBS+OutputEventBuffer
 derivative-of: ../Rules/Multi_Hand_v03.md
 if-conflict: derivative-of takes precedence
+mirror: none
 ---
 # OutputEventBuffer 구현 경계 (API-04.3)
 

@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818521611
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521611/EBS+CR-028-bs05-at-screens
+mirror: none
 ---
 
 # CCR-028: BS-05에 AT 화면 체계(AT-00~AT-07) 도입

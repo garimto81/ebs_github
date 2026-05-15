@@ -10,6 +10,7 @@ reimplementability_notes: "BS-08-02 메타데이터 편집 기획 완결"
 confluence-page-id: 3819766283
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766283/EBS+Metadata+Editing
+mirror: none
 ---
 # BS-08-02 Metadata Editing — `skin.json` 편집 매트릭스 + PATCH
 

@@ -11,6 +11,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3818685071
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818685071/EBS+SESSION+2.2+HANDOFF+blind+payout+structure+services+20-26+70
+mirror: none
 ---
 
 ## 1. 진행 결과

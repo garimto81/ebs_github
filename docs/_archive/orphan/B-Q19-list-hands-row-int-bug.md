@@ -10,6 +10,7 @@ last-updated: 2026-05-03
 confluence-page-id: 3819766424
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766424/EBS+B-Q19+list_hands+SQLAlchemy+2.x+Row+int+TypeError+Type+A
+mirror: none
 ---
 
 ## 발견

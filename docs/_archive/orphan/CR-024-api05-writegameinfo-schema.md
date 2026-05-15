@@ -4,9 +4,9 @@ owner: conductor
 tier: internal
 legacy-id: CCR-024
 last-updated: 2026-04-15
-confluence-page-id: 3819209902
+confluence-page-id: 3833168113
 confluence-parent-id: 3818521542
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209902/EBS+CR-024-api05-writegameinfo-schema
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833168113/Schema
 ---
 
 # CCR-024: API-05 WriteGameInfo 프로토콜 22+ 필드 스키마 완전 명세

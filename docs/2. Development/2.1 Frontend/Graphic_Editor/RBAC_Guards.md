@@ -10,6 +10,7 @@ reimplementability_notes: "BS-08-04 RBAC 가드 기획 완결"
 confluence-page-id: 3818750453
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750453/EBS+RBAC+Guards
+mirror: none
 ---
 # BS-08-04 RBAC Guards — Admin/Operator/Viewer 게이트
 

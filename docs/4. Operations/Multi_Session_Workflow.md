@@ -6,6 +6,7 @@ governance: v10.3 architect_then_observer
 confluence-page-id: 3818717573
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818717573/EBS+Multi-Session+Workflow+v10.3+redirect
+mirror: none
 ---
 
 # Multi-Session Workflow — v10.3

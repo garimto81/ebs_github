@@ -10,6 +10,7 @@ reimplementability_notes: "WSOP LIVE 정렬 진척표 구조 명확"
 confluence-page-id: 3818586732
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586732/EBS+SSOT+Alignment+Progress
+mirror: none
 ---
 
 # SSOT Alignment Progress — EBS ↔ WSOP LIVE Confluence

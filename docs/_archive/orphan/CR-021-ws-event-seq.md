@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818882250
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818882250/EBS+CR-021-ws-event-seq
+mirror: none
 ---
 
 # CCR-021: WebSocket 이벤트에 단조증가 seq 필드 + replay 엔드포인트 추가

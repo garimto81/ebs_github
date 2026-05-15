@@ -8,6 +8,7 @@ status: COMPLETED
 confluence-page-id: 3818750413
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750413/EBS+SSOT+Alignment+Report+Lobby+Path+Drift+Eradication
+mirror: none
 ---
 
 # SSOT Alignment Report — Lobby Path Drift Eradication

@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818882190
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818882190/EBS+CR-037-bs08-graphic-editor-new
+mirror: none
 ---
 
 # CCR-037: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드)

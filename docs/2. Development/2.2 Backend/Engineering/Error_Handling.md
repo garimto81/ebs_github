@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818455658
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455658/EBS+Error+Handling+0578
+mirror: none
 ---
 
 # IMPL-06 Error Handling — 에러 분류 + 복구 전략

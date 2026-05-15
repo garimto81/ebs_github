@@ -10,6 +10,7 @@ last-updated: 2026-05-08
 confluence-page-id: 3818521179
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521179/EBS+Conductor+spec
+mirror: none
 ---
 
 # Conductor — 잔여 영역 + 통합 검증 spec

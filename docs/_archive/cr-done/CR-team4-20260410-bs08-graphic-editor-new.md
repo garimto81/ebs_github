@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team4-20260410-bs08-graphic-editor-new
 confluence-page-id: 3818882230
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818882230/EBS+CR-team4-20260410-bs08-graphic-editor-new
+mirror: none
 ---
 
 # CCR-DRAFT: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드)

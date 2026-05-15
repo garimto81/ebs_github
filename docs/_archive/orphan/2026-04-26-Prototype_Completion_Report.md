@@ -11,6 +11,7 @@ last-updated: 2026-04-26
 confluence-page-id: 3819176745
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819176745/EBS+Prototype+Completion+Report+Spec+Code+2026-04-26
+mirror: none
 ---
 
 # Prototype Completion Report

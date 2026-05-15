@@ -5,6 +5,7 @@ tier: internal
 confluence-page-id: 3818586752
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586752/EBS+B-082+Staff+Role+Permission
+mirror: none
 ---
 
 # B-082 — Staff Role & Permission 관리

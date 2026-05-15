@@ -11,6 +11,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3818881548
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881548/EBS+SESSION+2+FINAL+REPORT+Core+Logic+Backend+Engine+B-Q10+cascade
+mirror: none
 ---
 
 ## 🎯 Session 2 — Core Logic & Backend Engine 최종 결과

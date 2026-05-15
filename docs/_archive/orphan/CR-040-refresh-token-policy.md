@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818521651
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521651/EBS+CR-040-refresh-token-policy
+mirror: none
 ---
 
 # CCR-040: BS-01 refresh_token 전달 방식을 환경별 조건부로 통일

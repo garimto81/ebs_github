@@ -35,6 +35,7 @@ related-docs:
 confluence-page-id: 3818586954
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586954/EBS+Lobby+EBS+Lobby+Design+SSOT+1+1
+mirror: none
 ---
 
 # Lobby 리뉴얼 계획

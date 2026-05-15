@@ -10,6 +10,7 @@ last-updated: 2026-05-08
 confluence-page-id: 3818947317
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947317/EBS+2026-05-08+Master+Orchestration+Plan
+mirror: none
 ---
 
 # 정합성 감사 — Master Plan

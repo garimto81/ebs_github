@@ -4,9 +4,9 @@ owner: conductor
 tier: internal
 last-updated: 2026-04-15
 legacy-id: CCR-DRAFT-team4-20260410-api03-hal-lifecycle
-confluence-page-id: 3818816703
+confluence-page-id: 3832807673
 confluence-parent-id: 3818521542
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816703/EBS+CR-team4-20260410-api03-hal-lifecycle
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3832807673/Lifecycle
 ---
 
 # CCR-DRAFT: API-03 RFID HAL 에러 복구 및 생명주기 시나리오 보강

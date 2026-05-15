@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818685011
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818685011/EBS+Dependency+Injection
+mirror: none
 ---
 
 # IMPL-05 Dependency Injection — Real/Mock HAL 교체 + 테스트 패턴

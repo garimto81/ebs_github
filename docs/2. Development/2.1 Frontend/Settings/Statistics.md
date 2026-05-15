@@ -9,9 +9,9 @@ reimplementability_checked: 2026-04-21
 reimplementability_notes: "2026-04-21 교차검증 완료: stats_screen.dart 에 equity_display_mode/history_window/hud_enabled/hud_fields 필드 구현 확인 (grep). SG-003 §Tab 5 + SG-007 Reports API 연동 반영."
 sg_reference: SG-003, SG-007
 scope: event
-confluence-page-id: 3819766343
+confluence-page-id: 3833069731
 confluence-parent-id: 3811606750
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766343/EBS+Statistics
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833069731/Statistics
 ---
 
 # BS-03-05 Stats — 통계/승률 설정

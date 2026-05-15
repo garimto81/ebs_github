@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260414-ws-event-catalog
 confluence-page-id: 3818882210
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818882210/EBS+CR-team2-20260414-ws-event-catalog
+mirror: none
 ---
 
 # CCR-DRAFT: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬

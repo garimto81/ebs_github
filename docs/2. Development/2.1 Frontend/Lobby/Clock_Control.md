@@ -9,6 +9,7 @@ reimplementability_notes: "Clock control 스펙 완결 (8KB)"
 confluence-page-id: 3818947157
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947157/EBS+Clock+Control
+mirror: none
 ---
 # Lobby — Clock Control (블라인드 타이머·레벨·브레이크 제어)
 

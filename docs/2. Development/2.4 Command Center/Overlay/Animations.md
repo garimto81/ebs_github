@@ -4,9 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-07-02
 last-updated: 2026-04-15
-confluence-page-id: 3818750513
+confluence-page-id: 3832873307
 confluence-parent-id: 3811901565
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750513/EBS+Animations
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3832873307/Animations
 ---
 
 # BS-07-02 Animations — Rive 애니메이션 상세

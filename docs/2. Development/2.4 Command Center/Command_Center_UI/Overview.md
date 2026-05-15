@@ -4,9 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-05-00
 last-updated: 2026-05-13
-confluence-page-id: 3819602576
+confluence-page-id: 3833856204
 confluence-parent-id: 3811901565
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819602576/EBS+Overview+1565
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833856204/Overview
 related-docs:
   - ../../../mockups/EBS Command Center/tokens.css (디자인 SSOT — Broadcast Dark Amber OKLCH)
   - ../../../mockups/EBS Command Center/EBS Command Center.html (구조 참조)

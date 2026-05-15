@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team4-20260410-bs07-security-delay
 confluence-page-id: 3819242535
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819242535/EBS+CR-team4-20260410-bs07-security-delay
+mirror: none
 ---
 
 # CCR-DRAFT: BS-07 Security Delay (홀카드 공개 지연) 명세

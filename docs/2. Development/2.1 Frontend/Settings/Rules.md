@@ -9,9 +9,9 @@ reimplementability_checked: 2026-04-21
 reimplementability_notes: "2026-04-21 교차검증 완료: rules_screen.dart 에 game_variant/blind_structure_id/ante_schedule_id/time_bank_seconds/straddle_* 필드 구현 확인 (grep). WSOP Rule 95 (under-raise) / Rule 96 (incomplete all-in) — Betting_and_Pots.md §3+§4 (IT-15 IncompleteAllInNoReopen / IT-16 UnderRaiseAdjust) 참조 (구 BS-06-02 R95/R96). SG-003 §Tab 4 스키마 충족."
 sg_reference: SG-003
 scope: event
-confluence-page-id: 3818947177
+confluence-page-id: 3834216518
 confluence-parent-id: 3811606750
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947177/EBS+Rules
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3834216518/Rules
 ---
 
 # BS-03-04 Rules — 게임 규칙 설정

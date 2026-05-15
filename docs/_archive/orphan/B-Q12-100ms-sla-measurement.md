@@ -10,6 +10,7 @@ last-updated: 2026-05-05
 confluence-page-id: 3818947257
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947257/EBS+B-Q12+framework+NFR+RFID+Engine+WS+Render
+mirror: none
 ---
 
 ## 표기 주의 (2026-05-05, SG-033 cascade)

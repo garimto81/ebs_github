@@ -13,6 +13,7 @@ related:
 confluence-page-id: 3818816281
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816281/EBS+Plan+Lobby+Flutter+Desktop
+mirror: none
 ---
 
 # Plan — Lobby Flutter Desktop 결정 기획 문서 전수 수정

@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team4-20260410-api05-messagepack
 confluence-page-id: 3819177109
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819177109/EBS+CR-team4-20260410-api05-messagepack
+mirror: none
 ---
 
 # CCR-DRAFT: API-05 MessagePack 직렬화 프로토콜 채택 (WSOP Fatima.app 패턴)

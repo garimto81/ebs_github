@@ -7,6 +7,7 @@ last-updated: 2026-05-08
 confluence-page-id: 3819274924
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274924/EBS+Error+Handling
+mirror: none
 ---
 
 # Login — Error Handling (로그인 실패·가드·잠금)

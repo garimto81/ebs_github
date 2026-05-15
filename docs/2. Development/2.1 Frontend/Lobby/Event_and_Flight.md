@@ -10,6 +10,7 @@ reimplementability_notes: "BS-02-02 EventFlightStatus enum 완결 (WSOP LIVE par
 confluence-page-id: 3818881488
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881488/EBS+Event+and+Flight
+mirror: none
 ---
 # BS-02-02 Event/Flight 상태 — `EventFlightStatus` enum
 

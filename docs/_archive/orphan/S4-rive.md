@@ -11,6 +11,7 @@ last-updated: 2026-05-08
 confluence-page-id: 3818914472
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914472/EBS+S4+RIVE+Standards+spec
+mirror: none
 ---
 
 # S4 RIVE Standards — 정합성 감사 작업 spec

@@ -12,6 +12,7 @@ related-docs:
   - Foundation.md (정점 SSOT)
   - Product_SSOT_Policy.md (SSOT 정책)
   - tools/doc_discovery.py (cascade graph 분석 도구)
+mirror: none
 ---
 
 # EBS 문서 인과관계 대시보드

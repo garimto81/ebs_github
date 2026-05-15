@@ -7,9 +7,9 @@ last-updated: 2026-05-07
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-03-06 테이블 운영 기획 완결 (8KB)"
-confluence-page-id: 3818586772
+confluence-page-id: 3834151023
 confluence-parent-id: 3811606750
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586772/EBS+Operations
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3834151023/Operations
 ---
 # Lobby — Operations (테이블 인증·진단·내보내기)
 

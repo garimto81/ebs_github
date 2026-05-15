@@ -4,9 +4,9 @@ owner: conductor
 tier: external
 last-updated: 2026-05-13
 version: 0.8.0
-confluence-page-id: 3816784235
+confluence-page-id: 3833266224
 confluence-parent-id: 3811344758
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3816784235
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833266224/Overlay
 audience-target: 외부 개발팀 + 외부 디자이너 + 방송 PD
 purpose: |
   Overlay Graphics 의 정본 SSOT.

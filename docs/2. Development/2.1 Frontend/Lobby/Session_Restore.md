@@ -10,6 +10,7 @@ reimplementability_notes: "BS-02-01-session-restore 복구 플로우 완결"
 confluence-page-id: 3819274904
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274904/EBS+Session+Restore
+mirror: none
 ---
 # Lobby — Session Restore (재진입 세션 복원)
 

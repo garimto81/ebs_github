@@ -7,9 +7,9 @@ last-updated: 2026-04-27
 reimplementability: PASS
 reimplementability_checked: 2026-04-20
 reimplementability_notes: "BS-03-00 Settings 총괄 완결. TBD 1건은 키보드 단축키 (블로커 아님). 2026-04-27 5-level scope 채택 (SG-003+SG-017 DONE)"
-confluence-page-id: 3818914500
+confluence-page-id: 3833856204
 confluence-parent-id: 3811606750
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914500/EBS+Settings+Overview
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833856204/Overview
 ---
 # BS-03-00 Overview — Settings 총괄
 

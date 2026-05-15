@@ -4,9 +4,9 @@ owner: team1
 tier: internal
 legacy-id: BS-02-01-form
 last-updated: 2026-05-08
-confluence-page-id: 3818455618
+confluence-page-id: 3834118350
 confluence-parent-id: 3811606750
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818455618/EBS+Form
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3834118350/Form
 ---
 
 # Login — Form (로그인 입력·인증 방식)

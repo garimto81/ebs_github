@@ -14,6 +14,7 @@ related:
 confluence-page-id: 3819766243
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766243/EBS+Spec+Gap+Triage
+mirror: none
 ---
 
 # Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜

@@ -2,9 +2,9 @@
 title: Command Center
 owner: conductor
 tier: external
-confluence-page-id: 3811901603
+confluence-page-id: 3832905876
 confluence-parent-id: 3811344758
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811901603
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3832905876/2.4+Command+Center+APIs
 last-updated: 2026-05-13
 last-synced: 2026-05-13
 version: 4.3.0

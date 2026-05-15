@@ -7,6 +7,7 @@ related-plan: ~/.claude/plans/role-and-objective-reactive-canyon.md
 confluence-page-id: 3819209316
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819209316/EBS+M1+Session+Drift+Audit+2026-04-28
+mirror: none
 ---
 
 # M1 — Backend Multi-session Audit Kickoff (D+0)

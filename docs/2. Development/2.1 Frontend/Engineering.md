@@ -6,9 +6,9 @@ last-updated: 2026-04-22
 reimplementability: UNKNOWN
 reimplementability_checked: 2026-04-22
 reimplementability_notes: "Foundation.md 2026-04-22 재설계 반영 (B-T1-FND-01) — §1.5 설치 관점(Ch.4 §4.4) + §2.0 런타임 모드(§5.0) + §2.2 프로세스 경계(§6.3) + §6.0 실시간 동기화(§6.4) 신설. 재검증 후 PASS 재판정."
-confluence-page-id: 3818750433
+confluence-page-id: 3833036900
 confluence-parent-id: 3811606750
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750433/EBS+Engineering+Frontend+Flutter
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833036900/Engineering
 ---
 
 # Engineering — Frontend (Flutter)

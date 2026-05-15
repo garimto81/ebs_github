@@ -13,6 +13,7 @@ confluence-parent-id: 3811836049
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818815911/EBS+Harness+REST+API
 derivative-of: ../Rules/Multi_Hand_v03.md
 if-conflict: derivative-of takes precedence
+mirror: none
 ---
 # Harness REST API 명세 (API-04.2)
 

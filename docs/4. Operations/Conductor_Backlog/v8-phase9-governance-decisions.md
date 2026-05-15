@@ -14,6 +14,7 @@ related:
 confluence-page-id: 3818619180
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818619180/EBS+v8.0+Phase+9+Governance+Decisions+Brief
+mirror: none
 ---
 
 # v8.0 Phase 9 — Governance Decisions Brief

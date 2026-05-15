@@ -5,6 +5,7 @@ tier: internal
 confluence-page-id: 3818816061
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818816061/EBS+B-080+Blind+Prize+Structure+Template
+mirror: none
 ---
 
 # B-080 — Blind & Prize Structure Template 관리

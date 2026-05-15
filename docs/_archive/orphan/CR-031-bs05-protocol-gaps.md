@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818947713
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818947713/EBS+CR-031-bs05-protocol-gaps
+mirror: none
 ---
 
 # CCR-031: BS-05 서버 프로토콜 매핑 및 내부 모호성 해소

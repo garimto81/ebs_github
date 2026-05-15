@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team2-20260410-jwt-expiry
 confluence-page-id: 3819766856
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766856/EBS+CR-team2-20260410-jwt-expiry
+mirror: none
 ---
 
 # CCR-DRAFT: BS-01에 JWT Access/Refresh 만료 정책 명시

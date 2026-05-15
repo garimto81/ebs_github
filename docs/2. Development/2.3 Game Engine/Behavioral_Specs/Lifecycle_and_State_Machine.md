@@ -12,9 +12,9 @@ related:
   - "Behavioral_Specs/Card_Pipeline_Overview.md"   # BS-06-12 (board card detection authority)
   - "Behavioral_Specs/Triggers.md"                  # `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: `Triggers.md` (legacy-id: BS-06-00-triggers))) (event 트리거 SSOT)
   - "Behavioral_Specs/Holdem/Coalescence.md"        # RFID burst 처리
-confluence-page-id: 3819274769
+confluence-page-id: 3832807673
 confluence-parent-id: 3811836049
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819274769/EBS+Lifecycle+State+Machine+Domain+Master
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3832807673/Lifecycle
 derivative-of: ../Rules/Multi_Hand_v03.md
 if-conflict: derivative-of takes precedence
 ---

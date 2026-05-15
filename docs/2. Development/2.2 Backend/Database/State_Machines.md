@@ -10,6 +10,7 @@ reimplementability_notes: "DATA-03 상태 기계 완결 (15KB) — SG-009 직렬
 confluence-page-id: 3818684991
 confluence-parent-id: 3811770578
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818684991/EBS+State+Machines
+mirror: none
 ---
 # DATA-03 State Machines
 

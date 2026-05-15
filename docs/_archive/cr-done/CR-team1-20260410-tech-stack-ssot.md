@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team1-20260410-tech-stack-ssot
 confluence-page-id: 3818914809
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818914809/EBS+CR-team1-20260410-tech-stack-ssot
+mirror: none
 ---
 
 # CCR-DRAFT: Tech Stack SSOT를 BS-00에 명시하고 team2 IMPL 시리즈 동기화

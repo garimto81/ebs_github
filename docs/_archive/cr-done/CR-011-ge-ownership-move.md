@@ -7,6 +7,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3820553360
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3820553360/EBS+CR-011-ge-ownership-move
+mirror: none
 ---
 
 # CCR-011: Graphic Editor 소유권 Team 4 → Team 1 이관 (Lobby 허브)

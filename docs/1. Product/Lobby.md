@@ -3,9 +3,9 @@ title: Lobby
 status: APPROVED
 owner: stream:S2 (Lobby)
 tier: external
-confluence-page-id: 3811672228
+confluence-page-id: 3834216497
 confluence-parent-id: 3811344758
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3834216497/Lobby
 last-updated: 2026-05-13
 last-synced: 2026-05-11
 version: 3.0.5

@@ -7,6 +7,7 @@ legacy-id: CCR-DRAFT-team1-20260410-wsop-parity
 confluence-page-id: 3818521591
 confluence-parent-id: 3818521542
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818521591/EBS+CR-team1-20260410-wsop-parity
+mirror: none
 ---
 
 # CCR-DRAFT: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC

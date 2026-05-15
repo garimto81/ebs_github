@@ -12,6 +12,7 @@ last-updated: 2026-04-27
 confluence-page-id: 3819078346
 confluence-parent-id: 3184328827
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819078346/EBS+SG-024+Conductor+broadcast
+mirror: none
 ---
 
 ## 공식 선언

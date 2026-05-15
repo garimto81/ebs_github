@@ -20,6 +20,7 @@ linked-memories:
   - project_rfid_out_of_scope_2026_04_29
 last-updated: 2026-05-03
 reimplementability: PASS
+mirror: none
 ---
 
 # EBS Phase Plan — 통합 SSOT (2026-05-03)

@@ -4,9 +4,9 @@ owner: team4
 tier: internal
 legacy-id: BS-04-00
 last-updated: 2026-04-15
-confluence-page-id: 3818881678
+confluence-page-id: 3833593947
 confluence-parent-id: 3811901565
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818881678/EBS+RFID_Cards+Overview
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833593947/RFID_Cards
 ---
 
 # BS-04-00 Overview — RFID 서브시스템 전체 흐름

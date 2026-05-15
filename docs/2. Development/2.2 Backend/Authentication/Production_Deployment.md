@@ -7,9 +7,9 @@ related-arch: ../../2.5 Shared/Authentication/Distributed_Architecture.md (M2)
 related-runbook: ../../2.5 Shared/Authentication/Troubleshooting_Runbook.md (M6)
 related-quickstart: Quickstart_Local_Cluster.md (M5)
 related-plan: ~/.claude/plans/role-and-objective-reactive-canyon.md (M8)
-confluence-page-id: 3818586813
+confluence-page-id: 3833626839
 confluence-parent-id: 3811770578
-confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818586813/EBS+Production+Deployment+Auth+domain
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/~71202036ff7e0a7684471195434d342e3315ed/pages/3833626839/Deployment
 ---
 
 # Production Deployment — Authentication Domain (M8)
