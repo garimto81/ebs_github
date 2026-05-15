@@ -6,6 +6,7 @@ last-updated: 2026-04-15
 confluence-page-id: 3818619311
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818619311/EBS+README
+discarded: "2026-05-15: absorbed into Lobby Settings"
 ---
 
 # skin-editor/ — ⚠️ team1 소유 (CCR-011)

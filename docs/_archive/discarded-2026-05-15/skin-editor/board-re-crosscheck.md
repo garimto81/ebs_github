@@ -9,6 +9,7 @@ reimplementability_notes: "Board RE crosscheck 완결 분석 (14 elements + GAP 
 confluence-page-id: 3818848738
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818848738/EBS+board-re-crosscheck
+discarded: "2026-05-15: absorbed into Lobby Settings"
 ---
 # Board GE Reverse Engineering Crosscheck
 

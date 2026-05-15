@@ -18,6 +18,7 @@ source_analysis:
   - ref: "PRD-0005"
     path: "docs/01-plan/prd-skin-editor.prd.md"
     desc: "PokerGFX Skin Editor 역공학 분석 — 7 Parts, skin_type 187 필드, 오버레이 Impact Map"
+discarded: "2026-05-15: absorbed into Lobby Settings"
 ---
 
 # EBS Skin Editor — 스킨 편집기 UI 설계

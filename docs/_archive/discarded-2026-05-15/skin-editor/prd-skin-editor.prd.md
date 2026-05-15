@@ -9,6 +9,7 @@ reimplementability_notes: "PRD-0005 Skin Editor 정본 (104KB, 1809줄) — 최�
 confluence-page-id: 3818717688
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818717688/EBS+prd-skin-editor.prd
+discarded: "2026-05-15: absorbed into Lobby Settings"
 ---
 # EBS Skin Editor PRD
 

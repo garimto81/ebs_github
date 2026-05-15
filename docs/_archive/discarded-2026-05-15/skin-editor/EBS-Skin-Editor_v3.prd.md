@@ -9,6 +9,7 @@ reimplementability_notes: "Skin Editor v3 PRD (74KB) 완결본 — team1 BS-08 �
 confluence-page-id: 3818717668
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818717668/EBS-Skin-Editor_v3.prd
+discarded: "2026-05-15: absorbed into Lobby Settings"
 ---
 # EBS Skin Editor — UI Design PRD v3
 

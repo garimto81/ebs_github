@@ -9,6 +9,7 @@ reimplementability_notes: "UI 검증 워크플로우 (8KB) 완결"
 confluence-page-id: 3819766363
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3819766363/EBS+ui-feature-verification-workflow
+discarded: "2026-05-15: absorbed into Lobby Settings"
 ---
 # UI Feature Verification Workflow
 
