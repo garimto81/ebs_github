@@ -96,22 +96,6 @@ tier: generated
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/Metadata_Editing.md` | Metadata Editing | team1 | internal | BS-08-02 |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/Overview.md` | Overview | team1 | internal | BS-08-00 |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/RBAC_Guards.md` | RBAC Guards | team1 | internal | BS-08-04 |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/EBS-Skin-Editor_v3.prd.md` | EBS-Skin-Editor_v3.prd | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/README.md` | README | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/EBS-Skin-Editor-UI-Design.prd.md` | EBS-Skin-Editor-UI-Design.prd | BRACELET STUDIO | - | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/EBS-Skin-Editor.prd.md` | EBS-Skin-Editor.prd | BRACELET STUDIO | - | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/EBS-Skin-Editor_v2.prd.md` | EBS-Skin-Editor_v2.prd | BRACELET STUDIO | - | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/ebs-ui-design-plan.md` | ebs-ui-design-plan | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/ebs-ui-design-strategy.md` | ebs-ui-design-strategy | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/pokergfx-vs-ebs-skin-editor.prd.md` | pokergfx-vs-ebs-skin-editor.prd | BRACELET STUDIO | - | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/prd-skin-editor-layout-references.prd.md` | prd-skin-editor-layout-references.prd | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/skin-editor-layout-balance-solutions.md` | skin-editor-layout-balance-solutions | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/board-re-crosscheck.md` | board-re-crosscheck | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/data/layout-css-extraction.md` | layout-css-extraction | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ebs-ui-layout-anatomy.md` | ebs-ui-layout-anatomy | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-compact-mockup-design-system.prd.md` | prd-compact-mockup-design-system.prd | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-skin-editor.prd.md` | prd-skin-editor.prd | team1 | internal | - |
-| `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` | ui-feature-verification-workflow | team1 | internal | - |
 | `docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md` | UI | team1 | internal | UI-04 |
 | `docs/2. Development/2.1 Frontend/Lobby/Backlog/AUDIT-S2-lobby-v3-cascade-2026-05-08.md` | AUDIT-S2 — Lobby v3.0.0 정체성 cascade + 8-항목 정합 감사 | stream:S2 (Lobby) | audit | - |
 | `docs/2. Development/2.1 Frontend/Lobby/Backlog/NOTIFY-Conductor-ci-drift-2026-05-08.md` | NOTIFY-Conductor — PR | stream:S2 (Lobby) → conductor | notify | - |
@@ -442,6 +426,7 @@ tier: generated
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-037_cc_mockup_state_sync.md` | 기획 공백: CC PRD ↔ HTML mockup state model drift (TWEAKS / seats.sync / 1600×900 canvas 등) | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-040_overlay_9_categories_foundation_gap.md` | 기획 공백 + 모순: User 9 카테고리 vs Foundation Scene 1 (8 그래픽) vs RIVE Ch.2 (11 카테고리) 부정합 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-041_overlay_widget_3_missing.md` | 기획-구현 drift: overlay/layer1 widget 3종 누락 — Branding STUB / Blind STUB / Field MISSING | conductor | - | - |
+| `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-043_skin_editor_discard.md` | 기획 결정: EBS Skin Editor 폐기 — Lobby Settings GFX 탭 흡수 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` | 기획 공백: 외부 인계 PRD derivative-of frontmatter 미연결 5건 | conductor | - | - |
 | `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` | v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record | conductor | operations | - |
 | `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` | v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기) | conductor | operations | - |
@@ -531,6 +516,22 @@ tier: generated
 | `docs/_archive/cycles/Confluence_Cleanup_Cycle_18_2026-05-13.md` | Confluence Cleanup + 5 PRD Sync — Cycle 18 | stream:S11 (Dev Assist - cross-cutting) | internal | - |
 | `docs/_archive/cycles/Confluence_Cycle18_Rename_Push_2026-05-13.md` | Confluence Cycle 18 Rename + Content Push Report | stream:S11 | internal | - |
 | `docs/_archive/cycles/Spec_Gap_Audit_Cycle_15_2026-05-13.md` | Spec Gap Audit — Cycle 15 (S10-A) | stream:S10-A | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/EBS-Skin-Editor_v3.prd.md` | EBS-Skin-Editor_v3.prd | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/README.md` | README | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/archive/EBS-Skin-Editor-UI-Design.prd.md` | EBS-Skin-Editor-UI-Design.prd | BRACELET STUDIO | - | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/archive/EBS-Skin-Editor.prd.md` | EBS-Skin-Editor.prd | BRACELET STUDIO | - | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/archive/EBS-Skin-Editor_v2.prd.md` | EBS-Skin-Editor_v2.prd | BRACELET STUDIO | - | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/archive/ebs-ui-design-plan.md` | ebs-ui-design-plan | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/archive/ebs-ui-design-strategy.md` | ebs-ui-design-strategy | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/archive/pokergfx-vs-ebs-skin-editor.prd.md` | pokergfx-vs-ebs-skin-editor.prd | BRACELET STUDIO | - | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/archive/prd-skin-editor-layout-references.prd.md` | prd-skin-editor-layout-references.prd | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/archive/skin-editor-layout-balance-solutions.md` | skin-editor-layout-balance-solutions | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/board-re-crosscheck.md` | board-re-crosscheck | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/data/layout-css-extraction.md` | layout-css-extraction | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/ebs-ui-layout-anatomy.md` | ebs-ui-layout-anatomy | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/prd-compact-mockup-design-system.prd.md` | prd-compact-mockup-design-system.prd | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/prd-skin-editor.prd.md` | prd-skin-editor.prd | team1 | internal | - |
+| `docs/_archive/discarded-2026-05-15/skin-editor/ui-feature-verification-workflow.md` | ui-feature-verification-workflow | team1 | internal | - |
 | `docs/_archive/governance-2026-05/DEPENDABOT_GOVERNANCE.md` | Dependabot Governance — Label / Major Gate / Recreate Guard | conductor | internal | - |
 | `docs/_archive/governance-2026-05/INDEX.md` | EBS Governance Archive Index | conductor | frozen | - |
 | `docs/_archive/governance-2026-05/Multi_Session_Handoff.md` | Multi-Session Handoff Guide (2026-04-21) | conductor | internal | - |

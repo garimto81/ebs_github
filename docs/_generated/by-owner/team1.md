@@ -24,18 +24,6 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/Metadata_Editing.md` — Metadata Editing
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/Overview.md` — Overview
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/RBAC_Guards.md` — RBAC Guards
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/EBS-Skin-Editor_v3.prd.md` — EBS-Skin-Editor_v3.prd
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/README.md` — README
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/ebs-ui-design-plan.md` — ebs-ui-design-plan
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/ebs-ui-design-strategy.md` — ebs-ui-design-strategy
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/prd-skin-editor-layout-references.prd.md` — prd-skin-editor-layout-references.prd
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/archive/skin-editor-layout-balance-solutions.md` — skin-editor-layout-balance-solutions
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/board-re-crosscheck.md` — board-re-crosscheck
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/data/layout-css-extraction.md` — layout-css-extraction
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ebs-ui-layout-anatomy.md` — ebs-ui-layout-anatomy
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-compact-mockup-design-system.prd.md` — prd-compact-mockup-design-system.prd
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/prd-skin-editor.prd.md` — prd-skin-editor.prd
-- `docs/2. Development/2.1 Frontend/Graphic_Editor/References/skin-editor/ui-feature-verification-workflow.md` — ui-feature-verification-workflow
 - `docs/2. Development/2.1 Frontend/Graphic_Editor/UI.md` — UI
 - `docs/2. Development/2.1 Frontend/Lobby/Chip_Management.md` — Chip Management
 - `docs/2. Development/2.1 Frontend/Lobby/Clock_Control.md` — Clock Control
@@ -62,6 +50,18 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Settings/Rules.md` — Rules
 - `docs/2. Development/2.1 Frontend/Settings/Statistics.md` — Statistics
 - `docs/2. Development/2.1 Frontend/Settings/UI.md` — UI
+- `docs/_archive/discarded-2026-05-15/skin-editor/EBS-Skin-Editor_v3.prd.md` — EBS-Skin-Editor_v3.prd
+- `docs/_archive/discarded-2026-05-15/skin-editor/README.md` — README
+- `docs/_archive/discarded-2026-05-15/skin-editor/archive/ebs-ui-design-plan.md` — ebs-ui-design-plan
+- `docs/_archive/discarded-2026-05-15/skin-editor/archive/ebs-ui-design-strategy.md` — ebs-ui-design-strategy
+- `docs/_archive/discarded-2026-05-15/skin-editor/archive/prd-skin-editor-layout-references.prd.md` — prd-skin-editor-layout-references.prd
+- `docs/_archive/discarded-2026-05-15/skin-editor/archive/skin-editor-layout-balance-solutions.md` — skin-editor-layout-balance-solutions
+- `docs/_archive/discarded-2026-05-15/skin-editor/board-re-crosscheck.md` — board-re-crosscheck
+- `docs/_archive/discarded-2026-05-15/skin-editor/data/layout-css-extraction.md` — layout-css-extraction
+- `docs/_archive/discarded-2026-05-15/skin-editor/ebs-ui-layout-anatomy.md` — ebs-ui-layout-anatomy
+- `docs/_archive/discarded-2026-05-15/skin-editor/prd-compact-mockup-design-system.prd.md` — prd-compact-mockup-design-system.prd
+- `docs/_archive/discarded-2026-05-15/skin-editor/prd-skin-editor.prd.md` — prd-skin-editor.prd
+- `docs/_archive/discarded-2026-05-15/skin-editor/ui-feature-verification-workflow.md` — ui-feature-verification-workflow
 - `docs/_archive/orphan/B-214-team1-quasar-residue-cleanup.md` — B-214 — team1 Quasar 잔재 정리 + feature 매니페스트 정합
 - `docs/_archive/orphan/B-216-web-build-env-separation.md` — B-216 — Lobby/CC web build 환경 분리 (localhost vs LAN)
 - `docs/_archive/orphan/B-217-flutter-web-e2e-automation.md` — B-217 — Flutter Web E2E 자동화 (integration_test 기반)

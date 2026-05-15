@@ -60,6 +60,7 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-037_cc_mockup_state_sync.md` — 기획 공백: CC PRD ↔ HTML mockup state model drift (TWEAKS / seats.sync / 1600×900 canvas 등)
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-040_overlay_9_categories_foundation_gap.md` — 기획 공백 + 모순: User 9 카테고리 vs Foundation Scene 1 (8 그래픽) vs RIVE Ch.2 (11 카테고리) 부정합
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-041_overlay_widget_3_missing.md` — 기획-구현 drift: overlay/layer1 widget 3종 누락 — Branding STUB / Blind STUB / Field MISSING
+- `docs/4. Operations/Conductor_Backlog/_template_spec_gap_SG-043_skin_editor_discard.md` — 기획 결정: EBS Skin Editor 폐기 — Lobby Settings GFX 탭 흡수
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` — 기획 공백: 외부 인계 PRD derivative-of frontmatter 미연결 5건
 - `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` — v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record
 - `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` — v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기)
