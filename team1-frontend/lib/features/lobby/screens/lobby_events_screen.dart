@@ -139,7 +139,10 @@ class _LobbyEventsScreenState extends ConsumerState<LobbyEventsScreen> {
 
   void _onOpen(EbsEvent e) {
     selectEvent(ref, e.eventId, name: e.eventName);
-    context.go('/lobby/flights/${e.eventId}');
+    // context.push() = 스택 상위 추가 → MaterialPage 기본 전환 (ZoomPageTransitions).
+    // ShellRoute 내부이므로 inner navigator 에서 처리 → LobbyShell 상단 바 유지.
+    // context.go() 는 스택 교체(즉각, 전환 없음) — 드릴다운 진입은 push 사용.
+    context.push('/lobby/flights/${e.eventId}');
   }
 }
 
