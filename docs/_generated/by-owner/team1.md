@@ -62,13 +62,13 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Settings/Rules.md` — Rules
 - `docs/2. Development/2.1 Frontend/Settings/Statistics.md` — Statistics
 - `docs/2. Development/2.1 Frontend/Settings/UI.md` — UI
-- `docs/3. Change Requests/pending/CR-team1-20260414-bs02-overview-rename.md` — CR-team1-20260414-bs02-overview-rename
-- `docs/4. Operations/Conductor_Backlog/B-214-team1-quasar-residue-cleanup.md` — B-214 — team1 Quasar 잔재 정리 + feature 매니페스트 정합
-- `docs/4. Operations/Conductor_Backlog/B-216-web-build-env-separation.md` — B-216 — Lobby/CC web build 환경 분리 (localhost vs LAN)
-- `docs/4. Operations/Conductor_Backlog/B-217-flutter-web-e2e-automation.md` — B-217 — Flutter Web E2E 자동화 (integration_test 기반)
-- `docs/4. Operations/Conductor_Backlog/B-Q3-team1-frontend-web-build-assets.md` — team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade)
-- `docs/4. Operations/Conductor_Backlog/IMPL-004-team1-settings-19-d3-mapping.md` — 구현: team1 Settings 19 D3 잔류 매핑 (SG-008-b13 v2)
-- `docs/4. Operations/Conductor_Backlog/SG-012-lobby-sidebar-ssot.md` — Lobby 좌측 사이드바 SSOT 부재
-- `docs/4. Operations/Conductor_Backlog/SG-015-players-section-rationale.md` — Lobby Players 섹션 유지 근거 미문서화
-- `docs/4. Operations/Conductor_Backlog/SG-016-hand-history-sidebar-section.md` — Hand History 사이드바 섹션 공식화 (25개 분산 참조 통합)
-- `docs/4. Operations/Conductor_Backlog/SG-032-flutter-deps-major-bumps-deferred.md` — Flutter dependency major bumps (rive 0.14, file_picker 11) — migration deferred
+- `docs/_archive/orphan/B-214-team1-quasar-residue-cleanup.md` — B-214 — team1 Quasar 잔재 정리 + feature 매니페스트 정합
+- `docs/_archive/orphan/B-216-web-build-env-separation.md` — B-216 — Lobby/CC web build 환경 분리 (localhost vs LAN)
+- `docs/_archive/orphan/B-217-flutter-web-e2e-automation.md` — B-217 — Flutter Web E2E 자동화 (integration_test 기반)
+- `docs/_archive/orphan/B-Q3-team1-frontend-web-build-assets.md` — team1-frontend Flutter Web 빌드 자산 처리 (SG-022 cascade)
+- `docs/_archive/orphan/CR-team1-20260414-bs02-overview-rename.md` — CR-team1-20260414-bs02-overview-rename
+- `docs/_archive/orphan/IMPL-004-team1-settings-19-d3-mapping.md` — 구현: team1 Settings 19 D3 잔류 매핑 (SG-008-b13 v2)
+- `docs/_archive/orphan/SG-012-lobby-sidebar-ssot.md` — Lobby 좌측 사이드바 SSOT 부재
+- `docs/_archive/orphan/SG-015-players-section-rationale.md` — Lobby Players 섹션 유지 근거 미문서화
+- `docs/_archive/orphan/SG-016-hand-history-sidebar-section.md` — Hand History 사이드바 섹션 공식화 (25개 분산 참조 통합)
+- `docs/_archive/orphan/SG-032-flutter-deps-major-bumps-deferred.md` — Flutter dependency major bumps (rive 0.14, file_picker 11) — migration deferred

@@ -37,17 +37,17 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Engineering/State_Management.md` — State Management
 - `docs/2. Development/2.2 Backend/Engineering/Tech_Stack.md` — Tech Stack
 - `docs/2. Development/2.2 Backend/Engineering/Testing_Strategy.md` — Testing Strategy
-- `docs/2. Development/2.2 Backend/Settings.md` — Settings (Backend Env)
-- `docs/4. Operations/Conductor_Backlog/B-212-backend-coverage-78-to-90.md` — B-212 — Backend 커버리지 78% → 90% (B-Q10 1차 단계)
-- `docs/4. Operations/Conductor_Backlog/B-215-dev-seed-users.md` — B-215 — Dev 환경 시드 사용자 자동화
-- `docs/4. Operations/Conductor_Backlog/B-221-skins-multipart-upload.md` — B-221 — POST /api/v1/skins/upload multipart endpoint (CCR-013, D8 resolution)
-- `docs/4. Operations/Conductor_Backlog/IMPL-003-team2-decks-db-session.md` — 구현: team2 decks.py in-memory → DB session 전환
-- `docs/4. Operations/Conductor_Backlog/IMPL-005-team2-api-d2-routers.md` — 구현: team2 API 48 D2 endpoint 라우터 실구현 (SG-008-a 후속)
-- `docs/4. Operations/Conductor_Backlog/IMPL-006-websocket-ack-reject-publishers.md` — 구현: WebSocket Ack/Reject 6 이벤트 publisher (SG-020)
-- `docs/4. Operations/Conductor_Backlog/IMPL-008-skins-deactivate-endpoint.md` — 구현: POST /skins/{id}/deactivate (gfskin 비활성화) — SUPERSEDED
-- `docs/4. Operations/Conductor_Backlog/IMPL-009-users-force-logout-endpoint.md` — 구현: POST /users/{id}/force-logout (admin 강제 로그아웃) — SUPERSEDED
-- `docs/4. Operations/Conductor_Backlog/IMPL-010-tables-seats-create-endpoint.md` — 구현: POST /tables/{id}/seats (좌석 플레이어 배치) — SUPERSEDED + 의미 정정
-- `docs/4. Operations/Conductor_Backlog/IMPL-011-tables-seats-delete-endpoint.md` — 구현: DELETE /tables/{id}/seats/{seat_no} (좌석 비우기) — SUPERSEDED + 의미 정정
-- `docs/4. Operations/Conductor_Backlog/SG-018-5nf-metamodel-tables.md` — 5NF 메타모델 테이블 부재 (nav_sections / nav_items / report_templates / 외 6종)
-- `docs/4. Operations/Conductor_Backlog/SG-020-websocket-ack-reject-events.md` — WebSocket Ack/Reject 6 이벤트 신규 D2 (publisher 미동기화)
-- `docs/4. Operations/Plans/B088_team2_execution_plan_2026-04-21.md` — B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션
+- `docs/_archive/orphan/B-212-backend-coverage-78-to-90.md` — B-212 — Backend 커버리지 78% → 90% (B-Q10 1차 단계)
+- `docs/_archive/orphan/B-215-dev-seed-users.md` — B-215 — Dev 환경 시드 사용자 자동화
+- `docs/_archive/orphan/B-221-skins-multipart-upload.md` — B-221 — POST /api/v1/skins/upload multipart endpoint (CCR-013, D8 resolution)
+- `docs/_archive/orphan/B088_team2_execution_plan_2026-04-21.md` — B-088 team2 실행 계획 — camelCase/PascalCase 전수 마이그레이션
+- `docs/_archive/orphan/IMPL-003-team2-decks-db-session.md` — 구현: team2 decks.py in-memory → DB session 전환
+- `docs/_archive/orphan/IMPL-005-team2-api-d2-routers.md` — 구현: team2 API 48 D2 endpoint 라우터 실구현 (SG-008-a 후속)
+- `docs/_archive/orphan/IMPL-006-websocket-ack-reject-publishers.md` — 구현: WebSocket Ack/Reject 6 이벤트 publisher (SG-020)
+- `docs/_archive/orphan/IMPL-008-skins-deactivate-endpoint.md` — 구현: POST /skins/{id}/deactivate (gfskin 비활성화) — SUPERSEDED
+- `docs/_archive/orphan/IMPL-009-users-force-logout-endpoint.md` — 구현: POST /users/{id}/force-logout (admin 강제 로그아웃) — SUPERSEDED
+- `docs/_archive/orphan/IMPL-010-tables-seats-create-endpoint.md` — 구현: POST /tables/{id}/seats (좌석 플레이어 배치) — SUPERSEDED + 의미 정정
+- `docs/_archive/orphan/IMPL-011-tables-seats-delete-endpoint.md` — 구현: DELETE /tables/{id}/seats/{seat_no} (좌석 비우기) — SUPERSEDED + 의미 정정
+- `docs/_archive/orphan/SG-018-5nf-metamodel-tables.md` — 5NF 메타모델 테이블 부재 (nav_sections / nav_items / report_templates / 외 6종)
+- `docs/_archive/orphan/SG-020-websocket-ack-reject-events.md` — WebSocket Ack/Reject 6 이벤트 신규 D2 (publisher 미동기화)
+- `docs/_archive/orphan/Settings.md` — Settings (Backend Env)

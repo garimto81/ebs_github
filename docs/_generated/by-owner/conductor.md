@@ -17,7 +17,6 @@ tier: generated
 - `docs/1. Product/Product_SSOT_Policy.md` — Product SSOT Policy
 - `docs/1. Product/RIVE_Standards.md` — RIVE Standards — Overlay Graphics 정본
 - `docs/1. Product/References/PokerGFX_Reference.md` — PokerGFX Reference
-- `docs/1. Product/References/WSOP-Production-Structure-Analysis.md` — WSOP Production Structure Analysis
 - `docs/1. Product/archive/Foundation_v41.0.0.md` — Foundation
 - `docs/2. Development/2. Development.md` — 2. Development
 - `docs/2. Development/2.1 Frontend/Backlog/AUDIT-Conductor-194-frontend-sister-cascade-2026-05-08.md` — AUDIT-Conductor-194 — Frontend 자매 영역 cascade (Login + Settings + Graphic_Editor)
@@ -25,7 +24,6 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Backlog/NOTIFY-C1-frontend-non-lobby-identity-cascade-2026-05-07.md` — Phase C1 cascade — Frontend (Lobby 외) Lobby v3 / CC v4 정체성 LLM 전수 의미 정합 검토
 - `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-S3-178-rfid-mechanism-redesign-2026-05-08.md` — NOTIFY-S3-178 — RFID 12 안테나 메커니즘 재설계 (Mock-only 자율 해소)
 - `docs/2. Development/2.5 Shared/Authentication.md` — Authentication
-- `docs/2. Development/2.5 Shared/Authentication/D6_D7_D8_Decision_2026-05-10.md` — D6/D7/D8 Decision Cascade (Issue
 - `docs/2. Development/2.5 Shared/Authentication/Distributed_Architecture.md` — Distributed Authentication Architecture
 - `docs/2. Development/2.5 Shared/Authentication/Token_Lifecycle_Sequences.md` — Token Lifecycle Sequences
 - `docs/2. Development/2.5 Shared/Authentication/Troubleshooting_Runbook.md` — Authentication Troubleshooting Runbook
@@ -38,144 +36,15 @@ tier: generated
 - `docs/2. Development/2.5 Shared/Stream_Entry_Guide.md` — Stream Entry Guide (v10.3 멀티세션 진입)
 - `docs/2. Development/2.5 Shared/Stream_Entry_Guide_v11.md` — Stream Entry Guide v11 — 사용자 진입 가이드
 - `docs/3. Change Requests/3. Change Requests.md` — 3. Change Requests (DEPRECATED)
-- `docs/3. Change Requests/done/CR-011-ge-ownership-move.md` — CR-011-ge-ownership-move
-- `docs/3. Change Requests/done/CR-016-tech-stack-ssot.md` — CR-016-tech-stack-ssot
-- `docs/3. Change Requests/done/CR-037-bs08-graphic-editor-new.md` — CR-037-bs08-graphic-editor-new
-- `docs/3. Change Requests/done/CR-conductor-20260410-ge-ownership-move.md` — CR-conductor-20260410-ge-ownership-move
-- `docs/3. Change Requests/done/CR-conductor-20260410-gfskin-format-unify.md` — CR-conductor-20260410-gfskin-format-unify
-- `docs/3. Change Requests/done/CR-conductor-20260411-ge-api-spec.md` — CR-conductor-20260411-ge-api-spec
-- `docs/3. Change Requests/done/CR-conductor-20260411-ge-req-id-rework.md` — CR-conductor-20260411-ge-req-id-rework
-- `docs/3. Change Requests/done/CR-conductor-20260414-skin-updated-ws.md` — CR-conductor-20260414-skin-updated-ws
-- `docs/3. Change Requests/done/CR-conductor-20260421-ge-scope-expansion.md` — CR-conductor-20260421-ge-scope-expansion
-- `docs/3. Change Requests/done/CR-team1-20260410-tech-stack-ssot.md` — CR-team1-20260410-tech-stack-ssot
-- `docs/3. Change Requests/done/CR-team1-20260410-wsop-parity.md` — CR-team1-20260410-wsop-parity
-- `docs/3. Change Requests/done/CR-team1-20260413-google-oauth.md` — CR-team1-20260413-google-oauth
-- `docs/3. Change Requests/done/CR-team1-20260414-deadlink-cleanup.md` — CR-team1-20260414-deadlink-cleanup
-- `docs/3. Change Requests/done/CR-team2-20260410-data-idempotency-audit.md` — CR-team2-20260410-data-idempotency-audit
-- `docs/3. Change Requests/done/CR-team2-20260410-idempotency-key.md` — CR-team2-20260410-idempotency-key
-- `docs/3. Change Requests/done/CR-team2-20260410-jwt-expiry.md` — CR-team2-20260410-jwt-expiry
-- `docs/3. Change Requests/done/CR-team2-20260410-table-rebalance-saga.md` — CR-team2-20260410-table-rebalance-saga
-- `docs/3. Change Requests/done/CR-team2-20260410-ws-event-seq.md` — CR-team2-20260410-ws-event-seq
-- `docs/3. Change Requests/done/CR-team2-20260413-event-type-catalog.md` — CR-team2-20260413-event-type-catalog
-- `docs/3. Change Requests/done/CR-team2-20260413-refresh-token-policy.md` — CR-team2-20260413-refresh-token-policy
-- `docs/3. Change Requests/done/CR-team2-20260413-seat-waiting-enum.md` — CR-team2-20260413-seat-waiting-enum
-- `docs/3. Change Requests/done/CR-team2-20260413-summary-clock-fsm.md` — CR-team2-20260413-summary-clock-fsm
-- `docs/3. Change Requests/done/CR-team2-20260414-auth-ggpass-pattern.md` — CR-team2-20260414-auth-ggpass-pattern
-- `docs/3. Change Requests/done/CR-team2-20260414-blindstructure-endpoints.md` — CR-team2-20260414-blindstructure-endpoints
-- `docs/3. Change Requests/done/CR-team2-20260414-clock-endpoints-full.md` — CR-team2-20260414-clock-endpoints-full
-- `docs/3. Change Requests/done/CR-team2-20260414-competition-hierarchy.md` — CR-team2-20260414-competition-hierarchy
-- `docs/3. Change Requests/done/CR-team2-20260414-payout-structure-endpoints.md` — CR-team2-20260414-payout-structure-endpoints
-- `docs/3. Change Requests/done/CR-team2-20260414-rate-limit-security.md` — CR-team2-20260414-rate-limit-security
-- `docs/3. Change Requests/done/CR-team2-20260414-users-staff-pattern.md` — CR-team2-20260414-users-staff-pattern
-- `docs/3. Change Requests/done/CR-team2-20260414-ws-event-catalog.md` — CR-team2-20260414-ws-event-catalog
-- `docs/3. Change Requests/done/CR-team2-20260414-wsop-sync-catalog.md` — CR-team2-20260414-wsop-sync-catalog
-- `docs/3. Change Requests/done/CR-team3-20260410-wsop-conformance.md` — CR-team3-20260410-wsop-conformance
-- `docs/3. Change Requests/done/CR-team3-20260414-output-event-buffer-ownership.md` — CR-team3-20260414-output-event-buffer-ownership
-- `docs/3. Change Requests/done/CR-team4-20260410-api03-hal-lifecycle.md` — CR-team4-20260410-api03-hal-lifecycle
-- `docs/3. Change Requests/done/CR-team4-20260410-api05-messagepack.md` — CR-team4-20260410-api05-messagepack
-- `docs/3. Change Requests/done/CR-team4-20260410-api05-writegameinfo-schema.md` — CR-team4-20260410-api05-writegameinfo-schema
-- `docs/3. Change Requests/done/CR-team4-20260410-bs03-graphic-settings-tab.md` — CR-team4-20260410-bs03-graphic-settings-tab
-- `docs/3. Change Requests/done/CR-team4-20260410-bs04-at05-rfid-register.md` — CR-team4-20260410-bs04-at05-rfid-register
-- `docs/3. Change Requests/done/CR-team4-20260410-bs05-07-statistics-screen.md` — CR-team4-20260410-bs05-07-statistics-screen
-- `docs/3. Change Requests/done/CR-team4-20260410-bs05-at-screens.md` — CR-team4-20260410-bs05-at-screens
-- `docs/3. Change Requests/done/CR-team4-20260410-bs05-launch-flow.md` — CR-team4-20260410-bs05-launch-flow
-- `docs/3. Change Requests/done/CR-team4-20260410-bs05-multi-table-ops.md` — CR-team4-20260410-bs05-multi-table-ops
-- `docs/3. Change Requests/done/CR-team4-20260410-bs05-protocol-gaps.md` — CR-team4-20260410-bs05-protocol-gaps
-- `docs/3. Change Requests/done/CR-team4-20260410-bs05-visual-spec.md` — CR-team4-20260410-bs05-visual-spec
-- `docs/3. Change Requests/done/CR-team4-20260410-bs07-audio-layer.md` — CR-team4-20260410-bs07-audio-layer
-- `docs/3. Change Requests/done/CR-team4-20260410-bs07-cc-visual-sync.md` — CR-team4-20260410-bs07-cc-visual-sync
-- `docs/3. Change Requests/done/CR-team4-20260410-bs07-layer-boundary.md` — CR-team4-20260410-bs07-layer-boundary
-- `docs/3. Change Requests/done/CR-team4-20260410-bs07-security-delay.md` — CR-team4-20260410-bs07-security-delay
-- `docs/3. Change Requests/done/CR-team4-20260410-bs08-graphic-editor-new.md` — CR-team4-20260410-bs08-graphic-editor-new
-- `docs/3. Change Requests/in-progress/CR-010-jwt-expiry.md` — CR-010-jwt-expiry
-- `docs/3. Change Requests/in-progress/CR-012-gfskin-format-unify.md` — CR-012-gfskin-format-unify
-- `docs/3. Change Requests/in-progress/CR-013-ge-api-spec.md` — CR-013-ge-api-spec
-- `docs/3. Change Requests/in-progress/CR-014-ge-req-id-rework.md` — CR-014-ge-req-id-rework
-- `docs/3. Change Requests/in-progress/CR-015-skin-updated-ws.md` — CR-015-skin-updated-ws
-- `docs/3. Change Requests/in-progress/CR-017-wsop-parity.md` — CR-017-wsop-parity
-- `docs/3. Change Requests/in-progress/CR-018-data-idempotency-audit.md` — CR-018-data-idempotency-audit
-- `docs/3. Change Requests/in-progress/CR-019-idempotency-key.md` — CR-019-idempotency-key
-- `docs/3. Change Requests/in-progress/CR-020-table-rebalance-saga.md` — CR-020-table-rebalance-saga
-- `docs/3. Change Requests/in-progress/CR-021-ws-event-seq.md` — CR-021-ws-event-seq
-- `docs/3. Change Requests/in-progress/CR-022-api03-hal-lifecycle.md` — CR-022-api03-hal-lifecycle
-- `docs/3. Change Requests/in-progress/CR-023-api05-messagepack.md` — CR-023-api05-messagepack
-- `docs/3. Change Requests/in-progress/CR-024-api05-writegameinfo-schema.md` — CR-024-api05-writegameinfo-schema
-- `docs/3. Change Requests/in-progress/CR-025-bs03-graphic-settings-tab.md` — CR-025-bs03-graphic-settings-tab
-- `docs/3. Change Requests/in-progress/CR-026-bs04-at05-rfid-register.md` — CR-026-bs04-at05-rfid-register
-- `docs/3. Change Requests/in-progress/CR-027-bs05-07-statistics-screen.md` — CR-027-bs05-07-statistics-screen
-- `docs/3. Change Requests/in-progress/CR-028-bs05-at-screens.md` — CR-028-bs05-at-screens
-- `docs/3. Change Requests/in-progress/CR-029-bs05-launch-flow.md` — CR-029-bs05-launch-flow
-- `docs/3. Change Requests/in-progress/CR-030-bs05-multi-table-ops.md` — CR-030-bs05-multi-table-ops
-- `docs/3. Change Requests/in-progress/CR-031-bs05-protocol-gaps.md` — CR-031-bs05-protocol-gaps
-- `docs/3. Change Requests/in-progress/CR-032-bs05-visual-spec.md` — CR-032-bs05-visual-spec
-- `docs/3. Change Requests/in-progress/CR-033-bs07-audio-layer.md` — CR-033-bs07-audio-layer
-- `docs/3. Change Requests/in-progress/CR-034-bs07-cc-visual-sync.md` — CR-034-bs07-cc-visual-sync
-- `docs/3. Change Requests/in-progress/CR-035-bs07-layer-boundary.md` — CR-035-bs07-layer-boundary
-- `docs/3. Change Requests/in-progress/CR-036-bs07-security-delay.md` — CR-036-bs07-security-delay
-- `docs/3. Change Requests/in-progress/CR-038-google-oauth.md` — CR-038-google-oauth
-- `docs/3. Change Requests/in-progress/CR-039-event-type-catalog.md` — CR-039-event-type-catalog
-- `docs/3. Change Requests/in-progress/CR-040-refresh-token-policy.md` — CR-040-refresh-token-policy
-- `docs/3. Change Requests/in-progress/CR-041-seat-waiting-enum.md` — CR-041-seat-waiting-enum
-- `docs/3. Change Requests/in-progress/CR-042-summary-clock-fsm.md` — CR-042-summary-clock-fsm
-- `docs/3. Change Requests/in-progress/CR-043-wsop-sync-catalog.md` — CR-043-wsop-sync-catalog
-- `docs/3. Change Requests/in-progress/CR-047-competition-hierarchy.md` — CR-047-competition-hierarchy
-- `docs/3. Change Requests/in-progress/CR-048-auth-ggpass-pattern.md` — CR-048-auth-ggpass-pattern
-- `docs/3. Change Requests/in-progress/CR-049-blindstructure-endpoints.md` — CR-049-blindstructure-endpoints
-- `docs/3. Change Requests/in-progress/CR-050-clock-endpoints-full.md` — CR-050-clock-endpoints-full
-- `docs/3. Change Requests/in-progress/CR-051-payout-structure-endpoints.md` — CR-051-payout-structure-endpoints
-- `docs/3. Change Requests/in-progress/CR-052-rate-limit-security.md` — CR-052-rate-limit-security
-- `docs/3. Change Requests/in-progress/CR-053-users-staff-pattern.md` — CR-053-users-staff-pattern
-- `docs/3. Change Requests/in-progress/CR-054-ws-event-catalog.md` — CR-054-ws-event-catalog
-- `docs/3. Change Requests/in-progress/CR-055-output-event-buffer-ownership.md` — CR-055-output-event-buffer-ownership
-- `docs/3. Change Requests/in-progress/CR-056-deadlink-cleanup.md` — CR-056-deadlink-cleanup
 - `docs/4. Operations/4. Operations.md` — 4. Operations
-- `docs/4. Operations/CC_Design_Prototype_Critic_2026_05_06.md` — CC React 디자인 프로토타입 — Critic 판정 보고서
-- `docs/4. Operations/CC_PRD_Renewal_Plan_2026_05_06.md` — Command_Center.md 리뉴얼 계획 (v1.1.0 → v2.0.0)
-- `docs/4. Operations/CONTRACT_ALIGNMENT_PLAN.md` — Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획
-- `docs/4. Operations/Causality_Dashboard.md` — EBS 문서 인과관계 대시보드
 - `docs/4. Operations/Chat_Protocol.md` — Chat Protocol — Payload Schema + Channel Convention SSOT
-- `docs/4. Operations/Conductor_Backlog/B-076-ge-team5-separation-decision.md` — Graphic Editor team5 분리 적합성 결정 (DONE — Option A 채택)
-- `docs/4. Operations/Conductor_Backlog/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
-- `docs/4. Operations/Conductor_Backlog/B-100-redesign-wave-2026-04-22.md` — 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합)
-- `docs/4. Operations/Conductor_Backlog/B-101-periodic-duplication-audit.md` — 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서
-- `docs/4. Operations/Conductor_Backlog/B-211-e2e-full-hand-flow-scenario.md` — B-211 — End-to-End 풀 핸드 플로우 통합 테스트 시나리오
-- `docs/4. Operations/Conductor_Backlog/B-213-nfr-accuracy-quantitative-kpi.md` — B-213 — NFR "정확성" 정량 KPI 정의
+- `docs/4. Operations/Conductor_Backlog.md` — Conductor_Backlog
 - `docs/4. Operations/Conductor_Backlog/B-222-inter-session-chat-ui.md` — B-222 — Inter-Session Chat UI (4분할 Web UI + @ 멘션, Docker container)
-- `docs/4. Operations/Conductor_Backlog/B-CARD-FLOW-001-index-and-drift.md` — 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비
-- `docs/4. Operations/Conductor_Backlog/B-Q10-95-coverage-roadmap.md` — B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade)
-- `docs/4. Operations/Conductor_Backlog/B-Q11-owasp-audit.md` — B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade)
-- `docs/4. Operations/Conductor_Backlog/B-Q12-100ms-sla-measurement.md` — B-Q12 — 운영 안정성 측정 framework (NFR — RFID/Engine/WS/Render 사슬 안정성)
-- `docs/4. Operations/Conductor_Backlog/B-Q16-development-environment-standards.md` — B-Q16 — 개발 환경 표준화 (Session 1 — SG-027 cascade)
-- `docs/4. Operations/Conductor_Backlog/B-Q2-docker-lobby-web-cleanup.md` — Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade)
-- `docs/4. Operations/Conductor_Backlog/B-Q6-timeline-mvp-launch-schedule.md` — B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기)
-- `docs/4. Operations/Conductor_Backlog/B-Q7-quality-criteria-production.md` — B-Q7 — 품질 기준 (Production-strict 90% 재정의 2026-04-27)
-- `docs/4. Operations/Conductor_Backlog/B-Q8-vendor-rfi-rfq-reactivation.md` — B-Q8 — vendor 모델 reactivate (RFI/RFQ 재개 여부) (사용자 명시 대기)
-- `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-PHASE2-START.md` — Phase 1 설계 정렬 완료 — Phase 2 진입 허용 (전체 팀 broadcast)
-- `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG023-INTENT-PIVOT.md` — SG-023 인텐트 전환 (production 출시) — 전체 팀 broadcast + 작업 standby 권고
-- `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION.md` — SG-024 거버넌스 확장 — Conductor 단일 세션 전권 (broadcast)
-- `docs/4. Operations/Conductor_Backlog/NOTIFY-ALL-SG025-026-PRODUCTION-LAUNCH.md` — SG-025 + SG-026 — Production timeline + Quality gates (B-Q6 ㉠ + B-Q7 ㉠ broadcast)
-- `docs/4. Operations/Conductor_Backlog/SESSION_1_HANDOFF.md` — SESSION 1 HANDOFF — Foundation & Infrastructure
-- `docs/4. Operations/Conductor_Backlog/SESSION_2_1_HANDOFF.md` — SESSION 2.1 HANDOFF — auth_service.py 50% → 80% (B-Q10 cascade)
-- `docs/4. Operations/Conductor_Backlog/SESSION_2_2_HANDOFF.md` — SESSION 2.2 HANDOFF — blind/payout structure services 20-26% → 70%+
-- `docs/4. Operations/Conductor_Backlog/SESSION_2_3a_HANDOFF.md` — SESSION 2.3a HANDOFF — series_service.py 57% → 80%+
-- `docs/4. Operations/Conductor_Backlog/SESSION_2_FINAL_REPORT.md` — SESSION 2 FINAL REPORT — Core Logic & Backend Engine (B-Q10 cascade)
-- `docs/4. Operations/Conductor_Backlog/SESSION_2_HANDOFF.md` — SESSION 2 HANDOFF — Core Logic & Backend Engine (Phase 1 audit 완료)
-- `docs/4. Operations/Conductor_Backlog/SESSION_3_INIT.md` — SESSION 3 INIT — Frontend Interface & Routing (team1 영역)
-- `docs/4. Operations/Conductor_Backlog/SG-001-tech-stack-ssot-3way.md` — 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1)
 - `docs/4. Operations/Conductor_Backlog/SG-002-engine-dependency-contract.md` — Engine 의존 계약 — ENGINE_URL, timeout, graceful 대기, fallback
-- `docs/4. Operations/Conductor_Backlog/SG-003-settings-6tabs-schema.md` — Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences
-- `docs/4. Operations/Conductor_Backlog/SG-004-gfskin-zip-format.md` — .gfskin ZIP 포맷 (DATA-07) — manifest + .riv + assets 구조 명세
-- `docs/4. Operations/Conductor_Backlog/SG-005-foundation-ch6-system-connections.md` — Foundation Ch.6 시스템 연결 도식 — Engine↔BO 경계 (EBS_Core 병합)
-- `docs/4. Operations/Conductor_Backlog/SG-006-rfid-52-card-codemap.md` — RFID 52 카드 codemap — pre-registered deck + 초기 등록 절차
-- `docs/4. Operations/Conductor_Backlog/SG-007-team2-reports-api.md` — team2 Reports API 통합 — Dashboard/Table Activity/Player Stats/Hand Distribution/RFID Health/Operator
-- `docs/4. Operations/Conductor_Backlog/SG-008-api-d3-bulk-documentation.md` — Spec Drift: Backend HTTP D3 — 89 code-only endpoints 3분류 (기획이 진실)
 - `docs/4. Operations/Conductor_Backlog/SG-008-b1-audit-events.md` — GET /api/v1/audit-events 공개 범위 + RBAC 판정
 - `docs/4. Operations/Conductor_Backlog/SG-008-b10-event-undo.md` — POST /api/v1/events/{event_id}/undo 기능 범위 + 제약 판정
 - `docs/4. Operations/Conductor_Backlog/SG-008-b11-table-launch-cc.md` — POST /api/v1/tables/{table_id}/launch-cc 필요성 판정
 - `docs/4. Operations/Conductor_Backlog/SG-008-b12-legacy-reports.md` — GET /api/v1/reports/{report_type} deprecate 시점 판정
-- `docs/4. Operations/Conductor_Backlog/SG-008-b13-settings-code-only-cleanup.md` — Settings Drift: 30 code-only provider fields — scanner 정규화 + 3분류 (doc-add / doc-expand / code-remove)
-- `docs/4. Operations/Conductor_Backlog/SG-008-b14-auth-2fa-policy.md` — Auth 2FA 정책 — Admin/Operator 필수 여부 + provider 선택
-- `docs/4. Operations/Conductor_Backlog/SG-008-b15-ndi-fill-key-routing.md` — NDI Fill/Key 분리 라우팅 — 방송 시설 협의 필요
 - `docs/4. Operations/Conductor_Backlog/SG-008-b2-audit-logs-read.md` — GET /api/v1/audit-logs RBAC 스코프 판정
 - `docs/4. Operations/Conductor_Backlog/SG-008-b3-audit-logs-download.md` — GET /api/v1/audit-logs/download 포맷 + rate limit 판정
 - `docs/4. Operations/Conductor_Backlog/SG-008-b4-auth-me.md` — GET /auth/me 반환 필드 + 캐싱 정책 판정
@@ -184,19 +53,6 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/SG-008-b7-sync-mock-reset.md` — DELETE /api/v1/sync/mock/reset 운영 환경 노출 판정
 - `docs/4. Operations/Conductor_Backlog/SG-008-b8-sync-status.md` — GET /api/v1/sync/status 공개 범위 판정
 - `docs/4. Operations/Conductor_Backlog/SG-008-b9-sync-trigger.md` — POST /api/v1/sync/trigger/{source} RBAC + 환경 제약 판정
-- `docs/4. Operations/Conductor_Backlog/SG-009-tablefsm-case-serialization.md` — Spec Drift: TableFSM / SeatFSM display label vs serialized value case
-- `docs/4. Operations/Conductor_Backlog/SG-010-spec-drift-scanner-precision.md` — Tooling: spec_drift_check.py 정밀화 (Settings, Schema, WebSocket)
-- `docs/4. Operations/Conductor_Backlog/SG-013-lobby-tournaments-nomenclature.md` — Lobby 사이드바 "lobby" vs "Tournaments" 용어 충돌
-- `docs/4. Operations/Conductor_Backlog/SG-014-graphic-editor-dual-entry.md` — Graphic Editor 진입점 이중화 (헤더 vs Settings 탭)
-- `docs/4. Operations/Conductor_Backlog/SG-017-settings-global-vs-scoped.md` — "Settings \"글로벌 단위\" Overview 모순 (vs Series/Event/Table 분리)"
-- `docs/4. Operations/Conductor_Backlog/SG-019-reports-postproduction-boundary.md` — "Reports/Insights 탭 ↔ 포스트프로덕션 경계 정의 부재"
-- `docs/4. Operations/Conductor_Backlog/SG-021-rive-embedded-metadata-schema.md` — Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체)
-- `docs/4. Operations/Conductor_Backlog/SG-022-deprecation.md` — SG-022-deprecation
-- `docs/4. Operations/Conductor_Backlog/SG-023-intent-pivot-production.md` — SG-023 — 인텐트 전환 (기획서 완결 → production 출시)
-- `docs/4. Operations/Conductor_Backlog/SG-027-multi-session-pipeline.md` — SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델)
-- `docs/4. Operations/Conductor_Backlog/SG-031-confluence-mirror-rebuild.md` — SG-031 — Confluence Mirror 재구축
-- `docs/4. Operations/Conductor_Backlog/SG-033-ebs-mission-redefinition.md` — EBS 미션 재선언 — 속도 KPI 폐기, 정확성·안정성·단단한 HW 5 가치 채택
-- `docs/4. Operations/Conductor_Backlog/V2_PURGE_REPORT.md` — V2 Purge Report — 사용자 명시 "ebs v2 별개 프로젝트" cascade
 - `docs/4. Operations/Conductor_Backlog/_template_implementation.md` — 구현: <기능명>
 - `docs/4. Operations/Conductor_Backlog/_template_prototype_scenario.md` — 시나리오: <검증 대상 통합 흐름>
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap.md` — 기획 공백: <구체적 공백명>
@@ -207,90 +63,84 @@ tier: generated
 - `docs/4. Operations/Conductor_Backlog/_template_spec_gap_derivative_audit.md` — 기획 공백: 외부 인계 PRD derivative-of frontmatter 미연결 5건
 - `docs/4. Operations/Conductor_Backlog/v7-6-rejection-record.md` — v7.6 Autonomous CI/CD Pipeline Agent — Official Rejection Record
 - `docs/4. Operations/Conductor_Backlog/v8-phase9-governance-decisions.md` — v8.0 Phase 9 — Governance Decisions Brief (사용자 결정 대기)
-- `docs/4. Operations/Conductor_Backlog/worktree-cleanup-report.md` — Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A)
-- `docs/4. Operations/Confluence_Sync_Spec.md` — Confluence Sync Spec
-- `docs/4. Operations/Critic_Reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
-- `docs/4. Operations/Critic_Reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` — Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세
-- `docs/4. Operations/Critic_Reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
-- `docs/4. Operations/Critic_Reports/SG-008-b11-v13-critic-2026-05-03.md` — Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성
-- `docs/4. Operations/Doc_Discovery_Failure_Critic_2026_05_06.md` — 문서 발견 실패 — Command_Center.md 누락 사고와 systematic 해결
 - `docs/4. Operations/Docker_Runtime.md` — Docker Runtime 운영 지침
-- `docs/4. Operations/ECOSYSTEM_E2E_HANDOFF.md` — ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
-- `docs/4. Operations/Foundation_Alignment_Plan.md` — Foundation 재설계 정렬 계획 (Conductor 소유 문서)
 - `docs/4. Operations/GLOBAL_SSOT_SYNC_HANDOFF.md` — Global SSOT Sync — SG-022 advocacy eradication
 - `docs/4. Operations/Inter_Session_Chat_Design.md` — Inter-Session Chat — Design Specification
 - `docs/4. Operations/Inter_Session_Chat_Manual_Verification.md` — Inter-Session Chat — Manual Verification (Phase L1)
-- `docs/4. Operations/Inter_Session_Chat_Plan.md` — Inter-Session Chat — Implementation Plan (7 Day)
-- `docs/4. Operations/Inter_Session_Chat_Workflow.md` — Inter-Session Chat Workflow — 멀티 세션 발화/응답 룰
-- `docs/4. Operations/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Access (port-direct only, subdomain DEPRECATED)
-- `docs/4. Operations/Load_Test_Plan_Phase1.md` — Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate
 - `docs/4. Operations/MULTI_SESSION_DOCKER_HANDOFF.md` — Multi-Session Docker Handoff (SG-022 deprecation cascade)
 - `docs/4. Operations/Message_Bus_Runbook.md` — Inter-Session Message Bus — Operational Runbook
 - `docs/4. Operations/Multi_Session_Design_v10.3.md` — Multi-Session Orchestration Design v10.3
 - `docs/4. Operations/Multi_Session_Design_v11.md` — Multi-Session Orchestration Design v11 — Message Bus Push 기반
 - `docs/4. Operations/Multi_Session_Workflow.md` — Multi-Session Workflow (v10.3 redirect)
-- `docs/4. Operations/Network_Deployment.md` — Network Deployment Guide
-- `docs/4. Operations/OWASP_Audit_Kickoff_2026-05-03.md` — OWASP Top-10 Audit Kickoff Report — team2-backend
-- `docs/4. Operations/PR_AUTONOMOUS_PROCESSING.md` — PR Autonomous Processing (V10)
-- `docs/4. Operations/Phase_Plan_2027.md` — EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global
-- `docs/4. Operations/Plans/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
-- `docs/4. Operations/Plans/E2E_Verification_Report_2026-05-10.md` — E2E Verification Report (Docker Prototype) — 2026-05-10
-- `docs/4. Operations/Plans/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` — Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정
-- `docs/4. Operations/Plans/Lobby_Renewal_Plan_2026-05-06.md` — Lobby 리뉴얼 계획 — EBS Lobby Design SSOT 1:1 정합
-- `docs/4. Operations/Plans/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` — Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거
-- `docs/4. Operations/Plans/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` — Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계
-- `docs/4. Operations/Plans/PLAN-BO-Phase1.md` — PLAN-BO-Phase1
-- `docs/4. Operations/Plans/Planning_Prototype_Gap_Analysis_2026-05-09.md` — 기획-프로토타입 정합성 분석 보고서 (2026-05-09)
-- `docs/4. Operations/Plans/Redesign_Plan_2026_04_22.md` — Redesign Plan — 2026-04-22 회의록 기반 전면 재설계
-- `docs/4. Operations/RENOVATE_EVALUATION.md` — Renovate vs Dependabot Evaluation
-- `docs/4. Operations/Reports/2026-04-10-ccr-batch-team-impact.md` — 2026-04-10-ccr-batch-team-impact
-- `docs/4. Operations/Reports/2026-04-17_SSOT_Audit.md` — Team 2 Backend SSOT Compliance Audit
-- `docs/4. Operations/Reports/2026-04-21-critic-ge-multi-session.md` — Critic — GE 멀티 세션 분리 적합성 (Lobby 탭 종속 전제)
-- `docs/4. Operations/Reports/2026-04-21-critic-graphic-editor-team5-separation.md` — Critic — Graphic Editor team5 분리 적합성 검토
-- `docs/4. Operations/Reports/2026-04-21-quasar-to-flutter-migration-audit.md` — Quasar → Flutter 이전 누락 / 매칭 실패 감사
-- `docs/4. Operations/Reports/2026-04-26-Prototype_Completion_Report.md` — Prototype Completion Report — Spec ↔ Code 양방향 동기화 (2026-04-26)
-- `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase1.md` — Spec Gap Audit — Phase 1 분석 (2026-04-26)
-- `docs/4. Operations/Reports/2026-04-26-Spec_Gap_Audit_Phase4_Delivery.md` — Spec Gap Audit — Phase 4 Delivery (2026-04-26)
-- `docs/4. Operations/Reports/2026-04-28-v8-phase4-hook-deprecation-audit.md` — v8.0 Phase 4 — Deprecated Hooks Audit (branch_guard + session_branch_init)
-- `docs/4. Operations/Reports/2026-04-28-v8-phase6-l0-removal-record.md` — v8.0 Phase 6 — L0 Pre-Work Contract Removal Record
-- `docs/4. Operations/Reports/2026-04-28-v8-phase8a-multi-session-workflow-v4-history.md` — Multi-Session Workflow — v4.0/v4.1 → v5.0 전환 이유 (Archived 2026-04-28)
-- `docs/4. Operations/Reports/2026-04-28-v8-phase8c-skill-md-v4-history.md` — SKILL.md (team) — v4.0/v4.1 폐기 이유 (Archived 2026-04-28)
-- `docs/4. Operations/Reports/2026-04-28-v8-phase8d-multi-session-workflow-history.md` — Multi_Session_Workflow.md — v7.2 5-Session Pipeline + 변경 이력 (Archived 2026-04-28)
-- `docs/4. Operations/Reports/2026-04-28-v8-restoration-verified.md` — v8.0 Workflow Verification — End-to-End Test
-- `docs/4. Operations/Reports/2026-04-29-card-flow-drift-check.md` — Card Flow Drift Check Report (CF-009)
-- `docs/4. Operations/Reports/2026-04-29-v93-stale-worktrees-archive.md` — V9.3 Stale Worktrees Archive (2026-04-29 cleanup)
 - `docs/4. Operations/Reports/2026-04-29-v94-final-worktree-cleanup.md` — V9.4 Final Worktree Cleanup — SSOT-based Autonomous Judgment
 - `docs/4. Operations/Reports/2026-04-29-v95-cycle-metrics.md` — V9.5 Cycle Metrics — P10 결과물 Quality Report
 - `docs/4. Operations/Reports/2026-04-29-v95-e2e-iteration-phase-plan.md` — V9.5 결과물 E2E Iteration — Phase / Task Plan + P5/P6 진행
 - `docs/4. Operations/Reports/2026-04-29-v95-residual-cycle-wrap-up.md` — V9.5 잔존 후속 cycle wrap-up — Agent Teams 첫 적용 + P11-P14 통합 보고
 - `docs/4. Operations/Reports/2026-04-29-v95-ssot-implementation-gap-triage.md` — V9.5 SSOT vs Implementation Gap Triage
-- `docs/4. Operations/Reports/2026-05-08-S6-prototype-audit.md` — 2026-05-08 S6 Prototype 정합성 감사 (#165)
-- `docs/4. Operations/Reports/2026-05-08-consistency-audit-final.md` — 2026-05-08 정합성 감사 — 최종 통합 검증 보고서
 - `docs/4. Operations/Roadmap.md` — Roadmap
-- `docs/4. Operations/SSOT_ALIGNMENT_REPORT.md` — SSOT Alignment Report — Lobby Path Drift Eradication
-- `docs/4. Operations/SSOT_Alignment_Progress.md` — SSOT Alignment Progress
 - `docs/4. Operations/Spec_Gap_Registry.md` — Spec Gap Registry — Drift 집계 + 해소 추적
-- `docs/4. Operations/Spec_Gap_Triage.md` — Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜
 - `docs/4. Operations/Task_Dispatch_Board.md` — Task Dispatch Board (V9.3 — Intent/Execution Separation + AI Autonomous Merge)
 - `docs/4. Operations/Task_Dispatch_Board/README.md` — Task Dispatch Board (분해 디렉토리)
-- `docs/4. Operations/handoffs/CI_CHAOS_TEST_HANDOFF.md` — CI Chaos Test Handoff (PR
-- `docs/4. Operations/handoffs/CI_GATE_INTEGRATION_HANDOFF.md` — CI Gate Integration + ebs_v2 Cleanup Handoff
-- `docs/4. Operations/handoffs/INFRA_ALIGNMENT_HANDOFF.md` — INFRA Alignment Handoff (Conductor Claim
-- `docs/4. Operations/handoffs/P0_REMEDIATION_HANDOFF.md` — P0 Remediation Handoff (port 3000 + Dockerfile context)
-- `docs/4. Operations/handoffs/P1_FOLLOWUP_HANDOFF.md` — P1/P3 Follow-up Handoff (Sentry sidecar + Flutter pin + ebs_v2 archive)
 - `docs/4. Operations/orchestration/2026-05-08-consistency-audit/README.md` — 2026-05-08 정합성 감사 — Master Orchestration Plan
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/classification.md` — 683 .md 파일 전수 분류 매트릭스
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/conductor-spec.md` — conductor-spec
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/foundation_ssot.md` — Foundation v4.5 — SSOT 사실표 (정합성 감사 기준점)
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S1-foundation.md` — S1-foundation
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S2-lobby.md` — S2-lobby
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S3-cc.md` — S3-cc
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S4-rive.md` — S4-rive
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S5-index.md` — S5-index
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S6-prototype.md` — S6-prototype
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S7-backend.md` — S7-backend
-- `docs/4. Operations/orchestration/2026-05-08-consistency-audit/stream-specs/S8-engine.md` — S8-engine
 - `docs/README.md` — docs/ README
+- `docs/_archive/audit-reports/2026-04-26-Spec_Gap_Audit_Phase1.md` — Spec Gap Audit — Phase 1 분석 (2026-04-26)
+- `docs/_archive/audit-reports/2026-04-26-Spec_Gap_Audit_Phase4_Delivery.md` — Spec Gap Audit — Phase 4 Delivery (2026-04-26)
+- `docs/_archive/audit-reports/OWASP_Audit_Kickoff_2026-05-03.md` — OWASP Top-10 Audit Kickoff Report — team2-backend
+- `docs/_archive/cr-done/CR-011-ge-ownership-move.md` — CR-011-ge-ownership-move
+- `docs/_archive/cr-done/CR-016-tech-stack-ssot.md` — CR-016-tech-stack-ssot
+- `docs/_archive/cr-done/CR-037-bs08-graphic-editor-new.md` — CR-037-bs08-graphic-editor-new
+- `docs/_archive/cr-done/CR-conductor-20260410-ge-ownership-move.md` — CR-conductor-20260410-ge-ownership-move
+- `docs/_archive/cr-done/CR-conductor-20260410-gfskin-format-unify.md` — CR-conductor-20260410-gfskin-format-unify
+- `docs/_archive/cr-done/CR-conductor-20260411-ge-api-spec.md` — CR-conductor-20260411-ge-api-spec
+- `docs/_archive/cr-done/CR-conductor-20260411-ge-req-id-rework.md` — CR-conductor-20260411-ge-req-id-rework
+- `docs/_archive/cr-done/CR-conductor-20260414-skin-updated-ws.md` — CR-conductor-20260414-skin-updated-ws
+- `docs/_archive/cr-done/CR-conductor-20260421-ge-scope-expansion.md` — CR-conductor-20260421-ge-scope-expansion
+- `docs/_archive/cr-done/CR-team1-20260410-tech-stack-ssot.md` — CR-team1-20260410-tech-stack-ssot
+- `docs/_archive/cr-done/CR-team1-20260410-wsop-parity.md` — CR-team1-20260410-wsop-parity
+- `docs/_archive/cr-done/CR-team1-20260413-google-oauth.md` — CR-team1-20260413-google-oauth
+- `docs/_archive/cr-done/CR-team1-20260414-deadlink-cleanup.md` — CR-team1-20260414-deadlink-cleanup
+- `docs/_archive/cr-done/CR-team2-20260410-data-idempotency-audit.md` — CR-team2-20260410-data-idempotency-audit
+- `docs/_archive/cr-done/CR-team2-20260410-idempotency-key.md` — CR-team2-20260410-idempotency-key
+- `docs/_archive/cr-done/CR-team2-20260410-jwt-expiry.md` — CR-team2-20260410-jwt-expiry
+- `docs/_archive/cr-done/CR-team2-20260410-table-rebalance-saga.md` — CR-team2-20260410-table-rebalance-saga
+- `docs/_archive/cr-done/CR-team2-20260410-ws-event-seq.md` — CR-team2-20260410-ws-event-seq
+- `docs/_archive/cr-done/CR-team2-20260413-event-type-catalog.md` — CR-team2-20260413-event-type-catalog
+- `docs/_archive/cr-done/CR-team2-20260413-refresh-token-policy.md` — CR-team2-20260413-refresh-token-policy
+- `docs/_archive/cr-done/CR-team2-20260413-seat-waiting-enum.md` — CR-team2-20260413-seat-waiting-enum
+- `docs/_archive/cr-done/CR-team2-20260413-summary-clock-fsm.md` — CR-team2-20260413-summary-clock-fsm
+- `docs/_archive/cr-done/CR-team2-20260414-auth-ggpass-pattern.md` — CR-team2-20260414-auth-ggpass-pattern
+- `docs/_archive/cr-done/CR-team2-20260414-blindstructure-endpoints.md` — CR-team2-20260414-blindstructure-endpoints
+- `docs/_archive/cr-done/CR-team2-20260414-clock-endpoints-full.md` — CR-team2-20260414-clock-endpoints-full
+- `docs/_archive/cr-done/CR-team2-20260414-competition-hierarchy.md` — CR-team2-20260414-competition-hierarchy
+- `docs/_archive/cr-done/CR-team2-20260414-payout-structure-endpoints.md` — CR-team2-20260414-payout-structure-endpoints
+- `docs/_archive/cr-done/CR-team2-20260414-rate-limit-security.md` — CR-team2-20260414-rate-limit-security
+- `docs/_archive/cr-done/CR-team2-20260414-users-staff-pattern.md` — CR-team2-20260414-users-staff-pattern
+- `docs/_archive/cr-done/CR-team2-20260414-ws-event-catalog.md` — CR-team2-20260414-ws-event-catalog
+- `docs/_archive/cr-done/CR-team2-20260414-wsop-sync-catalog.md` — CR-team2-20260414-wsop-sync-catalog
+- `docs/_archive/cr-done/CR-team3-20260410-wsop-conformance.md` — CR-team3-20260410-wsop-conformance
+- `docs/_archive/cr-done/CR-team3-20260414-output-event-buffer-ownership.md` — CR-team3-20260414-output-event-buffer-ownership
+- `docs/_archive/cr-done/CR-team4-20260410-api03-hal-lifecycle.md` — CR-team4-20260410-api03-hal-lifecycle
+- `docs/_archive/cr-done/CR-team4-20260410-api05-messagepack.md` — CR-team4-20260410-api05-messagepack
+- `docs/_archive/cr-done/CR-team4-20260410-api05-writegameinfo-schema.md` — CR-team4-20260410-api05-writegameinfo-schema
+- `docs/_archive/cr-done/CR-team4-20260410-bs03-graphic-settings-tab.md` — CR-team4-20260410-bs03-graphic-settings-tab
+- `docs/_archive/cr-done/CR-team4-20260410-bs04-at05-rfid-register.md` — CR-team4-20260410-bs04-at05-rfid-register
+- `docs/_archive/cr-done/CR-team4-20260410-bs05-07-statistics-screen.md` — CR-team4-20260410-bs05-07-statistics-screen
+- `docs/_archive/cr-done/CR-team4-20260410-bs05-at-screens.md` — CR-team4-20260410-bs05-at-screens
+- `docs/_archive/cr-done/CR-team4-20260410-bs05-launch-flow.md` — CR-team4-20260410-bs05-launch-flow
+- `docs/_archive/cr-done/CR-team4-20260410-bs05-multi-table-ops.md` — CR-team4-20260410-bs05-multi-table-ops
+- `docs/_archive/cr-done/CR-team4-20260410-bs05-protocol-gaps.md` — CR-team4-20260410-bs05-protocol-gaps
+- `docs/_archive/cr-done/CR-team4-20260410-bs05-visual-spec.md` — CR-team4-20260410-bs05-visual-spec
+- `docs/_archive/cr-done/CR-team4-20260410-bs07-audio-layer.md` — CR-team4-20260410-bs07-audio-layer
+- `docs/_archive/cr-done/CR-team4-20260410-bs07-cc-visual-sync.md` — CR-team4-20260410-bs07-cc-visual-sync
+- `docs/_archive/cr-done/CR-team4-20260410-bs07-layer-boundary.md` — CR-team4-20260410-bs07-layer-boundary
+- `docs/_archive/cr-done/CR-team4-20260410-bs07-security-delay.md` — CR-team4-20260410-bs07-security-delay
+- `docs/_archive/cr-done/CR-team4-20260410-bs08-graphic-editor-new.md` — CR-team4-20260410-bs08-graphic-editor-new
+- `docs/_archive/critic-reports/CC_Design_Prototype_Critic_2026_05_06.md` — CC React 디자인 프로토타입 — Critic 판정 보고서
+- `docs/_archive/critic-reports/Doc_Discovery_Failure_Critic_2026_05_06.md` — 문서 발견 실패 — Command_Center.md 누락 사고와 systematic 해결
+- `docs/_archive/critic-reports/Lobby_IA_Sidebar_2026-04-21.md` — Critic — Lobby 좌측 사이드바 IA + 5NF 확장성 검토
+- `docs/_archive/critic-reports/Lobby_Spec_Implementation_Drift_2026-05-06.md` — Lobby 기획-구현 정합성 점검 — 3000 포트 운영 현실 vs 정본 명세
+- `docs/_archive/critic-reports/Meeting_Analysis_2026_04_22.md` — 회의록 Critic 분석 — 2026-04-22 재설계 결정 7건
+- `docs/_archive/critic-reports/SG-008-b11-v13-critic-2026-05-03.md` — Critic Mode 검토 — SG-008-b11 v1.3 (Lobby → CC) 사용자 의도 정합성
 - `docs/_archive/governance-2026-05/DEPENDABOT_GOVERNANCE.md` — Dependabot Governance — Label / Major Gate / Recreate Guard
 - `docs/_archive/governance-2026-05/INDEX.md` — EBS Governance Archive Index
 - `docs/_archive/governance-2026-05/Multi_Session_Handoff.md` — Multi-Session Handoff Guide (2026-04-21)
@@ -302,4 +152,157 @@ tier: generated
 - `docs/_archive/governance-2026-05/V9_4_AI_Centric_Governance.md` — V9.4 AI-Centric Governance — SSOT-first Judgment + 전문 질문 금지
 - `docs/_archive/governance-2026-05/V9_5_Single_Session_Output_Centric.md` — V9.5 Single Session AI-Centric — Hub-and-Spoke Deprecation
 - `docs/_archive/governance-2026-05/Workflow_Conductor_Autonomous.md` — Conductor Autonomous Workflow SOP — Hourglass 패턴
+- `docs/_archive/operations-misc/ECOSYSTEM_E2E_HANDOFF.md` — ECOSYSTEM E2E Handoff — Multi-Service Docker Validation
+- `docs/_archive/operations-misc/PR_AUTONOMOUS_PROCESSING.md` — PR Autonomous Processing (V10)
+- `docs/_archive/orphan/2026-04-08-game-engine.plan.md` — 2026-04-08-game-engine.plan
+- `docs/_archive/orphan/2026-04-10-ccr-batch-team-impact.md` — 2026-04-10-ccr-batch-team-impact
+- `docs/_archive/orphan/2026-04-17_SSOT_Audit.md` — Team 2 Backend SSOT Compliance Audit
+- `docs/_archive/orphan/2026-04-21-critic-ge-multi-session.md` — Critic — GE 멀티 세션 분리 적합성 (Lobby 탭 종속 전제)
+- `docs/_archive/orphan/2026-04-21-critic-graphic-editor-team5-separation.md` — Critic — Graphic Editor team5 분리 적합성 검토
+- `docs/_archive/orphan/2026-04-21-quasar-to-flutter-migration-audit.md` — Quasar → Flutter 이전 누락 / 매칭 실패 감사
+- `docs/_archive/orphan/2026-04-26-Prototype_Completion_Report.md` — Prototype Completion Report — Spec ↔ Code 양방향 동기화 (2026-04-26)
+- `docs/_archive/orphan/2026-04-28-v8-phase4-hook-deprecation-audit.md` — v8.0 Phase 4 — Deprecated Hooks Audit (branch_guard + session_branch_init)
+- `docs/_archive/orphan/2026-04-28-v8-phase6-l0-removal-record.md` — v8.0 Phase 6 — L0 Pre-Work Contract Removal Record
+- `docs/_archive/orphan/2026-04-28-v8-phase8a-multi-session-workflow-v4-history.md` — Multi-Session Workflow — v4.0/v4.1 → v5.0 전환 이유 (Archived 2026-04-28)
+- `docs/_archive/orphan/2026-04-28-v8-phase8c-skill-md-v4-history.md` — SKILL.md (team) — v4.0/v4.1 폐기 이유 (Archived 2026-04-28)
+- `docs/_archive/orphan/2026-04-28-v8-phase8d-multi-session-workflow-history.md` — Multi_Session_Workflow.md — v7.2 5-Session Pipeline + 변경 이력 (Archived 2026-04-28)
+- `docs/_archive/orphan/2026-04-28-v8-restoration-verified.md` — v8.0 Workflow Verification — End-to-End Test
+- `docs/_archive/orphan/2026-04-29-card-flow-drift-check.md` — Card Flow Drift Check Report (CF-009)
+- `docs/_archive/orphan/2026-04-29-v93-stale-worktrees-archive.md` — V9.3 Stale Worktrees Archive (2026-04-29 cleanup)
+- `docs/_archive/orphan/2026-05-08-S6-prototype-audit.md` — 2026-05-08 S6 Prototype 정합성 감사 (#165)
+- `docs/_archive/orphan/2026-05-08-consistency-audit-final.md` — 2026-05-08 정합성 감사 — 최종 통합 검증 보고서
+- `docs/_archive/orphan/B-076-ge-team5-separation-decision.md` — Graphic Editor team5 분리 적합성 결정 (DONE — Option A 채택)
+- `docs/_archive/orphan/B-088-naming-convention-camelcase-migration.md` — Naming Convention camelCase 전면 마이그레이션 (WSOP LIVE 직접 준수)
+- `docs/_archive/orphan/B-100-redesign-wave-2026-04-22.md` — 2026-04-22 회의록 기반 전면 재설계 Wave (7결정 통합)
+- `docs/_archive/orphan/B-101-periodic-duplication-audit.md` — 주기적 중복 audit (상시 항목) — 월 1회 Foundation + 주요 계약 문서
+- `docs/_archive/orphan/B-211-e2e-full-hand-flow-scenario.md` — B-211 — End-to-End 풀 핸드 플로우 통합 테스트 시나리오
+- `docs/_archive/orphan/B-213-nfr-accuracy-quantitative-kpi.md` — B-213 — NFR "정확성" 정량 KPI 정의
+- `docs/_archive/orphan/B-CARD-FLOW-001-index-and-drift.md` — 정비: RFID/커뮤니티 카드 호출 로직 집대성 + 분산 기획 정비
+- `docs/_archive/orphan/B-Q10-95-coverage-roadmap.md` — B-Q10 — 95% test coverage 도달 plan (B-Q7 ㉠ Production-strict cascade)
+- `docs/_archive/orphan/B-Q11-owasp-audit.md` — B-Q11 — OWASP Top 10 audit (B-Q7 ㉠ Production-strict cascade)
+- `docs/_archive/orphan/B-Q12-100ms-sla-measurement.md` — B-Q12 — 운영 안정성 측정 framework (NFR — RFID/Engine/WS/Render 사슬 안정성)
+- `docs/_archive/orphan/B-Q16-development-environment-standards.md` — B-Q16 — 개발 환경 표준화 (Session 1 — SG-027 cascade)
+- `docs/_archive/orphan/B-Q2-docker-lobby-web-cleanup.md` — Docker lobby-web 컨테이너/이미지 정리 (SG-022 cascade)
+- `docs/_archive/orphan/B-Q6-timeline-mvp-launch-schedule.md` — B-Q6 — timeline / MVP 정의 / 런칭 일정 (사용자 명시 대기)
+- `docs/_archive/orphan/B-Q7-quality-criteria-production.md` — B-Q7 — 품질 기준 (Production-strict 90% 재정의 2026-04-27)
+- `docs/_archive/orphan/B-Q8-vendor-rfi-rfq-reactivation.md` — B-Q8 — vendor 모델 reactivate (RFI/RFQ 재개 여부) (사용자 명시 대기)
+- `docs/_archive/orphan/CC_PRD_Renewal_Plan_2026_05_06.md` — Command_Center.md 리뉴얼 계획 (v1.1.0 → v2.0.0)
+- `docs/_archive/orphan/CI_CHAOS_TEST_HANDOFF.md` — CI Chaos Test Handoff (PR
+- `docs/_archive/orphan/CI_GATE_INTEGRATION_HANDOFF.md` — CI Gate Integration + ebs_v2 Cleanup Handoff
+- `docs/_archive/orphan/CONTRACT_ALIGNMENT_PLAN.md` — Contract Alignment Plan — bo ↔ lobby ↔ cc 정합 계획
+- `docs/_archive/orphan/CR-010-jwt-expiry.md` — CR-010-jwt-expiry
+- `docs/_archive/orphan/CR-012-gfskin-format-unify.md` — CR-012-gfskin-format-unify
+- `docs/_archive/orphan/CR-013-ge-api-spec.md` — CR-013-ge-api-spec
+- `docs/_archive/orphan/CR-014-ge-req-id-rework.md` — CR-014-ge-req-id-rework
+- `docs/_archive/orphan/CR-015-skin-updated-ws.md` — CR-015-skin-updated-ws
+- `docs/_archive/orphan/CR-017-wsop-parity.md` — CR-017-wsop-parity
+- `docs/_archive/orphan/CR-018-data-idempotency-audit.md` — CR-018-data-idempotency-audit
+- `docs/_archive/orphan/CR-019-idempotency-key.md` — CR-019-idempotency-key
+- `docs/_archive/orphan/CR-020-table-rebalance-saga.md` — CR-020-table-rebalance-saga
+- `docs/_archive/orphan/CR-021-ws-event-seq.md` — CR-021-ws-event-seq
+- `docs/_archive/orphan/CR-022-api03-hal-lifecycle.md` — CR-022-api03-hal-lifecycle
+- `docs/_archive/orphan/CR-023-api05-messagepack.md` — CR-023-api05-messagepack
+- `docs/_archive/orphan/CR-024-api05-writegameinfo-schema.md` — CR-024-api05-writegameinfo-schema
+- `docs/_archive/orphan/CR-025-bs03-graphic-settings-tab.md` — CR-025-bs03-graphic-settings-tab
+- `docs/_archive/orphan/CR-026-bs04-at05-rfid-register.md` — CR-026-bs04-at05-rfid-register
+- `docs/_archive/orphan/CR-027-bs05-07-statistics-screen.md` — CR-027-bs05-07-statistics-screen
+- `docs/_archive/orphan/CR-028-bs05-at-screens.md` — CR-028-bs05-at-screens
+- `docs/_archive/orphan/CR-029-bs05-launch-flow.md` — CR-029-bs05-launch-flow
+- `docs/_archive/orphan/CR-030-bs05-multi-table-ops.md` — CR-030-bs05-multi-table-ops
+- `docs/_archive/orphan/CR-031-bs05-protocol-gaps.md` — CR-031-bs05-protocol-gaps
+- `docs/_archive/orphan/CR-032-bs05-visual-spec.md` — CR-032-bs05-visual-spec
+- `docs/_archive/orphan/CR-033-bs07-audio-layer.md` — CR-033-bs07-audio-layer
+- `docs/_archive/orphan/CR-034-bs07-cc-visual-sync.md` — CR-034-bs07-cc-visual-sync
+- `docs/_archive/orphan/CR-035-bs07-layer-boundary.md` — CR-035-bs07-layer-boundary
+- `docs/_archive/orphan/CR-036-bs07-security-delay.md` — CR-036-bs07-security-delay
+- `docs/_archive/orphan/CR-038-google-oauth.md` — CR-038-google-oauth
+- `docs/_archive/orphan/CR-039-event-type-catalog.md` — CR-039-event-type-catalog
+- `docs/_archive/orphan/CR-040-refresh-token-policy.md` — CR-040-refresh-token-policy
+- `docs/_archive/orphan/CR-041-seat-waiting-enum.md` — CR-041-seat-waiting-enum
+- `docs/_archive/orphan/CR-042-summary-clock-fsm.md` — CR-042-summary-clock-fsm
+- `docs/_archive/orphan/CR-043-wsop-sync-catalog.md` — CR-043-wsop-sync-catalog
+- `docs/_archive/orphan/CR-047-competition-hierarchy.md` — CR-047-competition-hierarchy
+- `docs/_archive/orphan/CR-048-auth-ggpass-pattern.md` — CR-048-auth-ggpass-pattern
+- `docs/_archive/orphan/CR-049-blindstructure-endpoints.md` — CR-049-blindstructure-endpoints
+- `docs/_archive/orphan/CR-050-clock-endpoints-full.md` — CR-050-clock-endpoints-full
+- `docs/_archive/orphan/CR-051-payout-structure-endpoints.md` — CR-051-payout-structure-endpoints
+- `docs/_archive/orphan/CR-052-rate-limit-security.md` — CR-052-rate-limit-security
+- `docs/_archive/orphan/CR-053-users-staff-pattern.md` — CR-053-users-staff-pattern
+- `docs/_archive/orphan/CR-054-ws-event-catalog.md` — CR-054-ws-event-catalog
+- `docs/_archive/orphan/CR-055-output-event-buffer-ownership.md` — CR-055-output-event-buffer-ownership
+- `docs/_archive/orphan/CR-056-deadlink-cleanup.md` — CR-056-deadlink-cleanup
+- `docs/_archive/orphan/Causality_Dashboard.md` — EBS 문서 인과관계 대시보드
+- `docs/_archive/orphan/Confluence_Sync_Spec.md` — Confluence Sync Spec
+- `docs/_archive/orphan/D6_D7_D8_Decision_2026-05-10.md` — D6/D7/D8 Decision Cascade (Issue
+- `docs/_archive/orphan/E2E_Verification_Report_2026-05-10.md` — E2E Verification Report (Docker Prototype) — 2026-05-10
+- `docs/_archive/orphan/Foundation_Alignment_Plan.md` — Foundation 재설계 정렬 계획 (Conductor 소유 문서)
+- `docs/_archive/orphan/INFRA_ALIGNMENT_HANDOFF.md` — INFRA Alignment Handoff (Conductor Claim
+- `docs/_archive/orphan/Inter_Session_Chat_Plan.md` — Inter-Session Chat — Implementation Plan (7 Day)
+- `docs/_archive/orphan/Inter_Session_Chat_Workflow.md` — Inter-Session Chat Workflow — 멀티 세션 발화/응답 룰
+- `docs/_archive/orphan/LAN_DEPLOYMENT.md` — LAN Deployment — Internal Network Access (port-direct only, subdomain DEPRECATED)
+- `docs/_archive/orphan/Load_Test_Plan_Phase1.md` — Phase 1 Load Test Plan — 8시간 Soak + Production-strict Gate
+- `docs/_archive/orphan/Lobby_Flutter_Stack_Doc_Migration_Plan_2026-04-21.md` — Plan — Lobby Flutter Desktop 결정에 따른 기획 문서 전수 수정
+- `docs/_archive/orphan/Lobby_Renewal_Plan_2026-05-06.md` — Lobby 리뉴얼 계획 — EBS Lobby Design SSOT 1:1 정합
+- `docs/_archive/orphan/Lobby_Sidebar_HandHistory_Migration_Plan_2026-04-21.md` — Plan — Lobby 사이드바 Hand History 섹션 공식화 + Insights 제거
+- `docs/_archive/orphan/Multi_Session_Workflow_v4_Conflict_Prevention_Plan_2026-04-21.md` — Plan — Multi_Session_Workflow v4.0 Pre-Declaration 충돌 사전 방지 설계
+- `docs/_archive/orphan/NOTIFY-ALL-PHASE2-START.md` — Phase 1 설계 정렬 완료 — Phase 2 진입 허용 (전체 팀 broadcast)
+- `docs/_archive/orphan/NOTIFY-ALL-SG023-INTENT-PIVOT.md` — SG-023 인텐트 전환 (production 출시) — 전체 팀 broadcast + 작업 standby 권고
+- `docs/_archive/orphan/NOTIFY-ALL-SG024-GOVERNANCE-EXPANSION.md` — SG-024 거버넌스 확장 — Conductor 단일 세션 전권 (broadcast)
+- `docs/_archive/orphan/NOTIFY-ALL-SG025-026-PRODUCTION-LAUNCH.md` — SG-025 + SG-026 — Production timeline + Quality gates (B-Q6 ㉠ + B-Q7 ㉠ broadcast)
+- `docs/_archive/orphan/Network_Deployment.md` — Network Deployment Guide
+- `docs/_archive/orphan/P0_REMEDIATION_HANDOFF.md` — P0 Remediation Handoff (port 3000 + Dockerfile context)
+- `docs/_archive/orphan/P1_FOLLOWUP_HANDOFF.md` — P1/P3 Follow-up Handoff (Sentry sidecar + Flutter pin + ebs_v2 archive)
+- `docs/_archive/orphan/PLAN-BO-Phase1.md` — PLAN-BO-Phase1
+- `docs/_archive/orphan/Phase_Plan_2027.md` — EBS Phase Plan — 2027-01 Korea Launch + 2027-06 Vegas Global
+- `docs/_archive/orphan/Planning_Prototype_Gap_Analysis_2026-05-09.md` — 기획-프로토타입 정합성 분석 보고서 (2026-05-09)
+- `docs/_archive/orphan/RENOVATE_EVALUATION.md` — Renovate vs Dependabot Evaluation
+- `docs/_archive/orphan/Redesign_Plan_2026_04_22.md` — Redesign Plan — 2026-04-22 회의록 기반 전면 재설계
+- `docs/_archive/orphan/S1-foundation.md` — S1-foundation
+- `docs/_archive/orphan/S2-lobby.md` — S2-lobby
+- `docs/_archive/orphan/S3-cc.md` — S3-cc
+- `docs/_archive/orphan/S4-rive.md` — S4-rive
+- `docs/_archive/orphan/S5-index.md` — S5-index
+- `docs/_archive/orphan/S6-prototype.md` — S6-prototype
+- `docs/_archive/orphan/S7-backend.md` — S7-backend
+- `docs/_archive/orphan/S8-engine.md` — S8-engine
+- `docs/_archive/orphan/SESSION_1_HANDOFF.md` — SESSION 1 HANDOFF — Foundation & Infrastructure
+- `docs/_archive/orphan/SESSION_2_1_HANDOFF.md` — SESSION 2.1 HANDOFF — auth_service.py 50% → 80% (B-Q10 cascade)
+- `docs/_archive/orphan/SESSION_2_2_HANDOFF.md` — SESSION 2.2 HANDOFF — blind/payout structure services 20-26% → 70%+
+- `docs/_archive/orphan/SESSION_2_3a_HANDOFF.md` — SESSION 2.3a HANDOFF — series_service.py 57% → 80%+
+- `docs/_archive/orphan/SESSION_2_FINAL_REPORT.md` — SESSION 2 FINAL REPORT — Core Logic & Backend Engine (B-Q10 cascade)
+- `docs/_archive/orphan/SESSION_2_HANDOFF.md` — SESSION 2 HANDOFF — Core Logic & Backend Engine (Phase 1 audit 완료)
+- `docs/_archive/orphan/SESSION_3_INIT.md` — SESSION 3 INIT — Frontend Interface & Routing (team1 영역)
+- `docs/_archive/orphan/SG-001-tech-stack-ssot-3way.md` — 기획 공백: Lobby/GE 기술 스택 SSOT 3중화 (Conductor vs BS_Overview vs team1)
+- `docs/_archive/orphan/SG-003-settings-6tabs-schema.md` — Settings 6탭 스키마 — Outputs / GFX / Display / Rules / Stats / Preferences
+- `docs/_archive/orphan/SG-004-gfskin-zip-format.md` — .gfskin ZIP 포맷 (DATA-07) — manifest + .riv + assets 구조 명세
+- `docs/_archive/orphan/SG-005-foundation-ch6-system-connections.md` — Foundation Ch.6 시스템 연결 도식 — Engine↔BO 경계 (EBS_Core 병합)
+- `docs/_archive/orphan/SG-006-rfid-52-card-codemap.md` — RFID 52 카드 codemap — pre-registered deck + 초기 등록 절차
+- `docs/_archive/orphan/SG-007-team2-reports-api.md` — team2 Reports API 통합 — Dashboard/Table Activity/Player Stats/Hand Distribution/RFID Health/Operator
+- `docs/_archive/orphan/SG-008-api-d3-bulk-documentation.md` — Spec Drift: Backend HTTP D3 — 89 code-only endpoints 3분류 (기획이 진실)
+- `docs/_archive/orphan/SG-008-b13-settings-code-only-cleanup.md` — Settings Drift: 30 code-only provider fields — scanner 정규화 + 3분류 (doc-add / doc-expand / code-remove)
+- `docs/_archive/orphan/SG-008-b14-auth-2fa-policy.md` — Auth 2FA 정책 — Admin/Operator 필수 여부 + provider 선택
+- `docs/_archive/orphan/SG-008-b15-ndi-fill-key-routing.md` — NDI Fill/Key 분리 라우팅 — 방송 시설 협의 필요
+- `docs/_archive/orphan/SG-009-tablefsm-case-serialization.md` — Spec Drift: TableFSM / SeatFSM display label vs serialized value case
+- `docs/_archive/orphan/SG-010-spec-drift-scanner-precision.md` — Tooling: spec_drift_check.py 정밀화 (Settings, Schema, WebSocket)
+- `docs/_archive/orphan/SG-013-lobby-tournaments-nomenclature.md` — Lobby 사이드바 "lobby" vs "Tournaments" 용어 충돌
+- `docs/_archive/orphan/SG-014-graphic-editor-dual-entry.md` — Graphic Editor 진입점 이중화 (헤더 vs Settings 탭)
+- `docs/_archive/orphan/SG-017-settings-global-vs-scoped.md` — "Settings \"글로벌 단위\" Overview 모순 (vs Series/Event/Table 분리)"
+- `docs/_archive/orphan/SG-019-reports-postproduction-boundary.md` — "Reports/Insights 탭 ↔ 포스트프로덕션 경계 정의 부재"
+- `docs/_archive/orphan/SG-021-rive-embedded-metadata-schema.md` — Rive 내장 메타데이터 스키마 (B-209 후속, .gfskin SUPERSEDED 대체)
+- `docs/_archive/orphan/SG-022-deprecation.md` — SG-022-deprecation
+- `docs/_archive/orphan/SG-023-intent-pivot-production.md` — SG-023 — 인텐트 전환 (기획서 완결 → production 출시)
+- `docs/_archive/orphan/SG-027-multi-session-pipeline.md` — SG-027 — 5-Session Pipeline 도입 (multi-turn 분량 분할 모델)
+- `docs/_archive/orphan/SG-031-confluence-mirror-rebuild.md` — SG-031 — Confluence Mirror 재구축
+- `docs/_archive/orphan/SG-033-ebs-mission-redefinition.md` — EBS 미션 재선언 — 속도 KPI 폐기, 정확성·안정성·단단한 HW 5 가치 채택
+- `docs/_archive/orphan/SSOT_ALIGNMENT_REPORT.md` — SSOT Alignment Report — Lobby Path Drift Eradication
+- `docs/_archive/orphan/SSOT_Alignment_Progress.md` — SSOT Alignment Progress
+- `docs/_archive/orphan/Spec_Gap_Triage.md` — Spec Gap Triage — 프로토타입 실패 → 기획 환원 프로토콜
+- `docs/_archive/orphan/V2_PURGE_REPORT.md` — V2 Purge Report — 사용자 명시 "ebs v2 별개 프로젝트" cascade
+- `docs/_archive/orphan/WSOP-Production-Structure-Analysis.md` — WSOP Production Structure Analysis
+- `docs/_archive/orphan/classification.md` — 683 .md 파일 전수 분류 매트릭스
+- `docs/_archive/orphan/conductor-spec.md` — conductor-spec
+- `docs/_archive/orphan/foundation_ssot.md` — Foundation v4.5 — SSOT 사실표 (정합성 감사 기준점)
+- `docs/_archive/orphan/worktree-cleanup-report.md` — Worktree Cleanup Report (v8.0 Phase 9 — Decision 3A)
+- `docs/_meta/conductor-ops/karpathy-idea-ebs-application_2026-05-14_v2.md` — Karpathy LLM Wiki 패턴 EBS 적용 v2 — 멀티스트림 분산 wiki + 9-카테고리 SSOT 결합
+- `docs/_meta/conductor-ops/karpathy-idea-ebs-application_2026-05-14_v2_.md` — Karpathy LLM Wiki 패턴 EBS 적용 v2 — 멀티스트림 분산 wiki + 9-카테고리 SSOT 결합
 - `docs/examples/README.md` — Examples

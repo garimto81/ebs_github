@@ -6,4 +6,4 @@ tier: generated
 
 # prototype
 
-- `docs/4. Operations/Frozen_Build_SOP.md` — Frozen Build SOP — file revert race 우회
+- `docs/_archive/orphan/Frozen_Build_SOP.md` — Frozen Build SOP — file revert race 우회

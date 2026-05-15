@@ -6,4 +6,4 @@ tier: generated
 
 # stream:S11
 
-- `docs/4. Operations/Reports/Confluence_Cycle18_Rename_Push_2026-05-13.md` — Confluence Cycle 18 Rename + Content Push Report
+- `docs/_archive/cycles/Confluence_Cycle18_Rename_Push_2026-05-13.md` — Confluence Cycle 18 Rename + Content Push Report

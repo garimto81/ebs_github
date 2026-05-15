@@ -6,7 +6,6 @@ tier: generated
 
 # unknown
 
-- `docs/2. Development/2.1 Frontend/Backlog.md` — Backlog
 - `docs/2. Development/2.1 Frontend/Backlog/B-068-team1-frontend-Quasar-프로젝트-실제-초기화.md` — team1-frontend Quasar 프로젝트 실제 초기화
 - `docs/2. Development/2.1 Frontend/Backlog/B-075-React-아카이브-Quasar-이식-B-068-하위.md` — React 아카이브 → Quasar 이식 (B-068 하위)
 - `docs/2. Development/2.1 Frontend/Backlog/B-076-QA-LOBBY-06-기반-Vitest-Playwright-셋업.md` — QA-LOBBY-06 기반 Vitest + Playwright 셋업
@@ -56,7 +55,6 @@ tier: generated
 - `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-021-LEGACY-검토-요청-API-05-MessagePack-직렬화-프로토콜-채택-WSOP-F.md` — [LEGACY] 검토 요청: API-05 MessagePack 직렬화 프로토콜 채택 (WSOP Fatima.app 패턴)
 - `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-024-LEGACY-검토-요청-BS-07-Overlay-시각-일관성-CC-색상-체계-재사용.md` — [LEGACY] 검토 요청: BS-07 Overlay 시각 일관성 (CC 색상 체계 재사용)
 - `docs/2. Development/2.1 Frontend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-025-LEGACY-검토-요청-BS-08-Graphic-Editor-행동-명세-신규-작성-WSOP.md` — [LEGACY] 검토 요청: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드)
-- `docs/2. Development/2.2 Backend/Backlog.md` — Backlog
 - `docs/2. Development/2.2 Backend/Backlog/B-021-CC-WebSocket-연결-추적.md` — CC WebSocket 연결 추적
 - `docs/2. Development/2.2 Backend/Backlog/B-022-CC-설정-잠금-매트릭스.md` — CC 설정 잠금 매트릭스
 - `docs/2. Development/2.2 Backend/Backlog/B-023-핸드-기록-수신-CC-BO-WebSocket.md` — 핸드 기록 수신 — CC → BO WebSocket
@@ -104,7 +102,6 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Backlog/B-068-sandbox-tournament-generator.md` — Sandbox Tournament Generator 구현
 - `docs/2. Development/2.2 Backend/Backlog/B-088-team2-camelcase-migration.md` — camelCase 전수 마이그레이션 (team2 PR 2/3/4)
 - `docs/2. Development/2.2 Backend/Backlog/B-089-team2-test-assertion-migration.md` — B-088 후속 — test assertion snake→camelCase 완전 교체
-- `docs/2. Development/2.2 Backend/Backlog/NOTIFY-team2-B088-PR2-3-4-naming-migration.md` — B-088 PR-2/3/4 — Backend camelCase 전환 (Pydantic + WS publisher + REST path)
 - `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-011-검토-요청-Graphic-Editor-소유권-Team-4-Team-1-이관-Lobby-허브.md` — 검토 요청: Graphic Editor 소유권 Team 4 → Team 1 이관 (Lobby 허브)
 - `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-012-검토-요청-gfskin-ZIP-포맷-단일화-및-DATA-07-신설.md` — 검토 요청: .gfskin ZIP 포맷 단일화 및 DATA-07 신설
 - `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-013-검토-요청-API-07-Graphic-Editor-엔드포인트-신설.md` — 검토 요청: API-07 Graphic Editor 엔드포인트 신설
@@ -128,7 +125,6 @@ tier: generated
 - `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-021-LEGACY-검토-요청-API-05-MessagePack-직렬화-프로토콜-채택-WSOP-F.md` — [LEGACY] 검토 요청: API-05 MessagePack 직렬화 프로토콜 채택 (WSOP Fatima.app 패턴)
 - `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-022-LEGACY-검토-요청-BS-04-AT-05-RFID-Register-화면-명세-추가.md` — [LEGACY] 검토 요청: BS-04 AT-05 RFID Register 화면 명세 추가
 - `docs/2. Development/2.2 Backend/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-025-LEGACY-검토-요청-BS-08-Graphic-Editor-행동-명세-신규-작성-WSOP.md` — [LEGACY] 검토 요청: BS-08 Graphic Editor 행동 명세 신규 작성 (WSOP 8모드)
-- `docs/2. Development/2.3 Game Engine/Backlog.md` — Backlog
 - `docs/2. Development/2.3 Game Engine/Backlog/B-320-WSOP-LIVE-BS-07-Overlay-감시.md` — WSOP LIVE BS-07 Overlay 완성 감시
 - `docs/2. Development/2.3 Game Engine/Backlog/B-330-Foundation-Engine-별도-프로세스-전파.md` — Foundation §B.2/§B.3 Engine 별도 프로세스 원칙을 API-04 전반에 전파
 - `docs/2. Development/2.3 Game Engine/Backlog/B-331-harness-engine-health-endpoint.md` — harness /engine/health endpoint 신설 — Foundation Demo Mode 3-stage 지원
@@ -149,10 +145,6 @@ tier: generated
 - `docs/2. Development/2.3 Game Engine/Backlog/CYCLE2-2026-05-11-engine-1hand-ready.md` — CYCLE 2 — S8 Engine 1 Hand Ready (Issue
 - `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-2026-05-12-settings-engine-9keys.md` — CYCLE 4 — S8 Settings engine_rules 9 keys 정합 (Issue
 - `docs/2. Development/2.3 Game Engine/Backlog/CYCLE4-mediation-2026-05-12-betting-system-9keys.md` — CYCLE 4 mediation — Betting_System.md §7-5 9 keys default 패치 제안
-- `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-2026-05-08-ci-infra-blockers.md` — NOTIFY-Conductor-2026-05-08-ci-infra-blockers
-- `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-Conductor-cycle7-v04-betting-system-7-6-patch.md` — NOTIFY Conductor — Betting_System.md §7-6 v04 deeper game 룰 추가 요청 (BLOCKED meta)
-- `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-B088-PR8-outputevent-payload.md` — B-088 PR-8 — Engine OutputEvent payload 필드 camelCase
-- `docs/2. Development/2.3 Game Engine/Backlog/NOTIFY-team3-impl-cycle7-v04-bomb-seven-rit3.md` — NOTIFY team3-impl — Cycle 7 v04 Engine 코드 변경 인계 (bomb_pot + seven_deuce + run_it_three)
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-301-OutputEvent-발행-시스템-구현-DONE-2026-04-13.md` — OutputEvent 발행 시스템 구현~~ ✅ DONE (2026-04-13)
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-302-Under-raise-Rule-95-구현-DONE-2026-04-13.md` — Under-raise Rule 95 구현~~ ✅ DONE (2026-04-13)
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/done/B-303-Short-All-in-Rule-96-구현-DONE-2026-04-13.md` — Short All-in Rule 96 구현~~ ✅ DONE (2026-04-13)
@@ -171,7 +163,6 @@ tier: generated
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-049-검토-요청-BlindStructure-관리-엔드포인트-추가-WSOP-LIVE-정렬.md` — 검토 요청: BlindStructure 관리 엔드포인트 추가 (WSOP LIVE 정렬)
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-054-검토-요청-WebSocket-이벤트-카탈로그-WSOP-LIVE-SignalR-정렬.md` — 검토 요청: WebSocket 이벤트 카탈로그 WSOP LIVE SignalR 정렬
 - `docs/2. Development/2.3 Game Engine/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-023-LEGACY-검토-요청-BS-07-Overlay-오디오-레이어-추가-WSOP-1-BGM-2.md` — [LEGACY] 검토 요청: BS-07 Overlay 오디오 레이어 추가 (WSOP 1 BGM + 2 Effect 채널)
-- `docs/2. Development/2.4 Command Center/Backlog.md` — Backlog
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-001-AT-02-ActionView-dynamic-labels.md` — AT-02 ActionView — CHECK↔CALL / BET↔RAISE-TO 동적 라벨 구현
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-002-TableRepository-phase-C-tdd.md` — TableRepository Phase C TDD — fetch / subscribe / applyServerEvent
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-003-S11-e2e-automation-scaffold.md` — S-11 E2E 자동화 스캐폴드 — Playwright + flutter_driver
@@ -181,9 +172,6 @@ tier: generated
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-008-foundation-high-overlay-overview-runtime-modes.md` — Foundation 재설계 P1 — Overlay/Overview 2 런타임 모드 분기 + 배경 config flag
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-009-foundation-medium-reference-updates.md` — Foundation 재설계 P2 — MEDIUM 일괄 참조·주석 보강
 - `docs/2. Development/2.4 Command Center/Backlog/B-team4-010-foundation-low-link-fixes.md` — Foundation 재설계 P3 — LOW 링크·참조 갱신
-- `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team1-S11-lobby-ui-wiring.md` — S-11 Lobby Hand History 자동화 UI wiring 요청
-- `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team2-S11-seeder-and-endpoints.md` — S-11 자동화 실행을 위한 BO seeder + endpoint 준비 요청
-- `docs/2. Development/2.4 Command Center/Backlog/NOTIFY-team4-B088-PR7-cc-consumer-migration.md` — B-088 PR-7 — CC consumer camelCase 전환 (ws + REST + Freezed)
 - `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-011-검토-요청-Graphic-Editor-소유권-Team-4-Team-1-이관-Lobby-허브.md` — 검토 요청: Graphic Editor 소유권 Team 4 → Team 1 이관 (Lobby 허브)
 - `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-012-검토-요청-gfskin-ZIP-포맷-단일화-및-DATA-07-신설.md` — 검토 요청: .gfskin ZIP 포맷 단일화 및 DATA-07 신설
 - `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-ccr/NOTIFY-CCR-017-검토-요청-WSOP-LIVE-Parity-EventFlightStatusRestricted.md` — 검토 요청: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC
@@ -205,20 +193,21 @@ tier: generated
 - `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-003-LEGACY-검토-요청-모든-Mutation-API에-Idempotency-Key-헤더-표.md` — [LEGACY] 검토 요청: 모든 Mutation API에 Idempotency-Key 헤더 표준 도입
 - `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-015-LEGACY-검토-요청-WebSocket-이벤트에-단조증가-seq-필드-replay-엔드포.md` — [LEGACY] 검토 요청: WebSocket 이벤트에 단조증가 seq 필드 + replay 엔드포인트 추가
 - `docs/2. Development/2.4 Command Center/Backlog/_archived-2026-04/notify-legacy/NOTIFY-LEGACY-CCR-016-LEGACY-검토-요청-WSOP-LIVE-Parity-EventFlightStatusRes.md` — [LEGACY] 검토 요청: WSOP LIVE Parity — EventFlightStatus/Restricted/BlindDetailType/Table 2축/Bit Flag RBAC
-- `docs/3. Change Requests/pending/CR-team1-20260417-bo-cors-lan.md` — CR: Team2 BO CORS 기본값을 LAN 허용으로 변경
-- `docs/3. Change Requests/pending/CR-team1-20260417-cc-network-config.md` — CR: Team4 CC boApiClientProvider localhost 하드코딩 제거
-- `docs/4. Operations/Conductor_Backlog.md` — Conductor_Backlog
-- `docs/4. Operations/Conductor_Backlog/B-040-Phase-2-통합-테스트-E2E.md` — Phase 2 통합 테스트 + E2E
-- `docs/4. Operations/Conductor_Backlog/B-055-Phase-3-통합-테스트-부하-테스트.md` — Phase 3 통합 테스트 + 부하 테스트
-- `docs/4. Operations/Conductor_Backlog/B-066-재해-복구-절차-문서화.md` — 재해 복구 절차 문서화
-- `docs/4. Operations/Conductor_Backlog/B-067-Phase-4-전격-운영-검증.md` — Phase 4 전격 운영 검증
-- `docs/4. Operations/Conductor_Backlog/B-069-team3-engine-게임-PRD-Confluence-동기화-상태-확인.md` — team3-engine 게임 PRD Confluence 동기화 상태 확인
-- `docs/4. Operations/Conductor_Backlog/B-074-IMPL-01-Lobby-섹션-stale-수정-Team-2-인계.md` — IMPL-01 Lobby 섹션 stale 수정 (Team 2 인계)
-- `docs/4. Operations/Conductor_Backlog/B-200-foundation-alignment-2026-04-22.md` — Foundation 재설계(2026-04-22) 정렬 — Conductor 소유 문서 전수 수정
-- `docs/4. Operations/Conductor_Backlog/B-209-ge-d3-meeting-decision.md` — 회의 D3 GE 제거 결정 — 전체 전파 (Conductor + team1/team2/team4)
-- `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR1-doc-correction.md` — B-088 PR-1 — 기존 divergence 선언 정정 (Conductor 영역)
-- `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR2bis-service-layer.md` — B-088 PR-2-bis — service/router 레이어 Pydantic 응답 타입 적용 (B-089 23 failure 근본 해결)
-- `docs/4. Operations/Conductor_Backlog/NOTIFY-conductor-B088-PR9-naming-ci-gate.md` — B-088 PR-9 — naming CI gate 도구 신설 (재발 방지)
-- `docs/4. Operations/Conductor_Backlog/NOTIFY-team1-sandbox-toggle-ui.md` — team1 Lobby UI 협의 — Sandbox Toggle 배지 + ?include_sandbox
-- `docs/4. Operations/Conductor_Backlog/NOTIFY-team2-B088-PR4-rest-path-migration.md` — B-088 PR-4 — team2 Backend router REST path kebab→PascalCase (URGENT)
-- `docs/4. Operations/Conductor_Backlog/NOTIFY-team4-cc-web-unhealthy.md` — ebs-cc-web-1 컨테이너 2일간 unhealthy 상태 — 진단/재빌드 요청
+- `docs/_archive/orphan/B-040-Phase-2-통합-테스트-E2E.md` — Phase 2 통합 테스트 + E2E
+- `docs/_archive/orphan/B-055-Phase-3-통합-테스트-부하-테스트.md` — Phase 3 통합 테스트 + 부하 테스트
+- `docs/_archive/orphan/B-066-재해-복구-절차-문서화.md` — 재해 복구 절차 문서화
+- `docs/_archive/orphan/B-067-Phase-4-전격-운영-검증.md` — Phase 4 전격 운영 검증
+- `docs/_archive/orphan/B-069-team3-engine-게임-PRD-Confluence-동기화-상태-확인.md` — team3-engine 게임 PRD Confluence 동기화 상태 확인
+- `docs/_archive/orphan/B-074-IMPL-01-Lobby-섹션-stale-수정-Team-2-인계.md` — IMPL-01 Lobby 섹션 stale 수정 (Team 2 인계)
+- `docs/_archive/orphan/B-200-foundation-alignment-2026-04-22.md` — Foundation 재설계(2026-04-22) 정렬 — Conductor 소유 문서 전수 수정
+- `docs/_archive/orphan/B-209-ge-d3-meeting-decision.md` — 회의 D3 GE 제거 결정 — 전체 전파 (Conductor + team1/team2/team4)
+- `docs/_archive/orphan/CR-team1-20260417-bo-cors-lan.md` — CR: Team2 BO CORS 기본값을 LAN 허용으로 변경
+- `docs/_archive/orphan/CR-team1-20260417-cc-network-config.md` — CR: Team4 CC boApiClientProvider localhost 하드코딩 제거
+- `docs/_archive/orphan/NOTIFY-Conductor-cycle7-v04-betting-system-7-6-patch.md` — NOTIFY Conductor — Betting_System.md §7-6 v04 deeper game 룰 추가 요청 (BLOCKED meta)
+- `docs/_archive/orphan/NOTIFY-conductor-B088-PR1-doc-correction.md` — B-088 PR-1 — 기존 divergence 선언 정정 (Conductor 영역)
+- `docs/_archive/orphan/NOTIFY-conductor-B088-PR2bis-service-layer.md` — B-088 PR-2-bis — service/router 레이어 Pydantic 응답 타입 적용 (B-089 23 failure 근본 해결)
+- `docs/_archive/orphan/NOTIFY-conductor-B088-PR9-naming-ci-gate.md` — B-088 PR-9 — naming CI gate 도구 신설 (재발 방지)
+- `docs/_archive/orphan/NOTIFY-team1-sandbox-toggle-ui.md` — team1 Lobby UI 협의 — Sandbox Toggle 배지 + ?include_sandbox
+- `docs/_archive/orphan/NOTIFY-team2-B088-PR4-rest-path-migration.md` — B-088 PR-4 — team2 Backend router REST path kebab→PascalCase (URGENT)
+- `docs/_archive/orphan/NOTIFY-team3-impl-cycle7-v04-bomb-seven-rit3.md` — NOTIFY team3-impl — Cycle 7 v04 Engine 코드 변경 인계 (bomb_pot + seven_deuce + run_it_three)
+- `docs/_archive/orphan/NOTIFY-team4-cc-web-unhealthy.md` — ebs-cc-web-1 컨테이너 2일간 unhealthy 상태 — 진단/재빌드 요청
