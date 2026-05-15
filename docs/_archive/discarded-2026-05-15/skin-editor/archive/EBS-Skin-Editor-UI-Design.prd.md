@@ -9,6 +9,7 @@ depends_on:
   - "PRD-0006: pokergfx-vs-ebs-skin-editor.prd.md (SE/GE 설계 정본)"
   - "PRD-0007-S2: ebs-ui-design-strategy.md (5대 설계 원칙)"
   - "PRD-CMDS-001: prd-compact-mockup-design-system.prd.md (720×480 디자인 시스템)"
+discarded: "2026-05-15: absorbed into Lobby Settings"
 ---
 
 # EBS Skin Editor — UI Design PRD

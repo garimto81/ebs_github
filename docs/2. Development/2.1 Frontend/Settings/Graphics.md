@@ -21,6 +21,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38197
 | 2026-04-08 | 신규 작성 | 스킨 선택, 레이아웃, 배치, 해상도 대응, 카드 렌더링 정의 |
 | 2026-04-09 | SE 진입 추가 | Skin Editor 진입 워크플로우, GE 이동, 미리보기 화면 정의 |
 | 2026-04-09 | Console PRD v9.7 재설계 | §2.8 기반 — Layout/Card & Player/Animation 3서브그룹, 14 컨트롤 |
+| 2026-05-15 | **Skin Editor 폐기 + Lobby Settings 흡수** | 사용자 결정 (2026-05-15). Skin Editor (독립 Graphic Editor 탭) 폐기. 스킨 관련 핵심 기능은 **본 GFX 탭 §6 Active Skin 관리** 로 흡수. Upload/Metadata/Preview 는 EBS 범위 외 — 디자이너 Rive 공식 에디터 담당. PRD 원본: `docs/_archive/discarded-2026-05-15/skin-editor/`. |
 
 ---
 
@@ -28,7 +29,7 @@ confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/38197
 
 Graphics 섹션은 Settings의 두 번째 탭으로, 오버레이의 **시각적 배치와 카드/애니메이션 런타임 설정** 을 관리한다. 3-Column 구조: Layout(보드/플레이어 배치, 마진) → Card & Player(카드 공개, 폴드, 리더보드) → Animation(전환 효과, 액션 강조).
 
-> **Skin Editor 진입점 변경 (2026-04-15)**: Skin Editor(= Graphic Editor)는 **Lobby 헤더의 독립 `[Graphic Editor]` 버튼** 으로만 진입한다. 구 Settings/Graphics 의 `Load Skin` (M-14) / `Skin Editor 진입` (M-16) 컨트롤과 Info Bar Load Skin 버튼은 제거되었다. Settings/Graphics 에는 **색·폰트·애니메이션 런타임 설정만** 유지. 스킨 Activate/Import/Metadata 편집은 `../Graphic_Editor/Overview.md` 참조.
+> ~~**Skin Editor 진입점 변경 (2026-04-15)**~~ **→ Skin Editor 폐기 (2026-05-15)**: Graphic Editor 독립 탭 폐기됨. Settings/Graphics 에는 **런타임 설정 + §6 Active Skin 선택/활성화** 만 남음. Upload/Import/Metadata 기능 없음.
 
 > 참조: Console PRD v9.7 §2.8 GFX 탭
 
@@ -149,9 +150,15 @@ Graphics 섹션은 Settings의 두 번째 탭으로, 오버레이의 **시각적
 
 ---
 
-## 2. Skin Editor 진입 (참조)
+## 2. Skin Editor → Lobby Settings GFX 탭 흡수 (2026-05-15)
 
-Skin Editor 는 Settings 가 아닌 **Lobby 헤더 `[Graphic Editor]` 독립 진입점** 으로만 접근한다. 진입 조건·플로우는 `../Graphic_Editor/Overview.md` 와 `../Lobby/Overview.md §진입점` 을 참조.
+> **⛔ 폐기 결정 (2026-05-15)**: EBS Skin Editor (독립 Graphic Editor 탭) 폐기. Lobby 헤더 `[Graphic Editor]` 버튼 제거됨.
+>
+> **흡수 위치**: 스킨 선택 및 활성화 기능 → **§6 Active Skin 관리** (본 문서). 이것이 Lobby Settings 에서 제공하는 유일한 Theme/Skin 기능.
+>
+> **범위 밖**: Upload / `.gfskin` 파싱 / Metadata 편집 / Rive 프리뷰 — EBS 운영 범위 제외. 디자이너는 Rive 공식 에디터 → `.gfskin` ZIP 직접 배포.
+>
+> 폐기 PRD 파일: `docs/_archive/discarded-2026-05-15/skin-editor/` (16개, `discarded` frontmatter 추가됨).
 
 ---
 

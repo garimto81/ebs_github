@@ -9,6 +9,7 @@ reimplementability_notes: "레이아웃 CSS 추출 데이터 (15KB) 완결"
 confluence-page-id: 3818750473
 confluence-parent-id: 3811606750
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3818750473/EBS+layout-css-extraction
+discarded: "2026-05-15: absorbed into Lobby Settings"
 ---
 # SE & GE 목업 CSS 레이아웃 추출 문서
 

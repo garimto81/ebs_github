@@ -6,9 +6,9 @@ tier: external
 confluence-page-id: 3811672228
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228
-last-updated: 2026-05-13
+last-updated: 2026-05-15
 last-synced: 2026-05-11
-version: 3.0.5
+version: 3.0.6
 derivative-of: ../2. Development/2.1 Frontend/Lobby/Overview.md
 if-conflict: derivative-of takes precedence
 audience-target: 외부 stakeholder + Lobby 개발자 (이중 audience — 그림 소설 + 개발자 무결성)
@@ -940,7 +940,7 @@ EBS 는 WSOP LIVE 의 거울일 뿐 — 데이터를 거꾸로 쓰지 않는다.
 | 탭 | 필드 수 | 주 영역 |
 |----|:------:|--------|
 | **Outputs** | 13 | Resolution / Live Pipeline (NDI/RTMP/SRT/DIRECT) / Output Mode |
-| **GFX** | 14 | Layout / Card&Player / Animation / Display Toggles / Active Skin |
+| **GFX** | 14 | Layout / Card&Player / Animation / Display Toggles / Active Skin (Theme·스킨 선택) |
 | **Display** | 17 | Blinds / Currency / Precision / Mode / UI Theme |
 | **Rules** | 11 | Game Rules / Player Display |
 | **Stats** | 15 | Equity / Leaderboard / Score Strip |
@@ -949,6 +949,8 @@ EBS 는 WSOP LIVE 의 거울일 뿐 — 데이터를 거꾸로 쓰지 않는다.
 총 **79 필드**.
 
 ## D.2 GFX 탭 상세 (가장 자주 변경되는 탭)
+
+> **Skin Editor 기능은 Lobby Settings 의 GFX 탭에 흡수됨 (2026-05-15)**: 스킨 선택·활성화는 GFX 탭 **Active Skin** 섹션에서 제공한다. 이전에 존재했던 독립 Graphic Editor 탭 (Upload / Metadata 편집 / Rive 프리뷰) 은 폐기됨. 디자이너는 Rive 공식 에디터에서 `.riv` 완성 → `.gfskin` ZIP 직접 배포.
 
 ![Settings GFX — Layout (Board / Player layout / Margins / Leaderboard) + Card & Player (Reveal / Fold / Showdown)](visual/screenshots/ebs-lobby-07b-settings-gfx.png)
 

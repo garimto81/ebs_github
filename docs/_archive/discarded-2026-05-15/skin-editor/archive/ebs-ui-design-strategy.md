@@ -15,6 +15,7 @@ last-updated: 2026-05-03
 reimplementability: N/A
 reimplementability_checked: 2026-05-03
 reimplementability_notes: "SUPERSEDED 2026-04-27 — Graphic Editor 영역 회의 D3 결정으로 폐기. 신 SSOT: SG-021 + Foundation §5.3 Rive Manager"
+discarded: "2026-05-15: absorbed into Lobby Settings"
 ---
 # EBS UI Design 전략 제안서
 
