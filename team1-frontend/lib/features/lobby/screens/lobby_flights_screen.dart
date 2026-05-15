@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../foundation/theme/design_tokens.dart';
 import '../../../foundation/theme/ebs_typography.dart';
 import '../../../foundation/widgets/empty_state.dart';
 import '../../../foundation/widgets/error_banner.dart';
@@ -134,7 +135,10 @@ class _LobbyFlightsScreenState extends ConsumerState<LobbyFlightsScreen> {
 
   void _onOpen(EventFlight f) {
     ref.read(currentFlightIdProvider.notifier).state = f.eventFlightId;
-    context.go('/lobby/flight/${f.eventFlightId}/tables');
+    // context.push() = 스택 상위 추가 → MaterialPage 기본 전환 (ZoomPageTransitions).
+    // ShellRoute 내부이므로 inner navigator 에서 처리 → LobbyShell 상단 바 유지.
+    // context.go() 는 스택 교체(즉각, 전환 없음) — 드릴다운 진입은 push 사용.
+    context.push('/lobby/flight/${f.eventFlightId}/tables');
   }
 }
 
@@ -152,6 +156,27 @@ class _FlightsTable extends StatelessWidget {
         child: SingleChildScrollView(
           child: DataTable(
             showCheckboxColumn: false,
+            // HTML: `th { padding: 5px 4px; font-size: 8px }`, active row: `background: #fffef5`
+            headingRowHeight: 28,
+            dataRowMinHeight: 28,
+            dataRowMaxHeight: 28,
+            horizontalMargin: 8,
+            columnSpacing: 12,
+            dividerThickness: 0.5,
+            headingTextStyle: const TextStyle(
+              fontFamily: DesignTokens.fontFamilyUi,
+              fontSize: 8,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF999999),
+              letterSpacing: 0.8,
+            ),
+            dataRowColor: WidgetStateProperty.resolveWith<Color?>((states) {
+              if (states.contains(WidgetState.selected)) {
+                // HTML: `.row-active { background: #fffef5 }` (gold tint for active flight)
+                return const Color(0xFFFFFEF5);
+              }
+              return null;
+            }),
             columns: const [
               DataColumn(label: Text('START TIME')),
               DataColumn(label: Text('FLIGHT')),

@@ -119,10 +119,11 @@ class _Toolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      // HTML: `.toolbar { padding: 6px 16px; border-bottom: 1px solid #eee }`
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: const BoxDecoration(
-        color: DesignTokens.lightBg,
-        border: Border(bottom: BorderSide(color: DesignTokens.lightLine)),
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Color(0xFFEEEEEE))),
       ),
       child: Row(
         children: [
@@ -164,7 +165,8 @@ class _Grid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 18, 24, 28),
+      // HTML: main content area padding matches toolbar (16px sides)
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -188,14 +190,15 @@ class _Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 28),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _YearBand(year: year, count: items.length),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           LayoutBuilder(builder: (context, c) {
-            final cols = (c.maxWidth / 294).floor().clamp(1, 6);
+            // HTML: `grid-template-columns: repeat(4, 1fr)` → min ~220px per card
+            final cols = (c.maxWidth / 220).floor().clamp(1, 6);
             return Wrap(
               spacing: DesignChrome.cardGridGap,
               runSpacing: DesignChrome.cardGridGap,
@@ -256,38 +259,46 @@ class _SeriesCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          decoration: BoxDecoration(
-            color: DesignTokens.lightBg,
-            border: Border.all(color: DesignTokens.lightLine),
-            borderRadius:
-                BorderRadius.circular(DesignChrome.cardBorderRadius),
+          // HTML: `border: 1px solid #e0e0e0` — NO border-radius
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            border: Border.fromBorderSide(
+              BorderSide(color: Color(0xFFE0E0E0)),
+            ),
           ),
-          clipBehavior: Clip.antiAlias,
+          clipBehavior: Clip.hardEdge,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _Banner(series: series),
               Padding(
-                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                // HTML: `.card-body { padding: 6px 8px }`
+                padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       series.seriesName,
-                      style: EbsTypography.pageTitle.copyWith(fontSize: 14),
+                      // HTML: `.card-name { font-size: 10px; font-weight: 700 }`
+                      style: const TextStyle(
+                        fontFamily: DesignTokens.fontFamilyUi,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF1A1A1A),
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Text(
                       series.countryCode ?? '—',
                       style: const TextStyle(
                         fontFamily: DesignTokens.fontFamilyMono,
-                        fontSize: 11.5,
-                        color: DesignTokens.lightInk3,
+                        fontSize: 9,
+                        color: Color(0xFF999999),
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -295,8 +306,8 @@ class _SeriesCard extends StatelessWidget {
                           series.currency,
                           style: const TextStyle(
                             fontFamily: DesignTokens.fontFamilyMono,
-                            fontSize: 11,
-                            color: DesignTokens.lightInk3,
+                            fontSize: 9,
+                            color: Color(0xFF999999),
                           ),
                         ),
                         LobbyStatusBadge(
@@ -321,39 +332,33 @@ class _Banner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Accent color cycles by year for visual variety. The design source uses
-    // per-series accents; we approximate by hashing year + name.
+    // HTML: `.card-banner { height: 52px; background: <flat-hex-color> }` — NO gradient.
+    // Accent cycles by seriesId for visual variety (same hue palette, flat).
     final accent = _accentFor(series);
     return Container(
-      height: DesignChrome.cardBannerHeight,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [accent, Color.lerp(accent, Colors.black, 0.25)!],
-        ),
-      ),
+      height: DesignChrome.cardBannerHeight, // 52px per HTML
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(color: accent),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             (series.countryCode ?? '—').toUpperCase(),
             style: const TextStyle(
               fontFamily: DesignTokens.fontFamilyUi,
               color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.14 * 10,
+              fontSize: 8,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.0,
             ),
           ),
-          const Spacer(),
           Text(
             _range(series),
             style: const TextStyle(
               fontFamily: DesignTokens.fontFamilyMono,
               color: Colors.white,
-              fontSize: 11,
+              fontSize: 9,
               fontWeight: FontWeight.w600,
               fontFeatures: [FontFeature.tabularFigures()],
             ),

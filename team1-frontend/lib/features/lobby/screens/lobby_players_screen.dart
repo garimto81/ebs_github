@@ -153,10 +153,11 @@ class _ToolbarState extends State<_Toolbar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      // HTML: `.toolbar { padding: 6px 16px }`
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: const BoxDecoration(
-        color: DesignTokens.lightBg,
-        border: Border(bottom: BorderSide(color: DesignTokens.lightLine)),
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Color(0xFFEEEEEE))),
       ),
       child: Row(
         children: [
@@ -268,6 +269,20 @@ class _PlayersTable extends StatelessWidget {
         child: SingleChildScrollView(
           child: DataTable(
             showCheckboxColumn: false,
+            // HTML: compact table, `th 8px`, `td 10px`, `padding: 5px 4px`
+            headingRowHeight: 28,
+            dataRowMinHeight: 28,
+            dataRowMaxHeight: 28,
+            horizontalMargin: 8,
+            columnSpacing: 12,
+            dividerThickness: 0.5,
+            headingTextStyle: const TextStyle(
+              fontFamily: DesignTokens.fontFamilyUi,
+              fontSize: 8,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF999999),
+              letterSpacing: 0.8,
+            ),
             columns: const [
               DataColumn(label: Text('#'), numeric: true),
               DataColumn(label: Text('PLAYER')),
@@ -357,17 +372,19 @@ class _StatePill extends StatelessWidget {
   Widget build(BuildContext context) {
     final spec = _spec(state);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
+      // HTML: `.state-badge { padding: 1px 5px; font-size: 8px; font-weight: 700 }` — NO border-radius
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
       decoration: BoxDecoration(
         color: spec.bg,
-        borderRadius: BorderRadius.circular(999),
+        // HTML state badges have NO border-radius (sharp rectangular)
+        borderRadius: BorderRadius.zero,
       ),
       child: Text(
         state,
         style: TextStyle(
           fontFamily: DesignTokens.fontFamilyUi,
-          fontSize: 10.5,
-          fontWeight: FontWeight.w600,
+          fontSize: 8,
+          fontWeight: FontWeight.w700,
           color: spec.ink,
           decoration:
               state == 'busted' ? TextDecoration.lineThrough : null,

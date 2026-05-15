@@ -26,24 +26,34 @@ final currentTableNameProvider = StateProvider<String?>((ref) => null);
 // Selection helpers
 // ---------------------------------------------------------------------------
 
-/// Select a series — resets event, flight, and table.
+/// Select a series — 다른 시리즈로 변경 시에만 하위(event/flight/table) 리셋.
+/// 같은 시리즈 재진입(브레드크럼 역이동 후 재클릭) 시 이벤트/플라이트/테이블 선택 보존.
 void selectSeries(WidgetRef ref, int? id, {String? name}) {
+  final prevId = ref.read(currentSeriesIdProvider);
   ref.read(currentSeriesIdProvider.notifier).state = id;
   ref.read(currentSeriesNameProvider.notifier).state = name;
-  ref.read(currentEventIdProvider.notifier).state = null;
-  ref.read(currentEventNameProvider.notifier).state = null;
-  ref.read(currentFlightIdProvider.notifier).state = null;
-  ref.read(currentTableIdProvider.notifier).state = null;
-  ref.read(currentTableNameProvider.notifier).state = null;
+  // 다른 시리즈로 변경 시에만 자식 상태 초기화.
+  if (prevId != id) {
+    ref.read(currentEventIdProvider.notifier).state = null;
+    ref.read(currentEventNameProvider.notifier).state = null;
+    ref.read(currentFlightIdProvider.notifier).state = null;
+    ref.read(currentTableIdProvider.notifier).state = null;
+    ref.read(currentTableNameProvider.notifier).state = null;
+  }
 }
 
-/// Select an event — resets flight and table.
+/// Select an event — 다른 이벤트로 변경 시에만 하위(flight/table) 리셋.
+/// 같은 이벤트 재진입(브레드크럼 역이동 후 재클릭) 시 플라이트/테이블 선택 보존.
 void selectEvent(WidgetRef ref, int? id, {String? name}) {
+  final prevId = ref.read(currentEventIdProvider);
   ref.read(currentEventIdProvider.notifier).state = id;
   ref.read(currentEventNameProvider.notifier).state = name;
-  ref.read(currentFlightIdProvider.notifier).state = null;
-  ref.read(currentTableIdProvider.notifier).state = null;
-  ref.read(currentTableNameProvider.notifier).state = null;
+  // 다른 이벤트로 변경 시에만 자식 상태 초기화.
+  if (prevId != id) {
+    ref.read(currentFlightIdProvider.notifier).state = null;
+    ref.read(currentTableIdProvider.notifier).state = null;
+    ref.read(currentTableNameProvider.notifier).state = null;
+  }
 }
 
 /// Select a table.

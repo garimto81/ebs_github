@@ -139,7 +139,10 @@ class _LobbyEventsScreenState extends ConsumerState<LobbyEventsScreen> {
 
   void _onOpen(EbsEvent e) {
     selectEvent(ref, e.eventId, name: e.eventName);
-    context.go('/lobby/flights/${e.eventId}');
+    // context.push() = 스택 상위 추가 → MaterialPage 기본 전환 (ZoomPageTransitions).
+    // ShellRoute 내부이므로 inner navigator 에서 처리 → LobbyShell 상단 바 유지.
+    // context.go() 는 스택 교체(즉각, 전환 없음) — 드릴다운 진입은 push 사용.
+    context.push('/lobby/flights/${e.eventId}');
   }
 }
 
@@ -165,11 +168,12 @@ class _Tabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      // HTML: `.tabs { padding: 6px 16px; border-bottom: 1px solid #eee }`
       decoration: const BoxDecoration(
-        color: DesignTokens.lightBg,
-        border: Border(bottom: BorderSide(color: DesignTokens.lightLine)),
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Color(0xFFEEEEEE))),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
           for (final t in _order) _Tab(
@@ -204,7 +208,8 @@ class _Tab extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          // HTML: `.tab { padding: 6px 12px }`, active tab: `border-bottom: 2px solid #111`
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
@@ -260,6 +265,20 @@ class _EventsTable extends StatelessWidget {
         child: SingleChildScrollView(
           child: DataTable(
             showCheckboxColumn: false,
+            // HTML: `th { padding: 5px 4px; font-size: 8px }`, `td { padding: 5px 4px; font-size: 10px }`
+            headingRowHeight: 28,
+            dataRowMinHeight: 28,
+            dataRowMaxHeight: 28,
+            horizontalMargin: 8,
+            columnSpacing: 12,
+            dividerThickness: 0.5,
+            headingTextStyle: const TextStyle(
+              fontFamily: DesignTokens.fontFamilyUi,
+              fontSize: 8,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF999999),
+              letterSpacing: 0.8,
+            ),
             columns: const [
               DataColumn(label: Text('NO')),
               DataColumn(label: Text('START')),
