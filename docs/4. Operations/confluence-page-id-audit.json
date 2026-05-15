@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-15T11:45:34.992831",
+  "generated_at": "2026-05-15T11:52:30.713016",
   "summary": {
     "ok": 341,
     "page_id_mismatch": 0,
@@ -8,7 +8,7 @@
     "duplicate_confluence": 1,
     "duplicate_git": 0,
     "unmapped_confluence": 343,
-    "auto_corrected": 0
+    "auto_corrected": 1
   },
   "details": {
     "ok": [
@@ -6480,6 +6480,13 @@
         ]
       }
     ],
-    "auto_corrected": []
+    "auto_corrected": [
+      {
+        "path": "1. Product\\Foundation.md",
+        "type": "url_mismatch",
+        "old_url": "https://ggnetwork.atlassian.net/wiki/x/qwAU2",
+        "new_url": "https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3625189547/EBS+기초+기획서"
+      }
+    ]
   }
 }
