@@ -1,11 +1,16 @@
 // ActionBadge — LAST action pill contract (Cycle 19 Wave 3 U3).
 //
-// 토큰 매핑 검증:
-//   FOLD       → EbsOklch.err
-//   CHECK/CALL → EbsOklch.ok
-//   BET/RAISE  → EbsOklch.accent
-//   ALL-IN     → EbsOklch.warn
-//   none       → fg-3 dashed placeholder
+// 토큰 매핑 검증 (HTML mockup SSOT 정합 — PR #480 이후):
+//   FOLD       → EbsOklch.fg2    (gray, HTML #616161)
+//   CHECK/CALL → EbsOklch.info   (blue, HTML #1976d2)
+//   BET        → EbsOklch.accent (amber, HTML #f9a825)
+//   RAISE      → EbsOklch.err    (red, HTML #e53935)
+//   ALL-IN     → EbsOklch.warn   (gold)
+//   none       → fg-3 placeholder
+//
+// Cycle 21 (residual-drift) — 추가 검증:
+//   CHECK pulse bar  → kActionBadgePulseBarKey 위젯 존재
+//   CALL dashed      → kActionBadgeCallDashedKey CustomPaint 존재
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -66,21 +71,21 @@ void main() {
     });
   });
 
-  group('ActionBadge token mapping (spec)', () {
-    test('FOLD tone == EbsOklch.err', () {
-      expect(ActionBadgeType.fold.tone, EbsOklch.err);
+  group('ActionBadge token mapping (HTML SSOT — #480 정합)', () {
+    test('FOLD tone == EbsOklch.fg2', () {
+      expect(ActionBadgeType.fold.tone, EbsOklch.fg2);
     });
-    test('CHECK tone == EbsOklch.ok', () {
-      expect(ActionBadgeType.check.tone, EbsOklch.ok);
+    test('CHECK tone == EbsOklch.info', () {
+      expect(ActionBadgeType.check.tone, EbsOklch.info);
     });
-    test('CALL tone == EbsOklch.ok', () {
-      expect(ActionBadgeType.call.tone, EbsOklch.ok);
+    test('CALL tone == EbsOklch.info', () {
+      expect(ActionBadgeType.call.tone, EbsOklch.info);
     });
     test('BET tone == EbsOklch.accent', () {
       expect(ActionBadgeType.bet.tone, EbsOklch.accent);
     });
-    test('RAISE tone == EbsOklch.accent', () {
-      expect(ActionBadgeType.raise.tone, EbsOklch.accent);
+    test('RAISE tone == EbsOklch.err', () {
+      expect(ActionBadgeType.raise.tone, EbsOklch.err);
     });
     test('ALL-IN tone == EbsOklch.warn', () {
       expect(ActionBadgeType.allIn.tone, EbsOklch.warn);
@@ -119,6 +124,72 @@ void main() {
       await tester.tap(find.text('FOLD'));
       await tester.pump();
       expect(taps, 1);
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────────────
+  // Cycle 21 residual-drift: CHECK pulse + CALL dashed border
+  // ──────────────────────────────────────────────────────────────────
+
+  group('CHECK pulse animation (drift #1)', () {
+    testWidgets('CHECK badge has pulse bar widget', (tester) async {
+      await _pump(tester, const ActionBadge(type: ActionBadgeType.check));
+      await tester.pump();
+      expect(find.byKey(kActionBadgePulseBarKey), findsOneWidget);
+    });
+
+    testWidgets('non-CHECK badges do NOT have pulse bar', (tester) async {
+      for (final t in [
+        ActionBadgeType.fold,
+        ActionBadgeType.call,
+        ActionBadgeType.bet,
+        ActionBadgeType.raise,
+        ActionBadgeType.allIn,
+        ActionBadgeType.none,
+      ]) {
+        await _pump(tester, ActionBadge(type: t));
+        await tester.pump();
+        expect(
+          find.byKey(kActionBadgePulseBarKey),
+          findsNothing,
+          reason: '$t should not have pulse bar',
+        );
+      }
+    });
+
+    testWidgets('CHECK pulse animates without crash over 1.4s', (tester) async {
+      await _pump(tester, const ActionBadge(type: ActionBadgeType.check));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 700));
+      await tester.pump(const Duration(milliseconds: 700));
+      expect(find.byKey(kActionBadgePulseBarKey), findsOneWidget);
+    });
+  });
+
+  group('CALL dashed border / visual_indicator=null (drift #3)', () {
+    testWidgets('CALL badge has dashed border CustomPaint', (tester) async {
+      await _pump(tester, const ActionBadge(type: ActionBadgeType.call));
+      await tester.pump();
+      expect(find.byKey(kActionBadgeCallDashedKey), findsOneWidget);
+    });
+
+    testWidgets('non-CALL badges do NOT have dashed border key', (tester) async {
+      for (final t in [
+        ActionBadgeType.fold,
+        ActionBadgeType.check,
+        ActionBadgeType.bet,
+        ActionBadgeType.raise,
+        ActionBadgeType.allIn,
+        ActionBadgeType.none,
+      ]) {
+        await _pump(tester, ActionBadge(type: t));
+        await tester.pump();
+        expect(
+          find.byKey(kActionBadgeCallDashedKey),
+          findsNothing,
+          reason: '$t should not have dashed border',
+        );
+      }
     });
   });
 }
