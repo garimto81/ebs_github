@@ -46,6 +46,20 @@ import '../providers/seat_provider.dart';
 import 'acting_glow_overlay.dart';
 import 'action_badge.dart';
 
+
+// Cycle 21 residual-drift: FOLD grayscale(0.85) ColorFilter.
+// HTML SSOT: `.player-card { filter: grayscale(0.85) }` (action-indicator-fold.html).
+// Luminance-weighted matrix: R=0.2126, G=0.7152, B=0.0722 blended at 85%.
+const ColorFilter _kGrayscale85 = ColorFilter.matrix([
+  0.33071, 0.60792, 0.06137, 0, 0, // R
+  0.18071, 0.75792, 0.06137, 0, 0, // G
+  0.18071, 0.60792, 0.21137, 0, 0, // B
+  0,       0,       0,       1, 0, // A
+]);
+
+/// Key for the [ColorFiltered] applied to folded seats. Used in widget tests.
+const Key kSeatCellFoldGrayscaleKey = Key('seat-fold-grayscale');
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -625,12 +639,21 @@ class _SeatCellState extends ConsumerState<SeatCell> {
         opacity: opacity,
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeOut,
+        // Cycle 21 — FOLD grayscale(0.85): HTML SSOT `filter: grayscale(0.85)`
+        // (action-indicator-fold.html). ColorFiltered snaps with state change;
+        // AnimatedOpacity handles the 400ms fade independently.
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: EbsSpacing.xs,
             vertical: EbsSpacing.xs,
           ),
-          child: content,
+          child: seat.activity == PlayerActivity.folded
+              ? ColorFiltered(
+                  key: kSeatCellFoldGrayscaleKey,
+                  colorFilter: _kGrayscale85,
+                  child: content,
+                )
+              : content,
         ),
       ),
     );

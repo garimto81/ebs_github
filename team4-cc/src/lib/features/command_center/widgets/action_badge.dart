@@ -14,10 +14,21 @@
 // 사용: SeatCell LAST 행에서 ActionBadge.fromActivity() 로 PlayerActivity 매핑.
 // 기존 inline `_RowCell` 의 highlightColor 분기 제거 후 이 위젯으로 위임.
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../../foundation/theme/ebs_oklch.dart';
 import '../../../models/enums/seat_status.dart';
+
+// ── Test-visible keys ──────────────────────────────────────────────────
+/// Key for the pulse bar inside CHECK [ActionBadge]. Used in widget tests.
+const Key kActionBadgePulseBarKey = Key('action-badge-pulse-bar');
+
+/// Key for the dashed-border [CustomPaint] wrapping the CALL [ActionBadge].
+/// CALL uses visual_indicator=null (viewer: 미표시), dashed = operator signal.
+const Key kActionBadgeCallDashedKey = Key('action-badge-call-dashed');
+
 
 /// LAST action 종류. `none` = 미선택/대기 (placeholder 표시).
 enum ActionBadgeType {
@@ -99,55 +110,183 @@ class ActionBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final tone = type.tone;
     final isPlaceholder = type == ActionBadgeType.none;
+    final isCall = type == ActionBadgeType.call;
+    final isCheck = type == ActionBadgeType.check;
 
-    final pill = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-      decoration: BoxDecoration(
-        // `.row-action.<state>` background + border (app.css L733-744).
-        color: isPlaceholder ? Colors.transparent : tone.withValues(alpha: 0.18),
-        border: Border.all(
-          color: isPlaceholder
-              ? EbsOklch.line
-              : tone.withValues(alpha: 0.5),
-          width: 1,
-          style: isPlaceholder ? BorderStyle.solid : BorderStyle.solid,
+    // ── Content row ──────────────────────────────────────────────────
+    final contentRow = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // LBL — 9px / w700 / fg-3 (app.css `.row-lbl`)
+        const Text(
+          'LAST',
+          style: TextStyle(
+            fontSize: 9,
+            fontWeight: FontWeight.w700,
+            color: EbsOklch.fg3,
+            letterSpacing: 0.10 * 9,
+          ),
         ),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // LBL — 9px / w700 / fg-3 (app.css `.row-lbl`)
-          const Text(
-            'LAST',
+        // VAL — mono 13px / w900 / tone color
+        Flexible(
+          child: Text(
+            label ?? type.label,
             style: TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w700,
-              color: EbsOklch.fg3,
-              letterSpacing: 0.10 * 9,
+              fontSize: isPlaceholder ? 12 : 13,
+              fontWeight: isPlaceholder ? FontWeight.w600 : FontWeight.w900,
+              color: isPlaceholder ? EbsOklch.fg3 : tone,
+              fontFamily: isPlaceholder ? null : 'monospace',
+              letterSpacing: isPlaceholder ? 0 : 1.3,
             ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            textAlign: TextAlign.right,
           ),
-          // VAL — mono 13px / w900 / tone color (app.css `.row-action.active`)
-          Flexible(
-            child: Text(
-              label ?? type.label,
-              style: TextStyle(
-                fontSize: isPlaceholder ? 12 : 13,
-                fontWeight: isPlaceholder ? FontWeight.w600 : FontWeight.w900,
-                color: isPlaceholder ? EbsOklch.fg3 : tone,
-                fontFamily: isPlaceholder ? null : 'monospace',
-                letterSpacing: isPlaceholder ? 0 : 1.3,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              textAlign: TextAlign.right,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
+
+    // ── CHECK: pulse bar (HTML SSOT: .pulse { height:2px } 1.4s) ────
+    final Widget innerChild = isCheck
+        ? Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              contentRow,
+              _PulseBar(key: kActionBadgePulseBarKey, color: tone),
+            ],
+          )
+        : contentRow;
+
+    // ── CALL: dashed border (visual_indicator=null — CC only) ────────
+    // HTML SSOT: .indicator.call { border-style: dashed } (action-indicator-bet.html)
+    final Widget pill;
+    if (isCall) {
+      pill = CustomPaint(
+        key: kActionBadgeCallDashedKey,
+        painter: _DashedBorderPainter(color: tone.withValues(alpha: 0.5)),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+          decoration: BoxDecoration(
+            color: tone.withValues(alpha: 0.18),
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: innerChild,
+        ),
+      );
+    } else {
+      pill = Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+        decoration: BoxDecoration(
+          color: isPlaceholder ? Colors.transparent : tone.withValues(alpha: 0.18),
+          border: Border.all(
+            color: isPlaceholder ? EbsOklch.line : tone.withValues(alpha: 0.5),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: innerChild,
+      );
+    }
 
     if (onTap == null) return pill;
     return GestureDetector(onTap: onTap, child: pill);
   }
+}
+
+// ── _PulseBar ──────────────────────────────────────────────────────────
+
+/// CHECK 표식 하단 2px 펄스 바.
+/// HTML SSOT: .pulse { height:2px; opacity:0.4 } + 1.4s 반복.
+class _PulseBar extends StatefulWidget {
+  const _PulseBar({required this.color, super.key});
+  final Color color;
+
+  @override
+  State<_PulseBar> createState() => _PulseBarState();
+}
+
+class _PulseBarState extends State<_PulseBar>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400), // HTML: pulse 1.4s
+    )..repeat(reverse: true);
+    // opacity oscillates: 0.15 ↔ 0.55 (HTML .pulse opacity 0.4 base)
+    _anim = Tween<double>(begin: 0.15, end: 0.55).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (_, __) => Container(
+        height: 2,
+        margin: const EdgeInsets.only(top: 4),
+        decoration: BoxDecoration(
+          color: widget.color.withValues(alpha: _anim.value),
+          borderRadius: BorderRadius.circular(1),
+        ),
+      ),
+    );
+  }
+}
+
+// ── _DashedBorderPainter ───────────────────────────────────────────────
+
+/// CALL 배지용 대시 둥근 테두리 페인터.
+/// HTML SSOT: .indicator.call { border-style: dashed } (action-indicator-bet.html).
+class _DashedBorderPainter extends CustomPainter {
+  const _DashedBorderPainter({required this.color});
+
+  final Color color;
+  static const double _radius = 3.0;
+  static const double _dashLen = 4.0;
+  static const double _gapLen = 3.0;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+
+    final rrect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0.5, 0.5, size.width - 1, size.height - 1),
+      const Radius.circular(_radius),
+    );
+
+    canvas.drawPath(_buildDashedPath(Path()..addRRect(rrect)), paint);
+  }
+
+  Path _buildDashedPath(Path source) {
+    final result = Path();
+    for (final metric in source.computeMetrics()) {
+      var dist = 0.0;
+      final total = metric.length;
+      while (dist < total) {
+        final end = math.min(dist + _dashLen, total);
+        result.addPath(metric.extractPath(dist, end), Offset.zero);
+        dist += _dashLen + _gapLen;
+      }
+    }
+    return result;
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedBorderPainter old) => old.color != color;
 }
