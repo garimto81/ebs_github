@@ -197,24 +197,27 @@ class DesignChrome {
   DesignChrome._();
 
   static const topBarHeight = 44.0;
-  static const breadcrumbHeight = 44.0;
+  // HTML mockup: `.bc-bar { padding: 6px 16px }` → ~28px total height
+  static const breadcrumbHeight = 28.0;
   static const railWidthExpanded = 240.0;
   static const railWidthCollapsed = 56.0;
   static const railItemPadX = 14.0;
   static const railItemPadY = 8.0;
 
-  static const kpiPadX = 24.0;
-  static const kpiPadY = 14.0;
-  static const kpiMinWidth = 130.0;
+  // HTML mockup: summary bar padding: 6px 16px
+  static const kpiPadX = 16.0;
+  static const kpiPadY = 6.0;
+  static const kpiMinWidth = 80.0;
 
-  static const cardBorderRadius = 6.0;
+  // HTML mockup: cards have NO border-radius (border: 1px solid #e0e0e0)
+  static const cardBorderRadius = 0.0;
   static const buttonBorderRadius = 4.0;
   static const sheetBorderRadius = 8.0;
 
-  // Series card grid
-  static const cardGridGap = 14.0;
-  static const cardGridMin = 280.0;
-  static const cardBannerHeight = 88.0;
+  // Series card grid: HTML `gap: 8px`, banner `height: 52px`
+  static const cardGridGap = 8.0;
+  static const cardGridMin = 260.0;
+  static const cardBannerHeight = 52.0;
 
   // Waitlist drawer
   static const waitlistWidth = 240.0;

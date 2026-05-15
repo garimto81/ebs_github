@@ -76,58 +76,102 @@ final routerProvider = Provider<GoRouter>((ref) {
             redirect: (_, __) => '/lobby/series',
           ),
           // ── Drilldown ──
+          // NoTransitionPage: HTML 웹처럼 즉시 전환 (platform 슬라이드/페이드 제거).
+          // ShellRoute 내부이므로 LobbyShell chrome은 그대로 유지 — content 영역만 교체.
           GoRoute(
             path: '/lobby/series',
-            builder: (_, __) => const SeriesScreen(),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const SeriesScreen(),
+            ),
           ),
           GoRoute(
             path: '/lobby/events/:seriesId',
-            builder: (_, state) => LobbyEventsScreen(
-              seriesId: int.parse(state.pathParameters['seriesId']!),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: LobbyEventsScreen(
+                seriesId: int.parse(state.pathParameters['seriesId']!),
+              ),
             ),
           ),
           GoRoute(
             path: '/lobby/flights/:eventId',
-            builder: (_, state) => LobbyFlightsScreen(
-              eventId: int.parse(state.pathParameters['eventId']!),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: LobbyFlightsScreen(
+                eventId: int.parse(state.pathParameters['eventId']!),
+              ),
             ),
           ),
           GoRoute(
             path: '/lobby/flight/:flightId/tables',
-            builder: (_, state) => LobbyTablesScreen(
-              flightId: int.parse(state.pathParameters['flightId']!),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: LobbyTablesScreen(
+                flightId: int.parse(state.pathParameters['flightId']!),
+              ),
             ),
           ),
           GoRoute(
             path: '/lobby/flight/:flightId/players',
-            builder: (_, state) => LobbyPlayersScreen(
-              flightId: int.parse(state.pathParameters['flightId']!),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: LobbyPlayersScreen(
+                flightId: int.parse(state.pathParameters['flightId']!),
+              ),
             ),
           ),
           GoRoute(
             path: '/tables/:tableId',
-            builder: (_, state) => TableDetailScreen(
-              tableId: int.parse(state.pathParameters['tableId']!),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: TableDetailScreen(
+                tableId: int.parse(state.pathParameters['tableId']!),
+              ),
             ),
           ),
           // ── Tools (top-level meta) ──
-          GoRoute(path: '/players', builder: (_, __) => const PlayersScreen()),
-          GoRoute(path: '/staff', builder: (_, __) => const StaffListScreen()),
+          GoRoute(
+            path: '/players',
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const PlayersScreen(),
+            ),
+          ),
+          GoRoute(
+            path: '/staff',
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const StaffListScreen(),
+            ),
+          ),
           GoRoute(
             path: '/settings',
             redirect: (_, __) => '/settings/outputs',
           ),
           GoRoute(
             path: '/settings/:section',
-            builder: (_, state) => SettingsLayout(
-              section: state.pathParameters['section'] ?? 'outputs',
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: SettingsLayout(
+                section: state.pathParameters['section'] ?? 'outputs',
+              ),
             ),
           ),
-          GoRoute(path: '/graphic-editor', builder: (_, __) => const GeHubScreen()),
+          GoRoute(
+            path: '/graphic-editor',
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const GeHubScreen(),
+            ),
+          ),
           GoRoute(
             path: '/graphic-editor/:skinId',
-            builder: (_, state) => GeDetailScreen(
-              skinId: state.pathParameters['skinId']!,
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: GeDetailScreen(
+                skinId: state.pathParameters['skinId']!,
+              ),
             ),
           ),
           // ── Hand History (Cycle 21 W3 — Reports 폐기 후 독립 격상) ──
@@ -135,12 +179,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           //       docs/2. Development/2.2 Backend/APIs/Players_HandHistory_API.md
           GoRoute(
             path: '/hand-history',
-            builder: (_, __) => const HandHistoryScreen(),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const HandHistoryScreen(),
+            ),
           ),
           GoRoute(
             path: '/hand-history/:id',
-            builder: (_, state) => HandDetailScreen(
-              handId: int.parse(state.pathParameters['id']!),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: HandDetailScreen(
+                handId: int.parse(state.pathParameters['id']!),
+              ),
             ),
           ),
         ],

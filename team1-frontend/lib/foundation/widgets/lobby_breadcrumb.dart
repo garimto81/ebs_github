@@ -1,8 +1,8 @@
-// EBS Lobby — sticky breadcrumb bar (44px).
+// EBS Lobby — sticky breadcrumb bar (28px).
 //
-// Mirrors `.bc-bar` / `.bc` / `.bc-actions` from the design source. Each
-// crumb is a clickable navigation hop; the last crumb is rendered as the
-// current page with bold ink. The right side carries a `⌘K` keyboard hint.
+// HTML mockup: `.bc-bar { padding: 6px 16px; font-size: 10px; border-bottom: 1px solid #eee }`
+// Each crumb is a clickable navigation hop; the last crumb is bold (current page).
+// ⌘K shortcut hint removed — not present in HTML mockup.
 
 import 'package:flutter/material.dart';
 
@@ -25,35 +25,30 @@ class LobbyBreadcrumb extends StatelessWidget implements PreferredSizeWidget {
   const LobbyBreadcrumb({
     super.key,
     required this.crumbs,
-    this.shortcutHint = '⌘K',
-    this.shortcutLabel = 'to jump',
   });
 
   final List<LobbyBreadcrumbCrumb> crumbs;
-  final String shortcutHint;
-  final String shortcutLabel;
 
   @override
   Size get preferredSize =>
-      const Size.fromHeight(DesignChrome.breadcrumbHeight);
+      const Size.fromHeight(DesignChrome.breadcrumbHeight); // 28px
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Container(
       height: DesignChrome.breadcrumbHeight,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+      // HTML: `padding: 6px 16px`
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: const BoxDecoration(
+        // HTML: pure white background (`#fff`), not warm-tinted
+        color: Colors.white,
         border: Border(
-          bottom: BorderSide(color: theme.dividerColor),
+          bottom: BorderSide(color: Color(0xFFEEEEEE)),
         ),
       ),
-      child: Row(
-        children: [
-          Expanded(child: _Trail(crumbs: crumbs)),
-          _Shortcut(hint: shortcutHint, label: shortcutLabel),
-        ],
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: _Trail(crumbs: crumbs),
       ),
     );
   }
@@ -65,30 +60,27 @@ class _Trail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final children = <Widget>[];
     for (var i = 0; i < crumbs.length; i++) {
       final c = crumbs[i];
       final isLast = i == crumbs.length - 1;
       if (i > 0) {
+        // HTML uses `›` text separator — lighter than chevron icon
         children.add(
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6),
-            child: Icon(
-              Icons.chevron_right,
-              size: 14,
-              color: DesignTokens.lightInk5,
+            padding: EdgeInsets.symmetric(horizontal: 4),
+            child: Text(
+              '›',
+              style: TextStyle(
+                fontSize: 11,
+                color: Color(0xFFBBBBBB),
+              ),
             ),
           ),
         );
       }
       children.add(
-        _Crumb(
-          label: c.label,
-          onTap: c.onTap,
-          current: isLast,
-          textTheme: theme,
-        ),
+        _Crumb(label: c.label, onTap: c.onTap, current: isLast),
       );
     }
     return Row(
@@ -103,72 +95,26 @@ class _Crumb extends StatelessWidget {
     required this.label,
     required this.onTap,
     required this.current,
-    required this.textTheme,
   });
 
   final String label;
   final VoidCallback? onTap;
   final bool current;
-  final ThemeData textTheme;
 
   @override
   Widget build(BuildContext context) {
-    final color = current
-        ? textTheme.colorScheme.onSurface
-        : DesignTokens.lightInk3;
+    // HTML: `font-size: 10px`, active crumb bold
     final style = TextStyle(
       fontFamily: DesignTokens.fontFamilyUi,
-      fontSize: DesignTokens.fsTab,
-      color: color,
-      fontWeight: current ? FontWeight.w600 : FontWeight.w500,
+      fontSize: 10,
+      color: current ? const Color(0xFF1A1A1A) : const Color(0xFF888888),
+      fontWeight: current ? FontWeight.w600 : FontWeight.w400,
     );
     final text = Text(label, style: style);
     if (onTap == null) return text;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(onTap: onTap, child: text),
-    );
-  }
-}
-
-class _Shortcut extends StatelessWidget {
-  const _Shortcut({required this.hint, required this.label});
-  final String hint;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-          decoration: BoxDecoration(
-            border: Border.all(color: theme.dividerColor),
-            borderRadius:
-                BorderRadius.circular(DesignChrome.buttonBorderRadius - 1),
-            color: theme.colorScheme.surfaceContainerHighest,
-          ),
-          child: Text(
-            hint,
-            style: const TextStyle(
-              fontFamily: DesignTokens.fontFamilyMono,
-              fontSize: 10,
-              color: DesignTokens.lightInk3,
-            ),
-          ),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: const TextStyle(
-            fontFamily: DesignTokens.fontFamilyUi,
-            fontSize: 11,
-            color: DesignTokens.lightInk3,
-          ),
-        ),
-      ],
     );
   }
 }
