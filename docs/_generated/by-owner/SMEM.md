@@ -15,7 +15,7 @@ tier: generated
 - `docs/_journey/2026-05-12_smem_cycle8.md` — SMEM Cycle 8 — Cycle 7 case study + v03 milestone + KPI
 - `docs/_meta/doc-wiki/Index.md` — Doc Wiki Index -- 9 Topic SSOT
 - `docs/_meta/doc-wiki/Log.md` — Doc Wiki Event Log
-- `docs/_meta/doc-wiki/_schema.md` — Doc Wiki Schema -- Stream-Owned Topic Wiki
+- `docs/_meta/doc-wiki/_schema.md` — Doc Wiki Schema — Stream-Owned Topic Wiki + Append-Only Log + PR Draft Candidates
 - `docs/_meta/doc-wiki/back-office.md` — Back Office Wiki SSOT
 - `docs/_meta/doc-wiki/command-center.md` — Command Center Wiki SSOT
 - `docs/_meta/doc-wiki/devops-ci.md` — DevOps CI Wiki SSOT

@@ -769,7 +769,7 @@ tier: generated
 | `docs/_meta/conductor-ops/karpathy-idea-ebs-application_2026-05-14_v2_.md` | Karpathy LLM Wiki 패턴 EBS 적용 v2 — 멀티스트림 분산 wiki + 9-카테고리 SSOT 결합 | conductor | meta | - |
 | `docs/_meta/doc-wiki/Index.md` | Doc Wiki Index -- 9 Topic SSOT | SMEM | meta | None |
 | `docs/_meta/doc-wiki/Log.md` | Doc Wiki Event Log | SMEM | meta | None |
-| `docs/_meta/doc-wiki/_schema.md` | Doc Wiki Schema -- Stream-Owned Topic Wiki | SMEM | meta | - |
+| `docs/_meta/doc-wiki/_schema.md` | Doc Wiki Schema — Stream-Owned Topic Wiki + Append-Only Log + PR Draft Candidates | SMEM | meta | None |
 | `docs/_meta/doc-wiki/back-office.md` | Back Office Wiki SSOT | SMEM | meta | None |
 | `docs/_meta/doc-wiki/command-center.md` | Command Center Wiki SSOT | SMEM | meta | None |
 | `docs/_meta/doc-wiki/devops-ci.md` | DevOps CI Wiki SSOT | SMEM | meta | None |
