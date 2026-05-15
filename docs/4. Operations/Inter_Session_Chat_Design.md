@@ -4,6 +4,7 @@ owner: conductor
 tier: internal
 status: DESIGN
 plan: TBD (writing-plans skill 다음 단계)
+mirror: none  # 2026-05-15 사용자 결정 — AI Conductor 메타 영역 = 본 프로젝트 외, Confluence sync 안 함. file 보존.
 last-updated: 2026-05-11
 related-backlog: docs/4. Operations/Conductor_Backlog/B-222-inter-session-chat-ui.md
 predecessors:
