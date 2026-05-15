@@ -4,7 +4,7 @@ owner: conductor
 tier: internal
 confluence-page-id: 3625189547
 confluence-parent-id: 3811344758
-confluence-url: https://ggnetwork.atlassian.net/wiki/x/qwAU2
+confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3625189547
 source: "local SSOT"
 confluence-mirror-status: "to-push (v4.5 Phase B cascade)"
 last-updated: 2026-05-13
