@@ -3,10 +3,10 @@ id: topic-command-center
 title: Command Center Wiki SSOT
 type: topic_wiki
 topic: command-center
-owner_stream: s3
+owner: SMEM
 status: DRAFT
 tier: meta
-confluence-sync: false
+mirror: none
 legacy-id: null
 created: 2026-05-15
 last_ingest_at: null

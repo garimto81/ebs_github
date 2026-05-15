@@ -3,10 +3,10 @@ id: topic-gap-writing
 title: Gap Writing Wiki SSOT
 type: topic_wiki
 topic: gap-writing
-owner_stream: s10-w
+owner: SMEM
 status: DRAFT
 tier: meta
-confluence-sync: false
+mirror: none
 legacy-id: null
 created: 2026-05-15
 last_ingest_at: null

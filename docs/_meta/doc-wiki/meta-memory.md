@@ -3,10 +3,10 @@ id: topic-meta-memory
 title: Meta Memory Wiki SSOT
 type: topic_wiki
 topic: meta-memory
-owner_stream: smem
+owner: SMEM
 status: DRAFT
 tier: meta
-confluence-sync: false
+mirror: none
 legacy-id: null
 created: 2026-05-15
 last_ingest_at: null

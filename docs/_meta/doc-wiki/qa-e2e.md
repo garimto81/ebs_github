@@ -3,10 +3,10 @@ id: topic-qa-e2e
 title: QA E2E Wiki SSOT
 type: topic_wiki
 topic: qa-e2e
-owner_stream: s9
+owner: SMEM
 status: DRAFT
 tier: meta
-confluence-sync: false
+mirror: none
 legacy-id: null
 created: 2026-05-15
 last_ingest_at: null

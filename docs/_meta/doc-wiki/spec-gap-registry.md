@@ -3,10 +3,10 @@ id: topic-spec-gap-registry
 title: Spec Gap Registry Wiki SSOT
 type: topic_wiki
 topic: spec-gap-registry
-owner_stream: s10-a
+owner: SMEM
 status: DRAFT
 tier: meta
-confluence-sync: false
+mirror: none
 legacy-id: null
 created: 2026-05-15
 last_ingest_at: null

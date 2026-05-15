@@ -1,8 +1,13 @@
 ---
 id: doc-wiki-index
 title: "Doc Wiki Index -- 9 Topic SSOT"
-type: generated
+type: meta_index
 tier: meta
+owner: SMEM
+status: ACTIVE
+mirror: none
+legacy-id: null
+created: 2026-05-14
 ---
 
 # Doc Wiki Index

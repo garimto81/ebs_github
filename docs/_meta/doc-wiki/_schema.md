@@ -5,7 +5,7 @@ type: meta_schema
 status: DRAFT
 owner: SMEM
 tier: meta
-confluence-sync: false
+mirror: none
 created: 2026-05-14
 ---
 
