@@ -6,9 +6,9 @@ tier: external
 confluence-page-id: 3811672228
 confluence-parent-id: 3811344758
 confluence-url: https://ggnetwork.atlassian.net/wiki/spaces/WSOPLive/pages/3811672228
-last-updated: 2026-05-13
-last-synced: 2026-05-11
-version: 3.0.5
+last-updated: 2026-05-17
+last-synced: 2026-05-17
+version: 3.1.0
 derivative-of: ../2. Development/2.1 Frontend/Lobby/Overview.md
 if-conflict: derivative-of takes precedence
 audience-target: 외부 stakeholder + Lobby 개발자 (이중 audience — 그림 소설 + 개발자 무결성)
@@ -562,8 +562,18 @@ Day1 이 끝나면 Late Reg (지각 등록) 가 닫힌다. WSOP LIVE 가 Late Re
 | **칩** (4,317,000 / 3,850,000 / ...) | WSOP LIVE `player.chip_count` (실시간) |
 | **BB** (171.8 / 153.2 / ...) | EBS 계산 (chip / current_BB) |
 | **상태** (Active / Away / Elim) | WSOP LIVE + EBS |
-| **VPIP / PFR / AGR** | EBS 자체 통계 (CC 가 기록) |
+| **VPIP / PFR / AGR / Wtsd / CumWin** ★ v3.1 | EBS 자체 통계 (CC 가 기록) — 5종 (PokerGFX 정합) |
 | **FT** ★ (Final Table) | WSOP LIVE seat 기준 |
+
+> 💡 **통계 5종 (v3.1 cascade, PokerGFX PlayerInfoResponse 매핑)**:
+>   - **VPIP** (Voluntarily Put In Pot) = 자발적 팟 참여율
+>   - **PFR** (Pre-Flop Raise) = 프리플롭 레이즈 빈도
+>   - **AGR** (Aggression) = 공격성 지수
+>   - **Wtsd** (Went To ShowDown) = 쇼다운 진행률 (v3.1 신규)
+>   - **CumWin** (Cumulative Win) = 누적 수익 (v3.1 신규)
+>
+> PokerGFX 정본 (archive `complete.md` line 1663-1684 PlayerInfoResponse 20 fields) 의 5 통계 표준 정합.
+> Wtsd / CumWin 은 운영자가 라이브 방송 중 플레이어 성향 파악에 자주 사용 — Ticker 시스템 (RIVE_Standards Ch.23) 에도 노출 가능.
 
 상단 KPI 5 — Players 918 / Total Stack 151.06M / Entered Stacks 153.11M / Difference −2.05M (−1.34%) / Avg Stack 164,553.
 
@@ -965,6 +975,62 @@ EBS 는 WSOP LIVE 의 거울일 뿐 — 데이터를 거꾸로 쓰지 않는다.
 | **LOCK** | 라이브 중 비활성 | 회색 | game type / max players |
 
 상단 Status banner 가 운영자에게 색상 의미를 항상 보여준다 — `FREE applies immediately` / `CONFIRM applies on next HandStarted` / `LOCK disabled during live hand`.
+
+---
+
+## D.4 Mixed Game Settings (v3.1 신규)
+
+Mixed Game (HORSE / 8-Game / Custom) 운영 시 게임 전환 단위 설정. Foundation §B.1 cascade.
+
+### D.4.1 Settings 필드 (Rules 탭 sub-section)
+
+| 필드 | 타입 | 기본값 | 옵션 | LOCK/CONFIRM/FREE |
+|------|------|-------|------|:--:|
+| `mixed_game_mode` | enum | none | none / HORSE / 8_game / custom | **LOCK** (라이브 중 비활성) |
+| `mixed_game_variants` | game[] | [] | game enum list | **LOCK** |
+| `mixed_game_transition` | enum | every_hand | every_hand / every_round / new_level | **CONFIRM** (다음 핸드부터) |
+| `mixed_game_preview_visible` | bool | true | true / false | **FREE** (즉시 적용) |
+
+### D.4.2 Transition Unit 의미
+
+| 옵션 | PokerGFX 패턴 | 운영 의미 |
+|------|---------------|----------|
+| `every_hand` (default) | `auto_blinds_type.every_hand` 차용 | 매 핸드 종료 시 `SendGameVariant` |
+| `every_round` | `pl_dealer` rotation 검출 | dealer 한 바퀴 회귀 시 변경 |
+| `new_level` | `auto_blinds_type.new_level` 차용 | `blind_level` 증가 시 변경 |
+
+### D.4.3 Mixed Game cycle 정의 (HORSE / 8-Game)
+
+| 모드 | cycle 게임 (Foundation §B.1) |
+|------|------------------------------|
+| HORSE | Hold'em / Omaha / Razz / Stud / Stud Hi-Lo (5 종) |
+| 8-Game | NLHE / PLO / Razz / Stud / Stud Hi-Lo / 2-7 Triple Draw / Limit Hold'em / Omaha 8/B (8 종) |
+| Custom | 운영자가 game enum list 직접 선택 |
+
+### D.4.4 CC UI Preview
+
+운영자에게 StatusBar 우측에 다음 게임 preview 표시 (v3.1):
+
+```
+┌─────────────────────────────────────────────────────┐
+│ ... Players 9/10 ◐ ▣ ⚙   Next: PLO                 │ ← every_hand
+└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│ ... Players 9/10 ◐ ▣ ⚙   Next: PLO • 4 hands left │ ← every_round
+└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│ ... Players 9/10 ◐ ▣ ⚙   L5 NLHE / Next: L6 PLO   │ ← new_level
+└─────────────────────────────────────────────────────┘
+```
+
+상세 UI spec: Command_Center.md Ch.X StatusBar Mixed Preview sub-section (SG-renewal-ui-20).
+
+### D.4.5 PokerGFX 정본 인용
+
+- `complete.md` line 1596 — `SendGameVariant` command (manual change)
+- `complete.md` line 1598 — `GAME_VARIANT_LIST` command (variant catalog)
+- `complete.md` line 2872 — `auto_blinds_type` enum 4 종
+- `complete.md` line 686 — `pl_dealer` field (round detection)
 
 ---
 
