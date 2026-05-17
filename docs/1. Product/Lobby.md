@@ -563,7 +563,10 @@ Day1 이 끝나면 Late Reg (지각 등록) 가 닫힌다. WSOP LIVE 가 Late Re
 | **BB** (171.8 / 153.2 / ...) | EBS 계산 (chip / current_BB) |
 | **상태** (Active / Away / Elim) | WSOP LIVE + EBS |
 | **VPIP / PFR / AGR / Wtsd / CumWin** ★ v3.1 | EBS 자체 통계 (CC 가 기록) — 5종 (PokerGFX 정합) |
+| **runItTwiceShare** ★ v3.1+ | EBS Engine 산출 — All-in Run It Multiple 확률 share (Hand JSON, Cycle 7 #329) |
 | **FT** ★ (Final Table) | WSOP LIVE seat 기준 |
+
+> 💡 **runItTwiceShare (v3.1+ Code-driven)**: `team1-frontend/lib/models/entities/hand_player.dart` line 31 `runItTwiceShare: double?` 필드 (Cycle 7 #329 v03 game-rules). All-in Run It Multiple 시나리오에서 각 플레이어의 추가 보드 share 확률. Hand History JSON 송출.
 
 > 💡 **통계 5종 (v3.1 cascade, PokerGFX PlayerInfoResponse 매핑)**:
 >   - **VPIP** (Voluntarily Put In Pot) = 자발적 팟 참여율

@@ -331,7 +331,7 @@ flowchart LR
     D --> E["TURN"]
     E --> F["RIVER"]
     F --> G["SHOWDOWN"]
-    F -.run_it_times>1.-> R["RUN_IT_TWICE<br/>추가 보드"]
+    F -.runItMultipleAllowed.-> R["runItMultiple<br/>추가 보드 N 회"]
     R --> G
     G --> H["HAND_COMPLETE"]
     H --> A
@@ -341,7 +341,11 @@ flowchart LR
 
 > ⚠️ **R5 거절 처리** (§Ch.14): React 시안의 HandFSM 은 7-state (SETUP_HAND 누락). EBS 는 **10-state 보존** — 블라인드 수거 단계가 Rive 애니메이션 트리거에 필수.
 
-> 🆕 **v4.4 RUN_IT_TWICE 분기 추가** (PokerGFX 정본 line 905-908 cascade): All-in 상황에서 운영자 옵션으로 보드 2 회 분배 → 별도 팟 분배. `run_it_times` 필드가 1 보다 클 때 활성. PokerGFX 의 검증된 시청자 인기 기능.
+> 🆕 **v4.4 runItMultiple 분기 추가** (Code-driven SSOT, `team4-cc/src/lib/models/enums/hand_fsm.dart` line 13 + `hand_fsm_provider.dart` line 94-99):
+>   - **EBS spec = Run It Multiple** (보드 2~N 회 추가 분배, **PokerGFX 의 Run It Twice 일반화**)
+>   - 진입 조건: RIVER + `runItMultipleAllowed` flag (GameInfo) + All-in ≥ 2 (Code-driven)
+>   - PRD ↔ Code 정본 SSOT: `docs/2. Development/2.2 Backend/Database/State_Machines.md §2 HandFSM`
+>   - PokerGFX 정본 line 905-908 = `run_it_times` 정수 N 지원 (Twice 만이 아닌 N-times) — EBS 의 진보 정합
 
 ### 6.1 단계별 화면 변화
 
@@ -351,7 +355,7 @@ flowchart LR
 | **SETUP_HAND** | "Setting Up" | "BLINDS" | SB/BB 좌석 칩 이동 애니메이션 | (전부 disabled) |
 | **PRE_FLOP** | "PRE FLOP" + 팟 | "ACTING — S{n} · Name" | 카드 슬롯 face-down `?`, action_on glow | [F][C][B][A] 활성 |
 | **FLOP / TURN / RIVER** | 동일 | 동일 | 보드 카드 추가, 폴드 좌석 반투명 | 동일 |
-| **RUN_IT_TWICE** (옵션) | "RUN IT TWICE" | "Additional board" | 추가 보드 슬롯 활성 | (대기) |
+| **runItMultiple** (옵션) | "RUN IT MULTIPLE" | "Additional board(s)" | 추가 보드 슬롯 활성 (2~N) | (대기) |
 | **SHOWDOWN** | "SHOWDOWN" | "Reveal hands" | 남은 좌석 카드 face-up flip | (특수 버튼) |
 | **HAND_COMPLETE** | "HAND OVER" | "Award pot — Press FINISH HAND" | 팟 분배 → 스택 갱신 | [N] FINISH HAND only |
 
@@ -391,7 +395,7 @@ flowchart TB
     B -- draw --> D[PRE_FLOP_DRAW<br/>stud_draw_in_progress=true]
     B -- stud --> S[THIRD → FOURTH → FIFTH → SIXTH → SEVENTH]
     F --> RIT{run_it_times>1?}
-    RIT -- yes --> RIT2[RUN_IT_TWICE]
+    RIT -- yes --> RIT2[RUN_IT_MULTIPLE]
     RIT -- no --> SD[SHOWDOWN]
     RIT2 --> SD
     D --> SD
@@ -482,7 +486,7 @@ PokerGFX 정본 line 113-121 직접 인용:
 
 본 패턴 채택 = **L5 Frontend (Flutter CC) 의 7-state mockup 단순화는 의도된 정합**:
 - React mockup 의 7-state (SETUP_HAND 누락) = L5 Frontend Display 적절
-- L2 Engine FSM 의 10-state (RUN_IT_TWICE + SETUP_HAND 포함) = backend 만 보유
+- L2 Engine FSM 의 10-state (RUN_IT_MULTIPLE + SETUP_HAND 포함) = backend 만 보유
 - 두 layer 가 다른 깊이로 정합 = 7-Layer architecture 정합
 
 #### Architecture Stack 차원
